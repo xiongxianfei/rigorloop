@@ -14,6 +14,7 @@ This report verifies the shipped proof-of-value example and its traceability pac
 
 ## Manual checks
 
-- `docs/changes/0001-skill-validator/` contains `proposal.md`, `spec.md`, `plan.md`, `test-spec.md`, `verify-report.md`, `explain-change.md`, and `change.yaml`.
+- `docs/changes/0001-skill-validator/` contains `proposal.md`, `spec.md`, `plan.md`, `test-spec.md`, `verify-report.md`, `explain-change.md`, `review-resolution.md`, and `change.yaml`.
 - The local artifact wrappers link back to the approved top-level proposal, spec, architecture, ADR, and test spec instead of restating conflicting contracts.
+- `review-resolution.md` records the material accepted and deferred review items for the shipped validator change.
 - `README.md` points contributors to the shipped example.

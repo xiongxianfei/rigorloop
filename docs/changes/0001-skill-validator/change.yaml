@@ -9,6 +9,7 @@ artifacts:
   test_spec: docs/changes/0001-skill-validator/test-spec.md
   verify_report: docs/changes/0001-skill-validator/verify-report.md
   explain_change: docs/changes/0001-skill-validator/explain-change.md
+  review_resolution: docs/changes/0001-skill-validator/review-resolution.md
 requirements:
   - R9
   - R9a
@@ -61,6 +62,7 @@ changed_files:
   - docs/changes/0001-skill-validator/explain-change.md
   - docs/changes/0001-skill-validator/plan.md
   - docs/changes/0001-skill-validator/proposal.md
+  - docs/changes/0001-skill-validator/review-resolution.md
   - docs/changes/0001-skill-validator/spec.md
   - docs/changes/0001-skill-validator/test-spec.md
   - docs/changes/0001-skill-validator/verify-report.md
@@ -91,5 +93,6 @@ changed_files:
   - tests/fixtures/skills/placeholder-text/SKILL.md
   - tests/fixtures/skills/valid-basic/SKILL.md
 review:
-  status: pending_code_review
-  unresolved_items: 0
+  status: resolved_with_deferred_followups
+  unresolved_items: 2
+  location: docs/changes/0001-skill-validator/review-resolution.md

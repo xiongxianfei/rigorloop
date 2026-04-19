@@ -19,4 +19,4 @@ The first release needed one concrete non-trivial change that shows the full lif
 
 ## Review-resolution note
 
-No standalone `review-resolution.md` is included for this example because there is no durable review feedback specific to the M6 artifact pack yet.
+A standalone `review-resolution.md` is included for this example because the validator change went through multiple material review rounds with accepted fixes and deferred minor follow-ups that future maintainers may need to understand.

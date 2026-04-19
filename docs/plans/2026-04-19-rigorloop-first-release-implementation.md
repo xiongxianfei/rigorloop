@@ -382,6 +382,7 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 - 2026-04-19: Follow-up after M4 `code-review` to enforce missing `SKILL.md` detection for leaf source-skill directories and add a regression fixture for the mixed-tree case that previously passed.
 - 2026-04-19: Completed M5 by replacing the template `scripts/ci.sh` placeholder with the approved structural checks, wiring GitHub Actions to set up Python and delegate to that repo-owned script, and updating contributor docs to name the same commands CI runs.
 - 2026-04-19: Completed M6 by publishing `docs/changes/0001-skill-validator/`, validating `change.yaml`, and updating `README.md` so contributors can find the shipped proof-of-value example from the project entrypoint.
+- 2026-04-19: Follow-up after M6 `code-review` to add `review-resolution.md` for the actual reviewed validator change and wire that artifact into the change metadata and verification notes.
 
 ## Decision log
 
@@ -399,6 +400,7 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 - 2026-04-19: Treat leaf directories without an ancestor skill as source-skill directories during tree validation. Rationale: otherwise a mixed tree can pass even when one sibling directory is missing `SKILL.md`, which violates `R15`.
 - 2026-04-19: Keep GitHub Actions as a setup-only wrapper over `scripts/ci.sh`. Rationale: `R9a` and `T14` require hosted CI to delegate validation logic to repo-owned commands instead of duplicating checks in workflow YAML.
 - 2026-04-19: Use change-local wrapper artifacts in `docs/changes/0001-skill-validator/` instead of copying the full top-level proposal, spec, and architecture docs. Rationale: the proof-of-value example should stay concise, link back to the approved source artifacts, and avoid creating a second long-form contract surface.
+- 2026-04-19: Use a standalone `review-resolution.md` for `0001-skill-validator`. Rationale: the change already went through multiple material review rounds and fixups, so reviewer dispositions now have durable project value under `R12c`.
 
 ## Surprises and discoveries
 
@@ -417,6 +419,7 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 - 2026-04-19: The initial M4 validator only walked existing `SKILL.md` files, so a tree with one valid skill and one sibling directory missing `SKILL.md` still passed until the follow-up fix broadened source-skill discovery.
 - 2026-04-19: GitHub-hosted CI still needs an explicit Python setup step even though the local environment now exposes `python` directly.
 - 2026-04-19: The proof-of-value example spans multiple reviewed milestone commits, so the M6 artifact pack needed to summarize and index that history rather than pretend the validator shipped as one single diff.
+- 2026-04-19: The first M6 artifact pack was still missing durable review resolution even though the validator work had already accumulated multiple review-driven fixes across M1-M6.
 
 ## Validation notes
 
@@ -510,6 +513,11 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
   - `python scripts/validate-change-metadata.py docs/changes/0001-skill-validator/change.yaml` -> pass
   - `git diff --check -- docs/changes/0001-skill-validator README.md docs/plans/2026-04-19-rigorloop-first-release-implementation.md` -> pass
   - manual artifact review -> pass, the change-local docs link back to the approved top-level proposal, spec, architecture, ADR, and test spec without contradicting them
+- 2026-04-19 M6 follow-up after code review:
+  - `bash scripts/ci.sh` -> pass
+  - `python scripts/validate-change-metadata.py docs/changes/0001-skill-validator/change.yaml` -> pass
+  - `git diff --check -- docs/changes/0001-skill-validator docs/plans/2026-04-19-rigorloop-first-release-implementation.md` -> pass
+  - manual artifact review -> pass, `review-resolution.md` now records accepted and deferred review items for the actual reviewed change and is referenced from `change.yaml`, `verify-report.md`, and `explain-change.md`
 
 ## Outcome and retrospective
 
