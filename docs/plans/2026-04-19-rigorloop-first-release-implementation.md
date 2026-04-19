@@ -92,7 +92,7 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 - Validation commands:
   - `! rg -n "<PROJECT_NAME>|This template|Replace this" README.md docs/workflows.md AGENTS.md .github/pull_request_template.md`
   - `! rg -n "\\.codex/PLANS\\.md" README.md docs/workflows.md AGENTS.md .github/pull_request_template.md skills .codex/skills`
-  - `git -c safe.directory=/home/xiongxianfei/data/20260419-rigorloop diff --check -- README.md docs/workflows.md AGENTS.md .github/pull_request_template.md skills`
+  - `git diff --check -- README.md docs/workflows.md AGENTS.md .github/pull_request_template.md skills`
 - Expected observable result:
   - contributors can identify RigorLoop, the approved lifecycle, and canonical versus generated paths from the main docs without reading chat history
 - Commit message: `M1: align repository guidance with approved workflow`
@@ -138,7 +138,7 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
   - `! python scripts/validate-change-metadata.py tests/fixtures/change-metadata/missing-review/change.yaml`
   - `! python scripts/validate-change-metadata.py tests/fixtures/change-metadata/bad-validation-record/change.yaml`
   - `! python scripts/validate-change-metadata.py tests/fixtures/change-metadata/bad-review-shape/change.yaml`
-  - `git -c safe.directory=/home/xiongxianfei/data/20260419-rigorloop diff --check -- schemas scripts/validate-change-metadata.py tests/fixtures/change-metadata`
+  - `git diff --check -- schemas scripts/validate-change-metadata.py tests/fixtures/change-metadata`
 - Expected observable result:
   - the repository has concrete schema files for change metadata and simple skill metadata shape, a working way to validate a sample `change.yaml`, and an explicit validator boundary
 - Commit message: `M2: add first-release schema scaffolding`
@@ -439,10 +439,10 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 - 2026-04-19 M1 validation:
   - `! rg -n "<PROJECT_NAME>|This template|Replace this" README.md docs/workflows.md AGENTS.md .github/pull_request_template.md` -> pass
   - `! rg -n "\\.codex/PLANS\\.md" README.md docs/workflows.md AGENTS.md .github/pull_request_template.md skills .codex/skills` -> pass
-  - `git -c safe.directory=/home/xiongxianfei/data/20260419-rigorloop diff --check -- README.md docs/workflows.md AGENTS.md .github/pull_request_template.md skills` -> pass
+  - `git diff --check -- README.md docs/workflows.md AGENTS.md .github/pull_request_template.md skills` -> pass
 - 2026-04-19 M1 follow-up after code review:
-  - `git -c safe.directory=/home/xiongxianfei/data/20260419-rigorloop ls-files -- docs/proposals/2026-04-19-rigorloop-project-direction.md docs/proposals/2026-04-19-rigorloop-workflow-product.explore.md docs/proposals/2026-04-19-implementation-milestone-commit-policy.md specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md docs/adr/ADR-20260419-repository-source-layout.md` -> pass
-  - `git -c safe.directory=/home/xiongxianfei/data/20260419-rigorloop diff --check --cached -- docs/proposals/2026-04-19-rigorloop-project-direction.md docs/proposals/2026-04-19-rigorloop-workflow-product.explore.md docs/proposals/2026-04-19-implementation-milestone-commit-policy.md specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md docs/adr/ADR-20260419-repository-source-layout.md docs/plans/2026-04-19-rigorloop-first-release-implementation.md` -> pass
+  - `git ls-files -- docs/proposals/2026-04-19-rigorloop-project-direction.md docs/proposals/2026-04-19-rigorloop-workflow-product.explore.md docs/proposals/2026-04-19-implementation-milestone-commit-policy.md specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md docs/adr/ADR-20260419-repository-source-layout.md` -> pass
+  - `git diff --check --cached -- docs/proposals/2026-04-19-rigorloop-project-direction.md docs/proposals/2026-04-19-rigorloop-workflow-product.explore.md docs/proposals/2026-04-19-implementation-milestone-commit-policy.md specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md docs/adr/ADR-20260419-repository-source-layout.md docs/plans/2026-04-19-rigorloop-first-release-implementation.md` -> pass
 - 2026-04-19 M1 follow-up after second code review:
   - `diff -qr skills .codex/skills` -> only `plan` and `implement` differed before canonical sync
   - `git ls-files -- skills/plan/SKILL.md skills/implement/SKILL.md .codex/skills/plan/SKILL.md .codex/skills/implement/SKILL.md` -> pass after staging skill trees

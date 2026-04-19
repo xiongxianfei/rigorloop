@@ -5,8 +5,8 @@
 
 ## Related proposal
 
-- [RigorLoop Project Direction](/home/xiongxianfei/data/20260419-rigorloop/docs/proposals/2026-04-19-rigorloop-project-direction.md)
-- [Implementation Milestone Commit Policy](/home/xiongxianfei/data/20260419-rigorloop/docs/proposals/2026-04-19-implementation-milestone-commit-policy.md)
+- [RigorLoop Project Direction](../docs/proposals/2026-04-19-rigorloop-project-direction.md)
+- [Implementation Milestone Commit Policy](../docs/proposals/2026-04-19-implementation-milestone-commit-policy.md)
 
 ## Goal and context
 
