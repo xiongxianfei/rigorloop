@@ -225,15 +225,15 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
   - `python scripts/test-skill-validator.py`
   - `python scripts/validate-skills.py`
   - `python scripts/build-skills.py --check`
-  - `git -c safe.directory=/home/xiongxianfei/data/20260419-rigorloop diff --check -- scripts .codex/skills`
+  - `git diff --check -- scripts .codex/skills docs/plans/2026-04-19-rigorloop-first-release-implementation.md`
 - Expected observable result:
   - contributors can validate canonical skill structure locally and confirm that generated Codex compatibility output is in sync
 - Commit message: `M4: implement skill validation and deterministic generation`
 - Milestone closeout:
-  - [ ] validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
+  - [x] validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
   - [ ] milestone committed
 - Risks:
   - YAML frontmatter parsing may tempt the change into third-party dependencies the repo does not currently manage
@@ -263,7 +263,7 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
   - make release guidance honest if CI language or README still overstates release readiness
 - Validation commands:
   - `bash scripts/ci.sh`
-  - `git -c safe.directory=/home/xiongxianfei/data/20260419-rigorloop diff --check -- scripts/ci.sh .github/workflows/ci.yml README.md docs/workflows.md`
+  - `git diff --check -- scripts/ci.sh .github/workflows/ci.yml README.md docs/workflows.md`
 - Expected observable result:
   - local and CI validation use the same repo-owned commands for the first-release structural checks
 - Commit message: `M5: wire repository CI to real validation commands`
@@ -305,7 +305,7 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 - Validation commands:
   - `bash scripts/ci.sh`
   - `python scripts/validate-change-metadata.py docs/changes/0001-skill-validator/change.yaml`
-  - `git -c safe.directory=/home/xiongxianfei/data/20260419-rigorloop diff --check -- docs/changes/0001-skill-validator README.md`
+  - `git diff --check -- docs/changes/0001-skill-validator README.md`
 - Expected observable result:
   - contributors can follow one concrete non-trivial change from artifacts to verification evidence and PR-ready explanation
 - Commit message: `M6: publish skill-validator golden path artifacts`
@@ -368,7 +368,7 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 - [x] M1. Align repository guidance and review surfaces
 - [x] M2. Add schema and metadata scaffolding
 - [x] M3. Normalize canonical skill sources and add validator fixtures
-- [ ] M4. Implement simple validation and deterministic skill generation
+- [x] M4. Implement simple validation and deterministic skill generation
 - [ ] M5. Replace template CI behavior with repository-owned checks
 - [ ] M6. Publish the skill-validator golden path and change traceability
 
@@ -378,6 +378,7 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 - 2026-04-19: User-directed follow-up overrides the original M1 sequencing guard and brings `skills/` plus `.codex/skills/` into the branch now so contributor guidance and tracked repository surfaces match.
 - 2026-04-19: Completed M2 by adding `schemas/change.schema.json`, `schemas/skill.schema.json`, a stdlib-only `scripts/validate-change-metadata.py`, and valid plus invalid `tests/fixtures/change-metadata/` cases for `T5` through `T7`.
 - 2026-04-19: Completed M3 by fixing the lone canonical top-level-title violation in `skills/architecture/SKILL.md`, adding the required `tests/fixtures/skills/` pass/fail cases, and correcting the M3 validation commands so they check the intended conditions with ripgrep.
+- 2026-04-19: Completed M4 by shipping `scripts/validate-skills.py`, `scripts/test-skill-validator.py`, and `scripts/build-skills.py`, then performing the first deliberate `.codex/skills/` sync from canonical `skills/`.
 
 ## Decision log
 
@@ -390,6 +391,8 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 - 2026-04-19: Ship invalid metadata fixtures in M2, not later. Rationale: `specs/rigorloop-workflow.test.md` requires `T6` and `T7` coverage before code review, so M2 needs both passing and failing metadata cases.
 - 2026-04-19: Keep `.codex/skills/` untouched in M3 even though `skills/` changed. Rationale: the approved plan and prior user direction defer generated compatibility sync until M4 after canonical skill content is stable.
 - 2026-04-19: Replace the draft M3 `rg -L` checks with explicit per-file ripgrep loops. Rationale: ripgrep `-L` does not mean “files without match” in this repo workflow, so the original command text did not validate the intended conditions.
+- 2026-04-19: Keep the first-release generator as a byte-for-byte copy from `skills/` to `.codex/skills/`. Rationale: a literal copy is the smallest deterministic transform and avoids warning-header churn in the generated review surface.
+- 2026-04-19: Exercise the validator through its CLI in `scripts/test-skill-validator.py` instead of importing internals directly. Rationale: the approved command surface is `python scripts/validate-skills.py`, so fixture tests should prove that public entrypoint rather than only helper functions.
 
 ## Surprises and discoveries
 
@@ -400,10 +403,11 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 - 2026-04-19: M1 guidance updates passed grep-based cleanup checks before review, but `code-review` caught that the branch still did not track the spec, architecture, ADR, and proposal artifacts those docs referenced.
 - 2026-04-19: `code-review` also caught that `skills/` and `.codex/skills/` were still only working-tree content and that canonical `plan` and `implement` skill guidance lagged the approved milestone and fast-lane rules.
 - 2026-04-19: `workflow` skill guidance still used `mini-spec` wording even though the approved fast lane now requires `spec -> implement -> verify -> pr`.
-- 2026-04-19: This shell has `python3` but no `python`, so local M2 validation used `python3` even though the workflow docs still describe the eventual repo command surface with `python`.
+- 2026-04-19: The environment initially had `python3` but no `python` during early M2 work; after `python-is-python3` was installed, the repository command surface now matches the documented `python` commands.
 - 2026-04-19: The canonical `skills/` tree was owned by `root:root`, so M3 could not edit the approved source-of-truth files until ownership was narrowed back to the current user for that path.
 - 2026-04-19: The canonical skill corpus was already almost compliant; the only content fix needed for M3 was removing a second top-level heading from the architecture skill’s ADR example block.
 - 2026-04-19: The M3 draft validation commands used ripgrep `-L` incorrectly, so they had to be corrected before the milestone could rely on them as pass/fail evidence.
+- 2026-04-19: The first deliberate M4 drift check failed immediately because `.codex/skills/architecture/SKILL.md` was still stale after the M3 canonical fix, which confirmed the generator check was catching real drift before the first sync.
 
 ## Validation notes
 
@@ -461,6 +465,19 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
   - `python - <<'PY'\nfrom pathlib import Path\nimport re\nowners = {}\nfor path in sorted(Path('skills').glob('*/SKILL.md')):\n    text = path.read_text()\n    match = re.search(r'^name:\\s*(.+)$', text, re.M)\n    if not match:\n        raise SystemExit(f\"{path}: missing name\")\n    name = match.group(1).strip()\n    if name in owners:\n        raise SystemExit(f\"duplicate skill name: {name} in {owners[name]} and {path}\")\n    owners[name] = path\nPY` -> pass
   - `test -f tests/fixtures/skills/valid-basic/SKILL.md && test -f tests/fixtures/skills/missing-name/SKILL.md && test -f tests/fixtures/skills/missing-description/SKILL.md && test -f tests/fixtures/skills/missing-expected-output/SKILL.md && test -f tests/fixtures/skills/missing-title/SKILL.md && test -f tests/fixtures/skills/duplicate-name/first/SKILL.md && test -f tests/fixtures/skills/duplicate-name/second/SKILL.md && test -f tests/fixtures/skills/placeholder-text/SKILL.md` -> pass
   - `git diff --check -- skills tests/fixtures docs/plans/2026-04-19-rigorloop-first-release-implementation.md` -> pass
+- 2026-04-19 M4 TDD and milestone validation:
+  - `python scripts/test-skill-validator.py` -> expected pre-implementation failure because `scripts/validate-skills.py` did not exist yet
+  - `python scripts/build-skills.py --check` -> expected pre-implementation failure because `.codex/skills/architecture/SKILL.md` was still stale after the M3 canonical fix
+  - `python scripts/test-skill-validator.py` -> pass
+  - `python scripts/validate-skills.py` -> pass
+  - `! python scripts/validate-skills.py .codex/skills` -> pass
+  - `python scripts/build-skills.py` -> pass
+  - `python scripts/build-skills.py --check` -> pass
+  - `python - <<'PY' ... append deliberate drift marker to .codex/skills/architecture/SKILL.md ... PY` -> pass
+  - `! python scripts/build-skills.py --check` -> pass
+  - `python scripts/build-skills.py` -> pass
+  - `python scripts/build-skills.py --check` -> pass
+  - `git diff --check -- scripts .codex/skills docs/plans/2026-04-19-rigorloop-first-release-implementation.md` -> pass
 
 ## Outcome and retrospective
 

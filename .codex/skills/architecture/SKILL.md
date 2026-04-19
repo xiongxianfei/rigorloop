@@ -75,7 +75,7 @@ Keep diagrams small and accurate. Prefer multiple simple diagrams over one unrea
 Use:
 
 ```text
-# ADR-YYYYMMDD-slug: Title
+ADR-YYYYMMDD-slug: Title
 
 ## Status
 Accepted | Proposed | Superseded
