@@ -10,7 +10,7 @@ It is a Git-first starter kit. It does not replace pull requests, CI, or human r
 - a full lifecycle for non-trivial work
 - canonical workflow sources in `docs/`, `specs/`, `skills/`, `schemas/`, and `scripts/`
 - generated Codex compatibility output in `.codex/skills/`
-- change-local artifacts and machine-readable traceability under `docs/changes/<change-id>/`
+- a change-local artifact pattern under `docs/changes/<change-id>/` for the golden-path example and later non-trivial work
 
 ## Workflow At A Glance
 
@@ -69,6 +69,16 @@ The normative contract lives in `specs/rigorloop-workflow.md`. The short operati
 - Execution plans follow:
   - `docs/plans/0000-00-00-example-plan.md`
 
+## Validation Commands
+
+Before PR, run the same structural checks that CI runs:
+
+- `python scripts/validate-skills.py`
+- `python scripts/test-skill-validator.py`
+- `python scripts/build-skills.py --check`
+
+Use `bash scripts/ci.sh` to run the same checks through the repository-owned CI wrapper.
+
 ## Current Focus
 
 The first proof-of-value change is a skill metadata validator with fixture tests, generated-output drift checks, and CI integration.
@@ -95,8 +105,7 @@ Active implementation work is tracked in:
 │   ├── plans/
 │   │   └── 0000-00-00-example-plan.md
 │   ├── architecture/
-│   ├── adr/
-│   └── changes/
+│   └── adr/
 ├── .codex/
 │   └── skills/
 ├── scripts/
@@ -104,6 +113,8 @@ Active implementation work is tracked in:
 ├── schemas/
 └── specs/
 ```
+
+`docs/changes/` is created when the golden-path example lands in M6.
 
 ## License
 

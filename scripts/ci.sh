@@ -1,39 +1,33 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "This is a template CI script."
-echo "Replace scripts/ci.sh with the real commands for your repository."
-echo
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT_DIR"
 
-if [[ -f package.json ]]; then
-  echo "Detected package.json. Example commands:"
-  echo "  npm ci && npm run lint && npm test && npm run build"
-  exit 0
+run_check() {
+  local label="$1"
+  shift
+
+  echo "==> $label"
+  printf '+'
+  printf ' %q' "$@"
+  printf '\n'
+  "$@"
+  echo
+}
+
+if ! command -v python >/dev/null 2>&1; then
+  echo "python command not found; install Python or provide a python shim before running CI." >&2
+  exit 1
 fi
 
-if [[ -f pyproject.toml ]]; then
-  echo "Detected pyproject.toml. Example commands:"
-  echo "  uv sync --frozen && pytest"
-  echo "  # or your project-specific equivalent"
-  exit 0
-fi
+run_check "Validate canonical skills" \
+  python scripts/validate-skills.py
 
-if [[ -f Cargo.toml ]]; then
-  echo "Detected Cargo.toml. Example commands:"
-  echo "  cargo fmt --check && cargo test"
-  exit 0
-fi
+run_check "Run skill validator fixtures" \
+  python scripts/test-skill-validator.py
 
-if [[ -f go.mod ]]; then
-  echo "Detected go.mod. Example commands:"
-  echo "  go test ./..."
-  exit 0
-fi
+run_check "Check generated skill drift" \
+  python scripts/build-skills.py --check
 
-if [[ -f pom.xml || -f build.gradle || -f build.gradle.kts ]]; then
-  echo "Detected Java or Gradle build files. Example commands:"
-  echo "  ./gradlew test"
-  exit 0
-fi
-
-echo "No known build system detected. Replace this script before requiring the CI check."
+echo "CI checks passed."

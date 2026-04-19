@@ -43,13 +43,17 @@ Notes:
 
 ## Validation
 
-- Until the first-release validation scripts are fully landed, use the exact validation commands named in the active plan and test spec.
-- When repo-owned validation scripts are implemented, run the named repository commands before PR and report the commands you actually ran.
-- Do not report success with implied or assumed checks.
+Run these first-release structural checks before PR:
+
+- `python scripts/validate-skills.py`
+- `python scripts/test-skill-validator.py`
+- `python scripts/build-skills.py --check`
+
+Use `bash scripts/ci.sh` to run the same checks through the repository-owned CI wrapper and report the commands you actually ran.
 
 ## CI And Release
 
-- `.github/workflows/ci.yml` should remain a thin wrapper around repo-owned validation commands.
+- `.github/workflows/ci.yml` should remain a thin wrapper around repo-owned validation commands. It may set up required tooling, but validation logic belongs in `scripts/ci.sh`.
 - Current release automation remains conservative and tag-driven. Do not treat `scripts/release-verify.sh` as a mature release gate until repository-specific checks replace the template behavior.
 
 ## Documentation Ownership
