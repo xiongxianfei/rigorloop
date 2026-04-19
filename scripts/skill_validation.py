@@ -109,12 +109,37 @@ def load_skill_schema() -> dict:
     return json.loads(SKILL_SCHEMA_PATH.read_text(encoding="utf-8"))
 
 
-def discover_skill_files(target: Path) -> list[Path]:
+def _has_ancestor_skill_dir(directory: Path, target: Path) -> bool:
+    current = directory.parent
+    while True:
+        if (current / "SKILL.md").is_file():
+            return True
+        if current == target:
+            return False
+        if current == current.parent:
+            return False
+        current = current.parent
+
+
+def discover_source_skill_dirs(target: Path) -> list[Path]:
     if target.is_file():
         if target.name != "SKILL.md":
             return []
-        return [target]
-    return sorted(path for path in target.rglob("SKILL.md") if path.is_file())
+        return [target.parent]
+
+    directories = [target]
+    directories.extend(path for path in sorted(target.rglob("*")) if path.is_dir())
+
+    candidates: list[Path] = []
+    for directory in directories:
+        if directory != target and _has_ancestor_skill_dir(directory, target):
+            continue
+        has_skill_file = (directory / "SKILL.md").is_file()
+        has_child_directories = any(child.is_dir() for child in directory.iterdir())
+        if has_skill_file or not has_child_directories:
+            candidates.append(directory)
+
+    return candidates
 
 
 def validate_metadata_against_schema(metadata: dict[str, str], schema: dict, path: Path) -> list[str]:
@@ -185,15 +210,21 @@ def validate_skill_tree(target: Path) -> ValidationResult:
             ],
         )
 
-    checked_files = discover_skill_files(target)
-    if not checked_files:
+    skill_dirs = discover_source_skill_dirs(target)
+    if not skill_dirs:
         return ValidationResult(checked_files=[], errors=[f"{target}: no SKILL.md files found"])
 
     schema = load_skill_schema()
     errors: list[str] = []
     owners: dict[str, Path] = {}
+    checked_files: list[Path] = []
 
-    for path in checked_files:
+    for directory in skill_dirs:
+        path = directory if directory.is_file() else directory / "SKILL.md"
+        if not path.is_file():
+            errors.append(f"{path}: missing required skill file")
+            continue
+        checked_files.append(path)
         file_errors, name = validate_skill_file(path, schema)
         errors.extend(file_errors)
         if not name:

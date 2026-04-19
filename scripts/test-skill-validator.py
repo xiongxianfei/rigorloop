@@ -61,6 +61,11 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "missing-expected-output", "missing required '## Expected output' section"
         )
 
+    def test_missing_skill_file_fails(self) -> None:
+        self.assertFixtureFails(
+            "missing-skill-file", "empty-skill/SKILL.md: missing required skill file"
+        )
+
     def test_duplicate_name_fails(self) -> None:
         self.assertFixtureFails("duplicate-name", "duplicate skill name: duplicate-name")
 
