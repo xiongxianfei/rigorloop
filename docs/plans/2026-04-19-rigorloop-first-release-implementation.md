@@ -122,13 +122,13 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 - Tests to add/update:
   - no dedicated test harness yet
   - JSON syntax validation for the schema files
-  - one valid sample `change.yaml` fixture for metadata-validator smoke validation
+  - valid and invalid `change.yaml` fixtures covering the required passing and failing metadata cases from `T5` through `T7`
 - Implementation steps:
   - create `schemas/` as an authored root
   - define `change.schema.json` for the first-release `change.yaml` shape from `R25b`-`R25e`
   - define `skill.schema.json` only for per-skill machine-readable metadata shape
   - add a minimal metadata-validation command for `docs/changes/<change-id>/change.yaml` so later milestones can validate the golden-path traceability file against the first-release contract
-  - create one valid sample metadata fixture that matches the first-release schema
+  - create valid and invalid metadata fixtures that match the first-release schema contract and failing edge cases
   - keep Markdown section checks, uniqueness checks, placeholder rejection, and source-of-truth checks out of JSON Schema and in the future validator script
 - Validation commands:
   - `python -m json.tool schemas/change.schema.json >/dev/null`
@@ -139,11 +139,11 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
   - the repository has concrete schema files for change metadata and simple skill metadata shape, a working way to validate a sample `change.yaml`, and an explicit validator boundary
 - Commit message: `M2: add first-release schema scaffolding`
 - Milestone closeout:
-  - [ ] validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - overfitting the schema to future workflow ideas instead of the approved first-release contract
 - Rollback/recovery:
@@ -324,7 +324,7 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
   - keep milestone boundaries aligned with the approved requirement groups
 - Implementation milestone validation:
   - M1 uses doc consistency and placeholder/reference checks
-  - M2 uses JSON syntax validation for schema files
+  - M2 uses JSON syntax validation for schema files plus change-metadata fixture validation
   - M3 uses canonical-skill and fixture inventory checks
   - M4 uses the validator, fixture tests, and build drift check
   - M5 uses `bash scripts/ci.sh` and workflow-wrapper checks
@@ -362,7 +362,7 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 ## Progress
 
 - [x] M1. Align repository guidance and review surfaces
-- [ ] M2. Add schema and metadata scaffolding
+- [x] M2. Add schema and metadata scaffolding
 - [ ] M3. Normalize canonical skill sources and add validator fixtures
 - [ ] M4. Implement simple validation and deterministic skill generation
 - [ ] M5. Replace template CI behavior with repository-owned checks
@@ -372,6 +372,7 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 - 2026-04-19: Follow-up after `code-review` to add the referenced workflow spec, test spec, architecture, ADR, and proposal artifacts to the branch so the new guidance resolves from git history instead of only from the working tree.
 - 2026-04-19: Follow-up after second `code-review` to track `skills/` and `.codex/skills/` in git, align canonical `plan` and `implement` skill guidance to the approved milestone rules, and surface fast-lane eligibility and evidence rules directly in the root docs.
 - 2026-04-19: User-directed follow-up overrides the original M1 sequencing guard and brings `skills/` plus `.codex/skills/` into the branch now so contributor guidance and tracked repository surfaces match.
+- 2026-04-19: Completed M2 by adding `schemas/change.schema.json`, `schemas/skill.schema.json`, a stdlib-only `scripts/validate-change-metadata.py`, and valid plus invalid `tests/fixtures/change-metadata/` cases for `T5` through `T7`.
 
 ## Decision log
 
@@ -380,6 +381,8 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 - 2026-04-19: Plan for deterministic minimal skill generation. Rationale: the first-release generator should make `.codex/skills/` a stable, reviewable derivative of `skills/` rather than a second authored tree.
 - 2026-04-19: Normalize canonical skill content in its own milestone before script enforcement. Rationale: reviewable content cleanup is safer when it is not mixed with validator and generator logic.
 - 2026-04-19: Update `.codex/skills/` only after canonical `skills/` is good enough for a deliberate sync. Rationale: frequent generated-output churn would create review noise and hide whether the canonical source is actually stable.
+- 2026-04-19: Keep change-metadata validation stdlib-only in M2. Rationale: the repository does not manage YAML or JSON Schema dependencies yet, and the approved first-release contract is small enough for a focused parser and validator.
+- 2026-04-19: Ship invalid metadata fixtures in M2, not later. Rationale: `specs/rigorloop-workflow.test.md` requires `T6` and `T7` coverage before code review, so M2 needs both passing and failing metadata cases.
 
 ## Surprises and discoveries
 
@@ -390,6 +393,7 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 - 2026-04-19: M1 guidance updates passed grep-based cleanup checks before review, but `code-review` caught that the branch still did not track the spec, architecture, ADR, and proposal artifacts those docs referenced.
 - 2026-04-19: `code-review` also caught that `skills/` and `.codex/skills/` were still only working-tree content and that canonical `plan` and `implement` skill guidance lagged the approved milestone and fast-lane rules.
 - 2026-04-19: `workflow` skill guidance still used `mini-spec` wording even though the approved fast lane now requires `spec -> implement -> verify -> pr`.
+- 2026-04-19: This shell has `python3` but no `python`, so local M2 validation used `python3` even though the workflow docs still describe the eventual repo command surface with `python`.
 
 ## Validation notes
 
@@ -418,6 +422,16 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
   - `git ls-files -- skills/plan/SKILL.md skills/implement/SKILL.md .codex/skills/plan/SKILL.md .codex/skills/implement/SKILL.md` -> pass after staging skill trees
   - `git diff --check -- README.md docs/workflows.md skills/plan/SKILL.md skills/implement/SKILL.md docs/plans/2026-04-19-rigorloop-first-release-implementation.md` -> pass
   - `rg -n "mini-spec|mini spec" skills .codex/skills README.md docs/workflows.md` -> only `workflow` skill matched before final fast-lane wording sync
+- 2026-04-19 M2 TDD and milestone validation:
+  - `python3 scripts/validate-change-metadata.py tests/fixtures/change-metadata/valid-basic/change.yaml` -> expected pre-implementation failure because `scripts/validate-change-metadata.py` did not exist yet
+  - `python3 -m json.tool schemas/change.schema.json >/dev/null` -> pass
+  - `python3 -m json.tool schemas/skill.schema.json >/dev/null` -> pass
+  - `python3 scripts/validate-change-metadata.py tests/fixtures/change-metadata/valid-basic/change.yaml` -> pass
+  - `python3 scripts/validate-change-metadata.py tests/fixtures/change-metadata/missing-title/change.yaml` -> fail as expected with missing `title`
+  - `python3 scripts/validate-change-metadata.py tests/fixtures/change-metadata/missing-review/change.yaml` -> fail as expected with missing `review`
+  - `python3 scripts/validate-change-metadata.py tests/fixtures/change-metadata/bad-validation-record/change.yaml` -> fail as expected with missing `validation[0].result`
+  - `python3 scripts/validate-change-metadata.py tests/fixtures/change-metadata/bad-review-shape/change.yaml` -> fail as expected with non-integer `review.unresolved_items`
+  - `git diff --check -- schemas scripts/validate-change-metadata.py tests/fixtures/change-metadata` -> pass
 
 ## Outcome and retrospective
 
