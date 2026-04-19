@@ -263,16 +263,16 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
   - make release guidance honest if CI language or README still overstates release readiness
 - Validation commands:
   - `bash scripts/ci.sh`
-  - `git diff --check -- scripts/ci.sh .github/workflows/ci.yml README.md docs/workflows.md`
+  - `git diff --check -- scripts/ci.sh .github/workflows/ci.yml README.md docs/workflows.md docs/plans/2026-04-19-rigorloop-first-release-implementation.md`
 - Expected observable result:
   - local and CI validation use the same repo-owned commands for the first-release structural checks
 - Commit message: `M5: wire repository CI to real validation commands`
 - Milestone closeout:
-  - [ ] validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - CI may become the first place that reveals portability issues in the scripts
 - Rollback/recovery:
@@ -369,7 +369,7 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 - [x] M2. Add schema and metadata scaffolding
 - [x] M3. Normalize canonical skill sources and add validator fixtures
 - [x] M4. Implement simple validation and deterministic skill generation
-- [ ] M5. Replace template CI behavior with repository-owned checks
+- [x] M5. Replace template CI behavior with repository-owned checks
 - [ ] M6. Publish the skill-validator golden path and change traceability
 
 - 2026-04-19: Completed M1 by aligning `README.md`, `docs/workflows.md`, `AGENTS.md`, and `.github/pull_request_template.md` to the approved lifecycle, fast-lane rules, milestone commit policy, and canonical-versus-generated boundaries.
@@ -380,6 +380,7 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 - 2026-04-19: Completed M3 by fixing the lone canonical top-level-title violation in `skills/architecture/SKILL.md`, adding the required `tests/fixtures/skills/` pass/fail cases, and correcting the M3 validation commands so they check the intended conditions with ripgrep.
 - 2026-04-19: Completed M4 by shipping `scripts/validate-skills.py`, `scripts/test-skill-validator.py`, and `scripts/build-skills.py`, then performing the first deliberate `.codex/skills/` sync from canonical `skills/`.
 - 2026-04-19: Follow-up after M4 `code-review` to enforce missing `SKILL.md` detection for leaf source-skill directories and add a regression fixture for the mixed-tree case that previously passed.
+- 2026-04-19: Completed M5 by replacing the template `scripts/ci.sh` placeholder with the approved structural checks, wiring GitHub Actions to set up Python and delegate to that repo-owned script, and updating contributor docs to name the same commands CI runs.
 
 ## Decision log
 
@@ -395,6 +396,7 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 - 2026-04-19: Keep the first-release generator as a byte-for-byte copy from `skills/` to `.codex/skills/`. Rationale: a literal copy is the smallest deterministic transform and avoids warning-header churn in the generated review surface.
 - 2026-04-19: Exercise the validator through its CLI in `scripts/test-skill-validator.py` instead of importing internals directly. Rationale: the approved command surface is `python scripts/validate-skills.py`, so fixture tests should prove that public entrypoint rather than only helper functions.
 - 2026-04-19: Treat leaf directories without an ancestor skill as source-skill directories during tree validation. Rationale: otherwise a mixed tree can pass even when one sibling directory is missing `SKILL.md`, which violates `R15`.
+- 2026-04-19: Keep GitHub Actions as a setup-only wrapper over `scripts/ci.sh`. Rationale: `R9a` and `T14` require hosted CI to delegate validation logic to repo-owned commands instead of duplicating checks in workflow YAML.
 
 ## Surprises and discoveries
 
@@ -411,6 +413,7 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 - 2026-04-19: The M3 draft validation commands used ripgrep `-L` incorrectly, so they had to be corrected before the milestone could rely on them as pass/fail evidence.
 - 2026-04-19: The first deliberate M4 drift check failed immediately because `.codex/skills/architecture/SKILL.md` was still stale after the M3 canonical fix, which confirmed the generator check was catching real drift before the first sync.
 - 2026-04-19: The initial M4 validator only walked existing `SKILL.md` files, so a tree with one valid skill and one sibling directory missing `SKILL.md` still passed until the follow-up fix broadened source-skill discovery.
+- 2026-04-19: GitHub-hosted CI still needs an explicit Python setup step even though the local environment now exposes `python` directly.
 
 ## Validation notes
 
@@ -489,6 +492,14 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
   - `python scripts/build-skills.py --check` -> pass
   - `! python scripts/validate-skills.py <temp mixed tree with valid-skill/ plus missing-skill/>` -> pass
   - `git diff --check -- scripts tests/fixtures docs/plans/2026-04-19-rigorloop-first-release-implementation.md` -> pass
+- 2026-04-19 M5 TDD and milestone validation:
+  - `bash scripts/ci.sh` -> expected pre-implementation failure because `scripts/ci.sh` was still the template placeholder and did not run repo-owned checks
+  - `bash scripts/ci.sh` -> pass
+  - `python - <<'PY' ... append DRIFT-CHECK-MARKER to .codex/skills/architecture/SKILL.md ... PY` -> pass
+  - `! bash scripts/ci.sh` -> pass, failed on stale generated output during the drift check step
+  - `python scripts/build-skills.py` -> pass
+  - `python scripts/build-skills.py --check` -> pass
+  - `git diff --check -- scripts/ci.sh .github/workflows/ci.yml README.md docs/workflows.md docs/plans/2026-04-19-rigorloop-first-release-implementation.md` -> pass
 
 ## Outcome and retrospective
 
