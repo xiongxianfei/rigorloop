@@ -29,9 +29,16 @@ Explain why this work matters.
 
 ## Milestones
 
-1. First milestone
+1. M1. First milestone
    - deliverable
    - verification
+   - milestone commit message: `M1: <completed milestone outcome>`
+   - milestone closeout checklist:
+     - [ ] targeted validation passed
+     - [ ] progress updated
+     - [ ] decision log updated if needed
+     - [ ] validation notes updated
+     - [ ] milestone committed
 
 ## Progress
 

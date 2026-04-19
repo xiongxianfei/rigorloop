@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rigorloop.dev/schemas/change.schema.json",
+  "title": "RigorLoop Change Metadata",
+  "description": "First-release machine-readable traceability for non-trivial changes.",
+  "type": "object",
+  "required": [
+    "change_id",
+    "title",
+    "classification",
+    "risk",
+    "artifacts",
+    "requirements",
+    "tests",
+    "validation",
+    "changed_files",
+    "review"
+  ],
+  "properties": {
+    "change_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "classification": {
+      "type": "string",
+      "minLength": 1
+    },
+    "risk": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifacts": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "minLength": 1
+      },
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "requirements": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "tests": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "validation": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "command",
+          "result"
+        ],
+        "properties": {
+          "command": {
+            "type": "string",
+            "minLength": 1
+          },
+          "result": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "changed_files": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "review": {
+      "type": "object",
+      "required": [
+        "status",
+        "unresolved_items"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "minLength": 1
+        },
+        "unresolved_items": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
