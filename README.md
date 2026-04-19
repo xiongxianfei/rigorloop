@@ -22,6 +22,38 @@ Trivial work may use the fast lane:
 
 `spec -> implement -> verify -> pr`
 
+Use the fast lane only for:
+
+- typos
+- formatting-only changes
+- small documentation clarifications
+- comment-only changes
+- small test-fixture corrections
+- small non-behavioral renames
+- minor generated-artifact refreshes that do not change generator behavior
+
+Do not use the fast lane for:
+
+- public behavior changes
+- workflow order or stage-policy changes
+- skill triggering rules
+- architecture changes
+- security-sensitive behavior
+- CI behavior changes
+- release packaging changes
+- schema changes
+- generated-output logic changes
+- changes that are hard to roll back safely
+
+Fast-lane evidence must include a spec with:
+
+- intent
+- expected change
+- out of scope
+- validation
+
+That spec may live in the PR body, issue comment, commit message, or a linked change note.
+
 The normative contract lives in `specs/rigorloop-workflow.md`. The short operational summary lives in `docs/workflows.md`.
 
 ## Source Of Truth

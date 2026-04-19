@@ -1,0 +1,102 @@
+---
+name: plan
+description: >
+  Create or revise a living execution plan after proposal, spec, and architecture are stable enough to implement. Use for multi-file, multi-component, risky, or milestone-based work that should be split into reviewable milestone slices.
+argument-hint: [feature name, spec path, architecture path, or implementation goal]
+---
+
+# Living execution plan
+
+You are turning approved behavior and architecture into a safe, reviewable implementation path.
+
+Planning happens after the spec defines behavior and architecture defines the design direction. Do not use this skill to decide what the product should be.
+
+## Inputs to read
+
+Read:
+
+- `AGENTS.md`
+- `.codex/CONSTITUTION.md` if present
+- `docs/plan.md` if present
+- accepted proposal
+- approved or reviewed feature spec
+- spec-review findings
+- architecture doc and ADRs when relevant
+- architecture-review findings when available
+- test-spec if already created
+- `docs/project-map.md`
+- relevant code, tests, CI, and workflows
+
+## Output paths
+
+Prefer:
+
+```text
+docs/plans/YYYY-MM-DD-slug.md
+docs/plan.md
+```
+
+Create a new dated plan for new initiatives. Update `docs/plan.md` as an index of active, completed, and superseded plans.
+
+## Required sections
+
+1. **Status**: draft, reviewed, active, complete, superseded.
+2. **Purpose / big picture**: why this implementation plan exists.
+3. **Source artifacts**: proposal, spec, architecture, test spec.
+4. **Context and orientation**: files, modules, flows, and constraints a new contributor needs.
+5. **Non-goals**: scope guardrails from proposal/spec.
+6. **Requirements covered**: list requirement IDs and where they will be implemented.
+7. **Milestones**: small reviewable slices.
+8. **Validation plan**: commands and manual checks per milestone.
+9. **Risks and recovery**: rollback, feature flags, migration recovery, idempotence.
+10. **Dependencies**: internal and external sequencing constraints.
+11. **Progress**: checkboxes or status per milestone.
+12. **Decision log**: implementation decisions made during planning.
+13. **Surprises and discoveries**: updated during implementation.
+14. **Validation notes**: evidence from implementation.
+15. **Outcome and retrospective**: filled after completion.
+
+## Milestone format
+
+Each milestone should include:
+
+```text
+M1. Title
+- Goal:
+- Requirements:
+- Files/components likely touched:
+- Dependencies:
+- Tests to add/update:
+- Implementation steps:
+- Validation commands:
+- Expected observable result:
+- Commit message: `M1: <completed milestone outcome>`
+- Milestone closeout:
+  - validation passed
+  - progress updated
+  - decision log updated if needed
+  - validation notes updated
+  - milestone committed
+- Risks:
+- Rollback/recovery:
+```
+
+Milestones should be small enough for one review loop and one coherent commit. A PR may contain one or more completed milestones when that is the clearest review boundary.
+
+## Planning rules
+
+- Derive work from spec requirements and architecture decisions.
+- Do not add behavior not in the spec.
+- Do not hide risky work in vague milestones.
+- Do not omit validation commands.
+- Do not create a plan that only the current chat context can understand.
+- Do not proceed to implementation until `plan-review` and `test-spec` are ready unless using the fast lane.
+- If planning reveals spec or architecture gaps, update those artifacts first.
+
+## Expected output
+
+- concrete plan file path;
+- updated `docs/plan.md` index when applicable;
+- milestone-by-milestone plan;
+- validation and recovery strategy;
+- readiness statement for `plan-review` and `test-spec`.

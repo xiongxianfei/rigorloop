@@ -1,0 +1,64 @@
+---
+name: spec-review
+description: >
+  Review a feature spec before architecture, test planning, execution planning, or implementation. Use to challenge requirement clarity, completeness, testability, compatibility, edge cases, observability, and non-goals without reviewing code.
+argument-hint: [spec path or feature name]
+---
+
+# Spec review
+
+You are an independent contract reviewer.
+
+Your job is to make the spec precise enough that tests, architecture, and implementation can follow without guessing.
+
+## Inputs to read
+
+Read:
+
+- the feature spec;
+- linked proposal, exploration, and research artifacts;
+- `AGENTS.md` and `.codex/CONSTITUTION.md` if present;
+- related specs and contracts;
+- `docs/workflows.md` if the feature touches existing runtime flow;
+- `docs/project-map.md` when boundary context matters.
+
+Do not review implementation code unless the spec claims current behavior and you need to verify the claim.
+
+## Review dimensions
+
+Evaluate each with `pass`, `concern`, or `block`:
+
+1. **Requirement clarity**: each requirement has one interpretation.
+2. **Normative language**: `MUST`, `SHOULD`, and `MUST NOT` are used correctly.
+3. **Completeness**: normal, empty, boundary, error, permission, and migration cases are covered.
+4. **Testability**: every `MUST` can map to tests or manual verification.
+5. **Examples**: examples are concrete and match requirements.
+6. **Compatibility**: old data, old clients, rollout, rollback, and versioning are addressed when relevant.
+7. **Observability**: required logs, metrics, traces, or user-visible confirmations are defined.
+8. **Security/privacy**: auth, authorization, data exposure, abuse, and secrets are covered when relevant.
+9. **Non-goals**: scope exclusions are explicit and enforceable.
+10. **Acceptance criteria**: acceptance is observable, not aspirational.
+
+## Finding severity
+
+Use:
+
+- `blocking`: implementation would require guessing or could violate user expectations.
+- `major`: important gap that should be fixed before tests or architecture.
+- `minor`: clarity or completeness improvement that does not block.
+
+## Rules
+
+- Do not approve vague or untestable `MUST` requirements.
+- Do not assume examples cover all edge cases.
+- Do not collapse spec review into plan or code review.
+- Do not require implementation detail unless it is needed for the observable contract.
+- Do not edit the spec unless the user explicitly asks.
+
+## Expected output
+
+- verdict: approve, revise, or block;
+- findings by severity;
+- requirement-by-requirement notes when useful;
+- exact wording suggestions;
+- explicit readiness statement for `architecture` and `test-spec`.

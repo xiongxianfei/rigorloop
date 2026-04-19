@@ -6,6 +6,9 @@ This file is the short operational summary for working in this repository. The n
 
 - Use the fast lane for trivial or low-risk work only.
   - Reference path: `spec -> implement -> verify -> pr`
+  - Allowed categories: typos, formatting-only changes, small documentation clarifications, comment-only changes, small test-fixture corrections, small non-behavioral renames, and minor generated-artifact refreshes that do not change generator behavior.
+  - Do not use fast lane for: behavior changes, workflow-stage changes, skill-triggering changes, architecture changes, security-sensitive behavior, CI behavior changes, release packaging, schemas, generated-output logic, or changes that are hard to roll back safely.
+  - Fast-lane evidence: record a spec with intent, expected change, out of scope, and validation in the PR body, issue comment, commit message, or a linked change note.
 - Use the full lifecycle for non-trivial work.
   - Required for behavior changes, workflow-stage changes, CI behavior changes, schema changes, architecture changes, and generated-output logic.
 

@@ -370,6 +370,8 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 
 - 2026-04-19: Completed M1 by aligning `README.md`, `docs/workflows.md`, `AGENTS.md`, and `.github/pull_request_template.md` to the approved lifecycle, fast-lane rules, milestone commit policy, and canonical-versus-generated boundaries.
 - 2026-04-19: Follow-up after `code-review` to add the referenced workflow spec, test spec, architecture, ADR, and proposal artifacts to the branch so the new guidance resolves from git history instead of only from the working tree.
+- 2026-04-19: Follow-up after second `code-review` to track `skills/` and `.codex/skills/` in git, align canonical `plan` and `implement` skill guidance to the approved milestone rules, and surface fast-lane eligibility and evidence rules directly in the root docs.
+- 2026-04-19: User-directed follow-up overrides the original M1 sequencing guard and brings `skills/` plus `.codex/skills/` into the branch now so contributor guidance and tracked repository surfaces match.
 
 ## Decision log
 
@@ -386,6 +388,8 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 - 2026-04-19: Current CI and release workflows are thin wrappers over template shell scripts, so the real enforcement surface is still missing.
 - 2026-04-19: `docs/workflows.md` still named the removed legacy plan-helper path during M1, so the doc had to stop naming that path to satisfy the no-stale-reference milestone gate.
 - 2026-04-19: M1 guidance updates passed grep-based cleanup checks before review, but `code-review` caught that the branch still did not track the spec, architecture, ADR, and proposal artifacts those docs referenced.
+- 2026-04-19: `code-review` also caught that `skills/` and `.codex/skills/` were still only working-tree content and that canonical `plan` and `implement` skill guidance lagged the approved milestone and fast-lane rules.
+- 2026-04-19: `workflow` skill guidance still used `mini-spec` wording even though the approved fast lane now requires `spec -> implement -> verify -> pr`.
 
 ## Validation notes
 
@@ -409,6 +413,11 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 - 2026-04-19 M1 follow-up after code review:
   - `git -c safe.directory=/home/xiongxianfei/data/20260419-rigorloop ls-files -- docs/proposals/2026-04-19-rigorloop-project-direction.md docs/proposals/2026-04-19-rigorloop-workflow-product.explore.md docs/proposals/2026-04-19-implementation-milestone-commit-policy.md specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md docs/adr/ADR-20260419-repository-source-layout.md` -> pass
   - `git -c safe.directory=/home/xiongxianfei/data/20260419-rigorloop diff --check --cached -- docs/proposals/2026-04-19-rigorloop-project-direction.md docs/proposals/2026-04-19-rigorloop-workflow-product.explore.md docs/proposals/2026-04-19-implementation-milestone-commit-policy.md specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md docs/adr/ADR-20260419-repository-source-layout.md docs/plans/2026-04-19-rigorloop-first-release-implementation.md` -> pass
+- 2026-04-19 M1 follow-up after second code review:
+  - `diff -qr skills .codex/skills` -> only `plan` and `implement` differed before canonical sync
+  - `git ls-files -- skills/plan/SKILL.md skills/implement/SKILL.md .codex/skills/plan/SKILL.md .codex/skills/implement/SKILL.md` -> pass after staging skill trees
+  - `git diff --check -- README.md docs/workflows.md skills/plan/SKILL.md skills/implement/SKILL.md docs/plans/2026-04-19-rigorloop-first-release-implementation.md` -> pass
+  - `rg -n "mini-spec|mini spec" skills .codex/skills README.md docs/workflows.md` -> only `workflow` skill matched before final fast-lane wording sync
 
 ## Outcome and retrospective
 
