@@ -379,6 +379,7 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 - 2026-04-19: Completed M2 by adding `schemas/change.schema.json`, `schemas/skill.schema.json`, a stdlib-only `scripts/validate-change-metadata.py`, and valid plus invalid `tests/fixtures/change-metadata/` cases for `T5` through `T7`.
 - 2026-04-19: Completed M3 by fixing the lone canonical top-level-title violation in `skills/architecture/SKILL.md`, adding the required `tests/fixtures/skills/` pass/fail cases, and correcting the M3 validation commands so they check the intended conditions with ripgrep.
 - 2026-04-19: Completed M4 by shipping `scripts/validate-skills.py`, `scripts/test-skill-validator.py`, and `scripts/build-skills.py`, then performing the first deliberate `.codex/skills/` sync from canonical `skills/`.
+- 2026-04-19: Follow-up after M4 `code-review` to enforce missing `SKILL.md` detection for leaf source-skill directories and add a regression fixture for the mixed-tree case that previously passed.
 
 ## Decision log
 
@@ -393,6 +394,7 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 - 2026-04-19: Replace the draft M3 `rg -L` checks with explicit per-file ripgrep loops. Rationale: ripgrep `-L` does not mean “files without match” in this repo workflow, so the original command text did not validate the intended conditions.
 - 2026-04-19: Keep the first-release generator as a byte-for-byte copy from `skills/` to `.codex/skills/`. Rationale: a literal copy is the smallest deterministic transform and avoids warning-header churn in the generated review surface.
 - 2026-04-19: Exercise the validator through its CLI in `scripts/test-skill-validator.py` instead of importing internals directly. Rationale: the approved command surface is `python scripts/validate-skills.py`, so fixture tests should prove that public entrypoint rather than only helper functions.
+- 2026-04-19: Treat leaf directories without an ancestor skill as source-skill directories during tree validation. Rationale: otherwise a mixed tree can pass even when one sibling directory is missing `SKILL.md`, which violates `R15`.
 
 ## Surprises and discoveries
 
@@ -408,6 +410,7 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 - 2026-04-19: The canonical skill corpus was already almost compliant; the only content fix needed for M3 was removing a second top-level heading from the architecture skill’s ADR example block.
 - 2026-04-19: The M3 draft validation commands used ripgrep `-L` incorrectly, so they had to be corrected before the milestone could rely on them as pass/fail evidence.
 - 2026-04-19: The first deliberate M4 drift check failed immediately because `.codex/skills/architecture/SKILL.md` was still stale after the M3 canonical fix, which confirmed the generator check was catching real drift before the first sync.
+- 2026-04-19: The initial M4 validator only walked existing `SKILL.md` files, so a tree with one valid skill and one sibling directory missing `SKILL.md` still passed until the follow-up fix broadened source-skill discovery.
 
 ## Validation notes
 
@@ -478,6 +481,14 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
   - `python scripts/build-skills.py` -> pass
   - `python scripts/build-skills.py --check` -> pass
   - `git diff --check -- scripts .codex/skills docs/plans/2026-04-19-rigorloop-first-release-implementation.md` -> pass
+- 2026-04-19 M4 follow-up after code review:
+  - `python scripts/test-skill-validator.py` -> expected pre-fix failure because the new missing-`SKILL.md` regression passed unexpectedly
+  - `python scripts/test-skill-validator.py` -> pass
+  - `python scripts/validate-skills.py` -> pass
+  - `! python scripts/validate-skills.py .codex/skills` -> pass
+  - `python scripts/build-skills.py --check` -> pass
+  - `! python scripts/validate-skills.py <temp mixed tree with valid-skill/ plus missing-skill/>` -> pass
+  - `git diff --check -- scripts tests/fixtures docs/plans/2026-04-19-rigorloop-first-release-implementation.md` -> pass
 
 ## Outcome and retrospective
 
