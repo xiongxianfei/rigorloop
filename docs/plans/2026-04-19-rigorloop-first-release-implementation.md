@@ -134,6 +134,10 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
   - `python -m json.tool schemas/change.schema.json >/dev/null`
   - `python -m json.tool schemas/skill.schema.json >/dev/null`
   - `python scripts/validate-change-metadata.py tests/fixtures/change-metadata/valid-basic/change.yaml`
+  - `! python scripts/validate-change-metadata.py tests/fixtures/change-metadata/missing-title/change.yaml`
+  - `! python scripts/validate-change-metadata.py tests/fixtures/change-metadata/missing-review/change.yaml`
+  - `! python scripts/validate-change-metadata.py tests/fixtures/change-metadata/bad-validation-record/change.yaml`
+  - `! python scripts/validate-change-metadata.py tests/fixtures/change-metadata/bad-review-shape/change.yaml`
   - `git -c safe.directory=/home/xiongxianfei/data/20260419-rigorloop diff --check -- schemas scripts/validate-change-metadata.py tests/fixtures/change-metadata`
 - Expected observable result:
   - the repository has concrete schema files for change metadata and simple skill metadata shape, a working way to validate a sample `change.yaml`, and an explicit validator boundary
@@ -432,6 +436,13 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
   - `python3 scripts/validate-change-metadata.py tests/fixtures/change-metadata/bad-validation-record/change.yaml` -> fail as expected with missing `validation[0].result`
   - `python3 scripts/validate-change-metadata.py tests/fixtures/change-metadata/bad-review-shape/change.yaml` -> fail as expected with non-integer `review.unresolved_items`
   - `git diff --check -- schemas scripts/validate-change-metadata.py tests/fixtures/change-metadata` -> pass
+- 2026-04-19 M2 review follow-up after `code-review`:
+  - `python --version` -> pass (`Python 3.12.3`)
+  - `python scripts/validate-change-metadata.py tests/fixtures/change-metadata/valid-basic/change.yaml` -> pass
+  - `! python scripts/validate-change-metadata.py tests/fixtures/change-metadata/missing-title/change.yaml` -> pass
+  - `! python scripts/validate-change-metadata.py tests/fixtures/change-metadata/missing-review/change.yaml` -> pass
+  - `! python scripts/validate-change-metadata.py tests/fixtures/change-metadata/bad-validation-record/change.yaml` -> pass
+  - `! python scripts/validate-change-metadata.py tests/fixtures/change-metadata/bad-review-shape/change.yaml` -> pass
 
 ## Outcome and retrospective
 
