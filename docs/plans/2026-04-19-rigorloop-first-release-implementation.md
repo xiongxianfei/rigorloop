@@ -31,12 +31,12 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 
 ## Context and orientation
 
-- The repository still presents itself as a template in `README.md`, `scripts/ci.sh`, and `scripts/release-verify.sh`.
-- `docs/workflows.md` still summarizes the older operational flow and does not yet reflect the approved lifecycle, fast lane, or the `ci` stage meaning from `specs/rigorloop-workflow.md`.
-- `skills/` is the intended canonical workflow source, but `.codex/skills/` remains the current runtime compatibility surface and has already drifted from `skills/`.
+- The repository entrypoint, workflow summary, and CI script now reflect the approved RigorLoop workflow; `scripts/release-verify.sh` remains a template placeholder and is outside this initiative.
+- `docs/workflows.md` now summarizes the approved lifecycle, fast lane, and `ci` stage meaning from `specs/rigorloop-workflow.md`.
+- `skills/` is the canonical workflow source, and `.codex/skills/` is tracked generated compatibility output after the deliberate M4 sync.
 - `.codex/PLANS.md` has been removed. All plan guidance must now point to `docs/plans/0000-00-00-example-plan.md`.
-- `schemas/` and `docs/changes/` do not exist yet.
-- Current CI in `.github/workflows/ci.yml` only shells out to `scripts/ci.sh`, which is still a template placeholder.
+- `schemas/` exists as an authored root, and `docs/changes/` now stores the golden-path example at `docs/changes/0001-skill-validator/`.
+- Current CI in `.github/workflows/ci.yml` shells out to the real repository-owned `scripts/ci.sh` validation wrapper.
 - Current release automation in `.github/workflows/release.yml` only shells out to `scripts/release-verify.sh`, which is still a template placeholder. Release automation is not the main focus of this initiative.
 - There is no `docs/project-map.md` and no `.codex/CONSTITUTION.md`.
 - The repository already has useful local surfaces for the implementation:
@@ -310,11 +310,11 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
   - contributors can follow one concrete non-trivial change from artifacts to verification evidence and PR-ready explanation
 - Commit message: `M6: publish skill-validator golden path artifacts`
 - Milestone closeout:
-  - [ ] validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - the example may drift from the real implementation if artifact updates are left until too late
   - duplicating top-level proposal/spec text inside `docs/changes/` would add avoidable maintenance overhead
@@ -370,7 +370,7 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 - [x] M3. Normalize canonical skill sources and add validator fixtures
 - [x] M4. Implement simple validation and deterministic skill generation
 - [x] M5. Replace template CI behavior with repository-owned checks
-- [ ] M6. Publish the skill-validator golden path and change traceability
+- [x] M6. Publish the skill-validator golden path and change traceability
 
 - 2026-04-19: Completed M1 by aligning `README.md`, `docs/workflows.md`, `AGENTS.md`, and `.github/pull_request_template.md` to the approved lifecycle, fast-lane rules, milestone commit policy, and canonical-versus-generated boundaries.
 - 2026-04-19: Follow-up after `code-review` to add the referenced workflow spec, test spec, architecture, ADR, and proposal artifacts to the branch so the new guidance resolves from git history instead of only from the working tree.
@@ -381,6 +381,7 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 - 2026-04-19: Completed M4 by shipping `scripts/validate-skills.py`, `scripts/test-skill-validator.py`, and `scripts/build-skills.py`, then performing the first deliberate `.codex/skills/` sync from canonical `skills/`.
 - 2026-04-19: Follow-up after M4 `code-review` to enforce missing `SKILL.md` detection for leaf source-skill directories and add a regression fixture for the mixed-tree case that previously passed.
 - 2026-04-19: Completed M5 by replacing the template `scripts/ci.sh` placeholder with the approved structural checks, wiring GitHub Actions to set up Python and delegate to that repo-owned script, and updating contributor docs to name the same commands CI runs.
+- 2026-04-19: Completed M6 by publishing `docs/changes/0001-skill-validator/`, validating `change.yaml`, and updating `README.md` so contributors can find the shipped proof-of-value example from the project entrypoint.
 
 ## Decision log
 
@@ -397,6 +398,7 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 - 2026-04-19: Exercise the validator through its CLI in `scripts/test-skill-validator.py` instead of importing internals directly. Rationale: the approved command surface is `python scripts/validate-skills.py`, so fixture tests should prove that public entrypoint rather than only helper functions.
 - 2026-04-19: Treat leaf directories without an ancestor skill as source-skill directories during tree validation. Rationale: otherwise a mixed tree can pass even when one sibling directory is missing `SKILL.md`, which violates `R15`.
 - 2026-04-19: Keep GitHub Actions as a setup-only wrapper over `scripts/ci.sh`. Rationale: `R9a` and `T14` require hosted CI to delegate validation logic to repo-owned commands instead of duplicating checks in workflow YAML.
+- 2026-04-19: Use change-local wrapper artifacts in `docs/changes/0001-skill-validator/` instead of copying the full top-level proposal, spec, and architecture docs. Rationale: the proof-of-value example should stay concise, link back to the approved source artifacts, and avoid creating a second long-form contract surface.
 
 ## Surprises and discoveries
 
@@ -414,6 +416,7 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 - 2026-04-19: The first deliberate M4 drift check failed immediately because `.codex/skills/architecture/SKILL.md` was still stale after the M3 canonical fix, which confirmed the generator check was catching real drift before the first sync.
 - 2026-04-19: The initial M4 validator only walked existing `SKILL.md` files, so a tree with one valid skill and one sibling directory missing `SKILL.md` still passed until the follow-up fix broadened source-skill discovery.
 - 2026-04-19: GitHub-hosted CI still needs an explicit Python setup step even though the local environment now exposes `python` directly.
+- 2026-04-19: The proof-of-value example spans multiple reviewed milestone commits, so the M6 artifact pack needed to summarize and index that history rather than pretend the validator shipped as one single diff.
 
 ## Validation notes
 
@@ -500,13 +503,25 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
   - `python scripts/build-skills.py` -> pass
   - `python scripts/build-skills.py --check` -> pass
   - `git diff --check -- scripts/ci.sh .github/workflows/ci.yml README.md docs/workflows.md docs/plans/2026-04-19-rigorloop-first-release-implementation.md` -> pass
+- 2026-04-19 M6 TDD and milestone validation:
+  - `python scripts/validate-change-metadata.py docs/changes/0001-skill-validator/change.yaml` -> expected pre-implementation failure because the change-local artifact pack did not exist yet
+  - `test -d docs/changes/0001-skill-validator` -> expected pre-implementation failure because the change-local artifact directory did not exist yet
+  - `bash scripts/ci.sh` -> pass
+  - `python scripts/validate-change-metadata.py docs/changes/0001-skill-validator/change.yaml` -> pass
+  - `git diff --check -- docs/changes/0001-skill-validator README.md docs/plans/2026-04-19-rigorloop-first-release-implementation.md` -> pass
+  - manual artifact review -> pass, the change-local docs link back to the approved top-level proposal, spec, architecture, ADR, and test spec without contradicting them
 
 ## Outcome and retrospective
 
-- Not started. Fill after implementation and verification are complete.
+- All planned implementation milestones are complete through M6.
+- Final workflow gates still pending:
+  - `code-review`
+  - `verify`
+  - `explain-change`
+  - `pr`
 
 ## Readiness
 
 This plan has passed `plan-review`.
 
-The required pre-implementation artifacts now exist. Implementation may begin with M1, provided the work continues to follow this plan, `specs/rigorloop-workflow.md`, and `specs/rigorloop-workflow.test.md`.
+All planned implementation milestones are now complete. The next recommended stages are `code-review` and `verify`, using this plan, `specs/rigorloop-workflow.md`, and `specs/rigorloop-workflow.test.md` as the source of truth.

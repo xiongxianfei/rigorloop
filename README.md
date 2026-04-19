@@ -83,6 +83,10 @@ Use `bash scripts/ci.sh` to run the same checks through the repository-owned CI 
 
 The first proof-of-value change is a skill metadata validator with fixture tests, generated-output drift checks, and CI integration.
 
+The shipped golden-path example for that change lives in:
+
+- `docs/changes/0001-skill-validator/`
+
 Active implementation work is tracked in:
 
 - `docs/plans/2026-04-19-rigorloop-first-release-implementation.md`
@@ -102,6 +106,8 @@ Active implementation work is tracked in:
 │   ├── proposals/
 │   ├── roadmap.md
 │   ├── workflows.md
+│   ├── changes/
+│   │   └── 0001-skill-validator/
 │   ├── plans/
 │   │   └── 0000-00-00-example-plan.md
 │   ├── architecture/
@@ -114,7 +120,7 @@ Active implementation work is tracked in:
 └── specs/
 ```
 
-`docs/changes/` is created when the golden-path example lands in M6.
+The first shipped change-local artifact pack is `docs/changes/0001-skill-validator/`.
 
 ## License
 
