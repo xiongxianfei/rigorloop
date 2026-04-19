@@ -176,23 +176,23 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
   - create fixture skill directories that capture the approved pass/fail cases
   - keep fixture content minimal and objective; do not add writing-quality checks
 - Validation commands:
-  - `! rg -L '^name:' skills/*/SKILL.md`
-  - `! rg -L '^description:' skills/*/SKILL.md`
-  - `! rg -L '^## Expected output$' skills/*/SKILL.md`
+  - `bash -lc 'for f in skills/*/SKILL.md; do rg -q "^name:" "$f" || { echo "$f: missing name"; exit 1; }; done'`
+  - `bash -lc 'for f in skills/*/SKILL.md; do rg -q "^description:" "$f" || { echo "$f: missing description"; exit 1; }; done'`
+  - `bash -lc 'for f in skills/*/SKILL.md; do rg -q "^## Expected output$" "$f" || { echo "$f: missing ## Expected output"; exit 1; }; done'`
   - `! rg -n '\\b(TODO|TBD)\\b' skills/*/SKILL.md`
   - `python - <<'PY'\nfrom pathlib import Path\nbad = []\nfor path in sorted(Path('skills').glob('*/SKILL.md')):\n    lines = path.read_text().splitlines()\n    titles = [line for line in lines if line.startswith('# ') and not line.startswith('## ')]\n    if len(titles) != 1:\n        bad.append(f\"{path}: expected exactly one top-level title, found {len(titles)}\")\nif bad:\n    raise SystemExit('\\n'.join(bad))\nPY`
   - `python - <<'PY'\nfrom pathlib import Path\nimport re\nowners = {}\nfor path in sorted(Path('skills').glob('*/SKILL.md')):\n    text = path.read_text()\n    match = re.search(r'^name:\\s*(.+)$', text, re.M)\n    if not match:\n        raise SystemExit(f\"{path}: missing name\")\n    name = match.group(1).strip()\n    if name in owners:\n        raise SystemExit(f\"duplicate skill name: {name} in {owners[name]} and {path}\")\n    owners[name] = path\nPY`
-  - `test -f tests/fixtures/skills/valid-basic/SKILL.md && test -f tests/fixtures/skills/missing-name/SKILL.md && test -f tests/fixtures/skills/missing-description/SKILL.md && test -f tests/fixtures/skills/missing-expected-output/SKILL.md && test -f tests/fixtures/skills/missing-title/SKILL.md && test -f tests/fixtures/skills/duplicate-name/SKILL.md && test -f tests/fixtures/skills/placeholder-text/SKILL.md`
-  - `git -c safe.directory=/home/xiongxianfei/data/20260419-rigorloop diff --check -- skills tests/fixtures`
+  - `test -f tests/fixtures/skills/valid-basic/SKILL.md && test -f tests/fixtures/skills/missing-name/SKILL.md && test -f tests/fixtures/skills/missing-description/SKILL.md && test -f tests/fixtures/skills/missing-expected-output/SKILL.md && test -f tests/fixtures/skills/missing-title/SKILL.md && test -f tests/fixtures/skills/duplicate-name/first/SKILL.md && test -f tests/fixtures/skills/duplicate-name/second/SKILL.md && test -f tests/fixtures/skills/placeholder-text/SKILL.md`
+  - `git diff --check -- skills tests/fixtures docs/plans/2026-04-19-rigorloop-first-release-implementation.md`
 - Expected observable result:
   - canonical skills are good enough for one deliberate generated sync in M4, and the repository has explicit fixture cases for the approved rule set
 - Commit message: `M3: normalize canonical skills and add validator fixtures`
 - Milestone closeout:
-  - [ ] validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - bulk skill normalization may touch many files and create review noise
   - some existing skill content may imply stronger validation than the approved first-release contract
@@ -367,7 +367,7 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 
 - [x] M1. Align repository guidance and review surfaces
 - [x] M2. Add schema and metadata scaffolding
-- [ ] M3. Normalize canonical skill sources and add validator fixtures
+- [x] M3. Normalize canonical skill sources and add validator fixtures
 - [ ] M4. Implement simple validation and deterministic skill generation
 - [ ] M5. Replace template CI behavior with repository-owned checks
 - [ ] M6. Publish the skill-validator golden path and change traceability
@@ -377,6 +377,7 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 - 2026-04-19: Follow-up after second `code-review` to track `skills/` and `.codex/skills/` in git, align canonical `plan` and `implement` skill guidance to the approved milestone rules, and surface fast-lane eligibility and evidence rules directly in the root docs.
 - 2026-04-19: User-directed follow-up overrides the original M1 sequencing guard and brings `skills/` plus `.codex/skills/` into the branch now so contributor guidance and tracked repository surfaces match.
 - 2026-04-19: Completed M2 by adding `schemas/change.schema.json`, `schemas/skill.schema.json`, a stdlib-only `scripts/validate-change-metadata.py`, and valid plus invalid `tests/fixtures/change-metadata/` cases for `T5` through `T7`.
+- 2026-04-19: Completed M3 by fixing the lone canonical top-level-title violation in `skills/architecture/SKILL.md`, adding the required `tests/fixtures/skills/` pass/fail cases, and correcting the M3 validation commands so they check the intended conditions with ripgrep.
 
 ## Decision log
 
@@ -387,6 +388,8 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 - 2026-04-19: Update `.codex/skills/` only after canonical `skills/` is good enough for a deliberate sync. Rationale: frequent generated-output churn would create review noise and hide whether the canonical source is actually stable.
 - 2026-04-19: Keep change-metadata validation stdlib-only in M2. Rationale: the repository does not manage YAML or JSON Schema dependencies yet, and the approved first-release contract is small enough for a focused parser and validator.
 - 2026-04-19: Ship invalid metadata fixtures in M2, not later. Rationale: `specs/rigorloop-workflow.test.md` requires `T6` and `T7` coverage before code review, so M2 needs both passing and failing metadata cases.
+- 2026-04-19: Keep `.codex/skills/` untouched in M3 even though `skills/` changed. Rationale: the approved plan and prior user direction defer generated compatibility sync until M4 after canonical skill content is stable.
+- 2026-04-19: Replace the draft M3 `rg -L` checks with explicit per-file ripgrep loops. Rationale: ripgrep `-L` does not mean “files without match” in this repo workflow, so the original command text did not validate the intended conditions.
 
 ## Surprises and discoveries
 
@@ -398,6 +401,9 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 - 2026-04-19: `code-review` also caught that `skills/` and `.codex/skills/` were still only working-tree content and that canonical `plan` and `implement` skill guidance lagged the approved milestone and fast-lane rules.
 - 2026-04-19: `workflow` skill guidance still used `mini-spec` wording even though the approved fast lane now requires `spec -> implement -> verify -> pr`.
 - 2026-04-19: This shell has `python3` but no `python`, so local M2 validation used `python3` even though the workflow docs still describe the eventual repo command surface with `python`.
+- 2026-04-19: The canonical `skills/` tree was owned by `root:root`, so M3 could not edit the approved source-of-truth files until ownership was narrowed back to the current user for that path.
+- 2026-04-19: The canonical skill corpus was already almost compliant; the only content fix needed for M3 was removing a second top-level heading from the architecture skill’s ADR example block.
+- 2026-04-19: The M3 draft validation commands used ripgrep `-L` incorrectly, so they had to be corrected before the milestone could rely on them as pass/fail evidence.
 
 ## Validation notes
 
@@ -443,6 +449,18 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
   - `! python scripts/validate-change-metadata.py tests/fixtures/change-metadata/missing-review/change.yaml` -> pass
   - `! python scripts/validate-change-metadata.py tests/fixtures/change-metadata/bad-validation-record/change.yaml` -> pass
   - `! python scripts/validate-change-metadata.py tests/fixtures/change-metadata/bad-review-shape/change.yaml` -> pass
+- 2026-04-19 M3 TDD and milestone validation:
+  - `python - <<'PY' ... top-level-title audit ... PY` -> expected pre-implementation failure because `skills/architecture/SKILL.md` had two top-level headings
+  - `test -f tests/fixtures/skills/valid-basic/SKILL.md && ... && test -f tests/fixtures/skills/placeholder-text/SKILL.md` -> expected pre-implementation failure because the skill fixture tree did not exist yet
+  - `sudo -n chown -R xiongxianfei:xiongxianfei skills` -> pass
+  - `bash -lc 'for f in skills/*/SKILL.md; do rg -q "^name:" "$f" || { echo "$f: missing name"; exit 1; }; done'` -> pass
+  - `bash -lc 'for f in skills/*/SKILL.md; do rg -q "^description:" "$f" || { echo "$f: missing description"; exit 1; }; done'` -> pass
+  - `bash -lc 'for f in skills/*/SKILL.md; do rg -q "^## Expected output$" "$f" || { echo "$f: missing ## Expected output"; exit 1; }; done'` -> pass
+  - `! rg -n '\\b(TODO|TBD)\\b' skills/*/SKILL.md` -> pass
+  - `python - <<'PY'\nfrom pathlib import Path\nbad = []\nfor path in sorted(Path('skills').glob('*/SKILL.md')):\n    lines = path.read_text().splitlines()\n    titles = [line for line in lines if line.startswith('# ') and not line.startswith('## ')]\n    if len(titles) != 1:\n        bad.append(f\"{path}: expected exactly one top-level title, found {len(titles)}\")\nif bad:\n    raise SystemExit('\\n'.join(bad))\nPY` -> pass
+  - `python - <<'PY'\nfrom pathlib import Path\nimport re\nowners = {}\nfor path in sorted(Path('skills').glob('*/SKILL.md')):\n    text = path.read_text()\n    match = re.search(r'^name:\\s*(.+)$', text, re.M)\n    if not match:\n        raise SystemExit(f\"{path}: missing name\")\n    name = match.group(1).strip()\n    if name in owners:\n        raise SystemExit(f\"duplicate skill name: {name} in {owners[name]} and {path}\")\n    owners[name] = path\nPY` -> pass
+  - `test -f tests/fixtures/skills/valid-basic/SKILL.md && test -f tests/fixtures/skills/missing-name/SKILL.md && test -f tests/fixtures/skills/missing-description/SKILL.md && test -f tests/fixtures/skills/missing-expected-output/SKILL.md && test -f tests/fixtures/skills/missing-title/SKILL.md && test -f tests/fixtures/skills/duplicate-name/first/SKILL.md && test -f tests/fixtures/skills/duplicate-name/second/SKILL.md && test -f tests/fixtures/skills/placeholder-text/SKILL.md` -> pass
+  - `git diff --check -- skills tests/fixtures docs/plans/2026-04-19-rigorloop-first-release-implementation.md` -> pass
 
 ## Outcome and retrospective
 
