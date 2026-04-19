@@ -12,13 +12,26 @@ Explain the user or maintainer problem.
 
 ## Verification
 
-- [ ] I listed the commands I actually ran
-- [ ] I updated docs/specs/tests if the contract changed
+- [ ] I listed the commands I actually ran or I stated a no-test rationale
+- [ ] I updated the docs/specs/tests/artifacts required by the current contract
 
-Commands run:
+Commands run or no-test rationale:
 ```text
 paste commands here
 ```
+
+## Review focus
+
+- item
+
+## RigorLoop artifacts
+
+- Proposal:
+- Spec:
+- Test spec:
+- Architecture / ADR:
+- Explain change:
+- Change metadata:
 
 ## Risks and follow-ups
 
