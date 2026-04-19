@@ -234,7 +234,7 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
   - [x] progress updated
   - [x] decision log updated if needed
   - [x] validation notes updated
-  - [ ] milestone committed
+  - [x] milestone committed
 - Risks:
   - YAML frontmatter parsing may tempt the change into third-party dependencies the repo does not currently manage
   - generated-output churn may be larger than expected on first sync
