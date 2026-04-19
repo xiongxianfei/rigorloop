@@ -1,0 +1,27 @@
+change_id: 0001-skill-validator
+title: Add skill metadata validator
+classification: default
+risk: low
+artifacts:
+  proposal: docs/changes/0001-skill-validator/proposal.md
+  spec: docs/changes/0001-skill-validator/spec.md
+  plan: docs/changes/0001-skill-validator/plan.md
+  test_spec: docs/changes/0001-skill-validator/test-spec.md
+  explain_change: docs/changes/0001-skill-validator/explain-change.md
+requirements:
+  - REQ-001
+  - REQ-002
+tests:
+  - TEST-001
+  - TEST-002
+validation:
+  - command: python scripts/validate-skills.py
+    result: pass
+  - command: python scripts/test-skill-validator.py
+    result: pass
+changed_files:
+  - scripts/validate-skills.py
+  - .github/workflows/validate-skills.yml
+review:
+  status: resolved
+  unresolved_items: 0
