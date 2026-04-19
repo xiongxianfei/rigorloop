@@ -24,19 +24,25 @@ Do not silently blend conflicting higher-priority instructions. Call out the con
 - Preserve user changes unless explicitly asked to revert them.
 - When behavior changes, update the relevant spec, test spec, docs, or examples in the same change when this repository uses them.
 - Reuse existing scripts and workflows before inventing new commands or processes.
+- Edit canonical workflow content in `docs/`, `specs/`, `skills/`, `schemas/`, and `scripts/`.
+- Do not hand-edit generated Codex compatibility output in `.codex/skills/`.
 - Keep `AGENTS.md` practical. Move workflow detail to `docs/workflows.md` and feature-specific detail to `specs/`.
 
 ## Planning and workflow
 
 Use a plan first for work that is multi-file, risky, ambiguous, architecture-affecting, migration-heavy, or large enough that it should be split into reviewable milestones.
 
-Use the default workflow for behavior-changing feature work:
+For the lifecycle contract, follow `specs/rigorloop-workflow.md`.
 
-`plan -> spec -> test-spec -> implement -> verify -> docs -> review`
+Use `docs/workflows.md` for the short operational summary.
+
+Once proposal, spec, and architecture are already settled, execution usually proceeds through:
+
+`plan -> plan-review -> test-spec -> implement -> code-review -> verify -> explain-change -> pr`
 
 Add `plan-review` before spec work when the task is risky, cross-cutting, or hard to sequence cleanly.
 
-Use `bugfix` for bugs, `ci` for GitHub Actions or automation changes, and `pr` only when the branch is already ready for review.
+Use `bugfix` for bugs, `ci` for GitHub Actions or automation changes when workflow automation for a material risk is missing or stale, and `pr` only when the branch is already ready for review.
 
 ## Plan file policy
 
@@ -45,7 +51,7 @@ Use `bugfix` for bugs, `ci` for GitHub Actions or automation changes, and `pr` o
 - Every approved initiative gets its own living plan file under `docs/plans/YYYY-MM-DD-slug.md`.
 - Never overwrite an older plan when starting a new initiative.
 - If a new plan replaces an older one, keep the older file and mark it as superseded.
-- Execution plans should follow `.codex/PLANS.md`.
+- Execution plans should follow `docs/plans/0000-00-00-example-plan.md`.
 
 ## Required reading before implementation
 
@@ -77,9 +83,9 @@ If the work changes externally observable behavior and no relevant spec exists, 
 
 ## Verification expectations
 
-Replace this section with the real commands for your repository.
-
-Until this file is customized, inspect the existing task runner, package manager, Makefile, and `.github/workflows` files to find the real commands. Do not report success without naming the commands actually run.
+- Until the repository-wide validation scripts are fully implemented, use the exact validation commands named in the active plan and matching test spec.
+- When repo-owned validation scripts exist, run those named commands before PR instead of inventing substitute checks.
+- Do not report success without naming the commands actually run.
 
 ## Change management
 
