@@ -97,11 +97,11 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
   - contributors can identify RigorLoop, the approved lifecycle, and canonical versus generated paths from the main docs without reading chat history
 - Commit message: `M1: align repository guidance with approved workflow`
 - Milestone closeout:
-  - [ ] validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - canonical skill docs may need updates that are larger than expected because `skills/` and `.codex/skills/` already drift
 - Rollback/recovery:
@@ -369,6 +369,7 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 - [ ] M6. Publish the skill-validator golden path and change traceability
 
 - 2026-04-19: Completed M1 by aligning `README.md`, `docs/workflows.md`, `AGENTS.md`, and `.github/pull_request_template.md` to the approved lifecycle, fast-lane rules, milestone commit policy, and canonical-versus-generated boundaries.
+- 2026-04-19: Follow-up after `code-review` to add the referenced workflow spec, test spec, architecture, ADR, and proposal artifacts to the branch so the new guidance resolves from git history instead of only from the working tree.
 
 ## Decision log
 
@@ -384,6 +385,7 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 - 2026-04-19: `skills/` and `.codex/skills/` are both present and already drifted, including the `plan` and `implement` skills.
 - 2026-04-19: Current CI and release workflows are thin wrappers over template shell scripts, so the real enforcement surface is still missing.
 - 2026-04-19: `docs/workflows.md` still named the removed legacy plan-helper path during M1, so the doc had to stop naming that path to satisfy the no-stale-reference milestone gate.
+- 2026-04-19: M1 guidance updates passed grep-based cleanup checks before review, but `code-review` caught that the branch still did not track the spec, architecture, ADR, and proposal artifacts those docs referenced.
 
 ## Validation notes
 
@@ -404,6 +406,9 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
   - `! rg -n "<PROJECT_NAME>|This template|Replace this" README.md docs/workflows.md AGENTS.md .github/pull_request_template.md` -> pass
   - `! rg -n "\\.codex/PLANS\\.md" README.md docs/workflows.md AGENTS.md .github/pull_request_template.md skills .codex/skills` -> pass
   - `git -c safe.directory=/home/xiongxianfei/data/20260419-rigorloop diff --check -- README.md docs/workflows.md AGENTS.md .github/pull_request_template.md skills` -> pass
+- 2026-04-19 M1 follow-up after code review:
+  - `git -c safe.directory=/home/xiongxianfei/data/20260419-rigorloop ls-files -- docs/proposals/2026-04-19-rigorloop-project-direction.md docs/proposals/2026-04-19-rigorloop-workflow-product.explore.md docs/proposals/2026-04-19-implementation-milestone-commit-policy.md specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md docs/adr/ADR-20260419-repository-source-layout.md` -> pass
+  - `git -c safe.directory=/home/xiongxianfei/data/20260419-rigorloop diff --check --cached -- docs/proposals/2026-04-19-rigorloop-project-direction.md docs/proposals/2026-04-19-rigorloop-workflow-product.explore.md docs/proposals/2026-04-19-implementation-milestone-commit-policy.md specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md docs/adr/ADR-20260419-repository-source-layout.md docs/plans/2026-04-19-rigorloop-first-release-implementation.md` -> pass
 
 ## Outcome and retrospective
 
