@@ -59,14 +59,15 @@ Use `bugfix` for bugs, `ci` for GitHub Actions or automation changes when workfl
 
 ## Required reading before implementation
 
-Before implementing behavior-changing work, read in this order when the files exist:
+Before implementing behavior-changing work, follow the source-of-truth order from `CONSTITUTION.md`. In practice, read in this order when the files exist:
 
 1. `CONSTITUTION.md`
-2. `docs/plan.md`, then the active plan file in `docs/plans/`
-3. the relevant feature spec in `specs/<feature>.md`
-4. the matching test spec in `specs/<feature>.test.md`
-5. `docs/workflows.md` when the task touches an existing flow or release process
-6. the files you expect to modify
+2. the relevant feature spec in `specs/<feature>.md`
+3. approved architecture or ADR docs when they are relevant to the change
+4. `docs/plan.md`, then the active plan file in `docs/plans/`
+5. the matching test spec in `specs/<feature>.test.md`
+6. `docs/workflows.md` when the task touches an existing flow or release process
+7. the files you expect to modify
 
 If the work changes externally observable behavior and no relevant spec exists, create or request the missing spec before coding the contract into the implementation.
 
