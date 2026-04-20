@@ -1,7 +1,7 @@
 # Constitution Governance Surface
 
 ## Status
-- draft
+- approved
 
 ## Related proposal
 

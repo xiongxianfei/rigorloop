@@ -1,7 +1,7 @@
 # Constitution Governance Surface
 
 ## Status
-- draft
+- accepted
 
 ## Problem
 
@@ -193,11 +193,15 @@ This question does not block writing the spec because the core directional decis
 | 2026-04-20 | Update constitution references in canonical `skills/` first, then regenerate `.codex/skills/` in the same change. | This preserves the repository's canonical-versus-generated ownership model during the migration. | Editing generated skill output directly would break the established source-of-truth boundary. |
 | 2026-04-20 | Do not keep a compatibility shim at `.codex/CONSTITUTION.md`. | Removing the old path in the same change avoids duplicate governance surfaces and long-lived ambiguity. | A temporary redirect file would weaken the “single canonical constitution” goal. |
 
-## Next artifacts
+## Follow-on artifacts
 
-- `spec`: define the exact migration contract for `CONSTITUTION.md`, `AGENTS.md`, and reference updates.
-- `plan`: sequence the path migration across root docs, skills, and active guidance surfaces.
+- `specs/constitution-governance-surface.md`
+- `specs/constitution-governance-surface.test.md`
+- `docs/plans/2026-04-20-constitution-governance-migration.md`
+- `docs/explain/2026-04-20-constitution-governance-migration.md`
 
 ## Readiness
 
-Ready for `spec`.
+Proposal review is complete. This proposal was accepted and its migration is now part of the merged repository baseline.
+
+No further proposal-stage action is pending for this artifact.

@@ -1,6 +1,6 @@
 # Plan index lifecycle ownership
 
-- Status: reviewed
+- Status: accepted
 
 ## Problem
 
@@ -180,14 +180,15 @@ Rollback:
 - 2026-04-20: Chose final-closeout ownership with `verify` drift detection as the leading direction. Reason: it matches the real lifecycle transition point with the smallest process change.
 - 2026-04-20: Deferred automation. Reason: automation is easier to design after the ownership model is explicit and stable.
 
-## Next artifacts
+## Follow-on artifacts
 
-- spec
-- test-spec
-- plan
+- `specs/plan-index-lifecycle-ownership.md`
+- `specs/plan-index-lifecycle-ownership.test.md`
+- `docs/plans/2026-04-20-plan-index-lifecycle-ownership.md`
+- `docs/explain/2026-04-20-plan-index-lifecycle-ownership.md`
 
 ## Readiness
 
 Proposal review is complete. The accepted direction is now carried by `specs/plan-index-lifecycle-ownership.md` and `docs/plans/2026-04-20-plan-index-lifecycle-ownership.md`.
 
-Ready for planned implementation under `docs/plans/2026-04-20-plan-index-lifecycle-ownership.md` and matching test coverage in `specs/plan-index-lifecycle-ownership.test.md`.
+No further proposal-stage action is pending for this artifact.

@@ -2,7 +2,7 @@
 
 ## Status
 
-- draft
+- complete
 
 ## Related spec and plan
 
@@ -481,6 +481,6 @@
 
 ## Readiness
 
-This test spec is ready for implementation planning and milestone execution.
+This test spec is complete. Its coverage now describes the merged first-release workflow baseline.
 
-The next stage is `implement`. The branch should start with M1 from the active plan, while keeping this test spec as the coverage source of truth for negative cases, drift behavior, and metadata validation.
+No further implementation-stage action is pending for this artifact.
