@@ -1,7 +1,7 @@
 # Implementation Milestone Commit Policy
 
 ## Status
-- draft
+- accepted
 
 ## Problem
 
@@ -169,13 +169,15 @@ Rollback is straightforward:
 | 2026-04-19 | Standardize milestone closeout commit subjects as `M<n>: <completed milestone outcome>`. | This makes milestone boundaries visible in git history without prescribing every commit contributors may create. | Leaving milestone commit wording fully ad hoc would weaken reviewability and traceability. |
 | 2026-04-19 | Add an explicit milestone closeout checklist to the plan template. | This makes milestone completion concrete and repeatable instead of relying on contributors to remember the closeout steps from memory. | Depending only on cross-reference to the workflow spec would be easier to miss during implementation. |
 
-## Next artifacts
+## Follow-on artifacts
 
-- `proposal-review`: challenge whether the policy is scoped correctly and whether any important edge cases are missing.
-- `spec`: update the workflow contract to define milestone completion, milestone commit boundaries, and PR boundary rules.
-- `test-spec`: map the new workflow requirements to concrete examples and documentation checks.
-- `docs/workflows.md`: align operational guidance after the workflow spec is updated.
+- `specs/rigorloop-workflow.md`
+- `specs/rigorloop-workflow.test.md`
+- `docs/plans/2026-04-19-rigorloop-first-release-implementation.md`
+- `docs/plans/0000-00-00-example-plan.md`
 
 ## Readiness
 
-This proposal is ready for `proposal-review`. If accepted, it should move directly into the workflow spec rather than a broader exploration cycle.
+Proposal review is complete. This proposal was accepted and its milestone policy now lives in the merged workflow baseline.
+
+No further proposal-stage action is pending for this artifact.

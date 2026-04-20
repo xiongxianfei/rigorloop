@@ -1,7 +1,7 @@
 # RigorLoop Workflow
 
 ## Status
-- draft
+- approved
 
 ## Related proposal
 
@@ -422,4 +422,4 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 
 - None for the workflow contract. Exact repository layout details may be delegated to the architecture artifact as long as the source-of-truth separation and required contract paths in this spec are preserved.
 
-This spec is ready for `spec-review`.
+Spec review is complete. This approved spec now governs the merged first-release workflow baseline.
