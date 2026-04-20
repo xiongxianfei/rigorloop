@@ -3,6 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
+- [2026-04-20 Plan index lifecycle ownership](plans/2026-04-20-plan-index-lifecycle-ownership.md) - active execution plan for clarifying lifecycle-closeout ownership between `docs/plan.md`, concrete plan bodies, workflow guidance, and stage skills.
 - [2026-04-20 Constitution governance migration](plans/2026-04-20-constitution-governance-migration.md) - active execution plan for promoting governance to root `CONSTITUTION.md` and aligning canonical and generated guidance surfaces in one coherent change.
 
 ## Blocked
