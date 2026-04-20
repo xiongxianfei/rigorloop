@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- none yet
+- [2026-04-20 Artifact status lifecycle ownership](plans/2026-04-20-artifact-status-lifecycle-ownership.md) - active execution plan for the artifact-lifecycle validator, deterministic verify/CI scope handling, guidance/template alignment, and relied-on artifact status migration.
 
 ## Blocked
 - none yet

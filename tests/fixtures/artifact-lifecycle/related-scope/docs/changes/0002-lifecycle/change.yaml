@@ -1,0 +1,8 @@
+change_id: 0002-lifecycle
+title: Related scope fixture
+classification: default
+risk: low
+artifacts:
+  proposal: docs/proposals/2026-04-20-related-proposal.md
+  spec: specs/related-spec.md
+  architecture: docs/architecture/2026-04-20-related-architecture.md
