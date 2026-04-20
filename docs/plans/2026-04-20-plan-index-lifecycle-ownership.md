@@ -285,6 +285,7 @@ The implementation needs to do three things in one coherent sequence:
 - 2026-04-20: M3 implemented. Updated `docs/plan.md`, the canonical plan example, and the already-indexed first-release and constitution-migration plans so lifecycle state, closeout wording, and `Done` classification now match known reality.
 - 2026-04-20: code-review approved the completed M1-M3 implementation with no blocking findings.
 - 2026-04-20: verify reran the feature proof surface, confirmed the implementation is complete, and closed this plan to `Done` before PR because the outcome is already known on-branch.
+- 2026-04-20: explain-change published the durable rationale artifact at `docs/explain/2026-04-20-plan-index-lifecycle-ownership.md`.
 
 ## Decision log
 
@@ -397,6 +398,6 @@ This plan is done.
 
 Tracked approval metadata is normalized, `test-spec` is complete, and the full M1-M3 implementation has passed code review and verify.
 
-Next expected workflow stage for the branch is `explain-change`, then `pr`.
+Next expected workflow stage for the branch is `pr`.
 
 This plan remains as a historical execution record rather than an active initiative.
