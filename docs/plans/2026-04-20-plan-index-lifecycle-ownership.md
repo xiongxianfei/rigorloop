@@ -1,6 +1,6 @@
 # Plan index lifecycle ownership plan
 
-- Status: active
+- Status: done
 - Owner: maintainer + Codex
 - Start date: 2026-04-20
 - Last updated: 2026-04-20
@@ -283,6 +283,8 @@ The implementation needs to do three things in one coherent sequence:
 - 2026-04-20: post-M1 code review found stale pre-implementation readiness text in this plan. Updated the stage metadata so the active plan body matches the completed `plan-review`, `test-spec`, and M1 work.
 - 2026-04-20: M2 implemented. Updated canonical `plan`, `implement`, `verify`, `pr`, `learn`, and `workflow` skills with explicit lifecycle ownership guidance and regenerated matching `.codex/skills/` output.
 - 2026-04-20: M3 implemented. Updated `docs/plan.md`, the canonical plan example, and the already-indexed first-release and constitution-migration plans so lifecycle state, closeout wording, and `Done` classification now match known reality.
+- 2026-04-20: code-review approved the completed M1-M3 implementation with no blocking findings.
+- 2026-04-20: verify reran the feature proof surface, confirmed the implementation is complete, and closed this plan to `Done` before PR because the outcome is already known on-branch.
 
 ## Decision log
 
@@ -295,6 +297,7 @@ The implementation needs to do three things in one coherent sequence:
 - 2026-04-20: Keep `plan` focused on startup and replanning ownership, and move ongoing lifecycle-closeout timing into `implement`, `verify`, `pr`, `learn`, and `workflow`. Rationale: the ownership split should stay discoverable without turning the planning skill into the authority for all later lifecycle transitions.
 - 2026-04-20: Reclassify the constitution-governance migration plan as `Done` during M3. Rationale: its tracked outcome, verification, and explain artifact already showed the migration work was complete, so keeping it under `Active` was stale rather than a merge-dependent exception.
 - 2026-04-20: Normalize historical plan wording from `complete` to `done` where the plan index already uses `Done`. Rationale: the migration should teach one lifecycle vocabulary across `docs/plan.md`, the example plan, and the touched historical plan bodies.
+- 2026-04-20: Close this initiative to `Done` during verify before `pr`. Rationale: the implementation, code review, and verification outcome are already known on-branch, so deferring `Done` until after PR or merge would violate the lifecycle-closeout rule this feature just introduced.
 
 ## Surprises and discoveries
 
@@ -360,17 +363,40 @@ The implementation needs to do three things in one coherent sequence:
     - the first-release and constitution-governance migration plan bodies now match their `Done` index placement without stale active-stage readiness wording
     - the example plan now teaches contributors to keep `docs/plan.md` and the plan body synchronized when lifecycle state changes
   - result: pass
+- 2026-04-20 verify:
+  - pre-closeout proof:
+    - `docs/plan.md` still listed this initiative under `## Active`
+    - this plan body still used `Status: active`
+    - this plan body's readiness still named `code-review` as the next expected work even though code review had already passed
+  - validation:
+    - `rg -n "docs/plan\\.md|plan body|lifecycle closeout|Blocked|Done|Superseded|stale lifecycle|learn|verify" CONSTITUTION.md AGENTS.md docs/workflows.md specs/rigorloop-workflow.md`
+    - `python scripts/validate-skills.py`
+    - `python scripts/build-skills.py --check`
+    - `rg -n "docs/plan\\.md|plan body|lifecycle|closeout|stale|learn|verify|merge-dependent|post-merge|Blocked|Superseded|authoritative" skills .codex/skills`
+    - `rg -n "^## (Active|Blocked|Done|Superseded)$" docs/plan.md`
+    - `for slug in 2026-04-19-rigorloop-first-release-implementation 2026-04-20-constitution-governance-migration 2026-04-20-plan-index-lifecycle-ownership; do test "$(rg -c "${slug}\\.md" docs/plan.md)" -eq 1; done`
+    - `rg -n "Status|Outcome and retrospective|Readiness|ready for PR|ready for code-review|complete and now belongs|blocked|superseded" docs/plans/0000-00-00-example-plan.md docs/plans/2026-04-19-rigorloop-first-release-implementation.md docs/plans/2026-04-20-constitution-governance-migration.md docs/plans/2026-04-20-plan-index-lifecycle-ownership.md`
+    - `git diff --check 155be39..HEAD`
+    - `bash scripts/ci.sh`
+  - manual review:
+    - reviewed `docs/plan.md` `Done` section after closeout
+    - reviewed this plan body's `Status`, `Outcome and retrospective`, and `Readiness` surfaces after closeout
+    - confirmed the full feature range `155be39..HEAD` changes only the planned workflow, skill, spec, and plan surfaces for this initiative
+    - confirmed hosted CI is defined in `.github/workflows/ci.yml` as a thin wrapper over `bash scripts/ci.sh`, but no hosted run was observed from this environment
+  - result: pass with hosted CI still unobserved
 
 ## Outcome and retrospective
 
-- M1-M3 are implemented.
+- M1-M3 are implemented, reviewed, and verified.
 - The workflow docs, skill guidance, plan index, example plan, and already-known stale plan bodies now follow the same lifecycle-closeout model.
-- This initiative remains active only because downstream review stages are still pending; lifecycle closeout for this plan should happen after those stages determine the real final state.
+- This initiative is done on-branch and now belongs in `docs/plan.md` under `Done`.
 
 ## Readiness
 
-This plan remains active.
+This plan is done.
 
-Tracked approval metadata is normalized, `test-spec` is complete, and M1-M3 are implemented.
+Tracked approval metadata is normalized, `test-spec` is complete, and the full M1-M3 implementation has passed code review and verify.
 
-Next expected work is `code-review` for the completed implementation. If review passes, proceed to `verify`, then `explain-change`, then `pr`. Do not move this plan to `Done` until those downstream stages confirm the initiative is actually closed or an explicit merge-dependent exception applies.
+Next expected workflow stage for the branch is `explain-change`, then `pr`.
+
+This plan remains as a historical execution record rather than an active initiative.
