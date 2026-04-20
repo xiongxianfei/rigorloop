@@ -17,7 +17,7 @@ Read:
 
 - the proposal under review;
 - linked exploration and research artifacts;
-- `AGENTS.md` and `.codex/CONSTITUTION.md` if present;
+- `AGENTS.md` and `CONSTITUTION.md` if present;
 - `docs/project-map.md` if architecture impact matters;
 - related specs, ADRs, or plans.
 

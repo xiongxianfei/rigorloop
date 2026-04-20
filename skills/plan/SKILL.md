@@ -16,7 +16,7 @@ Planning happens after the spec defines behavior and architecture defines the de
 Read:
 
 - `AGENTS.md`
-- `.codex/CONSTITUTION.md` if present
+- `CONSTITUTION.md` if present
 - `docs/plan.md` if present
 - accepted proposal
 - approved or reviewed feature spec

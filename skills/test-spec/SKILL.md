@@ -19,7 +19,7 @@ Read:
 - spec-review findings;
 - architecture doc and ADRs when relevant;
 - concrete execution plan;
-- `AGENTS.md` and `.codex/CONSTITUTION.md` if present;
+- `AGENTS.md` and `CONSTITUTION.md` if present;
 - existing test conventions, fixtures, helpers, and CI commands;
 - related tests for similar behavior.
 

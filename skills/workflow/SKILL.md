@@ -193,7 +193,7 @@ Use existing repo conventions when present. If absent, prefer:
 
 ```text
 AGENTS.md
-.codex/CONSTITUTION.md
+CONSTITUTION.md
 docs/project-map.md
 docs/workflows.md
 docs/proposals/YYYY-MM-DD-slug.md
