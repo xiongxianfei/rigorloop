@@ -2,7 +2,7 @@
 
 ## Status
 
-- draft
+- complete
 
 ## Related spec and plan
 
@@ -361,6 +361,6 @@
 
 ## Readiness
 
-Ready for `implement` through M1, M2, and M3 in `docs/plans/2026-04-20-plan-index-lifecycle-ownership.md`.
+This test spec is complete. Its coverage now describes the merged lifecycle-ownership baseline.
 
-Implementation should keep this test spec as the coverage source of truth for lifecycle-state scans, plan-body synchronization checks, and stage-skill guidance alignment.
+No further implementation-stage action is pending for this artifact.

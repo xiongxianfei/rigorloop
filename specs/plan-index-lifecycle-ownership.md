@@ -1,7 +1,7 @@
 # Plan Index Lifecycle Ownership
 
 ## Status
-- reviewed
+- approved
 
 ## Related proposal
 
@@ -190,6 +190,6 @@ None.
 
 ## Readiness
 
-Ready for `implement` through `docs/plans/2026-04-20-plan-index-lifecycle-ownership.md` and matching test coverage in `specs/plan-index-lifecycle-ownership.test.md`.
+This spec is approved. The plan-index lifecycle ownership change is implemented and merged into the repository baseline.
 
-Implementation should use the active plan and matching test spec rather than chat-only approval context.
+No further implementation-stage action is pending for this artifact.
