@@ -286,6 +286,9 @@ The implementation needs to do three things in one coherent sequence:
 - 2026-04-20: code-review approved the completed M1-M3 implementation with no blocking findings.
 - 2026-04-20: verify reran the feature proof surface, confirmed the implementation is complete, and closed this plan to `Done` before PR because the outcome is already known on-branch.
 - 2026-04-20: explain-change published the durable rationale artifact at `docs/explain/2026-04-20-plan-index-lifecycle-ownership.md`.
+- 2026-04-20: PR #3 opened against `main`.
+- 2026-04-20: learn captured the retrospective lessons in this completed plan.
+- 2026-04-20: PR #3 merged into `main` as `8040a54`.
 
 ## Decision log
 
@@ -299,6 +302,7 @@ The implementation needs to do three things in one coherent sequence:
 - 2026-04-20: Reclassify the constitution-governance migration plan as `Done` during M3. Rationale: its tracked outcome, verification, and explain artifact already showed the migration work was complete, so keeping it under `Active` was stale rather than a merge-dependent exception.
 - 2026-04-20: Normalize historical plan wording from `complete` to `done` where the plan index already uses `Done`. Rationale: the migration should teach one lifecycle vocabulary across `docs/plan.md`, the example plan, and the touched historical plan bodies.
 - 2026-04-20: Close this initiative to `Done` during verify before `pr`. Rationale: the implementation, code review, and verification outcome are already known on-branch, so deferring `Done` until after PR or merge would violate the lifecycle-closeout rule this feature just introduced.
+- 2026-04-20: Open PR #3 against `main` even though this branch tracks `origin/feat/rigorloop-first-release`. Rationale: `main` is the repository default branch and the branch-specific cherry set against `origin/main` contains only this feature's five commits.
 
 ## Surprises and discoveries
 
@@ -308,6 +312,7 @@ The implementation needs to do three things in one coherent sequence:
 - 2026-04-20: `docs/plan.md` was already described as an index, but the repo’s core workflow and governance docs still lacked explicit ownership for ongoing plan-body updates, lifecycle closeout, and stale-state verification.
 - 2026-04-20: the canonical `plan` skill still used `complete` and omitted `Blocked`, so lifecycle vocabulary drift existed inside skill guidance in addition to the missing ownership language.
 - 2026-04-20: the example plan template still modeled a `proposed` plan and lacked explicit outcome/readiness guidance, so it could not teach contributors how to avoid stale lifecycle wording.
+- 2026-04-20: the branch tracked `origin/feat/rigorloop-first-release`, but the actual pull request target still needed to be `main`; review-scoping base and PR base can differ once earlier feature work is already merged.
 
 ## Validation notes
 
@@ -391,13 +396,24 @@ The implementation needs to do three things in one coherent sequence:
 - M1-M3 are implemented, reviewed, and verified.
 - The workflow docs, skill guidance, plan index, example plan, and already-known stale plan bodies now follow the same lifecycle-closeout model.
 - This initiative is done on-branch and now belongs in `docs/plan.md` under `Done`.
+- What changed: the feature added a full proposal/spec/test-spec/plan/explain trail, updated governing workflow docs and stage skills, normalized the canonical plan template and touched historical plan bodies, and closed the initiative to `Done` before PR.
+- What went well: milestone slicing kept the review surface small, and the manual plus structural proof surface was strong enough to catch real lifecycle-state drift without inventing low-value executable tests.
+- What was harder than expected: the plan body drifted after `plan-review`, after M1 code review, and again before PR, so keeping stage metadata current required explicit follow-through after each review pass rather than only at milestone commit time.
+- Spec accuracy: the feature spec correctly captured lifecycle ownership, stale-state blocking, and the default done-before-PR rule; the main readiness gap was approval-state traceability, which the plan had to normalize before `test-spec` and implementation.
+- Test effectiveness: the test spec's document scans, plan/index comparisons, and repo-owned validation commands were the right checks for this change; `code-review` and `verify` both found stale plan metadata that would have been easy to miss in a prose-only review.
+- Architecture accuracy: no new architecture artifact was needed; the existing repository architecture and ADR were enough to preserve the canonical `skills/` versus generated `.codex/skills/` boundary and the single canonical plan template.
+- Process issues: chat-only approval state created avoidable ambiguity until the proposal and spec status markers were normalized, and shell-expanded commit bodies proved less reliable than the plan and explain artifact as a record of exact validation commands.
+- Durable updates made: the repository now documents lifecycle ownership in governance docs, stage skills, the canonical plan template, and the touched plan/index surfaces; this retrospective also records that future agents should treat active-plan metadata as live state after each review/verify pass and should confirm the actual PR base instead of assuming the branch upstream is the merge target.
+- Follow-up actions: observe hosted CI on PR #3; if PR-base confusion recurs, update `skills/pr/SKILL.md` and `.codex/skills/pr/SKILL.md` to make the base-branch check explicit; continue using plan and explain artifacts as the authoritative source for exact validation commands when commit-message quoting could distort them.
 
 ## Readiness
 
 This plan is done.
 
-Tracked approval metadata is normalized, `test-spec` is complete, and the full M1-M3 implementation has passed code review and verify.
+Tracked approval metadata is normalized, `test-spec` is complete, and the full M1-M3 implementation has passed code review, verify, and learn.
 
-Next expected workflow stage for the branch is `pr`.
+PR #3 merged into `main` as `8040a54`.
+
+No further workflow stage is expected for this initiative unless PR review or hosted CI reopens work.
 
 This plan remains as a historical execution record rather than an active initiative.
