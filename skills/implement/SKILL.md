@@ -11,6 +11,8 @@ You are implementing the smallest approved slice with tests first.
 
 Do not expand scope. Do not silently alter the spec. Do not declare success without verification evidence.
 
+For planned initiatives, `implement` owns keeping the active plan body current during execution. Update the plan body's progress, decisions, discoveries, and validation notes as work advances instead of leaving those details to later stages.
+
 ## Inputs to read
 
 Read before editing:
@@ -38,7 +40,7 @@ For each milestone:
 7. Run the narrow tests again.
 8. Refactor only within milestone scope.
 9. Run milestone validation commands.
-10. Update the plan’s progress, decisions, surprises, and validation notes.
+10. Update the active plan body’s progress, decisions, surprises, and validation notes.
 11. When the milestone is complete, create a milestone closeout commit using the subject format `M<n>: <completed milestone outcome>` and include milestone validation in the commit body or referenced evidence.
 12. Stop before the next milestone unless the user asked to continue.
 
@@ -71,6 +73,8 @@ Update the concrete plan with:
 - validation commands run;
 - validation results;
 - known follow-ups or deferred work.
+- for planned initiatives, keep `docs/plan.md` as lifecycle bookkeeping rather than a milestone journal;
+- if lifecycle state changes during implementation, update both `docs/plan.md` and the plan body, or record why only a merge-dependent `Done` transition remains pending.
 
 ## Expected output
 

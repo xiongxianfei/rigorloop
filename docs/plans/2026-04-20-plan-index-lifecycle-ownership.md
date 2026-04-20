@@ -171,11 +171,11 @@ The implementation needs to do three things in one coherent sequence:
   - canonical and generated skill guidance no longer imply that `plan` or `learn` owns final lifecycle bookkeeping, and `verify` explicitly challenges stale state before PR readiness
 - Commit message: `M2: align skills with plan lifecycle ownership`
 - Milestone closeout:
-  - [ ] validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - generated skill output may drift if canonical edits are incomplete
   - stage descriptions may partially overlap and create contradictory ownership wording
@@ -255,8 +255,6 @@ The implementation needs to do three things in one coherent sequence:
   - Recovery: only correct state that is already known from tracked evidence; leave genuinely active work active.
 - Risk: the plan template change becomes a hidden redesign of plan structure rather than a targeted lifecycle clarification.
   - Recovery: keep edits focused on lifecycle status, closeout, and readiness wording only.
-- Risk: the tracked feature spec still says `draft` even though the user confirmed review completion in chat.
-  - Recovery: treat the user confirmation as the current approval to continue planning, and normalize tracked status later only if implementation or review requires it.
 
 ## Dependencies
 
@@ -277,11 +275,13 @@ The implementation needs to do three things in one coherent sequence:
 ## Progress
 
 - [x] M1. Encode lifecycle ownership in workflow and governance docs
-- [ ] M2. Align lifecycle-stage skills and regenerate compatibility output
+- [x] M2. Align lifecycle-stage skills and regenerate compatibility output
 - [ ] M3. Migrate plan surfaces and correct known stale lifecycle state
 - 2026-04-20: plan created
 - 2026-04-20: tracked approval metadata normalized in the proposal/spec and test spec created at `specs/plan-index-lifecycle-ownership.test.md`.
 - 2026-04-20: M1 implemented. Updated `CONSTITUTION.md`, `specs/rigorloop-workflow.md`, `docs/workflows.md`, and `AGENTS.md` so planned-initiative lifecycle ownership, closeout timing, and stale-state verification are explicit.
+- 2026-04-20: post-M1 code review found stale pre-implementation readiness text in this plan. Updated the stage metadata so the active plan body matches the completed `plan-review`, `test-spec`, and M1 work.
+- 2026-04-20: M2 implemented. Updated canonical `plan`, `implement`, `verify`, `pr`, `learn`, and `workflow` skills with explicit lifecycle ownership guidance and regenerated matching `.codex/skills/` output.
 
 ## Decision log
 
@@ -290,6 +290,8 @@ The implementation needs to do three things in one coherent sequence:
 - 2026-04-20: Split implementation into three milestones. Rationale: core docs, skill guidance, and plan-surface migration are distinct reviewable slices with different validation surfaces.
 - 2026-04-20: Require tracked approval metadata before `test-spec` or `implement`. Rationale: downstream stages should cite repository artifacts rather than depend on chat-only approval state.
 - 2026-04-20: Encode the lifecycle rule twice: as concise governance in `CONSTITUTION.md` and as stage-specific contract detail in `specs/rigorloop-workflow.md`. Rationale: the constitution must reflect affected workflow guidance, while the workflow spec still needs the normative owner and timing detail.
+- 2026-04-20: Keep the active plan's stage metadata synchronized with actual workflow progress after each milestone and review pass. Rationale: the clarified lifecycle rule requires plan bodies to remain current enough for later stages to trust them.
+- 2026-04-20: Keep `plan` focused on startup and replanning ownership, and move ongoing lifecycle-closeout timing into `implement`, `verify`, `pr`, `learn`, and `workflow`. Rationale: the ownership split should stay discoverable without turning the planning skill into the authority for all later lifecycle transitions.
 
 ## Surprises and discoveries
 
@@ -297,6 +299,7 @@ The implementation needs to do three things in one coherent sequence:
 - 2026-04-20: lifecycle ownership is currently expressed across both top-level docs and stage skills, so a docs-only fix would leave runtime guidance inconsistent.
 - 2026-04-20: the constitution migration explain artifact already calls out plan-lifecycle follow-up risk, which makes stale plan-state review part of this initiative’s adoption scope.
 - 2026-04-20: `docs/plan.md` was already described as an index, but the repo’s core workflow and governance docs still lacked explicit ownership for ongoing plan-body updates, lifecycle closeout, and stale-state verification.
+- 2026-04-20: the canonical `plan` skill still used `complete` and omitted `Blocked`, so lifecycle vocabulary drift existed inside skill guidance in addition to the missing ownership language.
 
 ## Validation notes
 
@@ -313,6 +316,27 @@ The implementation needs to do three things in one coherent sequence:
     - `CONSTITUTION.md`, `AGENTS.md`, and `docs/workflows.md` now align with `specs/rigorloop-workflow.md`
     - `specs/rigorloop-workflow.md` now makes planned-initiative lifecycle ownership, timing, and stale-state blocking explicit through `R8f` to `R8ja`
   - result: pass
+- 2026-04-20 M2:
+  - pre-change proof:
+    - `python scripts/validate-skills.py`
+    - `python scripts/build-skills.py --check`
+    - `rg -n "docs/plan\\.md|plan body|lifecycle closeout|lifecycle state|stale lifecycle|Blocked|Superseded|merge-dependent|post-merge|plan body|non-authoritative|authoritative|readiness blocker" skills/plan/SKILL.md skills/implement/SKILL.md skills/verify/SKILL.md skills/pr/SKILL.md skills/learn/SKILL.md skills/workflow/SKILL.md .codex/skills/plan/SKILL.md .codex/skills/implement/SKILL.md .codex/skills/verify/SKILL.md .codex/skills/pr/SKILL.md .codex/skills/learn/SKILL.md .codex/skills/workflow/SKILL.md`
+    - result: skill structure was valid and generated output was in sync, but the targeted stage skills still lacked the approved lifecycle-ownership wording.
+  - no-test rationale:
+    - M2 updates contributor/runtime guidance rather than application runtime logic. The approved proof surface comes from manual and structural checks in `specs/plan-index-lifecycle-ownership.test.md` (`T2`, `T3`, `T4`, `T5`, `T6`) plus the existing skill validator and drift check.
+  - milestone validation:
+    - `python scripts/build-skills.py`
+    - `python scripts/validate-skills.py`
+    - `python scripts/build-skills.py --check`
+    - `rg -n "docs/plan\\.md|plan body|lifecycle|closeout|stale|learn|verify|merge-dependent|post-merge|Blocked|Superseded|authoritative" skills .codex/skills`
+    - `git diff --check -- skills .codex/skills`
+  - manual review:
+    - canonical and generated `plan`, `implement`, `verify`, `pr`, `learn`, and `workflow` skills now agree that `docs/plan.md` is the lifecycle index and plan bodies carry initiative detail
+    - `implement` now owns ongoing plan-body progress/decision/discovery/validation-note updates during execution
+    - `verify` now treats stale lifecycle state as a readiness blocker and requires explicit lifecycle-evidence review when relevant
+    - `pr` and `workflow` now describe done-before-PR as the default, the merge-dependent post-merge exception, and immediate `Blocked`/`Superseded` handling
+    - `learn` now remains explicitly retrospective and non-authoritative for lifecycle bookkeeping
+  - result: pass
 
 ## Outcome and retrospective
 
@@ -320,6 +344,8 @@ The implementation needs to do three things in one coherent sequence:
 
 ## Readiness
 
-This plan is ready for `plan-review`.
+This plan remains active.
 
-After `plan-review`, first satisfy the pre-implementation prerequisites above. Then proceed to `test-spec`, which should map `R1` through `R9` to the milestone proof surfaces named above, with explicit manual lifecycle-comparison cases for `docs/plan.md` and the affected plan bodies.
+Tracked approval metadata is normalized, `test-spec` is complete, and M1-M2 are implemented.
+
+Next expected work is M3: migrate the plan surfaces, correct already-known stale lifecycle state, and then move to `code-review` for that milestone. `verify`, `explain-change`, and `pr` remain downstream of completing the remaining milestone.
