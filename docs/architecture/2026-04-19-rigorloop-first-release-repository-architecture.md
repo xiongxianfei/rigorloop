@@ -1,7 +1,7 @@
 # RigorLoop First-Release Repository Architecture
 
 ## Status
-- draft
+- approved
 
 ## Related artifacts
 

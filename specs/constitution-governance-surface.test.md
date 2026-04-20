@@ -2,7 +2,7 @@
 
 ## Status
 
-- draft
+- complete
 
 ## Related spec and plan
 
@@ -286,6 +286,6 @@
 
 ## Readiness
 
-Ready for `implement` through `M1` in `docs/plans/2026-04-20-constitution-governance-migration.md`.
+This test spec is complete. Its coverage now describes the merged governance migration baseline.
 
-If the work expands beyond that one coherent migration or broadens into separate governance or workflow cleanup, return to `plan` before implementation.
+No further implementation-stage action is pending for this artifact.

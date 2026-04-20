@@ -1,7 +1,7 @@
 # RigorLoop Project Direction
 
 ## Status
-- draft
+- accepted
 
 ## Problem
 
@@ -239,14 +239,15 @@ These questions are now implementation-shaping details rather than unresolved pr
 | 2026-04-19 | Leave exact repository layout details to the architecture artifact while preserving source-of-truth separation in the workflow contract. | The workflow spec should define invariants and required paths, while architecture should define the concrete repository layout for authored sources, adapters, and generated output. | Hardcoding the entire directory layout into the workflow contract would make early evolution harder without improving the core methodology. |
 | 2026-04-19 | Treat the `ci` stage as creating or updating GitHub workflows for material-risk changes, not routine CI execution. | This keeps the lifecycle aligned with the `ci` skill's purpose while leaving routine PR CI enforcement to verification and repository rules. | Treating `ci` as routine CI execution would blur the difference between automation maintenance and normal PR validation. |
 
-## Next artifacts
+## Follow-on artifacts
 
-- `proposal-review`: challenge scope, audience, tradeoffs, and readiness before acceptance.
-- `spec`: define the public workflow contract and project positioning in normative terms.
-- `test-spec`: map each workflow requirement to concrete repository checks, examples, or tests.
-- `architecture`: only if the accepted direction introduces non-trivial automation, validation, or packaging boundaries.
-- `plan`: sequence the repository changes required to turn the template into the first real RigorLoop release.
+- `specs/rigorloop-workflow.md`
+- `specs/rigorloop-workflow.test.md`
+- `docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md`
+- `docs/plans/2026-04-19-rigorloop-first-release-implementation.md`
 
 ## Readiness
 
-This proposal is ready for `spec`. The remaining open questions are now about workflow thresholds and representation details, not the core product direction.
+Proposal review is complete. This proposal was accepted and is now part of the merged first-release baseline.
+
+No further proposal-stage action is pending for this artifact.
