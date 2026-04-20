@@ -22,7 +22,7 @@ Read:
 - actual diff;
 - test output and CI status when available;
 - code-review findings;
-- `AGENTS.md` and `.codex/CONSTITUTION.md`;
+- `AGENTS.md` and `CONSTITUTION.md`;
 - CI workflow definitions relevant to the change.
 
 ## Verification dimensions

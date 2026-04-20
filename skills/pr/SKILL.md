@@ -24,7 +24,7 @@ Read:
 - explain-change artifact if present;
 - verification report;
 - CI status when available;
-- `AGENTS.md` and `.codex/CONSTITUTION.md` if relevant.
+- `AGENTS.md` and `CONSTITUTION.md` if relevant.
 
 ## Readiness checks
 

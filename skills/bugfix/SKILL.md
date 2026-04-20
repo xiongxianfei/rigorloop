@@ -19,7 +19,7 @@ Read, if present:
 - relevant spec and test spec;
 - concrete plan if the bug belongs to active work;
 - architecture docs or project map for affected flow;
-- `AGENTS.md` and `.codex/CONSTITUTION.md`;
+- `AGENTS.md` and `CONSTITUTION.md`;
 - related code and neighboring tests;
 - recent changes that could have introduced the regression.
 

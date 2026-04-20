@@ -16,7 +16,7 @@ A proposal answers “why this change, why now, and why this approach?” It doe
 Read, if present:
 
 - `AGENTS.md`
-- `.codex/CONSTITUTION.md`
+- `CONSTITUTION.md`
 - `docs/project-map.md`
 - relevant exploration artifact
 - relevant research artifact

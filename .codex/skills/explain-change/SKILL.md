@@ -23,7 +23,7 @@ Read:
 - concrete plan and validation notes;
 - code-review and verify findings;
 - test and CI output;
-- `AGENTS.md` and `.codex/CONSTITUTION.md` if relevant.
+- `AGENTS.md` and `CONSTITUTION.md` if relevant.
 
 ## Output path
 

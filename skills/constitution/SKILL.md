@@ -28,7 +28,7 @@ Create or update project governance so future work has clear answers for:
 Read, if present:
 
 - `AGENTS.md`
-- `.codex/CONSTITUTION.md`
+- `CONSTITUTION.md`
 - `README.md`
 - `CONTRIBUTING.md`
 - `docs/workflows.md`
@@ -45,7 +45,7 @@ Prefer this structure:
 
 ```text
 AGENTS.md                  # concise agent-facing operating rules
-.codex/CONSTITUTION.md     # detailed governance and lifecycle rules
+CONSTITUTION.md     # detailed governance and lifecycle rules
 ```
 
 If the repo already uses only `AGENTS.md`, update it without adding another file unless more detail is needed.

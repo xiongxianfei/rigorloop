@@ -28,7 +28,7 @@ Read, if present:
 
 - `README.md`
 - `AGENTS.md`
-- `.codex/CONSTITUTION.md`
+- `CONSTITUTION.md`
 - `docs/`
 - `specs/`
 - package/build files

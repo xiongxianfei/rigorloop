@@ -16,7 +16,7 @@ The spec defines **what the system must do** and **how the behavior will be obse
 Read, if present:
 
 - `AGENTS.md`
-- `.codex/CONSTITUTION.md`
+- `CONSTITUTION.md`
 - accepted proposal or issue
 - exploration and research artifacts
 - `docs/project-map.md`

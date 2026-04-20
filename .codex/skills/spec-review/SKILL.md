@@ -17,7 +17,7 @@ Read:
 
 - the feature spec;
 - linked proposal, exploration, and research artifacts;
-- `AGENTS.md` and `.codex/CONSTITUTION.md` if present;
+- `AGENTS.md` and `CONSTITUTION.md` if present;
 - related specs and contracts;
 - `docs/workflows.md` if the feature touches existing runtime flow;
 - `docs/project-map.md` when boundary context matters.
