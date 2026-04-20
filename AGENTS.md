@@ -51,7 +51,8 @@ Use `bugfix` for bugs, `ci` for GitHub Actions or automation changes when workfl
 ## Plan file policy
 
 - `docs/roadmap.md` stores future ideas and unapproved work.
-- `docs/plan.md` is an index of active and closed execution plans. It is not the body of a plan.
+- `docs/plan.md` is the lifecycle index of active, blocked, done, and superseded execution plans. It is not the body of a plan.
+- Concrete plan files under `docs/plans/` are the plan bodies that carry initiative detail.
 - Every approved initiative gets its own living plan file under `docs/plans/YYYY-MM-DD-slug.md`.
 - Never overwrite an older plan when starting a new initiative.
 - If a new plan replaces an older one, keep the older file and mark it as superseded.
@@ -84,13 +85,14 @@ If the work changes externally observable behavior and no relevant spec exists, 
 - Write or update tests first when feasible.
 - Run the smallest relevant verification scope first, then expand only as needed.
 - If validation fails, stop and fix the failure before moving to the next milestone.
-- Update the active plan's progress, decisions, discoveries, and validation notes as work proceeds.
+- During execution, `implement` owns ongoing plan-body updates. Keep the active plan's progress, decisions, discoveries, and validation notes current as work proceeds.
 - If a spec gap blocks safe implementation, state it explicitly instead of silently guessing.
 
 ## Verification expectations
 
 - Until the repository-wide validation scripts are fully implemented, use the exact validation commands named in the active plan and matching test spec.
 - When repo-owned validation scripts exist, run those named commands before PR instead of inventing substitute checks.
+- For planned initiatives, final lifecycle closeout updates both `docs/plan.md` and the plan body when lifecycle state changes, and `verify` treats stale lifecycle state between them as blocking PR readiness.
 - Do not report success without naming the commands actually run.
 
 ## Change management

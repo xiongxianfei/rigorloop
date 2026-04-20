@@ -73,6 +73,10 @@ Repository validation logic MUST live in repo-owned scripts. GitHub Actions work
 
 Plans MUST follow `docs/plans/0000-00-00-example-plan.md`. `.codex/PLANS.md` MUST NOT be reintroduced as a second planning surface.
 
+For planned initiatives, `docs/plan.md` MUST remain the lifecycle index and concrete files under `docs/plans/` MUST remain the plan bodies that carry initiative detail.
+
+During execution, `implement` MUST keep the active plan body's progress, decisions, discoveries, and validation notes current enough that later stages can review the real initiative state.
+
 Change-local artifacts under `docs/changes/<change-id>/` SHOULD stay concise and MUST link back to approved top-level artifacts instead of becoming a second long-form source of truth.
 
 Architecture-affecting changes MUST update the relevant architecture document or ADR in the same change.
@@ -108,6 +112,8 @@ Hosted CI MUST NOT be claimed as passed unless the hosted run was actually obser
 Local validation claims MUST name the commands actually run.
 
 Non-trivial changes MUST leave contributor-visible verification evidence in the plan, verify report, PR body, or change-local artifacts.
+
+For planned initiatives, final lifecycle closeout MUST update both `docs/plan.md` and the plan body when lifecycle state changes, and `verify` MUST treat stale lifecycle state between them as blocking PR readiness.
 
 Until repository-specific release checks replace the current conservative template behavior, contributors MUST treat `scripts/release-verify.sh` and `release.yml` as non-authoritative for broader completion claims.
 
