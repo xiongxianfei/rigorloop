@@ -1,6 +1,6 @@
 # RigorLoop first-release implementation plan
 
-- Status: complete
+- Status: done
 - Owner: maintainer + Codex
 - Start date: 2026-04-19
 - Last updated: 2026-04-20
@@ -527,6 +527,6 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 
 ## Readiness
 
-This plan is complete and now belongs in `docs/plan.md` under `Done`.
+This plan is done and belongs in `docs/plan.md` under `Done`.
 
 It remains a historical record for the shipped first release, not an active execution plan for new work.

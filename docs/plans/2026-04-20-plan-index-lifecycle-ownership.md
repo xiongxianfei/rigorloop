@@ -220,11 +220,11 @@ The implementation needs to do three things in one coherent sequence:
   - the plan index and touched plan bodies agree about lifecycle state, and the canonical plan example teaches contributors how to keep them synchronized
 - Commit message: `M3: synchronize plan index and plan bodies`
 - Milestone closeout:
-  - [ ] validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - the change could accidentally rewrite historical meaning rather than correcting only clearly known stale state
   - active plans may be over-closed if readiness wording is interpreted too aggressively
@@ -276,12 +276,13 @@ The implementation needs to do three things in one coherent sequence:
 
 - [x] M1. Encode lifecycle ownership in workflow and governance docs
 - [x] M2. Align lifecycle-stage skills and regenerate compatibility output
-- [ ] M3. Migrate plan surfaces and correct known stale lifecycle state
+- [x] M3. Migrate plan surfaces and correct known stale lifecycle state
 - 2026-04-20: plan created
 - 2026-04-20: tracked approval metadata normalized in the proposal/spec and test spec created at `specs/plan-index-lifecycle-ownership.test.md`.
 - 2026-04-20: M1 implemented. Updated `CONSTITUTION.md`, `specs/rigorloop-workflow.md`, `docs/workflows.md`, and `AGENTS.md` so planned-initiative lifecycle ownership, closeout timing, and stale-state verification are explicit.
 - 2026-04-20: post-M1 code review found stale pre-implementation readiness text in this plan. Updated the stage metadata so the active plan body matches the completed `plan-review`, `test-spec`, and M1 work.
 - 2026-04-20: M2 implemented. Updated canonical `plan`, `implement`, `verify`, `pr`, `learn`, and `workflow` skills with explicit lifecycle ownership guidance and regenerated matching `.codex/skills/` output.
+- 2026-04-20: M3 implemented. Updated `docs/plan.md`, the canonical plan example, and the already-indexed first-release and constitution-migration plans so lifecycle state, closeout wording, and `Done` classification now match known reality.
 
 ## Decision log
 
@@ -292,6 +293,8 @@ The implementation needs to do three things in one coherent sequence:
 - 2026-04-20: Encode the lifecycle rule twice: as concise governance in `CONSTITUTION.md` and as stage-specific contract detail in `specs/rigorloop-workflow.md`. Rationale: the constitution must reflect affected workflow guidance, while the workflow spec still needs the normative owner and timing detail.
 - 2026-04-20: Keep the active plan's stage metadata synchronized with actual workflow progress after each milestone and review pass. Rationale: the clarified lifecycle rule requires plan bodies to remain current enough for later stages to trust them.
 - 2026-04-20: Keep `plan` focused on startup and replanning ownership, and move ongoing lifecycle-closeout timing into `implement`, `verify`, `pr`, `learn`, and `workflow`. Rationale: the ownership split should stay discoverable without turning the planning skill into the authority for all later lifecycle transitions.
+- 2026-04-20: Reclassify the constitution-governance migration plan as `Done` during M3. Rationale: its tracked outcome, verification, and explain artifact already showed the migration work was complete, so keeping it under `Active` was stale rather than a merge-dependent exception.
+- 2026-04-20: Normalize historical plan wording from `complete` to `done` where the plan index already uses `Done`. Rationale: the migration should teach one lifecycle vocabulary across `docs/plan.md`, the example plan, and the touched historical plan bodies.
 
 ## Surprises and discoveries
 
@@ -300,6 +303,7 @@ The implementation needs to do three things in one coherent sequence:
 - 2026-04-20: the constitution migration explain artifact already calls out plan-lifecycle follow-up risk, which makes stale plan-state review part of this initiative’s adoption scope.
 - 2026-04-20: `docs/plan.md` was already described as an index, but the repo’s core workflow and governance docs still lacked explicit ownership for ongoing plan-body updates, lifecycle closeout, and stale-state verification.
 - 2026-04-20: the canonical `plan` skill still used `complete` and omitted `Blocked`, so lifecycle vocabulary drift existed inside skill guidance in addition to the missing ownership language.
+- 2026-04-20: the example plan template still modeled a `proposed` plan and lacked explicit outcome/readiness guidance, so it could not teach contributors how to avoid stale lifecycle wording.
 
 ## Validation notes
 
@@ -337,15 +341,36 @@ The implementation needs to do three things in one coherent sequence:
     - `pr` and `workflow` now describe done-before-PR as the default, the merge-dependent post-merge exception, and immediate `Blocked`/`Superseded` handling
     - `learn` now remains explicitly retrospective and non-authoritative for lifecycle bookkeeping
   - result: pass
+- 2026-04-20 M3:
+  - pre-change proof:
+    - `rg -n "^## (Active|Blocked|Done|Superseded)$" docs/plan.md`
+    - `for slug in 2026-04-19-rigorloop-first-release-implementation 2026-04-20-constitution-governance-migration 2026-04-20-plan-index-lifecycle-ownership; do test "$(rg -c "${slug}\\.md" docs/plan.md)" -eq 1; done`
+    - `rg -n "Status|Outcome and retrospective|Readiness|ready for PR|ready for code-review|complete and now belongs|blocked|superseded" docs/plans/0000-00-00-example-plan.md docs/plans/2026-04-19-rigorloop-first-release-implementation.md docs/plans/2026-04-20-constitution-governance-migration.md docs/plans/2026-04-20-plan-index-lifecycle-ownership.md`
+    - result: `docs/plan.md` still listed the constitution-governance migration under `Active`, the example plan still modeled `Status: proposed`, and the first-release plan still used `complete` wording while the index used `Done`.
+  - no-test rationale:
+    - M3 changes lifecycle bookkeeping and plan-template guidance, not application runtime behavior. The approved proof surface comes from manual and structural checks in `specs/plan-index-lifecycle-ownership.test.md` (`T4`, `T7`, `T8`, `T9`, `T10`) plus the existing repo wrapper in `bash scripts/ci.sh`.
+  - milestone validation:
+    - `rg -n "^## (Active|Blocked|Done|Superseded)$" docs/plan.md`
+    - `for slug in 2026-04-19-rigorloop-first-release-implementation 2026-04-20-constitution-governance-migration 2026-04-20-plan-index-lifecycle-ownership; do test "$(rg -c "${slug}\\.md" docs/plan.md)" -eq 1; done`
+    - `rg -n "Status|Outcome and retrospective|Readiness|ready for PR|ready for code-review|complete and now belongs|blocked|superseded" docs/plans/0000-00-00-example-plan.md docs/plans/2026-04-19-rigorloop-first-release-implementation.md docs/plans/2026-04-20-constitution-governance-migration.md docs/plans/2026-04-20-plan-index-lifecycle-ownership.md`
+    - `git diff --check -- docs/plan.md docs/plans`
+    - `bash scripts/ci.sh`
+  - manual review:
+    - `docs/plan.md` now lists the touched plan slugs exactly once under one lifecycle section
+    - the first-release and constitution-governance migration plan bodies now match their `Done` index placement without stale active-stage readiness wording
+    - the example plan now teaches contributors to keep `docs/plan.md` and the plan body synchronized when lifecycle state changes
+  - result: pass
 
 ## Outcome and retrospective
 
-- not started
+- M1-M3 are implemented.
+- The workflow docs, skill guidance, plan index, example plan, and already-known stale plan bodies now follow the same lifecycle-closeout model.
+- This initiative remains active only because downstream review stages are still pending; lifecycle closeout for this plan should happen after those stages determine the real final state.
 
 ## Readiness
 
 This plan remains active.
 
-Tracked approval metadata is normalized, `test-spec` is complete, and M1-M2 are implemented.
+Tracked approval metadata is normalized, `test-spec` is complete, and M1-M3 are implemented.
 
-Next expected work is M3: migrate the plan surfaces, correct already-known stale lifecycle state, and then move to `code-review` for that milestone. `verify`, `explain-change`, and `pr` remain downstream of completing the remaining milestone.
+Next expected work is `code-review` for the completed implementation. If review passes, proceed to `verify`, then `explain-change`, then `pr`. Do not move this plan to `Done` until those downstream stages confirm the initiative is actually closed or an explicit merge-dependent exception applies.
