@@ -16,7 +16,7 @@ The architecture artifact explains **how the system should be shaped** to satisf
 Read, if present:
 
 - `AGENTS.md`
-- `.codex/CONSTITUTION.md`
+- `CONSTITUTION.md`
 - feature spec and spec-review findings
 - accepted proposal
 - research artifacts

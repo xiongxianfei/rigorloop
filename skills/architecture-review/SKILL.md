@@ -22,7 +22,7 @@ Read:
 - `docs/project-map.md`;
 - related source interfaces and schemas when needed;
 - existing ADRs and architecture docs;
-- `AGENTS.md` and `.codex/CONSTITUTION.md` if present.
+- `AGENTS.md` and `CONSTITUTION.md` if present.
 
 ## Review dimensions
 

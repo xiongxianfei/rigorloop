@@ -15,7 +15,7 @@ CI is part of verification. It should prove the right things at the right time.
 
 Read:
 
-- `AGENTS.md` and `.codex/CONSTITUTION.md` if present;
+- `AGENTS.md` and `CONSTITUTION.md` if present;
 - feature spec and test spec;
 - concrete plan validation commands;
 - architecture doc when runtime or deployment boundaries matter;

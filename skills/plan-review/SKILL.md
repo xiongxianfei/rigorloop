@@ -16,7 +16,7 @@ Your job is to make sure the plan is safe, complete, sequenced, and verifiable b
 Read:
 
 - the concrete plan file, not just an index;
-- `AGENTS.md` and `.codex/CONSTITUTION.md` if present;
+- `AGENTS.md` and `CONSTITUTION.md` if present;
 - accepted proposal;
 - feature spec and spec-review findings;
 - architecture doc and ADRs;

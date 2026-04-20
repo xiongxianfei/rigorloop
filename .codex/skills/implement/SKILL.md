@@ -16,7 +16,7 @@ Do not expand scope. Do not silently alter the spec. Do not declare success with
 Read before editing:
 
 - `AGENTS.md`
-- `.codex/CONSTITUTION.md` if present
+- `CONSTITUTION.md` if present
 - concrete execution plan
 - feature spec
 - test spec

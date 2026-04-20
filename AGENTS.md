@@ -4,16 +4,20 @@ This repository uses Codex to help maintain a public open source project.
 
 Optimize for correctness, explicitness, small reviewable diffs, and alignment with the documented contract over speculative improvements.
 
+Detailed governance lives in `CONSTITUTION.md`. `AGENTS.md` stays concise and points to the governing artifacts.
+
 ## Instruction precedence
 
 When instructions conflict, follow this order:
 
 1. Direct user request
-2. Approved feature spec in `specs/`
-3. Matching test spec in `specs/`
-4. Active execution plan file in `docs/plans/`
-5. `docs/workflows.md`
-6. This file
+2. `CONSTITUTION.md`
+3. Approved feature spec in `specs/`
+4. Approved architecture or ADR docs when relevant
+5. Active execution plan file in `docs/plans/`
+6. Matching test spec in `specs/`
+7. `docs/workflows.md`
+8. This file
 
 Do not silently blend conflicting higher-priority instructions. Call out the conflict, explain the impact, and follow the highest-priority source that already implies the answer.
 
@@ -55,13 +59,15 @@ Use `bugfix` for bugs, `ci` for GitHub Actions or automation changes when workfl
 
 ## Required reading before implementation
 
-Before implementing behavior-changing work, read in this order when the files exist:
+Before implementing behavior-changing work, follow the source-of-truth order from `CONSTITUTION.md`. In practice, read in this order when the files exist:
 
-1. `docs/plan.md`, then the active plan file in `docs/plans/`
+1. `CONSTITUTION.md`
 2. the relevant feature spec in `specs/<feature>.md`
-3. the matching test spec in `specs/<feature>.test.md`
-4. `docs/workflows.md` when the task touches an existing flow or release process
-5. the files you expect to modify
+3. approved architecture or ADR docs when they are relevant to the change
+4. `docs/plan.md`, then the active plan file in `docs/plans/`
+5. the matching test spec in `specs/<feature>.test.md`
+6. `docs/workflows.md` when the task touches an existing flow or release process
+7. the files you expect to modify
 
 If the work changes externally observable behavior and no relevant spec exists, create or request the missing spec before coding the contract into the implementation.
 
