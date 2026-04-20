@@ -24,6 +24,10 @@ Notes:
 ## Planned Milestone Work
 
 - Use a concrete plan under `docs/plans/` for multi-file, risky, ambiguous, migration-heavy, or milestone-based work.
+- `docs/plan.md` is the lifecycle index for planned initiatives; concrete plan bodies live under `docs/plans/`.
+- During execution, `implement` keeps the active plan body's progress, decisions, discoveries, and validation notes current.
+- When a planned initiative changes lifecycle state, final lifecycle closeout updates both `docs/plan.md` and the plan body.
+- `verify` blocks PR readiness when stale lifecycle state remains between the plan index and the plan body.
 - Execution plans follow `docs/plans/0000-00-00-example-plan.md`.
 - Each completed planned milestone ends with a coherent commit using:
   - `M<n>: <completed milestone outcome>`

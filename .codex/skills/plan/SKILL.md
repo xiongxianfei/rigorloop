@@ -36,11 +36,12 @@ docs/plans/YYYY-MM-DD-slug.md
 docs/plan.md
 ```
 
-Create a new dated plan for new initiatives. Update `docs/plan.md` as an index of active, completed, and superseded plans.
+Create a new dated plan for new initiatives. Update `docs/plan.md` as the lifecycle index of active, blocked, done, and superseded plans.
+For planned initiatives, `docs/plan.md` remains the lifecycle index while files under `docs/plans/` remain the plan bodies. `plan` owns creating or revising those surfaces when an initiative starts or is re-planned, not every later execution-time update.
 
 ## Required sections
 
-1. **Status**: draft, reviewed, active, complete, superseded.
+1. **Status**: draft, reviewed, active, blocked, done, superseded.
 2. **Purpose / big picture**: why this implementation plan exists.
 3. **Source artifacts**: proposal, spec, architecture, test spec.
 4. **Context and orientation**: files, modules, flows, and constraints a new contributor needs.
@@ -89,6 +90,8 @@ Milestones should be small enough for one review loop and one coherent commit. A
 - Do not add behavior not in the spec.
 - Do not hide risky work in vague milestones.
 - Do not omit validation commands.
+- Keep `docs/plan.md` as an index, not a second long-form plan body.
+- When planning starts a new initiative or replaces an older one, update the relevant `docs/plan.md` entry and plan body in the same planning change.
 - Do not create a plan that only the current chat context can understand.
 - Do not proceed to implementation until `plan-review` and `test-spec` are ready unless using the fast lane.
 - If planning reveals spec or architecture gaps, update those artifacts first.

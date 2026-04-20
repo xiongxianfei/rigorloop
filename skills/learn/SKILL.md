@@ -38,6 +38,8 @@ Choose the narrowest durable home:
 - **Plan outcome** → completed plan’s outcome/retrospective section.
 - **General retrospective** → `docs/retrospectives/YYYY-MM-DD-slug.md`.
 
+`learn` is retrospective capture, not the authoritative owner of `docs/plan.md` or plan-body lifecycle transitions. If lifecycle bookkeeping is stale, fix the plan/index surfaces directly instead of treating the retrospective as the closeout mechanism.
+
 ## Retrospective sections
 
 For a completed feature, include:
@@ -58,6 +60,7 @@ For a completed feature, include:
 - Do not put project-wide rules into a feature-only artifact.
 - Do not turn one-off trivia into policy.
 - Do not blame; describe conditions and fixes.
+- Do not use `learn` as the authoritative owner of plan-index or plan-body lifecycle bookkeeping.
 - Do not leave verified workflow changes undocumented.
 - If nothing durable was learned, say so and make no edits.
 

@@ -35,10 +35,11 @@ Before drafting or opening a PR, check:
 3. commits are present and scoped;
 4. tests and validation commands passed or gaps are documented;
 5. CI status is known when available;
-6. artifacts are updated;
-7. no secrets, credentials, local paths, or debug-only changes are included;
-8. generated files and migrations are intentional;
-9. reviewers have enough context.
+6. for planned initiatives, lifecycle closeout is already reflected in both `docs/plan.md` and the plan body when the final state is known before PR; only merge-dependent `Done` transitions may wait for immediate post-merge cleanup;
+7. artifacts are updated;
+8. no secrets, credentials, local paths, or debug-only changes are included;
+9. generated files and migrations are intentional;
+10. reviewers have enough context.
 
 ## PR body structure
 
@@ -98,6 +99,7 @@ Examples:
 - Do not open or claim to open a PR unless the tool/action actually did it.
 - Do not say CI passed unless it passed.
 - Do not omit failed or unrun validation.
+- Do not defer blocked or superseded lifecycle closeout until PR, merge, or retrospective work.
 - Do not summarize from memory when a diff is available.
 - Do not bury known risks.
 - Do not include massive internal detail that obscures review.
