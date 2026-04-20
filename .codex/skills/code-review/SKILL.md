@@ -22,7 +22,7 @@ Read:
 - architecture doc and ADRs when relevant;
 - plan validation notes;
 - test and CI results;
-- `AGENTS.md` and `.codex/CONSTITUTION.md`;
+- `AGENTS.md` and `CONSTITUTION.md`;
 - related code paths and tests when needed.
 
 Prefer a fresh session or intentionally reset assumptions.

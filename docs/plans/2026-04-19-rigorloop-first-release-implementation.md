@@ -1,9 +1,9 @@
 # RigorLoop first-release implementation plan
 
-- Status: in_progress
+- Status: complete
 - Owner: maintainer + Codex
 - Start date: 2026-04-19
-- Last updated: 2026-04-19
+- Last updated: 2026-04-20
 - Related issue or PR: none
 - Supersedes: none
 
@@ -383,6 +383,7 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 - 2026-04-19: Completed M5 by replacing the template `scripts/ci.sh` placeholder with the approved structural checks, wiring GitHub Actions to set up Python and delegate to that repo-owned script, and updating contributor docs to name the same commands CI runs.
 - 2026-04-19: Completed M6 by publishing `docs/changes/0001-skill-validator/`, validating `change.yaml`, and updating `README.md` so contributors can find the shipped proof-of-value example from the project entrypoint.
 - 2026-04-19: Follow-up after M6 `code-review` to add `review-resolution.md` for the actual reviewed validator change and wire that artifact into the change metadata and verification notes.
+- 2026-04-20: Completed the remaining workflow stages through `code-review`, `verify`, `explain-change`, and PR merge. This plan is now closed and indexed under `Done` in `docs/plan.md`.
 
 ## Decision log
 
@@ -521,15 +522,11 @@ The plan also keeps `.codex/skills/` stable on purpose. Contributors update cano
 
 ## Outcome and retrospective
 
-- All planned implementation milestones are complete through M6.
-- Final workflow gates still pending:
-  - `code-review`
-  - `verify`
-  - `explain-change`
-  - `pr`
+- All planned implementation milestones and final workflow stages are complete.
+- The first-release branch was reviewed, verified, explained, and merged, and its outputs are now part of the repository baseline.
 
 ## Readiness
 
-This plan has passed `plan-review`.
+This plan is complete and now belongs in `docs/plan.md` under `Done`.
 
-All planned implementation milestones are now complete. The next recommended stages are `code-review` and `verify`, using this plan, `specs/rigorloop-workflow.md`, and `specs/rigorloop-workflow.test.md` as the source of truth.
+It remains a historical record for the shipped first release, not an active execution plan for new work.

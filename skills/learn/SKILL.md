@@ -22,7 +22,7 @@ Read, if present:
 - incident or bugfix notes;
 - relevant spec and test spec;
 - architecture docs and ADRs;
-- `AGENTS.md`, `.codex/CONSTITUTION.md`, and `docs/workflows.md`;
+- `AGENTS.md`, `CONSTITUTION.md`, and `docs/workflows.md`;
 - CI failures or flaky test evidence.
 
 ## Where lessons go

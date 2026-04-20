@@ -24,7 +24,7 @@ Do not write an execution plan. Do not implement. Do not freeze requirements. Ex
 Read, if present:
 
 - `AGENTS.md`
-- `.codex/CONSTITUTION.md`
+- `CONSTITUTION.md`
 - `docs/project-map.md`
 - related specs
 - related architecture docs or ADRs
