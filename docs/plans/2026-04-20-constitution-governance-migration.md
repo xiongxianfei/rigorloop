@@ -182,6 +182,7 @@ The spec requires one coherent change rather than a long-lived staged rollout. T
 - 2026-04-20: plan created
 - 2026-04-20: M1 implemented. Added root `CONSTITUTION.md`, updated `AGENTS.md` and canonical `skills/`, regenerated `.codex/skills/`, removed `.codex/CONSTITUTION.md`, and aligned active plan surfaces.
 - 2026-04-20: M1 code-review follow-up fixed `AGENTS.md` required-reading order so it explicitly follows the constitution without contradiction.
+- 2026-04-20: M1 verify passed on the current committed branch state using path checks, focused scans, `python scripts/build-skills.py --check`, and `bash scripts/ci.sh`.
 
 ## Decision log
 
@@ -218,7 +219,22 @@ The spec requires one coherent change rather than a long-lived staged rollout. T
   - manual review:
     - `AGENTS.md` required-reading order now defers to `CONSTITUTION.md` and follows the same artifact order for implementation work
   - result: pass
+- 2026-04-20 verify:
+  - validation:
+    - `git ls-files --error-unmatch CONSTITUTION.md`
+    - `! git ls-files --error-unmatch .codex/CONSTITUTION.md >/dev/null 2>&1 && ! test -e .codex/CONSTITUTION.md`
+    - `rg -n "\\.codex/CONSTITUTION\\.md|CONSTITUTION\\.md" AGENTS.md docs/workflows.md docs/plan.md docs/plans/2026-04-20-constitution-governance-migration.md README.md`
+    - `rg -n "\\.codex/CONSTITUTION\\.md|CONSTITUTION\\.md" skills .codex/skills`
+    - `rg -n "\\.codex/CONSTITUTION\\.md" AGENTS.md README.md docs specs skills .codex/skills`
+    - `python scripts/build-skills.py --check`
+    - `git diff --check 8dcc4d3..HEAD`
+    - `bash scripts/ci.sh`
+  - manual review:
+    - `CONSTITUTION.md` remains substantive and ordered
+    - `AGENTS.md` continues to defer to the constitution without contradiction
+    - remaining `.codex/CONSTITUTION.md` references are historical or proof artifacts only
+  - result: pass with concerns limited to hosted CI not yet observed and unrelated untracked files outside the reviewed diff
 
 ## Outcome and retrospective
 
-- M1 is complete and ready for `code-review`.
+- M1 is complete and verified. It is ready for PR once the branch-scoped explain artifact is committed and unrelated untracked work remains excluded.
