@@ -126,11 +126,11 @@ The spec requires one coherent change rather than a long-lived staged rollout. T
   - any remaining old-path references are historical only
 - Commit message: `M1: migrate governance to root constitution`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - stale old-path references may remain in active guidance outside the initially expected file set
   - canonical skill updates may be broader than expected because many skills reference the old path
@@ -181,6 +181,7 @@ The spec requires one coherent change rather than a long-lived staged rollout. T
 - [x] M1. Land the root-constitution governance migration
 - 2026-04-20: plan created
 - 2026-04-20: M1 implemented. Added root `CONSTITUTION.md`, updated `AGENTS.md` and canonical `skills/`, regenerated `.codex/skills/`, removed `.codex/CONSTITUTION.md`, and aligned active plan surfaces.
+- 2026-04-20: M1 code-review follow-up fixed `AGENTS.md` required-reading order so it explicitly follows the constitution without contradiction.
 
 ## Decision log
 
@@ -210,6 +211,13 @@ The spec requires one coherent change rather than a long-lived staged rollout. T
   - manual review:
     - `CONSTITUTION.md` is substantive and defines the required source-of-truth order
     - `AGENTS.md` points to `CONSTITUTION.md` and reproduces an order consistent with it
+- 2026-04-20 code-review follow-up:
+  - validation:
+    - `python scripts/build-skills.py --check`
+    - `git diff --check -- AGENTS.md docs/plans/2026-04-20-constitution-governance-migration.md`
+  - manual review:
+    - `AGENTS.md` required-reading order now defers to `CONSTITUTION.md` and follows the same artifact order for implementation work
+  - result: pass
 
 ## Outcome and retrospective
 
