@@ -49,6 +49,19 @@ constitution / project context
 
 When a lower-level skill says a different order, this orchestrator wins.
 
+## Planned initiative lifecycle ownership
+
+For work that has a concrete plan file under `docs/plans/`:
+
+- `docs/plan.md` is the lifecycle index, not the body of a plan.
+- `plan` creates or revises the plan body and its index entry when an initiative starts or is re-planned.
+- `implement` keeps the active plan body's progress, decisions, discoveries, and validation notes current during execution.
+- Final lifecycle closeout updates both `docs/plan.md` and the plan body when lifecycle state changes.
+- `verify` blocks PR readiness when stale lifecycle state remains between the plan index and the plan body.
+- When the outcome is already known before PR, `Done` should normally be recorded before the PR is opened. Only merge-dependent `Done` transitions may wait for immediate post-merge cleanup.
+- `Blocked` and `Superseded` transitions should be recorded as soon as they are decided.
+- `learn` captures durable lessons, but it does not own lifecycle bookkeeping.
+
 ## Work lanes
 
 ### Full feature lane

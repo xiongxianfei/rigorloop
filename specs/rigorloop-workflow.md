@@ -156,6 +156,21 @@ R8d. The workflow MUST allow a pull request to contain one or more completed mil
 
 R8e. The milestone commit requirements in `R8a` through `R8d` apply only to planned milestone work. Fast-lane changes and non-trivial single-slice changes without a plan-defined milestone boundary MAY use normal commit subjects and do not require milestone-formatted commits.
 
+R8f. For planned initiatives, `docs/plan.md` MUST remain the lifecycle index rather than the body of a plan.
+
+R8g. For planned initiatives, `implement` MUST keep the active plan body's progress, decisions, discoveries, and validation notes current during execution. When lifecycle state changes, final lifecycle closeout MUST update both `docs/plan.md` and the plan body.
+
+R8h. When the outcome is already known before PR creation, a `Done` transition SHOULD be recorded before the PR is opened. A merge-dependent `Done` transition MAY be completed in immediate post-merge cleanup only when merged state is the deciding event for completion.
+
+R8i. `Blocked` and `Superseded` lifecycle transitions for planned initiatives MUST be recorded as soon as they are decided.
+
+R8j. `verify` MUST treat stale lifecycle state between `docs/plan.md` and the plan body as blocking PR readiness for planned initiatives.
+
+R8ja. At minimum, stale lifecycle state includes:
+- a completed, blocked, or superseded planned initiative still listed under `## Active`;
+- `docs/plan.md` and the corresponding plan body presenting conflicting lifecycle state;
+- a plan body marked done, blocked, or superseded while still presenting itself as active or in progress through status or readiness wording.
+
 R9. Once repository CI exists, the starter kit MUST treat routine CI validation results as enforced for every pull request.
 
 R9a. In the lifecycle stage table, `ci` MUST refer to creating or updating GitHub workflows or related repository automation needed to cover material change risk. It MUST NOT refer only to waiting for existing CI checks to run.

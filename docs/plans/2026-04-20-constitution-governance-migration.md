@@ -1,6 +1,6 @@
 # Constitution governance migration plan
 
-- Status: active
+- Status: done
 - Owner: maintainer + Codex
 - Start date: 2026-04-20
 - Last updated: 2026-04-20
@@ -41,9 +41,9 @@ The spec requires one coherent change rather than a long-lived staged rollout. T
   - canonical skills live under `skills/`
   - generated Codex compatibility output lives under `.codex/skills/`
   - `python scripts/build-skills.py --check` is the existing sync proof surface
-- Current active guidance that names the governance path includes at minimum:
+- At plan creation, the active guidance set that named the governance path included at minimum:
   - `AGENTS.md`
-  - the active plan indexed in `docs/plan.md`, currently `docs/plans/2026-04-20-constitution-governance-migration.md`
+  - the then-active plan indexed in `docs/plan.md`, `docs/plans/2026-04-20-constitution-governance-migration.md`
   - canonical skill files under `skills/`
   - generated skill files under `.codex/skills/`
 - `docs/workflows.md` does not currently name the constitution path, so it is in scope only if implementation adds or changes governance-path wording there.
@@ -237,4 +237,10 @@ The spec requires one coherent change rather than a long-lived staged rollout. T
 
 ## Outcome and retrospective
 
-- M1 is complete and verified. It is ready for PR once the branch-scoped explain artifact is committed and unrelated untracked work remains excluded.
+- M1 is complete, verified, and explained. This migration work is done and now belongs in `docs/plan.md` under `Done`.
+
+## Readiness
+
+This plan is done.
+
+It remains a historical record for the constitution-governance migration rather than an active execution plan.
