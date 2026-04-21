@@ -17,6 +17,9 @@
   - `AGENTS.md`
   - `CONSTITUTION.md`
   - `README.md`
+  - `skills/workflow/SKILL.md`
+  - `skills/implement/SKILL.md`
+  - generated `.codex/skills/`
   - `schemas/change.schema.json`
   - `scripts/validate-change-metadata.py`
   - `scripts/ci.sh`
@@ -27,6 +30,7 @@
 ## Testing strategy
 
 - Use manual contract review for the workflow spec, workflow test spec, README, and summary surfaces because much of this feature is repository guidance rather than new runtime behavior.
+- Treat stage-local `workflow` and `implement` skills as part of the manual proof surface when they operationalize the approved docs-changes contract.
 - Use integration coverage for `scripts/validate-change-metadata.py` and `tests/fixtures/change-metadata/` because canonical artifact-key enforcement and scalar-path preservation are executable validator behavior.
 - Use the shipped `docs/changes/0001-skill-validator/` pack and approved legacy `docs/explain/*.md` artifacts as real compatibility fixtures rather than synthetic stand-ins.
 - Use smoke validation through `bash scripts/ci.sh` after the dedicated change-metadata fixture runner is wired into the repo-owned CI wrapper.
@@ -79,15 +83,18 @@
   - `AGENTS.md`
   - `CONSTITUTION.md`
   - `README.md`
+  - `skills/workflow/SKILL.md`
+  - `skills/implement/SKILL.md`
 - Steps:
-  - Review the approved feature spec, the governing workflow spec, the existing workflow test spec, and the contributor summary surfaces.
+  - Review the approved feature spec, the governing workflow spec, the existing workflow test spec, the contributor summary surfaces, and the stage-local `workflow`/`implement` skills.
   - Confirm `specs/rigorloop-workflow.md` is the normative home for the packaging rule.
   - Confirm `docs/workflows.md`, `AGENTS.md`, `CONSTITUTION.md`, and `README.md` summarize the same baseline-versus-conditional artifact rule without weakening it.
+  - Confirm `skills/workflow/SKILL.md` and `skills/implement/SKILL.md` operationalize the same approved baseline-versus-conditional rule rather than treating the change-local pack as optional for ordinary non-trivial work.
   - Confirm the existing workflow test spec remains aligned where it already covers `change.yaml`, `0001-skill-validator/`, and explain-change/review-resolution behavior.
 - Expected result:
-  - Contributors can find one coherent packaging rule, and the existing workflow proof surface does not drift from it.
+  - Contributors can find one coherent packaging rule across normative workflow docs, summary surfaces, and stage-local execution guidance.
 - Failure proves:
-  - The repository would have contract drift between the governing workflow spec, summaries, and the existing workflow test surface.
+  - The repository would have contract drift between the governing workflow spec, summaries, stage-local skills, and the existing workflow test surface.
 - Automation location:
   - Manual review during M1.
 
@@ -100,14 +107,17 @@
   - `specs/rigorloop-workflow.md`
   - `docs/workflows.md`
   - `AGENTS.md`
+  - `skills/workflow/SKILL.md`
+  - `skills/implement/SKILL.md`
 - Steps:
-  - Review the packaging rule in the approved feature spec and the updated workflow/summaries.
+  - Review the packaging rule in the approved feature spec, the updated workflow/summaries, and the stage-local `workflow`/`implement` guidance.
   - Confirm only approved fast-lane work may omit `docs/changes/<change-id>/change.yaml`.
-  - Confirm non-trivial work missing `change.yaml` is described as incomplete rather than merely discouraged.
+  - Confirm ordinary non-trivial work missing `change.yaml` is described as incomplete rather than merely discouraged.
+  - Confirm the skill guidance does not broaden the docs-changes requirement into the approved fast-lane lane.
 - Expected result:
-  - The fast-lane omission boundary remains narrow, and non-trivial work still requires machine-readable change metadata.
+  - The fast-lane omission boundary remains narrow, and ordinary non-trivial work still requires machine-readable change metadata.
 - Failure proves:
-  - Contributors could misclassify non-trivial work as docs-changes-optional or treat a missing `change.yaml` as acceptable.
+  - Contributors could misclassify ordinary non-trivial work as docs-changes-optional, or the skill layer could accidentally broaden the requirement into fast-lane work.
 - Automation location:
   - Manual review during M1.
 
@@ -118,17 +128,19 @@
 - Fixture/setup:
   - `specs/docs-changes-usage-policy.md`
   - `specs/rigorloop-workflow.md`
+  - `skills/implement/SKILL.md`
   - approved artifacts under `docs/explain/`
 - Steps:
-  - Review the approved feature spec and updated workflow surfaces.
+  - Review the approved feature spec, updated workflow surfaces, and stage-local implementation guidance.
   - Confirm the default durable reasoning artifact for new non-trivial work is `docs/changes/<change-id>/explain-change.md`.
   - Confirm PR text alone is not a valid substitute.
   - Confirm only workflow-spec-named equivalents may replace the default durable reasoning artifact for a change.
+  - Confirm `skills/implement/SKILL.md` treats `docs/changes/<change-id>/explain-change.md` as the default durable reasoning surface for new ordinary non-trivial work unless an approved equivalent already applies.
   - Confirm approved legacy top-level explain artifacts remain valid until migrated or retired, and new top-level explain artifacts are not the default for new work.
 - Expected result:
-  - New work defaults to change-local `explain-change.md`, while legacy approved `docs/explain/*.md` artifacts remain valid compatibility surfaces.
+  - New work defaults to change-local `explain-change.md` in both contract and stage-local implementation guidance, while legacy approved `docs/explain/*.md` artifacts remain valid compatibility surfaces.
 - Failure proves:
-  - Contributors could rely on PR text alone, create new top-level explain artifacts by default, or wrongly invalidate existing approved explain artifacts.
+  - Contributors could rely on PR text alone, create new top-level explain artifacts by default, or see stage-local implementation guidance drift from the approved durable reasoning default.
 - Automation location:
   - Manual review during M1.
 
