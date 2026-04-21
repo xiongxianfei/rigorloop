@@ -70,9 +70,11 @@ ARCHITECTURE_CONTRACT = ArtifactContract(
 
 ADR_CONTRACT = ArtifactContract(
     class_name="adr",
-    allowed_statuses=frozenset({"Proposed", "Accepted", "Superseded", "Archived"}),
-    settlement_statuses=frozenset({"Accepted"}),
-    terminal_statuses=frozenset({"Superseded", "Archived"}),
+    allowed_statuses=frozenset(
+        {"draft", "proposed", "accepted", "active", "deprecated", "superseded", "archived", "abandoned"}
+    ),
+    settlement_statuses=frozenset({"accepted", "active"}),
+    terminal_statuses=frozenset({"deprecated", "superseded", "archived", "abandoned"}),
     required_sections=("Context", "Decision", "Alternatives considered", "Consequences"),
     identifier_pattern=ADR_ID_PATTERN,
     identifier_label="ADR identifier",
