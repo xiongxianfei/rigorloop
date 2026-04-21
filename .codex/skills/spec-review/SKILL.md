@@ -54,6 +54,7 @@ Use:
 - Do not collapse spec review into plan or code review.
 - Do not require implementation detail unless it is needed for the observable contract.
 - Do not edit the spec unless the user explicitly asks.
+- When the review outcome is approval, the tracked spec should be ready to normalize to `approved` before architecture, plan, test-spec, or implementation relies on it. Do not leave a governing spec in durable `reviewed` state.
 
 ## Expected output
 

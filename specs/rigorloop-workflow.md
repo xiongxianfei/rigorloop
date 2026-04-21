@@ -171,6 +171,32 @@ R8ja. At minimum, stale lifecycle state includes:
 - `docs/plan.md` and the corresponding plan body presenting conflicting lifecycle state;
 - a plan body marked done, blocked, or superseded while still presenting itself as active or in progress through status or readiness wording.
 
+R8k. Top-level lifecycle-managed workflow artifacts MUST keep their lifecycle status inside the artifact itself as tracked source of truth. Git branch state, PR state, merge state, and chat-only review outcomes MUST NOT replace artifact-local lifecycle state for proposals, top-level specs, test specs, architecture documents, or ADRs.
+
+R8ka. The starter kit MUST document the repository-wide artifact lifecycle summary using the following table:
+
+| Artifact | Required for | Authoring skill | Review skill | Settlement states | Closeout or terminal states |
+| --- | --- | --- | --- | --- | --- |
+| Proposal | non-trivial direction choice | `proposal` | `proposal-review` | `accepted` | `rejected`, `abandoned`, `superseded`, `archived` |
+| Spec | behavior changes | `spec` | `spec-review` | `approved` | `abandoned`, `superseded`, `archived` |
+| Architecture | boundary or system-shape changes | `architecture` | `architecture-review` | `approved` | `abandoned`, `superseded`, `archived` |
+| Test spec | behavior proof | `test-spec` | repository-defined review surface | `active` | `abandoned`, `superseded`, `archived` |
+| ADR | long-lived design decision | `architecture` | `architecture-review` when relevant | `Accepted` | `Superseded`, `Archived` |
+
+R8kb. Detailed per-artifact lifecycle rules MUST be delegated to the canonical template, example, and skill surfaces for each artifact class instead of being duplicated in full inside this workflow spec.
+
+R8kc. For proposals, top-level specs, test specs, and architecture documents, `reviewed` MUST be treated as transitional review output rather than a durable relied-on artifact state.
+
+R8kd. Settlement and closeout MUST remain distinct:
+- `accepted`, `approved`, `active`, and `Accepted` are settlement states that may still be relied on as current guidance;
+- `done`, `rejected`, `abandoned`, `superseded`, and `archived` are closeout or terminal states.
+
+R8ke. `Next artifacts` MUST record planned next steps while an artifact remains active. `Follow-on artifacts` or `Closeout` MUST record actual downstream artifacts, replacement, or terminal disposition, and a premature `Follow-on artifacts` section MUST say `None yet` instead of remaining empty.
+
+R8kf. `verify` MUST block on stale or inconsistent lifecycle-managed artifacts that are touched, referenced, generated, or authoritative for the changed area, and it MUST report unrelated stale baseline artifacts as warnings rather than blockers.
+
+R8kg. PR-body references participate in `verify` only when draft PR text already exists. Before PR text exists, `verify` MUST use the pre-PR handoff surfaces such as `docs/changes/<change-id>/change.yaml`, explain-change artifacts, the active plan, and the touched, referenced, generated, or authoritative artifacts for the changed area.
+
 R9. Once repository CI exists, the starter kit MUST treat routine CI validation results as enforced for every pull request.
 
 R9a. In the lifecycle stage table, `ci` MUST refer to creating or updating GitHub workflows or related repository automation needed to cover material change risk. It MUST NOT refer only to waiting for existing CI checks to run.
@@ -358,6 +384,7 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - Compatibility output for legacy or project-specific Codex setups MAY be generated, but generated compatibility directories remain derived output rather than authored source.
 - Later releases MAY add JSON compatibility or alternative export formats, but `docs/changes/<change-id>/change.yaml` remains the canonical first-release contract.
 - Existing repositories adopting RigorLoop MAY phase in the contract incrementally, beginning with documentation and structural checks before stricter enforcement.
+- Repositories adopting lifecycle-managed artifact ownership MAY phase migration of unrelated stale baseline artifacts, but they MUST normalize stale touched or relied-on artifacts before downstream stages rely on them as current guidance.
 - Repositories that squash, rebase, or otherwise rewrite commit history MAY collapse milestone commit boundaries after merge. The first-release contract guarantees milestone visibility during branch and pull-request review, not preservation under every default-branch merge strategy.
 
 ## Observability
@@ -395,6 +422,8 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 7. A non-trivial change may omit some artifact keys from `change.yaml` when those artifact types are not applicable to the change, but it may not omit the required top-level fields listed in `R25b`.
 8. A completed milestone that is not independently safe to merge may remain inside a larger pull request, but it still requires the completion evidence and milestone commit boundary defined in `R8a` and `R8b`.
 9. A fast-lane change or non-trivial unplanned single-slice change may use a normal commit subject because milestone-formatted commits are reserved for planned milestone work.
+10. An accepted proposal, approved spec, approved architecture document, active test spec, or `Accepted` ADR may remain current guidance without immediate closeout as long as its readiness text is truthful and terminal disposition has not occurred.
+11. Final PR text may reference additional authoritative artifacts only after `verify` is rerun against those new references or an equivalent updated pre-PR handoff surface.
 
 ## Non-goals
 
@@ -413,6 +442,7 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - The workflow clearly distinguishes what is advice, default, and enforced.
 - The starter kit contract clearly separates generic methodology from Codex-specific adapters and generated output.
 - The first CI contract is limited to structural validation, validator fixture testing, and generated-output drift detection.
+- A contributor can distinguish settlement states from closeout or terminal states for lifecycle-managed proposals, specs, test specs, architecture docs, and ADRs without relying on chat history.
 - A reviewer can determine from the PR plus artifacts why a change exists, how it was validated, and which content is canonical versus generated.
 - A reviewer can determine the disposition and rationale of review feedback without guessing whether it lives in PR text, explain-change, or a standalone review-resolution artifact.
 - A reviewer can locate structured traceability for a non-trivial change in `docs/changes/<change-id>/change.yaml` and find at least the required fields defined by `R25b`.
