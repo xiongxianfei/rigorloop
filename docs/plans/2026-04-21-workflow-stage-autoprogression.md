@@ -416,7 +416,8 @@ The implementation must stay inside the approved v1 boundary:
 - Test effectiveness: manual contract review plus generated-skill drift checks were the right proof surface for this guidance-driven feature, and repo-owned smoke validation caught the one real integration issue around generated-output handling and later the stale active test-spec readiness wording.
 - Architecture accuracy: the approved guidance-and-skill-driven architecture was sufficient. The feature did not need a router, persistent workflow state, or a second readiness registry.
 - Process issues: workflow-managed autoprogression is only safe when lifecycle-managed artifacts stay current after each review gate. The code-review and verify stages both needed explicit plan/test-spec readiness normalization rather than assuming milestone completion notes were enough.
-- Follow-up actions: complete `explain-change`, then prepare the PR from the verified branch tip; keep the two unrelated local proposal drafts out of scope.
+- Durable updates made: `docs/workflows.md` now says autoprogression does not replace lifecycle bookkeeping after review/verify gates, and it now records that generated `.codex/skills/` output stays on the `build-skills.py --check` proof path instead of authored-artifact lifecycle validation.
+- Follow-up actions: watch hosted CI and review feedback on PR #7, keep the two unrelated local proposal drafts out of scope, and treat any future fast-lane/bugfix autoprogression or router work as a separate approved feature rather than extending this v1 scope informally.
 
 ## Readiness
 
