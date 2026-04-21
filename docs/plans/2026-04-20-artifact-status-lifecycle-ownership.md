@@ -404,6 +404,7 @@ The implementation needs to land as one coherent sequence:
 - 2026-04-21: expanded the ADR lifecycle contract to the shared lowercase status family requested during implementation: `draft`, `proposed`, `accepted`, `active`, `deprecated`, `superseded`, `archived`, and `abandoned`. This required coordinated updates to the approved spec, workflow guidance, validator contract, fixtures, generated skills, and the relied-on repository-layout ADR.
 - 2026-04-21: completed M3 by wiring the artifact lifecycle validator into `scripts/ci.sh` and `.github/workflows/ci.yml`, adding diff-mode regression coverage, and tightening plan-surface reference expansion so CI-mode validation stays deterministic without treating future milestone references as current blockers.
 - 2026-04-21: addressed the M3 code-review findings by switching `pr-ci` to merge-base-aware diffs, reading diff-derived scope and baseline artifacts from tracked commit snapshots, and expanding active-plan reference extraction across the whole plan with lifecycle-path filtering.
+- 2026-04-21: reran the M3 proof surface after the scope fix and found that `pr-ci` and `push-main-ci` now block on the stale historical test specs already listed under M4. The corrected whole-plan extraction exposes those artifacts as related scope before M4 migration begins.
 
 ## Decision log
 
@@ -445,6 +446,7 @@ The implementation needs to land as one coherent sequence:
 - Diff-derived validation must read tracked commit snapshots rather than the live working tree; otherwise local untracked drafts and unstaged edits leak into PR or push validation in ways hosted CI would never see.
 - Active plans can reference authoritative artifacts outside `Source artifacts`, so plan-scope extraction needs whole-plan lifecycle-path filtering rather than a `Source artifacts`-only shortcut or naive unrestricted Markdown scraping.
 - Diff-derived validation must distinguish between generated outputs as related surfaces and generated outputs as authored-source inputs; otherwise normal regenerated `.codex/skills/` changes become false blockers in CI.
+- Once whole-plan extraction is correct, future migration targets listed in the active plan immediately become related artifacts in diff-derived validation. That makes stale M4 targets block M3 reruns unless the plan narrows those references or the migration milestone lands first.
 
 ## Validation notes
 
@@ -496,6 +498,9 @@ The implementation needs to land as one coherent sequence:
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/artifact-status-lifecycle-ownership.md --path docs/proposals/2026-04-20-artifact-status-lifecycle-ownership.md` -> passed (`validated 2 artifact files in explicit-paths mode`)
   - `bash scripts/ci.sh` -> passed (`local tracked-diff fallback stayed deterministic after the M3 scope corrections`)
   - `git diff --check -- scripts/artifact_lifecycle_validation.py scripts/test-artifact-lifecycle-validator.py docs/plans/2026-04-20-artifact-status-lifecycle-ownership.md` -> passed
+- Blocking validation after the M3 code-review fix:
+  - `python scripts/validate-artifact-lifecycle.py --mode pr-ci --base "$(git rev-parse HEAD~1)" --head "$(git rev-parse HEAD)"` -> failed with blockers on `specs/rigorloop-workflow.test.md`, `specs/constitution-governance-surface.test.md`, and `specs/plan-index-lifecycle-ownership.test.md` because the corrected whole-plan extraction now treats the M4 migration targets listed in this active plan as related artifacts
+  - `python scripts/validate-artifact-lifecycle.py --mode push-main-ci --before "$(git rev-parse HEAD~1)" --after "$(git rev-parse HEAD)"` -> failed with the same three blockers for the same reason
 - Supporting lifecycle bookkeeping validation:
   - `git diff --check -- docs/plan.md docs/plans/2026-04-20-artifact-status-lifecycle-ownership.md specs/artifact-status-lifecycle-ownership.test.md` -> passed
 - Optional proof not run:
@@ -510,6 +515,6 @@ The implementation needs to land as one coherent sequence:
 
 - This initiative remains active; M1-M3 are complete.
 - The tracked-source-artifact prerequisite is satisfied and the test spec is now active at `specs/artifact-status-lifecycle-ownership.test.md`.
-- M3 is ready for `code-review`.
+- The M3 code-review fix is implemented, but diff-derived validation now truthfully exposes M4 migration blockers. Do not treat M3 as ready for another `code-review` pass until that sequencing issue is resolved.
 - M1-M3 together satisfy the v0.1 first-enforcement stack of docs, validator, fixtures, `verify`, and CI.
 - M4 has not started.
