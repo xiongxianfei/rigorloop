@@ -234,8 +234,10 @@
   - Run targeted validator checks that exercise scope expansion through each supported surface.
   - Confirm pre-PR mode works without draft PR text.
   - Confirm draft PR-body references join scope only when explicit draft PR text is supplied.
+  - Confirm change-local Markdown files reached through `change.yaml` do not recursively expand nested scope beyond the approved pre-PR surfaces.
 - Expected result:
   - Related-scope expansion follows the approved pre-PR and draft-PR rules deterministically.
+  - Nested references inside change-local Markdown files do not turn unrelated historical plans or proposals into blocking related scope.
 - Failure proves:
   - Verify scope could silently miss authoritative references or block on non-existent PR text.
 - Automation location:
