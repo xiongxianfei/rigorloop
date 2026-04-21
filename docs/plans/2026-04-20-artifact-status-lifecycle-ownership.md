@@ -499,6 +499,11 @@ The implementation needs to land as one coherent sequence:
   - `python scripts/validate-artifact-lifecycle.py --mode push-main-ci --before "$(git rev-parse HEAD~2)" --after "$(git rev-parse HEAD~1)"` -> passed with warnings only (`validated 7 artifact files in push-main-ci mode`; stale M4 migration targets remained baseline warnings instead of current blockers after section-aware plan filtering)
   - `bash scripts/ci.sh` -> passed (`local tracked-diff fallback stayed deterministic after the M3 scope corrections`)
   - `git diff --check -- scripts/artifact_lifecycle_validation.py scripts/test-artifact-lifecycle-validator.py docs/plans/2026-04-20-artifact-status-lifecycle-ownership.md` -> passed
+  - post-commit confirmation for `M3: narrow active plan scope references`:
+    - `python scripts/validate-artifact-lifecycle.py --mode pr-ci --base "$(git rev-parse HEAD~1)" --head "$(git rev-parse HEAD)"` -> passed with warnings only (`validated 6 artifact files in pr-ci mode`)
+    - `python scripts/validate-artifact-lifecycle.py --mode push-main-ci --before "$(git rev-parse HEAD~1)" --after "$(git rev-parse HEAD)"` -> passed with warnings only (`validated 6 artifact files in push-main-ci mode`)
+    - `bash scripts/ci.sh` -> passed (`clean tracked-worktree fallback used push-main-ci from HEAD~1..HEAD and emitted warning-only baseline debt`)
+    - `git diff --check -- HEAD~1..HEAD -- scripts/artifact_lifecycle_validation.py scripts/test-artifact-lifecycle-validator.py docs/plans/2026-04-20-artifact-status-lifecycle-ownership.md` -> passed
 - Supporting lifecycle bookkeeping validation:
   - `git diff --check -- docs/plan.md docs/plans/2026-04-20-artifact-status-lifecycle-ownership.md specs/artifact-status-lifecycle-ownership.test.md` -> passed
 - Optional proof not run:
@@ -514,5 +519,6 @@ The implementation needs to land as one coherent sequence:
 - This initiative remains active; M1-M3 are complete.
 - The tracked-source-artifact prerequisite is satisfied and the test spec is now active at `specs/artifact-status-lifecycle-ownership.test.md`.
 - The M3 code-review fix is implemented and diff-derived validation now keeps stale M4 migration targets as baseline warnings instead of current blockers.
+- M3 is ready for `code-review`.
 - M1-M3 together satisfy the v0.1 first-enforcement stack of docs, validator, fixtures, `verify`, and CI.
 - M4 has not started.
