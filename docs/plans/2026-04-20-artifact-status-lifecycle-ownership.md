@@ -406,6 +406,7 @@ The implementation needs to land as one coherent sequence:
 - 2026-04-21: addressed the M3 code-review findings by switching `pr-ci` to merge-base-aware diffs, reading diff-derived scope and baseline artifacts from tracked commit snapshots, and expanding active-plan reference extraction from current plan context while excluding milestone/backlog sections that would prematurely pull M4 migration targets into related scope.
 - 2026-04-21: completed M4 by archiving the three relied-on historical test specs that still used `complete`, adding terminal closeout sections to them, and confirming the feature proposal, spec, and architecture already satisfied the settled-state contract without further edits.
 - 2026-04-21: verify closed this initiative to `Done` because the full outcome is already known on-branch and merged state is not the deciding event for completion.
+- 2026-04-21: created `docs/explain/2026-04-20-artifact-status-lifecycle-ownership.md` to capture the full rationale from proposal through verify closeout and advanced this completed plan to `pr` readiness.
 
 ## Decision log
 
@@ -522,6 +523,8 @@ The implementation needs to land as one coherent sequence:
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-20-artifact-status-lifecycle-ownership.md --path specs/artifact-status-lifecycle-ownership.md --path docs/architecture/2026-04-20-artifact-status-lifecycle-ownership.md --path specs/rigorloop-workflow.test.md --path specs/constitution-governance-surface.test.md --path specs/plan-index-lifecycle-ownership.test.md` -> passed (`validated 6 artifact files in explicit-paths mode`)
   - `bash scripts/ci.sh` -> passed (`repo-owned CI wrapper remained green after plan/index closeout`)
   - manual review -> passed (`reviewed docs/plan.md Done section plus this plan body's Status, Outcome and retrospective, and Readiness surfaces after closeout`)
+- Green validation after explain-change:
+  - `git diff --check -- docs/explain/2026-04-20-artifact-status-lifecycle-ownership.md docs/plans/2026-04-20-artifact-status-lifecycle-ownership.md` -> passed
 - Optional proof not run:
   - `python scripts/validate-artifact-lifecycle.py --mode local` was intentionally skipped because the working tree contains unrelated untracked proposal drafts, so `local` mode would not have been clean milestone proof.
 
@@ -539,5 +542,6 @@ The implementation needs to land as one coherent sequence:
 - The tracked-source-artifact prerequisite is satisfied and the test spec is now active at `specs/artifact-status-lifecycle-ownership.test.md`.
 - The relied-on historical test specs now use truthful archived closeout state, and the feature proposal, spec, and architecture remain truthful settled artifacts.
 - Implementation, code review, and verify are complete.
+- `explain-change` is complete at `docs/explain/2026-04-20-artifact-status-lifecycle-ownership.md`.
 - M1-M4 satisfy the v0.1 first-enforcement stack of docs, validator, fixtures, `verify`, and CI, including relied-on artifact migration.
-- The next expected stage is `explain-change`, then `pr`.
+- The next expected stage is `pr`.
