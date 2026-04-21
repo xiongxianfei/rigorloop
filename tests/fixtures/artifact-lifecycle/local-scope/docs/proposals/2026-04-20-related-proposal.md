@@ -1,7 +1,7 @@
 # Related stale proposal
 
 ## Status
-- draft
+- accepted
 
 ## Problem
 
@@ -18,6 +18,10 @@ This fixture stays stale and is modified locally so it should block in local mod
 ## Recommended direction
 
 Leave this proposal stale.
+
+## Next artifacts
+
+- `specs/related-spec.md`
 
 ## Readiness
 

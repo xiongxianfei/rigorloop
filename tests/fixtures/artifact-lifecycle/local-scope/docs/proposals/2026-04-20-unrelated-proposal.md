@@ -1,7 +1,7 @@
 # Unrelated stale proposal
 
 ## Status
-- draft
+- accepted
 
 ## Problem
 
@@ -18,6 +18,10 @@ This fixture stays stale but unchanged so it should warn in local mode.
 ## Recommended direction
 
 Leave this proposal stale.
+
+## Next artifacts
+
+- `specs/unrelated-spec.md`
 
 ## Readiness
 

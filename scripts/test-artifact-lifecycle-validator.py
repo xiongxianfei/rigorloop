@@ -83,6 +83,12 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
             "docs/proposals/2026-04-20-valid-proposal.md",
         )
 
+    def test_valid_draft_proposal_passes(self) -> None:
+        self.assertFixturePasses(
+            "valid-draft-proposal",
+            "docs/proposals/2026-04-20-draft-proposal.md",
+        )
+
     def test_valid_spec_passes(self) -> None:
         self.assertFixturePasses("valid-spec", "specs/valid-spec.md")
 
@@ -120,6 +126,13 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
             "invalid-empty-follow-on",
             "specs/invalid-empty-follow-on.test.md",
             "Follow-on artifacts section must not be empty",
+        )
+
+    def test_empty_next_artifacts_fails(self) -> None:
+        self.assertFixtureFails(
+            "invalid-empty-next-artifacts",
+            "docs/proposals/2026-04-20-empty-next-artifacts.md",
+            "Next artifacts section must not be empty",
         )
 
     def test_superseded_without_pointer_fails(self) -> None:
@@ -191,6 +204,16 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
         self.assertIn("docs/proposals/2026-04-20-valid-proposal.md", checked_paths)
         self.assertNotIn("specs/invalid-reviewed.md", checked_paths)
 
+    def test_specs_docs_are_not_classified_as_behavior_specs(self) -> None:
+        result = self.validate_fixture(
+            "spec-docs-only",
+            mode="explicit-paths",
+            paths=["specs/README.md"],
+        )
+        self.assertFalse(result.blocking_findings)
+        self.assertFalse(result.warning_findings)
+        self.assertEqual([], result.checked_artifacts)
+
     def test_change_yaml_explain_change_plan_and_pr_body_expand_related_scope(self) -> None:
         fixture_root = copy_fixture("related-scope")
         self.addCleanupTree(fixture_root)
@@ -244,6 +267,40 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
         warning_paths = {f.path.name for f in result.warning_findings}
         self.assertIn("2026-04-20-related-proposal.md", blocking_paths)
         self.assertIn("2026-04-20-unrelated-proposal.md", warning_paths)
+
+    def test_local_mode_blocks_duplicate_identifier_when_any_participant_is_related(self) -> None:
+        fixture_root = copy_fixture("duplicate-spec-identifier")
+        self.addCleanupTree(fixture_root)
+        subprocess.run(["git", "init"], cwd=fixture_root, check=True, capture_output=True, text=True)
+        subprocess.run(
+            ["git", "config", "user.email", "tester@example.com"],
+            cwd=fixture_root,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        subprocess.run(
+            ["git", "config", "user.name", "Fixture Tester"],
+            cwd=fixture_root,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        subprocess.run(["git", "add", "."], cwd=fixture_root, check=True, capture_output=True, text=True)
+        subprocess.run(
+            ["git", "commit", "-m", "fixture baseline"],
+            cwd=fixture_root,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        related_path = fixture_root / "specs" / "alpha" / "shared-spec.md"
+        related_path.write_text(related_path.read_text(encoding="utf-8") + "\nChanged locally.\n", encoding="utf-8")
+
+        result = validate_repository(fixture_root, mode="local")
+        blocking_paths = {f.path.relative_to(fixture_root).as_posix() for f in result.blocking_findings}
+        self.assertIn("specs/alpha/shared-spec.md", blocking_paths)
+        self.assertIn("specs/beta/shared-spec.md", blocking_paths)
 
     def test_cli_requires_pr_ci_and_push_ci_inputs(self) -> None:
         pr_result = run_cli("--mode", "pr-ci")
