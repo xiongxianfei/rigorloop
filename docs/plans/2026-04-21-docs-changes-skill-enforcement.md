@@ -136,12 +136,12 @@ The implementation must stay inside the approved narrow boundary:
   - the entrypoint and implementation skills now make the baseline change-local pack an explicit ordinary non-trivial work requirement without widening fast-lane behavior, and the existing docs-changes test spec remains aligned where it already owns that contract proof.
 - Commit message: `M1: align docs-changes workflow guidance`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - skill wording may copy too much contract detail and drift from the workflow spec;
   - fast-lane wording may be broadened accidentally.
@@ -278,12 +278,14 @@ The implementation must stay inside the approved narrow boundary:
 - [x] 2026-04-21: spec created and approved without requiring a separate architecture artifact.
 - [x] 2026-04-21: plan created and indexed under `Active` in `docs/plan.md`.
 - [x] 2026-04-21: test spec created and linked as the active proof-planning surface for implementation.
+- [x] 2026-04-21: M1 completed. `workflow` and `implement` now make the baseline change-local pack explicit for ordinary non-trivial work, the existing docs-changes test spec stays aligned, and generated `.codex/skills/` output is synchronized.
 
 ## Decision log
 
 - 2026-04-21: no separate architecture artifact is required at this stage. Reason: the change is a small skill-guidance alignment, not a new subsystem or system-boundary redesign.
 - 2026-04-21: split the work into entrypoint/implement guidance, downstream gate guidance, and final proof. Reason: the change spans several skills, but the slices are still reviewable if split by stage responsibility.
 - 2026-04-21: use a dedicated feature test spec plus targeted updates to the existing docs-changes and workflow-stage test specs. Reason: those existing test specs already own part of the governing proof surface and must stay aligned instead of being silently replaced.
+- 2026-04-21: leave `docs/workflows.md` unchanged in M1. Reason: the workflow summary already matched the approved docs-changes contract, so the stage-local fix belonged only in `skills/workflow/SKILL.md`, `skills/implement/SKILL.md`, and the existing docs-changes test spec.
 
 ## Surprises and discoveries
 
@@ -300,6 +302,14 @@ The implementation must stay inside the approved narrow boundary:
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-21-docs-changes-skill-enforcement.md --path specs/docs-changes-skill-enforcement.md --path docs/plans/2026-04-21-docs-changes-skill-enforcement.md --path specs/docs-changes-skill-enforcement.test.md`
   - `git diff --check --cached -- docs/plan.md docs/proposals/2026-04-21-docs-changes-skill-enforcement.md specs/docs-changes-skill-enforcement.md docs/plans/2026-04-21-docs-changes-skill-enforcement.md specs/docs-changes-skill-enforcement.test.md`
   - Result: passed.
+- 2026-04-21: M1 updated the stage-local `workflow` and `implement` skills plus the existing docs-changes usage-policy test spec, then regenerated `.codex/skills/`.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/docs-changes-usage-policy.test.md`
+  - `python scripts/validate-skills.py`
+  - `python scripts/build-skills.py`
+  - `python scripts/build-skills.py --check`
+  - `rg -n 'docs/changes|change.yaml|explain-change|fast-lane' skills/workflow/SKILL.md skills/implement/SKILL.md .codex/skills`
+  - `git diff --check -- skills/workflow/SKILL.md skills/implement/SKILL.md specs/docs-changes-usage-policy.test.md .codex/skills docs/workflows.md`
+  - Result: passed. `docs/workflows.md` review found no wording drift, so no summary-surface edit was needed in this milestone.
 
 ## Outcome and retrospective
 
@@ -312,4 +322,5 @@ The implementation must stay inside the approved narrow boundary:
 - No separate architecture artifact is required unless later review broadens the change.
 - `specs/docs-changes-skill-enforcement.test.md` now exists and is the active proof-planning surface.
 - The tracked-source prerequisite is satisfied.
-- The next stage is `implement`.
+- M1 is complete; M2 and M3 remain open.
+- The next stage is `code-review` for the M1 slice.
