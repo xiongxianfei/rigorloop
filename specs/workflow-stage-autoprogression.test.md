@@ -348,4 +348,4 @@
 
 - This test spec is active.
 - The tracked-source prerequisite is satisfied for the accepted proposal, approved spec, approved architecture, active plan, and this test spec.
-- Ready for `implement`.
+- It remains the current proof-planning surface for this initiative until lifecycle closeout moves it to a terminal state.

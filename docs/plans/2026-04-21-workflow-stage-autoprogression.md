@@ -340,12 +340,14 @@ The implementation must stay inside the approved v1 boundary:
 - 2026-04-21: kept M2 focused on execution-stage skill behavior and direct-`pr` semantics, while leaving repo-wide smoke proof to M3. Reason: the approved plan already reserves `bash scripts/ci.sh` as part of the final repo-wide proof milestone rather than the narrower execution-skill alignment slice.
 - 2026-04-21: left `skills/workflow/SKILL.md` unchanged in M3. Reason: the shared authoring-to-review and isolated-stage boundary rules were already correct after M1, so M3 only needed stage-local authoring/review alignment plus the repo-wide smoke-proof wrapper fix.
 - 2026-04-21: filtered generated `.codex/skills/*` paths out of the CI wrapper's explicit-path artifact lifecycle fallback. Reason: generated-skill drift is already enforced by `build-skills.py --check`, while the lifecycle validator correctly treats generated output as non-authored source.
+- 2026-04-21: normalized `specs/workflow-stage-autoprogression.test.md` readiness away from `Ready for implement` once execution advanced into review. Reason: active test specs are settled proof-planning surfaces, and their readiness must not imply earlier pending stages remain.
 
 ## Surprises and discoveries
 
 - 2026-04-21: `python scripts/build-skills.py --check` is meaningful milestone proof only after regeneration has completed. The final M1 validation set was rerun sequentially so generated-skill drift evidence reflects the post-sync state.
 - 2026-04-21: a local exploratory `bash scripts/ci.sh` run still blocks when tracked-diff explicit-path lifecycle validation sees changed `.codex/skills/*` files as generated outputs rather than authored sources. That repo-wide proof issue is recorded for M3 instead of being silently ignored.
 - 2026-04-21: the repo-wide smoke failure did not require relaxing the lifecycle validator itself. A small wrapper fix in `scripts/ci.sh` was enough because generated-skill drift and authored-artifact lifecycle validation are intentionally separate proof surfaces.
+- 2026-04-21: independent `code-review` of M3 surfaced a stale settled-state readiness line in `specs/workflow-stage-autoprogression.test.md`. The fix was to keep the test spec active while removing the outdated `implement` handoff wording instead of relaxing lifecycle validation.
 
 ## Validation notes
 
@@ -391,6 +393,12 @@ The implementation must stay inside the approved v1 boundary:
   - `bash scripts/ci.sh`
   - `rg -n "proposal-review|spec-review|architecture-review|workflow-managed|isolated|review-only" skills/proposal/SKILL.md skills/proposal-review/SKILL.md skills/spec/SKILL.md skills/spec-review/SKILL.md skills/architecture/SKILL.md skills/architecture-review/SKILL.md skills/workflow/SKILL.md .codex/skills`
   - `git diff --check -- CONSTITUTION.md AGENTS.md docs/workflows.md specs/rigorloop-workflow.md skills .codex/skills scripts/ci.sh`
+- 2026-04-21: M3 code-review rerun will include the test-spec readiness fix with:
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/workflow-stage-autoprogression.test.md`
+  - `python scripts/validate-skills.py`
+  - `python scripts/build-skills.py --check`
+  - `bash scripts/ci.sh`
+  - `git diff --check -- specs/workflow-stage-autoprogression.test.md docs/plans/2026-04-21-workflow-stage-autoprogression.md`
 
 ## Outcome and retrospective
 
