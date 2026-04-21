@@ -42,6 +42,7 @@ class ValidationResult:
 class ValidationScope:
     mode: str
     input_source: str
+    tracked_revision: str | None
     changed_paths: tuple[Path, ...]
     related_artifact_paths: tuple[Path, ...]
     baseline_paths: tuple[Path, ...]
@@ -85,7 +86,7 @@ def _normalize_repo_path(root: Path, source_path: Path, raw_path: str) -> Path |
 
 
 def _extract_markdown_refs(root: Path, path: Path) -> set[Path]:
-    return _extract_repo_path_refs_from_text(root, path, path.read_text(encoding="utf-8"))
+    return _extract_repo_path_refs_from_text(root, path, _read_repo_text(root, path))
 
 
 def _extract_repo_path_refs_from_text(root: Path, path: Path, text: str) -> set[Path]:
@@ -97,15 +98,9 @@ def _extract_repo_path_refs_from_text(root: Path, path: Path, text: str) -> set[
     return refs
 
 
-def _extract_plan_refs(root: Path, path: Path) -> set[Path]:
-    refs: set[Path] = set()
-    sections = _parse_sections(path.read_text(encoding="utf-8"))
-    for section_name in ("Source artifacts",):
-        body = sections.get(section_name)
-        if not body:
-            continue
-        refs.update(_extract_repo_path_refs_from_text(root, path, body))
-    return refs
+def _extract_plan_refs(root: Path, path: Path, tracked_revision: str | None = None) -> set[Path]:
+    refs = _extract_repo_path_refs_from_text(root, path, _read_repo_text(root, path, tracked_revision))
+    return {ref for ref in refs if _is_lifecycle_reference_path(root, ref)}
 
 
 def _contains_placeholder_text(text: str) -> bool:
@@ -123,9 +118,9 @@ def _contains_placeholder_text(text: str) -> bool:
     return PLACEHOLDER_PATTERN.search(sanitized) is not None
 
 
-def _extract_change_yaml_refs(root: Path, path: Path) -> set[Path]:
+def _extract_change_yaml_refs(root: Path, path: Path, tracked_revision: str | None = None) -> set[Path]:
     refs: set[Path] = set()
-    lines = path.read_text(encoding="utf-8").splitlines()
+    lines = _read_repo_text(root, path, tracked_revision).splitlines()
     in_artifacts = False
     artifact_indent = 0
 
@@ -204,6 +199,57 @@ def _has_terminal_closeout(sections: dict[str, str]) -> bool:
     return "Follow-on artifacts" in sections or "Closeout" in sections
 
 
+def _is_lifecycle_reference_path(root: Path, path: Path) -> bool:
+    relative = path.relative_to(root).as_posix()
+    if relative.startswith("docs/proposals/"):
+        return True
+    if relative.startswith("docs/architecture/"):
+        return True
+    if relative.startswith("docs/adr/"):
+        return True
+    if relative.startswith("docs/plans/"):
+        return True
+    if relative.startswith("docs/explain/"):
+        return True
+    if relative.startswith("docs/changes/") and relative.endswith("/change.yaml"):
+        return True
+    if relative.startswith("specs/") and relative.endswith(".md"):
+        return True
+    return False
+
+
+def _read_git_text(root: Path, tracked_revision: str, relative_path: Path) -> str:
+    result = subprocess.run(
+        ["git", "-C", str(root), "show", f"{tracked_revision}:{relative_path.as_posix()}"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    return result.stdout
+
+
+def _read_repo_text(root: Path, path: Path, tracked_revision: str | None = None) -> str:
+    if tracked_revision is None:
+        return path.read_text(encoding="utf-8")
+    return _read_git_text(root, tracked_revision, path.relative_to(root))
+
+
+def _tracked_path_exists(root: Path, tracked_revision: str, relative_path: Path) -> bool:
+    result = subprocess.run(
+        ["git", "-C", str(root), "cat-file", "-e", f"{tracked_revision}:{relative_path.as_posix()}"],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    return result.returncode == 0
+
+
+def _path_exists(root: Path, path: Path, tracked_revision: str | None = None) -> bool:
+    if tracked_revision is None:
+        return path.exists()
+    return _tracked_path_exists(root, tracked_revision, path.relative_to(root))
+
+
 def _requires_readiness_consistency_check(contract: ArtifactContract, status: str | None) -> bool:
     if status is None:
         return False
@@ -266,9 +312,9 @@ def _validate_status_and_sections(
     return errors, status
 
 
-def _inspect_artifact(path: Path, root: Path) -> ArtifactInspection | None:
+def _inspect_artifact(path: Path, root: Path, tracked_revision: str | None = None) -> ArtifactInspection | None:
     relative_path = path.relative_to(root)
-    text = path.read_text(encoding="utf-8")
+    text = _read_repo_text(root, path, tracked_revision)
     contract = classify_artifact(relative_path, text)
     if contract is None:
         return None
@@ -284,14 +330,29 @@ def _inspect_artifact(path: Path, root: Path) -> ArtifactInspection | None:
     )
 
 
-def _discover_all_in_scope_artifacts(root: Path) -> set[Path]:
+def _tracked_markdown_paths(root: Path, tracked_revision: str) -> list[Path]:
+    result = subprocess.run(
+        ["git", "-C", str(root), "ls-tree", "-r", "--name-only", "-z", tracked_revision],
+        check=True,
+        capture_output=True,
+    )
+    return [
+        (root / entry.decode("utf-8")).resolve()
+        for entry in result.stdout.split(b"\0")
+        if entry and entry.decode("utf-8").endswith(".md")
+    ]
+
+
+def _discover_all_in_scope_artifacts(root: Path, tracked_revision: str | None = None) -> set[Path]:
     results: set[Path] = set()
-    for candidate in root.rglob("*.md"):
+    candidates = root.rglob("*.md") if tracked_revision is None else _tracked_markdown_paths(root, tracked_revision)
+    for candidate in candidates:
         if not candidate.is_file():
-            continue
+            if tracked_revision is None:
+                continue
         if not _is_relative_to(candidate.resolve(), root):
             continue
-        text = candidate.read_text(encoding="utf-8")
+        text = _read_repo_text(root, candidate.resolve(), tracked_revision)
         relative = candidate.resolve().relative_to(root)
         if classify_artifact(relative, text) is not None:
             results.add(candidate.resolve())
@@ -316,9 +377,9 @@ def _collect_local_changed_paths(root: Path) -> list[Path]:
     return changed
 
 
-def _collect_diff_paths(root: Path, start: str, end: str) -> list[Path]:
+def _collect_diff_paths(root: Path, diff_spec: str) -> list[Path]:
     result = subprocess.run(
-        ["git", "-C", str(root), "diff", "--name-only", f"{start}..{end}"],
+        ["git", "-C", str(root), "diff", "--name-only", diff_spec],
         check=True,
         capture_output=True,
         text=True,
@@ -337,6 +398,7 @@ def _resolve_scope(
     after: str | None = None,
     pr_body_file: str | None = None,
 ) -> ValidationScope:
+    tracked_revision: str | None = None
     if mode == "explicit-paths":
         if not paths:
             raise ValidationInputError("explicit-paths mode requires at least one --path")
@@ -348,19 +410,23 @@ def _resolve_scope(
     elif mode == "pr-ci":
         if not base or not head:
             raise ValidationInputError("pr-ci mode requires --base and --head")
-        changed_paths = _collect_diff_paths(root, base, head)
+        changed_paths = _collect_diff_paths(root, f"{base}...{head}")
         input_source = "explicit PR diff range"
+        tracked_revision = head
     elif mode == "push-main-ci":
         if not before or not after:
             raise ValidationInputError("push-main-ci mode requires --before and --after")
-        changed_paths = _collect_diff_paths(root, before, after)
+        changed_paths = _collect_diff_paths(root, f"{before}..{after}")
         input_source = "explicit push diff range"
+        tracked_revision = after
     else:
         raise ValidationInputError(f"unsupported mode: {mode}")
 
     queue: list[Path] = []
     for path in changed_paths:
-        if not path.exists():
+        if not _path_exists(root, path, tracked_revision):
+            if tracked_revision is not None:
+                continue
             raise ValidationInputError(f"input path does not exist: {path.relative_to(root)}")
         queue.append(path)
 
@@ -382,7 +448,9 @@ def _resolve_scope(
             continue
         visited.add(current)
 
-        if not current.exists():
+        current_revision = None if current == pr_path else tracked_revision
+
+        if not _path_exists(root, current, current_revision):
             continue
 
         if not _is_relative_to(current, root):
@@ -394,15 +462,13 @@ def _resolve_scope(
                 generated_paths.add(current)
             continue
 
-        contract = classify_artifact(
-            relative,
-            current.read_text(encoding="utf-8") if current.suffix == ".md" else None,
-        )
+        current_text = _read_repo_text(root, current, current_revision) if current.suffix in {".md", ".yaml"} else None
+        contract = classify_artifact(relative, current_text if current.suffix == ".md" else None)
         if contract is not None:
             related_artifacts.add(current)
 
         if current.name == "change.yaml":
-            queue.extend(sorted(_extract_change_yaml_refs(root, current)))
+            queue.extend(sorted(_extract_change_yaml_refs(root, current, current_revision)))
             continue
 
         relative_text = relative.as_posix()
@@ -414,17 +480,18 @@ def _resolve_scope(
         )
         if current.suffix == ".md" and is_reference_surface:
             if relative_text.startswith("docs/plans/"):
-                queue.extend(sorted(_extract_plan_refs(root, current)))
+                queue.extend(sorted(_extract_plan_refs(root, current, current_revision)))
             else:
-                queue.extend(sorted(_extract_markdown_refs(root, current)))
+                queue.extend(sorted(_extract_repo_path_refs_from_text(root, current, current_text or "")))
 
     baseline_paths: set[Path] = set()
     if mode != "explicit-paths":
-        baseline_paths = _discover_all_in_scope_artifacts(root) - related_artifacts
+        baseline_paths = _discover_all_in_scope_artifacts(root, tracked_revision) - related_artifacts
 
     return ValidationScope(
         mode=mode,
         input_source=input_source,
+        tracked_revision=tracked_revision,
         changed_paths=tuple(sorted(changed_paths)),
         related_artifact_paths=tuple(sorted(related_artifacts)),
         baseline_paths=tuple(sorted(baseline_paths)),
@@ -472,7 +539,7 @@ def validate_repository(
 
     inspections: dict[Path, ArtifactInspection] = {}
     for path in tuple(sorted(related_paths | set(scope.baseline_paths))):
-        inspection = _inspect_artifact(path, root_resolved)
+        inspection = _inspect_artifact(path, root_resolved, scope.tracked_revision)
         if inspection is not None:
             inspections[path] = inspection
 
