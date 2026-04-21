@@ -389,7 +389,7 @@ The implementation needs to land as one coherent sequence:
 - [x] M1. Add the artifact lifecycle validator core and fixture coverage
 - [x] M2. Align workflow docs, skills, templates, and example surfaces
 - [x] M3. Integrate deterministic lifecycle validation into verify and CI
-- [ ] M4. Normalize relied-on stale artifacts and closeout metadata
+- [x] M4. Normalize relied-on stale artifacts and closeout metadata
 - 2026-04-20: plan created.
 - 2026-04-20: planning found that the accepted proposal, approved spec, and approved architecture for this feature remain untracked local files and must be tracked before downstream stages rely on them.
 - 2026-04-20: planning confirmed that no `docs/project-map.md` exists; the existing repository architecture doc and ADR remain sufficient context.
@@ -404,6 +404,7 @@ The implementation needs to land as one coherent sequence:
 - 2026-04-21: expanded the ADR lifecycle contract to the shared lowercase status family requested during implementation: `draft`, `proposed`, `accepted`, `active`, `deprecated`, `superseded`, `archived`, and `abandoned`. This required coordinated updates to the approved spec, workflow guidance, validator contract, fixtures, generated skills, and the relied-on repository-layout ADR.
 - 2026-04-21: completed M3 by wiring the artifact lifecycle validator into `scripts/ci.sh` and `.github/workflows/ci.yml`, adding diff-mode regression coverage, and tightening plan-surface reference expansion so CI-mode validation stays deterministic without treating future milestone references as current blockers.
 - 2026-04-21: addressed the M3 code-review findings by switching `pr-ci` to merge-base-aware diffs, reading diff-derived scope and baseline artifacts from tracked commit snapshots, and expanding active-plan reference extraction from current plan context while excluding milestone/backlog sections that would prematurely pull M4 migration targets into related scope.
+- 2026-04-21: completed M4 by archiving the three relied-on historical test specs that still used `complete`, adding terminal closeout sections to them, and confirming the feature proposal, spec, and architecture already satisfied the settled-state contract without further edits.
 
 ## Decision log
 
@@ -428,6 +429,7 @@ The implementation needs to land as one coherent sequence:
 - 2026-04-21: in `pr-ci` and `push-main-ci`, read changed-scope surfaces and baseline artifact discovery from the tracked `head` or `after` snapshot instead of the local filesystem. Rationale: local diff-mode proofs must match hosted CI and must not warn on unrelated untracked drafts.
 - 2026-04-21: extract lifecycle and artifact path references from current active-plan context sections while excluding milestone execution details, validation history, and readiness bookkeeping. Rationale: M3 should validate the scope resolver for current authoritative inputs, while M4 owns migration targets and must not become related scope just because the plan records future work.
 - 2026-04-21: treat changed `.codex/` paths as explicit generated-source blockers only in `explicit-paths` mode, not in diff-derived CI modes. Rationale: PR and push validation must tolerate legitimate generated-output refreshes while still rejecting attempts to validate generated output as authored source of truth directly.
+- 2026-04-21: archive the three relied-on historical test specs instead of marking them superseded. Rationale: they remain useful historical evidence for merged baselines, but this migration does not create direct replacement test specs that would justify `superseded`.
 
 ## Surprises and discoveries
 
@@ -446,6 +448,7 @@ The implementation needs to land as one coherent sequence:
 - Active plans need section-aware scope extraction: current context such as `Source artifacts`, prerequisites, and related-architecture references should join related scope, but milestone worklists and validation history should not turn future M4 backlog targets into current blockers.
 - Diff-derived validation must distinguish between generated outputs as related surfaces and generated outputs as authored-source inputs; otherwise normal regenerated `.codex/skills/` changes become false blockers in CI.
 - Once whole-plan extraction is correct, future migration targets listed in the active plan immediately become related artifacts in diff-derived validation. That makes stale M4 targets block M3 reruns unless the plan narrows those references or the migration milestone lands first.
+- By the time M4 started, the feature proposal, approved spec, and approved architecture were already truthful settled artifacts. The only relied-on blockers left were the three historical test specs that still advertised `complete`.
 
 ## Validation notes
 
@@ -506,6 +509,12 @@ The implementation needs to land as one coherent sequence:
     - `git diff --check -- HEAD~1..HEAD -- scripts/artifact_lifecycle_validation.py scripts/test-artifact-lifecycle-validator.py docs/plans/2026-04-20-artifact-status-lifecycle-ownership.md` -> passed
 - Supporting lifecycle bookkeeping validation:
   - `git diff --check -- docs/plan.md docs/plans/2026-04-20-artifact-status-lifecycle-ownership.md specs/artifact-status-lifecycle-ownership.test.md` -> passed
+- Green validation after M4 artifact migration:
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-20-artifact-status-lifecycle-ownership.md --path specs/artifact-status-lifecycle-ownership.md --path docs/architecture/2026-04-20-artifact-status-lifecycle-ownership.md --path specs/rigorloop-workflow.test.md --path specs/constitution-governance-surface.test.md --path specs/plan-index-lifecycle-ownership.test.md` -> passed (`validated 6 artifact files in explicit-paths mode`)
+  - `rg -n '^## Status$|^- (draft|under review|accepted|rejected|abandoned|superseded|archived|approved|active|proposed|deprecated|reviewed|complete)$|^## (Next artifacts|Follow-on artifacts|Readiness)$|^superseded_by:' docs/proposals specs docs/architecture docs/adr` -> passed (`the touched proposal/spec/architecture remain truthful settled artifacts, and the migrated historical test specs now use archived status plus closeout sections instead of long-lived complete state`)
+  - `bash scripts/ci.sh` -> passed (`repo-owned CI wrapper accepts the migrated relied-on artifacts and continues to report only unrelated baseline debt as warnings`)
+  - manual review -> passed (`the feature proposal, spec, and architecture already carried truthful settled-state readiness, and the three historical relied-on test specs now carry truthful archived closeout wording without inventing replacement pointers`)
+  - `git diff --check -- docs/proposals specs docs/architecture docs/adr docs/plans/2026-04-20-artifact-status-lifecycle-ownership.md` -> passed
 - Optional proof not run:
   - `python scripts/validate-artifact-lifecycle.py --mode local` was intentionally skipped because the working tree contains unrelated untracked proposal drafts, so `local` mode would not have been clean milestone proof.
 
@@ -516,9 +525,9 @@ The implementation needs to land as one coherent sequence:
 
 ## Readiness
 
-- This initiative remains active; M1-M3 are complete.
+- This initiative remains active; M1-M4 are complete.
 - The tracked-source-artifact prerequisite is satisfied and the test spec is now active at `specs/artifact-status-lifecycle-ownership.test.md`.
-- The M3 code-review fix is implemented and diff-derived validation now keeps stale M4 migration targets as baseline warnings instead of current blockers.
-- M3 is ready for `code-review`.
+- The relied-on historical test specs now use truthful archived closeout state, and the feature proposal, spec, and architecture remain truthful settled artifacts.
+- Implementation is ready for `code-review`.
 - M1-M3 together satisfy the v0.1 first-enforcement stack of docs, validator, fixtures, `verify`, and CI.
-- M4 has not started.
+- The next expected stage is `code-review`.
