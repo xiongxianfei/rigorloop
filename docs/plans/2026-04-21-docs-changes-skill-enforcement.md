@@ -281,6 +281,7 @@ The implementation must stay inside the approved narrow boundary:
 - [x] 2026-04-21: M1 completed. `workflow` and `implement` now make the baseline change-local pack explicit for ordinary non-trivial work, the existing docs-changes test spec stays aligned, and generated `.codex/skills/` output is synchronized.
 - [x] 2026-04-21: M1 code-review and verify passed with no follow-up fixes, so the initiative is back in `implement` for M2.
 - [x] 2026-04-21: M2 completed. `verify`, `pr`, and `explain-change` now surface docs-changes baseline-pack expectations explicitly, the existing workflow-stage test spec stays aligned, and this feature itself now carries a baseline change-local pack.
+- [x] 2026-04-21: M2 code-review and verify passed after one wording fix in `explain-change`, so the initiative is back in `implement` for M3.
 
 ## Decision log
 
@@ -334,6 +335,13 @@ The implementation must stay inside the approved narrow boundary:
   - `python scripts/build-skills.py --check`
   - `git diff --check -- skills/explain-change/SKILL.md docs/changes/2026-04-21-docs-changes-skill-enforcement/explain-change.md .codex/skills/explain-change/SKILL.md`
   - Result: passed.
+- 2026-04-21: M2 independent code-review found no blocking, major, or minor issues after the explain-change wording fix, and the follow-on verification pass was clean.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-04-21-docs-changes-skill-enforcement/change.yaml`
+  - `python scripts/validate-skills.py`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/workflow-stage-autoprogression.test.md --path docs/plans/2026-04-21-docs-changes-skill-enforcement.md`
+  - `git diff --check 301e3ce..HEAD -- skills/verify/SKILL.md skills/explain-change/SKILL.md skills/pr/SKILL.md specs/workflow-stage-autoprogression.test.md docs/changes/2026-04-21-docs-changes-skill-enforcement .codex/skills docs/plans/2026-04-21-docs-changes-skill-enforcement.md`
+  - Result: passed. No additional M2 fixup was required.
 
 ## Outcome and retrospective
 
@@ -346,5 +354,5 @@ The implementation must stay inside the approved narrow boundary:
 - No separate architecture artifact is required unless later review broadens the change.
 - `specs/docs-changes-skill-enforcement.test.md` now exists and is the active proof-planning surface.
 - The tracked-source prerequisite is satisfied.
-- M1 and M2 are implemented; M3 remains open.
-- The next stage is `code-review` for the M2 slice.
+- M1 and M2 are implemented, reviewed, and verified; M3 remains open.
+- The next stage is `implement` for M3.
