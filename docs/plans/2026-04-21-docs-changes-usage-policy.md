@@ -343,6 +343,13 @@ The implementation must stay inside the approved architecture boundary:
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-04-21-docs-changes-usage-policy.md --path specs/docs-changes-usage-policy.test.md`
   - `git diff --check 9c1994b^..9c1994b -- README.md scripts/ci.sh .github/workflows/ci.yml docs/changes/0001-skill-validator docs/plans/2026-04-21-docs-changes-usage-policy.md`
   - Result: approve, no findings.
+- 2026-04-21: verify passed on the completed M1-M3 implementation range.
+  - `python scripts/test-change-metadata-validator.py`
+  - `python scripts/validate-change-metadata.py docs/changes/0001-skill-validator/change.yaml`
+  - `bash scripts/ci.sh`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-20-docs-changes-usage-policy.md --path specs/docs-changes-usage-policy.md --path docs/architecture/2026-04-21-docs-changes-usage-policy.md --path docs/plans/2026-04-21-docs-changes-usage-policy.md --path specs/docs-changes-usage-policy.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md`
+  - `git diff --check -- docs/plans/2026-04-21-docs-changes-usage-policy.md specs/docs-changes-usage-policy.test.md`
+  - Result: pass, with only unrelated warning-level baseline artifact debt from historical proposal files during diff-derived lifecycle validation.
 
 ## Outcome and retrospective
 
@@ -354,4 +361,5 @@ The implementation must stay inside the approved architecture boundary:
 - The tracked-source prerequisite is satisfied for the accepted proposal, approved spec, approved architecture, active plan, and active test spec.
 - M1 through M3 are complete.
 - `code-review` is complete for the implementation milestones.
-- The next stage is `verify`.
+- `verify` is complete for the implementation milestones.
+- The next stage is `explain-change`.
