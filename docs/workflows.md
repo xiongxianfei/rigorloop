@@ -35,6 +35,7 @@ Notes:
 - Fast-lane and bugfix execution stay on the repository's existing explicit-step behavior in v1.
 - `learn` remains advice-only and does not auto-run by default.
 - Stop automatic continuation when the user explicitly pauses, validation fails, a review or design issue needs a real decision, permissions or tooling block the next step, or the next action would be stronger than PR creation such as merge, release, deploy, or destructive Git operations.
+- Autoprogression does not replace lifecycle bookkeeping. After `code-review`, `verify`, or other review gates change the real initiative state, update the active plan, any affected active test spec, and `docs/plan.md` before claiming downstream readiness.
 
 ## Planned Milestone Work
 
@@ -94,6 +95,8 @@ Run these first-release structural checks before PR:
 Use `bash scripts/ci.sh` to run the same checks through the repository-owned CI wrapper and report the commands you actually ran. In hosted CI, the wrapper receives explicit SHA inputs for `pr-ci` or `push-main-ci`; outside CI, it falls back to deterministic explicit-path validation over tracked changes or the latest commit diff.
 
 Reserve `python scripts/validate-artifact-lifecycle.py --mode local` for clean worktrees only. When unrelated drafts, untracked files, or other local-only changes are present, use `--mode explicit-paths`, the diff-derived CI modes, or `bash scripts/ci.sh` instead of treating `local` mode as milestone proof.
+
+When a change updates canonical `skills/`, keep generated `.codex/skills/` output on the `build-skills.py --check` proof path. Do not treat generated `.codex/skills/*` files as authored lifecycle-managed inputs for explicit-path artifact validation.
 
 ## CI And Release
 
