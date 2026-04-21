@@ -21,6 +21,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -28,4 +30,10 @@ jobs:
           python-version: "3.11"
 
       - name: Run repository CI script
+        env:
+          ARTIFACT_LIFECYCLE_MODE: ${{ github.event_name == 'pull_request' && 'pr-ci' || 'push-main-ci' }}
+          ARTIFACT_LIFECYCLE_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || '' }}
+          ARTIFACT_LIFECYCLE_HEAD: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || '' }}
+          ARTIFACT_LIFECYCLE_BEFORE: ${{ github.event_name == 'push' && github.event.before || '' }}
+          ARTIFACT_LIFECYCLE_AFTER: ${{ github.event_name == 'push' && github.sha || '' }}
         run: bash scripts/ci.sh

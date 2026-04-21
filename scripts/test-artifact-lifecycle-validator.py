@@ -33,6 +33,66 @@ def run_cli(*args: str) -> subprocess.CompletedProcess[str]:
     )
 
 
+def init_git_fixture(path: Path) -> str:
+    subprocess.run(["git", "init"], cwd=path, check=True, capture_output=True, text=True)
+    subprocess.run(
+        ["git", "config", "user.email", "tester@example.com"],
+        cwd=path,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    subprocess.run(
+        ["git", "config", "user.name", "Fixture Tester"],
+        cwd=path,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    subprocess.run(["git", "add", "."], cwd=path, check=True, capture_output=True, text=True)
+    subprocess.run(
+        ["git", "commit", "-m", "fixture baseline"],
+        cwd=path,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    return subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=path,
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+
+
+def commit_fixture_change(
+    path: Path,
+    relative_path: str,
+    message: str,
+    *,
+    extra_paths: list[str] | None = None,
+) -> str:
+    target = path / relative_path
+    target.write_text(target.read_text(encoding="utf-8") + f"\n{message}\n", encoding="utf-8")
+    add_paths = [relative_path, *(extra_paths or [])]
+    subprocess.run(["git", "add", *add_paths], cwd=path, check=True, capture_output=True, text=True)
+    subprocess.run(
+        ["git", "commit", "-m", message],
+        cwd=path,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    return subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=path,
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+
+
 class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
     maxDiff = None
 
@@ -245,32 +305,36 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
         self.assertIn("specs/related-spec.md", checked_paths)
         self.assertIn("docs/architecture/2026-04-20-related-architecture.md", checked_paths)
 
+    def test_plan_scope_ignores_non_source_artifact_mentions(self) -> None:
+        fixture_root = copy_fixture("related-scope")
+        self.addCleanupTree(fixture_root)
+        unrelated = fixture_root / "docs" / "proposals" / "2026-04-20-unrelated-proposal.md"
+        unrelated.parent.mkdir(parents=True, exist_ok=True)
+        unrelated.write_text(
+            "# Unrelated proposal\n\nThis file is mentioned later in the plan but is not a source artifact.\n",
+            encoding="utf-8",
+        )
+        plan_path = fixture_root / "docs" / "plans" / "2026-04-20-related-plan.md"
+        plan_path.write_text(
+            plan_path.read_text(encoding="utf-8")
+            + "\n## Future work\n\n- `docs/proposals/2026-04-20-unrelated-proposal.md`\n",
+            encoding="utf-8",
+        )
+
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=["docs/plans/2026-04-20-related-plan.md"],
+        )
+        self.assertFalse(result.blocking_findings)
+        checked_paths = {path.as_posix() for path in result.checked_artifacts}
+        self.assertIn("docs/proposals/2026-04-20-related-proposal.md", checked_paths)
+        self.assertNotIn("docs/proposals/2026-04-20-unrelated-proposal.md", checked_paths)
+
     def test_local_mode_blocks_related_and_warns_unrelated_baseline(self) -> None:
         fixture_root = copy_fixture("local-scope")
         self.addCleanupTree(fixture_root)
-        subprocess.run(["git", "init"], cwd=fixture_root, check=True, capture_output=True, text=True)
-        subprocess.run(
-            ["git", "config", "user.email", "tester@example.com"],
-            cwd=fixture_root,
-            check=True,
-            capture_output=True,
-            text=True,
-        )
-        subprocess.run(
-            ["git", "config", "user.name", "Fixture Tester"],
-            cwd=fixture_root,
-            check=True,
-            capture_output=True,
-            text=True,
-        )
-        subprocess.run(["git", "add", "."], cwd=fixture_root, check=True, capture_output=True, text=True)
-        subprocess.run(
-            ["git", "commit", "-m", "fixture baseline"],
-            cwd=fixture_root,
-            check=True,
-            capture_output=True,
-            text=True,
-        )
+        init_git_fixture(fixture_root)
         related_path = fixture_root / "docs" / "proposals" / "2026-04-20-related-proposal.md"
         related_path.write_text(related_path.read_text(encoding="utf-8") + "\nChanged locally.\n", encoding="utf-8")
 
@@ -283,29 +347,7 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
     def test_local_mode_blocks_duplicate_identifier_when_any_participant_is_related(self) -> None:
         fixture_root = copy_fixture("duplicate-spec-identifier")
         self.addCleanupTree(fixture_root)
-        subprocess.run(["git", "init"], cwd=fixture_root, check=True, capture_output=True, text=True)
-        subprocess.run(
-            ["git", "config", "user.email", "tester@example.com"],
-            cwd=fixture_root,
-            check=True,
-            capture_output=True,
-            text=True,
-        )
-        subprocess.run(
-            ["git", "config", "user.name", "Fixture Tester"],
-            cwd=fixture_root,
-            check=True,
-            capture_output=True,
-            text=True,
-        )
-        subprocess.run(["git", "add", "."], cwd=fixture_root, check=True, capture_output=True, text=True)
-        subprocess.run(
-            ["git", "commit", "-m", "fixture baseline"],
-            cwd=fixture_root,
-            check=True,
-            capture_output=True,
-            text=True,
-        )
+        init_git_fixture(fixture_root)
         related_path = fixture_root / "specs" / "alpha" / "shared-spec.md"
         related_path.write_text(related_path.read_text(encoding="utf-8") + "\nChanged locally.\n", encoding="utf-8")
 
@@ -313,6 +355,60 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
         blocking_paths = {f.path.relative_to(fixture_root).as_posix() for f in result.blocking_findings}
         self.assertIn("specs/alpha/shared-spec.md", blocking_paths)
         self.assertIn("specs/beta/shared-spec.md", blocking_paths)
+
+    def test_pr_ci_mode_uses_explicit_diff_range(self) -> None:
+        fixture_root = copy_fixture("local-scope")
+        self.addCleanupTree(fixture_root)
+        base = init_git_fixture(fixture_root)
+        head = commit_fixture_change(
+            fixture_root,
+            "docs/proposals/2026-04-20-related-proposal.md",
+            "fixture PR change",
+        )
+
+        result = validate_repository(fixture_root, mode="pr-ci", base=base, head=head)
+        blocking_paths = {f.path.name for f in result.blocking_findings}
+        warning_paths = {f.path.name for f in result.warning_findings}
+        self.assertIn("2026-04-20-related-proposal.md", blocking_paths)
+        self.assertIn("2026-04-20-unrelated-proposal.md", warning_paths)
+
+    def test_pr_ci_mode_ignores_generated_outputs_in_diff(self) -> None:
+        fixture_root = copy_fixture("local-scope")
+        self.addCleanupTree(fixture_root)
+        generated = fixture_root / ".codex" / "skills" / "proposal" / "SKILL.md"
+        generated.parent.mkdir(parents=True, exist_ok=True)
+        generated.write_text("generated output\n", encoding="utf-8")
+        base = init_git_fixture(fixture_root)
+        generated.write_text("generated output updated\n", encoding="utf-8")
+        head = commit_fixture_change(
+            fixture_root,
+            "docs/proposals/2026-04-20-related-proposal.md",
+            "fixture PR change with generated output",
+            extra_paths=[".codex/skills/proposal/SKILL.md"],
+        )
+
+        result = validate_repository(fixture_root, mode="pr-ci", base=base, head=head)
+        blocking_paths = {f.path.relative_to(fixture_root).as_posix() for f in result.blocking_findings}
+        warning_paths = {f.path.relative_to(fixture_root).as_posix() for f in result.warning_findings}
+        self.assertIn("docs/proposals/2026-04-20-related-proposal.md", blocking_paths)
+        self.assertIn("docs/proposals/2026-04-20-unrelated-proposal.md", warning_paths)
+        self.assertNotIn(".codex/skills/proposal/SKILL.md", blocking_paths)
+
+    def test_push_main_ci_mode_uses_explicit_diff_range(self) -> None:
+        fixture_root = copy_fixture("local-scope")
+        self.addCleanupTree(fixture_root)
+        before = init_git_fixture(fixture_root)
+        after = commit_fixture_change(
+            fixture_root,
+            "docs/proposals/2026-04-20-related-proposal.md",
+            "fixture push change",
+        )
+
+        result = validate_repository(fixture_root, mode="push-main-ci", before=before, after=after)
+        blocking_paths = {f.path.name for f in result.blocking_findings}
+        warning_paths = {f.path.name for f in result.warning_findings}
+        self.assertIn("2026-04-20-related-proposal.md", blocking_paths)
+        self.assertIn("2026-04-20-unrelated-proposal.md", warning_paths)
 
     def test_cli_requires_pr_ci_and_push_ci_inputs(self) -> None:
         pr_result = run_cli("--mode", "pr-ci")
