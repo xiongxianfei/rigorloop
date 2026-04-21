@@ -89,7 +89,7 @@ Rules:
 
 Use for new product behavior, API changes, data contracts, migrations, risky refactors, UI flows, safety-sensitive changes, or any change spanning multiple components.
 
-Required stages:
+Default stage order:
 
 1. `constitution` if project principles are missing or stale.
 2. `project-map` if the architecture is not clear enough to make safe choices.
@@ -110,7 +110,8 @@ Required stages:
 17. `ci` when GitHub workflow automation for a material risk is missing or stale.
 18. `explain-change` to summarize why the diff exists.
 19. `pr` to prepare and open the pull request when ready.
-20. `learn` to capture durable lessons.
+
+Follow with `learn` only when a durable lesson actually emerged.
 
 ### Fast lane
 
