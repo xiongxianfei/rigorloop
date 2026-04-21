@@ -58,10 +58,16 @@ Ask these when useful:
 - Do not edit the proposal unless the user explicitly asks.
 - When the review outcome accepts the direction, ensure the tracked proposal is ready to normalize to `accepted` before downstream stages rely on it. Do not leave a relied-on proposal in `under review`.
 
+## Workflow handoff behavior
+
+- Direct or review-only `proposal-review` requests remain isolated by default.
+- In v1, `proposal-review` is a gate, not an automatic handoff into `spec`; report approval, revision needs, or blocker state without implying `spec` auto-starts.
+- If the user explicitly wants to continue into `spec`, that must come from a separate workflow or user request rather than this review stage auto-continuing on its own.
+
 ## Expected output
 
 - verdict: approve, revise, or rethink;
 - findings by review dimension;
 - blocking questions;
 - exact suggested proposal edits;
-- readiness statement for `spec`.
+- readiness statement for `spec`, isolated stop, or blocker state.
