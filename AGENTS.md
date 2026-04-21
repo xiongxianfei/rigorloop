@@ -30,6 +30,7 @@ Do not silently blend conflicting higher-priority instructions. Call out the con
 - Reuse existing scripts and workflows before inventing new commands or processes.
 - Edit canonical workflow content in `docs/`, `specs/`, `skills/`, `schemas/`, and `scripts/`.
 - Do not hand-edit generated Codex compatibility output in `.codex/skills/`.
+- For non-trivial work, the baseline change-local artifact pack is `docs/changes/<change-id>/change.yaml` plus durable Markdown reasoning. Standalone `review-resolution.md` and `verify-report.md` remain conditional under the workflow contract.
 - Keep `AGENTS.md` practical. Move workflow detail to `docs/workflows.md` and feature-specific detail to `specs/`.
 
 ## Planning and workflow

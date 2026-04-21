@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- none yet
+- [2026-04-21 Docs changes usage policy](plans/2026-04-21-docs-changes-usage-policy.md) - active execution plan for clarifying `docs/changes/` baseline versus conditional artifacts, aligning workflow summaries, tightening `change.yaml` artifact-key validation, and keeping the `0001` example proportional.
 
 ## Blocked
 - none yet

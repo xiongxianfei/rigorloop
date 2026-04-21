@@ -219,6 +219,16 @@ R10. The starter kit MUST treat `explain-change` as:
 - required in PR summary form for every change;
 - required as a standalone durable artifact for non-trivial changes.
 
+R10a. For new non-trivial work, the default standalone durable reasoning artifact MUST be `docs/changes/<change-id>/explain-change.md`.
+
+R10b. PR text alone MUST NOT satisfy the standalone durable reasoning requirement for non-trivial work.
+
+R10c. The only allowed equivalent to the default standalone durable reasoning artifact is another artifact class explicitly named by this workflow spec as satisfying durable reasoning for the change.
+
+R10d. Approved legacy top-level explain artifacts, including approved artifacts under `docs/explain/`, MUST remain valid durable reasoning surfaces until they are migrated, superseded, archived, or otherwise retired.
+
+R10e. New top-level explain artifacts MUST NOT be created unless this workflow spec explicitly allows that artifact class.
+
 R11. The starter kit MUST define the explain-change split as follows:
 - PR text carries reviewer-facing summary;
 - durable Markdown artifacts carry reusable reasoning;
@@ -252,9 +262,25 @@ R12c. A standalone `review-resolution.md` artifact MUST be used when any of the 
 - the change goes through multiple material review rounds;
 - a maintainer explicitly requests a standalone review-resolution artifact.
 
+R12d. A standalone `verify-report.md` artifact MUST be used when at least one of the following is true:
+- verification evidence cannot remain concise in `docs/changes/<change-id>/explain-change.md`;
+- the change requires a durable standalone verification record for reviewer or maintainer audit;
+- the change has multiple verification commands, environments, or result groups that need separate traceable reporting;
+- repository policy for the change type explicitly requires a standalone verification artifact;
+- a reviewer or maintainer explicitly requests a standalone verify report;
+- the verification stage is itself a reviewed deliverable for the change.
+
+R12e. When none of the `R12d` triggers apply, verification evidence MAY remain in `docs/changes/<change-id>/explain-change.md` or the PR summary, provided the workflow's durability and concision requirements remain satisfied.
+
+R12f. Contributors SHOULD NOT infer that `verify-report.md` is universally required merely because the proof-of-value example contains one.
+
 R13. The first proof-of-value example shipped by the starter kit MUST be a skill metadata validator change that demonstrates the workflow end to end.
 
 R14. The proof-of-value example MUST include durable artifacts for proposal, spec, plan, test-spec, verify report, and explain-change.
+
+R14a. `docs/changes/0001-skill-validator/` MUST be treated as a rich reference example rather than the minimum universal pack for every non-trivial change.
+
+R14b. The ordinary baseline non-trivial change-local pack MUST be `docs/changes/<change-id>/change.yaml` plus durable Markdown reasoning, with standalone `review-resolution.md` and `verify-report.md` remaining conditional when their governing triggers do not apply.
 
 R15. The starter kit MUST provide a local skill-structure validation command that checks, at minimum:
 - a source skill contains `SKILL.md`;
@@ -400,6 +426,7 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - Existing repositories adopting RigorLoop MAY phase in the contract incrementally, beginning with documentation and structural checks before stricter enforcement.
 - Repositories adopting lifecycle-managed artifact ownership MAY phase migration of unrelated stale baseline artifacts, but they MUST normalize stale touched or relied-on artifacts before downstream stages rely on them as current guidance.
 - Repositories that squash, rebase, or otherwise rewrite commit history MAY collapse milestone commit boundaries after merge. The first-release contract guarantees milestone visibility during branch and pull-request review, not preservation under every default-branch merge strategy.
+- For new non-trivial work, the default standalone durable reasoning artifact is `docs/changes/<change-id>/explain-change.md`. Approved legacy top-level explain artifacts under `docs/explain/` remain valid until migrated or retired.
 
 ## Observability
 
@@ -438,6 +465,9 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 9. A fast-lane change or non-trivial unplanned single-slice change may use a normal commit subject because milestone-formatted commits are reserved for planned milestone work.
 10. An accepted proposal, approved spec, approved architecture document, active test spec, or accepted or active ADR may remain current guidance without immediate closeout as long as its readiness text is truthful and terminal disposition has not occurred.
 11. Final PR text may reference additional authoritative artifacts only after `verify` is rerun against those new references or an equivalent updated pre-PR handoff surface.
+12. An ordinary non-trivial change may satisfy the baseline change-local pack with `docs/changes/<change-id>/change.yaml` plus `docs/changes/<change-id>/explain-change.md` when standalone `review-resolution.md` and `verify-report.md` triggers do not apply.
+13. `docs/changes/0001-skill-validator/` may include more artifacts than an ordinary non-trivial change without making those additional artifacts universal requirements.
+14. Approved legacy top-level explain artifacts under `docs/explain/` remain valid for already-shipped work until they are migrated, superseded, archived, or otherwise retired.
 
 ## Non-goals
 
@@ -460,6 +490,8 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - A reviewer can determine from the PR plus artifacts why a change exists, how it was validated, and which content is canonical versus generated.
 - A reviewer can determine the disposition and rationale of review feedback without guessing whether it lives in PR text, explain-change, or a standalone review-resolution artifact.
 - A reviewer can locate structured traceability for a non-trivial change in `docs/changes/<change-id>/change.yaml` and find at least the required fields defined by `R25b`.
+- A reviewer can distinguish the ordinary baseline non-trivial change-local pack from the richer `docs/changes/0001-skill-validator/` example pack.
+- A reviewer can tell that new non-trivial work defaults to `docs/changes/<change-id>/explain-change.md` while approved legacy top-level explain artifacts remain valid until retired.
 - A reviewer can distinguish milestone commit boundaries from pull-request boundaries by inspecting standardized milestone commit subjects and the associated plan updates.
 
 ## Open questions
