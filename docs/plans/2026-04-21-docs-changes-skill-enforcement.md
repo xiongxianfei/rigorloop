@@ -283,6 +283,7 @@ The implementation must stay inside the approved narrow boundary:
 - [x] 2026-04-21: M2 completed. `verify`, `pr`, and `explain-change` now surface docs-changes baseline-pack expectations explicitly, the existing workflow-stage test spec stays aligned, and this feature itself now carries a baseline change-local pack.
 - [x] 2026-04-21: M2 code-review and verify passed after one wording fix in `explain-change`, so the initiative is back in `implement` for M3.
 - [x] 2026-04-21: M3 completed. No directly related `docs/workflows.md` drift remained, the active test spec was synced back to review state, and the repo-owned smoke validation path passed.
+- [x] 2026-04-21: overall code-review passed with no findings, so the feature is ready for the final `verify` gate.
 
 ## Decision log
 
@@ -349,6 +350,10 @@ The implementation must stay inside the approved narrow boundary:
   - `python scripts/build-skills.py --check`
   - `bash scripts/ci.sh`
   - Result: passed. `docs/workflows.md` still matched the approved docs-changes contract, so no summary-surface edit was needed.
+- 2026-04-21: overall code-review found no blocking, major, or minor issues across the full feature diff.
+  - `git diff --stat ba8998e..HEAD`
+  - `git diff ba8998e..HEAD -- docs/plan.md docs/proposals/2026-04-21-docs-changes-skill-enforcement.md specs/docs-changes-skill-enforcement.md specs/docs-changes-skill-enforcement.test.md docs/plans/2026-04-21-docs-changes-skill-enforcement.md skills/workflow/SKILL.md skills/implement/SKILL.md skills/verify/SKILL.md skills/explain-change/SKILL.md skills/pr/SKILL.md specs/docs-changes-usage-policy.test.md specs/workflow-stage-autoprogression.test.md docs/changes/2026-04-21-docs-changes-skill-enforcement/change.yaml docs/changes/2026-04-21-docs-changes-skill-enforcement/explain-change.md .codex/skills/workflow/SKILL.md .codex/skills/implement/SKILL.md .codex/skills/verify/SKILL.md .codex/skills/explain-change/SKILL.md .codex/skills/pr/SKILL.md`
+  - Result: approved.
 
 ## Outcome and retrospective
 
@@ -361,5 +366,5 @@ The implementation must stay inside the approved narrow boundary:
 - No separate architecture artifact is required unless later review broadens the change.
 - `specs/docs-changes-skill-enforcement.test.md` now exists and is the active proof-planning surface.
 - The tracked-source prerequisite is satisfied.
-- M1 through M3 are implemented; overall review and verification remain open.
-- The next stage is `code-review`.
+- M1 through M3 are implemented and overall code-review is complete; final verification remains open.
+- The next stage is `verify`.

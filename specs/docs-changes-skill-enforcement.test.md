@@ -217,7 +217,7 @@
 
 ## Next artifacts
 
-- `code-review`
+- `verify`
 
 ## Follow-on artifacts
 
@@ -225,5 +225,5 @@
 
 ## Readiness
 
-- This test spec is active and remains the proof surface for implementation review and verification.
-- The next stage is `code-review`.
+- This test spec is active and remains the proof surface for final verification.
+- The next stage is `verify`.
