@@ -192,12 +192,12 @@ The implementation must stay inside the approved architecture boundary:
   - repo-owned validation rejects noncanonical artifact keys while continuing to accept the current scalar-path shape and the shipped `0001` example.
 - Commit message: `M2: enforce docs-changes metadata contract`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - semantic checks may overconstrain artifact keys beyond the approved list;
   - validator changes may break the shipped `0001` example or the existing fixture shape unexpectedly.
@@ -287,7 +287,8 @@ The implementation must stay inside the approved architecture boundary:
 - [x] 2026-04-21: `specs/docs-changes-usage-policy.test.md` created as the active proof-planning surface for implementation.
 - [x] 2026-04-21: M1 aligned the workflow contract, existing workflow proof surface, contributor summaries, and README to the approved baseline-versus-conditional docs-changes rule.
 - [x] M1 completed.
-- [ ] M2 completed.
+- [x] 2026-04-21: M2 added repo-owned metadata fixture tests, negative fixtures for invalid artifact keys and value shapes, and canonical artifact-key enforcement in `scripts/validate-change-metadata.py` without changing the schema shape.
+- [x] M2 completed.
 - [ ] M3 completed.
 
 ## Decision log
@@ -296,10 +297,12 @@ The implementation must stay inside the approved architecture boundary:
 - 2026-04-21: keep canonical artifact-key enforcement in `scripts/validate-change-metadata.py` rather than redesigning `schemas/change.schema.json`. Reason: the approved architecture explicitly preserves the existing scalar-path schema shape.
 - 2026-04-21: treat tracked-source normalization as a hard prerequisite before `test-spec` or `implement`. Reason: the accepted proposal, approved spec, approved architecture, and this plan currently exist only as local worktree artifacts.
 - 2026-04-21: make the workflow contract and summary surfaces state the ordinary baseline pack separately from the `0001-skill-validator/` example. Reason: M1 needed to stop contributors from treating the shipped rich example as the universal minimum pack for non-trivial work.
+- 2026-04-21: enforce the approved `artifacts` contract through an allowlist of canonical snake_case keys instead of regex-only naming checks. Reason: the approved spec names the canonical key set directly, and rejecting unknown keys keeps the validator aligned with that contract.
 
 ## Surprises and discoveries
 
 - 2026-04-21: the existing archived `specs/rigorloop-workflow.test.md` still owns the main proof surface for `change.yaml`, explain-change, and `0001` behavior, so M1 required workflow-test alignment rather than only editing summary docs.
+- 2026-04-21: the pre-M2 metadata validator already enforced scalar string artifact values through schema validation, but it silently accepted noncanonical artifact keys until the semantic allowlist check was added.
 
 ## Validation notes
 
@@ -310,6 +313,17 @@ The implementation must stay inside the approved architecture boundary:
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/docs-changes-usage-policy.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/architecture/2026-04-21-docs-changes-usage-policy.md`
   - `git diff --check -- README.md CONSTITUTION.md AGENTS.md docs/workflows.md specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md`
   - Result: all passed.
+- 2026-04-21: M2 fail-first proof confirmed the gap before the semantic check landed.
+  - Copied the pre-M2 `scripts/validate-change-metadata.py` from `HEAD` into a temporary script under `scripts/` and ran it against `tests/fixtures/change-metadata/bad-artifact-key/change.yaml`.
+  - Result: the pre-M2 validator incorrectly reported the invalid artifact key fixture as valid.
+- 2026-04-21: M2 validation passed.
+  - `python scripts/test-change-metadata-validator.py`
+  - `python scripts/validate-change-metadata.py docs/changes/0001-skill-validator/change.yaml`
+  - `python scripts/validate-change-metadata.py tests/fixtures/change-metadata/bad-artifact-key/change.yaml`
+  - `python scripts/validate-change-metadata.py tests/fixtures/change-metadata/bad-artifact-value-shape/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-04-21-docs-changes-usage-policy.md --path specs/docs-changes-usage-policy.test.md`
+  - `git diff --check -- scripts/validate-change-metadata.py specs/docs-changes-usage-policy.test.md docs/plans/2026-04-21-docs-changes-usage-policy.md`
+  - Result: all passed, and the invalid fixtures now fail with contributor-actionable messages.
 
 ## Outcome and retrospective
 
@@ -319,5 +333,5 @@ The implementation must stay inside the approved architecture boundary:
 
 - `specs/docs-changes-usage-policy.test.md` is now the active proof-planning surface.
 - The tracked-source prerequisite is satisfied for the accepted proposal, approved spec, approved architecture, active plan, and active test spec.
-- M1 is complete and the initiative remains active for M2 and M3.
+- M1 and M2 are complete and the initiative remains active for M3.
 - The next stage is `code-review`.

@@ -1,0 +1,18 @@
+change_id: 0002-bad-artifact-key
+title: Invalid artifact key fixture
+classification: default
+risk: low
+artifacts:
+  explain-change: docs/changes/0002-bad-artifact-key/explain-change.md
+requirements:
+  - REQ-001
+tests:
+  - TEST-001
+validation:
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/bad-artifact-key/change.yaml
+    result: fail
+changed_files:
+  - tests/fixtures/change-metadata/bad-artifact-key/change.yaml
+review:
+  status: pending
+  unresolved_items: 1

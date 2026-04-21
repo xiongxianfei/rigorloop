@@ -180,7 +180,7 @@
 - Fixture/setup:
   - `docs/changes/0001-skill-validator/change.yaml`
   - `tests/fixtures/change-metadata/valid-basic/change.yaml`
-  - future repo-owned runner: `scripts/test-change-metadata-validator.py`
+  - repo-owned runner: `scripts/test-change-metadata-validator.py`
 - Steps:
   - Run `python scripts/test-change-metadata-validator.py`.
   - Run `python scripts/validate-change-metadata.py docs/changes/0001-skill-validator/change.yaml tests/fixtures/change-metadata/valid-basic/change.yaml`.
@@ -198,10 +198,10 @@
 - Covers: `R9a`, `R9b`, `R9c`
 - Level: integration
 - Fixture/setup:
-  - future invalid fixtures:
+  - invalid fixtures:
     - `tests/fixtures/change-metadata/bad-artifact-key/change.yaml`
     - `tests/fixtures/change-metadata/bad-artifact-value-shape/change.yaml`
-  - future repo-owned runner: `scripts/test-change-metadata-validator.py`
+  - repo-owned runner: `scripts/test-change-metadata-validator.py`
 - Steps:
   - Run `python scripts/test-change-metadata-validator.py` after the invalid fixtures are added.
   - Run `python scripts/validate-change-metadata.py <invalid-fixture>` for each invalid fixture.
@@ -260,7 +260,7 @@
   - `tests/fixtures/change-metadata/bad-artifact-value-shape/change.yaml`
 - Use repo-owned scripts rather than ad hoc shell parsing as the executable proof surface:
   - `scripts/validate-change-metadata.py`
-  - future `scripts/test-change-metadata-validator.py`
+  - `scripts/test-change-metadata-validator.py`
   - `scripts/ci.sh`
 
 ## Mocking/stubbing policy
@@ -294,7 +294,7 @@
 - The approved architecture adds no new subsystem, queue, or network dependency.
 - Manual confirmation is sufficient that validation remains file-based and linear in the size of the checked metadata files:
   - `scripts/validate-change-metadata.py`
-  - future `scripts/test-change-metadata-validator.py`
+  - `scripts/test-change-metadata-validator.py`
 
 ## Manual QA checklist
 
@@ -315,7 +315,7 @@
 ## Uncovered gaps
 
 - No blocking spec or architecture gaps remain.
-- Current implementation gap by design: the dedicated repo-owned metadata fixture runner (`scripts/test-change-metadata-validator.py`) does not exist yet and is planned in M2. Until then, direct `python scripts/validate-change-metadata.py ...` runs and manual workflow-test alignment remain the narrower proof surfaces.
+- No blocking implementation gaps remain for the M2 metadata proof surface. The dedicated repo-owned metadata fixture runner now exists at `scripts/test-change-metadata-validator.py`.
 
 ## Next artifacts
 
