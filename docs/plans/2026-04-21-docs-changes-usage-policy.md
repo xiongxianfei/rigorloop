@@ -4,7 +4,7 @@
 - Owner: maintainer + Codex
 - Start date: 2026-04-21
 - Last updated: 2026-04-21
-- Related issue or PR: none yet
+- Related issue or PR: PR #9
 - Supersedes: none
 
 ## Purpose / big picture
@@ -366,7 +366,7 @@ The implementation must stay inside the approved architecture boundary:
 - Test effectiveness: the dedicated change-metadata fixture runner and negative fixtures were the highest-value executable proof because they turned the new artifact-key contract into a small, deterministic validator seam, while manual workflow/test-spec review remained the right proof level for the guidance surfaces.
 - Architecture accuracy: the approved small design held. The feature never needed a schema redesign, second registry, or new storage model; the validator seam plus existing workflow surfaces were sufficient.
 - Process issues: pre-PR lifecycle closeout still matters for completed planned work. `docs/plan.md` and the plan body both needed an explicit transition to `Done` before the PR stage so review would not inherit stale active-state bookkeeping.
-- Follow-up actions: open the PR against `main`, watch hosted CI, and then do only normal merge follow-up if review accepts the change.
+- Follow-up actions: watch hosted CI and review feedback on PR #9, then do only normal merge follow-up if review accepts the change.
 
 ## Readiness
 
