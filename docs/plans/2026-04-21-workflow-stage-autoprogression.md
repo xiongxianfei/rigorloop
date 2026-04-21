@@ -399,6 +399,7 @@ The implementation must stay inside the approved v1 boundary:
   - `python scripts/build-skills.py --check`
   - `bash scripts/ci.sh`
   - `git diff --check -- specs/workflow-stage-autoprogression.test.md docs/plans/2026-04-21-workflow-stage-autoprogression.md`
+- 2026-04-21: M3 code-review passed after the readiness fix. The review-resolution loop did not require further skill or workflow changes beyond normalizing the active test-spec and plan readiness wording.
 
 ## Outcome and retrospective
 
@@ -409,4 +410,5 @@ The implementation must stay inside the approved v1 boundary:
 - This plan is active.
 - `plan-review` is complete.
 - The tracked-source prerequisite and test spec are in place.
-- M3 is implemented and ready for `code-review`.
+- Implementation and `code-review` are complete through M3.
+- The next stage is `verify`.
