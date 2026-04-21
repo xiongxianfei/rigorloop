@@ -89,6 +89,13 @@ When PR-body references are not yet available, record which pre-PR handoff surfa
 - Do not move to PR if blockers remain.
 - Do not update artifacts silently; call out drift.
 
+## Workflow handoff behavior
+
+- In a workflow-managed full-feature flow, successful `verify` hands off to the next required or default downstream stage for the lane.
+- In that full-feature lane, the downstream stage is `ci` when the governing workflow contract elevates it; otherwise it is `explain-change`.
+- Direct `verify` requests remain isolated by default unless the user explicitly asks to continue through completion.
+- When `verify` stops because of blockers or pause conditions, name the blocked next stage and the reason continuation stopped.
+
 ## Expected output
 
 - verification verdict: ready, concerns, or blocked;
@@ -97,4 +104,4 @@ When PR-body references are not yet available, record which pre-PR handoff surfa
 - CI status or CI gap;
 - artifact drift findings;
 - remaining risks;
-- readiness statement for `explain-change` and `pr`.
+- readiness statement for `ci`, `explain-change`, isolated stop, or blocker state.

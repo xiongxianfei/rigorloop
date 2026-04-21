@@ -220,12 +220,12 @@ The implementation must stay inside the approved v1 boundary:
   - full-feature execution skills continue automatically where the v1 contract requires it, `pr` opens directly when ready, and isolated/direct-stage exceptions remain explicit.
 - Commit message: `M2: align workflow autoprogression execution skills`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - stage-local wording may diverge across execution skills;
   - `pr` behavior may still read as draft-only if readiness wording is not updated consistently.
@@ -323,7 +323,7 @@ The implementation must stay inside the approved v1 boundary:
 - [x] 2026-04-21: tracked-source prerequisite satisfied for proposal, spec, architecture, plan, and test spec before downstream implementation reliance.
 - [x] 2026-04-21: test spec created at `specs/workflow-stage-autoprogression.test.md`.
 - [x] 2026-04-21: M1 completed. The workflow contract, operational summary, repository guidance, and shared workflow skill now agree on bounded v1 autoprogression scope.
-- [ ] M2. Align full-feature execution-stage skills and direct-PR behavior.
+- [x] 2026-04-21: M2 completed. The execution-stage skills now express the full-feature downstream chain, direct `pr` opening, isolated review/verification/explanation behavior, and advice-only `learn`.
 - [ ] M3. Align authoring-to-review skills and complete repo-wide proof.
 
 ## Decision log
@@ -334,10 +334,13 @@ The implementation must stay inside the approved v1 boundary:
 - 2026-04-21: kept M1 limited to shared workflow and governance surfaces plus `skills/workflow/SKILL.md`. Reason: the approved architecture makes `workflow` the owner of lane, invocation-context, and generic continuation rules, while stage-local execution skills remain M2 work.
 - 2026-04-21: tightened the shared workflow contract from optional to required continuation when the approved autoprogression rule applies, and removed `learn` from the full-feature lane's default required sequence. Reason: M1 review found those two wording drifts kept manual handoff and automatic `learn` behavior implicitly allowed in the shared surfaces.
 - 2026-04-21: removed `learn` from the remaining required/default lifecycle summaries in `docs/workflows.md` and the shared workflow skill's canonical artifact order. Reason: `learn` is advice-only in the approved spec and should not appear as part of the default auto-run lane.
+- 2026-04-21: left `skills/workflow/SKILL.md` unchanged in M2. Reason: M1 already carried the shared invocation-context and lane-aware handoff rules, so M2 only needed to align the stage-local execution skills that inherit that contract.
+- 2026-04-21: kept M2 focused on execution-stage skill behavior and direct-`pr` semantics, while leaving repo-wide smoke proof to M3. Reason: the approved plan already reserves `bash scripts/ci.sh` as part of the final repo-wide proof milestone rather than the narrower execution-skill alignment slice.
 
 ## Surprises and discoveries
 
 - 2026-04-21: `python scripts/build-skills.py --check` is meaningful milestone proof only after regeneration has completed. The final M1 validation set was rerun sequentially so generated-skill drift evidence reflects the post-sync state.
+- 2026-04-21: a local exploratory `bash scripts/ci.sh` run still blocks when tracked-diff explicit-path lifecycle validation sees changed `.codex/skills/*` files as generated outputs rather than authored sources. That repo-wide proof issue is recorded for M3 instead of being silently ignored.
 
 ## Validation notes
 
@@ -364,6 +367,17 @@ The implementation must stay inside the approved v1 boundary:
   - `rg -n 'workflow-managed|isolated|direct \`pr\`|fast-lane|bugfix|learn|ci' specs/rigorloop-workflow.md docs/workflows.md AGENTS.md CONSTITUTION.md skills/workflow/SKILL.md .codex/skills`
   - `git diff --check -- CONSTITUTION.md AGENTS.md docs/workflows.md specs/rigorloop-workflow.md skills/workflow/SKILL.md .codex/skills`
   - `git diff --check -- docs/plans/2026-04-21-workflow-stage-autoprogression.md`
+- 2026-04-21: M2 updated `skills/implement/SKILL.md`, `skills/code-review/SKILL.md`, `skills/verify/SKILL.md`, `skills/ci/SKILL.md`, `skills/explain-change/SKILL.md`, `skills/pr/SKILL.md`, and `skills/learn/SKILL.md`, then regenerated `.codex/skills/`.
+- 2026-04-21: M2 targeted validation passed with:
+  - `python scripts/validate-skills.py`
+  - `python scripts/build-skills.py`
+  - `python scripts/build-skills.py --check`
+  - `rg -n -- 'workflow-managed|isolated|direct \`pr\`|code-review|verify|ci|explain-change|learn' skills/workflow/SKILL.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/verify/SKILL.md skills/ci/SKILL.md skills/explain-change/SKILL.md skills/pr/SKILL.md skills/learn/SKILL.md .codex/skills`
+  - `git diff --check -- skills .codex/skills`
+- 2026-04-21: exploratory repo-wide smoke validation was run early:
+  - `bash scripts/ci.sh`
+  - result: failed because local explicit-path artifact lifecycle validation blocks changed `.codex/skills/*` paths as generated outputs
+  - handling: recorded as an M3 repo-wide-proof discovery rather than treating it as a hidden pass or expanding M2 into CI/lifecycle-validator changes
 
 ## Outcome and retrospective
 
@@ -374,4 +388,4 @@ The implementation must stay inside the approved v1 boundary:
 - This plan is active.
 - `plan-review` is complete.
 - The tracked-source prerequisite and test spec are in place.
-- M1 is implemented and ready for `code-review`.
+- M2 is implemented and ready for `code-review`.
