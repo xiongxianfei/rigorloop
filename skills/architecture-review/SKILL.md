@@ -59,6 +59,7 @@ Use when useful:
 - Do not ignore operational failure modes.
 - Do not let diagrams substitute for decisions.
 - Do not edit the architecture doc unless the user explicitly asks.
+- When the review outcome is approval, the tracked architecture artifact should be ready to normalize to `approved` before planning or implementation relies on it. Do not leave a relied-on design in durable `reviewed` state.
 
 ## Expected output
 

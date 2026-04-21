@@ -36,7 +36,7 @@ Do not overwrite an older proposal for a new initiative.
 
 ## Required sections
 
-1. **Status**: draft, under review, accepted, rejected, superseded.
+1. **Status**: draft, under review, accepted, rejected, abandoned, superseded, archived.
 2. **Problem**: the user or system problem being solved.
 3. **Goals**: outcomes the change should produce.
 4. **Non-goals**: explicitly out-of-scope work.
@@ -50,7 +50,9 @@ Do not overwrite an older proposal for a new initiative.
 12. **Risks and mitigations**: product, technical, operational, security, performance.
 13. **Open questions**: what must be resolved before spec or architecture.
 14. **Decision log**: date, decision, reason, alternatives rejected.
-15. **Next artifacts**: spec, architecture, plan, test-spec.
+15. **Next artifacts**: planned spec, architecture, plan, test-spec, or follow-up work while the proposal is active.
+16. **Follow-on artifacts**: actual downstream artifacts or terminal disposition after settlement or closeout. If present before any real follow-ons exist, say `None yet`.
+17. **Readiness**: truthful next-stage status.
 
 ## Decision quality checklist
 
@@ -72,6 +74,9 @@ Before marking accepted or ready for review, verify:
 - Do not hide major tradeoffs.
 - Do not skip the rejected alternatives.
 - Do not claim a proposal is accepted unless the user or project process accepts it.
+- Do not treat `under review` as a durable relied-on state once downstream work is using the proposal. Normalize accepted proposals to `accepted`.
+- Preserve `Next artifacts` as planning history. Use `Follow-on artifacts` or equivalent closeout text for actual downstream artifacts or final disposition.
+- If a proposal is superseded, identify the replacement with `superseded_by` or equivalent labeled text.
 
 ## Expected output
 

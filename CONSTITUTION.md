@@ -77,6 +77,10 @@ For planned initiatives, `docs/plan.md` MUST remain the lifecycle index and conc
 
 During execution, `implement` MUST keep the active plan body's progress, decisions, discoveries, and validation notes current enough that later stages can review the real initiative state.
 
+Lifecycle-managed top-level artifacts under `docs/proposals/`, top-level `specs/`, `specs/*.test.md`, `docs/architecture/`, and `docs/adr/` MUST keep status inside the artifact as tracked source of truth. For proposals, top-level specs, test specs, and architecture documents, `reviewed` is transitional review output rather than a durable relied-on state. Durable current states are `accepted`, `approved`, and `active`; terminal or historical states include `deprecated`, `rejected`, `abandoned`, `superseded`, and `archived`.
+
+For lifecycle-managed artifacts, `Next artifacts` preserves planned next steps while the artifact is active. `Follow-on artifacts` or `Closeout` records actual downstream artifacts or final disposition instead of rewriting planning history. `superseded` artifacts MUST identify their replacement through `superseded_by` or equivalent labeled text.
+
 Change-local artifacts under `docs/changes/<change-id>/` SHOULD stay concise and MUST link back to approved top-level artifacts instead of becoming a second long-form source of truth.
 
 Architecture-affecting changes MUST update the relevant architecture document or ADR in the same change.
@@ -114,6 +118,10 @@ Local validation claims MUST name the commands actually run.
 Non-trivial changes MUST leave contributor-visible verification evidence in the plan, verify report, PR body, or change-local artifacts.
 
 For planned initiatives, final lifecycle closeout MUST update both `docs/plan.md` and the plan body when lifecycle state changes, and `verify` MUST treat stale lifecycle state between them as blocking PR readiness.
+
+For lifecycle-managed proposals, specs, test specs, architecture documents, and ADRs, `verify` MUST block on stale or inconsistent artifacts that are touched, referenced, generated, or authoritative for the changed area, and it MUST report unrelated stale baseline artifacts as warnings instead of blockers.
+
+Before draft PR text exists, `verify` MUST use pre-PR handoff surfaces such as `docs/changes/<change-id>/change.yaml`, explain-change artifacts, the active plan, and other touched or referenced authoritative artifacts. Final PR text MUST NOT introduce new authoritative artifact references without rerunning `verify`.
 
 Until repository-specific release checks replace the current conservative template behavior, contributors MUST treat `scripts/release-verify.sh` and `release.yml` as non-authoritative for broader completion claims.
 

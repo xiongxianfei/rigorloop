@@ -37,7 +37,7 @@ Use ADRs for decisions that are long-lived, controversial, high-risk, or likely 
 
 ## Required architecture sections
 
-1. **Status**: draft, reviewed, approved, superseded.
+1. **Status**: draft, approved, abandoned, superseded, archived.
 2. **Related artifacts**: proposal, spec, research, project map.
 3. **Summary**: one-paragraph design direction.
 4. **Requirements covered**: map requirement IDs to design areas.
@@ -55,6 +55,9 @@ Use ADRs for decisions that are long-lived, controversial, high-risk, or likely 
 16. **ADRs**: decisions made, rationale, consequences.
 17. **Risks and mitigations**.
 18. **Open questions** that must be resolved before plan.
+19. **Next artifacts**: planned next steps while the design remains active current guidance.
+20. **Follow-on artifacts**: actual downstream artifacts or terminal disposition. If present before any real follow-ons exist, say `None yet`.
+21. **Readiness**: truthful next-stage or settled-state wording.
 
 ## Diagram guidance
 
@@ -78,7 +81,7 @@ Use:
 ADR-YYYYMMDD-slug: Title
 
 ## Status
-Accepted | Proposed | Superseded
+draft | proposed | accepted | active | deprecated | superseded | archived | abandoned
 
 ## Context
 
@@ -91,6 +94,12 @@ Accepted | Proposed | Superseded
 ## Follow-up
 ```
 
+For this repository's current ADR contract:
+
+- `draft` and `proposed` are active-work states.
+- `accepted` and `active` are settlement states.
+- `deprecated`, `superseded`, `archived`, and `abandoned` are terminal or closeout-oriented states.
+
 ## Rules
 
 - Do not write an execution milestone list here; use `plan` after design review.
@@ -98,6 +107,9 @@ Accepted | Proposed | Superseded
 - Do not introduce architecture that the spec does not require.
 - Do not change behavior in the architecture doc without updating the spec.
 - Do not claim compatibility, rollback, or performance safety without explaining the mechanism.
+- Do not use `reviewed` as a durable architecture status. Once the design is relied on, normalize the tracked artifact to `approved` or the appropriate terminal state.
+- Preserve `Next artifacts` as planning history. Use `Follow-on artifacts` for actual downstream artifacts, replacement, or terminal closeout.
+- If an architecture document is superseded, identify the replacement with `superseded_by` or equivalent labeled text.
 
 ## Expected output
 

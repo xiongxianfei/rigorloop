@@ -18,6 +18,7 @@ Read:
 - feature spec;
 - test spec;
 - architecture doc and ADRs;
+- touched or authoritative lifecycle-managed artifacts relevant to the change;
 - concrete plan and validation notes;
 - actual diff;
 - test output and CI status when available;
@@ -34,11 +35,12 @@ Evaluate each with `pass`, `concern`, or `block`:
 3. **Test coverage**: every required test exists or has a documented manual verification.
 4. **Test validity**: tests can fail for the right reason and assert meaningful behavior.
 5. **Architecture coherence**: implementation matches design and ADRs.
-6. **Plan completion**: milestones are complete or intentionally deferred, and planned initiatives do not have stale lifecycle state between `docs/plan.md` and the plan body.
-7. **Validation evidence**: commands, outputs, and CI results are recorded.
-8. **Drift detection**: specs/plans/architecture reflect what was actually built.
-9. **Risk closure**: rollout, rollback, migration, observability, and security risks are addressed.
-10. **Release readiness**: branch state, generated files, migrations, docs, and CI are ready for PR.
+6. **Artifact lifecycle state**: touched, referenced, generated, and authoritative lifecycle-managed artifacts do not advertise stale or contradictory status, readiness, closeout, or replacement state.
+7. **Plan completion**: milestones are complete or intentionally deferred, and planned initiatives do not have stale lifecycle state between `docs/plan.md` and the plan body.
+8. **Validation evidence**: commands, outputs, and CI results are recorded.
+9. **Drift detection**: specs/plans/architecture reflect what was actually built.
+10. **Risk closure**: rollout, rollback, migration, observability, and security risks are addressed.
+11. **Release readiness**: branch state, generated files, migrations, docs, and CI are ready for PR.
 
 ## Verification process
 
@@ -50,11 +52,13 @@ Requirement → Test IDs → Files changed → Evidence → Status
 
 2. Check the actual diff for unplanned behavior.
 3. Compare tests against the test spec.
-4. For planned initiatives, compare `docs/plan.md` against the plan body and treat stale lifecycle state as a blocker. At minimum, block on completed, blocked, or superseded work still listed under `## Active`; conflicting index-versus-body state; or a plan body marked done, blocked, or superseded while still presenting itself as active or in progress.
-5. Run or list required validation commands.
-6. Inspect CI workflow scope if CI is expected.
-7. Identify artifact drift and propose fixes.
-8. Produce a final readiness verdict.
+4. Build the related artifact set from changed files, `docs/changes/<change-id>/change.yaml`, explain-change artifacts, the active plan, generated outputs, governing specs, governing architecture docs or ADRs, governing test specs, and draft PR text only when that draft PR body already exists.
+5. For lifecycle-managed artifacts, treat stale or inconsistent touched, referenced, generated, or authoritative artifacts as blockers. Report unrelated stale baseline artifacts as warnings instead of blocking the change.
+6. For planned initiatives, compare `docs/plan.md` against the plan body and treat stale lifecycle state as a blocker. At minimum, block on completed, blocked, or superseded work still listed under `## Active`; conflicting index-versus-body state; or a plan body marked done, blocked, or superseded while still presenting itself as active or in progress.
+7. Run or list required validation commands.
+8. Inspect CI workflow scope if CI is expected.
+9. Identify artifact drift and propose fixes.
+10. Produce a final readiness verdict.
 
 ## Commands and evidence
 
@@ -70,12 +74,16 @@ If commands cannot be run, state why and what evidence is missing.
 
 When planned-initiative lifecycle state matters, record which `docs/plan.md` section and which plan-body lifecycle surfaces were reviewed.
 
+When PR-body references are not yet available, record which pre-PR handoff surfaces supplied authoritative references instead. Final PR text must not add new authoritative artifact references without rerunning `verify`.
+
 ## Rules
 
 - Do not claim CI passed unless CI actually passed.
 - Do not claim tests were run unless they were run.
 - Do not treat unrun tests as evidence.
 - Do not ignore implementation that exceeds the spec.
+- Do not treat `reviewed` as a durable passing state for relied-on proposals, specs, test specs, or architecture docs.
+- Do not let touched or authoritative stale artifacts pass as baseline debt.
 - Do not treat a planned initiative as PR-ready when lifecycle state is stale.
 - Do not accept deferring a known `Done` transition until after merge unless merged state is the deciding event for completion.
 - Do not move to PR if blockers remain.
