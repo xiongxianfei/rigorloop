@@ -1,6 +1,6 @@
 # Docs changes usage policy plan
 
-- Status: active
+- Status: done
 - Owner: maintainer + Codex
 - Start date: 2026-04-21
 - Last updated: 2026-04-21
@@ -358,14 +358,20 @@ The implementation must stay inside the approved architecture boundary:
 
 ## Outcome and retrospective
 
-- This initiative is active. Use this section for completion, blockage, supersession, or retrospective notes once the real lifecycle outcome is known.
+- This plan is done on-branch and now belongs in `docs/plan.md` under `Done`.
+- What changed: the feature clarified the repository rule for baseline versus conditional `docs/changes/` artifacts, aligned the governing workflow/test surfaces and summaries, added canonical `change.yaml` artifact-key enforcement plus negative fixtures, and wired the metadata fixture runner into `bash scripts/ci.sh`.
+- What went well: splitting the work into guidance alignment, validator enforcement, and repo-wide proof kept the reviews narrow and made it easy to isolate real contract drift from feature work.
+- What was harder than expected: lifecycle-managed artifacts still needed explicit post-review and post-verify readiness normalization even after the milestone implementation work was complete.
+- Spec accuracy: the approved spec held through implementation once the durable-reasoning default, legacy `docs/explain/` compatibility, and canonical artifact-key contract were made explicit. The most important constraint was clarifying the workflow contract without weakening it.
+- Test effectiveness: the dedicated change-metadata fixture runner and negative fixtures were the highest-value executable proof because they turned the new artifact-key contract into a small, deterministic validator seam, while manual workflow/test-spec review remained the right proof level for the guidance surfaces.
+- Architecture accuracy: the approved small design held. The feature never needed a schema redesign, second registry, or new storage model; the validator seam plus existing workflow surfaces were sufficient.
+- Process issues: pre-PR lifecycle closeout still matters for completed planned work. `docs/plan.md` and the plan body both needed an explicit transition to `Done` before the PR stage so review would not inherit stale active-state bookkeeping.
+- Follow-up actions: open the PR against `main`, watch hosted CI, and then do only normal merge follow-up if review accepts the change.
 
 ## Readiness
 
-- `specs/docs-changes-usage-policy.test.md` is now the active proof-planning surface.
-- The tracked-source prerequisite is satisfied for the accepted proposal, approved spec, approved architecture, active plan, and active test spec.
+- This plan is done on-branch.
+- The tracked-source prerequisite and active test spec are in place.
 - M1 through M3 are complete.
-- `code-review` is complete for the implementation milestones.
-- `verify` is complete for the implementation milestones.
-- `explain-change` is complete at `docs/explain/2026-04-21-docs-changes-usage-policy.md`.
-- The next stage is `pr`.
+- `code-review`, `verify`, and `explain-change` are complete.
+- The next expected state change is PR review or merge follow-up, not more feature implementation.
