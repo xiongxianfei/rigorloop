@@ -332,6 +332,7 @@ The implementation must stay inside the approved v1 boundary:
 - 2026-04-21: excluded executable router work from this plan. Reason: the approved architecture keeps v1 guidance- and skill-driven.
 - 2026-04-21: kept fast-lane and bugfix execution out of implementation scope. Reason: the approved spec explicitly narrows v1 to full-feature execution plus authoring-to-review handoffs.
 - 2026-04-21: kept M1 limited to shared workflow and governance surfaces plus `skills/workflow/SKILL.md`. Reason: the approved architecture makes `workflow` the owner of lane, invocation-context, and generic continuation rules, while stage-local execution skills remain M2 work.
+- 2026-04-21: tightened the shared workflow contract from optional to required continuation when the approved autoprogression rule applies, and removed `learn` from the full-feature lane's default required sequence. Reason: M1 review found those two wording drifts kept manual handoff and automatic `learn` behavior implicitly allowed in the shared surfaces.
 
 ## Surprises and discoveries
 
@@ -348,6 +349,13 @@ The implementation must stay inside the approved v1 boundary:
   - `python scripts/build-skills.py --check`
   - `rg -n 'workflow-managed|isolated|direct \`pr\`|fast-lane|bugfix|learn|ci' specs/rigorloop-workflow.md docs/workflows.md AGENTS.md CONSTITUTION.md skills/workflow/SKILL.md .codex/skills`
   - `git diff --check -- CONSTITUTION.md AGENTS.md docs/workflows.md specs/rigorloop-workflow.md skills/workflow/SKILL.md .codex/skills`
+- 2026-04-21: M1 review-fix validation passed after tightening `R7d` and making `learn` conditional in the shared workflow skill:
+  - `python scripts/validate-skills.py`
+  - `python scripts/build-skills.py`
+  - `python scripts/build-skills.py --check`
+  - `rg -n 'workflow-managed|isolated|direct \`pr\`|fast-lane|bugfix|learn|ci' specs/rigorloop-workflow.md docs/workflows.md AGENTS.md CONSTITUTION.md skills/workflow/SKILL.md .codex/skills`
+  - `git diff --check -- CONSTITUTION.md AGENTS.md docs/workflows.md specs/rigorloop-workflow.md skills/workflow/SKILL.md .codex/skills`
+  - `git diff --check -- docs/plans/2026-04-21-workflow-stage-autoprogression.md`
 
 ## Outcome and retrospective
 

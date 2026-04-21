@@ -137,7 +137,7 @@ R7b. The "Eventually enforce when" column in the stage-classification table MUST
 
 R7c. The starter kit MUST distinguish workflow-managed completion flows from isolated stage requests when deciding whether a stage result should continue automatically into a downstream stage.
 
-R7d. When an approved continuation contract applies, a workflow-managed completion flow MAY continue automatically into the next required or default downstream stage for the current lane without waiting for redundant user re-invocation.
+R7d. When an approved continuation contract applies, a workflow-managed completion flow MUST continue automatically into the next required or default downstream stage for the current lane unless a documented stop condition applies. Redundant user re-invocation MUST NOT be required merely to enter that already-known downstream stage.
 
 R7e. Unless a later approved change broadens scope, v1 continuation applies only to:
 - authoring-to-review handoffs for `proposal`, `spec`, and `architecture` when the matching review stage is the next required or default downstream step;
