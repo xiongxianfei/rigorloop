@@ -145,13 +145,13 @@ The core best practice is:
 
 The workflow-spec summary should stay compact and should identify, at minimum:
 
-| Artifact | Required for | Authoring skill | Review skill | Settled closeout state |
-| --- | --- | --- | --- | --- |
-| Proposal | non-trivial direction choice | `proposal` | `proposal-review` | `accepted` / `rejected` / `abandoned` / `superseded` / `archived` |
-| Spec | behavior changes | `spec` | `spec-review` | `approved` / `abandoned` / `superseded` / `archived` |
-| Architecture | boundary or system-shape changes | `architecture` | `architecture-review` | `approved` / `abandoned` / `superseded` / `archived` |
-| Test spec | behavior proof | `test-spec` | repository-defined review gate | `active` / `abandoned` / `superseded` / `archived` |
-| ADR | long-lived design decision | ADR authoring flow | `architecture-review` when relevant | `Accepted` / `Superseded` / `Archived` |
+| Artifact | Required for | Authoring skill | Review skill | Settlement states | Closeout / terminal states | Closeout required when |
+| --- | --- | --- | --- | --- | --- | --- |
+| Proposal | non-trivial direction choice | `proposal` | `proposal-review` | `accepted` | `rejected`, `abandoned`, `superseded`, `archived` | when terminal or historical disposition is known |
+| Spec | behavior changes | `spec` | `spec-review` | `approved` | `abandoned`, `superseded`, `archived` | when terminal or historical disposition is known |
+| Architecture | boundary or system-shape changes | `architecture` | `architecture-review` | `approved` | `abandoned`, `superseded`, `archived` | when terminal or historical disposition is known |
+| Test spec | behavior proof | `test-spec` | repository-defined review gate | `active` | `abandoned`, `superseded`, `archived` | when the test spec is no longer the active proof surface |
+| ADR | long-lived design decision | ADR authoring flow | `architecture-review` when relevant | `Accepted` | `Superseded`, `Archived` | when the decision is explicitly replaced or retired |
 
 The spec should then point to the canonical detailed contract surfaces already used by the repository, such as:
 

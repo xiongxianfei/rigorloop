@@ -400,6 +400,7 @@ The implementation needs to land as one coherent sequence:
 - 2026-04-20: completed M1 by adding the artifact lifecycle contract registry, validator helper, CLI entrypoint, and fixture-driven validator tests under `scripts/` and `tests/fixtures/artifact-lifecycle/`.
 - 2026-04-21: addressed the first M1 code-review pass by narrowing spec classification to lifecycle-managed behavior contracts, fixing duplicate-ID severity classification, applying stale-readiness checks only to settled or terminal artifacts, and adding `Next artifacts` validation plus regression fixtures.
 - 2026-04-21: completed M2 by aligning `specs/rigorloop-workflow.md`, root workflow guidance, feature templates, and the canonical/generated proposal/spec/test-spec/architecture/verify/workflow skills with the settled-versus-terminal artifact lifecycle model.
+- 2026-04-21: addressed the M2 code-review findings by fixing the ADR guidance surface to include `Archived` and by updating the approved proposal example to use split settlement-versus-terminal columns plus explicit closeout timing.
 
 ## Decision log
 
@@ -417,6 +418,7 @@ The implementation needs to land as one coherent sequence:
 - 2026-04-21: parse and validate `Next artifacts` when the section exists. Rationale: M1 claims `R9a` and `R9b` coverage, so the validator must enforce at least the objective non-empty-history rule for preserved planning sections.
 - 2026-04-21: keep proposal and architecture example artifacts as illustrative aligned surfaces without adding new dedicated templates in M2. Rationale: the approved examples already model the lifecycle contract well enough for human guidance, and the approved architecture forbids treating examples as a second executable rule source.
 - 2026-04-21: update lifecycle semantics in human guidance now, but leave standard validator and CI command wiring to M3. Rationale: M2 owns discoverability across docs, templates, and skills, while M3 owns repo-wide `verify` and `scripts/ci.sh` integration.
+- 2026-04-21: keep the ADR guidance review-fix aligned to the approved spec instead of broadening the ADR status contract during M2. Rationale: the approved spec and validator currently allow `Proposed`, `Accepted`, `Superseded`, and `Archived` for ADRs, so the M2 fix should close the guidance gap without introducing a wider unreviewed status model.
 
 ## Surprises and discoveries
 
@@ -429,6 +431,7 @@ The implementation needs to land as one coherent sequence:
 - The `specs/` directory can legitimately contain ordinary documentation as well as lifecycle-managed behavior specs, so spec classification needs content-shape checks instead of path-only matching.
 - Duplicate-identifier severity cannot be assigned incrementally without missing the case where a changed artifact collides with an unchanged baseline artifact.
 - The existing spec and test-spec templates were far slimmer than the approved lifecycle contract, so M2 needed to expand them materially to teach status normalization, closeout, and readiness patterns instead of only adding a few status bullets.
+- The approved proposal example still carried the older single-column lifecycle summary after the first M2 pass, so manual example-surface review has to check terminology drift separately from the workflow spec and skills.
 
 ## Validation notes
 
@@ -454,6 +457,12 @@ The implementation needs to land as one coherent sequence:
   - `python scripts/build-skills.py --check` -> passed (`generated skills are in sync under /home/xiongxianfei/data/20260419-rigorloop/.codex/skills`)
   - `rg -n "Settlement states|Closeout or terminal states|Follow-on artifacts|superseded_by|archived|active|reviewed|complete" CONSTITUTION.md AGENTS.md docs/workflows.md specs/rigorloop-workflow.md specs/feature-template.md specs/feature-template.test.md skills .codex/skills` -> passed (`human guidance and generated skills contain the expected lifecycle vocabulary and summary headings`)
   - `git diff --check -- CONSTITUTION.md AGENTS.md docs/workflows.md specs/rigorloop-workflow.md specs/feature-template.md specs/feature-template.test.md skills .codex/skills` -> passed
+- Green validation after the M2 code-review fix:
+  - `python scripts/validate-skills.py` -> passed (`validated 22 skill files under /home/xiongxianfei/data/20260419-rigorloop/skills`)
+  - `python scripts/build-skills.py` -> passed (`synced generated skills from /home/xiongxianfei/data/20260419-rigorloop/skills to /home/xiongxianfei/data/20260419-rigorloop/.codex/skills`)
+  - `python scripts/build-skills.py --check` -> passed (`generated skills are in sync under /home/xiongxianfei/data/20260419-rigorloop/.codex/skills`)
+  - `rg -n "Settlement states|Closeout / terminal states|Closeout required when|Follow-on artifacts|superseded_by|archived|Accepted | Proposed | Superseded | Archived" docs/proposals/2026-04-20-artifact-status-lifecycle-ownership.md skills/architecture/SKILL.md .codex/skills/architecture/SKILL.md` -> passed (`example and ADR guidance surfaces now expose the expected split terminology and ADR status line`)
+  - `git diff --check -- docs/proposals/2026-04-20-artifact-status-lifecycle-ownership.md skills/architecture/SKILL.md .codex/skills/architecture/SKILL.md docs/plans/2026-04-20-artifact-status-lifecycle-ownership.md` -> passed
 - Supporting lifecycle bookkeeping validation:
   - `git diff --check -- docs/plan.md docs/plans/2026-04-20-artifact-status-lifecycle-ownership.md specs/artifact-status-lifecycle-ownership.test.md` -> passed
 - Optional proof not run:
@@ -470,5 +479,6 @@ The implementation needs to land as one coherent sequence:
 - This initiative remains active; M1 and M2 are complete.
 - The tracked-source-artifact prerequisite is satisfied and the test spec is now active at `specs/artifact-status-lifecycle-ownership.test.md`.
 - M2 is ready for `code-review`.
+- M2 is ready for re-run `code-review`.
 - M1-M3 together satisfy the v0.1 first-enforcement stack of docs, validator, fixtures, `verify`, and CI. M1 and M2 together are still not final feature closeout.
 - M3 has not started.
