@@ -4,7 +4,7 @@
 - Owner: maintainer + Codex
 - Start date: 2026-04-21
 - Last updated: 2026-04-21
-- Related issue or PR: PR #9
+- Related issue or PR: closed PR #9; carried forward on branch `feat/docs-changes-skill-enforcement-v2`
 - Supersedes: none
 
 ## Purpose / big picture
@@ -366,7 +366,7 @@ The implementation must stay inside the approved architecture boundary:
 - Test effectiveness: the dedicated change-metadata fixture runner and negative fixtures were the highest-value executable proof because they turned the new artifact-key contract into a small, deterministic validator seam, while manual workflow/test-spec review remained the right proof level for the guidance surfaces.
 - Architecture accuracy: the approved small design held. The feature never needed a schema redesign, second registry, or new storage model; the validator seam plus existing workflow surfaces were sufficient.
 - Process issues: pre-PR lifecycle closeout still matters for completed planned work. `docs/plan.md` and the plan body both needed an explicit transition to `Done` before the PR stage so review would not inherit stale active-state bookkeeping.
-- Follow-up actions: watch hosted CI and review feedback on PR #9, then do only normal merge follow-up if review accepts the change.
+- Follow-up actions: open a replacement PR from `feat/docs-changes-skill-enforcement-v2` once the combined domain work is ready, then do only normal review and merge follow-up there.
 
 ## Readiness
 
@@ -374,4 +374,4 @@ The implementation must stay inside the approved architecture boundary:
 - The tracked-source prerequisite and active test spec are in place.
 - M1 through M3 are complete.
 - `code-review`, `verify`, and `explain-change` are complete.
-- The next expected state change is PR review or merge follow-up, not more feature implementation.
+- The next expected state change is a replacement PR from `feat/docs-changes-skill-enforcement-v2` or later merge follow-up there, not more implementation on this completed initiative.
