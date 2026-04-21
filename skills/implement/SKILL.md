@@ -27,6 +27,20 @@ Read before editing:
 - existing patterns in neighboring files
 - CI or validation commands relevant to the milestone
 
+## Docs-changes baseline pack
+
+For ordinary non-trivial work, implementation scope includes the baseline change-local pack:
+
+- `docs/changes/<change-id>/change.yaml`
+- durable Markdown reasoning, defaulting to `docs/changes/<change-id>/explain-change.md` for new work unless an approved equivalent reasoning surface already applies
+
+Rules:
+
+- Treat creating or updating that baseline pack as part of the milestone, not as optional follow-up.
+- Do not treat PR text alone as the durable reasoning surface for ordinary non-trivial work.
+- Do not broaden the docs-changes requirement into approved fast-lane work.
+- Keep standalone `review-resolution.md` and `verify-report.md` conditional; add them only when their governing workflow triggers apply.
+
 ## Implementation loop
 
 For each milestone:

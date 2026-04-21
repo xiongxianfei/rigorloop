@@ -13,6 +13,20 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_PATH = ROOT / "schemas" / "change.schema.json"
+CANONICAL_ARTIFACT_KEYS = {
+    "adr",
+    "architecture",
+    "change_summary",
+    "explain_change",
+    "plan",
+    "pr_body",
+    "proposal",
+    "retrospective",
+    "review_resolution",
+    "spec",
+    "test_spec",
+    "verify_report",
+}
 
 
 class MetadataValidationError(Exception):
@@ -293,10 +307,32 @@ def validate_against_schema(schema: dict[str, Any], value: Any, path: str = "$")
     return errors
 
 
+def validate_metadata_semantics(data: Any) -> list[str]:
+    if not isinstance(data, dict):
+        return []
+
+    artifacts = data.get("artifacts")
+    if not isinstance(artifacts, dict):
+        return []
+
+    allowed_keys = ", ".join(sorted(CANONICAL_ARTIFACT_KEYS))
+    errors: list[str] = []
+    for key in artifacts:
+        if key not in CANONICAL_ARTIFACT_KEYS:
+            errors.append(
+                f"{path_label('$', 'artifacts')}.{key}: invalid artifact key; "
+                f"use one of: {allowed_keys}"
+            )
+    return errors
+
+
 def validate_file(path: Path) -> list[str]:
     data = load_yaml(path)
     schema = load_schema()
-    return validate_against_schema(schema, data)
+    schema_errors = validate_against_schema(schema, data)
+    if schema_errors:
+        return schema_errors
+    return validate_metadata_semantics(data)
 
 
 def main(argv: list[str]) -> int:

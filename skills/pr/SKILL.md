@@ -38,10 +38,11 @@ Before drafting or opening a PR, check:
 4. tests and validation commands passed or gaps are documented;
 5. CI status is known when available;
 6. for planned initiatives, lifecycle closeout is already reflected in both `docs/plan.md` and the plan body when the final state is known before PR; only merge-dependent `Done` transitions may wait for immediate post-merge cleanup;
-7. artifacts are updated;
-8. no secrets, credentials, local paths, or debug-only changes are included;
-9. generated files and migrations are intentional;
-10. reviewers have enough context.
+7. for ordinary non-trivial work, the required docs-changes artifacts exist, including `docs/changes/<change-id>/change.yaml` plus durable reasoning, defaulting to `docs/changes/<change-id>/explain-change.md` unless an approved equivalent surface applies;
+8. artifacts are updated;
+9. no secrets, credentials, local paths, or debug-only changes are included;
+10. generated files and migrations are intentional;
+11. reviewers have enough context.
 
 Apply the same readiness checks for workflow-managed and direct-`pr` invocation. Direct `pr` remains isolated only in the sense that no downstream stage follows `pr`; it still opens the PR when readiness passes.
 
@@ -103,6 +104,7 @@ Examples:
 - Do not open or claim to open a PR unless the tool/action actually did it.
 - Do not say CI passed unless it passed.
 - Do not omit failed or unrun validation.
+- Do not treat a missing required docs-changes baseline pack as a warning-only condition for ordinary non-trivial work; it is a readiness blocker.
 - Do not defer blocked or superseded lifecycle closeout until PR, merge, or retrospective work.
 - Do not summarize from memory when a diff is available.
 - Do not bury known risks.

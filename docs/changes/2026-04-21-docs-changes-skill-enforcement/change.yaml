@@ -1,0 +1,75 @@
+change_id: 2026-04-21-docs-changes-skill-enforcement
+title: Enforce docs-changes baseline pack in workflow skills
+classification: default
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-04-21-docs-changes-skill-enforcement.md
+  spec: specs/docs-changes-skill-enforcement.md
+  plan: docs/plans/2026-04-21-docs-changes-skill-enforcement.md
+  test_spec: specs/docs-changes-skill-enforcement.test.md
+  explain_change: docs/changes/2026-04-21-docs-changes-skill-enforcement/explain-change.md
+requirements:
+  - R1
+  - R1a
+  - R2
+  - R2a
+  - R2b
+  - R3
+  - R3a
+  - R3b
+  - R4
+  - R4a
+  - R5
+  - R5a
+  - R6
+  - R6a
+  - R7
+  - R8
+  - R9
+tests:
+  - T1
+  - T2
+  - T3
+  - T4
+validation:
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-21-docs-changes-skill-enforcement.md --path specs/docs-changes-skill-enforcement.md --path docs/plans/2026-04-21-docs-changes-skill-enforcement.md --path specs/docs-changes-skill-enforcement.test.md
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-21-docs-changes-skill-enforcement/change.yaml
+    result: pass
+  - command: python scripts/validate-skills.py
+    result: pass
+  - command: python scripts/build-skills.py
+    result: pass
+  - command: python scripts/build-skills.py --check
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/workflow-stage-autoprogression.test.md --path docs/plans/2026-04-21-docs-changes-skill-enforcement.md
+    result: pass
+  - command: bash scripts/ci.sh
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-21-docs-changes-skill-enforcement.md --path specs/docs-changes-skill-enforcement.md --path docs/plans/2026-04-21-docs-changes-skill-enforcement.md --path specs/docs-changes-skill-enforcement.test.md --path specs/docs-changes-usage-policy.test.md --path specs/workflow-stage-autoprogression.test.md
+    result: pass
+  - command: git diff --check ba8998e..HEAD
+    result: pass
+changed_files:
+  - .codex/skills/explain-change/SKILL.md
+  - .codex/skills/implement/SKILL.md
+  - .codex/skills/pr/SKILL.md
+  - .codex/skills/verify/SKILL.md
+  - .codex/skills/workflow/SKILL.md
+  - docs/changes/2026-04-21-docs-changes-skill-enforcement/change.yaml
+  - docs/changes/2026-04-21-docs-changes-skill-enforcement/explain-change.md
+  - docs/plan.md
+  - docs/plans/2026-04-21-docs-changes-skill-enforcement.md
+  - docs/proposals/2026-04-21-docs-changes-skill-enforcement.md
+  - skills/explain-change/SKILL.md
+  - skills/implement/SKILL.md
+  - skills/pr/SKILL.md
+  - skills/verify/SKILL.md
+  - skills/workflow/SKILL.md
+  - specs/docs-changes-skill-enforcement.md
+  - specs/docs-changes-skill-enforcement.test.md
+  - specs/docs-changes-usage-policy.test.md
+  - specs/workflow-stage-autoprogression.test.md
+review:
+  status: pending
+  unresolved_items: 0

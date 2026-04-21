@@ -22,6 +22,16 @@ Notes:
 - Not every stage is required for every change; stage classification and enforcement rules are defined in `specs/rigorloop-workflow.md`.
 - `learn` is advice-only. Treat it as an explicit follow-up when a durable lesson actually emerged or another approved rule elevates it.
 
+## Change-Local Artifacts
+
+- Fast-lane work may omit `docs/changes/<change-id>/` only when the approved fast-lane policy allows omission.
+- For non-trivial work, the baseline change-local pack is `docs/changes/<change-id>/change.yaml` plus durable Markdown reasoning.
+- For new non-trivial work, the default durable reasoning artifact is `docs/changes/<change-id>/explain-change.md`.
+- PR text remains the reviewer-facing summary surface; it does not replace required durable reasoning for non-trivial work.
+- Standalone `review-resolution.md` and `verify-report.md` remain conditional and are added only when their governing workflow triggers apply.
+- Approved legacy top-level artifacts under `docs/explain/` remain valid durable reasoning surfaces until they are migrated or retired.
+- `docs/changes/0001-skill-validator/` is a rich example of a fully formed pack, not the universal minimum for every non-trivial change.
+
 ## Autoprogression
 
 - Distinguish `workflow-managed` completion flows from isolated stage requests.
