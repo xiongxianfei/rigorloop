@@ -20,6 +20,24 @@ STALE_READINESS_PATTERN = re.compile(
     r"next stage should be `?(proposal-review|spec-review|implement|implementation|pr|code-review)`?)",
     re.IGNORECASE,
 )
+PLAN_NON_SCOPE_SECTIONS = frozenset(
+    {
+        "Milestones",
+        "Progress",
+        "Decision log",
+        "Surprises and discoveries",
+        "Validation notes",
+        "Outcome and retrospective",
+        "Readiness",
+    }
+)
+PLAN_SCOPE_SECTIONS = frozenset(
+    {
+        "Source artifacts",
+        "Pre-implementation prerequisites",
+        "Related artifacts",
+    }
+)
 
 
 @dataclass(frozen=True)
@@ -99,7 +117,14 @@ def _extract_repo_path_refs_from_text(root: Path, path: Path, text: str) -> set[
 
 
 def _extract_plan_refs(root: Path, path: Path, tracked_revision: str | None = None) -> set[Path]:
-    refs = _extract_repo_path_refs_from_text(root, path, _read_repo_text(root, path, tracked_revision))
+    refs: set[Path] = set()
+    sections = _parse_sections(_read_repo_text(root, path, tracked_revision))
+    for section_name, body in sections.items():
+        if section_name in PLAN_NON_SCOPE_SECTIONS:
+            continue
+        if section_name not in PLAN_SCOPE_SECTIONS and not section_name.startswith("Related "):
+            continue
+        refs.update(_extract_repo_path_refs_from_text(root, path, body))
     return {ref for ref in refs if _is_lifecycle_reference_path(root, ref)}
 
 
