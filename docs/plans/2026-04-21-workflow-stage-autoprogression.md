@@ -4,7 +4,7 @@
 - Owner: maintainer + Codex
 - Start date: 2026-04-21
 - Last updated: 2026-04-21
-- Related issue or PR: none
+- Related issue or PR: PR #7
 - Supersedes: none
 
 ## Purpose / big picture
@@ -417,7 +417,8 @@ The implementation must stay inside the approved v1 boundary:
 - Architecture accuracy: the approved guidance-and-skill-driven architecture was sufficient. The feature did not need a router, persistent workflow state, or a second readiness registry.
 - Process issues: workflow-managed autoprogression is only safe when lifecycle-managed artifacts stay current after each review gate. The code-review and verify stages both needed explicit plan/test-spec readiness normalization rather than assuming milestone completion notes were enough.
 - Durable updates made: `docs/workflows.md` now says autoprogression does not replace lifecycle bookkeeping after review/verify gates, and it now records that generated `.codex/skills/` output stays on the `build-skills.py --check` proof path instead of authored-artifact lifecycle validation.
-- Follow-up actions: watch hosted CI and review feedback on PR #7, keep the two unrelated local proposal drafts out of scope, and treat any future fast-lane/bugfix autoprogression or router work as a separate approved feature rather than extending this v1 scope informally.
+- Merge note: PR #7 merged into `main` at `c1d92ac25ab5821cf4532f50f133c07256e31592`.
+- Follow-up actions: no further feature implementation stages remain. Keep the two unrelated local proposal drafts out of scope, and treat any future fast-lane/bugfix autoprogression or router work as a separate approved feature rather than extending this v1 scope informally.
 
 ## Readiness
 
@@ -426,4 +427,5 @@ The implementation must stay inside the approved v1 boundary:
 - The tracked-source prerequisite and test spec are in place.
 - Implementation, `code-review`, and `verify` are complete through M3.
 - `explain-change` is complete at `docs/explain/2026-04-21-workflow-stage-autoprogression.md`.
-- The next stage is `pr`.
+- `pr` is complete through merged PR #7.
+- No further workflow stage is pending for this feature.
