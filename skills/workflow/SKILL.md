@@ -114,6 +114,13 @@ Default stage order:
 
 Follow with `learn` only when a durable lesson actually emerged.
 
+For ordinary non-trivial work in the full-feature lane, carry the baseline change-local pack:
+
+- `docs/changes/<change-id>/change.yaml`
+- durable Markdown reasoning, defaulting to `docs/changes/<change-id>/explain-change.md` for new work unless an approved equivalent surface already applies
+
+Keep `review-resolution.md` and `verify-report.md` conditional. Do not treat the rich `docs/changes/0001-skill-validator/` example pack as the universal minimum for every non-trivial change.
+
 ### Fast lane
 
 Use for small, low-risk, well-understood changes that affect at most a few files and do not introduce architecture changes.
@@ -132,6 +139,7 @@ Rules:
 
 - Use the fast lane only for typos, formatting-only changes, small documentation clarifications, comment-only changes, small test-fixture corrections, small non-behavioral renames, or minor generated-artifact refreshes that do not change generator behavior.
 - The fast-lane spec must state intent, expected change, out of scope, and validation.
+- Approved fast-lane work may still omit `docs/changes/<change-id>/` when the governing workflow contract allows it.
 - Still write tests first when feasible.
 - Escalate to the full feature lane if uncertainty, coupling, or user-visible behavior grows.
 - Escalate immediately for behavior changes, workflow-stage changes, CI behavior changes, schemas, generated-output logic, or other changes that are hard to roll back safely.

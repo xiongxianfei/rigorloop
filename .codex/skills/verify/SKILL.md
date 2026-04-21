@@ -53,12 +53,14 @@ Requirement → Test IDs → Files changed → Evidence → Status
 2. Check the actual diff for unplanned behavior.
 3. Compare tests against the test spec.
 4. Build the related artifact set from changed files, `docs/changes/<change-id>/change.yaml`, explain-change artifacts, the active plan, generated outputs, governing specs, governing architecture docs or ADRs, governing test specs, and draft PR text only when that draft PR body already exists.
-5. For lifecycle-managed artifacts, treat stale or inconsistent touched, referenced, generated, or authoritative artifacts as blockers. Report unrelated stale baseline artifacts as warnings instead of blocking the change.
-6. For planned initiatives, compare `docs/plan.md` against the plan body and treat stale lifecycle state as a blocker. At minimum, block on completed, blocked, or superseded work still listed under `## Active`; conflicting index-versus-body state; or a plan body marked done, blocked, or superseded while still presenting itself as active or in progress.
-7. Run or list required validation commands.
-8. Inspect CI workflow scope if CI is expected.
-9. Identify artifact drift and propose fixes.
-10. Produce a final readiness verdict.
+5. For ordinary non-trivial work, confirm the required baseline change-local pack exists: `docs/changes/<change-id>/change.yaml` plus durable Markdown reasoning, defaulting to `docs/changes/<change-id>/explain-change.md` unless an approved equivalent surface applies.
+6. Treat a missing required baseline change-local pack as a blocker, not acceptable silence.
+7. For lifecycle-managed artifacts, treat stale or inconsistent touched, referenced, generated, or authoritative artifacts as blockers. Report unrelated stale baseline artifacts as warnings instead of blocking the change.
+8. For planned initiatives, compare `docs/plan.md` against the plan body and treat stale lifecycle state as a blocker. At minimum, block on completed, blocked, or superseded work still listed under `## Active`; conflicting index-versus-body state; or a plan body marked done, blocked, or superseded while still presenting itself as active or in progress.
+9. Run or list required validation commands.
+10. Inspect CI workflow scope if CI is expected.
+11. Identify artifact drift and propose fixes.
+12. Produce a final readiness verdict.
 
 ## Commands and evidence
 

@@ -27,8 +27,8 @@
 | `R8`-`R8e` | `T2` | manual | Planned milestone work, commit format, and PR boundary rules |
 | `R9`, `R18`, `R19` | `T13` | smoke | `scripts/ci.sh` runs the required structural checks |
 | `R9a`, `R27` | `T14` | manual | GitHub workflow remains a thin wrapper over repo-owned commands |
-| `R10`-`R12c` | `T3`, `T16` | manual, integration | PR summary, explain-change split, and review-resolution visibility |
-| `R13`, `R14` | `T15` | integration | Golden-path skill-validator example and artifact pack |
+| `R10`-`R12f` | `T3`, `T16` | manual, integration | PR summary, explain-change split, review-resolution visibility, and conditional verify-report guidance |
+| `R13`, `R14`, `R14a`, `R14b` | `T15` | integration | Golden-path skill-validator example, rich-example handling, and baseline-pack proportionality |
 | `R15`, `R15a` | `T8`, `T9`, `T10` | integration | Canonical skill validation and intentionally simple rule set |
 | `R16` | `T9`, `T10` | integration | Invalid fixture cases for the required validator failures |
 | `R17` | `T11`, `T12` | integration | Deterministic generation and stale/hand-edited drift failure |
@@ -102,19 +102,24 @@
 
 ### T3. PR summary and explain-change guidance match the contract
 
-- Covers: `R10`, `R11`, `R12`
+- Covers: `R10`, `R10a`, `R10b`, `R10c`, `R10d`, `R10e`, `R11`, `R12`
 - Level: manual
 - Fixture/setup:
+  - `specs/rigorloop-workflow.md`
   - `.github/pull_request_template.md`
   - `README.md`
   - `docs/workflows.md`
+  - approved artifacts under `docs/explain/`
 - Steps:
   - Review PR-facing guidance and confirm every change requires a reviewer-facing summary.
   - Confirm the split between PR summary, durable Markdown artifacts, and machine-readable metadata is described accurately.
+  - Confirm new non-trivial work defaults to `docs/changes/<change-id>/explain-change.md` for standalone durable reasoning.
+  - Confirm PR text alone is not presented as a substitute for the durable reasoning artifact.
+  - Confirm approved legacy top-level artifacts under `docs/explain/` remain valid durable reasoning surfaces until retired.
 - Expected result:
-  - Reviewer-facing requirements for summary, validation, and artifact links are clear before implementation.
+  - Reviewer-facing requirements for summary, validation, artifact links, and durable reasoning location are clear before implementation.
 - Failure proves:
-  - Contributors may satisfy the scripts but still produce incomplete review packages.
+  - Contributors may satisfy the scripts while still omitting required durable reasoning or treating legacy explain artifacts incorrectly.
 - Automation location:
   - Manual review during M1.
 
@@ -314,7 +319,7 @@
 
 ### T15. Golden-path skill-validator artifacts are complete and coherent
 
-- Covers: `R13`, `R14`, `R25f`, `R25g`, `E1`
+- Covers: `R13`, `R14`, `R14a`, `R14b`, `R25f`, `R25g`, `E1`
 - Level: integration
 - Fixture/setup:
   - `docs/changes/0001-skill-validator/`
@@ -324,10 +329,11 @@
   - Confirm the change-local artifact directory contains proposal, spec, plan, test-spec, verify report, explain-change, and `change.yaml`.
   - Run `python scripts/validate-change-metadata.py docs/changes/0001-skill-validator/change.yaml`.
   - Confirm the change-local docs link or summarize the approved top-level artifacts instead of contradicting them.
+  - Confirm repository guidance does not present the `0001` artifact set as the minimum required pack for every non-trivial change.
 - Expected result:
-  - The repository contains one coherent proof-of-value example from durable artifacts through validation evidence.
+  - The repository contains one coherent proof-of-value example from durable artifacts through validation evidence, and that example is clearly richer than the ordinary baseline non-trivial pack.
 - Failure proves:
-  - The advertised golden path is incomplete, invalid, or disconnected from the approved contract.
+  - The advertised golden path is incomplete, invalid, disconnected from the approved contract, or misleading contributors about the baseline pack.
 - Automation location:
   - M6 validation plus manual artifact review.
 
@@ -425,6 +431,7 @@
   - canonical `skills/`
   - generated `.codex/skills/`
   - `docs/changes/0001-skill-validator/`
+  - approved artifacts under `docs/explain/`
 
 ## Mocking and stubbing policy
 
@@ -462,7 +469,7 @@
 - [ ] No contributor-facing doc still references `.codex/PLANS.md`.
 - [ ] `skills/` is clean enough for deliberate generation and `.codex/skills/` is only updated during the generation milestone.
 - [ ] `bash scripts/ci.sh` names and runs the real structural commands.
-- [ ] `docs/changes/0001-skill-validator/` contains the required artifact pack and a valid `change.yaml`.
+- [ ] `docs/changes/0001-skill-validator/` contains the required artifact pack, a valid `change.yaml`, and remains documented as a rich example rather than a universal minimum.
 - [ ] Validation failures name the failing skill, file, or path clearly enough for a contributor to act.
 
 ## What not to test

@@ -1,0 +1,19 @@
+change_id: 0003-bad-artifact-value-shape
+title: Invalid artifact value shape fixture
+classification: default
+risk: low
+artifacts:
+  explain_change:
+    path: docs/changes/0003-bad-artifact-value-shape/explain-change.md
+requirements:
+  - REQ-001
+tests:
+  - TEST-001
+validation:
+  - command: python scripts/validate-change-metadata.py tests/fixtures/change-metadata/bad-artifact-value-shape/change.yaml
+    result: fail
+changed_files:
+  - tests/fixtures/change-metadata/bad-artifact-value-shape/change.yaml
+review:
+  status: pending
+  unresolved_items: 1

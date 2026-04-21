@@ -30,10 +30,20 @@ Read:
 Prefer:
 
 ```text
+docs/changes/<change-id>/explain-change.md
+```
+
+For new ordinary non-trivial work, use `docs/changes/<change-id>/explain-change.md` unless an approved equivalent durable reasoning surface already applies under the workflow contract.
+
+Use:
+
+```text
 docs/explain/YYYY-MM-DD-slug.md
 ```
 
-For small changes, inline explanation in the final response or PR body is enough.
+only when the governing workflow contract explicitly allows that top-level explain artifact class for the change.
+
+For small fast-lane or otherwise exempt changes, inline explanation in the final response or PR body is enough.
 
 ## Required sections
 
@@ -72,6 +82,8 @@ File | Change | Reason | Source artifact | Test/evidence
 ## Rules
 
 - Explain from the actual diff, not memory.
+- For ordinary non-trivial work, do not treat PR text alone as the durable reasoning surface.
+- For new ordinary non-trivial work, do not default to a new top-level `docs/explain/` artifact when `docs/changes/<change-id>/explain-change.md` should exist.
 - Do not justify unrelated changes; flag them.
 - Do not claim a requirement drove a change unless the link is real.
 - Do not hide validation gaps.

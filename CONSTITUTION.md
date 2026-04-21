@@ -83,6 +83,8 @@ For lifecycle-managed artifacts, `Next artifacts` preserves planned next steps w
 
 Change-local artifacts under `docs/changes/<change-id>/` SHOULD stay concise and MUST link back to approved top-level artifacts instead of becoming a second long-form source of truth.
 
+For non-trivial changes, the baseline change-local artifact pack MUST include `docs/changes/<change-id>/change.yaml` plus durable Markdown reasoning. New work SHOULD default to `docs/changes/<change-id>/explain-change.md`, while approved legacy top-level `docs/explain/*.md` artifacts remain valid until migrated or retired.
+
 Architecture-affecting changes MUST update the relevant architecture document or ADR in the same change.
 
 ## Security and privacy rules

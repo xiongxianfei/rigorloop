@@ -56,6 +56,14 @@ That spec may live in the PR body, issue comment, commit message, or a linked ch
 
 The normative contract lives in `specs/rigorloop-workflow.md`. The short operational summary lives in `docs/workflows.md`.
 
+## Change-Local Artifact Packs
+
+- Fast-lane work may omit `docs/changes/<change-id>/` only when the approved fast-lane policy allows it.
+- Ordinary non-trivial work uses the baseline pack: `docs/changes/<change-id>/change.yaml` plus `docs/changes/<change-id>/explain-change.md`.
+- `review-resolution.md` and `verify-report.md` stay conditional and are added only when their governing workflow triggers apply.
+- Approved legacy top-level explain artifacts under `docs/explain/` remain valid until migrated or retired.
+- `docs/changes/0001-skill-validator/` is a rich reference example, not the minimum required pack for every non-trivial change.
+
 ## Source Of Truth
 
 - Edit canonical workflow content in:
@@ -120,7 +128,7 @@ Active implementation work is tracked in:
 └── specs/
 ```
 
-The first shipped change-local artifact pack is `docs/changes/0001-skill-validator/`.
+The first shipped change-local artifact pack is `docs/changes/0001-skill-validator/`, and it should be read as a rich example rather than the universal minimum pack for every non-trivial change.
 
 ## License
 

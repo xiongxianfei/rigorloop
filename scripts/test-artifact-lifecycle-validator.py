@@ -323,6 +323,72 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
         self.assertIn("specs/related-spec.md", checked_paths)
         self.assertIn("docs/architecture/2026-04-20-related-architecture.md", checked_paths)
 
+    def test_change_local_markdown_refs_do_not_recursively_expand_related_scope(self) -> None:
+        fixture_root = copy_fixture("related-scope")
+        self.addCleanupTree(fixture_root)
+
+        change_yaml = fixture_root / "docs" / "changes" / "0002-lifecycle" / "change.yaml"
+        change_yaml.write_text(
+            """change_id: 0002-lifecycle
+title: Related scope fixture
+classification: default
+risk: low
+artifacts:
+  proposal: docs/proposals/2026-04-20-related-proposal.md
+  spec: specs/related-spec.md
+  architecture: docs/architecture/2026-04-20-related-architecture.md
+  verify_report: docs/changes/0002-lifecycle/verify-report.md
+""",
+            encoding="utf-8",
+        )
+
+        verify_report = fixture_root / "docs" / "changes" / "0002-lifecycle" / "verify-report.md"
+        verify_report.write_text(
+            """# Related verify report
+
+- `docs/plans/2026-04-20-nested-plan.md`
+""",
+            encoding="utf-8",
+        )
+
+        nested_plan = fixture_root / "docs" / "plans" / "2026-04-20-nested-plan.md"
+        nested_plan.write_text(
+            """# Nested plan
+
+## Source artifacts
+
+- Proposal: `docs/proposals/2026-04-20-unrelated-proposal.md`
+""",
+            encoding="utf-8",
+        )
+
+        unrelated_proposal = fixture_root / "docs" / "proposals" / "2026-04-20-unrelated-proposal.md"
+        unrelated_proposal.write_text(
+            """# Unrelated proposal
+
+## Status
+- draft
+""",
+            encoding="utf-8",
+        )
+
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=[
+                "docs/changes/0002-lifecycle/change.yaml",
+                "docs/explain/2026-04-20-related-change.md",
+                "docs/plans/2026-04-20-related-plan.md",
+            ],
+            pr_body_file="pr-body.md",
+        )
+
+        self.assertFalse(result.blocking_findings)
+        checked_paths = {path.as_posix() for path in result.checked_artifacts}
+        self.assertIn("docs/proposals/2026-04-20-related-proposal.md", checked_paths)
+        self.assertNotIn("docs/plans/2026-04-20-nested-plan.md", checked_paths)
+        self.assertNotIn("docs/proposals/2026-04-20-unrelated-proposal.md", checked_paths)
+
     def test_plan_scope_uses_current_context_refs_but_ignores_future_milestone_targets(self) -> None:
         fixture_root = copy_fixture("related-scope")
         self.addCleanupTree(fixture_root)
