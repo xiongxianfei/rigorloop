@@ -247,6 +247,7 @@ The implementation must stay inside the approved v1 boundary:
   - `skills/architecture/SKILL.md`
   - `skills/architecture-review/SKILL.md`
   - `skills/workflow/SKILL.md` if shared wording still needs alignment
+  - `scripts/ci.sh` if repo-wide smoke proof needs a wrapper fix for generated-output handling
   - generated `.codex/skills/`
 - Dependencies:
   - M1 and M2 should land first so shared vocabulary and execution-stage behavior are already stable
@@ -261,6 +262,7 @@ The implementation must stay inside the approved v1 boundary:
   - update proposal/spec/architecture authoring skills so workflow-managed completion flows hand off into the matching review stage automatically when that review is the next required or default downstream step;
   - update the paired review skills so standalone review-only requests remain isolated unless the user asks to continue;
   - keep review-to-next-authoring transitions explicitly out of scope in stage-local guidance;
+  - if repo-wide smoke proof still fails because generated `.codex/skills/` paths are being treated as authored artifacts, narrow the CI-wrapper explicit-path scope so generated drift stays enforced by `build-skills.py --check` instead of the authored-artifact lifecycle validator;
   - regenerate `.codex/skills/`;
   - run repo-wide validation and manual scenario checks covering the approved examples and edge cases.
 - Validation commands:
@@ -274,12 +276,12 @@ The implementation must stay inside the approved v1 boundary:
   - authoring-to-review handoffs behave consistently with the v1 contract, review-only requests remain isolated, and repo-wide validation passes without generated drift.
 - Commit message: `M3: finish workflow autoprogression skill alignment`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - authoring skills may accidentally imply `proposal-review -> spec` or similar out-of-scope transitions;
   - generated skill output may drift if regeneration is incomplete.
@@ -324,7 +326,7 @@ The implementation must stay inside the approved v1 boundary:
 - [x] 2026-04-21: test spec created at `specs/workflow-stage-autoprogression.test.md`.
 - [x] 2026-04-21: M1 completed. The workflow contract, operational summary, repository guidance, and shared workflow skill now agree on bounded v1 autoprogression scope.
 - [x] 2026-04-21: M2 completed. The execution-stage skills now express the full-feature downstream chain, direct `pr` opening, isolated review/verification/explanation behavior, and advice-only `learn`.
-- [ ] M3. Align authoring-to-review skills and complete repo-wide proof.
+- [x] 2026-04-21: M3 completed. The authoring/review skills now express the bounded authoring-to-review handoffs, review-only isolation, and repo-wide smoke proof passes without treating generated `.codex/skills/` output as authored lifecycle-managed source.
 
 ## Decision log
 
@@ -336,11 +338,14 @@ The implementation must stay inside the approved v1 boundary:
 - 2026-04-21: removed `learn` from the remaining required/default lifecycle summaries in `docs/workflows.md` and the shared workflow skill's canonical artifact order. Reason: `learn` is advice-only in the approved spec and should not appear as part of the default auto-run lane.
 - 2026-04-21: left `skills/workflow/SKILL.md` unchanged in M2. Reason: M1 already carried the shared invocation-context and lane-aware handoff rules, so M2 only needed to align the stage-local execution skills that inherit that contract.
 - 2026-04-21: kept M2 focused on execution-stage skill behavior and direct-`pr` semantics, while leaving repo-wide smoke proof to M3. Reason: the approved plan already reserves `bash scripts/ci.sh` as part of the final repo-wide proof milestone rather than the narrower execution-skill alignment slice.
+- 2026-04-21: left `skills/workflow/SKILL.md` unchanged in M3. Reason: the shared authoring-to-review and isolated-stage boundary rules were already correct after M1, so M3 only needed stage-local authoring/review alignment plus the repo-wide smoke-proof wrapper fix.
+- 2026-04-21: filtered generated `.codex/skills/*` paths out of the CI wrapper's explicit-path artifact lifecycle fallback. Reason: generated-skill drift is already enforced by `build-skills.py --check`, while the lifecycle validator correctly treats generated output as non-authored source.
 
 ## Surprises and discoveries
 
 - 2026-04-21: `python scripts/build-skills.py --check` is meaningful milestone proof only after regeneration has completed. The final M1 validation set was rerun sequentially so generated-skill drift evidence reflects the post-sync state.
 - 2026-04-21: a local exploratory `bash scripts/ci.sh` run still blocks when tracked-diff explicit-path lifecycle validation sees changed `.codex/skills/*` files as generated outputs rather than authored sources. That repo-wide proof issue is recorded for M3 instead of being silently ignored.
+- 2026-04-21: the repo-wide smoke failure did not require relaxing the lifecycle validator itself. A small wrapper fix in `scripts/ci.sh` was enough because generated-skill drift and authored-artifact lifecycle validation are intentionally separate proof surfaces.
 
 ## Validation notes
 
@@ -378,6 +383,14 @@ The implementation must stay inside the approved v1 boundary:
   - `bash scripts/ci.sh`
   - result: failed because local explicit-path artifact lifecycle validation blocks changed `.codex/skills/*` paths as generated outputs
   - handling: recorded as an M3 repo-wide-proof discovery rather than treating it as a hidden pass or expanding M2 into CI/lifecycle-validator changes
+- 2026-04-21: M3 updated `skills/proposal/SKILL.md`, `skills/proposal-review/SKILL.md`, `skills/spec/SKILL.md`, `skills/spec-review/SKILL.md`, `skills/architecture/SKILL.md`, `skills/architecture-review/SKILL.md`, and `scripts/ci.sh`, then regenerated `.codex/skills/`.
+- 2026-04-21: M3 targeted validation passed with:
+  - `python scripts/validate-skills.py`
+  - `python scripts/build-skills.py`
+  - `python scripts/build-skills.py --check`
+  - `bash scripts/ci.sh`
+  - `rg -n "proposal-review|spec-review|architecture-review|workflow-managed|isolated|review-only" skills/proposal/SKILL.md skills/proposal-review/SKILL.md skills/spec/SKILL.md skills/spec-review/SKILL.md skills/architecture/SKILL.md skills/architecture-review/SKILL.md skills/workflow/SKILL.md .codex/skills`
+  - `git diff --check -- CONSTITUTION.md AGENTS.md docs/workflows.md specs/rigorloop-workflow.md skills .codex/skills scripts/ci.sh`
 
 ## Outcome and retrospective
 
@@ -388,4 +401,4 @@ The implementation must stay inside the approved v1 boundary:
 - This plan is active.
 - `plan-review` is complete.
 - The tracked-source prerequisite and test spec are in place.
-- M2 is implemented and ready for `code-review`.
+- M3 is implemented and ready for `code-review`.

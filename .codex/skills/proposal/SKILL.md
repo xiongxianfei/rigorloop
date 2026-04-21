@@ -78,6 +78,12 @@ Before marking accepted or ready for review, verify:
 - Preserve `Next artifacts` as planning history. Use `Follow-on artifacts` or equivalent closeout text for actual downstream artifacts or final disposition.
 - If a proposal is superseded, identify the replacement with `superseded_by` or equivalent labeled text.
 
+## Workflow handoff behavior
+
+- In a workflow-managed flow, successful `proposal` completion hands off to `proposal-review` when that review is the next required or default downstream stage.
+- If open questions or direction gaps still block review, stop and report the blocker instead of implying that `proposal-review` can proceed.
+- This v1 contract does not imply `proposal-review -> spec`; review-to-next-authoring transitions remain outside the autoprogression boundary unless a later approved change adds them.
+
 ## Expected output
 
 - proposal file path;
@@ -85,4 +91,4 @@ Before marking accepted or ready for review, verify:
 - alternatives and rationale;
 - non-goals and risks;
 - open questions;
-- readiness statement for `proposal-review` or `spec`.
+- readiness statement for `proposal-review` or blocker state.
