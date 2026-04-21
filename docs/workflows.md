@@ -33,6 +33,27 @@ Notes:
   - `M<n>: <completed milestone outcome>`
 - A pull request may contain one or more completed milestone commits when that is the clearest review boundary.
 
+## Artifact Lifecycle
+
+Lifecycle-managed top-level artifacts keep their own tracked status. Do not treat PR state, branch state, or chat-only review outcomes as a replacement for artifact-local lifecycle state.
+
+| Artifact | Settlement states | Closeout or terminal states |
+| --- | --- | --- |
+| Proposal | `accepted` | `rejected`, `abandoned`, `superseded`, `archived` |
+| Spec | `approved` | `abandoned`, `superseded`, `archived` |
+| Architecture | `approved` | `abandoned`, `superseded`, `archived` |
+| Test spec | `active` | `abandoned`, `superseded`, `archived` |
+| ADR | `Accepted` | `Superseded`, `Archived` |
+
+Notes:
+
+- `reviewed` is transitional review output, not a durable relied-on state for proposals, top-level specs, test specs, or architecture docs.
+- `accepted`, `approved`, `active`, and `Accepted` are settlement states. `done`, `rejected`, `abandoned`, `superseded`, and `archived` are closeout or terminal states.
+- Keep `Next artifacts` as planning history while an artifact is active. Use `Follow-on artifacts` or `Closeout` for actual downstream artifacts or final disposition. If a `Follow-on artifacts` section appears before real follow-ons exist, it must say `None yet`.
+- `superseded` artifacts must identify their replacement with `superseded_by` or equivalent labeled text. `archived` artifacts do not require a replacement pointer.
+- `verify` blocks on stale lifecycle-managed artifacts that are touched, referenced, generated, or authoritative for the changed area, and it warns on unrelated stale baseline artifacts.
+- Draft PR-body references participate in `verify` only when draft PR text already exists. Before that, `verify` uses `docs/changes/<change-id>/change.yaml`, explain-change artifacts, the active plan, and other touched or referenced authoritative artifacts.
+
 ## Source Of Truth
 
 - Edit canonical workflow content in:
