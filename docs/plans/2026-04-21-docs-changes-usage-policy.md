@@ -235,12 +235,12 @@ The implementation must stay inside the approved architecture boundary:
   - the repository's standard CI wrapper exercises the new change-metadata proof surface, and contributor entrypoints no longer imply that the `0001` example is the mandatory minimum pack.
 - Commit message: `M3: finish docs-changes usage policy proof`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - CI proof may remain incomplete if the new validator test runner is not wired into the repository wrapper;
   - example wording drift may survive in entrypoint docs even after the normative contract is fixed.
@@ -289,7 +289,8 @@ The implementation must stay inside the approved architecture boundary:
 - [x] M1 completed.
 - [x] 2026-04-21: M2 added repo-owned metadata fixture tests, negative fixtures for invalid artifact keys and value shapes, and canonical artifact-key enforcement in `scripts/validate-change-metadata.py` without changing the schema shape.
 - [x] M2 completed.
-- [ ] M3 completed.
+- [x] 2026-04-21: M3 wired the change-metadata fixture runner into `scripts/ci.sh` and confirmed the repo-wide CI wrapper now exercises the new proof surface while `.github/workflows/ci.yml` stays a thin delegate.
+- [x] M3 completed.
 
 ## Decision log
 
@@ -298,11 +299,13 @@ The implementation must stay inside the approved architecture boundary:
 - 2026-04-21: treat tracked-source normalization as a hard prerequisite before `test-spec` or `implement`. Reason: the accepted proposal, approved spec, approved architecture, and this plan currently exist only as local worktree artifacts.
 - 2026-04-21: make the workflow contract and summary surfaces state the ordinary baseline pack separately from the `0001-skill-validator/` example. Reason: M1 needed to stop contributors from treating the shipped rich example as the universal minimum pack for non-trivial work.
 - 2026-04-21: enforce the approved `artifacts` contract through an allowlist of canonical snake_case keys instead of regex-only naming checks. Reason: the approved spec names the canonical key set directly, and rejecting unknown keys keeps the validator aligned with that contract.
+- 2026-04-21: keep `.github/workflows/ci.yml` unchanged in M3. Reason: it already satisfied the approved thin-wrapper boundary by delegating validation logic to `bash scripts/ci.sh`.
 
 ## Surprises and discoveries
 
 - 2026-04-21: the existing archived `specs/rigorloop-workflow.test.md` still owns the main proof surface for `change.yaml`, explain-change, and `0001` behavior, so M1 required workflow-test alignment rather than only editing summary docs.
 - 2026-04-21: the pre-M2 metadata validator already enforced scalar string artifact values through schema validation, but it silently accepted noncanonical artifact keys until the semantic allowlist check was added.
+- 2026-04-21: after M1 wording alignment, no additional README or `docs/changes/0001-skill-validator/` edits were needed in M3; the only remaining gap was the missing CI-wrapper hook for the new metadata fixture runner.
 
 ## Validation notes
 
@@ -324,6 +327,15 @@ The implementation must stay inside the approved architecture boundary:
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-04-21-docs-changes-usage-policy.md --path specs/docs-changes-usage-policy.test.md`
   - `git diff --check -- scripts/validate-change-metadata.py specs/docs-changes-usage-policy.test.md docs/plans/2026-04-21-docs-changes-usage-policy.md`
   - Result: all passed, and the invalid fixtures now fail with contributor-actionable messages.
+- 2026-04-21: M3 fail-first proof confirmed the repo-wide wrapper gap before wiring landed.
+  - Ran `bash scripts/ci.sh` and captured its output before editing `scripts/ci.sh`.
+  - Result: the wrapper passed, but it did not invoke `python scripts/test-change-metadata-validator.py` yet.
+- 2026-04-21: M3 validation passed.
+  - `python scripts/test-change-metadata-validator.py`
+  - `python scripts/validate-change-metadata.py docs/changes/0001-skill-validator/change.yaml`
+  - `bash scripts/ci.sh`
+  - `git diff --check -- README.md scripts/ci.sh .github/workflows/ci.yml docs/changes/0001-skill-validator`
+  - Result: all passed, and the standard CI wrapper now exercises the change-metadata proof surface.
 
 ## Outcome and retrospective
 
@@ -333,5 +345,5 @@ The implementation must stay inside the approved architecture boundary:
 
 - `specs/docs-changes-usage-policy.test.md` is now the active proof-planning surface.
 - The tracked-source prerequisite is satisfied for the accepted proposal, approved spec, approved architecture, active plan, and active test spec.
-- M1 and M2 are complete and the initiative remains active for M3.
+- M1 through M3 are complete.
 - The next stage is `code-review`.

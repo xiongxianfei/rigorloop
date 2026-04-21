@@ -121,6 +121,9 @@ run_check "Run skill validator fixtures" \
 run_check "Check generated skill drift" \
   python scripts/build-skills.py --check
 
+run_check "Run change metadata validator fixtures" \
+  python scripts/test-change-metadata-validator.py
+
 run_check "Run artifact lifecycle validator fixtures" \
   python scripts/test-artifact-lifecycle-validator.py
 
