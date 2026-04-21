@@ -323,11 +323,11 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
         self.assertIn("specs/related-spec.md", checked_paths)
         self.assertIn("docs/architecture/2026-04-20-related-architecture.md", checked_paths)
 
-    def test_plan_scope_uses_whole_plan_artifact_refs(self) -> None:
+    def test_plan_scope_uses_current_context_refs_but_ignores_future_milestone_targets(self) -> None:
         fixture_root = copy_fixture("related-scope")
         self.addCleanupTree(fixture_root)
-        follow_on = fixture_root / "specs" / "related-history.test.md"
-        follow_on.write_text(
+        current_context = fixture_root / "specs" / "related-history.test.md"
+        current_context.write_text(
             """# Related history test spec
 
 ## Status
@@ -363,10 +363,49 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
 """,
             encoding="utf-8",
         )
+        future_target = fixture_root / "specs" / "future-stale.test.md"
+        future_target.write_text(
+            """# Future stale test spec
+
+## Status
+
+- active
+
+## Related spec and plan
+
+- Spec: `specs/related-spec.md`
+- Plan: `docs/plans/2026-04-20-related-plan.md`
+
+## Testing strategy
+
+- Keep the fixture valid.
+
+## Requirement coverage map
+
+| Requirement IDs | Covered by | Level | Notes |
+| --- | --- | --- | --- |
+| `R1` | `T2` | integration | future milestone target |
+
+## Test cases
+
+### T2. Future milestone target fixture
+
+- Covers: R1
+- Level: integration
+- Fixture/setup:
+- Steps:
+- Expected result:
+- Failure proves:
+- Automation location:
+""",
+            encoding="utf-8",
+        )
         plan_path = fixture_root / "docs" / "plans" / "2026-04-20-related-plan.md"
         plan_path.write_text(
             plan_path.read_text(encoding="utf-8")
-            + "\n## Migration targets\n\n- `specs/related-history.test.md`\n- `docs/workflows.md`\n",
+            + "\n## Related artifacts\n\n- `specs/related-history.test.md`\n"
+            + "\n## Context and orientation\n\n- `specs/future-stale.test.md`\n"
+            + "\n## Milestones\n\n### M4. Future migration\n\n- `specs/future-stale.test.md`\n",
             encoding="utf-8",
         )
 
@@ -379,7 +418,7 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
         checked_paths = {path.as_posix() for path in result.checked_artifacts}
         self.assertIn("docs/proposals/2026-04-20-related-proposal.md", checked_paths)
         self.assertIn("specs/related-history.test.md", checked_paths)
-        self.assertNotIn("docs/workflows.md", checked_paths)
+        self.assertNotIn("specs/future-stale.test.md", checked_paths)
 
     def test_local_mode_blocks_related_and_warns_unrelated_baseline(self) -> None:
         fixture_root = copy_fixture("local-scope")
