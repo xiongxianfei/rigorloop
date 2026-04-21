@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- none yet
+- [2026-04-21 Docs changes skill enforcement](plans/2026-04-21-docs-changes-skill-enforcement.md) - active execution plan for aligning stage-local workflow skills with the approved docs-changes baseline pack, blocker handling, and generated-skill proof path.
 
 ## Blocked
 - none yet
