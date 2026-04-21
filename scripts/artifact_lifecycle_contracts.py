@@ -11,6 +11,12 @@ from pathlib import Path
 PROPOSAL_ID_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}-[a-z0-9]+(?:-[a-z0-9]+)*$")
 SPEC_ID_PATTERN = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 ADR_ID_PATTERN = re.compile(r"^ADR-\d{8}-[a-z0-9]+(?:-[a-z0-9]+)*$")
+SPEC_CONTRACT_HEADINGS = (
+    "## Status",
+    "## Goal and context",
+    "## Requirements",
+    "## Acceptance criteria",
+)
 
 
 @dataclass(frozen=True)
@@ -73,7 +79,12 @@ ADR_CONTRACT = ArtifactContract(
 )
 
 
-def classify_artifact(relative_path: Path) -> ArtifactContract | None:
+def _is_lifecycle_managed_spec(text: str) -> bool:
+    matches = sum(1 for heading in SPEC_CONTRACT_HEADINGS if heading in text)
+    return matches >= 2
+
+
+def classify_artifact(relative_path: Path, text: str | None = None) -> ArtifactContract | None:
     path_text = relative_path.as_posix()
     name = relative_path.name
 
@@ -85,10 +96,13 @@ def classify_artifact(relative_path: Path) -> ArtifactContract | None:
         "feature-template.md",
         "feature-template.test.md",
     } and not name.endswith(".test.md"):
-        return SPEC_CONTRACT
+        if text is None:
+            return None
+        if _is_lifecycle_managed_spec(text):
+            return SPEC_CONTRACT
+        return None
     if path_text.startswith("docs/architecture/") and name.endswith(".md"):
         return ARCHITECTURE_CONTRACT
     if path_text.startswith("docs/adr/") and name.endswith(".md"):
         return ADR_CONTRACT
     return None
-

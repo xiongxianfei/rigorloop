@@ -16,7 +16,7 @@ REPO_PATH_PATTERN = re.compile(
     r"(?P<path>(?:\.\./|\.\/)?(?:docs|specs|\.codex)/[A-Za-z0-9._/\-]+(?:\.md|\.yaml))"
 )
 STALE_READINESS_PATTERN = re.compile(
-    r"(ready for (proposal-review|spec-review|implement|implementation|pr|code-review)|"
+    r"(ready for `?(proposal-review|spec-review|implement|implementation|pr|code-review)`?|"
     r"next stage should be `?(proposal-review|spec-review|implement|implementation|pr|code-review)`?)",
     re.IGNORECASE,
 )
@@ -50,6 +50,15 @@ class ValidationScope:
 
 class ValidationInputError(Exception):
     """Raised when validator input is incomplete or ambiguous."""
+
+
+@dataclass(frozen=True)
+class ArtifactInspection:
+    path: Path
+    contract: ArtifactContract
+    status: str | None
+    identifier: str | None
+    errors: tuple[str, ...]
 
 
 def _is_relative_to(path: Path, other: Path) -> bool:
@@ -181,6 +190,12 @@ def _has_terminal_closeout(sections: dict[str, str]) -> bool:
     return "Follow-on artifacts" in sections or "Closeout" in sections
 
 
+def _requires_readiness_consistency_check(contract: ArtifactContract, status: str | None) -> bool:
+    if status is None:
+        return False
+    return status in contract.settlement_statuses or status in contract.terminal_statuses
+
+
 def _validate_status_and_sections(
     path: Path,
     contract: ArtifactContract,
@@ -218,6 +233,9 @@ def _validate_status_and_sections(
         if status.lower() == "superseded" and not _has_replacement_pointer(text):
             errors.append("superseded artifacts must identify a replacement")
 
+    if "Next artifacts" in sections and not sections["Next artifacts"].strip():
+        errors.append("Next artifacts section must not be empty")
+
     if "Follow-on artifacts" in sections:
         follow_on_body = sections["Follow-on artifacts"].strip()
         if not follow_on_body:
@@ -226,22 +244,30 @@ def _validate_status_and_sections(
             pass
 
     readiness = sections.get("Readiness", "")
-    if readiness and STALE_READINESS_PATTERN.search(readiness):
+    if readiness and _requires_readiness_consistency_check(contract, status) and STALE_READINESS_PATTERN.search(
+        readiness
+    ):
         errors.append("status and readiness disagree about whether earlier pending stages remain")
 
     return errors, status
 
 
-def _validate_artifact(path: Path, root: Path) -> tuple[str | None, str | None, list[str]]:
+def _inspect_artifact(path: Path, root: Path) -> ArtifactInspection | None:
     relative_path = path.relative_to(root)
-    contract = classify_artifact(relative_path)
-    if contract is None:
-        return None, None, []
-
     text = path.read_text(encoding="utf-8")
+    contract = classify_artifact(relative_path, text)
+    if contract is None:
+        return None
     sections = _parse_sections(text)
     errors, status = _validate_status_and_sections(relative_path, contract, sections, text)
-    return contract.class_name, status, errors
+    identifier = _extract_identifier(contract, relative_path)
+    return ArtifactInspection(
+        path=path,
+        contract=contract,
+        status=status,
+        identifier=identifier,
+        errors=tuple(errors),
+    )
 
 
 def _discover_all_in_scope_artifacts(root: Path) -> set[Path]:
@@ -251,8 +277,9 @@ def _discover_all_in_scope_artifacts(root: Path) -> set[Path]:
             continue
         if not _is_relative_to(candidate.resolve(), root):
             continue
+        text = candidate.read_text(encoding="utf-8")
         relative = candidate.resolve().relative_to(root)
-        if classify_artifact(relative) is not None:
+        if classify_artifact(relative, text) is not None:
             results.add(candidate.resolve())
     return results
 
@@ -352,7 +379,10 @@ def _resolve_scope(
             generated_paths.add(current)
             continue
 
-        contract = classify_artifact(relative)
+        contract = classify_artifact(
+            relative,
+            current.read_text(encoding="utf-8") if current.suffix == ".md" else None,
+        )
         if contract is not None:
             related_artifacts.add(current)
 
@@ -408,6 +438,8 @@ def validate_repository(
 
     blocking_findings: list[ValidationFinding] = []
     warning_findings: list[ValidationFinding] = []
+    root_resolved = root.resolve()
+    related_paths = set(scope.related_artifact_paths)
 
     for path in scope.generated_paths:
         blocking_findings.append(
@@ -420,41 +452,51 @@ def validate_repository(
             )
         )
 
-    seen_identifiers: dict[tuple[str, str], Path] = {}
+    inspections: dict[Path, ArtifactInspection] = {}
+    for path in tuple(sorted(related_paths | set(scope.baseline_paths))):
+        inspection = _inspect_artifact(path, root_resolved)
+        if inspection is not None:
+            inspections[path] = inspection
 
-    def record_findings(paths_to_validate: tuple[Path, ...], severity: str) -> None:
-        target_findings = blocking_findings if severity == "block" else warning_findings
-        for path in paths_to_validate:
-            artifact_class, status, errors = _validate_artifact(path, root.resolve())
-            if artifact_class is None:
-                continue
-
-            contract = classify_artifact(path.relative_to(root.resolve()))
-            identifier = _extract_identifier(contract, path.relative_to(root.resolve())) if contract else None
-            if artifact_class and identifier:
-                key = (artifact_class, identifier)
-                owner = seen_identifiers.get(key)
-                if owner and owner != path:
-                    errors.append(f"duplicate {artifact_class} identifier: {identifier}")
-                else:
-                    seen_identifiers[key] = path
-
-            for error in errors:
-                target_findings.append(
-                    ValidationFinding(
-                        severity=severity,
-                        path=path,
-                        artifact_class=artifact_class,
-                        status=status,
-                        message=error,
-                    )
+    for inspection in inspections.values():
+        target_findings = blocking_findings if inspection.path in related_paths else warning_findings
+        for error in inspection.errors:
+            target_findings.append(
+                ValidationFinding(
+                    severity="block" if inspection.path in related_paths else "warn",
+                    path=inspection.path,
+                    artifact_class=inspection.contract.class_name,
+                    status=inspection.status,
+                    message=error,
                 )
+            )
 
-    record_findings(scope.related_artifact_paths, "block")
-    record_findings(scope.baseline_paths, "warn")
+    duplicate_groups: dict[tuple[str, str], list[ArtifactInspection]] = {}
+    for inspection in inspections.values():
+        if inspection.identifier is None:
+            continue
+        key = (inspection.contract.class_name, inspection.identifier)
+        duplicate_groups.setdefault(key, []).append(inspection)
+
+    for (artifact_class, identifier), group in duplicate_groups.items():
+        if len(group) < 2:
+            continue
+        any_related = any(inspection.path in related_paths for inspection in group)
+        target_findings = blocking_findings if any_related else warning_findings
+        severity = "block" if any_related else "warn"
+        for inspection in sorted(group, key=lambda item: item.path.as_posix()):
+            target_findings.append(
+                ValidationFinding(
+                    severity=severity,
+                    path=inspection.path,
+                    artifact_class=artifact_class,
+                    status=inspection.status,
+                    message=f"duplicate {artifact_class} identifier: {identifier}",
+                )
+            )
 
     return ValidationResult(
-        checked_artifacts=[path.relative_to(root.resolve()) for path in scope.related_artifact_paths],
+        checked_artifacts=[path.relative_to(root_resolved) for path in scope.related_artifact_paths],
         blocking_findings=blocking_findings,
         warning_findings=warning_findings,
     )

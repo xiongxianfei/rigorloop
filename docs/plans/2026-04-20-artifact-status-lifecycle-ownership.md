@@ -398,6 +398,7 @@ The implementation needs to land as one coherent sequence:
 - 2026-04-20: moved the accepted proposal, approved spec, and approved architecture for this feature into tracked git state so downstream stages can rely on repository artifacts instead of untracked local files.
 - 2026-04-20: started implementation, normalized `specs/artifact-status-lifecycle-ownership.test.md` from `draft` to `active`, and updated this plan from `draft` to `active`.
 - 2026-04-20: completed M1 by adding the artifact lifecycle contract registry, validator helper, CLI entrypoint, and fixture-driven validator tests under `scripts/` and `tests/fixtures/artifact-lifecycle/`.
+- 2026-04-21: addressed the first M1 code-review pass by narrowing spec classification to lifecycle-managed behavior contracts, fixing duplicate-ID severity classification, applying stale-readiness checks only to settled or terminal artifacts, and adding `Next artifacts` validation plus regression fixtures.
 
 ## Decision log
 
@@ -409,6 +410,10 @@ The implementation needs to land as one coherent sequence:
 - 2026-04-20: normalize the test spec to `active` once M1 began relying on it as the governing proof surface. Rationale: the approved lifecycle contract treats live implementation use as the transition point from `draft` to `active`.
 - 2026-04-20: restrict recursive related-scope reference expansion to `docs/changes/`, `docs/explain/`, `docs/plans/`, and optional draft PR-body input. Rationale: explicit-path validation should stay deterministic and must not pull unrelated repository artifacts into scope from arbitrary Markdown files.
 - 2026-04-20: ignore referenced paths that are absent during scope expansion instead of failing the whole run. Rationale: pre-PR handoff surfaces may mention artifacts that are not present in a narrow fixture tree, and missing references are not themselves an approved M1 blocker.
+- 2026-04-21: classify top-level `specs/*.md` files as lifecycle-managed behavior specs only when their content matches the contract shape instead of using path alone. Rationale: the `specs/` directory may legitimately contain ordinary documentation such as `README.md`.
+- 2026-04-21: build the full artifact identifier index before assigning duplicate-ID severity. Rationale: duplicate groups must block whenever any participant is related to the change, not only when the second-seen artifact happens to be related.
+- 2026-04-21: restrict stale-readiness checks to settled or terminal artifact states. Rationale: draft and proposed artifacts can legitimately say they are ready for the next review stage.
+- 2026-04-21: parse and validate `Next artifacts` when the section exists. Rationale: M1 claims `R9a` and `R9b` coverage, so the validator must enforce at least the objective non-empty-history rule for preserved planning sections.
 
 ## Surprises and discoveries
 
@@ -418,17 +423,27 @@ The implementation needs to land as one coherent sequence:
 - Proposal and architecture lifecycle guidance currently depends more on skills and approved examples than on dedicated templates, so M2 must treat those surfaces carefully.
 - Broad recursive Markdown reference expansion initially pulled unrelated repo docs and generated `.codex/` paths into explicit-path validation. Restricting expansion to the approved scope surfaces restored deterministic relatedness.
 - Placeholder detection needed to ignore fenced code blocks and inline code so valid prose examples like `` `TODO` `` in specs and proposals do not become false blockers.
+- The `specs/` directory can legitimately contain ordinary documentation as well as lifecycle-managed behavior specs, so spec classification needs content-shape checks instead of path-only matching.
+- Duplicate-identifier severity cannot be assigned incrementally without missing the case where a changed artifact collides with an unchanged baseline artifact.
 
 ## Validation notes
 
 - Red state before implementation:
   - `python scripts/test-artifact-lifecycle-validator.py` -> failed with `ModuleNotFoundError: No module named 'artifact_lifecycle_validation'`
+- Red state before the M1 review-fix pass:
+  - `python scripts/test-artifact-lifecycle-validator.py` -> failed (`3` failures covering spec-doc classification, duplicate-ID severity with a related participant, and missing `Next artifacts` validation)
 - Green validation after implementation:
   - `python scripts/test-artifact-lifecycle-validator.py` -> passed (`20` tests)
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/artifact-status-lifecycle-ownership.md` -> passed (`validated 1 artifact files in explicit-paths mode`)
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/artifact-status-lifecycle-ownership.md --path docs/proposals/2026-04-20-artifact-status-lifecycle-ownership.md --path docs/architecture/2026-04-20-artifact-status-lifecycle-ownership.md` -> passed (`validated 3 artifact files in explicit-paths mode`)
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/artifact-status-lifecycle-ownership.test.md` -> passed (`validated 1 artifact files in explicit-paths mode`)
   - `git diff --check -- scripts tests/fixtures` -> passed
+- Green validation after the M1 review-fix pass:
+  - `python scripts/test-artifact-lifecycle-validator.py` -> passed (`24` tests)
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/artifact-status-lifecycle-ownership.md` -> passed (`validated 1 artifact files in explicit-paths mode`)
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/artifact-status-lifecycle-ownership.md --path docs/proposals/2026-04-20-artifact-status-lifecycle-ownership.md --path docs/architecture/2026-04-20-artifact-status-lifecycle-ownership.md` -> passed (`validated 3 artifact files in explicit-paths mode`)
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/artifact-status-lifecycle-ownership.test.md` -> passed (`validated 1 artifact files in explicit-paths mode`)
+  - `git diff --check -- scripts tests/fixtures docs/plans/2026-04-20-artifact-status-lifecycle-ownership.md` -> passed
 - Supporting lifecycle bookkeeping validation:
   - `git diff --check -- docs/plan.md docs/plans/2026-04-20-artifact-status-lifecycle-ownership.md specs/artifact-status-lifecycle-ownership.test.md` -> passed
 - Optional proof not run:
