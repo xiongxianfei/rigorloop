@@ -285,6 +285,7 @@ The implementation must stay inside the approved narrow boundary:
 - [x] 2026-04-21: M3 completed. No directly related `docs/workflows.md` drift remained, the active test spec was synced back to review state, and the repo-owned smoke validation path passed.
 - [x] 2026-04-21: overall code-review passed with no findings, so the feature is ready for the final `verify` gate.
 - [x] 2026-04-21: overall verify passed and the initiative moved from `Active` to `Done` on-branch before explanation and PR preparation.
+- [x] 2026-04-21: explain-change completed in the feature's change-local durable reasoning surface, so the branch is ready for `pr`.
 
 ## Decision log
 
@@ -364,6 +365,9 @@ The implementation must stay inside the approved narrow boundary:
   - `rg -n "^## (Active|Blocked|Done|Superseded)$|2026-04-21-docs-changes-skill-enforcement" docs/plan.md`
   - `git diff --check ba8998e..HEAD`
   - Result: passed. The only remaining verify-stage work is downstream explanation/PR packaging, not more implementation.
+- 2026-04-21: explain-change completed using the feature's existing change-local durable reasoning surface rather than creating a second top-level explain artifact.
+  - `git diff --check -- docs/changes/2026-04-21-docs-changes-skill-enforcement/explain-change.md docs/plans/2026-04-21-docs-changes-skill-enforcement.md specs/docs-changes-skill-enforcement.test.md`
+  - Result: passed.
 
 ## Outcome and retrospective
 
@@ -385,4 +389,5 @@ The implementation must stay inside the approved narrow boundary:
 - The tracked-source prerequisite is satisfied.
 - This plan is done on-branch.
 - M1 through M3, overall code-review, and overall verify are complete.
-- The next expected stage is `explain-change`.
+- `explain-change` is complete.
+- The next expected stage is `pr`.
