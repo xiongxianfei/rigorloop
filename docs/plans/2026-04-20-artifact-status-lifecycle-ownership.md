@@ -403,6 +403,7 @@ The implementation needs to land as one coherent sequence:
 - 2026-04-21: addressed the M2 code-review findings by fixing the ADR guidance surface to include `Archived` and by updating the approved proposal example to use split settlement-versus-terminal columns plus explicit closeout timing.
 - 2026-04-21: expanded the ADR lifecycle contract to the shared lowercase status family requested during implementation: `draft`, `proposed`, `accepted`, `active`, `deprecated`, `superseded`, `archived`, and `abandoned`. This required coordinated updates to the approved spec, workflow guidance, validator contract, fixtures, generated skills, and the relied-on repository-layout ADR.
 - 2026-04-21: completed M3 by wiring the artifact lifecycle validator into `scripts/ci.sh` and `.github/workflows/ci.yml`, adding diff-mode regression coverage, and tightening plan-surface reference expansion so CI-mode validation stays deterministic without treating future milestone references as current blockers.
+- 2026-04-21: addressed the M3 code-review findings by switching `pr-ci` to merge-base-aware diffs, reading diff-derived scope and baseline artifacts from tracked commit snapshots, and expanding active-plan reference extraction across the whole plan with lifecycle-path filtering.
 
 ## Decision log
 
@@ -423,7 +424,9 @@ The implementation needs to land as one coherent sequence:
 - 2026-04-21: keep the ADR guidance review-fix aligned to the approved spec instead of broadening the ADR status contract during M2. Rationale: the approved spec and validator currently allow `Proposed`, `Accepted`, `Superseded`, and `Archived` for ADRs, so the M2 fix should close the guidance gap without introducing a wider unreviewed status model.
 - 2026-04-21: broaden the ADR status contract when the user explicitly requested the shared lowercase lifecycle format. Rationale: once that higher-priority direction changed, leaving ADRs on the older mixed-case subset would have kept the canonical skill, workflow docs, validator, and relied-on ADR artifact inconsistent with the requested source of truth.
 - 2026-04-21: when `scripts/ci.sh` runs outside hosted CI, use `explicit-paths` over the tracked diff first and fall back to `HEAD~1..HEAD` only when there is no tracked diff. Rationale: local wrapper runs must stay deterministic without pulling unrelated untracked drafts into scope through `local` mode.
-- 2026-04-21: expand active-plan references from the `Source artifacts` section rather than every path mention in the plan body. Rationale: plans legitimately mention future milestone targets and out-of-scope local drafts that should not become current related-artifact blockers.
+- 2026-04-21: compute `pr-ci` changed paths from the merge-base-aware PR diff (`base...head`). Rationale: pull-request validation must follow the current change rather than tree differences introduced by unrelated base-branch advances.
+- 2026-04-21: in `pr-ci` and `push-main-ci`, read changed-scope surfaces and baseline artifact discovery from the tracked `head` or `after` snapshot instead of the local filesystem. Rationale: local diff-mode proofs must match hosted CI and must not warn on unrelated untracked drafts.
+- 2026-04-21: extract lifecycle and artifact path references from the whole active plan, filtered to lifecycle/reference path patterns, instead of only the `Source artifacts` section. Rationale: active plans can govern authoritative artifacts outside the source-artifact summary, so plan-wide references must stay discoverable without scraping unrelated non-lifecycle docs.
 - 2026-04-21: treat changed `.codex/` paths as explicit generated-source blockers only in `explicit-paths` mode, not in diff-derived CI modes. Rationale: PR and push validation must tolerate legitimate generated-output refreshes while still rejecting attempts to validate generated output as authored source of truth directly.
 
 ## Surprises and discoveries
@@ -439,7 +442,8 @@ The implementation needs to land as one coherent sequence:
 - The existing spec and test-spec templates were far slimmer than the approved lifecycle contract, so M2 needed to expand them materially to teach status normalization, closeout, and readiness patterns instead of only adding a few status bullets.
 - The approved proposal example still carried the older single-column lifecycle summary after the first M2 pass, so manual example-surface review has to check terminology drift separately from the workflow spec and skills.
 - The ADR status request was larger than a skill-only wording tweak: once lowercase shared ADR statuses were adopted, the approved spec, validator fixtures, generated skills, and the real relied-on ADR all needed to move together or the repository would immediately reintroduce lifecycle drift.
-- The active plan can mention future migration targets and out-of-scope local drafts without those references being authoritative for the current milestone, so CI-mode scope expansion needs section-aware plan parsing rather than naive whole-file Markdown scraping.
+- Diff-derived validation must read tracked commit snapshots rather than the live working tree; otherwise local untracked drafts and unstaged edits leak into PR or push validation in ways hosted CI would never see.
+- Active plans can reference authoritative artifacts outside `Source artifacts`, so plan-scope extraction needs whole-plan lifecycle-path filtering rather than a `Source artifacts`-only shortcut or naive unrestricted Markdown scraping.
 - Diff-derived validation must distinguish between generated outputs as related surfaces and generated outputs as authored-source inputs; otherwise normal regenerated `.codex/skills/` changes become false blockers in CI.
 
 ## Validation notes
@@ -487,6 +491,11 @@ The implementation needs to land as one coherent sequence:
   - `python scripts/validate-artifact-lifecycle.py --mode push-main-ci --before "$(git rev-parse HEAD~1)" --after "$(git rev-parse HEAD)"` -> passed with warnings only (`validated 7 artifact files in push-main-ci mode`; warnings were unrelated stale baseline debt, not blockers)
   - `bash scripts/ci.sh` -> passed (`scripts/ci.sh` now runs skill validation, skill fixtures, generated-skill drift check, artifact lifecycle validator fixtures, and lifecycle validation using deterministic CI or local fallback inputs`)
   - `git diff --check -- scripts/ci.sh .github/workflows/ci.yml scripts docs/workflows.md docs/plans/2026-04-20-artifact-status-lifecycle-ownership.md` -> passed
+- Green validation after the M3 code-review fix:
+  - `python scripts/test-artifact-lifecycle-validator.py` -> passed (`32` tests including merge-base PR scope, tracked-only diff-mode baseline discovery, and whole-plan artifact-reference expansion)
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/artifact-status-lifecycle-ownership.md --path docs/proposals/2026-04-20-artifact-status-lifecycle-ownership.md` -> passed (`validated 2 artifact files in explicit-paths mode`)
+  - `bash scripts/ci.sh` -> passed (`local tracked-diff fallback stayed deterministic after the M3 scope corrections`)
+  - `git diff --check -- scripts/artifact_lifecycle_validation.py scripts/test-artifact-lifecycle-validator.py docs/plans/2026-04-20-artifact-status-lifecycle-ownership.md` -> passed
 - Supporting lifecycle bookkeeping validation:
   - `git diff --check -- docs/plan.md docs/plans/2026-04-20-artifact-status-lifecycle-ownership.md specs/artifact-status-lifecycle-ownership.test.md` -> passed
 - Optional proof not run:

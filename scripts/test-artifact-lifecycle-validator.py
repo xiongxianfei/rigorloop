@@ -93,6 +93,24 @@ def commit_fixture_change(
     ).stdout.strip()
 
 
+def checkout_fixture_branch(path: Path, branch: str, *, create: bool = False) -> None:
+    command = ["git", "checkout"]
+    if create:
+        command.append("-b")
+    command.append(branch)
+    subprocess.run(command, cwd=path, check=True, capture_output=True, text=True)
+
+
+def current_fixture_branch(path: Path) -> str:
+    return subprocess.run(
+        ["git", "branch", "--show-current"],
+        cwd=path,
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+
+
 class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
     maxDiff = None
 
@@ -305,19 +323,50 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
         self.assertIn("specs/related-spec.md", checked_paths)
         self.assertIn("docs/architecture/2026-04-20-related-architecture.md", checked_paths)
 
-    def test_plan_scope_ignores_non_source_artifact_mentions(self) -> None:
+    def test_plan_scope_uses_whole_plan_artifact_refs(self) -> None:
         fixture_root = copy_fixture("related-scope")
         self.addCleanupTree(fixture_root)
-        unrelated = fixture_root / "docs" / "proposals" / "2026-04-20-unrelated-proposal.md"
-        unrelated.parent.mkdir(parents=True, exist_ok=True)
-        unrelated.write_text(
-            "# Unrelated proposal\n\nThis file is mentioned later in the plan but is not a source artifact.\n",
+        follow_on = fixture_root / "specs" / "related-history.test.md"
+        follow_on.write_text(
+            """# Related history test spec
+
+## Status
+
+- active
+
+## Related spec and plan
+
+- Spec: `specs/related-spec.md`
+- Plan: `docs/plans/2026-04-20-related-plan.md`
+
+## Testing strategy
+
+- Keep the fixture valid.
+
+## Requirement coverage map
+
+| Requirement IDs | Covered by | Level | Notes |
+| --- | --- | --- | --- |
+| `R1` | `T1` | integration | plan-wide path extraction |
+
+## Test cases
+
+### T1. Plan-wide extraction fixture
+
+- Covers: R1
+- Level: integration
+- Fixture/setup:
+- Steps:
+- Expected result:
+- Failure proves:
+- Automation location:
+""",
             encoding="utf-8",
         )
         plan_path = fixture_root / "docs" / "plans" / "2026-04-20-related-plan.md"
         plan_path.write_text(
             plan_path.read_text(encoding="utf-8")
-            + "\n## Future work\n\n- `docs/proposals/2026-04-20-unrelated-proposal.md`\n",
+            + "\n## Migration targets\n\n- `specs/related-history.test.md`\n- `docs/workflows.md`\n",
             encoding="utf-8",
         )
 
@@ -329,7 +378,8 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
         self.assertFalse(result.blocking_findings)
         checked_paths = {path.as_posix() for path in result.checked_artifacts}
         self.assertIn("docs/proposals/2026-04-20-related-proposal.md", checked_paths)
-        self.assertNotIn("docs/proposals/2026-04-20-unrelated-proposal.md", checked_paths)
+        self.assertIn("specs/related-history.test.md", checked_paths)
+        self.assertNotIn("docs/workflows.md", checked_paths)
 
     def test_local_mode_blocks_related_and_warns_unrelated_baseline(self) -> None:
         fixture_root = copy_fixture("local-scope")
@@ -359,7 +409,16 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
     def test_pr_ci_mode_uses_explicit_diff_range(self) -> None:
         fixture_root = copy_fixture("local-scope")
         self.addCleanupTree(fixture_root)
-        base = init_git_fixture(fixture_root)
+        init_git_fixture(fixture_root)
+        main_branch = current_fixture_branch(fixture_root)
+        checkout_fixture_branch(fixture_root, "feature", create=True)
+        checkout_fixture_branch(fixture_root, main_branch)
+        base = commit_fixture_change(
+            fixture_root,
+            "docs/proposals/2026-04-20-unrelated-proposal.md",
+            "base-only unrelated change",
+        )
+        checkout_fixture_branch(fixture_root, "feature")
         head = commit_fixture_change(
             fixture_root,
             "docs/proposals/2026-04-20-related-proposal.md",
@@ -371,6 +430,7 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
         warning_paths = {f.path.name for f in result.warning_findings}
         self.assertIn("2026-04-20-related-proposal.md", blocking_paths)
         self.assertIn("2026-04-20-unrelated-proposal.md", warning_paths)
+        self.assertNotIn("2026-04-20-unrelated-proposal.md", blocking_paths)
 
     def test_pr_ci_mode_ignores_generated_outputs_in_diff(self) -> None:
         fixture_root = copy_fixture("local-scope")
@@ -394,6 +454,49 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
         self.assertIn("docs/proposals/2026-04-20-unrelated-proposal.md", warning_paths)
         self.assertNotIn(".codex/skills/proposal/SKILL.md", blocking_paths)
 
+    def test_pr_ci_mode_ignores_untracked_baseline_artifacts(self) -> None:
+        fixture_root = copy_fixture("local-scope")
+        self.addCleanupTree(fixture_root)
+        base = init_git_fixture(fixture_root)
+        head = commit_fixture_change(
+            fixture_root,
+            "docs/proposals/2026-04-20-related-proposal.md",
+            "fixture PR change",
+        )
+        untracked = fixture_root / "docs" / "proposals" / "2026-04-20-untracked-proposal.md"
+        untracked.write_text(
+            """# Untracked stale proposal
+
+## Status
+- accepted
+
+## Problem
+
+This local draft should not affect diff-based CI validation.
+
+## Goals
+
+- Stay out of tracked baseline scope.
+
+## Non-goals
+
+- none
+
+## Recommended direction
+
+Leave this draft stale.
+
+## Readiness
+
+- ready for proposal-review
+""",
+            encoding="utf-8",
+        )
+
+        result = validate_repository(fixture_root, mode="pr-ci", base=base, head=head)
+        finding_paths = {f.path.name for f in (*result.blocking_findings, *result.warning_findings)}
+        self.assertNotIn("2026-04-20-untracked-proposal.md", finding_paths)
+
     def test_push_main_ci_mode_uses_explicit_diff_range(self) -> None:
         fixture_root = copy_fixture("local-scope")
         self.addCleanupTree(fixture_root)
@@ -409,6 +512,49 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
         warning_paths = {f.path.name for f in result.warning_findings}
         self.assertIn("2026-04-20-related-proposal.md", blocking_paths)
         self.assertIn("2026-04-20-unrelated-proposal.md", warning_paths)
+
+    def test_push_main_ci_mode_ignores_untracked_baseline_artifacts(self) -> None:
+        fixture_root = copy_fixture("local-scope")
+        self.addCleanupTree(fixture_root)
+        before = init_git_fixture(fixture_root)
+        after = commit_fixture_change(
+            fixture_root,
+            "docs/proposals/2026-04-20-related-proposal.md",
+            "fixture push change",
+        )
+        untracked = fixture_root / "docs" / "proposals" / "2026-04-20-untracked-proposal.md"
+        untracked.write_text(
+            """# Untracked stale proposal
+
+## Status
+- accepted
+
+## Problem
+
+This local draft should not affect diff-based CI validation.
+
+## Goals
+
+- Stay out of tracked baseline scope.
+
+## Non-goals
+
+- none
+
+## Recommended direction
+
+Leave this draft stale.
+
+## Readiness
+
+- ready for proposal-review
+""",
+            encoding="utf-8",
+        )
+
+        result = validate_repository(fixture_root, mode="push-main-ci", before=before, after=after)
+        finding_paths = {f.path.name for f in (*result.blocking_findings, *result.warning_findings)}
+        self.assertNotIn("2026-04-20-untracked-proposal.md", finding_paths)
 
     def test_cli_requires_pr_ci_and_push_ci_inputs(self) -> None:
         pr_result = run_cli("--mode", "pr-ci")
