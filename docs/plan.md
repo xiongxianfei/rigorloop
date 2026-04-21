@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-04-21 Docs changes skill enforcement](plans/2026-04-21-docs-changes-skill-enforcement.md) - active execution plan for aligning stage-local workflow skills with the approved docs-changes baseline pack, blocker handling, and generated-skill proof path.
+- none yet
 
 ## Blocked
 - none yet
@@ -15,6 +15,7 @@ This file tracks active, blocked, done, and superseded plans.
 - [2026-04-20 Artifact status lifecycle ownership](plans/2026-04-20-artifact-status-lifecycle-ownership.md) - completed execution plan for the artifact-lifecycle validator, deterministic verify/CI scope handling, guidance and template alignment, relied-on artifact migration, and validator-backed artifact lifecycle closeout.
 - [2026-04-21 Workflow stage autoprogression](plans/2026-04-21-workflow-stage-autoprogression.md) - completed execution plan for bounded v1 workflow autoprogression across full-feature execution handoffs, authoring-to-review handoffs, and canonical/generated skill alignment.
 - [2026-04-21 Docs changes usage policy](plans/2026-04-21-docs-changes-usage-policy.md) - completed execution plan for clarifying `docs/changes/` baseline versus conditional artifacts, aligning workflow summaries, tightening `change.yaml` artifact-key validation, and wiring the metadata proof surface into the standard CI wrapper.
+- [2026-04-21 Docs changes skill enforcement](plans/2026-04-21-docs-changes-skill-enforcement.md) - completed execution plan for aligning stage-local workflow skills with the approved docs-changes baseline pack, blocker handling, change-local durable reasoning defaults, and generated-skill proof.
 
 ## Superseded
 - none yet
