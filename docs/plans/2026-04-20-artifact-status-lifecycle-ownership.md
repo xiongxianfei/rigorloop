@@ -326,12 +326,12 @@ The implementation needs to land as one coherent sequence:
   - the repository no longer relies on stale state for the authoritative artifacts touched by this initiative, and unrelated stale baseline debt is explicit instead of silently blocking
 - Commit message: `M4: migrate artifact lifecycle state`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - migration may rewrite historical intent instead of adding truthful closeout metadata
   - settled current artifacts may be incorrectly treated as historical closeout cases
@@ -528,6 +528,6 @@ The implementation needs to land as one coherent sequence:
 - This initiative remains active; M1-M4 are complete.
 - The tracked-source-artifact prerequisite is satisfied and the test spec is now active at `specs/artifact-status-lifecycle-ownership.test.md`.
 - The relied-on historical test specs now use truthful archived closeout state, and the feature proposal, spec, and architecture remain truthful settled artifacts.
-- Implementation is ready for `code-review`.
-- M1-M3 together satisfy the v0.1 first-enforcement stack of docs, validator, fixtures, `verify`, and CI.
-- The next expected stage is `code-review`.
+- Implementation and code review are complete.
+- M1-M4 now satisfy the v0.1 first-enforcement stack of docs, validator, fixtures, `verify`, and CI, including relied-on artifact migration.
+- The next expected stage is `verify`.
