@@ -291,6 +291,7 @@ The implementation must stay inside the approved architecture boundary:
 - [x] M2 completed.
 - [x] 2026-04-21: M3 wired the change-metadata fixture runner into `scripts/ci.sh` and confirmed the repo-wide CI wrapper now exercises the new proof surface while `.github/workflows/ci.yml` stays a thin delegate.
 - [x] M3 completed.
+- [x] 2026-04-21: `explain-change` captured the implementation rationale at `docs/explain/2026-04-21-docs-changes-usage-policy.md` and moved the active plan/test-spec readiness to the `pr` gate.
 
 ## Decision log
 
@@ -350,6 +351,10 @@ The implementation must stay inside the approved architecture boundary:
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-20-docs-changes-usage-policy.md --path specs/docs-changes-usage-policy.md --path docs/architecture/2026-04-21-docs-changes-usage-policy.md --path docs/plans/2026-04-21-docs-changes-usage-policy.md --path specs/docs-changes-usage-policy.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md`
   - `git diff --check -- docs/plans/2026-04-21-docs-changes-usage-policy.md specs/docs-changes-usage-policy.test.md`
   - Result: pass, with only unrelated warning-level baseline artifact debt from historical proposal files during diff-derived lifecycle validation.
+- 2026-04-21: explain-change completed.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-04-21-docs-changes-usage-policy.md --path specs/docs-changes-usage-policy.test.md`
+  - `git diff --check -- docs/explain/2026-04-21-docs-changes-usage-policy.md docs/plans/2026-04-21-docs-changes-usage-policy.md specs/docs-changes-usage-policy.test.md`
+  - Result: passed.
 
 ## Outcome and retrospective
 
@@ -362,4 +367,5 @@ The implementation must stay inside the approved architecture boundary:
 - M1 through M3 are complete.
 - `code-review` is complete for the implementation milestones.
 - `verify` is complete for the implementation milestones.
-- The next stage is `explain-change`.
+- `explain-change` is complete at `docs/explain/2026-04-21-docs-changes-usage-policy.md`.
+- The next stage is `pr`.
