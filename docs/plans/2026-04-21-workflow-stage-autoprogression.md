@@ -424,4 +424,5 @@ The implementation must stay inside the approved v1 boundary:
 - `plan-review` is complete.
 - The tracked-source prerequisite and test spec are in place.
 - Implementation, `code-review`, and `verify` are complete through M3.
-- The next stage is `explain-change`.
+- `explain-change` is complete at `docs/explain/2026-04-21-workflow-stage-autoprogression.md`.
+- The next stage is `pr`.
