@@ -85,12 +85,26 @@ def _normalize_repo_path(root: Path, source_path: Path, raw_path: str) -> Path |
 
 
 def _extract_markdown_refs(root: Path, path: Path) -> set[Path]:
+    return _extract_repo_path_refs_from_text(root, path, path.read_text(encoding="utf-8"))
+
+
+def _extract_repo_path_refs_from_text(root: Path, path: Path, text: str) -> set[Path]:
     refs: set[Path] = set()
-    text = path.read_text(encoding="utf-8")
     for match in REPO_PATH_PATTERN.finditer(text):
         resolved = _normalize_repo_path(root, path, match.group("path"))
         if resolved is not None:
             refs.add(resolved)
+    return refs
+
+
+def _extract_plan_refs(root: Path, path: Path) -> set[Path]:
+    refs: set[Path] = set()
+    sections = _parse_sections(path.read_text(encoding="utf-8"))
+    for section_name in ("Source artifacts",):
+        body = sections.get(section_name)
+        if not body:
+            continue
+        refs.update(_extract_repo_path_refs_from_text(root, path, body))
     return refs
 
 
@@ -376,7 +390,8 @@ def _resolve_scope(
 
         relative = current.relative_to(root)
         if relative.as_posix().startswith(".codex/"):
-            generated_paths.add(current)
+            if mode == "explicit-paths":
+                generated_paths.add(current)
             continue
 
         contract = classify_artifact(
@@ -398,7 +413,10 @@ def _resolve_scope(
             or relative_text.startswith("docs/changes/")
         )
         if current.suffix == ".md" and is_reference_surface:
-            queue.extend(sorted(_extract_markdown_refs(root, current)))
+            if relative_text.startswith("docs/plans/"):
+                queue.extend(sorted(_extract_plan_refs(root, current)))
+            else:
+                queue.extend(sorted(_extract_markdown_refs(root, current)))
 
     baseline_paths: set[Path] = set()
     if mode != "explicit-paths":

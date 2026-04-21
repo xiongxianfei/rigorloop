@@ -73,12 +73,14 @@ Run these first-release structural checks before PR:
 - `python scripts/validate-skills.py`
 - `python scripts/test-skill-validator.py`
 - `python scripts/build-skills.py --check`
+- `python scripts/test-artifact-lifecycle-validator.py`
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path <repo-path> [...]`
 
-Use `bash scripts/ci.sh` to run the same checks through the repository-owned CI wrapper and report the commands you actually ran.
+Use `bash scripts/ci.sh` to run the same checks through the repository-owned CI wrapper and report the commands you actually ran. In hosted CI, the wrapper receives explicit SHA inputs for `pr-ci` or `push-main-ci`; outside CI, it falls back to deterministic explicit-path validation over tracked changes or the latest commit diff.
 
 ## CI And Release
 
-- `.github/workflows/ci.yml` should remain a thin wrapper around repo-owned validation commands. It may set up required tooling, but validation logic belongs in `scripts/ci.sh`.
+- `.github/workflows/ci.yml` should remain a thin wrapper around repo-owned validation commands. It may set up required tooling and pass explicit diff inputs, but validation logic belongs in `scripts/ci.sh`.
 - Current release automation remains conservative and tag-driven. Do not treat `scripts/release-verify.sh` as a mature release gate until repository-specific checks replace the template behavior.
 
 ## Documentation Ownership

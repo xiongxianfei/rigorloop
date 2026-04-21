@@ -3,7 +3,7 @@
 - Status: active
 - Owner: maintainer + Codex
 - Start date: 2026-04-20
-- Last updated: 2026-04-20
+- Last updated: 2026-04-21
 - Related issue or PR: none
 - Supersedes: none
 
@@ -11,7 +11,7 @@
 
 Implement the approved artifact-status lifecycle ownership change so top-level workflow artifacts remain trustworthy after review, adoption, supersession, archival, or abandonment.
 
-This initiative is the artifact-wide follow-through to the earlier plan-lifecycle fix. The repository already corrected stale state for execution plans, but proposals, specs, test specs, architecture docs, and ADRs can still drift into misleading states such as `draft`, `reviewed`, `complete`, or `Proposed` long after the repository depends on them as settled guidance.
+This initiative is the artifact-wide follow-through to the earlier plan-lifecycle fix. The repository already corrected stale state for execution plans, but proposals, specs, test specs, architecture docs, and ADRs can still drift into misleading states such as `draft`, `reviewed`, `complete`, or `proposed` long after the repository depends on them as settled guidance.
 
 The implementation needs to land as one coherent sequence:
 
@@ -26,7 +26,7 @@ The implementation needs to land as one coherent sequence:
 - Spec: `specs/artifact-status-lifecycle-ownership.md`
 - Spec-review findings carried into this plan:
   - `reviewed` is a transitional review event, not a durable relied-on state;
-  - settlement and closeout are distinct, so `accepted`, `approved`, `active`, and `Accepted` remain settled current states rather than closeout states;
+  - settlement and closeout are distinct, so `accepted`, `approved`, and `active` remain settled current states rather than closeout states;
   - ADR durable transitions are maintainer, architecture-owner, design-authority, or explicitly delegated actions;
   - first-release executable validation must stay minimal and objective;
   - identifier enforcement applies only to artifact classes whose contracts already define identifiers.
@@ -273,12 +273,12 @@ The implementation needs to land as one coherent sequence:
   - local verify and hosted CI use the same repo-owned lifecycle validator path with explicit scope inputs and clear failure behavior
 - Commit message: `M3: wire artifact lifecycle validation into CI`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - CI mode wiring may choose the wrong diff range and over-block unrelated changes
   - warning-only baseline findings may be lost if CI output is too terse
@@ -318,7 +318,7 @@ The implementation needs to land as one coherent sequence:
 - Validation commands:
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-20-artifact-status-lifecycle-ownership.md --path specs/artifact-status-lifecycle-ownership.md --path docs/architecture/2026-04-20-artifact-status-lifecycle-ownership.md --path specs/rigorloop-workflow.test.md --path specs/constitution-governance-surface.test.md --path specs/plan-index-lifecycle-ownership.test.md`
   - optional when the working tree has no unrelated changes: `python scripts/validate-artifact-lifecycle.py --mode local`
-  - `rg -n '^## Status$|^- (draft|under review|accepted|rejected|abandoned|superseded|archived|approved|active|Proposed|Accepted|Superseded|Archived)$|^## (Next artifacts|Follow-on artifacts|Readiness)$|^superseded_by:' docs/proposals specs docs/architecture docs/adr`
+  - `rg -n '^## Status$|^- (draft|under review|accepted|rejected|abandoned|superseded|archived|approved|active|proposed|deprecated|reviewed|complete)$|^## (Next artifacts|Follow-on artifacts|Readiness)$|^superseded_by:' docs/proposals specs docs/architecture docs/adr`
   - `bash scripts/ci.sh`
   - manual review: confirm touched authoritative artifacts are truthful, and confirm any remaining stale artifacts are unrelated baseline warnings rather than blockers
   - `git diff --check -- docs/proposals specs docs/architecture docs/adr`
@@ -388,7 +388,7 @@ The implementation needs to land as one coherent sequence:
 
 - [x] M1. Add the artifact lifecycle validator core and fixture coverage
 - [x] M2. Align workflow docs, skills, templates, and example surfaces
-- [ ] M3. Integrate deterministic lifecycle validation into verify and CI
+- [x] M3. Integrate deterministic lifecycle validation into verify and CI
 - [ ] M4. Normalize relied-on stale artifacts and closeout metadata
 - 2026-04-20: plan created.
 - 2026-04-20: planning found that the accepted proposal, approved spec, and approved architecture for this feature remain untracked local files and must be tracked before downstream stages rely on them.
@@ -402,6 +402,7 @@ The implementation needs to land as one coherent sequence:
 - 2026-04-21: completed M2 by aligning `specs/rigorloop-workflow.md`, root workflow guidance, feature templates, and the canonical/generated proposal/spec/test-spec/architecture/verify/workflow skills with the settled-versus-terminal artifact lifecycle model.
 - 2026-04-21: addressed the M2 code-review findings by fixing the ADR guidance surface to include `Archived` and by updating the approved proposal example to use split settlement-versus-terminal columns plus explicit closeout timing.
 - 2026-04-21: expanded the ADR lifecycle contract to the shared lowercase status family requested during implementation: `draft`, `proposed`, `accepted`, `active`, `deprecated`, `superseded`, `archived`, and `abandoned`. This required coordinated updates to the approved spec, workflow guidance, validator contract, fixtures, generated skills, and the relied-on repository-layout ADR.
+- 2026-04-21: completed M3 by wiring the artifact lifecycle validator into `scripts/ci.sh` and `.github/workflows/ci.yml`, adding diff-mode regression coverage, and tightening plan-surface reference expansion so CI-mode validation stays deterministic without treating future milestone references as current blockers.
 
 ## Decision log
 
@@ -421,6 +422,9 @@ The implementation needs to land as one coherent sequence:
 - 2026-04-21: update lifecycle semantics in human guidance now, but leave standard validator and CI command wiring to M3. Rationale: M2 owns discoverability across docs, templates, and skills, while M3 owns repo-wide `verify` and `scripts/ci.sh` integration.
 - 2026-04-21: keep the ADR guidance review-fix aligned to the approved spec instead of broadening the ADR status contract during M2. Rationale: the approved spec and validator currently allow `Proposed`, `Accepted`, `Superseded`, and `Archived` for ADRs, so the M2 fix should close the guidance gap without introducing a wider unreviewed status model.
 - 2026-04-21: broaden the ADR status contract when the user explicitly requested the shared lowercase lifecycle format. Rationale: once that higher-priority direction changed, leaving ADRs on the older mixed-case subset would have kept the canonical skill, workflow docs, validator, and relied-on ADR artifact inconsistent with the requested source of truth.
+- 2026-04-21: when `scripts/ci.sh` runs outside hosted CI, use `explicit-paths` over the tracked diff first and fall back to `HEAD~1..HEAD` only when there is no tracked diff. Rationale: local wrapper runs must stay deterministic without pulling unrelated untracked drafts into scope through `local` mode.
+- 2026-04-21: expand active-plan references from the `Source artifacts` section rather than every path mention in the plan body. Rationale: plans legitimately mention future milestone targets and out-of-scope local drafts that should not become current related-artifact blockers.
+- 2026-04-21: treat changed `.codex/` paths as explicit generated-source blockers only in `explicit-paths` mode, not in diff-derived CI modes. Rationale: PR and push validation must tolerate legitimate generated-output refreshes while still rejecting attempts to validate generated output as authored source of truth directly.
 
 ## Surprises and discoveries
 
@@ -435,6 +439,8 @@ The implementation needs to land as one coherent sequence:
 - The existing spec and test-spec templates were far slimmer than the approved lifecycle contract, so M2 needed to expand them materially to teach status normalization, closeout, and readiness patterns instead of only adding a few status bullets.
 - The approved proposal example still carried the older single-column lifecycle summary after the first M2 pass, so manual example-surface review has to check terminology drift separately from the workflow spec and skills.
 - The ADR status request was larger than a skill-only wording tweak: once lowercase shared ADR statuses were adopted, the approved spec, validator fixtures, generated skills, and the real relied-on ADR all needed to move together or the repository would immediately reintroduce lifecycle drift.
+- The active plan can mention future migration targets and out-of-scope local drafts without those references being authoritative for the current milestone, so CI-mode scope expansion needs section-aware plan parsing rather than naive whole-file Markdown scraping.
+- Diff-derived validation must distinguish between generated outputs as related surfaces and generated outputs as authored-source inputs; otherwise normal regenerated `.codex/skills/` changes become false blockers in CI.
 
 ## Validation notes
 
@@ -474,6 +480,13 @@ The implementation needs to land as one coherent sequence:
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/artifact-status-lifecycle-ownership.md --path docs/proposals/2026-04-20-artifact-status-lifecycle-ownership.md --path docs/architecture/2026-04-20-artifact-status-lifecycle-ownership.md --path docs/adr/ADR-20260419-repository-source-layout.md` -> passed (`validated 4 artifact files in explicit-paths mode`)
   - `rg -n "draft \\| proposed \\| accepted \\| active \\| deprecated \\| superseded \\| archived \\| abandoned|accepted, active|deprecated, superseded, archived, abandoned|draft and proposed are active-work states|accepted and active are settlement states|deprecated, superseded, archived, and abandoned are terminal" specs/artifact-status-lifecycle-ownership.md docs/proposals/2026-04-20-artifact-status-lifecycle-ownership.md specs/rigorloop-workflow.md docs/workflows.md CONSTITUTION.md AGENTS.md skills/architecture/SKILL.md skills/workflow/SKILL.md .codex/skills/architecture/SKILL.md .codex/skills/workflow/SKILL.md docs/adr/ADR-20260419-repository-source-layout.md scripts/artifact_lifecycle_contracts.py` -> passed (`shared lowercase ADR statuses and settlement-versus-terminal wording appear across the governing contract, guidance, validator, and relied-on ADR artifact`)
   - `git diff --check -- specs/artifact-status-lifecycle-ownership.md docs/proposals/2026-04-20-artifact-status-lifecycle-ownership.md specs/rigorloop-workflow.md docs/workflows.md CONSTITUTION.md AGENTS.md skills .codex/skills scripts/artifact_lifecycle_contracts.py scripts/test-artifact-lifecycle-validator.py tests/fixtures/artifact-lifecycle docs/adr/ADR-20260419-repository-source-layout.md` -> passed
+- Green validation after M3 CI integration:
+  - `python scripts/test-artifact-lifecycle-validator.py` -> passed (`30` tests including `pr-ci`, `push-main-ci`, plan-scope, and generated-output regressions)
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/artifact-status-lifecycle-ownership.md --path docs/proposals/2026-04-20-artifact-status-lifecycle-ownership.md` -> passed (`validated 2 artifact files in explicit-paths mode`)
+  - `python scripts/validate-artifact-lifecycle.py --mode pr-ci --base "$(git rev-parse HEAD~1)" --head "$(git rev-parse HEAD)"` -> passed with warnings only (`validated 7 artifact files in pr-ci mode`; warnings were unrelated stale baseline debt, not blockers)
+  - `python scripts/validate-artifact-lifecycle.py --mode push-main-ci --before "$(git rev-parse HEAD~1)" --after "$(git rev-parse HEAD)"` -> passed with warnings only (`validated 7 artifact files in push-main-ci mode`; warnings were unrelated stale baseline debt, not blockers)
+  - `bash scripts/ci.sh` -> passed (`scripts/ci.sh` now runs skill validation, skill fixtures, generated-skill drift check, artifact lifecycle validator fixtures, and lifecycle validation using deterministic CI or local fallback inputs`)
+  - `git diff --check -- scripts/ci.sh .github/workflows/ci.yml scripts docs/workflows.md docs/plans/2026-04-20-artifact-status-lifecycle-ownership.md` -> passed
 - Supporting lifecycle bookkeeping validation:
   - `git diff --check -- docs/plan.md docs/plans/2026-04-20-artifact-status-lifecycle-ownership.md specs/artifact-status-lifecycle-ownership.test.md` -> passed
 - Optional proof not run:
@@ -486,10 +499,8 @@ The implementation needs to land as one coherent sequence:
 
 ## Readiness
 
-- This initiative remains active; M1 and M2 are complete.
+- This initiative remains active; M1-M3 are complete.
 - The tracked-source-artifact prerequisite is satisfied and the test spec is now active at `specs/artifact-status-lifecycle-ownership.test.md`.
-- M2 is ready for `code-review`.
-- M2 is ready for re-run `code-review`.
-- The ADR status-model follow-up is ready for `code-review`.
-- M1-M3 together satisfy the v0.1 first-enforcement stack of docs, validator, fixtures, `verify`, and CI. M1 and M2 together are still not final feature closeout.
-- M3 has not started.
+- M3 is ready for `code-review`.
+- M1-M3 together satisfy the v0.1 first-enforcement stack of docs, validator, fixtures, `verify`, and CI.
+- M4 has not started.
