@@ -231,12 +231,12 @@ The implementation must stay inside the approved narrow boundary:
   - canonical/generated skills stay synchronized, related summary wording is truthful, and repo-owned smoke validation remains green.
 - Commit message: `M3: finish docs-changes skill alignment proof`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - related summary surfaces may still lag the touched skill wording;
   - generated output may drift if regeneration is skipped.
@@ -282,6 +282,7 @@ The implementation must stay inside the approved narrow boundary:
 - [x] 2026-04-21: M1 code-review and verify passed with no follow-up fixes, so the initiative is back in `implement` for M2.
 - [x] 2026-04-21: M2 completed. `verify`, `pr`, and `explain-change` now surface docs-changes baseline-pack expectations explicitly, the existing workflow-stage test spec stays aligned, and this feature itself now carries a baseline change-local pack.
 - [x] 2026-04-21: M2 code-review and verify passed after one wording fix in `explain-change`, so the initiative is back in `implement` for M3.
+- [x] 2026-04-21: M3 completed. No directly related `docs/workflows.md` drift remained, the active test spec was synced back to review state, and the repo-owned smoke validation path passed.
 
 ## Decision log
 
@@ -342,6 +343,12 @@ The implementation must stay inside the approved narrow boundary:
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/workflow-stage-autoprogression.test.md --path docs/plans/2026-04-21-docs-changes-skill-enforcement.md`
   - `git diff --check 301e3ce..HEAD -- skills/verify/SKILL.md skills/explain-change/SKILL.md skills/pr/SKILL.md specs/workflow-stage-autoprogression.test.md docs/changes/2026-04-21-docs-changes-skill-enforcement .codex/skills docs/plans/2026-04-21-docs-changes-skill-enforcement.md`
   - Result: passed. No additional M2 fixup was required.
+- 2026-04-21: M3 confirmed the touched summary surface stayed truthful and the repo-owned smoke validation path remained green.
+  - `rg -n 'docs/changes|change.yaml|explain-change|review-resolution|verify-report' docs/workflows.md`
+  - `python scripts/validate-skills.py`
+  - `python scripts/build-skills.py --check`
+  - `bash scripts/ci.sh`
+  - Result: passed. `docs/workflows.md` still matched the approved docs-changes contract, so no summary-surface edit was needed.
 
 ## Outcome and retrospective
 
@@ -354,5 +361,5 @@ The implementation must stay inside the approved narrow boundary:
 - No separate architecture artifact is required unless later review broadens the change.
 - `specs/docs-changes-skill-enforcement.test.md` now exists and is the active proof-planning surface.
 - The tracked-source prerequisite is satisfied.
-- M1 and M2 are implemented, reviewed, and verified; M3 remains open.
-- The next stage is `implement` for M3.
+- M1 through M3 are implemented; overall review and verification remain open.
+- The next stage is `code-review`.

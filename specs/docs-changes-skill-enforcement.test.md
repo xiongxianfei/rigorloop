@@ -217,7 +217,7 @@
 
 ## Next artifacts
 
-- `implement`
+- `code-review`
 
 ## Follow-on artifacts
 
@@ -225,5 +225,5 @@
 
 ## Readiness
 
-- This test spec is active and is now the proof-planning surface for implementation.
-- The next stage is `implement`.
+- This test spec is active and remains the proof surface for implementation review and verification.
+- The next stage is `code-review`.

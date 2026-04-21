@@ -44,6 +44,8 @@ validation:
     result: pass
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/workflow-stage-autoprogression.test.md --path docs/plans/2026-04-21-docs-changes-skill-enforcement.md
     result: pass
+  - command: bash scripts/ci.sh
+    result: pass
 changed_files:
   - .codex/skills/explain-change/SKILL.md
   - .codex/skills/implement/SKILL.md
