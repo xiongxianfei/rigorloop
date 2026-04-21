@@ -407,6 +407,7 @@ The implementation needs to land as one coherent sequence:
 - 2026-04-21: completed M4 by archiving the three relied-on historical test specs that still used `complete`, adding terminal closeout sections to them, and confirming the feature proposal, spec, and architecture already satisfied the settled-state contract without further edits.
 - 2026-04-21: verify closed this initiative to `Done` because the full outcome is already known on-branch and merged state is not the deciding event for completion.
 - 2026-04-21: created `docs/explain/2026-04-20-artifact-status-lifecycle-ownership.md` to capture the full rationale from proposal through verify closeout and advanced this completed plan to `pr` readiness.
+- 2026-04-21: opened PR #6 from `feat/artifact-status-lifecycle-ownership` into `main` and captured the post-PR retrospective lessons in this completed plan plus `docs/workflows.md`.
 
 ## Decision log
 
@@ -534,6 +535,12 @@ The implementation needs to land as one coherent sequence:
 - What changed: the feature added the artifact lifecycle validator and fixture suite, aligned workflow docs, skills, and templates with the lifecycle contract, wired deterministic validation into CI, migrated relied-on stale historical test specs, and closed the initiative through verify-stage lifecycle bookkeeping.
 - What went well: milestone slicing kept validator, guidance, CI, and migration work reviewable while still converging on one coherent lifecycle model.
 - What was harder than expected: keeping the active plan synchronized through repeated review and verify passes required explicit follow-through after each stage rather than relying on milestone implementation alone.
+- Spec accuracy: the approved spec stayed directionally correct through implementation, especially on settlement-versus-closeout semantics and verify block-versus-warning scope. The main contract expansion happened when ADR statuses were intentionally widened to the shared lowercase family during M2; after that user-directed change, the spec continued to anchor the coordinated validator, guidance, and artifact updates.
+- Test effectiveness: the fixture-driven validator tests were the highest-value executable proof. They caught the mixed `specs/` directory case, duplicate-ID severity drift, draft-readiness false blockers, merge-base PR-scope behavior, tracked-snapshot CI baselines, and plan-scope over-expansion. Manual review remained necessary for guidance surfaces and historical artifact migration where prose, not code, was the contract.
+- Architecture accuracy: the approved small-registry design held up. One executable contract registry, deterministic mode-specific scope resolution, and tracked commit snapshots were sufficient; the feature never needed a second registry, network-dependent PR inspection, or a generalized Markdown schema layer.
+- Process issues: repeated review passes showed that completed plans still need explicit post-review and post-verify stage-state updates, not just milestone implementation notes. The presence of unrelated untracked drafts also made `--mode local` a bad proof surface during active work, and PR prep was cleaner once the verified tip moved off local `main` onto a dedicated feature branch.
+- Durable updates made: `docs/workflows.md` now says `--mode local` is only for clean worktrees, this completed plan records the retrospective in more detail, and the explain-change artifact preserves the full proposal-to-verify rationale for future reviewers.
+- Follow-up actions: watch hosted CI and review feedback on PR #6, then after merge confirm whether any post-merge cleanup is needed beyond normal branch hygiene.
 - Process lesson: when the outcome is already known on-branch, verify must close the initiative to `Done` before PR so later stages do not inherit stale active-state bookkeeping.
 
 ## Readiness
@@ -543,5 +550,6 @@ The implementation needs to land as one coherent sequence:
 - The relied-on historical test specs now use truthful archived closeout state, and the feature proposal, spec, and architecture remain truthful settled artifacts.
 - Implementation, code review, and verify are complete.
 - `explain-change` is complete at `docs/explain/2026-04-20-artifact-status-lifecycle-ownership.md`.
+- `learn` is complete in this plan's retrospective section, and PR #6 is open against `main`.
 - M1-M4 satisfy the v0.1 first-enforcement stack of docs, validator, fixtures, `verify`, and CI, including relied-on artifact migration.
-- The next expected stage is `pr`.
+- The next expected state change is PR review or merge follow-up, not more feature implementation.
