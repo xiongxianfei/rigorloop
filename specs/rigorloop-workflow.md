@@ -181,15 +181,15 @@ R8ka. The starter kit MUST document the repository-wide artifact lifecycle summa
 | Spec | behavior changes | `spec` | `spec-review` | `approved` | `abandoned`, `superseded`, `archived` |
 | Architecture | boundary or system-shape changes | `architecture` | `architecture-review` | `approved` | `abandoned`, `superseded`, `archived` |
 | Test spec | behavior proof | `test-spec` | repository-defined review surface | `active` | `abandoned`, `superseded`, `archived` |
-| ADR | long-lived design decision | `architecture` | `architecture-review` when relevant | `Accepted` | `Superseded`, `Archived` |
+| ADR | long-lived design decision | `architecture` | `architecture-review` when relevant | `accepted`, `active` | `deprecated`, `superseded`, `archived`, `abandoned` |
 
 R8kb. Detailed per-artifact lifecycle rules MUST be delegated to the canonical template, example, and skill surfaces for each artifact class instead of being duplicated in full inside this workflow spec.
 
 R8kc. For proposals, top-level specs, test specs, and architecture documents, `reviewed` MUST be treated as transitional review output rather than a durable relied-on artifact state.
 
 R8kd. Settlement and closeout MUST remain distinct:
-- `accepted`, `approved`, `active`, and `Accepted` are settlement states that may still be relied on as current guidance;
-- `done`, `rejected`, `abandoned`, `superseded`, and `archived` are closeout or terminal states.
+- `accepted`, `approved`, and `active` are settlement states that may still be relied on as current guidance;
+- `done`, `deprecated`, `rejected`, `abandoned`, `superseded`, and `archived` are closeout or terminal states.
 
 R8ke. `Next artifacts` MUST record planned next steps while an artifact remains active. `Follow-on artifacts` or `Closeout` MUST record actual downstream artifacts, replacement, or terminal disposition, and a premature `Follow-on artifacts` section MUST say `None yet` instead of remaining empty.
 
@@ -422,7 +422,7 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 7. A non-trivial change may omit some artifact keys from `change.yaml` when those artifact types are not applicable to the change, but it may not omit the required top-level fields listed in `R25b`.
 8. A completed milestone that is not independently safe to merge may remain inside a larger pull request, but it still requires the completion evidence and milestone commit boundary defined in `R8a` and `R8b`.
 9. A fast-lane change or non-trivial unplanned single-slice change may use a normal commit subject because milestone-formatted commits are reserved for planned milestone work.
-10. An accepted proposal, approved spec, approved architecture document, active test spec, or `Accepted` ADR may remain current guidance without immediate closeout as long as its readiness text is truthful and terminal disposition has not occurred.
+10. An accepted proposal, approved spec, approved architecture document, active test spec, or accepted or active ADR may remain current guidance without immediate closeout as long as its readiness text is truthful and terminal disposition has not occurred.
 11. Final PR text may reference additional authoritative artifacts only after `verify` is rerun against those new references or an equivalent updated pre-PR handoff surface.
 
 ## Non-goals

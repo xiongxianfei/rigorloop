@@ -9,9 +9,9 @@
 
 ## Goal and context
 
-This spec defines the repository-visible contract for keeping top-level workflow artifacts truthful about their lifecycle state after review, adoption, supersession, archival, or abandonment.
+This spec defines the repository-visible contract for keeping top-level workflow artifacts truthful about their lifecycle state after review, adoption, activation, deprecation, supersession, archival, or abandonment.
 
-The repository already fixed stale lifecycle bookkeeping for execution plans. The same drift still exists across proposals, feature specs, test specs, architecture documents, and ADRs. Artifacts that the repository already depends on can still advertise `draft`, `reviewed`, `complete`, or `Proposed`, and forward-looking readiness text can remain stale long after review or merge. This spec defines the allowed status model, transition ownership, closeout pattern, verification policy, and first enforcement expectations needed to make those artifacts trustworthy again without adding a second central registry.
+The repository already fixed stale lifecycle bookkeeping for execution plans. The same drift still exists across proposals, feature specs, test specs, architecture documents, and ADRs. Artifacts that the repository already depends on can still advertise `draft`, `reviewed`, `complete`, or `proposed`, and forward-looking readiness text can remain stale long after review or merge. This spec defines the allowed status model, transition ownership, closeout pattern, verification policy, and first enforcement expectations needed to make those artifacts trustworthy again without adding a second central registry.
 
 ## Glossary
 
@@ -93,7 +93,7 @@ R3b. The compact summary table defined by `R3` MUST cover, at minimum, the follo
 - Spec: required for behavior changes; authoring skill `spec`; review skill `spec-review`; settlement states `approved`; closeout or terminal states `abandoned`, `superseded`, `archived`
 - Architecture: required for boundary or system-shape changes; authoring skill `architecture`; review skill `architecture-review`; settlement states `approved`; closeout or terminal states `abandoned`, `superseded`, `archived`
 - Test spec: required for behavior proof; authoring skill `test-spec`; review surface repository-defined; settlement states `active`; closeout or terminal states `abandoned`, `superseded`, `archived`
-- ADR: required for long-lived design decisions; authoring flow ADR-specific; review surface `architecture-review` when relevant; settlement states `Accepted`; closeout or terminal states `Superseded`, `Archived`
+- ADR: required for long-lived design decisions; authoring flow ADR-specific; review surface `architecture-review` when relevant; settlement states `accepted`, `active`; closeout or terminal states `deprecated`, `superseded`, `archived`, `abandoned`
 
 R3c. Per-artifact detail beyond the compact summary table MUST be delegated to canonical template, example, or skill surfaces rather than duplicated in full inside `specs/rigorloop-workflow.md`.
 
@@ -121,10 +121,14 @@ R5a. The durable status vocabulary for architecture documents MUST be limited to
 - `archived`
 
 R5b. The durable status vocabulary for ADRs MUST be limited to:
-- `Proposed`
-- `Accepted`
-- `Superseded`
-- `Archived`
+- `draft`
+- `proposed`
+- `accepted`
+- `active`
+- `deprecated`
+- `superseded`
+- `archived`
+- `abandoned`
 
 R5c. The durable status vocabulary for test specs MUST be limited to:
 - `draft`
@@ -143,13 +147,13 @@ R6a. `complete` MUST NOT remain the long-lived status of a settled test spec aft
 
 R7. Settled current guidance and historical closed artifacts MUST remain distinct concepts.
 
-R7a. `accepted`, `approved`, `active`, and `Accepted` MAY still be relied on as current guidance for the repository when the artifact remains operative.
+R7a. `accepted`, `approved`, and `active` MAY still be relied on as current guidance for the repository when the artifact remains operative.
 
-R7b. `superseded`, `archived`, `rejected`, and `abandoned` MUST be treated as no longer current authoritative guidance.
+R7b. `deprecated`, `superseded`, `archived`, `rejected`, and `abandoned` MUST be treated as no longer current authoritative guidance.
 
 R7c. Settlement MUST NOT be treated as immediate closeout.
 
-R7d. Artifacts in settled current states such as `accepted`, `approved`, `active`, and `Accepted` MUST record the decision metadata required by their class contract, but they MUST NOT be required to add immediate `Closeout` or `Follow-on artifacts` sections solely because settlement occurred.
+R7d. Artifacts in settled current states such as `accepted`, `approved`, and `active` MUST record the decision metadata required by their class contract, but they MUST NOT be required to add immediate `Closeout` or `Follow-on artifacts` sections solely because settlement occurred.
 
 R7e. Distinct closeout surfaces become required when an artifact enters a terminal or historical state, or earlier only when the detailed class contract explicitly requires recording actual downstream artifacts before terminal closeout.
 
@@ -165,7 +169,7 @@ R8. Lifecycle transition ownership for in-scope artifacts MUST be explicit and M
 - `test-spec` authors new test specs in `draft`
 - once implementation or review is actively using a test spec as the governing proof surface, the tracked test spec MUST normalize to `active`
 - once a test spec is no longer the active proof-planning surface, the closeout change that settles the governed work MUST normalize it to `archived`, `superseded`, or `abandoned`
-- ADRs MAY be drafted by contributors or agents in `Proposed`, but durable ADR transitions such as `Accepted`, `Superseded`, and `Archived`, and any explicitly adopted ADR `deprecated` marker, MUST be owned by a maintainer, architecture owner, design authority, or explicitly delegated role
+- ADRs MAY be drafted by contributors or agents in `draft` or `proposed`, but durable ADR transitions such as `accepted`, `active`, `deprecated`, `superseded`, `archived`, and `abandoned` MUST be owned by a maintainer, architecture owner, design authority, or explicitly delegated role
 - later replacement work owns `superseded` transitions for the older artifacts it replaces
 
 R9. In-scope artifact guidance MUST distinguish planned next steps from actual settled outcomes.
@@ -192,7 +196,7 @@ R10c. A superseded artifact SHOULD also record the supersession date and reason 
 
 R10d. `archived` MUST be reserved for an artifact that is no longer current but remains useful for history, audit, learning, or traceability and has no direct replacement requirement.
 
-R10e. `archived` MUST NOT be used when the more precise state is `rejected`, `abandoned`, `done`, or `superseded`.
+R10e. `archived` MUST NOT be used when the more precise state is `deprecated`, `rejected`, `abandoned`, `done`, or `superseded`.
 
 R11. `verify` MUST block on stale or inconsistent in-scope artifacts that are touched, referenced, generated, or authoritative for the changed area.
 
@@ -215,7 +219,7 @@ R11d. Before final PR text exists, `verify` MUST use the pre-PR handoff surfaces
 R11e. Final PR text MUST NOT introduce new authoritative artifact references without re-running `verify`.
 
 R12. At minimum, stale or inconsistent artifact state under this spec includes:
-- a proposal, feature spec, architecture document, or ADR that the repository is already relying on as settled guidance while its tracked status still says `draft`, `under review`, `reviewed`, or `Proposed`
+- a proposal, feature spec, architecture document, or ADR that the repository is already relying on as settled guidance while its tracked status still says `draft`, `under review`, `reviewed`, or `proposed`
 - a test spec that the repository is already relying on as settled historical evidence while its tracked status still says `complete`
 - a settled artifact whose status and readiness text disagree about whether review, implementation, or PR preparation is still pending
 - an artifact in a terminal or historical state that still lacks the required `Closeout` or `Follow-on artifacts` surface defined by its detailed contract surface
@@ -262,7 +266,7 @@ R15a. At minimum, migration for relied-on or touched artifacts MUST normalize:
 - proposals left in `draft` or `under review` after acceptance or rejection
 - feature specs or architecture documents left in `reviewed`
 - test specs left in long-lived `complete`
-- ADRs left in `Proposed` after the decision is already adopted
+- ADRs left in `draft` or `proposed` after the decision is already adopted
 
 R15b. Migration of unrelated stale baseline artifacts MAY be phased, provided `verify` reports them as warnings and the current change does not rely on them as authoritative guidance.
 
@@ -310,7 +314,7 @@ R15b. Migration of unrelated stale baseline artifacts MAY be phased, provided `v
 - Adoption MUST not create a second central lifecycle registry.
 - Existing relied-on artifacts with stale lifecycle states MUST be normalized as part of the migration for this contract.
 - Existing test specs currently marked `complete` MUST be reclassified to `active`, `archived`, `superseded`, or `abandoned` according to their real role.
-- Existing proposals, specs, architecture documents, and ADRs MUST move away from stale transitional statuses such as `draft`, `under review`, `reviewed`, or `Proposed` when the repository already depends on them as settled guidance.
+- Existing proposals, specs, architecture documents, and ADRs MUST move away from stale transitional statuses such as `draft`, `under review`, `reviewed`, or `proposed` when the repository already depends on them as settled guidance.
 - Rollback, if required, is a reversal of the lifecycle-governance rule change, but truthfully corrected artifact status history SHOULD be preserved.
 
 ## Observability
@@ -367,7 +371,7 @@ EC9. If a `Follow-on artifacts` section appears before any actual downstream art
 - The repository no longer relies on `reviewed` as a durable status for proposals, feature specs, test specs, or architecture documents.
 - The repository no longer relies on long-lived `complete` test-spec status after adoption of this contract.
 - Settled current guidance remains distinguishable from historical closed artifacts.
-- Settlement does not force immediate closeout for `accepted`, `approved`, `active`, or `Accepted` artifacts, while terminal or historical artifacts carry the required closeout surfaces.
+- Settlement does not force immediate closeout for `accepted`, `approved`, or `active` artifacts, while terminal or historical artifacts carry the required closeout surfaces.
 - Superseded artifacts identify their replacements, while archived artifacts do not require replacement pointers.
 - `verify` blocks on stale or inconsistent related authoritative artifacts and warns on unrelated stale baseline artifacts.
 - The first enforcement step includes documentation, a minimal structural validator, fixtures, `verify`, and CI wiring.

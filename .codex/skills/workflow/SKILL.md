@@ -72,7 +72,7 @@ For proposals, top-level specs, test specs, architecture docs, and ADRs:
 | Spec | `approved` | `abandoned`, `superseded`, `archived` |
 | Architecture | `approved` | `abandoned`, `superseded`, `archived` |
 | Test spec | `active` | `abandoned`, `superseded`, `archived` |
-| ADR | `Accepted` | `Superseded`, `Archived` |
+| ADR | `accepted`, `active` | `deprecated`, `superseded`, `archived`, `abandoned` |
 
 Rules:
 

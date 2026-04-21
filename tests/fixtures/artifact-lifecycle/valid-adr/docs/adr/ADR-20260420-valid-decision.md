@@ -1,7 +1,7 @@
 # ADR-20260420-valid-decision: Valid decision
 
 ## Status
-Accepted
+accepted
 
 ## Context
 

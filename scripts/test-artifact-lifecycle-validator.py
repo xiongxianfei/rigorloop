@@ -107,6 +107,18 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
             "docs/adr/ADR-20260420-valid-decision.md",
         )
 
+    def test_valid_active_adr_passes(self) -> None:
+        self.assertFixturePasses(
+            "valid-active-adr",
+            "docs/adr/ADR-20260420-active-decision.md",
+        )
+
+    def test_valid_deprecated_adr_passes(self) -> None:
+        self.assertFixturePasses(
+            "valid-deprecated-adr",
+            "docs/adr/ADR-20260420-deprecated-decision.md",
+        )
+
     def test_reviewed_status_fails(self) -> None:
         self.assertFixtureFails(
             "invalid-reviewed-spec",

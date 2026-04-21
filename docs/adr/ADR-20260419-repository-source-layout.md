@@ -1,7 +1,7 @@
 # ADR-20260419-repository-source-layout: Canonical Workflow Sources and Codex Compatibility Output
 
 ## Status
-Accepted
+accepted
 
 ## Context
 

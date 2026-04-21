@@ -55,9 +55,9 @@ As a result, artifact status metadata is not consistently trustworthy. A tracked
   - specs: `draft`, `reviewed`, `approved`, `superseded`
   - test specs: `draft`, `reviewed`, `active`, `complete`
   - architecture docs: `draft`, `reviewed`, `approved`, `superseded`
-  - ADRs: `Proposed`, `Accepted`, `Superseded`
+  - ADRs: `draft`, `proposed`, `accepted`, `active`, `deprecated`, `superseded`, `archived`, `abandoned`
 - Those differences are not inherently bad, but without explicit ownership they drift into inconsistent meanings.
-- The repository now wants `reviewed` to become a transitional review event rather than a long-lived artifact state. Long-lived states should normalize to a smaller settled set such as `approved`, `accepted`, `active`, `superseded`, `archived`, `rejected`, and `abandoned`, with the allowed subset defined per artifact class.
+- The repository now wants `reviewed` to become a transitional review event rather than a long-lived artifact state. Long-lived states should normalize to a smaller settled set such as `approved`, `accepted`, `active`, `deprecated`, `superseded`, `archived`, `rejected`, and `abandoned`, with the allowed subset defined per artifact class.
 - The recent cleanup PR proved the problem is systemic rather than isolated: multiple merged artifacts still looked pre-review or pre-implementation long after the work had landed.
 
 ## Options considered
@@ -151,7 +151,7 @@ The workflow-spec summary should stay compact and should identify, at minimum:
 | Spec | behavior changes | `spec` | `spec-review` | `approved` | `abandoned`, `superseded`, `archived` | when terminal or historical disposition is known |
 | Architecture | boundary or system-shape changes | `architecture` | `architecture-review` | `approved` | `abandoned`, `superseded`, `archived` | when terminal or historical disposition is known |
 | Test spec | behavior proof | `test-spec` | repository-defined review gate | `active` | `abandoned`, `superseded`, `archived` | when the test spec is no longer the active proof surface |
-| ADR | long-lived design decision | ADR authoring flow | `architecture-review` when relevant | `Accepted` | `Superseded`, `Archived` | when the decision is explicitly replaced or retired |
+| ADR | long-lived design decision | ADR authoring flow | `architecture-review` when relevant | `accepted`, `active` | `deprecated`, `superseded`, `archived`, `abandoned` | when the decision is explicitly replaced, retired, or intentionally left behind |
 
 The spec should then point to the canonical detailed contract surfaces already used by the repository, such as:
 
@@ -167,7 +167,7 @@ The spec should then point to the canonical detailed contract surfaces already u
 
 `archived` is reserved for artifacts that are no longer current but remain useful for historical, audit, learning, or traceability purposes. Archived artifacts are not authoritative and do not require a replacement.
 
-Do not use `archived` when the more precise status is `rejected`, `abandoned`, `done`, or `superseded`.
+Do not use `archived` when the more precise status is `deprecated`, `rejected`, `abandoned`, `done`, or `superseded`.
 
 An artifact is `superseded` when a newer artifact replaces it as the authoritative source.
 
@@ -215,13 +215,13 @@ The recommended ownership split is:
 - `test-spec` authors test specs in `draft`; once implementation is actively using the test spec as its proof surface, the artifact becomes `active`; once the implemented change is no longer an active proof-planning surface, the artifact becomes `archived` unless it is superseded or abandoned
 - `architecture` authors design docs in `draft`
 - `architecture-review` or equivalent accepted design closeout moves relied-on architecture docs to `approved`; `reviewed` is only a short-lived transitional event
-- ADRs use ADR-native status vocabulary, but once the decision is adopted as repository direction the ADR must be `Accepted`, not left `Proposed`; later retirement should use `Superseded` or `Archived`
+- ADRs use the repository's lifecycle-managed ADR vocabulary: `draft`, `proposed`, `accepted`, `active`, `deprecated`, `superseded`, `archived`, and `abandoned`. Once the decision is adopted as repository direction, the ADR must leave `draft` or `proposed`; later retirement should use `deprecated`, `superseded`, `archived`, or `abandoned` according to the actual disposition
 - later replacement work owns `superseded` transitions for older artifacts it replaces, and each superseded artifact must identify the newer authoritative replacement
 - once an artifact reaches a settled state, closeout records should be added through distinct `Closeout` or `Follow-on artifacts` surfaces rather than by overwriting the original `Next artifacts` planning history
 
 The repository should also define a general stale-state rule for touched artifacts. At minimum, stale state should include:
 
-- a merged or otherwise closed artifact still marked `draft`, `under review`, `reviewed`, `active`, or `Proposed` when the repository is already depending on it as settled guidance
+- a merged or otherwise closed artifact still marked `draft`, `under review`, `reviewed`, `active`, or `proposed` when the repository is already depending on it as settled guidance
 - an artifact whose `Status` says it is settled while its active-work `Readiness` text still advertises pre-review, pre-implementation, or still-pending downstream stages
 - an artifact that has reached settled state but still lacks the distinct closeout surface the workflow requires to record actual follow-on artifacts or final disposition
 - a touched artifact that remains in a pre-approval state even though the current branch is already using it as an approved source of truth

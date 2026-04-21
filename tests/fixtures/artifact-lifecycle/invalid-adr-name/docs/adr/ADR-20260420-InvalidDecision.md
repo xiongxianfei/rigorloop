@@ -1,7 +1,7 @@
 # ADR-20260420-InvalidDecision: Invalid ADR identifier
 
 ## Status
-Accepted
+accepted
 
 ## Context
 
@@ -18,4 +18,3 @@ Keep the fixture intentionally invalid.
 ## Consequences
 
 - The fixture should fail validation.
-

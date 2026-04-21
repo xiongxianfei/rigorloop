@@ -43,12 +43,12 @@ Lifecycle-managed top-level artifacts keep their own tracked status. Do not trea
 | Spec | `approved` | `abandoned`, `superseded`, `archived` |
 | Architecture | `approved` | `abandoned`, `superseded`, `archived` |
 | Test spec | `active` | `abandoned`, `superseded`, `archived` |
-| ADR | `Accepted` | `Superseded`, `Archived` |
+| ADR | `accepted`, `active` | `deprecated`, `superseded`, `archived`, `abandoned` |
 
 Notes:
 
 - `reviewed` is transitional review output, not a durable relied-on state for proposals, top-level specs, test specs, or architecture docs.
-- `accepted`, `approved`, `active`, and `Accepted` are settlement states. `done`, `rejected`, `abandoned`, `superseded`, and `archived` are closeout or terminal states.
+- `accepted`, `approved`, and `active` are settlement states. `done`, `deprecated`, `rejected`, `abandoned`, `superseded`, and `archived` are closeout or terminal states.
 - Keep `Next artifacts` as planning history while an artifact is active. Use `Follow-on artifacts` or `Closeout` for actual downstream artifacts or final disposition. If a `Follow-on artifacts` section appears before real follow-ons exist, it must say `None yet`.
 - `superseded` artifacts must identify their replacement with `superseded_by` or equivalent labeled text. `archived` artifacts do not require a replacement pointer.
 - `verify` blocks on stale lifecycle-managed artifacts that are touched, referenced, generated, or authoritative for the changed area, and it warns on unrelated stale baseline artifacts.
