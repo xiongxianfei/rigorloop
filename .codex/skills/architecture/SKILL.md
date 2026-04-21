@@ -81,7 +81,7 @@ Use:
 ADR-YYYYMMDD-slug: Title
 
 ## Status
-Accepted | Proposed | Superseded
+Proposed | Accepted | Superseded | Archived
 
 ## Context
 
@@ -93,6 +93,12 @@ Accepted | Proposed | Superseded
 
 ## Follow-up
 ```
+
+For this repository's current ADR contract:
+
+- `Accepted` is the settlement state.
+- `Superseded` and `Archived` are terminal or closeout-oriented states.
+- Do not invent broader ADR statuses here unless the governing spec changes first.
 
 ## Rules
 
