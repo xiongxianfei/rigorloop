@@ -501,7 +501,6 @@ def _resolve_scope(
             current == pr_path
             or relative_text.startswith("docs/explain/")
             or relative_text.startswith("docs/plans/")
-            or relative_text.startswith("docs/changes/")
         )
         if current.suffix == ".md" and is_reference_surface:
             if relative_text.startswith("docs/plans/"):
