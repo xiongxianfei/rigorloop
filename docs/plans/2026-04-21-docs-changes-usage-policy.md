@@ -336,6 +336,13 @@ The implementation must stay inside the approved architecture boundary:
   - `bash scripts/ci.sh`
   - `git diff --check -- README.md scripts/ci.sh .github/workflows/ci.yml docs/changes/0001-skill-validator`
   - Result: all passed, and the standard CI wrapper now exercises the change-metadata proof surface.
+- 2026-04-21: M3 code-review rerun passed.
+  - `python scripts/test-change-metadata-validator.py`
+  - `python scripts/validate-change-metadata.py docs/changes/0001-skill-validator/change.yaml`
+  - `bash scripts/ci.sh`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-04-21-docs-changes-usage-policy.md --path specs/docs-changes-usage-policy.test.md`
+  - `git diff --check 9c1994b^..9c1994b -- README.md scripts/ci.sh .github/workflows/ci.yml docs/changes/0001-skill-validator docs/plans/2026-04-21-docs-changes-usage-policy.md`
+  - Result: approve, no findings.
 
 ## Outcome and retrospective
 
@@ -346,4 +353,5 @@ The implementation must stay inside the approved architecture boundary:
 - `specs/docs-changes-usage-policy.test.md` is now the active proof-planning surface.
 - The tracked-source prerequisite is satisfied for the accepted proposal, approved spec, approved architecture, active plan, and active test spec.
 - M1 through M3 are complete.
-- The next stage is `code-review`.
+- `code-review` is complete for the implementation milestones.
+- The next stage is `verify`.
