@@ -188,12 +188,12 @@ The implementation must stay inside the approved narrow boundary:
   - downstream stage-local skills now make missing required baseline packs visible as blockers and use the approved durable reasoning default consistently, while the existing workflow-stage autoprogression test spec remains aligned where it already owns direct-`pr` and isolated-stage proof.
 - Commit message: `M2: enforce docs-changes skill gates`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - verify/pr wording may overpromise executable enforcement that the repository still lacks outside the skill layer;
   - explain-change wording may accidentally conflict with existing top-level explain artifact compatibility rules.
@@ -279,6 +279,8 @@ The implementation must stay inside the approved narrow boundary:
 - [x] 2026-04-21: plan created and indexed under `Active` in `docs/plan.md`.
 - [x] 2026-04-21: test spec created and linked as the active proof-planning surface for implementation.
 - [x] 2026-04-21: M1 completed. `workflow` and `implement` now make the baseline change-local pack explicit for ordinary non-trivial work, the existing docs-changes test spec stays aligned, and generated `.codex/skills/` output is synchronized.
+- [x] 2026-04-21: M1 code-review and verify passed with no follow-up fixes, so the initiative is back in `implement` for M2.
+- [x] 2026-04-21: M2 completed. `verify`, `pr`, and `explain-change` now surface docs-changes baseline-pack expectations explicitly, the existing workflow-stage test spec stays aligned, and this feature itself now carries a baseline change-local pack.
 
 ## Decision log
 
@@ -286,10 +288,11 @@ The implementation must stay inside the approved narrow boundary:
 - 2026-04-21: split the work into entrypoint/implement guidance, downstream gate guidance, and final proof. Reason: the change spans several skills, but the slices are still reviewable if split by stage responsibility.
 - 2026-04-21: use a dedicated feature test spec plus targeted updates to the existing docs-changes and workflow-stage test specs. Reason: those existing test specs already own part of the governing proof surface and must stay aligned instead of being silently replaced.
 - 2026-04-21: leave `docs/workflows.md` unchanged in M1. Reason: the workflow summary already matched the approved docs-changes contract, so the stage-local fix belonged only in `skills/workflow/SKILL.md`, `skills/implement/SKILL.md`, and the existing docs-changes test spec.
+- 2026-04-21: add a baseline `docs/changes/2026-04-21-docs-changes-skill-enforcement/` pack during M2. Reason: this feature is itself ordinary non-trivial work, so the branch should comply with the docs-changes contract it is teaching instead of relying only on stacked top-level planning artifacts.
 
 ## Surprises and discoveries
 
-- none yet
+- 2026-04-21: this follow-up itself needed a baseline change-local pack. The earlier top-level proposal/spec/plan/test-spec stack was necessary but not sufficient under the approved docs-changes contract for new ordinary non-trivial work.
 
 ## Validation notes
 
@@ -310,6 +313,21 @@ The implementation must stay inside the approved narrow boundary:
   - `rg -n 'docs/changes|change.yaml|explain-change|fast-lane' skills/workflow/SKILL.md skills/implement/SKILL.md .codex/skills`
   - `git diff --check -- skills/workflow/SKILL.md skills/implement/SKILL.md specs/docs-changes-usage-policy.test.md .codex/skills docs/workflows.md`
   - Result: passed. `docs/workflows.md` review found no wording drift, so no summary-surface edit was needed in this milestone.
+- 2026-04-21: M1 independent code-review found no blocking, major, or minor issues, and the follow-on verification pass was clean.
+  - `python scripts/validate-skills.py`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/docs-changes-usage-policy.test.md --path docs/plans/2026-04-21-docs-changes-skill-enforcement.md`
+  - `git diff --check c78c435..301e3ce -- skills/workflow/SKILL.md skills/implement/SKILL.md specs/docs-changes-usage-policy.test.md .codex/skills docs/workflows.md docs/plans/2026-04-21-docs-changes-skill-enforcement.md`
+  - Result: passed. No additional M1 fixup was required.
+- 2026-04-21: M2 updated `verify`, `pr`, and `explain-change`, aligned the existing workflow-stage autoprogression test spec, added the feature's own baseline change-local pack, and regenerated `.codex/skills/`.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-04-21-docs-changes-skill-enforcement/change.yaml`
+  - `python scripts/validate-skills.py`
+  - `python scripts/build-skills.py`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/workflow-stage-autoprogression.test.md --path docs/plans/2026-04-21-docs-changes-skill-enforcement.md`
+  - `rg -n 'docs/changes|change.yaml|explain-change|blocker|readiness' skills/verify/SKILL.md skills/explain-change/SKILL.md skills/pr/SKILL.md .codex/skills`
+  - `git diff --check -- skills/verify/SKILL.md skills/explain-change/SKILL.md skills/pr/SKILL.md specs/workflow-stage-autoprogression.test.md docs/changes/2026-04-21-docs-changes-skill-enforcement .codex/skills docs/plans/2026-04-21-docs-changes-skill-enforcement.md`
+  - Result: passed.
 
 ## Outcome and retrospective
 
@@ -322,5 +340,5 @@ The implementation must stay inside the approved narrow boundary:
 - No separate architecture artifact is required unless later review broadens the change.
 - `specs/docs-changes-skill-enforcement.test.md` now exists and is the active proof-planning surface.
 - The tracked-source prerequisite is satisfied.
-- M1 is complete; M2 and M3 remain open.
-- The next stage is `code-review` for the M1 slice.
+- M1 and M2 are implemented; M3 remains open.
+- The next stage is `code-review` for the M2 slice.
