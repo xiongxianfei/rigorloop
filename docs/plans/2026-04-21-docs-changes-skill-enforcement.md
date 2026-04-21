@@ -1,6 +1,6 @@
 # Docs changes skill enforcement plan
 
-- Status: active
+- Status: done
 - Owner: maintainer + Codex
 - Start date: 2026-04-21
 - Last updated: 2026-04-21
@@ -284,6 +284,7 @@ The implementation must stay inside the approved narrow boundary:
 - [x] 2026-04-21: M2 code-review and verify passed after one wording fix in `explain-change`, so the initiative is back in `implement` for M3.
 - [x] 2026-04-21: M3 completed. No directly related `docs/workflows.md` drift remained, the active test spec was synced back to review state, and the repo-owned smoke validation path passed.
 - [x] 2026-04-21: overall code-review passed with no findings, so the feature is ready for the final `verify` gate.
+- [x] 2026-04-21: overall verify passed and the initiative moved from `Active` to `Done` on-branch before explanation and PR preparation.
 
 ## Decision log
 
@@ -354,10 +355,26 @@ The implementation must stay inside the approved narrow boundary:
   - `git diff --stat ba8998e..HEAD`
   - `git diff ba8998e..HEAD -- docs/plan.md docs/proposals/2026-04-21-docs-changes-skill-enforcement.md specs/docs-changes-skill-enforcement.md specs/docs-changes-skill-enforcement.test.md docs/plans/2026-04-21-docs-changes-skill-enforcement.md skills/workflow/SKILL.md skills/implement/SKILL.md skills/verify/SKILL.md skills/explain-change/SKILL.md skills/pr/SKILL.md specs/docs-changes-usage-policy.test.md specs/workflow-stage-autoprogression.test.md docs/changes/2026-04-21-docs-changes-skill-enforcement/change.yaml docs/changes/2026-04-21-docs-changes-skill-enforcement/explain-change.md .codex/skills/workflow/SKILL.md .codex/skills/implement/SKILL.md .codex/skills/verify/SKILL.md .codex/skills/explain-change/SKILL.md .codex/skills/pr/SKILL.md`
   - Result: approved.
+- 2026-04-21: overall verify passed on the completed implementation range, and post-verify lifecycle state was normalized in `docs/plan.md`, this plan body, and the active test spec.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-04-21-docs-changes-skill-enforcement/change.yaml`
+  - `python scripts/validate-skills.py`
+  - `python scripts/build-skills.py --check`
+  - `bash scripts/ci.sh`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-21-docs-changes-skill-enforcement.md --path specs/docs-changes-skill-enforcement.md --path docs/plans/2026-04-21-docs-changes-skill-enforcement.md --path specs/docs-changes-skill-enforcement.test.md --path specs/docs-changes-usage-policy.test.md --path specs/workflow-stage-autoprogression.test.md`
+  - `rg -n "^## (Active|Blocked|Done|Superseded)$|2026-04-21-docs-changes-skill-enforcement" docs/plan.md`
+  - `git diff --check ba8998e..HEAD`
+  - Result: passed. The only remaining verify-stage work is downstream explanation/PR packaging, not more implementation.
 
 ## Outcome and retrospective
 
-- This initiative is active. Use this section for completion, blockage, supersession, or retrospective notes once the real lifecycle outcome is known.
+- This plan is done on-branch and now belongs in `docs/plan.md` under `Done`.
+- What changed: the repository's canonical `workflow`, `implement`, `verify`, `explain-change`, and `pr` skills now operationalize the approved docs-changes baseline pack, blocker handling, and default change-local durable reasoning surface for ordinary non-trivial work.
+- What went well: splitting the work into upstream guidance, downstream gates, and repo-wide proof kept the reviews narrow and surfaced one real ambiguity in `explain-change` before it could leak into later changes.
+- What was harder than expected: the feature itself also needed its own baseline `docs/changes/` pack; relying only on stacked top-level proposal/spec/plan/test-spec artifacts would have repeated the exact contract gap this follow-up was meant to close.
+- Spec accuracy: the approved feature spec held through implementation once the existing docs-changes and workflow-stage test specs were treated as living proof surfaces instead of background references.
+- Test effectiveness: the highest-value proof came from targeted manual alignment of the two existing relied-on test specs plus the standard repo-owned smoke path in `bash scripts/ci.sh`; no new runtime subsystem or validator inference was needed.
+- Architecture accuracy: the earlier decision to avoid a separate architecture artifact was correct. This stayed a small skill-alignment slice rather than turning into schema or validator redesign.
+- Follow-up actions: explain the completed change set from the actual diff, then prepare the replacement PR from `feat/docs-changes-skill-enforcement-v2` with the carried-forward docs-changes policy work.
 
 ## Readiness
 
@@ -366,5 +383,6 @@ The implementation must stay inside the approved narrow boundary:
 - No separate architecture artifact is required unless later review broadens the change.
 - `specs/docs-changes-skill-enforcement.test.md` now exists and is the active proof-planning surface.
 - The tracked-source prerequisite is satisfied.
-- M1 through M3 are implemented and overall code-review is complete; final verification remains open.
-- The next stage is `verify`.
+- This plan is done on-branch.
+- M1 through M3, overall code-review, and overall verify are complete.
+- The next expected stage is `explain-change`.
