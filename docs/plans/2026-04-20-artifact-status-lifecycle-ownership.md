@@ -1,6 +1,6 @@
 # Artifact status lifecycle ownership plan
 
-- Status: active
+- Status: done
 - Owner: maintainer + Codex
 - Start date: 2026-04-20
 - Last updated: 2026-04-21
@@ -405,6 +405,7 @@ The implementation needs to land as one coherent sequence:
 - 2026-04-21: completed M3 by wiring the artifact lifecycle validator into `scripts/ci.sh` and `.github/workflows/ci.yml`, adding diff-mode regression coverage, and tightening plan-surface reference expansion so CI-mode validation stays deterministic without treating future milestone references as current blockers.
 - 2026-04-21: addressed the M3 code-review findings by switching `pr-ci` to merge-base-aware diffs, reading diff-derived scope and baseline artifacts from tracked commit snapshots, and expanding active-plan reference extraction from current plan context while excluding milestone/backlog sections that would prematurely pull M4 migration targets into related scope.
 - 2026-04-21: completed M4 by archiving the three relied-on historical test specs that still used `complete`, adding terminal closeout sections to them, and confirming the feature proposal, spec, and architecture already satisfied the settled-state contract without further edits.
+- 2026-04-21: verify closed this initiative to `Done` because the full outcome is already known on-branch and merged state is not the deciding event for completion.
 
 ## Decision log
 
@@ -430,6 +431,7 @@ The implementation needs to land as one coherent sequence:
 - 2026-04-21: extract lifecycle and artifact path references from current active-plan context sections while excluding milestone execution details, validation history, and readiness bookkeeping. Rationale: M3 should validate the scope resolver for current authoritative inputs, while M4 owns migration targets and must not become related scope just because the plan records future work.
 - 2026-04-21: treat changed `.codex/` paths as explicit generated-source blockers only in `explicit-paths` mode, not in diff-derived CI modes. Rationale: PR and push validation must tolerate legitimate generated-output refreshes while still rejecting attempts to validate generated output as authored source of truth directly.
 - 2026-04-21: archive the three relied-on historical test specs instead of marking them superseded. Rationale: they remain useful historical evidence for merged baselines, but this migration does not create direct replacement test specs that would justify `superseded`.
+- 2026-04-21: close the initiative to `Done` during verify rather than deferring until PR or merge. Rationale: the feature outcome is already known on-branch, so this is the default done-before-PR case rather than a merge-dependent exception.
 
 ## Surprises and discoveries
 
@@ -515,19 +517,27 @@ The implementation needs to land as one coherent sequence:
   - `bash scripts/ci.sh` -> passed (`repo-owned CI wrapper accepts the migrated relied-on artifacts and continues to report only unrelated baseline debt as warnings`)
   - manual review -> passed (`the feature proposal, spec, and architecture already carried truthful settled-state readiness, and the three historical relied-on test specs now carry truthful archived closeout wording without inventing replacement pointers`)
   - `git diff --check -- docs/proposals specs docs/architecture docs/adr docs/plans/2026-04-20-artifact-status-lifecycle-ownership.md` -> passed
+- Green validation after verify-stage lifecycle closeout:
+  - `git diff --check -- docs/plans/2026-04-20-artifact-status-lifecycle-ownership.md` -> passed
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-20-artifact-status-lifecycle-ownership.md --path specs/artifact-status-lifecycle-ownership.md --path docs/architecture/2026-04-20-artifact-status-lifecycle-ownership.md --path specs/rigorloop-workflow.test.md --path specs/constitution-governance-surface.test.md --path specs/plan-index-lifecycle-ownership.test.md` -> passed (`validated 6 artifact files in explicit-paths mode`)
+  - `bash scripts/ci.sh` -> passed (`repo-owned CI wrapper remained green after plan/index closeout`)
+  - manual review -> passed (`reviewed docs/plan.md Done section plus this plan body's Status, Outcome and retrospective, and Readiness surfaces after closeout`)
 - Optional proof not run:
   - `python scripts/validate-artifact-lifecycle.py --mode local` was intentionally skipped because the working tree contains unrelated untracked proposal drafts, so `local` mode would not have been clean milestone proof.
 
 ## Outcome and retrospective
 
-- This plan is still active. Do not mark the initiative `Done`, `Blocked`, or `Superseded` until the real lifecycle decision is known.
-- When lifecycle state changes, update both `docs/plan.md` and this plan body in the same change.
+- This plan is done on-branch and now belongs in `docs/plan.md` under `Done`.
+- What changed: the feature added the artifact lifecycle validator and fixture suite, aligned workflow docs, skills, and templates with the lifecycle contract, wired deterministic validation into CI, migrated relied-on stale historical test specs, and closed the initiative through verify-stage lifecycle bookkeeping.
+- What went well: milestone slicing kept validator, guidance, CI, and migration work reviewable while still converging on one coherent lifecycle model.
+- What was harder than expected: keeping the active plan synchronized through repeated review and verify passes required explicit follow-through after each stage rather than relying on milestone implementation alone.
+- Process lesson: when the outcome is already known on-branch, verify must close the initiative to `Done` before PR so later stages do not inherit stale active-state bookkeeping.
 
 ## Readiness
 
-- This initiative remains active; M1-M4 are complete.
+- This plan is done.
 - The tracked-source-artifact prerequisite is satisfied and the test spec is now active at `specs/artifact-status-lifecycle-ownership.test.md`.
 - The relied-on historical test specs now use truthful archived closeout state, and the feature proposal, spec, and architecture remain truthful settled artifacts.
-- Implementation and code review are complete.
-- M1-M4 now satisfy the v0.1 first-enforcement stack of docs, validator, fixtures, `verify`, and CI, including relied-on artifact migration.
-- The next expected stage is `verify`.
+- Implementation, code review, and verify are complete.
+- M1-M4 satisfy the v0.1 first-enforcement stack of docs, validator, fixtures, `verify`, and CI, including relied-on artifact migration.
+- The next expected stage is `explain-change`, then `pr`.
