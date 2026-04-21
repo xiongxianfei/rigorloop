@@ -328,6 +328,12 @@ The implementation must stay inside the approved narrow boundary:
   - `rg -n 'docs/changes|change.yaml|explain-change|blocker|readiness' skills/verify/SKILL.md skills/explain-change/SKILL.md skills/pr/SKILL.md .codex/skills`
   - `git diff --check -- skills/verify/SKILL.md skills/explain-change/SKILL.md skills/pr/SKILL.md specs/workflow-stage-autoprogression.test.md docs/changes/2026-04-21-docs-changes-skill-enforcement .codex/skills docs/plans/2026-04-21-docs-changes-skill-enforcement.md`
   - Result: passed.
+- 2026-04-21: M2 review follow-up tightened `skills/explain-change/SKILL.md` so inline explanation remains limited to fast-lane or otherwise exempt changes rather than implying PR text alone is enough for small ordinary non-trivial work.
+  - `python scripts/validate-skills.py`
+  - `python scripts/build-skills.py`
+  - `python scripts/build-skills.py --check`
+  - `git diff --check -- skills/explain-change/SKILL.md docs/changes/2026-04-21-docs-changes-skill-enforcement/explain-change.md .codex/skills/explain-change/SKILL.md`
+  - Result: passed.
 
 ## Outcome and retrospective
 

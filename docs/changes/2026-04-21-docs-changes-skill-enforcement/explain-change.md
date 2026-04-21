@@ -14,7 +14,7 @@ The repository already approved the baseline docs-changes contract for ordinary 
 ## What changed so far
 
 - M1 aligned `workflow` and `implement` so ordinary non-trivial work carries the baseline change-local pack while fast-lane omission stays narrow.
-- M2 is aligning `verify`, `pr`, and `explain-change` so missing required baseline packs become explicit blockers and the default durable reasoning surface stays change-local for new ordinary non-trivial work.
+- M2 aligned `verify`, `pr`, and `explain-change` so missing required baseline packs become explicit blockers and the default durable reasoning surface stays change-local for new ordinary non-trivial work.
 
 ## Scope boundaries
 
