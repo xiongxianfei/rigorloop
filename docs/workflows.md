@@ -14,12 +14,13 @@ This file is the short operational summary for working in this repository. The n
 
 ## Full Lifecycle
 
-`constitution / project-map when needed -> explore -> research when needed -> proposal -> proposal-review -> spec -> spec-review -> architecture -> architecture-review when needed -> plan -> plan-review -> test-spec -> implement -> code-review -> verify -> ci when GitHub workflow automation for a material risk is missing or stale -> explain-change -> pr -> learn`
+`constitution / project-map when needed -> explore -> research when needed -> proposal -> proposal-review -> spec -> spec-review -> architecture -> architecture-review when needed -> plan -> plan-review -> test-spec -> implement -> code-review -> verify -> ci when GitHub workflow automation for a material risk is missing or stale -> explain-change -> pr`
 
 Notes:
 
 - `ci` means creating or updating GitHub workflows or related automation for a material risk. It does not mean waiting for routine CI to run.
 - Not every stage is required for every change; stage classification and enforcement rules are defined in `specs/rigorloop-workflow.md`.
+- `learn` is advice-only. Treat it as an explicit follow-up when a durable lesson actually emerged or another approved rule elevates it.
 
 ## Autoprogression
 

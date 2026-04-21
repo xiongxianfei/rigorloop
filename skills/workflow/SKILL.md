@@ -44,8 +44,9 @@ constitution / project context
 → verify including CI when available
 → explain-change
 → pr
-→ learn
 ```
+
+Treat `learn` as an advice-only follow-up when a durable lesson actually emerged or another approved rule elevates it.
 
 When a lower-level skill says a different order, this orchestrator wins.
 
