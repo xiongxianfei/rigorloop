@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-04-21 Workflow stage autoprogression](plans/2026-04-21-workflow-stage-autoprogression.md) - active execution plan for bounded v1 workflow autoprogression across full-feature execution handoffs, authoring-to-review handoffs, and stage-skill guidance alignment.
+- none yet
 
 ## Blocked
 - none yet
@@ -13,6 +13,7 @@ This file tracks active, blocked, done, and superseded plans.
 - [2026-04-20 Constitution governance migration](plans/2026-04-20-constitution-governance-migration.md) - completed execution plan for promoting governance to root `CONSTITUTION.md`, aligning canonical and generated guidance surfaces, and closing the migration as historical work.
 - [2026-04-20 Plan index lifecycle ownership](plans/2026-04-20-plan-index-lifecycle-ownership.md) - completed execution plan for clarifying lifecycle-closeout ownership, aligning workflow and skill guidance, and synchronizing the plan index with touched plan bodies.
 - [2026-04-20 Artifact status lifecycle ownership](plans/2026-04-20-artifact-status-lifecycle-ownership.md) - completed execution plan for the artifact-lifecycle validator, deterministic verify/CI scope handling, guidance and template alignment, relied-on artifact migration, and validator-backed artifact lifecycle closeout.
+- [2026-04-21 Workflow stage autoprogression](plans/2026-04-21-workflow-stage-autoprogression.md) - completed execution plan for bounded v1 workflow autoprogression across full-feature execution handoffs, authoring-to-review handoffs, and canonical/generated skill alignment.
 
 ## Superseded
 - none yet

@@ -1,6 +1,6 @@
 # Workflow stage autoprogression plan
 
-- Status: active
+- Status: done
 - Owner: maintainer + Codex
 - Start date: 2026-04-21
 - Last updated: 2026-04-21
@@ -400,15 +400,28 @@ The implementation must stay inside the approved v1 boundary:
   - `bash scripts/ci.sh`
   - `git diff --check -- specs/workflow-stage-autoprogression.test.md docs/plans/2026-04-21-workflow-stage-autoprogression.md`
 - 2026-04-21: M3 code-review passed after the readiness fix. The review-resolution loop did not require further skill or workflow changes beyond normalizing the active test-spec and plan readiness wording.
+- 2026-04-21: verify-stage lifecycle closeout passed with:
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/workflow-stage-autoprogression.test.md --path docs/plans/2026-04-21-workflow-stage-autoprogression.md`
+  - `bash scripts/ci.sh`
+  - `git diff --check -- docs/plan.md docs/plans/2026-04-21-workflow-stage-autoprogression.md`
+  - manual review -> passed (`docs/plan.md` and this plan body now agree that the initiative is done on-branch while downstream `explain-change` and `pr` remain next workflow stages`)
 
 ## Outcome and retrospective
 
-- This initiative is active. Do not mark it `done`, `blocked`, or `superseded` until execution reaches a real lifecycle outcome.
+- This plan is done on-branch and now belongs in `docs/plan.md` under `Done`.
+- What changed: the feature aligned the workflow contract, governance surfaces, canonical/generated execution skills, authoring-to-review skills, and CI smoke wrapper with the approved bounded v1 autoprogression model.
+- What went well: splitting the work into workflow/guidance, execution-skill, and authoring/review slices kept review findings narrow and made it easy to correct wording drift without reopening the broader contract.
+- What was harder than expected: the repo-wide smoke proof initially failed because generated `.codex/skills/` output was entering authored-artifact lifecycle validation; the right fix was a thin `scripts/ci.sh` wrapper change, not relaxing the lifecycle validator.
+- Spec accuracy: the approved spec held through implementation once v1 scope was narrowed to full-feature execution plus authoring-to-review handoffs. The most important constraint was keeping fast-lane, bugfix, and review-to-next-authoring transitions out of scope.
+- Test effectiveness: manual contract review plus generated-skill drift checks were the right proof surface for this guidance-driven feature, and repo-owned smoke validation caught the one real integration issue around generated-output handling and later the stale active test-spec readiness wording.
+- Architecture accuracy: the approved guidance-and-skill-driven architecture was sufficient. The feature did not need a router, persistent workflow state, or a second readiness registry.
+- Process issues: workflow-managed autoprogression is only safe when lifecycle-managed artifacts stay current after each review gate. The code-review and verify stages both needed explicit plan/test-spec readiness normalization rather than assuming milestone completion notes were enough.
+- Follow-up actions: complete `explain-change`, then prepare the PR from the verified branch tip; keep the two unrelated local proposal drafts out of scope.
 
 ## Readiness
 
-- This plan is active.
+- This plan is done.
 - `plan-review` is complete.
 - The tracked-source prerequisite and test spec are in place.
-- Implementation and `code-review` are complete through M3.
-- The next stage is `verify`.
+- Implementation, `code-review`, and `verify` are complete through M3.
+- The next stage is `explain-change`.
