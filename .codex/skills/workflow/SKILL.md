@@ -44,8 +44,9 @@ constitution / project context
 → verify including CI when available
 → explain-change
 → pr
-→ learn
 ```
+
+Treat `learn` as an advice-only follow-up when a durable lesson actually emerged or another approved rule elevates it.
 
 When a lower-level skill says a different order, this orchestrator wins.
 
@@ -89,7 +90,7 @@ Rules:
 
 Use for new product behavior, API changes, data contracts, migrations, risky refactors, UI flows, safety-sensitive changes, or any change spanning multiple components.
 
-Required stages:
+Default stage order:
 
 1. `constitution` if project principles are missing or stale.
 2. `project-map` if the architecture is not clear enough to make safe choices.
@@ -107,9 +108,11 @@ Required stages:
 14. `implement` milestone by milestone with tests first.
 15. `code-review` with fresh eyes.
 16. `verify` to check artifact/code/test coherence.
-17. `explain-change` to summarize why the diff exists.
-18. `pr` to prepare the pull request.
-19. `learn` to capture durable lessons.
+17. `ci` when GitHub workflow automation for a material risk is missing or stale.
+18. `explain-change` to summarize why the diff exists.
+19. `pr` to prepare and open the pull request when ready.
+
+Follow with `learn` only when a durable lesson actually emerged.
 
 ### Fast lane
 
@@ -167,6 +170,33 @@ Possible review skills:
 - `explain-change`
 
 Do not edit files unless the user asks for edits.
+
+## Invocation context and continuation
+
+Classify the request into one of these contexts before deciding whether to continue:
+
+- `workflow-managed`: the agent is carrying a change through its normal downstream stages toward completion under the active lane.
+- `isolated`: the user asked for one stage result only, such as standalone `proposal-review`, `spec-review`, `architecture-review`, `code-review`, `verify`, or `explain-change`.
+- `direct-pr`: the user directly invoked `pr`.
+
+Rules:
+
+- In v1, workflow-managed autoprogression applies only to:
+  - `proposal -> proposal-review`
+  - `spec -> spec-review`
+  - `architecture -> architecture-review` when that review stage is the next required or default downstream step
+  - full-feature execution from `implement` through `pr`
+- In the full-feature lane, continue through this downstream chain unless a stop condition applies:
+  - `implement -> code-review`
+  - `code-review -> review-resolution -> code-review` when findings are accepted for action
+  - `code-review -> verify` once the review gate is satisfied
+  - `verify -> ci` when the governing workflow contract elevates `ci`; otherwise `verify -> explain-change`
+  - `ci -> explain-change`
+  - `explain-change -> pr`
+- Direct `proposal-review`, `spec-review`, `architecture-review`, `code-review`, `verify`, and `explain-change` stay isolated by default unless the user explicitly asks for end-to-end continuation.
+- Direct `pr` remains in scope and still performs the `pr` stage itself when readiness passes. Isolation only prevents downstream continuation beyond `pr`.
+- Fast-lane and bugfix execution remain on the repository's existing explicit-step behavior in v1.
+- Advice-only stages such as `learn` do not auto-run by default.
 
 ### Documentation or governance lane
 
@@ -242,28 +272,35 @@ docs/explain/YYYY-MM-DD-slug.md
 
 Do not overwrite older durable artifacts for a new initiative. Create a new dated file and update the relevant index.
 
-## Human gates
+## Continuation and checkpoints
 
-For high-impact changes, produce the artifact and clearly mark whether it is ready for the next stage. In an interactive session, ask for approval at these gates when the user has not already authorized continuing:
+For high-impact changes, produce the artifact and clearly mark whether it is ready for the next stage.
 
-1. after `proposal-review`
-2. after `spec-review`
-3. after `architecture-review` or `architecture`
-4. after `plan-review`
-5. before opening or merging a PR
+Do not ask for redundant approval merely to enter an already-known next required or default downstream stage in a workflow-managed flow.
 
-If the user explicitly asked for an end-to-end best-effort run, continue without repeated approval requests and document assumptions.
+Pause instead when:
+
+- the user explicitly asks to stop, pause, or inspect before the next stage;
+- a spec gap, architecture conflict, failing validation result, or review finding requires a real user decision;
+- the active plan or spec defines a separately reviewable checkpoint that should not be crossed automatically;
+- missing permissions, network failures, or tool limitations prevent safe continuation;
+- the next action would be merge, deploy, release, tag publication, branch deletion, history rewrite, rollback, or another stronger external/destructive action than PR creation.
+
+Review-only or explicitly isolated stage requests stay isolated unless the user asks to continue.
 
 ## Stop conditions
 
 Stop and surface the blocker when:
 
+- the user explicitly asks to stop, pause, or inspect before the next stage;
 - the requested behavior is ambiguous enough that different implementations would be valid;
 - there is no way to verify a `MUST` requirement;
 - the architecture boundary is unknown and the change is risky;
 - a validation command fails and the failure is not understood;
 - tests pass but do not actually assert the required behavior;
 - the implementation requires secrets, credentials, external systems, or unavailable tools;
+- a review finding, spec gap, or architecture conflict requires a real user decision;
+- the next action would be merge, deploy, release, tag publication, branch deletion, history rewrite, rollback, or another stronger external/destructive action than PR creation;
 - the diff introduces scope outside the approved spec or plan.
 
 When stopped, provide the smallest concrete next artifact or decision needed to resume.
@@ -273,8 +310,10 @@ When stopped, provide the smallest concrete next artifact or decision needed to 
 Always state:
 
 - chosen lane and why;
+- invocation context and why;
 - current stage;
 - artifacts found, created, or missing;
-- next recommended skill;
+- next recommended skill or next automatic stage;
 - blockers or assumptions;
+- whether continuation happened, stopped, or is out of scope;
 - whether implementation is allowed yet.

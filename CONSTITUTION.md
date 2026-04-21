@@ -137,6 +137,10 @@ Until repository-specific release checks replace the current conservative templa
 
 `code-review` and `verify` MUST happen before non-trivial changes are considered ready for PR.
 
+In workflow-managed completion flows, agents MUST continue into the next required or default downstream stage when an approved autoprogression spec says continuation applies. Review-only or otherwise isolated stage requests MUST remain isolated by default, except that direct `pr` still performs PR opening when readiness passes.
+
+Fast-lane and bugfix execution remain explicit-step unless a higher-priority approved artifact broadens their automation scope. Advice-only stages such as `learn` MUST NOT auto-run by default unless a higher-priority approved artifact elevates them.
+
 When review feedback exists, each material item MUST be resolved, rejected, or deferred with rationale. When the review creates durable project memory, a standalone `review-resolution.md` MUST be used.
 
 ## Documentation rules

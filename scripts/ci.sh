@@ -69,13 +69,24 @@ determine_artifact_lifecycle_command() {
 
   local -a tracked_diff_paths=()
   mapfile -t tracked_diff_paths < <(git diff --name-only --diff-filter=ACMRT HEAD -- .)
-  if [[ ${#tracked_diff_paths[@]} -gt 0 ]]; then
+  local -a authored_diff_paths=()
+  local path=""
+  for path in "${tracked_diff_paths[@]}"; do
+    # Generated Codex compatibility output is already checked by build-skills drift
+    # and should not be passed to authored-artifact lifecycle validation.
+    if [[ "$path" == .codex/skills/* ]]; then
+      continue
+    fi
+    authored_diff_paths+=("$path")
+  done
+
+  if [[ ${#authored_diff_paths[@]} -gt 0 ]]; then
     artifact_lifecycle_label="Validate artifact lifecycle (explicit-paths from tracked diff)"
     artifact_lifecycle_cmd=(
       python scripts/validate-artifact-lifecycle.py
       --mode explicit-paths
     )
-    for path in "${tracked_diff_paths[@]}"; do
+    for path in "${authored_diff_paths[@]}"; do
       artifact_lifecycle_cmd+=(--path "$path")
     done
     return 0

@@ -61,10 +61,16 @@ Use when useful:
 - Do not edit the architecture doc unless the user explicitly asks.
 - When the review outcome is approval, the tracked architecture artifact should be ready to normalize to `approved` before planning or implementation relies on it. Do not leave a relied-on design in durable `reviewed` state.
 
+## Workflow handoff behavior
+
+- Direct or review-only `architecture-review` requests remain isolated by default.
+- In v1, `architecture-review` does not auto-continue into `plan`; it reports approval, required revisions, or blockers and stops there unless the user explicitly requests a later stage.
+- Keep review-to-next-authoring transitions out of scope in this skill's wording.
+
 ## Expected output
 
 - verdict: approve, revise, or block;
 - findings by review dimension;
 - missing ADRs or design decisions;
 - exact suggested changes;
-- readiness statement for `plan`.
+- readiness statement for `plan`, isolated stop, or blocker state.

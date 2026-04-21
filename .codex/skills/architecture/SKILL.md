@@ -111,6 +111,12 @@ For this repository's current ADR contract:
 - Preserve `Next artifacts` as planning history. Use `Follow-on artifacts` for actual downstream artifacts, replacement, or terminal closeout.
 - If an architecture document is superseded, identify the replacement with `superseded_by` or equivalent labeled text.
 
+## Workflow handoff behavior
+
+- In a workflow-managed flow, successful `architecture` completion hands off to `architecture-review` when that review is the next required or default downstream stage.
+- If the design still has open questions that block safe review, stop and report the blocker instead of implying `architecture-review` can proceed.
+- This v1 contract does not imply `architecture-review -> plan`; review-to-next-authoring transitions remain outside the autoprogression boundary unless a later approved change adds them.
+
 ## Expected output
 
 - architecture doc path and ADR paths;
@@ -118,4 +124,4 @@ For this repository's current ADR contract:
 - diagrams when useful;
 - alternatives and decisions;
 - risks, migrations, and observability;
-- readiness statement for `architecture-review` or `plan`.
+- readiness statement for `architecture-review` or blocker state.

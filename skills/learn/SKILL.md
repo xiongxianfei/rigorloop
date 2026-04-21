@@ -11,6 +11,8 @@ You are preserving useful lessons so future work improves.
 
 Do not fabricate lessons. Capture what was actually learned from evidence.
 
+`learn` is advice-only in the current workflow contract. Do not auto-run it by default; use it only when the user explicitly requests it or another approved artifact elevates it for the active change.
+
 ## Inputs to read
 
 Read, if present:
