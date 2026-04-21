@@ -2,7 +2,7 @@
 
 ## Status
 
-- complete
+- archived
 
 ## Related spec and plan
 
@@ -284,8 +284,13 @@
 - No uncovered contract gaps remain for the current one-milestone migration shape.
 - If implementation expands beyond one coherent change or broadens into unrelated governance cleanup, return to `plan` or `spec` before `implement`.
 
+## Follow-on artifacts
+
+- Final disposition: archived after the constitution-governance migration merged and root `CONSTITUTION.md` became the repository's current governance baseline.
+- Replacement: none. This artifact remains historical evidence for that merged migration.
+
 ## Readiness
 
-This test spec is complete. Its coverage now describes the merged governance migration baseline.
+This test spec is archived. Its coverage now describes the merged governance migration baseline as historical evidence and no longer serves as the active proof-planning surface.
 
 No further implementation-stage action is pending for this artifact.

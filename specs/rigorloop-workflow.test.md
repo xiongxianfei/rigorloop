@@ -2,7 +2,7 @@
 
 ## Status
 
-- complete
+- archived
 
 ## Related spec and plan
 
@@ -479,8 +479,13 @@
 - The implementation should add invalid metadata fixtures alongside the valid sample fixture early enough that `T6` and `T7` are not deferred past code review.
 - If the implementation cannot validate YAML with the repository’s chosen runtime assumptions, return to planning before widening implementation scope.
 
+## Follow-on artifacts
+
+- Final disposition: archived after the first-release workflow baseline merged and became the repository's current workflow contract.
+- Replacement: none. This artifact remains historical evidence for that merged baseline.
+
 ## Readiness
 
-This test spec is complete. Its coverage now describes the merged first-release workflow baseline.
+This test spec is archived. Its coverage now describes the merged first-release workflow baseline as historical evidence and no longer serves as the active proof-planning surface.
 
 No further implementation-stage action is pending for this artifact.
