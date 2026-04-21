@@ -217,7 +217,7 @@
 
 ## Next artifacts
 
-- `explain-change`
+- `pr`
 
 ## Follow-on artifacts
 
@@ -225,5 +225,5 @@
 
 ## Readiness
 
-- This test spec remains the relied-on proof surface after final verification.
-- The next stage is `explain-change`.
+- This test spec remains the relied-on proof surface after final verification and explanation.
+- The next stage is `pr`.
