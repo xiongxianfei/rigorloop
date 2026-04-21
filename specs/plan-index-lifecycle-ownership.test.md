@@ -2,7 +2,7 @@
 
 ## Status
 
-- complete
+- archived
 
 ## Related spec and plan
 
@@ -359,8 +359,13 @@
 - No uncovered gaps block implementation under the current reviewed spec and active plan.
 - If implementation expands into inferred automation, new CI behavior, or a broader redesign of plan structure, return to `spec` or `architecture` before continuing.
 
+## Follow-on artifacts
+
+- Final disposition: archived after the plan-index lifecycle ownership change merged and the repository's plan lifecycle baseline became current guidance.
+- Replacement: none. This artifact remains historical evidence for that merged lifecycle baseline.
+
 ## Readiness
 
-This test spec is complete. Its coverage now describes the merged lifecycle-ownership baseline.
+This test spec is archived. Its coverage now describes the merged lifecycle-ownership baseline as historical evidence and no longer serves as the active proof-planning surface.
 
 No further implementation-stage action is pending for this artifact.

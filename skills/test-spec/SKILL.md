@@ -15,7 +15,7 @@ The test spec defines how the team will know the implementation satisfies the be
 
 Read:
 
-- approved or reviewed feature spec;
+- approved feature spec;
 - spec-review findings;
 - architecture doc and ADRs when relevant;
 - concrete execution plan;
@@ -33,7 +33,7 @@ specs/slug.test.md
 
 ## Required sections
 
-1. **Status**: draft, reviewed, active, complete.
+1. **Status**: draft, active, abandoned, superseded, archived.
 2. **Related spec and plan**.
 3. **Testing strategy**: unit, integration, end-to-end, smoke, manual, contract, migration.
 4. **Requirement coverage map**: every requirement ID maps to one or more tests or explicit manual verification.
@@ -49,6 +49,9 @@ specs/slug.test.md
 14. **Manual QA checklist** when automation is insufficient.
 15. **What not to test** and why.
 16. **Uncovered gaps** that must return to spec or architecture.
+17. **Next artifacts**: planned next steps while the test spec remains draft or active.
+18. **Follow-on artifacts**: actual downstream artifacts or terminal disposition. If present before any real follow-ons exist, say `None yet`.
+19. **Readiness**: truthful next-stage or active-proof-surface wording.
 
 ## Test case format
 
@@ -80,6 +83,8 @@ T1. Title
 - Do not mark a requirement covered by a test that does not assert it.
 - Do not rely only on snapshots for behavioral requirements.
 - Do not skip integration tests where the risk is at a boundary.
+- Do not use `reviewed` or long-lived `complete` as durable test-spec states. Move from `draft` to `active` when implementation or review is relying on the test spec, then close out to `archived`, `superseded`, or `abandoned` when it is no longer the active proof-planning surface.
+- Preserve `Next artifacts` as planning history. Use `Follow-on artifacts` for actual downstream artifacts, replacement, or terminal closeout.
 - Do not hide untestable requirements; send them back to `spec-review`.
 
 ## Expected output

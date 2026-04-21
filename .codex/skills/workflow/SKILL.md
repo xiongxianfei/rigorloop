@@ -62,6 +62,27 @@ For work that has a concrete plan file under `docs/plans/`:
 - `Blocked` and `Superseded` transitions should be recorded as soon as they are decided.
 - `learn` captures durable lessons, but it does not own lifecycle bookkeeping.
 
+## Lifecycle-managed artifacts
+
+For proposals, top-level specs, test specs, architecture docs, and ADRs:
+
+| Artifact | Settlement states | Closeout or terminal states |
+| --- | --- | --- |
+| Proposal | `accepted` | `rejected`, `abandoned`, `superseded`, `archived` |
+| Spec | `approved` | `abandoned`, `superseded`, `archived` |
+| Architecture | `approved` | `abandoned`, `superseded`, `archived` |
+| Test spec | `active` | `abandoned`, `superseded`, `archived` |
+| ADR | `accepted`, `active` | `deprecated`, `superseded`, `archived`, `abandoned` |
+
+Rules:
+
+- Status lives inside the artifact, not in PR state or chat-only review outcomes.
+- `reviewed` is transitional review output, not a durable relied-on state for proposals, top-level specs, test specs, or architecture docs.
+- `Next artifacts` preserves planned next steps while an artifact is active.
+- `Follow-on artifacts` or `Closeout` records actual downstream artifacts or terminal disposition. If a `Follow-on artifacts` section appears before real follow-ons exist, it must say `None yet`.
+- `superseded` artifacts must identify their replacement with `superseded_by` or equivalent labeled text.
+- `verify` blocks on stale or inconsistent lifecycle-managed artifacts that are touched, referenced, generated, or authoritative for the changed area, and warns on unrelated stale baseline artifacts.
+
 ## Work lanes
 
 ### Full feature lane

@@ -38,7 +38,7 @@ Do not overwrite unrelated specs. If changing an existing behavior, update the e
 
 ## Required sections
 
-1. **Status**: draft, reviewed, approved, superseded.
+1. **Status**: draft, approved, abandoned, superseded, archived.
 2. **Related proposal**: link to proposal or issue.
 3. **Goal and context**: what behavior is being defined and why.
 4. **Glossary**: domain terms that affect interpretation.
@@ -56,6 +56,9 @@ Do not overwrite unrelated specs. If changing an existing behavior, update the e
 16. **Non-goals**: behaviors intentionally not covered.
 17. **Acceptance criteria**: observable outcomes that can be verified.
 18. **Open questions**: only if they do not invalidate the spec.
+19. **Next artifacts**: planned next steps while the spec is active.
+20. **Follow-on artifacts**: actual downstream artifacts or terminal disposition. If present before any real follow-ons exist, say `None yet`.
+21. **Readiness**: truthful next-stage or settled-state wording.
 
 ## Requirement format
 
@@ -88,6 +91,9 @@ Then ...
 - Do not skip failure behavior.
 - Do not skip compatibility expectations.
 - Do not invent requirements that the proposal excludes.
+- Do not use `reviewed` as a durable spec status. Once the review outcome is relied on, normalize the tracked spec to `approved` or the appropriate terminal state.
+- Preserve `Next artifacts` as planning history. Use `Follow-on artifacts` for actual downstream artifacts, replacement, or terminal closeout.
+- If a spec is superseded, identify the replacement with `superseded_by` or equivalent labeled text.
 - If the behavior is too unclear to specify, return to `explore`, `research`, or `proposal`.
 
 ## Expected output

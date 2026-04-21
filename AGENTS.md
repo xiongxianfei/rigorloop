@@ -79,6 +79,14 @@ If the work changes externally observable behavior and no relevant spec exists, 
 - Every `MUST` in a spec should map to at least one test.
 - The test spec does not override the feature spec; it operationalizes it.
 
+## Artifact lifecycle defaults
+
+- Proposal, spec, test-spec, architecture, and ADR status lives inside the artifact, not in PR state or chat-only review outcomes.
+- For proposals, top-level specs, test specs, architecture docs, and ADRs, `reviewed` is transitional only where it exists in older artifacts. Durable current states are `accepted`, `approved`, and `active`. Terminal or historical states include `deprecated`, `rejected`, `abandoned`, `superseded`, and `archived`.
+- Keep `Next artifacts` as planning history while an artifact is active. Use `Follow-on artifacts` or `Closeout` for actual downstream artifacts or final disposition. If a `Follow-on artifacts` section appears before real follow-ons exist, it must say `None yet`.
+- `superseded` artifacts must identify their replacement with `superseded_by` or equivalent labeled text.
+- `verify` blocks on stale touched, referenced, generated, or authoritative lifecycle-managed artifacts and warns on unrelated stale baseline debt.
+
 ## Implementation rules
 
 - Keep diffs scoped.

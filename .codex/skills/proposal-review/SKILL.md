@@ -56,6 +56,7 @@ Ask these when useful:
 - Do not let vague benefits pass as strategy.
 - Do not ignore the `do nothing` option.
 - Do not edit the proposal unless the user explicitly asks.
+- When the review outcome accepts the direction, ensure the tracked proposal is ready to normalize to `accepted` before downstream stages rely on it. Do not leave a relied-on proposal in `under review`.
 
 ## Expected output
 
