@@ -152,18 +152,19 @@
 - Fixture/setup:
   - `skills/pr/SKILL.md`
   - `skills/workflow/SKILL.md`
+  - `specs/docs-changes-usage-policy.md`
   - `docs/workflows.md`
   - the active plan and other lifecycle-managed artifacts for readiness wording
 - Steps:
   - Review direct-`pr` and workflow-managed `pr` guidance.
   - Confirm `pr` opens directly when readiness passes.
-  - Confirm blocker wording covers: unknown base branch, missing review branch, unrelated tracked changes, stale lifecycle closeout, and unavailable network/tooling.
+  - Confirm blocker wording covers: unknown base branch, missing review branch, unrelated tracked changes, missing required baseline docs-changes artifacts for ordinary non-trivial work, stale lifecycle closeout, and unavailable network/tooling.
   - Confirm unrelated untracked drafts are excluded from PR scope rather than treated as automatic blockers.
   - Confirm pending hosted CI is described truthfully rather than reported as passed.
 - Expected result:
-  - `pr` remains a submit/open stage, and readiness blockers are explicit and reviewable.
+  - `pr` remains a submit/open stage, and readiness blockers including missing required docs-changes artifacts are explicit and reviewable.
 - Failure proves:
-  - PR opening semantics, scope safety, or CI honesty drifted from the approved contract.
+  - PR opening semantics, docs-changes readiness checks, scope safety, or CI honesty drifted from the approved contract.
 - Automation location:
   - Manual review during M2 and M3.
 
@@ -177,15 +178,17 @@
   - `skills/verify/SKILL.md`
   - `skills/explain-change/SKILL.md`
   - `skills/pr/SKILL.md`
+  - `specs/docs-changes-usage-policy.md`
 - Steps:
   - Review isolated-stage and stop-condition wording across shared and stage-local skills.
   - Confirm direct `code-review`, `verify`, and `explain-change` remain isolated by default.
+  - Confirm direct `verify` still reports a missing required baseline docs-changes pack as a blocker for ordinary non-trivial work instead of treating the omission as acceptable silence.
   - Confirm explicit pause instructions and decision-requiring review findings stop the workflow instead of auto-continuing.
   - Confirm stronger external actions such as merge, release, deploy, and destructive Git remain outside default autoprogression.
 - Expected result:
-  - The workflow remains safe and unsurprising when the request is isolated or a real blocker exists.
+  - The workflow remains safe and unsurprising when the request is isolated or a real blocker such as a missing required docs-changes pack exists.
 - Failure proves:
-  - The implementation would continue when it should pause or block.
+  - The implementation would continue when it should pause or block, or it could hide a required docs-changes blocker during isolated verification.
 - Automation location:
   - Manual review during M2 and M3.
 
