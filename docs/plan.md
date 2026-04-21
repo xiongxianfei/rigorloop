@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- none yet
+- [2026-04-21 Workflow stage autoprogression](plans/2026-04-21-workflow-stage-autoprogression.md) - active execution plan for bounded v1 workflow autoprogression across full-feature execution handoffs, authoring-to-review handoffs, and stage-skill guidance alignment.
 
 ## Blocked
 - none yet
