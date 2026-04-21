@@ -43,7 +43,7 @@ docs/explain/YYYY-MM-DD-slug.md
 
 only when the governing workflow contract explicitly allows that top-level explain artifact class for the change.
 
-For small changes, inline explanation in the final response or PR body is enough.
+For small fast-lane or otherwise exempt changes, inline explanation in the final response or PR body is enough.
 
 ## Required sections
 
