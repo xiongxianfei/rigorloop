@@ -21,6 +21,20 @@ Notes:
 - `ci` means creating or updating GitHub workflows or related automation for a material risk. It does not mean waiting for routine CI to run.
 - Not every stage is required for every change; stage classification and enforcement rules are defined in `specs/rigorloop-workflow.md`.
 
+## Autoprogression
+
+- Distinguish `workflow-managed` completion flows from isolated stage requests.
+- In v1, workflow-managed autoprogression applies only to:
+  - `proposal -> proposal-review`
+  - `spec -> spec-review`
+  - `architecture -> architecture-review` when that review stage is the next required or default downstream step
+  - full-feature execution from `implement -> code-review -> verify -> ci when triggered -> explain-change -> pr`
+- Direct `pr` remains in scope and opens the PR when readiness passes.
+- Direct `proposal-review`, `spec-review`, `architecture-review`, `code-review`, `verify`, and `explain-change` stay isolated by default unless the user asks to carry the change through completion.
+- Fast-lane and bugfix execution stay on the repository's existing explicit-step behavior in v1.
+- `learn` remains advice-only and does not auto-run by default.
+- Stop automatic continuation when the user explicitly pauses, validation fails, a review or design issue needs a real decision, permissions or tooling block the next step, or the next action would be stronger than PR creation such as merge, release, deploy, or destructive Git operations.
+
 ## Planned Milestone Work
 
 - Use a concrete plan under `docs/plans/` for multi-file, risky, ambiguous, migration-heavy, or milestone-based work.
