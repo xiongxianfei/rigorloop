@@ -56,10 +56,16 @@ Use:
 - Do not edit the spec unless the user explicitly asks.
 - When the review outcome is approval, the tracked spec should be ready to normalize to `approved` before architecture, plan, test-spec, or implementation relies on it. Do not leave a governing spec in durable `reviewed` state.
 
+## Workflow handoff behavior
+
+- Direct or review-only `spec-review` requests remain isolated by default.
+- In v1, `spec-review` does not auto-continue into `architecture`, `plan`, or `test-spec`; it reports approval, required revisions, or blockers and stops there unless the user explicitly requests a later stage.
+- Keep review-to-next-authoring transitions out of scope in this skill's wording.
+
 ## Expected output
 
 - verdict: approve, revise, or block;
 - findings by severity;
 - requirement-by-requirement notes when useful;
 - exact wording suggestions;
-- explicit readiness statement for `architecture` and `test-spec`.
+- explicit readiness statement for `architecture`, `test-spec`, isolated stop, or blocker state.

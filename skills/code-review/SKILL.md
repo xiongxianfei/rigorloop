@@ -64,6 +64,13 @@ Use:
 - Do not skip positive notes for good patterns.
 - Do not approve if verification evidence is missing for critical behavior.
 
+## Workflow handoff behavior
+
+- In a workflow-managed full-feature flow, a satisfied `code-review` hands off to `verify` unless a stop condition applies.
+- If findings can be resolved without a new user decision and are accepted for action, enter the `review-resolution` loop, address them, and rerun `code-review` before any downstream handoff.
+- If findings require a design, scope, or spec decision, stop and report that blocker instead of auto-looping.
+- Direct `code-review` requests remain isolated by default unless the user explicitly asks to continue beyond the review result.
+
 ## Expected output
 
 - verdict: approve, request changes, or block;
@@ -72,4 +79,4 @@ Use:
 - test coverage findings;
 - validation evidence assessment;
 - positive notes;
-- readiness statement for `verify`, more implementation, or `pr`.
+- readiness statement for `verify`, `review-resolution`, isolated stop, or blocker state.

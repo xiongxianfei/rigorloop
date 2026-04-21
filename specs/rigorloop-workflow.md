@@ -25,6 +25,8 @@ RigorLoop is a Git-first starter kit. It does not replace pull requests, CI, or 
 - `canonical source`: the authored workflow content from which generated output is derived.
 - `generated output`: derived distribution content that can be rebuilt and is not the source of truth.
 - `adapter`: tool-specific guidance or generated output layered on top of generic workflow content.
+- `workflow-managed completion flow`: a change flow that is being carried through its normal downstream stages toward completion under the active lane.
+- `isolated stage request`: a request for the output of one stage only, such as standalone review, verification, or explanation work.
 
 ## Examples first
 
@@ -132,6 +134,18 @@ R7a. When the stage-classification table uses a combined classification, it MUST
 - `enforced if review comments exist`: not required when no review feedback exists, but treated as `enforced` when review feedback exists.
 
 R7b. The "Eventually enforce when" column in the stage-classification table MUST be treated as the authoritative trigger list for elevating a stage from its starting classification to a stricter expectation.
+
+R7c. The starter kit MUST distinguish workflow-managed completion flows from isolated stage requests when deciding whether a stage result should continue automatically into a downstream stage.
+
+R7d. When an approved continuation contract applies, a workflow-managed completion flow MUST continue automatically into the next required or default downstream stage for the current lane unless a documented stop condition applies. Redundant user re-invocation MUST NOT be required merely to enter that already-known downstream stage.
+
+R7e. Unless a later approved change broadens scope, v1 continuation applies only to:
+- authoring-to-review handoffs for `proposal`, `spec`, and `architecture` when the matching review stage is the next required or default downstream step;
+- full-feature execution flow from `implement` through `pr`.
+
+R7f. In v1, fast-lane and bugfix execution remain explicit-step by default, and advice-only stages such as `learn` MUST NOT auto-run unless the user explicitly requests them or a later approved rule elevates them.
+
+R7g. Direct invocation of `pr` remains allowed. Isolation prevents downstream continuation beyond `pr`, but it MUST NOT downgrade `pr` itself from opening a pull request when readiness passes.
 
 R8. The starter kit MUST treat the following stages as enforced for every contributed change:
 - implement;

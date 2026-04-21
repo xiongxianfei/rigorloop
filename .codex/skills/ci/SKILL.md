@@ -71,6 +71,12 @@ Evaluate:
 - Do not require secrets for pull requests from forks unless the repo intentionally supports that pattern.
 - Do not treat CI as a substitute for local verification evidence.
 
+## Workflow handoff behavior
+
+- When `ci` is part of a workflow-managed full-feature flow and the governing workflow contract elevated it after `verify`, a successful `ci` stage hands off to `explain-change` unless a stop condition applies.
+- When `ci` is run for a narrower or explicitly isolated purpose, report the CI result without implying downstream continuation that was not requested.
+- If the needed CI automation cannot be created or updated safely, stop and report the blocker instead of claiming the workflow is ready to continue.
+
 ## Expected output
 
 - workflow file path;
@@ -79,4 +85,5 @@ Evaluate:
 - commands run by CI;
 - concurrency and caching notes;
 - coverage against feature risk;
-- gaps or manual checks that CI does not cover.
+- gaps or manual checks that CI does not cover;
+- readiness statement for `explain-change` or blocker state when `ci` is part of a workflow-managed full-feature flow.

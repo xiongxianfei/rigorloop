@@ -44,6 +44,8 @@ For each milestone:
 11. When the milestone is complete, create a milestone closeout commit using the subject format `M<n>: <completed milestone outcome>` and include milestone validation in the commit body or referenced evidence.
 12. Stop before the next milestone unless the user asked to continue.
 
+Stopping before the next milestone does not cancel a required downstream workflow handoff. In a workflow-managed full-feature flow, once the requested milestone is complete and no stop condition applies, hand off to `code-review` instead of waiting for redundant user confirmation.
+
 ## TDD rules
 
 - Tests first for new behavior.
@@ -62,6 +64,12 @@ For each milestone:
 - If validation fails, fix or report before moving on.
 - Do not mark a milestone complete without the milestone commit.
 - Do not assume every completed milestone needs its own PR; multiple completed milestones may continue in the same PR when that is the clearest review unit.
+
+## Workflow handoff
+
+- In the full-feature lane, successful `implement` completion hands off to `code-review` unless a stop condition applies.
+- If milestone validation fails or the implementation reveals a blocker that needs a real user decision, stop before `code-review` and report the blocker explicitly.
+- This v1 autoprogression rule does not expand fast-lane or bugfix execution behavior through the `implement` skill.
 
 ## Plan update requirements
 
@@ -84,4 +92,4 @@ Update the concrete plan with:
 - files changed;
 - plan updates made;
 - blockers or spec gaps;
-- readiness statement for `code-review` or next milestone.
+- readiness statement for `code-review`, blocker/pause state, or next milestone.

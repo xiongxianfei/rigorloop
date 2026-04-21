@@ -78,6 +78,12 @@ File | Change | Reason | Source artifact | Test/evidence
 - Do not invent alternatives that were never considered; mark them as hindsight if added.
 - Keep explanations readable for a human reviewer.
 
+## Workflow handoff behavior
+
+- In a workflow-managed full-feature flow, successful `explain-change` completion hands off to `pr` unless a stop condition applies.
+- Direct `explain-change` requests remain isolated by default unless the user explicitly asks to continue beyond the explanation.
+- If explanation work surfaces a validation gap, stale artifact, or other blocker, stop and report it instead of implying the change is ready for `pr`.
+
 ## Expected output
 
 - explanation artifact path or inline explanation;
@@ -86,4 +92,4 @@ File | Change | Reason | Source artifact | Test/evidence
 - tests and verification evidence;
 - alternatives rejected;
 - remaining risks;
-- PR-ready summary bullets.
+- PR-ready summary bullets plus a readiness statement for `pr` or blocker state.

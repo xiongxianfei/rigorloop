@@ -11,6 +11,8 @@ You are preparing the change for human review.
 
 The PR body should be grounded in the actual diff and verification evidence, not chat memory.
 
+In this repository, `pr` is a submit/open stage when readiness passes. Do not treat it as draft-only preparation unless a blocker, tool limitation, or explicit user instruction prevents opening the PR.
+
 ## Inputs to read
 
 Read:
@@ -40,6 +42,8 @@ Before drafting or opening a PR, check:
 8. no secrets, credentials, local paths, or debug-only changes are included;
 9. generated files and migrations are intentional;
 10. reviewers have enough context.
+
+Apply the same readiness checks for workflow-managed and direct-`pr` invocation. Direct `pr` remains isolated only in the sense that no downstream stage follows `pr`; it still opens the PR when readiness passes.
 
 ## PR body structure
 
@@ -103,12 +107,13 @@ Examples:
 - Do not summarize from memory when a diff is available.
 - Do not bury known risks.
 - Do not include massive internal detail that obscures review.
+- Do not stop at “PR ready” when the user asked for `pr` and all readiness checks pass; open it unless a blocker or tool limitation prevents that action.
 
 ## Expected output
 
 - readiness check results;
 - PR title;
 - PR body;
-- blockers if not ready;
+- opened PR URL or blockers if not ready;
 - explicit validation and CI status;
 - recommended reviewers or review focus when useful.
