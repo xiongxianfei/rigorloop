@@ -340,5 +340,5 @@
 
 - This test spec is active.
 - The tracked-source prerequisite is satisfied for the accepted proposal, approved spec, active plan, and this active test spec.
-- Implementation, first-pass `code-review`, and `verify` are complete for M1.
-- The next stage is `explain-change`.
+- Implementation, first-pass `code-review`, `verify`, and `explain-change` are complete for M1.
+- The next stage is `pr`.
