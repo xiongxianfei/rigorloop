@@ -304,8 +304,8 @@
 
 ## Next artifacts
 
-- `implement`
-- downstream `code-review`, `verify`, and `explain-change` if implementation proceeds
+- `explain-change`
+- downstream `pr` if later stages continue
 
 ## Follow-on artifacts
 
@@ -313,6 +313,6 @@ None yet.
 
 ## Readiness
 
-This test spec is active and ready to guide implementation.
+This test spec remained aligned through implementation, first-pass `code-review`, and `verify`.
 
-The next stage is `implement`.
+The next stage is `explain-change`.

@@ -205,6 +205,7 @@ The implementation must stay inside the approved slice:
 - [x] 2026-04-22: plan created and indexed in `docs/plan.md`.
 - [x] 2026-04-22: `specs/readme-user-value-positioning.test.md` created and activated.
 - [x] 2026-04-22: `M1` rewritten `README.md` into the approved value-first order and created the baseline change-local pack under `docs/changes/2026-04-22-readme-user-value-positioning/`.
+- [x] 2026-04-22: first-pass `code-review` returned `clean-with-notes`, and `verify` found no blockers to downstream explanation work.
 
 ## Decision log
 
@@ -233,13 +234,53 @@ The implementation must stay inside the approved slice:
   - `! rg -n '^## Current Focus$|^Active implementation work is tracked in' README.md`
   - `git diff --check -- README.md docs/workflows.md specs/readme-user-value-positioning.test.md docs/plan.md docs/plans/2026-04-22-readme-user-value-positioning.md docs/changes/2026-04-22-readme-user-value-positioning .github/ISSUE_TEMPLATE/bug.yml .github/ISSUE_TEMPLATE/feature.yml .github/pull_request_template.md specs/README.md`
   - `bash scripts/ci.sh`
+- 2026-04-22: First-pass `code-review` record:
+  - review status: `clean-with-notes`
+  - review inputs:
+    - diff range: `4a6095823f95d5dc4effa237c1e65756e42781bd~1..4a6095823f95d5dc4effa237c1e65756e42781bd`
+    - spec: `specs/readme-user-value-positioning.md`
+    - test spec: `specs/readme-user-value-positioning.test.md`
+    - plan milestone: `docs/plans/2026-04-22-readme-user-value-positioning.md`
+    - architecture / ADR: none
+    - validation evidence: `docs/changes/2026-04-22-readme-user-value-positioning/change.yaml`, commit `4a60958`, and the `M1` validation record above
+  - diff summary: `README.md` now opens with a value-first overview, exact fit guidance, quick-start links, and a concise help/contribution pointer; the baseline change-local pack and lifecycle artifacts for this initiative were added in the same diff.
+  - findings: No blocking or required-change findings.
+  - checklist coverage:
+    - Spec alignment: pass. The README opening order, audience priority, fit guidance, required links, and non-goals match the approved spec.
+    - Test coverage: pass. The active test spec's manual proof surface is exercised by the heading/link/stale-wording checks plus direct review of the top-of-file ordering and link targets.
+    - Edge cases: pass. The diff preserves the no-`CONTRIBUTING.md`, no-placeholder-security-link, and no-workflow-drift boundaries named in the spec and test spec.
+    - Error handling: pass. The help/contribution pointer uses only existing active surfaces and does not invent unsupported entrypoints when the repo lacks a standalone contributor guide.
+    - Architecture boundaries: pass. No architecture artifact was required, and the diff stays inside the approved README-first slice.
+    - Compatibility: pass. `docs/workflows.md`, `specs/rigorloop-workflow.md`, issue templates, and the PR template remain unchanged, so contributor workflow rules and validation expectations do not drift.
+    - Security/privacy: pass. No secrets or private operational details were introduced, and the placeholder security URL remains excluded from the README.
+    - Generated output drift: pass. No generated artifacts were edited, and `bash scripts/ci.sh` reported generated skill output in sync.
+    - Unrelated changes: pass. The diff is limited to README positioning plus the directly related proposal/spec/plan/test-spec/change-local artifact surfaces for this initiative.
+    - Validation evidence: pass. Named commands were run and recorded in the commit body, change metadata, and plan validation notes.
+  - no-finding rationale:
+    - the actual diff matches the approved spec and single-milestone plan scope
+    - the README now answers the required value, fit, quick-start, and contribution-discovery questions before mechanics
+    - no linked summary surface needed editing because the existing targets were already truthful
+    - the named validation commands passed, including the repository-owned CI wrapper
+  - recommended next stage: `verify`
+- 2026-04-22: `verify` verdict: `ready`
+  - Traceability:
+    - `R1`-`R4b`, `R8`-`R8a` -> `T1`, `T2`, `T3`, `T4`, `T8` -> `README.md` -> manual contract review plus heading and stale-wording checks -> pass
+    - `R5`-`R5f`, `R10` -> `T5`, `T6`, `T7` -> `README.md` and existing linked help/contribution surfaces -> manual link-truthfulness review plus required-link grep -> pass
+    - `R6`-`R7a`, `R9`-`R9a` -> `T2`, `T4`, `T9` -> `README.md`, `docs/workflows.md`, `specs/rigorloop-workflow.md` -> diff review and unchanged linked summary surfaces -> pass
+  - CI/readiness notes:
+    - local `bash scripts/ci.sh` passed
+    - hosted CI has not been observed because no PR exists yet
+    - the required baseline change-local pack exists and validates
+    - `docs/plan.md` and the plan body remain aligned on active lifecycle state
 
 ## Outcome and retrospective
 
-- This plan is active. Outcome notes and retrospective lessons will be recorded after implementation and verification are complete.
+- This plan is active. Implementation, first-pass review, and verify are complete; outcome notes and retrospective lessons will be extended during `explain-change`, PR preparation, and merge closeout.
 
 ## Readiness
 
 - `plan-review` feedback is incorporated.
-- The active test spec now exists.
-- Ready for `implement`.
+- `M1` is implemented and committed in `4a60958`.
+- First-pass `code-review` is `clean-with-notes`.
+- `verify` is ready with no blockers.
+- The next stage is `explain-change`.
