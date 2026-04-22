@@ -304,8 +304,8 @@
 
 ## Next artifacts
 
-- `explain-change`
-- downstream `pr` if later stages continue
+- `pr`
+- downstream merge-closeout lifecycle updates if later stages continue
 
 ## Follow-on artifacts
 
@@ -313,6 +313,6 @@ None yet.
 
 ## Readiness
 
-This test spec remained aligned through implementation, first-pass `code-review`, and `verify`.
+This test spec remained aligned through implementation, first-pass `code-review`, `verify`, and `explain-change`.
 
-The next stage is `explain-change`.
+The next stage is `pr`.
