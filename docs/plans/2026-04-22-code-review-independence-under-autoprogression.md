@@ -295,7 +295,9 @@ The implementation must stay inside the approved first slice:
 - Spec accuracy: the approved spec held through implementation. The key boundary was preserving `implement -> code-review -> verify` while restricting `review-resolution` to first-pass `changes-requested`.
 - Test effectiveness: the focused feature test spec plus targeted repo-owned validator commands were sufficient for this guidance-driven slice; no runtime router or session-isolation harness was needed.
 - Architecture accuracy: the earlier decision to avoid a separate architecture artifact was correct because the implementation remained stage-local guidance alignment rather than a new orchestration subsystem.
-- Follow-up actions: open the PR from this branch, watch hosted CI there, and treat any future stronger session-boundary enforcement as a separate proposal/spec track.
+- Process issues: the first PR attempt reused a branch that had already backed merged PR #10. GitHub compared that reused branch against a newer `main` and reported conflicts until the branch was rebuilt from current `origin/main` with only the three intended feature commits.
+- Durable updates made: `docs/workflows.md` now tells agents to create a fresh branch from the current base and restack only the intended commits when a reused branch would drag already-merged history into a PR diff.
+- Follow-up actions: watch hosted CI on PR #11, and treat any future stronger session-boundary enforcement as a separate proposal/spec track.
 
 ## Readiness
 
