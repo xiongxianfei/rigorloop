@@ -1,6 +1,6 @@
 # README user value positioning plan
 
-- Status: active
+- Status: done
 - Owner: maintainer + Codex
 - Start date: 2026-04-22
 - Last updated: 2026-04-22
@@ -273,16 +273,28 @@ The implementation must stay inside the approved slice:
     - hosted CI has not been observed because no PR exists yet
     - the required baseline change-local pack exists and validates
     - `docs/plan.md` and the plan body remain aligned on active lifecycle state
+- 2026-04-22: the initiative moved to `Done` on-branch before `pr`.
+  - Lifecycle updates: `docs/plan.md` now lists this initiative under `Done`, and this plan header is `done`.
+  - Validation commands:
+    - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-22-readme-user-value-positioning.md --path specs/readme-user-value-positioning.md --path specs/readme-user-value-positioning.test.md --path docs/plans/2026-04-22-readme-user-value-positioning.md`
+    - `git diff --check -- docs/plan.md docs/plans/2026-04-22-readme-user-value-positioning.md specs/readme-user-value-positioning.test.md docs/changes/2026-04-22-readme-user-value-positioning/explain-change.md`
+  - Result: passed.
+  - Recommended next stage: `pr`
 
 ## Outcome and retrospective
 
-- This plan is active. Implementation, first-pass review, verify, and explain-change are complete; outcome notes and retrospective lessons will be extended during PR preparation and merge closeout.
+- This plan is done on-branch and now belongs in `docs/plan.md` under `Done`.
+- What changed: the repository root README now leads with user value, fit guidance, quick-start links, and truthful help/contribution discovery before lifecycle mechanics.
+- What went well: the feature stayed narrow enough for one milestone, and existing workflow/spec/help surfaces were already truthful enough that the README could improve without widening into adjacent docs churn.
+- What was harder than expected: the feature work was initially sitting on a reused local branch that also contained an unrelated post-merge cleanup commit, so PR preparation had to rebuild the branch from current `origin/main` with only the intended feature commits.
+- Spec accuracy: the approved spec held through implementation. The key boundary was preserving a README-first change while keeping workflow rules, validation requirements, and source-of-truth ordering untouched.
+- Test effectiveness: the focused manual test spec plus targeted grep, metadata, lifecycle, patch-hygiene, and repo-owned CI wrapper checks were sufficient for this documentation-contract slice.
+- Architecture accuracy: the earlier decision to avoid a separate architecture artifact was correct because the implementation stayed within public-entrypoint positioning and did not touch system shape or runtime behavior.
+- Follow-up actions: observe hosted CI on the PR, and open a separate proposal/spec only if future contributor feedback shows the current issue/PR entrypoints are not enough for contribution discovery.
 
 ## Readiness
 
-- `plan-review` feedback is incorporated.
-- `M1` is implemented and committed in `4a60958`.
-- First-pass `code-review` is `clean-with-notes`.
-- `verify` is ready with no blockers.
-- `explain-change` is complete.
+- This plan is done.
+- `M1`, first-pass `code-review`, `verify`, and `explain-change` are complete with no blockers.
+- The tracked source artifacts and active test spec remain in place.
 - The next stage is `pr`.
