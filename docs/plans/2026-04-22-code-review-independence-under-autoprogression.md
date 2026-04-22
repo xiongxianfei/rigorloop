@@ -1,6 +1,6 @@
 # Code review independence under autoprogression plan
 
-- Status: active
+- Status: done
 - Owner: maintainer + Codex
 - Start date: 2026-04-22
 - Last updated: 2026-04-22
@@ -199,6 +199,8 @@ The implementation must stay inside the approved first slice:
 - [x] 2026-04-22: M1 implemented, validated, and prepared for `code-review`.
 - [x] 2026-04-22: first-pass `code-review` returned `clean-with-notes` with no required changes and handed the initiative to `verify`.
 - [x] 2026-04-22: `verify` passed with no blockers, stale lifecycle drift, or missing evidence.
+- [x] 2026-04-22: `explain-change` updated the durable rationale artifact and advanced readiness to `pr`.
+- [x] 2026-04-22: the initiative moved from `Active` to `Done` in `docs/plan.md` and this plan body before PR preparation.
 
 ## Decision log
 
@@ -268,15 +270,39 @@ The implementation must stay inside the approved first slice:
   - Artifact drift: none blocking after updating the active plan, active test spec, and change metadata to reflect the clean first-pass review result.
   - Remaining risks: hosted CI and eventual PR base-branch readiness still need to be observed downstream.
   - Recommended next stage: `explain-change`
+- 2026-04-22: `explain-change` refreshed the durable rationale artifact and updated active readiness markers.
+  - Explanation artifact: `docs/changes/2026-04-22-code-review-independence-under-autoprogression/explain-change.md`
+  - Lifecycle updates: active plan readiness and active test-spec readiness now both point to `pr`.
+  - Validation commands:
+    - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-22-code-review-independence-under-autoprogression.md --path specs/code-review-independence-under-autoprogression.md --path specs/code-review-independence-under-autoprogression.test.md --path docs/plans/2026-04-22-code-review-independence-under-autoprogression.md`
+    - `git diff --check -- docs/changes/2026-04-22-code-review-independence-under-autoprogression/explain-change.md docs/plans/2026-04-22-code-review-independence-under-autoprogression.md specs/code-review-independence-under-autoprogression.test.md`
+  - Result: passed.
+  - Recommended next stage: `pr`
+- 2026-04-22: the initiative moved to `Done` on-branch before `pr`.
+  - Lifecycle updates: `docs/plan.md` now lists this initiative under `Done`, and this plan header is `done`.
+  - Validation commands:
+    - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-22-code-review-independence-under-autoprogression.md --path specs/code-review-independence-under-autoprogression.md --path specs/code-review-independence-under-autoprogression.test.md --path docs/plans/2026-04-22-code-review-independence-under-autoprogression.md`
+    - `git diff --check -- docs/plan.md docs/plans/2026-04-22-code-review-independence-under-autoprogression.md specs/code-review-independence-under-autoprogression.test.md docs/changes/2026-04-22-code-review-independence-under-autoprogression/explain-change.md`
+  - Result: passed.
+  - Recommended next stage: `pr`
 
 ## Outcome and retrospective
 
-- This initiative is active. M1, the first-pass `code-review`, and `verify` are complete, and downstream lifecycle closeout remains pending until explanation and PR preparation settle the branch.
+- This plan is done on-branch and now belongs in `docs/plan.md` under `Done`.
+- What changed: the repository's canonical `code-review` and `workflow` guidance now require independent-review mode, first-pass review records, explicit status mapping, and evidence-backed clean reviews without widening the v1 workflow boundary.
+- What went well: the feature stayed narrow enough for one milestone, and the review/verify/explain stages were able to update durable lifecycle artifacts without reopening proposal or spec decisions.
+- What was harder than expected: the skill validator still treats raw `# ` lines inside fenced examples as extra top-level headings, so the clean-review template example had to avoid mirroring the spec's literal heading markup verbatim.
+- Spec accuracy: the approved spec held through implementation. The key boundary was preserving `implement -> code-review -> verify` while restricting `review-resolution` to first-pass `changes-requested`.
+- Test effectiveness: the focused feature test spec plus targeted repo-owned validator commands were sufficient for this guidance-driven slice; no runtime router or session-isolation harness was needed.
+- Architecture accuracy: the earlier decision to avoid a separate architecture artifact was correct because the implementation remained stage-local guidance alignment rather than a new orchestration subsystem.
+- Follow-up actions: open the PR from this branch, watch hosted CI there, and treat any future stronger session-boundary enforcement as a separate proposal/spec track.
 
 ## Readiness
 
-- The next stage is `explain-change`.
-- M1, the first-pass review record, and verify are complete with no blockers.
+- This plan is done.
+- The tracked-source prerequisite and active test spec remain in place.
+- M1, the first-pass review record, `verify`, and `explain-change` are complete with no blockers.
+- The next stage is `pr`.
 
 ## Risks and follow-ups
 
