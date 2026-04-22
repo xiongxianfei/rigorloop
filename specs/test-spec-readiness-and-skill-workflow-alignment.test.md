@@ -362,8 +362,8 @@
 
 ## Next artifacts
 
-- implementation under `docs/plans/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md`
-- change-local artifacts under `docs/changes/2026-04-22-test-spec-readiness-and-skill-workflow-alignment/`
+- `explain-change` under `docs/changes/2026-04-22-test-spec-readiness-and-skill-workflow-alignment/`
+- downstream `pr` preparation once explanation refreshes the lifecycle markers
 
 ## Follow-on artifacts
 
@@ -373,6 +373,6 @@ None yet.
 
 This test spec is active.
 
-It is the current proof-planning surface for `docs/plans/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md`.
+It remained aligned through implementation, first-pass `code-review`, and `verify` for `docs/plans/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md`.
 
-Implementation may proceed under the active plan and this active test spec.
+The next stage is `explain-change`.

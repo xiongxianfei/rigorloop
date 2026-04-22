@@ -161,12 +161,12 @@ The implementation must stay inside the approved first slice:
   - the durable workflow spec, workflow summary, and directly affected workflow-facing skills all use the same approved matrix for immediate next stage, eventual `test-spec` readiness, negative output shapes, stop conditions, and preserved prerequisites.
 - Commit message: `M1: implement test-spec readiness alignment`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] lifecycle state checked; no `docs/plan.md` update was required while the initiative remained active
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - `specs/rigorloop-workflow.md` and the focused spec may drift if the implementation duplicates wording instead of folding the invariant cleanly;
   - `skills/plan-review/SKILL.md` may be changed unnecessarily even if no real defect exists there;
@@ -230,6 +230,8 @@ The implementation must stay inside the approved first slice:
 - [x] 2026-04-22: `plan-review` feedback incorporated; early validation and focused `test-spec` proof requirements tightened.
 - [x] 2026-04-22: `specs/test-spec-readiness-and-skill-workflow-alignment.test.md` created and activated.
 - [x] 2026-04-22: M1 updated `specs/rigorloop-workflow.md`, `docs/workflows.md`, `skills/spec-review/SKILL.md`, `skills/test-spec/SKILL.md`, `skills/workflow/SKILL.md`, `skills/plan-review/SKILL.md`, created the baseline change-local pack under `docs/changes/2026-04-22-test-spec-readiness-and-skill-workflow-alignment/`, and regenerated `.codex/skills/`.
+- [x] 2026-04-22: first-pass `code-review` returned `clean-with-notes` with no required changes and handed the initiative to `verify`.
+- [x] 2026-04-22: `verify` passed with no blockers, stale lifecycle drift, or missing evidence, so the initiative is ready for `explain-change`.
 
 ## Decision log
 
@@ -274,6 +276,47 @@ The implementation must stay inside the approved first slice:
   - `bash scripts/ci.sh`
   - Result: passed.
 - 2026-04-22: No `docs/plan.md` lifecycle update was needed during M1. The initiative remains active, and the existing active-plan index entry stays truthful while the plan body moves from `implement` readiness into downstream review readiness.
+- 2026-04-22: first-pass `code-review` record for `06053ab^..06053ab`.
+  - Review status: `clean-with-notes`
+  - Review inputs:
+    - Diff range: `06053ab^..06053ab`
+    - Spec: `specs/test-spec-readiness-and-skill-workflow-alignment.md`
+    - Test spec: `specs/test-spec-readiness-and-skill-workflow-alignment.test.md`
+    - Plan milestone: `M1`
+    - Architecture / ADR: none for this approved first slice
+    - Validation evidence: `python scripts/validate-skills.py`, `python scripts/test-skill-validator.py`, `python scripts/test-artifact-lifecycle-validator.py`, `python scripts/build-skills.py`, `python scripts/build-skills.py --check`, `python scripts/validate-change-metadata.py docs/changes/2026-04-22-test-spec-readiness-and-skill-workflow-alignment/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md --path specs/test-spec-readiness-and-skill-workflow-alignment.md --path specs/rigorloop-workflow.md --path specs/test-spec-readiness-and-skill-workflow-alignment.test.md --path docs/plans/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md`, `bash scripts/ci.sh`
+  - Diff summary: the committed range adds the approved proposal/spec/test-spec/plan stack, folds the durable handoff-versus-readiness invariant into `specs/rigorloop-workflow.md`, aligns `spec-review`, `test-spec`, `workflow`, and the necessary `plan-review` wording with that contract, updates the short workflow summary, regenerates `.codex/skills/`, and adds the feature's baseline change-local pack.
+  - Findings: no blocking or required-change findings.
+  - Checklist coverage:
+    - Spec alignment: pass (`specs/rigorloop-workflow.md`, `skills/spec-review/SKILL.md`, `skills/test-spec/SKILL.md`, `skills/workflow/SKILL.md`, and `skills/plan-review/SKILL.md` now express the approved immediate-next-stage, eventual-readiness, stop-condition, and preserved-prerequisite contract.)
+    - Test coverage: pass (`specs/test-spec-readiness-and-skill-workflow-alignment.test.md` maps `R1`-`R8a` to `T1`-`T9`, and the recorded validator/smoke commands cover the touched workflow-facing surfaces and lifecycle-managed artifacts.)
+    - Edge cases: pass (`conditionally-ready`, `not-ready`, `not-assessed`, isolated `spec-review`, conditional `plan-review` scope, and preserved architecture/ADR prerequisites are all represented in the focused spec, test spec, and touched skill guidance.)
+    - Error handling: pass (the workflow rule and `spec-review` guidance now force explicit stop conditions for missing inputs and forbid pseudo-routing states.)
+    - Architecture boundaries: pass (the implementation stayed within the approved first slice and did not add a new workflow router, validator subsystem, or separate architecture track.)
+    - Compatibility: pass (the existing stage order and isolation boundary remain intact, with `plan-review` still handing off immediately to `test-spec` and `spec-review` still isolated by default.)
+    - Security/privacy: pass (the wording change adds no new network or secret-handling path and does not weaken higher-priority workflow controls.)
+    - Generated output drift: pass (`python scripts/build-skills.py` and `python scripts/build-skills.py --check` kept `.codex/skills/` synchronized with canonical `skills/`.)
+    - Unrelated changes: pass (the reviewed diff is limited to initiative artifacts, the intended workflow-facing skills, the workflow summary/spec, and generated mirrors.)
+  - Validation evidence: pass (the milestone commit and plan validation notes name the repo-owned commands and show them passing on the touched scope.)
+  - No-finding rationale: no blocking findings were found because the diff matches the approved spec and plan scope, the active test spec covers the changed contract, the reviewed diff contains no unrelated behavior changes, and the recorded validation evidence supports the implementation.
+  - Recommended next stage: `verify`
+- 2026-04-22: `verify` passed on the implementation plus the post-review lifecycle bookkeeping.
+  - Verification verdict: `ready`
+  - Traceability:
+    - `R1`-`R3k` -> `T1`-`T4` -> `specs/rigorloop-workflow.md`, `skills/spec-review/SKILL.md`, `skills/workflow/SKILL.md`, `docs/workflows.md` -> first-pass review record plus targeted validation evidence -> pass
+    - `R4`-`R5b` -> `T4`-`T5` -> `skills/workflow/SKILL.md`, `skills/plan-review/SKILL.md`, `docs/workflows.md` -> preserved stage-order wording, isolated review behavior, and downstream-readiness phrasing -> pass
+    - `R6`-`R6b` -> `T6` -> `skills/test-spec/SKILL.md`, `specs/rigorloop-workflow.md` -> preserved approved-spec, review-finding, plan, and relevant architecture/ADR prerequisites -> pass
+    - `R7`-`R8a` -> `T7`-`T9` -> `docs/changes/2026-04-22-test-spec-readiness-and-skill-workflow-alignment/`, `.codex/skills/`, active plan/test-spec surfaces -> scope control, generated-output sync, lifecycle validity, and smoke proof -> pass
+  - Validation commands:
+    - `python scripts/validate-change-metadata.py docs/changes/2026-04-22-test-spec-readiness-and-skill-workflow-alignment/change.yaml`
+    - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md --path specs/test-spec-readiness-and-skill-workflow-alignment.md --path specs/rigorloop-workflow.md --path specs/test-spec-readiness-and-skill-workflow-alignment.test.md --path docs/plans/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md`
+    - `rg -n '^## (Active|Blocked|Done|Superseded)$|2026-04-22-test-spec-readiness-and-skill-workflow-alignment' docs/plan.md`
+    - `git diff --check -- docs/plan.md docs/plans/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md specs/test-spec-readiness-and-skill-workflow-alignment.test.md docs/changes/2026-04-22-test-spec-readiness-and-skill-workflow-alignment/change.yaml`
+    - `bash scripts/ci.sh`
+  - CI status: local repo-owned CI wrapper passed via `bash scripts/ci.sh`; hosted CI remains unobserved from this environment.
+  - Artifact drift: none blocking after updating the active plan and change metadata to reflect the clean first-pass review result.
+  - Remaining risks: hosted CI and eventual PR base-branch readiness still need downstream observation.
+  - Recommended next stage: `explain-change`
 
 ## Outcome and retrospective
 
@@ -287,8 +330,9 @@ The implementation must stay inside the approved first slice:
 - `plan-review` feedback is incorporated.
 - The active focused test spec now exists.
 - M1 implementation is complete.
-- The next stage is `code-review`.
-- Workflow-managed handoff may proceed into first-pass review.
+- First-pass `code-review` and `verify` are complete with no blockers.
+- The next stage is `explain-change`.
+- Workflow-managed handoff may proceed into explanation work.
 
 ## Risks and follow-ups
 
