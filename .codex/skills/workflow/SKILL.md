@@ -106,7 +106,7 @@ Default stage order:
 12. `plan-review` before implementation.
 13. `test-spec` before test code and production code.
 14. `implement` milestone by milestone with tests first.
-15. `code-review` with fresh eyes.
+15. `code-review` in independent-review mode with a first-pass review record before any review-driven fixes.
 16. `verify` to check artifact/code/test coherence.
 17. `ci` when GitHub workflow automation for a material risk is missing or stale.
 18. `explain-change` to summarize why the diff exists.
@@ -196,11 +196,13 @@ Rules:
   - full-feature execution from `implement` through `pr`
 - In the full-feature lane, continue through this downstream chain unless a stop condition applies:
   - `implement -> code-review`
-  - `code-review -> review-resolution -> code-review` when findings are accepted for action
-  - `code-review -> verify` once the review gate is satisfied
+  - `code-review -> review-resolution -> code-review` only for first-pass `changes-requested` findings that are fixable within current approved scope
+  - `code-review -> verify` only for first-pass `clean-with-notes` once the review gate is satisfied
   - `verify -> ci` when the governing workflow contract elevates `ci`; otherwise `verify -> explain-change`
   - `ci -> explain-change`
   - `explain-change -> pr`
+- In workflow-managed full-feature runs, autoprogressed `code-review` must emit its first-pass review record before any review-driven fix begins.
+- In workflow-managed full-feature runs, first-pass `blocked` and `inconclusive` stop instead of entering `review-resolution`.
 - Direct `proposal-review`, `spec-review`, `architecture-review`, `code-review`, `verify`, and `explain-change` stay isolated by default unless the user explicitly asks for end-to-end continuation.
 - Direct `pr` remains in scope and still performs the `pr` stage itself when readiness passes. Isolation only prevents downstream continuation beyond `pr`.
 - Fast-lane and bugfix execution remain on the repository's existing explicit-step behavior in v1.
