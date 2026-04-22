@@ -1,6 +1,6 @@
 # Test-spec readiness and skill workflow alignment plan
 
-- Status: active
+- Status: done
 - Owner: maintainer + Codex
 - Start date: 2026-04-22
 - Last updated: 2026-04-22
@@ -232,6 +232,7 @@ The implementation must stay inside the approved first slice:
 - [x] 2026-04-22: M1 updated `specs/rigorloop-workflow.md`, `docs/workflows.md`, `skills/spec-review/SKILL.md`, `skills/test-spec/SKILL.md`, `skills/workflow/SKILL.md`, `skills/plan-review/SKILL.md`, created the baseline change-local pack under `docs/changes/2026-04-22-test-spec-readiness-and-skill-workflow-alignment/`, and regenerated `.codex/skills/`.
 - [x] 2026-04-22: first-pass `code-review` returned `clean-with-notes` with no required changes and handed the initiative to `verify`.
 - [x] 2026-04-22: `verify` passed with no blockers, stale lifecycle drift, or missing evidence, so the initiative is ready for `explain-change`.
+- [x] 2026-04-22: `docs/changes/2026-04-22-test-spec-readiness-and-skill-workflow-alignment/explain-change.md` now captures the full decision trail, file-level rationale, review/verify outcomes, verification evidence, rejected alternatives, and PR-ready summary.
 
 ## Decision log
 
@@ -317,22 +318,40 @@ The implementation must stay inside the approved first slice:
   - Artifact drift: none blocking after updating the active plan and change metadata to reflect the clean first-pass review result.
   - Remaining risks: hosted CI and eventual PR base-branch readiness still need downstream observation.
   - Recommended next stage: `explain-change`
+- 2026-04-22: `explain-change` refreshed the durable rationale artifact and advanced readiness markers to `pr`.
+  - Explanation artifact: `docs/changes/2026-04-22-test-spec-readiness-and-skill-workflow-alignment/explain-change.md`
+  - Lifecycle updates: the active plan and active test spec now both point to `pr` as the next stage.
+  - Validation commands:
+    - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md --path specs/test-spec-readiness-and-skill-workflow-alignment.md --path specs/rigorloop-workflow.md --path specs/test-spec-readiness-and-skill-workflow-alignment.test.md --path docs/plans/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md`
+    - `git diff --check -- docs/changes/2026-04-22-test-spec-readiness-and-skill-workflow-alignment/explain-change.md docs/plans/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md specs/test-spec-readiness-and-skill-workflow-alignment.test.md`
+  - Result: passed.
+  - Recommended next stage: `pr`
+- 2026-04-22: the initiative moved to `Done` on-branch before `pr`.
+  - Lifecycle updates: `docs/plan.md` now lists this initiative under `Done`, and this plan header is `done`.
+  - Validation commands:
+    - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md --path specs/test-spec-readiness-and-skill-workflow-alignment.md --path specs/test-spec-readiness-and-skill-workflow-alignment.test.md --path docs/plans/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md`
+    - `git diff --check -- docs/plan.md docs/plans/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md specs/test-spec-readiness-and-skill-workflow-alignment.test.md docs/changes/2026-04-22-test-spec-readiness-and-skill-workflow-alignment/explain-change.md`
+  - Result: passed.
+  - Recommended next stage: `pr`
 
 ## Outcome and retrospective
 
-- While this plan is still active, say so plainly instead of implying `done`, `blocked`, or `superseded`.
-- When the real lifecycle decision is known, update both this plan body and the single `docs/plan.md` entry in the same change.
+- This plan is done on-branch and now belongs in `docs/plan.md` under `Done`.
+- What changed: the repository's durable workflow rule and directly affected workflow-facing skills now distinguish immediate next stage from eventual `test-spec` readiness while preserving stop conditions, stage order, and upstream proof prerequisites.
+- What went well: the feature stayed narrow enough for one milestone, the conditional `plan-review` scope check caught a real wording defect without widening the slice, and the review/verify/explain stages were able to update durable lifecycle artifacts without reopening proposal or spec decisions.
+- What was harder than expected: because this work started on a local post-merge cleanup branch, PR preparation must restack the feature onto a fresh branch from current `origin/main` so the review diff excludes unrelated history.
+- Spec accuracy: the approved spec held through implementation. The key boundary was preserving immediate stage handoff, downstream readiness, and `test-spec` prerequisites without introducing a validator or broader autoprogression.
+- Test effectiveness: the focused test spec plus repo-owned validator, lifecycle, generated-output, and smoke checks were sufficient for this workflow-contract slice.
+- Architecture accuracy: the earlier decision to avoid a separate architecture artifact was correct because the implementation stayed inside workflow wording and skill alignment rather than changing system boundaries.
+- Follow-up actions: open a separate proposal/spec track only if later work proves the wording stable enough for validator enforcement or if another review-stage skill outside the approved first-pass scope must align.
 
 ## Readiness
 
-- This plan is active.
-- No separate architecture artifact is expected for this slice.
-- `plan-review` feedback is incorporated.
-- The active focused test spec now exists.
-- M1 implementation is complete.
-- First-pass `code-review` and `verify` are complete with no blockers.
-- The next stage is `explain-change`.
-- Workflow-managed handoff may proceed into explanation work.
+- This plan is done.
+- `M1`, first-pass `code-review`, `verify`, and `explain-change` are complete with no blockers.
+- The tracked source artifacts and active test spec remain in place.
+- The next stage is `pr`.
+- Workflow-managed handoff may proceed into PR preparation.
 
 ## Risks and follow-ups
 

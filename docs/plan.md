@@ -3,12 +3,13 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-04-22 Test-spec readiness and skill workflow alignment](plans/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md) - active execution plan for separating immediate next-stage handoff from downstream readiness, preserving test-spec prerequisites, aligning directly affected workflow-facing skills, and folding the durable invariant into `specs/rigorloop-workflow.md` without broadening stage order or v1 autoprogression.
+- none yet
 
 ## Blocked
 - none yet
 
 ## Done
+- [2026-04-22 Test-spec readiness and skill workflow alignment](plans/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md) - completed execution plan for separating immediate next-stage handoff from downstream readiness, preserving test-spec prerequisites, aligning directly affected workflow-facing skills, and folding the durable invariant into `specs/rigorloop-workflow.md` without broadening stage order or v1 autoprogression.
 - [2026-04-22 README user value positioning](plans/2026-04-22-readme-user-value-positioning.md) - completed execution plan for rewriting the public README entrypoint around user value, fit guidance, quick-start/help discovery, reviewable lifecycle artifacts, and truthful PR-ready closeout without changing workflow rules.
 - [2026-04-19 RigorLoop first-release implementation](plans/2026-04-19-rigorloop-first-release-implementation.md) - completed execution plan for repository guidance alignment, schemas, validator/generator implementation, CI wiring, and the skill-validator golden path.
 - [2026-04-20 Constitution governance migration](plans/2026-04-20-constitution-governance-migration.md) - completed execution plan for promoting governance to root `CONSTITUTION.md`, aligning canonical and generated guidance surfaces, and closing the migration as historical work.
