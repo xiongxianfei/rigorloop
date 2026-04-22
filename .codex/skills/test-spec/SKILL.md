@@ -79,6 +79,7 @@ T1. Title
 ## Rules
 
 - Do not generate tests from an unreviewed or unstable spec unless using the fast lane and documenting the risk.
+- Do not generate tests from a spec-review outcome that explicitly marked eventual `test-spec` readiness as `not-ready` or `not-assessed`.
 - Do not invent behavior not specified.
 - Do not mark a requirement covered by a test that does not assert it.
 - Do not rely only on snapshots for behavioral requirements.
@@ -86,6 +87,8 @@ T1. Title
 - Do not use `reviewed` or long-lived `complete` as durable test-spec states. Move from `draft` to `active` when implementation or review is relying on the test spec, then close out to `archived`, `superseded`, or `abandoned` when it is no longer the active proof-planning surface.
 - Preserve `Next artifacts` as planning history. Use `Follow-on artifacts` for actual downstream artifacts, replacement, or terminal closeout.
 - Do not hide untestable requirements; send them back to `spec-review`.
+- Do not treat downstream implementation readiness as a substitute for approved spec-review findings and concrete plan context.
+- When changed boundaries still require approved architecture or ADR input, return the work to the appropriate upstream gate instead of guessing.
 
 ## Expected output
 

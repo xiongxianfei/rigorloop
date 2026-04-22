@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- none yet
+- [2026-04-22 Test-spec readiness and skill workflow alignment](plans/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md) - active execution plan for separating immediate next-stage handoff from downstream readiness, preserving test-spec prerequisites, aligning directly affected workflow-facing skills, and folding the durable invariant into `specs/rigorloop-workflow.md` without broadening stage order or v1 autoprogression.
 
 ## Blocked
 - none yet

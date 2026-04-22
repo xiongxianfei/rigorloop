@@ -20,6 +20,8 @@ Notes:
 
 - `ci` means creating or updating GitHub workflows or related automation for a material risk. It does not mean waiting for routine CI to run.
 - Not every stage is required for every change; stage classification and enforcement rules are defined in `specs/rigorloop-workflow.md`.
+- After `spec-review`, the immediate next stage is still `architecture` when needed, otherwise `plan`. Any mention of eventual `test-spec` readiness is downstream readiness, not a stage skip.
+- `plan-review` remains the normal immediate handoff into `test-spec`. If implementation readiness is mentioned there, it is downstream readiness rather than the handoff itself.
 - `learn` is advice-only. Treat it as an explicit follow-up when a durable lesson actually emerged or another approved rule elevates it.
 
 ## Change-Local Artifacts

@@ -121,6 +121,15 @@ For ordinary non-trivial work in the full-feature lane, carry the baseline chang
 
 Keep `review-resolution.md` and `verify-report.md` conditional. Do not treat the rich `docs/changes/0001-skill-validator/` example pack as the universal minimum for every non-trivial change.
 
+### Review-stage handoff versus downstream readiness
+
+- `spec-review` may report both immediate next repository stage and eventual `test-spec` readiness, but those are different concepts.
+- After approved `spec-review`, the immediate next stage is `architecture` when architecture is still required, otherwise `plan`.
+- Eventual `test-spec` readiness may be `ready` or `conditionally-ready` after approved `spec-review`; `conditionally-ready` must name the remaining intermediate dependency.
+- `changes-requested` and `blocked` pair with eventual `test-spec` readiness `not-ready` and return the workflow to `spec`.
+- `inconclusive` pairs with eventual `test-spec` readiness `not-assessed`, records the missing-input stop condition, and leaves immediate next stage empty.
+- `plan-review` remains the normal immediate handoff to `test-spec`. If implementation readiness is discussed there, it is downstream readiness rather than the handoff itself.
+
 ### Fast lane
 
 Use for small, low-risk, well-understood changes that affect at most a few files and do not introduce architecture changes.
