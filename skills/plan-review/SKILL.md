@@ -54,4 +54,5 @@ Evaluate each with `pass`, `concern`, or `block`:
 - findings by review dimension;
 - missing milestones or dependencies;
 - exact suggested edits;
-- explicit readiness statement for `test-spec` and `implement`.
+- explicit immediate-next-stage statement for `test-spec`;
+- downstream implementation-readiness statement only when useful and clearly distinct from the immediate `test-spec` handoff.

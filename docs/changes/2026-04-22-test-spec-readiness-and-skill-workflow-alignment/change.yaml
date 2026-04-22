@@ -1,0 +1,106 @@
+change_id: 2026-04-22-test-spec-readiness-and-skill-workflow-alignment
+title: Implement test-spec readiness and skill workflow alignment
+classification: default
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md
+  spec: specs/test-spec-readiness-and-skill-workflow-alignment.md
+  plan: docs/plans/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md
+  test_spec: specs/test-spec-readiness-and-skill-workflow-alignment.test.md
+  explain_change: docs/changes/2026-04-22-test-spec-readiness-and-skill-workflow-alignment/explain-change.md
+requirements:
+  - R1
+  - R1a
+  - R1b
+  - R1c
+  - R1d
+  - R2
+  - R2a
+  - R2b
+  - R2c
+  - R2d
+  - R2e
+  - R2f
+  - R2g
+  - R2h
+  - R3
+  - R3a
+  - R3b
+  - R3c
+  - R3d
+  - R3e
+  - R3f
+  - R3g
+  - R3h
+  - R3i
+  - R3j
+  - R3k
+  - R4
+  - R4a
+  - R4b
+  - R4c
+  - R5
+  - R5a
+  - R5b
+  - R6
+  - R6a
+  - R6b
+  - R7
+  - R7a
+  - R8
+  - R8a
+tests:
+  - T1
+  - T2
+  - T3
+  - T4
+  - T5
+  - T6
+  - T7
+  - T8
+  - T9
+validation:
+  - command: python scripts/validate-skills.py
+    result: pass
+  - command: python scripts/test-skill-validator.py
+    result: pass
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass
+  - command: python scripts/build-skills.py
+    result: pass
+  - command: python scripts/build-skills.py --check
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-22-test-spec-readiness-and-skill-workflow-alignment/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md --path specs/test-spec-readiness-and-skill-workflow-alignment.md --path specs/rigorloop-workflow.md --path specs/test-spec-readiness-and-skill-workflow-alignment.test.md --path docs/plans/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md
+    result: pass
+  - command: rg -n 'immediate next repository stage|downstream readiness|eventual `?test-spec`? readiness|ready|conditionally-ready|not-ready|not-assessed|approved|changes-requested|blocked|inconclusive|stop condition' skills/spec-review/SKILL.md skills/test-spec/SKILL.md skills/workflow/SKILL.md skills/plan-review/SKILL.md docs/workflows.md specs/test-spec-readiness-and-skill-workflow-alignment.md specs/rigorloop-workflow.md .codex/skills
+    result: pass
+  - command: rg -n 'spec-review|test-spec|plan-review|architecture|workflow' AGENTS.md CONSTITUTION.md docs/workflows.md specs/rigorloop-workflow.md
+    result: pass
+  - command: git diff --check -- specs/test-spec-readiness-and-skill-workflow-alignment.test.md specs/test-spec-readiness-and-skill-workflow-alignment.md specs/rigorloop-workflow.md skills/spec-review/SKILL.md skills/test-spec/SKILL.md skills/workflow/SKILL.md skills/plan-review/SKILL.md docs/workflows.md docs/changes/2026-04-22-test-spec-readiness-and-skill-workflow-alignment .codex/skills AGENTS.md CONSTITUTION.md docs/plans/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md docs/plan.md
+    result: pass
+  - command: bash scripts/ci.sh
+    result: pass
+changed_files:
+  - .codex/skills/plan-review/SKILL.md
+  - .codex/skills/spec-review/SKILL.md
+  - .codex/skills/test-spec/SKILL.md
+  - .codex/skills/workflow/SKILL.md
+  - docs/changes/2026-04-22-test-spec-readiness-and-skill-workflow-alignment/change.yaml
+  - docs/changes/2026-04-22-test-spec-readiness-and-skill-workflow-alignment/explain-change.md
+  - docs/plan.md
+  - docs/plans/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md
+  - docs/proposals/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md
+  - docs/workflows.md
+  - skills/plan-review/SKILL.md
+  - skills/spec-review/SKILL.md
+  - skills/test-spec/SKILL.md
+  - skills/workflow/SKILL.md
+  - specs/rigorloop-workflow.md
+  - specs/test-spec-readiness-and-skill-workflow-alignment.md
+  - specs/test-spec-readiness-and-skill-workflow-alignment.test.md
+review:
+  status: clean_with_notes
+  unresolved_items: 0
+  location: docs/plans/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md

@@ -27,6 +27,10 @@ RigorLoop is a Git-first starter kit. It does not replace pull requests, CI, or 
 - `adapter`: tool-specific guidance or generated output layered on top of generic workflow content.
 - `workflow-managed completion flow`: a change flow that is being carried through its normal downstream stages toward completion under the active lane.
 - `isolated stage request`: a request for the output of one stage only, such as standalone review, verification, or explanation work.
+- `immediate next repository stage`: the next required or default downstream repository stage for the current lane and invocation context.
+- `downstream readiness`: an assessment of whether a later stage can be relied on after required intermediate stages complete.
+- `eventual test-spec readiness`: the downstream-readiness assessment for later `test-spec` authoring.
+- `stop condition`: a documented reason the workflow must stop rather than continue into downstream reliance or stage continuation.
 
 ## Examples first
 
@@ -146,6 +150,34 @@ R7e. Unless a later approved change broadens scope, v1 continuation applies only
 R7f. In v1, fast-lane and bugfix execution remain explicit-step by default, and advice-only stages such as `learn` MUST NOT auto-run unless the user explicitly requests them or a later approved rule elevates them.
 
 R7g. Direct invocation of `pr` remains allowed. Isolation prevents downstream continuation beyond `pr`, but it MUST NOT downgrade `pr` itself from opening a pull request when readiness passes.
+
+R7h. Workflow-facing review outputs that report both stage handoff and later-stage fitness MUST distinguish immediate next repository stage from downstream readiness.
+
+R7i. `spec-review` output MUST report review outcome, immediate next repository stage, and eventual `test-spec` readiness separately.
+
+R7j. `spec-review` immediate next repository stage MUST use only repository stages:
+- `architecture` when the review outcome is approved and a separate architecture step remains required;
+- `plan` when the review outcome is approved and no separate architecture step remains required;
+- `spec` when the review outcome is `changes-requested` or `blocked`;
+- omitted or explicitly empty when the review outcome is `inconclusive`.
+
+R7k. `spec-review` eventual `test-spec` readiness MUST use exactly one of:
+- `ready`;
+- `conditionally-ready`;
+- `not-ready`;
+- `not-assessed`.
+
+R7l. Approved `spec-review` MUST pair only with eventual `test-spec` readiness `ready` or `conditionally-ready`. `conditionally-ready` MUST name the remaining intermediate dependency or dependencies.
+
+R7m. `changes-requested` and `blocked` spec-review outcomes MUST pair with eventual `test-spec` readiness `not-ready`. `inconclusive` MUST pair with eventual `test-spec` readiness `not-assessed`.
+
+R7n. When eventual `test-spec` readiness is `not-ready`, the output MUST state that downstream planning stops, name `spec` as the required upstream fix surface, and identify the blocking defect category. When eventual `test-spec` readiness is `not-assessed`, the output MUST record the stop condition and missing required input without naming any immediate next repository stage.
+
+R7o. Missing input and blocker conditions MUST be expressed as stop conditions rather than pseudo-routing states in immediate-next-stage fields.
+
+R7p. `plan-review` remains the normal immediate handoff into `test-spec`. If it reports implementation readiness or other later-stage fitness, it MUST present that as downstream readiness rather than replacing the immediate `test-spec` handoff.
+
+R7q. `test-spec` authoring MUST continue to require an approved feature spec, spec-review findings, a concrete execution plan, and approved architecture or ADR inputs when relevant to the changed boundaries.
 
 R8. The starter kit MUST treat the following stages as enforced for every contributed change:
 - implement;
@@ -468,6 +500,9 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 12. An ordinary non-trivial change may satisfy the baseline change-local pack with `docs/changes/<change-id>/change.yaml` plus `docs/changes/<change-id>/explain-change.md` when standalone `review-resolution.md` and `verify-report.md` triggers do not apply.
 13. `docs/changes/0001-skill-validator/` may include more artifacts than an ordinary non-trivial change without making those additional artifacts universal requirements.
 14. Approved legacy top-level explain artifacts under `docs/explain/` remain valid for already-shipped work until they are migrated, superseded, archived, or otherwise retired.
+15. Successful `spec-review` may still say the immediate next repository stage is `architecture` while separately reporting eventual `test-spec` readiness `conditionally-ready`.
+16. `inconclusive` may record a missing-input stop condition without naming any immediate next repository stage.
+17. `plan-review` may mention implementation readiness only after preserving `test-spec` as the immediate next handoff.
 
 ## Non-goals
 
@@ -493,6 +528,8 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - A reviewer can distinguish the ordinary baseline non-trivial change-local pack from the richer `docs/changes/0001-skill-validator/` example pack.
 - A reviewer can tell that new non-trivial work defaults to `docs/changes/<change-id>/explain-change.md` while approved legacy top-level explain artifacts remain valid until retired.
 - A reviewer can distinguish milestone commit boundaries from pull-request boundaries by inspecting standardized milestone commit subjects and the associated plan updates.
+- A reviewer can tell when `spec-review` is reporting immediate next repository stage versus eventual `test-spec` readiness without inferring that `test-spec` skips required intermediate stages.
+- A reviewer can tell that `plan-review` preserves `test-spec` as the immediate next handoff even when later implementation readiness is also discussed.
 
 ## Open questions
 

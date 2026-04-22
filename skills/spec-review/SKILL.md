@@ -54,18 +54,24 @@ Use:
 - Do not collapse spec review into plan or code review.
 - Do not require implementation detail unless it is needed for the observable contract.
 - Do not edit the spec unless the user explicitly asks.
-- When the review outcome is approval, the tracked spec should be ready to normalize to `approved` before architecture, plan, test-spec, or implementation relies on it. Do not leave a governing spec in durable `reviewed` state.
+- When the review outcome is `approved`, the tracked spec should be ready to normalize to `approved` before architecture, plan, test-spec, or implementation relies on it. Do not leave a governing spec in durable `reviewed` state.
+- Do not report `approved` without explicit eventual `test-spec` readiness of `ready` or `conditionally-ready`.
+- Do not use pseudo-routing states such as `blocker handling` or `missing-context resolution` in the immediate-next-stage field.
+- Do not name `test-spec` as the immediate next stage while `architecture` or `plan` still remains.
+- When required inputs are missing, use `inconclusive`, record the missing required input and stop condition, and leave the immediate-next-stage field empty.
 
 ## Workflow handoff behavior
 
 - Direct or review-only `spec-review` requests remain isolated by default.
-- In v1, `spec-review` does not auto-continue into `architecture`, `plan`, or `test-spec`; it reports approval, required revisions, or blockers and stops there unless the user explicitly requests a later stage.
+- In v1, `spec-review` does not auto-continue into `architecture`, `plan`, or `test-spec`; it reports review outcome, immediate next repository stage, eventual `test-spec` readiness, and any stop condition, then stops there unless the user explicitly requests a later stage.
 - Keep review-to-next-authoring transitions out of scope in this skill's wording.
 
 ## Expected output
 
-- verdict: approve, revise, or block;
+- review outcome: `approved`, `changes-requested`, `blocked`, or `inconclusive`;
 - findings by severity;
 - requirement-by-requirement notes when useful;
 - exact wording suggestions;
-- explicit readiness statement for `architecture`, `test-spec`, isolated stop, or blocker state.
+- immediate next repository stage;
+- eventual `test-spec` readiness;
+- stop condition or upstream fix surface when approval is denied or readiness is not assessed.
