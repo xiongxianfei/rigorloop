@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- none yet
+- [2026-04-22 README user value positioning](plans/2026-04-22-readme-user-value-positioning.md) - active execution plan for rewriting the public README entrypoint around value, audience fit, quick-start/help discovery, and minimal linked-summary alignment without changing workflow rules.
 
 ## Blocked
 - none yet

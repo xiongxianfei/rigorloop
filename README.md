@@ -1,16 +1,36 @@
 # RigorLoop
 
-RigorLoop is an open-source AI engineering workflow for building software with explicit proposals, specs, architecture, plans, tests, review gates, verification, and explainable change history.
+*Git-first starter kit for AI-assisted software delivery with explicit artifacts, review gates, and durable change history.*
 
-It is a Git-first starter kit. It does not replace pull requests, CI, or human review. It makes the path from idea to reviewed change explicit and auditable.
+RigorLoop helps individual contributors turn AI-assisted ideas into reviewable changes with proposals, specs, plans, tests, review gates, verification, and explainable change history. That gives contributors clearer review scope, explicit artifact history, and traceable change rationale from idea to PR. It also helps maintainers and small teams keep AI-assisted delivery explicit and auditable without replacing Git, pull requests, CI, or human review.
 
-## What This Repository Contains
+## When to use / When not to use
 
-- a fast lane for trivial or low-risk work
-- a full lifecycle for non-trivial work
-- canonical workflow sources in `docs/`, `specs/`, `skills/`, `schemas/`, and `scripts/`
-- generated Codex compatibility output in `.codex/skills/`
-- a change-local artifact pattern under `docs/changes/<change-id>/` for the golden-path example and later non-trivial work
+Use RigorLoop when:
+
+- you want AI-assisted work to stay reviewable, traceable, and grounded in explicit proposals, specs, plans, tests, and verification
+- you need a Git-first starter kit that leaves durable change history instead of burying decisions in chat
+- you want a workflow that makes the path from idea to reviewed change visible and auditable
+
+Do not use RigorLoop when:
+
+- you want agents to bypass pull requests, CI, or human review
+- you need a hosted orchestration platform or centralized control plane
+- you want a zero-process scratchpad with no explicit artifacts or review gates
+
+## Quick Start
+
+1. Read the [short workflow summary](docs/workflows.md).
+2. Read the [normative workflow contract](specs/rigorloop-workflow.md).
+3. Inspect the [shipped proof-of-value example](docs/changes/0001-skill-validator/).
+4. If the approach fits, start from the lifecycle artifacts under [docs/](docs/), [specs/](specs/), and [skills/](skills/).
+
+## Learn More / Contribute
+
+- Workflow detail: [docs/workflows.md](docs/workflows.md) and [specs/rigorloop-workflow.md](specs/rigorloop-workflow.md)
+- Artifact and skill docs: [specs/README.md](specs/README.md) and [skills/](skills/)
+- Report problems or feature ideas: [bug report template](.github/ISSUE_TEMPLATE/bug.yml) and [feature request template](.github/ISSUE_TEMPLATE/feature.yml)
+- Review PR expectations before contributing: [.github/pull_request_template.md](.github/pull_request_template.md)
 
 ## Workflow At A Glance
 
@@ -54,7 +74,15 @@ Fast-lane evidence must include a spec with:
 
 That spec may live in the PR body, issue comment, commit message, or a linked change note.
 
-The normative contract lives in `specs/rigorloop-workflow.md`. The short operational summary lives in `docs/workflows.md`.
+The normative contract lives in [specs/rigorloop-workflow.md](specs/rigorloop-workflow.md). The short operational summary lives in [docs/workflows.md](docs/workflows.md).
+
+## What This Repository Contains
+
+- a fast lane for trivial or low-risk work
+- a full lifecycle for non-trivial work
+- canonical workflow sources in `docs/`, `specs/`, `skills/`, `schemas/`, and `scripts/`
+- generated Codex compatibility output in `.codex/skills/`
+- a change-local artifact pattern under `docs/changes/<change-id>/` for the shipped example and later non-trivial work
 
 ## Change-Local Artifact Packs
 
@@ -86,19 +114,6 @@ Before PR, run the same structural checks that CI runs:
 - `python scripts/build-skills.py --check`
 
 Use `bash scripts/ci.sh` to run the same checks through the repository-owned CI wrapper.
-
-## Current Focus
-
-The first proof-of-value change is a skill metadata validator with fixture tests, generated-output drift checks, and CI integration.
-
-The shipped golden-path example for that change lives in:
-
-- `docs/changes/0001-skill-validator/`
-
-Active implementation work is tracked in:
-
-- `docs/plans/2026-04-19-rigorloop-first-release-implementation.md`
-- `specs/rigorloop-workflow.test.md`
 
 ## Repository Layout
 
