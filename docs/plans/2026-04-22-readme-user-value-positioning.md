@@ -206,6 +206,7 @@ The implementation must stay inside the approved slice:
 - [x] 2026-04-22: `specs/readme-user-value-positioning.test.md` created and activated.
 - [x] 2026-04-22: `M1` rewritten `README.md` into the approved value-first order and created the baseline change-local pack under `docs/changes/2026-04-22-readme-user-value-positioning/`.
 - [x] 2026-04-22: first-pass `code-review` returned `clean-with-notes`, and `verify` found no blockers to downstream explanation work.
+- [x] 2026-04-22: `docs/changes/2026-04-22-readme-user-value-positioning/explain-change.md` now captures the full decision trail, file-by-file rationale, review/verify outcomes, and PR-ready summary.
 
 ## Decision log
 
@@ -275,7 +276,7 @@ The implementation must stay inside the approved slice:
 
 ## Outcome and retrospective
 
-- This plan is active. Implementation, first-pass review, and verify are complete; outcome notes and retrospective lessons will be extended during `explain-change`, PR preparation, and merge closeout.
+- This plan is active. Implementation, first-pass review, verify, and explain-change are complete; outcome notes and retrospective lessons will be extended during PR preparation and merge closeout.
 
 ## Readiness
 
@@ -283,4 +284,5 @@ The implementation must stay inside the approved slice:
 - `M1` is implemented and committed in `4a60958`.
 - First-pass `code-review` is `clean-with-notes`.
 - `verify` is ready with no blockers.
-- The next stage is `explain-change`.
+- `explain-change` is complete.
+- The next stage is `pr`.
