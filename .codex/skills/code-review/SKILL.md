@@ -7,7 +7,7 @@ argument-hint: [branch, diff, plan path, spec path, or feature name]
 
 # Independent implementation review
 
-You are reviewing with fresh eyes.
+You are reviewing in independent-review mode with fresh eyes.
 
 Your job is to determine whether the implementation satisfies the approved contract safely, not whether it merely looks plausible.
 
@@ -22,28 +22,46 @@ Read:
 - architecture doc and ADRs when relevant;
 - plan validation notes;
 - test and CI results;
+- invocation context for `workflow-managed`, isolated, or review-only behavior;
+- explicit user instructions to stop after review;
 - `AGENTS.md` and `CONSTITUTION.md`;
 - related code paths and tests when needed.
 
-Prefer a fresh session or intentionally reset assumptions.
+Prefer a fresh session, separate reviewer, or separate agent when available. If not, intentionally reset assumptions before reading the diff.
 
-## Review dimensions
+## Independent-review mode
 
-Evaluate each with `pass`, `concern`, or `block`:
+- Ground the review in the actual diff or changed files, approved upstream artifacts, checklist coverage, and available validation evidence.
+- Do not treat remembered implementation intent, chat memory, or passing tests alone as sufficient review grounding.
+- If you cannot inspect the actual diff, relevant tests, or authoritative upstream artifacts, the review result must be `inconclusive`.
 
-1. **Requirement compliance**: every relevant `MUST` is satisfied.
-2. **Non-goal protection**: diff does not add excluded behavior.
-3. **Architecture alignment**: implementation follows design decisions and boundaries.
-4. **Test quality**: tests assert behavior, not implementation trivia.
-5. **Coverage completeness**: requirements, examples, edge cases, and regressions are covered.
-6. **Error handling**: failures, invalid input, permissions, and partial states are handled.
-7. **Security/privacy**: no secrets, leaks, auth bypass, injection, unsafe logging, or exposure.
-8. **Compatibility/migration**: old data/clients/configs are handled as specified.
-9. **Performance/scalability**: no obvious avoidable bottleneck or unbounded work.
-10. **Simplicity/maintainability**: implementation is no more complex than needed.
-11. **Observability**: required logs, metrics, traces, or audit events are present.
-12. **Validation evidence**: claimed commands/results are present and credible.
-13. **Artifact updates**: specs, plans, architecture docs, and learnings are updated when reality changed.
+## First-pass checklist coverage
+
+Evaluate each check with `pass`, `concern`, or `block`, and cite concrete evidence from the diff, tests, or governing artifacts:
+
+1. **Spec alignment**: the changed behavior matches the approved spec and non-goals.
+2. **Test coverage**: tests prove the changed behavior and regressions at the right level.
+3. **Edge cases**: named edge cases and failure paths are handled as specified.
+4. **Error handling**: invalid states, partial failures, permissions, and fallbacks are handled safely.
+5. **Architecture boundaries**: the diff respects approved design boundaries and ADR decisions.
+6. **Compatibility**: existing workflow expectations, contributor contracts, and migrations remain valid.
+7. **Security/privacy**: no secret leakage, unsafe logging, auth bypass, or policy regression.
+8. **Generated output drift**: canonical/generated outputs remain synchronized when generation is involved.
+9. **Unrelated changes**: the reviewed diff does not quietly include unrelated edits.
+10. **Validation evidence**: named commands and results are present, relevant, and credible.
+
+For sensitive change classes, explicitly cite the relevant governing requirements, risks, or checklist items instead of relying on a generic clean summary.
+
+## First-pass statuses
+
+Use exactly one first-pass review status:
+
+- `clean-with-notes`: the review passes and no unresolved accepted fix is required before `verify`.
+- `changes-requested`: one or more fixable findings exist within current approved scope and with sufficient evidence to act.
+- `blocked`: the review cannot safely auto-enter `review-resolution` under current approved scope without a new decision.
+- `inconclusive`: the reviewer cannot inspect enough evidence to produce a credible clean or actionable result.
+
+Issues that are clearly fixable within current approved scope and with sufficient evidence to act use `changes-requested`, not `blocked`.
 
 ## Severity
 
@@ -57,26 +75,90 @@ Use:
 
 ## Rules
 
+- Produce a first-pass review record before any review-driven fix is applied or any `review-resolution` work begins.
+- The first-pass review record must include: review status, review inputs, diff summary, findings, checklist coverage, no-finding rationale when no findings exist, and recommended next stage.
+- Surfacing findings first means the findings are visible before fixes begin. It does not create a new user decision gate unless a stop condition applies.
+- This feature does not create a new standalone `review-resolution.md` requirement by itself.
 - Do not confuse passing tests with compliance.
-- Do not spot-check only a few requirements.
 - Do not review from memory; use the actual diff.
 - Do not request broad rewrites when a targeted fix is enough.
-- Do not skip positive notes for good patterns.
-- Do not approve if verification evidence is missing for critical behavior.
+- Do not claim a credible clean result when required evidence is missing; use `inconclusive` instead.
+- Do not require positive notes in a clean review. Include them only when they provide specific, evidence-backed information useful to future maintainers.
+- Do not emit generic praise such as `looks good` without checklist coverage and no-finding rationale. That is an invalid clean review.
+- Do not expose secrets, credentials, or sensitive runtime values from the diff or validation outputs.
 
 ## Workflow handoff behavior
 
-- In a workflow-managed full-feature flow, a satisfied `code-review` hands off to `verify` unless a stop condition applies.
-- If findings can be resolved without a new user decision and are accepted for action, enter the `review-resolution` loop, address them, and rerun `code-review` before any downstream handoff.
-- If findings require a design, scope, or spec decision, stop and report that blocker instead of auto-looping.
+- In a workflow-managed full-feature flow, emit the first-pass review record before any review-driven fix begins.
+- In a workflow-managed full-feature flow, `clean-with-notes` hands off to `verify` when no stop condition applies.
+- In a workflow-managed full-feature flow, `changes-requested` enters the `review-resolution` loop, addresses the findings, and reruns `code-review` when no stop condition applies.
+- In a workflow-managed full-feature flow, `blocked` stops and reports the blocker.
+- In a workflow-managed full-feature flow, `inconclusive` stops and reports the missing evidence. It does not enter `review-resolution`.
+- Stop instead of auto-entering `review-resolution` when the request is review-only, the request is isolated `code-review`, a finding requires a product/spec/architecture/ADR/scope decision, a higher-priority repository policy requires human review, the actual diff/tests/upstream artifacts are unavailable, or the user explicitly asked to stop after review.
 - Direct `code-review` requests remain isolated by default unless the user explicitly asks to continue beyond the review result.
+
+## Recommended clean review template
+
+```md
+Code Review
+
+## Review status
+
+clean-with-notes
+
+## Review inputs
+
+- Diff range:
+- Spec:
+- Test spec:
+- Plan milestone:
+- Architecture / ADR:
+- Validation evidence:
+
+## Diff summary
+
+<What changed, based on the actual diff.>
+
+## Findings
+
+No blocking or required-change findings.
+
+## Checklist coverage
+
+| Check | Result | Notes |
+|---|---|---|
+| Spec alignment | pass | <evidence> |
+| Test coverage | pass | <evidence> |
+| Edge cases | pass | <evidence> |
+| Error handling | pass | <evidence> |
+| Architecture boundaries | pass | <evidence> |
+| Compatibility | pass | <evidence> |
+| Security/privacy | pass | <evidence> |
+| Generated output drift | pass | <evidence> |
+| Unrelated changes | pass | <evidence> |
+
+## No-finding rationale
+
+No blocking findings were found because:
+
+- the diff matches the approved spec and plan scope
+- tests cover the changed behavior
+- no unrelated files are present in the reviewed diff
+- validation evidence supports the implemented behavior
+
+## Residual risks
+
+- None identified.
+```
 
 ## Expected output
 
-- verdict: approve, request changes, or block;
-- requirement-by-requirement compliance summary when useful;
-- issues by severity with exact file/path references;
-- test coverage findings;
-- validation evidence assessment;
-- positive notes;
-- readiness statement for `verify`, `review-resolution`, isolated stop, or blocker state.
+- first-pass review record with:
+  - review status using `clean-with-notes`, `changes-requested`, `blocked`, or `inconclusive`;
+  - review inputs;
+  - diff summary;
+  - findings with exact file/path references;
+  - checklist coverage;
+  - no-finding rationale when applicable;
+  - optional positive notes only when they add specific evidence-backed value; and
+  - recommended next stage or stop reason.

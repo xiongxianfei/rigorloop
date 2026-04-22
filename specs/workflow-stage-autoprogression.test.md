@@ -13,6 +13,7 @@
 - Plan: `docs/plans/2026-04-21-workflow-stage-autoprogression.md`
 - Related workflow and guidance surfaces:
   - `specs/rigorloop-workflow.md`
+  - `specs/code-review-independence-under-autoprogression.test.md`
   - `docs/workflows.md`
   - `AGENTS.md`
   - `CONSTITUTION.md`
@@ -28,6 +29,7 @@
 - Use generated-output drift checks as the executable proof that canonical `skills/` and `.codex/skills/` remain aligned after each milestone.
 - Use repo-owned smoke validation through `bash scripts/ci.sh` to confirm the changed workflow/skill guidance still passes the repository's standard checks.
 - Use real repository artifacts rather than synthetic mocks for workflow and skill coverage. The main risk is contract drift across authored surfaces, not algorithmic logic in a new runtime subsystem.
+- Use `specs/code-review-independence-under-autoprogression.test.md` as the focused proof surface for first-pass review record contents, first-pass status semantics, clean-review validity, optional positive notes, and sensitive-change coverage. This test spec retains ownership of the broader execution-chain and isolated-stage-default proof.
 - Treat PR-opening prerequisites, isolated-stage behavior, and stop conditions as contract/manual scenarios asserted through stage-skill wording and readiness guidance until a later approved change adds executable orchestration.
 - Treat compatibility and migration coverage as manual plus smoke: confirm stage order and lane definitions remain intact while the new continuation policy lands only in the approved v1 scope.
 

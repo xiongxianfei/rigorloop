@@ -1,0 +1,96 @@
+change_id: 2026-04-22-code-review-independence-under-autoprogression
+title: Implement code-review independence under autoprogression
+classification: default
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-04-22-code-review-independence-under-autoprogression.md
+  spec: specs/code-review-independence-under-autoprogression.md
+  plan: docs/plans/2026-04-22-code-review-independence-under-autoprogression.md
+  test_spec: specs/code-review-independence-under-autoprogression.test.md
+  explain_change: docs/changes/2026-04-22-code-review-independence-under-autoprogression/explain-change.md
+requirements:
+  - R1
+  - R1a
+  - R1b
+  - R1c
+  - R2
+  - R2a
+  - R2b
+  - R2c
+  - R3
+  - R3a
+  - R3b
+  - R3c
+  - R3d
+  - R3e
+  - R4
+  - R4a
+  - R4b
+  - R4c
+  - R4d
+  - R5
+  - R6
+  - R6a
+  - R6b
+  - R6c
+  - R6d
+  - R6e
+  - R6f
+  - R7
+  - R8
+  - R8a
+  - R8b
+  - R8c
+  - R8d
+tests:
+  - T1
+  - T2
+  - T3
+  - T4
+  - T5
+  - T6
+  - T7
+  - T8
+validation:
+  - command: python scripts/validate-skills.py
+    result: pass
+  - command: python scripts/test-skill-validator.py
+    result: pass
+  - command: python scripts/build-skills.py
+    result: pass
+  - command: python scripts/build-skills.py --check
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-22-code-review-independence-under-autoprogression/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-22-code-review-independence-under-autoprogression.md --path specs/code-review-independence-under-autoprogression.md --path specs/code-review-independence-under-autoprogression.test.md --path docs/plans/2026-04-22-code-review-independence-under-autoprogression.md
+    result: pass
+  - command: rg -n 'independent-review|first-pass review record|clean-with-notes|changes-requested|blocked|inconclusive|no-finding rationale|positive note|review-resolution' skills/code-review/SKILL.md skills/workflow/SKILL.md docs/workflows.md .codex/skills specs/code-review-independence-under-autoprogression.test.md specs/workflow-stage-autoprogression.test.md
+    result: pass
+  - command: rg -n 'code-review|verify|validation|workflow-managed|isolated|review-resolution' AGENTS.md CONSTITUTION.md docs/workflows.md
+    result: pass
+  - command: git diff --check -- skills/code-review/SKILL.md skills/workflow/SKILL.md skills/implement/SKILL.md docs/workflows.md specs/code-review-independence-under-autoprogression.test.md specs/workflow-stage-autoprogression.test.md docs/changes/2026-04-22-code-review-independence-under-autoprogression .codex/skills
+    result: pass
+  - command: bash scripts/ci.sh
+    result: pass
+  - command: rg -n '^## (Active|Blocked|Done|Superseded)$|2026-04-22-code-review-independence-under-autoprogression' docs/plan.md
+    result: pass
+  - command: git diff --check -- docs/plan.md docs/plans/2026-04-22-code-review-independence-under-autoprogression.md specs/code-review-independence-under-autoprogression.test.md docs/changes/2026-04-22-code-review-independence-under-autoprogression/change.yaml
+    result: pass
+changed_files:
+  - .codex/skills/code-review/SKILL.md
+  - .codex/skills/workflow/SKILL.md
+  - docs/changes/2026-04-22-code-review-independence-under-autoprogression/change.yaml
+  - docs/changes/2026-04-22-code-review-independence-under-autoprogression/explain-change.md
+  - docs/plan.md
+  - docs/plans/2026-04-22-code-review-independence-under-autoprogression.md
+  - docs/proposals/2026-04-22-code-review-independence-under-autoprogression.md
+  - docs/workflows.md
+  - skills/code-review/SKILL.md
+  - skills/workflow/SKILL.md
+  - specs/code-review-independence-under-autoprogression.md
+  - specs/code-review-independence-under-autoprogression.test.md
+  - specs/workflow-stage-autoprogression.test.md
+review:
+  status: clean_with_notes
+  unresolved_items: 0
+  location: docs/plans/2026-04-22-code-review-independence-under-autoprogression.md
