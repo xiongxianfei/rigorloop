@@ -285,12 +285,14 @@ The implementation must stay inside the approved slice:
 
 - This plan is done on-branch and now belongs in `docs/plan.md` under `Done`.
 - What changed: the repository root README now leads with user value, fit guidance, quick-start links, and truthful help/contribution discovery before lifecycle mechanics.
-- What went well: the feature stayed narrow enough for one milestone, and existing workflow/spec/help surfaces were already truthful enough that the README could improve without widening into adjacent docs churn.
+- What went well: the feature stayed narrow enough for one milestone, existing workflow/spec/help surfaces were already truthful enough that the README could improve without widening into adjacent docs churn, and hosted CI on PR #12 passed without additional fixes.
 - What was harder than expected: the feature work was initially sitting on a reused local branch that also contained an unrelated post-merge cleanup commit, so PR preparation had to rebuild the branch from current `origin/main` with only the intended feature commits.
 - Spec accuracy: the approved spec held through implementation. The key boundary was preserving a README-first change while keeping workflow rules, validation requirements, and source-of-truth ordering untouched.
 - Test effectiveness: the focused manual test spec plus targeted grep, metadata, lifecycle, patch-hygiene, and repo-owned CI wrapper checks were sufficient for this documentation-contract slice.
 - Architecture accuracy: the earlier decision to avoid a separate architecture artifact was correct because the implementation stayed within public-entrypoint positioning and did not touch system shape or runtime behavior.
-- Follow-up actions: observe hosted CI on the PR, and open a separate proposal/spec only if future contributor feedback shows the current issue/PR entrypoints are not enough for contribution discovery.
+- Process issues: the short workflow summary did not explicitly restate the already-approved `Done before PR when outcome is already known` rule, so PR preparation initially left the initiative active longer than intended.
+- Durable updates made: `docs/workflows.md` now states that planned initiatives with known outcomes move to `Done` before PR, with only merge-dependent closeout waiting until post-merge cleanup.
+- Follow-up actions: open a separate proposal/spec only if future contributor feedback shows the current issue/PR entrypoints are not enough for contribution discovery.
 
 ## Readiness
 
