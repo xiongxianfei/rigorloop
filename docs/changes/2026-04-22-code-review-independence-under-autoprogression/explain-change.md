@@ -54,7 +54,3 @@ The repository had already approved an explicit contract for independent first-p
 - `CONSTITUTION.md` was left unchanged because the implementation refined stage-local workflow guidance rather than introducing a new governance principle.
 - `skills/implement/SKILL.md` was left unchanged because its handoff wording already matched the approved `implement -> code-review` boundary.
 - No hard fresh-session enforcement, mandatory human review, fast-lane expansion, bugfix autoprogression, or new standalone `review-resolution.md` requirement was introduced.
-
-## Remaining follow-through
-
-- Hand the finished milestone to `code-review`; the implementation slice is complete and the remaining lifecycle work is downstream review, verify, explain-change, and PR readiness.

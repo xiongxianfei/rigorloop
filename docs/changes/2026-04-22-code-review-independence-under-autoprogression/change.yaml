@@ -72,6 +72,10 @@ validation:
     result: pass
   - command: bash scripts/ci.sh
     result: pass
+  - command: rg -n '^## (Active|Blocked|Done|Superseded)$|2026-04-22-code-review-independence-under-autoprogression' docs/plan.md
+    result: pass
+  - command: git diff --check -- docs/plan.md docs/plans/2026-04-22-code-review-independence-under-autoprogression.md specs/code-review-independence-under-autoprogression.test.md docs/changes/2026-04-22-code-review-independence-under-autoprogression/change.yaml
+    result: pass
 changed_files:
   - .codex/skills/code-review/SKILL.md
   - .codex/skills/workflow/SKILL.md
@@ -87,5 +91,6 @@ changed_files:
   - specs/code-review-independence-under-autoprogression.test.md
   - specs/workflow-stage-autoprogression.test.md
 review:
-  status: pending
+  status: clean_with_notes
   unresolved_items: 0
+  location: docs/plans/2026-04-22-code-review-independence-under-autoprogression.md

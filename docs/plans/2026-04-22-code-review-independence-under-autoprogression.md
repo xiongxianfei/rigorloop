@@ -197,6 +197,8 @@ The implementation must stay inside the approved first slice:
 - [x] 2026-04-22: plan-review feedback incorporated.
 - [x] 2026-04-22: `specs/code-review-independence-under-autoprogression.test.md` created and activated.
 - [x] 2026-04-22: M1 implemented, validated, and prepared for `code-review`.
+- [x] 2026-04-22: first-pass `code-review` returned `clean-with-notes` with no required changes and handed the initiative to `verify`.
+- [x] 2026-04-22: `verify` passed with no blockers, stale lifecycle drift, or missing evidence.
 
 ## Decision log
 
@@ -227,15 +229,54 @@ The implementation must stay inside the approved first slice:
   - `bash scripts/ci.sh`
   - Result: passed.
 - 2026-04-22: No `docs/plan.md` lifecycle update was needed during M1. The initiative remained active, and the existing active-plan index entry stayed truthful while implementation moved the plan body from `implement` readiness to `code-review` readiness.
+- 2026-04-22: first-pass `code-review` record for `b716bf0^..b716bf0`.
+  - Review status: `clean-with-notes`
+  - Review inputs:
+    - Diff range: `b716bf0^..b716bf0`
+    - Spec: `specs/code-review-independence-under-autoprogression.md`
+    - Test spec: `specs/code-review-independence-under-autoprogression.test.md`
+    - Plan milestone: `M1`
+    - Architecture / ADR: none for this first slice
+    - Validation evidence: `python scripts/validate-skills.py`, `python scripts/test-skill-validator.py`, `python scripts/build-skills.py`, `python scripts/build-skills.py --check`, `python scripts/validate-change-metadata.py docs/changes/2026-04-22-code-review-independence-under-autoprogression/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-22-code-review-independence-under-autoprogression.md --path specs/code-review-independence-under-autoprogression.md --path specs/code-review-independence-under-autoprogression.test.md --path docs/plans/2026-04-22-code-review-independence-under-autoprogression.md`, `bash scripts/ci.sh`
+  - Diff summary: the committed range adds the approved proposal/spec/test-spec/plan stack, aligns canonical and generated `code-review` plus `workflow` skills with the first-pass review contract, updates `docs/workflows.md`, and adds the feature's baseline change-local pack.
+  - Findings: no blocking or required-change findings.
+  - Checklist coverage:
+    - Spec alignment: pass (`skills/code-review/SKILL.md`, `skills/workflow/SKILL.md`, and `docs/workflows.md` now express independent-review mode, first-pass review record contents, approved status mapping, and optional positive notes consistently with the approved spec.)
+    - Test coverage: pass (`specs/code-review-independence-under-autoprogression.test.md` maps `R1`-`R8d` to `T1`-`T8`, and `specs/workflow-stage-autoprogression.test.md` keeps the broader loop/isolation proof ownership explicit.)
+    - Edge cases: pass (isolated review, explicit stop-after-review, `blocked`, `inconclusive`, and sensitive-change coverage are all represented in the skill guidance and focused test spec.)
+    - Error handling: pass (missing diff/tests/upstream artifacts now lead to `inconclusive`, and decision-requiring findings stop instead of fixing forward.)
+    - Architecture boundaries: pass (the implementation stays within the approved first slice and does not add a new router, hard session enforcement, or mandatory human-review loop.)
+    - Compatibility: pass (the existing `implement -> code-review -> review-resolution/code-review -> verify` boundary remains intact for workflow-managed full-feature runs.)
+    - Security/privacy: pass (the updated `code-review` skill forbids leaking secrets from diffs or validation output and preserves higher-priority human-review stop conditions.)
+    - Generated output drift: pass (`python scripts/build-skills.py` and `python scripts/build-skills.py --check` kept `.codex/skills/` synchronized with canonical `skills/`.)
+    - Unrelated changes: pass (`git status --short` was clean after the milestone commit, and the reviewed diff is limited to initiative artifacts and the intended canonical/generated workflow surfaces.)
+  - No-finding rationale: no blocking findings were found because the diff matches the approved spec and plan scope, the active test spec covers the changed behavior, the reviewed diff contains no unrelated files, and the recorded validation evidence supports the implementation.
+  - Recommended next stage: `verify`
+- 2026-04-22: `verify` passed on the implementation plus the post-review lifecycle bookkeeping.
+  - Verification verdict: `ready`
+  - Traceability:
+    - `R1`-`R3e` -> `T1`-`T5` -> `skills/code-review/SKILL.md`, `skills/workflow/SKILL.md`, `docs/workflows.md` -> focused test spec plus first-pass review record and implementation validation -> pass
+    - `R4`-`R5`, `R8`-`R8d` -> `T3`, `T4`, `T8` -> `skills/workflow/SKILL.md`, `docs/workflows.md`, `specs/workflow-stage-autoprogression.test.md` -> preserved stage-order wording, explicit stop conditions, artifact validation, and repo smoke proof -> pass
+    - docs-changes baseline pack and lifecycle truthfulness -> `T8` -> `docs/changes/2026-04-22-code-review-independence-under-autoprogression/`, `docs/plans/2026-04-22-code-review-independence-under-autoprogression.md`, `docs/plan.md` -> `change.yaml`, explain-change artifact, lifecycle validation, and active-plan index review -> pass
+  - Validation commands:
+    - `python scripts/validate-change-metadata.py docs/changes/2026-04-22-code-review-independence-under-autoprogression/change.yaml`
+    - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-22-code-review-independence-under-autoprogression.md --path specs/code-review-independence-under-autoprogression.md --path specs/code-review-independence-under-autoprogression.test.md --path docs/plans/2026-04-22-code-review-independence-under-autoprogression.md`
+    - `rg -n '^## (Active|Blocked|Done|Superseded)$|2026-04-22-code-review-independence-under-autoprogression' docs/plan.md`
+    - `git diff --check -- docs/plan.md docs/plans/2026-04-22-code-review-independence-under-autoprogression.md specs/code-review-independence-under-autoprogression.test.md docs/changes/2026-04-22-code-review-independence-under-autoprogression/change.yaml`
+    - `bash scripts/ci.sh`
+  - CI status: local repo-owned CI wrapper passed via `bash scripts/ci.sh`; hosted CI remains unobserved from this environment.
+  - Artifact drift: none blocking after updating the active plan, active test spec, and change metadata to reflect the clean first-pass review result.
+  - Remaining risks: hosted CI and eventual PR base-branch readiness still need to be observed downstream.
+  - Recommended next stage: `explain-change`
 
 ## Outcome and retrospective
 
-- This initiative is active. M1 is implemented and awaits independent `code-review`; downstream lifecycle closeout remains pending until later stages settle the branch.
+- This initiative is active. M1, the first-pass `code-review`, and `verify` are complete, and downstream lifecycle closeout remains pending until explanation and PR preparation settle the branch.
 
 ## Readiness
 
-- The next stage is `code-review`.
-- M1 is complete and ready for the first independent review pass.
+- The next stage is `explain-change`.
+- M1, the first-pass review record, and verify are complete with no blockers.
 
 ## Risks and follow-ups
 
