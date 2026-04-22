@@ -362,8 +362,8 @@
 
 ## Next artifacts
 
-- `explain-change` under `docs/changes/2026-04-22-test-spec-readiness-and-skill-workflow-alignment/`
-- downstream `pr` preparation once explanation refreshes the lifecycle markers
+- `pr`
+- downstream merge-closeout lifecycle updates if later stages continue
 
 ## Follow-on artifacts
 
@@ -373,6 +373,6 @@ None yet.
 
 This test spec is active.
 
-It remained aligned through implementation, first-pass `code-review`, and `verify` for `docs/plans/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md`.
+It remained aligned through implementation, first-pass `code-review`, `verify`, and `explain-change` for `docs/plans/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md`.
 
-The next stage is `explain-change`.
+The next stage is `pr`.
