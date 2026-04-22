@@ -1,0 +1,77 @@
+change_id: 2026-04-22-readme-user-value-positioning
+title: Implement README user-value positioning
+classification: default
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-04-22-readme-user-value-positioning.md
+  spec: specs/readme-user-value-positioning.md
+  plan: docs/plans/2026-04-22-readme-user-value-positioning.md
+  test_spec: specs/readme-user-value-positioning.test.md
+  explain_change: docs/changes/2026-04-22-readme-user-value-positioning/explain-change.md
+requirements:
+  - R1
+  - R1a
+  - R1b
+  - R2
+  - R2a
+  - R2b
+  - R2c
+  - R3
+  - R3a
+  - R3b
+  - R4
+  - R4a
+  - R4b
+  - R5
+  - R5a
+  - R5b
+  - R5c
+  - R5d
+  - R5e
+  - R5f
+  - R6
+  - R7
+  - R7a
+  - R8
+  - R8a
+  - R9
+  - R9a
+  - R10
+tests:
+  - T1
+  - T2
+  - T3
+  - T4
+  - T5
+  - T6
+  - T7
+  - T8
+  - T9
+validation:
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-22-readme-user-value-positioning.md --path specs/readme-user-value-positioning.md --path specs/readme-user-value-positioning.test.md --path docs/plans/2026-04-22-readme-user-value-positioning.md
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-22-readme-user-value-positioning/change.yaml
+    result: pass
+  - command: rg -n '^# |^## ' README.md
+    result: pass
+  - command: rg -n 'When to use / When not to use|docs/workflows.md|specs/rigorloop-workflow.md|docs/changes/0001-skill-validator|skills/|specs/README.md|ISSUE_TEMPLATE|pull_request_template' README.md docs/workflows.md specs/README.md .github/ISSUE_TEMPLATE .github/pull_request_template.md
+    result: pass
+  - command: "! rg -n '^## Current Focus$|^Active implementation work is tracked in' README.md"
+    result: pass
+  - command: git diff --check -- README.md docs/workflows.md specs/readme-user-value-positioning.test.md docs/plan.md docs/plans/2026-04-22-readme-user-value-positioning.md docs/changes/2026-04-22-readme-user-value-positioning .github/ISSUE_TEMPLATE/bug.yml .github/ISSUE_TEMPLATE/feature.yml .github/pull_request_template.md specs/README.md
+    result: pass
+  - command: bash scripts/ci.sh
+    result: pass
+changed_files:
+  - README.md
+  - docs/changes/2026-04-22-readme-user-value-positioning/change.yaml
+  - docs/changes/2026-04-22-readme-user-value-positioning/explain-change.md
+  - docs/plan.md
+  - docs/plans/2026-04-22-readme-user-value-positioning.md
+  - docs/proposals/2026-04-22-readme-user-value-positioning.md
+  - specs/readme-user-value-positioning.md
+  - specs/readme-user-value-positioning.test.md
+review:
+  status: clean_with_notes
+  unresolved_items: 0
+  location: docs/plans/2026-04-22-readme-user-value-positioning.md
