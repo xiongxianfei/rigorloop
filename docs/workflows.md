@@ -61,6 +61,7 @@ Notes:
 - Each completed planned milestone ends with a coherent commit using:
   - `M<n>: <completed milestone outcome>`
 - A pull request may contain one or more completed milestone commits when that is the clearest review boundary.
+- Before opening or repairing a PR, compare the head branch against the current base branch. If the branch already backed a merged PR or drags already-merged history into the diff, create a fresh branch from the current base and cherry-pick or restack only the intended commits before final validation and PR creation.
 
 ## Artifact Lifecycle
 
