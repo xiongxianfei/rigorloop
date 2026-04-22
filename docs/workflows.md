@@ -40,6 +40,9 @@ Notes:
   - `spec -> spec-review`
   - `architecture -> architecture-review` when that review stage is the next required or default downstream step
   - full-feature execution from `implement -> code-review -> verify -> ci when triggered -> explain-change -> pr`
+- In workflow-managed full-feature runs, `code-review` first emits a first-pass review record grounded in the actual diff, upstream artifacts, checklist coverage, and validation evidence before any review-driven fixes begin.
+- In workflow-managed full-feature runs, first-pass `clean-with-notes` continues to `verify`, first-pass `changes-requested` continues to `review-resolution`, and first-pass `blocked` or `inconclusive` stops.
+- Clean reviews require checklist coverage plus no-finding rationale. Positive notes are optional and only useful when they add specific evidence-backed context.
 - Direct `pr` remains in scope and opens the PR when readiness passes.
 - Direct `proposal-review`, `spec-review`, `architecture-review`, `code-review`, `verify`, and `explain-change` stay isolated by default unless the user asks to carry the change through completion.
 - Fast-lane and bugfix execution stay on the repository's existing explicit-step behavior in v1.

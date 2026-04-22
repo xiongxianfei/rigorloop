@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- none yet
+- [2026-04-22 Code review independence under autoprogression](plans/2026-04-22-code-review-independence-under-autoprogression.md) - active execution plan for implementing independent-review mode, first-pass review records and status mapping, clean-review validity rules, and canonical/generated skill alignment without expanding v1 autoprogression scope.
 
 ## Blocked
 - none yet
