@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 import sys
+import shutil
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -15,8 +17,11 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from adapter_distribution import (  # noqa: E402
     ADAPTERS,
     SUPPORTED_ADAPTERS,
+    collect_adapter_drift,
     evaluate_skill,
+    expected_adapter_files,
     render_manifest_yaml,
+    sync_adapter_output,
 )
 
 
@@ -25,6 +30,13 @@ class AdapterDistributionTests(unittest.TestCase):
 
     def fixture(self, name: str) -> Path:
         return FIXTURES / name
+
+    def copy_fixture_skills(self, target: Path, names: tuple[str, ...]) -> Path:
+        skills_root = target / "skills"
+        skills_root.mkdir()
+        for name in names:
+            shutil.copytree(self.fixture(name), skills_root / name)
+        return skills_root
 
     def test_adapter_model_matches_required_paths(self) -> None:
         self.assertEqual(SUPPORTED_ADAPTERS, ("codex", "claude", "opencode"))
@@ -169,6 +181,182 @@ class AdapterDistributionTests(unittest.TestCase):
                 ]
             ),
         )
+
+    def test_adapter_generation_creates_independent_packages_and_thin_entrypoints(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root = self.copy_fixture_skills(
+                root,
+                (
+                    "portable-basic",
+                    "transformable-frontmatter",
+                    "partial-portability",
+                    "unsupported-frontmatter",
+                ),
+            )
+            output_root = root / "dist" / "adapters"
+
+            sync_adapter_output("0.1.0-rc.1", skills_root=skills_root, output_root=output_root)
+
+            for adapter, config in ADAPTERS.items():
+                with self.subTest(adapter=adapter):
+                    package_root = output_root / adapter
+                    entrypoint = package_root / Path(config.entrypoint.as_posix())
+                    skill_root = package_root / Path(config.skill_root.as_posix())
+                    copied_project = root / f"copied-{adapter}"
+
+                    shutil.copytree(package_root, copied_project)
+
+                    self.assertTrue(entrypoint.is_file())
+                    self.assertTrue(skill_root.is_dir())
+                    self.assertTrue((copied_project / Path(config.entrypoint.as_posix())).is_file())
+                    self.assertTrue((copied_project / Path(config.skill_root.as_posix())).is_dir())
+
+                    entrypoint_text = entrypoint.read_text(encoding="utf-8")
+                    self.assertIn("generated adapter output", entrypoint_text)
+                    self.assertIn("canonical", entrypoint_text)
+                    self.assertNotIn("# Portable Basic", entrypoint_text)
+
+            self.assertFalse(
+                (
+                    output_root
+                    / "opencode"
+                    / ".opencode"
+                    / "skills"
+                    / "partial-portability"
+                    / "SKILL.md"
+                ).exists()
+            )
+
+    def test_adapter_generation_drops_transformed_frontmatter_for_non_codex(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root = self.copy_fixture_skills(root, ("transformable-frontmatter",))
+            output_root = root / "dist" / "adapters"
+
+            sync_adapter_output("0.1.0-rc.1", skills_root=skills_root, output_root=output_root)
+
+            codex_skill = (
+                output_root
+                / "codex"
+                / ".agents"
+                / "skills"
+                / "transformable-frontmatter"
+                / "SKILL.md"
+            ).read_text(encoding="utf-8")
+            claude_skill = (
+                output_root
+                / "claude"
+                / ".claude"
+                / "skills"
+                / "transformable-frontmatter"
+                / "SKILL.md"
+            ).read_text(encoding="utf-8")
+            opencode_skill = (
+                output_root
+                / "opencode"
+                / ".opencode"
+                / "skills"
+                / "transformable-frontmatter"
+                / "SKILL.md"
+            ).read_text(encoding="utf-8")
+
+            self.assertIn("argument-hint:", codex_skill)
+            self.assertNotIn("argument-hint:", claude_skill)
+            self.assertNotIn("argument-hint:", opencode_skill)
+
+    def test_adapter_generation_drift_check_detects_stale_and_unexpected_files(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root = self.copy_fixture_skills(root, ("portable-basic",))
+            output_root = root / "dist" / "adapters"
+
+            sync_adapter_output("0.1.0-rc.1", skills_root=skills_root, output_root=output_root)
+            self.assertEqual(
+                collect_adapter_drift(
+                    "0.1.0-rc.1", skills_root=skills_root, output_root=output_root
+                ),
+                [],
+            )
+
+            stale_file = output_root / "codex" / "AGENTS.md"
+            stale_file.write_text(
+                stale_file.read_text(encoding="utf-8") + "\nstale\n",
+                encoding="utf-8",
+            )
+            stale_drift = collect_adapter_drift(
+                "0.1.0-rc.1", skills_root=skills_root, output_root=output_root
+            )
+            self.assertTrue(any("stale generated adapter file" in entry for entry in stale_drift))
+
+            sync_adapter_output("0.1.0-rc.1", skills_root=skills_root, output_root=output_root)
+            unexpected_file = output_root / "codex" / "unexpected.txt"
+            unexpected_file.write_text("unexpected\n", encoding="utf-8")
+            unexpected_drift = collect_adapter_drift(
+                "0.1.0-rc.1", skills_root=skills_root, output_root=output_root
+            )
+            self.assertTrue(
+                any("unexpected generated adapter file" in entry for entry in unexpected_drift)
+            )
+
+            sync_adapter_output("0.1.0-rc.1", skills_root=skills_root, output_root=output_root)
+            self.assertFalse(unexpected_file.exists())
+            self.assertEqual(
+                collect_adapter_drift(
+                    "0.1.0-rc.1", skills_root=skills_root, output_root=output_root
+                ),
+                [],
+            )
+
+    def test_generated_manifest_matches_version_and_generated_files(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root = self.copy_fixture_skills(
+                root,
+                (
+                    "portable-basic",
+                    "partial-portability",
+                    "unsupported-frontmatter",
+                ),
+            )
+            output_root = root / "dist" / "adapters"
+
+            sync_adapter_output("0.1.0-rc.1", skills_root=skills_root, output_root=output_root)
+            rc_manifest = (output_root / "manifest.yaml").read_text(encoding="utf-8")
+
+            self.assertIn("version: 0.1.0-rc.1", rc_manifest)
+            self.assertIn("  portable-basic:", rc_manifest)
+            self.assertIn("    adapters: [codex, claude, opencode]", rc_manifest)
+            self.assertIn("  partial-portability:", rc_manifest)
+            self.assertIn("    adapters: [codex, claude]", rc_manifest)
+            self.assertIn("  unsupported-frontmatter:", rc_manifest)
+            self.assertIn("    adapters: [codex]", rc_manifest)
+            self.assertTrue(
+                (
+                    output_root
+                    / "claude"
+                    / ".claude"
+                    / "skills"
+                    / "portable-basic"
+                    / "SKILL.md"
+                ).is_file()
+            )
+            self.assertFalse(
+                (
+                    output_root
+                    / "claude"
+                    / ".claude"
+                    / "skills"
+                    / "unsupported-frontmatter"
+                    / "SKILL.md"
+                ).exists()
+            )
+
+            stable_files = expected_adapter_files(
+                "0.1.0",
+                skills_root=skills_root,
+            )
+            self.assertIn("version: 0.1.0", stable_files[Path("manifest.yaml")])
 
 
 if __name__ == "__main__":
