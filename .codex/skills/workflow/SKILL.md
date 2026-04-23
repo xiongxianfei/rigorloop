@@ -133,6 +133,13 @@ Keep `review-resolution.md` and `verify-report.md` conditional. Do not treat the
 ### Execution-stage claim ownership
 
 - `implement` may report milestone completion, validation, blockers, readiness for `code-review`, or the next milestone, but it does not claim review findings or `branch-ready`.
+- Before `implement` hands off to `code-review`, the approved slice should satisfy a `first-pass acceptable result`.
+- `implement` targets the `smallest scope-complete change`, not merely the smallest diff.
+- The same-slice completeness set includes in-scope requirements, required authored surfaces, required aligned surfaces, required edge cases, and the targeted validation set.
+- Required edge cases come from approved artifacts, named regression cases, changed branch conditions or touched failure paths, governing tests or fixtures, and required aligned wording distinctions for the slice.
+- If a required surface stays unchanged, `implement` records `unaffected with rationale` in an authoritative surface such as the active plan or required change-local artifacts.
+- If missing or contradictory inputs prevent that standard, stop with a blocker instead of handing off an incomplete slice to `code-review`.
+- Later review comments may still happen. A `preventable first-pass miss` is only a finding that should have been caught by the same-slice completeness set, required edge cases, or targeted validation before `code-review`.
 - `code-review` may inspect staged or unstaged diffs, PR diffs, or commit ranges. If it cites governing artifacts for a clean branch-scoped conclusion, those artifacts must be confirmed in tracked governing branch state.
 - Missing tracked governing authority blocks `clean-with-notes`, but it does not suppress independently supported findings from the review surface.
 - Named edge cases need direct proof for clean review or `branch-ready` outcomes; code-shape inference alone is insufficient.

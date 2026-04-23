@@ -1,0 +1,96 @@
+change_id: 2026-04-23-implement-first-attempt-correctness
+title: Implement first-attempt correctness guidance
+classification: default
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-04-23-implement-first-attempt-correctness.md
+  spec: specs/implement-first-attempt-correctness.md
+  plan: docs/plans/2026-04-23-implement-first-attempt-correctness.md
+  test_spec: specs/implement-first-attempt-correctness.test.md
+  explain_change: docs/changes/2026-04-23-implement-first-attempt-correctness/explain-change.md
+requirements:
+  - R1
+  - R1a
+  - R1b
+  - R1c
+  - R2
+  - R2a
+  - R2b
+  - R3
+  - R3a
+  - R3b
+  - R4
+  - R4a
+  - R4b
+  - R5
+  - R5a
+  - R5b
+  - R5ba
+  - R5c
+  - R6
+  - R6a
+  - R6b
+  - R6c
+  - R6d
+  - R7
+  - R7a
+  - R7b
+  - R7c
+  - R8
+  - R8a
+  - R8b
+  - R8c
+  - R8d
+  - R8e
+  - R9
+  - R9a
+  - R9b
+  - R9c
+  - R10
+  - R10b
+tests:
+  - T1
+  - T2
+  - T3
+  - T4
+  - T5
+  - T6
+  - T7
+  - T8
+  - T9
+  - T10
+validation:
+  - command: python scripts/validate-skills.py
+    result: pass
+  - command: python scripts/test-skill-validator.py
+    result: pass
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass
+  - command: python scripts/build-skills.py
+    result: pass
+  - command: python scripts/build-skills.py --check
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-23-implement-first-attempt-correctness/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/implement-first-attempt-correctness.md --path specs/implement-first-attempt-correctness.test.md --path docs/plans/2026-04-23-implement-first-attempt-correctness.md
+    result: pass
+  - command: rg -n 'first-pass acceptable result|required edge case|smallest scope-complete change|preventable first-pass miss|unaffected with rationale|code-review' skills/implement/SKILL.md skills/workflow/SKILL.md docs/workflows.md .codex/skills
+    result: pass
+  - command: git diff --check -- skills/implement/SKILL.md skills/workflow/SKILL.md docs/workflows.md specs/implement-first-attempt-correctness.test.md docs/changes/2026-04-23-implement-first-attempt-correctness .codex/skills docs/plans/2026-04-23-implement-first-attempt-correctness.md docs/plan.md AGENTS.md CONSTITUTION.md
+    result: pass
+changed_files:
+  - .codex/skills/implement/SKILL.md
+  - .codex/skills/workflow/SKILL.md
+  - docs/changes/2026-04-23-implement-first-attempt-correctness/change.yaml
+  - docs/changes/2026-04-23-implement-first-attempt-correctness/explain-change.md
+  - docs/plan.md
+  - docs/plans/2026-04-23-implement-first-attempt-correctness.md
+  - docs/proposals/2026-04-23-implement-first-attempt-correctness.md
+  - docs/workflows.md
+  - skills/implement/SKILL.md
+  - skills/workflow/SKILL.md
+  - specs/implement-first-attempt-correctness.md
+  - specs/implement-first-attempt-correctness.test.md
+review:
+  status: pending
+  unresolved_items: 0

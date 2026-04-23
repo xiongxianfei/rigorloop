@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- none yet
+- [2026-04-23 Implement first-attempt correctness](plans/2026-04-23-implement-first-attempt-correctness.md) - active execution plan for adding observable first-pass completeness wording to `implement`, aligning `workflow`, and updating only the summary or generated surfaces that would otherwise become stale.
 
 ## Blocked
 - none yet
