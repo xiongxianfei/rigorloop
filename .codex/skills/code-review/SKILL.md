@@ -33,7 +33,7 @@ Prefer a fresh session, separate reviewer, or separate agent when available. If 
 
 - Ground the review in the actual diff or changed files, approved upstream artifacts, checklist coverage, and available validation evidence.
 - Do not treat remembered implementation intent, chat memory, or passing tests alone as sufficient review grounding.
-- If you cannot inspect the actual diff, relevant tests, or authoritative upstream artifacts, the review result must be `inconclusive`.
+- If you cannot inspect the actual diff, relevant tests, or authoritative upstream artifacts, do not return `clean-with-notes`. Use `changes-requested` or `blocked` when the review surface independently supports a finding; otherwise use `inconclusive`.
 
 ## Review surface and tracked governing branch state
 
