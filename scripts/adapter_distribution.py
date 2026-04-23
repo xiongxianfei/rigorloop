@@ -221,6 +221,19 @@ def evaluate_skill(target: Path) -> SkillPortabilityReport:
     )
 
 
+def _yaml_double_quoted(value: str) -> str:
+    replacements = {
+        "\\": "\\\\",
+        '"': '\\"',
+        "\b": "\\b",
+        "\f": "\\f",
+        "\n": "\\n",
+        "\r": "\\r",
+        "\t": "\\t",
+    }
+    return '"' + "".join(replacements.get(char, char) for char in value) + '"'
+
+
 def render_manifest_yaml(version: str, reports: Iterable[SkillPortabilityReport]) -> str:
     """Render the constrained generated adapter manifest shape deterministically."""
 
@@ -230,6 +243,6 @@ def render_manifest_yaml(version: str, reports: Iterable[SkillPortabilityReport]
         lines.append(f"    portable: {str(report.portable).lower()}")
         lines.append(f"    adapters: [{', '.join(report.included_adapters)}]")
         if not report.portable:
-            lines.append(f"    reason: {report.reason}")
+            lines.append(f"    reason: {_yaml_double_quoted(report.reason)}")
     lines.append("")
     return "\n".join(lines)
