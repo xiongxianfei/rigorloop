@@ -50,9 +50,10 @@ Given the user asks only for `code-review`
 When the reviewer finds actionable issues
 Then `code-review` emits the first-pass review record and stops instead of entering `review-resolution`.
 
-### Example E4: missing evidence produces an inconclusive result
+### Example E4: missing evidence produces an inconclusive result only when no supported finding remains
 
-Given `code-review` cannot inspect the actual diff, relevant tests, or authoritative upstream artifacts
+Given `code-review` cannot inspect enough evidence to ground a clean result
+And the available review surface does not independently support a fixable or blocking finding
 When the review runs
 Then the result is `inconclusive`, the missing evidence is reported explicitly, and the workflow does not enter `review-resolution`.
 
@@ -135,7 +136,7 @@ R6. A clean review outcome MUST be evidence-backed.
 
 R6a. A `clean-with-notes` first-pass review record MUST identify the review inputs, checklist coverage, diff summary, and no-finding rationale grounding the result in the actual diff, upstream artifacts, and validation evidence.
 
-R6b. A review MUST NOT claim a credible clean result when the reviewer cannot inspect the required evidence. It MUST use `inconclusive` instead.
+R6b. A review MUST NOT claim a credible clean result when the reviewer cannot inspect the required evidence. It MUST use `inconclusive` when missing evidence prevents both a supported finding and a clean conclusion.
 
 R6c. Passing tests alone or remembered implementation reasoning alone MUST NOT be treated as a sufficient basis for `clean-with-notes`.
 
@@ -186,7 +187,7 @@ Outputs:
 ## Error and boundary behavior
 
 - If `code-review` cannot inspect the actual diff, the result MUST be `inconclusive`.
-- If authoritative upstream artifacts needed to ground the review are unavailable, the result MUST be `inconclusive` unless a higher-priority policy requires a stronger blocker.
+- If authoritative upstream artifacts needed to ground a clean result are unavailable, `code-review` MUST NOT return `clean-with-notes`. It MAY still return `changes-requested` or `blocked` when the inspectable review surface independently supports a finding; otherwise the result MUST be `inconclusive`.
 - If findings require a product, spec, architecture, ADR, or scope decision, the result MUST be `blocked`.
 - If the user explicitly asks to stop after review, `code-review` MUST stop after the first-pass review record even when the findings are otherwise fixable.
 - If a higher-priority repository policy requires human review for a sensitive finding, the workflow MUST stop instead of auto-entering `review-resolution`.
@@ -278,7 +279,7 @@ No blocking findings were found because:
 1. A workflow-managed clean review continues to `verify` only when it includes checklist coverage and no-finding rationale.
 2. Fixable findings become visible before `review-resolution` begins.
 3. A review-only or isolated `code-review` request stops after the first-pass review record.
-4. Missing diff, tests, or authoritative upstream artifacts produce `inconclusive`.
+4. Missing diff produces `inconclusive`, and missing authoritative upstream artifacts prevent a clean result unless the review surface independently supports `changes-requested` or `blocked`.
 5. Findings that require product, spec, architecture, ADR, or scope decisions produce `blocked`.
 6. Sensitive change classes require stronger explicit coverage than a generic clean summary.
 7. An explicit user request to stop after review overrides automatic entry into `review-resolution`.

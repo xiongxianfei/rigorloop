@@ -52,7 +52,7 @@
 | `E1` | `T3`, `T5` | Workflow-managed clean review continues to `verify` only when the clean result is evidence-backed |
 | `E2` | `T2`, `T3` | First-pass findings appear before any `review-resolution` work begins |
 | `E3` | `T4` | Isolated or review-only `code-review` stops after the first-pass record |
-| `E4` | `T4` | Missing diff/tests/upstream artifacts force `inconclusive` |
+| `E4` | `T4` | Missing evidence yields `inconclusive` only when no supported actionable finding remains |
 | `E5` | `T4` | Decision-requiring findings use `blocked` and stop |
 | `E6` | `T6` | Sensitive change classes require stronger explicit coverage |
 
@@ -61,7 +61,7 @@
 - Edge case 1: workflow-managed clean review continues to `verify` only when checklist coverage and no-finding rationale are present: `T3`, `T5`
 - Edge case 2: fixable findings become visible before `review-resolution` begins: `T2`, `T3`
 - Edge case 3: isolated or review-only `code-review` stops after the first-pass review record: `T4`
-- Edge case 4: missing diff, tests, or authoritative upstream artifacts produces `inconclusive`: `T4`
+- Edge case 4: missing evidence prevents `clean-with-notes`, but missing authoritative upstream artifacts do not suppress supported `changes-requested` or `blocked` findings: `T4`
 - Edge case 5: product/spec/architecture/ADR/scope decisions produce `blocked`: `T4`
 - Edge case 6: sensitive change classes require stronger explicit coverage than a generic clean summary: `T6`
 - Edge case 7: explicit user stop-after-review instructions override automatic entry into `review-resolution`: `T4`
@@ -150,14 +150,15 @@
 - Steps:
   - Review the touched `code-review` and workflow guidance for stop conditions and isolated-stage behavior.
   - Confirm `blocked` is used when findings require a product decision, spec approval, architecture or ADR approval, scope expansion, or a higher-priority repository policy that requires human review.
-  - Confirm `inconclusive` is used when the reviewer cannot inspect the actual diff, relevant tests, or authoritative upstream artifacts.
+  - Confirm `inconclusive` is used when the reviewer cannot inspect enough evidence to support either a clean result or a supported actionable finding.
+  - Confirm missing authoritative upstream artifacts prevent `clean-with-notes` but do not suppress independently supported `changes-requested` or `blocked` findings from the review surface.
   - Confirm `blocked` and `inconclusive` do not auto-enter `review-resolution`.
   - Confirm direct isolated or review-only `code-review` stops after the first-pass record.
   - Confirm an explicit user request to stop after review overrides otherwise-fixable automatic continuation.
 - Expected result:
-  - The workflow now distinguishes fixable review findings from real blockers or missing evidence without surprise continuation.
+  - The workflow now distinguishes fixable review findings from real blockers or missing evidence without surprise continuation, and it does not force `inconclusive` when the review surface already supports a finding.
 - Failure proves:
-  - The repository could still fix forward when it should stop, or it could blur `blocked`, `inconclusive`, and isolated-review behavior.
+  - The repository could still fix forward when it should stop, or it could blur `blocked`, `changes-requested`, `inconclusive`, and isolated-review behavior.
 - Automation location:
   - Manual review during M1.
 

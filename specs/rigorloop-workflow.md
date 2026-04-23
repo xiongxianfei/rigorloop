@@ -31,6 +31,14 @@ RigorLoop is a Git-first starter kit. It does not replace pull requests, CI, or 
 - `downstream readiness`: an assessment of whether a later stage can be relied on after required intermediate stages complete.
 - `eventual test-spec readiness`: the downstream-readiness assessment for later `test-spec` authoring.
 - `stop condition`: a documented reason the workflow must stop rather than continue into downstream reliance or stage continuation.
+- `review surface`: the changed files, staged diff, unstaged diff, PR diff, patch, or commit range being inspected by `code-review`.
+- `tracked governing branch state`: the tracked Git state that can support branch-scoped authority or readiness conclusions for the reviewed change.
+- `governing artifact`: a proposal, spec, test spec, architecture document, ADR, plan, or other cited workflow artifact used as review or readiness authority.
+- `local-only governing artifact`: a governing artifact visible in the local worktree but absent from tracked governing branch state.
+- `branch-ready`: the `verify` stage conclusion that the tracked branch state satisfies required validation and authoritative-artifact checks.
+- `pr-body-ready`: the `pr` stage conclusion that the PR body is accurate, concise, and grounded in verified artifacts.
+- `pr-open-ready`: the `pr` stage conclusion that branch, base, remote, worktree, PR body, and action prerequisites are ready for PR opening.
+- `direct proof`: targeted evidence tied to a named requirement or test-spec item, such as a targeted test, targeted validation output, or an explicit manual verification note when manual verification is allowed.
 
 ## Examples first
 
@@ -179,6 +187,44 @@ R7p. `plan-review` remains the normal immediate handoff into `test-spec`. If it 
 
 R7q. `test-spec` authoring MUST continue to require an approved feature spec, spec-review findings, a concrete execution plan, and approved architecture or ADR inputs when relevant to the changed boundaries.
 
+R7r. Workflow-facing execution and review stages MUST keep stage-owned language and branch-scoped authority claims distinct.
+
+R7ra. `implement` MAY report implementation completion, milestone validation, blockers, readiness for `code-review`, or the next milestone, but it MUST NOT claim completed review findings or `branch-ready`.
+
+R7rb. `code-review` owns first-pass review findings and review-status conclusions.
+
+R7rc. `verify` owns `branch-ready`.
+
+R7rd. `pr` owns `pr-body-ready` and `pr-open-ready`.
+
+R7re. Workflow-facing outputs SHOULD avoid unqualified `PR-ready` as live guidance or status language. Unqualified `PR-ready` MAY remain only as negative guidance, historical context, or a quoted term definition.
+
+R7s. The tracked-branch requirement MUST apply to branch-scoped authority and readiness claims, not as a blanket rule that every reviewed code change is already committed.
+
+R7sa. `code-review` MAY inspect a review surface consisting of changed files, staged changes, unstaged diffs, PR diffs, or commit ranges, depending on the review context.
+
+R7sb. When `code-review` cites a governing artifact as authoritative support for a clean branch-scoped conclusion, it MUST confirm that artifact is present in tracked governing branch state.
+
+R7sc. A local-only governing artifact MAY inform reviewer background understanding, but it MUST NOT support a clean branch-scoped conclusion.
+
+R7t. Missing tracked governing authority MUST prevent `clean-with-notes`, but it MUST NOT suppress independently supported findings.
+
+R7ta. When the review surface independently supports a fixable defect, `code-review` MUST use `changes-requested` even if tracked governing authority for a clean result is incomplete.
+
+R7tb. When the review surface independently supports a blocking defect, `code-review` MUST use `blocked` even if tracked governing authority for a clean result is incomplete.
+
+R7tc. `code-review` MUST use `inconclusive` only when missing evidence prevents both a supported finding and a clean conclusion.
+
+R7u. When `verify` evaluates `branch-ready`, required authoritative artifacts missing from tracked governing branch state MUST be treated as a blocking condition.
+
+R7v. Clean branch-scoped review conclusions for named edge cases MUST cite direct proof. Code-shape inference alone is insufficient.
+
+R7va. Actionable named edge-case proof gaps MUST be reported as findings rather than allowed inside a clean result.
+
+R7vb. Unresolved named edge-case proof gaps MUST block `branch-ready`.
+
+R7w. These branch-reality and traceability rules supplement the earlier `code-review` independence contract. They MUST NOT remove the first-pass review record, approved review statuses, workflow-managed `review-resolution` handoff for fixable findings, or isolated-review stop behavior defined by the governing workflow artifacts.
+
 R8. The starter kit MUST treat the following stages as enforced for every contributed change:
 - implement;
 - verify;
@@ -210,7 +256,7 @@ R8h. When the outcome is already known before PR creation, a `Done` transition S
 
 R8i. `Blocked` and `Superseded` lifecycle transitions for planned initiatives MUST be recorded as soon as they are decided.
 
-R8j. `verify` MUST treat stale lifecycle state between `docs/plan.md` and the plan body as blocking PR readiness for planned initiatives.
+R8j. `verify` MUST treat stale lifecycle state between `docs/plan.md` and the plan body as blocking `branch-ready` for planned initiatives.
 
 R8ja. At minimum, stale lifecycle state includes:
 - a completed, blocked, or superseded planned initiative still listed under `## Active`;

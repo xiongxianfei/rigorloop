@@ -1,0 +1,126 @@
+change_id: 2026-04-22-code-review-branch-reality-and-traceability
+title: Implement code-review branch reality and traceability alignment
+classification: default
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-04-22-code-review-branch-reality-and-traceability.md
+  spec: specs/code-review-branch-reality-and-traceability.md
+  plan: docs/plans/2026-04-22-code-review-branch-reality-and-traceability.md
+  test_spec: specs/code-review-branch-reality-and-traceability.test.md
+  explain_change: docs/changes/2026-04-22-code-review-branch-reality-and-traceability/explain-change.md
+requirements:
+  - R1
+  - R1a
+  - R1b
+  - R1c
+  - R1d
+  - R1e
+  - R1f
+  - R2
+  - R2a
+  - R2b
+  - R2c
+  - R2d
+  - R2e
+  - R2f
+  - R2g
+  - R2h
+  - R2i
+  - R2j
+  - R2k
+  - R2l
+  - R2m
+  - R2n
+  - R3
+  - R3a
+  - R3b
+  - R3c
+  - R3d
+  - R3e
+  - R3f
+  - R4
+  - R4a
+  - R4b
+  - R4c
+  - R4d
+  - R4e
+tests:
+  - T1
+  - T2
+  - T3
+  - T4
+  - T5
+  - T6
+  - T7
+  - T8
+  - T9
+validation:
+  - command: python scripts/validate-skills.py
+    result: pass
+  - command: python scripts/test-skill-validator.py
+    result: pass
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass
+  - command: python scripts/build-skills.py
+    result: pass
+  - command: python scripts/build-skills.py --check
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-22-code-review-branch-reality-and-traceability/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-22-code-review-branch-reality-and-traceability.md --path specs/code-review-branch-reality-and-traceability.md --path specs/rigorloop-workflow.md --path specs/code-review-branch-reality-and-traceability.test.md --path docs/plans/2026-04-22-code-review-branch-reality-and-traceability.md
+    result: pass
+  - command: rg -n 'review surface|tracked governing branch state|branch-ready|pr-body-ready|pr-open-ready|clean-with-notes|changes-requested|blocked|inconclusive|direct proof|PR-ready' skills/implement/SKILL.md skills/code-review/SKILL.md skills/verify/SKILL.md skills/workflow/SKILL.md skills/pr/SKILL.md skills/explain-change/SKILL.md docs/workflows.md specs/code-review-branch-reality-and-traceability.md specs/rigorloop-workflow.md .codex/skills
+    result: pass
+  - command: rg -n 'workflow|review|verify|pr-ready|branch-ready|pr-body-ready|pr-open-ready' AGENTS.md CONSTITUTION.md docs/workflows.md specs/rigorloop-workflow.md
+    result: pass
+  - command: git diff --check -- specs/code-review-branch-reality-and-traceability.test.md specs/code-review-branch-reality-and-traceability.md specs/rigorloop-workflow.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/verify/SKILL.md skills/workflow/SKILL.md skills/pr/SKILL.md skills/explain-change/SKILL.md docs/workflows.md docs/changes/2026-04-22-code-review-branch-reality-and-traceability .codex/skills AGENTS.md CONSTITUTION.md docs/plans/2026-04-22-code-review-branch-reality-and-traceability.md docs/plan.md
+    result: pass
+  - command: bash scripts/ci.sh
+    result: pass
+  - command: rg -n '^## (Active|Blocked|Done|Superseded)$|2026-04-22-code-review-branch-reality-and-traceability' docs/plan.md
+    result: pass
+  - command: git diff --check -- docs/plan.md docs/plans/2026-04-22-code-review-branch-reality-and-traceability.md specs/code-review-branch-reality-and-traceability.test.md docs/changes/2026-04-22-code-review-branch-reality-and-traceability/change.yaml docs/changes/2026-04-22-code-review-branch-reality-and-traceability/explain-change.md
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-22-code-review-branch-reality-and-traceability.md --path specs/code-review-branch-reality-and-traceability.md --path specs/rigorloop-workflow.md --path specs/code-review-branch-reality-and-traceability.test.md --path docs/plans/2026-04-22-code-review-branch-reality-and-traceability.md --path specs/code-review-independence-under-autoprogression.md --path specs/code-review-independence-under-autoprogression.test.md
+    result: pass
+  - command: git diff --check -- skills/code-review/SKILL.md .codex/skills/code-review/SKILL.md specs/code-review-independence-under-autoprogression.md specs/code-review-independence-under-autoprogression.test.md
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/plan-index-lifecycle-ownership.md --path specs/rigorloop-workflow.md
+    result: pass
+  - command: rg -n '\bPR-ready\b|\bPR readiness\b|\bbranch-ready\b' specs/plan-index-lifecycle-ownership.md specs/rigorloop-workflow.md
+    result: pass
+  - command: git diff --check -- specs/plan-index-lifecycle-ownership.md specs/rigorloop-workflow.md
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-22-code-review-branch-reality-and-traceability.md --path specs/code-review-branch-reality-and-traceability.md --path specs/code-review-branch-reality-and-traceability.test.md --path docs/plans/2026-04-22-code-review-branch-reality-and-traceability.md
+    result: pass
+  - command: git diff --check -- docs/plan.md docs/plans/2026-04-22-code-review-branch-reality-and-traceability.md specs/code-review-branch-reality-and-traceability.test.md docs/changes/2026-04-22-code-review-branch-reality-and-traceability/change.yaml docs/changes/2026-04-22-code-review-branch-reality-and-traceability/explain-change.md specs/plan-index-lifecycle-ownership.md specs/rigorloop-workflow.md
+    result: pass
+changed_files:
+  - .codex/skills/code-review/SKILL.md
+  - .codex/skills/explain-change/SKILL.md
+  - .codex/skills/implement/SKILL.md
+  - .codex/skills/pr/SKILL.md
+  - .codex/skills/verify/SKILL.md
+  - .codex/skills/workflow/SKILL.md
+  - docs/changes/2026-04-22-code-review-branch-reality-and-traceability/change.yaml
+  - docs/changes/2026-04-22-code-review-branch-reality-and-traceability/explain-change.md
+  - docs/plan.md
+  - docs/plans/2026-04-22-code-review-branch-reality-and-traceability.md
+  - docs/proposals/2026-04-22-code-review-branch-reality-and-traceability.md
+  - docs/workflows.md
+  - skills/code-review/SKILL.md
+  - skills/explain-change/SKILL.md
+  - skills/implement/SKILL.md
+  - skills/pr/SKILL.md
+  - skills/verify/SKILL.md
+  - skills/workflow/SKILL.md
+  - specs/code-review-independence-under-autoprogression.md
+  - specs/code-review-independence-under-autoprogression.test.md
+  - specs/code-review-branch-reality-and-traceability.md
+  - specs/code-review-branch-reality-and-traceability.test.md
+  - specs/plan-index-lifecycle-ownership.md
+  - specs/rigorloop-workflow.md
+review:
+  status: clean_with_notes
+  unresolved_items: 0
+  location: docs/plans/2026-04-22-code-review-branch-reality-and-traceability.md
