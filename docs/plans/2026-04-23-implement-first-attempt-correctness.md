@@ -3,7 +3,7 @@
 - Status: active
 - Owner: maintainer + Codex
 - Start date: 2026-04-23
-- Last updated: 2026-04-23
+- Last updated: 2026-04-24
 - Related issue or PR: none
 - Supersedes: none
 
@@ -243,6 +243,7 @@ The implementation must stay inside the approved first slice:
 - [x] 2026-04-23: isolated `plan-review` approved the one-milestone slice and preserved `test-spec` as the immediate next authoring stage.
 - [x] 2026-04-23: `specs/implement-first-attempt-correctness.test.md` created and activated as the focused proof surface for M1.
 - [x] 2026-04-23: `M1` completed. `skills/implement/SKILL.md`, `skills/workflow/SKILL.md`, and `docs/workflows.md` now use the approved first-pass completeness vocabulary; the required change-local pack exists; generated `.codex/skills/` output is synchronized; and the aligned-surface audit closed with `docs/workflows.md` plus generated `.codex/skills/` marked `update`, `AGENTS.md` marked `no-change` with rationale, and `CONSTITUTION.md` marked `no-change` with rationale.
+- [x] 2026-04-24: isolated `code-review` found stale readiness text in the touched proposal and spec; the follow-up implementation synced both settled artifacts to `code-review`, updated change-local reasoning, and reran narrow lifecycle validation for the touched artifact set.
 
 ## Decision log
 
@@ -292,6 +293,12 @@ The implementation must stay inside the approved first slice:
   - `git diff --check -- skills/implement/SKILL.md skills/workflow/SKILL.md docs/workflows.md specs/implement-first-attempt-correctness.test.md docs/changes/2026-04-23-implement-first-attempt-correctness .codex/skills docs/plans/2026-04-23-implement-first-attempt-correctness.md docs/plan.md AGENTS.md CONSTITUTION.md`
   - Result: passed.
   - Optional broad smoke `bash scripts/ci.sh` was intentionally not run at this handoff because the approved M1 gate requires targeted proof before `code-review`, not broad smoke.
+- 2026-04-24: review-driven lifecycle fix updated the accepted proposal and approved spec so their readiness text matches the active plan and active test spec after `M1` completion.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-04-23-implement-first-attempt-correctness/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-23-implement-first-attempt-correctness.md --path specs/implement-first-attempt-correctness.md --path specs/implement-first-attempt-correctness.test.md --path docs/plans/2026-04-23-implement-first-attempt-correctness.md`
+  - `git diff --check -- docs/proposals/2026-04-23-implement-first-attempt-correctness.md specs/implement-first-attempt-correctness.md specs/implement-first-attempt-correctness.test.md docs/plans/2026-04-23-implement-first-attempt-correctness.md docs/changes/2026-04-23-implement-first-attempt-correctness`
+  - Result: passed.
+  - Recommended next stage: rerun `code-review`
 
 ## Outcome and retrospective
 
