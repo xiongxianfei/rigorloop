@@ -246,6 +246,7 @@ The implementation must stay inside the approved first slice:
 - [x] 2026-04-24: isolated `code-review` found stale readiness text in the touched proposal and spec; the follow-up implementation synced both settled artifacts to `code-review`, updated change-local reasoning, and reran narrow lifecycle validation for the touched artifact set.
 - [x] 2026-04-24: first-pass `code-review` rerun completed with `clean-with-notes` and no required changes.
 - [x] 2026-04-24: post-review lifecycle bookkeeping was synchronized so the settled artifacts, active test spec, active plan, and change-local pack all point to `verify` as the next stage.
+- [x] 2026-04-24: `verify` passed with no blockers, no stale lifecycle drift, and no missing evidence, so the initiative is ready for `explain-change`.
 
 ## Decision log
 
@@ -313,16 +314,34 @@ The implementation must stay inside the approved first slice:
   - `git diff --check -- docs/proposals/2026-04-23-implement-first-attempt-correctness.md specs/implement-first-attempt-correctness.md specs/implement-first-attempt-correctness.test.md docs/plans/2026-04-23-implement-first-attempt-correctness.md docs/changes/2026-04-23-implement-first-attempt-correctness`
   - Result: passed.
   - Recommended next stage: rerun `verify`
+- 2026-04-24: No `docs/plan.md` lifecycle update was needed after `verify`. The initiative remains active, and the existing active-plan index entry stays truthful while the plan body moves from `verify` readiness into downstream `explain-change` readiness.
+- 2026-04-24: `verify` passed on the implementation plus the post-review lifecycle bookkeeping.
+  - Verification verdict: `ready`
+  - Validation commands:
+    - `python scripts/validate-skills.py`
+    - `python scripts/test-skill-validator.py`
+    - `python scripts/test-change-metadata-validator.py`
+    - `python scripts/test-artifact-lifecycle-validator.py`
+    - `python scripts/build-skills.py --check`
+    - `python scripts/validate-change-metadata.py docs/changes/2026-04-23-implement-first-attempt-correctness/change.yaml`
+    - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-23-implement-first-attempt-correctness.md --path specs/implement-first-attempt-correctness.md --path specs/implement-first-attempt-correctness.test.md --path docs/plans/2026-04-23-implement-first-attempt-correctness.md`
+    - `rg -n '^## (Active|Blocked|Done|Superseded)$|2026-04-23-implement-first-attempt-correctness' docs/plan.md`
+    - `git diff --check -- docs/proposals/2026-04-23-implement-first-attempt-correctness.md specs/implement-first-attempt-correctness.md specs/implement-first-attempt-correctness.test.md docs/plans/2026-04-23-implement-first-attempt-correctness.md docs/changes/2026-04-23-implement-first-attempt-correctness`
+    - `bash scripts/ci.sh`
+  - CI status: local repo-owned CI wrapper passed via `bash scripts/ci.sh`; hosted CI remains unobserved from this environment.
+  - Artifact drift: none blocking after updating the settled artifacts, active test spec, active plan, and change-local pack to reflect the clean review result and the ready verify outcome.
+  - Remaining risks: hosted CI and eventual PR base-branch readiness still need downstream observation.
+  - Recommended next stage: `explain-change`
 
 ## Outcome and retrospective
 
-- `M1` is complete and the initiative remains active for `verify`.
+- `M1` is complete and the initiative remains active for `explain-change`.
 - The aligned-surface audit closed with `docs/workflows.md` and generated `.codex/skills/` updated, and `AGENTS.md` plus `CONSTITUTION.md` explicitly kept unchanged with rationale.
-- First-pass `code-review` completed with `clean-with-notes`; `verify` and any broader follow-up beyond this first slice remain pending.
+- First-pass `code-review` completed with `clean-with-notes`, and `verify` completed with verdict `ready`; any broader follow-up beyond this first slice remains pending.
 
 ## Readiness
 
 - This plan is active.
-- `M1` implementation, targeted pre-`code-review` proof, and first-pass `code-review` are complete.
-- The immediate next repository stage is `verify`.
-- This plan is ready for `verify`.
+- `M1` implementation, targeted pre-`code-review` proof, first-pass `code-review`, and `verify` are complete.
+- The immediate next repository stage is `explain-change`.
+- This plan is ready for `explain-change`.
