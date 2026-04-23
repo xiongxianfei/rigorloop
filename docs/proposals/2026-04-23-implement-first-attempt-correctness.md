@@ -340,9 +340,12 @@ Rollback:
 ## Follow-on artifacts
 
 - `specs/implement-first-attempt-correctness.md`
+- `docs/plans/2026-04-23-implement-first-attempt-correctness.md`
+- `specs/implement-first-attempt-correctness.test.md`
 
 ## Readiness
 
 - Proposal review is complete. This proposal is accepted.
-- The focused spec now exists at `specs/implement-first-attempt-correctness.md`.
-- The next stage is `spec-review`.
+- The focused spec, active plan, and active test spec now exist for this slice.
+- `M1` implementation is complete under the active plan.
+- The next stage is `code-review`.

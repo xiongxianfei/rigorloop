@@ -344,6 +344,8 @@ No separate architecture artifact is expected for this slice.
 
 A concrete execution plan now exists at `docs/plans/2026-04-23-implement-first-attempt-correctness.md`.
 
-The active test spec now exists.
+The active test spec and required change-local artifacts now exist.
 
-Implementation may proceed under the active plan and active test spec.
+`M1` implementation is complete under the active plan.
+
+The next stage is `code-review`.

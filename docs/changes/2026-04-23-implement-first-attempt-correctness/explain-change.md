@@ -26,6 +26,7 @@ The repository had an approved spec for first-pass correctness, but the canonica
 | `skills/workflow/SKILL.md` | mirrors the new implementation-stage vocabulary under execution-stage claim ownership without widening routing behavior | keep the lifecycle entrypoint aligned with `implement` while preserving stage order and ownership boundaries | `R6`-`R6d`, `R8c` | focused test spec `T5`, targeted wording review |
 | `docs/workflows.md` | adds the short-form summary of first-pass acceptable result, unaffected-rationale handling, and preventable first-pass misses | avoid summary drift after canonical skill wording changed | `R8d` | targeted wording review and vocabulary grep proof |
 | `.codex/skills/` mirrors | regenerated derived skill surfaces from canonical `skills/` | keep generated adapter guidance synchronized with canonical workflow wording | `R8e` | `python scripts/build-skills.py`, `python scripts/build-skills.py --check` |
+| `docs/proposals/2026-04-23-implement-first-attempt-correctness.md`, `specs/implement-first-attempt-correctness.md` | sync settled-artifact readiness text from earlier authoring-stage wording to the real post-implementation next stage | keep touched lifecycle-managed artifacts truthful after `M1` completion and avoid stale earlier-stage readiness claims | lifecycle-truthfulness rules, isolated `code-review` finding | `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-23-implement-first-attempt-correctness.md --path specs/implement-first-attempt-correctness.md --path specs/implement-first-attempt-correctness.test.md --path docs/plans/2026-04-23-implement-first-attempt-correctness.md`, `git diff --check -- docs/proposals/2026-04-23-implement-first-attempt-correctness.md specs/implement-first-attempt-correctness.md specs/implement-first-attempt-correctness.test.md docs/plans/2026-04-23-implement-first-attempt-correctness.md docs/changes/2026-04-23-implement-first-attempt-correctness` |
 | `docs/plans/2026-04-23-implement-first-attempt-correctness.md` | closes the aligned-surface audit, records final `update` and `no-change` decisions, and logs targeted implementation proof | use the active plan as the authoritative pre-`code-review` audit surface required by this slice | `R5b`, `R5ba`, `R7c` | plan audit review, lifecycle validation |
 | `docs/changes/2026-04-23-implement-first-attempt-correctness/` | creates the baseline change-local pack for this ordinary non-trivial workflow change | satisfy the repository docs-changes contract while leaving durable rationale for the implementation slice | docs-changes baseline contract, M1 plan | `python scripts/validate-change-metadata.py docs/changes/2026-04-23-implement-first-attempt-correctness/change.yaml` |
 | `specs/implement-first-attempt-correctness.test.md` | advances test-spec readiness from `implement` to `code-review` after implementation completes | keep the active proof-planning artifact truthful about the next stage | active test-spec lifecycle rules | artifact-lifecycle validation, plan alignment review |
@@ -50,7 +51,7 @@ The repository had an approved spec for first-pass correctness, but the canonica
 
 - `code-review`
   - Status: pending
-  - Result: this implementation invocation stops before review because the user requested the isolated `implement` stage
+  - Result: one isolated `code-review` finding identified stale readiness text in the touched proposal and spec; this follow-up sync addresses that finding and a rerun is still required
 - `verify`
   - Status: pending
   - Result: not started in this invocation
@@ -66,6 +67,9 @@ The repository had an approved spec for first-pass correctness, but the canonica
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/implement-first-attempt-correctness.md --path specs/implement-first-attempt-correctness.test.md --path docs/plans/2026-04-23-implement-first-attempt-correctness.md`
 - `rg -n 'first-pass acceptable result|required edge case|smallest scope-complete change|preventable first-pass miss|unaffected with rationale|code-review' skills/implement/SKILL.md skills/workflow/SKILL.md docs/workflows.md .codex/skills`
 - `git diff --check -- skills/implement/SKILL.md skills/workflow/SKILL.md docs/workflows.md specs/implement-first-attempt-correctness.test.md docs/changes/2026-04-23-implement-first-attempt-correctness .codex/skills docs/plans/2026-04-23-implement-first-attempt-correctness.md docs/plan.md AGENTS.md CONSTITUTION.md`
+- `python scripts/validate-change-metadata.py docs/changes/2026-04-23-implement-first-attempt-correctness/change.yaml`
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-23-implement-first-attempt-correctness.md --path specs/implement-first-attempt-correctness.md --path specs/implement-first-attempt-correctness.test.md --path docs/plans/2026-04-23-implement-first-attempt-correctness.md`
+- `git diff --check -- docs/proposals/2026-04-23-implement-first-attempt-correctness.md specs/implement-first-attempt-correctness.md specs/implement-first-attempt-correctness.test.md docs/plans/2026-04-23-implement-first-attempt-correctness.md docs/changes/2026-04-23-implement-first-attempt-correctness`
 - Hosted CI status: unobserved from this environment
 
 ## Alternatives rejected
