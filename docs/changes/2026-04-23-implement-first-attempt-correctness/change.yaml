@@ -84,6 +84,8 @@ validation:
     result: pass
   - command: git diff --check -- docs/proposals/2026-04-23-implement-first-attempt-correctness.md specs/implement-first-attempt-correctness.md specs/implement-first-attempt-correctness.test.md docs/plans/2026-04-23-implement-first-attempt-correctness.md docs/changes/2026-04-23-implement-first-attempt-correctness
     result: pass
+  - command: rg -n '^## (Active|Blocked|Done|Superseded)$|2026-04-23-implement-first-attempt-correctness' docs/plan.md
+    result: pass
 changed_files:
   - .codex/skills/implement/SKILL.md
   - .codex/skills/workflow/SKILL.md
@@ -98,5 +100,6 @@ changed_files:
   - specs/implement-first-attempt-correctness.md
   - specs/implement-first-attempt-correctness.test.md
 review:
-  status: pending
+  status: clean_with_notes
   unresolved_items: 0
+  location: docs/plans/2026-04-23-implement-first-attempt-correctness.md
