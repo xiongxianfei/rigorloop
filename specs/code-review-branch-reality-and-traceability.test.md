@@ -395,8 +395,10 @@ This test spec is active.
 
 It remained aligned through implementation, first-pass `code-review`, and `verify` for `docs/plans/2026-04-22-code-review-branch-reality-and-traceability.md`.
 
+It also remained aligned through the 2026-04-23 mixed-evidence follow-up and the later local overlap-spec cleanup for `specs/plan-index-lifecycle-ownership.md` and `specs/rigorloop-workflow.md`.
+
 No separate architecture artifact is expected for this slice.
 
-The next stage is `explain-change`.
+The next stage is `pr`.
 
 If implementation reveals a need for architecture or a broader workflow redesign, stop and return to the appropriate upstream gate instead of proceeding on this test spec alone.

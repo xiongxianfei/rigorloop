@@ -1,9 +1,9 @@
 # Code review branch reality and traceability plan
 
-- Status: active
+- Status: done
 - Owner: maintainer + Codex
 - Start date: 2026-04-22
-- Last updated: 2026-04-22
+- Last updated: 2026-04-23
 - Related issue or PR: none
 - Supersedes: none
 
@@ -393,21 +393,66 @@ The implementation must stay inside the approved first slice:
   - CI status: local repo-owned CI wrapper passed via `bash scripts/ci.sh`; hosted CI remains unobserved from this environment.
   - Artifact drift: none blocking for the follow-up diff.
   - Recommended next stage: `explain-change`
+- 2026-04-23: isolated code-review found one remaining live readiness-term overlap after the mixed-evidence follow-up.
+  - Findings:
+    - `major`: `specs/plan-index-lifecycle-ownership.md` still used broad `PR readiness` in verify-owned lifecycle-state rules.
+    - `major`: `specs/rigorloop-workflow.md` still used broad `PR readiness` in `R8j`, which conflicted with the approved `branch-ready` ownership split.
+  - Resolution:
+    - local follow-up updates `specs/plan-index-lifecycle-ownership.md` and `specs/rigorloop-workflow.md` so `verify` blocks `branch-ready`, not broad `PR readiness`, when stale lifecycle state remains.
+  - Validation commands:
+    - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/plan-index-lifecycle-ownership.md --path specs/rigorloop-workflow.md`
+    - `rg -n '\bPR-ready\b|\bPR readiness\b|\bbranch-ready\b' specs/plan-index-lifecycle-ownership.md specs/rigorloop-workflow.md`
+    - `git diff --check -- specs/plan-index-lifecycle-ownership.md specs/rigorloop-workflow.md`
+  - Result: passed.
+- 2026-04-23: bookkeeping follow-up recorded the local spec-overlap fix in the active plan and change metadata.
+  - Result: the narrow follow-up is now recorded durably; rerun `verify` is the next stage before `explain-change`.
+- 2026-04-23: isolated `verify` rerun passed on the local spec-overlap follow-up.
+  - Verification verdict: `ready`
+  - Validation commands:
+    - `python scripts/validate-change-metadata.py docs/changes/2026-04-22-code-review-branch-reality-and-traceability/change.yaml`
+    - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-04-22-code-review-branch-reality-and-traceability.md --path specs/plan-index-lifecycle-ownership.md --path specs/rigorloop-workflow.md`
+    - `git diff --check -- docs/plans/2026-04-22-code-review-branch-reality-and-traceability.md docs/changes/2026-04-22-code-review-branch-reality-and-traceability/change.yaml specs/plan-index-lifecycle-ownership.md specs/rigorloop-workflow.md`
+    - `rg -n '^## (Active|Blocked|Done|Superseded)$|2026-04-22-code-review-branch-reality-and-traceability' docs/plan.md`
+    - `rg -n '\bPR-ready\b|\bPR readiness\b|\bbranch-ready\b' specs/plan-index-lifecycle-ownership.md specs/rigorloop-workflow.md`
+  - CI status: hosted CI remains unobserved; `bash scripts/ci.sh` was not rerun for this narrow local spec-and-bookkeeping follow-up.
+  - Artifact drift: none blocking after the plan and change metadata were updated.
+  - Recommended next stage: `explain-change`
+- 2026-04-23: `explain-change` was updated for the local spec-overlap follow-up.
+  - Result: the durable explanation now covers the main implementation, the mixed-evidence review-resolution update, and the later overlap-spec terminology fix.
+  - Recommended next stage: `pr`
+- 2026-04-23: the initiative moved to `Done` on-branch before `pr`.
+  - Lifecycle updates: `docs/plan.md` now lists this initiative under `Done`, and this plan header is `done`.
+  - Validation commands:
+    - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-22-code-review-branch-reality-and-traceability.md --path specs/code-review-branch-reality-and-traceability.md --path specs/code-review-branch-reality-and-traceability.test.md --path docs/plans/2026-04-22-code-review-branch-reality-and-traceability.md`
+    - `git diff --check -- docs/plan.md docs/plans/2026-04-22-code-review-branch-reality-and-traceability.md specs/code-review-branch-reality-and-traceability.test.md docs/changes/2026-04-22-code-review-branch-reality-and-traceability/change.yaml docs/changes/2026-04-22-code-review-branch-reality-and-traceability/explain-change.md specs/plan-index-lifecycle-ownership.md specs/rigorloop-workflow.md`
+  - Result: passed.
+  - Recommended next stage: `pr`
 
 ## Outcome and retrospective
 
-- While the plan is still active, say so plainly instead of implying `Done`, `Blocked`, or `Superseded`.
-- When the real lifecycle decision is known, update both this plan body and the single `docs/plan.md` entry in the same change.
+- This plan is done on-branch and now belongs in `docs/plan.md` under `Done`.
+- What changed: the repository's workflow contract now distinguishes review surface from tracked governing branch state, preserves mixed-evidence `code-review` behavior, uses qualified readiness ownership, and aligns the live overlap specs that review surfaced afterward.
+- What went well: the approved spec was stable enough that the implementation, review-resolution follow-ups, and overlap-spec cleanup all stayed inside one initiative without reopening proposal or architecture work.
+- What was harder than expected: live overlap specs outside the first touched set still held older wording after the initial implementation, so isolated `code-review` and `verify` passes had to drive two additional narrow review-resolution loops before the branch could be truthfully handed to `pr`.
+- Spec accuracy: the approved spec held through implementation and the follow-ups. The key boundary was preserving the existing workflow order while tightening claim ownership and evidence rules.
+- Test effectiveness: the focused test spec plus repo-owned validator commands, terminology scans, patch-hygiene checks, and targeted isolated review/verify reruns were sufficient for this workflow-contract slice.
+- Architecture accuracy: the earlier decision to avoid a separate architecture artifact was correct because the work remained a guidance and authoritative-spec alignment change rather than a new orchestration subsystem.
+- Process issues: the final narrow overlap-spec fix happened as an isolated local follow-up after the earlier committed verify pass, so the plan, change metadata, and explain-change artifact all had to be refreshed before the branch was honestly PR-open-ready.
+- Durable updates made: the live authoritative surfaces now use `branch-ready` rather than broad verify-owned `PR readiness`, and the earlier `code-review` independence surfaces now defer to the same mixed-evidence contract as the new branch-reality spec.
+- Follow-up actions: consider a later validator-backed initiative only if repeated wording drift shows that manual/document review is no longer enough.
 
 ## Readiness
 
-- This plan is active.
+- This plan is done.
 - Plan-review feedback is incorporated.
 - The focused active test spec now exists.
 - M1 implementation is complete and recorded.
 - First-pass `code-review` is recorded as `clean-with-notes`.
-- `verify` is recorded as `ready`.
-- The immediate next stage is `explain-change`.
+- The last committed `verify` result is recorded as `ready`.
+- The local spec-overlap follow-up is recorded in this plan, change metadata, and explain-change artifact.
+- The isolated local `verify` rerun is recorded as `ready`.
+- `explain-change` is complete.
+- The immediate next stage is `pr`.
 
 ## Risks and follow-ups
 

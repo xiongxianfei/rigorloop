@@ -3,12 +3,13 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-04-22 Code review branch reality and traceability](plans/2026-04-22-code-review-branch-reality-and-traceability.md) - active execution plan for aligning stage-owned review language, review-surface versus tracked-governing-state rules, mixed-evidence review outcomes, qualified readiness terms, and canonical/generated workflow guidance without broadening v1 workflow scope.
+- none yet
 
 ## Blocked
 - none yet
 
 ## Done
+- [2026-04-22 Code review branch reality and traceability](plans/2026-04-22-code-review-branch-reality-and-traceability.md) - completed execution plan for aligning stage-owned review language, review-surface versus tracked-governing-state rules, mixed-evidence review outcomes, qualified readiness terms, direct-proof expectations, overlap-spec compatibility fixes, and canonical/generated workflow guidance without broadening v1 workflow scope.
 - [2026-04-22 Test-spec readiness and skill workflow alignment](plans/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md) - completed execution plan for separating immediate next-stage handoff from downstream readiness, preserving test-spec prerequisites, aligning directly affected workflow-facing skills, and folding the durable invariant into `specs/rigorloop-workflow.md` without broadening stage order or v1 autoprogression.
 - [2026-04-22 README user value positioning](plans/2026-04-22-readme-user-value-positioning.md) - completed execution plan for rewriting the public README entrypoint around user value, fit guidance, quick-start/help discovery, reviewable lifecycle artifacts, and truthful PR-ready closeout without changing workflow rules.
 - [2026-04-19 RigorLoop first-release implementation](plans/2026-04-19-rigorloop-first-release-implementation.md) - completed execution plan for repository guidance alignment, schemas, validator/generator implementation, CI wiring, and the skill-validator golden path.
