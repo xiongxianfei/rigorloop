@@ -17,3 +17,5 @@ No `dist/adapters/` files are generated in M1. Generated adapter packages are pl
 The first M1 code-review pass found that manifest exclusion reasons could be rendered as invalid YAML when the human-readable reason contained `: `, such as `Uses unsupported frontmatter: codex-only-field.`.
 
 The follow-up quotes generated manifest reason strings and escapes double-quoted YAML control characters before rendering. The adapter regression suite now includes the unsupported-frontmatter fixture as a manifest-rendering case so the colon-bearing reason path remains covered before M2 writes `dist/adapters/manifest.yaml`.
+
+The rereview follow-up also makes the portable-core gate reuse the repository `SKILL.md` body checks before any adapter can include a skill. New `invalid-body` and `partial-portability` fixtures prove invalid Markdown instruction content is excluded from every adapter and that a skill explicitly incompatible with opencode can still be listed for Codex and Claude Code with a manifest reason.

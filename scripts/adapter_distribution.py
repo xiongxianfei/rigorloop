@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 from typing import Iterable
 
-from skill_validation import load_skill_file
+from skill_validation import load_skill_file, load_skill_schema, validate_skill_file
 
 
 SUPPORTED_ADAPTERS = ("codex", "claude", "opencode")
@@ -16,6 +16,10 @@ COMMON_FRONTMATTER = frozenset({"name", "description"})
 TRANSFORMABLE_FRONTMATTER = frozenset({"argument-hint"})
 PORTABLE_NAME_PATTERN = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 CODEX_SKILL_INVOCATION_PATTERN = re.compile(r"(?<![A-Za-z0-9_])\$[a-z][a-z0-9-]*\b")
+TARGET_INCOMPATIBILITY_PATTERNS = {
+    "claude": re.compile(r"\bnot compatible with Claude Code\b", re.IGNORECASE),
+    "opencode": re.compile(r"\bnot compatible with opencode\b", re.IGNORECASE),
+}
 
 
 @dataclass(frozen=True)
@@ -122,6 +126,11 @@ def _description_errors(description: str) -> list[str]:
     return []
 
 
+def _structure_errors(path: Path) -> list[str]:
+    errors, _name = validate_skill_file(path, load_skill_schema())
+    return errors
+
+
 def _non_codex_reasons(metadata: dict[str, str], text: str) -> list[str]:
     reasons: list[str] = []
     unsupported = sorted(set(metadata) - COMMON_FRONTMATTER - TRANSFORMABLE_FRONTMATTER)
@@ -138,6 +147,14 @@ def _non_codex_reasons(metadata: dict[str, str], text: str) -> list[str]:
     if _has_codex_runtime_assumption(text):
         reasons.append("Assumes Codex-only tool, UI, approval, or runtime assumption.")
     return reasons
+
+
+def _target_adapter_reasons(text: str) -> dict[str, tuple[str, ...]]:
+    return {
+        adapter: (f"Not compatible with {adapter}.",)
+        for adapter, pattern in TARGET_INCOMPATIBILITY_PATTERNS.items()
+        if pattern.search(text)
+    }
 
 
 def _has_codex_runtime_assumption(text: str) -> bool:
@@ -188,6 +205,7 @@ def evaluate_skill(target: Path) -> SkillPortabilityReport:
     description = _normalize_description(metadata.get("description"))
     common_errors = _portable_name_errors(name, directory_name)
     common_errors.extend(_description_errors(description))
+    common_errors.extend(_structure_errors(path))
     if common_errors:
         return SkillPortabilityReport(
             path=path,
@@ -198,18 +216,20 @@ def evaluate_skill(target: Path) -> SkillPortabilityReport:
 
     full_text = path.read_text(encoding="utf-8")
     non_codex_reasons = tuple(_non_codex_reasons(metadata, full_text))
+    target_reasons = _target_adapter_reasons(full_text)
     non_codex_transforms = _non_codex_transforms(metadata)
 
     decisions: list[AdapterDecision] = [
         AdapterDecision(adapter="codex", included=True),
     ]
     for adapter in ("claude", "opencode"):
+        adapter_reasons = non_codex_reasons + target_reasons.get(adapter, ())
         decisions.append(
             AdapterDecision(
                 adapter=adapter,
-                included=not non_codex_reasons,
-                reasons=non_codex_reasons,
-                transforms=() if non_codex_reasons else non_codex_transforms,
+                included=not adapter_reasons,
+                reasons=adapter_reasons,
+                transforms=() if adapter_reasons else non_codex_transforms,
             )
         )
 

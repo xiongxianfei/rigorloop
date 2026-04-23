@@ -58,9 +58,10 @@ class AdapterDistributionTests(unittest.TestCase):
         self.assertEqual(report.included_adapters, ("codex", "claude", "opencode"))
         self.assertEqual(report.reason, "")
 
-    def test_invalid_name_and_description_fail_all_adapters(self) -> None:
+    def test_invalid_name_description_and_body_fail_all_adapters(self) -> None:
         invalid_name = evaluate_skill(self.fixture("invalid-name"))
         invalid_description = evaluate_skill(self.fixture("invalid-description"))
+        invalid_body = evaluate_skill(self.fixture("invalid-body"))
 
         self.assertFalse(invalid_name.portable)
         self.assertEqual(invalid_name.included_adapters, ())
@@ -69,6 +70,11 @@ class AdapterDistributionTests(unittest.TestCase):
         self.assertFalse(invalid_description.portable)
         self.assertEqual(invalid_description.included_adapters, ())
         self.assertIn("description", invalid_description.reason)
+
+        self.assertFalse(invalid_body.portable)
+        self.assertEqual(invalid_body.included_adapters, ())
+        self.assertIn("top-level # title", invalid_body.reason)
+        self.assertIn("Expected output", invalid_body.reason)
 
     def test_argument_hint_is_explicit_transform_not_exclusion(self) -> None:
         report = evaluate_skill(self.fixture("transformable-frontmatter"))
@@ -107,11 +113,24 @@ class AdapterDistributionTests(unittest.TestCase):
         self.assertTrue(report.portable)
         self.assertEqual(report.included_adapters, ("codex", "claude", "opencode"))
 
+    def test_partial_portability_records_exact_adapter_decision(self) -> None:
+        report = evaluate_skill(self.fixture("partial-portability"))
+
+        self.assertFalse(report.portable)
+        self.assertEqual(report.included_adapters, ("codex", "claude"))
+        self.assertTrue(report.adapter_decision("codex").included)
+        self.assertTrue(report.adapter_decision("claude").included)
+        self.assertFalse(report.adapter_decision("opencode").included)
+        self.assertEqual(
+            report.adapter_decision("opencode").reasons,
+            ("Not compatible with opencode.",),
+        )
+
     def test_manifest_render_records_partial_portability(self) -> None:
         portable = evaluate_skill(self.fixture("portable-basic"))
-        codex_only = evaluate_skill(self.fixture("codex-dollar-skill"))
+        partial = evaluate_skill(self.fixture("partial-portability"))
 
-        manifest = render_manifest_yaml("0.1.0-rc.1", [codex_only, portable])
+        manifest = render_manifest_yaml("0.1.0-rc.1", [partial, portable])
 
         self.assertEqual(
             manifest,
@@ -119,10 +138,10 @@ class AdapterDistributionTests(unittest.TestCase):
                 [
                     "version: 0.1.0-rc.1",
                     "skills:",
-                    "  codex-dollar-skill:",
+                    "  partial-portability:",
                     "    portable: false",
-                    "    adapters: [codex]",
-                    '    reason: "Requires Codex-specific $skill invocation."',
+                    "    adapters: [codex, claude]",
+                    '    reason: "Not compatible with opencode."',
                     "  portable-basic:",
                     "    portable: true",
                     "    adapters: [codex, claude, opencode]",
