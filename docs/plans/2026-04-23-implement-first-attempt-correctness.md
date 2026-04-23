@@ -244,6 +244,8 @@ The implementation must stay inside the approved first slice:
 - [x] 2026-04-23: `specs/implement-first-attempt-correctness.test.md` created and activated as the focused proof surface for M1.
 - [x] 2026-04-23: `M1` completed. `skills/implement/SKILL.md`, `skills/workflow/SKILL.md`, and `docs/workflows.md` now use the approved first-pass completeness vocabulary; the required change-local pack exists; generated `.codex/skills/` output is synchronized; and the aligned-surface audit closed with `docs/workflows.md` plus generated `.codex/skills/` marked `update`, `AGENTS.md` marked `no-change` with rationale, and `CONSTITUTION.md` marked `no-change` with rationale.
 - [x] 2026-04-24: isolated `code-review` found stale readiness text in the touched proposal and spec; the follow-up implementation synced both settled artifacts to `code-review`, updated change-local reasoning, and reran narrow lifecycle validation for the touched artifact set.
+- [x] 2026-04-24: first-pass `code-review` rerun completed with `clean-with-notes` and no required changes.
+- [x] 2026-04-24: post-review lifecycle bookkeeping was synchronized so the settled artifacts, active test spec, active plan, and change-local pack all point to `verify` as the next stage.
 
 ## Decision log
 
@@ -299,16 +301,28 @@ The implementation must stay inside the approved first slice:
   - `git diff --check -- docs/proposals/2026-04-23-implement-first-attempt-correctness.md specs/implement-first-attempt-correctness.md specs/implement-first-attempt-correctness.test.md docs/plans/2026-04-23-implement-first-attempt-correctness.md docs/changes/2026-04-23-implement-first-attempt-correctness`
   - Result: passed.
   - Recommended next stage: rerun `code-review`
+- 2026-04-24: first-pass `code-review` record for `6b051eb..3b305fd`.
+  - Review status: `clean-with-notes`
+  - Findings: no blocking or required-change findings.
+  - Recommended next stage: `verify`
+- 2026-04-24: No `docs/plan.md` lifecycle update was needed after the clean review. The initiative remains active, and the existing active-plan index entry stays truthful while the plan body moves from `code-review` readiness into downstream `verify` readiness.
+- 2026-04-24: post-review lifecycle sync updated the accepted proposal, approved spec, active test spec, active plan, and change-local pack so the tracked artifacts no longer advertise `code-review` as the next stage after the clean rerun.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-04-23-implement-first-attempt-correctness/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-23-implement-first-attempt-correctness.md --path specs/implement-first-attempt-correctness.md --path specs/implement-first-attempt-correctness.test.md --path docs/plans/2026-04-23-implement-first-attempt-correctness.md`
+  - `rg -n '^## (Active|Blocked|Done|Superseded)$|2026-04-23-implement-first-attempt-correctness' docs/plan.md`
+  - `git diff --check -- docs/proposals/2026-04-23-implement-first-attempt-correctness.md specs/implement-first-attempt-correctness.md specs/implement-first-attempt-correctness.test.md docs/plans/2026-04-23-implement-first-attempt-correctness.md docs/changes/2026-04-23-implement-first-attempt-correctness`
+  - Result: passed.
+  - Recommended next stage: rerun `verify`
 
 ## Outcome and retrospective
 
-- `M1` is complete and the initiative remains active for first-pass `code-review`.
+- `M1` is complete and the initiative remains active for `verify`.
 - The aligned-surface audit closed with `docs/workflows.md` and generated `.codex/skills/` updated, and `AGENTS.md` plus `CONSTITUTION.md` explicitly kept unchanged with rationale.
-- Review, verification, and any broader follow-up beyond this first slice remain pending.
+- First-pass `code-review` completed with `clean-with-notes`; `verify` and any broader follow-up beyond this first slice remain pending.
 
 ## Readiness
 
 - This plan is active.
-- `M1` implementation and targeted pre-`code-review` proof are complete.
-- The immediate next repository stage is `code-review`.
-- This plan is ready for first-pass `code-review`.
+- `M1` implementation, targeted pre-`code-review` proof, and first-pass `code-review` are complete.
+- The immediate next repository stage is `verify`.
+- This plan is ready for `verify`.

@@ -347,5 +347,5 @@ Rollback:
 
 - Proposal review is complete. This proposal is accepted.
 - The focused spec, active plan, and active test spec now exist for this slice.
-- `M1` implementation is complete under the active plan.
-- The next stage is `code-review`.
+- `M1` implementation and first-pass `code-review` are complete under the active plan.
+- The next stage is `verify`.
