@@ -69,7 +69,7 @@ R3b. A plan body whose lifecycle state is `Done`, `Blocked`, or `Superseded` MUS
 R4. Lifecycle-closeout ownership MUST be split as follows:
 - `plan` creates or revises the plan file and its index entry when an initiative starts or is re-planned;
 - `implement` keeps progress, decisions, discoveries, and validation notes current during execution;
-- `verify` checks whether lifecycle state in the plan index and the plan body still matches reality before PR readiness is claimed;
+- `verify` checks whether lifecycle state in the plan index and the plan body still matches reality before `branch-ready` is claimed;
 - final lifecycle closeout updates both the plan index and the plan body when lifecycle state changes;
 - `learn` captures durable lessons and MUST NOT be the authoritative owner of lifecycle-state bookkeeping.
 
@@ -83,7 +83,7 @@ R6a. A `Done` transition MAY be completed in immediate post-merge cleanup only w
 
 R6b. `Blocked` and `Superseded` transitions MUST be recorded as soon as they are decided. They MUST NOT be deferred only because no PR has been opened or merged yet.
 
-R7. `verify` MUST NOT treat a planned initiative as PR-ready when stale lifecycle state remains in either the plan index or the plan body.
+R7. `verify` MUST NOT treat a planned initiative as `branch-ready` when stale lifecycle state remains in either the plan index or the plan body.
 
 R7a. For this spec, stale lifecycle state includes at minimum:
 - a completed initiative still listed under `## Active`;
@@ -97,7 +97,7 @@ R8a. At minimum, the repository's workflow summary and plan guidance MUST descri
 - that `docs/plan.md` is an index rather than a plan body;
 - that `implement` owns ongoing plan-body updates during execution;
 - that final lifecycle closeout owns state transitions in both the plan index and the plan body; and
-- that `verify` challenges stale lifecycle state before PR readiness.
+- that `verify` challenges stale lifecycle state before `branch-ready`.
 
 R9. When this rule is adopted, previously stale plan-index or plan-body lifecycle state that is already known to be wrong SHOULD be corrected as part of the migration to the clarified ownership model.
 
@@ -126,7 +126,7 @@ R9. When this rule is adopted, previously stale plan-index or plan-body lifecycl
 
 ## Error and boundary behavior
 
-- If a contributor claims PR readiness while the plan index and plan body disagree about lifecycle state, the initiative is not ready.
+- If a contributor claims `branch-ready` while the plan index and plan body disagree about lifecycle state, the initiative is not ready.
 - If a `Done` transition is clearly known before PR and still left under `## Active`, that is stale lifecycle state.
 - If an initiative becomes `Blocked` or `Superseded`, waiting for a later merge or retrospective to update the plan state is incorrect.
 - If a repository has no planned initiative for the work, this spec does not require creating one just to satisfy lifecycle-closeout rules.
@@ -143,7 +143,7 @@ R9. When this rule is adopted, previously stale plan-index or plan-body lifecycl
 
 - Manual review MUST be able to compare `docs/plan.md` and the corresponding plan body and determine whether lifecycle state is synchronized.
 - Workflow and plan-guidance artifacts MUST make the ownership split discoverable to contributors.
-- Verification results MUST name the specific lifecycle-state evidence reviewed when this rule is relevant to PR readiness.
+- Verification results MUST name the specific lifecycle-state evidence reviewed when this rule is relevant to `branch-ready`.
 
 ## Security and privacy
 
@@ -181,7 +181,7 @@ EC5. A repository MAY later automate lifecycle-state enforcement, but automation
 - The ownership split between `plan`, `implement`, `verify`, final lifecycle closeout, and `learn` is explicit and non-conflicting.
 - A completed, blocked, or superseded planned initiative does not remain under `## Active` once the real lifecycle decision is known.
 - A planned initiative does not present conflicting lifecycle state between `docs/plan.md` and its plan body.
-- `verify` treats stale lifecycle state as blocking PR readiness for planned initiatives.
+- `verify` treats stale lifecycle state as blocking `branch-ready` for planned initiatives.
 - The post-merge exception is limited to merge-dependent `Done` transitions rather than becoming the default for all lifecycle changes.
 
 ## Open questions

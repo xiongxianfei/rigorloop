@@ -256,7 +256,7 @@ R8h. When the outcome is already known before PR creation, a `Done` transition S
 
 R8i. `Blocked` and `Superseded` lifecycle transitions for planned initiatives MUST be recorded as soon as they are decided.
 
-R8j. `verify` MUST treat stale lifecycle state between `docs/plan.md` and the plan body as blocking PR readiness for planned initiatives.
+R8j. `verify` MUST treat stale lifecycle state between `docs/plan.md` and the plan body as blocking `branch-ready` for planned initiatives.
 
 R8ja. At minimum, stale lifecycle state includes:
 - a completed, blocked, or superseded planned initiative still listed under `## Active`;
