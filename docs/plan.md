@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- none yet
+- [2026-04-22 Code review branch reality and traceability](plans/2026-04-22-code-review-branch-reality-and-traceability.md) - active execution plan for aligning stage-owned review language, review-surface versus tracked-governing-state rules, mixed-evidence review outcomes, qualified readiness terms, and canonical/generated workflow guidance without broadening v1 workflow scope.
 
 ## Blocked
 - none yet

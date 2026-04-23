@@ -130,6 +130,15 @@ Keep `review-resolution.md` and `verify-report.md` conditional. Do not treat the
 - `inconclusive` pairs with eventual `test-spec` readiness `not-assessed`, records the missing-input stop condition, and leaves immediate next stage empty.
 - `plan-review` remains the normal immediate handoff to `test-spec`. If implementation readiness is discussed there, it is downstream readiness rather than the handoff itself.
 
+### Execution-stage claim ownership
+
+- `implement` may report milestone completion, validation, blockers, readiness for `code-review`, or the next milestone, but it does not claim review findings or `branch-ready`.
+- `code-review` may inspect staged or unstaged diffs, PR diffs, or commit ranges. If it cites governing artifacts for a clean branch-scoped conclusion, those artifacts must be confirmed in tracked governing branch state.
+- Missing tracked governing authority blocks `clean-with-notes`, but it does not suppress independently supported findings from the review surface.
+- Named edge cases need direct proof for clean review or `branch-ready` outcomes; code-shape inference alone is insufficient.
+- `verify` owns `branch-ready`. `pr` owns `pr-body-ready` and `pr-open-ready`.
+- Avoid unqualified `PR-ready` as live workflow guidance or status language.
+
 ### Fast lane
 
 Use for small, low-risk, well-understood changes that affect at most a few files and do not introduce architecture changes.
