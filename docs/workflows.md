@@ -23,6 +23,9 @@ Notes:
 - After `spec-review`, the immediate next stage is still `architecture` when needed, otherwise `plan`. Any mention of eventual `test-spec` readiness is downstream readiness, not a stage skip.
 - `plan-review` remains the normal immediate handoff into `test-spec`. If implementation readiness is mentioned there, it is downstream readiness rather than the handoff itself.
 - In the execution lane, stage-owned language stays split: `implement` reports implementation completion or readiness for `code-review`; `code-review` owns review findings; `verify` owns `branch-ready`; `pr` owns `pr-body-ready` and `pr-open-ready`.
+- Before `implement` hands off to `code-review`, the slice should satisfy a first-pass acceptable result: address in-scope requirements, required authored and aligned surfaces, required edge cases, and targeted validation for the smallest scope-complete change.
+- If a required surface stays unchanged, record `unaffected with rationale` in an authoritative surface such as the active plan or required change-local artifacts. If missing or contradictory inputs prevent that standard, stop with a blocker instead of handing off an incomplete slice.
+- Later review comments may still happen. A preventable first-pass miss is a finding that should have been caught by the slice's completeness set, required edge cases, or targeted validation before `code-review`.
 - `code-review` may inspect staged or unstaged diffs, but cited governing artifacts only support a clean branch-scoped conclusion when they are confirmed in tracked governing branch state.
 - Missing tracked governing authority blocks `clean-with-notes` but does not suppress independently supported findings, and named edge cases need direct proof for clean review or `branch-ready`.
 - `learn` is advice-only. Treat it as an explicit follow-up when a durable lesson actually emerged or another approved rule elevates it.
