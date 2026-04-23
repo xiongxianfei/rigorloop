@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- none yet
+- [2026-04-24 Multi-agent adapters and first public release](plans/2026-04-24-multi-agent-adapters-first-public-release.md) - active execution plan for generated Codex, Claude Code, and opencode adapter packages, release metadata, release verification, public docs, RC readiness, and maintainer-gated stable smoke closeout.
 
 ## Blocked
 - none yet
