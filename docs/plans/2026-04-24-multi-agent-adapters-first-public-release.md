@@ -464,6 +464,7 @@ The plan separates adapter logic, generated output, validation, release evidence
 - [x] 2026-04-24: test spec active.
 - [x] 2026-04-24: M1 adapter core and portable-core validation complete.
 - [x] 2026-04-24: M1 code-review finding accepted and fixed; manifest exclusion reasons are now quoted.
+- [x] 2026-04-24: M1 rereview findings accepted and fixed; invalid skill bodies and partial portability now have direct tests.
 - [ ] M2 complete.
 - [ ] M3 complete.
 - [ ] M4 complete.
@@ -479,12 +480,15 @@ The plan separates adapter logic, generated output, validation, release evidence
 - 2026-04-24: M1 treats `argument-hint` frontmatter as an explicit non-Codex transform and unknown frontmatter as a non-Codex exclusion. This keeps current Codex metadata support while preventing unsupported metadata from leaking into Claude Code or opencode outputs.
 - 2026-04-24: M1 does not write `dist/adapters/`. It only classifies skills and renders deterministic manifest content in memory so package generation remains isolated to M2.
 - 2026-04-24: Quote generated manifest exclusion reasons. This keeps human-readable reasons parseable when they contain YAML-sensitive punctuation such as `: `.
+- 2026-04-24: Reuse the repository `SKILL.md` validator for portable-core body checks. This avoids creating a second definition of Agent Skills-compatible Markdown structure.
+- 2026-04-24: Treat explicit target-adapter incompatibility text, such as `not compatible with opencode`, as a target-specific exclusion reason. This covers partial portability without weakening the portable-core gate for other adapters.
 
 ## Surprises and discoveries
 
 - 2026-04-24: The test-first red state was the expected missing `scripts/adapter_distribution.py` module after adding `scripts/test-adapter-distribution.py`; no spec or architecture gap was found.
 - 2026-04-24: An earlier M1 milestone commit attempt was blocked by a read-only `.git` filesystem. The filesystem became writable later, so the milestone closeout commit was retried.
 - 2026-04-24: M1 code review found that the unsupported-frontmatter exclusion reason included `: ` and therefore needed manifest-rendering coverage, not just portability-decision coverage.
+- 2026-04-24: M1 rereview found two preventable proof gaps: valid frontmatter with invalid Markdown body could pass as portable, and the named partial-portability fixture from `T4` had not been added.
 
 ## Validation notes
 
@@ -504,6 +508,12 @@ The plan separates adapter logic, generated output, validation, release evidence
 - 2026-04-24: M1 review-fix change metadata validation passed with `python scripts/validate-change-metadata.py docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml`.
 - 2026-04-24: M1 review-fix formatting validation passed with `git diff --check -- scripts tests docs/changes/2026-04-24-multi-agent-adapters-first-public-release docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md`.
 - 2026-04-24: M1 review-fix lifecycle validation passed with `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/multi-agent-adapters-first-public-release.test.md --path docs/plan.md --path docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md --path docs/proposals/2026-04-24-multi-agent-adapters-first-public-release.md --path specs/multi-agent-adapters-first-public-release.md --path docs/architecture/2026-04-24-multi-agent-adapter-distribution.md --path docs/adr/ADR-20260424-generated-adapter-packages.md --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml`.
+- 2026-04-24: M1 rereview-fix red check passed as expected with `python scripts/test-adapter-distribution.py`, which failed on the new invalid-body and partial-portability cases before the implementation fix.
+- 2026-04-24: M1 rereview-fix adapter regression tests passed with `python scripts/test-adapter-distribution.py`.
+- 2026-04-24: M1 rereview-fix canonical skill validation passed with `python scripts/validate-skills.py`.
+- 2026-04-24: M1 rereview-fix change metadata validation passed with `python scripts/validate-change-metadata.py docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml`.
+- 2026-04-24: M1 rereview-fix formatting validation passed with `git diff --check -- scripts tests docs/changes/2026-04-24-multi-agent-adapters-first-public-release docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md`.
+- 2026-04-24: M1 rereview-fix lifecycle validation passed with `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/multi-agent-adapters-first-public-release.test.md --path docs/plan.md --path docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md --path docs/proposals/2026-04-24-multi-agent-adapters-first-public-release.md --path specs/multi-agent-adapters-first-public-release.md --path docs/architecture/2026-04-24-multi-agent-adapter-distribution.md --path docs/adr/ADR-20260424-generated-adapter-packages.md --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml`.
 
 ## Outcome and retrospective
 
