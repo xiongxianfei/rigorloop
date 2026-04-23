@@ -442,5 +442,5 @@
 - The tracked-source prerequisite is satisfied for the accepted proposal, approved spec, active plan, and this active test spec.
 - No separate architecture artifact is expected for this slice.
 - It remains the current proof-planning surface for this initiative until lifecycle closeout moves it to a terminal state.
-- Implementation is complete for `M1`, the targeted pre-`code-review` proof is recorded in the active plan and change-local artifacts, first-pass `code-review` completed with `clean-with-notes`, and `verify` completed with verdict `ready`.
-- The next stage is `explain-change`.
+- Implementation is complete for `M1`, the targeted pre-`code-review` proof is recorded in the active plan and change-local artifacts, first-pass `code-review` completed with `clean-with-notes`, `verify` completed with verdict `ready`, and `explain-change` is now recorded in the durable reasoning artifact.
+- The next stage is `pr`.

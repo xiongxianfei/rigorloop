@@ -30,6 +30,7 @@ The repository had an approved spec for first-pass correctness, but the canonica
 | `docs/plans/2026-04-23-implement-first-attempt-correctness.md` | closes the aligned-surface audit, records final `update` and `no-change` decisions, and logs targeted implementation proof | use the active plan as the authoritative pre-`code-review` audit surface required by this slice | `R5b`, `R5ba`, `R7c` | plan audit review, lifecycle validation |
 | `docs/changes/2026-04-23-implement-first-attempt-correctness/` | creates the baseline change-local pack for this ordinary non-trivial workflow change | satisfy the repository docs-changes contract while leaving durable rationale for the implementation slice | docs-changes baseline contract, M1 plan | `python scripts/validate-change-metadata.py docs/changes/2026-04-23-implement-first-attempt-correctness/change.yaml` |
 | `specs/implement-first-attempt-correctness.test.md` | advances test-spec readiness from `implement` to `code-review` after implementation completes | keep the active proof-planning artifact truthful about the next stage | active test-spec lifecycle rules | artifact-lifecycle validation, plan alignment review |
+| `docs/plan.md` and lifecycle closeout wording in touched artifacts | move the initiative to `Done` on-branch before PR and update proposal/spec/test-spec/plan readiness from `explain-change` to `pr` | the outcome is already known before PR creation, so lifecycle closeout must happen in tracked source before PR preparation | plan-index lifecycle ownership, workflow closeout rules, isolated `explain-change` completion | `rg -n '^## (Active|Blocked|Done|Superseded)$|2026-04-23-implement-first-attempt-correctness' docs/plan.md`, `bash scripts/ci.sh` |
 
 ## Aligned-surface audit closeout
 
@@ -71,8 +72,15 @@ The repository had an approved spec for first-pass correctness, but the canonica
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-23-implement-first-attempt-correctness.md --path specs/implement-first-attempt-correctness.md --path specs/implement-first-attempt-correctness.test.md --path docs/plans/2026-04-23-implement-first-attempt-correctness.md`
 - `rg -n '^## (Active|Blocked|Done|Superseded)$|2026-04-23-implement-first-attempt-correctness' docs/plan.md`
 - `git diff --check -- docs/proposals/2026-04-23-implement-first-attempt-correctness.md specs/implement-first-attempt-correctness.md specs/implement-first-attempt-correctness.test.md docs/plans/2026-04-23-implement-first-attempt-correctness.md docs/changes/2026-04-23-implement-first-attempt-correctness`
+- `git diff --check -- docs/plan.md docs/proposals/2026-04-23-implement-first-attempt-correctness.md specs/implement-first-attempt-correctness.md specs/implement-first-attempt-correctness.test.md docs/plans/2026-04-23-implement-first-attempt-correctness.md docs/changes/2026-04-23-implement-first-attempt-correctness`
 - `bash scripts/ci.sh`
 - Hosted CI status: unobserved from this environment
+
+## PR handoff summary
+
+- `implement` now teaches first-pass acceptability, smallest scope-complete change, required edge-case sources, and unaffected-rationale handling in observable terms.
+- `workflow`, `docs/workflows.md`, and generated `.codex/skills/` stay aligned with that contract without changing routing or ownership.
+- The initiative carries a complete durable record across proposal, spec, active test spec, done plan, change metadata, clean `code-review`, ready `verify`, and this explanation artifact.
 
 ## Alternatives rejected
 
@@ -88,7 +96,7 @@ The repository had an approved spec for first-pass correctness, but the canonica
 - `AGENTS.md` remained unchanged because the practical summary already stayed truthful once the lower-level workflow surfaces were aligned.
 - `CONSTITUTION.md` remained unchanged because no principle-level rule changed here.
 - `bugfix` and other implementation-adjacent skills remained untouched in this first slice.
-- `docs/plan.md` stayed under `Active` because the initiative has cleared first-pass `code-review` and `verify` but still has `explain-change`, `pr`, and later lifecycle closeout ahead.
+- `docs/plan.md` moved to `Done` because the initiative's outcome is now known before PR creation, and the workflow contract requires on-branch lifecycle closeout before PR in that case.
 - `specs/rigorloop-workflow.md` remained untouched because durable workflow-spec fold-in is still a separate follow-up.
 
 ## Risks and follow-ups
@@ -99,6 +107,7 @@ The repository had an approved spec for first-pass correctness, but the canonica
 
 ## Readiness
 
-- The implementation slice is complete for `M1`, first-pass `code-review` is clean, and `verify` is ready for the current tracked branch state.
-- The next stage is `explain-change`.
-- This file mirrors the final aligned-surface audit decisions, the clean review result, and the ready verify outcome now recorded in tracked source.
+- `explain-change` is complete for this initiative.
+- The next stage is `pr`.
+- This file mirrors the final aligned-surface audit decisions, the clean review result, the ready verify outcome, and the on-branch lifecycle closeout now recorded in tracked source.
+- This was a direct `explain-change` request, so no automatic handoff to `pr` was performed here.

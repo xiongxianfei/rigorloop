@@ -346,6 +346,6 @@ A concrete execution plan now exists at `docs/plans/2026-04-23-implement-first-a
 
 The active test spec and required change-local artifacts now exist.
 
-`M1` implementation, first-pass `code-review`, and `verify` are complete under the active plan.
+`M1` implementation, first-pass `code-review`, `verify`, and `explain-change` are complete under the tracked plan and change-local artifacts.
 
-The next stage is `explain-change`.
+The next stage is `pr`.
