@@ -122,10 +122,30 @@ class AdapterDistributionTests(unittest.TestCase):
                     "  codex-dollar-skill:",
                     "    portable: false",
                     "    adapters: [codex]",
-                    "    reason: Requires Codex-specific $skill invocation.",
+                    '    reason: "Requires Codex-specific $skill invocation."',
                     "  portable-basic:",
                     "    portable: true",
                     "    adapters: [codex, claude, opencode]",
+                    "",
+                ]
+            ),
+        )
+
+    def test_manifest_render_quotes_yaml_sensitive_reasons(self) -> None:
+        report = evaluate_skill(self.fixture("unsupported-frontmatter"))
+
+        manifest = render_manifest_yaml("0.1.0-rc.1", [report])
+
+        self.assertEqual(
+            manifest,
+            "\n".join(
+                [
+                    "version: 0.1.0-rc.1",
+                    "skills:",
+                    "  unsupported-frontmatter:",
+                    "    portable: false",
+                    "    adapters: [codex]",
+                    '    reason: "Uses unsupported frontmatter: codex-only-field."',
                     "",
                 ]
             ),
