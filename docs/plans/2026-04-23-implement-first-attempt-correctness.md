@@ -1,6 +1,6 @@
 # Implement first-attempt correctness plan
 
-- Status: active
+- Status: done
 - Owner: maintainer + Codex
 - Start date: 2026-04-23
 - Last updated: 2026-04-24
@@ -247,6 +247,7 @@ The implementation must stay inside the approved first slice:
 - [x] 2026-04-24: first-pass `code-review` rerun completed with `clean-with-notes` and no required changes.
 - [x] 2026-04-24: post-review lifecycle bookkeeping was synchronized so the settled artifacts, active test spec, active plan, and change-local pack all point to `verify` as the next stage.
 - [x] 2026-04-24: `verify` passed with no blockers, no stale lifecycle drift, and no missing evidence, so the initiative is ready for `explain-change`.
+- [x] 2026-04-24: `explain-change` completed in the feature's durable change-local reasoning artifact, and lifecycle closeout moved the initiative to `Done` on-branch before `pr`.
 
 ## Decision log
 
@@ -332,16 +333,31 @@ The implementation must stay inside the approved first slice:
   - Artifact drift: none blocking after updating the settled artifacts, active test spec, active plan, and change-local pack to reflect the clean review result and the ready verify outcome.
   - Remaining risks: hosted CI and eventual PR base-branch readiness still need downstream observation.
   - Recommended next stage: `explain-change`
+- 2026-04-24: `explain-change` completed in `docs/changes/2026-04-23-implement-first-attempt-correctness/explain-change.md`, and lifecycle closeout moved this initiative to `Done` in both `docs/plan.md` and the plan body before `pr`.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-04-23-implement-first-attempt-correctness/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-23-implement-first-attempt-correctness.md --path specs/implement-first-attempt-correctness.md --path specs/implement-first-attempt-correctness.test.md --path docs/plans/2026-04-23-implement-first-attempt-correctness.md`
+  - `rg -n '^## (Active|Blocked|Done|Superseded)$|2026-04-23-implement-first-attempt-correctness' docs/plan.md`
+  - `git diff --check -- docs/plan.md docs/proposals/2026-04-23-implement-first-attempt-correctness.md specs/implement-first-attempt-correctness.md specs/implement-first-attempt-correctness.test.md docs/plans/2026-04-23-implement-first-attempt-correctness.md docs/changes/2026-04-23-implement-first-attempt-correctness`
+  - `bash scripts/ci.sh`
+  - Result: passed.
+  - Recommended next stage: `pr`
 
 ## Outcome and retrospective
 
-- `M1` is complete and the initiative remains active for `explain-change`.
+- This plan is done on-branch and now belongs in `docs/plan.md` under `Done`.
 - The aligned-surface audit closed with `docs/workflows.md` and generated `.codex/skills/` updated, and `AGENTS.md` plus `CONSTITUTION.md` explicitly kept unchanged with rationale.
-- First-pass `code-review` completed with `clean-with-notes`, and `verify` completed with verdict `ready`; any broader follow-up beyond this first slice remains pending.
+- What changed: the implementation-stage workflow guidance now defines first-pass completeness in observable terms, preserves aligned-surface bookkeeping, and carries durable proposal/spec/test-spec/plan/change-local state cleanly through review and verification to PR handoff.
+- What went well: the slice stayed narrow, the aligned-surface audit caught the repository-specific coupling to `docs/workflows.md` and generated `.codex/skills/`, and the follow-up review/verify bookkeeping fixes stayed small and fully validator-backed.
+- What was harder than expected: the first review correctly exposed that settled artifacts and later handoff surfaces can go stale even when the wording change itself is correct, so the initiative needed two small lifecycle-sync follow-ups after the initial M1 implementation.
+- Spec accuracy: the approved spec held through implementation. The decisive boundary was enforcing `smallest scope-complete change` without widening into `bugfix` or durable workflow-spec fold-in.
+- Test effectiveness: the focused test spec plus repo-owned skill, metadata, lifecycle, generated-output, and CI-wrapper checks were sufficient for this workflow-contract slice.
+- Architecture accuracy: the earlier decision to avoid a separate architecture artifact was correct because the implementation stayed within workflow wording and artifact truthfulness rather than system-shape changes.
+- Follow-up actions: use a separate approved change if maintainers want to extend the same vocabulary to `bugfix` or fold the invariant into `specs/rigorloop-workflow.md`.
 
 ## Readiness
 
-- This plan is active.
-- `M1` implementation, targeted pre-`code-review` proof, first-pass `code-review`, and `verify` are complete.
-- The immediate next repository stage is `explain-change`.
-- This plan is ready for `explain-change`.
+- This plan is done.
+- `M1`, first-pass `code-review`, `verify`, and `explain-change` are complete with no blockers.
+- The tracked source artifacts and active test spec remain in place.
+- The next stage is `pr`.
+- This was an isolated `explain-change` request, so no automatic handoff to `pr` was performed here.
