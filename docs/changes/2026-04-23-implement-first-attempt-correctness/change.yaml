@@ -86,6 +86,8 @@ validation:
     result: pass
   - command: rg -n '^## (Active|Blocked|Done|Superseded)$|2026-04-23-implement-first-attempt-correctness' docs/plan.md
     result: pass
+  - command: bash scripts/ci.sh
+    result: pass
 changed_files:
   - .codex/skills/implement/SKILL.md
   - .codex/skills/workflow/SKILL.md

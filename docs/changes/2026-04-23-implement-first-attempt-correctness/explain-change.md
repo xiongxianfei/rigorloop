@@ -53,15 +53,15 @@ The repository had an approved spec for first-pass correctness, but the canonica
   - Status: `clean-with-notes`
   - Result: no blocking or required-change findings; the clean result is recorded in the active plan
 - `verify`
-  - Status: pending
-  - Result: an isolated `verify` pass found stale post-review lifecycle bookkeeping; this follow-up sync updates the tracked artifacts so `verify` can be rerun cleanly
+  - Verdict: `ready`
+  - Result: no blockers, no stale lifecycle drift, and no missing validation evidence after the post-review and post-verify bookkeeping updates; the ready result is recorded in the active plan
 
 ## Verification evidence
 
 - `python scripts/validate-skills.py`
 - `python scripts/test-skill-validator.py`
+- `python scripts/test-change-metadata-validator.py`
 - `python scripts/test-artifact-lifecycle-validator.py`
-- `python scripts/build-skills.py`
 - `python scripts/build-skills.py --check`
 - `python scripts/validate-change-metadata.py docs/changes/2026-04-23-implement-first-attempt-correctness/change.yaml`
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/implement-first-attempt-correctness.md --path specs/implement-first-attempt-correctness.test.md --path docs/plans/2026-04-23-implement-first-attempt-correctness.md`
@@ -71,6 +71,7 @@ The repository had an approved spec for first-pass correctness, but the canonica
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-23-implement-first-attempt-correctness.md --path specs/implement-first-attempt-correctness.md --path specs/implement-first-attempt-correctness.test.md --path docs/plans/2026-04-23-implement-first-attempt-correctness.md`
 - `rg -n '^## (Active|Blocked|Done|Superseded)$|2026-04-23-implement-first-attempt-correctness' docs/plan.md`
 - `git diff --check -- docs/proposals/2026-04-23-implement-first-attempt-correctness.md specs/implement-first-attempt-correctness.md specs/implement-first-attempt-correctness.test.md docs/plans/2026-04-23-implement-first-attempt-correctness.md docs/changes/2026-04-23-implement-first-attempt-correctness`
+- `bash scripts/ci.sh`
 - Hosted CI status: unobserved from this environment
 
 ## Alternatives rejected
@@ -87,7 +88,7 @@ The repository had an approved spec for first-pass correctness, but the canonica
 - `AGENTS.md` remained unchanged because the practical summary already stayed truthful once the lower-level workflow surfaces were aligned.
 - `CONSTITUTION.md` remained unchanged because no principle-level rule changed here.
 - `bugfix` and other implementation-adjacent skills remained untouched in this first slice.
-- `docs/plan.md` stayed under `Active` because the initiative has cleared first-pass `code-review` but still has `verify` and later lifecycle closeout ahead.
+- `docs/plan.md` stayed under `Active` because the initiative has cleared first-pass `code-review` and `verify` but still has `explain-change`, `pr`, and later lifecycle closeout ahead.
 - `specs/rigorloop-workflow.md` remained untouched because durable workflow-spec fold-in is still a separate follow-up.
 
 ## Risks and follow-ups
@@ -98,6 +99,6 @@ The repository had an approved spec for first-pass correctness, but the canonica
 
 ## Readiness
 
-- The implementation slice is complete for `M1`, and first-pass `code-review` is clean.
-- The next stage is `verify`.
-- This file mirrors the final aligned-surface audit decisions and the clean review result now recorded in tracked source.
+- The implementation slice is complete for `M1`, first-pass `code-review` is clean, and `verify` is ready for the current tracked branch state.
+- The next stage is `explain-change`.
+- This file mirrors the final aligned-surface audit decisions, the clean review result, and the ready verify outcome now recorded in tracked source.
