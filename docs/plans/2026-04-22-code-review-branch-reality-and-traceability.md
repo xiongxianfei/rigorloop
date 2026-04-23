@@ -265,6 +265,7 @@ The implementation must stay inside the approved first slice:
 - 2026-04-22: Unqualified `PR-ready` wording already exists in `skills/verify/SKILL.md` and `skills/explain-change/SKILL.md`, and `skills/pr/SKILL.md` still says “PR ready” in rules.
 - 2026-04-22: `docs/plan.md` currently has no active initiatives, so this plan becomes the sole active entry when created.
 - 2026-04-22: Running `python scripts/build-skills.py` and `python scripts/build-skills.py --check` in parallel produced a false drift failure. The stable proof path is sequential generation followed by the drift check.
+- 2026-04-23: An isolated code-review found one remaining mixed-evidence contradiction between `skills/code-review/SKILL.md` and the older approved `code-review` independence spec/test surfaces. Resolving it required touching those overlapping authoritative surfaces, which M1 had explicitly allowed when real overlap drift appeared.
 
 ## Validation notes
 
@@ -341,6 +342,56 @@ The implementation must stay inside the approved first slice:
   - CI status: local repo-owned CI wrapper passed via `bash scripts/ci.sh`; hosted CI remains unobserved from this environment.
   - Artifact drift: none blocking. The active plan, active test spec, and change metadata now reflect the clean first-pass review result and ready verify outcome.
   - Remaining risks: hosted CI and eventual PR/base-branch readiness remain downstream concerns for later stages.
+  - Recommended next stage: `explain-change`
+- 2026-04-23: isolated code-review found a mixed-evidence contract contradiction after the earlier clean review.
+  - Findings:
+    - `major`: `skills/code-review/SKILL.md` still said missing authoritative upstream artifacts force `inconclusive`, which conflicted with the approved mixed-evidence rule.
+    - `major`: `specs/code-review-independence-under-autoprogression.md` and `.test.md` still encoded the older absolute `inconclusive` rule, leaving two authoritative review contracts that could be read differently.
+  - Resolution:
+    - `Review-resolution: align mixed-evidence review contract` (`5a15a5c`) updated the canonical/generated `code-review` skill and the overlapping older approved spec/test surfaces so missing authoritative upstream artifacts prevent `clean-with-notes` but do not suppress independently supported `changes-requested` or `blocked` findings.
+  - Validation commands:
+    - `python scripts/validate-skills.py`
+    - `python scripts/test-skill-validator.py`
+    - `python scripts/build-skills.py`
+    - `python scripts/build-skills.py --check`
+    - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-22-code-review-branch-reality-and-traceability.md --path specs/code-review-branch-reality-and-traceability.md --path specs/rigorloop-workflow.md --path specs/code-review-branch-reality-and-traceability.test.md --path docs/plans/2026-04-22-code-review-branch-reality-and-traceability.md --path specs/code-review-independence-under-autoprogression.md --path specs/code-review-independence-under-autoprogression.test.md`
+    - `git diff --check -- skills/code-review/SKILL.md .codex/skills/code-review/SKILL.md specs/code-review-independence-under-autoprogression.md specs/code-review-independence-under-autoprogression.test.md`
+    - `bash scripts/ci.sh`
+  - Result: passed.
+- 2026-04-23: rerun first-pass `code-review` for `5a15a5c^..5a15a5c`.
+  - Review status: `clean-with-notes`
+  - Review inputs:
+    - Diff range: `5a15a5c^..5a15a5c`
+    - Review surface: committed diff for `5a15a5c^..5a15a5c`
+    - Tracked governing branch state: `HEAD` at `5a15a5cc84e7401778f56ce9eab68a471cc0a582`, with the canonical `code-review` skill, generated mirror, older approved `code-review` independence spec/test surfaces, and the current branch-reality spec all confirmed in tracked state
+    - Spec: `specs/code-review-branch-reality-and-traceability.md`
+    - Test spec: `specs/code-review-branch-reality-and-traceability.test.md`
+    - Plan milestone: `M1`
+    - Architecture / ADR: none for this approved slice
+    - Validation evidence: `python scripts/validate-skills.py`, `python scripts/test-skill-validator.py`, `python scripts/build-skills.py`, `python scripts/build-skills.py --check`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-22-code-review-branch-reality-and-traceability.md --path specs/code-review-branch-reality-and-traceability.md --path specs/rigorloop-workflow.md --path specs/code-review-branch-reality-and-traceability.test.md --path docs/plans/2026-04-22-code-review-branch-reality-and-traceability.md --path specs/code-review-independence-under-autoprogression.md --path specs/code-review-independence-under-autoprogression.test.md`, `git diff --check -- skills/code-review/SKILL.md .codex/skills/code-review/SKILL.md specs/code-review-independence-under-autoprogression.md specs/code-review-independence-under-autoprogression.test.md`, `bash scripts/ci.sh`
+  - Diff summary: the committed follow-up narrows one canonical `code-review` skill sentence and aligns the older approved `code-review` independence spec/test surfaces with the mixed-evidence rule already defined by the current branch-reality contract.
+  - Findings: no blocking or required-change findings.
+  - Checklist coverage:
+    - Spec alignment: pass (the follow-up now matches the approved mixed-evidence rule instead of contradicting it.)
+    - Test coverage: pass (the overlapping older test spec now proves the same mixed-evidence behavior rather than the superseded absolute `inconclusive` rule.)
+    - Edge cases: pass (missing authoritative upstream artifacts now block `clean-with-notes` without erasing supported findings.)
+    - Error handling: pass (the rerun preserves `inconclusive` only for cases where missing evidence prevents both a clean result and a supported finding.)
+    - Architecture boundaries: pass (the follow-up stays inside the plan-approved overlap update for genuine proof-surface drift.)
+    - Compatibility: pass (the repo no longer retains two contradictory authoritative review contracts for this rule.)
+    - Security/privacy: pass (the wording-only fix adds no new sensitive-output path.)
+    - Generated output drift: pass (`python scripts/build-skills.py` and `python scripts/build-skills.py --check` kept the generated mirror aligned.)
+    - Unrelated changes: pass (the follow-up diff is limited to the single canonical/generated skill and the overlapping older spec/test surfaces.)
+    - Validation evidence: pass (the rerun uses repo-owned validation plus the explicit overlap proof commands.)
+  - No-finding rationale: no blocking findings were found because the committed follow-up removes the mixed-evidence contradiction without widening the feature scope, and the overlapping authoritative surfaces now agree on when `inconclusive` is required.
+  - Recommended next stage: `verify`
+- 2026-04-23: targeted `verify` rerun passed on the review-resolution follow-up.
+  - Verification verdict: `ready`
+  - Validation commands:
+    - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-22-code-review-branch-reality-and-traceability.md --path specs/code-review-branch-reality-and-traceability.md --path specs/rigorloop-workflow.md --path specs/code-review-branch-reality-and-traceability.test.md --path docs/plans/2026-04-22-code-review-branch-reality-and-traceability.md --path specs/code-review-independence-under-autoprogression.md --path specs/code-review-independence-under-autoprogression.test.md`
+    - `git diff --check -- skills/code-review/SKILL.md .codex/skills/code-review/SKILL.md specs/code-review-independence-under-autoprogression.md specs/code-review-independence-under-autoprogression.test.md`
+    - `bash scripts/ci.sh`
+  - CI status: local repo-owned CI wrapper passed via `bash scripts/ci.sh`; hosted CI remains unobserved from this environment.
+  - Artifact drift: none blocking for the follow-up diff.
   - Recommended next stage: `explain-change`
 
 ## Outcome and retrospective
