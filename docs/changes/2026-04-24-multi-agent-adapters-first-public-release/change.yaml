@@ -1,5 +1,5 @@
 change_id: 2026-04-24-multi-agent-adapters-first-public-release
-title: Add multi-agent adapter portability core
+title: Add multi-agent adapter portability and RC package generation
 classification: default
 risk: high
 artifacts:
@@ -13,10 +13,20 @@ artifacts:
   review_resolution: docs/changes/2026-04-24-multi-agent-adapters-first-public-release/review-resolution.md
 requirements:
   - R1
+  - R2
+  - R3
+  - R4
+  - R5
   - R6
   - R7
   - R8
   - R9
+  - R10
+  - R11
+  - R12
+  - R13
+  - R14
+  - R15
   - R16
   - R17
   - R18
@@ -30,8 +40,18 @@ requirements:
   - R26
   - R27
   - R28
+  - R29
+  - R29a
+  - R29b
+  - R30
+  - R31
   - R31a
+  - R32
+  - R33
+  - R34
   - R35
+  - R49
+  - R50
   - R51
   - R52
   - R53
@@ -40,6 +60,9 @@ tests:
   - T2
   - T3
   - T4
+  - T5
+  - T6
+  - T7
   - T8
 validation:
   - command: python scripts/test-adapter-distribution.py
@@ -76,9 +99,34 @@ validation:
     result: pass_after_rereview_fix
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/multi-agent-adapters-first-public-release.test.md --path docs/plan.md --path docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md --path docs/proposals/2026-04-24-multi-agent-adapters-first-public-release.md --path specs/multi-agent-adapters-first-public-release.md --path docs/architecture/2026-04-24-multi-agent-adapter-distribution.md --path docs/adr/ADR-20260424-generated-adapter-packages.md --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml
     result: pass_after_rereview_fix
+  - command: python scripts/test-adapter-distribution.py
+    result: expected_fail_missing_adapter_generation_helpers_before_m2_implementation
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_after_m2_generation_helpers
+  - command: python scripts/build-adapters.py --version 0.1.0-rc.1
+    result: pass_generated_rc_adapter_tree
+  - command: python scripts/build-adapters.py --version 0.1.0-rc.1 --check
+    result: pass_after_rc_generation
+  - command: test -f dist/adapters/codex/AGENTS.md
+    result: pass_after_rc_generation
+  - command: test -f dist/adapters/claude/CLAUDE.md
+    result: pass_after_rc_generation
+  - command: test -f dist/adapters/opencode/AGENTS.md
+    result: pass_after_rc_generation
+  - command: test -f dist/adapters/manifest.yaml
+    result: pass_after_rc_generation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml
+    result: pass_after_m2_generation
+  - command: git diff --check -- scripts tests dist docs/changes/2026-04-24-multi-agent-adapters-first-public-release docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md
+    result: pass_after_m2_generation
 changed_files:
   - scripts/adapter_distribution.py
+  - scripts/build-adapters.py
+  - scripts/adapter_templates/codex/AGENTS.md
+  - scripts/adapter_templates/claude/CLAUDE.md
+  - scripts/adapter_templates/opencode/AGENTS.md
   - scripts/test-adapter-distribution.py
+  - dist/adapters/
   - tests/fixtures/adapters/agents-openai/SKILL.md
   - tests/fixtures/adapters/codex-dollar-skill/SKILL.md
   - tests/fixtures/adapters/codex-install-only/SKILL.md
@@ -97,5 +145,5 @@ changed_files:
   - docs/changes/2026-04-24-multi-agent-adapters-first-public-release/review-resolution.md
   - docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md
 review:
-  status: changes_requested_addressed_pending_rereview
+  status: m2_pending_code_review
   unresolved_items: 0

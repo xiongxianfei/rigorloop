@@ -165,11 +165,11 @@ The plan separates adapter logic, generated output, validation, release evidence
   - the repository contains independently copyable generated adapter package roots for Codex, Claude Code, and opencode, plus a generated `0.1.0-rc.1` manifest
 - Commit message: `M2: generate rc adapter packages`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - checked-in generated output may be noisy
   - `dist/adapters/codex/` may be confused with `.codex/skills/`
@@ -465,7 +465,7 @@ The plan separates adapter logic, generated output, validation, release evidence
 - [x] 2026-04-24: M1 adapter core and portable-core validation complete.
 - [x] 2026-04-24: M1 code-review finding accepted and fixed; manifest exclusion reasons are now quoted.
 - [x] 2026-04-24: M1 rereview findings accepted and fixed; invalid skill bodies and partial portability now have direct tests.
-- [ ] M2 complete.
+- [x] 2026-04-24: M2 adapter package generation and tracked RC outputs implemented.
 - [ ] M3 complete.
 - [ ] M4 complete.
 - [ ] M5 complete.
@@ -482,6 +482,9 @@ The plan separates adapter logic, generated output, validation, release evidence
 - 2026-04-24: Quote generated manifest exclusion reasons. This keeps human-readable reasons parseable when they contain YAML-sensitive punctuation such as `: `.
 - 2026-04-24: Reuse the repository `SKILL.md` validator for portable-core body checks. This avoids creating a second definition of Agent Skills-compatible Markdown structure.
 - 2026-04-24: Treat explicit target-adapter incompatibility text, such as `not compatible with opencode`, as a target-specific exclusion reason. This covers partial portability without weakening the portable-core gate for other adapters.
+- 2026-04-24: M2 keeps `scripts/build-adapters.py` as a thin CLI and puts generation, drift, and synchronization behavior in `scripts/adapter_distribution.py`. This preserves the existing repo pattern of shared Python helpers plus small entrypoints.
+- 2026-04-24: M2 uses authored thin templates under `scripts/adapter_templates/` for instruction entrypoints and writes the rendered versions into `dist/adapters/`. The templates identify generated output and canonical edit locations without duplicating skill bodies.
+- 2026-04-24: M2 preserves Codex adapter skill files as canonical skill text and applies the explicit `argument-hint` drop transform only for included non-Codex adapter skill files.
 
 ## Surprises and discoveries
 
@@ -489,6 +492,8 @@ The plan separates adapter logic, generated output, validation, release evidence
 - 2026-04-24: An earlier M1 milestone commit attempt was blocked by a read-only `.git` filesystem. The filesystem became writable later, so the milestone closeout commit was retried.
 - 2026-04-24: M1 code review found that the unsupported-frontmatter exclusion reason included `: ` and therefore needed manifest-rendering coverage, not just portability-decision coverage.
 - 2026-04-24: M1 rereview found two preventable proof gaps: valid frontmatter with invalid Markdown body could pass as portable, and the named partial-portability fixture from `T4` had not been added.
+- 2026-04-24: The M2 test-first red state was the expected missing adapter generation helper imports after extending `scripts/test-adapter-distribution.py`.
+- 2026-04-24: The current canonical `skills/` set has 22 skills, and every skill passes the portable-core gate for all three first-public-release adapters after the explicit non-Codex `argument-hint` transform. The generated RC manifest therefore has no current canonical skill exclusions.
 
 ## Validation notes
 
@@ -514,10 +519,17 @@ The plan separates adapter logic, generated output, validation, release evidence
 - 2026-04-24: M1 rereview-fix change metadata validation passed with `python scripts/validate-change-metadata.py docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml`.
 - 2026-04-24: M1 rereview-fix formatting validation passed with `git diff --check -- scripts tests docs/changes/2026-04-24-multi-agent-adapters-first-public-release docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md`.
 - 2026-04-24: M1 rereview-fix lifecycle validation passed with `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/multi-agent-adapters-first-public-release.test.md --path docs/plan.md --path docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md --path docs/proposals/2026-04-24-multi-agent-adapters-first-public-release.md --path specs/multi-agent-adapters-first-public-release.md --path docs/architecture/2026-04-24-multi-agent-adapter-distribution.md --path docs/adr/ADR-20260424-generated-adapter-packages.md --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml`.
+- 2026-04-24: M2 test-first red check passed as expected with `python scripts/test-adapter-distribution.py`, which failed because adapter generation helpers were not implemented yet.
+- 2026-04-24: M2 adapter regression tests passed with `python scripts/test-adapter-distribution.py`.
+- 2026-04-24: M2 RC adapter generation passed with `python scripts/build-adapters.py --version 0.1.0-rc.1`.
+- 2026-04-24: M2 RC adapter drift check passed with `python scripts/build-adapters.py --version 0.1.0-rc.1 --check`.
+- 2026-04-24: M2 required entrypoint checks passed with `test -f dist/adapters/codex/AGENTS.md`, `test -f dist/adapters/claude/CLAUDE.md`, `test -f dist/adapters/opencode/AGENTS.md`, and `test -f dist/adapters/manifest.yaml`.
+- 2026-04-24: M2 change metadata validation passed with `python scripts/validate-change-metadata.py docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml`.
+- 2026-04-24: M2 formatting validation passed with `git diff --check -- scripts tests dist docs/changes/2026-04-24-multi-agent-adapters-first-public-release docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md`.
 
 ## Outcome and retrospective
 
-This plan is active. M1 is complete; M2 through M6 remain open.
+This plan is active. M1 and M2 are complete; M3 through M6 remain open.
 
 Plan review is complete and the matching test spec is active.
 
@@ -525,7 +537,7 @@ Plan review is complete and the matching test spec is active.
 
 Immediate next repository stage: `code-review`.
 
-Next expected milestone after code-review: M2, adapter package generation and tracked RC outputs.
+Next expected milestone after code-review: M3, adapter validation, security checks, and CI integration.
 
 ## Risks and follow-ups
 
