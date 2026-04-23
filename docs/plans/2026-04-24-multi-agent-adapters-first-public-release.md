@@ -1,0 +1,515 @@
+# Multi-agent adapters and first public release plan
+
+- Status: active
+- Owner: maintainer + Codex
+- Start date: 2026-04-24
+- Last updated: 2026-04-24
+- Related issue or PR: none
+- Supersedes: none
+
+## Purpose / big picture
+
+Implement the approved multi-agent adapter and first-public-release contract as a set of deterministic, reviewable slices. The work should let RigorLoop keep `skills/` as the only authored skill source while generating independently installable Codex, Claude Code, and opencode adapter packages under `dist/adapters/`.
+
+The plan separates adapter logic, generated output, validation, release evidence, public docs, and manual smoke closeout so each slice has a coherent proof boundary. The first implementation target is `v0.1.0-rc.1`: structurally ready generated packages with incomplete smoke allowed only as `not-run` or externally `blocked` rows with reason and owner. The stable `v0.1.0` closeout remains maintainer-gated until every supported tool smoke row passes.
+
+## Source artifacts
+
+- Proposal: `docs/proposals/2026-04-24-multi-agent-adapters-first-public-release.md`
+- Spec: `specs/multi-agent-adapters-first-public-release.md`
+- Spec-review findings: resolved before this plan; RC gates, smoke matrix shape, and placeholder release-check rules are now explicit in the spec.
+- Architecture: `docs/architecture/2026-04-24-multi-agent-adapter-distribution.md`
+- ADR: `docs/adr/ADR-20260424-generated-adapter-packages.md`
+- Architecture-review findings: approved; carry forward the plan caution that release validation must stay target-version scoped so historical `v0.1.0-rc.1` metadata is not accidentally revalidated against a later `0.1.0` manifest.
+- Test spec: `specs/multi-agent-adapters-first-public-release.test.md`
+- Project map: none exists. Existing source layout is small enough for this plan to orient from scripts, docs, specs, and architecture.
+
+## Context and orientation
+
+- Canonical authored workflow content lives in `docs/`, `specs/`, `skills/`, `schemas/`, and `scripts/`.
+- `skills/` is the canonical authored skill tree.
+- `.codex/skills/` is generated local Codex runtime compatibility output and remains checked by `scripts/build-skills.py --check`.
+- New public adapter packages will be generated under `dist/adapters/` and must not become another authored skill tree.
+- Existing skill validation uses `scripts/skill_validation.py`, `scripts/validate-skills.py`, `scripts/test-skill-validator.py`, and `schemas/skill.schema.json`.
+- Existing generated Codex drift logic is isolated in `scripts/build-skills.py`.
+- `scripts/ci.sh` currently runs skill validation, skill validator fixtures, `.codex/skills` drift, change metadata fixtures, artifact lifecycle fixtures, and artifact lifecycle validation.
+- `scripts/release-verify.sh` is currently a placeholder and contains the exact text that the approved spec now requires release verification to reject.
+- `.github/workflows/release.yml` currently delegates to `scripts/release-verify.sh` and uses `gh release create --generate-notes`; the approved architecture requires tracked release notes instead.
+- `README.md`, `docs/workflows.md`, and `AGENTS.md` currently describe the Codex-oriented first-release baseline and will need public adapter guidance once generated packages and validation exist.
+- Ordinary contributors should be able to run repository-owned non-smoke validation without Codex, Claude Code, or opencode installed.
+
+## Non-goals
+
+- Build a hosted RigorLoop service, control plane, marketplace package, plugin registry publication, or installer distribution.
+- Guarantee identical runtime behavior across Codex, Claude Code, and opencode.
+- Make every existing skill portable in the first public release.
+- Require ordinary contributors to install all supported tools locally.
+- Add secrets, API keys, private credentials, or default permission-bypass configuration.
+- Replace Git, pull requests, CI, human review, or the existing RigorLoop lifecycle.
+- Retire `.codex/skills/` in this initiative. It remains a separate generated local Codex mirror until a later accepted lifecycle change retires or migrates it.
+
+## Requirements covered
+
+| Requirement IDs | Planned implementation surface |
+| --- | --- |
+| `R1`-`R15` | `scripts/adapter_distribution.py`, `scripts/build-adapters.py`, `scripts/adapter_templates/`, generated `dist/adapters/{codex,claude,opencode}/`, and `dist/adapters/manifest.yaml` |
+| `R16`-`R28` | portable-core validation in `scripts/adapter_distribution.py`, adapter regression fixtures, generated skill transforms or exclusions, and manifest exclusion reasons |
+| `R29`-`R35` | generated manifest writer, deterministic ordering, generated package drift check, and `scripts/validate-adapters.py` |
+| `R36`-`R38` | `README.md`, `docs/workflows.md`, `AGENTS.md`, and release notes support matrix wording |
+| `R39`-`R42a` | `docs/releases/<version>/release.yaml`, `docs/releases/<version>/release-notes.md`, and `scripts/validate-release.py` |
+| `R43`-`R47` | `scripts/validate-release.py`, `scripts/release-verify.sh`, tracked release notes, RC and final smoke rules, placeholder release-check rejection |
+| `R48` | `scripts/ci.sh`, adapter regression tests, adapter generation drift check, adapter validation, and GitHub workflow wrappers |
+| `R49`-`R50` | continued `scripts/build-skills.py --check` proof for `.codex/skills/`, docs explaining `.codex/skills/` versus `dist/adapters/codex/`, and ADR-backed boundaries |
+| `R51`-`R53` | no hosted runtime, no network/secrets requirement, standard-library generation and validation, security scans over generated adapters, templates, release metadata, and release notes |
+
+## Milestones
+
+### M1. Adapter core and portable-core validation
+
+- Goal:
+  - Add the shared adapter model and portable-core validation logic without writing generated packages yet.
+- Requirements:
+  - `R1`, `R6`-`R9`, `R16`-`R28`, `R31a`, `R35`, `R51`-`R53`
+- Files/components likely touched:
+  - `scripts/adapter_distribution.py`
+  - `scripts/test-adapter-distribution.py`
+  - `tests/fixtures/adapters/`
+  - `scripts/skill_validation.py` only if existing frontmatter helpers need a safe shared extraction
+- Dependencies:
+  - approved proposal, spec, architecture, and ADR
+  - existing canonical skill validator behavior
+  - no dependency on real Codex, Claude Code, or opencode installations
+- Tests to add/update:
+  - fixtures for a portable skill
+  - fixtures for invalid names and descriptions
+  - fixtures for unsupported frontmatter
+  - fixtures for `$skill` or Codex-only invocation assumptions
+  - fixtures for `.codex/skills` as the only install location
+  - fixtures for `agents/openai.yaml`
+  - fixtures for Codex-only tool, UI, approval, or permission assumptions
+  - fixtures for explicit exclusion or validated transform behavior
+- Implementation steps:
+  - define the first-public-release adapter set: `codex`, `claude`, `opencode`
+  - define each adapter package root, instruction entrypoint, and project-skill path in one shared model
+  - implement portable skill-name validation with the approved lowercase hyphenated pattern and 64-character limit
+  - implement portable description validation with the approved non-empty and 1024-character limit
+  - implement portable-core body and metadata checks for Codex-only assumptions named in the spec
+  - represent adapter inclusion, exclusion, transform, and human-readable reason in one deterministic data structure
+  - implement constrained YAML rendering/parsing helpers only for the manifest and release metadata shapes approved by the architecture
+  - keep all checks standard-library only and independent of network access or tool installations
+- Validation commands:
+  - `python scripts/test-adapter-distribution.py`
+  - `python scripts/validate-skills.py`
+  - `git diff --check -- scripts tests docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md`
+- Expected observable result:
+  - repository-owned tests can classify canonical or fixture skills as portable, excluded, or transformable for each adapter without creating `dist/adapters/`
+- Commit message: `M1: add adapter portability core`
+- Milestone closeout:
+  - [x] targeted validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
+- Risks:
+  - portable-core checks may become too heuristic if body matching is vague
+  - transform behavior may silently hide tool-specific assumptions
+  - YAML helper scope may grow beyond the approved constrained shapes
+- Rollback/recovery:
+  - revert the new shared adapter module and fixtures without touching canonical skills or generated output
+  - if a required transform cannot be made deterministic and testable, exclude the skill with a manifest reason instead of guessing
+
+### M2. Adapter package generation and tracked RC outputs
+
+- Goal:
+  - Generate tracked adapter-specific packages and `dist/adapters/manifest.yaml` for `0.1.0-rc.1`.
+- Requirements:
+  - `R2`-`R15`, `R27`-`R35`, `R49`-`R50`
+- Files/components likely touched:
+  - `scripts/build-adapters.py`
+  - `scripts/adapter_templates/codex/AGENTS.md`
+  - `scripts/adapter_templates/claude/CLAUDE.md`
+  - `scripts/adapter_templates/opencode/AGENTS.md`
+  - `dist/adapters/manifest.yaml`
+  - `dist/adapters/codex/AGENTS.md`
+  - `dist/adapters/codex/.agents/skills/*/SKILL.md`
+  - `dist/adapters/claude/CLAUDE.md`
+  - `dist/adapters/claude/.claude/skills/*/SKILL.md`
+  - `dist/adapters/opencode/AGENTS.md`
+  - `dist/adapters/opencode/.opencode/skills/*/SKILL.md`
+- Dependencies:
+  - M1 adapter model and portability decisions
+  - accepted architecture decision that `dist/adapters/` and `.codex/skills/` are separate generated surfaces
+- Tests to add/update:
+  - generator check-mode tests in `scripts/test-adapter-distribution.py`
+  - fixture assertions for required package paths and entrypoints
+  - fixture assertions for deterministic manifest ordering and version
+- Implementation steps:
+  - add thin authored instruction entrypoint templates for each adapter
+  - implement `python scripts/build-adapters.py --version <version>`
+  - implement `python scripts/build-adapters.py --version <version> --check`
+  - render skill files into each adapter's target project-skill path
+  - render entrypoints from thin templates without duplicating skill bodies
+  - generate `dist/adapters/manifest.yaml` with version, skill portability, adapter inclusion lists, and exclusion reasons
+  - remove unexpected generated files in write mode and fail on unexpected files in check mode
+  - generate the first tracked package set with manifest version `0.1.0-rc.1`
+- Validation commands:
+  - `python scripts/test-adapter-distribution.py`
+  - `python scripts/build-adapters.py --version 0.1.0-rc.1`
+  - `python scripts/build-adapters.py --version 0.1.0-rc.1 --check`
+  - `test -f dist/adapters/codex/AGENTS.md`
+  - `test -f dist/adapters/claude/CLAUDE.md`
+  - `test -f dist/adapters/opencode/AGENTS.md`
+  - `test -f dist/adapters/manifest.yaml`
+  - `git diff --check -- scripts tests dist docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md`
+- Expected observable result:
+  - the repository contains independently copyable generated adapter package roots for Codex, Claude Code, and opencode, plus a generated `0.1.0-rc.1` manifest
+- Commit message: `M2: generate rc adapter packages`
+- Milestone closeout:
+  - [ ] targeted validation passed
+  - [ ] progress updated
+  - [ ] decision log updated if needed
+  - [ ] validation notes updated
+  - [ ] milestone committed
+- Risks:
+  - checked-in generated output may be noisy
+  - `dist/adapters/codex/` may be confused with `.codex/skills/`
+  - entrypoint templates may accidentally duplicate large skill bodies
+- Rollback/recovery:
+  - remove `dist/adapters/`, `scripts/build-adapters.py`, and adapter templates while leaving canonical `skills/` and `.codex/skills/` untouched
+  - if generated output becomes stale, rerun the generator rather than hand-editing generated files
+
+### M3. Adapter validation, security checks, and CI integration
+
+- Goal:
+  - Add repository-owned validation for generated adapter packages and wire the non-smoke adapter checks into CI.
+- Requirements:
+  - `R7`-`R10`, `R16`-`R35`, `R48`, `R51`-`R53`
+- Files/components likely touched:
+  - `scripts/validate-adapters.py`
+  - `scripts/adapter_distribution.py`
+  - `scripts/test-adapter-distribution.py`
+  - `scripts/ci.sh`
+  - `scripts/artifact_lifecycle_validation.py`
+  - `tests/fixtures/adapters/`
+- Dependencies:
+  - M1 portability logic
+  - M2 generated adapter packages
+- Tests to add/update:
+  - validation fixture for missing adapter directories
+  - validation fixture for missing instruction entrypoints
+  - validation fixture for manifest/file mismatches
+  - validation fixture for unsupported metadata leaks in non-Codex adapters
+  - validation fixture for generated secret markers or machine-local paths
+  - validation fixture for generated `dist/adapters/*` not being treated as authored lifecycle source
+- Implementation steps:
+  - implement `python scripts/validate-adapters.py --version <manifest-version>`
+  - validate adapter root existence, entrypoint existence, skill paths, manifest version, generated skill counts, and manifest/file consistency
+  - validate portable-core inclusion decisions against generated files
+  - validate unsupported metadata is removed, transformed, or excluded where required
+  - add security scanning for common secret markers, private key delimiters, absolute machine-local paths, and placeholder permission-bypass language
+  - update `scripts/ci.sh` to run adapter regression tests, adapter drift checks, and adapter validation
+  - keep `scripts/ci.sh` filtering generated `dist/adapters/*` out of authored artifact lifecycle validation
+  - extend artifact lifecycle handling if needed so generated adapter paths are not accepted as authored lifecycle-managed inputs
+- Validation commands:
+  - `python scripts/test-adapter-distribution.py`
+  - `python scripts/build-adapters.py --version 0.1.0-rc.1 --check`
+  - `python scripts/validate-adapters.py --version 0.1.0-rc.1`
+  - `bash scripts/ci.sh`
+  - `git diff --check -- scripts tests dist docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md`
+- Expected observable result:
+  - ordinary contributors can run local non-smoke checks that prove generated adapters are in sync, structurally valid, security-scanned, and not treated as authored lifecycle source
+- Commit message: `M3: validate adapter package outputs`
+- Milestone closeout:
+  - [ ] targeted validation passed
+  - [ ] progress updated
+  - [ ] decision log updated if needed
+  - [ ] validation notes updated
+  - [ ] milestone committed
+- Risks:
+  - CI may become noisy if generated paths are sent to authored artifact lifecycle validation
+  - security scanning may be either too weak to catch obvious leaks or too broad for release notes and examples
+  - adapter validation may duplicate generator logic in a way that misses shared bugs
+- Rollback/recovery:
+  - revert CI wiring first if it blocks unrelated contributors
+  - keep `build-adapters.py --check` as the minimum drift proof while validator defects are fixed
+  - narrow false-positive security patterns with explicit fixtures rather than bypassing security validation
+
+### M4. Release metadata validator and RC release artifacts
+
+- Goal:
+  - Add target-version-scoped release metadata validation and create the `v0.1.0-rc.1` release evidence artifacts.
+- Requirements:
+  - `R39`-`R47`, `R52`-`R53`
+- Files/components likely touched:
+  - `scripts/validate-release.py`
+  - `scripts/adapter_distribution.py`
+  - `scripts/test-adapter-distribution.py`
+  - `docs/releases/v0.1.0-rc.1/release.yaml`
+  - `docs/releases/v0.1.0-rc.1/release-notes.md`
+  - `tests/fixtures/adapters/`
+- Dependencies:
+  - M2 generated `0.1.0-rc.1` adapter packages
+  - M3 adapter validation
+  - architecture-review caution that release validation must stay target-version scoped
+- Tests to add/update:
+  - release metadata fixture with one smoke row per supported tool
+  - failing fixture for mismatched manifest version
+  - failing fixture for mismatched supported tools across release notes, release metadata, manifest, and generated paths
+  - failing fixture for RC smoke `fail`
+  - failing fixture for RC `not-run` or `blocked` without reason or owner
+  - failing fixture for final release smoke that is not all `pass`
+- Implementation steps:
+  - implement `python scripts/validate-release.py --version v0.1.0-rc.1`
+  - require release metadata path `docs/releases/<version>/release.yaml`
+  - require release notes path `docs/releases/<version>/release-notes.md`
+  - validate release metadata shape, release type, manifest version, supported tools, adapter paths, instruction entrypoints, smoke rows, and validation rows
+  - validate release notes version is exactly the target tag
+  - compare release metadata, release notes, manifest, and generated adapter paths for the same supported tools
+  - implement RC smoke allowances for `not-run` and externally `blocked` rows with reason and owner
+  - implement final smoke strictness for all `pass` rows
+  - create `docs/releases/v0.1.0-rc.1/release.yaml` with `not-run` smoke rows and owner/reason fields
+  - create tracked `docs/releases/v0.1.0-rc.1/release-notes.md` describing the generated adapter package set, support matrix, exclusions, and known limitations
+- Validation commands:
+  - `python scripts/test-adapter-distribution.py`
+  - `python scripts/validate-release.py --version v0.1.0-rc.1`
+  - `python scripts/validate-adapters.py --version 0.1.0-rc.1`
+  - `git diff --check -- scripts tests docs/releases docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md`
+- Expected observable result:
+  - the repository has authoritative RC release metadata and release notes that validate against the generated `0.1.0-rc.1` adapter package set without requiring manual smoke to pass
+- Commit message: `M4: add rc release metadata validation`
+- Milestone closeout:
+  - [ ] targeted validation passed
+  - [ ] progress updated
+  - [ ] decision log updated if needed
+  - [ ] validation notes updated
+  - [ ] milestone committed
+- Risks:
+  - release metadata could become another stale authored source
+  - validating historical RC metadata against a later final manifest could create false failures
+  - release notes may describe unsupported tools or skills not present in the manifest
+- Rollback/recovery:
+  - keep `validate-release.py` scoped to one requested tag and the package state at that tag
+  - if metadata and manifest disagree, fix the generator or metadata before changing release claims
+  - remove RC release artifacts before tag publication if the generated package set is not ready
+
+### M5. Public docs, release gate replacement, and workflow integration
+
+- Goal:
+  - Replace placeholder release checks with repository-specific gates and update public guidance for generated adapter packages.
+- Requirements:
+  - `R36`-`R38`, `R43`-`R48`, `R51`-`R53`
+- Files/components likely touched:
+  - `scripts/release-verify.sh`
+  - `.github/workflows/release.yml`
+  - `README.md`
+  - `docs/workflows.md`
+  - `AGENTS.md`
+  - `docs/releases/v0.1.0-rc.1/release-notes.md`
+  - `docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md`
+- Dependencies:
+  - M1 through M4 complete
+  - tracked RC release metadata and notes exist
+- Tests to add/update:
+  - release verification invocation coverage through `scripts/test-adapter-distribution.py` or shell-level focused checks
+  - documentation checks for support matrix and canonical-versus-generated wording
+  - placeholder text rejection checks
+- Implementation steps:
+  - replace the placeholder `scripts/release-verify.sh` with a real orchestrator
+  - make `scripts/release-verify.sh` accept an explicit version argument and fall back to `GITHUB_REF_NAME` in GitHub Actions
+  - invoke skill validation, skill regression validation, `.codex/skills` drift check, adapter distribution regression tests, adapter generation drift check, adapter validation, release metadata validation, and security checks
+  - fail release verification when placeholder release-check text remains
+  - fail release verification when any required repository-specific check is missing from the orchestrator
+  - update `.github/workflows/release.yml` to pass the tag to release verification and create GitHub releases from tracked `docs/releases/<tag>/release-notes.md`
+  - update public documentation to describe adapter installation by copying one adapter package root into a project
+  - update public documentation to distinguish `skills/`, `.codex/skills/`, and `dist/adapters/`
+  - state that ordinary contributors do not need all supported tools installed locally for non-smoke validation
+  - document that RC may be published before full smoke only when non-smoke gates pass and no known smoke failures exist
+- Validation commands:
+  - `bash scripts/release-verify.sh v0.1.0-rc.1`
+  - `bash scripts/ci.sh`
+  - `! rg -n 'Replace this script with repository-specific release checks|TODO: release checks|placeholder release check' scripts/release-verify.sh`
+  - `rg -n 'codex|claude|opencode|dist/adapters|\\.codex/skills|not need all supported tools' README.md docs/workflows.md AGENTS.md docs/releases/v0.1.0-rc.1/release-notes.md`
+  - `git diff --check -- scripts .github README.md docs AGENTS.md dist`
+- Expected observable result:
+  - `bash scripts/release-verify.sh v0.1.0-rc.1` is the authoritative RC release gate and passes with structurally ready generated packages plus allowed incomplete smoke rows
+- Commit message: `M5: replace release gate for rc adapters`
+- Milestone closeout:
+  - [ ] targeted validation passed
+  - [ ] progress updated
+  - [ ] decision log updated if needed
+  - [ ] validation notes updated
+  - [ ] milestone committed
+- Risks:
+  - release verification may accidentally claim hosted CI passed without observed evidence
+  - docs may imply marketplace or package-manager distribution
+  - `release.yml` may still use generated GitHub notes instead of tracked notes
+- Rollback/recovery:
+  - revert release workflow changes if tag publishing behavior is unsafe
+  - keep release verification local-only until the shell gate is deterministic
+  - narrow documentation claims to generated project-local adapter packages if any install claim is over-broad
+
+### M6. Maintainer smoke and stable `v0.1.0` closeout
+
+- Goal:
+  - Convert the structurally ready RC package set into a stable `v0.1.0` release only after maintainer smoke passes for every supported tool.
+- Requirements:
+  - `R29b`, `R39`-`R47`, especially `R44`-`R45`
+- Files/components likely touched:
+  - `dist/adapters/manifest.yaml`
+  - `dist/adapters/{codex,claude,opencode}/`
+  - `docs/releases/v0.1.0/release.yaml`
+  - `docs/releases/v0.1.0/release-notes.md`
+  - `docs/plan.md`
+  - `docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md`
+- Dependencies:
+  - M1 through M5 complete
+  - maintainer has access to Codex, Claude Code, and opencode smoke environments
+  - every smoke row result can be recorded as `pass` with non-empty tool version and evidence
+- Tests to add/update:
+  - no new automated tests expected unless smoke reveals a validator or generator defect
+  - update fixtures only when a smoke finding exposes an automated validation gap
+- Implementation steps:
+  - run the maintainer smoke matrix against each generated adapter package
+  - record one `pass` smoke row per supported tool in `docs/releases/v0.1.0/release.yaml`
+  - regenerate adapter packages and manifest for version `0.1.0`
+  - create stable release notes with version exactly `v0.1.0`
+  - run final release verification for `v0.1.0`
+  - update this plan and `docs/plan.md` lifecycle state only when the stable release readiness outcome is known
+- Manual smoke checks:
+  - Codex adapter package can be copied into a clean project root and exposes `AGENTS.md` plus `.agents/skills/<skill>/SKILL.md`
+  - Claude Code adapter package can be copied into a clean project root and exposes `CLAUDE.md` plus `.claude/skills/<skill>/SKILL.md`
+  - opencode adapter package can be copied into a clean project root and exposes `AGENTS.md` plus `.opencode/skills/<skill>/SKILL.md`
+- Validation commands:
+  - `python scripts/build-adapters.py --version 0.1.0`
+  - `python scripts/build-adapters.py --version 0.1.0 --check`
+  - `python scripts/validate-adapters.py --version 0.1.0`
+  - `python scripts/validate-release.py --version v0.1.0`
+  - `bash scripts/release-verify.sh v0.1.0`
+  - `git diff --check -- dist docs/releases/v0.1.0 docs/plan.md docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md`
+- Expected observable result:
+  - the stable package set has manifest version `0.1.0`, all supported smoke rows pass, and `bash scripts/release-verify.sh v0.1.0` succeeds
+- Commit message: `M6: prepare stable adapter release`
+- Milestone closeout:
+  - [ ] targeted validation passed
+  - [ ] progress updated
+  - [ ] decision log updated if needed
+  - [ ] validation notes updated
+  - [ ] milestone committed
+- Risks:
+  - maintainer smoke may reveal a real tool-discovery incompatibility
+  - the stable version bump can make old RC metadata look stale if validators are not target-version scoped
+  - final release notes may overstate unsupported skills or tool behavior
+- Rollback/recovery:
+  - if any smoke row fails, do not publish `v0.1.0`; keep or publish only RC artifacts with the known failure resolved before retesting
+  - if smoke is externally blocked, keep stable release blocked and use RC metadata with owner and reason only when no known smoke failures exist
+  - if the stable manifest is generated prematurely, regenerate `0.1.0-rc.1` before RC verification or keep the stable change isolated until smoke passes
+
+## Validation plan
+
+| Validation level | When | Required before implementation handoff? | Purpose |
+| --- | --- | ---: | --- |
+| Planning validation | after this plan is created | yes | Prove the plan and index are lifecycle-valid and formatting-clean. |
+| Milestone targeted validation | before each milestone closeout | yes | Prove the milestone's concrete behavior and touched files. |
+| CI wrapper validation | after CI wiring and before RC readiness | yes | Prove ordinary contributor non-smoke validation works through `scripts/ci.sh`. |
+| RC release verification | before `v0.1.0-rc.1` tag readiness | yes | Prove all non-smoke release gates pass and incomplete smoke rows are allowed only under RC rules. |
+| Manual smoke matrix | before `v0.1.0` readiness | yes | Prove every supported tool has passing maintainer smoke evidence. |
+
+- Planning-stage validation:
+  - `git diff --check -- docs/plan.md docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md docs/proposals/2026-04-24-multi-agent-adapters-first-public-release.md specs/multi-agent-adapters-first-public-release.md docs/architecture/2026-04-24-multi-agent-adapter-distribution.md docs/adr/ADR-20260424-generated-adapter-packages.md`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md --path docs/proposals/2026-04-24-multi-agent-adapters-first-public-release.md --path specs/multi-agent-adapters-first-public-release.md --path docs/architecture/2026-04-24-multi-agent-adapter-distribution.md --path docs/adr/ADR-20260424-generated-adapter-packages.md`
+- Milestone validation:
+  - run the validation commands listed in the relevant milestone before marking that milestone complete
+  - update `Validation notes` with command, result, and any material failure or retry
+- Final release validation:
+  - `bash scripts/release-verify.sh v0.1.0-rc.1` is required before RC tag readiness
+  - `bash scripts/release-verify.sh v0.1.0` plus passing manual smoke evidence is required before stable tag readiness
+
+## Risks and recovery
+
+- Risk: generated `dist/adapters/` becomes a second authored source of truth.
+  - Recovery: keep generator drift checks mandatory, filter generated adapter paths out of authored lifecycle validation, and update docs to say canonical edits happen in `skills/` and templates only.
+- Risk: portable-core validation silently ships misleading non-Codex skills.
+  - Recovery: default uncertain tool-specific assumptions to exclusion with a manifest reason unless an explicit tested transform exists.
+- Risk: `.codex/skills/` and `dist/adapters/codex/` drift independently.
+  - Recovery: keep separate drift checks for `scripts/build-skills.py --check` and `scripts/build-adapters.py --check`.
+- Risk: release verification remains a checklist by another name.
+  - Recovery: make `scripts/release-verify.sh` invoke concrete repository-owned commands and reject placeholder wording or missing required invocations.
+- Risk: RC and final release metadata conflict as versions change.
+  - Recovery: validate one requested tag at a time and run release verification against the package state at the intended tag.
+- Risk: manual smoke is blocked by tool access.
+  - Recovery: allow only RC `blocked` rows with external/tool-access reason and owner; keep stable `v0.1.0` blocked until all rows pass.
+- Risk: security scans produce noisy false positives.
+  - Recovery: tune patterns with failing fixtures and keep explicit allowlist decisions narrow and reviewed.
+
+## Dependencies
+
+- `plan-review` must complete before implementation starts.
+- `specs/multi-agent-adapters-first-public-release.test.md` must be created and active before production code changes begin.
+- M2 depends on M1 adapter classification and deterministic rendering helpers.
+- M3 depends on generated output existing from M2.
+- M4 depends on generated RC packages and adapter validation.
+- M5 depends on release metadata validation and RC release artifacts.
+- M6 depends on maintainer-run manual smoke for Codex, Claude Code, and opencode.
+- No milestone requires ordinary contributors to install Codex, Claude Code, or opencode for non-smoke validation.
+- No milestone should add third-party dependencies unless a later architecture update explicitly approves the dependency.
+
+## Progress
+
+- [x] 2026-04-24: proposal accepted.
+- [x] 2026-04-24: spec approved after spec-review.
+- [x] 2026-04-24: architecture approved and ADR accepted after architecture-review.
+- [x] 2026-04-24: execution plan created and indexed.
+- [x] 2026-04-24: planning-stage validation passed.
+- [x] 2026-04-24: plan-review approved with no required edits.
+- [x] 2026-04-24: test spec active.
+- [x] 2026-04-24: M1 adapter core and portable-core validation complete.
+- [ ] M2 complete.
+- [ ] M3 complete.
+- [ ] M4 complete.
+- [ ] M5 complete.
+- [ ] M6 complete.
+
+## Decision log
+
+- 2026-04-24: Plan targets `v0.1.0-rc.1` first, then stable `v0.1.0` after manual smoke passes. This matches the approved release distinction between structural package readiness and smoke-verified final release.
+- 2026-04-24: Keep `.codex/skills/` and `dist/adapters/codex/` as separate generated surfaces with separate drift checks. This avoids making generated output the source for other generated output.
+- 2026-04-24: Put shared adapter behavior in `scripts/adapter_distribution.py` and keep CLI scripts thin. This follows the existing repository pattern of reusable validation helpers plus small entrypoints.
+- 2026-04-24: Keep release validation target-version scoped. This carries forward the architecture-review caution and prevents later stable-version work from invalidating historical RC evidence outside its tag context.
+- 2026-04-24: M1 treats `argument-hint` frontmatter as an explicit non-Codex transform and unknown frontmatter as a non-Codex exclusion. This keeps current Codex metadata support while preventing unsupported metadata from leaking into Claude Code or opencode outputs.
+- 2026-04-24: M1 does not write `dist/adapters/`. It only classifies skills and renders deterministic manifest content in memory so package generation remains isolated to M2.
+
+## Surprises and discoveries
+
+- 2026-04-24: The test-first red state was the expected missing `scripts/adapter_distribution.py` module after adding `scripts/test-adapter-distribution.py`; no spec or architecture gap was found.
+- 2026-04-24: An earlier M1 milestone commit attempt was blocked by a read-only `.git` filesystem. The filesystem became writable later, so the milestone closeout commit was retried.
+
+## Validation notes
+
+- 2026-04-24: Planning-stage formatting passed with `git diff --check -- docs/plan.md docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md docs/proposals/2026-04-24-multi-agent-adapters-first-public-release.md specs/multi-agent-adapters-first-public-release.md docs/architecture/2026-04-24-multi-agent-adapter-distribution.md docs/adr/ADR-20260424-generated-adapter-packages.md`.
+- 2026-04-24: Lifecycle validation passed with `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md --path docs/proposals/2026-04-24-multi-agent-adapters-first-public-release.md --path specs/multi-agent-adapters-first-public-release.md --path docs/architecture/2026-04-24-multi-agent-adapter-distribution.md --path docs/adr/ADR-20260424-generated-adapter-packages.md`. The validator reported `validated 4 artifact files in explicit-paths mode`; `docs/plan.md` and concrete plan files are checked by the formatting proof and lifecycle references, while the lifecycle validator currently classifies proposal, spec, architecture, and ADR files.
+- 2026-04-24: Test-spec authoring validation passed with `git diff --check -- specs/multi-agent-adapters-first-public-release.test.md docs/plan.md docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md docs/proposals/2026-04-24-multi-agent-adapters-first-public-release.md specs/multi-agent-adapters-first-public-release.md docs/architecture/2026-04-24-multi-agent-adapter-distribution.md docs/adr/ADR-20260424-generated-adapter-packages.md`.
+- 2026-04-24: Test-spec lifecycle validation passed with `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/multi-agent-adapters-first-public-release.test.md --path docs/plan.md --path docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md --path docs/proposals/2026-04-24-multi-agent-adapters-first-public-release.md --path specs/multi-agent-adapters-first-public-release.md --path docs/architecture/2026-04-24-multi-agent-adapter-distribution.md --path docs/adr/ADR-20260424-generated-adapter-packages.md`.
+- 2026-04-24: M1 test-first red check passed as expected with `python scripts/test-adapter-distribution.py`, which failed because `scripts/adapter_distribution.py` did not exist yet.
+- 2026-04-24: M1 adapter regression tests passed with `python scripts/test-adapter-distribution.py`.
+- 2026-04-24: M1 canonical skill validation passed with `python scripts/validate-skills.py`.
+- 2026-04-24: M1 change metadata validation passed with `python scripts/validate-change-metadata.py docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml`.
+- 2026-04-24: M1 formatting validation passed with `git diff --check -- scripts tests docs/changes/2026-04-24-multi-agent-adapters-first-public-release docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md`.
+- 2026-04-24: M1 milestone commit command prepared as `git add ... && git commit -m "M1: add adapter portability core"`.
+
+## Outcome and retrospective
+
+This plan is active. M1 is complete; M2 through M6 remain open.
+
+Plan review is complete and the matching test spec is active.
+
+## Readiness
+
+Immediate next repository stage: `code-review`.
+
+Next expected milestone after code-review: M2, adapter package generation and tracked RC outputs.
+
+## Risks and follow-ups
+
+- Follow-up after stable release: decide whether `.codex/skills/` should remain as a local generated mirror or eventually be replaced by `dist/adapters/codex/`.
+- Follow-up after first external use: reassess whether generated packages should move to package-manager, plugin, or marketplace distribution.
+- Follow-up if many skills are excluded: create a portability-improvement initiative rather than weakening the portable-core gate.
