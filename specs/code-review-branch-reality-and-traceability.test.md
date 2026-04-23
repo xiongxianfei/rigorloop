@@ -382,9 +382,8 @@
 
 ## Next artifacts
 
-- `implement`
-- `code-review`
-- `verify`
+- `explain-change`
+- `pr`
 
 ## Follow-on artifacts
 
@@ -394,10 +393,10 @@ None yet.
 
 This test spec is active.
 
-The approved feature spec, completed `plan-review`, and active execution plan are in place for this initiative.
+It remained aligned through implementation, first-pass `code-review`, and `verify` for `docs/plans/2026-04-22-code-review-branch-reality-and-traceability.md`.
 
 No separate architecture artifact is expected for this slice.
 
-The next stage is `implement`.
+The next stage is `explain-change`.
 
 If implementation reveals a need for architecture or a broader workflow redesign, stop and return to the appropriate upstream gate instead of proceeding on this test spec alone.

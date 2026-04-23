@@ -249,6 +249,7 @@ The implementation must stay inside the approved first slice:
 - [x] 2026-04-22: plan created and indexed in `docs/plan.md`.
 - [x] 2026-04-22: focused active test spec created for this initiative.
 - [x] 2026-04-22: M1 implementation completed with canonical and generated workflow guidance aligned; first-pass `code-review` is the next stage.
+- [x] 2026-04-22: first-pass `code-review` completed with `clean-with-notes` and `verify` completed with verdict `ready`; the next stage is `explain-change`.
 
 ## Decision log
 
@@ -297,6 +298,50 @@ The implementation must stay inside the approved first slice:
 - 2026-04-22: residual unqualified `PR-ready` hits were manually classified:
   - allowed survivors are negative guidance or quoted term definitions in `skills/workflow/SKILL.md`, `specs/rigorloop-workflow.md`, and the focused spec and test spec.
   - no touched workflow-facing live guidance or output template still uses unqualified `PR-ready` in `skills/implement/SKILL.md`, `skills/code-review/SKILL.md`, `skills/verify/SKILL.md`, `skills/pr/SKILL.md`, `skills/explain-change/SKILL.md`, or `docs/workflows.md`.
+- 2026-04-22: no `docs/plan.md` lifecycle update was needed after M1 implementation or the first-pass review. The initiative remains active, so the existing `## Active` entry stays truthful while the plan body moves from `implement` readiness into downstream review readiness.
+- 2026-04-22: first-pass `code-review` record for `297a010^..297a010`.
+  - Review status: `clean-with-notes`
+  - Review inputs:
+    - Diff range: `297a010^..297a010`
+    - Review surface: committed diff for `297a010^..297a010`
+    - Tracked governing branch state: `HEAD` at `297a0104a50f9797870b8c424598b568517acfbe`, with the proposal, focused spec, focused test spec, active plan, and `specs/rigorloop-workflow.md` confirmed in tracked state via `git ls-files`
+    - Spec: `specs/code-review-branch-reality-and-traceability.md`
+    - Test spec: `specs/code-review-branch-reality-and-traceability.test.md`
+    - Plan milestone: `M1`
+    - Architecture / ADR: none for this approved first slice
+    - Validation evidence: `python scripts/validate-skills.py`, `python scripts/test-skill-validator.py`, `python scripts/test-artifact-lifecycle-validator.py`, `python scripts/build-skills.py`, `python scripts/build-skills.py --check`, `python scripts/validate-change-metadata.py docs/changes/2026-04-22-code-review-branch-reality-and-traceability/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-22-code-review-branch-reality-and-traceability.md --path specs/code-review-branch-reality-and-traceability.md --path specs/rigorloop-workflow.md --path specs/code-review-branch-reality-and-traceability.test.md --path docs/plans/2026-04-22-code-review-branch-reality-and-traceability.md`, `bash scripts/ci.sh`
+  - Diff summary: the committed range adds the approved proposal/spec/test-spec/plan stack, folds the durable branch-reality and traceability invariant into `specs/rigorloop-workflow.md`, aligns the directly affected workflow-facing skills and `docs/workflows.md` with the new stage-owned language and evidence rules, regenerates `.codex/skills/`, and records the implementation proof path in the active plan and change-local pack.
+  - Findings: no blocking or required-change findings.
+  - Checklist coverage:
+    - Spec alignment: pass (`specs/rigorloop-workflow.md`, `skills/implement/SKILL.md`, `skills/code-review/SKILL.md`, `skills/verify/SKILL.md`, `skills/workflow/SKILL.md`, `skills/pr/SKILL.md`, and `docs/workflows.md` implement the approved contract without widening the slice.)
+    - Test coverage: pass (the focused test spec names the exact proof surface and the implementation validation followed the repo-owned commands named in the plan.)
+    - Edge cases: pass (`skills/code-review/SKILL.md`, `skills/verify/SKILL.md`, and `specs/rigorloop-workflow.md` explicitly require direct proof for named edge cases and block unsupported clean conclusions.)
+    - Error handling: pass (`code-review` now uses `inconclusive` only when missing evidence prevents both a supported finding and a clean conclusion; `verify` blocks missing authoritative tracked artifacts for `branch-ready`.)
+    - Architecture boundaries: pass (the change stayed within the approved workflow-guidance slice and did not introduce validators, routers, or stage-order redesign.)
+    - Compatibility: pass (`specs/rigorloop-workflow.md` preserves the earlier `code-review` independence contract and `docs/workflows.md` keeps `implement -> code-review -> verify` intact.)
+    - Security/privacy: pass (the wording changes add no new secret-bearing path and preserve the rule against exposing sensitive values in review or verification outputs.)
+    - Generated output drift: pass (`python scripts/build-skills.py` plus `python scripts/build-skills.py --check` kept `.codex/skills/` synchronized with canonical `skills/`.)
+    - Unrelated changes: pass (the diff is limited to this initiative's workflow artifacts, directly affected skills, summary docs, generated mirrors, and change-local pack.)
+    - Validation evidence: pass (the plan and change metadata name the actual repo-owned commands and they passed on the touched scope.)
+  - No-finding rationale: no blocking findings were found because the diff matches the approved spec and plan scope, the focused test spec covers the changed contract, the governing artifacts cited in the review are tracked in the reviewed branch state, and the recorded validation evidence supports the implementation.
+  - Recommended next stage: `verify`
+- 2026-04-22: `verify` passed on the implementation plus the post-review lifecycle bookkeeping.
+  - Verification verdict: `ready`
+  - Traceability:
+    - `R1`-`R1f` -> `T1`, `T4` -> `specs/rigorloop-workflow.md`, `skills/implement/SKILL.md`, `skills/verify/SKILL.md`, `skills/pr/SKILL.md`, `skills/explain-change/SKILL.md`, `docs/workflows.md` -> committed diff plus clean review record and verify validation commands -> pass
+    - `R2`-`R2n` -> `T2`, `T3`, `T4` -> `skills/code-review/SKILL.md`, `skills/verify/SKILL.md`, `specs/rigorloop-workflow.md`, active plan review record -> tracked-governing-state proof, mixed-evidence handling, and `branch-ready` blocking rules -> pass
+    - `R3`-`R3f` -> `T5` -> `skills/code-review/SKILL.md`, `skills/verify/SKILL.md`, `specs/rigorloop-workflow.md`, `docs/workflows.md` -> direct-proof wording and named-edge-case blocking behavior -> pass
+    - `R4`-`R4e` -> `T6`, `T7`, `T8`, `T9` -> `specs/rigorloop-workflow.md`, active test spec, active plan, `.codex/skills/`, and change-local pack -> preserved earlier `code-review` independence contract, narrow v1 scope, generated-output sync, lifecycle validity, and smoke proof -> pass
+  - Validation commands:
+    - `python scripts/validate-change-metadata.py docs/changes/2026-04-22-code-review-branch-reality-and-traceability/change.yaml`
+    - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-22-code-review-branch-reality-and-traceability.md --path specs/code-review-branch-reality-and-traceability.md --path specs/rigorloop-workflow.md --path specs/code-review-branch-reality-and-traceability.test.md --path docs/plans/2026-04-22-code-review-branch-reality-and-traceability.md`
+    - `rg -n '^## (Active|Blocked|Done|Superseded)$|2026-04-22-code-review-branch-reality-and-traceability' docs/plan.md`
+    - `git diff --check -- docs/plan.md docs/plans/2026-04-22-code-review-branch-reality-and-traceability.md specs/code-review-branch-reality-and-traceability.test.md docs/changes/2026-04-22-code-review-branch-reality-and-traceability/change.yaml docs/changes/2026-04-22-code-review-branch-reality-and-traceability/explain-change.md`
+    - `bash scripts/ci.sh`
+  - CI status: local repo-owned CI wrapper passed via `bash scripts/ci.sh`; hosted CI remains unobserved from this environment.
+  - Artifact drift: none blocking. The active plan, active test spec, and change metadata now reflect the clean first-pass review result and ready verify outcome.
+  - Remaining risks: hosted CI and eventual PR/base-branch readiness remain downstream concerns for later stages.
+  - Recommended next stage: `explain-change`
 
 ## Outcome and retrospective
 
@@ -309,7 +354,9 @@ The implementation must stay inside the approved first slice:
 - Plan-review feedback is incorporated.
 - The focused active test spec now exists.
 - M1 implementation is complete and recorded.
-- The immediate next stage is `code-review`.
+- First-pass `code-review` is recorded as `clean-with-notes`.
+- `verify` is recorded as `ready`.
+- The immediate next stage is `explain-change`.
 
 ## Risks and follow-ups
 
