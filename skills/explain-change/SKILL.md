@@ -104,4 +104,4 @@ File | Change | Reason | Source artifact | Test/evidence
 - tests and verification evidence;
 - alternatives rejected;
 - remaining risks;
-- PR-ready summary bullets plus a readiness statement for `pr` or blocker state.
+- PR handoff summary bullets plus a readiness statement for `pr` or blocker state.

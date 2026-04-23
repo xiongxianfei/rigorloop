@@ -46,6 +46,8 @@ Before drafting or opening a PR, check:
 
 Apply the same readiness checks for workflow-managed and direct-`pr` invocation. Direct `pr` remains isolated only in the sense that no downstream stage follows `pr`; it still opens the PR when readiness passes.
 
+`verify` owns `branch-ready`. This stage owns `pr-body-ready` and `pr-open-ready`.
+
 ## PR body structure
 
 Use this template:
@@ -109,7 +111,7 @@ Examples:
 - Do not summarize from memory when a diff is available.
 - Do not bury known risks.
 - Do not include massive internal detail that obscures review.
-- Do not stop at “PR ready” when the user asked for `pr` and all readiness checks pass; open it unless a blocker or tool limitation prevents that action.
+- Do not stop at a chat-only readiness summary when the user asked for `pr`; if `branch-ready`, `pr-body-ready`, and `pr-open-ready` checks pass, open it unless a blocker or tool limitation prevents that action.
 
 ## Expected output
 

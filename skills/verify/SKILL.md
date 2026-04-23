@@ -11,6 +11,8 @@ You are proving that the implementation, tests, and durable artifacts agree.
 
 Verification is broader than running CI. It checks completeness, correctness, coherence, and evidence.
 
+`verify` owns `branch-ready`. The `pr` stage owns `pr-body-ready` and `pr-open-ready`.
+
 ## Inputs to read
 
 Read:
@@ -53,6 +55,7 @@ Requirement → Test IDs → Files changed → Evidence → Status
 2. Check the actual diff for unplanned behavior.
 3. Compare tests against the test spec.
 4. Build the related artifact set from changed files, `docs/changes/<change-id>/change.yaml`, explain-change artifacts, the active plan, generated outputs, governing specs, governing architecture docs or ADRs, governing test specs, and draft PR text only when that draft PR body already exists.
+4a. When `branch-ready` depends on cited governing artifacts, confirm those authoritative artifacts are present in tracked governing branch state rather than only in the local worktree.
 5. For ordinary non-trivial work, confirm the required baseline change-local pack exists: `docs/changes/<change-id>/change.yaml` plus durable Markdown reasoning, defaulting to `docs/changes/<change-id>/explain-change.md` unless an approved equivalent surface applies.
 6. Treat a missing required baseline change-local pack as a blocker, not acceptable silence.
 7. For lifecycle-managed artifacts, treat stale or inconsistent touched, referenced, generated, or authoritative artifacts as blockers. Report unrelated stale baseline artifacts as warnings instead of blocking the change.
@@ -86,7 +89,9 @@ When PR-body references are not yet available, record which pre-PR handoff surfa
 - Do not ignore implementation that exceeds the spec.
 - Do not treat `reviewed` as a durable passing state for relied-on proposals, specs, test specs, or architecture docs.
 - Do not let touched or authoritative stale artifacts pass as baseline debt.
-- Do not treat a planned initiative as PR-ready when lifecycle state is stale.
+- Do not treat local-only authoritative artifacts as sufficient support for `branch-ready`.
+- Do not treat unresolved named edge-case proof gaps as compatible with `branch-ready`.
+- Do not treat a planned initiative as `branch-ready` when lifecycle state is stale.
 - Do not accept deferring a known `Done` transition until after merge unless merged state is the deciding event for completion.
 - Do not move to PR if blockers remain.
 - Do not update artifacts silently; call out drift.
@@ -106,4 +111,4 @@ When PR-body references are not yet available, record which pre-PR handoff surfa
 - CI status or CI gap;
 - artifact drift findings;
 - remaining risks;
-- readiness statement for `ci`, `explain-change`, isolated stop, or blocker state.
+- readiness statement for `branch-ready`, `ci`, `explain-change`, isolated stop, or blocker state.

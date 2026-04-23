@@ -82,6 +82,8 @@ Stopping before the next milestone does not cancel a required downstream workflo
 ## Workflow handoff
 
 - In the full-feature lane, successful `implement` completion hands off to `code-review` unless a stop condition applies.
+- Implementation-stage closeout may report milestone completion, validation, blockers, readiness for `code-review`, or the next milestone.
+- Do not use `implement` to claim review findings, review-clean status, or `branch-ready`. If review has not happened yet, say the change is ready for `code-review`, not that no required fixes were found.
 - If milestone validation fails or the implementation reveals a blocker that needs a real user decision, stop before `code-review` and report the blocker explicitly.
 - This v1 autoprogression rule does not expand fast-lane or bugfix execution behavior through the `implement` skill.
 
@@ -106,4 +108,4 @@ Update the concrete plan with:
 - files changed;
 - plan updates made;
 - blockers or spec gaps;
-- readiness statement for `code-review`, blocker/pause state, or next milestone.
+- readiness statement for `code-review`, blocker/pause state, or next milestone, without implying review findings or `branch-ready`.
