@@ -35,6 +35,27 @@ Prefer a fresh session, separate reviewer, or separate agent when available. If 
 - Do not treat remembered implementation intent, chat memory, or passing tests alone as sufficient review grounding.
 - If you cannot inspect the actual diff, relevant tests, or authoritative upstream artifacts, the review result must be `inconclusive`.
 
+## Review surface and tracked governing branch state
+
+- The review surface may be changed files, a staged diff, an unstaged diff, a PR diff, a commit range, an explicit patch, or another local review target.
+- Tracked governing branch state is the tracked Git state that can support branch-scoped conclusions about cleanliness, authority, or readiness.
+- This review does not require every reviewed implementation change to already be committed.
+- If you cite a proposal, spec, test spec, plan, architecture document, or ADR as authoritative support for a clean branch-scoped conclusion, confirm that artifact is present in tracked governing branch state.
+- Local-only governing artifacts may inform reviewer background understanding, but they must not support a clean branch-scoped conclusion.
+
+## Mixed-evidence handling
+
+- Missing tracked governing authority blocks `clean-with-notes`.
+- Missing tracked governing authority does not suppress independently supported `changes-requested` or `blocked` findings.
+- Use `inconclusive` only when missing evidence prevents both a supported finding and a clean conclusion.
+
+## Direct proof for named edge cases
+
+- Clean review conclusions for named edge cases must cite direct proof from a targeted test, targeted validation output, or an explicit manual verification note when manual verification is allowed.
+- Code-shape inference alone is insufficient direct proof for a named edge case.
+- When a named edge-case proof gap is actionable within approved scope, report it as a finding instead of a clean result.
+- When the reviewer cannot inspect enough evidence to assess a named edge case credibly, use `inconclusive` rather than a clean result.
+
 ## First-pass checklist coverage
 
 Evaluate each check with `pass`, `concern`, or `block`, and cite concrete evidence from the diff, tests, or governing artifacts:
@@ -82,7 +103,7 @@ Use:
 - Do not confuse passing tests with compliance.
 - Do not review from memory; use the actual diff.
 - Do not request broad rewrites when a targeted fix is enough.
-- Do not claim a credible clean result when required evidence is missing; use `inconclusive` instead.
+- Do not claim a credible clean result when required evidence or tracked governing authority is missing; use `inconclusive` instead unless the review surface independently supports a finding.
 - Do not require positive notes in a clean review. Include them only when they provide specific, evidence-backed information useful to future maintainers.
 - Do not emit generic praise such as `looks good` without checklist coverage and no-finding rationale. That is an invalid clean review.
 - Do not expose secrets, credentials, or sensitive runtime values from the diff or validation outputs.
@@ -109,6 +130,8 @@ clean-with-notes
 ## Review inputs
 
 - Diff range:
+- Review surface:
+- Tracked governing branch state:
 - Spec:
 - Test spec:
 - Plan milestone:
@@ -157,8 +180,9 @@ No blocking findings were found because:
   - review status using `clean-with-notes`, `changes-requested`, `blocked`, or `inconclusive`;
   - review inputs;
   - diff summary;
-  - findings with exact file/path references;
-  - checklist coverage;
-  - no-finding rationale when applicable;
-  - optional positive notes only when they add specific evidence-backed value; and
-  - recommended next stage or stop reason.
+- findings with exact file/path references;
+- checklist coverage;
+- no-finding rationale when applicable;
+- any missing tracked governing artifacts or direct-proof gaps that affected the result;
+- optional positive notes only when they add specific evidence-backed value; and
+- recommended next stage or stop reason.
