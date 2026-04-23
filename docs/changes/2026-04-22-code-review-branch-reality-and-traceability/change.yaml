@@ -81,6 +81,10 @@ validation:
     result: pass
   - command: git diff --check -- docs/plan.md docs/plans/2026-04-22-code-review-branch-reality-and-traceability.md specs/code-review-branch-reality-and-traceability.test.md docs/changes/2026-04-22-code-review-branch-reality-and-traceability/change.yaml docs/changes/2026-04-22-code-review-branch-reality-and-traceability/explain-change.md
     result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-22-code-review-branch-reality-and-traceability.md --path specs/code-review-branch-reality-and-traceability.md --path specs/rigorloop-workflow.md --path specs/code-review-branch-reality-and-traceability.test.md --path docs/plans/2026-04-22-code-review-branch-reality-and-traceability.md --path specs/code-review-independence-under-autoprogression.md --path specs/code-review-independence-under-autoprogression.test.md
+    result: pass
+  - command: git diff --check -- skills/code-review/SKILL.md .codex/skills/code-review/SKILL.md specs/code-review-independence-under-autoprogression.md specs/code-review-independence-under-autoprogression.test.md
+    result: pass
 changed_files:
   - .codex/skills/code-review/SKILL.md
   - .codex/skills/explain-change/SKILL.md
@@ -100,6 +104,8 @@ changed_files:
   - skills/pr/SKILL.md
   - skills/verify/SKILL.md
   - skills/workflow/SKILL.md
+  - specs/code-review-independence-under-autoprogression.md
+  - specs/code-review-independence-under-autoprogression.test.md
   - specs/code-review-branch-reality-and-traceability.md
   - specs/code-review-branch-reality-and-traceability.test.md
   - specs/rigorloop-workflow.md
