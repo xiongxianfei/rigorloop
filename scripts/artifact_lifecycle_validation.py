@@ -88,6 +88,11 @@ def _is_relative_to(path: Path, other: Path) -> bool:
         return False
 
 
+def _is_generated_output_path(relative_path: Path) -> bool:
+    relative = relative_path.as_posix()
+    return relative.startswith(".codex/") or relative.startswith("dist/adapters/")
+
+
 def _normalize_repo_path(root: Path, source_path: Path, raw_path: str) -> Path | None:
     candidate = raw_path.strip().strip("`").rstrip(").,")
     if not candidate:
@@ -482,7 +487,7 @@ def _resolve_scope(
             continue
 
         relative = current.relative_to(root)
-        if relative.as_posix().startswith(".codex/"):
+        if _is_generated_output_path(relative):
             if mode == "explicit-paths":
                 generated_paths.add(current)
             continue
