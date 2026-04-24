@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- none yet
+- [2026-04-24 Skill invocation commands for adapter packages](plans/2026-04-24-skill-invocation-commands-for-adapters.md) - active execution plan for `v0.1.1` OpenCode command aliases, Claude/OpenCode invocation docs, manifest command path metadata, release verification, and smoke evidence.
 
 ## Blocked
 - none yet

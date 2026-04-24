@@ -1,0 +1,93 @@
+change_id: 2026-04-24-skill-invocation-commands-for-adapters
+title: Add OpenCode command alias generation to adapter packages
+classification: default
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-04-24-skill-invocation-commands-for-adapters.md
+  spec: specs/skill-invocation-commands-for-adapters.md
+  test_spec: specs/skill-invocation-commands-for-adapters.test.md
+  architecture: docs/architecture/2026-04-24-skill-invocation-commands-for-adapters.md
+  plan: docs/plans/2026-04-24-skill-invocation-commands-for-adapters.md
+  explain_change: docs/changes/2026-04-24-skill-invocation-commands-for-adapters/explain-change.md
+requirements:
+  - R1
+  - R2
+  - R3
+  - R4
+  - R5
+  - R6
+  - R7
+  - R8
+  - R9
+  - R10
+  - R11
+  - R12
+  - R13
+  - R14
+  - R15
+  - R16
+  - R17
+  - R18
+  - R19
+  - R20
+  - R21
+  - R22
+  - R23
+  - R24
+  - R25
+  - R26
+  - R27
+  - R46
+  - R47
+tests:
+  - T1
+  - T2
+  - T3
+  - T4
+  - T5
+  - T6
+  - T7
+  - T8
+  - T14
+  - T15
+validation:
+  - command: python scripts/test-adapter-distribution.py
+    result: expected_fail_missing_opencode_command_alias_api_before_m1_implementation
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_after_m1_alias_generation_and_validation
+  - command: python scripts/build-adapters.py --version 0.1.1
+    result: pass_generated_0_1_1_adapter_tree
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_after_0_1_1_generation
+  - command: python scripts/build-adapters.py --check
+    result: pass_after_default_adapter_version_update
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_after_m1_alias_validation
+  - command: git diff --check -- scripts tests dist docs/plans/2026-04-24-skill-invocation-commands-for-adapters.md
+    result: pass_after_m1_generation
+  - command: bash scripts/ci.sh
+    result: pass_after_m1_ci_alignment
+changed_files:
+  - scripts/adapter_distribution.py
+  - scripts/test-adapter-distribution.py
+  - scripts/ci.sh
+  - dist/adapters/manifest.yaml
+  - dist/adapters/codex/AGENTS.md
+  - dist/adapters/claude/CLAUDE.md
+  - dist/adapters/opencode/AGENTS.md
+  - dist/adapters/opencode/.opencode/commands/proposal.md
+  - dist/adapters/opencode/.opencode/commands/proposal-review.md
+  - dist/adapters/opencode/.opencode/commands/spec.md
+  - dist/adapters/opencode/.opencode/commands/spec-review.md
+  - dist/adapters/opencode/.opencode/commands/plan.md
+  - dist/adapters/opencode/.opencode/commands/plan-review.md
+  - dist/adapters/opencode/.opencode/commands/test-spec.md
+  - dist/adapters/opencode/.opencode/commands/implement.md
+  - dist/adapters/opencode/.opencode/commands/code-review.md
+  - dist/adapters/opencode/.opencode/commands/pr.md
+  - docs/changes/2026-04-24-skill-invocation-commands-for-adapters/change.yaml
+  - docs/changes/2026-04-24-skill-invocation-commands-for-adapters/explain-change.md
+  - docs/plans/2026-04-24-skill-invocation-commands-for-adapters.md
+review:
+  status: pending_code_review
+  unresolved_items: 0
