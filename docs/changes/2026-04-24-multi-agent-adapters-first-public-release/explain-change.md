@@ -71,3 +71,11 @@ The `v0.1.0-rc.1` release metadata now records `placeholder_release_check: pass`
 The M5 tests cover the release script dry-run command contract, fallback to `GITHUB_REF_NAME`, tracked release notes in the GitHub workflow, public docs source-boundary wording, external tool contract lifecycle wording, and the updated release metadata placeholder status. The actual release gate was also run directly for `v0.1.0-rc.1`.
 
 Post-review M5 verification reran `bash scripts/release-verify.sh v0.1.0-rc.1`, `bash scripts/ci.sh`, placeholder text rejection, public docs evidence checks, change metadata validation, explicit artifact lifecycle validation, and `git diff --check -- 8e28920..HEAD`. The CI wrapper passed with unrelated pre-existing proposal warnings from push-main lifecycle validation. Stable `v0.1.0` remains blocked on M6 maintainer smoke.
+
+## Post-review adapter contract hardening
+
+The branch-level code review found two adapter contract gaps after M5 closeout. First, the portable-core `.codex/skills` rule was too broad: `R23` rejects `.codex/skills` only when it is the only install location, so adapter-aware explanatory references must remain portable. The fix adds the `codex-install-with-alternatives` fixture and narrows the non-Codex exclusion rule to allow `.codex/skills` when the same skill also identifies public adapter package alternatives.
+
+Second, adapter generation and validation could treat missing or malformed canonical skill input as empty or excluded output. The fix adds regression coverage for malformed canonical skills and missing skill roots, makes adapter output synchronization fail before writing generated files when canonical skill validation fails, and makes adapter validation report canonical source errors directly.
+
+The post-review regression pass first failed on those new cases, then passed after the implementation fix. The follow-up validation reran `python scripts/test-adapter-distribution.py`, `python scripts/build-adapters.py --version 0.1.0-rc.1 --check`, `python scripts/validate-adapters.py --version 0.1.0-rc.1`, `bash scripts/release-verify.sh v0.1.0-rc.1`, `bash scripts/ci.sh`, change metadata validation, explicit artifact lifecycle validation, and formatting checks.

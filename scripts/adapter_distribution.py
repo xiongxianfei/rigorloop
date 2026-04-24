@@ -204,7 +204,7 @@ def _non_codex_reasons(metadata: dict[str, str], text: str) -> list[str]:
         reasons.append("Requires Codex-only invocation syntax.")
     if "agents/openai.yaml" in text:
         reasons.append("Depends on agents/openai.yaml.")
-    if ".codex/skills" in text:
+    if _references_codex_skills_as_only_install_location(text):
         reasons.append("References .codex/skills as the only install location.")
     if CODEX_SKILL_INVOCATION_PATTERN.search(text):
         reasons.append("Requires Codex-specific $skill invocation.")
@@ -219,6 +219,20 @@ def _target_adapter_reasons(text: str) -> dict[str, tuple[str, ...]]:
         for adapter, pattern in TARGET_INCOMPATIBILITY_PATTERNS.items()
         if pattern.search(text)
     }
+
+
+def _references_codex_skills_as_only_install_location(text: str) -> bool:
+    if ".codex/skills" not in text:
+        return False
+
+    lowered = text.lower()
+    alternative_markers = (
+        "dist/adapters/",
+        ".agents/skills",
+        ".claude/skills",
+        ".opencode/skills",
+    )
+    return not any(marker in lowered for marker in alternative_markers)
 
 
 def _has_codex_runtime_assumption(text: str) -> bool:
@@ -629,6 +643,36 @@ def collect_skill_reports(skills_root: Path = CANONICAL_SKILLS_DIR) -> tuple[Ski
     return tuple(sorted(reports, key=lambda report: (report.name, report.path.as_posix())))
 
 
+def _canonical_skill_source_errors(
+    skills_root: Path,
+    reports: tuple[SkillPortabilityReport, ...] | None = None,
+) -> list[str]:
+    if not skills_root.exists():
+        return [f"canonical skills root does not exist: {skills_root}"]
+    if not skills_root.is_dir() and not (skills_root.is_file() and skills_root.name == "SKILL.md"):
+        return [f"canonical skills root is not a skill directory or SKILL.md file: {skills_root}"]
+
+    reports = collect_skill_reports(skills_root) if reports is None else reports
+    if not reports:
+        return [f"canonical skills root contains no skill files: {skills_root}"]
+
+    errors: list[str] = []
+    for report in reports:
+        if report.included_adapters:
+            continue
+        reason = report.reason or "no adapter inclusion decision"
+        errors.append(f"canonical skill validation failed: {report.path}: {reason}")
+    return errors
+
+
+def _validated_skill_reports(skills_root: Path) -> tuple[SkillPortabilityReport, ...]:
+    reports = collect_skill_reports(skills_root)
+    errors = _canonical_skill_source_errors(skills_root, reports)
+    if errors:
+        raise ValueError("\n".join(errors))
+    return reports
+
+
 def _path_from_posix(path: PurePosixPath) -> Path:
     return Path(*path.parts)
 
@@ -704,7 +748,7 @@ def expected_adapter_files(
 ) -> dict[Path, str]:
     """Return the complete expected generated adapter file map."""
 
-    reports = collect_skill_reports(skills_root)
+    reports = _validated_skill_reports(skills_root)
     expected: dict[Path, str] = {
         Path("manifest.yaml"): render_manifest_yaml(version, reports),
     }
@@ -748,6 +792,10 @@ def collect_adapter_drift(
     output_root: Path = ADAPTER_OUTPUT_ROOT,
 ) -> list[str]:
     """Collect missing, stale, and unexpected generated adapter output."""
+
+    canonical_errors = _canonical_skill_source_errors(skills_root)
+    if canonical_errors:
+        return canonical_errors
 
     expected = expected_adapter_files(
         version,
@@ -905,14 +953,17 @@ def validate_adapter_output(
     """Validate generated adapter packages, manifest consistency, and security markers."""
 
     errors: list[str] = []
-    errors.extend(
-        collect_adapter_drift(
-            version,
-            skills_root=skills_root,
-            template_root=template_root,
-            output_root=output_root,
+    canonical_errors = _canonical_skill_source_errors(skills_root)
+    errors.extend(canonical_errors)
+    if not canonical_errors:
+        errors.extend(
+            collect_adapter_drift(
+                version,
+                skills_root=skills_root,
+                template_root=template_root,
+                output_root=output_root,
+            )
         )
-    )
 
     manifest_path = output_root / "manifest.yaml"
     manifest: AdapterManifest | None = None
@@ -929,7 +980,10 @@ def validate_adapter_output(
             f"manifest version mismatch: expected {version}, found {manifest.version} at {manifest_path}"
         )
 
-    reports = {report.name: report for report in collect_skill_reports(skills_root)}
+    reports = {
+        report.name: report
+        for report in (() if canonical_errors else collect_skill_reports(skills_root))
+    }
     generated_by_adapter: dict[str, set[str]] = {adapter: set() for adapter in SUPPORTED_ADAPTERS}
 
     for adapter_name in SUPPORTED_ADAPTERS:

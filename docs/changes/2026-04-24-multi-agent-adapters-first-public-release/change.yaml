@@ -254,6 +254,24 @@ validation:
     result: pass_after_m5_explain_closeout
   - command: git diff --check -- docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml docs/changes/2026-04-24-multi-agent-adapters-first-public-release/explain-change.md docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md
     result: pass_after_m5_explain_closeout
+  - command: python scripts/test-adapter-distribution.py
+    result: expected_fail_adapter_contract_review_regressions_before_fix
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_after_adapter_contract_review_regressions
+  - command: python scripts/build-adapters.py --version 0.1.0-rc.1 --check
+    result: pass_after_adapter_contract_review_regressions
+  - command: python scripts/validate-adapters.py --version 0.1.0-rc.1
+    result: pass_after_adapter_contract_review_regressions
+  - command: bash scripts/release-verify.sh v0.1.0-rc.1
+    result: pass_after_adapter_contract_review_regressions
+  - command: bash scripts/ci.sh
+    result: pass_after_adapter_contract_review_regressions
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml
+    result: pass_after_adapter_contract_review_regressions
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/explain-change.md --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/review-resolution.md --path docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path tests/fixtures/adapters/codex-install-with-alternatives/SKILL.md
+    result: pass_after_adapter_contract_review_regressions
+  - command: git diff --check -- scripts tests docs
+    result: pass_after_adapter_contract_review_regressions
 changed_files:
   - scripts/adapter_distribution.py
   - scripts/build-adapters.py
@@ -275,6 +293,7 @@ changed_files:
   - docs/releases/v0.1.0-rc.1/release.yaml
   - docs/releases/v0.1.0-rc.1/release-notes.md
   - tests/fixtures/adapters/agents-openai/SKILL.md
+  - tests/fixtures/adapters/codex-install-with-alternatives/SKILL.md
   - tests/fixtures/adapters/codex-dollar-skill/SKILL.md
   - tests/fixtures/adapters/codex-install-only/SKILL.md
   - tests/fixtures/adapters/codex-invocation/SKILL.md
@@ -292,6 +311,6 @@ changed_files:
   - docs/changes/2026-04-24-multi-agent-adapters-first-public-release/review-resolution.md
   - docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md
 review:
-  status: clean_with_notes
+  status: review_findings_resolved_pending_code_review
   unresolved_items: 0
   location: docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md

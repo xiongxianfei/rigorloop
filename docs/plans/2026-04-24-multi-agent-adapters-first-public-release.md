@@ -585,6 +585,15 @@ The plan separates adapter logic, generated output, validation, release evidence
 - 2026-04-24: M5 verify passed with `bash scripts/release-verify.sh v0.1.0-rc.1`, `bash scripts/ci.sh`, placeholder text rejection, docs evidence `rg`, `python scripts/validate-change-metadata.py docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml`, explicit artifact lifecycle validation, and `git diff --check -- 8e28920..HEAD`.
 - 2026-04-24: M5 verify observed unrelated pre-existing proposal warnings from `bash scripts/ci.sh` push-main lifecycle validation; the CI wrapper still passed and validated five related artifact files.
 - 2026-04-24: M5 explain-change closeout validation passed with change metadata validation, explicit artifact lifecycle validation, and `git diff --check` for the change-local explanation, change metadata, and plan body.
+- 2026-04-24: Branch code-review regression tests failed as expected with `python scripts/test-adapter-distribution.py` before the fix. The new failures covered the over-broad `.codex/skills` install-location rule and missing/malformed canonical skill source handling.
+- 2026-04-24: Branch code-review regression tests passed after the fix with `python scripts/test-adapter-distribution.py`.
+- 2026-04-24: Branch code-review adapter drift validation passed with `python scripts/build-adapters.py --version 0.1.0-rc.1 --check`.
+- 2026-04-24: Branch code-review adapter validation passed with `python scripts/validate-adapters.py --version 0.1.0-rc.1`.
+- 2026-04-24: Branch code-review release verification passed with `bash scripts/release-verify.sh v0.1.0-rc.1`.
+- 2026-04-24: Branch code-review CI wrapper validation passed with `bash scripts/ci.sh`.
+- 2026-04-24: Branch code-review change metadata validation passed with `python scripts/validate-change-metadata.py docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml`.
+- 2026-04-24: Branch code-review explicit artifact lifecycle validation passed for the touched change-local artifacts, plan, adapter script, adapter tests, and new adapter fixture with `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`.
+- 2026-04-24: Branch code-review formatting validation passed with `git diff --check -- scripts tests docs`.
 
 ## Review record
 
@@ -601,6 +610,10 @@ The plan separates adapter logic, generated output, validation, release evidence
   - Review surface: complete M5 release gate replacement plus the review-resolution fix.
   - Findings: no blocking or required-change findings remain.
   - Direct proof: `python scripts/test-adapter-distribution.py`, `bash scripts/release-verify.sh v0.1.0-rc.1`, `bash scripts/ci.sh`, change metadata validation, explicit lifecycle validation, docs evidence `rg`, and diff checks passed after review resolution.
+- 2026-04-24: Branch-level `code-review` after M5 closeout returned `changes-requested`.
+  - Review surface: full branch diff from the tracked upstream through M5 explain-change closeout.
+  - Findings: `.codex/skills` references were over-rejected when adapter alternatives were present, and missing or malformed canonical skill inputs were not directly blocking adapter generation and validation.
+  - Resolution: added regression tests for both findings, narrowed the `.codex/skills` only-install-location rule, and made canonical skill source errors fail generation and validation directly.
 
 ## Outcome and retrospective
 
@@ -610,7 +623,7 @@ Plan review is complete and the matching test spec is active.
 
 ## Readiness
 
-Immediate next repository stage: `implement` for M6 when maintainer smoke evidence is available.
+Immediate next repository stage: `code-review` rerun for the branch-level review findings.
 
 Next expected milestone after review and verification: M6, maintainer smoke and stable `v0.1.0` closeout.
 
