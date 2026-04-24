@@ -367,6 +367,7 @@ This plan starts after the proposal, spec, and architecture are settled. It does
 - 2026-04-24: M3 maintainer smoke passed for Codex `codex-cli 0.124.0`, Claude Code `2.1.119 (Claude Code)`, and OpenCode `1.14.22`. OpenCode smoke used `opencode run --pure --dir <copied-adapter-root> --command proposal` and verified that the `proposal` skill loaded and repeated `ARGUMENT_MARKER_M3_SMOKE` from the command arguments.
 - 2026-04-24: M3 tests were added first for `v0.1.1` release target support, OpenCode command alias smoke evidence, release verification support, and smoke-backed docs. The focused test set initially failed because `v0.1.1` release artifacts and one-shot docs were not yet wired, then passed after release validation, metadata, notes, and template updates.
 - 2026-04-24: M3 validation passed with `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_v0_1_1_release_metadata_requires_command_alias_smoke_evidence AdapterDistributionTests.test_validate_release_cli_accepts_repository_v0_1_1_artifacts AdapterDistributionTests.test_release_verify_script_supports_v0_1_1 AdapterDistributionTests.test_opencode_entrypoint_documents_skills_and_thin_aliases AdapterDistributionTests.test_readme_distinguishes_claude_and_opencode_invocation_forms`, `python scripts/build-adapters.py --version 0.1.1`, `python scripts/test-adapter-distribution.py`, `python scripts/build-adapters.py --version 0.1.1 --check`, `python scripts/validate-adapters.py --version 0.1.1`, `python scripts/validate-release.py --version v0.1.1`, `RELEASE_VERIFY_DRY_RUN=1 bash scripts/release-verify.sh v0.1.1`, `git diff --check -- README.md scripts docs dist`, and `bash scripts/ci.sh`.
+- 2026-04-24: M3 code-review completed with `clean-with-notes`; no required-change findings remained before verification.
 
 ## Outcome and retrospective
 
@@ -374,7 +375,7 @@ M1 through M3 are implemented. OpenCode command aliases are generated, listed ex
 
 ## Readiness
 
-M3 is implemented and ready for code-review. M4 remains the final lifecycle closeout milestone after review and verification.
+M3 is implemented, clean-reviewed, and ready for verification. M4 remains the final lifecycle closeout milestone after verification.
 
 ## Risks and follow-ups
 
