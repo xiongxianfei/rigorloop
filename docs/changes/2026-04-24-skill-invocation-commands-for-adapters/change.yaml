@@ -148,6 +148,10 @@ validation:
     result: pass_after_m3_release_docs
   - command: bash scripts/ci.sh
     result: pass_after_m3_release_metadata
+  - command: bash scripts/release-verify.sh v0.1.1
+    result: pass_after_m3_clean_review
+  - command: bash scripts/ci.sh
+    result: pass_after_m3_clean_review
 changed_files:
   - README.md
   - scripts/adapter_distribution.py
