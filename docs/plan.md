@@ -3,12 +3,13 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-04-24 Multi-agent adapters and first public release](plans/2026-04-24-multi-agent-adapters-first-public-release.md) - active execution plan for generated Codex, Claude Code, and opencode adapter packages, release metadata, release verification, public docs, RC readiness, and maintainer-gated stable smoke closeout.
+- none yet
 
 ## Blocked
 - none yet
 
 ## Done
+- [2026-04-24 Multi-agent adapters and first public release](plans/2026-04-24-multi-agent-adapters-first-public-release.md) - completed execution plan for generated Codex, Claude Code, and opencode adapter packages, release metadata, release verification, public docs, RC readiness, and smoke-verified stable `v0.1.0` closeout.
 - [2026-04-23 Implement first-attempt correctness](plans/2026-04-23-implement-first-attempt-correctness.md) - completed execution plan for adding observable first-pass completeness wording to `implement`, aligning `workflow`, and updating only the summary or generated surfaces that would otherwise become stale.
 - [2026-04-22 Code review branch reality and traceability](plans/2026-04-22-code-review-branch-reality-and-traceability.md) - completed execution plan for aligning stage-owned review language, review-surface versus tracked-governing-state rules, mixed-evidence review outcomes, qualified readiness terms, direct-proof expectations, overlap-spec compatibility fixes, and canonical/generated workflow guidance without broadening v1 workflow scope.
 - [2026-04-22 Test-spec readiness and skill workflow alignment](plans/2026-04-22-test-spec-readiness-and-skill-workflow-alignment.md) - completed execution plan for separating immediate next-stage handoff from downstream readiness, preserving test-spec prerequisites, aligning directly affected workflow-facing skills, and folding the durable invariant into `specs/rigorloop-workflow.md` without broadening stage order or v1 autoprogression.
