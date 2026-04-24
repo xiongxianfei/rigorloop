@@ -125,10 +125,10 @@ run_check "Run adapter distribution fixtures" \
   python scripts/test-adapter-distribution.py
 
 run_check "Check generated adapter drift" \
-  python scripts/build-adapters.py --version 0.1.0 --check
+  python scripts/build-adapters.py --version 0.1.1 --check
 
 run_check "Validate generated adapters" \
-  python scripts/validate-adapters.py --version 0.1.0
+  python scripts/validate-adapters.py --version 0.1.1
 
 run_check "Run change metadata validator fixtures" \
   python scripts/test-change-metadata-validator.py
