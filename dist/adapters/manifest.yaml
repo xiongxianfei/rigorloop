@@ -1,4 +1,4 @@
-version: 0.1.0
+version: 0.1.1
 skills:
   architecture:
     portable: true
@@ -66,3 +66,17 @@ skills:
   workflow:
     portable: true
     adapters: [codex, claude, opencode]
+command_aliases:
+  opencode:
+    count: 10
+    aliases:
+      proposal: dist/adapters/opencode/.opencode/commands/proposal.md
+      proposal-review: dist/adapters/opencode/.opencode/commands/proposal-review.md
+      spec: dist/adapters/opencode/.opencode/commands/spec.md
+      spec-review: dist/adapters/opencode/.opencode/commands/spec-review.md
+      plan: dist/adapters/opencode/.opencode/commands/plan.md
+      plan-review: dist/adapters/opencode/.opencode/commands/plan-review.md
+      test-spec: dist/adapters/opencode/.opencode/commands/test-spec.md
+      implement: dist/adapters/opencode/.opencode/commands/implement.md
+      code-review: dist/adapters/opencode/.opencode/commands/code-review.md
+      pr: dist/adapters/opencode/.opencode/commands/pr.md

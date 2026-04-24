@@ -17,10 +17,13 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from adapter_distribution import (  # noqa: E402
     ADAPTERS,
+    OPENCODE_COMMAND_ALIASES,
     SUPPORTED_ADAPTERS,
     collect_adapter_drift,
     evaluate_skill,
     expected_adapter_files,
+    parse_manifest_yaml,
+    render_opencode_command_alias,
     render_manifest_yaml,
     sync_adapter_output,
     validate_adapter_output,
@@ -377,6 +380,66 @@ class AdapterDistributionTests(unittest.TestCase):
             self.assertNotIn("argument-hint:", claude_skill)
             self.assertNotIn("argument-hint:", opencode_skill)
 
+    def test_opencode_generation_creates_curated_command_aliases_for_0_1_1(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_root = Path(tmp) / "dist" / "adapters"
+
+            sync_adapter_output("0.1.1", output_root=output_root)
+
+            command_root = output_root / "opencode" / ".opencode" / "commands"
+            aliases = {path.stem for path in command_root.glob("*.md")}
+            self.assertEqual(aliases, set(OPENCODE_COMMAND_ALIASES))
+            self.assertFalse((command_root / "workflow.md").exists())
+            self.assertFalse((command_root / "verify.md").exists())
+            self.assertFalse((output_root / "claude" / ".claude" / "commands").exists())
+
+            for alias in OPENCODE_COMMAND_ALIASES:
+                with self.subTest(alias=alias):
+                    alias_path = command_root / f"{alias}.md"
+                    skill_path = (
+                        output_root
+                        / "opencode"
+                        / ".opencode"
+                        / "skills"
+                        / alias
+                        / "SKILL.md"
+                    )
+                    self.assertTrue(skill_path.is_file())
+                    alias_text = alias_path.read_text(encoding="utf-8")
+                    self.assertEqual(alias_text, render_opencode_command_alias(alias))
+                    self.assertIn("description:", alias_text)
+                    self.assertIn("$ARGUMENTS", alias_text)
+
+    def test_opencode_alias_generation_rejects_missing_curated_skill(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root = self.copy_fixture_skills(root, ("portable-basic",))
+            output_root = root / "dist" / "adapters"
+
+            with self.assertRaisesRegex(ValueError, "opencode command alias proposal"):
+                sync_adapter_output("0.1.1", skills_root=skills_root, output_root=output_root)
+
+            self.assertFalse(output_root.exists())
+
+    def test_manifest_records_exact_opencode_command_alias_paths(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_root = Path(tmp) / "dist" / "adapters"
+
+            sync_adapter_output("0.1.1", output_root=output_root)
+            manifest = parse_manifest_yaml(
+                (output_root / "manifest.yaml").read_text(encoding="utf-8"),
+                output_root / "manifest.yaml",
+            )
+
+            opencode_aliases = manifest.command_aliases["opencode"]
+            self.assertEqual(opencode_aliases.count, len(OPENCODE_COMMAND_ALIASES))
+            self.assertEqual(tuple(opencode_aliases.aliases), OPENCODE_COMMAND_ALIASES)
+            for alias in OPENCODE_COMMAND_ALIASES:
+                self.assertEqual(
+                    opencode_aliases.aliases[alias],
+                    f"dist/adapters/opencode/.opencode/commands/{alias}.md",
+                )
+
     def test_adapter_generation_drift_check_detects_stale_and_unexpected_files(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -419,6 +482,99 @@ class AdapterDistributionTests(unittest.TestCase):
                 ),
                 [],
             )
+
+    def test_opencode_command_alias_validation_rejects_missing_extra_and_dangling_aliases(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_root = Path(tmp) / "dist" / "adapters"
+
+            sync_adapter_output("0.1.1", output_root=output_root)
+            proposal_alias = output_root / "opencode" / ".opencode" / "commands" / "proposal.md"
+            proposal_alias.unlink()
+            errors = validate_adapter_output("0.1.1", output_root=output_root)
+            self.assertTrue(
+                any("opencode command alias missing: proposal" in error for error in errors)
+            )
+
+            sync_adapter_output("0.1.1", output_root=output_root)
+            verify_alias = output_root / "opencode" / ".opencode" / "commands" / "verify.md"
+            verify_alias.write_text(render_opencode_command_alias("verify"), encoding="utf-8")
+            errors = validate_adapter_output("0.1.1", output_root=output_root)
+            self.assertTrue(
+                any("unexpected opencode command alias: verify" in error for error in errors)
+            )
+
+            sync_adapter_output("0.1.1", output_root=output_root)
+            shutil.rmtree(output_root / "opencode" / ".opencode" / "skills" / "proposal")
+            errors = validate_adapter_output("0.1.1", output_root=output_root)
+            self.assertTrue(
+                any("opencode command alias maps to missing skill: proposal" in error for error in errors)
+            )
+
+    def test_opencode_command_alias_manifest_validation_rejects_mismatches(self) -> None:
+        cases = (
+            (
+                "proposal: dist/adapters/opencode/.opencode/commands/proposal.md",
+                "proposal: .opencode/commands/proposal.md",
+                "path must be under dist/adapters/opencode/.opencode/commands",
+            ),
+            (
+                "proposal: dist/adapters/opencode/.opencode/commands/proposal.md",
+                "proposal: dist/adapters/opencode/.opencode/commands/spec.md",
+                "filename stem mismatch: proposal",
+            ),
+            (
+                "command_aliases:\n",
+                (
+                    "command_aliases:\n"
+                    "  claude:\n"
+                    "    count: 1\n"
+                    "    aliases:\n"
+                    "      proposal: dist/adapters/claude/.claude/commands/proposal.md\n"
+                ),
+                "unsupported command alias tool: claude",
+            ),
+        )
+
+        for old, new, expected_error in cases:
+            with self.subTest(expected_error=expected_error):
+                with tempfile.TemporaryDirectory() as tmp:
+                    output_root = Path(tmp) / "dist" / "adapters"
+                    sync_adapter_output("0.1.1", output_root=output_root)
+                    manifest_path = output_root / "manifest.yaml"
+                    manifest_path.write_text(
+                        manifest_path.read_text(encoding="utf-8").replace(old, new, 1),
+                        encoding="utf-8",
+                    )
+
+                    errors = validate_adapter_output("0.1.1", output_root=output_root)
+
+                    self.assertTrue(any(expected_error in error for error in errors), errors)
+
+    def test_opencode_command_alias_validation_rejects_unsafe_or_stale_body(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_root = Path(tmp) / "dist" / "adapters"
+            sync_adapter_output("0.1.1", output_root=output_root)
+            alias_path = output_root / "opencode" / ".opencode" / "commands" / "proposal.md"
+            alias_path.write_text(
+                (
+                    "---\n"
+                    "description: Use the RigorLoop proposal skill.\n"
+                    "---\n\n"
+                    "Load @README.md\n"
+                    "!pwd\n"
+                    "model: unsafe\n"
+                    "permissions: elevated\n"
+                ),
+                encoding="utf-8",
+            )
+
+            errors = validate_adapter_output("0.1.1", output_root=output_root)
+
+            self.assertTrue(any("file-reference interpolation" in error for error in errors))
+            self.assertTrue(any("shell-output interpolation" in error for error in errors))
+            self.assertTrue(any("model override" in error for error in errors))
+            self.assertTrue(any("permission policy change" in error for error in errors))
+            self.assertTrue(any("body mismatch" in error for error in errors))
 
     def test_generated_manifest_matches_version_and_generated_files(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -653,7 +809,7 @@ class AdapterDistributionTests(unittest.TestCase):
                 sys.executable,
                 str(ROOT / "scripts" / "validate-adapters.py"),
                 "--version",
-                "0.1.0",
+                "0.1.1",
             ],
             capture_output=True,
             text=True,
@@ -665,14 +821,14 @@ class AdapterDistributionTests(unittest.TestCase):
             0,
             msg=f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}",
         )
-        self.assertIn("validated generated adapters for version 0.1.0", result.stdout)
+        self.assertIn("validated generated adapters for version 0.1.1", result.stdout)
 
     def test_ci_script_runs_adapter_checks_and_filters_generated_paths(self) -> None:
         ci_text = (ROOT / "scripts" / "ci.sh").read_text(encoding="utf-8")
 
         self.assertIn("python scripts/test-adapter-distribution.py", ci_text)
-        self.assertIn("python scripts/build-adapters.py --version 0.1.0 --check", ci_text)
-        self.assertIn("python scripts/validate-adapters.py --version 0.1.0", ci_text)
+        self.assertIn("python scripts/build-adapters.py --version 0.1.1 --check", ci_text)
+        self.assertIn("python scripts/validate-adapters.py --version 0.1.1", ci_text)
         self.assertIn('"$path" == dist/adapters/*', ci_text)
 
     def test_release_metadata_validation_accepts_rc_artifacts(self) -> None:
@@ -845,25 +1001,36 @@ class AdapterDistributionTests(unittest.TestCase):
 
             self.assertTrue(any("machine-local absolute path" in error for error in errors))
 
-    def test_validate_release_cli_accepts_repository_stable_artifacts(self) -> None:
-        result = subprocess.run(
-            [
-                sys.executable,
-                str(ROOT / "scripts" / "validate-release.py"),
-                "--version",
-                "v0.1.0",
-            ],
-            capture_output=True,
-            text=True,
-            cwd=ROOT,
-        )
+    def test_release_metadata_validation_accepts_stable_artifacts(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root, output_root = self.generate_fixture_adapters(root, version="0.1.0")
+            release_root = root / "docs" / "releases"
+            self.write_release_artifacts(
+                root,
+                version="v0.1.0",
+                release_type="final",
+                manifest_version="0.1.0",
+                smoke_overrides={
+                    tool: {
+                        "result": "pass",
+                        "tool_version": f"{tool} 1.0.0",
+                        "evidence": '"manual smoke passed"',
+                        "reason": '""',
+                        "owner": "maintainer",
+                    }
+                    for tool in SUPPORTED_ADAPTERS
+                },
+            )
 
-        self.assertEqual(
-            result.returncode,
-            0,
-            msg=f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}",
-        )
-        self.assertIn("validated release metadata for v0.1.0", result.stdout)
+            errors = validate_release_output(
+                "v0.1.0",
+                skills_root=skills_root,
+                output_root=output_root,
+                release_root=release_root,
+            )
+
+            self.assertEqual(errors, [])
 
     def test_release_verify_script_invokes_required_repository_checks(self) -> None:
         script = ROOT / "scripts" / "release-verify.sh"
