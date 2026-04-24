@@ -24,11 +24,16 @@ jobs:
           fetch-depth: 0
 
       - name: Verify release readiness
-        run: bash scripts/release-verify.sh
+        run: bash scripts/release-verify.sh "$GITHUB_REF_NAME"
 
       - name: Create GitHub release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           tag="${GITHUB_REF_NAME}"
-          gh release create "$tag" --verify-tag --generate-notes --latest
+          notes_file="docs/releases/${tag}/release-notes.md"
+          args=("$tag" --verify-tag --notes-file "$notes_file")
+          if [[ "$tag" == *-rc.* ]]; then
+            args+=(--prerelease --latest=false)
+          fi
+          gh release create "${args[@]}"

@@ -72,7 +72,7 @@ class AdapterDistributionTests(unittest.TestCase):
         validation = {
             "generated_sync": "pass",
             "release_notes_consistency": "pass",
-            "placeholder_release_check": "fail",
+            "placeholder_release_check": "pass",
             "security": "pass",
         }
         validation.update(validation_overrides or {})
@@ -804,6 +804,87 @@ class AdapterDistributionTests(unittest.TestCase):
             msg=f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}",
         )
         self.assertIn("validated release metadata for v0.1.0-rc.1", result.stdout)
+
+    def test_release_verify_script_invokes_required_repository_checks(self) -> None:
+        script = ROOT / "scripts" / "release-verify.sh"
+        script_text = script.read_text(encoding="utf-8")
+        forbidden = (
+            "Replace this script with repository-specific release checks",
+            "TODO: release checks",
+            "placeholder release check",
+        )
+        for marker in forbidden:
+            self.assertNotIn(marker, script_text)
+
+        result = subprocess.run(
+            ["bash", str(script), "v0.1.0-rc.1"],
+            capture_output=True,
+            text=True,
+            cwd=ROOT,
+            env={"RELEASE_VERIFY_DRY_RUN": "1"},
+        )
+
+        self.assertEqual(
+            result.returncode,
+            0,
+            msg=f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+        )
+        required_commands = (
+            "python scripts/validate-skills.py",
+            "python scripts/test-skill-validator.py",
+            "python scripts/build-skills.py --check",
+            "python scripts/test-adapter-distribution.py",
+            "python scripts/build-adapters.py --version 0.1.0-rc.1 --check",
+            "python scripts/validate-adapters.py --version 0.1.0-rc.1",
+            "python scripts/validate-release.py --version v0.1.0-rc.1",
+        )
+        for command in required_commands:
+            self.assertIn(command, result.stdout)
+        self.assertIn("security", result.stdout.lower())
+
+    def test_release_verify_script_accepts_github_ref_name(self) -> None:
+        result = subprocess.run(
+            ["bash", str(ROOT / "scripts" / "release-verify.sh")],
+            capture_output=True,
+            text=True,
+            cwd=ROOT,
+            env={"GITHUB_REF_NAME": "v0.1.0-rc.1", "RELEASE_VERIFY_DRY_RUN": "1"},
+        )
+
+        self.assertEqual(
+            result.returncode,
+            0,
+            msg=f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+        )
+        self.assertIn("Release verification for v0.1.0-rc.1", result.stdout)
+
+    def test_release_workflow_uses_tracked_release_notes(self) -> None:
+        workflow_text = (ROOT / ".github" / "workflows" / "release.yml").read_text(
+            encoding="utf-8"
+        )
+
+        self.assertIn('bash scripts/release-verify.sh "$GITHUB_REF_NAME"', workflow_text)
+        self.assertIn('docs/releases/${tag}/release-notes.md', workflow_text)
+        self.assertIn("--notes-file", workflow_text)
+        self.assertNotIn("--generate-notes", workflow_text)
+
+    def test_public_docs_describe_adapter_support_and_generated_boundaries(self) -> None:
+        docs = {
+            "README.md": (ROOT / "README.md").read_text(encoding="utf-8"),
+            "docs/workflows.md": (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8"),
+            "AGENTS.md": (ROOT / "AGENTS.md").read_text(encoding="utf-8"),
+            "release-notes.md": (
+                ROOT / "docs" / "releases" / "v0.1.0-rc.1" / "release-notes.md"
+            ).read_text(encoding="utf-8"),
+        }
+        combined = "\n".join(docs.values()).lower()
+
+        for term in ("codex", "claude", "opencode", "dist/adapters", ".codex/skills"):
+            self.assertIn(term, combined)
+        self.assertIn("ordinary contributors do not need all supported tools", combined)
+        self.assertIn("skills/", combined)
+        self.assertNotIn("marketplace package", combined)
+        self.assertNotIn("package-manager distribution", combined)
 
 
 if __name__ == "__main__":

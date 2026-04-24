@@ -335,11 +335,11 @@ The plan separates adapter logic, generated output, validation, release evidence
   - `bash scripts/release-verify.sh v0.1.0-rc.1` is the authoritative RC release gate and passes with structurally ready generated packages plus allowed incomplete smoke rows
 - Commit message: `M5: replace release gate for rc adapters`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - release verification may accidentally claim hosted CI passed without observed evidence
   - docs may imply marketplace or package-manager distribution
@@ -471,7 +471,7 @@ The plan separates adapter logic, generated output, validation, release evidence
 - [x] 2026-04-24: M4 release metadata validation and `v0.1.0-rc.1` release artifacts implemented.
 - [x] 2026-04-24: M4 first-pass code-review completed with `clean-with-notes`; no required changes.
 - [x] 2026-04-24: M4 verify passed; the next implementation slice is M5.
-- [ ] M5 complete.
+- [x] 2026-04-24: M5 public docs, release gate replacement, and workflow integration implemented.
 - [ ] M6 complete.
 
 ## Decision log
@@ -493,6 +493,9 @@ The plan separates adapter logic, generated output, validation, release evidence
 - 2026-04-24: M3 filters `dist/adapters/*` out of authored artifact lifecycle validation in `scripts/ci.sh` while still checking those paths through adapter drift and adapter validation.
 - 2026-04-24: M4 keeps `scripts/validate-release.py` target-version scoped. It validates only `docs/releases/<version>/` for the requested tag and compares that metadata to the generated adapter package set for the matching manifest version.
 - 2026-04-24: M4 records `placeholder_release_check: fail` in `docs/releases/v0.1.0-rc.1/release.yaml` because `scripts/release-verify.sh` is intentionally still a placeholder until M5. The release metadata validator checks that this row matches reality instead of allowing a false pass claim.
+- 2026-04-24: M5 keeps `scripts/release-verify.sh` as the single repository-owned release gate. It accepts a tag or `GITHUB_REF_NAME`, derives the adapter manifest version by removing the leading `v`, and rejects targets outside `v0.1.0-rc.1` and `v0.1.0`.
+- 2026-04-24: M5 tests release verification orchestration through a script dry-run mode, while the milestone validation still runs the actual `bash scripts/release-verify.sh v0.1.0-rc.1` gate. This avoids recursive full-gate execution inside `scripts/test-adapter-distribution.py` without weakening the real release proof.
+- 2026-04-24: M5 release workflow creation uses tracked `docs/releases/<tag>/release-notes.md` and marks RC tags as prereleases instead of relying on generated GitHub notes.
 
 ## Surprises and discoveries
 
@@ -507,6 +510,8 @@ The plan separates adapter logic, generated output, validation, release evidence
 - 2026-04-24: The M4 test-first red state was the expected missing `validate_release_output` import after adding release metadata validation tests.
 - 2026-04-24: M4 revealed an honesty boundary between metadata validation and release verification. Metadata can validate while recording `placeholder_release_check: fail`; M5 owns replacing the placeholder release gate and changing that row to `pass`.
 - 2026-04-24: M4 parser cleanup found that smoke row fields must be explicitly present, even when an empty string is allowed for RC evidence. A regression case now rejects missing required smoke fields.
+- 2026-04-24: M5 test-first red check failed in the expected places: placeholder release script text, missing tracked release-notes workflow behavior, missing public contributor/tool wording, and RC metadata still recording `placeholder_release_check: fail`.
+- 2026-04-24: `bash scripts/release-verify.sh v0.1.0-rc.1` is now the first full non-smoke RC release gate. It does not claim hosted CI passed; it only proves the local repository-owned checks.
 
 ## Validation notes
 
@@ -560,6 +565,15 @@ The plan separates adapter logic, generated output, validation, release evidence
 - 2026-04-24: M4 post-commit lifecycle validation passed with `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/explain-change.md --path docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md --path docs/releases/v0.1.0-rc.1/release.yaml --path docs/releases/v0.1.0-rc.1/release-notes.md`.
 - 2026-04-24: M4 post-commit CI wrapper validation passed with `bash scripts/ci.sh`; push-main artifact lifecycle validation reported unrelated pre-existing proposal warnings and passed.
 - 2026-04-24: M4 final verification passed with `python scripts/test-adapter-distribution.py`, `python scripts/validate-release.py --version v0.1.0-rc.1`, `python scripts/validate-adapters.py --version 0.1.0-rc.1`, `python scripts/validate-change-metadata.py docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml`, explicit artifact lifecycle validation for the M4 release artifacts, `git diff --check -- HEAD~2..HEAD`, and `bash scripts/ci.sh`.
+- 2026-04-24: M5 test-first red check passed as expected with `python scripts/test-adapter-distribution.py`, which failed on the placeholder release script, missing tracked-notes workflow behavior, missing public docs wording, and RC metadata still recording the placeholder gate as `fail`.
+- 2026-04-24: M5 adapter distribution and release-gate regression tests passed with `python scripts/test-adapter-distribution.py`.
+- 2026-04-24: M5 actual RC release verification passed with `bash scripts/release-verify.sh v0.1.0-rc.1`.
+- 2026-04-24: M5 CI wrapper validation passed with `bash scripts/ci.sh`.
+- 2026-04-24: M5 placeholder text rejection passed with `bash -c "! rg -n 'Replace this script with repository-specific release checks|TODO: release checks|placeholder release check' scripts/release-verify.sh"`.
+- 2026-04-24: M5 public docs coverage check passed with `rg -n 'codex|claude|opencode|dist/adapters|\\.codex/skills|not need all supported tools' README.md docs/workflows.md AGENTS.md docs/releases/v0.1.0-rc.1/release-notes.md`.
+- 2026-04-24: M5 formatting validation passed with `git diff --check -- scripts .github README.md docs AGENTS.md dist`.
+- 2026-04-24: M5 change metadata validation passed with `python scripts/validate-change-metadata.py docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml`.
+- 2026-04-24: M5 lifecycle validation passed with `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/explain-change.md --path docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md --path docs/releases/v0.1.0-rc.1/release.yaml --path docs/releases/v0.1.0-rc.1/release-notes.md --path README.md --path docs/workflows.md --path AGENTS.md`.
 
 ## Review record
 
@@ -571,15 +585,15 @@ The plan separates adapter logic, generated output, validation, release evidence
 
 ## Outcome and retrospective
 
-This plan is active. M1 through M4 are complete; M5 and M6 remain open.
+This plan is active. M1 through M5 are complete; M6 remains open.
 
 Plan review is complete and the matching test spec is active.
 
 ## Readiness
 
-Immediate next repository stage: `implement` for M5.
+Immediate next repository stage: `code-review`.
 
-Next expected milestone: M5, public docs, release gate replacement, and workflow integration.
+Next expected milestone after review and verification: M6, maintainer smoke and stable `v0.1.0` closeout.
 
 ## Risks and follow-ups
 

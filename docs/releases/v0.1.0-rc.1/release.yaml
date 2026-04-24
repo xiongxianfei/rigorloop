@@ -40,5 +40,5 @@ smoke:
 validation:
   generated_sync: pass
   release_notes_consistency: pass
-  placeholder_release_check: fail
+  placeholder_release_check: pass
   security: pass

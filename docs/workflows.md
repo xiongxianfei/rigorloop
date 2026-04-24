@@ -103,6 +103,9 @@ Notes:
   - `scripts/`
 - Do not hand-edit generated Codex compatibility output in:
   - `.codex/skills/`
+- Do not hand-edit generated public adapter packages in:
+  - `dist/adapters/`
+- For public adapter packages, `skills/` is the canonical authored skill source, `dist/adapters/` is generated installable output for Codex, Claude Code, and opencode, and `.codex/skills/` is a separate generated local Codex mirror.
 - Use `docs/plans/0000-00-00-example-plan.md` for plan structure. Do not reintroduce a second plan-template path.
 
 ## Validation
@@ -112,10 +115,16 @@ Run these first-release structural checks before PR:
 - `python scripts/validate-skills.py`
 - `python scripts/test-skill-validator.py`
 - `python scripts/build-skills.py --check`
+- `python scripts/test-adapter-distribution.py`
+- `python scripts/build-adapters.py --version 0.1.0-rc.1 --check`
+- `python scripts/validate-adapters.py --version 0.1.0-rc.1`
+- `python scripts/validate-release.py --version v0.1.0-rc.1`
 - `python scripts/test-artifact-lifecycle-validator.py`
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path <repo-path> [...]`
 
 Use `bash scripts/ci.sh` to run the same checks through the repository-owned CI wrapper and report the commands you actually ran. In hosted CI, the wrapper receives explicit SHA inputs for `pr-ci` or `push-main-ci`; outside CI, it falls back to deterministic explicit-path validation over tracked changes or the latest commit diff.
+
+Ordinary contributors do not need all supported tools installed locally for non-smoke validation. Repository-owned checks validate generated package structure, drift, manifests, release metadata, and security without invoking Codex, Claude Code, or opencode.
 
 Reserve `python scripts/validate-artifact-lifecycle.py --mode local` for clean worktrees only. When unrelated drafts, untracked files, or other local-only changes are present, use `--mode explicit-paths`, the diff-derived CI modes, or `bash scripts/ci.sh` instead of treating `local` mode as milestone proof.
 
@@ -124,7 +133,8 @@ When a change updates canonical `skills/`, keep generated `.codex/skills/` outpu
 ## CI And Release
 
 - `.github/workflows/ci.yml` should remain a thin wrapper around repo-owned validation commands. It may set up required tooling and pass explicit diff inputs, but validation logic belongs in `scripts/ci.sh`.
-- Current release automation remains conservative and tag-driven. Do not treat `scripts/release-verify.sh` as a mature release gate until repository-specific checks replace the template behavior.
+- `scripts/release-verify.sh` is the repository-owned release gate for `v0.1.0-rc.1` and `v0.1.0`. It accepts a tag argument or `GITHUB_REF_NAME`, checks generated adapters and release metadata, and consumes tracked release notes from `docs/releases/<tag>/release-notes.md`.
+- RC releases may be published before full manual smoke only when non-smoke gates pass and no smoke row records `fail`. Stable `v0.1.0` remains blocked until Codex, Claude Code, and opencode smoke rows all pass.
 
 ## Documentation Ownership
 
