@@ -1,6 +1,6 @@
 # Skill invocation commands for adapter packages plan
 
-- Status: active
+- Status: done
 - Owner: maintainer + Codex
 - Start date: 2026-04-24
 - Last updated: 2026-04-24
@@ -280,12 +280,12 @@ This plan starts after the proposal, spec, and architecture are settled. It does
   - the branch has complete implementation evidence, lifecycle artifacts, and validation results ready for `code-review`.
 - Commit message: `M4: close command alias release lifecycle`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - lifecycle artifacts can become stale while generated output changes
   - broad CI may fail on unrelated local work if explicit-path validation is not used carefully
@@ -334,7 +334,7 @@ This plan starts after the proposal, spec, and architecture are settled. It does
 - [x] M1 complete.
 - [x] M2 complete.
 - [x] M3 complete.
-- [ ] M4 complete.
+- [x] M4 complete.
 
 ## Decision log
 
@@ -343,6 +343,7 @@ This plan starts after the proposal, spec, and architecture are settled. It does
 - 2026-04-24: Keep `docs/releases/v0.1.1/release-notes.md` fully owned by M3, not M2. Rationale: release notes and one-shot examples require M3 release metadata and smoke evidence.
 - 2026-04-24: Move `DEFAULT_ADAPTER_VERSION` and CI adapter drift checks to `0.1.1` in M1. Rationale: tracked `dist/adapters/` now represents the generated package version with command aliases, so repository-owned adapter checks must validate the current generated tree rather than historical `0.1.0` output.
 - 2026-04-24: Include the OpenCode `opencode run --command proposal` one-shot example in README, the OpenCode adapter entrypoint, and `v0.1.1` release notes after maintainer smoke proved that the alias loads the `proposal` skill and passes arguments through.
+- 2026-04-24: Close the plan as done before PR readiness because the outcome is known before PR creation and does not depend on merge state.
 
 ## Surprises and discoveries
 
@@ -369,6 +370,8 @@ This plan starts after the proposal, spec, and architecture are settled. It does
 - 2026-04-24: M3 validation passed with `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_v0_1_1_release_metadata_requires_command_alias_smoke_evidence AdapterDistributionTests.test_validate_release_cli_accepts_repository_v0_1_1_artifacts AdapterDistributionTests.test_release_verify_script_supports_v0_1_1 AdapterDistributionTests.test_opencode_entrypoint_documents_skills_and_thin_aliases AdapterDistributionTests.test_readme_distinguishes_claude_and_opencode_invocation_forms`, `python scripts/build-adapters.py --version 0.1.1`, `python scripts/test-adapter-distribution.py`, `python scripts/build-adapters.py --version 0.1.1 --check`, `python scripts/validate-adapters.py --version 0.1.1`, `python scripts/validate-release.py --version v0.1.1`, `RELEASE_VERIFY_DRY_RUN=1 bash scripts/release-verify.sh v0.1.1`, `git diff --check -- README.md scripts docs dist`, and `bash scripts/ci.sh`.
 - 2026-04-24: M3 code-review completed with `clean-with-notes`; no required-change findings remained before verification.
 - 2026-04-24: M3 verification passed with `bash scripts/release-verify.sh v0.1.1` and `bash scripts/ci.sh`. CI reported only unrelated baseline proposal warnings during push-main artifact validation.
+- 2026-04-24: M4 lifecycle closeout moved the plan from active to done in both `docs/plan.md` and this plan body before final validation.
+- 2026-04-24: M4 validation passed with `python scripts/validate-change-metadata.py docs/changes/2026-04-24-skill-invocation-commands-for-adapters/change.yaml`, explicit-path artifact lifecycle validation including `docs/plan.md`, `bash scripts/release-verify.sh v0.1.1`, and `bash scripts/ci.sh`.
 
 ## Outcome and retrospective
 
@@ -376,8 +379,8 @@ M1 through M3 are implemented. OpenCode command aliases are generated, listed ex
 
 ## Readiness
 
-M3 is implemented, clean-reviewed, and verified. M4 remains the final lifecycle closeout milestone.
+M1 through M4 are complete. The `v0.1.1` adapter command alias release work is implemented, clean-reviewed, verified, and closed out in the plan index and concrete plan body.
 
 ## Risks and follow-ups
 
-- Follow-up: complete code-review, verify, and M4 lifecycle closeout before PR readiness.
+- Follow-up: prepare PR handoff if this branch is restacked onto a review branch.

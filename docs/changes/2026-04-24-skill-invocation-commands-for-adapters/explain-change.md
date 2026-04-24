@@ -35,3 +35,11 @@ The repository release gate now accepts `v0.1.1`, and `docs/releases/v0.1.1/rele
 The `v0.1.1` release notes describe the generated adapter package set, all supported tools, the exact curated OpenCode command aliases, Claude Code skill-native usage, and the smoke evidence. README and the generated OpenCode entrypoint now include the OpenCode one-shot example because M3 supplied matching smoke evidence. Claude Code one-shot examples remain omitted because no Claude one-shot command form is part of this release contract.
 
 The workflow summary now points current structural release checks at `0.1.1` and lists `v0.1.1` as a supported release verification target, keeping public operational docs aligned with the generated adapter package version.
+
+## M4 lifecycle closeout
+
+M4 closes the planned initiative after implementation, code review, verification, release verification, and CI passed.
+
+The plan index now moves the skill invocation command plan from `Active` to `Done`, and the concrete plan body is marked `done`. This keeps the lifecycle state synchronized before PR readiness instead of deferring the known completion state until after merge.
+
+The change metadata now includes the M4 lifecycle proof surface, including change metadata validation, explicit-path artifact lifecycle validation, `bash scripts/release-verify.sh v0.1.1`, and `bash scripts/ci.sh`.
