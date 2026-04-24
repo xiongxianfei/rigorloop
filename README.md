@@ -25,6 +25,24 @@ Do not use RigorLoop when:
 3. Inspect the [shipped proof-of-value example](docs/changes/0001-skill-validator/).
 4. If the approach fits, start from the lifecycle artifacts under [docs/](docs/), [specs/](specs/), and [skills/](skills/).
 
+## Adapter Packages
+
+RigorLoop ships generated adapter packages for Codex, Claude Code, and opencode under `dist/adapters/`.
+
+| Tool | Package root | Instruction entrypoint | Skill directory |
+| --- | --- | --- | --- |
+| Codex | `dist/adapters/codex/` | `AGENTS.md` | `.agents/skills/` |
+| Claude Code | `dist/adapters/claude/` | `CLAUDE.md` | `.claude/skills/` |
+| opencode | `dist/adapters/opencode/` | `AGENTS.md` | `.opencode/skills/` |
+
+To install one adapter, copy that adapter package root's contents into a project root. The current support matrix is generated in `dist/adapters/manifest.yaml`; for `v0.1.0`, all current skills are included for Codex, Claude Code, and opencode.
+
+Canonical skill edits happen in `skills/`. Adapter packages under `dist/adapters/` are generated release output, and `.codex/skills/` remains a separate generated local Codex runtime mirror for this repository.
+
+Adapter compatibility claims are versioned. If external tool contracts change, update the affected adapter contract through the RigorLoop lifecycle before changing release claims.
+
+Ordinary contributors do not need all supported tools installed locally to run non-smoke validation. Maintainer smoke for Codex, Claude Code, and opencode is recorded in `docs/releases/<version>/release.yaml` before a stable release.
+
 ## Learn More / Contribute
 
 - Workflow detail: [docs/workflows.md](docs/workflows.md) and [specs/rigorloop-workflow.md](specs/rigorloop-workflow.md)
@@ -82,6 +100,7 @@ The normative contract lives in [specs/rigorloop-workflow.md](specs/rigorloop-wo
 - a full lifecycle for non-trivial work
 - canonical workflow sources in `docs/`, `specs/`, `skills/`, `schemas/`, and `scripts/`
 - generated Codex compatibility output in `.codex/skills/`
+- generated public adapter packages in `dist/adapters/`
 - a change-local artifact pattern under `docs/changes/<change-id>/` for the shipped example and later non-trivial work
 
 ## Change-Local Artifact Packs
@@ -102,6 +121,8 @@ The normative contract lives in [specs/rigorloop-workflow.md](specs/rigorloop-wo
   - `scripts/`
 - Do not hand-edit generated Codex compatibility output in:
   - `.codex/skills/`
+- Do not hand-edit generated public adapter packages in:
+  - `dist/adapters/`
 - Execution plans follow:
   - `docs/plans/0000-00-00-example-plan.md`
 
@@ -112,6 +133,9 @@ Before PR, run the same structural checks that CI runs:
 - `python scripts/validate-skills.py`
 - `python scripts/test-skill-validator.py`
 - `python scripts/build-skills.py --check`
+- `python scripts/build-adapters.py --version 0.1.0 --check`
+- `python scripts/validate-adapters.py --version 0.1.0`
+- `python scripts/validate-release.py --version v0.1.0`
 
 Use `bash scripts/ci.sh` to run the same checks through the repository-owned CI wrapper.
 
@@ -137,6 +161,8 @@ Use `bash scripts/ci.sh` to run the same checks through the repository-owned CI 
 │   └── adr/
 ├── .codex/
 │   └── skills/
+├── dist/
+│   └── adapters/
 ├── scripts/
 ├── skills/
 ├── schemas/

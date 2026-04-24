@@ -7,7 +7,7 @@ argument-hint: [plan path, milestone ID, feature name, or implementation request
 
 # Test-driven implementation
 
-You are implementing the smallest approved slice with tests first.
+You are implementing the smallest scope-complete change for the approved slice with tests first.
 
 Do not expand scope. Do not silently alter the spec. Do not declare success without verification evidence.
 
@@ -41,20 +41,45 @@ Rules:
 - Do not broaden the docs-changes requirement into approved fast-lane work.
 - Keep standalone `review-resolution.md` and `verify-report.md` conditional; add them only when their governing workflow triggers apply.
 
+## First-pass completeness
+
+Before editing:
+
+- identify the same-slice completeness set for the approved slice:
+  - in-scope requirements
+  - required authored surfaces
+  - required aligned surfaces
+  - required edge cases
+  - the targeted validation set
+- target a `first-pass acceptable result`, not merely a plausible first edit.
+- treat the `smallest scope-complete change` as the target, not the smallest diff.
+- a `first-pass acceptable result` means:
+  - every in-scope requirement for the slice is addressed
+  - every required authored surface in scope is updated, or explicitly marked `unaffected with rationale`
+  - every required aligned surface in scope is updated, or explicitly marked `unaffected with rationale`
+  - no known in-scope defect remains
+  - the required targeted validation set passes
+  - no required same-slice fix is deferred to later review or later cleanup
+  - the change does not rely on later cleanup to become contract-complete
+- if a required authored or aligned surface remains unchanged, record `unaffected with rationale` in a contributor-visible authoritative surface such as the active plan or required change-local artifacts.
+- required edge cases come from approved spec and test-spec items, named regression cases from the motivating incident, changed branch conditions or touched failure paths, existing governing tests or fixtures, and required aligned workflow or skill wording distinctions for the slice.
+- a later finding that should have been caught by the same-slice completeness set, required edge cases, or targeted validation is a `preventable first-pass miss`.
+- if missing inputs, contradictory instructions, or unresolved scope ambiguity prevent a scope-complete first pass, stop and report the blocker instead of handing off to `code-review`.
+
 ## Implementation loop
 
 For each milestone:
 
-1. Confirm milestone scope and requirements covered.
-2. Identify the tests from the test spec.
+1. Confirm milestone scope, requirements covered, and the same-slice completeness set.
+2. Identify the tests, proof surfaces, and required edge cases from the test spec and active plan.
 3. Write or update the tests first.
 4. Run the narrowest relevant test command.
 5. Confirm new tests fail for the expected reason when feasible.
 6. Implement the minimum production code needed to pass.
 7. Run the narrow tests again.
 8. Refactor only within milestone scope.
-9. Run milestone validation commands.
-10. Update the active plan body’s progress, decisions, surprises, and validation notes.
+9. Run milestone targeted validation commands before any optional broad smoke.
+10. Update the active plan body’s progress, decisions, surprises, aligned-surface audit, and validation notes.
 11. When the milestone is complete, create a milestone closeout commit using the subject format `M<n>: <completed milestone outcome>` and include milestone validation in the commit body or referenced evidence.
 12. Stop before the next milestone unless the user asked to continue.
 
@@ -72,8 +97,10 @@ Stopping before the next milestone does not cancel a required downstream workflo
 ## Scope rules
 
 - Implement only approved requirements and milestone tasks.
+- Prefer the `smallest scope-complete change` over the smallest diff.
 - Do not add unrelated refactors.
 - Do not change public behavior not covered by the spec.
+- Do not defer a required same-slice fix to later review, later milestone, or later cleanup.
 - If code reveals a spec or architecture gap, stop and update the artifact or document the blocker.
 - If validation fails, fix or report before moving on.
 - Do not mark a milestone complete without the milestone commit.
@@ -81,10 +108,12 @@ Stopping before the next milestone does not cancel a required downstream workflo
 
 ## Workflow handoff
 
+- Do not hand off to `code-review` until the slice meets the `first-pass acceptable result` bar.
 - In the full-feature lane, successful `implement` completion hands off to `code-review` unless a stop condition applies.
 - Implementation-stage closeout may report milestone completion, validation, blockers, readiness for `code-review`, or the next milestone.
 - Do not use `implement` to claim review findings, review-clean status, or `branch-ready`. If review has not happened yet, say the change is ready for `code-review`, not that no required fixes were found.
 - If milestone validation fails or the implementation reveals a blocker that needs a real user decision, stop before `code-review` and report the blocker explicitly.
+- Ordinary later review comments may still happen. A `preventable first-pass miss` is only a finding that should have been caught by the same-slice completeness set, required edge cases, or targeted validation before handoff.
 - This v1 autoprogression rule does not expand fast-lane or bugfix execution behavior through the `implement` skill.
 
 ## Plan update requirements

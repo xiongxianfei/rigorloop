@@ -397,8 +397,10 @@ It remained aligned through implementation, first-pass `code-review`, and `verif
 
 It also remained aligned through the 2026-04-23 mixed-evidence follow-up and the later local overlap-spec cleanup for `specs/plan-index-lifecycle-ownership.md` and `specs/rigorloop-workflow.md`.
 
+PR #14 merged into `main` at `c06a3cd7e0ae422c0f14a9bd1047d84e592534c0`.
+
 No separate architecture artifact is expected for this slice.
 
-The next stage is `pr`.
+No further workflow stage is pending.
 
 If implementation reveals a need for architecture or a broader workflow redesign, stop and return to the appropriate upstream gate instead of proceeding on this test spec alone.

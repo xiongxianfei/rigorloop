@@ -30,6 +30,8 @@ Do not silently blend conflicting higher-priority instructions. Call out the con
 - Reuse existing scripts and workflows before inventing new commands or processes.
 - Edit canonical workflow content in `docs/`, `specs/`, `skills/`, `schemas/`, and `scripts/`.
 - Do not hand-edit generated Codex compatibility output in `.codex/skills/`.
+- Do not hand-edit generated public adapter package output in `dist/adapters/`.
+- Public adapter packages for Codex, Claude Code, and opencode are generated under `dist/adapters/`; `.codex/skills/` remains a separate generated local Codex runtime mirror.
 - For non-trivial work, the baseline change-local artifact pack is `docs/changes/<change-id>/change.yaml` plus durable Markdown reasoning. Standalone `review-resolution.md` and `verify-report.md` remain conditional under the workflow contract.
 - Keep `AGENTS.md` practical. Move workflow detail to `docs/workflows.md` and feature-specific detail to `specs/`.
 
@@ -103,6 +105,8 @@ If the work changes externally observable behavior and no relevant spec exists, 
 
 - Until the repository-wide validation scripts are fully implemented, use the exact validation commands named in the active plan and matching test spec.
 - When repo-owned validation scripts exist, run those named commands before PR instead of inventing substitute checks.
+- For adapter package work, ordinary contributors do not need all supported tools installed locally; non-smoke validation is repository-owned through adapter generation, adapter validation, release metadata validation, and `scripts/release-verify.sh`.
+- Release automation must use tracked release notes under `docs/releases/<tag>/release-notes.md`; do not rely on generated release notes for adapter compatibility claims.
 - For planned initiatives, final lifecycle closeout updates both `docs/plan.md` and the plan body when lifecycle state changes, and `verify` treats stale lifecycle state between them as blocking PR readiness.
 - Do not report success without naming the commands actually run.
 
