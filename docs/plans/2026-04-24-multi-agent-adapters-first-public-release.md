@@ -614,6 +614,10 @@ The plan separates adapter logic, generated output, validation, release evidence
   - Review surface: full branch diff from the tracked upstream through M5 explain-change closeout.
   - Findings: `.codex/skills` references were over-rejected when adapter alternatives were present, and missing or malformed canonical skill inputs were not directly blocking adapter generation and validation.
   - Resolution: added regression tests for both findings, narrowed the `.codex/skills` only-install-location rule, and made canonical skill source errors fail generation and validation directly.
+- 2026-04-24: Branch-level `code-review` rerun after commit `59e3349` returned `clean-with-notes`.
+  - Review surface: the adapter contract review-regression fix commit, its tests, governing `R23` and canonical skill parse-failure requirements, and recorded validation evidence.
+  - Findings: no blocking or required-change findings remain for the review-resolution patch.
+  - Direct proof: `python scripts/test-adapter-distribution.py`, `python scripts/build-adapters.py --version 0.1.0-rc.1 --check`, `python scripts/validate-adapters.py --version 0.1.0-rc.1`, `bash scripts/release-verify.sh v0.1.0-rc.1`, `bash scripts/ci.sh`, change metadata validation, explicit artifact lifecycle validation, and diff checks passed.
 
 ## Outcome and retrospective
 
@@ -623,7 +627,7 @@ Plan review is complete and the matching test spec is active.
 
 ## Readiness
 
-Immediate next repository stage: `code-review` rerun for the branch-level review findings.
+Immediate next repository stage: `verify` rerun for the branch-level review finding resolution.
 
 Next expected milestone after review and verification: M6, maintainer smoke and stable `v0.1.0` closeout.
 
