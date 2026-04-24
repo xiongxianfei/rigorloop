@@ -311,6 +311,12 @@ validation:
     result: pass_after_m6_stable_release
   - command: git diff --check -- scripts README.md docs dist
     result: pass_after_m6_stable_release
+  - command: bash scripts/release-verify.sh v0.1.0
+    result: pass_after_m6_verify
+  - command: bash scripts/ci.sh
+    result: pass_after_m6_verify_with_unrelated_proposal_warnings
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/explain-change.md --path docs/releases/v0.1.0/release.yaml --path docs/releases/v0.1.0/release-notes.md --path README.md --path docs/workflows.md
+    result: pass_after_m6_verify
 changed_files:
   - scripts/adapter_distribution.py
   - scripts/build-adapters.py

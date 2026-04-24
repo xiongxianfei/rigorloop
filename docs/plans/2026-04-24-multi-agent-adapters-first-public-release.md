@@ -616,6 +616,8 @@ The plan separates adapter logic, generated output, validation, release evidence
 - 2026-04-24: M6 change metadata validation passed with `python scripts/validate-change-metadata.py docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml`.
 - 2026-04-24: M6 explicit artifact lifecycle validation passed for the touched change-local artifacts, active plan, stable release artifacts, README, and workflow docs.
 - 2026-04-24: M6 formatting validation passed with `git diff --check -- scripts README.md docs dist`.
+- 2026-04-24: M6 verify reran `bash scripts/release-verify.sh v0.1.0`, `bash scripts/ci.sh`, and explicit artifact lifecycle validation for the plan index, active plan, change-local artifacts, stable release artifacts, README, and workflow docs.
+- 2026-04-24: M6 verify observed unrelated pre-existing draft-proposal warnings from the CI push-main lifecycle fallback after the review-record commit; the CI wrapper still passed and validated five related artifact files.
 
 ## Review record
 
@@ -647,17 +649,29 @@ The plan separates adapter logic, generated output, validation, release evidence
   - Checklist coverage: spec alignment, test coverage, named edge cases, release error handling, architecture boundaries, compatibility, security/privacy, generated output drift, unrelated-change scope, and validation evidence all passed against the reviewed diff.
   - Direct proof: `bash scripts/release-verify.sh v0.1.0`, `bash scripts/ci.sh`, `python scripts/validate-release.py --version v0.1.0`, `python scripts/build-adapters.py --version 0.1.0 --check`, `python scripts/validate-adapters.py --version 0.1.0`, explicit lifecycle validation, and the recorded manual smoke rows passed.
 
+## Verification record
+
+- 2026-04-24: M6 `verify` returned `ready`.
+  - Traceability: `R29b`, `R39`-`R42a`, and `R44`-`R45` map to `T15` and `T20`, with evidence in `dist/adapters/manifest.yaml`, `docs/releases/v0.1.0/release.yaml`, `docs/releases/v0.1.0/release-notes.md`, and `bash scripts/release-verify.sh v0.1.0`.
+  - Traceability: `R36`-`R38`, `R47`, and `R48` map to `T16`, `T17`, `T18`, and `T21`, with evidence in README, `docs/workflows.md`, `scripts/ci.sh`, `scripts/test-adapter-distribution.py`, and `bash scripts/ci.sh`.
+  - Traceability: `R51`-`R53` map to `T16`, `T17`, and `T20`, with evidence from adapter and release security validation plus stable release notes that avoid hosted runtime, registry publication, package-manager installer, secrets, and permission-bypass claims.
+  - Validation: `bash scripts/release-verify.sh v0.1.0`, `bash scripts/ci.sh`, and explicit artifact lifecycle validation passed.
+  - CI status: local repo-owned CI passed; hosted CI was not observed from this environment.
+  - Artifact drift: none blocking. `docs/plan.md` correctly remains active until downstream `explain-change` closeout moves the plan to Done.
+  - Remaining risks: actual tag publication and hosted CI observation remain downstream release/PR concerns.
+  - Recommended next stage: `explain-change`.
+
 ## Outcome and retrospective
 
-This plan is active. M1 through M6 implementation milestones are complete; M6 code-review is clean and verify handoff remains open before PR readiness.
+This plan is active. M1 through M6 implementation milestones are complete; M6 code-review and verify are clean, and `explain-change` remains open before PR readiness.
 
 Plan review is complete and the matching test spec is active.
 
 ## Readiness
 
-Immediate next repository stage: `verify` for M6 stable release closeout.
+Immediate next repository stage: `explain-change` for M6 stable release closeout.
 
-Next expected milestone: M6 verification closeout.
+Next expected milestone: M6 explanation and lifecycle closeout.
 
 ## Risks and follow-ups
 
