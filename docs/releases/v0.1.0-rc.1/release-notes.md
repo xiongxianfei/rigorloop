@@ -14,6 +14,8 @@ This release candidate records the generated adapter package set under `dist/ada
 
 All 22 current RigorLoop skills pass the portable-core gate for Codex, Claude Code, and opencode in this release candidate package set.
 
+These adapter compatibility claims are versioned for `v0.1.0-rc.1`. If external tool contracts change, update the affected adapter contract through the RigorLoop lifecycle before changing release claims.
+
 No current non-portable skill exclusions.
 
 ## Verification

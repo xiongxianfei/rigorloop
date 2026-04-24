@@ -64,7 +64,7 @@ M5 replaces the checklist-only release script with a repository-owned release ga
 
 `.github/workflows/release.yml` now passes the tag to release verification and creates GitHub releases from `docs/releases/<tag>/release-notes.md` instead of generated notes. RC tags are marked prerelease and are not marked latest.
 
-The public docs now describe the generated Codex, Claude Code, and opencode adapter packages under `dist/adapters/`, show the support matrix paths, explain how to install one adapter by copying its package root into a project, and distinguish canonical `skills/`, generated public `dist/adapters/`, and generated local `.codex/skills/`. They also state that ordinary contributors do not need all supported tools installed locally for non-smoke validation.
+The public docs now describe the generated Codex, Claude Code, and opencode adapter packages under `dist/adapters/`, show the support matrix paths, explain how to install one adapter by copying its package root into a project, and distinguish canonical `skills/`, generated public `dist/adapters/`, and generated local `.codex/skills/`. They also state that ordinary contributors do not need all supported tools installed locally for non-smoke validation, and that adapter compatibility claims must be revised through the lifecycle before release claims change when external tool contracts change.
 
 The `v0.1.0-rc.1` release metadata now records `placeholder_release_check: pass`, because the placeholder release gate has been replaced. The RC release notes now identify `bash scripts/release-verify.sh v0.1.0-rc.1` as the release gate and keep manual adapter smoke as the remaining limitation before stable `v0.1.0`.
 

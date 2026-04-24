@@ -220,6 +220,20 @@ validation:
     result: pass_after_m5_release_gate_and_docs
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/explain-change.md --path docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md --path docs/releases/v0.1.0-rc.1/release.yaml --path docs/releases/v0.1.0-rc.1/release-notes.md --path README.md --path docs/workflows.md --path AGENTS.md
     result: pass_after_m5_release_gate_and_docs
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_after_m5_review_resolution
+  - command: rg -n 'external tool contracts|before changing release claims|codex|claude|opencode|dist/adapters|\.codex/skills|not need all supported tools' README.md docs/workflows.md AGENTS.md docs/releases/v0.1.0-rc.1/release-notes.md
+    result: pass_after_m5_review_resolution
+  - command: git diff --check -- README.md docs/releases/v0.1.0-rc.1/release-notes.md scripts/test-adapter-distribution.py docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml docs/changes/2026-04-24-multi-agent-adapters-first-public-release/explain-change.md docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md
+    result: pass_after_m5_review_resolution
+  - command: bash scripts/release-verify.sh v0.1.0-rc.1
+    result: pass_after_m5_review_resolution
+  - command: bash scripts/ci.sh
+    result: pass_after_m5_review_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml
+    result: pass_after_m5_review_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/explain-change.md --path docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md --path docs/releases/v0.1.0-rc.1/release.yaml --path docs/releases/v0.1.0-rc.1/release-notes.md --path README.md --path docs/workflows.md --path AGENTS.md
+    result: pass_after_m5_review_resolution
 changed_files:
   - scripts/adapter_distribution.py
   - scripts/build-adapters.py
@@ -258,6 +272,6 @@ changed_files:
   - docs/changes/2026-04-24-multi-agent-adapters-first-public-release/review-resolution.md
   - docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md
 review:
-  status: m5_pending_code_review
+  status: m5_review_resolution_ready_for_rerun
   unresolved_items: 0
   location: docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md

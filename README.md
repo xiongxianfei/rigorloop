@@ -39,6 +39,8 @@ To install one adapter, copy that adapter package root's contents into a project
 
 Canonical skill edits happen in `skills/`. Adapter packages under `dist/adapters/` are generated release output, and `.codex/skills/` remains a separate generated local Codex runtime mirror for this repository.
 
+Adapter compatibility claims are versioned. If external tool contracts change, update the affected adapter contract through the RigorLoop lifecycle before changing release claims.
+
 Ordinary contributors do not need all supported tools installed locally to run non-smoke validation. Maintainer smoke for Codex, Claude Code, and opencode is recorded in `docs/releases/<version>/release.yaml` before a stable release.
 
 ## Learn More / Contribute

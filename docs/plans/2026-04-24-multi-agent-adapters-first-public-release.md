@@ -574,6 +574,14 @@ The plan separates adapter logic, generated output, validation, release evidence
 - 2026-04-24: M5 formatting validation passed with `git diff --check -- scripts .github README.md docs AGENTS.md dist`.
 - 2026-04-24: M5 change metadata validation passed with `python scripts/validate-change-metadata.py docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml`.
 - 2026-04-24: M5 lifecycle validation passed with `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/explain-change.md --path docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md --path docs/releases/v0.1.0-rc.1/release.yaml --path docs/releases/v0.1.0-rc.1/release-notes.md --path README.md --path docs/workflows.md --path AGENTS.md`.
+- 2026-04-24: M5 review-resolution update added the missing T12/E8 public-doc statement that adapter compatibility claims are versioned and external tool contract changes require lifecycle revision before changing release claims.
+- 2026-04-24: M5 review-resolution regression passed with `python scripts/test-adapter-distribution.py`.
+- 2026-04-24: M5 review-resolution docs evidence check passed with `rg -n 'external tool contracts|before changing release claims|codex|claude|opencode|dist/adapters|\\.codex/skills|not need all supported tools' README.md docs/workflows.md AGENTS.md docs/releases/v0.1.0-rc.1/release-notes.md`.
+- 2026-04-24: M5 review-resolution formatting validation passed with `git diff --check -- README.md docs/releases/v0.1.0-rc.1/release-notes.md scripts/test-adapter-distribution.py docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml docs/changes/2026-04-24-multi-agent-adapters-first-public-release/explain-change.md docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md`.
+- 2026-04-24: M5 review-resolution release verification passed with `bash scripts/release-verify.sh v0.1.0-rc.1`.
+- 2026-04-24: M5 review-resolution CI wrapper validation passed with `bash scripts/ci.sh`.
+- 2026-04-24: M5 review-resolution change metadata validation passed with `python scripts/validate-change-metadata.py docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml`.
+- 2026-04-24: M5 review-resolution lifecycle validation passed with `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/explain-change.md --path docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md --path docs/releases/v0.1.0-rc.1/release.yaml --path docs/releases/v0.1.0-rc.1/release-notes.md --path README.md --path docs/workflows.md --path AGENTS.md`.
 
 ## Review record
 
@@ -582,6 +590,10 @@ The plan separates adapter logic, generated output, validation, release evidence
   - Findings: no blocking or required-change findings.
   - Direct proof: `python scripts/test-adapter-distribution.py`, `python scripts/validate-release.py --version v0.1.0-rc.1`, `python scripts/validate-adapters.py --version 0.1.0-rc.1`, explicit lifecycle validation, and `bash scripts/ci.sh` passed against tracked branch state.
   - Residual risk: M4 is not RC-publication-ready until M5 replaces the placeholder release gate and changes `placeholder_release_check` to `pass`.
+- 2026-04-24: First-pass `code-review` for `8e28920..4c9b1dc` returned `changes-requested`.
+  - Review surface: M5 release gate replacement, release workflow, public docs, regression tests, change-local artifacts, and active plan updates.
+  - Finding: public docs did not state the T12/E8 rule that adapter compatibility claims are versioned and external tool contract changes must go through the lifecycle before changing release claims.
+  - Resolution: README and RC release notes now carry the missing claim-boundary wording, and `scripts/test-adapter-distribution.py` asserts the wording remains present.
 
 ## Outcome and retrospective
 
