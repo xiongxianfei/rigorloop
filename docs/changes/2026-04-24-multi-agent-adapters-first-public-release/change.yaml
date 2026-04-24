@@ -50,6 +50,39 @@ requirements:
   - R33
   - R34
   - R35
+  - R39
+  - R40
+  - R40a
+  - R40b
+  - R40c
+  - R40d
+  - R40e
+  - R40f
+  - R41
+  - R41a
+  - R41b
+  - R41c
+  - R41d
+  - R41e
+  - R41f
+  - R42
+  - R42a
+  - R43
+  - R43a
+  - R43b
+  - R43c
+  - R43d
+  - R43e
+  - R43f
+  - R44
+  - R44a
+  - R44b
+  - R44c
+  - R44d
+  - R45
+  - R46
+  - R46a
+  - R47
   - R48
   - R49
   - R50
@@ -68,6 +101,10 @@ tests:
   - T9
   - T10
   - T11
+  - T13
+  - T14
+  - T15
+  - T16
   - T18
   - T19
 validation:
@@ -143,10 +180,27 @@ validation:
     result: pass_after_m3_ci_wiring
   - command: git diff --check -- scripts tests dist docs/changes/2026-04-24-multi-agent-adapters-first-public-release docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md
     result: pass_after_m3_ci_wiring
+  - command: python scripts/test-adapter-distribution.py
+    result: expected_fail_missing_validate_release_output_before_m4_implementation
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_after_m4_release_metadata_validation
+  - command: python scripts/validate-release.py --version v0.1.0-rc.1
+    result: pass_after_m4_release_metadata_validation
+  - command: python scripts/validate-adapters.py --version 0.1.0-rc.1
+    result: pass_after_m4_release_metadata_validation
+  - command: git diff --check -- scripts tests docs/releases docs/changes/2026-04-24-multi-agent-adapters-first-public-release docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md
+    result: pass_after_m4_release_metadata_validation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml
+    result: pass_after_m4_release_metadata_validation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/explain-change.md --path docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md --path docs/releases/v0.1.0-rc.1/release.yaml --path docs/releases/v0.1.0-rc.1/release-notes.md
+    result: pass_after_m4_release_metadata_validation
+  - command: bash scripts/ci.sh
+    result: pass_after_m4_release_metadata_validation
 changed_files:
   - scripts/adapter_distribution.py
   - scripts/build-adapters.py
   - scripts/validate-adapters.py
+  - scripts/validate-release.py
   - scripts/ci.sh
   - scripts/artifact_lifecycle_validation.py
   - scripts/adapter_templates/codex/AGENTS.md
@@ -155,6 +209,8 @@ changed_files:
   - scripts/test-adapter-distribution.py
   - scripts/test-artifact-lifecycle-validator.py
   - dist/adapters/
+  - docs/releases/v0.1.0-rc.1/release.yaml
+  - docs/releases/v0.1.0-rc.1/release-notes.md
   - tests/fixtures/adapters/agents-openai/SKILL.md
   - tests/fixtures/adapters/codex-dollar-skill/SKILL.md
   - tests/fixtures/adapters/codex-install-only/SKILL.md
@@ -173,5 +229,5 @@ changed_files:
   - docs/changes/2026-04-24-multi-agent-adapters-first-public-release/review-resolution.md
   - docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md
 review:
-  status: m3_pending_code_review
+  status: m4_pending_code_review
   unresolved_items: 0

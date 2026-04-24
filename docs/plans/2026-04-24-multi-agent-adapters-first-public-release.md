@@ -257,6 +257,7 @@ The plan separates adapter logic, generated output, validation, release evidence
   - failing fixture for mismatched supported tools across release notes, release metadata, manifest, and generated paths
   - failing fixture for RC smoke `fail`
   - failing fixture for RC `not-run` or `blocked` without reason or owner
+  - failing fixture for missing required smoke row fields
   - failing fixture for final release smoke that is not all `pass`
 - Implementation steps:
   - implement `python scripts/validate-release.py --version v0.1.0-rc.1`
@@ -273,16 +274,16 @@ The plan separates adapter logic, generated output, validation, release evidence
   - `python scripts/test-adapter-distribution.py`
   - `python scripts/validate-release.py --version v0.1.0-rc.1`
   - `python scripts/validate-adapters.py --version 0.1.0-rc.1`
-  - `git diff --check -- scripts tests docs/releases docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md`
+  - `git diff --check -- scripts tests docs/releases docs/changes/2026-04-24-multi-agent-adapters-first-public-release docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md`
 - Expected observable result:
   - the repository has authoritative RC release metadata and release notes that validate against the generated `0.1.0-rc.1` adapter package set without requiring manual smoke to pass
 - Commit message: `M4: add rc release metadata validation`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - release metadata could become another stale authored source
   - validating historical RC metadata against a later final manifest could create false failures
@@ -467,7 +468,7 @@ The plan separates adapter logic, generated output, validation, release evidence
 - [x] 2026-04-24: M1 rereview findings accepted and fixed; invalid skill bodies and partial portability now have direct tests.
 - [x] 2026-04-24: M2 adapter package generation and tracked RC outputs implemented.
 - [x] 2026-04-24: M3 adapter validation, security checks, and CI integration implemented.
-- [ ] M4 complete.
+- [x] 2026-04-24: M4 release metadata validation and `v0.1.0-rc.1` release artifacts implemented.
 - [ ] M5 complete.
 - [ ] M6 complete.
 
@@ -488,6 +489,8 @@ The plan separates adapter logic, generated output, validation, release evidence
 - 2026-04-24: M3 validates generated adapters through a dedicated `scripts/validate-adapters.py` CLI instead of expanding `scripts/build-adapters.py --check` into a broader validator. Drift and semantic validation remain separate checks.
 - 2026-04-24: M3 keeps security scanning high-signal and standard-library only. The scanner rejects private key delimiters, common secret assignments, machine-local absolute paths, and explicit permission-bypass wording without treating ordinary references to permissions or secrets as failures.
 - 2026-04-24: M3 filters `dist/adapters/*` out of authored artifact lifecycle validation in `scripts/ci.sh` while still checking those paths through adapter drift and adapter validation.
+- 2026-04-24: M4 keeps `scripts/validate-release.py` target-version scoped. It validates only `docs/releases/<version>/` for the requested tag and compares that metadata to the generated adapter package set for the matching manifest version.
+- 2026-04-24: M4 records `placeholder_release_check: fail` in `docs/releases/v0.1.0-rc.1/release.yaml` because `scripts/release-verify.sh` is intentionally still a placeholder until M5. The release metadata validator checks that this row matches reality instead of allowing a false pass claim.
 
 ## Surprises and discoveries
 
@@ -499,6 +502,9 @@ The plan separates adapter logic, generated output, validation, release evidence
 - 2026-04-24: The current canonical `skills/` set has 22 skills, and every skill passes the portable-core gate for all three first-public-release adapters after the explicit non-Codex `argument-hint` transform. The generated RC manifest therefore has no current canonical skill exclusions.
 - 2026-04-24: The M3 test-first red state split into two expected failures: adapter validation APIs were missing, and the artifact lifecycle validator did not yet classify `dist/adapters/*` as generated output for explicit-path validation.
 - 2026-04-24: `bash scripts/ci.sh` in local diff mode now validates adapter outputs while passing only authored, non-generated changed paths to artifact lifecycle validation. The final observed local lifecycle command excluded generated adapter output and validated the touched authored plan/change artifacts plus scripts.
+- 2026-04-24: The M4 test-first red state was the expected missing `validate_release_output` import after adding release metadata validation tests.
+- 2026-04-24: M4 revealed an honesty boundary between metadata validation and release verification. Metadata can validate while recording `placeholder_release_check: fail`; M5 owns replacing the placeholder release gate and changing that row to `pass`.
+- 2026-04-24: M4 parser cleanup found that smoke row fields must be explicitly present, even when an empty string is allowed for RC evidence. A regression case now rejects missing required smoke fields.
 
 ## Validation notes
 
@@ -540,10 +546,18 @@ The plan separates adapter logic, generated output, validation, release evidence
 - 2026-04-24: M3 CI wrapper validation passed with `bash scripts/ci.sh`. The CI output included `python scripts/test-adapter-distribution.py`, `python scripts/build-adapters.py --version 0.1.0-rc.1 --check`, and `python scripts/validate-adapters.py --version 0.1.0-rc.1`.
 - 2026-04-24: M3 change metadata validation passed with `python scripts/validate-change-metadata.py docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml`.
 - 2026-04-24: M3 formatting validation passed with `git diff --check -- scripts tests dist docs/changes/2026-04-24-multi-agent-adapters-first-public-release docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md`.
+- 2026-04-24: M4 release-validation red check passed as expected with `python scripts/test-adapter-distribution.py`, which failed because `validate_release_output` was not implemented yet.
+- 2026-04-24: M4 adapter and release regression tests passed with `python scripts/test-adapter-distribution.py`.
+- 2026-04-24: M4 release metadata validation passed with `python scripts/validate-release.py --version v0.1.0-rc.1`.
+- 2026-04-24: M4 adapter validation still passed with `python scripts/validate-adapters.py --version 0.1.0-rc.1`.
+- 2026-04-24: M4 formatting validation passed with `git diff --check -- scripts tests docs/releases docs/changes/2026-04-24-multi-agent-adapters-first-public-release docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md`.
+- 2026-04-24: M4 change metadata validation passed with `python scripts/validate-change-metadata.py docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml`.
+- 2026-04-24: M4 lifecycle validation passed with `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/explain-change.md --path docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md --path docs/releases/v0.1.0-rc.1/release.yaml --path docs/releases/v0.1.0-rc.1/release-notes.md`.
+- 2026-04-24: M4 CI wrapper validation passed with `bash scripts/ci.sh`.
 
 ## Outcome and retrospective
 
-This plan is active. M1 through M3 are complete; M4 through M6 remain open.
+This plan is active. M1 through M4 are complete; M5 and M6 remain open.
 
 Plan review is complete and the matching test spec is active.
 
@@ -551,7 +565,7 @@ Plan review is complete and the matching test spec is active.
 
 Immediate next repository stage: `code-review`.
 
-Next expected milestone after code-review: M4, release metadata validator and RC release artifacts.
+Next expected milestone after code-review: M5, public docs, release gate replacement, and workflow integration.
 
 ## Risks and follow-ups
 

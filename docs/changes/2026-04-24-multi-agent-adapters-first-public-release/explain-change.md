@@ -43,3 +43,11 @@ The security scan is intentionally narrow for this milestone. It rejects private
 `scripts/ci.sh` now runs adapter regression tests, adapter drift checks, and adapter validation after the existing `.codex/skills/` drift check. It also filters `dist/adapters/*` from authored artifact lifecycle validation for the same reason `.codex/skills/*` is filtered: generated outputs are checked by drift and adapter validators, not by lifecycle artifact rules.
 
 The artifact lifecycle validator now treats explicit `dist/adapters/*` inputs as generated output instead of accepting them as authored source. This preserves the source-of-truth boundary while still allowing CI to validate generated files through adapter-specific checks.
+
+## M4 release metadata validation and RC evidence
+
+M4 adds target-version-scoped validation for `docs/releases/<version>/release.yaml` and `release-notes.md`.
+
+`scripts/validate-release.py --version v0.1.0-rc.1` reads only that versioned release directory, compares the release metadata to the generated `dist/adapters/manifest.yaml`, checks the expected Codex, Claude Code, and opencode adapter paths and entrypoints, validates RC and final smoke-row rules, checks release notes version and supported-tool consistency, and scans the release metadata and notes for high-signal security markers.
+
+The `v0.1.0-rc.1` metadata records smoke rows as `not-run` with maintainer ownership because manual adapter smoke is intentionally later. It also records `placeholder_release_check: fail` because `scripts/release-verify.sh` is still the placeholder gate until M5. This keeps the release evidence truthful while allowing the metadata shape, notes consistency, generated package sync, and security checks to validate now.

@@ -24,6 +24,7 @@ from adapter_distribution import (  # noqa: E402
     render_manifest_yaml,
     sync_adapter_output,
     validate_adapter_output,
+    validate_release_output,
 )
 
 
@@ -44,11 +45,103 @@ class AdapterDistributionTests(unittest.TestCase):
         self,
         root: Path,
         names: tuple[str, ...] = ("portable-basic", "transformable-frontmatter"),
+        version: str = "0.1.0-rc.1",
     ) -> tuple[Path, Path]:
         skills_root = self.copy_fixture_skills(root, names)
         output_root = root / "dist" / "adapters"
-        sync_adapter_output("0.1.0-rc.1", skills_root=skills_root, output_root=output_root)
+        sync_adapter_output(version, skills_root=skills_root, output_root=output_root)
         return skills_root, output_root
+
+    def write_release_artifacts(
+        self,
+        root: Path,
+        *,
+        version: str = "v0.1.0-rc.1",
+        release_type: str = "rc",
+        manifest_version: str = "0.1.0-rc.1",
+        supported_tools: tuple[str, ...] = SUPPORTED_ADAPTERS,
+        smoke_result: str = "not-run",
+        smoke_overrides: dict[str, dict[str, str]] | None = None,
+        validation_overrides: dict[str, str] | None = None,
+        notes_tools: tuple[str, ...] = SUPPORTED_ADAPTERS,
+        notes_extra: str = "",
+    ) -> Path:
+        release_dir = root / "docs" / "releases" / version
+        release_dir.mkdir(parents=True)
+        smoke_overrides = smoke_overrides or {}
+        validation = {
+            "generated_sync": "pass",
+            "release_notes_consistency": "pass",
+            "placeholder_release_check": "fail",
+            "security": "pass",
+        }
+        validation.update(validation_overrides or {})
+
+        lines = [
+            f"version: {version}",
+            f"release_type: {release_type}",
+            f"manifest_version: {manifest_version}",
+            "supported_tools:",
+            *(f"  - {tool}" for tool in supported_tools),
+            "adapter_paths:",
+        ]
+        lines.extend(f"  {tool}: dist/adapters/{tool}/" for tool in supported_tools)
+        lines.append("instruction_entrypoints:")
+        for tool in supported_tools:
+            entrypoint = "CLAUDE.md" if tool == "claude" else "AGENTS.md"
+            lines.append(f"  {tool}: dist/adapters/{tool}/{entrypoint}")
+        lines.append("smoke:")
+        for tool in supported_tools:
+            row = {
+                "result": smoke_result,
+                "tool_version": "unknown",
+                "evidence": '""',
+                "reason": '"RC metadata prepared before full manual smoke."',
+                "owner": "maintainer",
+            }
+            row.update(smoke_overrides.get(tool, {}))
+            lines.extend(
+                [
+                    f"  {tool}:",
+                    f"    result: {row['result']}",
+                    f"    tool_version: {row['tool_version']}",
+                    f"    evidence: {row['evidence']}",
+                    f"    reason: {row['reason']}",
+                    f"    owner: {row['owner']}",
+                ]
+            )
+        lines.append("validation:")
+        lines.extend(f"  {key}: {value}" for key, value in validation.items())
+        lines.append("")
+        (release_dir / "release.yaml").write_text("\n".join(lines), encoding="utf-8")
+
+        notes_lines = [
+            f"# RigorLoop {version}",
+            "",
+            "## Generated Adapter Packages",
+            "",
+            "This release candidate ships generated adapter packages under `dist/adapters/`.",
+            "",
+            "## Supported Tools",
+            "",
+            *(
+                f"- `{tool}`: `dist/adapters/{tool}/`"
+                for tool in notes_tools
+            ),
+            "",
+            "## Skill Support",
+            "",
+            "No current non-portable skill exclusions.",
+            "",
+            "## Known Limitations",
+            "",
+            "- Manual adapter smoke is not complete for this RC metadata.",
+        ]
+        if notes_extra:
+            notes_lines.extend(["", notes_extra])
+        notes_lines.append("")
+        (release_dir / "release-notes.md").write_text("\n".join(notes_lines), encoding="utf-8")
+        return release_dir
 
     def test_adapter_model_matches_required_paths(self) -> None:
         self.assertEqual(SUPPORTED_ADAPTERS, ("codex", "claude", "opencode"))
@@ -432,7 +525,10 @@ class AdapterDistributionTests(unittest.TestCase):
 
             self.assertTrue(any("adapter list mismatch: portable-basic" in error for error in errors))
             self.assertTrue(
-                any("generated skill is not listed in manifest: claude/portable-basic" in error for error in errors)
+                any(
+                    "generated skill is not listed in manifest: claude/portable-basic" in error
+                    for error in errors
+                )
             )
 
     def test_validate_adapter_output_rejects_unsupported_non_codex_metadata_leak(self) -> None:
@@ -518,6 +614,196 @@ class AdapterDistributionTests(unittest.TestCase):
         self.assertIn("python scripts/build-adapters.py --version 0.1.0-rc.1 --check", ci_text)
         self.assertIn("python scripts/validate-adapters.py --version 0.1.0-rc.1", ci_text)
         self.assertIn('"$path" == dist/adapters/*', ci_text)
+
+    def test_release_metadata_validation_accepts_rc_artifacts(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root, output_root = self.generate_fixture_adapters(root)
+            release_root = root / "docs" / "releases"
+            self.write_release_artifacts(root)
+
+            errors = validate_release_output(
+                "v0.1.0-rc.1",
+                skills_root=skills_root,
+                output_root=output_root,
+                release_root=release_root,
+            )
+
+            self.assertEqual(errors, [])
+
+    def test_release_metadata_validation_rejects_manifest_and_tool_mismatches(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root, output_root = self.generate_fixture_adapters(root)
+            release_root = root / "docs" / "releases"
+            self.write_release_artifacts(root, manifest_version="0.1.0")
+
+            errors = validate_release_output(
+                "v0.1.0-rc.1",
+                skills_root=skills_root,
+                output_root=output_root,
+                release_root=release_root,
+            )
+
+            self.assertTrue(any("manifest_version" in error for error in errors))
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root, output_root = self.generate_fixture_adapters(root)
+            release_root = root / "docs" / "releases"
+            self.write_release_artifacts(root, notes_tools=("codex", "claude"))
+
+            errors = validate_release_output(
+                "v0.1.0-rc.1",
+                skills_root=skills_root,
+                output_root=output_root,
+                release_root=release_root,
+            )
+
+            self.assertTrue(any("release notes supported tools mismatch" in error for error in errors))
+
+    def test_release_metadata_validation_enforces_rc_smoke_rules(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root, output_root = self.generate_fixture_adapters(root)
+            release_root = root / "docs" / "releases"
+            self.write_release_artifacts(
+                root,
+                smoke_overrides={
+                    "codex": {
+                        "result": "fail",
+                        "tool_version": "codex 1.2.3",
+                        "evidence": '"smoke failed"',
+                        "reason": '"tool did not discover skills"',
+                        "owner": "maintainer",
+                    }
+                },
+            )
+
+            errors = validate_release_output(
+                "v0.1.0-rc.1",
+                skills_root=skills_root,
+                output_root=output_root,
+                release_root=release_root,
+            )
+
+            self.assertTrue(any("known smoke failure blocks rc" in error for error in errors))
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root, output_root = self.generate_fixture_adapters(root)
+            release_root = root / "docs" / "releases"
+            self.write_release_artifacts(root, smoke_overrides={"claude": {"owner": '""'}})
+
+            errors = validate_release_output(
+                "v0.1.0-rc.1",
+                skills_root=skills_root,
+                output_root=output_root,
+                release_root=release_root,
+            )
+
+            self.assertTrue(any("smoke.claude.owner" in error for error in errors))
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root, output_root = self.generate_fixture_adapters(root)
+            release_root = root / "docs" / "releases"
+            release_dir = self.write_release_artifacts(root)
+            release_yaml = release_dir / "release.yaml"
+            release_yaml.write_text(
+                release_yaml.read_text(encoding="utf-8").replace("    owner: maintainer\n", "", 1),
+                encoding="utf-8",
+            )
+
+            errors = validate_release_output(
+                "v0.1.0-rc.1",
+                skills_root=skills_root,
+                output_root=output_root,
+                release_root=release_root,
+            )
+
+            self.assertTrue(any("smoke.codex: missing required field owner" in error for error in errors))
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root, output_root = self.generate_fixture_adapters(root)
+            release_root = root / "docs" / "releases"
+            self.write_release_artifacts(
+                root,
+                smoke_overrides={
+                    "opencode": {
+                        "result": "blocked",
+                        "reason": '"maintainer did not run this yet"',
+                    }
+                },
+            )
+
+            errors = validate_release_output(
+                "v0.1.0-rc.1",
+                skills_root=skills_root,
+                output_root=output_root,
+                release_root=release_root,
+            )
+
+            self.assertTrue(any("smoke.opencode.reason" in error for error in errors))
+
+    def test_release_metadata_validation_enforces_final_smoke_strictness(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root, output_root = self.generate_fixture_adapters(root, version="0.1.0")
+            release_root = root / "docs" / "releases"
+            self.write_release_artifacts(
+                root,
+                version="v0.1.0",
+                release_type="final",
+                manifest_version="0.1.0",
+                smoke_result="not-run",
+            )
+
+            errors = validate_release_output(
+                "v0.1.0",
+                skills_root=skills_root,
+                output_root=output_root,
+                release_root=release_root,
+            )
+
+            self.assertTrue(any("final release requires smoke pass" in error for error in errors))
+
+    def test_release_metadata_validation_rejects_release_security_violations(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root, output_root = self.generate_fixture_adapters(root)
+            release_root = root / "docs" / "releases"
+            self.write_release_artifacts(root, notes_extra="/home/alice/.ssh/id_rsa")
+
+            errors = validate_release_output(
+                "v0.1.0-rc.1",
+                skills_root=skills_root,
+                output_root=output_root,
+                release_root=release_root,
+            )
+
+            self.assertTrue(any("machine-local absolute path" in error for error in errors))
+
+    def test_validate_release_cli_accepts_repository_rc_artifacts(self) -> None:
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts" / "validate-release.py"),
+                "--version",
+                "v0.1.0-rc.1",
+            ],
+            capture_output=True,
+            text=True,
+            cwd=ROOT,
+        )
+
+        self.assertEqual(
+            result.returncode,
+            0,
+            msg=f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+        )
+        self.assertIn("validated release metadata for v0.1.0-rc.1", result.stdout)
 
 
 if __name__ == "__main__":
