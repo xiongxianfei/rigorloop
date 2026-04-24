@@ -357,6 +357,7 @@ This plan starts after the proposal, spec, and architecture are settled. It does
 - 2026-04-24: M1 tests were added first; `python scripts/test-adapter-distribution.py` initially failed with `ImportError` for missing `OPENCODE_COMMAND_ALIASES`, then passed after alias generation, manifest parsing, validation, and generated-output updates.
 - 2026-04-24: M1 validation passed with `python scripts/test-adapter-distribution.py`, `python scripts/build-adapters.py --version 0.1.1`, `python scripts/build-adapters.py --version 0.1.1 --check`, `python scripts/build-adapters.py --check`, `python scripts/validate-adapters.py --version 0.1.1`, `git diff --check -- scripts tests dist docs/plans/2026-04-24-skill-invocation-commands-for-adapters.md`, and `bash scripts/ci.sh`.
 - 2026-04-24: M1 code-review fix added direct T5 coverage for a manifest-declared non-curated OpenCode alias. Validation passed with `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_opencode_command_alias_manifest_validation_rejects_mismatches`, `python scripts/test-adapter-distribution.py`, and `bash scripts/ci.sh`.
+- 2026-04-24: M1 clean re-review completed with `clean-with-notes`. Verify found stale review metadata, so the change metadata and plan readiness were updated before rerunning validation.
 
 ## Outcome and retrospective
 
@@ -364,7 +365,7 @@ M1 complete. OpenCode command aliases are generated, listed exactly in `dist/ada
 
 ## Readiness
 
-M1 code-review feedback has been addressed and is ready for re-review. M2 remains the next implementation milestone for README and generated entrypoint invocation documentation after review or explicit continuation.
+M1 code-review feedback has been addressed and clean re-review completed. After verification of this metadata fix, M2 remains the next implementation milestone for README and generated entrypoint invocation documentation.
 
 ## Risks and follow-ups
 
