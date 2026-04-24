@@ -1,0 +1,44 @@
+version: v0.1.0-rc.1
+release_type: rc
+manifest_version: 0.1.0-rc.1
+
+supported_tools:
+  - codex
+  - claude
+  - opencode
+
+adapter_paths:
+  codex: dist/adapters/codex/
+  claude: dist/adapters/claude/
+  opencode: dist/adapters/opencode/
+
+instruction_entrypoints:
+  codex: dist/adapters/codex/AGENTS.md
+  claude: dist/adapters/claude/CLAUDE.md
+  opencode: dist/adapters/opencode/AGENTS.md
+
+smoke:
+  codex:
+    result: not-run
+    tool_version: unknown
+    evidence: ""
+    reason: "RC metadata prepared before full manual smoke."
+    owner: maintainer
+  claude:
+    result: not-run
+    tool_version: unknown
+    evidence: ""
+    reason: "RC metadata prepared before full manual smoke."
+    owner: maintainer
+  opencode:
+    result: not-run
+    tool_version: unknown
+    evidence: ""
+    reason: "RC metadata prepared before full manual smoke."
+    owner: maintainer
+
+validation:
+  generated_sync: pass
+  release_notes_consistency: pass
+  placeholder_release_check: fail
+  security: pass

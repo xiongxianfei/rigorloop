@@ -6,7 +6,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
-from typing import Iterable
+from typing import Any, Iterable
 
 from skill_validation import (
     CANONICAL_SKILLS_DIR,
@@ -22,6 +22,7 @@ DEFAULT_ADAPTER_VERSION = "0.1.0-rc.1"
 ROOT = Path(__file__).resolve().parents[1]
 ADAPTER_OUTPUT_ROOT = ROOT / "dist" / "adapters"
 ADAPTER_TEMPLATE_ROOT = ROOT / "scripts" / "adapter_templates"
+RELEASE_ROOT = ROOT / "docs" / "releases"
 ADAPTER_OUTPUT_CONTRACT_ROOT = PurePosixPath("dist/adapters")
 COMMON_FRONTMATTER = frozenset({"name", "description"})
 TRANSFORMABLE_FRONTMATTER = frozenset({"argument-hint"})
@@ -97,6 +98,27 @@ class AdapterManifest:
     skills: dict[str, ManifestSkillEntry]
 
 
+@dataclass(frozen=True)
+class SmokeRow:
+    result: str
+    tool_version: str
+    evidence: str
+    reason: str
+    owner: str
+
+
+@dataclass(frozen=True)
+class ReleaseMetadata:
+    version: str
+    release_type: str
+    manifest_version: str
+    supported_tools: tuple[str, ...]
+    adapter_paths: dict[str, str]
+    instruction_entrypoints: dict[str, str]
+    smoke: dict[str, SmokeRow]
+    validation: dict[str, str]
+
+
 ADAPTERS = {
     "codex": AdapterConfig(
         name="codex",
@@ -117,6 +139,23 @@ ADAPTERS = {
         skill_root=PurePosixPath(".opencode/skills"),
     ),
 }
+
+
+RELEASE_TARGETS = {
+    "v0.1.0-rc.1": ("rc", "0.1.0-rc.1"),
+    "v0.1.0": ("final", "0.1.0"),
+}
+REQUIRED_RELEASE_VALIDATION_KEYS = (
+    "generated_sync",
+    "release_notes_consistency",
+    "placeholder_release_check",
+    "security",
+)
+PLACEHOLDER_RELEASE_PATTERNS = (
+    "Replace this script with repository-specific release checks",
+    "TODO: release checks",
+    "placeholder release check",
+)
 
 
 def _skill_file(target: Path) -> Path:
@@ -387,6 +426,198 @@ def parse_manifest_yaml(text: str, path: Path = Path("manifest.yaml")) -> Adapte
         )
 
     return AdapterManifest(version=version, skills=skills)
+
+
+@dataclass(frozen=True)
+class _YamlLine:
+    indent: int
+    text: str
+    lineno: int
+
+
+def _parse_simple_yaml_scalar(value: str) -> str:
+    stripped = value.strip()
+    if len(stripped) >= 2 and stripped[0] == stripped[-1] and stripped[0] in {"'", '"'}:
+        return _strip_manifest_quotes(stripped)
+    return stripped
+
+
+def _tokenize_simple_yaml(text: str, path: Path) -> list[_YamlLine]:
+    rows: list[_YamlLine] = []
+    for lineno, raw_line in enumerate(text.splitlines(), start=1):
+        if not raw_line.strip() or raw_line.lstrip().startswith("#"):
+            continue
+        if "\t" in raw_line:
+            raise ValueError(f"{path}: line {lineno}: tabs are not supported")
+        indent = len(raw_line) - len(raw_line.lstrip(" "))
+        if indent % 2:
+            raise ValueError(f"{path}: line {lineno}: indentation must use multiples of two spaces")
+        rows.append(_YamlLine(indent=indent, text=raw_line[indent:], lineno=lineno))
+    return rows
+
+
+def _split_simple_yaml_mapping(text: str, path: Path, lineno: int) -> tuple[str, str]:
+    if ":" not in text:
+        raise ValueError(f"{path}: line {lineno}: expected key: value")
+    key, value = text.split(":", 1)
+    key = key.strip()
+    if not key:
+        raise ValueError(f"{path}: line {lineno}: mapping key must not be empty")
+    return key, value.lstrip()
+
+
+def _parse_simple_yaml_block(
+    rows: list[_YamlLine],
+    index: int,
+    indent: int,
+    path: Path,
+) -> tuple[Any, int]:
+    if index >= len(rows):
+        raise ValueError(f"{path}: unexpected end of file")
+    row = rows[index]
+    if row.indent != indent:
+        raise ValueError(f"{path}: line {row.lineno}: expected indentation {indent}, found {row.indent}")
+    if row.text.startswith("- "):
+        return _parse_simple_yaml_list(rows, index, indent, path)
+    return _parse_simple_yaml_mapping(rows, index, indent, path)
+
+
+def _parse_simple_yaml_mapping(
+    rows: list[_YamlLine],
+    index: int,
+    indent: int,
+    path: Path,
+) -> tuple[dict[str, Any], int]:
+    data: dict[str, Any] = {}
+    while index < len(rows):
+        row = rows[index]
+        if row.indent < indent:
+            break
+        if row.indent > indent:
+            raise ValueError(f"{path}: line {row.lineno}: unexpected indentation inside mapping")
+        if row.text.startswith("- "):
+            raise ValueError(f"{path}: line {row.lineno}: unexpected list item inside mapping")
+
+        key, remainder = _split_simple_yaml_mapping(row.text, path, row.lineno)
+        index += 1
+        if remainder:
+            data[key] = _parse_simple_yaml_scalar(remainder)
+            continue
+        if index >= len(rows) or rows[index].indent <= indent:
+            data[key] = ""
+            continue
+        child_indent = rows[index].indent
+        if child_indent != indent + 2:
+            raise ValueError(
+                f"{path}: line {rows[index].lineno}: nested block for {key} "
+                "must be indented by two spaces"
+            )
+        data[key], index = _parse_simple_yaml_block(rows, index, child_indent, path)
+    return data, index
+
+
+def _parse_simple_yaml_list(
+    rows: list[_YamlLine],
+    index: int,
+    indent: int,
+    path: Path,
+) -> tuple[list[str], int]:
+    values: list[str] = []
+    while index < len(rows):
+        row = rows[index]
+        if row.indent < indent:
+            break
+        if row.indent > indent:
+            raise ValueError(f"{path}: line {row.lineno}: unexpected indentation inside list")
+        if not row.text.startswith("- "):
+            break
+        item = row.text[2:].lstrip()
+        if not item:
+            raise ValueError(f"{path}: line {row.lineno}: list items must be scalar values")
+        values.append(_parse_simple_yaml_scalar(item))
+        index += 1
+    return values, index
+
+
+def _parse_simple_yaml(text: str, path: Path) -> Any:
+    rows = _tokenize_simple_yaml(text, path)
+    if not rows:
+        raise ValueError(f"{path}: file must not be empty")
+    data, index = _parse_simple_yaml_block(rows, 0, rows[0].indent, path)
+    if index != len(rows):
+        row = rows[index]
+        raise ValueError(f"{path}: line {row.lineno}: unexpected trailing content")
+    return data
+
+
+def _required_string(data: dict[str, Any], key: str, path: Path) -> str:
+    value = data.get(key)
+    if not isinstance(value, str) or not value:
+        raise ValueError(f"{path}: {key}: missing or invalid string")
+    return value
+
+
+def _required_string_list(data: dict[str, Any], key: str, path: Path) -> tuple[str, ...]:
+    value = data.get(key)
+    if not isinstance(value, list) or not all(isinstance(item, str) and item for item in value):
+        raise ValueError(f"{path}: {key}: expected a non-empty list of strings")
+    return tuple(value)
+
+
+def _required_string_mapping(data: dict[str, Any], key: str, path: Path) -> dict[str, str]:
+    value = data.get(key)
+    if not isinstance(value, dict):
+        raise ValueError(f"{path}: {key}: expected mapping")
+    mapping: dict[str, str] = {}
+    for item_key, item_value in value.items():
+        if not isinstance(item_key, str) or not isinstance(item_value, str):
+            raise ValueError(f"{path}: {key}: expected string keys and values")
+        mapping[item_key] = item_value
+    return mapping
+
+
+def _required_present_string(data: dict[str, Any], key: str, context: str, path: Path) -> str:
+    if key not in data:
+        raise ValueError(f"{path}: {context}: missing required field {key}")
+    value = data[key]
+    if not isinstance(value, str):
+        raise ValueError(f"{path}: {context}.{key}: expected string")
+    return value
+
+
+def parse_release_yaml(text: str, path: Path = Path("release.yaml")) -> ReleaseMetadata:
+    """Parse the constrained release metadata shape."""
+
+    data = _parse_simple_yaml(text, path)
+    if not isinstance(data, dict):
+        raise ValueError(f"{path}: expected top-level mapping")
+
+    smoke_data = data.get("smoke")
+    if not isinstance(smoke_data, dict):
+        raise ValueError(f"{path}: smoke: expected mapping")
+    smoke: dict[str, SmokeRow] = {}
+    for tool, row in smoke_data.items():
+        if not isinstance(tool, str) or not isinstance(row, dict):
+            raise ValueError(f"{path}: smoke.{tool}: expected mapping")
+        context = f"smoke.{tool}"
+        smoke[tool] = SmokeRow(
+            result=_required_string(row, "result", path),
+            tool_version=_required_string(row, "tool_version", path),
+            evidence=_required_present_string(row, "evidence", context, path),
+            reason=_required_present_string(row, "reason", context, path),
+            owner=_required_present_string(row, "owner", context, path),
+        )
+
+    return ReleaseMetadata(
+        version=_required_string(data, "version", path),
+        release_type=_required_string(data, "release_type", path),
+        manifest_version=_required_string(data, "manifest_version", path),
+        supported_tools=_required_string_list(data, "supported_tools", path),
+        adapter_paths=_required_string_mapping(data, "adapter_paths", path),
+        instruction_entrypoints=_required_string_mapping(data, "instruction_entrypoints", path),
+        smoke=smoke,
+        validation=_required_string_mapping(data, "validation", path),
+    )
 
 
 def collect_skill_reports(skills_root: Path = CANONICAL_SKILLS_DIR) -> tuple[SkillPortabilityReport, ...]:
@@ -755,12 +986,16 @@ def validate_adapter_output(
                 )
             if entry.portable != report.portable:
                 errors.append(
-                    f"portable flag mismatch: {skill_name}: expected {report.portable}, found {entry.portable}"
+                    f"portable flag mismatch: {skill_name}: expected {report.portable}, "
+                    f"found {entry.portable}"
                 )
             if not entry.portable and not entry.reason:
                 errors.append(f"non-portable manifest entry missing reason: {skill_name}")
             for adapter_name in entry.adapters:
-                if adapter_name in SUPPORTED_ADAPTERS and skill_name not in generated_by_adapter[adapter_name]:
+                if (
+                    adapter_name in SUPPORTED_ADAPTERS
+                    and skill_name not in generated_by_adapter[adapter_name]
+                ):
                     config = ADAPTERS[adapter_name]
                     expected_path = _adapter_skill_root(output_root, config) / skill_name / "SKILL.md"
                     errors.append(
@@ -786,4 +1021,252 @@ def validate_adapter_output(
                 errors.append(f"generated skill is not listed in manifest: {adapter_name}/{skill_name}")
 
     errors.extend(scan_security_paths((output_root, template_root)))
+    return _dedupe_errors(errors)
+
+
+def _expected_adapter_paths() -> dict[str, str]:
+    return {
+        adapter: f"{config.package_root.as_posix()}/"
+        for adapter, config in ADAPTERS.items()
+    }
+
+
+def _expected_instruction_entrypoints() -> dict[str, str]:
+    return {
+        adapter: f"{config.package_root.as_posix()}/{config.entrypoint.as_posix()}"
+        for adapter, config in ADAPTERS.items()
+    }
+
+
+def _release_notes_tools(text: str) -> tuple[str, ...]:
+    tools: list[str] = []
+    for line in text.splitlines():
+        match = re.fullmatch(r"- `([^`]+)`: `dist/adapters/[^`]+/`", line.strip())
+        if match:
+            tools.append(match.group(1))
+    return tuple(tools)
+
+
+def _release_notes_consistency_errors(
+    version: str,
+    metadata: ReleaseMetadata,
+    manifest: AdapterManifest,
+    notes_text: str,
+) -> list[str]:
+    errors: list[str] = []
+    first_heading = next((line.strip() for line in notes_text.splitlines() if line.strip()), "")
+    if first_heading != f"# RigorLoop {version}":
+        errors.append(f"release notes version mismatch: expected '# RigorLoop {version}'")
+
+    notes_tools = _release_notes_tools(notes_text)
+    if notes_tools != metadata.supported_tools:
+        errors.append(
+            f"release notes supported tools mismatch: expected {metadata.supported_tools}, "
+            f"found {notes_tools}"
+        )
+    if "dist/adapters/" not in notes_text:
+        errors.append("release notes must describe generated adapter packages under dist/adapters/")
+
+    non_portable = sorted(name for name, entry in manifest.skills.items() if not entry.portable)
+    if non_portable:
+        for skill_name in non_portable:
+            if skill_name not in notes_text:
+                errors.append(f"release notes omit non-portable skill exclusion: {skill_name}")
+    elif "No current non-portable skill exclusions." not in notes_text:
+        errors.append("release notes must state that there are no current non-portable skill exclusions")
+
+    return errors
+
+
+def _placeholder_release_check_status() -> str:
+    release_verify = ROOT / "scripts" / "release-verify.sh"
+    if not release_verify.is_file():
+        return "fail"
+    text = release_verify.read_text(encoding="utf-8")
+    return "fail" if any(marker in text for marker in PLACEHOLDER_RELEASE_PATTERNS) else "pass"
+
+
+def _validate_smoke_row(
+    version: str,
+    release_type: str,
+    tool: str,
+    row: SmokeRow,
+) -> list[str]:
+    errors: list[str] = []
+    valid_results = {"pass", "fail", "not-run", "blocked"}
+    if row.result not in valid_results:
+        return [f"smoke.{tool}.result: unsupported value: {row.result}"]
+
+    if row.result == "pass":
+        if not row.tool_version or row.tool_version == "unknown":
+            errors.append(f"smoke.{tool}.tool_version: pass requires known tool version")
+        if not row.evidence:
+            errors.append(f"smoke.{tool}.evidence: pass requires evidence")
+
+    if row.result == "fail":
+        for field_name, value in (
+            ("tool_version", row.tool_version),
+            ("evidence", row.evidence),
+            ("reason", row.reason),
+            ("owner", row.owner),
+        ):
+            if not value:
+                errors.append(f"smoke.{tool}.{field_name}: fail requires non-empty value")
+        if release_type == "rc":
+            errors.append(f"smoke.{tool}.result: known smoke failure blocks rc {version}")
+
+    if row.result == "not-run":
+        if row.tool_version != "unknown":
+            errors.append(f"smoke.{tool}.tool_version: not-run requires unknown")
+        if row.evidence:
+            errors.append(f"smoke.{tool}.evidence: not-run requires empty evidence")
+        if not row.reason:
+            errors.append(f"smoke.{tool}.reason: not-run requires reason")
+        if not row.owner:
+            errors.append(f"smoke.{tool}.owner: not-run requires owner")
+
+    if row.result == "blocked":
+        if not row.reason:
+            errors.append(f"smoke.{tool}.reason: blocked requires reason")
+        if not row.owner:
+            errors.append(f"smoke.{tool}.owner: blocked requires owner")
+        reason = row.reason.lower()
+        if (
+            release_type == "rc"
+            and "external" not in reason
+            and "tool-access" not in reason
+            and "tool access" not in reason
+        ):
+            errors.append(
+                f"smoke.{tool}.reason: blocked rc smoke must identify an "
+                "external or tool-access blocker"
+            )
+
+    if release_type == "final" and row.result != "pass":
+        errors.append(f"smoke.{tool}.result: final release requires smoke pass")
+
+    return errors
+
+
+def validate_release_output(
+    version: str,
+    *,
+    skills_root: Path = CANONICAL_SKILLS_DIR,
+    template_root: Path = ADAPTER_TEMPLATE_ROOT,
+    output_root: Path = ADAPTER_OUTPUT_ROOT,
+    release_root: Path = RELEASE_ROOT,
+) -> list[str]:
+    """Validate one target-version release metadata and notes surface."""
+
+    errors: list[str] = []
+    target = RELEASE_TARGETS.get(version)
+    if target is None:
+        return [f"unsupported release target: {version}"]
+    expected_release_type, expected_manifest_version = target
+
+    release_dir = release_root / version
+    release_path = release_dir / "release.yaml"
+    notes_path = release_dir / "release-notes.md"
+    if not release_path.is_file():
+        return [f"missing release metadata: {release_path}"]
+    if not notes_path.is_file():
+        return [f"missing release notes: {notes_path}"]
+
+    try:
+        metadata = parse_release_yaml(release_path.read_text(encoding="utf-8"), release_path)
+    except ValueError as exc:
+        return [str(exc)]
+
+    if metadata.version != version:
+        errors.append(
+            f"{release_path}: version mismatch: expected {version}, found {metadata.version}"
+        )
+    if metadata.release_type != expected_release_type:
+        errors.append(
+            f"{release_path}: release_type mismatch: expected {expected_release_type}, "
+            f"found {metadata.release_type}"
+        )
+    if metadata.manifest_version != expected_manifest_version:
+        errors.append(
+            f"{release_path}: manifest_version mismatch: expected {expected_manifest_version}, "
+            f"found {metadata.manifest_version}"
+        )
+    if metadata.supported_tools != SUPPORTED_ADAPTERS:
+        errors.append(
+            f"{release_path}: supported_tools must be exactly {SUPPORTED_ADAPTERS}, "
+            f"found {metadata.supported_tools}"
+        )
+    if metadata.adapter_paths != _expected_adapter_paths():
+        errors.append(f"{release_path}: adapter_paths mismatch")
+    if metadata.instruction_entrypoints != _expected_instruction_entrypoints():
+        errors.append(f"{release_path}: instruction_entrypoints mismatch")
+    if set(metadata.smoke) != set(SUPPORTED_ADAPTERS):
+        errors.append(f"{release_path}: smoke rows must be exactly {SUPPORTED_ADAPTERS}")
+    for tool in SUPPORTED_ADAPTERS:
+        row = metadata.smoke.get(tool)
+        if row is not None:
+            errors.extend(_validate_smoke_row(version, expected_release_type, tool, row))
+
+    for key in REQUIRED_RELEASE_VALIDATION_KEYS:
+        if key not in metadata.validation:
+            errors.append(f"{release_path}: validation.{key}: missing required field")
+        elif metadata.validation[key] not in {"pass", "fail"}:
+            errors.append(f"{release_path}: validation.{key}: expected pass or fail")
+
+    manifest_path = output_root / "manifest.yaml"
+    manifest: AdapterManifest | None = None
+    if not manifest_path.is_file():
+        errors.append(f"missing adapter manifest: {manifest_path}")
+    else:
+        try:
+            manifest = parse_manifest_yaml(
+                manifest_path.read_text(encoding="utf-8"),
+                manifest_path,
+            )
+        except ValueError as exc:
+            errors.append(str(exc))
+    if manifest is not None and manifest.version != expected_manifest_version:
+        errors.append(
+            f"{manifest_path}: version mismatch: expected {expected_manifest_version}, "
+            f"found {manifest.version}"
+        )
+
+    generated_sync_errors = collect_adapter_drift(
+        expected_manifest_version,
+        skills_root=skills_root,
+        template_root=template_root,
+        output_root=output_root,
+    )
+    errors.extend(generated_sync_errors)
+
+    adapter_validation_errors = validate_adapter_output(
+        expected_manifest_version,
+        skills_root=skills_root,
+        template_root=template_root,
+        output_root=output_root,
+    )
+    errors.extend(adapter_validation_errors)
+
+    notes_text = notes_path.read_text(encoding="utf-8")
+    release_notes_errors = (
+        _release_notes_consistency_errors(version, metadata, manifest, notes_text)
+        if manifest is not None
+        else ["release notes consistency could not be checked without manifest"]
+    )
+    errors.extend(release_notes_errors)
+
+    security_errors = scan_security_paths((release_path, notes_path))
+    errors.extend(security_errors)
+
+    actual_validation = {
+        "generated_sync": "fail" if generated_sync_errors or adapter_validation_errors else "pass",
+        "release_notes_consistency": "fail" if release_notes_errors else "pass",
+        "placeholder_release_check": _placeholder_release_check_status(),
+        "security": "fail" if security_errors else "pass",
+    }
+    for key, actual in actual_validation.items():
+        recorded = metadata.validation.get(key)
+        if recorded in {"pass", "fail"} and recorded != actual:
+            errors.append(f"{release_path}: validation.{key}: expected {actual}, found {recorded}")
+
     return _dedupe_errors(errors)
