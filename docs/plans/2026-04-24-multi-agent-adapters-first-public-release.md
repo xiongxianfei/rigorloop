@@ -640,18 +640,24 @@ The plan separates adapter logic, generated output, validation, release evidence
   - Review surface: the adapter contract review-regression fix commit, its tests, governing `R23` and canonical skill parse-failure requirements, and recorded validation evidence.
   - Findings: no blocking or required-change findings remain for the review-resolution patch.
   - Direct proof: `python scripts/test-adapter-distribution.py`, `python scripts/build-adapters.py --version 0.1.0-rc.1 --check`, `python scripts/validate-adapters.py --version 0.1.0-rc.1`, `bash scripts/release-verify.sh v0.1.0-rc.1`, `bash scripts/ci.sh`, change metadata validation, explicit artifact lifecycle validation, and diff checks passed.
+- 2026-04-24: M6 `code-review` for commit `9a572cf` returned `clean-with-notes`.
+  - Review inputs: committed M6 diff, approved feature spec, active test spec, adapter distribution architecture, generated-adapter ADR, M6 plan notes, release metadata, and validation evidence.
+  - Diff summary: the generated adapter package version moved to `0.1.0`, stable release metadata and notes were added, CI and contributor docs now target stable validation commands, and M6 smoke/validation evidence was recorded in the change-local artifacts and plan.
+  - Findings: no blocking or required-change findings.
+  - Checklist coverage: spec alignment, test coverage, named edge cases, release error handling, architecture boundaries, compatibility, security/privacy, generated output drift, unrelated-change scope, and validation evidence all passed against the reviewed diff.
+  - Direct proof: `bash scripts/release-verify.sh v0.1.0`, `bash scripts/ci.sh`, `python scripts/validate-release.py --version v0.1.0`, `python scripts/build-adapters.py --version 0.1.0 --check`, `python scripts/validate-adapters.py --version 0.1.0`, explicit lifecycle validation, and the recorded manual smoke rows passed.
 
 ## Outcome and retrospective
 
-This plan is active. M1 through M6 implementation milestones are complete; M6 code-review and verify handoff remain open before PR readiness.
+This plan is active. M1 through M6 implementation milestones are complete; M6 code-review is clean and verify handoff remains open before PR readiness.
 
 Plan review is complete and the matching test spec is active.
 
 ## Readiness
 
-Immediate next repository stage: `code-review` for M6 stable release closeout.
+Immediate next repository stage: `verify` for M6 stable release closeout.
 
-Next expected milestone: M6 review and verification closeout.
+Next expected milestone: M6 verification closeout.
 
 ## Risks and follow-ups
 
