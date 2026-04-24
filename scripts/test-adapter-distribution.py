@@ -882,6 +882,8 @@ class AdapterDistributionTests(unittest.TestCase):
         for term in ("codex", "claude", "opencode", "dist/adapters", ".codex/skills"):
             self.assertIn(term, combined)
         self.assertIn("ordinary contributors do not need all supported tools", combined)
+        self.assertIn("external tool contracts", combined)
+        self.assertIn("before changing release claims", combined)
         self.assertIn("skills/", combined)
         self.assertNotIn("marketplace package", combined)
         self.assertNotIn("package-manager distribution", combined)
