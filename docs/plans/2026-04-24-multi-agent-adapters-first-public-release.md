@@ -470,6 +470,7 @@ The plan separates adapter logic, generated output, validation, release evidence
 - [x] 2026-04-24: M3 adapter validation, security checks, and CI integration implemented.
 - [x] 2026-04-24: M4 release metadata validation and `v0.1.0-rc.1` release artifacts implemented.
 - [x] 2026-04-24: M4 first-pass code-review completed with `clean-with-notes`; no required changes.
+- [x] 2026-04-24: M4 verify passed; the next implementation slice is M5.
 - [ ] M5 complete.
 - [ ] M6 complete.
 
@@ -558,6 +559,7 @@ The plan separates adapter logic, generated output, validation, release evidence
 - 2026-04-24: M4 post-commit release metadata validation passed with `python scripts/validate-release.py --version v0.1.0-rc.1`.
 - 2026-04-24: M4 post-commit lifecycle validation passed with `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/explain-change.md --path docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md --path docs/releases/v0.1.0-rc.1/release.yaml --path docs/releases/v0.1.0-rc.1/release-notes.md`.
 - 2026-04-24: M4 post-commit CI wrapper validation passed with `bash scripts/ci.sh`; push-main artifact lifecycle validation reported unrelated pre-existing proposal warnings and passed.
+- 2026-04-24: M4 final verification passed with `python scripts/test-adapter-distribution.py`, `python scripts/validate-release.py --version v0.1.0-rc.1`, `python scripts/validate-adapters.py --version 0.1.0-rc.1`, `python scripts/validate-change-metadata.py docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml`, explicit artifact lifecycle validation for the M4 release artifacts, `git diff --check -- HEAD~2..HEAD`, and `bash scripts/ci.sh`.
 
 ## Review record
 
@@ -575,9 +577,9 @@ Plan review is complete and the matching test spec is active.
 
 ## Readiness
 
-Immediate next repository stage: `verify`.
+Immediate next repository stage: `implement` for M5.
 
-Next expected milestone after clean verify: M5, public docs, release gate replacement, and workflow integration.
+Next expected milestone: M5, public docs, release gate replacement, and workflow integration.
 
 ## Risks and follow-ups
 
