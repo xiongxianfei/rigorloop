@@ -582,6 +582,8 @@ The plan separates adapter logic, generated output, validation, release evidence
 - 2026-04-24: M5 review-resolution CI wrapper validation passed with `bash scripts/ci.sh`.
 - 2026-04-24: M5 review-resolution change metadata validation passed with `python scripts/validate-change-metadata.py docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml`.
 - 2026-04-24: M5 review-resolution lifecycle validation passed with `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/explain-change.md --path docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md --path docs/releases/v0.1.0-rc.1/release.yaml --path docs/releases/v0.1.0-rc.1/release-notes.md --path README.md --path docs/workflows.md --path AGENTS.md`.
+- 2026-04-24: M5 verify passed with `bash scripts/release-verify.sh v0.1.0-rc.1`, `bash scripts/ci.sh`, placeholder text rejection, docs evidence `rg`, `python scripts/validate-change-metadata.py docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml`, explicit artifact lifecycle validation, and `git diff --check -- 8e28920..HEAD`.
+- 2026-04-24: M5 verify observed unrelated pre-existing proposal warnings from `bash scripts/ci.sh` push-main lifecycle validation; the CI wrapper still passed and validated five related artifact files.
 
 ## Review record
 
@@ -601,13 +603,13 @@ The plan separates adapter logic, generated output, validation, release evidence
 
 ## Outcome and retrospective
 
-This plan is active. M1 through M5 are complete; M6 remains open.
+This plan is active. M1 through M5 are complete and verified; M6 remains open.
 
 Plan review is complete and the matching test spec is active.
 
 ## Readiness
 
-Immediate next repository stage: `verify`.
+Immediate next repository stage: `explain-change`.
 
 Next expected milestone after review and verification: M6, maintainer smoke and stable `v0.1.0` closeout.
 
