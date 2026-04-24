@@ -361,6 +361,7 @@ This plan starts after the proposal, spec, and architecture are settled. It does
 - 2026-04-24: M2 tests were added first; focused entrypoint and README invocation tests initially failed because the docs lacked tool-native invocation guidance, then passed after README and adapter template updates.
 - 2026-04-24: M2 validation passed with `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_claude_entrypoint_documents_native_skill_invocation AdapterDistributionTests.test_opencode_entrypoint_documents_skills_and_thin_aliases AdapterDistributionTests.test_readme_distinguishes_claude_and_opencode_invocation_forms`, `python scripts/build-adapters.py --version 0.1.1`, `python scripts/test-adapter-distribution.py`, `python scripts/build-adapters.py --version 0.1.1 --check`, `python scripts/validate-adapters.py --version 0.1.1`, the documented `rg` check, `git diff --check`, and `bash scripts/ci.sh`.
 - 2026-04-24: M2 code-review completed with `clean-with-notes`; no required-change findings remained before verification.
+- 2026-04-24: M2 verification passed on tracked state with `bash scripts/ci.sh`; lifecycle validation reported only unrelated baseline proposal warnings.
 
 ## Outcome and retrospective
 
@@ -368,7 +369,7 @@ M1 and M2 complete. OpenCode command aliases are generated, listed exactly in `d
 
 ## Readiness
 
-M2 is implemented and clean-reviewed. M3 remains the next implementation milestone for `v0.1.1` release metadata, release notes, and smoke evidence after verification or explicit continuation.
+M2 is implemented, clean-reviewed, and verified. M3 remains the next implementation milestone for `v0.1.1` release metadata, release notes, and smoke evidence after explicit continuation.
 
 ## Risks and follow-ups
 
