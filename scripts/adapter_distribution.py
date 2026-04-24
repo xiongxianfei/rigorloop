@@ -164,6 +164,7 @@ ADAPTERS = {
 RELEASE_TARGETS = {
     "v0.1.0-rc.1": ("rc", "0.1.0-rc.1"),
     "v0.1.0": ("final", "0.1.0"),
+    "v0.1.1": ("final", "0.1.1"),
 }
 REQUIRED_RELEASE_VALIDATION_KEYS = (
     "generated_sync",
@@ -1375,6 +1376,29 @@ def _release_notes_consistency_errors(
     elif "No current non-portable skill exclusions." not in notes_text:
         errors.append("release notes must state that there are no current non-portable skill exclusions")
 
+    if _supports_opencode_command_aliases(metadata.manifest_version):
+        opencode_aliases = manifest.command_aliases.get("opencode")
+        if opencode_aliases is None:
+            errors.append("release notes consistency could not check missing OpenCode command aliases")
+        else:
+            missing_aliases = [
+                alias for alias in opencode_aliases.aliases
+                if f"`{alias}`" not in notes_text
+            ]
+            if missing_aliases:
+                errors.append(
+                    "release notes omit OpenCode command aliases: "
+                    + ", ".join(missing_aliases)
+                )
+        if "OpenCode command aliases" not in notes_text:
+            errors.append("release notes must describe OpenCode command aliases")
+        if "Claude Code" not in notes_text or "skill-native" not in notes_text:
+            errors.append("release notes must describe Claude Code skill-native usage")
+        if "opencode run --command proposal" not in notes_text:
+            errors.append(
+                "release notes must include the smoke-tested OpenCode one-shot command form"
+            )
+
     return errors
 
 
@@ -1448,6 +1472,27 @@ def _validate_smoke_row(
     return errors
 
 
+def _validate_opencode_command_alias_smoke(version: str, metadata: ReleaseMetadata) -> list[str]:
+    if not _supports_opencode_command_aliases(metadata.manifest_version):
+        return []
+
+    row = metadata.smoke.get("opencode")
+    if row is None or row.result != "pass":
+        return []
+
+    evidence = row.evidence.lower()
+    has_one_shot_form = "opencode run --command proposal" in evidence
+    has_behavior = (
+        "loaded" in evidence
+        or "followed" in evidence
+        or "argument_marker_m3_smoke" in evidence
+    )
+    has_skill = "proposal skill" in evidence or "`proposal` skill" in evidence
+    if has_one_shot_form and has_behavior and has_skill:
+        return []
+    return [f"smoke.opencode.evidence: {version} requires command alias behavior evidence"]
+
+
 def validate_release_output(
     version: str,
     *,
@@ -1506,6 +1551,7 @@ def validate_release_output(
         row = metadata.smoke.get(tool)
         if row is not None:
             errors.extend(_validate_smoke_row(version, expected_release_type, tool, row))
+    errors.extend(_validate_opencode_command_alias_smoke(version, metadata))
 
     for key in REQUIRED_RELEASE_VALIDATION_KEYS:
         if key not in metadata.validation:

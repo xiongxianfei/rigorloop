@@ -22,7 +22,7 @@ if [[ -z "$release_version" ]]; then
 fi
 
 case "$release_version" in
-  v0.1.0-rc.1|v0.1.0)
+  v0.1.0-rc.1|v0.1.0|v0.1.1)
     ;;
   *)
     echo "Unsupported release target: ${release_version}" >&2

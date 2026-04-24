@@ -226,11 +226,11 @@ This plan starts after the proposal, spec, and architecture are settled. It does
   - `v0.1.1` release verification can validate generated command aliases, release metadata, release notes, and OpenCode command alias smoke evidence.
 - Commit message: `M3: prepare v0.1.1 command alias release`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - OpenCode smoke may be blocked by local account/tool configuration
   - smoke evidence may prove the command exists but not that the matching skill was followed
@@ -333,7 +333,7 @@ This plan starts after the proposal, spec, and architecture are settled. It does
 - [x] Test spec active.
 - [x] M1 complete.
 - [x] M2 complete.
-- [ ] M3 complete.
+- [x] M3 complete.
 - [ ] M4 complete.
 
 ## Decision log
@@ -342,12 +342,14 @@ This plan starts after the proposal, spec, and architecture are settled. It does
 - 2026-04-24: Split implementation into alias generation, user-facing docs, release verification, and lifecycle closeout. Rationale: each slice has a distinct validation boundary and can be reviewed coherently.
 - 2026-04-24: Keep `docs/releases/v0.1.1/release-notes.md` fully owned by M3, not M2. Rationale: release notes and one-shot examples require M3 release metadata and smoke evidence.
 - 2026-04-24: Move `DEFAULT_ADAPTER_VERSION` and CI adapter drift checks to `0.1.1` in M1. Rationale: tracked `dist/adapters/` now represents the generated package version with command aliases, so repository-owned adapter checks must validate the current generated tree rather than historical `0.1.0` output.
+- 2026-04-24: Include the OpenCode `opencode run --command proposal` one-shot example in README, the OpenCode adapter entrypoint, and `v0.1.1` release notes after maintainer smoke proved that the alias loads the `proposal` skill and passes arguments through.
 
 ## Surprises and discoveries
 
 - 2026-04-24: Planning was blocked until the command alias architecture extension existed because the approved spec explicitly named `architecture` as the immediate next stage.
 - 2026-04-24: Plan review found ambiguous release-notes ownership between M2 and M3; the plan now keeps M2 to README plus generated entrypoint docs and gates release notes and one-shot examples on M3 smoke evidence.
 - 2026-04-24: Regenerating tracked adapter output for `0.1.1` made repository-current adapter CLI and CI checks stale while historical `v0.1.0` release validation still needed coverage. The M1 fix moved current adapter checks to `0.1.1` and kept `v0.1.0` release validation covered through isolated fixtures, leaving `v0.1.1` release metadata to M3.
+- 2026-04-24: OpenCode command alias smoke needed both command execution and argument pass-through evidence. Repeating `ARGUMENT_MARKER_M3_SMOKE` in the OpenCode response gave release validation a concrete behavior signal beyond file discovery.
 
 ## Validation notes
 
@@ -362,15 +364,18 @@ This plan starts after the proposal, spec, and architecture are settled. It does
 - 2026-04-24: M2 validation passed with `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_claude_entrypoint_documents_native_skill_invocation AdapterDistributionTests.test_opencode_entrypoint_documents_skills_and_thin_aliases AdapterDistributionTests.test_readme_distinguishes_claude_and_opencode_invocation_forms`, `python scripts/build-adapters.py --version 0.1.1`, `python scripts/test-adapter-distribution.py`, `python scripts/build-adapters.py --version 0.1.1 --check`, `python scripts/validate-adapters.py --version 0.1.1`, the documented `rg` check, `git diff --check`, and `bash scripts/ci.sh`.
 - 2026-04-24: M2 code-review completed with `clean-with-notes`; no required-change findings remained before verification.
 - 2026-04-24: M2 verification passed on tracked state with `bash scripts/ci.sh`; lifecycle validation reported only unrelated baseline proposal warnings.
+- 2026-04-24: M3 maintainer smoke passed for Codex `codex-cli 0.124.0`, Claude Code `2.1.119 (Claude Code)`, and OpenCode `1.14.22`. OpenCode smoke used `opencode run --pure --dir <copied-adapter-root> --command proposal` and verified that the `proposal` skill loaded and repeated `ARGUMENT_MARKER_M3_SMOKE` from the command arguments.
+- 2026-04-24: M3 tests were added first for `v0.1.1` release target support, OpenCode command alias smoke evidence, release verification support, and smoke-backed docs. The focused test set initially failed because `v0.1.1` release artifacts and one-shot docs were not yet wired, then passed after release validation, metadata, notes, and template updates.
+- 2026-04-24: M3 validation passed with `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_v0_1_1_release_metadata_requires_command_alias_smoke_evidence AdapterDistributionTests.test_validate_release_cli_accepts_repository_v0_1_1_artifacts AdapterDistributionTests.test_release_verify_script_supports_v0_1_1 AdapterDistributionTests.test_opencode_entrypoint_documents_skills_and_thin_aliases AdapterDistributionTests.test_readme_distinguishes_claude_and_opencode_invocation_forms`, `python scripts/build-adapters.py --version 0.1.1`, `python scripts/test-adapter-distribution.py`, `python scripts/build-adapters.py --version 0.1.1 --check`, `python scripts/validate-adapters.py --version 0.1.1`, `python scripts/validate-release.py --version v0.1.1`, `RELEASE_VERIFY_DRY_RUN=1 bash scripts/release-verify.sh v0.1.1`, `git diff --check -- README.md scripts docs dist`, and `bash scripts/ci.sh`.
 
 ## Outcome and retrospective
 
-M1 and M2 complete. OpenCode command aliases are generated, listed exactly in `dist/adapters/manifest.yaml`, and validated for drift, manifest consistency, dangling aliases, stale bodies, and unsafe content. README and generated Claude/OpenCode entrypoints now document tool-native TUI invocation forms while omitting one-shot examples until M3 smoke evidence exists.
+M1 through M3 are implemented. OpenCode command aliases are generated, listed exactly in `dist/adapters/manifest.yaml`, and validated for drift, manifest consistency, dangling aliases, stale bodies, and unsafe content. README and generated Claude/OpenCode entrypoints document tool-native TUI invocation forms. Because M3 smoke verified the OpenCode command alias one-shot path, README, the OpenCode entrypoint, and `v0.1.1` release notes now include `opencode run --command proposal`.
 
 ## Readiness
 
-M2 is implemented, clean-reviewed, and verified. M3 remains the next implementation milestone for `v0.1.1` release metadata, release notes, and smoke evidence after explicit continuation.
+M3 is implemented and ready for code-review. M4 remains the final lifecycle closeout milestone after review and verification.
 
 ## Risks and follow-ups
 
-- Follow-up: decide during implementation whether OpenCode one-shot smoke is strong enough to include `opencode run --command ...` in README and release notes.
+- Follow-up: complete code-review, verify, and M4 lifecycle closeout before PR readiness.
