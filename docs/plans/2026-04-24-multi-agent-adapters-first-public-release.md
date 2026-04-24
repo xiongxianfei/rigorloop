@@ -594,6 +594,8 @@ The plan separates adapter logic, generated output, validation, release evidence
 - 2026-04-24: Branch code-review change metadata validation passed with `python scripts/validate-change-metadata.py docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml`.
 - 2026-04-24: Branch code-review explicit artifact lifecycle validation passed for the touched change-local artifacts, plan, adapter script, adapter tests, and new adapter fixture with `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`.
 - 2026-04-24: Branch code-review formatting validation passed with `git diff --check -- scripts tests docs`.
+- 2026-04-24: Branch code-review rerun bookkeeping validation passed with change metadata validation, explicit artifact lifecycle validation, `git diff --check -- docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md`, and `bash scripts/ci.sh`.
+- 2026-04-24: Branch review-resolution verify passed with `python scripts/validate-change-metadata.py docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml`, explicit artifact lifecycle validation for the review-resolution touched files, and `git diff --check -- HEAD~2..HEAD`.
 
 ## Review record
 
@@ -627,9 +629,9 @@ Plan review is complete and the matching test spec is active.
 
 ## Readiness
 
-Immediate next repository stage: `verify` rerun for the branch-level review finding resolution.
+Immediate next repository stage: `implement` for M6 when maintainer smoke evidence is available.
 
-Next expected milestone after review and verification: M6, maintainer smoke and stable `v0.1.0` closeout.
+Next expected milestone: M6, maintainer smoke and stable `v0.1.0` closeout.
 
 ## Risks and follow-ups
 
