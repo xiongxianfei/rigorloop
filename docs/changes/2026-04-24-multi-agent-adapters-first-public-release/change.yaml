@@ -50,6 +50,9 @@ requirements:
   - R33
   - R34
   - R35
+  - R36
+  - R37
+  - R38
   - R39
   - R40
   - R40a
@@ -101,12 +104,15 @@ tests:
   - T9
   - T10
   - T11
+  - T12
   - T13
   - T14
   - T15
   - T16
+  - T17
   - T18
   - T19
+  - T21
 validation:
   - command: python scripts/test-adapter-distribution.py
     result: expected_fail_missing_adapter_distribution_module_before_implementation
@@ -196,11 +202,30 @@ validation:
     result: pass_after_m4_release_metadata_validation
   - command: bash scripts/ci.sh
     result: pass_after_m4_release_metadata_validation
+  - command: python scripts/test-adapter-distribution.py
+    result: expected_fail_placeholder_release_gate_and_docs_before_m5_implementation
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_after_m5_release_gate_and_docs
+  - command: bash scripts/release-verify.sh v0.1.0-rc.1
+    result: pass_after_m5_release_gate_and_docs
+  - command: bash scripts/ci.sh
+    result: pass_after_m5_release_gate_and_docs
+  - command: bash -c "! rg -n 'Replace this script with repository-specific release checks|TODO: release checks|placeholder release check' scripts/release-verify.sh"
+    result: pass_after_m5_release_gate_and_docs
+  - command: rg -n 'codex|claude|opencode|dist/adapters|\.codex/skills|not need all supported tools' README.md docs/workflows.md AGENTS.md docs/releases/v0.1.0-rc.1/release-notes.md
+    result: pass_after_m5_release_gate_and_docs
+  - command: git diff --check -- scripts .github README.md docs AGENTS.md dist
+    result: pass_after_m5_release_gate_and_docs
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml
+    result: pass_after_m5_release_gate_and_docs
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/explain-change.md --path docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md --path docs/releases/v0.1.0-rc.1/release.yaml --path docs/releases/v0.1.0-rc.1/release-notes.md --path README.md --path docs/workflows.md --path AGENTS.md
+    result: pass_after_m5_release_gate_and_docs
 changed_files:
   - scripts/adapter_distribution.py
   - scripts/build-adapters.py
   - scripts/validate-adapters.py
   - scripts/validate-release.py
+  - scripts/release-verify.sh
   - scripts/ci.sh
   - scripts/artifact_lifecycle_validation.py
   - scripts/adapter_templates/codex/AGENTS.md
@@ -208,6 +233,10 @@ changed_files:
   - scripts/adapter_templates/opencode/AGENTS.md
   - scripts/test-adapter-distribution.py
   - scripts/test-artifact-lifecycle-validator.py
+  - .github/workflows/release.yml
+  - README.md
+  - docs/workflows.md
+  - AGENTS.md
   - dist/adapters/
   - docs/releases/v0.1.0-rc.1/release.yaml
   - docs/releases/v0.1.0-rc.1/release-notes.md
@@ -229,6 +258,6 @@ changed_files:
   - docs/changes/2026-04-24-multi-agent-adapters-first-public-release/review-resolution.md
   - docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md
 review:
-  status: clean_with_notes
+  status: m5_pending_code_review
   unresolved_items: 0
   location: docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md

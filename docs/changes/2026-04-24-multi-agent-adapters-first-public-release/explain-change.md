@@ -55,3 +55,17 @@ The `v0.1.0-rc.1` metadata records smoke rows as `not-run` with maintainer owner
 The M4 regression tests cover valid RC metadata, manifest-version and supported-tool mismatches, RC smoke failures, missing required smoke fields, final-release smoke strictness, release-note security scanning, and the repository `validate-release.py` CLI path. The final verification pass reran the adapter distribution tests, adapter validation, release metadata validation, change metadata validation, explicit lifecycle validation for the release artifacts, formatting checks, and `bash scripts/ci.sh`.
 
 M4 intentionally does not make `v0.1.0-rc.1` publication-ready. The remaining release gate replacement and public documentation work belongs to M5, and stable `v0.1.0` remains blocked on maintainer smoke in M6.
+
+## M5 release gate replacement and public docs
+
+M5 replaces the checklist-only release script with a repository-owned release gate for `v0.1.0-rc.1` and `v0.1.0`.
+
+`scripts/release-verify.sh` now accepts an explicit tag or falls back to `GITHUB_REF_NAME`, derives the adapter manifest version from the tag, rejects unsupported release targets, checks that the release script is not still a placeholder, and invokes the required repository-owned checks: skill validation, skill regression validation, `.codex/skills` drift, adapter regression tests, adapter drift, adapter validation, release metadata validation, and the security scans embedded in adapter and release validation.
+
+`.github/workflows/release.yml` now passes the tag to release verification and creates GitHub releases from `docs/releases/<tag>/release-notes.md` instead of generated notes. RC tags are marked prerelease and are not marked latest.
+
+The public docs now describe the generated Codex, Claude Code, and opencode adapter packages under `dist/adapters/`, show the support matrix paths, explain how to install one adapter by copying its package root into a project, and distinguish canonical `skills/`, generated public `dist/adapters/`, and generated local `.codex/skills/`. They also state that ordinary contributors do not need all supported tools installed locally for non-smoke validation.
+
+The `v0.1.0-rc.1` release metadata now records `placeholder_release_check: pass`, because the placeholder release gate has been replaced. The RC release notes now identify `bash scripts/release-verify.sh v0.1.0-rc.1` as the release gate and keep manual adapter smoke as the remaining limitation before stable `v0.1.0`.
+
+The M5 tests cover the release script dry-run command contract, fallback to `GITHUB_REF_NAME`, tracked release notes in the GitHub workflow, public docs source-boundary wording, and the updated release metadata placeholder status. The actual release gate was also run directly for `v0.1.0-rc.1`.

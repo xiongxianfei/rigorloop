@@ -2,7 +2,7 @@
 
 ## Generated Adapter Packages
 
-This release candidate records the generated adapter package set under `dist/adapters/` for public trial once the remaining release gate work is complete.
+This release candidate records the generated adapter package set under `dist/adapters/` for public trial. Install one adapter by copying that adapter package root into a project root.
 
 ## Supported Tools
 
@@ -16,8 +16,11 @@ All 22 current RigorLoop skills pass the portable-core gate for Codex, Claude Co
 
 No current non-portable skill exclusions.
 
+## Verification
+
+The repository-owned release gate is `bash scripts/release-verify.sh v0.1.0-rc.1`. It checks canonical skills, generated `.codex/skills/`, generated adapter drift, adapter validation, release metadata, release notes, and security scans without requiring ordinary contributors to install all supported tools.
+
 ## Known Limitations
 
 - Manual adapter smoke has not been run yet for Codex, Claude Code, or opencode.
 - Stable `v0.1.0` remains blocked until every supported tool smoke row passes with tool version and evidence.
-- The release verification placeholder gate remains incomplete until `placeholder_release_check` is updated to `pass` by a later milestone.
