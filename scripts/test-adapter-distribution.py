@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import sys
 import shutil
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -22,6 +23,7 @@ from adapter_distribution import (  # noqa: E402
     expected_adapter_files,
     render_manifest_yaml,
     sync_adapter_output,
+    validate_adapter_output,
 )
 
 
@@ -37,6 +39,16 @@ class AdapterDistributionTests(unittest.TestCase):
         for name in names:
             shutil.copytree(self.fixture(name), skills_root / name)
         return skills_root
+
+    def generate_fixture_adapters(
+        self,
+        root: Path,
+        names: tuple[str, ...] = ("portable-basic", "transformable-frontmatter"),
+    ) -> tuple[Path, Path]:
+        skills_root = self.copy_fixture_skills(root, names)
+        output_root = root / "dist" / "adapters"
+        sync_adapter_output("0.1.0-rc.1", skills_root=skills_root, output_root=output_root)
+        return skills_root, output_root
 
     def test_adapter_model_matches_required_paths(self) -> None:
         self.assertEqual(SUPPORTED_ADAPTERS, ("codex", "claude", "opencode"))
@@ -357,6 +369,155 @@ class AdapterDistributionTests(unittest.TestCase):
                 skills_root=skills_root,
             )
             self.assertIn("version: 0.1.0", stable_files[Path("manifest.yaml")])
+
+    def test_validate_adapter_output_accepts_generated_tree(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root, output_root = self.generate_fixture_adapters(root)
+
+            errors = validate_adapter_output(
+                "0.1.0-rc.1",
+                skills_root=skills_root,
+                output_root=output_root,
+            )
+
+            self.assertEqual(errors, [])
+
+    def test_validate_adapter_output_rejects_missing_adapter_directory_and_entrypoint(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root, output_root = self.generate_fixture_adapters(root)
+            shutil.rmtree(output_root / "claude")
+
+            errors = validate_adapter_output(
+                "0.1.0-rc.1",
+                skills_root=skills_root,
+                output_root=output_root,
+            )
+
+            self.assertTrue(any("missing adapter directory: claude" in error for error in errors))
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root, output_root = self.generate_fixture_adapters(root)
+            (output_root / "opencode" / "AGENTS.md").unlink()
+
+            errors = validate_adapter_output(
+                "0.1.0-rc.1",
+                skills_root=skills_root,
+                output_root=output_root,
+            )
+
+            self.assertTrue(any("missing instruction entrypoint: opencode" in error for error in errors))
+
+    def test_validate_adapter_output_rejects_manifest_file_mismatches(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root, output_root = self.generate_fixture_adapters(root, ("portable-basic",))
+            manifest_path = output_root / "manifest.yaml"
+            manifest_path.write_text(
+                manifest_path.read_text(encoding="utf-8").replace(
+                    "adapters: [codex, claude, opencode]",
+                    "adapters: [codex]",
+                    1,
+                ),
+                encoding="utf-8",
+            )
+
+            errors = validate_adapter_output(
+                "0.1.0-rc.1",
+                skills_root=skills_root,
+                output_root=output_root,
+            )
+
+            self.assertTrue(any("adapter list mismatch: portable-basic" in error for error in errors))
+            self.assertTrue(
+                any("generated skill is not listed in manifest: claude/portable-basic" in error for error in errors)
+            )
+
+    def test_validate_adapter_output_rejects_unsupported_non_codex_metadata_leak(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root, output_root = self.generate_fixture_adapters(root, ("transformable-frontmatter",))
+            codex_skill = (
+                output_root
+                / "codex"
+                / ".agents"
+                / "skills"
+                / "transformable-frontmatter"
+                / "SKILL.md"
+            )
+            claude_skill = (
+                output_root
+                / "claude"
+                / ".claude"
+                / "skills"
+                / "transformable-frontmatter"
+                / "SKILL.md"
+            )
+            claude_skill.write_text(codex_skill.read_text(encoding="utf-8"), encoding="utf-8")
+
+            errors = validate_adapter_output(
+                "0.1.0-rc.1",
+                skills_root=skills_root,
+                output_root=output_root,
+            )
+
+            self.assertTrue(
+                any(
+                    "unsupported metadata in claude/transformable-frontmatter: argument-hint" in error
+                    for error in errors
+                )
+            )
+
+    def test_validate_adapter_output_rejects_security_violations(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root, output_root = self.generate_fixture_adapters(root, ("portable-basic",))
+            entrypoint = output_root / "codex" / "AGENTS.md"
+            entrypoint.write_text(
+                entrypoint.read_text(encoding="utf-8")
+                + "\n-----BEGIN PRIVATE KEY-----\n/home/alice/.ssh/id_rsa\n--dangerously-skip-permissions\n",
+                encoding="utf-8",
+            )
+
+            errors = validate_adapter_output(
+                "0.1.0-rc.1",
+                skills_root=skills_root,
+                output_root=output_root,
+            )
+
+            self.assertTrue(any("private key delimiter" in error for error in errors))
+            self.assertTrue(any("machine-local absolute path" in error for error in errors))
+            self.assertTrue(any("permission bypass" in error for error in errors))
+
+    def test_validate_adapters_cli_accepts_repository_output(self) -> None:
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts" / "validate-adapters.py"),
+                "--version",
+                "0.1.0-rc.1",
+            ],
+            capture_output=True,
+            text=True,
+            cwd=ROOT,
+        )
+
+        self.assertEqual(
+            result.returncode,
+            0,
+            msg=f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+        )
+        self.assertIn("validated generated adapters for version 0.1.0-rc.1", result.stdout)
+
+    def test_ci_script_runs_adapter_checks_and_filters_generated_paths(self) -> None:
+        ci_text = (ROOT / "scripts" / "ci.sh").read_text(encoding="utf-8")
+
+        self.assertIn("python scripts/test-adapter-distribution.py", ci_text)
+        self.assertIn("python scripts/build-adapters.py --version 0.1.0-rc.1 --check", ci_text)
+        self.assertIn("python scripts/validate-adapters.py --version 0.1.0-rc.1", ci_text)
+        self.assertIn('"$path" == dist/adapters/*', ci_text)
 
 
 if __name__ == "__main__":

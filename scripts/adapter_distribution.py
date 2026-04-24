@@ -83,6 +83,20 @@ class SkillPortabilityReport:
         raise KeyError(adapter)
 
 
+@dataclass(frozen=True)
+class ManifestSkillEntry:
+    name: str
+    portable: bool
+    adapters: tuple[str, ...]
+    reason: str = ""
+
+
+@dataclass(frozen=True)
+class AdapterManifest:
+    version: str
+    skills: dict[str, ManifestSkillEntry]
+
+
 ADAPTERS = {
     "codex": AdapterConfig(
         name="codex",
@@ -277,6 +291,102 @@ def render_manifest_yaml(version: str, reports: Iterable[SkillPortabilityReport]
             lines.append(f"    reason: {_yaml_double_quoted(report.reason)}")
     lines.append("")
     return "\n".join(lines)
+
+
+def _strip_manifest_quotes(value: str) -> str:
+    value = value.strip()
+    if len(value) >= 2 and value[0] == value[-1] and value[0] in {"'", '"'}:
+        quote = value[0]
+        value = value[1:-1]
+        if quote == '"':
+            replacements = {
+                "\\\\": "\\",
+                '\\"': '"',
+                "\\b": "\b",
+                "\\f": "\f",
+                "\\n": "\n",
+                "\\r": "\r",
+                "\\t": "\t",
+            }
+            for escaped, plain in replacements.items():
+                value = value.replace(escaped, plain)
+    return value
+
+
+def _parse_manifest_adapter_list(value: str, path: Path, key: str) -> tuple[str, ...]:
+    stripped = value.strip()
+    if not stripped.startswith("[") or not stripped.endswith("]"):
+        raise ValueError(f"{path}: {key}: adapters must use inline list syntax")
+    body = stripped[1:-1].strip()
+    if not body:
+        return ()
+    return tuple(item.strip() for item in body.split(",") if item.strip())
+
+
+def _parse_manifest_bool(value: str, path: Path, key: str) -> bool:
+    stripped = value.strip()
+    if stripped == "true":
+        return True
+    if stripped == "false":
+        return False
+    raise ValueError(f"{path}: {key}: expected true or false")
+
+
+def parse_manifest_yaml(text: str, path: Path = Path("manifest.yaml")) -> AdapterManifest:
+    """Parse the constrained generated adapter manifest shape."""
+
+    rows: list[tuple[int, str, int]] = []
+    for lineno, raw_line in enumerate(text.splitlines(), start=1):
+        if not raw_line.strip() or raw_line.lstrip().startswith("#"):
+            continue
+        if "\t" in raw_line:
+            raise ValueError(f"{path}: line {lineno}: tabs are not supported")
+        indent = len(raw_line) - len(raw_line.lstrip(" "))
+        if indent % 2:
+            raise ValueError(f"{path}: line {lineno}: indentation must use multiples of two spaces")
+        rows.append((indent, raw_line[indent:], lineno))
+
+    if len(rows) < 2:
+        raise ValueError(f"{path}: manifest must include version and skills")
+    if rows[0][0] != 0 or not rows[0][1].startswith("version: "):
+        raise ValueError(f"{path}: missing top-level version")
+    version = rows[0][1].split(":", 1)[1].strip()
+    if not version:
+        raise ValueError(f"{path}: version must not be empty")
+    if rows[1][0] != 0 or rows[1][1] != "skills:":
+        raise ValueError(f"{path}: missing top-level skills mapping")
+
+    skills: dict[str, ManifestSkillEntry] = {}
+    index = 2
+    while index < len(rows):
+        indent, text_row, lineno = rows[index]
+        if indent != 2 or not text_row.endswith(":"):
+            raise ValueError(f"{path}: line {lineno}: expected skill mapping entry")
+        skill_name = text_row[:-1]
+        if not skill_name:
+            raise ValueError(f"{path}: line {lineno}: skill name must not be empty")
+        index += 1
+
+        fields: dict[str, str] = {}
+        while index < len(rows) and rows[index][0] == 4:
+            _child_indent, child_text, child_lineno = rows[index]
+            if ":" not in child_text:
+                raise ValueError(f"{path}: line {child_lineno}: expected key: value")
+            key, value = child_text.split(":", 1)
+            fields[key.strip()] = value.lstrip()
+            index += 1
+
+        missing = {"portable", "adapters"} - set(fields)
+        if missing:
+            raise ValueError(f"{path}: {skill_name}: missing fields: {', '.join(sorted(missing))}")
+        skills[skill_name] = ManifestSkillEntry(
+            name=skill_name,
+            portable=_parse_manifest_bool(fields["portable"], path, f"{skill_name}.portable"),
+            adapters=_parse_manifest_adapter_list(fields["adapters"], path, f"{skill_name}.adapters"),
+            reason=_strip_manifest_quotes(fields.get("reason", "")),
+        )
+
+    return AdapterManifest(version=version, skills=skills)
 
 
 def collect_skill_reports(skills_root: Path = CANONICAL_SKILLS_DIR) -> tuple[SkillPortabilityReport, ...]:
@@ -474,3 +584,206 @@ def sync_adapter_output(
             path.unlink()
 
     _remove_empty_directories(output_root)
+
+
+def _adapter_root(output_root: Path, config: AdapterConfig) -> Path:
+    return output_root / _adapter_package_relative_root(config)
+
+
+def _adapter_skill_root(output_root: Path, config: AdapterConfig) -> Path:
+    return _adapter_root(output_root, config) / _path_from_posix(config.skill_root)
+
+
+def _generated_skill_files(output_root: Path, config: AdapterConfig) -> tuple[Path, ...]:
+    skill_root = _adapter_skill_root(output_root, config)
+    if not skill_root.is_dir():
+        return ()
+    return tuple(sorted(skill_root.glob("*/SKILL.md")))
+
+
+SECURITY_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
+    (
+        "private key delimiter",
+        re.compile(r"-----BEGIN [A-Z0-9 ]*PRIVATE KEY-----"),
+    ),
+    (
+        "secret assignment",
+        re.compile(
+            r"\b(?:AWS_SECRET_ACCESS_KEY|SECRET_KEY|API_KEY|ACCESS_TOKEN|AUTH_TOKEN|PRIVATE_TOKEN)"
+            r"\s*[:=]\s*['\"]?[A-Za-z0-9_./+=-]{8,}",
+            re.IGNORECASE,
+        ),
+    ),
+    (
+        "machine-local absolute path",
+        re.compile(
+            r"(?<![A-Za-z0-9_./-])"
+            r"(?:/home/[A-Za-z0-9._-]+/|/Users/[A-Za-z0-9._-]+/|[A-Za-z]:\\Users\\)"
+        ),
+    ),
+    (
+        "permission bypass",
+        re.compile(
+            r"--dangerously-skip-permissions|dangerously skip permissions|"
+            r"bypass (?:all )?(?:tool )?permissions|permission-bypass",
+            re.IGNORECASE,
+        ),
+    ),
+)
+
+
+def scan_security_paths(paths: Iterable[Path]) -> list[str]:
+    """Scan generated adapter files and templates for high-signal unsafe markers."""
+
+    errors: list[str] = []
+    files: list[Path] = []
+    for path in paths:
+        if path.is_file():
+            files.append(path)
+        elif path.is_dir():
+            files.extend(item for item in sorted(path.rglob("*")) if item.is_file())
+
+    for path in sorted(files):
+        try:
+            text = path.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            errors.append(f"{path}: file must be UTF-8 text")
+            continue
+        for label, pattern in SECURITY_PATTERNS:
+            if pattern.search(text):
+                errors.append(f"{path}: security violation: {label}")
+
+    return errors
+
+
+def _dedupe_errors(errors: Iterable[str]) -> list[str]:
+    deduped: list[str] = []
+    for error in errors:
+        if error not in deduped:
+            deduped.append(error)
+    return deduped
+
+
+def validate_adapter_output(
+    version: str,
+    *,
+    skills_root: Path = CANONICAL_SKILLS_DIR,
+    template_root: Path = ADAPTER_TEMPLATE_ROOT,
+    output_root: Path = ADAPTER_OUTPUT_ROOT,
+) -> list[str]:
+    """Validate generated adapter packages, manifest consistency, and security markers."""
+
+    errors: list[str] = []
+    errors.extend(
+        collect_adapter_drift(
+            version,
+            skills_root=skills_root,
+            template_root=template_root,
+            output_root=output_root,
+        )
+    )
+
+    manifest_path = output_root / "manifest.yaml"
+    manifest: AdapterManifest | None = None
+    if not manifest_path.is_file():
+        errors.append(f"missing adapter manifest: {manifest_path}")
+    else:
+        try:
+            manifest = parse_manifest_yaml(manifest_path.read_text(encoding="utf-8"), manifest_path)
+        except ValueError as exc:
+            errors.append(str(exc))
+
+    if manifest is not None and manifest.version != version:
+        errors.append(
+            f"manifest version mismatch: expected {version}, found {manifest.version} at {manifest_path}"
+        )
+
+    reports = {report.name: report for report in collect_skill_reports(skills_root)}
+    generated_by_adapter: dict[str, set[str]] = {adapter: set() for adapter in SUPPORTED_ADAPTERS}
+
+    for adapter_name in SUPPORTED_ADAPTERS:
+        config = ADAPTERS[adapter_name]
+        package_root = _adapter_root(output_root, config)
+        entrypoint = package_root / _path_from_posix(config.entrypoint)
+        skill_root = _adapter_skill_root(output_root, config)
+
+        if not package_root.is_dir():
+            errors.append(f"missing adapter directory: {adapter_name}: {package_root}")
+            continue
+        if not entrypoint.is_file():
+            errors.append(f"missing instruction entrypoint: {adapter_name}: {entrypoint}")
+        if not skill_root.is_dir():
+            errors.append(f"missing adapter skill directory: {adapter_name}: {skill_root}")
+            continue
+
+        for skill_path in _generated_skill_files(output_root, config):
+            skill_name = skill_path.parent.name
+            generated_by_adapter[adapter_name].add(skill_name)
+            try:
+                metadata, _body = load_skill_file(skill_path)
+            except (OSError, ValueError) as exc:
+                errors.append(f"{skill_path}: {exc}")
+                continue
+            errors.extend(validate_skill_file(skill_path, load_skill_schema())[0])
+            name = _normalize_description(metadata.get("name"))
+            description = _normalize_description(metadata.get("description"))
+            errors.extend(f"{skill_path}: {error}" for error in _portable_name_errors(name, skill_name))
+            errors.extend(f"{skill_path}: {error}" for error in _description_errors(description))
+
+            if adapter_name != "codex":
+                unsupported = sorted(set(metadata) - COMMON_FRONTMATTER)
+                if unsupported:
+                    errors.append(
+                        f"unsupported metadata in {adapter_name}/{skill_name}: {', '.join(unsupported)}"
+                    )
+
+    if manifest is not None:
+        for skill_name, report in reports.items():
+            entry = manifest.skills.get(skill_name)
+            if entry is None:
+                errors.append(f"manifest omits canonical skill: {skill_name}")
+                continue
+            invalid_adapters = sorted(set(entry.adapters) - set(SUPPORTED_ADAPTERS))
+            if invalid_adapters:
+                errors.append(
+                    f"manifest lists unsupported adapter for {skill_name}: {', '.join(invalid_adapters)}"
+                )
+            if entry.adapters != report.included_adapters:
+                errors.append(
+                    f"adapter list mismatch: {skill_name}: expected {report.included_adapters}, "
+                    f"found {entry.adapters}"
+                )
+            if entry.portable != report.portable:
+                errors.append(
+                    f"portable flag mismatch: {skill_name}: expected {report.portable}, found {entry.portable}"
+                )
+            if not entry.portable and not entry.reason:
+                errors.append(f"non-portable manifest entry missing reason: {skill_name}")
+            for adapter_name in entry.adapters:
+                if adapter_name in SUPPORTED_ADAPTERS and skill_name not in generated_by_adapter[adapter_name]:
+                    config = ADAPTERS[adapter_name]
+                    expected_path = _adapter_skill_root(output_root, config) / skill_name / "SKILL.md"
+                    errors.append(
+                        f"manifest lists adapter without generated skill: {adapter_name}/{skill_name}: "
+                        f"{expected_path}"
+                    )
+
+        for skill_name in sorted(set(manifest.skills) - set(reports)):
+            errors.append(f"manifest lists unknown skill: {skill_name}")
+
+        for adapter_name, generated_names in generated_by_adapter.items():
+            listed_names = {
+                skill_name
+                for skill_name, entry in manifest.skills.items()
+                if adapter_name in entry.adapters
+            }
+            if generated_names != listed_names:
+                errors.append(
+                    f"generated skill count mismatch for {adapter_name}: "
+                    f"manifest lists {len(listed_names)}, files contain {len(generated_names)}"
+                )
+            for skill_name in sorted(generated_names - listed_names):
+                errors.append(f"generated skill is not listed in manifest: {adapter_name}/{skill_name}")
+
+    errors.extend(scan_security_paths((output_root, template_root)))
+    return _dedupe_errors(errors)

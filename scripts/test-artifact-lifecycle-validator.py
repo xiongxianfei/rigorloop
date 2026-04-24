@@ -283,6 +283,23 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
         self.assertTrue(result.blocking_findings)
         self.assertIn("generated output path must not be treated as authored source of truth", combined_messages)
 
+    def test_dist_adapters_generated_output_path_is_rejected(self) -> None:
+        fixture_root = copy_fixture("invalid-generated-source")
+        self.addCleanupTree(fixture_root)
+        generated = fixture_root / "dist" / "adapters" / "codex" / "AGENTS.md"
+        generated.parent.mkdir(parents=True)
+        generated.write_text("# Generated adapter\n", encoding="utf-8")
+
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=["dist/adapters/codex/AGENTS.md"],
+        )
+
+        combined_messages = "\n".join(f.message for f in result.blocking_findings)
+        self.assertTrue(result.blocking_findings)
+        self.assertIn("generated output path must not be treated as authored source of truth", combined_messages)
+
     def test_explicit_paths_ignore_unrelated_invalid_fixture_files(self) -> None:
         result = self.validate_fixture(
             "explicit-scope",

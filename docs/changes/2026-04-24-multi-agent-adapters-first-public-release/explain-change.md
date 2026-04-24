@@ -31,3 +31,15 @@ The shared adapter distribution module now exposes deterministic expected-file g
 The generated Codex package preserves canonical skill files under `.agents/skills/`. Claude Code and opencode packages drop the Codex-specific `argument-hint` frontmatter through the explicit M1 transform before writing `.claude/skills/` and `.opencode/skills/` files. The entrypoint templates stay thin: they identify the package as generated adapter output, point maintainers back to canonical sources, name the target skill directory, and do not duplicate skill bodies.
 
 The M2 tests cover independent package roots, required entrypoints, template thinness, deterministic manifest versions, transform application, stale drift detection, unexpected generated file detection, and write-mode cleanup of unexpected generated files.
+
+## M3 adapter validation and CI integration
+
+M3 adds the repository-owned adapter validation gate around the generated package output.
+
+`scripts/validate-adapters.py` validates the tracked `dist/adapters/` tree for a requested manifest version. The shared adapter distribution module now parses the constrained generated manifest, checks required adapter directories and instruction entrypoints, compares manifest records with canonical portability decisions, verifies generated skill files are listed in the manifest, rejects non-Codex metadata leaks such as `argument-hint`, and scans generated adapter files plus authored templates for high-signal security markers.
+
+The security scan is intentionally narrow for this milestone. It rejects private key delimiters, common secret assignments, machine-local absolute paths, and explicit permission-bypass language without flagging ordinary skill text about permissions or secrets.
+
+`scripts/ci.sh` now runs adapter regression tests, adapter drift checks, and adapter validation after the existing `.codex/skills/` drift check. It also filters `dist/adapters/*` from authored artifact lifecycle validation for the same reason `.codex/skills/*` is filtered: generated outputs are checked by drift and adapter validators, not by lifecycle artifact rules.
+
+The artifact lifecycle validator now treats explicit `dist/adapters/*` inputs as generated output instead of accepting them as authored source. This preserves the source-of-truth boundary while still allowing CI to validate generated files through adapter-specific checks.
