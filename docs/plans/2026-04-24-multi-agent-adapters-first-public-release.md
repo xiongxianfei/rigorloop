@@ -391,11 +391,11 @@ The plan separates adapter logic, generated output, validation, release evidence
   - the stable package set has manifest version `0.1.0`, all supported smoke rows pass, and `bash scripts/release-verify.sh v0.1.0` succeeds
 - Commit message: `M6: prepare stable adapter release`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - maintainer smoke may reveal a real tool-discovery incompatibility
   - the stable version bump can make old RC metadata look stale if validators are not target-version scoped
@@ -472,7 +472,7 @@ The plan separates adapter logic, generated output, validation, release evidence
 - [x] 2026-04-24: M4 first-pass code-review completed with `clean-with-notes`; no required changes.
 - [x] 2026-04-24: M4 verify passed; the next implementation slice is M5.
 - [x] 2026-04-24: M5 public docs, release gate replacement, and workflow integration implemented.
-- [ ] M6 complete.
+- [x] 2026-04-24: M6 maintainer smoke and stable `v0.1.0` release closeout implemented; code-review handoff pending.
 
 ## Decision log
 
@@ -496,6 +496,8 @@ The plan separates adapter logic, generated output, validation, release evidence
 - 2026-04-24: M5 keeps `scripts/release-verify.sh` as the single repository-owned release gate. It accepts a tag or `GITHUB_REF_NAME`, derives the adapter manifest version by removing the leading `v`, and rejects targets outside `v0.1.0-rc.1` and `v0.1.0`.
 - 2026-04-24: M5 tests release verification orchestration through a script dry-run mode, while the milestone validation still runs the actual `bash scripts/release-verify.sh v0.1.0-rc.1` gate. This avoids recursive full-gate execution inside `scripts/test-adapter-distribution.py` without weakening the real release proof.
 - 2026-04-24: M5 release workflow creation uses tracked `docs/releases/<tag>/release-notes.md` and marks RC tags as prereleases instead of relying on generated GitHub notes.
+- 2026-04-24: M6 switches the active generated adapter package version, CI adapter checks, public validation commands, and release verification target from `0.1.0-rc.1` to stable `0.1.0` only after Codex, Claude Code, and opencode smoke rows passed.
+- 2026-04-24: Keep `docs/plan.md` active during M6 implementation closeout. The stable release readiness outcome is known, but the workflow still requires the post-implementation code-review and verify handoff before moving the execution plan to Done.
 
 ## Surprises and discoveries
 
@@ -512,6 +514,9 @@ The plan separates adapter logic, generated output, validation, release evidence
 - 2026-04-24: M4 parser cleanup found that smoke row fields must be explicitly present, even when an empty string is allowed for RC evidence. A regression case now rejects missing required smoke fields.
 - 2026-04-24: M5 test-first red check failed in the expected places: placeholder release script text, missing tracked release-notes workflow behavior, missing public contributor/tool wording, and RC metadata still recording `placeholder_release_check: fail`.
 - 2026-04-24: `bash scripts/release-verify.sh v0.1.0-rc.1` is now the first full non-smoke RC release gate. It does not claim hosted CI passed; it only proves the local repository-owned checks.
+- 2026-04-24: opencode is now available in the maintainer environment as `1.14.22`, so the M6 manual smoke matrix could be completed instead of leaving stable release blocked.
+- 2026-04-24: Codex, Claude Code, and opencode each discovered the copied adapter package entrypoint and the generated `workflow` skill path when run against isolated adapter package roots.
+- 2026-04-24: The public docs regression intentionally rejects over-broad distribution wording. The stable release notes use registry and package-manager non-goals without implying a hosted package channel.
 
 ## Validation notes
 
@@ -596,6 +601,21 @@ The plan separates adapter logic, generated output, validation, release evidence
 - 2026-04-24: Branch code-review formatting validation passed with `git diff --check -- scripts tests docs`.
 - 2026-04-24: Branch code-review rerun bookkeeping validation passed with change metadata validation, explicit artifact lifecycle validation, `git diff --check -- docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md`, and `bash scripts/ci.sh`.
 - 2026-04-24: Branch review-resolution verify passed with `python scripts/validate-change-metadata.py docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml`, explicit artifact lifecycle validation for the review-resolution touched files, and `git diff --check -- HEAD~2..HEAD`.
+- 2026-04-24: M6 tool-version checks passed with `codex --version`, `claude --version`, and `opencode --version`, reporting `codex-cli 0.124.0`, `2.1.119 (Claude Code)`, and `1.14.22`.
+- 2026-04-24: M6 manual smoke passed for the copied Codex, Claude Code, and opencode adapter package roots. Each smoke verified the required instruction entrypoint and generated `workflow` skill path, and the evidence is recorded in `docs/releases/v0.1.0/release.yaml`.
+- 2026-04-24: M6 red release metadata check passed as expected with `python scripts/validate-release.py --version v0.1.0`, which failed before stable release metadata existed.
+- 2026-04-24: M6 red adapter drift check passed as expected with `python scripts/build-adapters.py --version 0.1.0 --check`, which failed while the generated adapter output still carried the RC version.
+- 2026-04-24: M6 red regression check passed as expected with `python scripts/test-adapter-distribution.py`, which failed before the stable release notes and metadata were added.
+- 2026-04-24: M6 stable adapter generation passed with `python scripts/build-adapters.py --version 0.1.0`.
+- 2026-04-24: M6 adapter distribution tests passed with `python scripts/test-adapter-distribution.py`.
+- 2026-04-24: M6 stable adapter drift validation passed with `python scripts/build-adapters.py --version 0.1.0 --check`.
+- 2026-04-24: M6 stable adapter validation passed with `python scripts/validate-adapters.py --version 0.1.0`.
+- 2026-04-24: M6 stable release metadata validation passed with `python scripts/validate-release.py --version v0.1.0`.
+- 2026-04-24: M6 stable release verification passed with `bash scripts/release-verify.sh v0.1.0`.
+- 2026-04-24: M6 CI wrapper validation passed with `bash scripts/ci.sh`.
+- 2026-04-24: M6 change metadata validation passed with `python scripts/validate-change-metadata.py docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml`.
+- 2026-04-24: M6 explicit artifact lifecycle validation passed for the touched change-local artifacts, active plan, stable release artifacts, README, and workflow docs.
+- 2026-04-24: M6 formatting validation passed with `git diff --check -- scripts README.md docs dist`.
 
 ## Review record
 
@@ -623,15 +643,15 @@ The plan separates adapter logic, generated output, validation, release evidence
 
 ## Outcome and retrospective
 
-This plan is active. M1 through M5 are complete and verified; M6 remains open.
+This plan is active. M1 through M6 implementation milestones are complete; M6 code-review and verify handoff remain open before PR readiness.
 
 Plan review is complete and the matching test spec is active.
 
 ## Readiness
 
-Immediate next repository stage: `implement` for M6 when maintainer smoke evidence is available.
+Immediate next repository stage: `code-review` for M6 stable release closeout.
 
-Next expected milestone: M6, maintainer smoke and stable `v0.1.0` closeout.
+Next expected milestone: M6 review and verification closeout.
 
 ## Risks and follow-ups
 

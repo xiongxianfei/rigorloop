@@ -112,6 +112,7 @@ tests:
   - T17
   - T18
   - T19
+  - T20
   - T21
 validation:
   - command: python scripts/test-adapter-distribution.py
@@ -272,6 +273,44 @@ validation:
     result: pass_after_adapter_contract_review_regressions
   - command: git diff --check -- scripts tests docs
     result: pass_after_adapter_contract_review_regressions
+  - command: codex --version
+    result: pass_m6_tool_version_codex_cli_0.124.0
+  - command: claude --version
+    result: pass_m6_tool_version_claude_code_2.1.119
+  - command: opencode --version
+    result: pass_m6_tool_version_opencode_1.14.22
+  - command: codex adapter manual smoke against copied package root
+    result: pass_m6_entrypoint_and_workflow_skill_visible
+  - command: claude adapter manual smoke against copied package root
+    result: pass_m6_entrypoint_and_workflow_skill_visible
+  - command: opencode adapter manual smoke against copied package root
+    result: pass_m6_entrypoint_and_workflow_skill_visible
+  - command: python scripts/validate-release.py --version v0.1.0
+    result: expected_fail_missing_stable_release_metadata_before_m6
+  - command: python scripts/build-adapters.py --version 0.1.0 --check
+    result: expected_fail_stale_stable_adapter_output_before_m6
+  - command: python scripts/test-adapter-distribution.py
+    result: expected_fail_missing_stable_artifacts_before_m6
+  - command: python scripts/build-adapters.py --version 0.1.0
+    result: pass_generated_stable_adapter_tree
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_after_m6_stable_release
+  - command: python scripts/build-adapters.py --version 0.1.0 --check
+    result: pass_after_m6_stable_release
+  - command: python scripts/validate-adapters.py --version 0.1.0
+    result: pass_after_m6_stable_release
+  - command: python scripts/validate-release.py --version v0.1.0
+    result: pass_after_m6_stable_release
+  - command: bash scripts/release-verify.sh v0.1.0
+    result: pass_after_m6_stable_release
+  - command: bash scripts/ci.sh
+    result: pass_after_m6_stable_release
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml
+    result: pass_after_m6_stable_release
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/explain-change.md --path docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md --path docs/releases/v0.1.0/release.yaml --path docs/releases/v0.1.0/release-notes.md --path README.md --path docs/workflows.md
+    result: pass_after_m6_stable_release
+  - command: git diff --check -- scripts README.md docs dist
+    result: pass_after_m6_stable_release
 changed_files:
   - scripts/adapter_distribution.py
   - scripts/build-adapters.py
@@ -292,6 +331,8 @@ changed_files:
   - dist/adapters/
   - docs/releases/v0.1.0-rc.1/release.yaml
   - docs/releases/v0.1.0-rc.1/release-notes.md
+  - docs/releases/v0.1.0/release.yaml
+  - docs/releases/v0.1.0/release-notes.md
   - tests/fixtures/adapters/agents-openai/SKILL.md
   - tests/fixtures/adapters/codex-install-with-alternatives/SKILL.md
   - tests/fixtures/adapters/codex-dollar-skill/SKILL.md
@@ -311,6 +352,6 @@ changed_files:
   - docs/changes/2026-04-24-multi-agent-adapters-first-public-release/review-resolution.md
   - docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md
 review:
-  status: clean_with_notes
+  status: pending_m6_code_review
   unresolved_items: 0
   location: docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md

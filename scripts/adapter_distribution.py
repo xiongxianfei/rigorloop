@@ -18,7 +18,7 @@ from skill_validation import (
 
 
 SUPPORTED_ADAPTERS = ("codex", "claude", "opencode")
-DEFAULT_ADAPTER_VERSION = "0.1.0-rc.1"
+DEFAULT_ADAPTER_VERSION = "0.1.0"
 ROOT = Path(__file__).resolve().parents[1]
 ADAPTER_OUTPUT_ROOT = ROOT / "dist" / "adapters"
 ADAPTER_TEMPLATE_ROOT = ROOT / "scripts" / "adapter_templates"

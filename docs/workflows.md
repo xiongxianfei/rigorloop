@@ -116,9 +116,9 @@ Run these first-release structural checks before PR:
 - `python scripts/test-skill-validator.py`
 - `python scripts/build-skills.py --check`
 - `python scripts/test-adapter-distribution.py`
-- `python scripts/build-adapters.py --version 0.1.0-rc.1 --check`
-- `python scripts/validate-adapters.py --version 0.1.0-rc.1`
-- `python scripts/validate-release.py --version v0.1.0-rc.1`
+- `python scripts/build-adapters.py --version 0.1.0 --check`
+- `python scripts/validate-adapters.py --version 0.1.0`
+- `python scripts/validate-release.py --version v0.1.0`
 - `python scripts/test-artifact-lifecycle-validator.py`
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path <repo-path> [...]`
 
@@ -134,7 +134,7 @@ When a change updates canonical `skills/`, keep generated `.codex/skills/` outpu
 
 - `.github/workflows/ci.yml` should remain a thin wrapper around repo-owned validation commands. It may set up required tooling and pass explicit diff inputs, but validation logic belongs in `scripts/ci.sh`.
 - `scripts/release-verify.sh` is the repository-owned release gate for `v0.1.0-rc.1` and `v0.1.0`. It accepts a tag argument or `GITHUB_REF_NAME`, checks generated adapters and release metadata, and consumes tracked release notes from `docs/releases/<tag>/release-notes.md`.
-- RC releases may be published before full manual smoke only when non-smoke gates pass and no smoke row records `fail`. Stable `v0.1.0` remains blocked until Codex, Claude Code, and opencode smoke rows all pass.
+- RC releases may be published before full manual smoke only when non-smoke gates pass and no smoke row records `fail`. Stable `v0.1.0` requires passing Codex, Claude Code, and opencode smoke rows.
 
 ## Documentation Ownership
 

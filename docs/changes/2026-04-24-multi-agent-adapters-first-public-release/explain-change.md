@@ -79,3 +79,13 @@ The branch-level code review found two adapter contract gaps after M5 closeout. 
 Second, adapter generation and validation could treat missing or malformed canonical skill input as empty or excluded output. The fix adds regression coverage for malformed canonical skills and missing skill roots, makes adapter output synchronization fail before writing generated files when canonical skill validation fails, and makes adapter validation report canonical source errors directly.
 
 The post-review regression pass first failed on those new cases, then passed after the implementation fix. The follow-up validation reran `python scripts/test-adapter-distribution.py`, `python scripts/build-adapters.py --version 0.1.0-rc.1 --check`, `python scripts/validate-adapters.py --version 0.1.0-rc.1`, `bash scripts/release-verify.sh v0.1.0-rc.1`, `bash scripts/ci.sh`, change metadata validation, explicit artifact lifecycle validation, and formatting checks.
+
+## M6 stable release closeout
+
+M6 records the maintainer smoke matrix and moves the generated adapter package set from RC to stable `0.1.0`.
+
+The smoke checks copied each adapter package root into a clean project root and verified that the tool could see the expected instruction entrypoint and `workflow` skill path. The recorded tool versions are `codex-cli 0.124.0`, `2.1.119 (Claude Code)`, and `opencode 1.14.22`; the stable release metadata records one passing smoke row for each supported tool.
+
+The adapter generator default, CI wrapper, public validation commands, generated entrypoints, and `dist/adapters/manifest.yaml` now target `0.1.0`. Historical RC release artifacts remain version-scoped under `docs/releases/v0.1.0-rc.1/`; the active stable release artifacts live under `docs/releases/v0.1.0/`.
+
+The stable release notes keep the support matrix aligned with the manifest and avoid claiming hosted runtime, registry publication, package-manager installation, or guaranteed identical runtime behavior across tools. The final release gate `bash scripts/release-verify.sh v0.1.0` passed after generated adapter drift, adapter validation, release metadata validation, release notes consistency, security scans, and the full CI wrapper passed.
