@@ -230,6 +230,13 @@ class AdapterDistributionTests(unittest.TestCase):
         self.assertTrue(report.portable)
         self.assertEqual(report.included_adapters, ("codex", "claude", "opencode"))
 
+    def test_codex_skills_reference_with_adapter_alternatives_remains_portable(self) -> None:
+        report = evaluate_skill(self.fixture("codex-install-with-alternatives"))
+
+        self.assertTrue(report.portable)
+        self.assertEqual(report.included_adapters, ("codex", "claude", "opencode"))
+        self.assertEqual(report.reason, "")
+
     def test_partial_portability_records_exact_adapter_decision(self) -> None:
         report = evaluate_skill(self.fixture("partial-portability"))
 
@@ -502,6 +509,59 @@ class AdapterDistributionTests(unittest.TestCase):
             )
 
             self.assertTrue(any("missing instruction entrypoint: opencode" in error for error in errors))
+
+    def test_adapter_generation_rejects_malformed_canonical_skill_before_output(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root = root / "skills"
+            broken_skill = skills_root / "broken-skill"
+            broken_skill.mkdir(parents=True)
+            (broken_skill / "SKILL.md").write_text(
+                "---\nname: broken-skill\n",
+                encoding="utf-8",
+            )
+            output_root = root / "dist" / "adapters"
+
+            with self.assertRaisesRegex(ValueError, "canonical skill validation failed"):
+                sync_adapter_output(
+                    "0.1.0-rc.1",
+                    skills_root=skills_root,
+                    output_root=output_root,
+                )
+
+            self.assertFalse(output_root.exists())
+
+    def test_validate_adapter_output_rejects_missing_or_malformed_canonical_skills(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            missing_skills_root = root / "missing-skills"
+            output_root = root / "dist" / "adapters"
+
+            errors = validate_adapter_output(
+                "0.1.0-rc.1",
+                skills_root=missing_skills_root,
+                output_root=output_root,
+            )
+
+            self.assertTrue(any("canonical skills root does not exist" in error for error in errors))
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root, output_root = self.generate_fixture_adapters(root, ("portable-basic",))
+            broken_skill = skills_root / "broken-skill"
+            broken_skill.mkdir()
+            (broken_skill / "SKILL.md").write_text(
+                "---\nname: broken-skill\n",
+                encoding="utf-8",
+            )
+
+            errors = validate_adapter_output(
+                "0.1.0-rc.1",
+                skills_root=skills_root,
+                output_root=output_root,
+            )
+
+            self.assertTrue(any("canonical skill validation failed" in error for error in errors))
 
     def test_validate_adapter_output_rejects_manifest_file_mismatches(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
