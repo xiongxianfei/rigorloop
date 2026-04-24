@@ -68,4 +68,6 @@ The public docs now describe the generated Codex, Claude Code, and opencode adap
 
 The `v0.1.0-rc.1` release metadata now records `placeholder_release_check: pass`, because the placeholder release gate has been replaced. The RC release notes now identify `bash scripts/release-verify.sh v0.1.0-rc.1` as the release gate and keep manual adapter smoke as the remaining limitation before stable `v0.1.0`.
 
-The M5 tests cover the release script dry-run command contract, fallback to `GITHUB_REF_NAME`, tracked release notes in the GitHub workflow, public docs source-boundary wording, and the updated release metadata placeholder status. The actual release gate was also run directly for `v0.1.0-rc.1`.
+The M5 tests cover the release script dry-run command contract, fallback to `GITHUB_REF_NAME`, tracked release notes in the GitHub workflow, public docs source-boundary wording, external tool contract lifecycle wording, and the updated release metadata placeholder status. The actual release gate was also run directly for `v0.1.0-rc.1`.
+
+Post-review M5 verification reran `bash scripts/release-verify.sh v0.1.0-rc.1`, `bash scripts/ci.sh`, placeholder text rejection, public docs evidence checks, change metadata validation, explicit artifact lifecycle validation, and `git diff --check -- 8e28920..HEAD`. The CI wrapper passed with unrelated pre-existing proposal warnings from push-main lifecycle validation. Stable `v0.1.0` remains blocked on M6 maintainer smoke.
