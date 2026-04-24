@@ -1,0 +1,44 @@
+version: v0.1.0
+release_type: final
+manifest_version: 0.1.0
+
+supported_tools:
+  - codex
+  - claude
+  - opencode
+
+adapter_paths:
+  codex: dist/adapters/codex/
+  claude: dist/adapters/claude/
+  opencode: dist/adapters/opencode/
+
+instruction_entrypoints:
+  codex: dist/adapters/codex/AGENTS.md
+  claude: dist/adapters/claude/CLAUDE.md
+  opencode: dist/adapters/opencode/AGENTS.md
+
+smoke:
+  codex:
+    result: pass
+    tool_version: "codex-cli 0.124.0"
+    evidence: "codex exec in a copied adapter root reported AGENTS.md and .agents/skills/workflow/SKILL.md visible with the workflow description prefix."
+    reason: ""
+    owner: maintainer
+  claude:
+    result: pass
+    tool_version: "2.1.119 (Claude Code)"
+    evidence: "claude -p in a copied adapter root reported CLAUDE.md and .claude/skills/workflow/SKILL.md visible with the workflow description prefix."
+    reason: ""
+    owner: maintainer
+  opencode:
+    result: pass
+    tool_version: "1.14.22"
+    evidence: "opencode run --pure in a copied adapter root read AGENTS.md, globbed 22 .opencode skills, and reported .opencode/skills/workflow/SKILL.md visible."
+    reason: ""
+    owner: maintainer
+
+validation:
+  generated_sync: pass
+  release_notes_consistency: pass
+  placeholder_release_check: pass
+  security: pass

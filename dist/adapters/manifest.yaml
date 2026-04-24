@@ -1,0 +1,68 @@
+version: 0.1.0
+skills:
+  architecture:
+    portable: true
+    adapters: [codex, claude, opencode]
+  architecture-review:
+    portable: true
+    adapters: [codex, claude, opencode]
+  bugfix:
+    portable: true
+    adapters: [codex, claude, opencode]
+  ci:
+    portable: true
+    adapters: [codex, claude, opencode]
+  code-review:
+    portable: true
+    adapters: [codex, claude, opencode]
+  constitution:
+    portable: true
+    adapters: [codex, claude, opencode]
+  explain-change:
+    portable: true
+    adapters: [codex, claude, opencode]
+  explore:
+    portable: true
+    adapters: [codex, claude, opencode]
+  implement:
+    portable: true
+    adapters: [codex, claude, opencode]
+  learn:
+    portable: true
+    adapters: [codex, claude, opencode]
+  plan:
+    portable: true
+    adapters: [codex, claude, opencode]
+  plan-review:
+    portable: true
+    adapters: [codex, claude, opencode]
+  pr:
+    portable: true
+    adapters: [codex, claude, opencode]
+  project-map:
+    portable: true
+    adapters: [codex, claude, opencode]
+  proposal:
+    portable: true
+    adapters: [codex, claude, opencode]
+  proposal-review:
+    portable: true
+    adapters: [codex, claude, opencode]
+  research:
+    portable: true
+    adapters: [codex, claude, opencode]
+  spec:
+    portable: true
+    adapters: [codex, claude, opencode]
+  spec-review:
+    portable: true
+    adapters: [codex, claude, opencode]
+  test-spec:
+    portable: true
+    adapters: [codex, claude, opencode]
+  verify:
+    portable: true
+    adapters: [codex, claude, opencode]
+  workflow:
+    portable: true
+    adapters: [codex, claude, opencode]

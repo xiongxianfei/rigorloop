@@ -72,9 +72,9 @@ determine_artifact_lifecycle_command() {
   local -a authored_diff_paths=()
   local path=""
   for path in "${tracked_diff_paths[@]}"; do
-    # Generated Codex compatibility output is already checked by build-skills drift
+    # Generated compatibility outputs are checked by drift/adapter validators
     # and should not be passed to authored-artifact lifecycle validation.
-    if [[ "$path" == .codex/skills/* ]]; then
+    if [[ "$path" == .codex/skills/* || "$path" == dist/adapters/* ]]; then
       continue
     fi
     authored_diff_paths+=("$path")
@@ -120,6 +120,15 @@ run_check "Run skill validator fixtures" \
 
 run_check "Check generated skill drift" \
   python scripts/build-skills.py --check
+
+run_check "Run adapter distribution fixtures" \
+  python scripts/test-adapter-distribution.py
+
+run_check "Check generated adapter drift" \
+  python scripts/build-adapters.py --version 0.1.0 --check
+
+run_check "Validate generated adapters" \
+  python scripts/validate-adapters.py --version 0.1.0
 
 run_check "Run change metadata validator fixtures" \
   python scripts/test-change-metadata-validator.py
