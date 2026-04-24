@@ -9,6 +9,7 @@ This file tracks active, blocked, done, and superseded plans.
 - none yet
 
 ## Done
+- [2026-04-24 Skill invocation commands for adapter packages](plans/2026-04-24-skill-invocation-commands-for-adapters.md) - completed execution plan for `v0.1.1` OpenCode command aliases, Claude/OpenCode invocation docs, manifest command path metadata, release verification, smoke evidence, and lifecycle closeout.
 - [2026-04-24 Multi-agent adapters and first public release](plans/2026-04-24-multi-agent-adapters-first-public-release.md) - completed execution plan for generated Codex, Claude Code, and opencode adapter packages, release metadata, release verification, public docs, RC readiness, and smoke-verified stable `v0.1.0` closeout.
 - [2026-04-23 Implement first-attempt correctness](plans/2026-04-23-implement-first-attempt-correctness.md) - completed execution plan for adding observable first-pass completeness wording to `implement`, aligning `workflow`, and updating only the summary or generated surfaces that would otherwise become stale.
 - [2026-04-22 Code review branch reality and traceability](plans/2026-04-22-code-review-branch-reality-and-traceability.md) - completed execution plan for aligning stage-owned review language, review-surface versus tracked-governing-state rules, mixed-evidence review outcomes, qualified readiness terms, direct-proof expectations, overlap-spec compatibility fixes, and canonical/generated workflow guidance without broadening v1 workflow scope.

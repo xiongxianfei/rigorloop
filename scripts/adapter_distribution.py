@@ -18,12 +18,25 @@ from skill_validation import (
 
 
 SUPPORTED_ADAPTERS = ("codex", "claude", "opencode")
-DEFAULT_ADAPTER_VERSION = "0.1.0"
+DEFAULT_ADAPTER_VERSION = "0.1.1"
+OPENCODE_COMMAND_ALIASES = (
+    "proposal",
+    "proposal-review",
+    "spec",
+    "spec-review",
+    "plan",
+    "plan-review",
+    "test-spec",
+    "implement",
+    "code-review",
+    "pr",
+)
 ROOT = Path(__file__).resolve().parents[1]
 ADAPTER_OUTPUT_ROOT = ROOT / "dist" / "adapters"
 ADAPTER_TEMPLATE_ROOT = ROOT / "scripts" / "adapter_templates"
 RELEASE_ROOT = ROOT / "docs" / "releases"
 ADAPTER_OUTPUT_CONTRACT_ROOT = PurePosixPath("dist/adapters")
+OPENCODE_COMMAND_ROOT = PurePosixPath(".opencode/commands")
 COMMON_FRONTMATTER = frozenset({"name", "description"})
 TRANSFORMABLE_FRONTMATTER = frozenset({"argument-hint"})
 PORTABLE_NAME_PATTERN = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
@@ -93,9 +106,16 @@ class ManifestSkillEntry:
 
 
 @dataclass(frozen=True)
+class CommandAliasSection:
+    count: int
+    aliases: dict[str, str]
+
+
+@dataclass(frozen=True)
 class AdapterManifest:
     version: str
     skills: dict[str, ManifestSkillEntry]
+    command_aliases: dict[str, CommandAliasSection]
 
 
 @dataclass(frozen=True)
@@ -144,6 +164,7 @@ ADAPTERS = {
 RELEASE_TARGETS = {
     "v0.1.0-rc.1": ("rc", "0.1.0-rc.1"),
     "v0.1.0": ("final", "0.1.0"),
+    "v0.1.1": ("final", "0.1.1"),
 }
 REQUIRED_RELEASE_VALIDATION_KEYS = (
     "generated_sync",
@@ -335,13 +356,26 @@ def _yaml_double_quoted(value: str) -> str:
 def render_manifest_yaml(version: str, reports: Iterable[SkillPortabilityReport]) -> str:
     """Render the constrained generated adapter manifest shape deterministically."""
 
+    report_tuple = tuple(reports)
+    if _supports_opencode_command_aliases(version):
+        missing_alias_skills = _opencode_command_alias_missing_skill_errors(report_tuple)
+        if missing_alias_skills:
+            raise ValueError("\n".join(missing_alias_skills))
+
     lines = [f"version: {version}", "skills:"]
-    for report in sorted(reports, key=lambda item: item.name):
+    for report in sorted(report_tuple, key=lambda item: item.name):
         lines.append(f"  {report.name}:")
         lines.append(f"    portable: {str(report.portable).lower()}")
         lines.append(f"    adapters: [{', '.join(report.included_adapters)}]")
         if not report.portable:
             lines.append(f"    reason: {_yaml_double_quoted(report.reason)}")
+    if _supports_opencode_command_aliases(version):
+        lines.append("command_aliases:")
+        lines.append("  opencode:")
+        lines.append(f"    count: {len(OPENCODE_COMMAND_ALIASES)}")
+        lines.append("    aliases:")
+        for alias, alias_path in _expected_opencode_command_alias_paths().items():
+            lines.append(f"      {alias}: {alias_path}")
     lines.append("")
     return "\n".join(lines)
 
@@ -388,58 +422,59 @@ def _parse_manifest_bool(value: str, path: Path, key: str) -> bool:
 def parse_manifest_yaml(text: str, path: Path = Path("manifest.yaml")) -> AdapterManifest:
     """Parse the constrained generated adapter manifest shape."""
 
-    rows: list[tuple[int, str, int]] = []
-    for lineno, raw_line in enumerate(text.splitlines(), start=1):
-        if not raw_line.strip() or raw_line.lstrip().startswith("#"):
-            continue
-        if "\t" in raw_line:
-            raise ValueError(f"{path}: line {lineno}: tabs are not supported")
-        indent = len(raw_line) - len(raw_line.lstrip(" "))
-        if indent % 2:
-            raise ValueError(f"{path}: line {lineno}: indentation must use multiples of two spaces")
-        rows.append((indent, raw_line[indent:], lineno))
-
-    if len(rows) < 2:
-        raise ValueError(f"{path}: manifest must include version and skills")
-    if rows[0][0] != 0 or not rows[0][1].startswith("version: "):
-        raise ValueError(f"{path}: missing top-level version")
-    version = rows[0][1].split(":", 1)[1].strip()
-    if not version:
+    data = _parse_simple_yaml(text, path)
+    if not isinstance(data, dict):
+        raise ValueError(f"{path}: expected top-level mapping")
+    version = data.get("version")
+    if not isinstance(version, str) or not version:
         raise ValueError(f"{path}: version must not be empty")
-    if rows[1][0] != 0 or rows[1][1] != "skills:":
+    skills_data = data.get("skills")
+    if not isinstance(skills_data, dict):
         raise ValueError(f"{path}: missing top-level skills mapping")
-
     skills: dict[str, ManifestSkillEntry] = {}
-    index = 2
-    while index < len(rows):
-        indent, text_row, lineno = rows[index]
-        if indent != 2 or not text_row.endswith(":"):
-            raise ValueError(f"{path}: line {lineno}: expected skill mapping entry")
-        skill_name = text_row[:-1]
-        if not skill_name:
-            raise ValueError(f"{path}: line {lineno}: skill name must not be empty")
-        index += 1
-
-        fields: dict[str, str] = {}
-        while index < len(rows) and rows[index][0] == 4:
-            _child_indent, child_text, child_lineno = rows[index]
-            if ":" not in child_text:
-                raise ValueError(f"{path}: line {child_lineno}: expected key: value")
-            key, value = child_text.split(":", 1)
-            fields[key.strip()] = value.lstrip()
-            index += 1
-
+    for skill_name, fields in skills_data.items():
+        if not isinstance(skill_name, str) or not skill_name:
+            raise ValueError(f"{path}: skill name must not be empty")
+        if not isinstance(fields, dict):
+            raise ValueError(f"{path}: {skill_name}: expected mapping")
         missing = {"portable", "adapters"} - set(fields)
         if missing:
             raise ValueError(f"{path}: {skill_name}: missing fields: {', '.join(sorted(missing))}")
         skills[skill_name] = ManifestSkillEntry(
             name=skill_name,
-            portable=_parse_manifest_bool(fields["portable"], path, f"{skill_name}.portable"),
-            adapters=_parse_manifest_adapter_list(fields["adapters"], path, f"{skill_name}.adapters"),
-            reason=_strip_manifest_quotes(fields.get("reason", "")),
+            portable=_parse_manifest_bool(str(fields["portable"]), path, f"{skill_name}.portable"),
+            adapters=_parse_manifest_adapter_list(str(fields["adapters"]), path, f"{skill_name}.adapters"),
+            reason=_strip_manifest_quotes(str(fields.get("reason", ""))),
         )
 
-    return AdapterManifest(version=version, skills=skills)
+    command_aliases: dict[str, CommandAliasSection] = {}
+    command_aliases_data = data.get("command_aliases", {})
+    if command_aliases_data:
+        if not isinstance(command_aliases_data, dict):
+            raise ValueError(f"{path}: command_aliases: expected mapping")
+        for tool, section in command_aliases_data.items():
+            if not isinstance(tool, str) or not tool:
+                raise ValueError(f"{path}: command_aliases: tool name must not be empty")
+            if not isinstance(section, dict):
+                raise ValueError(f"{path}: command_aliases.{tool}: expected mapping")
+            count_value = section.get("count")
+            try:
+                count = int(str(count_value))
+            except (TypeError, ValueError):
+                raise ValueError(f"{path}: command_aliases.{tool}.count: expected integer") from None
+            aliases = section.get("aliases")
+            if not isinstance(aliases, dict):
+                raise ValueError(f"{path}: command_aliases.{tool}.aliases: expected mapping")
+            alias_map: dict[str, str] = {}
+            for alias, alias_path in aliases.items():
+                if not isinstance(alias, str) or not isinstance(alias_path, str):
+                    raise ValueError(
+                        f"{path}: command_aliases.{tool}.aliases: expected string keys and values"
+                    )
+                alias_map[alias] = alias_path
+            command_aliases[tool] = CommandAliasSection(count=count, aliases=alias_map)
+
+    return AdapterManifest(version=version, skills=skills, command_aliases=command_aliases)
 
 
 @dataclass(frozen=True)
@@ -681,6 +716,65 @@ def _adapter_package_relative_root(config: AdapterConfig) -> Path:
     return _path_from_posix(config.package_root.relative_to(ADAPTER_OUTPUT_CONTRACT_ROOT))
 
 
+def _adapter_contract_relative_path(relative_path: Path) -> str:
+    return (ADAPTER_OUTPUT_CONTRACT_ROOT / PurePosixPath(relative_path.as_posix())).as_posix()
+
+
+def _parse_adapter_version_core(version: str) -> tuple[int, int, int] | None:
+    core = version.split("-", 1)[0]
+    parts = core.split(".")
+    if len(parts) != 3:
+        return None
+    try:
+        return int(parts[0]), int(parts[1]), int(parts[2])
+    except ValueError:
+        return None
+
+
+def _supports_opencode_command_aliases(version: str) -> bool:
+    parsed = _parse_adapter_version_core(version)
+    return parsed is not None and parsed >= (0, 1, 1)
+
+
+def opencode_command_alias_relative_path(alias: str) -> Path:
+    """Return the output-root-relative path for one OpenCode command alias."""
+
+    return (
+        _adapter_package_relative_root(ADAPTERS["opencode"])
+        / _path_from_posix(OPENCODE_COMMAND_ROOT)
+        / f"{alias}.md"
+    )
+
+
+def _opencode_command_alias_contract_path(alias: str) -> str:
+    return _adapter_contract_relative_path(opencode_command_alias_relative_path(alias))
+
+
+def _expected_opencode_command_alias_paths() -> dict[str, str]:
+    return {
+        alias: _opencode_command_alias_contract_path(alias)
+        for alias in OPENCODE_COMMAND_ALIASES
+    }
+
+
+def _opencode_command_alias_missing_skill_errors(
+    reports: Iterable[SkillPortabilityReport],
+) -> list[str]:
+    included = {
+        report.name
+        for report in reports
+        if "opencode" in report.included_adapters
+    }
+    return [
+        (
+            f"opencode command alias {alias} maps to missing included skill: "
+            f"{_opencode_command_alias_contract_path(alias)}"
+        )
+        for alias in OPENCODE_COMMAND_ALIASES
+        if alias not in included
+    ]
+
+
 def _render_frontmatter_field(key: str, value: str) -> list[str]:
     if key == "name" and PORTABLE_NAME_PATTERN.fullmatch(value):
         return [f"{key}: {value}"]
@@ -721,6 +815,23 @@ def render_skill_for_adapter(report: SkillPortabilityReport, decision: AdapterDe
     if not drop_keys:
         return report.path.read_text(encoding="utf-8")
     return _render_transformed_skill(report.path, drop_keys)
+
+
+def render_opencode_command_alias(alias: str) -> str:
+    """Render one deterministic thin OpenCode command alias wrapper."""
+
+    return "\n".join(
+        [
+            "---",
+            f"description: Use the RigorLoop {alias} skill.",
+            "---",
+            "",
+            f"Load and follow the `{alias}` skill for this request:",
+            "",
+            "$ARGUMENTS",
+            "",
+        ]
+    )
 
 
 def render_entrypoint_template(
@@ -770,6 +881,10 @@ def expected_adapter_files(
             expected[package_root / _path_from_posix(config.skill_path(report.name))] = (
                 render_skill_for_adapter(report, decision)
             )
+
+    if _supports_opencode_command_aliases(version):
+        for alias in OPENCODE_COMMAND_ALIASES:
+            expected[opencode_command_alias_relative_path(alias)] = render_opencode_command_alias(alias)
 
     return dict(sorted(expected.items(), key=lambda item: item[0].as_posix()))
 
@@ -878,6 +993,125 @@ def _generated_skill_files(output_root: Path, config: AdapterConfig) -> tuple[Pa
     if not skill_root.is_dir():
         return ()
     return tuple(sorted(skill_root.glob("*/SKILL.md")))
+
+
+def _opencode_command_root(output_root: Path) -> Path:
+    return _adapter_root(output_root, ADAPTERS["opencode"]) / _path_from_posix(OPENCODE_COMMAND_ROOT)
+
+
+def _generated_opencode_command_alias_files(output_root: Path) -> tuple[Path, ...]:
+    command_root = _opencode_command_root(output_root)
+    if not command_root.is_dir():
+        return ()
+    return tuple(sorted(command_root.glob("*.md")))
+
+
+def _command_alias_contract_path(output_root: Path, path: Path) -> str:
+    return _adapter_contract_relative_path(path.relative_to(output_root))
+
+
+def _command_alias_output_path(output_root: Path, contract_path: str) -> Path | None:
+    candidate = PurePosixPath(contract_path)
+    try:
+        relative = candidate.relative_to(ADAPTER_OUTPUT_CONTRACT_ROOT)
+    except ValueError:
+        return None
+    return output_root / _path_from_posix(relative)
+
+
+def _validate_opencode_command_alias_body(alias: str, path: Path, text: str) -> list[str]:
+    errors: list[str] = []
+    if "@" in text:
+        errors.append(f"opencode command alias file-reference interpolation: {alias}: {path}")
+    if "!" in text:
+        errors.append(f"opencode command alias shell-output interpolation: {alias}: {path}")
+    if re.search(r"(?im)^\s*model\s*:", text):
+        errors.append(f"opencode command alias model override: {alias}: {path}")
+    if re.search(r"(?im)^\s*agent\s*:", text):
+        errors.append(f"opencode command alias agent override: {alias}: {path}")
+    if re.search(r"(?im)^\s*permissions?\s*:", text):
+        errors.append(f"opencode command alias permission policy change: {alias}: {path}")
+    if text != render_opencode_command_alias(alias):
+        errors.append(f"opencode command alias body mismatch: {alias}: {path}")
+    return errors
+
+
+def _validate_opencode_command_aliases(
+    version: str,
+    manifest: AdapterManifest,
+    output_root: Path,
+    generated_by_adapter: dict[str, set[str]],
+) -> list[str]:
+    errors: list[str] = []
+    command_root = _opencode_command_root(output_root)
+    actual_files = _generated_opencode_command_alias_files(output_root)
+    actual_aliases = {
+        path.stem: _command_alias_contract_path(output_root, path)
+        for path in actual_files
+    }
+
+    unsupported_tools = sorted(set(manifest.command_aliases) - {"opencode"})
+    for tool in unsupported_tools:
+        errors.append(f"unsupported command alias tool: {tool}")
+
+    if not _supports_opencode_command_aliases(version):
+        if manifest.command_aliases:
+            errors.append(f"manifest command aliases are not supported for adapter version {version}")
+        return errors
+
+    section = manifest.command_aliases.get("opencode")
+    if section is None:
+        errors.append("manifest missing command_aliases.opencode")
+        section_aliases: dict[str, str] = {}
+    else:
+        section_aliases = section.aliases
+        if section.count != len(section.aliases):
+            errors.append(
+                f"command_aliases.opencode.count mismatch: expected {len(section.aliases)}, "
+                f"found {section.count}"
+            )
+
+    expected_aliases = _expected_opencode_command_alias_paths()
+    for alias, expected_path in expected_aliases.items():
+        if alias not in section_aliases:
+            errors.append(f"opencode command alias missing from manifest: {alias}: {expected_path}")
+
+    for alias, alias_path in section_aliases.items():
+        if alias not in OPENCODE_COMMAND_ALIASES:
+            errors.append(f"unexpected opencode command alias in manifest: {alias}: {alias_path}")
+        if not alias_path.startswith("dist/adapters/opencode/.opencode/commands/"):
+            errors.append(
+                f"opencode command alias path must be under "
+                f"dist/adapters/opencode/.opencode/commands: {alias}: {alias_path}"
+            )
+            continue
+        if PurePosixPath(alias_path).stem != alias:
+            errors.append(f"opencode command alias filename stem mismatch: {alias}: {alias_path}")
+        expected_path = expected_aliases.get(alias)
+        if expected_path is not None and alias_path != expected_path:
+            errors.append(
+                f"opencode command alias path mismatch: {alias}: expected {expected_path}, "
+                f"found {alias_path}"
+            )
+        output_path = _command_alias_output_path(output_root, alias_path)
+        if output_path is None or not output_path.is_file():
+            errors.append(f"opencode command alias missing: {alias}: {alias_path}")
+
+    for alias, alias_path in actual_aliases.items():
+        if alias not in OPENCODE_COMMAND_ALIASES:
+            errors.append(f"unexpected opencode command alias: {alias}: {alias_path}")
+        if alias not in section_aliases:
+            errors.append(f"opencode command alias file is not listed in manifest: {alias}: {alias_path}")
+        if alias not in generated_by_adapter.get("opencode", set()):
+            errors.append(f"opencode command alias maps to missing skill: {alias}: {alias_path}")
+        try:
+            text = (command_root / f"{alias}.md").read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            errors.append(f"opencode command alias must be UTF-8 text: {alias}: {alias_path}")
+            continue
+        errors.extend(_validate_opencode_command_alias_body(alias, command_root / f"{alias}.md", text))
+
+    return errors
 
 
 SECURITY_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
@@ -997,6 +1231,10 @@ def validate_adapter_output(
             continue
         if not entrypoint.is_file():
             errors.append(f"missing instruction entrypoint: {adapter_name}: {entrypoint}")
+        if adapter_name == "claude":
+            claude_commands = package_root / ".claude" / "commands"
+            if claude_commands.exists():
+                errors.append(f"unexpected claude command wrapper directory: claude: {claude_commands}")
         if not skill_root.is_dir():
             errors.append(f"missing adapter skill directory: {adapter_name}: {skill_root}")
             continue
@@ -1074,6 +1312,15 @@ def validate_adapter_output(
             for skill_name in sorted(generated_names - listed_names):
                 errors.append(f"generated skill is not listed in manifest: {adapter_name}/{skill_name}")
 
+        errors.extend(
+            _validate_opencode_command_aliases(
+                version,
+                manifest,
+                output_root,
+                generated_by_adapter,
+            )
+        )
+
     errors.extend(scan_security_paths((output_root, template_root)))
     return _dedupe_errors(errors)
 
@@ -1128,6 +1375,29 @@ def _release_notes_consistency_errors(
                 errors.append(f"release notes omit non-portable skill exclusion: {skill_name}")
     elif "No current non-portable skill exclusions." not in notes_text:
         errors.append("release notes must state that there are no current non-portable skill exclusions")
+
+    if _supports_opencode_command_aliases(metadata.manifest_version):
+        opencode_aliases = manifest.command_aliases.get("opencode")
+        if opencode_aliases is None:
+            errors.append("release notes consistency could not check missing OpenCode command aliases")
+        else:
+            missing_aliases = [
+                alias for alias in opencode_aliases.aliases
+                if f"`{alias}`" not in notes_text
+            ]
+            if missing_aliases:
+                errors.append(
+                    "release notes omit OpenCode command aliases: "
+                    + ", ".join(missing_aliases)
+                )
+        if "OpenCode command aliases" not in notes_text:
+            errors.append("release notes must describe OpenCode command aliases")
+        if "Claude Code" not in notes_text or "skill-native" not in notes_text:
+            errors.append("release notes must describe Claude Code skill-native usage")
+        if "opencode run --command proposal" not in notes_text:
+            errors.append(
+                "release notes must include the smoke-tested OpenCode one-shot command form"
+            )
 
     return errors
 
@@ -1202,6 +1472,27 @@ def _validate_smoke_row(
     return errors
 
 
+def _validate_opencode_command_alias_smoke(version: str, metadata: ReleaseMetadata) -> list[str]:
+    if not _supports_opencode_command_aliases(metadata.manifest_version):
+        return []
+
+    row = metadata.smoke.get("opencode")
+    if row is None or row.result != "pass":
+        return []
+
+    evidence = row.evidence.lower()
+    has_one_shot_form = "opencode run --command proposal" in evidence
+    has_behavior = (
+        "loaded" in evidence
+        or "followed" in evidence
+        or "argument_marker_m3_smoke" in evidence
+    )
+    has_skill = "proposal skill" in evidence or "`proposal` skill" in evidence
+    if has_one_shot_form and has_behavior and has_skill:
+        return []
+    return [f"smoke.opencode.evidence: {version} requires command alias behavior evidence"]
+
+
 def validate_release_output(
     version: str,
     *,
@@ -1260,6 +1551,7 @@ def validate_release_output(
         row = metadata.smoke.get(tool)
         if row is not None:
             errors.extend(_validate_smoke_row(version, expected_release_type, tool, row))
+    errors.extend(_validate_opencode_command_alias_smoke(version, metadata))
 
     for key in REQUIRED_RELEASE_VALIDATION_KEYS:
         if key not in metadata.validation:
