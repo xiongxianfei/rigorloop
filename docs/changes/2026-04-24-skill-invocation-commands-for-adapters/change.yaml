@@ -73,6 +73,12 @@ validation:
     result: pass_after_code_review_test_gap_fix
   - command: bash scripts/ci.sh
     result: pass_after_code_review_test_gap_fix
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-24-skill-invocation-commands-for-adapters/change.yaml
+    result: pass_after_review_metadata_fix
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-24-skill-invocation-commands-for-adapters.md --path specs/skill-invocation-commands-for-adapters.md --path specs/skill-invocation-commands-for-adapters.test.md --path docs/architecture/2026-04-24-skill-invocation-commands-for-adapters.md --path docs/plans/2026-04-24-skill-invocation-commands-for-adapters.md --path docs/changes/2026-04-24-skill-invocation-commands-for-adapters/change.yaml --path docs/changes/2026-04-24-skill-invocation-commands-for-adapters/explain-change.md
+    result: pass_after_review_metadata_fix
+  - command: bash scripts/ci.sh
+    result: pass_after_review_metadata_fix
 changed_files:
   - scripts/adapter_distribution.py
   - scripts/test-adapter-distribution.py
@@ -95,6 +101,6 @@ changed_files:
   - docs/changes/2026-04-24-skill-invocation-commands-for-adapters/explain-change.md
   - docs/plans/2026-04-24-skill-invocation-commands-for-adapters.md
 review:
-  status: review_fix_applied_pending_re_review
+  status: clean_with_notes
   unresolved_items: 0
   location: docs/plans/2026-04-24-skill-invocation-commands-for-adapters.md
