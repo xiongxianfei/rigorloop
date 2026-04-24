@@ -653,7 +653,7 @@ class AdapterDistributionTests(unittest.TestCase):
                 sys.executable,
                 str(ROOT / "scripts" / "validate-adapters.py"),
                 "--version",
-                "0.1.0-rc.1",
+                "0.1.0",
             ],
             capture_output=True,
             text=True,
@@ -665,14 +665,14 @@ class AdapterDistributionTests(unittest.TestCase):
             0,
             msg=f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}",
         )
-        self.assertIn("validated generated adapters for version 0.1.0-rc.1", result.stdout)
+        self.assertIn("validated generated adapters for version 0.1.0", result.stdout)
 
     def test_ci_script_runs_adapter_checks_and_filters_generated_paths(self) -> None:
         ci_text = (ROOT / "scripts" / "ci.sh").read_text(encoding="utf-8")
 
         self.assertIn("python scripts/test-adapter-distribution.py", ci_text)
-        self.assertIn("python scripts/build-adapters.py --version 0.1.0-rc.1 --check", ci_text)
-        self.assertIn("python scripts/validate-adapters.py --version 0.1.0-rc.1", ci_text)
+        self.assertIn("python scripts/build-adapters.py --version 0.1.0 --check", ci_text)
+        self.assertIn("python scripts/validate-adapters.py --version 0.1.0", ci_text)
         self.assertIn('"$path" == dist/adapters/*', ci_text)
 
     def test_release_metadata_validation_accepts_rc_artifacts(self) -> None:
@@ -845,13 +845,13 @@ class AdapterDistributionTests(unittest.TestCase):
 
             self.assertTrue(any("machine-local absolute path" in error for error in errors))
 
-    def test_validate_release_cli_accepts_repository_rc_artifacts(self) -> None:
+    def test_validate_release_cli_accepts_repository_stable_artifacts(self) -> None:
         result = subprocess.run(
             [
                 sys.executable,
                 str(ROOT / "scripts" / "validate-release.py"),
                 "--version",
-                "v0.1.0-rc.1",
+                "v0.1.0",
             ],
             capture_output=True,
             text=True,
@@ -863,7 +863,7 @@ class AdapterDistributionTests(unittest.TestCase):
             0,
             msg=f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}",
         )
-        self.assertIn("validated release metadata for v0.1.0-rc.1", result.stdout)
+        self.assertIn("validated release metadata for v0.1.0", result.stdout)
 
     def test_release_verify_script_invokes_required_repository_checks(self) -> None:
         script = ROOT / "scripts" / "release-verify.sh"
@@ -877,7 +877,7 @@ class AdapterDistributionTests(unittest.TestCase):
             self.assertNotIn(marker, script_text)
 
         result = subprocess.run(
-            ["bash", str(script), "v0.1.0-rc.1"],
+            ["bash", str(script), "v0.1.0"],
             capture_output=True,
             text=True,
             cwd=ROOT,
@@ -894,9 +894,9 @@ class AdapterDistributionTests(unittest.TestCase):
             "python scripts/test-skill-validator.py",
             "python scripts/build-skills.py --check",
             "python scripts/test-adapter-distribution.py",
-            "python scripts/build-adapters.py --version 0.1.0-rc.1 --check",
-            "python scripts/validate-adapters.py --version 0.1.0-rc.1",
-            "python scripts/validate-release.py --version v0.1.0-rc.1",
+            "python scripts/build-adapters.py --version 0.1.0 --check",
+            "python scripts/validate-adapters.py --version 0.1.0",
+            "python scripts/validate-release.py --version v0.1.0",
         )
         for command in required_commands:
             self.assertIn(command, result.stdout)
@@ -934,7 +934,7 @@ class AdapterDistributionTests(unittest.TestCase):
             "docs/workflows.md": (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8"),
             "AGENTS.md": (ROOT / "AGENTS.md").read_text(encoding="utf-8"),
             "release-notes.md": (
-                ROOT / "docs" / "releases" / "v0.1.0-rc.1" / "release-notes.md"
+                ROOT / "docs" / "releases" / "v0.1.0" / "release-notes.md"
             ).read_text(encoding="utf-8"),
         }
         combined = "\n".join(docs.values()).lower()

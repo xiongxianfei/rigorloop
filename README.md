@@ -35,7 +35,7 @@ RigorLoop ships generated adapter packages for Codex, Claude Code, and opencode 
 | Claude Code | `dist/adapters/claude/` | `CLAUDE.md` | `.claude/skills/` |
 | opencode | `dist/adapters/opencode/` | `AGENTS.md` | `.opencode/skills/` |
 
-To install one adapter, copy that adapter package root's contents into a project root. The current support matrix is generated in `dist/adapters/manifest.yaml`; for `v0.1.0-rc.1`, all current skills are included for Codex, Claude Code, and opencode.
+To install one adapter, copy that adapter package root's contents into a project root. The current support matrix is generated in `dist/adapters/manifest.yaml`; for `v0.1.0`, all current skills are included for Codex, Claude Code, and opencode.
 
 Canonical skill edits happen in `skills/`. Adapter packages under `dist/adapters/` are generated release output, and `.codex/skills/` remains a separate generated local Codex runtime mirror for this repository.
 
@@ -133,9 +133,9 @@ Before PR, run the same structural checks that CI runs:
 - `python scripts/validate-skills.py`
 - `python scripts/test-skill-validator.py`
 - `python scripts/build-skills.py --check`
-- `python scripts/build-adapters.py --version 0.1.0-rc.1 --check`
-- `python scripts/validate-adapters.py --version 0.1.0-rc.1`
-- `python scripts/validate-release.py --version v0.1.0-rc.1`
+- `python scripts/build-adapters.py --version 0.1.0 --check`
+- `python scripts/validate-adapters.py --version 0.1.0`
+- `python scripts/validate-release.py --version v0.1.0`
 
 Use `bash scripts/ci.sh` to run the same checks through the repository-owned CI wrapper.
 
