@@ -1,6 +1,6 @@
 # Multi-agent adapters and first public release plan
 
-- Status: active
+- Status: done
 - Owner: maintainer + Codex
 - Start date: 2026-04-24
 - Last updated: 2026-04-24
@@ -618,6 +618,7 @@ The plan separates adapter logic, generated output, validation, release evidence
 - 2026-04-24: M6 formatting validation passed with `git diff --check -- scripts README.md docs dist`.
 - 2026-04-24: M6 verify reran `bash scripts/release-verify.sh v0.1.0`, `bash scripts/ci.sh`, and explicit artifact lifecycle validation for the plan index, active plan, change-local artifacts, stable release artifacts, README, and workflow docs.
 - 2026-04-24: M6 verify observed unrelated pre-existing draft-proposal warnings from the CI push-main lifecycle fallback after the review-record commit; the CI wrapper still passed and validated five related artifact files.
+- 2026-04-24: M6 explain-change closeout moved this plan to Done in both `docs/plan.md` and this plan body after `code-review` and `verify` passed.
 
 ## Review record
 
@@ -663,15 +664,18 @@ The plan separates adapter logic, generated output, validation, release evidence
 
 ## Outcome and retrospective
 
-This plan is active. M1 through M6 implementation milestones are complete; M6 code-review and verify are clean, and `explain-change` remains open before PR readiness.
-
-Plan review is complete and the matching test spec is active.
+- This plan is done on-branch and now belongs in `docs/plan.md` under `Done`.
+- M1 through M6, first-pass code-review, verify, and explain-change closeout are complete with no blockers.
+- What changed: RigorLoop now has tracked generated Codex, Claude Code, and opencode adapter packages, target-version-scoped release metadata, repository-owned release verification, public docs, and smoke-verified stable `v0.1.0` release artifacts.
+- What went well: target-version-scoped validation kept RC and stable release evidence separate, and maintainer smoke confirmed each copied adapter package exposes the expected entrypoint and `workflow` skill path.
+- What was harder than expected: release wording needed tight docs tests to avoid implying hosted runtime, registry publication, package-manager installers, or unsupported compatibility claims.
+- Remaining risks: actual tag publication and hosted CI observation remain downstream PR or release-management concerns.
 
 ## Readiness
 
-Immediate next repository stage: `explain-change` for M6 stable release closeout.
-
-Next expected milestone: M6 explanation and lifecycle closeout.
+- This plan is done.
+- The tracked source artifacts, generated adapter output, release metadata, release notes, plan body, plan index, change-local metadata, and durable explanation are synchronized.
+- The next stage is `pr`.
 
 ## Risks and follow-ups
 

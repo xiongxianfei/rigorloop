@@ -89,3 +89,9 @@ The smoke checks copied each adapter package root into a clean project root and 
 The adapter generator default, CI wrapper, public validation commands, generated entrypoints, and `dist/adapters/manifest.yaml` now target `0.1.0`. Historical RC release artifacts remain version-scoped under `docs/releases/v0.1.0-rc.1/`; the active stable release artifacts live under `docs/releases/v0.1.0/`.
 
 The stable release notes keep the support matrix aligned with the manifest and avoid claiming hosted runtime, registry publication, package-manager installation, or guaranteed identical runtime behavior across tools. The final release gate `bash scripts/release-verify.sh v0.1.0` passed after generated adapter drift, adapter validation, release metadata validation, release notes consistency, security scans, and the full CI wrapper passed.
+
+## M6 post-verify lifecycle closeout
+
+After the M6 code-review returned `clean-with-notes` and verify returned `ready`, the plan lifecycle moved from Active to Done in both `docs/plan.md` and the concrete plan body. This closeout does not create new release behavior; it records that the already-reviewed stable adapter package set, smoke evidence, release metadata, release notes, generated-output drift checks, and CI wrapper are synchronized.
+
+The next workflow stage is `pr`. Hosted CI and actual tag publication remain downstream evidence, not claims made by this explanation artifact.
