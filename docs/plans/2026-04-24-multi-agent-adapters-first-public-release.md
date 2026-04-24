@@ -594,6 +594,10 @@ The plan separates adapter logic, generated output, validation, release evidence
   - Review surface: M5 release gate replacement, release workflow, public docs, regression tests, change-local artifacts, and active plan updates.
   - Finding: public docs did not state the T12/E8 rule that adapter compatibility claims are versioned and external tool contract changes must go through the lifecycle before changing release claims.
   - Resolution: README and RC release notes now carry the missing claim-boundary wording, and `scripts/test-adapter-distribution.py` asserts the wording remains present.
+- 2026-04-24: Second-pass `code-review` for `8e28920..76ab918` returned `clean-with-notes`.
+  - Review surface: complete M5 release gate replacement plus the review-resolution fix.
+  - Findings: no blocking or required-change findings remain.
+  - Direct proof: `python scripts/test-adapter-distribution.py`, `bash scripts/release-verify.sh v0.1.0-rc.1`, `bash scripts/ci.sh`, change metadata validation, explicit lifecycle validation, docs evidence `rg`, and diff checks passed after review resolution.
 
 ## Outcome and retrospective
 
@@ -603,7 +607,7 @@ Plan review is complete and the matching test spec is active.
 
 ## Readiness
 
-Immediate next repository stage: `code-review`.
+Immediate next repository stage: `verify`.
 
 Next expected milestone after review and verification: M6, maintainer smoke and stable `v0.1.0` closeout.
 
