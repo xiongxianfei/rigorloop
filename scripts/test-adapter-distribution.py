@@ -1104,6 +1104,54 @@ class AdapterDistributionTests(unittest.TestCase):
         self.assertIn("--notes-file", workflow_text)
         self.assertNotIn("--generate-notes", workflow_text)
 
+    def test_claude_entrypoint_documents_native_skill_invocation(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_root = Path(tmp) / "dist" / "adapters"
+            sync_adapter_output("0.1.1", output_root=output_root)
+
+            claude_root = output_root / "claude"
+            text = (claude_root / "CLAUDE.md").read_text(encoding="utf-8")
+
+            self.assertFalse((claude_root / ".claude" / "commands").exists())
+            self.assertIn("Using RigorLoop skills", text)
+            self.assertIn(".claude/skills/", text)
+            self.assertIn("native Claude Code slash commands", text)
+            for command in ("/proposal", "/spec", "/implement", "/code-review", "/pr"):
+                self.assertIn(command, text)
+            self.assertNotIn("claude -p", text)
+            self.assertNotIn("opencode run --command", text)
+
+    def test_opencode_entrypoint_documents_skills_and_thin_aliases(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_root = Path(tmp) / "dist" / "adapters"
+            sync_adapter_output("0.1.1", output_root=output_root)
+
+            text = (output_root / "opencode" / "AGENTS.md").read_text(encoding="utf-8")
+
+            self.assertIn("Using RigorLoop skills", text)
+            self.assertIn(".opencode/skills/", text)
+            self.assertIn(".opencode/commands/", text)
+            self.assertIn("thin command aliases", text)
+            for command in ("/proposal", "/spec", "/implement", "/code-review", "/pr"):
+                self.assertIn(command, text)
+            self.assertNotIn("/workflow", text)
+            self.assertNotIn("/verify", text)
+            self.assertNotIn("opencode run --command", text)
+            self.assertIn("Do not use Codex `$skill` syntax", text)
+
+    def test_readme_distinguishes_claude_and_opencode_invocation_forms(self) -> None:
+        text = (ROOT / "README.md").read_text(encoding="utf-8")
+
+        self.assertIn("Claude Code uses native skill slash commands", text)
+        self.assertIn("OpenCode uses generated command aliases", text)
+        self.assertIn(".opencode/skills/", text)
+        self.assertIn(".opencode/commands/", text)
+        for command in ("/proposal", "/spec", "/implement", "/code-review", "/pr"):
+            self.assertIn(command, text)
+        self.assertNotIn("opencode run --command", text)
+        self.assertNotIn("claude -p", text)
+        self.assertIn("Do not use Codex `$skill` syntax", text)
+
     def test_public_docs_describe_adapter_support_and_generated_boundaries(self) -> None:
         docs = {
             "README.md": (ROOT / "README.md").read_text(encoding="utf-8"),

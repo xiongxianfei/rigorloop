@@ -130,7 +130,7 @@ This plan starts after the proposal, spec, and architecture are settled. It does
 - Goal:
   - Update public docs and generated entrypoints so users know how to invoke skills in Claude Code and OpenCode without assuming cross-tool syntax parity.
 - Requirements:
-  - `R28`-`R39`, `R44`
+  - `R28`-`R39`
 - Files/components likely touched:
   - `scripts/adapter_templates/claude/CLAUDE.md`
   - `scripts/adapter_templates/opencode/AGENTS.md`
@@ -168,11 +168,11 @@ This plan starts after the proposal, spec, and architecture are settled. It does
   - users can read README or generated entrypoints and understand Claude Code slash-skill invocation, OpenCode curated command aliases, and the limits of one-shot examples.
 - Commit message: `M2: document adapter skill invocation`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - docs may overclaim one-shot support before smoke is complete
   - users may infer aliases exist for every skill
@@ -332,7 +332,7 @@ This plan starts after the proposal, spec, and architecture are settled. It does
 - [x] Plan review complete.
 - [x] Test spec active.
 - [x] M1 complete.
-- [ ] M2 complete.
+- [x] M2 complete.
 - [ ] M3 complete.
 - [ ] M4 complete.
 
@@ -358,14 +358,16 @@ This plan starts after the proposal, spec, and architecture are settled. It does
 - 2026-04-24: M1 validation passed with `python scripts/test-adapter-distribution.py`, `python scripts/build-adapters.py --version 0.1.1`, `python scripts/build-adapters.py --version 0.1.1 --check`, `python scripts/build-adapters.py --check`, `python scripts/validate-adapters.py --version 0.1.1`, `git diff --check -- scripts tests dist docs/plans/2026-04-24-skill-invocation-commands-for-adapters.md`, and `bash scripts/ci.sh`.
 - 2026-04-24: M1 code-review fix added direct T5 coverage for a manifest-declared non-curated OpenCode alias. Validation passed with `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_opencode_command_alias_manifest_validation_rejects_mismatches`, `python scripts/test-adapter-distribution.py`, and `bash scripts/ci.sh`.
 - 2026-04-24: M1 clean re-review completed with `clean-with-notes`. Verify found stale review metadata, so the change metadata and plan readiness were updated before rerunning validation.
+- 2026-04-24: M2 tests were added first; focused entrypoint and README invocation tests initially failed because the docs lacked tool-native invocation guidance, then passed after README and adapter template updates.
+- 2026-04-24: M2 validation passed with `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_claude_entrypoint_documents_native_skill_invocation AdapterDistributionTests.test_opencode_entrypoint_documents_skills_and_thin_aliases AdapterDistributionTests.test_readme_distinguishes_claude_and_opencode_invocation_forms`, `python scripts/build-adapters.py --version 0.1.1`, `python scripts/test-adapter-distribution.py`, `python scripts/build-adapters.py --version 0.1.1 --check`, `python scripts/validate-adapters.py --version 0.1.1`, the documented `rg` check, `git diff --check`, and `bash scripts/ci.sh`.
 
 ## Outcome and retrospective
 
-M1 complete. OpenCode command aliases are generated, listed exactly in `dist/adapters/manifest.yaml`, and validated for drift, manifest consistency, dangling aliases, stale bodies, and unsafe content.
+M1 and M2 complete. OpenCode command aliases are generated, listed exactly in `dist/adapters/manifest.yaml`, and validated for drift, manifest consistency, dangling aliases, stale bodies, and unsafe content. README and generated Claude/OpenCode entrypoints now document tool-native TUI invocation forms while omitting one-shot examples until M3 smoke evidence exists.
 
 ## Readiness
 
-M1 code-review feedback has been addressed and clean re-review completed. After verification of this metadata fix, M2 remains the next implementation milestone for README and generated entrypoint invocation documentation.
+M2 is implemented and ready for `code-review`. M3 remains the next implementation milestone for `v0.1.1` release metadata, release notes, and smoke evidence after review or explicit continuation.
 
 ## Risks and follow-ups
 

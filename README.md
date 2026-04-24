@@ -35,13 +35,39 @@ RigorLoop ships generated adapter packages for Codex, Claude Code, and opencode 
 | Claude Code | `dist/adapters/claude/` | `CLAUDE.md` | `.claude/skills/` |
 | opencode | `dist/adapters/opencode/` | `AGENTS.md` | `.opencode/skills/` |
 
-To install one adapter, copy that adapter package root's contents into a project root. The current support matrix is generated in `dist/adapters/manifest.yaml`; for `v0.1.0`, all current skills are included for Codex, Claude Code, and opencode.
+To install one adapter, copy that adapter package root's contents into a project root. The current support matrix is generated in `dist/adapters/manifest.yaml`; for adapter package version `0.1.1`, all current skills are included for Codex, Claude Code, and opencode. The manifest also lists the generated opencode command aliases under `command_aliases.opencode`.
 
 Canonical skill edits happen in `skills/`. Adapter packages under `dist/adapters/` are generated release output, and `.codex/skills/` remains a separate generated local Codex runtime mirror for this repository.
 
 Adapter compatibility claims are versioned. If external tool contracts change, update the affected adapter contract through the RigorLoop lifecycle before changing release claims.
 
 Ordinary contributors do not need all supported tools installed locally to run non-smoke validation. Maintainer smoke for Codex, Claude Code, and opencode is recorded in `docs/releases/<version>/release.yaml` before a stable release.
+
+### Using Adapter Skills
+
+Claude Code uses native skill slash commands after the Claude adapter is installed. TUI examples:
+
+```text
+/proposal Evaluate whether this change should be specified.
+/spec Define the observable behavior for this change.
+/implement Build the approved milestone with tests first.
+/code-review Review the current diff against the approved artifacts.
+/pr Prepare the verified change for pull request review.
+```
+
+OpenCode uses generated command aliases for the curated lifecycle stages. All included portable skills remain reusable under `.opencode/skills/`; thin command aliases live under `.opencode/commands/`. TUI examples:
+
+```text
+/proposal Evaluate whether this change should be specified.
+/spec Define the observable behavior for this change.
+/implement Build the approved milestone with tests first.
+/code-review Review the current diff against the approved artifacts.
+/pr Prepare the verified change for pull request review.
+```
+
+OpenCode command aliases are generated only for `proposal`, `proposal-review`, `spec`, `spec-review`, `plan`, `plan-review`, `test-spec`, `implement`, `code-review`, and `pr`. Other portable skills remain available as skills but do not receive command aliases.
+
+Do not use Codex `$skill` syntax for Claude Code or OpenCode. One-shot CLI examples are intentionally omitted until release smoke evidence exists for the exact tool-specific command form.
 
 ## Learn More / Contribute
 
@@ -133,9 +159,8 @@ Before PR, run the same structural checks that CI runs:
 - `python scripts/validate-skills.py`
 - `python scripts/test-skill-validator.py`
 - `python scripts/build-skills.py --check`
-- `python scripts/build-adapters.py --version 0.1.0 --check`
-- `python scripts/validate-adapters.py --version 0.1.0`
-- `python scripts/validate-release.py --version v0.1.0`
+- `python scripts/build-adapters.py --version 0.1.1 --check`
+- `python scripts/validate-adapters.py --version 0.1.1`
 
 Use `bash scripts/ci.sh` to run the same checks through the repository-owned CI wrapper.
 
