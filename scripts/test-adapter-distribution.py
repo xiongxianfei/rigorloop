@@ -533,6 +533,15 @@ class AdapterDistributionTests(unittest.TestCase):
                 ),
                 "unsupported command alias tool: claude",
             ),
+            (
+                "    count: 10\n    aliases:\n",
+                (
+                    "    count: 11\n"
+                    "    aliases:\n"
+                    "      verify: dist/adapters/opencode/.opencode/commands/verify.md\n"
+                ),
+                "unexpected opencode command alias in manifest: verify",
+            ),
         )
 
         for old, new, expected_error in cases:
