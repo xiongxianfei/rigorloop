@@ -469,6 +469,7 @@ The plan separates adapter logic, generated output, validation, release evidence
 - [x] 2026-04-24: M2 adapter package generation and tracked RC outputs implemented.
 - [x] 2026-04-24: M3 adapter validation, security checks, and CI integration implemented.
 - [x] 2026-04-24: M4 release metadata validation and `v0.1.0-rc.1` release artifacts implemented.
+- [x] 2026-04-24: M4 first-pass code-review completed with `clean-with-notes`; no required changes.
 - [ ] M5 complete.
 - [ ] M6 complete.
 
@@ -554,6 +555,17 @@ The plan separates adapter logic, generated output, validation, release evidence
 - 2026-04-24: M4 change metadata validation passed with `python scripts/validate-change-metadata.py docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml`.
 - 2026-04-24: M4 lifecycle validation passed with `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/explain-change.md --path docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md --path docs/releases/v0.1.0-rc.1/release.yaml --path docs/releases/v0.1.0-rc.1/release-notes.md`.
 - 2026-04-24: M4 CI wrapper validation passed with `bash scripts/ci.sh`.
+- 2026-04-24: M4 post-commit release metadata validation passed with `python scripts/validate-release.py --version v0.1.0-rc.1`.
+- 2026-04-24: M4 post-commit lifecycle validation passed with `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/change.yaml --path docs/changes/2026-04-24-multi-agent-adapters-first-public-release/explain-change.md --path docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md --path docs/releases/v0.1.0-rc.1/release.yaml --path docs/releases/v0.1.0-rc.1/release-notes.md`.
+- 2026-04-24: M4 post-commit CI wrapper validation passed with `bash scripts/ci.sh`; push-main artifact lifecycle validation reported unrelated pre-existing proposal warnings and passed.
+
+## Review record
+
+- 2026-04-24: First-pass `code-review` for `d112f98..e3bc21e` returned `clean-with-notes`.
+  - Review surface: M4 release metadata validator, RC release artifacts, regression tests, change-local artifacts, and active plan updates.
+  - Findings: no blocking or required-change findings.
+  - Direct proof: `python scripts/test-adapter-distribution.py`, `python scripts/validate-release.py --version v0.1.0-rc.1`, `python scripts/validate-adapters.py --version 0.1.0-rc.1`, explicit lifecycle validation, and `bash scripts/ci.sh` passed against tracked branch state.
+  - Residual risk: M4 is not RC-publication-ready until M5 replaces the placeholder release gate and changes `placeholder_release_check` to `pass`.
 
 ## Outcome and retrospective
 
@@ -563,9 +575,9 @@ Plan review is complete and the matching test spec is active.
 
 ## Readiness
 
-Immediate next repository stage: `code-review`.
+Immediate next repository stage: `verify`.
 
-Next expected milestone after code-review: M5, public docs, release gate replacement, and workflow integration.
+Next expected milestone after clean verify: M5, public docs, release gate replacement, and workflow integration.
 
 ## Risks and follow-ups
 
