@@ -70,7 +70,7 @@ class AdapterDistributionTests(unittest.TestCase):
         notes_extra: str = "",
     ) -> Path:
         release_dir = root / "docs" / "releases" / version
-        release_dir.mkdir(parents=True)
+        release_dir.mkdir(parents=True, exist_ok=True)
         smoke_overrides = smoke_overrides or {}
         validation = {
             "generated_sync": "pass",
@@ -145,6 +145,23 @@ class AdapterDistributionTests(unittest.TestCase):
         notes_lines.append("")
         (release_dir / "release-notes.md").write_text("\n".join(notes_lines), encoding="utf-8")
         return release_dir
+
+    def v0_1_1_notes_extra(self) -> str:
+        aliases = ", ".join(f"`{alias}`" for alias in OPENCODE_COMMAND_ALIASES)
+        return "\n".join(
+            [
+                "## Command Alias Usage",
+                "",
+                f"OpenCode command aliases are generated for {aliases}.",
+                "Claude Code remains skill-native and uses native skill slash commands such as `/proposal`.",
+                "",
+                "OpenCode one-shot example:",
+                "",
+                '```text',
+                'opencode run --command proposal "Draft a proposal for the requested change."',
+                '```',
+            ]
+        )
 
     def test_adapter_model_matches_required_paths(self) -> None:
         self.assertEqual(SUPPORTED_ADAPTERS, ("codex", "claude", "opencode"))
@@ -994,6 +1011,51 @@ class AdapterDistributionTests(unittest.TestCase):
 
             self.assertTrue(any("final release requires smoke pass" in error for error in errors))
 
+    def test_v0_1_1_release_metadata_requires_command_alias_smoke_evidence(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            release_root = root / "docs" / "releases"
+            smoke = {
+                tool: {
+                    "result": "pass",
+                    "tool_version": f'"{tool} 1.0.0"',
+                    "evidence": '"manual smoke passed"',
+                    "reason": '""',
+                    "owner": "maintainer",
+                }
+                for tool in SUPPORTED_ADAPTERS
+            }
+            self.write_release_artifacts(
+                root,
+                version="v0.1.1",
+                release_type="final",
+                manifest_version="0.1.1",
+                smoke_overrides=smoke,
+                notes_extra=self.v0_1_1_notes_extra(),
+            )
+
+            errors = validate_release_output("v0.1.1", release_root=release_root)
+
+            self.assertTrue(
+                any("smoke.opencode.evidence: v0.1.1 requires command alias behavior evidence" in error for error in errors),
+                errors,
+            )
+
+            smoke["opencode"]["evidence"] = (
+                '"opencode run --command proposal loaded the proposal skill and '
+                'repeated ARGUMENT_MARKER_M3_SMOKE."'
+            )
+            self.write_release_artifacts(
+                root,
+                version="v0.1.1",
+                release_type="final",
+                manifest_version="0.1.1",
+                smoke_overrides=smoke,
+                notes_extra=self.v0_1_1_notes_extra(),
+            )
+
+            self.assertEqual(validate_release_output("v0.1.1", release_root=release_root), [])
+
     def test_release_metadata_validation_rejects_release_security_violations(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -1041,6 +1103,26 @@ class AdapterDistributionTests(unittest.TestCase):
 
             self.assertEqual(errors, [])
 
+    def test_validate_release_cli_accepts_repository_v0_1_1_artifacts(self) -> None:
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts" / "validate-release.py"),
+                "--version",
+                "v0.1.1",
+            ],
+            capture_output=True,
+            text=True,
+            cwd=ROOT,
+        )
+
+        self.assertEqual(
+            result.returncode,
+            0,
+            msg=f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+        )
+        self.assertIn("validated release metadata for v0.1.1", result.stdout)
+
     def test_release_verify_script_invokes_required_repository_checks(self) -> None:
         script = ROOT / "scripts" / "release-verify.sh"
         script_text = script.read_text(encoding="utf-8")
@@ -1077,6 +1159,24 @@ class AdapterDistributionTests(unittest.TestCase):
         for command in required_commands:
             self.assertIn(command, result.stdout)
         self.assertIn("security", result.stdout.lower())
+
+    def test_release_verify_script_supports_v0_1_1(self) -> None:
+        result = subprocess.run(
+            ["bash", str(ROOT / "scripts" / "release-verify.sh"), "v0.1.1"],
+            capture_output=True,
+            text=True,
+            cwd=ROOT,
+            env={"RELEASE_VERIFY_DRY_RUN": "1"},
+        )
+
+        self.assertEqual(
+            result.returncode,
+            0,
+            msg=f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+        )
+        self.assertIn("python scripts/build-adapters.py --version 0.1.1 --check", result.stdout)
+        self.assertIn("python scripts/validate-adapters.py --version 0.1.1", result.stdout)
+        self.assertIn("python scripts/validate-release.py --version v0.1.1", result.stdout)
 
     def test_release_verify_script_accepts_github_ref_name(self) -> None:
         result = subprocess.run(
@@ -1136,7 +1236,7 @@ class AdapterDistributionTests(unittest.TestCase):
                 self.assertIn(command, text)
             self.assertNotIn("/workflow", text)
             self.assertNotIn("/verify", text)
-            self.assertNotIn("opencode run --command", text)
+            self.assertIn("opencode run --command proposal", text)
             self.assertIn("Do not use Codex `$skill` syntax", text)
 
     def test_readme_distinguishes_claude_and_opencode_invocation_forms(self) -> None:
@@ -1148,7 +1248,7 @@ class AdapterDistributionTests(unittest.TestCase):
         self.assertIn(".opencode/commands/", text)
         for command in ("/proposal", "/spec", "/implement", "/code-review", "/pr"):
             self.assertIn(command, text)
-        self.assertNotIn("opencode run --command", text)
+        self.assertIn("opencode run --command proposal", text)
         self.assertNotIn("claude -p", text)
         self.assertIn("Do not use Codex `$skill` syntax", text)
 

@@ -67,7 +67,13 @@ OpenCode uses generated command aliases for the curated lifecycle stages. All in
 
 OpenCode command aliases are generated only for `proposal`, `proposal-review`, `spec`, `spec-review`, `plan`, `plan-review`, `test-spec`, `implement`, `code-review`, and `pr`. Other portable skills remain available as skills but do not receive command aliases.
 
-Do not use Codex `$skill` syntax for Claude Code or OpenCode. One-shot CLI examples are intentionally omitted until release smoke evidence exists for the exact tool-specific command form.
+OpenCode one-shot example:
+
+```text
+opencode run --command proposal "Draft a proposal for the requested change."
+```
+
+Do not use Codex `$skill` syntax for Claude Code or OpenCode. Claude Code one-shot CLI examples are intentionally omitted because no Claude one-shot form has been smoke-tested for this release.
 
 ## Learn More / Contribute
 

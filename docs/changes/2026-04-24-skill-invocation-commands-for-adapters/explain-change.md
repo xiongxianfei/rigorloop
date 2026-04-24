@@ -23,3 +23,15 @@ The Claude Code entrypoint template now documents native Claude Code slash comma
 The OpenCode entrypoint template now distinguishes `.opencode/skills/` as the reusable skill surface from `.opencode/commands/` as a thin command-alias layer for only the curated lifecycle set. It includes the same TUI slash-command examples and explicitly says that non-aliased portable skills remain available as skills.
 
 The README now mirrors those tool-specific examples, updates adapter validation commands to the current `0.1.1` generated package version, and avoids one-shot CLI examples because M3 has not yet recorded smoke evidence for any one-shot command form.
+
+## M3 v0.1.1 release metadata and smoke-backed one-shot usage
+
+M3 turns the command-alias package into a release-verifiable `v0.1.1` patch target.
+
+Release validation now recognizes `v0.1.1` as a final release with adapter manifest version `0.1.1`. For manifest versions that support OpenCode command aliases, release notes validation requires the OpenCode alias set, Claude Code skill-native guidance, and the smoke-backed `opencode run --command proposal` one-shot form. Release smoke validation now rejects vague OpenCode evidence and requires evidence that the one-shot command alias loaded or followed the matching `proposal` skill and carried command arguments through.
+
+The repository release gate now accepts `v0.1.1`, and `docs/releases/v0.1.1/release.yaml` records passing maintainer smoke for Codex, Claude Code, and OpenCode. The OpenCode row records `1.14.22` and evidence that `opencode run --command proposal` was smoke-tested through a copied adapter root, loaded the `proposal` skill, and repeated `ARGUMENT_MARKER_M3_SMOKE` from the command arguments.
+
+The `v0.1.1` release notes describe the generated adapter package set, all supported tools, the exact curated OpenCode command aliases, Claude Code skill-native usage, and the smoke evidence. README and the generated OpenCode entrypoint now include the OpenCode one-shot example because M3 supplied matching smoke evidence. Claude Code one-shot examples remain omitted because no Claude one-shot command form is part of this release contract.
+
+The workflow summary now points current structural release checks at `0.1.1` and lists `v0.1.1` as a supported release verification target, keeping public operational docs aligned with the generated adapter package version.
