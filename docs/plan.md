@@ -3,12 +3,13 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-04-25 Review finding resolution contract implementation](plans/2026-04-25-review-finding-resolution-contract.md) - active plan for implementing review finding completeness, review-log and review-resolution structure, closeout validation, workflow guidance, generated skill and adapter sync, and final lifecycle closeout.
+- none yet
 
 ## Blocked
 - none yet
 
 ## Done
+- [2026-04-25 Review finding resolution contract implementation](plans/2026-04-25-review-finding-resolution-contract.md) - completed execution plan for review finding completeness, review-log and review-resolution structure, closeout validation, workflow guidance, generated skill and adapter sync, and lifecycle closeout.
 - [2026-04-24 Skill invocation commands for adapter packages](plans/2026-04-24-skill-invocation-commands-for-adapters.md) - completed execution plan for `v0.1.1` OpenCode command aliases, Claude/OpenCode invocation docs, manifest command path metadata, release verification, smoke evidence, and lifecycle closeout.
 - [2026-04-24 Multi-agent adapters and first public release](plans/2026-04-24-multi-agent-adapters-first-public-release.md) - completed execution plan for generated Codex, Claude Code, and opencode adapter packages, release metadata, release verification, public docs, RC readiness, and smoke-verified stable `v0.1.0` closeout.
 - [2026-04-23 Implement first-attempt correctness](plans/2026-04-23-implement-first-attempt-correctness.md) - completed execution plan for adding observable first-pass completeness wording to `implement`, aligning `workflow`, and updating only the summary or generated surfaces that would otherwise become stale.

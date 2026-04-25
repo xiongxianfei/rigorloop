@@ -1,6 +1,6 @@
 # Review finding resolution contract implementation plan
 
-- Status: active
+- Status: done
 - Owner: maintainer + Codex
 - Start date: 2026-04-25
 - Last updated: 2026-04-25
@@ -370,7 +370,8 @@ The implementation must preserve lightweight clean reviews. The full review arti
 - [x] 2026-04-25: M3 `.codex/skills/` and public adapter skill outputs regenerated from canonical `skills/`.
 - [x] M3. Workflow contract, skills, docs, and generated outputs.
 - [x] 2026-04-25: `code-review-r2` finding `CR2-F1` recorded before fixes, accepted, fixed, and closed with explicit review closeout evidence.
-- [ ] M4. Lifecycle closeout, final validation, and PR readiness.
+- [x] 2026-04-25: M4 added the durable explain-change artifact, synchronized change metadata, closed lifecycle state in the plan index and plan body, and ran final validation.
+- [x] M4. Lifecycle closeout, final validation, and PR readiness.
 
 ## Decision log
 
@@ -382,6 +383,7 @@ The implementation must preserve lightweight clean reviews. The full review arti
 - 2026-04-25: M2 recognizes same-stage nonblocking re-review and `Review closeout: <Review ID>` as structural proof that a blocking review outcome no longer blocks closeout. Rationale: the spec allows rerun or explicit reviewer/owner closeout, and both need deterministic parser-visible representations.
 - 2026-04-25: After `code-review-r1`, same-stage nonblocking rerun proof now requires a strictly later numeric round. Rationale: a same-stage, same-round nonblocking entry is not a rerun; when round ordering cannot be proven, closeout must use explicit `Review closeout: <Review ID>` evidence naming the original blocking review.
 - 2026-04-25: Keep `dist/adapters/manifest.yaml` unchanged for M3. Rationale: M3 changes shipped skill bodies and generated package contents, but not the supported skill set, adapter list, command aliases, generated file paths, or manifest-declared metadata.
+- 2026-04-25: Close the plan as done before PR handoff. Rationale: M1 through M4 implementation and validation are complete, and the outcome is known before PR creation rather than merge-dependent.
 
 ## Surprises and discoveries
 
@@ -390,6 +392,7 @@ The implementation must preserve lightweight clean reviews. The full review arti
 - 2026-04-25: `code-review-r1` found that closeout mode accepted a same-stage approved entry with the same `Round: 1`; the regression test reproduced the false closeout before the production fix.
 - 2026-04-25: Public adapter tests failed before adapter regeneration with stale generated adapter files for the review, verify, explain-change, PR, and workflow skills. Regenerating `dist/adapters/` resolved the drift without changing `dist/adapters/manifest.yaml`.
 - 2026-04-25: M3 code-review found the general workflow contract used `SHOULD` for first-pass material finding timing while the approved feature spec requires `MUST`.
+- 2026-04-25: M4 did not require additional production-code tests because it only closes lifecycle artifacts and durable explanation state; existing validators provide the proof surface.
 
 ## Validation notes
 
@@ -467,16 +470,28 @@ The implementation must preserve lightweight clean reviews. The full review arti
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-24-review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path specs/rigorloop-workflow.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml --path docs/plan.md --path docs/plans/2026-04-25-review-finding-resolution-contract.md --path docs/workflows.md --path AGENTS.md --path CONSTITUTION.md --path scripts/test-review-artifact-validator.py --path skills/code-review/SKILL.md --path skills/workflow/SKILL.md --path skills/verify/SKILL.md --path skills/explain-change/SKILL.md --path skills/pr/SKILL.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path skills/architecture-review/SKILL.md --path skills/plan-review/SKILL.md`
   - `git diff --check -- specs docs skills .codex/skills dist AGENTS.md CONSTITUTION.md scripts`
   - `bash scripts/ci.sh`
+- 2026-04-25: M4 lifecycle closeout validation passed:
+  - `python scripts/test-review-artifact-validator.py`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-24-review-finding-resolution-contract`
+  - `python scripts/validate-skills.py`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/test-adapter-distribution.py`
+  - `python scripts/build-adapters.py --version 0.1.1 --check`
+  - `python scripts/validate-adapters.py --version 0.1.1`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-24-review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path specs/rigorloop-workflow.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml --path docs/changes/2026-04-24-review-finding-resolution-contract/explain-change.md --path docs/plan.md --path docs/plans/2026-04-25-review-finding-resolution-contract.md --path docs/workflows.md --path AGENTS.md --path CONSTITUTION.md`
+  - `python scripts/validate-release.py --version v0.1.1`
+  - `git diff --check -- .`
+  - `bash scripts/ci.sh`
 
 ## Outcome and retrospective
 
-- Active plan. M1 and M2 validator behavior are implemented, validated, and committed. M3 source and generated-output alignment is implemented and validated, with only the milestone commit remaining.
+M1 through M4 are implemented, validated, and committed. The change now has validator-backed review artifact behavior, aligned workflow guidance and skills, synchronized generated outputs, closed review findings, durable explanation, and closed lifecycle state in both `docs/plan.md` and this plan body.
 
 ## Readiness
 
-- M1 and M2 are complete.
-- M3 implementation is ready for its milestone commit.
+M1 through M4 are complete. The change is ready for final code-review, verify, explain-change summary reuse, and PR handoff.
 
 ## Risks and follow-ups
 
-- Re-run review-artifact closeout validation on this change once M1 and M2 provide the validator.
+- No known implementation follow-ups remain.
