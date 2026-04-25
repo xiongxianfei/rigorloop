@@ -357,6 +357,7 @@ The plan preserves the repository value of trustworthy automation. It optimizes 
 - [x] 2026-04-25: M3 code-review complete. `code-review-r5` returned `clean-with-notes`.
 - [x] 2026-04-25: M4 implemented. Selector-selected targeted proof, wrapper execution proof, planned broad smoke, review closeout validation, change metadata validation, lifecycle validation, and whitespace validation passed.
 - [x] 2026-04-25: M4 code-review complete. `code-review-r6` returned `clean-with-notes`.
+- [x] 2026-04-25: Verify passed. Classified review/change/plan surfaces passed through `scripts/ci.sh`, `docs/plan.md` was manually routed through lifecycle validation after the selector returned the expected v1 `unclassified-path` block, and planned broad smoke passed.
 
 ## Decision log
 
@@ -453,14 +454,18 @@ The plan preserves the repository value of trustworthy automation. It optimizes 
 - 2026-04-25: M4 review artifact closeout validation passed after `code-review-r6`: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-25-test-layering-and-change-scoped-validation`.
 - 2026-04-25: M4 change metadata validation passed after review closeout updates: `python scripts/validate-change-metadata.py docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml`.
 - 2026-04-25: M4 lifecycle validation passed after review closeout updates: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml`.
+- 2026-04-25: Verify selector inspection found expected manual routing for `docs/plan.md`: `python scripts/select-validation.py --mode explicit --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/review-log.md --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/review-resolution.md --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/reviews/code-review-r6.md --path docs/plans/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/plan.md` returned `status: "blocked"` with `unclassified-path` for `docs/plan.md`, while classified paths selected `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `broad_smoke.repo`.
+- 2026-04-25: Verify manual-routing lifecycle proof for `docs/plan.md` passed: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml`.
+- 2026-04-25: Verify full authoritative lifecycle proof passed: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-25-test-layering-and-change-scoped-validation.md --path specs/test-layering-and-change-scoped-validation.md --path specs/test-layering-and-change-scoped-validation.test.md --path docs/architecture/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/plan.md --path docs/plans/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml`.
+- 2026-04-25: Verify wrapper proof passed for classified review/change/plan surfaces: `bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/review-log.md --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/review-resolution.md --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/reviews/code-review-r6.md --path docs/plans/2026-04-25-test-layering-and-change-scoped-validation.md`. The active-plan trigger selected and passed `broad_smoke.repo`; only unrelated baseline lifecycle warnings were emitted for older proposal artifacts.
 
 ## Outcome and retrospective
 
-- Active. M1, M2, M3, and M4 implementation and code-review are complete; the change is ready for verify.
+- Active. M1, M2, M3, M4, code-review, and verify are complete; the change is ready for explain-change.
 
 ## Readiness
 
-- Immediate next repository stage: `verify`.
+- Immediate next repository stage: `explain-change`.
 - Next implementation milestone: none.
 
 ## Risks and follow-ups
