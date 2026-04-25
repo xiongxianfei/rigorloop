@@ -143,7 +143,11 @@ In workflow-managed completion flows, agents MUST continue into the next require
 
 Fast-lane and bugfix execution remain explicit-step unless a higher-priority approved artifact broadens their automation scope. Advice-only stages such as `learn` MUST NOT auto-run by default unless a higher-priority approved artifact elevates them.
 
-When review feedback exists, each material item MUST be resolved, rejected, or deferred with rationale. When the review creates durable project memory, a standalone `review-resolution.md` MUST be used.
+When review feedback exists, each material finding MUST include evidence, a required outcome, and a safe resolution path or `needs-decision` rationale before it drives fixes.
+
+When material findings exist for a non-trivial change, dispositions MUST be recorded in `review-resolution.md` using only `accepted`, `rejected`, `deferred`, `partially-accepted`, or `needs-decision`. `needs-decision` is not final and blocks `verify`, `explain-change`, and `pr` until resolved or explicitly deferred by an authorized owner.
+
+`review-resolution.md` MUST use top-level `Closeout status: open` or `Closeout status: closed`. `Closeout status: closed` requires final dispositions plus the disposition-specific action, rationale, follow-up, and validation evidence records required by the governing spec.
 
 ## Documentation rules
 

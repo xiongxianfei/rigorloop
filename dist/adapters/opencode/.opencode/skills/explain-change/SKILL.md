@@ -21,6 +21,7 @@ Read:
 - architecture doc and ADRs;
 - concrete plan and validation notes;
 - code-review and verify findings;
+- `review-resolution.md` when material review findings exist;
 - test and CI output;
 - `AGENTS.md` and `CONSTITUTION.md` if relevant.
 
@@ -66,9 +67,13 @@ For small fast-lane or otherwise exempt changes, inline explanation in the final
    - commands run;
    - CI status if known;
    - manual checks.
-7. **Alternatives rejected**: what was not done and why.
-8. **Scope control**: non-goals preserved.
-9. **Risks and follow-ups**.
+7. **Review resolution summary** when material findings exist:
+   - concise counts by disposition;
+   - link to `review-resolution.md`;
+   - do not duplicate transcript details from review records.
+8. **Alternatives rejected**: what was not done and why.
+9. **Scope control**: non-goals preserved.
+10. **Risks and follow-ups**.
 
 ## File rationale format
 
@@ -86,6 +91,8 @@ File | Change | Reason | Source artifact | Test/evidence
 - Do not justify unrelated changes; flag them.
 - Do not claim a requirement drove a change unless the link is real.
 - Do not hide validation gaps.
+- Do not proceed when `review-resolution.md` is missing, open, or still contains `needs-decision` for material findings that must close before handoff.
+- Do not duplicate transcript content from detailed reviews; keep review-resolution discussion concise and link the durable artifact.
 - Do not invent alternatives that were never considered; mark them as hindsight if added.
 - Keep explanations readable for a human reviewer.
 

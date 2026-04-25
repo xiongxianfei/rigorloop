@@ -39,6 +39,14 @@ Evaluate each with `pass`, `concern`, or `block`:
 10. **Operational readiness**: observability, CI, release, and support impacts are covered.
 11. **Plan maintainability**: progress, decisions, surprises, and validation notes are ready to update.
 
+## Material findings
+
+For every material finding, include evidence, the required outcome, and a safe resolution path.
+
+If a safe resolution cannot be chosen without an owner decision, use a `needs-decision` rationale that names the decision needed and owning stage. A material finding lacking evidence, required outcome, or safe resolution or `needs-decision` rationale is incomplete.
+
+When workflow-managed review findings are recorded under `docs/changes/<change-id>/reviews/`, preserve the first-pass review record before fixes and record dispositions in `review-resolution.md`.
+
 ## Rules
 
 - Do not rubber-stamp organized-looking plans.
