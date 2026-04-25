@@ -30,10 +30,9 @@ jobs:
           python-version: "3.11"
 
       - name: Run repository CI script
-        env:
-          ARTIFACT_LIFECYCLE_MODE: ${{ github.event_name == 'pull_request' && 'pr-ci' || 'push-main-ci' }}
-          ARTIFACT_LIFECYCLE_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || '' }}
-          ARTIFACT_LIFECYCLE_HEAD: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || '' }}
-          ARTIFACT_LIFECYCLE_BEFORE: ${{ github.event_name == 'push' && github.event.before || '' }}
-          ARTIFACT_LIFECYCLE_AFTER: ${{ github.event_name == 'push' && github.sha || '' }}
-        run: bash scripts/ci.sh
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            bash scripts/ci.sh --mode pr --base "${{ github.event.pull_request.base.sha }}" --head "${{ github.event.pull_request.head.sha }}"
+          else
+            bash scripts/ci.sh --mode main --base "${{ github.event.before }}" --head "${{ github.sha }}"
+          fi
