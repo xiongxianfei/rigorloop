@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -14,6 +15,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SELECTOR = ROOT / "scripts" / "select-validation.py"
+CI = ROOT / "scripts" / "ci.sh"
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from validation_selection import (  # noqa: E402
@@ -49,6 +51,19 @@ def run_selector(*args: str, cwd: Path = ROOT) -> subprocess.CompletedProcess[st
         cwd=cwd,
         capture_output=True,
         text=True,
+    )
+
+
+def run_ci(*args: str, env: dict[str, str] | None = None) -> subprocess.CompletedProcess[str]:
+    run_env = os.environ.copy()
+    if env:
+        run_env.update(env)
+    return subprocess.run(
+        ["bash", str(CI), *args],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        env=run_env,
     )
 
 
@@ -107,6 +122,37 @@ class ValidationSelectionTests(unittest.TestCase):
             capture_output=True,
             text=True,
         ).stdout.strip()
+
+    def write_selector_fixture(self, payload: object | str) -> Path:
+        fixture = Path(tempfile.mkdtemp(prefix="validation-selection-fixture-")) / "selector.json"
+        self.addCleanupTree(fixture.parent)
+        if isinstance(payload, str):
+            fixture.write_text(payload, encoding="utf-8")
+        else:
+            fixture.write_text(json.dumps(payload), encoding="utf-8")
+        return fixture
+
+    def minimal_selector_payload(
+        self,
+        *,
+        mode: str = "explicit",
+        status: str = "ok",
+        selected_checks: list[dict[str, object]] | None = None,
+        blocking_results: list[dict[str, str]] | None = None,
+    ) -> dict[str, object]:
+        return {
+            "mode": mode,
+            "status": status,
+            "changed_paths": [],
+            "classified_paths": [],
+            "unclassified_paths": [],
+            "selected_checks": selected_checks or [],
+            "affected_roots": [],
+            "broad_smoke_required": False,
+            "broad_smoke": {"required": False, "sources": []},
+            "blocking_results": blocking_results or [],
+            "rationale": [],
+        }
 
     def select(self, paths: list[str], *, mode: str = "explicit", **kwargs):
         return select_validation(SelectionRequest(mode=mode, paths=tuple(paths), repo_root=ROOT, **kwargs))
@@ -286,6 +332,12 @@ class ValidationSelectionTests(unittest.TestCase):
                 "status": "blocked",
                 "blocking_code": "manual-routing-required",
             },
+            {
+                "path": "scripts/ci.sh",
+                "category": "ci-wrapper",
+                "status": "ok",
+                "checks": {"selector.regression"},
+            },
         ]
 
         for case in cases:
@@ -389,6 +441,177 @@ class ValidationSelectionTests(unittest.TestCase):
         self.assertIn("broad_smoke.repo", selected_ids(main_payload))
         self.assertTrue(main_payload["broad_smoke_required"])
         self.assertIn({"type": "mode", "value": "main"}, main_payload["broad_smoke"]["sources"])
+
+    def test_ci_wrapper_executes_selector_selected_path_and_root_checks(self) -> None:
+        result = run_ci(
+            "--mode",
+            "explicit",
+            "--path",
+            "docs/changes/2026-04-25-test-layering-and-change-scoped-validation/review-resolution.md",
+            "--path",
+            "specs/test-layering-and-change-scoped-validation.md",
+        )
+        output = result.stdout + result.stderr
+
+        self.assertEqual(result.returncode, 0, msg=output)
+        self.assertIn("Selector mode: explicit", output)
+        self.assertIn("Run selected check: review_artifacts.validate", output)
+        self.assertIn("Run selected check: artifact_lifecycle.validate", output)
+        self.assertIn(
+            "python scripts/validate-review-artifacts.py docs/changes/2026-04-25-test-layering-and-change-scoped-validation/",
+            output,
+        )
+        self.assertIn(
+            "python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-layering-and-change-scoped-validation.md",
+            output,
+        )
+
+    def test_ci_wrapper_fails_on_blocked_selector_without_partial_execution(self) -> None:
+        fixture = self.write_selector_fixture(
+            self.minimal_selector_payload(
+                status="blocked",
+                selected_checks=[
+                    {
+                        "id": "review_artifacts.validate",
+                        "command": "python scripts/validate-review-artifacts.py docs/changes/example/",
+                        "reason": "must not run when selector is blocked",
+                        "affected_roots": ["docs/changes/example/"],
+                    }
+                ],
+                blocking_results=[
+                    {
+                        "code": "unclassified-path",
+                        "path": "experimental/runtime/example.txt",
+                        "message": "changed path is not classified by the v1 selector",
+                    }
+                ],
+            )
+        )
+
+        result = run_ci(
+            "--mode",
+            "explicit",
+            "--path",
+            "experimental/runtime/example.txt",
+            env={"RIGORLOOP_SELECTOR_FIXTURE": str(fixture), "RIGORLOOP_SELECTOR_FIXTURE_EXIT": "2"},
+        )
+        output = result.stdout + result.stderr
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Selector status: blocked", output)
+        self.assertIn("unclassified-path", output)
+        self.assertNotIn("Run selected check: review_artifacts.validate", output)
+
+    def test_ci_wrapper_rejects_fallback_and_malformed_selector_output(self) -> None:
+        fallback_fixture = self.write_selector_fixture(self.minimal_selector_payload(status="fallback"))
+        fallback = run_ci(
+            "--mode",
+            "explicit",
+            "--path",
+            "experimental/runtime/example.txt",
+            env={"RIGORLOOP_SELECTOR_FIXTURE": str(fallback_fixture), "RIGORLOOP_SELECTOR_FIXTURE_EXIT": "3"},
+        )
+        fallback_output = fallback.stdout + fallback.stderr
+
+        self.assertNotEqual(fallback.returncode, 0)
+        self.assertIn("Selector status: fallback", fallback_output)
+        self.assertIn("fallback execution is not supported in v1", fallback_output)
+
+        malformed_fixture = self.write_selector_fixture("not json")
+        malformed = run_ci(
+            "--mode",
+            "explicit",
+            "--path",
+            "skills/code-review/SKILL.md",
+            env={"RIGORLOOP_SELECTOR_FIXTURE": str(malformed_fixture)},
+        )
+        malformed_output = malformed.stdout + malformed.stderr
+
+        self.assertNotEqual(malformed.returncode, 0)
+        self.assertIn("Malformed selector JSON", malformed_output)
+
+    def test_ci_wrapper_forwards_mode_arguments_to_selector(self) -> None:
+        fixture = self.write_selector_fixture(self.minimal_selector_payload())
+        trace = Path(tempfile.mkdtemp(prefix="validation-selection-trace-")) / "argv.txt"
+        self.addCleanupTree(trace.parent)
+
+        cases = [
+            (
+                ["--mode", "pr", "--base", "base-sha", "--head", "head-sha"],
+                ["--mode", "pr", "--base", "base-sha", "--head", "head-sha"],
+            ),
+            (
+                ["--mode", "main", "--base", "before-sha", "--head", "after-sha"],
+                ["--mode", "main", "--base", "before-sha", "--head", "after-sha"],
+            ),
+            (
+                ["--mode", "release", "--release-version", "v0.1.1"],
+                ["--mode", "release", "--release-version", "v0.1.1"],
+            ),
+            (
+                ["--mode", "explicit", "--path", "skills/code-review/SKILL.md", "--broad-smoke"],
+                ["--mode", "explicit", "--path", "skills/code-review/SKILL.md", "--broad-smoke"],
+            ),
+        ]
+
+        for args, expected in cases:
+            with self.subTest(args=args):
+                trace.write_text("", encoding="utf-8")
+                result = run_ci(
+                    *args,
+                    env={
+                        "RIGORLOOP_SELECTOR_FIXTURE": str(fixture),
+                        "RIGORLOOP_CI_SELECTOR_ARGV_FILE": str(trace),
+                    },
+                )
+                output = result.stdout + result.stderr
+
+                self.assertEqual(result.returncode, 0, msg=output)
+                traced = trace.read_text(encoding="utf-8").splitlines()
+                self.assertEqual(traced[-len(expected) :], expected)
+
+    def test_ci_wrapper_delegates_broad_smoke_non_recursively(self) -> None:
+        malformed_fixture = self.write_selector_fixture("not json")
+        direct = run_ci(
+            "--mode",
+            "broad-smoke",
+            env={
+                "RIGORLOOP_SELECTOR_FIXTURE": str(malformed_fixture),
+                "RIGORLOOP_CI_BROAD_SMOKE_STUB": "1",
+            },
+        )
+        direct_output = direct.stdout + direct.stderr
+
+        self.assertEqual(direct.returncode, 0, msg=direct_output)
+        self.assertIn("Broad smoke stub", direct_output)
+        self.assertNotIn("Malformed selector JSON", direct_output)
+
+        fixture = self.write_selector_fixture(
+            self.minimal_selector_payload(
+                selected_checks=[
+                    {
+                        "id": "broad_smoke.repo",
+                        "command": "bash scripts/ci.sh --mode broad-smoke",
+                        "reason": "Broad smoke is required by an authoritative source.",
+                    }
+                ]
+            )
+        )
+        selected = run_ci(
+            "--mode",
+            "explicit",
+            "--path",
+            "skills/code-review/SKILL.md",
+            env={
+                "RIGORLOOP_SELECTOR_FIXTURE": str(fixture),
+                "RIGORLOOP_CI_BROAD_SMOKE_STUB": "1",
+            },
+        )
+        selected_output = selected.stdout + selected.stderr
+
+        self.assertEqual(selected.returncode, 0, msg=selected_output)
+        self.assertIn("Run selected check: broad_smoke.repo", selected_output)
+        self.assertIn("Broad smoke stub", selected_output)
 
     def test_local_mode_discovers_tracked_and_untracked_git_paths(self) -> None:
         repo = self.make_git_repo()

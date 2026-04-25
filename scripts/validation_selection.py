@@ -478,8 +478,13 @@ def _apply_path_selection(
         _add_check(selected, "release.validate", "Changed release artifact requires release validation.", version=version)
         return
 
-    if category == "selector":
-        _add_check(selected, "selector.regression", "Changed selector code requires selector regression fixtures.")
+    if category in {"selector", "ci-wrapper"}:
+        reason = (
+            "Changed CI wrapper requires selector and wrapper regression fixtures."
+            if category == "ci-wrapper"
+            else "Changed selector code requires selector regression fixtures."
+        )
+        _add_check(selected, "selector.regression", reason)
         return
 
     if category == "validator-review-artifacts":
@@ -586,6 +591,8 @@ def _build_result(
             entry["paths"] = list(paths)
         if roots:
             entry["affected_roots"] = list(roots)
+        if versions:
+            entry["versions"] = list(versions)
         selected_checks.append(entry)
 
     combined_blocking = [*blocking_results, *build_errors]
@@ -624,6 +631,8 @@ def _path_category(path: str) -> str | None:
         return "adapters"
     if path in {"scripts/select-validation.py", "scripts/validation_selection.py", "scripts/test-select-validation.py"}:
         return "selector"
+    if path == "scripts/ci.sh":
+        return "ci-wrapper"
     if path in {"scripts/validate-review-artifacts.py", "scripts/review_artifact_validation.py", "scripts/test-review-artifact-validator.py"}:
         return "validator-review-artifacts"
     if path in {
