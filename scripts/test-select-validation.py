@@ -54,13 +54,18 @@ def run_selector(*args: str, cwd: Path = ROOT) -> subprocess.CompletedProcess[st
     )
 
 
-def run_ci(*args: str, env: dict[str, str] | None = None) -> subprocess.CompletedProcess[str]:
+def run_ci(
+    *args: str,
+    env: dict[str, str] | None = None,
+    script: Path = CI,
+    cwd: Path = ROOT,
+) -> subprocess.CompletedProcess[str]:
     run_env = os.environ.copy()
     if env:
         run_env.update(env)
     return subprocess.run(
-        ["bash", str(CI), *args],
-        cwd=ROOT,
+        ["bash", str(script), *args],
+        cwd=cwd,
         capture_output=True,
         text=True,
         env=run_env,
@@ -556,6 +561,40 @@ class ValidationSelectionTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("Run selected check: release.validate", output)
         self.assertIn("Selected check release.validate failed", output)
+
+    def test_ci_wrapper_reports_unavailable_selected_command(self) -> None:
+        temp_root = Path(tempfile.mkdtemp(prefix="validation-selection-ci-missing-"))
+        self.addCleanupTree(temp_root)
+        (temp_root / "scripts").mkdir()
+        shutil.copy2(CI, temp_root / "scripts" / "ci.sh")
+        shutil.copy2(ROOT / "scripts" / "validation_selection.py", temp_root / "scripts" / "validation_selection.py")
+        fixture = self.write_selector_fixture(
+            self.minimal_selector_payload(
+                selected_checks=[
+                    {
+                        "id": "release.validate",
+                        "command": "python scripts/validate-release.py --version v0.1.1",
+                        "reason": "fixture command should be unavailable in the temporary workspace",
+                        "versions": ["v0.1.1"],
+                    }
+                ]
+            )
+        )
+
+        result = run_ci(
+            "--mode",
+            "release",
+            "--release-version",
+            "v0.1.1",
+            env={"RIGORLOOP_SELECTOR_FIXTURE": str(fixture)},
+            script=temp_root / "scripts" / "ci.sh",
+            cwd=temp_root,
+        )
+        output = result.stdout + result.stderr
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Run selected check: release.validate", output)
+        self.assertIn("command is unavailable: scripts/validate-release.py", output)
 
     def test_ci_wrapper_forwards_mode_arguments_to_selector(self) -> None:
         fixture = self.write_selector_fixture(self.minimal_selector_payload())
