@@ -91,6 +91,17 @@ Post-review CR3 validation also passed with:
 - `git diff --check -- .`
 - `bash scripts/ci.sh`
 
+Final verify on 2026-04-25 passed with:
+
+- `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-24-review-finding-resolution-contract`
+- `python scripts/validate-change-metadata.py docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml`
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-24-review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path specs/rigorloop-workflow.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml --path docs/changes/2026-04-24-review-finding-resolution-contract/explain-change.md --path docs/plan.md --path docs/plans/2026-04-25-review-finding-resolution-contract.md --path docs/workflows.md --path AGENTS.md --path CONSTITUTION.md`
+- `python scripts/validate-release.py --version v0.1.1`
+- `git diff --check -- .`
+- `bash scripts/ci.sh`
+
+Local CI passed. The artifact lifecycle step emitted unrelated baseline warnings for older draft proposal artifacts that are not touched or authoritative for this change.
+
 ## Review Resolution Summary
 
 The durable review-resolution record is `docs/changes/2026-04-24-review-finding-resolution-contract/review-resolution.md`.
@@ -132,4 +143,4 @@ Generated `.codex/skills/` and `dist/adapters/` outputs remain derived from cano
 
 Remaining risk is process adoption: authors must use the canonical labels for new detailed review records. The mitigation is explicit skill guidance plus repository-owned structure and closeout validation.
 
-No implementation blocker remains. The change is ready for final review, verification, and PR handoff.
+No implementation blocker remains. The change is verified locally and ready for PR handoff, with hosted CI still to be observed by the PR gate.
