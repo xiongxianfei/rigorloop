@@ -70,3 +70,18 @@ Chosen action: Define the v1 `review-log.md` canonical parseable form as a simpl
 Rationale: The spec-review finding is correct. Exact-once Review ID validation needs a contributor-visible ledger shape that does not count incidental prose mentions.
 Validation target: Rerun spec-review after spec revision and run artifact lifecycle validation on the proposal, spec, architecture, and change metadata.
 Validation evidence: Spec revision completed. `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-24-review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml`, `python scripts/validate-change-metadata.py docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml`, and `git diff --check -- specs/review-finding-resolution-contract.md docs/changes/2026-04-24-review-finding-resolution-contract` passed. `spec-review-r2` approved the closeout.
+
+### code-review-r1
+
+Review closeout: code-review-r1
+
+#### CR1-F1
+
+Finding ID: CR1-F1
+Disposition: accepted
+Owner: implementer
+Owning stage: implement
+Chosen action: Require same-stage non-blocking rerun evidence to have a strictly later round than the original blocking review.
+Rationale: The code-review finding is correct. A same-stage, same-round non-blocking review is not a rerun and must not satisfy `R8f`.
+Validation target: Add a regression test where `Round: 1` followed by approved `Round: 1` fails closeout, then run the review artifact validator tests and closeout validation.
+Validation evidence: `python scripts/test-review-artifact-validator.py` passed after the regression test failed red before the production fix. `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-24-review-finding-resolution-contract` is the closeout proof target for the updated artifact state.

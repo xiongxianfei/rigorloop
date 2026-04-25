@@ -545,6 +545,22 @@ Validation target: Run tests.
         write_text(root / "review-resolution.md", accepted_closed_resolution_text())
         second_review = (root / "reviews" / "code-review-r1.md").read_text(encoding="utf-8")
         second_review = second_review.replace("Review ID: code-review-r1", "Review ID: code-review-r2")
+        second_review = second_review.replace("Status: changes-requested", "Status: approved")
+        second_review = second_review.replace("Finding ID: CR1-F1", "")
+        write_text(root / "reviews" / "code-review-r2.md", second_review)
+        with (root / "review-log.md").open("a", encoding="utf-8") as handle:
+            handle.write(
+                valid_log_text("None", "None")
+                .replace("Review ID: code-review-r1", "Review ID: code-review-r2")
+                .replace("Status: changes-requested", "Status: approved")
+                .replace("Detailed record: reviews/code-review-r1.md", "Detailed record: reviews/code-review-r2.md")
+            )
+        self.assertCloseoutFails(root, "blocking review outcome requires same-stage re-review or explicit closeout")
+
+        root = self.fixture()
+        write_text(root / "review-resolution.md", accepted_closed_resolution_text())
+        second_review = (root / "reviews" / "code-review-r1.md").read_text(encoding="utf-8")
+        second_review = second_review.replace("Review ID: code-review-r1", "Review ID: code-review-r2")
         second_review = second_review.replace("Round: 1", "Round: 2")
         second_review = second_review.replace("Status: changes-requested", "Status: approved")
         second_review = second_review.replace("Finding ID: CR1-F1", "")

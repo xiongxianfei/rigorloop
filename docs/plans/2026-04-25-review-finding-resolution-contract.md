@@ -364,6 +364,7 @@ The implementation must preserve lightweight clean reviews. The full review arti
 - [x] 2026-04-25: M2 tests added first and confirmed red on unsupported `closeout` mode plus missing CI review-artifact checks.
 - [x] 2026-04-25: M2 closeout mode, blocking-review rerun or explicit closeout checks, and CI changed-root structure validation implemented.
 - [x] 2026-04-25: M2 milestone commit.
+- [x] 2026-04-25: `code-review-r1` finding `CR1-F1` recorded before fixes, accepted, fixed, and closed with explicit review closeout evidence.
 - [ ] M3. Workflow contract, skills, docs, and generated outputs.
 - [ ] M4. Lifecycle closeout, final validation, and PR readiness.
 
@@ -375,11 +376,13 @@ The implementation must preserve lightweight clean reviews. The full review arti
 - 2026-04-25: Treat `test-spec` as a prerequisite to implementation, not as an implementation milestone. Rationale: the repository workflow requires test planning before writing production code.
 - 2026-04-25: Implement M1 with only `structure` mode exposed by `scripts/validate-review-artifacts.py`; `closeout` mode and CI discovery remain M2 scope. Rationale: M1 proves parseable artifact structure while preserving the planned milestone boundary.
 - 2026-04-25: M2 recognizes same-stage nonblocking re-review and `Review closeout: <Review ID>` as structural proof that a blocking review outcome no longer blocks closeout. Rationale: the spec allows rerun or explicit reviewer/owner closeout, and both need deterministic parser-visible representations.
+- 2026-04-25: After `code-review-r1`, same-stage nonblocking rerun proof now requires a strictly later numeric round. Rationale: a same-stage, same-round nonblocking entry is not a rerun; when round ordering cannot be proven, closeout must use explicit `Review closeout: <Review ID>` evidence naming the original blocking review.
 
 ## Surprises and discoveries
 
 - 2026-04-25: The live change-local review artifacts already satisfy the new M1 canonical `review-log.md`, detailed review, Finding ID, and `review-resolution.md` structure.
 - 2026-04-25: Full `bash scripts/ci.sh` now runs review-artifact fixture tests. The first run before plan/change metadata updates had no changed `docs/changes/` roots, so it correctly printed `No changed review artifact roots to validate`; the final M2 run after metadata updates validates the active change root.
+- 2026-04-25: `code-review-r1` found that closeout mode accepted a same-stage approved entry with the same `Round: 1`; the regression test reproduced the false closeout before the production fix.
 
 ## Validation notes
 
@@ -417,6 +420,17 @@ The implementation must preserve lightweight clean reviews. The full review arti
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-24-review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml --path docs/plan.md --path docs/plans/2026-04-25-review-finding-resolution-contract.md`
   - `git diff --check -- scripts tests docs/changes/2026-04-24-review-finding-resolution-contract docs/plans/2026-04-25-review-finding-resolution-contract.md`
 - 2026-04-25: M2 milestone closeout commit created with subject `M2: add review artifact closeout validation`.
+- 2026-04-25: `CR1-F1` red regression check passed as expected:
+  - `python scripts/test-review-artifact-validator.py`
+  - Result: failed because a same-stage `Round: 1` approved entry was accepted as closeout for a blocking `Round: 1` review.
+- 2026-04-25: `CR1-F1` implementation validation passed:
+  - `python scripts/test-review-artifact-validator.py`
+  - `python scripts/validate-review-artifacts.py docs/changes/2026-04-24-review-finding-resolution-contract`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-24-review-finding-resolution-contract`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-24-review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml --path docs/plan.md --path docs/plans/2026-04-25-review-finding-resolution-contract.md`
+  - `git diff --check -- .`
+  - `bash scripts/ci.sh`
 
 ## Outcome and retrospective
 
