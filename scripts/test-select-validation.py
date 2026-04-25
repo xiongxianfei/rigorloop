@@ -530,6 +530,33 @@ class ValidationSelectionTests(unittest.TestCase):
         self.assertNotEqual(malformed.returncode, 0)
         self.assertIn("Malformed selector JSON", malformed_output)
 
+    def test_ci_wrapper_preserves_selected_command_failure(self) -> None:
+        fixture = self.write_selector_fixture(
+            self.minimal_selector_payload(
+                selected_checks=[
+                    {
+                        "id": "release.validate",
+                        "command": "python scripts/validate-release.py --version missing-version",
+                        "reason": "fixture release version should fail validation",
+                        "versions": ["missing-version"],
+                    }
+                ]
+            )
+        )
+
+        result = run_ci(
+            "--mode",
+            "release",
+            "--release-version",
+            "missing-version",
+            env={"RIGORLOOP_SELECTOR_FIXTURE": str(fixture)},
+        )
+        output = result.stdout + result.stderr
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Run selected check: release.validate", output)
+        self.assertIn("Selected check release.validate failed", output)
+
     def test_ci_wrapper_forwards_mode_arguments_to_selector(self) -> None:
         fixture = self.write_selector_fixture(self.minimal_selector_payload())
         trace = Path(tempfile.mkdtemp(prefix="validation-selection-trace-")) / "argv.txt"
