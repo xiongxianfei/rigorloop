@@ -237,6 +237,18 @@ validation:
     result: pass_after_m3_final_validation
   - command: bash scripts/ci.sh
     result: pass_after_m3_final_validation
+  - command: python scripts/test-review-artifact-validator.py
+    result: pass_after_cr2_fix
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-24-review-finding-resolution-contract
+    result: pass_after_cr2_fix
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml
+    result: pass_after_cr2_fix
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-24-review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path specs/rigorloop-workflow.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml --path docs/plan.md --path docs/plans/2026-04-25-review-finding-resolution-contract.md --path docs/workflows.md --path AGENTS.md --path CONSTITUTION.md --path scripts/test-review-artifact-validator.py --path skills/code-review/SKILL.md --path skills/workflow/SKILL.md --path skills/verify/SKILL.md --path skills/explain-change/SKILL.md --path skills/pr/SKILL.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path skills/architecture-review/SKILL.md --path skills/plan-review/SKILL.md
+    result: pass_after_cr2_fix
+  - command: git diff --check -- specs docs skills .codex/skills dist AGENTS.md CONSTITUTION.md scripts
+    result: pass_after_cr2_fix
+  - command: bash scripts/ci.sh
+    result: pass_after_cr2_fix
 changed_files:
   - AGENTS.md
   - CONSTITUTION.md
@@ -283,6 +295,7 @@ changed_files:
   - docs/changes/2026-04-24-review-finding-resolution-contract/reviews/architecture-review-r1.md
   - docs/changes/2026-04-24-review-finding-resolution-contract/reviews/architecture-review-r2.md
   - docs/changes/2026-04-24-review-finding-resolution-contract/reviews/code-review-r1.md
+  - docs/changes/2026-04-24-review-finding-resolution-contract/reviews/code-review-r2.md
   - docs/changes/2026-04-24-review-finding-resolution-contract/reviews/spec-review-r1.md
   - docs/changes/2026-04-24-review-finding-resolution-contract/reviews/spec-review-r2.md
   - docs/plan.md

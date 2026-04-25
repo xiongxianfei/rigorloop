@@ -85,3 +85,18 @@ Chosen action: Require same-stage non-blocking rerun evidence to have a strictly
 Rationale: The code-review finding is correct. A same-stage, same-round non-blocking review is not a rerun and must not satisfy `R8f`.
 Validation target: Add a regression test where `Round: 1` followed by approved `Round: 1` fails closeout, then run the review artifact validator tests and closeout validation.
 Validation evidence: `python scripts/test-review-artifact-validator.py` passed after the regression test failed red before the production fix. `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-24-review-finding-resolution-contract` is the closeout proof target for the updated artifact state.
+
+### code-review-r2
+
+Review closeout: code-review-r2
+
+#### CR2-F1
+
+Finding ID: CR2-F1
+Disposition: accepted
+Owner: implementer
+Owning stage: implement
+Chosen action: Update `specs/rigorloop-workflow.md` `R12ab` so material review findings MUST be recorded before review-driven fixes begin.
+Rationale: The code-review finding is correct. The approved feature spec requires pre-fix recording with a reconstructed-record recovery path, and the general workflow contract must not weaken that requirement.
+Validation target: Run focused review-artifact validation, change metadata validation, artifact lifecycle explicit-path validation, and diff whitespace checks after the wording fix and artifact closeout updates.
+Validation evidence: `specs/rigorloop-workflow.md` `R12ab` now uses MUST for pre-fix material finding recording. `python scripts/test-review-artifact-validator.py`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-24-review-finding-resolution-contract`, `python scripts/validate-change-metadata.py docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`, and `git diff --check -- specs docs skills .codex/skills dist AGENTS.md CONSTITUTION.md scripts` passed after the fix.

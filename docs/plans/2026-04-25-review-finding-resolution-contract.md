@@ -369,6 +369,7 @@ The implementation must preserve lightweight clean reviews. The full review arti
 - [x] 2026-04-25: M3 workflow contract, governance summaries, review-stage skills, verify, explain-change, PR, and workflow skills aligned with the expanded review-resolution closeout contract.
 - [x] 2026-04-25: M3 `.codex/skills/` and public adapter skill outputs regenerated from canonical `skills/`.
 - [x] M3. Workflow contract, skills, docs, and generated outputs.
+- [x] 2026-04-25: `code-review-r2` finding `CR2-F1` recorded before fixes, accepted, fixed, and closed with explicit review closeout evidence.
 - [ ] M4. Lifecycle closeout, final validation, and PR readiness.
 
 ## Decision log
@@ -388,6 +389,7 @@ The implementation must preserve lightweight clean reviews. The full review arti
 - 2026-04-25: Full `bash scripts/ci.sh` now runs review-artifact fixture tests. The first run before plan/change metadata updates had no changed `docs/changes/` roots, so it correctly printed `No changed review artifact roots to validate`; the final M2 run after metadata updates validates the active change root.
 - 2026-04-25: `code-review-r1` found that closeout mode accepted a same-stage approved entry with the same `Round: 1`; the regression test reproduced the false closeout before the production fix.
 - 2026-04-25: Public adapter tests failed before adapter regeneration with stale generated adapter files for the review, verify, explain-change, PR, and workflow skills. Regenerating `dist/adapters/` resolved the drift without changing `dist/adapters/manifest.yaml`.
+- 2026-04-25: M3 code-review found the general workflow contract used `SHOULD` for first-pass material finding timing while the approved feature spec requires `MUST`.
 
 ## Validation notes
 
@@ -457,6 +459,13 @@ The implementation must preserve lightweight clean reviews. The full review arti
   - `rg -n "partially-accepted|needs-decision|Closeout status|review-resolution.md" specs/rigorloop-workflow.md docs/workflows.md CONSTITUTION.md AGENTS.md skills .codex/skills dist/adapters`
   - `git diff --check -- specs docs skills .codex/skills dist AGENTS.md CONSTITUTION.md scripts`
   - `python scripts/validate-release.py --version v0.1.1`
+  - `bash scripts/ci.sh`
+- 2026-04-25: `CR2-F1` implementation validation passed:
+  - `python scripts/test-review-artifact-validator.py`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-24-review-finding-resolution-contract`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-24-review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path specs/rigorloop-workflow.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml --path docs/plan.md --path docs/plans/2026-04-25-review-finding-resolution-contract.md --path docs/workflows.md --path AGENTS.md --path CONSTITUTION.md --path scripts/test-review-artifact-validator.py --path skills/code-review/SKILL.md --path skills/workflow/SKILL.md --path skills/verify/SKILL.md --path skills/explain-change/SKILL.md --path skills/pr/SKILL.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path skills/architecture-review/SKILL.md --path skills/plan-review/SKILL.md`
+  - `git diff --check -- specs docs skills .codex/skills dist AGENTS.md CONSTITUTION.md scripts`
   - `bash scripts/ci.sh`
 
 ## Outcome and retrospective
