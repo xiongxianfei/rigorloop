@@ -76,3 +76,19 @@ Validation evidence: `python scripts/test-select-validation.py` passed with 16 t
 
 Review closeout: code-review-r1
 Review closeout: code-review-r2
+
+### code-review-r3
+
+Finding ID: CR3-F1
+Disposition: accepted
+Owner: implementation owner
+Owning stage: implement
+Chosen action: Add a focused CI wrapper regression test that feeds selector fixture JSON with a valid check ID and a tampered non-catalog command, then asserts `scripts/ci.sh` rejects the payload before executing the selected check.
+Rationale: The implementation already validates selected commands against the catalog, but the approved test spec requires direct proof that arbitrary selector JSON command text cannot bypass the trusted catalog contract.
+Validation target: `python scripts/test-select-validation.py`
+Validation evidence: `python scripts/test-select-validation.py` passed with 24 tests after adding `test_ci_wrapper_rejects_selector_command_mismatch`; `bash scripts/ci.sh --mode explicit --path specs/test-layering-and-change-scoped-validation.md` passed; `bash scripts/ci.sh --mode explicit --path scripts/ci.sh` passed; `bash scripts/ci.sh --mode broad-smoke` passed.
+
+### code-review-r4
+
+Review closeout: code-review-r3
+Review closeout: code-review-r4
