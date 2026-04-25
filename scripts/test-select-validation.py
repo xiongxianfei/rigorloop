@@ -713,6 +713,65 @@ class ValidationSelectionTests(unittest.TestCase):
         self.assertIn("Run selected check: broad_smoke.repo", selected_output)
         self.assertIn("Broad smoke stub", selected_output)
 
+    def test_workflow_guidance_aligns_with_validation_layering_contract(self) -> None:
+        expectations = {
+            "specs/rigorloop-workflow.md": [
+                "targeted proof",
+                "broad smoke",
+                "manual proof",
+                "scripts/select-validation.py",
+                "broad_smoke_required",
+                "skills.validate",
+                "broad_smoke.repo",
+            ],
+            "docs/workflows.md": [
+                "targeted proof",
+                "broad smoke",
+                "scripts/select-validation.py",
+                "scripts/ci.sh --mode explicit",
+                "scripts/ci.sh --mode broad-smoke",
+                "skills.validate",
+                "review_artifacts.validate",
+                "broad_smoke.repo",
+                "does not imply broad smoke for every PR",
+            ],
+            "skills/implement/SKILL.md": [
+                "targeted proof",
+                "broad smoke",
+                "scripts/select-validation.py",
+                "selected checks",
+                "skills.validate",
+            ],
+            "skills/code-review/SKILL.md": [
+                "targeted proof",
+                "broad smoke",
+                "selected checks",
+                "direct proof",
+            ],
+            "skills/verify/SKILL.md": [
+                "verify-report.md",
+                "manual by design",
+                "manual proof",
+                "release metadata",
+                "not-run",
+                "bash scripts/ci.sh --mode broad-smoke",
+                "broad_smoke_required",
+            ],
+            "skills/workflow/SKILL.md": [
+                "targeted proof",
+                "broad smoke",
+                "manual proof",
+                "broad_smoke.sources",
+                "verify-report.md",
+            ],
+        }
+
+        for path, required_terms in expectations.items():
+            with self.subTest(path=path):
+                content = (ROOT / path).read_text(encoding="utf-8")
+                for term in required_terms:
+                    self.assertIn(term, content)
+
     def test_local_mode_discovers_tracked_and_untracked_git_paths(self) -> None:
         repo = self.make_git_repo()
         (repo / "skills" / "workflow" / "SKILL.md").write_text("# Workflow\n\nChanged\n", encoding="utf-8")

@@ -243,11 +243,11 @@ The plan preserves the repository value of trustworthy automation. It optimizes 
   - contributors and agents see the same selector, targeted-proof, broad-smoke, and manual-proof contract in workflow docs and shipped skill guidance.
 - Commit message: `M3: align validation selector workflow guidance`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - docs may overclaim selector coverage before `ci.sh` consumes it
   - canonical skill wording may introduce tool-specific assumptions that adapter validation rejects
@@ -353,7 +353,7 @@ The plan preserves the repository value of trustworthy automation. It optimizes 
 - [x] 2026-04-25: M1 code-review fixes implemented for `CR1-F1` and `CR1-F2`; `code-review-r2` returned `clean-with-notes`.
 - [x] 2026-04-25: M2 implemented. `scripts/ci.sh` now consumes selector JSON for normal modes, executes trusted catalog commands, preserves non-recursive `--mode broad-smoke`, and hosted CI passes PR/main ranges through the wrapper.
 - [x] 2026-04-25: M2 code-review complete. `code-review-r3` found missing direct proof for tampered selector command rejection; `CR3-F1` was fixed with a focused wrapper regression and `code-review-r4` returned `clean-with-notes`.
-- [ ] M3 complete.
+- [x] 2026-04-25: M3 implemented. Workflow docs and affected stage skills now describe selector-selected targeted proof, triggered broad smoke, stable check IDs, and manual-proof ownership; generated `.codex/skills/` and public adapter skill outputs were regenerated from canonical skills.
 - [ ] M4 complete.
 
 ## Decision log
@@ -375,6 +375,7 @@ The plan preserves the repository value of trustworthy automation. It optimizes 
 - M1 code-review: `CR1-F1` found that direct `docs/releases/release-notes.md` paths were incorrectly accepted as release version `release-notes.md`; `CR1-F2` found missing direct proof for valid PR/main modes and representative first-slice categories.
 - M2: `scripts/ci.sh` needed a selector classification so wrapper changes select the wrapper regression test surface instead of falling into manual routing.
 - M2 code-review: `CR3-F1` showed that implemented catalog validation still needed direct security proof against tampered selector JSON command text.
+- M3: A compact source-guidance alignment test was more useful than prose greps across generated output; generated-output drift checks prove `.codex/skills/` and `dist/adapters/` stayed synchronized after canonical skill changes.
 
 ## Validation notes
 
@@ -417,15 +418,29 @@ The plan preserves the repository value of trustworthy automation. It optimizes 
 - 2026-04-25: M2 change metadata validation passed after review closeout updates: `python scripts/validate-change-metadata.py docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml`.
 - 2026-04-25: M2 lifecycle validation passed after review closeout updates: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml`.
 - 2026-04-25: M2 whitespace validation passed after review closeout updates: `git diff --check -- scripts .github docs/plans/2026-04-25-test-layering-and-change-scoped-validation.md docs/changes/2026-04-25-test-layering-and-change-scoped-validation`.
+- 2026-04-25: M3 red check: `python scripts/test-select-validation.py` failed on `test_workflow_guidance_aligns_with_validation_layering_contract` because workflow docs and stage skills did not yet name selector-selected targeted proof, broad smoke triggers, stable check IDs, and manual-proof ownership.
+- 2026-04-25: M3 guidance alignment test passed after canonical docs and skill updates: `python scripts/test-select-validation.py` ran 25 tests and passed.
+- 2026-04-25: M3 skill validation passed: `python scripts/validate-skills.py`.
+- 2026-04-25: M3 skill validator fixtures passed: `python scripts/test-skill-validator.py`.
+- 2026-04-25: M3 generated skill mirror refreshed: `python scripts/build-skills.py`.
+- 2026-04-25: M3 generated skill drift check passed: `python scripts/build-skills.py --check`.
+- 2026-04-25: M3 public adapter packages regenerated: `python scripts/build-adapters.py --version 0.1.1`.
+- 2026-04-25: M3 adapter distribution fixtures passed: `python scripts/test-adapter-distribution.py`.
+- 2026-04-25: M3 generated adapter drift check passed: `python scripts/build-adapters.py --version 0.1.1 --check`.
+- 2026-04-25: M3 generated adapter validation passed: `python scripts/validate-adapters.py --version 0.1.1`.
+- 2026-04-25: M3 guidance search proof passed: `rg -n "select-validation|targeted proof|broad smoke|manual by design|verify-report.md|broad_smoke" specs/rigorloop-workflow.md docs/workflows.md skills .codex/skills dist/adapters`.
+- 2026-04-25: M3 change metadata validation passed after M3 updates: `python scripts/validate-change-metadata.py docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml`.
+- 2026-04-25: M3 lifecycle validation passed after M3 updates: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/rigorloop-workflow.md --path docs/plans/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml`.
+- 2026-04-25: M3 whitespace validation passed after M3 updates: `git diff --check -- specs docs skills .codex/skills dist scripts AGENTS.md CONSTITUTION.md`.
 
 ## Outcome and retrospective
 
-- Active. M1 and M2 implementation and code-review are complete; M3 is the next implementation milestone.
+- Active. M1 and M2 implementation and code-review are complete; M3 implementation is complete and awaits code-review.
 
 ## Readiness
 
-- Immediate next repository stage: `implement` for M3.
-- Next implementation milestone: M3 workflow guidance, manual proof closeout, and generated outputs.
+- Immediate next repository stage: `code-review` for M3.
+- Next implementation milestone after review: M4 integration closeout and final validation.
 
 ## Risks and follow-ups
 

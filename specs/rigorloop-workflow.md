@@ -39,6 +39,9 @@ RigorLoop is a Git-first starter kit. It does not replace pull requests, CI, or 
 - `pr-body-ready`: the `pr` stage conclusion that the PR body is accurate, concise, and grounded in verified artifacts.
 - `pr-open-ready`: the `pr` stage conclusion that branch, base, remote, worktree, PR body, and action prerequisites are ready for PR opening.
 - `direct proof`: targeted evidence tied to a named requirement or test-spec item, such as a targeted test, targeted validation output, or an explicit manual verification note when manual verification is allowed.
+- `targeted proof`: selector-selected validation checks that directly prove the changed surfaces and governing dependencies before review handoff.
+- `broad smoke`: broader repository validation run before final handoff, main, release, or another authoritative trigger; it is not the default first proof for every local edit.
+- `manual proof`: durable structured evidence for a check that cannot reasonably be automated.
 
 ## Examples first
 
@@ -288,6 +291,22 @@ R8ke. `Next artifacts` MUST record planned next steps while an artifact remains 
 R8kf. `verify` MUST block on stale or inconsistent lifecycle-managed artifacts that are touched, referenced, generated, or authoritative for the changed area, and it MUST report unrelated stale baseline artifacts as warnings rather than blockers.
 
 R8kg. PR-body references participate in `verify` only when draft PR text already exists. Before PR text exists, `verify` MUST use the pre-PR handoff surfaces such as `docs/changes/<change-id>/change.yaml`, explain-change artifacts, the active plan, and the touched, referenced, generated, or authoritative artifacts for the changed area.
+
+R8l. Non-trivial implementation and review handoff SHOULD use targeted proof before broad smoke when the repository-owned selector can classify the changed surfaces.
+
+R8m. Targeted proof SHOULD be selected through `python scripts/select-validation.py` or executed through `scripts/ci.sh --mode explicit --path <path>...` when explicit changed paths are known.
+
+R8n. Selector-selected checks MUST use stable check IDs such as `skills.validate`, `review_artifacts.validate`, and `broad_smoke.repo` rather than prose-only validation categories.
+
+R8o. `scripts/ci.sh` is an execution wrapper for selected checks. Running the wrapper in PR or explicit mode does not imply broad smoke for every PR.
+
+R8p. Broad smoke MUST be triggered by an authoritative source, such as selector mode `main` or `release`, an explicit `--broad-smoke` request, active plan field `broad_smoke_required: true`, test-spec requirement, review-resolution requirement, or release metadata.
+
+R8q. Planned initiatives MUST record targeted proof during implementation or review handoff and broad smoke evidence before final `verify` branch-ready closeout.
+
+R8r. Required manual proof for normal changes MUST be stored durably in `docs/changes/<change-id>/verify-report.md` when standalone verification evidence is required, and release smoke manual proof MUST remain in release metadata under `docs/releases/<version>/`.
+
+R8s. Manual proof records MUST identify the check, result, performer, date, evidence, and why it is `manual by design`; `fail`, `blocked`, and `not-run` results keep handoff open unless a governing release or stage contract explicitly allows the temporary state.
 
 R9. Once repository CI exists, the starter kit MUST treat routine CI validation results as enforced for every pull request.
 

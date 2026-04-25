@@ -41,6 +41,15 @@ Rules:
 - Do not broaden the docs-changes requirement into approved fast-lane work.
 - Keep standalone `review-resolution.md` and `verify-report.md` conditional; add them only when their governing workflow triggers apply.
 
+## Validation layering
+
+Use selector-selected targeted proof before optional broad smoke when the changed paths are known.
+
+- Inspect selected checks with `python scripts/select-validation.py --mode explicit --path <path>...`.
+- Execute selected checks with `bash scripts/ci.sh --mode explicit --path <path>...`.
+- Record stable selected check IDs, such as `skills.validate`, `review_artifacts.validate`, or `selector.regression`, in the active plan or change metadata when they explain the proof scope.
+- Run `bash scripts/ci.sh --mode broad-smoke` only when an authoritative trigger requires broad smoke, such as `broad_smoke_required: true`, main/release mode, review-resolution, test-spec, or release metadata.
+
 ## First-pass completeness
 
 Before editing:

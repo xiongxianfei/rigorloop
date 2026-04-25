@@ -120,6 +120,14 @@ For ordinary non-trivial work in the full-feature lane, carry the baseline chang
 
 Keep `review-resolution.md` and `verify-report.md` conditional. Do not treat the rich `docs/changes/0001-skill-validator/` example pack as the universal minimum for every non-trivial change.
 
+### Validation layering
+
+- Before `code-review`, prefer targeted proof selected by `python scripts/select-validation.py` or executed by `bash scripts/ci.sh --mode explicit --path <path>...`.
+- Record stable selected check IDs when they explain the proof boundary, for example `skills.validate`, `review_artifacts.validate`, `selector.regression`, or `broad_smoke.repo`.
+- Use broad smoke as a triggered handoff gate, not the first proof step for every PR. Authoritative triggers include main/release mode, `--broad-smoke`, active plan `broad_smoke_required: true`, test-spec, review-resolution, and release metadata.
+- Preserve source attribution when available through `broad_smoke.sources`.
+- Manual proof for normal changes belongs in `verify-report.md` when required; release smoke proof belongs in release metadata. Required manual proof should say `manual by design` when automation is intentionally not possible.
+
 ### Review-resolution contract
 
 - Material findings must include evidence, required outcome, and a safe resolution path or `needs-decision` rationale.
