@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- none yet
+- [2026-04-25 Test layering and change-scoped validation](plans/2026-04-25-test-layering-and-change-scoped-validation.md) - active execution plan for adding the JSON validation selector, wiring `scripts/ci.sh` to selector output, preserving source-attributed broad-smoke triggers, recording manual proof ownership, and aligning workflow guidance.
 
 ## Blocked
 - none yet
