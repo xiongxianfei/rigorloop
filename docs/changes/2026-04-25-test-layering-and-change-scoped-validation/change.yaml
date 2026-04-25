@@ -147,6 +147,12 @@ validation:
   - command: bash scripts/ci.sh --mode explicit --path .github/workflows/ci.yml --path docs/workflows.md --path docs/plan.md --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/explain-change.md --path scripts/validation_selection.py --path scripts/test-select-validation.py
     result: pass
     reason: Passed after mapping the hosted-CI blocking governance surfaces to deterministic checks; lifecycle validation included the governing change.yaml and validated 5 artifacts.
+  - command: bash scripts/ci.sh --mode pr --base origin/main --head HEAD
+    result: pass
+    reason: Passed locally after tightening plan-index and change-local lifecycle routing.
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-25-test-layering-and-change-scoped-validation
+    result: pass
+    reason: Passed after recording code-review-r7.
 changed_files:
   - .github/workflows/ci.yml
   - scripts/ci.sh
@@ -175,6 +181,7 @@ changed_files:
   - docs/changes/2026-04-25-test-layering-and-change-scoped-validation/reviews/code-review-r4.md
   - docs/changes/2026-04-25-test-layering-and-change-scoped-validation/reviews/code-review-r5.md
   - docs/changes/2026-04-25-test-layering-and-change-scoped-validation/reviews/code-review-r6.md
+  - docs/changes/2026-04-25-test-layering-and-change-scoped-validation/reviews/code-review-r7.md
   - skills/code-review/SKILL.md
   - skills/implement/SKILL.md
   - skills/verify/SKILL.md
