@@ -350,6 +350,7 @@ The plan preserves the repository value of trustworthy automation. It optimizes 
 - [x] 2026-04-25: plan-review approved after resolving `PR1-F1`.
 - [x] 2026-04-25: test spec active.
 - [x] 2026-04-25: M1 complete. Selector core, catalog, CLI, path classification, broad-smoke source attribution, and selector regression tests are implemented.
+- [x] 2026-04-25: M1 code-review fixes implemented for `CR1-F1` and `CR1-F2`; `code-review-r2` returned `clean-with-notes`.
 - [ ] M2 complete.
 - [ ] M3 complete.
 - [ ] M4 complete.
@@ -363,10 +364,12 @@ The plan preserves the repository value of trustworthy automation. It optimizes 
 - 2026-04-25: Store normal manual proof in `verify-report.md` and release smoke proof in release metadata; make `verify` own closeout. Rationale: manual proof is handoff evidence, not selector state.
 - 2026-04-25: Keep `scripts/ci.sh` unchanged in M1. Rationale: wrapper selector consumption is explicitly owned by M2, while M1 only provides the selector contract and regression surface.
 - 2026-04-25: Use `0.1.1` as the M1 default adapter version for selector command substitution. Rationale: the active plan records generated adapter target `0.1.1`, and a later release-contract change can centralize that default.
+- 2026-04-25: Treat direct files under `docs/releases/` as ambiguous release paths. Rationale: only paths nested under `docs/releases/<version>/...` may infer a release version, and v1 blocks ambiguous release paths instead of guessing.
 
 ## Surprises and discoveries
 
 - M1: The selector can prove wrapper-blocking expectations only through the regression harness until M2 wires `scripts/ci.sh` to selector output.
+- M1 code-review: `CR1-F1` found that direct `docs/releases/release-notes.md` paths were incorrectly accepted as release version `release-notes.md`; `CR1-F2` found missing direct proof for valid PR/main modes and representative first-slice categories.
 
 ## Validation notes
 
@@ -384,6 +387,15 @@ The plan preserves the repository value of trustworthy automation. It optimizes 
 - 2026-04-25: M1 change metadata validation passed: `python scripts/validate-change-metadata.py docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml`.
 - 2026-04-25: M1 lifecycle validation passed: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-25-test-layering-and-change-scoped-validation.md --path specs/test-layering-and-change-scoped-validation.md --path docs/architecture/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/plans/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml`.
 - 2026-04-25: M1 whitespace validation passed: `git diff --check -- scripts tests docs/plans/2026-04-25-test-layering-and-change-scoped-validation.md docs/changes/2026-04-25-test-layering-and-change-scoped-validation`.
+- 2026-04-25: M1 review-driven red check passed as expected before the production fix: `python scripts/test-select-validation.py` failed only on `test_release_path_without_version_directory_blocks` because the selector returned exit `0` instead of expected exit `2`.
+- 2026-04-25: M1 review-driven selector regression passed after the release inference fix: `python scripts/test-select-validation.py` ran 16 tests and passed.
+- 2026-04-25: M1 ambiguous release path probe returned the required block: `python scripts/select-validation.py --mode explicit --path docs/releases/release-notes.md` emitted `status: "blocked"`, `release-version-required`, and exit `2`.
+- 2026-04-25: M1 review artifact structure validation passed after resolving `CR1-F1` and `CR1-F2`: `python scripts/validate-review-artifacts.py docs/changes/2026-04-25-test-layering-and-change-scoped-validation`.
+- 2026-04-25: M1 same-stage re-review completed: `code-review-r2` returned `clean-with-notes` and closed out `code-review-r1`.
+- 2026-04-25: M1 review artifact closeout validation passed after `code-review-r2`: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-25-test-layering-and-change-scoped-validation`.
+- 2026-04-25: M1 change metadata validation passed after review-driven updates: `python scripts/validate-change-metadata.py docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml`.
+- 2026-04-25: M1 lifecycle validation passed after review-driven updates: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-layering-and-change-scoped-validation.md --path specs/test-layering-and-change-scoped-validation.test.md --path docs/plans/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml`.
+- 2026-04-25: M1 whitespace validation passed after review-driven updates: `git diff --check -- scripts docs/plans/2026-04-25-test-layering-and-change-scoped-validation.md docs/changes/2026-04-25-test-layering-and-change-scoped-validation`.
 
 ## Outcome and retrospective
 

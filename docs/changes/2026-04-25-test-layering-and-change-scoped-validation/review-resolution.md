@@ -51,3 +51,28 @@ Validation evidence: `python scripts/validate-review-artifacts.py docs/changes/2
 
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
+
+### code-review-r1
+
+Finding ID: CR1-F1
+Disposition: accepted
+Owner: implementation owner
+Owning stage: implement
+Chosen action: Add direct regression proof for ambiguous direct files under `docs/releases/`, then tighten release-version inference so only paths nested under `docs/releases/<version>/...` infer a release version.
+Rationale: The user accepted the code-review finding and clarified that direct files under `docs/releases/` are ambiguous in v1 and must block with `release-version-required` or manual routing.
+Validation target: `python scripts/test-select-validation.py`
+Validation evidence: `python scripts/test-select-validation.py` passed with 16 tests after the fix; direct probe `python scripts/select-validation.py --mode explicit --path docs/releases/release-notes.md` returned `status: "blocked"`, `release-version-required`, and exit `2`.
+
+Finding ID: CR1-F2
+Disposition: accepted
+Owner: implementation owner
+Owning stage: implement
+Chosen action: Add direct targeted proof for every named M1 selector mode and the missing first-slice category representatives using table-driven tests and a temporary Git range fixture for valid PR/main behavior.
+Rationale: The user accepted the direct-proof gap and instructed that nearby or partial cases must not substitute for named test-spec coverage.
+Validation target: `python scripts/test-select-validation.py`
+Validation evidence: `python scripts/test-select-validation.py` passed with 16 tests, including table-driven first-slice representative coverage and valid PR/main Git range fixtures.
+
+### code-review-r2
+
+Review closeout: code-review-r1
+Review closeout: code-review-r2

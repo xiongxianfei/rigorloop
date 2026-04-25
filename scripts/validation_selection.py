@@ -692,7 +692,7 @@ def _change_root(path: str) -> str | None:
 
 def _release_version_from_path(path: str) -> str | None:
     parts = path.split("/")
-    if len(parts) >= 3 and parts[0] == "docs" and parts[1] == "releases" and parts[2]:
+    if len(parts) >= 4 and parts[0] == "docs" and parts[1] == "releases" and parts[2] and parts[3]:
         return parts[2]
     return None
 

@@ -99,6 +99,15 @@ class ValidationSelectionTests(unittest.TestCase):
         )
         return repo
 
+    def git_output(self, repo: Path, *args: str) -> str:
+        return subprocess.run(
+            ["git", *args],
+            cwd=repo,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+
     def select(self, paths: list[str], *, mode: str = "explicit", **kwargs):
         return select_validation(SelectionRequest(mode=mode, paths=tuple(paths), repo_root=ROOT, **kwargs))
 
@@ -208,6 +217,92 @@ class ValidationSelectionTests(unittest.TestCase):
         release_check = next(check for check in payload["selected_checks"] if check["id"] == "release.validate")
         self.assertEqual(release_check["command"], "python scripts/validate-release.py --version v0.1.1")
 
+    def test_release_path_without_version_directory_blocks(self) -> None:
+        result = run_selector("--mode", "explicit", "--path", "docs/releases/release-notes.md")
+        self.assertEqual(result.returncode, 2)
+        payload = parse_stdout(result)
+
+        self.assertEqual(payload["status"], "blocked")
+        self.assertIn({"path": "docs/releases/release-notes.md", "category": "release"}, payload["classified_paths"])
+        self.assertIn(
+            "release-version-required",
+            {item["code"] for item in payload["blocking_results"]},
+        )
+        self.assertNotIn("release.validate", selected_ids(payload))
+
+    def test_first_slice_representative_categories_route_or_block_safely(self) -> None:
+        cases = [
+            {
+                "path": "dist/adapters/opencode/AGENTS.md",
+                "category": "generated-adapters",
+                "status": "ok",
+                "checks": {"adapters.regression", "adapters.drift", "adapters.validate"},
+            },
+            {
+                "path": ".codex/skills/code-review/SKILL.md",
+                "category": "generated-skills",
+                "status": "ok",
+                "checks": {"skills.drift"},
+            },
+            {
+                "path": "docs/workflows.md",
+                "category": "workflow-guidance",
+                "status": "blocked",
+                "blocking_code": "manual-routing-required",
+            },
+            {
+                "path": "CONSTITUTION.md",
+                "category": "governance",
+                "status": "blocked",
+                "blocking_code": "manual-routing-required",
+            },
+            {
+                "path": "schemas/change.schema.json",
+                "category": "schemas",
+                "status": "blocked",
+                "blocking_code": "manual-routing-required",
+            },
+            {
+                "path": "templates/example.md",
+                "category": "templates",
+                "status": "blocked",
+                "blocking_code": "manual-routing-required",
+            },
+            {
+                "path": "scripts/build-adapters.py",
+                "category": "adapters",
+                "status": "ok",
+                "checks": {"adapters.regression", "adapters.drift", "adapters.validate"},
+            },
+            {
+                "path": "scripts/validate-skills.py",
+                "category": "validator-skills",
+                "status": "ok",
+                "checks": {"skills.regression"},
+            },
+            {
+                "path": "scripts/validate-release.py",
+                "category": "script-unsupported",
+                "status": "blocked",
+                "blocking_code": "manual-routing-required",
+            },
+        ]
+
+        for case in cases:
+            with self.subTest(path=case["path"]):
+                result = self.select([case["path"]])
+                payload = result.to_json_dict()
+
+                self.assertEqual(result.status, case["status"])
+                self.assertIn({"path": case["path"], "category": case["category"]}, payload["classified_paths"])
+                if case.get("checks"):
+                    self.assertTrue(case["checks"].issubset(selected_ids(payload)))
+                if case.get("blocking_code"):
+                    self.assertIn(
+                        case["blocking_code"],
+                        {item["code"] for item in payload["blocking_results"]},
+                    )
+
     def test_selector_and_validation_script_paths_select_regressions(self) -> None:
         result = self.select(["scripts/select-validation.py", "scripts/validate-review-artifacts.py"])
         payload = result.to_json_dict()
@@ -262,6 +357,38 @@ class ValidationSelectionTests(unittest.TestCase):
             {"type": "release_metadata", "path": "docs/releases/v0.1.1/release.yaml"},
             payload["broad_smoke"]["sources"],
         )
+
+    def test_valid_pr_and_main_modes_use_git_range(self) -> None:
+        repo = self.make_git_repo()
+        base = self.git_output(repo, "rev-parse", "HEAD")
+        (repo / "skills" / "workflow" / "SKILL.md").write_text("# Workflow\n\nChanged\n", encoding="utf-8")
+        subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True, text=True)
+        subprocess.run(
+            ["git", "commit", "-m", "change skill"],
+            cwd=repo,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        head = self.git_output(repo, "rev-parse", "HEAD")
+
+        pr_result = run_selector("--mode", "pr", "--base", base, "--head", head, cwd=repo)
+        self.assertEqual(pr_result.returncode, 0, msg=pr_result.stderr)
+        pr_payload = parse_stdout(pr_result)
+        self.assertEqual(pr_payload["mode"], "pr")
+        self.assertEqual(pr_payload["changed_paths"], ["skills/workflow/SKILL.md"])
+        self.assertIn("skills.validate", selected_ids(pr_payload))
+        self.assertFalse(pr_payload["broad_smoke_required"])
+
+        main_result = run_selector("--mode", "main", "--base", base, "--head", head, cwd=repo)
+        self.assertEqual(main_result.returncode, 0, msg=main_result.stderr)
+        main_payload = parse_stdout(main_result)
+        self.assertEqual(main_payload["mode"], "main")
+        self.assertEqual(main_payload["changed_paths"], ["skills/workflow/SKILL.md"])
+        self.assertIn("skills.validate", selected_ids(main_payload))
+        self.assertIn("broad_smoke.repo", selected_ids(main_payload))
+        self.assertTrue(main_payload["broad_smoke_required"])
+        self.assertIn({"type": "mode", "value": "main"}, main_payload["broad_smoke"]["sources"])
 
     def test_local_mode_discovers_tracked_and_untracked_git_paths(self) -> None:
         repo = self.make_git_repo()
