@@ -25,6 +25,9 @@ Read:
 - test output and CI status when available;
 - code-review findings;
 - review-resolution.md when material review findings exist;
+- selector output or wrapper output for targeted proof when changed paths were validated through selected checks;
+- verify-report.md when required manual proof exists for a normal change;
+- release metadata when release smoke or release manual proof is in scope;
 - `AGENTS.md` and `CONSTITUTION.md`;
 - CI workflow definitions relevant to the change.
 
@@ -62,10 +65,12 @@ Requirement → Test IDs → Files changed → Evidence → Status
 8. Block on `Closeout status: open`, any `needs-decision` disposition, stale `review-log.md` open findings, missing final action, missing rationale, missing follow-up record, or missing `Validation evidence` required for an accepted fix.
 9. For lifecycle-managed artifacts, treat stale or inconsistent touched, referenced, generated, or authoritative artifacts as blockers. Report unrelated stale baseline artifacts as warnings instead of blocking the change.
 10. For planned initiatives, compare `docs/plan.md` against the plan body and treat stale lifecycle state as a blocker. At minimum, block on completed, blocked, or superseded work still listed under `## Active`; conflicting index-versus-body state; or a plan body marked done, blocked, or superseded while still presenting itself as active or in progress.
-11. Run or list required validation commands.
-12. Inspect CI workflow scope if CI is expected.
-13. Identify artifact drift and propose fixes.
-14. Produce a final readiness verdict.
+11. Confirm targeted proof ran for the changed surfaces, preferably through `python scripts/select-validation.py` or `bash scripts/ci.sh --mode explicit --path <path>...`, and record stable selected check IDs where useful.
+12. For planned initiatives or other authoritative triggers, confirm broad smoke evidence exists. Common direct proof is `bash scripts/ci.sh --mode broad-smoke`; selector-triggered proof may appear as selected check `broad_smoke.repo`.
+13. If the active plan, test spec, review-resolution, or release metadata records `broad_smoke_required: true`, do not mark `branch-ready` without broad smoke evidence or an explicit blocker.
+14. Inspect CI workflow scope if CI is expected.
+15. Identify artifact drift and propose fixes.
+16. Produce a final readiness verdict.
 
 ## Commands and evidence
 
@@ -82,6 +87,10 @@ If commands cannot be run, state why and what evidence is missing.
 When planned-initiative lifecycle state matters, record which `docs/plan.md` section and which plan-body lifecycle surfaces were reviewed.
 
 When PR-body references are not yet available, record which pre-PR handoff surfaces supplied authoritative references instead. Final PR text must not add new authoritative artifact references without rerunning `verify`.
+
+For required manual proof on normal changes, inspect `docs/changes/<change-id>/verify-report.md`. Required manual proof records must name the check ID, result, why it is manual, performer, date, evidence, and when applicable reason, owner, and follow-up. A check that is intentionally not automated must say `manual by design`.
+
+For release smoke, inspect release metadata under `docs/releases/<version>/` rather than inventing a normal-change `verify-report.md`. Manual proof result `fail` blocks `verify`; `blocked` or `not-run` also blocks unless the governing stage or release contract explicitly allows that temporary state with rationale, owner, and follow-up.
 
 ## Rules
 
