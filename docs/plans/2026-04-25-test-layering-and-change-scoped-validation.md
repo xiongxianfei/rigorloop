@@ -400,7 +400,7 @@ The plan preserves the repository value of trustworthy automation. It optimizes 
 - 2026-04-25: M1 lifecycle validation passed after review-driven updates: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-layering-and-change-scoped-validation.md --path specs/test-layering-and-change-scoped-validation.test.md --path docs/plans/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml`.
 - 2026-04-25: M1 whitespace validation passed after review-driven updates: `git diff --check -- scripts docs/plans/2026-04-25-test-layering-and-change-scoped-validation.md docs/changes/2026-04-25-test-layering-and-change-scoped-validation`.
 - 2026-04-25: M2 red check: `python scripts/test-select-validation.py` failed against the old wrapper because `scripts/ci.sh` ignored `--mode` and ran the broad check list instead of selector-selected proof.
-- 2026-04-25: M2 wrapper regression passed: `python scripts/test-select-validation.py` ran 22 tests and passed.
+- 2026-04-25: M2 wrapper regression passed: `python scripts/test-select-validation.py` ran 23 tests and passed.
 - 2026-04-25: M2 targeted wrapper proof passed: `bash scripts/ci.sh --mode explicit --path specs/test-layering-and-change-scoped-validation.md`.
 - 2026-04-25: M2 wrapper self-routing proof passed: `bash scripts/ci.sh --mode explicit --path scripts/ci.sh`.
 - 2026-04-25: M2 broad smoke passed: `bash scripts/ci.sh --mode broad-smoke`.
