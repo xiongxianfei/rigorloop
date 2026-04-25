@@ -39,6 +39,7 @@ Primary requirement groups: `R1`-`R2c`, `R3`-`R5t`, `R6`-`R15b`, `R16`-`R17g`, `
 ## Tests Added or Changed
 
 - `scripts/test-select-validation.py` is the new selector/wrapper regression surface. It covers the v1 check catalog, JSON shape, exit codes, explicit/local/pr/main/release modes, affected roots, release-version inference, first-slice categories, unclassified-path blocking, wrapper command execution, malformed selector output, selected-command failures, unavailable commands, trusted catalog command enforcement, and workflow guidance alignment.
+- A follow-up PR-CI regression covers deterministic routing for `.github/workflows/ci.yml`, `docs/workflows.md`, `docs/plan.md`, and change-local `explain-change.md`, so hosted PR mode does not stop on manual routing for those governed surfaces.
 - The M3 guidance alignment test intentionally checks contract-level wording for selector-selected targeted proof, broad-smoke triggers, stable check IDs, `verify-report.md`, release metadata, and manual-proof ownership.
 - Adapter and skill tests were not expanded for selector behavior; they remain proof executors and drift checks for generated outputs.
 
@@ -47,6 +48,7 @@ Primary requirement groups: `R1`-`R2c`, `R3`-`R5t`, `R6`-`R15b`, `R16`-`R17g`, `
 Key commands run and recorded in the plan/change metadata:
 
 - `python scripts/test-select-validation.py`
+- `bash scripts/ci.sh --mode explicit --path .github/workflows/ci.yml --path docs/workflows.md --path docs/plan.md --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/explain-change.md --path scripts/validation_selection.py --path scripts/test-select-validation.py`
 - `bash scripts/ci.sh --mode explicit --path scripts/select-validation.py --path scripts/validation_selection.py --path scripts/ci.sh`
 - `bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/review-log.md --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/review-resolution.md --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/reviews/code-review-r6.md --path docs/plans/2026-04-25-test-layering-and-change-scoped-validation.md`
 - `bash scripts/ci.sh --mode broad-smoke`
@@ -58,7 +60,7 @@ Key commands run and recorded in the plan/change metadata:
 - `python scripts/validate-adapters.py --version 0.1.1`
 - `git diff --check -- .`
 
-Verification noted one expected selector limitation: `docs/plan.md` is unclassified by the v1 selector, so verify manually routed it through artifact lifecycle validation instead of treating the selector block as a pass.
+Verification initially found that `docs/plan.md` and several PR-handoff governance surfaces were not deterministically routed. Hosted PR CI confirmed that gap, and the selector now maps those surfaces to `artifact_lifecycle.validate` or `selector.regression`.
 
 Hosted CI was not observed in this local workflow.
 
@@ -85,6 +87,5 @@ This change does not add dependency-graph test selection, app/runtime-code routi
 
 ## Risks and Follow-ups
 
-- `docs/plan.md` is currently outside the v1 selector categories and requires manual lifecycle routing when touched.
 - A future approved change can define a real conservative fallback set for selector status `fallback`.
 - If contributors repeatedly hit manual routing for governance files, add explicit selector mappings with tests rather than weakening unclassified-path blocking.

@@ -141,6 +141,12 @@ validation:
   - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-25-test-layering-and-change-scoped-validation
     result: pass
     reason: PR handoff review closeout validation passed.
+  - command: python scripts/test-select-validation.py
+    result: pass
+    reason: Passed with 26 tests after adding deterministic selector coverage for PR-handoff governance surfaces.
+  - command: bash scripts/ci.sh --mode explicit --path .github/workflows/ci.yml --path docs/workflows.md --path docs/plan.md --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/explain-change.md --path scripts/validation_selection.py --path scripts/test-select-validation.py
+    result: pass
+    reason: Passed after mapping the hosted-CI blocking governance surfaces to deterministic checks.
 changed_files:
   - .github/workflows/ci.yml
   - scripts/ci.sh
