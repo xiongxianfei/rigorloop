@@ -127,7 +127,7 @@ R6. The default full lifecycle for non-trivial work MUST be documented using the
 | `test-spec`           | define proof            | default                           | any behavior change                                                                  |
 | `implement`           | make change             | enforced                          | always                                                                               |
 | `code-review`         | inspect diff            | default                           | all non-trivial PRs                                                                  |
-| `review-resolution`   | handle suggestions      | enforced if review comments exist | any accepted/rejected/deferred review item                                           |
+| `review-resolution`   | handle suggestions      | enforced if review comments exist | any material review finding, non-final disposition, or review outcome requiring closeout |
 | `verify`              | prove result            | enforced                          | every PR                                                                             |
 | `ci`                  | create or update risk-focused GitHub workflows | conditional default | automation needed to cover a material risk is missing or stale                       |
 | `explain-change`      | explain final diff      | default                           | standalone artifact for non-trivial work; PR summary for all work                    |
@@ -319,26 +319,56 @@ R12. For non-trivial changes, PR text MUST include:
 - review focus or major risk;
 - links to relevant durable artifacts when they exist.
 
-R12a. When review feedback exists for a change, each review item MUST be recorded as:
-- accepted;
-- rejected; or
-- deferred,
-with rationale for the recorded disposition.
+R12a. A material review finding MUST include:
+- evidence supporting the finding;
+- the required outcome needed to satisfy the review gate;
+- a safe resolution path or a `needs-decision` rationale naming the authorized owner decision needed before a safe resolution can be chosen.
 
-R12b. Review resolution MAY be recorded in any of the following contributor-visible locations:
-- PR body;
-- explain-change artifact;
-- standalone `review-resolution.md` artifact.
+R12aa. A material review finding that lacks evidence, required outcome, or either a safe resolution path or decision-needed rationale MUST be treated as incomplete and MUST NOT silently drive review-resolution or fixes.
+
+R12ab. Material review findings MUST be recorded before review-driven fixes begin. If fixes already began before a durable review record existed, the durable record MUST be labeled as reconstructed and preserve the original review source, available evidence, after-fix timing disclosure, stable finding IDs, and any known loss of fidelity.
+
+R12ac. When formal lifecycle review findings are recorded under `docs/changes/<change-id>/reviews/`, `docs/changes/<change-id>/review-log.md` MUST exist and every material Finding ID MUST appear in `docs/changes/<change-id>/review-resolution.md`.
+
+R12ad. Review-resolution dispositions MUST use only:
+- `accepted`;
+- `rejected`;
+- `deferred`;
+- `partially-accepted`;
+- `needs-decision`.
+
+R12ae. `needs-decision` is not a final disposition. It is an unresolved stop state and MUST block `verify`, `explain-change`, and `pr` until an authorized owner resolves the decision or explicitly defers it.
+
+R12af. `review-resolution.md` MUST have a top-level closeout status of exactly `Closeout status: open` or `Closeout status: closed`.
+
+R12ag. `Closeout status: open` means one or more material findings are not yet fully resolved for handoff. `Closeout status: closed` means every material finding has a final disposition, all disposition-specific closeout requirements are satisfied, and `review-log.md` lists no open findings.
+
+R12ah. A finding with disposition `accepted` may count toward `Closeout status: closed` only when the chosen action and validation evidence are recorded.
+
+R12ai. A finding with disposition `rejected` may count toward `Closeout status: closed` only when rationale is recorded.
+
+R12aj. A finding with disposition `deferred` may count toward `Closeout status: closed` only when deferral rationale and a follow-up owner, owning stage, or explicit no-follow-up reason are recorded.
+
+R12ak. A finding with disposition `partially-accepted` may count toward `Closeout status: closed` only when the accepted portion has action and validation evidence, and the rejected or deferred portion has its required rationale and follow-up or no-follow-up record.
+
+R12al. A first-pass review outcome that requires revision, changes, or blocks downstream progress MUST be closed by a valid same-stage later review round or by explicit reviewer or owner closeout evidence naming the original Review ID. `review-resolution.md` alone MUST NOT silently replace required re-review or owner closeout.
+
+R12am. `verify`, final `explain-change` closeout, and `pr` handoff MUST NOT proceed while `review-log.md` still lists open findings.
+
+R12b. Routine non-material review notes MAY remain in PR body, the explain-change artifact, or another contributor-visible review surface when they do not require material finding disposition.
 
 R12c. A standalone `review-resolution.md` artifact MUST be used when any of the following is true:
+- a non-trivial change has material review findings;
 - review feedback changes behavior defined by the spec;
 - review feedback changes architecture or ADR direction;
 - review feedback changes the implementation plan;
 - review feedback changes test strategy;
 - review feedback raises security, correctness, compatibility, or data-risk concerns that future maintainers must understand;
-- review feedback creates rejected or deferred items with durable project value;
+- review feedback creates rejected, deferred, partially accepted, or decision-needed items with durable project value;
 - the change goes through multiple material review rounds;
 - a maintainer explicitly requests a standalone review-resolution artifact.
+
+R12ca. PR text and explain-change summaries MUST keep review-resolution details concise. When `review-resolution.md` exists, they SHOULD summarize counts by disposition and link the artifact instead of duplicating every detailed finding and suggestion.
 
 R12d. A standalone `verify-report.md` artifact MUST be used when at least one of the following is true:
 - verification evidence cannot remain concise in `docs/changes/<change-id>/explain-change.md`;
