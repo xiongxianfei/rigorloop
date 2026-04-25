@@ -354,6 +354,7 @@ The plan preserves the repository value of trustworthy automation. It optimizes 
 - [x] 2026-04-25: M2 implemented. `scripts/ci.sh` now consumes selector JSON for normal modes, executes trusted catalog commands, preserves non-recursive `--mode broad-smoke`, and hosted CI passes PR/main ranges through the wrapper.
 - [x] 2026-04-25: M2 code-review complete. `code-review-r3` found missing direct proof for tampered selector command rejection; `CR3-F1` was fixed with a focused wrapper regression and `code-review-r4` returned `clean-with-notes`.
 - [x] 2026-04-25: M3 implemented. Workflow docs and affected stage skills now describe selector-selected targeted proof, triggered broad smoke, stable check IDs, and manual-proof ownership; generated `.codex/skills/` and public adapter skill outputs were regenerated from canonical skills.
+- [x] 2026-04-25: M3 code-review complete. `code-review-r5` returned `clean-with-notes`.
 - [ ] M4 complete.
 
 ## Decision log
@@ -433,15 +434,20 @@ The plan preserves the repository value of trustworthy automation. It optimizes 
 - 2026-04-25: M3 change metadata validation passed after M3 updates: `python scripts/validate-change-metadata.py docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml`.
 - 2026-04-25: M3 lifecycle validation passed after M3 updates: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/rigorloop-workflow.md --path docs/plans/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml`.
 - 2026-04-25: M3 whitespace validation passed after M3 updates: `git diff --check -- specs docs skills .codex/skills dist scripts AGENTS.md CONSTITUTION.md`.
+- 2026-04-25: M3 code-review completed: `code-review-r5` returned `clean-with-notes`.
+- 2026-04-25: M3 review artifact closeout validation passed after `code-review-r5`: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-25-test-layering-and-change-scoped-validation`.
+- 2026-04-25: M3 change metadata validation passed after review closeout updates: `python scripts/validate-change-metadata.py docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml`.
+- 2026-04-25: M3 lifecycle validation passed after review closeout updates: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/rigorloop-workflow.md --path docs/plans/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml`.
+- 2026-04-25: M3 whitespace validation passed after review closeout updates: `git diff --check -- docs/changes/2026-04-25-test-layering-and-change-scoped-validation docs/plans/2026-04-25-test-layering-and-change-scoped-validation.md`.
 
 ## Outcome and retrospective
 
-- Active. M1 and M2 implementation and code-review are complete; M3 implementation is complete and awaits code-review.
+- Active. M1, M2, and M3 implementation and code-review are complete; M4 is the next implementation milestone.
 
 ## Readiness
 
-- Immediate next repository stage: `code-review` for M3.
-- Next implementation milestone after review: M4 integration closeout and final validation.
+- Immediate next repository stage: `implement` for M4.
+- Next implementation milestone: M4 integration closeout and final validation.
 
 ## Risks and follow-ups
 
