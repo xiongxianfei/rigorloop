@@ -298,26 +298,26 @@ class ValidationSelectionTests(unittest.TestCase):
             {
                 "path": "docs/workflows.md",
                 "category": "workflow-guidance",
-                "status": "blocked",
-                "blocking_code": "manual-routing-required",
+                "status": "ok",
+                "checks": {"selector.regression"},
             },
             {
                 "path": "CONSTITUTION.md",
                 "category": "governance",
-                "status": "blocked",
-                "blocking_code": "manual-routing-required",
+                "status": "ok",
+                "checks": {"selector.regression"},
             },
             {
                 "path": "schemas/change.schema.json",
                 "category": "schemas",
-                "status": "blocked",
-                "blocking_code": "manual-routing-required",
+                "status": "ok",
+                "checks": {"change_metadata.regression"},
             },
             {
                 "path": "templates/example.md",
                 "category": "templates",
-                "status": "blocked",
-                "blocking_code": "manual-routing-required",
+                "status": "ok",
+                "checks": {"selector.regression"},
             },
             {
                 "path": "scripts/build-adapters.py",
@@ -333,15 +333,33 @@ class ValidationSelectionTests(unittest.TestCase):
             },
             {
                 "path": "scripts/validate-release.py",
-                "category": "script-unsupported",
-                "status": "blocked",
-                "blocking_code": "manual-routing-required",
+                "category": "release-script",
+                "status": "ok",
+                "checks": {"adapters.regression"},
             },
             {
                 "path": "scripts/ci.sh",
                 "category": "ci-wrapper",
                 "status": "ok",
                 "checks": {"selector.regression"},
+            },
+            {
+                "path": ".github/workflows/ci.yml",
+                "category": "ci-workflow",
+                "status": "ok",
+                "checks": {"selector.regression"},
+            },
+            {
+                "path": "docs/plan.md",
+                "category": "lifecycle",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/explain-change.md",
+                "category": "change-local-lifecycle",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
             },
         ]
 
@@ -368,13 +386,31 @@ class ValidationSelectionTests(unittest.TestCase):
         self.assertIn("selector.regression", selected_ids(payload))
         self.assertIn("review_artifacts.regression", selected_ids(payload))
 
-    def test_governance_paths_block_with_manual_routing_instead_of_empty_ok(self) -> None:
+    def test_governance_paths_select_deterministic_proof_instead_of_empty_ok(self) -> None:
         result = self.select(["AGENTS.md"])
         payload = result.to_json_dict()
 
-        self.assertEqual(result.status, "blocked")
+        self.assertEqual(result.status, "ok")
         self.assertIn({"path": "AGENTS.md", "category": "governance"}, payload["classified_paths"])
-        self.assertIn("manual-routing-required", {item["code"] for item in payload["blocking_results"]})
+        self.assertIn("selector.regression", selected_ids(payload))
+        self.assertFalse(payload["blocking_results"])
+
+    def test_pr_handoff_surfaces_select_deterministic_checks(self) -> None:
+        result = self.select(
+            [
+                ".github/workflows/ci.yml",
+                "docs/workflows.md",
+                "docs/plan.md",
+                "docs/changes/2026-04-25-example/explain-change.md",
+            ]
+        )
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertFalse(payload["unclassified_paths"])
+        self.assertFalse(payload["blocking_results"])
+        self.assertIn("selector.regression", selected_ids(payload))
+        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
 
     def test_broad_smoke_sources_are_attributed(self) -> None:
         temp_root = Path(tempfile.mkdtemp(prefix="validation-selection-broad-smoke-"))

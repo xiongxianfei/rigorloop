@@ -463,6 +463,15 @@ def _apply_path_selection(
         )
         return
 
+    if category == "change-local-lifecycle":
+        _add_check(
+            selected,
+            "artifact_lifecycle.validate",
+            "Changed change-local lifecycle artifact requires artifact lifecycle validation.",
+            path=path,
+        )
+        return
+
     if category == "release":
         version = _release_version_from_path(path)
         if not version:
@@ -513,6 +522,30 @@ def _apply_path_selection(
 
     if category == "validator-skills":
         _add_check(selected, "skills.regression", "Changed skill validator requires skill regression fixtures.")
+        return
+
+    if category in {"ci-workflow", "workflow-guidance", "governance", "templates"}:
+        _add_check(
+            selected,
+            "selector.regression",
+            f"Changed {category} path requires selector and workflow routing regression fixtures.",
+        )
+        return
+
+    if category == "schemas":
+        _add_check(
+            selected,
+            "change_metadata.regression",
+            "Changed schema path requires change metadata regression fixtures.",
+        )
+        return
+
+    if category == "release-script":
+        _add_check(
+            selected,
+            "adapters.regression",
+            "Changed release script requires release and adapter distribution regression fixtures.",
+        )
         return
 
     blocking_results.append(
@@ -633,6 +666,8 @@ def _path_category(path: str) -> str | None:
         return "selector"
     if path == "scripts/ci.sh":
         return "ci-wrapper"
+    if path == ".github/workflows/ci.yml":
+        return "ci-workflow"
     if path in {"scripts/validate-review-artifacts.py", "scripts/review_artifact_validation.py", "scripts/test-review-artifact-validator.py"}:
         return "validator-review-artifacts"
     if path in {
@@ -651,6 +686,8 @@ def _path_category(path: str) -> str | None:
             return "change-metadata"
         if parts[3] in {"review-log.md", "review-resolution.md"} or parts[3] == "reviews":
             return "review-artifacts"
+        if parts[3] == "explain-change.md":
+            return "change-local-lifecycle"
         return "change-local-unsupported"
     if _is_lifecycle_path(path):
         return "lifecycle"
@@ -664,12 +701,16 @@ def _path_category(path: str) -> str | None:
         return "templates"
     if path.startswith("schemas/"):
         return "schemas"
+    if path in {"scripts/validate-release.py", "scripts/release-verify.sh"}:
+        return "release-script"
     if path.startswith("scripts/"):
         return "script-unsupported"
     return None
 
 
 def _is_lifecycle_path(path: str) -> bool:
+    if path == "docs/plan.md":
+        return True
     if path.startswith("docs/proposals/") and path.endswith(".md"):
         return True
     if path.startswith("specs/") and path.endswith(".md"):
