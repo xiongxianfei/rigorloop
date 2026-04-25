@@ -146,7 +146,7 @@ validation:
     reason: Passed with 26 tests after adding deterministic selector coverage for PR-handoff governance surfaces.
   - command: bash scripts/ci.sh --mode explicit --path .github/workflows/ci.yml --path docs/workflows.md --path docs/plan.md --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/explain-change.md --path scripts/validation_selection.py --path scripts/test-select-validation.py
     result: pass
-    reason: Passed after mapping the hosted-CI blocking governance surfaces to deterministic checks.
+    reason: Passed after mapping the hosted-CI blocking governance surfaces to deterministic checks; lifecycle validation included the governing change.yaml and validated 5 artifacts.
 changed_files:
   - .github/workflows/ci.yml
   - scripts/ci.sh

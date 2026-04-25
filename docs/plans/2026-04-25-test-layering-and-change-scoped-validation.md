@@ -360,7 +360,7 @@ The plan preserves the repository value of trustworthy automation. It optimizes 
 - [x] 2026-04-25: Verify passed. Classified review/change/plan surfaces passed through `scripts/ci.sh`, `docs/plan.md` was manually routed through lifecycle validation after the selector returned the expected v1 `unclassified-path` block, and planned broad smoke passed.
 - [x] 2026-04-25: Explain-change completed at `docs/changes/2026-04-25-test-layering-and-change-scoped-validation/explain-change.md`.
 - [x] 2026-04-25: PR handoff prepared. Lifecycle state is closed in the plan body and `docs/plan.md`; review-resolution remains closed with no open findings.
-- [x] 2026-04-25: Hosted PR CI coverage gap fixed. The selector now maps PR-handoff governance surfaces such as `.github/workflows/ci.yml`, `docs/workflows.md`, `docs/plan.md`, and change-local `explain-change.md` to deterministic checks instead of blocking PR mode.
+- [x] 2026-04-25: Hosted PR CI coverage gap fixed. The selector now maps PR-handoff governance surfaces such as `.github/workflows/ci.yml`, `docs/workflows.md`, `docs/plan.md`, and change-local `explain-change.md` to deterministic checks instead of blocking PR mode; plan-index and change-local lifecycle routing include related change metadata so lifecycle validation is not a no-op.
 
 ## Decision log
 
@@ -468,7 +468,7 @@ The plan preserves the repository value of trustworthy automation. It optimizes 
 - 2026-04-25: PR handoff review closeout validation passed: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-25-test-layering-and-change-scoped-validation`.
 - 2026-04-25: Hosted PR CI first run failed because PR mode blocked `.github/workflows/ci.yml`, `docs/workflows.md`, `docs/plan.md`, and change-local `explain-change.md`; this exposed a selector first-slice coverage gap.
 - 2026-04-25: PR CI gap selector regression passed after the fix: `python scripts/test-select-validation.py` ran 26 tests and passed.
-- 2026-04-25: PR CI gap targeted wrapper proof passed after the fix: `bash scripts/ci.sh --mode explicit --path .github/workflows/ci.yml --path docs/workflows.md --path docs/plan.md --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/explain-change.md --path scripts/validation_selection.py --path scripts/test-select-validation.py`.
+- 2026-04-25: PR CI gap targeted wrapper proof passed after the fix: `bash scripts/ci.sh --mode explicit --path .github/workflows/ci.yml --path docs/workflows.md --path docs/plan.md --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/explain-change.md --path scripts/validation_selection.py --path scripts/test-select-validation.py`. The lifecycle command included `docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml` and validated 5 artifacts.
 
 ## Outcome and retrospective
 

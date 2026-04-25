@@ -39,7 +39,7 @@ Primary requirement groups: `R1`-`R2c`, `R3`-`R5t`, `R6`-`R15b`, `R16`-`R17g`, `
 ## Tests Added or Changed
 
 - `scripts/test-select-validation.py` is the new selector/wrapper regression surface. It covers the v1 check catalog, JSON shape, exit codes, explicit/local/pr/main/release modes, affected roots, release-version inference, first-slice categories, unclassified-path blocking, wrapper command execution, malformed selector output, selected-command failures, unavailable commands, trusted catalog command enforcement, and workflow guidance alignment.
-- A follow-up PR-CI regression covers deterministic routing for `.github/workflows/ci.yml`, `docs/workflows.md`, `docs/plan.md`, and change-local `explain-change.md`, so hosted PR mode does not stop on manual routing for those governed surfaces.
+- A follow-up PR-CI regression covers deterministic routing for `.github/workflows/ci.yml`, `docs/workflows.md`, `docs/plan.md`, and change-local `explain-change.md`, so hosted PR mode does not stop on manual routing for those governed surfaces. Plan-index and change-local lifecycle routing include related change metadata so lifecycle validation is not a no-op.
 - The M3 guidance alignment test intentionally checks contract-level wording for selector-selected targeted proof, broad-smoke triggers, stable check IDs, `verify-report.md`, release metadata, and manual-proof ownership.
 - Adapter and skill tests were not expanded for selector behavior; they remain proof executors and drift checks for generated outputs.
 
