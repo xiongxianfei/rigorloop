@@ -121,6 +121,17 @@ For ordinary non-trivial work in the full-feature lane, carry the baseline chang
 
 Keep `review-resolution.md` and `verify-report.md` conditional. Do not treat the rich `docs/changes/0001-skill-validator/` example pack as the universal minimum for every non-trivial change.
 
+### Review-resolution contract
+
+- Material findings must include evidence, required outcome, and a safe resolution path or `needs-decision` rationale.
+- Record first-pass material review findings before review-driven fixes when feasible; reconstructed records must say they were reconstructed.
+- For non-trivial changes with material findings, use `review-resolution.md` and approved dispositions: `accepted`, `rejected`, `deferred`, `partially-accepted`, and `needs-decision`.
+- `needs-decision` is not final and blocks `verify`, `explain-change`, and `pr` until resolved or explicitly deferred by an authorized owner.
+- `Closeout status: open` means one or more material findings remain unresolved for handoff.
+- `Closeout status: closed` means every material finding has a final disposition plus required action, rationale, follow-up, and validation evidence.
+- A closed handoff requires `review-log.md` to list no open findings.
+- A review outcome requiring revision still needs a later same-stage review round or explicit reviewer or owner closeout evidence; `review-resolution.md` alone is not a silent substitute for required re-review.
+
 ### Review-stage handoff versus downstream readiness
 
 - `spec-review` may report both immediate next repository stage and eventual `test-spec` readiness, but those are different concepts.

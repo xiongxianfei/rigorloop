@@ -1,0 +1,384 @@
+change_id: 2026-04-24-review-finding-resolution-contract
+title: Define review finding resolution contract
+classification: default
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-04-24-review-finding-resolution-contract.md
+  spec: specs/review-finding-resolution-contract.md
+  test_spec: specs/review-finding-resolution-contract.test.md
+  architecture: docs/architecture/2026-04-24-review-finding-resolution-contract.md
+  plan: docs/plans/2026-04-25-review-finding-resolution-contract.md
+  explain_change: docs/changes/2026-04-24-review-finding-resolution-contract/explain-change.md
+  review_resolution: docs/changes/2026-04-24-review-finding-resolution-contract/review-resolution.md
+requirements:
+  - R1
+  - R1a
+  - R1b
+  - R1c
+  - R1d
+  - R2
+  - R2a
+  - R2b
+  - R2c
+  - R2d
+  - R2e
+  - R2f
+  - R2g
+  - R2h
+  - R2i
+  - R2j
+  - R2k
+  - R2l
+  - R2m
+  - R2m-exception
+  - R2n
+  - R2o
+  - R3
+  - R3a
+  - R3b
+  - R3c
+  - R3d
+  - R3e
+  - R3f
+  - R3g
+  - R3h
+  - R3i
+  - R3j
+  - R3k
+  - R3l
+  - R3m
+  - R3n
+  - R3o
+  - R3p
+  - R4
+  - R4a
+  - R4b
+  - R4c
+  - R5
+  - R5a
+  - R5b
+  - R5c
+  - R5d
+  - R5e
+  - R5f
+  - R5g
+  - R5h
+  - R5i
+  - R6
+  - R6a
+  - R6b
+  - R6c
+  - R6d
+  - R6e
+  - R6f
+  - R6g
+  - R6h
+  - R6i
+  - R6j
+  - R6k
+  - R6l
+  - R6m
+  - R7
+  - R7a
+  - R7b
+  - R7c
+  - R7d
+  - R8
+  - R8a
+  - R8b
+  - R8c
+  - R8d
+  - R8e
+  - R8f
+  - R8g
+  - R8h
+  - R9
+  - R9a
+  - R10
+  - R10a
+  - R10b
+  - R10c
+  - R11
+  - R11a
+  - R11b
+  - R12
+  - R12a
+  - R12b
+  - R12c
+  - R13
+  - R13a
+  - R13b
+  - R14
+  - R14a
+tests:
+  - specs/review-finding-resolution-contract.test.md
+validation:
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-24-review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md
+    result: pass_after_architecture_draft
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml
+    result: pass_after_review_record_creation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-24-review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml
+    result: pass_after_spec_timing_update
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml
+    result: pass_after_spec_timing_update
+  - command: git diff --check -- specs/review-finding-resolution-contract.md docs/changes/2026-04-24-review-finding-resolution-contract
+    result: pass_after_spec_timing_update
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml
+    result: pass_after_spec_review_record_creation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-24-review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml
+    result: pass_after_spec_review_record_creation
+  - command: git diff --check -- specs/review-finding-resolution-contract.md docs/changes/2026-04-24-review-finding-resolution-contract
+    result: pass_after_spec_review_record_creation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml
+    result: pass_after_sr1_sr2_sr3_spec_revision
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-24-review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml
+    result: pass_after_sr1_sr2_sr3_spec_revision
+  - command: git diff --check -- specs/review-finding-resolution-contract.md docs/changes/2026-04-24-review-finding-resolution-contract
+    result: pass_after_sr1_sr2_sr3_spec_revision
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml
+    result: pass_after_spec_review_r2_record
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-24-review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml
+    result: pass_after_spec_review_r2_record
+  - command: git diff --check -- specs/review-finding-resolution-contract.md docs/changes/2026-04-24-review-finding-resolution-contract
+    result: pass_after_spec_review_r2_record
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml
+    result: pass_after_architecture_revision
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-24-review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml
+    result: pass_after_architecture_revision
+  - command: git diff --check -- specs/review-finding-resolution-contract.md docs/architecture/2026-04-24-review-finding-resolution-contract.md docs/changes/2026-04-24-review-finding-resolution-contract
+    result: pass_after_architecture_revision
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml
+    result: pass_after_architecture_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-24-review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml
+    result: pass_after_architecture_review_r2
+  - command: git diff --check -- docs/changes/2026-04-24-review-finding-resolution-contract docs/architecture/2026-04-24-review-finding-resolution-contract.md specs/review-finding-resolution-contract.md
+    result: pass_after_architecture_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml
+    result: pass_after_plan_creation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-24-review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml --path docs/plan.md --path docs/plans/2026-04-25-review-finding-resolution-contract.md
+    result: pass_after_plan_creation
+  - command: git diff --check -- docs/proposals/2026-04-24-review-finding-resolution-contract.md specs/review-finding-resolution-contract.md docs/architecture/2026-04-24-review-finding-resolution-contract.md docs/changes/2026-04-24-review-finding-resolution-contract docs/plan.md docs/plans/2026-04-25-review-finding-resolution-contract.md
+    result: pass_after_plan_creation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml
+    result: pass_after_test_spec_creation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-24-review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml --path docs/plan.md --path docs/plans/2026-04-25-review-finding-resolution-contract.md
+    result: pass_after_test_spec_creation
+  - command: git diff --check -- docs/proposals/2026-04-24-review-finding-resolution-contract.md specs/review-finding-resolution-contract.md specs/review-finding-resolution-contract.test.md docs/architecture/2026-04-24-review-finding-resolution-contract.md docs/changes/2026-04-24-review-finding-resolution-contract docs/plan.md docs/plans/2026-04-25-review-finding-resolution-contract.md
+    result: pass_after_test_spec_creation
+  - command: python scripts/test-review-artifact-validator.py
+    result: fail_expected_missing_review_artifact_validation_module_before_m1_implementation
+  - command: python scripts/test-review-artifact-validator.py
+    result: pass_after_m1_implementation
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-04-24-review-finding-resolution-contract
+    result: pass_after_m1_implementation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml
+    result: pass_after_m1_implementation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-24-review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml --path docs/plan.md --path docs/plans/2026-04-25-review-finding-resolution-contract.md
+    result: pass_after_m1_implementation
+  - command: git diff --check -- scripts tests docs/changes/2026-04-24-review-finding-resolution-contract docs/plans/2026-04-25-review-finding-resolution-contract.md
+    result: pass_after_m1_implementation
+  - command: python scripts/test-review-artifact-validator.py
+    result: fail_expected_unsupported_closeout_mode_and_missing_ci_review_artifact_checks_before_m2_implementation
+  - command: python scripts/test-review-artifact-validator.py
+    result: pass_after_m2_implementation
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-04-24-review-finding-resolution-contract
+    result: pass_after_m2_implementation
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-24-review-finding-resolution-contract
+    result: pass_after_m2_implementation
+  - command: bash scripts/ci.sh
+    result: pass_after_m2_implementation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml
+    result: pass_after_m2_implementation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-24-review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml --path docs/plan.md --path docs/plans/2026-04-25-review-finding-resolution-contract.md
+    result: pass_after_m2_implementation
+  - command: git diff --check -- scripts tests docs/changes/2026-04-24-review-finding-resolution-contract docs/plans/2026-04-25-review-finding-resolution-contract.md
+    result: pass_after_m2_implementation
+  - command: python scripts/test-review-artifact-validator.py
+    result: fail_expected_same_round_nonblocking_review_was_accepted_before_cr1_fix
+  - command: python scripts/test-review-artifact-validator.py
+    result: pass_after_cr1_fix
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-04-24-review-finding-resolution-contract
+    result: pass_after_cr1_fix
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-24-review-finding-resolution-contract
+    result: pass_after_cr1_fix
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml
+    result: pass_after_cr1_fix
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-24-review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml --path docs/plan.md --path docs/plans/2026-04-25-review-finding-resolution-contract.md
+    result: pass_after_cr1_fix
+  - command: git diff --check -- .
+    result: pass_after_cr1_fix
+  - command: bash scripts/ci.sh
+    result: pass_after_cr1_fix
+  - command: python scripts/test-review-artifact-validator.py
+    result: fail_expected_missing_m3_guidance_before_workflow_and_skill_alignment
+  - command: python scripts/test-review-artifact-validator.py
+    result: pass_after_m3_workflow_and_skill_alignment
+  - command: python scripts/validate-skills.py
+    result: pass_after_m3_skill_alignment
+  - command: python scripts/build-skills.py
+    result: pass_after_m3_skill_alignment
+  - command: python scripts/build-skills.py --check
+    result: pass_after_m3_skill_alignment
+  - command: python scripts/test-adapter-distribution.py
+    result: fail_expected_stale_public_adapters_before_m3_regeneration
+  - command: python scripts/build-adapters.py --version 0.1.1
+    result: pass_after_m3_adapter_regeneration
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_after_m3_adapter_regeneration
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_after_m3_adapter_regeneration
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_after_m3_adapter_regeneration
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-24-review-finding-resolution-contract
+    result: pass_after_m3_final_validation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml
+    result: pass_after_m3_metadata_update
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-24-review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path specs/rigorloop-workflow.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml --path docs/plan.md --path docs/plans/2026-04-25-review-finding-resolution-contract.md --path docs/workflows.md --path AGENTS.md --path CONSTITUTION.md --path scripts/test-review-artifact-validator.py --path skills/code-review/SKILL.md --path skills/workflow/SKILL.md --path skills/verify/SKILL.md --path skills/explain-change/SKILL.md --path skills/pr/SKILL.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path skills/architecture-review/SKILL.md --path skills/plan-review/SKILL.md
+    result: pass_after_m3_final_validation
+  - command: rg -n "partially-accepted|needs-decision|Closeout status|review-resolution.md" specs/rigorloop-workflow.md docs/workflows.md CONSTITUTION.md AGENTS.md skills .codex/skills dist/adapters
+    result: pass_after_m3_final_validation
+  - command: git diff --check -- specs docs skills .codex/skills dist AGENTS.md CONSTITUTION.md scripts
+    result: pass_after_m3_final_validation
+  - command: python scripts/validate-release.py --version v0.1.1
+    result: pass_after_m3_final_validation
+  - command: bash scripts/ci.sh
+    result: pass_after_m3_final_validation
+  - command: python scripts/test-review-artifact-validator.py
+    result: pass_after_cr2_fix
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-24-review-finding-resolution-contract
+    result: pass_after_cr2_fix
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml
+    result: pass_after_cr2_fix
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-24-review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path specs/rigorloop-workflow.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml --path docs/plan.md --path docs/plans/2026-04-25-review-finding-resolution-contract.md --path docs/workflows.md --path AGENTS.md --path CONSTITUTION.md --path scripts/test-review-artifact-validator.py --path skills/code-review/SKILL.md --path skills/workflow/SKILL.md --path skills/verify/SKILL.md --path skills/explain-change/SKILL.md --path skills/pr/SKILL.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path skills/architecture-review/SKILL.md --path skills/plan-review/SKILL.md
+    result: pass_after_cr2_fix
+  - command: git diff --check -- specs docs skills .codex/skills dist AGENTS.md CONSTITUTION.md scripts
+    result: pass_after_cr2_fix
+  - command: bash scripts/ci.sh
+    result: pass_after_cr2_fix
+  - command: python scripts/test-review-artifact-validator.py
+    result: pass_after_m4_closeout
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-24-review-finding-resolution-contract
+    result: pass_after_m4_closeout
+  - command: python scripts/validate-skills.py
+    result: pass_after_m4_closeout
+  - command: python scripts/build-skills.py --check
+    result: pass_after_m4_closeout
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_after_m4_closeout
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_after_m4_closeout
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_after_m4_closeout
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml
+    result: pass_after_m4_closeout
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-24-review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path specs/rigorloop-workflow.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml --path docs/changes/2026-04-24-review-finding-resolution-contract/explain-change.md --path docs/plan.md --path docs/plans/2026-04-25-review-finding-resolution-contract.md --path docs/workflows.md --path AGENTS.md --path CONSTITUTION.md
+    result: pass_after_m4_closeout
+  - command: python scripts/validate-release.py --version v0.1.1
+    result: pass_after_m4_closeout
+  - command: git diff --check -- .
+    result: pass_after_m4_closeout
+  - command: bash scripts/ci.sh
+    result: pass_after_m4_closeout
+  - command: python scripts/test-review-artifact-validator.py
+    result: pass_after_cr3_fix
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-24-review-finding-resolution-contract
+    result: pass_after_cr3_fix
+  - command: python scripts/validate-skills.py
+    result: pass_after_cr3_fix
+  - command: python scripts/build-skills.py --check
+    result: pass_after_cr3_fix
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_after_cr3_fix
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_after_cr3_fix
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_after_cr3_fix
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml
+    result: pass_after_cr3_fix
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-24-review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path specs/rigorloop-workflow.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml --path docs/changes/2026-04-24-review-finding-resolution-contract/explain-change.md --path docs/plan.md --path docs/plans/2026-04-25-review-finding-resolution-contract.md --path docs/workflows.md --path AGENTS.md --path CONSTITUTION.md
+    result: pass_after_cr3_fix
+  - command: python scripts/validate-release.py --version v0.1.1
+    result: pass_after_cr3_fix
+  - command: git diff --check -- .
+    result: pass_after_cr3_fix
+  - command: bash scripts/ci.sh
+    result: pass_after_cr3_fix
+changed_files:
+  - AGENTS.md
+  - CONSTITUTION.md
+  - .codex/skills/architecture-review/SKILL.md
+  - .codex/skills/code-review/SKILL.md
+  - .codex/skills/explain-change/SKILL.md
+  - .codex/skills/plan-review/SKILL.md
+  - .codex/skills/pr/SKILL.md
+  - .codex/skills/proposal-review/SKILL.md
+  - .codex/skills/spec-review/SKILL.md
+  - .codex/skills/verify/SKILL.md
+  - .codex/skills/workflow/SKILL.md
+  - dist/adapters/claude/.claude/skills/architecture-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/code-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/explain-change/SKILL.md
+  - dist/adapters/claude/.claude/skills/plan-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/pr/SKILL.md
+  - dist/adapters/claude/.claude/skills/proposal-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/spec-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/verify/SKILL.md
+  - dist/adapters/claude/.claude/skills/workflow/SKILL.md
+  - dist/adapters/codex/.agents/skills/architecture-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/code-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/explain-change/SKILL.md
+  - dist/adapters/codex/.agents/skills/plan-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/pr/SKILL.md
+  - dist/adapters/codex/.agents/skills/proposal-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/spec-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/verify/SKILL.md
+  - dist/adapters/codex/.agents/skills/workflow/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/architecture-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/code-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/explain-change/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/plan-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/pr/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/proposal-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/spec-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/verify/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/workflow/SKILL.md
+  - docs/architecture/2026-04-24-review-finding-resolution-contract.md
+  - docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml
+  - docs/changes/2026-04-24-review-finding-resolution-contract/explain-change.md
+  - docs/changes/2026-04-24-review-finding-resolution-contract/review-log.md
+  - docs/changes/2026-04-24-review-finding-resolution-contract/review-resolution.md
+  - docs/changes/2026-04-24-review-finding-resolution-contract/reviews/architecture-review-r1.md
+  - docs/changes/2026-04-24-review-finding-resolution-contract/reviews/architecture-review-r2.md
+  - docs/changes/2026-04-24-review-finding-resolution-contract/reviews/code-review-r1.md
+  - docs/changes/2026-04-24-review-finding-resolution-contract/reviews/code-review-r2.md
+  - docs/changes/2026-04-24-review-finding-resolution-contract/reviews/code-review-r3.md
+  - docs/changes/2026-04-24-review-finding-resolution-contract/reviews/spec-review-r1.md
+  - docs/changes/2026-04-24-review-finding-resolution-contract/reviews/spec-review-r2.md
+  - docs/plan.md
+  - docs/plans/2026-04-25-review-finding-resolution-contract.md
+  - docs/proposals/2026-04-24-review-finding-resolution-contract.md
+  - docs/workflows.md
+  - scripts/ci.sh
+  - scripts/review_artifact_validation.py
+  - scripts/test-review-artifact-validator.py
+  - scripts/validate-review-artifacts.py
+  - skills/architecture-review/SKILL.md
+  - skills/code-review/SKILL.md
+  - skills/explain-change/SKILL.md
+  - skills/plan-review/SKILL.md
+  - skills/pr/SKILL.md
+  - skills/proposal-review/SKILL.md
+  - skills/spec-review/SKILL.md
+  - skills/verify/SKILL.md
+  - skills/workflow/SKILL.md
+  - specs/rigorloop-workflow.md
+  - specs/review-finding-resolution-contract.md
+  - specs/review-finding-resolution-contract.test.md
+  - tests/fixtures/review-artifacts/README.md
+  - tests/fixtures/review-artifacts/valid-open-resolution/review-log.md
+  - tests/fixtures/review-artifacts/valid-open-resolution/review-resolution.md
+  - tests/fixtures/review-artifacts/valid-open-resolution/reviews/code-review-r1.md
+review:
+  status: closed
+  unresolved_items: 0
+  location: docs/changes/2026-04-24-review-finding-resolution-contract/review-resolution.md
