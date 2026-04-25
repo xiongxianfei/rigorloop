@@ -1,6 +1,6 @@
 # Test layering and change-scoped validation implementation plan
 
-- Status: active
+- Status: done
 - Owner: maintainer + Codex
 - Start date: 2026-04-25
 - Last updated: 2026-04-25
@@ -359,6 +359,7 @@ The plan preserves the repository value of trustworthy automation. It optimizes 
 - [x] 2026-04-25: M4 code-review complete. `code-review-r6` returned `clean-with-notes`.
 - [x] 2026-04-25: Verify passed. Classified review/change/plan surfaces passed through `scripts/ci.sh`, `docs/plan.md` was manually routed through lifecycle validation after the selector returned the expected v1 `unclassified-path` block, and planned broad smoke passed.
 - [x] 2026-04-25: Explain-change completed at `docs/changes/2026-04-25-test-layering-and-change-scoped-validation/explain-change.md`.
+- [x] 2026-04-25: PR handoff prepared. Lifecycle state is closed in the plan body and `docs/plan.md`; review-resolution remains closed with no open findings.
 
 ## Decision log
 
@@ -461,10 +462,13 @@ The plan preserves the repository value of trustworthy automation. It optimizes 
 - 2026-04-25: Verify wrapper proof passed for classified review/change/plan surfaces: `bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/review-log.md --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/review-resolution.md --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/reviews/code-review-r6.md --path docs/plans/2026-04-25-test-layering-and-change-scoped-validation.md`. The active-plan trigger selected and passed `broad_smoke.repo`; only unrelated baseline lifecycle warnings were emitted for older proposal artifacts.
 - 2026-04-25: Explain-change change metadata validation passed: `python scripts/validate-change-metadata.py docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml`.
 - 2026-04-25: Explain-change lifecycle validation passed: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/explain-change.md --path docs/plan.md --path docs/plans/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml`.
+- 2026-04-25: PR handoff change metadata validation passed: `python scripts/validate-change-metadata.py docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml`.
+- 2026-04-25: PR handoff lifecycle validation passed: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/explain-change.md --path docs/plan.md --path docs/plans/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml`.
+- 2026-04-25: PR handoff review closeout validation passed: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-25-test-layering-and-change-scoped-validation`.
 
 ## Outcome and retrospective
 
-- Active. M1, M2, M3, M4, code-review, verify, and explain-change are complete; the change is ready for PR handoff.
+- Done. M1, M2, M3, M4, code-review, verify, and explain-change are complete; the change is ready for PR handoff.
 
 ## Readiness
 

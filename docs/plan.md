@@ -3,12 +3,13 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-04-25 Test layering and change-scoped validation](plans/2026-04-25-test-layering-and-change-scoped-validation.md) - active execution plan with M1-M4 implemented, reviewed, verified, and explained; pending PR handoff.
+- none yet
 
 ## Blocked
 - none yet
 
 ## Done
+- [2026-04-25 Test layering and change-scoped validation](plans/2026-04-25-test-layering-and-change-scoped-validation.md) - completed execution plan for adding the JSON validation selector, wiring `scripts/ci.sh` to selector output, preserving source-attributed broad-smoke triggers, recording manual proof ownership, aligning workflow guidance, and closing review/verification evidence.
 - [2026-04-25 Review finding resolution contract implementation](plans/2026-04-25-review-finding-resolution-contract.md) - completed execution plan for review finding completeness, review-log and review-resolution structure, closeout validation, workflow guidance, generated skill and adapter sync, and lifecycle closeout.
 - [2026-04-24 Skill invocation commands for adapter packages](plans/2026-04-24-skill-invocation-commands-for-adapters.md) - completed execution plan for `v0.1.1` OpenCode command aliases, Claude/OpenCode invocation docs, manifest command path metadata, release verification, smoke evidence, and lifecycle closeout.
 - [2026-04-24 Multi-agent adapters and first public release](plans/2026-04-24-multi-agent-adapters-first-public-release.md) - completed execution plan for generated Codex, Claude Code, and opencode adapter packages, release metadata, release verification, public docs, RC readiness, and smoke-verified stable `v0.1.0` closeout.
