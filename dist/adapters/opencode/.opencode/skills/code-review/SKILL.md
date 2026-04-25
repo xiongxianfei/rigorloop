@@ -93,6 +93,14 @@ Use:
 - `nit`: optional style/readability suggestion.
 - `positive`: good pattern worth keeping.
 
+## Material findings
+
+For every material finding, include evidence, the required outcome, and a safe resolution path.
+
+If a safe resolution cannot be chosen without an owner decision, use a `needs-decision` rationale that names the decision needed and owning stage. A material finding lacking evidence, required outcome, or safe resolution or `needs-decision` rationale is incomplete.
+
+When workflow-managed review findings are recorded under `docs/changes/<change-id>/reviews/`, preserve the first-pass review record before fixes and record dispositions in `review-resolution.md`.
+
 ## Rules
 
 - Produce a first-pass review record before any review-driven fix is applied or any `review-resolution` work begins.

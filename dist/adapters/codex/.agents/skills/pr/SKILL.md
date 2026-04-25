@@ -24,6 +24,7 @@ Read:
 - architecture doc and ADRs when relevant;
 - concrete plan and validation notes;
 - explain-change artifact if present;
+- `review-resolution.md` when material review findings exist;
 - verification report;
 - CI status when available;
 - `AGENTS.md` and `CONSTITUTION.md` if relevant.
@@ -39,10 +40,11 @@ Before drafting or opening a PR, check:
 5. CI status is known when available;
 6. for planned initiatives, lifecycle closeout is already reflected in both `docs/plan.md` and the plan body when the final state is known before PR; only merge-dependent `Done` transitions may wait for immediate post-merge cleanup;
 7. for ordinary non-trivial work, the required docs-changes artifacts exist, including `docs/changes/<change-id>/change.yaml` plus durable reasoning, defaulting to `docs/changes/<change-id>/explain-change.md` unless an approved equivalent surface applies;
-8. artifacts are updated;
-9. no secrets, credentials, local paths, or debug-only changes are included;
-10. generated files and migrations are intentional;
-11. reviewers have enough context.
+8. material review findings are closed in `review-resolution.md`, with no `needs-decision` dispositions remaining;
+9. artifacts are updated;
+10. no secrets, credentials, local paths, or debug-only changes are included;
+11. generated files and migrations are intentional;
+12. reviewers have enough context.
 
 Apply the same readiness checks for workflow-managed and direct-`pr` invocation. Direct `pr` remains isolated only in the sense that no downstream stage follows `pr`; it still opens the PR when readiness passes.
 
@@ -77,6 +79,14 @@ Use this template:
 - R1 → T1, T2 → files/evidence
 - R2 → T3 → files/evidence
 
+## Review resolution summary
+- Accepted: <count>
+- Rejected: <count>
+- Deferred: <count>
+- Partially accepted: <count>
+- Needs decision: <count, must be 0 before PR handoff>
+- Review-resolution: `docs/changes/<change-id>/review-resolution.md`
+
 ## Risks and rollback
 - ...
 
@@ -107,6 +117,8 @@ Examples:
 - Do not say CI passed unless it passed.
 - Do not omit failed or unrun validation.
 - Do not treat a missing required docs-changes baseline pack as a warning-only condition for ordinary non-trivial work; it is a readiness blocker.
+- Do not proceed to PR with `needs-decision`, `Closeout status: open`, or missing review-resolution closeout evidence for material findings.
+- Keep PR review-resolution details to counts by disposition and a link to `review-resolution.md`; do not duplicate every detailed finding and suggestion.
 - Do not defer blocked or superseded lifecycle closeout until PR, merge, or retrospective work.
 - Do not summarize from memory when a diff is available.
 - Do not bury known risks.

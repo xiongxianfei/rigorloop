@@ -203,7 +203,79 @@ validation:
     result: pass_after_cr1_fix
   - command: bash scripts/ci.sh
     result: pass_after_cr1_fix
+  - command: python scripts/test-review-artifact-validator.py
+    result: fail_expected_missing_m3_guidance_before_workflow_and_skill_alignment
+  - command: python scripts/test-review-artifact-validator.py
+    result: pass_after_m3_workflow_and_skill_alignment
+  - command: python scripts/validate-skills.py
+    result: pass_after_m3_skill_alignment
+  - command: python scripts/build-skills.py
+    result: pass_after_m3_skill_alignment
+  - command: python scripts/build-skills.py --check
+    result: pass_after_m3_skill_alignment
+  - command: python scripts/test-adapter-distribution.py
+    result: fail_expected_stale_public_adapters_before_m3_regeneration
+  - command: python scripts/build-adapters.py --version 0.1.1
+    result: pass_after_m3_adapter_regeneration
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_after_m3_adapter_regeneration
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_after_m3_adapter_regeneration
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_after_m3_adapter_regeneration
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-24-review-finding-resolution-contract
+    result: pass_after_m3_final_validation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml
+    result: pass_after_m3_metadata_update
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-24-review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path specs/rigorloop-workflow.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml --path docs/plan.md --path docs/plans/2026-04-25-review-finding-resolution-contract.md --path docs/workflows.md --path AGENTS.md --path CONSTITUTION.md --path scripts/test-review-artifact-validator.py --path skills/code-review/SKILL.md --path skills/workflow/SKILL.md --path skills/verify/SKILL.md --path skills/explain-change/SKILL.md --path skills/pr/SKILL.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path skills/architecture-review/SKILL.md --path skills/plan-review/SKILL.md
+    result: pass_after_m3_final_validation
+  - command: rg -n "partially-accepted|needs-decision|Closeout status|review-resolution.md" specs/rigorloop-workflow.md docs/workflows.md CONSTITUTION.md AGENTS.md skills .codex/skills dist/adapters
+    result: pass_after_m3_final_validation
+  - command: git diff --check -- specs docs skills .codex/skills dist AGENTS.md CONSTITUTION.md scripts
+    result: pass_after_m3_final_validation
+  - command: python scripts/validate-release.py --version v0.1.1
+    result: pass_after_m3_final_validation
+  - command: bash scripts/ci.sh
+    result: pass_after_m3_final_validation
 changed_files:
+  - AGENTS.md
+  - CONSTITUTION.md
+  - .codex/skills/architecture-review/SKILL.md
+  - .codex/skills/code-review/SKILL.md
+  - .codex/skills/explain-change/SKILL.md
+  - .codex/skills/plan-review/SKILL.md
+  - .codex/skills/pr/SKILL.md
+  - .codex/skills/proposal-review/SKILL.md
+  - .codex/skills/spec-review/SKILL.md
+  - .codex/skills/verify/SKILL.md
+  - .codex/skills/workflow/SKILL.md
+  - dist/adapters/claude/.claude/skills/architecture-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/code-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/explain-change/SKILL.md
+  - dist/adapters/claude/.claude/skills/plan-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/pr/SKILL.md
+  - dist/adapters/claude/.claude/skills/proposal-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/spec-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/verify/SKILL.md
+  - dist/adapters/claude/.claude/skills/workflow/SKILL.md
+  - dist/adapters/codex/.agents/skills/architecture-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/code-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/explain-change/SKILL.md
+  - dist/adapters/codex/.agents/skills/plan-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/pr/SKILL.md
+  - dist/adapters/codex/.agents/skills/proposal-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/spec-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/verify/SKILL.md
+  - dist/adapters/codex/.agents/skills/workflow/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/architecture-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/code-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/explain-change/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/plan-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/pr/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/proposal-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/spec-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/verify/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/workflow/SKILL.md
   - docs/architecture/2026-04-24-review-finding-resolution-contract.md
   - docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml
   - docs/changes/2026-04-24-review-finding-resolution-contract/review-log.md
@@ -216,10 +288,21 @@ changed_files:
   - docs/plan.md
   - docs/plans/2026-04-25-review-finding-resolution-contract.md
   - docs/proposals/2026-04-24-review-finding-resolution-contract.md
+  - docs/workflows.md
   - scripts/ci.sh
   - scripts/review_artifact_validation.py
   - scripts/test-review-artifact-validator.py
   - scripts/validate-review-artifacts.py
+  - skills/architecture-review/SKILL.md
+  - skills/code-review/SKILL.md
+  - skills/explain-change/SKILL.md
+  - skills/plan-review/SKILL.md
+  - skills/pr/SKILL.md
+  - skills/proposal-review/SKILL.md
+  - skills/spec-review/SKILL.md
+  - skills/verify/SKILL.md
+  - skills/workflow/SKILL.md
+  - specs/rigorloop-workflow.md
   - specs/review-finding-resolution-contract.md
   - specs/review-finding-resolution-contract.test.md
   - tests/fixtures/review-artifacts/README.md

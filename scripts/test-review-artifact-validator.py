@@ -58,6 +58,10 @@ def run_cli(change_root: Path, *args: str) -> subprocess.CompletedProcess[str]:
     )
 
 
+def read_repo_file(relative_path: str) -> str:
+    return (ROOT / relative_path).read_text(encoding="utf-8")
+
+
 def valid_clean_review_text() -> str:
     return """
     # Code Review R1
@@ -580,6 +584,60 @@ Validation target: Run tests.
         self.assertIn("test-review-artifact-validator.py", ci_script)
         self.assertIn("validate-review-artifacts.py", ci_script)
         self.assertIn("docs/changes/", ci_script)
+
+    def test_workflow_guidance_names_expanded_review_resolution_contract(self) -> None:
+        required_terms = [
+            "partially-accepted",
+            "needs-decision",
+            "Closeout status: closed",
+            "Closeout status: open",
+            "review-resolution.md",
+        ]
+        for path in [
+            "specs/rigorloop-workflow.md",
+            "docs/workflows.md",
+            "CONSTITUTION.md",
+            "AGENTS.md",
+        ]:
+            with self.subTest(path=path):
+                content = read_repo_file(path)
+                for term in required_terms:
+                    self.assertIn(term, content)
+
+    def test_review_stage_skills_align_with_review_resolution_contract(self) -> None:
+        for path in [
+            "skills/proposal-review/SKILL.md",
+            "skills/spec-review/SKILL.md",
+            "skills/architecture-review/SKILL.md",
+            "skills/plan-review/SKILL.md",
+            "skills/code-review/SKILL.md",
+        ]:
+            with self.subTest(path=path):
+                review_skill = read_repo_file(path)
+                for term in ["evidence", "required outcome", "safe resolution", "needs-decision", "review-resolution.md"]:
+                    self.assertIn(term, review_skill)
+
+        verify = read_repo_file("skills/verify/SKILL.md")
+        for term in [
+            "validate-review-artifacts.py --mode closeout",
+            "Closeout status: open",
+            "needs-decision",
+            "Validation evidence",
+            "review-resolution.md",
+        ]:
+            self.assertIn(term, verify)
+
+        explain_change = read_repo_file("skills/explain-change/SKILL.md")
+        for term in ["review-resolution.md", "concise", "link", "duplicate transcript"]:
+            self.assertIn(term, explain_change)
+
+        pr = read_repo_file("skills/pr/SKILL.md")
+        for term in ["counts by disposition", "review-resolution.md", "needs-decision", "duplicate every detailed finding"]:
+            self.assertIn(term, pr)
+
+        workflow = read_repo_file("skills/workflow/SKILL.md")
+        for term in ["partially-accepted", "needs-decision", "Closeout status: closed", "review-resolution.md"]:
+            self.assertIn(term, workflow)
 
 
 if __name__ == "__main__":

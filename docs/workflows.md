@@ -28,6 +28,7 @@ Notes:
 - Later review comments may still happen. A preventable first-pass miss is a finding that should have been caught by the slice's completeness set, required edge cases, or targeted validation before `code-review`.
 - `code-review` may inspect staged or unstaged diffs, but cited governing artifacts only support a clean branch-scoped conclusion when they are confirmed in tracked governing branch state.
 - Missing tracked governing authority blocks `clean-with-notes` but does not suppress independently supported findings, and named edge cases need direct proof for clean review or `branch-ready`.
+- A material review finding is incomplete unless it has evidence, a required outcome, and a safe resolution path or `needs-decision` rationale.
 - `learn` is advice-only. Treat it as an explicit follow-up when a durable lesson actually emerged or another approved rule elevates it.
 
 ## Change-Local Artifacts
@@ -37,6 +38,10 @@ Notes:
 - For new non-trivial work, the default durable reasoning artifact is `docs/changes/<change-id>/explain-change.md`.
 - PR text remains the reviewer-facing summary surface; it does not replace required durable reasoning for non-trivial work.
 - Standalone `review-resolution.md` and `verify-report.md` remain conditional and are added only when their governing workflow triggers apply.
+- When material findings exist for a non-trivial change, use `docs/changes/<change-id>/review-resolution.md` and approved dispositions: `accepted`, `rejected`, `deferred`, `partially-accepted`, and `needs-decision`.
+- `needs-decision` is not final. It keeps `review-resolution.md` at `Closeout status: open` and blocks `verify`, `explain-change`, and `pr` until an authorized owner resolves or explicitly defers it.
+- `Closeout status: closed` means every material finding has a final disposition and the required action, rationale, follow-up, and validation evidence records for that disposition.
+- Keep PR and explain-change review summaries concise: summarize counts by disposition and link `review-resolution.md` instead of duplicating detailed review records.
 - Approved legacy top-level artifacts under `docs/explain/` remain valid durable reasoning surfaces until they are migrated or retired.
 - `docs/changes/0001-skill-validator/` is a rich example of a fully formed pack, not the universal minimum for every non-trivial change.
 

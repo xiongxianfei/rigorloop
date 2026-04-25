@@ -238,11 +238,11 @@ The implementation must preserve lightweight clean reviews. The full review arti
   - workflow-facing docs and skill packages no longer contradict the approved disposition and closeout contract, and generated outputs are in sync.
 - Commit message: `M3: align review resolution workflow guidance`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - canonical skill changes may be portable in Codex but not in Claude Code or OpenCode adapters
   - summaries may overstate the standalone artifact requirement and break clean-review lightweight behavior
@@ -365,7 +365,10 @@ The implementation must preserve lightweight clean reviews. The full review arti
 - [x] 2026-04-25: M2 closeout mode, blocking-review rerun or explicit closeout checks, and CI changed-root structure validation implemented.
 - [x] 2026-04-25: M2 milestone commit.
 - [x] 2026-04-25: `code-review-r1` finding `CR1-F1` recorded before fixes, accepted, fixed, and closed with explicit review closeout evidence.
-- [ ] M3. Workflow contract, skills, docs, and generated outputs.
+- [x] 2026-04-25: M3 contract tests added first and confirmed red on missing expanded workflow guidance and stale generated adapters.
+- [x] 2026-04-25: M3 workflow contract, governance summaries, review-stage skills, verify, explain-change, PR, and workflow skills aligned with the expanded review-resolution closeout contract.
+- [x] 2026-04-25: M3 `.codex/skills/` and public adapter skill outputs regenerated from canonical `skills/`.
+- [x] M3. Workflow contract, skills, docs, and generated outputs.
 - [ ] M4. Lifecycle closeout, final validation, and PR readiness.
 
 ## Decision log
@@ -377,12 +380,14 @@ The implementation must preserve lightweight clean reviews. The full review arti
 - 2026-04-25: Implement M1 with only `structure` mode exposed by `scripts/validate-review-artifacts.py`; `closeout` mode and CI discovery remain M2 scope. Rationale: M1 proves parseable artifact structure while preserving the planned milestone boundary.
 - 2026-04-25: M2 recognizes same-stage nonblocking re-review and `Review closeout: <Review ID>` as structural proof that a blocking review outcome no longer blocks closeout. Rationale: the spec allows rerun or explicit reviewer/owner closeout, and both need deterministic parser-visible representations.
 - 2026-04-25: After `code-review-r1`, same-stage nonblocking rerun proof now requires a strictly later numeric round. Rationale: a same-stage, same-round nonblocking entry is not a rerun; when round ordering cannot be proven, closeout must use explicit `Review closeout: <Review ID>` evidence naming the original blocking review.
+- 2026-04-25: Keep `dist/adapters/manifest.yaml` unchanged for M3. Rationale: M3 changes shipped skill bodies and generated package contents, but not the supported skill set, adapter list, command aliases, generated file paths, or manifest-declared metadata.
 
 ## Surprises and discoveries
 
 - 2026-04-25: The live change-local review artifacts already satisfy the new M1 canonical `review-log.md`, detailed review, Finding ID, and `review-resolution.md` structure.
 - 2026-04-25: Full `bash scripts/ci.sh` now runs review-artifact fixture tests. The first run before plan/change metadata updates had no changed `docs/changes/` roots, so it correctly printed `No changed review artifact roots to validate`; the final M2 run after metadata updates validates the active change root.
 - 2026-04-25: `code-review-r1` found that closeout mode accepted a same-stage approved entry with the same `Round: 1`; the regression test reproduced the false closeout before the production fix.
+- 2026-04-25: Public adapter tests failed before adapter regeneration with stale generated adapter files for the review, verify, explain-change, PR, and workflow skills. Regenerating `dist/adapters/` resolved the drift without changing `dist/adapters/manifest.yaml`.
 
 ## Validation notes
 
@@ -431,15 +436,37 @@ The implementation must preserve lightweight clean reviews. The full review arti
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-24-review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml --path docs/plan.md --path docs/plans/2026-04-25-review-finding-resolution-contract.md`
   - `git diff --check -- .`
   - `bash scripts/ci.sh`
+- 2026-04-25: M3 TDD red checks passed as expected:
+  - `python scripts/test-review-artifact-validator.py`
+  - Result: failed because `specs/rigorloop-workflow.md`, `docs/workflows.md`, `CONSTITUTION.md`, `AGENTS.md`, and canonical review/closeout skills did not yet expose the expanded review-resolution contract.
+  - `python scripts/test-adapter-distribution.py`
+  - Result: failed after canonical skill edits because public adapter outputs were stale.
+- 2026-04-25: M3 source and generated-output validation passed so far:
+  - `python scripts/test-review-artifact-validator.py`
+  - `python scripts/validate-skills.py`
+  - `python scripts/build-skills.py`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/build-adapters.py --version 0.1.1`
+  - `python scripts/build-adapters.py --version 0.1.1 --check`
+  - `python scripts/validate-adapters.py --version 0.1.1`
+  - `python scripts/test-adapter-distribution.py`
+- 2026-04-25: M3 final validation passed:
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-24-review-finding-resolution-contract`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-24-review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path specs/rigorloop-workflow.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml --path docs/plan.md --path docs/plans/2026-04-25-review-finding-resolution-contract.md --path docs/workflows.md --path AGENTS.md --path CONSTITUTION.md --path scripts/test-review-artifact-validator.py --path skills/code-review/SKILL.md --path skills/workflow/SKILL.md --path skills/verify/SKILL.md --path skills/explain-change/SKILL.md --path skills/pr/SKILL.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path skills/architecture-review/SKILL.md --path skills/plan-review/SKILL.md`
+  - `rg -n "partially-accepted|needs-decision|Closeout status|review-resolution.md" specs/rigorloop-workflow.md docs/workflows.md CONSTITUTION.md AGENTS.md skills .codex/skills dist/adapters`
+  - `git diff --check -- specs docs skills .codex/skills dist AGENTS.md CONSTITUTION.md scripts`
+  - `python scripts/validate-release.py --version v0.1.1`
+  - `bash scripts/ci.sh`
 
 ## Outcome and retrospective
 
-- Active plan. M1 and M2 validator behavior are implemented, validated, and committed.
+- Active plan. M1 and M2 validator behavior are implemented, validated, and committed. M3 source and generated-output alignment is implemented and validated, with only the milestone commit remaining.
 
 ## Readiness
 
 - M1 and M2 are complete.
-- Next implementation scope remains M3: workflow contract, skills, docs, and generated outputs.
+- M3 implementation is ready for its milestone commit.
 
 ## Risks and follow-ups
 
