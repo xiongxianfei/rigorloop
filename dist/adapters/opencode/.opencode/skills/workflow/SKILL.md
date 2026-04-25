@@ -128,6 +128,7 @@ Keep `review-resolution.md` and `verify-report.md` conditional. Do not treat the
 - `needs-decision` is not final and blocks `verify`, `explain-change`, and `pr` until resolved or explicitly deferred by an authorized owner.
 - `Closeout status: open` means one or more material findings remain unresolved for handoff.
 - `Closeout status: closed` means every material finding has a final disposition plus required action, rationale, follow-up, and validation evidence.
+- A closed handoff requires `review-log.md` to list no open findings.
 - A review outcome requiring revision still needs a later same-stage review round or explicit reviewer or owner closeout evidence; `review-resolution.md` alone is not a silent substitute for required re-review.
 
 ### Review-stage handoff versus downstream readiness

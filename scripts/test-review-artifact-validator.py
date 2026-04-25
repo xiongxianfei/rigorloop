@@ -101,6 +101,8 @@ def accepted_closed_resolution_text() -> str:
 
     Closeout status: closed
 
+    ### code-review-r1
+
     Finding ID: CR1-F1
     Disposition: accepted
     Owner: implementer
@@ -118,6 +120,8 @@ def rejected_closed_resolution_text() -> str:
 
     Closeout status: closed
 
+    ### code-review-r1
+
     Finding ID: CR1-F1
     Disposition: rejected
     Owner: maintainer
@@ -134,6 +138,8 @@ def deferred_closed_resolution_text() -> str:
 
     Closeout status: closed
 
+    ### code-review-r1
+
     Finding ID: CR1-F1
     Disposition: deferred
     Owner: maintainer
@@ -149,6 +155,8 @@ def partially_accepted_closed_resolution_text() -> str:
     # Review Resolution
 
     Closeout status: closed
+
+    ### code-review-r1
 
     Finding ID: CR1-F1
     Disposition: partially-accepted
@@ -311,6 +319,25 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
             handle.write(valid_log_text())
         self.assertFails(root, "duplicate Review ID in review-log.md")
 
+        root = self.fixture()
+        replace_field(root / "review-log.md", "Resolution", "other-resolution.md#code-review-r1")
+        self.assertFails(root, "Resolution must be review-resolution.md#<Review ID>")
+
+        root = self.fixture()
+        replace_field(root / "review-log.md", "Resolution", "review-resolution.md#wrong-review")
+        self.assertFails(root, "Resolution must be review-resolution.md#<Review ID>")
+
+        root = self.fixture()
+        with (root / "review-log.md").open("a", encoding="utf-8") as handle:
+            handle.write("\nResolution: review-resolution.md#duplicate\n")
+        self.assertFails(root, "review-log entry must contain exactly one Resolution")
+
+        root = self.fixture()
+        resolution = (root / "review-resolution.md").read_text(encoding="utf-8")
+        resolution = resolution.replace("### code-review-r1", "### wrong-review")
+        (root / "review-resolution.md").write_text(resolution, encoding="utf-8")
+        self.assertFails(root, "Resolution Review ID not found in review-resolution.md")
+
     def test_finding_traceability_is_validated(self) -> None:
         root = self.fixture()
         extra_review = (root / "reviews" / "code-review-r2.md")
@@ -377,6 +404,8 @@ Validation target: Run tests.
 
         Closeout status: open
 
+        ### code-review-r1
+
         Finding ID: CR1-F1
         Disposition: needs-decision
         Decision owner: maintainer
@@ -393,6 +422,8 @@ Validation target: Run tests.
         # Review Resolution
 
         Closeout status: open
+
+        ### code-review-r1
 
         Finding ID: CR1-F1
         Disposition: accepted
@@ -480,6 +511,13 @@ Validation target: Run tests.
         self.assertCloseoutFails(root, "Closeout status must be closed")
 
         root = self.fixture()
+        write_text(
+            root / "review-resolution.md",
+            accepted_closed_resolution_text() + "\n    Review closeout: code-review-r1",
+        )
+        self.assertCloseoutFails(root, "review-log Open findings must be empty for closed closeout")
+
+        root = self.fixture()
         resolution = """
         # Review Resolution
 
@@ -536,39 +574,48 @@ Validation target: Run tests.
     def test_closeout_mode_blocks_blocking_review_without_rerun(self) -> None:
         root = self.fixture()
         write_text(root / "review-resolution.md", accepted_closed_resolution_text())
+        replace_field(root / "review-log.md", "Open findings", "None")
         self.assertCloseoutFails(root, "blocking review outcome requires same-stage re-review or explicit closeout")
 
         root = self.fixture()
         write_text(
             root / "review-resolution.md",
-            accepted_closed_resolution_text() + "\nReview closeout: code-review-r1",
+            accepted_closed_resolution_text() + "\n    Review closeout: code-review-r1",
         )
+        replace_field(root / "review-log.md", "Open findings", "None")
         self.assertCloseoutPasses(root)
 
         root = self.fixture()
         write_text(root / "review-resolution.md", accepted_closed_resolution_text())
+        replace_field(root / "review-log.md", "Open findings", "None")
         second_review = (root / "reviews" / "code-review-r1.md").read_text(encoding="utf-8")
         second_review = second_review.replace("Review ID: code-review-r1", "Review ID: code-review-r2")
         second_review = second_review.replace("Status: changes-requested", "Status: approved")
         second_review = second_review.replace("Finding ID: CR1-F1", "")
         write_text(root / "reviews" / "code-review-r2.md", second_review)
+        with (root / "review-resolution.md").open("a", encoding="utf-8") as handle:
+            handle.write("\n### code-review-r2\n\nNo material findings.\n")
         with (root / "review-log.md").open("a", encoding="utf-8") as handle:
             handle.write(
                 valid_log_text("None", "None")
                 .replace("Review ID: code-review-r1", "Review ID: code-review-r2")
                 .replace("Status: changes-requested", "Status: approved")
                 .replace("Detailed record: reviews/code-review-r1.md", "Detailed record: reviews/code-review-r2.md")
+                .replace("Resolution: review-resolution.md#code-review-r1", "Resolution: review-resolution.md#code-review-r2")
             )
         self.assertCloseoutFails(root, "blocking review outcome requires same-stage re-review or explicit closeout")
 
         root = self.fixture()
         write_text(root / "review-resolution.md", accepted_closed_resolution_text())
+        replace_field(root / "review-log.md", "Open findings", "None")
         second_review = (root / "reviews" / "code-review-r1.md").read_text(encoding="utf-8")
         second_review = second_review.replace("Review ID: code-review-r1", "Review ID: code-review-r2")
         second_review = second_review.replace("Round: 1", "Round: 2")
         second_review = second_review.replace("Status: changes-requested", "Status: approved")
         second_review = second_review.replace("Finding ID: CR1-F1", "")
         write_text(root / "reviews" / "code-review-r2.md", second_review)
+        with (root / "review-resolution.md").open("a", encoding="utf-8") as handle:
+            handle.write("\n### code-review-r2\n\nNo material findings.\n")
         with (root / "review-log.md").open("a", encoding="utf-8") as handle:
             handle.write(
                 valid_log_text("None", "None")
@@ -576,6 +623,7 @@ Validation target: Run tests.
                 .replace("Round: 1", "Round: 2")
                 .replace("Status: changes-requested", "Status: approved")
                 .replace("Detailed record: reviews/code-review-r1.md", "Detailed record: reviews/code-review-r2.md")
+                .replace("Resolution: review-resolution.md#code-review-r1", "Resolution: review-resolution.md#code-review-r2")
             )
         self.assertCloseoutPasses(root)
 

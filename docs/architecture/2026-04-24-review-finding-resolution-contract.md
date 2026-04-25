@@ -27,7 +27,7 @@ This change should be implemented as a small review-artifact contract and valida
 | --- | --- |
 | `R1`-`R1d` | Complete material finding structure and incomplete-finding boundary |
 | `R2`-`R2o` | Detailed review record metadata, first-pass timing, reconstructed records, and append-only review history |
-| `R3`-`R3k` | Required review-log, canonical `### Review entry` block parsing, and exact-once Review ID references |
+| `R3`-`R3p` | Required review-log, canonical `### Review entry` block parsing, resolution links, closed open-finding state, and exact-once Review ID references |
 | `R4`-`R4c` | Material Finding IDs and Finding ID uniqueness |
 | `R5`-`R5i` | Required review-resolution entries before fixes, initial decisions, final actions, and validation targets |
 | `R6`-`R6m` | Disposition vocabulary, top-level closeout status, final disposition rules, and closeout blockers |
@@ -103,7 +103,7 @@ The validator should support two modes:
 | Mode | Used by | Blocking behavior |
 | --- | --- | --- |
 | `structure` | authoring, local checks, CI for touched change roots | Fails malformed review artifacts, duplicate or dangling IDs, unsupported disposition values, missing material resolutions, invalid reconstructed records, and invalid closeout status values |
-| `closeout` | `verify`, `explain-change`, and `pr` handoff | Includes `structure` checks, then requires `Closeout status: closed`, no `needs-decision`, and disposition-specific closeout fields |
+| `closeout` | `verify`, `explain-change`, and `pr` handoff | Includes `structure` checks, then requires `Closeout status: closed`, no `needs-decision`, empty review-log open-finding sets, and disposition-specific closeout fields |
 
 `structure` mode may accept `Closeout status: open`. `closeout` mode must reject it.
 
@@ -154,7 +154,11 @@ Material findings: CR1-F1, CR1-F2
 Open findings: CR1-F1
 ```
 
+For v1, `Resolution:` is a repository-internal symbolic reference and must be exactly `review-resolution.md#<Review ID>`. When `review-resolution.md` exists, the referenced Review ID must be represented by a matching review section heading such as `### code-review-r1`.
+
 For v1, the validator counts only `Review ID: <id>` lines inside `### Review entry` blocks as review-log ledger references. Incidental prose mentions do not satisfy the ledger requirement and do not create duplicate-ledger failures.
+
+When `review-resolution.md` is closed, every review-log entry must have `Open findings: None`.
 
 `review-resolution.md` must carry a top-level closeout status and one entry for each material Finding ID:
 
@@ -310,6 +314,7 @@ The exact commands may be adjusted by the active plan and test spec, but the sou
 - A reconstructed review record lacks required reconstructed metadata: fail with the detailed file path and field.
 - Two detailed review files reuse a Review ID in one change: fail with both paths when available.
 - A canonical review-log block lacks Review ID, stage, round, status, detailed record, resolution, material findings, or open findings: fail with the log path and block line.
+- A canonical review-log block has a malformed `Resolution:` target, mismatched anchor, duplicate `Resolution:` field, or a missing referenced Review ID in `review-resolution.md` when the artifact exists: fail with the log path and Review ID.
 - `review-log.md` omits a detailed Review ID, references an unknown Review ID, or repeats a Review ID inside canonical blocks: fail with the log path and ID.
 - A prose Review ID mention outside a canonical block is ignored as a ledger reference; if the required canonical block is missing, fail for omission.
 - Two material findings reuse a Finding ID in one change: fail with both paths when available.
@@ -324,6 +329,7 @@ The exact commands may be adjusted by the active plan and test spec, but the sou
 - A resolution with `deferred` lacks deferral rationale plus follow-up owner, owning stage, or explicit no-follow-up reason: fail in closeout mode.
 - A resolution with `partially-accepted` lacks accepted portion, non-accepted portion, rationale, or validation evidence for the accepted portion: fail in closeout mode.
 - `review-resolution.md` has `Closeout status: open`: pass only structure mode; fail closeout mode.
+- `review-resolution.md` has `Closeout status: closed` but `review-log.md` still lists open findings: fail closeout mode.
 - A global validation mode starts failing old examples: fix the validation scope rather than retroactively editing historical artifacts unless the plan explicitly includes migration.
 
 ## Security and privacy design

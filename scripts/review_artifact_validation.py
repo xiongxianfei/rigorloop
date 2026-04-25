@@ -46,6 +46,7 @@ RECONSTRUCTED_REQUIRED_FIELDS = (
 )
 ID_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
 FIELD_PATTERN = re.compile(r"^\s*(?P<label>[A-Za-z][A-Za-z0-9 /-]*):\s*(?P<value>.*)$")
+REVIEW_RESOLUTION_HEADING_PATTERN = re.compile(r"^\s{0,3}###\s+(?P<review_id>[A-Za-z0-9][A-Za-z0-9._-]*)\s*$")
 
 
 @dataclass(frozen=True)
@@ -104,6 +105,7 @@ class ReviewResolution:
     closeout_status: str | None
     closeout_line: int | None
     explicit_review_closeout_ids: tuple[str, ...]
+    review_ids: tuple[str, ...]
     entries: tuple[ResolutionRecord, ...]
 
 
@@ -192,7 +194,7 @@ def validate_change_root(change_root: Path, *, mode: str = "structure") -> Revie
         resolution, resolution_findings = _parse_review_resolution(resolution_path, mode)
         findings.extend(resolution_findings)
 
-    findings.extend(_validate_review_relationships(change_root, review_records, finding_records, log_entries, mode))
+    findings.extend(_validate_review_relationships(change_root, review_records, finding_records, log_entries, resolution, mode))
     findings.extend(_validate_finding_relationships(resolution_path, finding_records, resolution, mode))
     if mode == "closeout":
         findings.extend(_validate_closeout(finding_records, log_entries, resolution, mode))
@@ -448,6 +450,18 @@ def _parse_review_log(path: Path, mode: str) -> tuple[list[ReviewLogEntry], list
             )
 
         field_values: dict[str, FieldValue] = {}
+        duplicate_resolution = len(block_fields.get("Resolution", [])) > 1
+        if duplicate_resolution:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=block_fields["Resolution"][1].line,
+                    mode=mode,
+                    message="review-log entry must contain exactly one Resolution",
+                    review_id=review_id,
+                )
+            )
+
         for label in REVIEW_LOG_REQUIRED_FIELDS:
             value = _first_nonempty(block_fields, label)
             if value is None:
@@ -463,7 +477,7 @@ def _parse_review_log(path: Path, mode: str) -> tuple[list[ReviewLogEntry], list
                 continue
             field_values[label] = value
 
-        if len(field_values) != len(REVIEW_LOG_REQUIRED_FIELDS):
+        if len(field_values) != len(REVIEW_LOG_REQUIRED_FIELDS) or duplicate_resolution:
             continue
 
         entries.append(
@@ -537,6 +551,7 @@ def _parse_review_resolution(
             closeout_status=closeout_status,
             closeout_line=closeout_line,
             explicit_review_closeout_ids=explicit_closeout_ids,
+            review_ids=tuple(_parse_review_resolution_review_ids(lines)),
             entries=tuple(entries),
         ),
         findings,
@@ -617,6 +632,15 @@ def _parse_resolution_entries(
         entries.append(entry)
 
     return entries
+
+
+def _parse_review_resolution_review_ids(lines: list[str]) -> list[str]:
+    review_ids: list[str] = []
+    for line in lines:
+        match = REVIEW_RESOLUTION_HEADING_PATTERN.match(line)
+        if match:
+            review_ids.append(match.group("review_id"))
+    return review_ids
 
 
 def _validate_resolution_entry_structure(
@@ -707,6 +731,7 @@ def _validate_review_relationships(
     review_records: list[ReviewRecord],
     finding_records: list[FindingRecord],
     log_entries: list[ReviewLogEntry],
+    resolution: ReviewResolution | None,
     mode: str,
 ) -> list[ValidationFinding]:
     findings: list[ValidationFinding] = []
@@ -763,6 +788,27 @@ def _validate_review_relationships(
                     line=entry.line,
                     mode=mode,
                     message=f"Detailed record does not match review file {expected_path}",
+                    review_id=entry.review_id,
+                )
+            )
+        expected_resolution = f"review-resolution.md#{entry.review_id}"
+        if entry.resolution != expected_resolution:
+            findings.append(
+                ValidationFinding(
+                    path=entry.path,
+                    line=entry.line,
+                    mode=mode,
+                    message="Resolution must be review-resolution.md#<Review ID>",
+                    review_id=entry.review_id,
+                )
+            )
+        elif resolution is not None and entry.review_id not in set(resolution.review_ids):
+            findings.append(
+                ValidationFinding(
+                    path=entry.path,
+                    line=entry.line,
+                    mode=mode,
+                    message="Resolution Review ID not found in review-resolution.md",
                     review_id=entry.review_id,
                 )
             )
@@ -951,7 +997,28 @@ def _validate_closeout(
         for entry in resolution.entries:
             findings.extend(_validate_resolution_entry_closeout(entry, mode))
 
+    findings.extend(_validate_closeout_log_open_findings(log_entries, mode))
     findings.extend(_validate_blocking_review_closeout(log_entries, resolution, mode))
+    return findings
+
+
+def _validate_closeout_log_open_findings(
+    log_entries: list[ReviewLogEntry],
+    mode: str,
+) -> list[ValidationFinding]:
+    findings: list[ValidationFinding] = []
+    for entry in log_entries:
+        if not entry.open_finding_ids:
+            continue
+        findings.append(
+            ValidationFinding(
+                path=entry.path,
+                line=entry.line,
+                mode=mode,
+                message="review-log Open findings must be empty for closed closeout",
+                review_id=entry.review_id,
+            )
+        )
     return findings
 
 

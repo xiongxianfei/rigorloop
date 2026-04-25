@@ -33,7 +33,7 @@ Do not silently blend conflicting higher-priority instructions. Call out the con
 - Do not hand-edit generated public adapter package output in `dist/adapters/`.
 - Public adapter packages for Codex, Claude Code, and opencode are generated under `dist/adapters/`; `.codex/skills/` remains a separate generated local Codex runtime mirror.
 - For non-trivial work, the baseline change-local artifact pack is `docs/changes/<change-id>/change.yaml` plus durable Markdown reasoning. Standalone `review-resolution.md` and `verify-report.md` remain conditional under the workflow contract.
-- When material review findings exist, record complete findings with evidence, required outcome, and safe resolution or `needs-decision` rationale. Use `review-resolution.md` dispositions `accepted`, `rejected`, `deferred`, `partially-accepted`, or `needs-decision`; `needs-decision` keeps `Closeout status: open`, while `Closeout status: closed` requires final dispositions and validation evidence.
+- When material review findings exist, record complete findings with evidence, required outcome, and safe resolution or `needs-decision` rationale. Use `review-resolution.md` dispositions `accepted`, `rejected`, `deferred`, `partially-accepted`, or `needs-decision`; `needs-decision` keeps `Closeout status: open`, while `Closeout status: closed` requires final dispositions, validation evidence, and no `review-log.md` open findings.
 - Keep `AGENTS.md` practical. Move workflow detail to `docs/workflows.md` and feature-specific detail to `specs/`.
 
 ## Planning and workflow

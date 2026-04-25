@@ -188,7 +188,17 @@ R3f. `review-log.md` MUST use a parseable Review ID entry for each detailed revi
 
 R3g. `review-log.md` MUST be updated when material finding closeout changes whether a review event still has open findings.
 
-R3h. For v1, each parseable `review-log.md` ledger entry MUST use this line-based block format:
+R3h. When `review-resolution.md` has `Closeout status: closed`, every review-log entry MUST have an empty open-finding set.
+
+R3i. If any `Open findings:` value in `review-log.md` still lists Finding IDs, closeout validation MUST fail.
+
+R3j. `verify`, final `explain-change` closeout, and `pr` handoff MUST NOT proceed while `review-log.md` still lists open findings.
+
+R3k. Each review-log entry MUST contain exactly one `Resolution:` line in the canonical form `Resolution: review-resolution.md#<Review ID>`.
+
+R3l. For v1, `Resolution:` is a repository-internal symbolic resolution reference. Structural validation MUST fail when the field is missing, the target file is not exactly `review-resolution.md`, the anchor does not exactly match the entry's Review ID, or the referenced Review ID cannot be found in `review-resolution.md` when that artifact exists.
+
+R3m. For v1, each parseable `review-log.md` ledger entry MUST use this line-based block format:
 
 ```md
 ### Review entry
@@ -202,11 +212,11 @@ Material findings: AR1, AR2
 Open findings: AR1, AR2
 ```
 
-R3i. For v1, structural validation MUST count only `Review ID: <id>` lines inside `### Review entry` blocks as review-log ledger references.
+R3n. For v1, structural validation MUST count only `Review ID: <id>` lines inside `### Review entry` blocks as review-log ledger references.
 
-R3j. Incidental prose mentions of Review IDs MUST NOT count as review-log ledger references.
+R3o. Incidental prose mentions of Review IDs MUST NOT count as review-log ledger references.
 
-R3k. Each `### Review entry` block MUST contain exactly one `Review ID: <id>` line.
+R3p. Each `### Review entry` block MUST contain exactly one `Review ID: <id>` line.
 
 R4. Material findings recorded in detailed review files MUST have Finding IDs.
 
@@ -473,6 +483,8 @@ Outputs:
 17. An accepted resolution entry remains unresolved while `review-resolution.md` has `Closeout status: open`.
 18. A `review-log.md` prose mention of a Review ID does not count as the required ledger entry unless it uses the documented parseable review-log form.
 19. A late review record created after fixes began is valid only when it is labeled `Record mode: reconstructed` and preserves durable original review evidence or a fidelity-loss note.
+20. A closed handoff with any `Open findings:` IDs still listed in `review-log.md` is invalid.
+21. A review-log `Resolution:` field that points outside `review-resolution.md`, uses an anchor different from the entry Review ID, duplicates the field, or references a missing review-resolution Review ID is invalid.
 
 ## Non-goals
 
@@ -490,6 +502,7 @@ Outputs:
 - A reviewer can tell which first-pass review records were created before fixes began.
 - A reviewer can tell from `review-log.md` which review events still have open material findings.
 - A reviewer can trace every material Finding ID from review record to review-resolution disposition.
+- Closeout validation fails when `review-log.md` still lists open findings.
 - A reviewer can distinguish an open `review-resolution.md` from final closeout.
 - `verify` blocks material Finding IDs missing from `review-resolution.md`.
 - `verify` blocks unresolved `needs-decision` findings.
@@ -498,7 +511,7 @@ Outputs:
 - A change with `revise`, `changes-requested`, or `blocked` review outcome cannot advance without same-stage re-review or explicit reviewer or owner closeout.
 - `explain-change.md` summarizes review-driven changes without duplicating the full review transcript.
 - The PR body summarizes review-resolution counts and links `review-resolution.md`.
-- Structural validation detects missing review-log, missing Review ID fields, missing reviewer, invalid reconstructed records, multiple Review IDs in one detailed file, duplicate Review IDs, dangling review-log references, incomplete review-log ledger entries, duplicate Finding IDs, material findings missing from review-resolution, unsupported disposition values, open top-level closeout status in closeout-gated validation, and review-resolution references to missing findings.
+- Structural validation detects missing review-log, missing Review ID fields, missing reviewer, invalid reconstructed records, multiple Review IDs in one detailed file, duplicate Review IDs, dangling review-log references, malformed resolution links, incomplete review-log ledger entries, duplicate Finding IDs, material findings missing from review-resolution, unsupported disposition values, open top-level closeout status in closeout-gated validation, stale open findings in closeout-gated validation, and review-resolution references to missing findings.
 - Adapter generation and validation catch stale `.codex/skills/` or `dist/adapters/` output after canonical adapter-shipped skill changes.
 - Clean reviews remain lightweight and do not create empty review-resolution boilerplate.
 
