@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- none yet
+- [2026-04-25 Review finding resolution contract implementation](plans/2026-04-25-review-finding-resolution-contract.md) - active plan for implementing review finding completeness, review-log and review-resolution structure, closeout validation, workflow guidance, generated skill and adapter sync, and final lifecycle closeout.
 
 ## Blocked
 - none yet
