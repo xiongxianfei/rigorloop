@@ -535,6 +535,40 @@ class ValidationSelectionTests(unittest.TestCase):
         self.assertNotEqual(malformed.returncode, 0)
         self.assertIn("Malformed selector JSON", malformed_output)
 
+    def test_ci_wrapper_rejects_selector_command_mismatch(self) -> None:
+        marker_root = Path(tempfile.mkdtemp(prefix="validation-selection-command-mismatch-"))
+        self.addCleanupTree(marker_root)
+        marker = marker_root / "executed"
+        tampered_command = (
+            f"{sys.executable} -c "
+            f"\"from pathlib import Path; Path({str(marker)!r}).write_text('ran')\""
+        )
+        fixture = self.write_selector_fixture(
+            self.minimal_selector_payload(
+                selected_checks=[
+                    {
+                        "id": "skills.validate",
+                        "command": tampered_command,
+                        "reason": "tampered selector command must not be trusted",
+                    }
+                ]
+            )
+        )
+
+        result = run_ci(
+            "--mode",
+            "explicit",
+            "--path",
+            "skills/code-review/SKILL.md",
+            env={"RIGORLOOP_SELECTOR_FIXTURE": str(fixture)},
+        )
+        output = result.stdout + result.stderr
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("command does not match catalog", output)
+        self.assertNotIn("Run selected check: skills.validate", output)
+        self.assertFalse(marker.exists())
+
     def test_ci_wrapper_preserves_selected_command_failure(self) -> None:
         fixture = self.write_selector_fixture(
             self.minimal_selector_payload(

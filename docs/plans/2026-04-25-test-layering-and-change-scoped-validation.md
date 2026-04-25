@@ -351,7 +351,8 @@ The plan preserves the repository value of trustworthy automation. It optimizes 
 - [x] 2026-04-25: test spec active.
 - [x] 2026-04-25: M1 complete. Selector core, catalog, CLI, path classification, broad-smoke source attribution, and selector regression tests are implemented.
 - [x] 2026-04-25: M1 code-review fixes implemented for `CR1-F1` and `CR1-F2`; `code-review-r2` returned `clean-with-notes`.
-- [x] 2026-04-25: M2 implemented. `scripts/ci.sh` now consumes selector JSON for normal modes, executes trusted catalog commands, preserves non-recursive `--mode broad-smoke`, and hosted CI passes PR/main ranges through the wrapper. Code-review remains pending.
+- [x] 2026-04-25: M2 implemented. `scripts/ci.sh` now consumes selector JSON for normal modes, executes trusted catalog commands, preserves non-recursive `--mode broad-smoke`, and hosted CI passes PR/main ranges through the wrapper.
+- [x] 2026-04-25: M2 code-review complete. `code-review-r3` found missing direct proof for tampered selector command rejection; `CR3-F1` was fixed with a focused wrapper regression and `code-review-r4` returned `clean-with-notes`.
 - [ ] M3 complete.
 - [ ] M4 complete.
 
@@ -373,6 +374,7 @@ The plan preserves the repository value of trustworthy automation. It optimizes 
 - M1: The selector can prove wrapper-blocking expectations only through the regression harness until M2 wires `scripts/ci.sh` to selector output.
 - M1 code-review: `CR1-F1` found that direct `docs/releases/release-notes.md` paths were incorrectly accepted as release version `release-notes.md`; `CR1-F2` found missing direct proof for valid PR/main modes and representative first-slice categories.
 - M2: `scripts/ci.sh` needed a selector classification so wrapper changes select the wrapper regression test surface instead of falling into manual routing.
+- M2 code-review: `CR3-F1` showed that implemented catalog validation still needed direct security proof against tampered selector JSON command text.
 
 ## Validation notes
 
@@ -405,15 +407,25 @@ The plan preserves the repository value of trustworthy automation. It optimizes 
 - 2026-04-25: M2 wrapper self-routing proof passed: `bash scripts/ci.sh --mode explicit --path scripts/ci.sh`.
 - 2026-04-25: M2 broad smoke passed: `bash scripts/ci.sh --mode broad-smoke`.
 - 2026-04-25: M2 whitespace validation passed: `git diff --check -- scripts .github docs/plans/2026-04-25-test-layering-and-change-scoped-validation.md`.
+- 2026-04-25: M2 code-review first pass `code-review-r3` found `CR3-F1`, missing direct proof that selector JSON command text cannot bypass trusted catalog command execution.
+- 2026-04-25: M2 review-driven wrapper regression passed after the `CR3-F1` fix: `python scripts/test-select-validation.py` ran 24 tests and passed.
+- 2026-04-25: M2 review-driven targeted wrapper proof passed: `bash scripts/ci.sh --mode explicit --path specs/test-layering-and-change-scoped-validation.md`.
+- 2026-04-25: M2 review-driven wrapper self-routing proof passed: `bash scripts/ci.sh --mode explicit --path scripts/ci.sh`.
+- 2026-04-25: M2 review-driven broad smoke passed: `bash scripts/ci.sh --mode broad-smoke`.
+- 2026-04-25: M2 same-stage re-review completed: `code-review-r4` returned `clean-with-notes` and closed out `code-review-r3`.
+- 2026-04-25: M2 review artifact closeout validation passed after `code-review-r4`: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-25-test-layering-and-change-scoped-validation`.
+- 2026-04-25: M2 change metadata validation passed after review closeout updates: `python scripts/validate-change-metadata.py docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml`.
+- 2026-04-25: M2 lifecycle validation passed after review closeout updates: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml`.
+- 2026-04-25: M2 whitespace validation passed after review closeout updates: `git diff --check -- scripts .github docs/plans/2026-04-25-test-layering-and-change-scoped-validation.md docs/changes/2026-04-25-test-layering-and-change-scoped-validation`.
 
 ## Outcome and retrospective
 
-- Active. M1 and M2 implementation are complete; M2 code-review remains the next gate.
+- Active. M1 and M2 implementation and code-review are complete; M3 is the next implementation milestone.
 
 ## Readiness
 
-- Immediate next repository stage: `code-review` for M2.
-- Next implementation milestone after review: M3 workflow guidance, manual proof closeout, and generated outputs.
+- Immediate next repository stage: `implement` for M3.
+- Next implementation milestone: M3 workflow guidance, manual proof closeout, and generated outputs.
 
 ## Risks and follow-ups
 
