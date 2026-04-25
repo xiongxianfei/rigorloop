@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-04-25 Test layering and change-scoped validation](plans/2026-04-25-test-layering-and-change-scoped-validation.md) - active execution plan with M1-M4 implemented; pending final code-review, verify, explain-change, and PR handoff.
+- [2026-04-25 Test layering and change-scoped validation](plans/2026-04-25-test-layering-and-change-scoped-validation.md) - active execution plan with M1-M4 implemented and reviewed; pending verify, explain-change, and PR handoff.
 
 ## Blocked
 - none yet

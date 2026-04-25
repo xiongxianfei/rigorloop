@@ -356,6 +356,7 @@ The plan preserves the repository value of trustworthy automation. It optimizes 
 - [x] 2026-04-25: M3 implemented. Workflow docs and affected stage skills now describe selector-selected targeted proof, triggered broad smoke, stable check IDs, and manual-proof ownership; generated `.codex/skills/` and public adapter skill outputs were regenerated from canonical skills.
 - [x] 2026-04-25: M3 code-review complete. `code-review-r5` returned `clean-with-notes`.
 - [x] 2026-04-25: M4 implemented. Selector-selected targeted proof, wrapper execution proof, planned broad smoke, review closeout validation, change metadata validation, lifecycle validation, and whitespace validation passed.
+- [x] 2026-04-25: M4 code-review complete. `code-review-r6` returned `clean-with-notes`.
 
 ## Decision log
 
@@ -448,14 +449,18 @@ The plan preserves the repository value of trustworthy automation. It optimizes 
 - 2026-04-25: M4 change metadata validation passed: `python scripts/validate-change-metadata.py docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml`.
 - 2026-04-25: M4 lifecycle validation passed: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-25-test-layering-and-change-scoped-validation.md --path specs/test-layering-and-change-scoped-validation.md --path specs/test-layering-and-change-scoped-validation.test.md --path docs/architecture/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/plans/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml`.
 - 2026-04-25: M4 whitespace validation passed: `git diff --check -- .`.
+- 2026-04-25: M4 code-review completed: `code-review-r6` returned `clean-with-notes`.
+- 2026-04-25: M4 review artifact closeout validation passed after `code-review-r6`: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-25-test-layering-and-change-scoped-validation`.
+- 2026-04-25: M4 change metadata validation passed after review closeout updates: `python scripts/validate-change-metadata.py docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml`.
+- 2026-04-25: M4 lifecycle validation passed after review closeout updates: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml`.
 
 ## Outcome and retrospective
 
-- Active. M1, M2, M3, and M4 implementation are complete; M4 is ready for code-review.
+- Active. M1, M2, M3, and M4 implementation and code-review are complete; the change is ready for verify.
 
 ## Readiness
 
-- Immediate next repository stage: `code-review` for M4.
+- Immediate next repository stage: `verify`.
 - Next implementation milestone: none.
 
 ## Risks and follow-ups
