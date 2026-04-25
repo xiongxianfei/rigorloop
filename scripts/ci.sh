@@ -18,6 +18,51 @@ run_check() {
 
 artifact_lifecycle_label=""
 artifact_lifecycle_cmd=()
+review_artifact_label=""
+review_artifact_cmd=()
+
+add_review_artifact_root() {
+  local path="$1"
+  if [[ "$path" != docs/changes/*/* ]]; then
+    return 0
+  fi
+
+  local remainder="${path#docs/changes/}"
+  local change_id="${remainder%%/*}"
+  local root="docs/changes/${change_id}"
+  local existing=""
+  for existing in "${review_artifact_cmd[@]:2}"; do
+    if [[ "$existing" == "$root" ]]; then
+      return 0
+    fi
+  done
+  review_artifact_cmd+=("$root")
+}
+
+determine_review_artifact_command() {
+  review_artifact_label="Validate review artifacts (changed roots)"
+  review_artifact_cmd=(python scripts/validate-review-artifacts.py)
+
+  local -a changed_paths=()
+  if [[ -n "${REVIEW_ARTIFACT_ROOTS:-}" ]]; then
+    local root=""
+    for root in ${REVIEW_ARTIFACT_ROOTS}; do
+      review_artifact_cmd+=("$root")
+    done
+  else
+    mapfile -t changed_paths < <(git diff --name-only --diff-filter=ACMRT HEAD -- .)
+    if [[ ${#changed_paths[@]} -eq 0 ]] && git rev-parse --verify HEAD~1 >/dev/null 2>&1; then
+      mapfile -t changed_paths < <(git diff --name-only --diff-filter=ACMRT HEAD~1 HEAD -- .)
+    fi
+
+    local path=""
+    for path in "${changed_paths[@]}"; do
+      add_review_artifact_root "$path"
+    done
+  fi
+
+  [[ ${#review_artifact_cmd[@]} -gt 2 ]]
+}
 
 determine_artifact_lifecycle_command() {
   if [[ -n "${ARTIFACT_LIFECYCLE_MODE:-}" ]]; then
@@ -135,6 +180,17 @@ run_check "Run change metadata validator fixtures" \
 
 run_check "Run artifact lifecycle validator fixtures" \
   python scripts/test-artifact-lifecycle-validator.py
+
+run_check "Run review artifact validator fixtures" \
+  python scripts/test-review-artifact-validator.py
+
+if determine_review_artifact_command; then
+  run_check "$review_artifact_label" \
+    "${review_artifact_cmd[@]}"
+else
+  echo "No changed review artifact roots to validate."
+  echo
+fi
 
 determine_artifact_lifecycle_command
 run_check "$artifact_lifecycle_label" \
