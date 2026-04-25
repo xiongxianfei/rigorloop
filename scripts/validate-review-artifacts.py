@@ -18,8 +18,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--mode",
         default="structure",
-        choices=["structure"],
-        help="validation mode; closeout mode is added in a later milestone",
+        choices=["structure", "closeout"],
+        help="validation mode",
     )
     parser.add_argument("change_roots", nargs="+", help="docs/changes/<change-id> roots to validate")
     args = parser.parse_args(argv)

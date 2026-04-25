@@ -17,6 +17,7 @@ APPROVED_DISPOSITIONS = frozenset(
         "needs-decision",
     }
 )
+BLOCKING_REVIEW_STATUSES = frozenset({"revise", "changes-requested", "blocked"})
 FORMAL_REVIEW_STAGES = frozenset(
     {
         "proposal-review",
@@ -26,6 +27,7 @@ FORMAL_REVIEW_STAGES = frozenset(
         "code-review",
     }
 )
+VALIDATION_MODES = frozenset({"structure", "closeout"})
 REVIEW_LOG_REQUIRED_FIELDS = (
     "Review ID",
     "Stage",
@@ -101,6 +103,7 @@ class ReviewResolution:
     path: Path
     closeout_status: str | None
     closeout_line: int | None
+    explicit_review_closeout_ids: tuple[str, ...]
     entries: tuple[ResolutionRecord, ...]
 
 
@@ -127,7 +130,7 @@ class ReviewArtifactValidationResult:
 
 
 def validate_change_root(change_root: Path, *, mode: str = "structure") -> ReviewArtifactValidationResult:
-    if mode != "structure":
+    if mode not in VALIDATION_MODES:
         raise ValueError(f"unsupported review artifact validation mode: {mode}")
 
     change_root = change_root.resolve()
@@ -191,6 +194,8 @@ def validate_change_root(change_root: Path, *, mode: str = "structure") -> Revie
 
     findings.extend(_validate_review_relationships(change_root, review_records, finding_records, log_entries, mode))
     findings.extend(_validate_finding_relationships(resolution_path, finding_records, resolution, mode))
+    if mode == "closeout":
+        findings.extend(_validate_closeout(finding_records, log_entries, resolution, mode))
 
     return _result(change_root, mode, findings, review_records, finding_records, log_entries, resolution)
 
@@ -513,7 +518,29 @@ def _parse_review_resolution(
             )
 
     entries = _parse_resolution_entries(path, lines, mode, findings)
-    return ReviewResolution(path=path, closeout_status=closeout_status, closeout_line=closeout_line, entries=tuple(entries)), findings
+    explicit_closeout_ids = tuple(value.value for value in fields.get("Review closeout", []))
+    for value in fields.get("Review closeout", []):
+        if not _is_stable_identifier(value.value):
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=value.line,
+                    mode=mode,
+                    message="Review closeout must reference a stable Review ID",
+                    review_id=value.value,
+                )
+            )
+
+    return (
+        ReviewResolution(
+            path=path,
+            closeout_status=closeout_status,
+            closeout_line=closeout_line,
+            explicit_review_closeout_ids=explicit_closeout_ids,
+            entries=tuple(entries),
+        ),
+        findings,
+    )
 
 
 def _parse_resolution_entries(
@@ -900,6 +927,202 @@ def _validate_finding_relationships(
         )
 
     return findings
+
+
+def _validate_closeout(
+    finding_records: list[FindingRecord],
+    log_entries: list[ReviewLogEntry],
+    resolution: ReviewResolution | None,
+    mode: str,
+) -> list[ValidationFinding]:
+    findings: list[ValidationFinding] = []
+
+    if resolution is not None and resolution.closeout_status != "closed":
+        findings.append(
+            ValidationFinding(
+                path=resolution.path,
+                line=resolution.closeout_line,
+                mode=mode,
+                message="Closeout status must be closed",
+            )
+        )
+
+    if resolution is not None:
+        for entry in resolution.entries:
+            findings.extend(_validate_resolution_entry_closeout(entry, mode))
+
+    findings.extend(_validate_blocking_review_closeout(log_entries, resolution, mode))
+    return findings
+
+
+def _validate_resolution_entry_closeout(
+    entry: ResolutionRecord,
+    mode: str,
+) -> list[ValidationFinding]:
+    findings: list[ValidationFinding] = []
+    if entry.disposition is None or entry.disposition not in APPROVED_DISPOSITIONS:
+        return findings
+
+    if entry.disposition == "needs-decision":
+        findings.append(
+            ValidationFinding(
+                path=entry.path,
+                line=entry.line,
+                mode=mode,
+                message="needs-decision is not a final disposition",
+                finding_id=entry.finding_id,
+            )
+        )
+        return findings
+
+    if entry.disposition == "accepted":
+        if not _entry_has_any(entry, ("Chosen action", "Final action")):
+            findings.append(
+                ValidationFinding(
+                    path=entry.path,
+                    line=entry.line,
+                    mode=mode,
+                    message="accepted finding missing chosen action",
+                    finding_id=entry.finding_id,
+                )
+            )
+        if not _entry_has(entry, "Validation evidence"):
+            findings.append(
+                ValidationFinding(
+                    path=entry.path,
+                    line=entry.line,
+                    mode=mode,
+                    message="accepted finding missing validation evidence",
+                    finding_id=entry.finding_id,
+                )
+            )
+        return findings
+
+    if entry.disposition == "rejected":
+        if not _entry_has(entry, "Rationale"):
+            findings.append(
+                ValidationFinding(
+                    path=entry.path,
+                    line=entry.line,
+                    mode=mode,
+                    message="rejected finding missing rationale",
+                    finding_id=entry.finding_id,
+                )
+            )
+        return findings
+
+    if entry.disposition == "deferred":
+        if not _entry_has(entry, "Rationale"):
+            findings.append(
+                ValidationFinding(
+                    path=entry.path,
+                    line=entry.line,
+                    mode=mode,
+                    message="deferred finding missing rationale",
+                    finding_id=entry.finding_id,
+                )
+            )
+        if not _entry_has_any(entry, ("Follow-up owner", "Owning stage", "No-follow-up reason")):
+            findings.append(
+                ValidationFinding(
+                    path=entry.path,
+                    line=entry.line,
+                    mode=mode,
+                    message="deferred finding missing follow-up owner, owning stage, or no-follow-up reason",
+                    finding_id=entry.finding_id,
+                )
+            )
+        return findings
+
+    if entry.disposition == "partially-accepted":
+        if not _entry_has(entry, "Accepted portion"):
+            findings.append(
+                ValidationFinding(
+                    path=entry.path,
+                    line=entry.line,
+                    mode=mode,
+                    message="partially-accepted finding missing accepted portion",
+                    finding_id=entry.finding_id,
+                )
+            )
+        if not _entry_has_any(
+            entry,
+            (
+                "Rejected or deferred portion",
+                "Rejected portion",
+                "Deferred portion",
+                "Non-accepted portion",
+            ),
+        ):
+            findings.append(
+                ValidationFinding(
+                    path=entry.path,
+                    line=entry.line,
+                    mode=mode,
+                    message="partially-accepted finding missing rejected or deferred portion",
+                    finding_id=entry.finding_id,
+                )
+            )
+        if not _entry_has(entry, "Rationale"):
+            findings.append(
+                ValidationFinding(
+                    path=entry.path,
+                    line=entry.line,
+                    mode=mode,
+                    message="partially-accepted finding missing rationale",
+                    finding_id=entry.finding_id,
+                )
+            )
+        if not _entry_has(entry, "Validation evidence"):
+            findings.append(
+                ValidationFinding(
+                    path=entry.path,
+                    line=entry.line,
+                    mode=mode,
+                    message="partially-accepted finding missing validation evidence",
+                    finding_id=entry.finding_id,
+                )
+            )
+    return findings
+
+
+def _validate_blocking_review_closeout(
+    log_entries: list[ReviewLogEntry],
+    resolution: ReviewResolution | None,
+    mode: str,
+) -> list[ValidationFinding]:
+    findings: list[ValidationFinding] = []
+    explicit_closeouts = set(resolution.explicit_review_closeout_ids) if resolution else set()
+    for index, entry in enumerate(log_entries):
+        if entry.status.lower() not in BLOCKING_REVIEW_STATUSES:
+            continue
+        if _has_later_nonblocking_review(entry, log_entries[index + 1 :]):
+            continue
+        if entry.review_id in explicit_closeouts:
+            continue
+        findings.append(
+            ValidationFinding(
+                path=entry.path,
+                line=entry.line,
+                mode=mode,
+                message="blocking review outcome requires same-stage re-review or explicit closeout",
+                review_id=entry.review_id,
+            )
+        )
+    return findings
+
+
+def _has_later_nonblocking_review(
+    entry: ReviewLogEntry,
+    later_entries: list[ReviewLogEntry],
+) -> bool:
+    for later in later_entries:
+        if later.stage != entry.stage:
+            continue
+        if later.status.lower() in BLOCKING_REVIEW_STATUSES:
+            continue
+        return True
+    return False
 
 
 def _read_lines(path: Path) -> list[str]:

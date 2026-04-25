@@ -7,6 +7,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import textwrap
 import unittest
 from pathlib import Path
 
@@ -26,7 +27,7 @@ def copy_fixture(relative_path: str = "valid-open-resolution") -> Path:
 
 def write_text(path: Path, text: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(text.strip() + "\n", encoding="utf-8")
+    path.write_text(textwrap.dedent(text).strip() + "\n", encoding="utf-8")
 
 
 def drop_field(path: Path, field: str) -> None:
@@ -48,9 +49,9 @@ def replace_field(path: Path, field: str, value: str) -> None:
     path.write_text("\n".join(replaced) + "\n", encoding="utf-8")
 
 
-def run_cli(change_root: Path) -> subprocess.CompletedProcess[str]:
+def run_cli(change_root: Path, *args: str) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
-        [sys.executable, str(VALIDATOR), str(change_root)],
+        [sys.executable, str(VALIDATOR), *args, str(change_root)],
         capture_output=True,
         text=True,
         cwd=ROOT,
@@ -90,6 +91,73 @@ def valid_log_text(material_findings: str = "CR1-F1", open_findings: str = "CR1-
     """
 
 
+def accepted_closed_resolution_text() -> str:
+    return """
+    # Review Resolution
+
+    Closeout status: closed
+
+    Finding ID: CR1-F1
+    Disposition: accepted
+    Owner: implementer
+    Owning stage: implement
+    Chosen action: Add direct validator coverage for the missing resolution entry case.
+    Rationale: The review evidence identified a material Finding ID without guaranteed traceability.
+    Validation target: Run the focused review artifact validator tests.
+    Validation evidence: `python scripts/test-review-artifact-validator.py` passed.
+    """
+
+
+def rejected_closed_resolution_text() -> str:
+    return """
+    # Review Resolution
+
+    Closeout status: closed
+
+    Finding ID: CR1-F1
+    Disposition: rejected
+    Owner: maintainer
+    Owning stage: code-review
+    Stop state: no change required
+    Rationale: The finding is already satisfied by existing validator coverage.
+    Expected proof: Reviewer confirms the cited coverage exists.
+    """
+
+
+def deferred_closed_resolution_text() -> str:
+    return """
+    # Review Resolution
+
+    Closeout status: closed
+
+    Finding ID: CR1-F1
+    Disposition: deferred
+    Owner: maintainer
+    Owning stage: follow-up
+    Stop state: deferred to a separate change
+    Rationale: The finding is useful but outside this milestone.
+    Validation target: Follow-up issue records owner and scope.
+    """
+
+
+def partially_accepted_closed_resolution_text() -> str:
+    return """
+    # Review Resolution
+
+    Closeout status: closed
+
+    Finding ID: CR1-F1
+    Disposition: partially-accepted
+    Owner: implementer
+    Owning stage: implement
+    Accepted portion: Add focused validator coverage.
+    Rejected or deferred portion: Defer broad historical artifact migration.
+    Rationale: Historical migration is outside this milestone.
+    Validation target: Focused validator tests and recorded follow-up rationale.
+    Validation evidence: `python scripts/test-review-artifact-validator.py` passed.
+    """
+
+
 class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
     maxDiff = None
 
@@ -98,6 +166,9 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
 
     def validate(self, change_root: Path):
         return validate_change_root(change_root, mode="structure")
+
+    def validateCloseout(self, change_root: Path):
+        return validate_change_root(change_root, mode="closeout")
 
     def assertPasses(self, change_root: Path) -> None:
         result = self.validate(change_root)
@@ -110,6 +181,19 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
         result = self.validate(change_root)
         combined = "\n".join(f.message for f in result.blocking_findings)
         self.assertTrue(result.blocking_findings, msg="expected validation to fail")
+        self.assertIn(expected_text, combined)
+
+    def assertCloseoutPasses(self, change_root: Path) -> None:
+        result = self.validateCloseout(change_root)
+        self.assertFalse(
+            result.blocking_findings,
+            msg="\n".join(f.message for f in result.blocking_findings),
+        )
+
+    def assertCloseoutFails(self, change_root: Path, expected_text: str) -> None:
+        result = self.validateCloseout(change_root)
+        combined = "\n".join(f.message for f in result.blocking_findings)
+        self.assertTrue(result.blocking_findings, msg="expected closeout validation to fail")
         self.assertIn(expected_text, combined)
 
     def fixture(self) -> Path:
@@ -357,6 +441,129 @@ Validation target: Run tests.
         self.assertIn("mode=structure", combined)
         self.assertIn("Finding ID=CR1-F1", combined)
         self.assertIn("missing owner", combined)
+
+    def test_closeout_mode_passes_closed_review_resolution(self) -> None:
+        root = self.fixture()
+        write_text(root / "review-resolution.md", accepted_closed_resolution_text())
+        write_text(
+            root / "review-log.md",
+            valid_log_text(open_findings="None").replace("changes-requested", "approved"),
+        )
+        replace_field(root / "reviews" / "code-review-r1.md", "Status", "approved")
+
+        self.assertCloseoutPasses(root)
+        cli_result = run_cli(root, "--mode", "closeout")
+        self.assertEqual(
+            cli_result.returncode,
+            0,
+            msg=f"stdout:\n{cli_result.stdout}\nstderr:\n{cli_result.stderr}",
+        )
+        self.assertIn("mode=closeout", cli_result.stdout)
+
+    def test_closeout_mode_preserves_clean_review_lightweight_path(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-empty-closeout-"))
+        self.addCleanupTree(root)
+        self.assertCloseoutPasses(root)
+
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-clean-closeout-"))
+        self.addCleanupTree(root)
+        write_text(root / "reviews" / "code-review-r1.md", valid_clean_review_text())
+        write_text(root / "review-log.md", valid_log_text("None", "None").replace("changes-requested", "approved"))
+        self.assertCloseoutPasses(root)
+
+    def test_closeout_mode_blocks_open_or_needs_decision_records(self) -> None:
+        root = self.fixture()
+        self.assertCloseoutFails(root, "Closeout status must be closed")
+
+        root = self.fixture()
+        resolution = """
+        # Review Resolution
+
+        Closeout status: open
+
+        Finding ID: CR1-F1
+        Disposition: needs-decision
+        Decision owner: maintainer
+        Decision needed: Decide whether this follow-up is in scope.
+        Owning stage: plan
+        Stop state: blocked until owner decision
+        Validation target: Owner decision recorded or finding deferred.
+        """
+        write_text(root / "review-resolution.md", resolution)
+        self.assertCloseoutFails(root, "needs-decision is not a final disposition")
+
+    def test_closeout_mode_validates_accepted_closeout_fields(self) -> None:
+        root = self.fixture()
+        write_text(root / "review-resolution.md", accepted_closed_resolution_text())
+        drop_field(root / "review-resolution.md", "Chosen action")
+        self.assertCloseoutFails(root, "accepted finding missing chosen action")
+
+        root = self.fixture()
+        write_text(root / "review-resolution.md", accepted_closed_resolution_text())
+        drop_field(root / "review-resolution.md", "Validation evidence")
+        self.assertCloseoutFails(root, "accepted finding missing validation evidence")
+
+    def test_closeout_mode_validates_rejected_deferred_and_partial_fields(self) -> None:
+        root = self.fixture()
+        write_text(root / "review-resolution.md", rejected_closed_resolution_text())
+        drop_field(root / "review-resolution.md", "Rationale")
+        self.assertCloseoutFails(root, "rejected finding missing rationale")
+
+        root = self.fixture()
+        write_text(root / "review-resolution.md", deferred_closed_resolution_text())
+        drop_field(root / "review-resolution.md", "Rationale")
+        self.assertCloseoutFails(root, "deferred finding missing rationale")
+
+        root = self.fixture()
+        write_text(root / "review-resolution.md", deferred_closed_resolution_text())
+        drop_field(root / "review-resolution.md", "Owning stage")
+        self.assertCloseoutFails(root, "deferred finding missing follow-up owner, owning stage, or no-follow-up reason")
+
+        root = self.fixture()
+        write_text(root / "review-resolution.md", partially_accepted_closed_resolution_text())
+        drop_field(root / "review-resolution.md", "Rejected or deferred portion")
+        self.assertCloseoutFails(root, "partially-accepted finding missing rejected or deferred portion")
+
+        root = self.fixture()
+        write_text(root / "review-resolution.md", partially_accepted_closed_resolution_text())
+        drop_field(root / "review-resolution.md", "Validation evidence")
+        self.assertCloseoutFails(root, "partially-accepted finding missing validation evidence")
+
+    def test_closeout_mode_blocks_blocking_review_without_rerun(self) -> None:
+        root = self.fixture()
+        write_text(root / "review-resolution.md", accepted_closed_resolution_text())
+        self.assertCloseoutFails(root, "blocking review outcome requires same-stage re-review or explicit closeout")
+
+        root = self.fixture()
+        write_text(
+            root / "review-resolution.md",
+            accepted_closed_resolution_text() + "\nReview closeout: code-review-r1",
+        )
+        self.assertCloseoutPasses(root)
+
+        root = self.fixture()
+        write_text(root / "review-resolution.md", accepted_closed_resolution_text())
+        second_review = (root / "reviews" / "code-review-r1.md").read_text(encoding="utf-8")
+        second_review = second_review.replace("Review ID: code-review-r1", "Review ID: code-review-r2")
+        second_review = second_review.replace("Round: 1", "Round: 2")
+        second_review = second_review.replace("Status: changes-requested", "Status: approved")
+        second_review = second_review.replace("Finding ID: CR1-F1", "")
+        write_text(root / "reviews" / "code-review-r2.md", second_review)
+        with (root / "review-log.md").open("a", encoding="utf-8") as handle:
+            handle.write(
+                valid_log_text("None", "None")
+                .replace("Review ID: code-review-r1", "Review ID: code-review-r2")
+                .replace("Round: 1", "Round: 2")
+                .replace("Status: changes-requested", "Status: approved")
+                .replace("Detailed record: reviews/code-review-r1.md", "Detailed record: reviews/code-review-r2.md")
+            )
+        self.assertCloseoutPasses(root)
+
+    def test_ci_script_invokes_review_artifact_checks_for_changed_roots(self) -> None:
+        ci_script = (ROOT / "scripts" / "ci.sh").read_text(encoding="utf-8")
+        self.assertIn("test-review-artifact-validator.py", ci_script)
+        self.assertIn("validate-review-artifacts.py", ci_script)
+        self.assertIn("docs/changes/", ci_script)
 
 
 if __name__ == "__main__":

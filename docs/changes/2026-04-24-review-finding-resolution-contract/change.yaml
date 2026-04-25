@@ -171,6 +171,22 @@ validation:
     result: pass_after_m1_implementation
   - command: git diff --check -- scripts tests docs/changes/2026-04-24-review-finding-resolution-contract docs/plans/2026-04-25-review-finding-resolution-contract.md
     result: pass_after_m1_implementation
+  - command: python scripts/test-review-artifact-validator.py
+    result: fail_expected_unsupported_closeout_mode_and_missing_ci_review_artifact_checks_before_m2_implementation
+  - command: python scripts/test-review-artifact-validator.py
+    result: pass_after_m2_implementation
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-04-24-review-finding-resolution-contract
+    result: pass_after_m2_implementation
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-24-review-finding-resolution-contract
+    result: pass_after_m2_implementation
+  - command: bash scripts/ci.sh
+    result: pass_after_m2_implementation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml
+    result: pass_after_m2_implementation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-24-review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml --path docs/plan.md --path docs/plans/2026-04-25-review-finding-resolution-contract.md
+    result: pass_after_m2_implementation
+  - command: git diff --check -- scripts tests docs/changes/2026-04-24-review-finding-resolution-contract docs/plans/2026-04-25-review-finding-resolution-contract.md
+    result: pass_after_m2_implementation
 changed_files:
   - docs/architecture/2026-04-24-review-finding-resolution-contract.md
   - docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml
@@ -183,6 +199,7 @@ changed_files:
   - docs/plan.md
   - docs/plans/2026-04-25-review-finding-resolution-contract.md
   - docs/proposals/2026-04-24-review-finding-resolution-contract.md
+  - scripts/ci.sh
   - scripts/review_artifact_validation.py
   - scripts/test-review-artifact-validator.py
   - scripts/validate-review-artifacts.py
