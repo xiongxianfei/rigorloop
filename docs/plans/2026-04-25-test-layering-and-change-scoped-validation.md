@@ -376,6 +376,7 @@ The plan preserves the repository value of trustworthy automation. It optimizes 
 - M2: `scripts/ci.sh` needed a selector classification so wrapper changes select the wrapper regression test surface instead of falling into manual routing.
 - M2 code-review: `CR3-F1` showed that implemented catalog validation still needed direct security proof against tampered selector JSON command text.
 - M3: A compact source-guidance alignment test was more useful than prose greps across generated output; generated-output drift checks prove `.codex/skills/` and `dist/adapters/` stayed synchronized after canonical skill changes.
+- M3: `skills/pr/SKILL.md` remained unchanged because existing PR guidance already keeps review-resolution details to counts and a `review-resolution.md` link, and `scripts/test-review-artifact-validator.py` continues to assert that contract.
 
 ## Validation notes
 
