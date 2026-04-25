@@ -115,6 +115,20 @@ Notes:
 
 ## Validation
 
+Use selector-selected targeted proof as the first validation layer for non-trivial work when the changed paths are known:
+
+- Inspect selection without running checks: `python scripts/select-validation.py --mode explicit --path <path>...`
+- Execute targeted proof through the wrapper: `bash scripts/ci.sh --mode explicit --path <path>...`
+- Examples of stable selected-check IDs are `skills.validate`, `review_artifacts.validate`, and `artifact_lifecycle.validate`.
+
+`scripts/ci.sh` is the execution wrapper for selected checks. It does not imply broad smoke for every PR.
+
+Use broad smoke only when an authoritative trigger requires it, such as selector mode `main`, selector mode `release`, an explicit `--broad-smoke` request, active plan field `broad_smoke_required: true`, test-spec requirement, review-resolution requirement, or release metadata. The selected check ID for repository broad smoke is `broad_smoke.repo`, and the direct command is:
+
+```bash
+bash scripts/ci.sh --mode broad-smoke
+```
+
 Run these structural checks before PR:
 
 - `python scripts/validate-skills.py`
@@ -127,7 +141,7 @@ Run these structural checks before PR:
 - `python scripts/test-artifact-lifecycle-validator.py`
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path <repo-path> [...]`
 
-Use `bash scripts/ci.sh` to run the same checks through the repository-owned CI wrapper and report the commands you actually ran. In hosted CI, the wrapper receives explicit SHA inputs for `pr-ci` or `push-main-ci`; outside CI, it falls back to deterministic explicit-path validation over tracked changes or the latest commit diff.
+Use `bash scripts/ci.sh` with an explicit mode to run checks through the repository-owned CI wrapper and report the commands you actually ran. Hosted PR CI uses `--mode pr --base <sha> --head <sha>`, main CI uses `--mode main --base <sha> --head <sha>`, and release automation uses release-specific validation. No-argument `bash scripts/ci.sh` remains legacy broad smoke, not the normal first proof step.
 
 Ordinary contributors do not need all supported tools installed locally for non-smoke validation. Repository-owned checks validate generated package structure, drift, manifests, release metadata, and security without invoking Codex, Claude Code, or opencode.
 

@@ -22,6 +22,7 @@ Read:
 - architecture doc and ADRs when relevant;
 - plan validation notes;
 - test and CI results;
+- selector-selected targeted proof, including selected checks and their stable check IDs when the selector is in scope;
 - invocation context for `workflow-managed`, isolated, or review-only behavior;
 - explicit user instructions to stop after review;
 - `AGENTS.md` and `CONSTITUTION.md`;
@@ -55,6 +56,7 @@ Prefer a fresh session, separate reviewer, or separate agent when available. If 
 - Code-shape inference alone is insufficient direct proof for a named edge case.
 - When a named edge-case proof gap is actionable within approved scope, report it as a finding instead of a clean result.
 - When the reviewer cannot inspect enough evidence to assess a named edge case credibly, use `inconclusive` rather than a clean result.
+- For validation-routing changes, targeted proof should name selector selected checks from `python scripts/select-validation.py` or `bash scripts/ci.sh --mode explicit`; broad smoke evidence is separate and required only when an authoritative trigger applies.
 
 ## First-pass checklist coverage
 
