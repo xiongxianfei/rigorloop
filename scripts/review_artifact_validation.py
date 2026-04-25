@@ -1116,13 +1116,27 @@ def _has_later_nonblocking_review(
     entry: ReviewLogEntry,
     later_entries: list[ReviewLogEntry],
 ) -> bool:
+    entry_round = _round_number(entry.round)
+    if entry_round is None:
+        return False
+
     for later in later_entries:
         if later.stage != entry.stage:
             continue
         if later.status.lower() in BLOCKING_REVIEW_STATUSES:
             continue
+        later_round = _round_number(later.round)
+        if later_round is None or later_round <= entry_round:
+            continue
         return True
     return False
+
+
+def _round_number(value: str) -> int | None:
+    try:
+        return int(value, 10)
+    except ValueError:
+        return None
 
 
 def _read_lines(path: Path) -> list[str]:
