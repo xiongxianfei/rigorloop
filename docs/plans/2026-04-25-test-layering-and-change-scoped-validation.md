@@ -296,13 +296,13 @@ The plan preserves the repository value of trustworthy automation. It optimizes 
   - the branch has targeted proof, broad-smoke proof for the planned initiative, closed review-resolution state, and synchronized lifecycle state.
 - Commit message: `M4: close validation selector integration`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] broad smoke passed
-  - [ ] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] broad smoke passed
+  - [x] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - broad smoke may reveal stale generated output from earlier milestones
   - final lifecycle validation may catch stale readiness wording in touched artifacts
@@ -355,7 +355,7 @@ The plan preserves the repository value of trustworthy automation. It optimizes 
 - [x] 2026-04-25: M2 code-review complete. `code-review-r3` found missing direct proof for tampered selector command rejection; `CR3-F1` was fixed with a focused wrapper regression and `code-review-r4` returned `clean-with-notes`.
 - [x] 2026-04-25: M3 implemented. Workflow docs and affected stage skills now describe selector-selected targeted proof, triggered broad smoke, stable check IDs, and manual-proof ownership; generated `.codex/skills/` and public adapter skill outputs were regenerated from canonical skills.
 - [x] 2026-04-25: M3 code-review complete. `code-review-r5` returned `clean-with-notes`.
-- [ ] M4 complete.
+- [x] 2026-04-25: M4 implemented. Selector-selected targeted proof, wrapper execution proof, planned broad smoke, review closeout validation, change metadata validation, lifecycle validation, and whitespace validation passed.
 
 ## Decision log
 
@@ -369,6 +369,7 @@ The plan preserves the repository value of trustworthy automation. It optimizes 
 - 2026-04-25: Treat direct files under `docs/releases/` as ambiguous release paths. Rationale: only paths nested under `docs/releases/<version>/...` may infer a release version, and v1 blocks ambiguous release paths instead of guessing.
 - 2026-04-25: Keep no-argument `bash scripts/ci.sh` as legacy broad smoke while adding explicit `--mode` routing. Rationale: existing contributors and docs still rely on the stable wrapper command, while targeted proof uses explicit modes.
 - 2026-04-25: Route `scripts/ci.sh` changes to `selector.regression`. Rationale: `python scripts/test-select-validation.py` now owns wrapper regression coverage as well as selector regression coverage.
+- 2026-04-25: Do not create `verify-report.md` during M4. Rationale: M4 used automated selector, wrapper, broad-smoke, review-artifact, change-metadata, lifecycle, and whitespace proof only; no manual proof check was required.
 
 ## Surprises and discoveries
 
@@ -439,15 +440,23 @@ The plan preserves the repository value of trustworthy automation. It optimizes 
 - 2026-04-25: M3 change metadata validation passed after review closeout updates: `python scripts/validate-change-metadata.py docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml`.
 - 2026-04-25: M3 lifecycle validation passed after review closeout updates: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/rigorloop-workflow.md --path docs/plans/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml`.
 - 2026-04-25: M3 whitespace validation passed after review closeout updates: `git diff --check -- docs/changes/2026-04-25-test-layering-and-change-scoped-validation docs/plans/2026-04-25-test-layering-and-change-scoped-validation.md`.
+- 2026-04-25: M4 selector inspection passed: `python scripts/select-validation.py --mode explicit --path scripts/select-validation.py --path scripts/validation_selection.py --path scripts/ci.sh` returned `status: "ok"` and selected `selector.regression`.
+- 2026-04-25: M4 targeted selector regression passed: `python scripts/test-select-validation.py` ran 25 tests and passed.
+- 2026-04-25: M4 targeted wrapper proof passed: `bash scripts/ci.sh --mode explicit --path scripts/select-validation.py --path scripts/validation_selection.py --path scripts/ci.sh`.
+- 2026-04-25: M4 planned broad smoke passed: `bash scripts/ci.sh --mode broad-smoke`. The command emitted only pre-existing unrelated lifecycle warnings for `docs/proposals/2026-04-19-rigorloop-workflow-product.explore.md`.
+- 2026-04-25: M4 review artifact closeout validation passed: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-25-test-layering-and-change-scoped-validation`.
+- 2026-04-25: M4 change metadata validation passed: `python scripts/validate-change-metadata.py docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml`.
+- 2026-04-25: M4 lifecycle validation passed: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-25-test-layering-and-change-scoped-validation.md --path specs/test-layering-and-change-scoped-validation.md --path specs/test-layering-and-change-scoped-validation.test.md --path docs/architecture/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/plans/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml`.
+- 2026-04-25: M4 whitespace validation passed: `git diff --check -- .`.
 
 ## Outcome and retrospective
 
-- Active. M1, M2, and M3 implementation and code-review are complete; M4 is the next implementation milestone.
+- Active. M1, M2, M3, and M4 implementation are complete; M4 is ready for code-review.
 
 ## Readiness
 
-- Immediate next repository stage: `implement` for M4.
-- Next implementation milestone: M4 integration closeout and final validation.
+- Immediate next repository stage: `code-review` for M4.
+- Next implementation milestone: none.
 
 ## Risks and follow-ups
 
