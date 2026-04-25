@@ -65,3 +65,13 @@ Detailed record: reviews/code-review-r2.md
 Resolution: review-resolution.md#code-review-r2
 Material findings: CR2-F1
 Open findings: None
+
+### Review entry
+Review ID: code-review-r3
+Stage: code-review
+Round: 3
+Status: changes-requested
+Detailed record: reviews/code-review-r3.md
+Resolution: review-resolution.md#code-review-r3
+Material findings: CR3-F1, CR3-F2, CR3-F3
+Open findings: None

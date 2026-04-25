@@ -23,7 +23,7 @@ The revised spec now defines exact `review-resolution.md` closeout status values
 | --- | --- | --- |
 | `SR1` | closed | `R6f`-`R6m` define top-level `open` or `closed` closeout status and disposition-specific closeout rules. |
 | `SR2` | closed | `R2m-exception` defines reconstructed review records, required labels, original evidence, after-fix disclosure, stable Finding IDs, and fidelity-loss notes. |
-| `SR3` | closed | `R3h`-`R3k` define the v1 `### Review entry` line-based ledger format and exact Review ID counting rule. |
+| `SR3` | closed | `R3m`-`R3p` define the v1 `### Review entry` line-based ledger format and exact Review ID counting rule. |
 
 ## Findings
 

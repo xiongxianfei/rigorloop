@@ -91,7 +91,7 @@ File | Change | Reason | Source artifact | Test/evidence
 - Do not justify unrelated changes; flag them.
 - Do not claim a requirement drove a change unless the link is real.
 - Do not hide validation gaps.
-- Do not proceed when `review-resolution.md` is missing, open, or still contains `needs-decision` for material findings that must close before handoff.
+- Do not proceed when `review-resolution.md` is missing, open, still contains `needs-decision`, or `review-log.md` still lists open findings for material findings that must close before handoff.
 - Do not duplicate transcript content from detailed reviews; keep review-resolution discussion concise and link the durable artifact.
 - Do not invent alternatives that were never considered; mark them as hindsight if added.
 - Keep explanations readable for a human reviewer.

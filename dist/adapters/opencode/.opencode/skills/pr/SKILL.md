@@ -39,7 +39,7 @@ Before drafting or opening a PR, check:
 5. CI status is known when available;
 6. for planned initiatives, lifecycle closeout is already reflected in both `docs/plan.md` and the plan body when the final state is known before PR; only merge-dependent `Done` transitions may wait for immediate post-merge cleanup;
 7. for ordinary non-trivial work, the required docs-changes artifacts exist, including `docs/changes/<change-id>/change.yaml` plus durable reasoning, defaulting to `docs/changes/<change-id>/explain-change.md` unless an approved equivalent surface applies;
-8. material review findings are closed in `review-resolution.md`, with no `needs-decision` dispositions remaining;
+8. material review findings are closed in `review-resolution.md`, with no `needs-decision` dispositions and no `review-log.md` open findings remaining;
 9. artifacts are updated;
 10. no secrets, credentials, local paths, or debug-only changes are included;
 11. generated files and migrations are intentional;
@@ -116,7 +116,7 @@ Examples:
 - Do not say CI passed unless it passed.
 - Do not omit failed or unrun validation.
 - Do not treat a missing required docs-changes baseline pack as a warning-only condition for ordinary non-trivial work; it is a readiness blocker.
-- Do not proceed to PR with `needs-decision`, `Closeout status: open`, or missing review-resolution closeout evidence for material findings.
+- Do not proceed to PR with `needs-decision`, `Closeout status: open`, stale `review-log.md` open findings, or missing review-resolution closeout evidence for material findings.
 - Keep PR review-resolution details to counts by disposition and a link to `review-resolution.md`; do not duplicate every detailed finding and suggestion.
 - Do not defer blocked or superseded lifecycle closeout until PR, merge, or retrospective work.
 - Do not summarize from memory when a diff is available.

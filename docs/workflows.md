@@ -40,7 +40,7 @@ Notes:
 - Standalone `review-resolution.md` and `verify-report.md` remain conditional and are added only when their governing workflow triggers apply.
 - When material findings exist for a non-trivial change, use `docs/changes/<change-id>/review-resolution.md` and approved dispositions: `accepted`, `rejected`, `deferred`, `partially-accepted`, and `needs-decision`.
 - `needs-decision` is not final. It keeps `review-resolution.md` at `Closeout status: open` and blocks `verify`, `explain-change`, and `pr` until an authorized owner resolves or explicitly defers it.
-- `Closeout status: closed` means every material finding has a final disposition and the required action, rationale, follow-up, and validation evidence records for that disposition.
+- `Closeout status: closed` means every material finding has a final disposition, `review-log.md` lists no open findings, and the required action, rationale, follow-up, and validation evidence records for that disposition exist.
 - Keep PR and explain-change review summaries concise: summarize counts by disposition and link `review-resolution.md` instead of duplicating detailed review records.
 - Approved legacy top-level artifacts under `docs/explain/` remain valid durable reasoning surfaces until they are migrated or retired.
 - `docs/changes/0001-skill-validator/` is a rich example of a fully formed pack, not the universal minimum for every non-trivial change.

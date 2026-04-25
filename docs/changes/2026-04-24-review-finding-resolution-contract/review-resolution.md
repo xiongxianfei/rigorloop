@@ -71,6 +71,10 @@ Rationale: The spec-review finding is correct. Exact-once Review ID validation n
 Validation target: Rerun spec-review after spec revision and run artifact lifecycle validation on the proposal, spec, architecture, and change metadata.
 Validation evidence: Spec revision completed. `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-24-review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml`, `python scripts/validate-change-metadata.py docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml`, and `git diff --check -- specs/review-finding-resolution-contract.md docs/changes/2026-04-24-review-finding-resolution-contract` passed. `spec-review-r2` approved the closeout.
 
+### spec-review-r2
+
+No material findings.
+
 ### code-review-r1
 
 Review closeout: code-review-r1
@@ -100,3 +104,39 @@ Chosen action: Update `specs/rigorloop-workflow.md` `R12ab` so material review f
 Rationale: The code-review finding is correct. The approved feature spec requires pre-fix recording with a reconstructed-record recovery path, and the general workflow contract must not weaken that requirement.
 Validation target: Run focused review-artifact validation, change metadata validation, artifact lifecycle explicit-path validation, and diff whitespace checks after the wording fix and artifact closeout updates.
 Validation evidence: `specs/rigorloop-workflow.md` `R12ab` now uses MUST for pre-fix material finding recording. `python scripts/test-review-artifact-validator.py`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-24-review-finding-resolution-contract`, `python scripts/validate-change-metadata.py docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`, and `git diff --check -- specs docs skills .codex/skills dist AGENTS.md CONSTITUTION.md scripts` passed after the fix.
+
+### code-review-r3
+
+Review closeout: code-review-r3
+
+#### CR3-F1
+
+Finding ID: CR3-F1
+Disposition: accepted
+Owner: implementer
+Owning stage: implement
+Chosen action: Update closeout validation so a closed handoff fails when any review-log entry still lists open findings.
+Rationale: The code-review finding is correct. A closed review-resolution state and a non-empty review-log open-finding set conflict, and downstream handoff must not proceed with that stale ledger state.
+Validation target: Add focused validator coverage for stale open findings in closeout mode, then run review-artifact tests and closeout validation.
+Validation evidence: `python scripts/test-review-artifact-validator.py` passed after adding a regression where `Closeout status: closed` plus stale `Open findings:` fails closeout mode. `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-24-review-finding-resolution-contract` passed for the updated artifact state.
+
+#### CR3-F2
+
+Finding ID: CR3-F2
+Disposition: accepted
+Owner: implementer
+Owning stage: implement
+Chosen action: Validate review-log `Resolution:` fields as canonical `review-resolution.md#<Review ID>` references and check the referenced Review ID when `review-resolution.md` exists.
+Rationale: The code-review finding is correct. The parser stored `Resolution:` without validating the symbolic link, which allowed stale or malformed ledger references.
+Validation target: Add focused validator coverage for malformed resolution target, mismatched anchor, duplicate `Resolution:` fields, and missing review-resolution Review ID headings, then run review-artifact tests and closeout validation.
+Validation evidence: `python scripts/test-review-artifact-validator.py` passed after adding regressions for malformed `Resolution:` target, mismatched anchor, duplicate `Resolution:` field, and missing review-resolution Review ID heading. `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-24-review-finding-resolution-contract` passed for the updated artifact state.
+
+#### CR3-F3
+
+Finding ID: CR3-F3
+Disposition: rejected
+Owner: maintainer
+Owning stage: code-review
+Stop state: no implementation change required
+Rationale: The maintainer explicitly rejected the heavier CI changed-root integration test for v1 because the repository already has substantial review-artifact validator coverage and the additional test would add more weight than value for this patch.
+Expected proof: The focused CR3-F1 and CR3-F2 regressions pass, while the existing CI coverage remains unchanged.

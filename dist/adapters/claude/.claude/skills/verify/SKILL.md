@@ -59,7 +59,7 @@ Requirement → Test IDs → Files changed → Evidence → Status
 5. For ordinary non-trivial work, confirm the required baseline change-local pack exists: `docs/changes/<change-id>/change.yaml` plus durable Markdown reasoning, defaulting to `docs/changes/<change-id>/explain-change.md` unless an approved equivalent surface applies.
 6. Treat a missing required baseline change-local pack as a blocker, not acceptable silence.
 7. When material review findings exist, run `python scripts/validate-review-artifacts.py --mode closeout docs/changes/<change-id>` and inspect `review-resolution.md`.
-8. Block on `Closeout status: open`, any `needs-decision` disposition, missing final action, missing rationale, missing follow-up record, or missing `Validation evidence` required for an accepted fix.
+8. Block on `Closeout status: open`, any `needs-decision` disposition, stale `review-log.md` open findings, missing final action, missing rationale, missing follow-up record, or missing `Validation evidence` required for an accepted fix.
 9. For lifecycle-managed artifacts, treat stale or inconsistent touched, referenced, generated, or authoritative artifacts as blockers. Report unrelated stale baseline artifacts as warnings instead of blocking the change.
 10. For planned initiatives, compare `docs/plan.md` against the plan body and treat stale lifecycle state as a blocker. At minimum, block on completed, blocked, or superseded work still listed under `## Active`; conflicting index-versus-body state; or a plan body marked done, blocked, or superseded while still presenting itself as active or in progress.
 11. Run or list required validation commands.
@@ -94,7 +94,7 @@ When PR-body references are not yet available, record which pre-PR handoff surfa
 - Do not treat local-only authoritative artifacts as sufficient support for `branch-ready`.
 - Do not treat unresolved named edge-case proof gaps as compatible with `branch-ready`.
 - Do not treat a planned initiative as `branch-ready` when lifecycle state is stale.
-- Do not treat material review findings as closed unless `review-resolution.md` is at `Closeout status: closed` and closeout validation passes.
+- Do not treat material review findings as closed unless `review-resolution.md` is at `Closeout status: closed`, `review-log.md` lists no open findings, and closeout validation passes.
 - Do not continue past `needs-decision`; it is not a final disposition.
 - Do not accept deferring a known `Done` transition until after merge unless merged state is the deciding event for completion.
 - Do not move to PR if blockers remain.

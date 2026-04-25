@@ -2,7 +2,7 @@
 
 ## Summary
 
-This change adds the review finding resolution contract for RigorLoop. It makes material review findings actionable, records durable review history, validates review-log and review-resolution structure, blocks downstream closeout on unresolved findings, and keeps canonical workflow skills plus generated adapter outputs aligned.
+This change adds the review finding resolution contract for RigorLoop. It makes material review findings actionable, records durable review history, validates review-log and review-resolution structure, blocks downstream closeout on unresolved findings or stale open-finding ledger state, and keeps canonical workflow skills plus generated adapter outputs aligned.
 
 The implementation preserves lightweight clean reviews. The full `reviews/`, `review-log.md`, and `review-resolution.md` chain is required only when material findings exist or when a change independently creates detailed review records.
 
@@ -37,7 +37,7 @@ The execution plan split the work into four milestones:
 
 | Area | Files | Change | Reason | Source / Evidence |
 | --- | --- | --- | --- | --- |
-| Review artifact validation | `scripts/review_artifact_validation.py`, `scripts/validate-review-artifacts.py` | Added parsers and validators for detailed review files, canonical `review-log.md` entries, material Finding IDs, `review-resolution.md`, disposition values, closeout status, and blocking review closeout. | Satisfies `R2`-`R8h`, `R11`-`R11b`, and clean-review edge cases. | `T2`-`T9`, `T13`, `T15`; `python scripts/test-review-artifact-validator.py`. |
+| Review artifact validation | `scripts/review_artifact_validation.py`, `scripts/validate-review-artifacts.py` | Added parsers and validators for detailed review files, canonical `review-log.md` entries, symbolic `Resolution:` links, material Finding IDs, `review-resolution.md`, disposition values, closeout status, stale open findings, and blocking review closeout. | Satisfies `R2`-`R8h`, `R11`-`R11b`, and clean-review edge cases. | `T2`-`T9`, `T13`, `T15`; `python scripts/test-review-artifact-validator.py`. |
 | Review artifact fixtures | `tests/fixtures/review-artifacts/` | Added valid and invalid review roots for structure and closeout mode. | Proves exact-one Review IDs, duplicate IDs, canonical log blocks, missing resolution entries, unsupported dispositions, and closeout blockers. | `T2`-`T9`, `T13`. |
 | CI integration | `scripts/ci.sh` | Runs review-artifact structure validation for changed `docs/changes/<change-id>/` roots. | Enforces current changes without forcing historical artifact migration. | `T13`; `bash scripts/ci.sh`. |
 | Workflow contract and docs | `specs/rigorloop-workflow.md`, `docs/workflows.md`, `CONSTITUTION.md`, `AGENTS.md` | Added expanded disposition vocabulary, complete-finding rules, closeout status rules, first-pass timing, and concise summary guidance. | Keeps repository guidance from contradicting the approved review-resolution contract. | `R14`-`R14a`; contract text checks in `scripts/test-review-artifact-validator.py`. |
@@ -53,8 +53,8 @@ The primary test surface is `scripts/test-review-artifact-validator.py`.
 | Test IDs | What The Tests Prove |
 | --- | --- |
 | `T1`, `T11` | Review guidance requires complete material findings and first-pass timing. |
-| `T2`-`T5`, `T13` | Detailed review files, Review IDs, Finding IDs, canonical review-log blocks, and review-resolution links are structurally valid. |
-| `T6`-`T8` | Disposition vocabulary, closeout status, `needs-decision`, `partially-accepted`, blocking review outcomes, and clean-review lightweight paths behave correctly. |
+| `T2`-`T5`, `T13` | Detailed review files, Review IDs, Finding IDs, canonical review-log blocks, symbolic resolution links, and review-resolution links are structurally valid. |
+| `T6`-`T8` | Disposition vocabulary, closeout status, stale open findings, `needs-decision`, `partially-accepted`, blocking review outcomes, and clean-review lightweight paths behave correctly. |
 | `T9`, `T15` | Validator failures are actionable and structural only, without semantic review-quality automation. |
 | `T10`, `T12`, `T16` | Downstream skills and generated adapters remain aligned with closeout and summary guidance. |
 | `T14` | Final lifecycle validation catches stale plan state, open review-resolution, and missing review closeout. |
@@ -76,14 +76,29 @@ Final M4 validation passed with:
 - `git diff --check -- .`
 - `bash scripts/ci.sh`
 
+Post-review CR3 validation also passed with:
+
+- `python scripts/test-review-artifact-validator.py`
+- `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-24-review-finding-resolution-contract`
+- `python scripts/validate-skills.py`
+- `python scripts/build-skills.py --check`
+- `python scripts/test-adapter-distribution.py`
+- `python scripts/build-adapters.py --version 0.1.1 --check`
+- `python scripts/validate-adapters.py --version 0.1.1`
+- `python scripts/validate-change-metadata.py docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml`
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-24-review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path specs/rigorloop-workflow.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/changes/2026-04-24-review-finding-resolution-contract/change.yaml --path docs/changes/2026-04-24-review-finding-resolution-contract/explain-change.md --path docs/plan.md --path docs/plans/2026-04-25-review-finding-resolution-contract.md --path docs/workflows.md --path AGENTS.md --path CONSTITUTION.md`
+- `python scripts/validate-release.py --version v0.1.1`
+- `git diff --check -- .`
+- `bash scripts/ci.sh`
+
 ## Review Resolution Summary
 
 The durable review-resolution record is `docs/changes/2026-04-24-review-finding-resolution-contract/review-resolution.md`.
 
 Counts by disposition:
 
-- Accepted: 7
-- Rejected: 0
+- Accepted: 9
+- Rejected: 1
 - Deferred: 0
 - Partially accepted: 0
 - Needs decision: 0
@@ -93,6 +108,7 @@ Material findings closed:
 - `AR1`, `AR2`
 - `SR1`, `SR2`, `SR3`
 - `CR1-F1`, `CR2-F1`
+- `CR3-F1`, `CR3-F2`, `CR3-F3`
 
 This explanation links to the detailed review-resolution artifact instead of duplicating every finding and suggested solution.
 

@@ -31,7 +31,7 @@
 | `R1`-`R1d` | `T1`, `T11` | Complete finding guidance and incomplete-finding boundary in review-stage guidance. |
 | `R2`-`R2l` | `T2`, `T3`, `T13` | Detailed review metadata, exact-one Review ID, stage scope, stability, and per-change uniqueness. |
 | `R2m`, `R2m-exception`, `R2n`, `R2o` | `T2`, `T8`, `T11` | First-pass timing, reconstructed records, append-only review history, and resolution/update surfaces. |
-| `R3`-`R3k` | `T3`, `T13` | Required review-log, canonical `### Review entry` blocks, exact-once ledger references, and prose exclusion. |
+| `R3`-`R3p` | `T3`, `T7`, `T13` | Required review-log, canonical `### Review entry` blocks, resolution links, closed open-finding state, exact-once ledger references, and prose exclusion. |
 | `R4`-`R4c` | `T4`, `T8` | Material Finding IDs, uniqueness, stable format, and non-material no-ID path. |
 | `R5`-`R5i` | `T4`, `T5`, `T7`, `T11` | Required review-resolution entries, initial entries before fixes, final action, validation target, and suggested-vs-final action split. |
 | `R6`-`R6m` | `T6`, `T7`, `T10` | Approved dispositions, final dispositions, `needs-decision` blocker, and top-level closeout status. |
@@ -82,6 +82,8 @@
 - Edge case 17, accepted resolution while top-level closeout remains open: `T7`
 - Edge case 18, review-log prose mention of Review ID: `T3`, `T13`
 - Edge case 19, late reconstructed review record: `T2`
+- Edge case 20, closed handoff with stale open findings in review-log: `T7`
+- Edge case 21, malformed review-log resolution link: `T3`
 
 ## Test cases
 
@@ -134,9 +136,9 @@
   - `python scripts/test-review-artifact-validator.py`
   - `python scripts/validate-review-artifacts.py tests/fixtures/review-artifacts/<fixture>`
 
-### T3. Review-log parser counts only canonical review entry blocks
+### T3. Review-log parser counts only canonical review entry blocks and resolution links
 
-- Covers: `R3`-`R3k`, `R11`, `E3`, `E12`, edge cases 1, 3, 8, 10, 18
+- Covers: `R3`-`R3p`, `R11`, `E3`, `E12`, edge cases 1, 3, 8, 10, 18, 21
 - Level: unit, integration
 - Fixture/setup:
   - `tests/fixtures/review-artifacts/valid-review-log/`
@@ -151,10 +153,11 @@
   - Validate a change root with `reviews/` and no `review-log.md`.
   - Validate canonical blocks missing `Review ID`, `Stage`, `Round`, `Status`, `Detailed record`, `Resolution`, `Material findings`, or `Open findings`.
   - Validate a log with duplicate `Review ID:` lines inside canonical `### Review entry` blocks.
+  - Validate malformed `Resolution:` fields with a noncanonical target file, mismatched anchor, duplicate `Resolution:` field, or missing referenced Review ID in `review-resolution.md` when that artifact exists.
   - Validate a log with a Review ID mentioned only in prose outside a canonical block.
   - Validate a log that references an unknown detailed review file.
 - Expected result:
-  - Structure mode counts exactly one `Review ID: <id>` line inside each canonical block and rejects missing, duplicate, dangling, or incomplete ledger entries.
+  - Structure mode counts exactly one `Review ID: <id>` line inside each canonical block and rejects missing, duplicate, dangling, malformed-resolution, or incomplete ledger entries.
 - Failure proves:
   - The review-log cannot serve as an exact, parseable ledger.
 - Automation location:
@@ -231,9 +234,9 @@
 - Automation location:
   - `python scripts/test-review-artifact-validator.py`
 
-### T7. Closeout mode blocks unresolved review-resolution records
+### T7. Closeout mode blocks unresolved review-resolution and review-log records
 
-- Covers: `R6a`-`R6m`, `R7`-`R8h`, `E4`, `E5`, `E9`, `E10`, edge cases 5, 6, 7, 12, 16, 17
+- Covers: `R3h`-`R3j`, `R6a`-`R6m`, `R7`-`R8h`, `E4`, `E5`, `E9`, `E10`, edge cases 5, 6, 7, 12, 16, 17, 20
 - Level: integration
 - Fixture/setup:
   - `tests/fixtures/review-artifacts/valid-closed-resolution/`
@@ -246,7 +249,7 @@
   - `tests/fixtures/review-artifacts/blocking-review-without-rerun/`
 - Steps:
   - Run `python scripts/validate-review-artifacts.py --mode closeout` against a fully closed fixture.
-  - Run closeout mode against fixtures with `Closeout status: open`, unresolved `needs-decision`, missing material resolution entries, accepted entries without action or evidence, deferred/rejected entries without rationale, and partial entries missing sub-decision fields.
+  - Run closeout mode against fixtures with `Closeout status: open`, unresolved `needs-decision`, stale `Open findings:` entries, missing material resolution entries, accepted entries without action or evidence, deferred/rejected entries without rationale, and partial entries missing sub-decision fields.
   - Assert a first-pass `revise`, `changes-requested`, or `blocked` review outcome remains blocking unless same-stage re-review or explicit reviewer or owner closeout is represented in the change root.
 - Expected result:
   - Closeout mode accepts only `Closeout status: closed` with final dispositions and all required disposition-specific closeout records.
@@ -366,7 +369,7 @@
 
 ### T13. CI validates changed review-artifact roots without retroactive historical migration
 
-- Covers: `R3`-`R3k`, `R11`, `R13b`, edge cases 1, 3, 8, 10, 18
+- Covers: `R3`-`R3p`, `R11`, `R13b`, edge cases 1, 3, 8, 10, 18
 - Level: integration
 - Fixture/setup:
   - `scripts/ci.sh`
@@ -467,9 +470,9 @@ Fixture families:
 
 - valid structure fixtures: `valid-detailed-review`, `valid-review-log`, `valid-material-findings`, `valid-open-resolution`, `valid-closed-resolution`, `clean-review-with-log`, `no-review-artifacts`
 - review record failures: `missing-review-fields`, `multiple-review-ids`, `duplicate-review-ids`, `reconstructed-missing-metadata`
-- review-log failures: `missing-review-log`, `log-missing-review-id`, `log-unknown-review-id`, `log-duplicate-review-id`, `log-prose-review-id-only`, `log-missing-required-field`
+- review-log failures: `missing-review-log`, `log-missing-review-id`, `log-unknown-review-id`, `log-duplicate-review-id`, `log-prose-review-id-only`, `log-missing-required-field`, `log-malformed-resolution-link`
 - finding/resolution failures: `duplicate-finding-ids`, `missing-resolution-file`, `missing-resolution-entry`, `unknown-resolution-finding`, `unsupported-disposition`
-- closeout failures: `open-closeout-status`, `needs-decision-open`, `accepted-missing-action`, `accepted-missing-evidence`, `deferred-missing-rationale`, `deferred-missing-followup`, `rejected-missing-rationale`, `partial-missing-subdecision`, `partial-missing-accepted-evidence`, `blocking-review-without-rerun`
+- closeout failures: `open-closeout-status`, `needs-decision-open`, `open-findings-after-closeout`, `accepted-missing-action`, `accepted-missing-evidence`, `deferred-missing-rationale`, `deferred-missing-followup`, `rejected-missing-rationale`, `partial-missing-subdecision`, `partial-missing-accepted-evidence`, `blocking-review-without-rerun`
 
 Fixtures should use small Markdown files with the canonical labels from the spec and architecture. They should not contain secrets, private keys, host-specific paths, real credentials, or large copied review transcripts.
 
