@@ -292,6 +292,7 @@ def select_validation(request: SelectionRequest) -> SelectionResult:
         _apply_path_selection(
             path,
             classification.category,
+            changed_paths=changed_paths,
             selected=selected,
             affected_roots=affected_roots,
             blocking_results=blocking_results,
@@ -404,6 +405,7 @@ def _apply_path_selection(
     path: str,
     category: str,
     *,
+    changed_paths: tuple[str, ...],
     selected: dict[str, SelectedCheckDraft],
     affected_roots: set[str],
     blocking_results: list[dict[str, str]],
@@ -464,12 +466,46 @@ def _apply_path_selection(
         return
 
     if category == "change-local-lifecycle":
+        governing_change_yaml = _change_root_change_yaml(path)
+        if governing_change_yaml:
+            _add_check(
+                selected,
+                "artifact_lifecycle.validate",
+                "Changed change-local lifecycle artifact requires its governing change metadata for lifecycle validation.",
+                path=governing_change_yaml,
+            )
         _add_check(
             selected,
             "artifact_lifecycle.validate",
             "Changed change-local lifecycle artifact requires artifact lifecycle validation.",
             path=path,
         )
+        return
+
+    if category == "plan-index":
+        context_paths = _plan_index_context_paths(changed_paths)
+        if not context_paths:
+            blocking_results.append(
+                {
+                    "code": "manual-routing-required",
+                    "path": path,
+                    "message": "changed plan index requires an active plan or change metadata context",
+                }
+            )
+            return
+        _add_check(
+            selected,
+            "artifact_lifecycle.validate",
+            "Changed plan index requires artifact lifecycle validation with the related plan context.",
+            path=path,
+        )
+        for context_path in context_paths:
+            _add_check(
+                selected,
+                "artifact_lifecycle.validate",
+                "Changed plan index requires artifact lifecycle validation with the related plan context.",
+                path=context_path,
+            )
         return
 
     if category == "release":
@@ -689,6 +725,8 @@ def _path_category(path: str) -> str | None:
         if parts[3] == "explain-change.md":
             return "change-local-lifecycle"
         return "change-local-unsupported"
+    if path == "docs/plan.md":
+        return "plan-index"
     if _is_lifecycle_path(path):
         return "lifecycle"
     if path.startswith("docs/releases/"):
@@ -710,7 +748,7 @@ def _path_category(path: str) -> str | None:
 
 def _is_lifecycle_path(path: str) -> bool:
     if path == "docs/plan.md":
-        return True
+        return False
     if path.startswith("docs/proposals/") and path.endswith(".md"):
         return True
     if path.startswith("specs/") and path.endswith(".md"):
@@ -724,6 +762,32 @@ def _is_lifecycle_path(path: str) -> bool:
     if path.startswith("docs/explain/") and path.endswith(".md"):
         return True
     return False
+
+
+def _change_root_change_yaml(path: str) -> str | None:
+    root = _change_root(path)
+    if root:
+        return f"{root}change.yaml"
+    return None
+
+
+def _plan_index_context_paths(changed_paths: tuple[str, ...]) -> list[str]:
+    context: list[str] = []
+    for path in changed_paths:
+        if path == "docs/plan.md":
+            continue
+        if _is_lifecycle_path(path):
+            context.append(path)
+            continue
+        if path.startswith("docs/changes/"):
+            parts = path.split("/")
+            if len(parts) >= 4 and parts[3] == "change.yaml":
+                context.append(path)
+                continue
+            change_yaml = _change_root_change_yaml(path)
+            if change_yaml:
+                context.append(change_yaml)
+    return _dedupe(context)
 
 
 def _skill_root(path: str) -> str | None:

@@ -351,9 +351,9 @@ class ValidationSelectionTests(unittest.TestCase):
             },
             {
                 "path": "docs/plan.md",
-                "category": "lifecycle",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
+                "category": "plan-index",
+                "status": "blocked",
+                "blocking_code": "manual-routing-required",
             },
             {
                 "path": "docs/changes/2026-04-25-example/explain-change.md",
