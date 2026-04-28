@@ -402,6 +402,8 @@ This plan uses two validation command types:
 ## Outcome and retrospective
 
 - Done. M1-M4 implementation milestones, first-pass `code-review`, `verify`, `explain-change`, and PR handoff readiness are complete.
+- PR-stage lesson: the PR stage took longer than expected because local and hosted PR-mode CI use `bash scripts/ci.sh --mode pr`, which hard-blocks on the known selector v1 manual-routing boundary for `scripts/test-adapter-distribution.py`. Earlier milestone evidence correctly recorded the direct manual route, but that does not make hosted PR CI pass. Future PR handoff for similar changes should either fix selector/CI routing before opening the PR or explicitly stop before opening when the local PR-mode wrapper already predicts a hosted CI failure.
+- Review-record lesson: this slice had a clean first-pass `code-review` with no material findings, so the review outcome belongs in the plan and change metadata rather than a `review-resolution.md` closeout. A standalone review-resolution artifact is required only when material findings or non-final dispositions exist.
 
 ## Readiness
 
@@ -412,3 +414,4 @@ This plan uses two validation command types:
 
 - Persistent cache behavior remains a future initiative and requires measurement plus an updated or superseding spec before implementation.
 - Broader parser helpers outside the adapter drift family require architecture review before adoption.
+- Follow-up: decide whether selector v1 should classify `scripts/test-adapter-distribution.py` for PR-mode changes or whether PR CI needs an approved manual-routing escape hatch before future branches touch that file.
