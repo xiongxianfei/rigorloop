@@ -1,0 +1,16 @@
+flowchart LR
+  contributor[Contributor or agent]
+  reviewer[Architecture reviewer]
+  repo[RigorLoop repository]
+  ci[Repository validation scripts]
+  adapters[Generated adapter consumers]
+
+  contributor -->|authors specs, architecture, ADRs, templates, skills| repo
+  reviewer -->|reviews C4, arc42, ADRs, merge-back path| repo
+  repo -->|runs targeted validation and drift checks| ci
+  repo -->|generates runtime and public adapter guidance| adapters
+
+  subgraph repo_boundary[RigorLoop repository boundary]
+    repo
+    ci
+  end

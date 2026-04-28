@@ -1,0 +1,24 @@
+flowchart TB
+  proposal[Accepted proposal]
+  spec[Approved architecture package method spec]
+  delta[Change-local architecture delta]
+  adr[Accepted ADR]
+  canonical[Future canonical architecture package]
+  templates[Future architecture and ADR templates]
+  skills[Canonical architecture skills]
+  generated[Generated skill and adapter output]
+  validators[Repository validation scripts]
+  legacy[Legacy architecture artifacts]
+
+  proposal --> spec
+  spec --> delta
+  delta --> adr
+  delta --> canonical
+  spec --> templates
+  spec --> skills
+  skills --> generated
+  spec --> validators
+  legacy -->|classified by follow-on migration artifact| canonical
+
+  canonical -->|section 9 links| adr
+  validators -->|targeted checks and drift checks| generated

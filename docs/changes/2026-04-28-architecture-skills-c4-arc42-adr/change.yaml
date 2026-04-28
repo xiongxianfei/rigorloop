@@ -1,0 +1,103 @@
+change_id: 2026-04-28-architecture-skills-c4-arc42-adr
+title: Adopt C4, arc42, and ADR architecture package method
+classification: default
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-04-28-architecture-skills-c4-arc42-adr.md
+  spec: specs/architecture-package-method.md
+  architecture: docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/architecture.md
+  adr: docs/adr/ADR-20260428-architecture-package-method.md
+  plan: docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md
+  test_spec: specs/architecture-package-method.test.md
+requirements:
+  - specs/architecture-package-method.md R1-R75
+tests:
+  - specs/architecture-package-method.test.md T1-T15
+validation:
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-28-architecture-skills-c4-arc42-adr.md --path specs/architecture-package-method.md
+    result: pass_before_architecture
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml
+    result: pass_after_architecture
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-28-architecture-skills-c4-arc42-adr.md --path specs/architecture-package-method.md --path docs/adr/ADR-20260428-architecture-package-method.md --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml
+    result: pass_after_architecture
+  - command: git diff --check -- docs/proposals/2026-04-28-architecture-skills-c4-arc42-adr.md specs/architecture-package-method.md docs/adr/ADR-20260428-architecture-package-method.md docs/changes/2026-04-28-architecture-skills-c4-arc42-adr
+    result: pass_after_architecture
+  - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-04-28-architecture-skills-c4-arc42-adr.md --path specs/architecture-package-method.md --path docs/adr/ADR-20260428-architecture-package-method.md --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/architecture.md --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/diagrams/context.mmd --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/diagrams/container.mmd
+    result: blocked_expected_manual_routing_for_change_local_architecture_delta_and_diagrams
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_after_architecture
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-04-28-architecture-skills-c4-arc42-adr.md --path specs/architecture-package-method.md --path docs/adr/ADR-20260428-architecture-package-method.md --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml
+    result: pass_after_architecture_supported_paths
+  - command: architecture-review docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/architecture.md docs/adr/ADR-20260428-architecture-package-method.md
+    result: approved_no_material_findings
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml
+    result: pass_after_plan
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_after_plan
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-28-architecture-skills-c4-arc42-adr.md --path specs/architecture-package-method.md --path docs/adr/ADR-20260428-architecture-package-method.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml
+    result: pass_after_plan
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml --path docs/plan.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md
+    result: pass_after_plan
+  - command: python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml
+    result: ok_after_plan_selected_lifecycle_change_metadata_and_final_broad_smoke
+  - command: git diff --check -- docs/plan.md docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml
+    result: pass_after_plan
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml
+    result: pass_after_plan_m5_inventory_revision
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-28-architecture-skills-c4-arc42-adr.md --path specs/architecture-package-method.md --path docs/adr/ADR-20260428-architecture-package-method.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml
+    result: pass_after_plan_m5_inventory_revision
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml --path docs/plan.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md
+    result: pass_after_plan_m5_inventory_revision
+  - command: git diff --check -- docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml
+    result: pass_after_plan_m5_inventory_revision
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/architecture-package-method.test.md --path specs/architecture-package-method.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml --path docs/adr/ADR-20260428-architecture-package-method.md
+    result: pass_after_test_spec
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml
+    result: pass_after_test_spec
+  - command: python scripts/select-validation.py --mode explicit --path specs/architecture-package-method.test.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path docs/plan.md --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml
+    result: ok_after_test_spec_selected_lifecycle_change_metadata_and_final_broad_smoke
+  - command: git diff --check -- specs/architecture-package-method.test.md docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md docs/plan.md docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml
+    result: pass_after_test_spec
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml --path docs/plan.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path specs/architecture-package-method.test.md
+    result: pass_after_test_spec
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_after_test_spec
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/architecture-package-method.test.md --path specs/architecture-package-method.md --path docs/proposals/2026-04-28-architecture-skills-c4-arc42-adr.md --path docs/adr/ADR-20260428-architecture-package-method.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md
+    result: pass_after_test_spec
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: fail_expected_before_m1_code_missing_legacy_sections_for_canonical_arc42_fixture
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_after_m1_37_tests
+  - command: python scripts/select-validation.py --mode explicit --path scripts/artifact_lifecycle_contracts.py --path scripts/artifact_lifecycle_validation.py --path scripts/test-artifact-lifecycle-validator.py
+    result: ok_after_m1_selected_artifact_lifecycle_regression
+  - command: python scripts/select-validation.py --mode explicit --path scripts/artifact_lifecycle_contracts.py --path scripts/test-artifact-lifecycle-validator.py --path tests/fixtures/artifact-lifecycle/valid-canonical-arc42-architecture/docs/architecture/system/architecture.md --path tests/fixtures/artifact-lifecycle/invalid-canonical-arc42-legacy-path/docs/architecture/2026-04-20-canonical-shaped-architecture.md
+    result: blocked_expected_m1_fixture_paths_unclassified_manual_routed_through_artifact_lifecycle_regression
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-28-architecture-skills-c4-arc42-adr.md --path specs/architecture-package-method.md --path docs/adr/ADR-20260428-architecture-package-method.md --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml
+    result: pass_after_m1
+  - command: bash scripts/ci.sh --mode explicit --path scripts/artifact_lifecycle_contracts.py --path scripts/artifact_lifecycle_validation.py --path scripts/test-artifact-lifecycle-validator.py
+    result: pass_after_m1_selected_artifact_lifecycle_regression
+  - command: git diff --check -- scripts tests/fixtures/artifact-lifecycle docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md docs/plan.md docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml
+    result: pass_after_m1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml
+    result: pass_after_m1_closeout_metadata
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml --path docs/plan.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path specs/architecture-package-method.test.md
+    result: pass_after_m1_closeout
+changed_files:
+  - docs/proposals/2026-04-28-architecture-skills-c4-arc42-adr.md
+  - specs/architecture-package-method.md
+  - docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml
+  - docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/architecture.md
+  - docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/diagrams/context.mmd
+  - docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/diagrams/container.mmd
+  - docs/adr/ADR-20260428-architecture-package-method.md
+  - docs/plan.md
+  - docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md
+  - specs/architecture-package-method.test.md
+  - scripts/artifact_lifecycle_contracts.py
+  - scripts/test-artifact-lifecycle-validator.py
+  - tests/fixtures/artifact-lifecycle/canonical-architecture-lifecycle-only/docs/architecture/system/architecture.md
+  - tests/fixtures/artifact-lifecycle/valid-canonical-arc42-architecture/docs/architecture/system/architecture.md
+  - tests/fixtures/artifact-lifecycle/invalid-canonical-arc42-legacy-path/docs/architecture/2026-04-20-canonical-shaped-architecture.md
+review:
+  status: m1_complete_ready_for_code_review
+  unresolved_items: 0
