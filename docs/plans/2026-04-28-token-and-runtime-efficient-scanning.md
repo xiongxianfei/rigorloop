@@ -1,6 +1,6 @@
 # Token and Runtime Efficient Scanning Execution Plan
 
-- Status: active
+- Status: done
 - Owner: maintainers
 - Start date: 2026-04-28
 - Last updated: 2026-04-28
@@ -283,7 +283,8 @@ This plan uses two validation command types:
 - [x] 2026-04-28: post-review lifecycle bookkeeping synchronized the spec, test spec, active plan, plan index, and change-local pack so tracked readiness points to `verify`.
 - [x] 2026-04-28: `verify` passed with verdict `ready`; branch-ready is satisfied, and the next stage is `explain-change`.
 - [x] 2026-04-28: `explain-change` completed the durable problem-to-diff rationale and PR handoff summary.
-- [ ] Final lifecycle closeout completed in both this plan and `docs/plan.md`.
+- [x] 2026-04-28: PR handoff prepared. Lifecycle state is closed in this plan body and `docs/plan.md`.
+- [x] Final lifecycle closeout completed in both this plan and `docs/plan.md`.
 
 ## Decision log
 
@@ -301,6 +302,7 @@ This plan uses two validation command types:
 - 2026-04-28: After clean first-pass `code-review`, keep the initiative active until `verify` and downstream explanation/PR handoff complete; the implementation state is ready for `verify`, not PR-ready.
 - 2026-04-28: After `verify`, keep the initiative active until `explain-change` and PR handoff complete; the branch is `branch-ready`, while `pr-body-ready` and `pr-open-ready` remain owned by later stages.
 - 2026-04-28: After direct `explain-change`, stop before `pr` while marking the explanation and PR handoff rationale complete; PR body readiness and PR opening remain owned by the `pr` stage.
+- 2026-04-28: During `pr`, close the plan as done before opening the pull request because M1-M4, code-review, verify, explain-change, and PR handoff readiness are complete before merge.
 
 ## Surprises and discoveries
 
@@ -388,19 +390,23 @@ This plan uses two validation command types:
   - Artifact: `docs/changes/token-and-runtime-efficient-scanning/explain-change.md`
   - Added required sections for the original problem, review-resolution summary, alternatives rejected, risks/follow-ups, and PR handoff readiness.
   - Next stage: `pr`
+- 2026-04-28: PR handoff lifecycle closeout completed in this plan and `docs/plan.md`.
+  - `docs/changes/token-and-runtime-efficient-scanning/change.yaml` records `review.status: pr handoff ready`.
+- 2026-04-28: PR handoff validation completed.
+  - `python scripts/validate-change-metadata.py docs/changes/token-and-runtime-efficient-scanning/change.yaml` passed.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plan.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/proposals/2026-04-27-token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md` passed.
+  - `bash scripts/ci.sh --mode explicit --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md` passed.
+  - `bash scripts/ci.sh --mode pr --base origin/main --head HEAD` returned the expected selector v1 manual-routing block for `scripts/test-adapter-distribution.py`; the approved direct manual route `python scripts/test-adapter-distribution.py` and broad smoke both passed earlier.
+  - `git diff --check -- .` passed.
 
 ## Outcome and retrospective
 
-- M1-M4 implementation milestones, first-pass `code-review`, `verify`, and `explain-change` are complete. Final lifecycle closeout remains open until PR-readiness stages complete.
+- Done. M1-M4 implementation milestones, first-pass `code-review`, `verify`, `explain-change`, and PR handoff readiness are complete.
 
 ## Readiness
 
-- M1-M4, first-pass `code-review`, `verify`, and `explain-change` are complete.
-- The active test spec is `specs/token-and-runtime-efficient-scanning.test.md`.
-- The branch is `branch-ready` from the verification gate.
-- The durable explanation is ready for PR handoff.
-- The next stage is `pr`.
-- The full initiative is not done until PR handoff completes.
+- Immediate next repository stage: `pr`.
+- Next implementation milestone: none.
 
 ## Risks and follow-ups
 
