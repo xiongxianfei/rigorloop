@@ -2,16 +2,24 @@
 
 ## Summary
 
-M1 adds the bounded extraction guidance required by the approved token and runtime efficient scanning spec. M2 shapes the first named script output, `python scripts/build-adapters.py --version <version> --check`, so normal adapter drift output is summary-first and bounded while `--verbose` keeps complete diagnostics available. M3 makes adapter drift collection inspect `dist/adapters/manifest.yaml` before filesystem confirmation and reports manifest contract problems as `manifest-error`. M4 closes the implementation slice by regenerating derived outputs, running selected validation, release validation, lifecycle validation, and broad smoke. The first-pass `code-review` returned `clean-with-notes`, and `verify` passed with verdict `ready`; the next stage is `explain-change`.
+M1 adds the bounded extraction guidance required by the approved token and runtime efficient scanning spec. M2 shapes the first named script output, `python scripts/build-adapters.py --version <version> --check`, so normal adapter drift output is summary-first and bounded while `--verbose` keeps complete diagnostics available. M3 makes adapter drift collection inspect `dist/adapters/manifest.yaml` before filesystem confirmation and reports manifest contract problems as `manifest-error`. M4 closes the implementation slice by regenerating derived outputs, running selected validation, release validation, lifecycle validation, and broad smoke. The first-pass `code-review` returned `clean-with-notes`, `verify` passed with verdict `ready`, and this explanation records the PR handoff rationale.
+
+## Problem
+
+RigorLoop agents and contributors repeatedly inspect large files, generated artifacts, validation logs, and review evidence. Before this change, the repository did not give enough explicit guidance or script behavior for starting from bounded evidence, reusing parsed state inside a command, and avoiding high-volume normal output. The result was higher token usage, slower repeated scans, and harder-to-review transcripts even when the underlying validation was correct.
+
+The selected proposal direction was bounded extraction plus lightweight scan reuse: keep reviewability and full detail available, but make concise, ID-based, failure-focused evidence the default first path.
 
 ## Decision trail
 
 - Proposal: `docs/proposals/2026-04-27-token-and-runtime-efficient-scanning.md`
+- Proposal option selected: Option 4, standardize bounded extraction plus lightweight scan reuse.
 - Spec: `specs/token-and-runtime-efficient-scanning.md`
 - Test spec: `specs/token-and-runtime-efficient-scanning.test.md`
+- Architecture/ADR decision: no separate architecture artifact was required because the helper work stays in-process, adapter-family scoped, dependency-free, and non-persistent.
 - Plan: `docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md`
 - Milestones completed: M1, add bounded extraction and skill guidance; M2, shape adapter drift check output; M3, add manifest-first adapter inspection; M4, align generated output, lifecycle artifacts, and final validation
-- Requirements covered through M4: `R1`-`R37`. First-pass `code-review` and `verify` are complete; downstream explanation and PR handoff remain separate workflow stages.
+- Requirements covered through M4: `R1`-`R37`. First-pass `code-review`, `verify`, and `explain-change` are complete; PR handoff remains a separate workflow stage.
 
 ## Diff rationale by area
 
@@ -53,6 +61,23 @@ M1 adds the bounded extraction guidance required by the approved token and runti
   - Broad smoke: passed with unrelated baseline warnings for older draft proposal files outside this change.
   - Durable location: `docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md`
   - Recommended next stage: `explain-change`
+- `explain-change`
+  - Status: complete.
+  - Result: this durable artifact links the proposal, requirements, implementation areas, tests, validation, review, verification, alternatives, scope limits, and PR handoff readiness.
+  - Recommended next stage: `pr`
+
+## Review Resolution Summary
+
+No material review findings exist for this slice. The first-pass `code-review` result was `clean-with-notes` with zero unresolved items, so no `review-resolution.md` closeout artifact is required.
+
+## Alternatives Rejected
+
+- Broad output and repeated full-file reads as the default: rejected in the proposal because it keeps token and runtime costs high and buries relevant evidence.
+- Chat-discipline-only guidance: rejected because it is inconsistent, hard to test, and does not improve repository-owned scripts.
+- Persistent indexing or caching in the first slice: rejected because the approved first slice defers persistent cache behavior until measurement justifies the complexity.
+- Changing validation semantics, selected check coverage, or command exit behavior while shaping output: rejected by the proposal and spec non-goals.
+- Hand-editing generated `.codex/skills/` or `dist/adapters/`: rejected because generated outputs must remain reproducible from canonical sources and existing generator commands.
+- Creating a top-level `docs/explain/` artifact: rejected because this ordinary non-trivial change already has the required change-local explanation surface.
 
 ## Tests added or changed
 
@@ -107,6 +132,8 @@ M1 adds the bounded extraction guidance required by the approved token and runti
 - `python scripts/test-artifact-lifecycle-validator.py`
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-27-token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md`
 - `bash scripts/ci.sh --mode broad-smoke`
+- `python scripts/select-validation.py --mode explicit --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md`
+- `bash scripts/ci.sh --mode explicit --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md`
 
 M2 output-size evidence:
 
@@ -126,6 +153,13 @@ Additional validation results are recorded in the active plan.
 - Generated `.codex/skills/` and `dist/adapters/` were produced through existing generator commands.
 - No new external dependency, parser boundary, persistent cache, or hosted CI behavior change is introduced.
 
+## Risks and Follow-ups
+
+- Persistent cache behavior remains deferred until a later measurement-backed proposal updates or supersedes the spec.
+- Broader parser helpers outside the adapter drift family remain out of scope and require architecture review before adoption.
+- Hosted CI has not been observed from this environment; local repo-owned validation and broad smoke passed.
+- PR body preparation and PR opening remain owned by the `pr` stage.
+
 ## Readiness
 
-M1-M4 implementation, first-pass `code-review`, and `verify` are complete. The branch is `branch-ready` from the verification gate. The next stage is `explain-change`; PR handoff remains a later workflow stage.
+M1-M4 implementation, first-pass `code-review`, `verify`, and `explain-change` are complete. The branch is `branch-ready`, and this explanation is ready for PR handoff. The next stage is `pr`; direct `$explain-change` execution stops before opening or preparing the PR.

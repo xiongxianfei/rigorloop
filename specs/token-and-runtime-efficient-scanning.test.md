@@ -524,4 +524,4 @@
 
 This test spec remains active as the proof map for the implemented slice.
 
-M1-M4 implementation, first-pass `code-review`, and `verify` are complete. The next repository stage is `explain-change`.
+M1-M4 implementation, first-pass `code-review`, `verify`, and `explain-change` are complete. The next repository stage is `pr`.

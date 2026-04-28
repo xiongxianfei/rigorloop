@@ -251,6 +251,21 @@ validation:
   - command: bash scripts/ci.sh --mode explicit --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md
     result: pass
     reason: Post-verify lifecycle sync executed the selected artifact lifecycle and change metadata checks.
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md
+    result: pass
+    reason: Explain-change closeout selected artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate; broad smoke was not required by the selector.
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md
+    result: pass
+    reason: Explain-change closeout executed the selected artifact lifecycle and change metadata checks.
+  - command: python scripts/validate-change-metadata.py docs/changes/token-and-runtime-efficient-scanning/change.yaml
+    result: pass
+    reason: Explain-change closeout change metadata validation passed.
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plan.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/proposals/2026-04-27-token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md
+    result: pass
+    reason: Explain-change closeout lifecycle validation passed for the authoritative artifact set.
+  - command: git diff --check -- .
+    result: pass
+    reason: Explain-change closeout whitespace validation passed.
 changed_files:
   - docs/workflows.md
   - scripts/test-skill-validator.py
@@ -277,3 +292,8 @@ verification:
   branch_ready: true
   location: docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md
   required_next_stage: explain-change
+explanation:
+  status: complete
+  pr_handoff_ready: true
+  location: docs/changes/token-and-runtime-efficient-scanning/explain-change.md
+  required_next_stage: pr
