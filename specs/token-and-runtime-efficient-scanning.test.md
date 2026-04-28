@@ -19,7 +19,7 @@
 - Skill and adapter sync tests use existing skill validation, skill regression, generated skill drift, adapter drift, and adapter validation commands after canonical skill edits.
 - Unit tests in `scripts/test-adapter-distribution.py` exercise structured adapter drift entries, failure categories, output formatting, output budgets, manifest parsing, manifest-first helper behavior, and no-persistent-cache boundaries.
 - Integration tests run the `scripts/build-adapters.py` CLI and selected validation wrapper paths to prove normal and verbose output, exit-code compatibility, check identity, and CI wrapper behavior.
-- Selector tests use `scripts/test-select-validation.py` to prove supported selected checks are stable and that `scripts/test-adapter-distribution.py` remains an expected manual-routing path when selector v1 reports it as unsupported.
+- Selector tests use `scripts/test-select-validation.py` to prove supported selected checks are stable, including deterministic adapter-check routing for `scripts/test-adapter-distribution.py`; unsupported paths still block fail-closed.
 - Smoke and release checks remain repository-owned pass gates from the approved plan; they are not substitutes for targeted unit and integration tests.
 
 ## Requirement coverage map
@@ -246,7 +246,7 @@
   - Assert drift `--check` exits non-zero as before.
   - Assert invalid canonical source input still fails check mode.
   - Assert `scripts/validation_selection.py` still selects check ID `adapters.drift` with command `python scripts/build-adapters.py --version <adapter-version> --check`.
-  - Run `scripts/ci.sh --mode explicit` for supported adapter paths or record the expected selector manual route for `scripts/test-adapter-distribution.py`.
+  - Run `scripts/ci.sh --mode explicit` for supported adapter paths, including `scripts/test-adapter-distribution.py` through the adapter check family.
 - Expected result:
   - Output formatting does not alter selected coverage, wrapper pass/fail reporting, or command exit semantics.
 - Failure proves:
@@ -425,14 +425,14 @@
 ### T16. Final validation gates prove lifecycle and generated-output alignment
 
 - Covers: `R14`, `R20`, `R25`, `R34`-`R37`, EC11, EC12, `AC1`-`AC11`
-- Level: smoke, contract, manual-routing proof
+- Level: smoke, contract, selector proof
 - Fixture/setup:
   - completed implementation for M1-M4
   - active plan and this test spec
 - Steps:
   - Run `python scripts/select-validation.py --mode explicit` with the concrete changed paths from the plan.
-  - Confirm any `scripts/test-adapter-distribution.py` selector block is the expected manual route and run `python scripts/test-adapter-distribution.py` directly.
-  - Run `bash scripts/ci.sh --mode explicit` for supported selected paths where the selector produces no manual-routing block.
+  - Confirm `scripts/test-adapter-distribution.py` routes through `adapters.regression`, `adapters.drift`, and `adapters.validate` instead of manual routing.
+  - Run `bash scripts/ci.sh --mode explicit` for supported selected paths.
   - Run all pass-gate commands named by M4.
   - Run `bash scripts/ci.sh --mode broad-smoke` before final PR readiness.
   - Run artifact lifecycle validation for the proposal, spec, this test spec, plan, and plan index.
@@ -491,7 +491,7 @@
 ## Manual QA checklist
 
 - Confirm plan and test spec validation notes record the commands actually run.
-- Confirm selector inspection blocks only on the expected `scripts/test-adapter-distribution.py` manual route when that path is included.
+- Confirm selector inspection routes `scripts/test-adapter-distribution.py` through adapter checks when that path is included.
 - Confirm before-and-after output-size evidence is present before code-review.
 - Confirm any unchanged governance surface is recorded as `unaffected with rationale`.
 - Confirm generated `.codex/skills/` and `dist/adapters/` changes, if any, came from generator commands.
@@ -507,7 +507,7 @@
 
 ## Uncovered gaps
 
-- None. Every spec MUST has automated test coverage, command-gate coverage, or explicit manual-routing proof coverage in this test spec.
+- None. Every spec MUST has automated test coverage, command-gate coverage, or explicit selector proof coverage in this test spec.
 
 ## Next artifacts
 

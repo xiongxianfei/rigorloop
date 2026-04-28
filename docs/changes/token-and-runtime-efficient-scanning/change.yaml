@@ -115,7 +115,7 @@ validation:
     result: pass
   - command: python scripts/select-validation.py --mode explicit --path scripts/build-adapters.py --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path scripts/validation_selection.py
     result: expected-blocked
-    reason: Selector inspection produced the expected blocked/manual-routing result for `scripts/test-adapter-distribution.py`; the manual route `python scripts/test-adapter-distribution.py` passed, and selected checks kept `adapters.drift` on the existing command identity.
+    reason: Before PR-stage CI repair, selector inspection produced the expected blocked/manual-routing result for `scripts/test-adapter-distribution.py`; the manual route `python scripts/test-adapter-distribution.py` passed, and selected checks kept `adapters.drift` on the existing command identity.
   - command: output-size evidence for adapter drift normal output
     result: pass
     reason: Representative clean output changed from legacy 1 line to shaped 4 lines; representative many-drift output changed from legacy 35 lines to shaped 26 lines.
@@ -144,7 +144,7 @@ validation:
     result: pass
   - command: python scripts/select-validation.py --mode explicit --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md
     result: expected-blocked
-    reason: Selector inspection selected adapters.regression, adapters.drift, adapters.validate, artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate, with the expected manual-routing block for `scripts/test-adapter-distribution.py`; broad smoke was not required.
+    reason: Before PR-stage CI repair, selector inspection selected adapters.regression, adapters.drift, adapters.validate, artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate, with the expected manual-routing block for `scripts/test-adapter-distribution.py`; broad smoke was not required.
   - command: python scripts/test-select-validation.py
     result: pass
   - command: python scripts/test-change-metadata-validator.py
@@ -166,10 +166,10 @@ validation:
     reason: M4 regenerated public adapter output from canonical skills and adapter templates; no generated diff remained.
   - command: python scripts/select-validation.py --mode explicit --path docs/workflows.md --path skills/architecture/SKILL.md --path skills/architecture-review/SKILL.md --path skills/bugfix/SKILL.md --path skills/ci/SKILL.md --path skills/code-review/SKILL.md --path skills/explain-change/SKILL.md --path skills/implement/SKILL.md --path skills/plan/SKILL.md --path skills/plan-review/SKILL.md --path skills/pr/SKILL.md --path skills/project-map/SKILL.md --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path skills/research/SKILL.md --path skills/spec/SKILL.md --path skills/spec-review/SKILL.md --path skills/test-spec/SKILL.md --path skills/verify/SKILL.md --path skills/workflow/SKILL.md --path scripts/build-adapters.py --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md
     result: expected-blocked
-    reason: M4 selector inspection selected skills.validate, skills.regression, skills.drift, adapters.regression, adapters.drift, adapters.validate, artifact_lifecycle.validate, and selector.regression; it blocked only on the expected manual route for scripts/test-adapter-distribution.py.
+    reason: Before PR-stage CI repair, M4 selector inspection selected skills.validate, skills.regression, skills.drift, adapters.regression, adapters.drift, adapters.validate, artifact_lifecycle.validate, and selector.regression; it blocked only on the expected manual route for scripts/test-adapter-distribution.py.
   - command: bash scripts/ci.sh --mode explicit --path docs/workflows.md --path skills/architecture/SKILL.md --path skills/architecture-review/SKILL.md --path skills/bugfix/SKILL.md --path skills/ci/SKILL.md --path skills/code-review/SKILL.md --path skills/explain-change/SKILL.md --path skills/implement/SKILL.md --path skills/plan/SKILL.md --path skills/plan-review/SKILL.md --path skills/pr/SKILL.md --path skills/project-map/SKILL.md --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path skills/research/SKILL.md --path skills/spec/SKILL.md --path skills/spec-review/SKILL.md --path skills/test-spec/SKILL.md --path skills/verify/SKILL.md --path skills/workflow/SKILL.md --path scripts/build-adapters.py --path scripts/adapter_distribution.py --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md
     result: pass
-    reason: M4 explicit CI executed the supported selected checks; the unsupported adapter-distribution test path used the direct manual pass-gate route.
+    reason: Before PR-stage CI repair, M4 explicit CI executed the supported selected checks; the unsupported adapter-distribution test path used the direct manual pass-gate route.
   - command: python scripts/build-adapters.py --version 0.1.1 --check --verbose
     result: pass
     reason: M4 verbose adapter drift check remained deterministic and concise for clean output.
@@ -277,10 +277,31 @@ validation:
     reason: PR handoff wrapper proof executed artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate for the lifecycle closeout paths.
   - command: bash scripts/ci.sh --mode pr --base origin/main --head HEAD
     result: expected-blocked
-    reason: Local PR-mode wrapper reported the approved selector v1 manual-routing boundary for scripts/test-adapter-distribution.py. The direct manual route python scripts/test-adapter-distribution.py and broad smoke both passed earlier and are recorded in this change metadata and the active plan.
+    reason: Before PR-stage CI repair, local PR-mode wrapper reported the approved selector v1 manual-routing boundary for scripts/test-adapter-distribution.py. The later selector repair entries supersede this boundary.
+  - command: python scripts/test-select-validation.py
+    result: pass
+    reason: PR-stage CI repair added selector regression coverage; 27 tests passed and scripts/test-adapter-distribution.py routes as adapters in explicit and PR modes.
+  - command: python scripts/select-validation.py --mode explicit --path scripts/build-adapters.py --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path scripts/validation_selection.py
+    result: pass
+    reason: PR-stage selector repair selected adapters.regression, adapters.drift, adapters.validate, and selector.regression with no blocking results.
+  - command: bash scripts/ci.sh --mode explicit --path scripts/test-adapter-distribution.py
+    result: pass
+    reason: PR-stage selector repair executed adapters.regression, adapters.drift, and adapters.validate for the adapter regression script path without a blocking selector result.
+  - command: bash scripts/ci.sh --mode pr --base origin/main --head HEAD
+    result: pass
+    reason: PR-stage selector repair made local PR-mode CI pass with scripts/test-adapter-distribution.py routed through deterministic adapter checks instead of manual routing.
+  - command: bash scripts/ci.sh --mode local
+    result: pass
+    reason: PR-stage selector repair closeout selected artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, and selector.regression for the dirty worktree.
+  - command: python scripts/validate-change-metadata.py docs/changes/token-and-runtime-efficient-scanning/change.yaml
+    result: pass
+    reason: PR-stage selector repair closeout change metadata validation passed.
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plan.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/proposals/2026-04-27-token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md
+    result: pass
+    reason: PR-stage selector repair closeout lifecycle validation passed for authoritative artifacts.
   - command: git diff --check -- .
     result: pass
-    reason: PR handoff whitespace validation passed after lifecycle closeout.
+    reason: PR-stage selector repair closeout whitespace validation passed after lifecycle and metadata updates.
 changed_files:
   - docs/workflows.md
   - scripts/test-skill-validator.py
@@ -297,6 +318,8 @@ changed_files:
   - scripts/build-adapters.py
   - scripts/adapter_distribution.py
   - scripts/test-adapter-distribution.py
+  - scripts/validation_selection.py
+  - scripts/test-select-validation.py
 review:
   status: pr handoff ready
   unresolved_items: 0

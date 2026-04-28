@@ -2,7 +2,7 @@
 
 ## Summary
 
-M1 adds the bounded extraction guidance required by the approved token and runtime efficient scanning spec. M2 shapes the first named script output, `python scripts/build-adapters.py --version <version> --check`, so normal adapter drift output is summary-first and bounded while `--verbose` keeps complete diagnostics available. M3 makes adapter drift collection inspect `dist/adapters/manifest.yaml` before filesystem confirmation and reports manifest contract problems as `manifest-error`. M4 closes the implementation slice by regenerating derived outputs, running selected validation, release validation, lifecycle validation, and broad smoke. The first-pass `code-review` returned `clean-with-notes`, `verify` passed with verdict `ready`, and this explanation records the PR handoff rationale.
+M1 adds the bounded extraction guidance required by the approved token and runtime efficient scanning spec. M2 shapes the first named script output, `python scripts/build-adapters.py --version <version> --check`, so normal adapter drift output is summary-first and bounded while `--verbose` keeps complete diagnostics available. M3 makes adapter drift collection inspect `dist/adapters/manifest.yaml` before filesystem confirmation and reports manifest contract problems as `manifest-error`. M4 closes the implementation slice by regenerating derived outputs, running selected validation, release validation, lifecycle validation, and broad smoke. The first-pass `code-review` returned `clean-with-notes`, `verify` passed with verdict `ready`, and PR-stage CI repair routes `scripts/test-adapter-distribution.py` through deterministic adapter checks.
 
 ## Problem
 
@@ -35,6 +35,7 @@ The selected proposal direction was bounded extraction plus lightweight scan reu
 | `scripts/test-adapter-distribution.py` | Adds M2 coverage for clean output, bounded drift output, verbose determinism, generated-output categories, canonical-source categories, no persistent cache writes, output-size evidence, and CLI compatibility. | Proves the display change preserves actionable detail, complete verbose diagnostics, and command compatibility. | `python scripts/test-adapter-distribution.py` |
 | `scripts/adapter_distribution.py` | Adds in-process manifest inspection before generated-file traversal and converts missing, malformed, inconsistent, version-mismatched, or stale manifest contract evidence into `manifest-error` drift entries. | Satisfies M3 manifest-first and manifest-error behavior while preserving filesystem drift confirmation for non-manifest files. | `T11`, `T12`, `python scripts/test-adapter-distribution.py` |
 | `scripts/test-adapter-distribution.py` | Adds M3 coverage for manifest-before-filesystem call order, manifest-error normal and verbose display, and continued non-manifest missing/stale/unexpected detection. | Proves manifest evidence is used first but is not treated as authoritative over canonical sources or filesystem state. | Initial failing M3 targeted test run, then passing adapter regression suite |
+| `scripts/validation_selection.py` and `scripts/test-select-validation.py` | Classifies `scripts/test-adapter-distribution.py` as adapter-owned and adds selector regression coverage for explicit and PR-mode routing. | Hosted PR CI runs `scripts/ci.sh --mode pr`; changed adapter regression scripts must select deterministic adapter checks instead of blocking on manual routing. | `python scripts/test-select-validation.py`, `bash scripts/ci.sh --mode pr --base origin/main --head HEAD` |
 | Change-local and plan artifacts | Records M4 generated-output alignment, selector proof, release validation, lifecycle validation, and broad-smoke evidence. | Satisfies `T16`, `AC9`, and `AC11` without changing runtime behavior after M3. | M4 pass-gate commands and `bash scripts/ci.sh --mode broad-smoke` |
 
 ## Aligned-surface audit
@@ -118,7 +119,7 @@ No material review findings exist for this slice. The first-pass `code-review` r
 - `python scripts/build-adapters.py --version 0.1.1 --verbose` failed as expected with exit code 2 and a clear `--check` requirement.
 - `python scripts/validate-adapters.py --version 0.1.1`
 - `python scripts/test-select-validation.py`
-- `python scripts/select-validation.py --mode explicit --path scripts/build-adapters.py --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path scripts/validation_selection.py` produced the expected selector blocked/manual-routing result for `scripts/test-adapter-distribution.py`; the direct manual route passed.
+- `python scripts/select-validation.py --mode explicit --path scripts/build-adapters.py --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path scripts/validation_selection.py` originally produced the expected selector blocked/manual-routing result for `scripts/test-adapter-distribution.py`; the direct manual route passed.
 - `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_drift_entries_classify_generated_output_failures AdapterDistributionTests.test_manifest_first_inspection_precedes_filesystem_confirmation AdapterDistributionTests.test_manifest_errors_are_structured_and_displayed_completely` failed before implementation because the M3 manifest-first helper and manifest-error drift entries were not implemented.
 - `python scripts/test-adapter-distribution.py` passed with 56 tests after M3.
 - `python scripts/build-adapters.py --version 0.1.1 --check`
@@ -126,7 +127,7 @@ No material review findings exist for this slice. The first-pass `code-review` r
 - `python scripts/validate-adapters.py --version 0.1.1`
 - `python scripts/build-skills.py`
 - `python scripts/build-adapters.py --version 0.1.1`
-- `python scripts/select-validation.py --mode explicit` with the M4 concrete path set selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `artifact_lifecycle.validate`, and `selector.regression`; it blocked only on the expected manual route for `scripts/test-adapter-distribution.py`.
+- `python scripts/select-validation.py --mode explicit` with the M4 concrete path set originally selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `artifact_lifecycle.validate`, and `selector.regression`; it blocked only on the expected manual route for `scripts/test-adapter-distribution.py`.
 - `bash scripts/ci.sh --mode explicit` with the supported M4 path set executed the selected checks successfully.
 - `python scripts/validate-release.py --version v0.1.1`
 - `python scripts/test-artifact-lifecycle-validator.py`
@@ -134,6 +135,9 @@ No material review findings exist for this slice. The first-pass `code-review` r
 - `bash scripts/ci.sh --mode broad-smoke`
 - `python scripts/select-validation.py --mode explicit --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md`
 - `bash scripts/ci.sh --mode explicit --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md`
+- `python scripts/select-validation.py --mode explicit --path scripts/build-adapters.py --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path scripts/validation_selection.py` passed after PR-stage CI repair, selecting `adapters.regression`, `adapters.drift`, `adapters.validate`, and `selector.regression` with no blocking results.
+- `bash scripts/ci.sh --mode explicit --path scripts/test-adapter-distribution.py`
+- `bash scripts/ci.sh --mode pr --base origin/main --head HEAD`
 
 M2 output-size evidence:
 
@@ -151,13 +155,13 @@ Additional validation results are recorded in the active plan.
 - M3 implements manifest-first collection and `manifest-error` regression coverage.
 - M4 performs generated-output, release, artifact-lifecycle, selector, and broad-smoke validation without adding runtime behavior.
 - Generated `.codex/skills/` and `dist/adapters/` were produced through existing generator commands.
-- No new external dependency, parser boundary, persistent cache, or hosted CI behavior change is introduced.
+- No new external dependency, parser boundary, or persistent cache is introduced. PR-mode CI behavior changes only through repository-owned selector routing for an adapter-owned script path.
 
 ## Risks and Follow-ups
 
 - Persistent cache behavior remains deferred until a later measurement-backed proposal updates or supersedes the spec.
 - Broader parser helpers outside the adapter drift family remain out of scope and require architecture review before adoption.
-- Hosted CI has not been observed from this environment; local repo-owned validation and broad smoke passed.
+- Hosted CI is the remaining external confirmation after push; local repo-owned PR-mode validation now passes instead of relying on a manual-routing exception.
 - PR body preparation and PR opening remain owned by the `pr` stage.
 
 ## Readiness
