@@ -266,6 +266,21 @@ validation:
   - command: git diff --check -- .
     result: pass
     reason: Explain-change closeout whitespace validation passed.
+  - command: python scripts/validate-change-metadata.py docs/changes/token-and-runtime-efficient-scanning/change.yaml
+    result: pass
+    reason: PR handoff change metadata validation passed after closing lifecycle state.
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plan.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/proposals/2026-04-27-token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md
+    result: pass
+    reason: PR handoff lifecycle validation passed with the plan moved to Done.
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md
+    result: pass
+    reason: PR handoff wrapper proof executed artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate for the lifecycle closeout paths.
+  - command: bash scripts/ci.sh --mode pr --base origin/main --head HEAD
+    result: expected-blocked
+    reason: Local PR-mode wrapper reported the approved selector v1 manual-routing boundary for scripts/test-adapter-distribution.py. The direct manual route python scripts/test-adapter-distribution.py and broad smoke both passed earlier and are recorded in this change metadata and the active plan.
+  - command: git diff --check -- .
+    result: pass
+    reason: PR handoff whitespace validation passed after lifecycle closeout.
 changed_files:
   - docs/workflows.md
   - scripts/test-skill-validator.py
@@ -283,10 +298,10 @@ changed_files:
   - scripts/adapter_distribution.py
   - scripts/test-adapter-distribution.py
 review:
-  status: clean_with_notes
+  status: pr handoff ready
   unresolved_items: 0
   location: docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md
-  required_next_stage: verify
+  required_next_stage: none
 verification:
   status: ready
   branch_ready: true
