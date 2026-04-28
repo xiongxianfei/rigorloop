@@ -522,6 +522,6 @@
 
 ## Readiness
 
-This test spec is active and ready to guide `implement`.
+This test spec remains active as the proof map for the implemented slice.
 
-Implementation is not complete until the implemented tests and validation evidence satisfy the coverage in this test spec and the active execution plan.
+M1-M4 implementation and first-pass `code-review` are complete. The next repository stage is `verify`.
