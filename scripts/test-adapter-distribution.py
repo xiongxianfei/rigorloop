@@ -9,12 +9,14 @@ import subprocess
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "tests" / "fixtures" / "adapters"
 sys.path.insert(0, str(ROOT / "scripts"))
 
+import adapter_distribution as adapter_distribution_module  # noqa: E402
 from adapter_distribution import (  # noqa: E402
     ADAPTERS,
     AdapterDriftEntry,
@@ -511,7 +513,7 @@ class AdapterDistributionTests(unittest.TestCase):
             output_root = root / "dist" / "adapters"
 
             sync_adapter_output("0.1.0-rc.1", skills_root=skills_root, output_root=output_root)
-            (output_root / "manifest.yaml").unlink()
+            sorted(output_root.rglob("SKILL.md"))[0].unlink()
             stale_file = output_root / "codex" / "AGENTS.md"
             stale_file.write_text(stale_file.read_text(encoding="utf-8") + "\nstale\n", encoding="utf-8")
             unexpected_file = output_root / "codex" / "unexpected.txt"
@@ -530,6 +532,127 @@ class AdapterDistributionTests(unittest.TestCase):
             )
             self.assertTrue(all(entry.path for entry in entries))
             self.assertTrue(all(entry.detail for entry in entries))
+
+    def test_manifest_first_inspection_precedes_filesystem_confirmation(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root = self.copy_fixture_skills(root, ("portable-basic",))
+            output_root = root / "dist" / "adapters"
+            sync_adapter_output("0.1.0-rc.1", skills_root=skills_root, output_root=output_root)
+            missing_skill = sorted(output_root.rglob("SKILL.md"))[0]
+            missing_skill.unlink()
+            stale_file = output_root / "codex" / "AGENTS.md"
+            stale_file.write_text(stale_file.read_text(encoding="utf-8") + "\nstale\n", encoding="utf-8")
+            unexpected_file = output_root / "codex" / "unexpected.txt"
+            unexpected_file.write_text("unexpected\n", encoding="utf-8")
+
+            call_order: list[str] = []
+            real_manifest_read = adapter_distribution_module._inspect_generated_adapter_manifest
+            real_file_collect = adapter_distribution_module._collect_generated_files
+
+            def manifest_read(output_root: Path):
+                call_order.append("manifest")
+                return real_manifest_read(output_root)
+
+            def file_collect(output_root: Path):
+                call_order.append("filesystem")
+                return real_file_collect(output_root)
+
+            with patch.object(
+                adapter_distribution_module,
+                "_inspect_generated_adapter_manifest",
+                side_effect=manifest_read,
+            ), patch.object(
+                adapter_distribution_module,
+                "_collect_generated_files",
+                side_effect=file_collect,
+            ):
+                entries = collect_adapter_drift_entries(
+                    "0.1.0-rc.1", skills_root=skills_root, output_root=output_root
+                )
+
+            self.assertEqual(call_order[:2], ["manifest", "filesystem"])
+            categories = {entry.category for entry in entries}
+            self.assertIn("missing", categories)
+            self.assertIn("stale", categories)
+            self.assertIn("unexpected", categories)
+            self.assertNotIn("manifest-error", categories)
+
+    def test_manifest_errors_are_structured_and_displayed_completely(self) -> None:
+        cases = (
+            (
+                "missing",
+                lambda manifest_path: manifest_path.unlink(),
+                "generated adapter manifest is missing",
+            ),
+            (
+                "malformed",
+                lambda manifest_path: manifest_path.write_text("version: [\n", encoding="utf-8"),
+                "malformed",
+            ),
+            (
+                "version",
+                lambda manifest_path: manifest_path.write_text(
+                    manifest_path.read_text(encoding="utf-8").replace(
+                        "version: 0.1.0-rc.1",
+                        "version: 0.0.0",
+                        1,
+                    ),
+                    encoding="utf-8",
+                ),
+                "version mismatch",
+            ),
+            (
+                "contract",
+                lambda manifest_path: manifest_path.write_text(
+                    manifest_path.read_text(encoding="utf-8").replace(
+                        "adapters: [codex, claude, opencode]",
+                        "adapters: [codex]",
+                        1,
+                    ),
+                    encoding="utf-8",
+                ),
+                "adapter list mismatch",
+            ),
+        )
+
+        for _name, mutate_manifest, expected_detail in cases:
+            with self.subTest(_name), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                skills_root = self.copy_fixture_skills(root, ("portable-basic",))
+                output_root = root / "dist" / "adapters"
+                sync_adapter_output("0.1.0-rc.1", skills_root=skills_root, output_root=output_root)
+                missing_skill = sorted(output_root.rglob("SKILL.md"))[0]
+                missing_skill.unlink()
+                manifest_path = output_root / "manifest.yaml"
+                mutate_manifest(manifest_path)
+
+                entries = collect_adapter_drift_entries(
+                    "0.1.0-rc.1", skills_root=skills_root, output_root=output_root
+                )
+                manifest_entries = [
+                    entry for entry in entries if entry.category == "manifest-error"
+                ]
+                normal_output = format_adapter_drift_normal(
+                    entries,
+                    version="0.1.0-rc.1",
+                    output_root=output_root,
+                )
+                verbose_output = format_adapter_drift_verbose(
+                    entries,
+                    version="0.1.0-rc.1",
+                    output_root=output_root,
+                )
+
+                self.assertTrue(manifest_entries)
+                self.assertTrue(all(entry.path == manifest_path for entry in manifest_entries))
+                self.assertTrue(any(expected_detail in entry.detail for entry in manifest_entries))
+                self.assertIn("missing", {entry.category for entry in entries})
+                self.assertIn("manifest-error", normal_output)
+                self.assertIn(str(manifest_path), normal_output)
+                self.assertIn("fix or regenerate the generated adapter manifest", normal_output)
+                self.assertIn(expected_detail, verbose_output)
+                self.assertIn(str(manifest_path), verbose_output)
 
     def test_canonical_source_failures_are_structured_adapter_drift_entries(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
