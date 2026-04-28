@@ -205,6 +205,14 @@ validation:
     result: pass_after_pr_closeout
   - command: bash scripts/ci.sh --mode broad-smoke
     result: pass_after_pr_closeout
+  - command: gh pr checks 20 --watch --interval 10
+    result: fail_hosted_ci_blocked_on_unclassified_architecture_support_paths_before_selector_fix
+  - command: python scripts/select-validation.py --mode pr --base origin/main --head HEAD
+    result: ok_after_ci_selector_fix
+  - command: python scripts/test-select-validation.py
+    result: pass_after_ci_selector_fix_28_tests
+  - command: bash scripts/ci.sh --mode pr --base origin/main --head HEAD
+    result: pass_after_ci_selector_fix_selected_pr_checks_and_broad_smoke
 changed_files:
   - docs/proposals/2026-04-28-architecture-skills-c4-arc42-adr.md
   - specs/architecture-package-method.md
@@ -221,6 +229,8 @@ changed_files:
   - specs/architecture-package-method.test.md
   - scripts/artifact_lifecycle_contracts.py
   - scripts/test-artifact-lifecycle-validator.py
+  - scripts/validation_selection.py
+  - scripts/test-select-validation.py
   - tests/fixtures/artifact-lifecycle/canonical-architecture-lifecycle-only/docs/architecture/system/architecture.md
   - tests/fixtures/artifact-lifecycle/valid-canonical-arc42-architecture/docs/architecture/system/architecture.md
   - tests/fixtures/artifact-lifecycle/invalid-canonical-arc42-legacy-path/docs/architecture/2026-04-20-canonical-shaped-architecture.md
@@ -243,5 +253,5 @@ changed_files:
   - dist/adapters/opencode/.opencode/skills/architecture/SKILL.md
   - dist/adapters/opencode/.opencode/skills/architecture-review/SKILL.md
 review:
-  status: pr_handoff_lifecycle_closed_ready_to_open
+  status: pr_opened_ci_fix_local_passed_ready_for_hosted_rerun
   unresolved_items: 0

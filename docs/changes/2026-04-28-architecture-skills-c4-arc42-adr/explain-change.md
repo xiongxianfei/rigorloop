@@ -47,6 +47,7 @@ The accepted direction was to standardize a lightweight but complete architectur
 | `docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/architecture.md` and diagrams | captures the change-local working architecture delta and C4 context/container diagrams | provide reviewable design reasoning before merge-back while keeping it non-canonical after acceptance | spec `R30`-`R43`, `R59`-`R61` | architecture-review, manual diagram review, verify |
 | `docs/adr/ADR-20260428-architecture-package-method.md` | records the durable decision to adopt C4, official arc42, ADRs, canonical package, change-local deltas, templates, Mermaid source diagrams, and review-based first adoption | preserve the why separately from the architecture shape | spec `R44`-`R48`, `AC7` | lifecycle validation, ADR review |
 | `scripts/artifact_lifecycle_contracts.py`, `scripts/test-artifact-lifecycle-validator.py`, and lifecycle fixtures | add path-scoped compatibility for `docs/architecture/system/architecture.md` and regression fixtures proving legacy architecture validation is not weakened | allow the canonical package to use official arc42 headings without adding package-shape enforcement | spec `R67`-`R72`, plan `M1` | `python scripts/test-artifact-lifecycle-validator.py` |
+| `scripts/validation_selection.py`, `scripts/test-select-validation.py` | route architecture diagram source files, change-local architecture deltas, and artifact-lifecycle fixtures to existing lifecycle or regression checks | keep PR CI deterministic for architecture support paths without adding C4 content, arc42 section, ADR-presence, or package-shape enforcement | spec `R72`, test spec `T13`, hosted CI failure evidence | PR-mode selector proof, selector regression tests |
 | `templates/architecture.md`, `templates/adr.md` | add canonical scaffolds for official arc42 architecture packages and ADRs | give contributors a consistent starting point without placing templates in live architecture or ADR directories | spec `R49`-`R55`, `AC8` | manual template heading inspection, lifecycle validation |
 | `CONSTITUTION.md`, `AGENTS.md`, `docs/workflows.md`, `specs/rigorloop-workflow.md` | declare `templates/` as canonical authored content and add only a stage-level pointer to the focused method spec | keep source boundaries clear and avoid creating two normative architecture-method homes | spec `R1`-`R3`, `R52`-`R55` | selector regression, lifecycle validation |
 | `docs/architecture/system/architecture.md` and diagrams | create the canonical architecture package using all 12 official arc42 sections plus C4 context/container source diagrams | make the architecture-method change itself the first real positive example and current baseline | spec `R4`-`R29`, `R59`-`R61` | lifecycle validation, manual arc42/C4 inspection |
@@ -75,6 +76,8 @@ The accepted direction was to standardize a lightweight but complete architectur
   - `T15` proves final artifact, generated-output, and lifecycle coherence.
 - `scripts/test-artifact-lifecycle-validator.py`
   - adds regression coverage for canonical arc42 path compatibility, path scoping, and non-enforcement of package shape.
+- `scripts/test-select-validation.py`
+  - adds regression coverage proving architecture diagram source files, change-local architecture deltas, and artifact-lifecycle fixtures route without manual PR CI blocks.
 - Existing validation suites were used for unchanged but affected behavior:
   - skill validation and skill regression tests;
   - adapter distribution tests, adapter drift checks, and adapter validation;
@@ -97,7 +100,9 @@ The test levels are intentional. Executable tests cover lifecycle compatibility,
 - Verify:
   - verdict: ready;
   - branch-ready is satisfied for the implemented M1-M5 rollout;
-  - hosted CI was not observed from this environment.
+- Hosted CI:
+  - initially failed because PR-mode validation selection blocked architecture support paths before validation execution;
+  - the selector now routes those paths to existing non-enforcement checks and local PR-mode selector proof passes.
 
 ## Verification Evidence
 
@@ -108,6 +113,8 @@ Final verification and explain-change proof included:
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-28-architecture-skills-c4-arc42-adr.md --path specs/architecture-package-method.md --path specs/architecture-package-method.test.md --path docs/adr/ADR-20260428-architecture-package-method.md --path docs/architecture/system/architecture.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml`
 - `python scripts/test-change-metadata-validator.py`
 - `python scripts/test-select-validation.py`
+- `python scripts/select-validation.py --mode pr --base origin/main --head HEAD`
+- `bash scripts/ci.sh --mode pr --base origin/main --head HEAD`
 - `git diff --check HEAD~5..HEAD -- .`
 - `find docs/architecture -type f | sort`
 - manual proof that every inventory path appears as a table row in `docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md`
@@ -148,6 +155,7 @@ Broad smoke passed and reported unrelated warnings for older baseline proposal f
 ## Risks And Follow-Ups
 
 - Hosted CI still needs to be observed on the eventual PR.
+- Hosted CI needs to be re-observed after the selector routing fix is pushed.
 - The follow-on legacy architecture lifecycle normalization plan remains active and must run later before the repository can claim legacy architecture artifacts are fully normalized.
 - Future enforcement automation should wait for a later approved contract after the real package shape stabilizes.
 - Future architecture-significant work must keep the canonical package current and add ADRs for durable decisions.
@@ -157,7 +165,7 @@ Broad smoke passed and reported unrelated warnings for older baseline proposal f
 - The branch adopts C4 plus official arc42 plus ADRs as the repository architecture method.
 - The branch adds the focused spec, test spec, canonical architecture package, ADR, templates, updated architecture skills, generated skill and adapter output, and a legacy architecture normalization follow-on plan.
 - The first implementation intentionally stays review-based and adds only narrow lifecycle-validator compatibility for the canonical arc42 package path.
-- Local verification passed, including targeted selector/lifecycle/change-metadata proof and broad smoke. Hosted CI has not been observed.
+- Local verification passed, including targeted selector/lifecycle/change-metadata proof and broad smoke. Hosted CI initially exposed a selector routing gap; the branch now includes a focused fix and needs a fresh hosted CI run.
 
 ## Readiness
 

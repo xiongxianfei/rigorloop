@@ -46,7 +46,7 @@ This plan intentionally keeps enforcement review-based for the first implementat
 - Creating a new canonical architecture document for every feature.
 - Making 4+1, full UML, or code-level diagrams the default.
 - Adding required structural architecture validators for arc42 sections, required C4 diagram files, ADR presence, or package shape.
-- Changing validation semantics, selected check coverage, command output, or command exit behavior beyond the narrow lifecycle-validator compatibility required by R71 and R72.
+- Changing validation semantics, command output, or command exit behavior beyond the narrow lifecycle-validator compatibility and PR CI-safe non-enforcement selector routing allowed by R71 and R72.
 - Adding a new external diagramming, templating, or validation dependency.
 - Hand-editing generated `.codex/skills/` or `dist/adapters/` output.
 
@@ -333,6 +333,7 @@ The first implementation must not use newly added package-shape automation as pr
 - 2026-04-28: `verify` passed with verdict `ready`; branch-ready is satisfied, and the next stage is `explain-change`.
 - 2026-04-28: `explain-change` created `docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/explain-change.md` and recorded the problem-to-diff rationale plus PR handoff summary.
 - 2026-04-28: `pr` closeout moved this initiative from Active to Done in `docs/plan.md`, kept the legacy architecture lifecycle normalization follow-on active, and prepared PR handoff after successful verification and explain-change.
+- 2026-04-28: Hosted PR CI initially failed because PR-mode selection blocked architecture `.mmd` paths, change-local architecture delta paths, and artifact-lifecycle fixture paths as unclassified/manual-routed. The selector was updated to route those path families to existing non-enforcement lifecycle or regression checks.
 
 ## Decision log
 
@@ -347,6 +348,7 @@ The first implementation must not use newly added package-shape automation as pr
 - 2026-04-28: implemented M5 by creating the legacy normalization follow-on as an active plan rather than immediately mutating legacy architecture documents. This keeps R64's no-immediate-full-migration boundary while satisfying R65's populated inventory and classification requirement.
 - 2026-04-28: after direct `explain-change`, stop before `pr` while marking the explanation and PR handoff rationale complete. PR body readiness and PR opening remain owned by the `pr` stage.
 - 2026-04-28: closed this initiative as done during `pr` preparation because all planned milestones, code-review, verify, explain-change, and closeout evidence are complete; the legacy normalization plan remains the active follow-on rather than part of this completed rollout.
+- 2026-04-28: after hosted PR CI exposed a deterministic routing gap, classified architecture diagram source files, change-local architecture delta files, and artifact-lifecycle fixtures to existing lifecycle/regression checks. This is CI routing compatibility, not C4 content, arc42 section, ADR-presence, or package-shape enforcement.
 
 ## Surprises and discoveries
 
@@ -357,6 +359,7 @@ The first implementation must not use newly added package-shape automation as pr
 - `scripts/artifact_lifecycle_validation.py` was unaffected in M1 because exact-path compatibility could be expressed in the contract registry without changing validation flow, command output, selected coverage, or exit behavior.
 - M2 did not require changes under `scripts/` or generated output because `templates/` is already classified by the selector and the first implementation remains review-based for template content.
 - M3 selector inspection blocked the canonical `.mmd` diagram paths as expected. The manual route is architecture/code-review diff inspection because the first implementation intentionally does not add required C4-file enforcement.
+- Hosted PR CI cannot use manual-routing notes for changed files, so architecture support paths now route through existing non-enforcement selector checks while diagram sufficiency still remains manual review evidence.
 - M4 did not require new validation automation. Existing skill validation already enforces summary and stable-ID first reasoning plus full-file-read guidance for scan-sensitive skills.
 - M4 adapter generation refreshed adapter-embedded architecture skills only; `dist/adapters/manifest.yaml` remained content-identical after regeneration.
 - M5 inventory includes `.mmd` diagram files because the approved manual proof uses `find docs/architecture -type f | sort`; the follow-on artifact classifies those diagrams as current canonical content with the canonical package.
@@ -450,6 +453,10 @@ The first implementation must not use newly added package-shape automation as pr
 - 2026-04-28: `pr` closeout `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/explain-change.md --path docs/plan.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/proposals/2026-04-28-architecture-skills-c4-arc42-adr.md --path specs/architecture-package-method.md --path specs/architecture-package-method.test.md --path docs/adr/ADR-20260428-architecture-package-method.md --path docs/architecture/system/architecture.md` passed.
 - 2026-04-28: `pr` closeout `git diff --check -- docs/plan.md docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml` passed.
 - 2026-04-28: `pr` closeout `bash scripts/ci.sh --mode broad-smoke` passed.
+- 2026-04-28: hosted PR CI failed before validation execution because `scripts/ci.sh --mode pr --base fe96af4684084bda1b1d1d03e6bee2fcabddd49d --head f333f3e50ea4d2c34f91a00564736c5a0d67cae5` blocked on unclassified/manual-routed architecture support paths.
+- 2026-04-28: CI fix `python scripts/select-validation.py --mode pr --base origin/main --head HEAD` returned `status: ok` after selector classification for architecture support paths.
+- 2026-04-28: CI fix `python scripts/test-select-validation.py` passed with 28 tests.
+- 2026-04-28: CI fix `bash scripts/ci.sh --mode pr --base origin/main --head HEAD` passed locally, including selected PR checks and broad smoke.
 
 ## Outcome and retrospective
 

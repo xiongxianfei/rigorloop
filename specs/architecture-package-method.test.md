@@ -19,7 +19,7 @@
 
 - Lifecycle-regression tests prove the existing artifact lifecycle validator accepts the new canonical `docs/architecture/system/architecture.md` arc42 package shape without weakening legacy architecture validation or adding package-shape enforcement.
 - Contract and manual review checks prove templates, governance, workflow guidance, the canonical package, C4 source diagrams, ADRs, and skill guidance match the approved C4, arc42, and ADR method.
-- Selector and CI-wrapper checks use existing repository validation routing for supported paths and record manual-routing proofs for `.mmd` diagrams and change-local architecture files.
+- Selector and CI-wrapper checks route architecture support paths to existing lifecycle or regression checks so PR CI does not block on source-text diagrams, change-local architecture deltas, or lifecycle fixtures. This routing is not architecture package enforcement.
 - Generated-output checks prove canonical skill changes are propagated only through `scripts/build-skills.py` and `scripts/build-adapters.py`.
 - Final validation combines targeted pass gates, manual inventory proof, change metadata validation, artifact lifecycle validation, generated-output drift checks, and broad-smoke execution from the active plan.
 
@@ -36,7 +36,7 @@
 | `R49`-`R55` | `T2`, `T7`, `T8`, `T11`, `T15` | Template paths, live-artifact separation, `templates/` canonical-source boundary, governance updates, and workflow summary pointer. |
 | `R56`-`R58` | `T10`, `T11`, `T15` | Architecture skill updates and generated output refresh through existing generators only. |
 | `R59`-`R66` | `T6`, `T9`, `T15` | Architecture-method change as first real example, prospective adoption, legacy artifact handling, and populated legacy normalization follow-on. |
-| `R67`-`R72` | `T12`, `T13`, `T15` | Review-based first implementation, deferred enforcement automation, no new dependencies, and narrow lifecycle-validator compatibility only. |
+| `R67`-`R72` | `T12`, `T13`, `T15` | Review-based first implementation, deferred enforcement automation, no new dependencies, narrow lifecycle-validator compatibility, and CI-safe non-enforcement selector routing. |
 | `R73`-`R75` | `T2`, `T3`, `T7`, `T8`, `T10`, `T14`, `T15` | No secrets, security/privacy guidance when relevant, and contributor-facing readability. |
 
 ## Example coverage map
@@ -135,9 +135,9 @@
   - Confirm the context diagram shows external actors/systems and the repository system boundary.
   - Confirm the container diagram shows the main repository containers/artifact groups needed for this method.
   - Confirm no generated image, screenshot, or external link is the only source of truth.
-  - Run selector inspection for the `.mmd` paths and record blocked/manual routing if the selector cannot auto-route them.
+  - Run selector inspection for the `.mmd` paths and confirm they route to existing lifecycle context checks without adding C4 content validation.
 - Expected result:
-  - Required C4 diagrams are diffable source files and manual review is the proof surface for this first slice.
+  - Required C4 diagrams are diffable source files, selector routing is deterministic for PR CI, and manual review remains the proof surface for diagram sufficiency in this first slice.
 - Failure proves:
   - Structural review depends on non-diffable or untracked diagram evidence.
 - Automation location:
@@ -341,7 +341,7 @@
   - Assert that fixture passes only at `docs/architecture/system/architecture.md`.
   - Assert existing legacy architecture fixtures still require the older architecture contract unless explicitly out of scope.
   - Assert missing status, invalid lifecycle status, placeholders, stale readiness, terminal closeout, and generated-output rejection behavior remain unchanged.
-  - Assert compatibility does not require C4 diagram files, ADR presence, package-shape validation, or selected-check coverage changes.
+  - Assert compatibility does not require C4 diagram files, ADR presence, or package-shape validation.
   - Run the M1 pass-gate commands.
 - Expected result:
   - The new canonical arc42 package can be added without turning the first implementation into a broader enforcement validator.
@@ -363,7 +363,8 @@
   - Inspect the diff for new required structural architecture validators, required C4 diagram file checks, ADR-presence enforcement, or package-shape enforcement.
   - Confirm no new external dependency is added solely for Markdown templates, Mermaid diagrams, ADRs, or architecture guidance.
   - Confirm lifecycle-validator changes are limited to accepting `docs/architecture/system/architecture.md` with the official arc42 shape.
-  - Confirm selected check coverage, command output, and command exit behavior are not changed by M1.
+  - Confirm command output and command exit behavior are not changed by M1.
+  - Confirm selector routing for architecture diagrams, change-local architecture deltas, and lifecycle fixtures uses only existing non-enforcement lifecycle or regression checks.
   - Confirm leaf changes remain exempt from architecture package updates.
 - Expected result:
   - The first slice stays review-based and proportional.
@@ -403,6 +404,7 @@
   - Run final change metadata validation.
   - Run final artifact lifecycle validation for the proposal, spec, this test spec, ADR, canonical architecture, active plan, legacy normalization follow-on artifact, and change metadata.
   - Run `bash scripts/ci.sh --mode broad-smoke` before final PR readiness.
+  - Run PR-mode selector or CI proof against the actual branch diff to confirm architecture support paths do not block as unclassified.
   - Run `git diff --check -- .`.
   - Confirm plan validation notes and change metadata name the commands actually run.
 - Expected result:
@@ -434,7 +436,7 @@
 - Legacy architecture documents under `docs/architecture/*.md` continue to validate against the older lifecycle contract until normalized: `T9`, `T12`.
 - The new canonical path `docs/architecture/system/architecture.md` validates with the official arc42 section model after M1: `T5`, `T12`.
 - `.codex/skills/` and `dist/adapters/` remain generated output and are refreshed only through existing generators: `T10`, `T11`.
-- First implementation does not change runtime behavior, public APIs, release artifacts, or command behavior outside the narrow lifecycle compatibility required by `R71` and `R72`: `T12`, `T13`, `T15`.
+- First implementation does not change runtime behavior, public APIs, release artifacts, or command behavior outside the narrow lifecycle compatibility and CI-safe non-enforcement selector routing allowed by `R71` and `R72`: `T12`, `T13`, `T15`.
 - Rollback remains documentation and generated-output rollback only; no runtime data migration is required: `T15`.
 
 ## Observability verification

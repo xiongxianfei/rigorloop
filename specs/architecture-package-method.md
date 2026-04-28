@@ -251,7 +251,7 @@ R70. The first implementation MUST NOT add a new external dependency solely to a
 
 R71. Existing artifact lifecycle validation MUST be updated only as needed to accept the new canonical arc42 architecture package shape under `docs/architecture/system/` without requiring the older architecture section names on that canonical package.
 
-R72. The R71 compatibility update MUST NOT add required arc42 section validation, required C4 diagram validation, ADR-presence validation, package-shape validation, selected check coverage changes, command output changes, or command exit behavior changes.
+R72. The R71 compatibility update MUST NOT add required arc42 section validation, required C4 diagram validation, ADR-presence validation, package-shape validation, command output changes, or command exit behavior changes. Selector classification needed to keep PR CI deterministic for architecture diagram source files, change-local architecture deltas, and artifact lifecycle fixtures MAY route those paths to existing non-enforcement lifecycle or regression checks only; that routing MUST NOT become architecture-package enforcement.
 
 R73. Architecture artifacts, diagrams, templates, and ADRs MUST NOT include secrets, credentials, private keys, or machine-local debug-only data unless an approved example explicitly justifies the data and keeps it non-sensitive.
 
