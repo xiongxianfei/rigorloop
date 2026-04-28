@@ -1,6 +1,6 @@
 # Architecture Skills C4 arc42 ADR Execution Plan
 
-- Status: active
+- Status: done
 - Owner: maintainers
 - Start date: 2026-04-28
 - Last updated: 2026-04-28
@@ -332,6 +332,7 @@ The first implementation must not use newly added package-shape automation as pr
 - 2026-04-28: first-pass `code-review` returned `clean-with-notes` with no blocking or required-change findings.
 - 2026-04-28: `verify` passed with verdict `ready`; branch-ready is satisfied, and the next stage is `explain-change`.
 - 2026-04-28: `explain-change` created `docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/explain-change.md` and recorded the problem-to-diff rationale plus PR handoff summary.
+- 2026-04-28: `pr` closeout moved this initiative from Active to Done in `docs/plan.md`, kept the legacy architecture lifecycle normalization follow-on active, and prepared PR handoff after successful verification and explain-change.
 
 ## Decision log
 
@@ -345,6 +346,7 @@ The first implementation must not use newly added package-shape automation as pr
 - 2026-04-28: implemented M4 by editing only canonical skill sources first, then refreshing generated `.codex/skills/` and `dist/adapters/` output through `scripts/build-skills.py` and `scripts/build-adapters.py --version 0.1.1`.
 - 2026-04-28: implemented M5 by creating the legacy normalization follow-on as an active plan rather than immediately mutating legacy architecture documents. This keeps R64's no-immediate-full-migration boundary while satisfying R65's populated inventory and classification requirement.
 - 2026-04-28: after direct `explain-change`, stop before `pr` while marking the explanation and PR handoff rationale complete. PR body readiness and PR opening remain owned by the `pr` stage.
+- 2026-04-28: closed this initiative as done during `pr` preparation because all planned milestones, code-review, verify, explain-change, and closeout evidence are complete; the legacy normalization plan remains the active follow-on rather than part of this completed rollout.
 
 ## Surprises and discoveries
 
@@ -441,13 +443,20 @@ The first implementation must not use newly added package-shape automation as pr
 - 2026-04-28: `explain-change` `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/explain-change.md --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml --path docs/plan.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path docs/proposals/2026-04-28-architecture-skills-c4-arc42-adr.md --path specs/architecture-package-method.md --path specs/architecture-package-method.test.md --path docs/adr/ADR-20260428-architecture-package-method.md --path docs/architecture/system/architecture.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md` passed.
 - 2026-04-28: `explain-change` `git diff --check -- docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/explain-change.md docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md` passed.
 - 2026-04-28: `explain-change` `bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/explain-change.md --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path docs/plan.md` passed selected lifecycle, change-metadata, and broad-smoke checks.
+- 2026-04-28: `pr` closeout `python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml` returned `status: ok` and selected lifecycle, change-metadata, and broad-smoke checks.
+- 2026-04-28: `pr` closeout `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml --path docs/plan.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md` passed.
+- 2026-04-28: `pr` closeout `python scripts/validate-change-metadata.py docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml` passed.
+- 2026-04-28: `pr` closeout `python scripts/test-change-metadata-validator.py` passed.
+- 2026-04-28: `pr` closeout `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/explain-change.md --path docs/plan.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/proposals/2026-04-28-architecture-skills-c4-arc42-adr.md --path specs/architecture-package-method.md --path specs/architecture-package-method.test.md --path docs/adr/ADR-20260428-architecture-package-method.md --path docs/architecture/system/architecture.md` passed.
+- 2026-04-28: `pr` closeout `git diff --check -- docs/plan.md docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml` passed.
+- 2026-04-28: `pr` closeout `bash scripts/ci.sh --mode broad-smoke` passed.
 
 ## Outcome and retrospective
 
-- M1, M2, M3, M4, M5, code-review, verify, and explain-change are complete. PR handoff remains.
+- M1, M2, M3, M4, M5, code-review, verify, explain-change, and PR handoff closeout are complete. The architecture package method rollout is ready for PR review.
 
 ## Readiness
 
-- Immediate next repository stage: `pr`.
+- Immediate next repository stage: PR opening and hosted review.
 - Test spec readiness: complete; `specs/architecture-package-method.test.md` is active.
-- Branch readiness: `verify` passed with verdict `ready`; PR body readiness and PR opening remain owned by the `pr` stage.
+- Branch readiness: `verify` passed with verdict `ready`; closeout state is synchronized between this plan and `docs/plan.md`.
