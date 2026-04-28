@@ -344,6 +344,6 @@ EC14. The generated adapter manifest is missing, malformed, inconsistent, or mis
 Spec review is complete and this spec is approved.
 
 Current follow-on artifacts: the linked execution plan and active test spec.
-Implementation milestones M1-M4, first-pass `code-review`, and `verify` are complete.
-Immediate next repository stage: `explain-change`.
-Implementation readiness: complete; branch-ready is satisfied by the verification gate.
+Implementation milestones M1-M4, first-pass `code-review`, `verify`, and `explain-change` are complete.
+Immediate next repository stage: `pr`.
+Implementation readiness: complete; branch-ready is satisfied by the verification gate and the durable explanation exists for PR handoff.

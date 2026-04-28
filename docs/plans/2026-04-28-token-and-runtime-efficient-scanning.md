@@ -282,6 +282,7 @@ This plan uses two validation command types:
 - [x] 2026-04-28: first-pass `code-review` returned `clean-with-notes` with no blocking or required-change findings and recommended `verify` as the next stage.
 - [x] 2026-04-28: post-review lifecycle bookkeeping synchronized the spec, test spec, active plan, plan index, and change-local pack so tracked readiness points to `verify`.
 - [x] 2026-04-28: `verify` passed with verdict `ready`; branch-ready is satisfied, and the next stage is `explain-change`.
+- [x] 2026-04-28: `explain-change` completed the durable problem-to-diff rationale and PR handoff summary.
 - [ ] Final lifecycle closeout completed in both this plan and `docs/plan.md`.
 
 ## Decision log
@@ -299,6 +300,7 @@ This plan uses two validation command types:
 - 2026-04-28: M4 leaves the initiative active in `docs/plan.md` until downstream `code-review` and `verify` complete; the implementation state is ready for `code-review`, not PR-ready.
 - 2026-04-28: After clean first-pass `code-review`, keep the initiative active until `verify` and downstream explanation/PR handoff complete; the implementation state is ready for `verify`, not PR-ready.
 - 2026-04-28: After `verify`, keep the initiative active until `explain-change` and PR handoff complete; the branch is `branch-ready`, while `pr-body-ready` and `pr-open-ready` remain owned by later stages.
+- 2026-04-28: After direct `explain-change`, stop before `pr` while marking the explanation and PR handoff rationale complete; PR body readiness and PR opening remain owned by the `pr` stage.
 
 ## Surprises and discoveries
 
@@ -382,18 +384,23 @@ This plan uses two validation command types:
   - CI status: local repo-owned broad smoke passed. Hosted CI has not been observed from this environment.
   - Artifact drift: none blocking. `docs/plan.md` and this plan body both keep the initiative active while moving the next stage from `verify` to `explain-change`.
   - Warnings: broad smoke reported unrelated baseline lifecycle warnings for older draft proposal files outside this change.
+- 2026-04-28: `explain-change` completed the durable explanation artifact.
+  - Artifact: `docs/changes/token-and-runtime-efficient-scanning/explain-change.md`
+  - Added required sections for the original problem, review-resolution summary, alternatives rejected, risks/follow-ups, and PR handoff readiness.
+  - Next stage: `pr`
 
 ## Outcome and retrospective
 
-- M1-M4 implementation milestones, first-pass `code-review`, and `verify` are complete. Final lifecycle closeout remains open until downstream explanation and PR-readiness stages complete.
+- M1-M4 implementation milestones, first-pass `code-review`, `verify`, and `explain-change` are complete. Final lifecycle closeout remains open until PR-readiness stages complete.
 
 ## Readiness
 
-- M1-M4, first-pass `code-review`, and `verify` are complete.
+- M1-M4, first-pass `code-review`, `verify`, and `explain-change` are complete.
 - The active test spec is `specs/token-and-runtime-efficient-scanning.test.md`.
 - The branch is `branch-ready` from the verification gate.
-- The next stage is `explain-change`.
-- The full initiative is not ready for `pr` until downstream explanation completes.
+- The durable explanation is ready for PR handoff.
+- The next stage is `pr`.
+- The full initiative is not done until PR handoff completes.
 
 ## Risks and follow-ups
 
