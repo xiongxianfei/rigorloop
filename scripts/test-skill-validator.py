@@ -12,6 +12,27 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 VALIDATOR = ROOT / "scripts" / "validate-skills.py"
 FIXTURES = ROOT / "tests" / "fixtures" / "skills"
+SCAN_SENSITIVE_SKILLS = [
+    "architecture",
+    "architecture-review",
+    "bugfix",
+    "ci",
+    "code-review",
+    "explain-change",
+    "implement",
+    "plan",
+    "plan-review",
+    "pr",
+    "project-map",
+    "proposal",
+    "proposal-review",
+    "research",
+    "spec",
+    "spec-review",
+    "test-spec",
+    "verify",
+    "workflow",
+]
 
 
 def run_validator(target: Path) -> subprocess.CompletedProcess[str]:
@@ -77,6 +98,40 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         combined_output = f"{result.stdout}\n{result.stderr}"
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("generated output path must not be used as authored source of truth", combined_output)
+
+    def test_workflow_guidance_defines_bounded_extraction_and_output_budgets(self) -> None:
+        workflow_text = (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8")
+        required_terms = [
+            "bounded extraction",
+            "stable IDs",
+            "matching line numbers",
+            "exact ranges",
+            "full-file read",
+            "routine command output target: 40 lines",
+            "routine command output warning threshold: 80 lines",
+            "single excerpt target: 12 lines",
+            "single excerpt warning threshold: 20 lines",
+            "one summary line per file",
+            "--verbose",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, workflow_text)
+
+    def test_scan_sensitive_skills_include_summary_id_reasoning_and_full_file_rules(self) -> None:
+        for skill_name in SCAN_SENSITIVE_SKILLS:
+            skill_path = ROOT / "skills" / skill_name / "SKILL.md"
+            body = skill_path.read_text(encoding="utf-8")
+            with self.subTest(skill=skill_name):
+                self.assertIn("summary and stable-ID first", body)
+                self.assertIn("check IDs", body)
+                self.assertIn("requirement IDs", body)
+                self.assertIn("file paths", body)
+                self.assertIn("line citations", body)
+                self.assertIn("When full-file read is required", body)
+                self.assertIn("the whole file is the review target", body)
+                self.assertIn("bounded searches disagree", body)
+                self.assertIn("behavior-changing edit depends on the whole source-of-truth artifact", body)
 
 
 if __name__ == "__main__":
