@@ -137,12 +137,12 @@ This plan intentionally keeps enforcement review-based for the first implementat
 - Expected observable result: contributors see `templates/` as authored workflow content, workflow routing points to the focused method spec, and templates are clearly scaffolds rather than live architecture or ADR records.
 - Commit message: `M2: add architecture templates and workflow guidance`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks: workflow spec could become a second normative home, or templates could drift from the approved spec.
 - Rollback/recovery: revert templates and guidance updates together so `templates/` is not left half-declared as a canonical source boundary.
 
@@ -323,6 +323,7 @@ The first implementation must not use newly added package-shape automation as pr
 - 2026-04-28: test spec created and activated after plan-review approval.
 - 2026-04-28: M1 tests were added first. The initial `python scripts/test-artifact-lifecycle-validator.py` run failed as expected because `docs/architecture/system/architecture.md` still required legacy architecture sections.
 - 2026-04-28: M1 implemented exact-path lifecycle compatibility for `docs/architecture/system/architecture.md`, kept legacy architecture Markdown on the older contract, and proved the canonical branch does not enforce package shape, C4 diagram files, or ADR presence.
+- 2026-04-28: M2 added `templates/architecture.md` and `templates/adr.md`, declared `templates/` as canonical authored workflow content in governance/workflow guidance, and added only a stage-level architecture package pointer to `specs/rigorloop-workflow.md`.
 
 ## Decision log
 
@@ -331,6 +332,7 @@ The first implementation must not use newly added package-shape automation as pr
 - 2026-04-28: planned broad smoke for final validation because the initiative crosses governance, workflow docs, scripts, skills, generated outputs, adapter packages, and architecture artifacts.
 - 2026-04-28: made M5 create a populated legacy normalization plan rather than a placeholder because R65 requires inventory and classification before the repository can claim legacy architecture normalization is complete.
 - 2026-04-28: implemented M1 as lifecycle-only compatibility by adding a canonical architecture contract with no required sections. This satisfies R71 while preserving R72's no required arc42 section, C4 diagram, ADR-presence, or package-shape enforcement boundary.
+- 2026-04-28: implemented M2 without adding validator behavior or dependencies. Template content is reviewed manually under T2/T7/T8, while selector, lifecycle, and CI wrapper checks prove routing and touched lifecycle artifacts.
 
 ## Surprises and discoveries
 
@@ -339,6 +341,7 @@ The first implementation must not use newly added package-shape automation as pr
 - Change-local architecture files and `.mmd` diagrams are not deterministic selector pass-gate paths today; they remain manual-routed review evidence.
 - M1 fixture files under `tests/fixtures/artifact-lifecycle/` are unclassified by the v1 selector when passed directly. The selected proof for M1 is `artifact_lifecycle.regression` from the touched lifecycle validator scripts, plus direct regression-test execution and diff checks.
 - `scripts/artifact_lifecycle_validation.py` was unaffected in M1 because exact-path compatibility could be expressed in the contract registry without changing validation flow, command output, selected coverage, or exit behavior.
+- M2 did not require changes under `scripts/` or generated output because `templates/` is already classified by the selector and the first implementation remains review-based for template content.
 
 ## Validation notes
 
@@ -368,13 +371,21 @@ The first implementation must not use newly added package-shape automation as pr
 - 2026-04-28: M1 `git diff --check -- scripts tests/fixtures/artifact-lifecycle docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md docs/plan.md docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml` passed.
 - 2026-04-28: M1 `python scripts/validate-change-metadata.py docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml` passed after closeout metadata updates.
 - 2026-04-28: M1 `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml --path docs/plan.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path specs/architecture-package-method.test.md` passed after closeout updates.
+- 2026-04-28: M2 manual template heading inspection with `rg -n "^## " templates/architecture.md templates/adr.md` confirmed the architecture template has lifecycle metadata before all 12 official arc42 section headings and the ADR template has the required status, context, decision, alternatives, consequences, and follow-up headings.
+- 2026-04-28: M2 `python scripts/select-validation.py --mode explicit --path templates/architecture.md --path templates/adr.md --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path specs/rigorloop-workflow.md` returned `status: ok` and selected `artifact_lifecycle.validate` plus `selector.regression`.
+- 2026-04-28: M2 `bash scripts/ci.sh --mode explicit --path templates/architecture.md --path templates/adr.md --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path specs/rigorloop-workflow.md` passed.
+- 2026-04-28: M2 `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/architecture-package-method.md --path specs/rigorloop-workflow.md` passed.
+- 2026-04-28: M2 `git diff --check -- templates CONSTITUTION.md AGENTS.md docs/workflows.md specs/rigorloop-workflow.md docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml` passed.
+- 2026-04-28: M2 closeout `python scripts/validate-change-metadata.py docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml` passed.
+- 2026-04-28: M2 closeout `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml --path docs/plan.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path specs/architecture-package-method.test.md --path specs/rigorloop-workflow.md` passed.
+- 2026-04-28: M2 closeout `python scripts/test-change-metadata-validator.py` passed.
 
 ## Outcome and retrospective
 
-- M1 is complete. M2 has not been started.
+- M1 and M2 are complete. M3 has not been started.
 
 ## Readiness
 
-- Immediate next repository stage: `code-review` for the completed M1 slice.
+- Immediate next repository stage: `code-review` for the completed M2 slice.
 - Test spec readiness: complete; `specs/architecture-package-method.test.md` is active.
-- Next implementation milestone after M1 review handoff: M2, `Add templates, governance boundary, and workflow pointer`.
+- Next implementation milestone after M2 review handoff: M3, `Create canonical architecture package and merge back durable content`.

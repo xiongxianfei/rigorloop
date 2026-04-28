@@ -82,6 +82,22 @@ validation:
     result: pass_after_m1_closeout_metadata
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml --path docs/plan.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path specs/architecture-package-method.test.md
     result: pass_after_m1_closeout
+  - command: rg -n "^## " templates/architecture.md templates/adr.md
+    result: pass_after_m2_manual_template_heading_inspection
+  - command: python scripts/select-validation.py --mode explicit --path templates/architecture.md --path templates/adr.md --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path specs/rigorloop-workflow.md
+    result: ok_after_m2_selected_artifact_lifecycle_validate_and_selector_regression
+  - command: bash scripts/ci.sh --mode explicit --path templates/architecture.md --path templates/adr.md --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path specs/rigorloop-workflow.md
+    result: pass_after_m2_selected_artifact_lifecycle_validate_and_selector_regression
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/architecture-package-method.md --path specs/rigorloop-workflow.md
+    result: pass_after_m2
+  - command: git diff --check -- templates CONSTITUTION.md AGENTS.md docs/workflows.md specs/rigorloop-workflow.md docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml
+    result: pass_after_m2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml
+    result: pass_after_m2_closeout_metadata
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml --path docs/plan.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path specs/architecture-package-method.test.md --path specs/rigorloop-workflow.md
+    result: pass_after_m2_closeout
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_after_m2_closeout
 changed_files:
   - docs/proposals/2026-04-28-architecture-skills-c4-arc42-adr.md
   - specs/architecture-package-method.md
@@ -98,6 +114,12 @@ changed_files:
   - tests/fixtures/artifact-lifecycle/canonical-architecture-lifecycle-only/docs/architecture/system/architecture.md
   - tests/fixtures/artifact-lifecycle/valid-canonical-arc42-architecture/docs/architecture/system/architecture.md
   - tests/fixtures/artifact-lifecycle/invalid-canonical-arc42-legacy-path/docs/architecture/2026-04-20-canonical-shaped-architecture.md
+  - templates/architecture.md
+  - templates/adr.md
+  - CONSTITUTION.md
+  - AGENTS.md
+  - docs/workflows.md
+  - specs/rigorloop-workflow.md
 review:
-  status: m1_complete_ready_for_code_review
+  status: m2_complete_ready_for_code_review
   unresolved_items: 0

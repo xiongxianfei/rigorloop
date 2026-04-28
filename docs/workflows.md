@@ -31,6 +31,11 @@ Notes:
 - A material review finding is incomplete unless it has evidence, a required outcome, and a safe resolution path or `needs-decision` rationale.
 - `learn` is advice-only. Treat it as an explicit follow-up when a durable lesson actually emerged or another approved rule elevates it.
 
+## Architecture Packages
+
+- When architecture is required, the architecture stage produces or updates the architecture package defined by `specs/architecture-package-method.md` before planning continues.
+- Use `templates/architecture.md` and `templates/adr.md` as scaffolds. Real architecture and ADR records live under `docs/architecture/` and `docs/adr/`.
+
 ## Efficient Evidence Collection
 
 - Use bounded extraction as the default first pass for large files, repeated scans, generated output, and validation logs.
@@ -124,6 +129,7 @@ Notes:
   - `skills/`
   - `schemas/`
   - `scripts/`
+  - `templates/`
 - Do not hand-edit generated Codex compatibility output in:
   - `.codex/skills/`
 - Do not hand-edit generated public adapter packages in:
@@ -181,3 +187,4 @@ When a change updates canonical `skills/`, keep generated `.codex/skills/` outpu
 - `docs/plans/*.md`: concrete execution plans
 - `specs/*.md`: normative behavior contract
 - `specs/*.test.md`: contract-to-test mapping
+- `templates/*.md`: canonical scaffolds for workflow artifacts
