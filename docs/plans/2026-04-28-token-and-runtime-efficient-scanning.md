@@ -281,6 +281,7 @@ This plan uses two validation command types:
 - [x] 2026-04-28: M4 completed generated-output regeneration, selector/manual-route proof, release validation, artifact-lifecycle validation, and broad-smoke validation.
 - [x] 2026-04-28: first-pass `code-review` returned `clean-with-notes` with no blocking or required-change findings and recommended `verify` as the next stage.
 - [x] 2026-04-28: post-review lifecycle bookkeeping synchronized the spec, test spec, active plan, plan index, and change-local pack so tracked readiness points to `verify`.
+- [x] 2026-04-28: `verify` passed with verdict `ready`; branch-ready is satisfied, and the next stage is `explain-change`.
 - [ ] Final lifecycle closeout completed in both this plan and `docs/plan.md`.
 
 ## Decision log
@@ -297,6 +298,7 @@ This plan uses two validation command types:
 - 2026-04-28: M3 reports manifest contract failures as `manifest-error` entries and skips a duplicate ordinary `missing` or `stale` entry for `manifest.yaml`; non-manifest generated files still use `missing`, `stale`, and `unexpected`.
 - 2026-04-28: M4 leaves the initiative active in `docs/plan.md` until downstream `code-review` and `verify` complete; the implementation state is ready for `code-review`, not PR-ready.
 - 2026-04-28: After clean first-pass `code-review`, keep the initiative active until `verify` and downstream explanation/PR handoff complete; the implementation state is ready for `verify`, not PR-ready.
+- 2026-04-28: After `verify`, keep the initiative active until `explain-change` and PR handoff complete; the branch is `branch-ready`, while `pr-body-ready` and `pr-open-ready` remain owned by later stages.
 
 ## Surprises and discoveries
 
@@ -351,17 +353,47 @@ This plan uses two validation command types:
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plan.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/proposals/2026-04-27-token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md`
   - `git diff --check -- .`
   - Result: passed.
+- 2026-04-28: `verify` passed on the complete implementation plus post-review lifecycle bookkeeping.
+  - Verification verdict: `ready`
+  - Traceability:
+    - `R1`-`R6`, `R34`, `R35` -> `T1`, `T2`, `T16` -> `docs/workflows.md`, canonical `skills/`, generated `.codex/skills/`, public adapter packages -> workflow guidance, skill guidance, skill validation, and generated-output drift checks -> pass
+    - `R7`-`R15`, `R21`-`R26` -> `T4`, `T5`, `T6`, `T8`, `T9`, `T12` -> `scripts/build-adapters.py`, `scripts/adapter_distribution.py`, `scripts/test-adapter-distribution.py` -> summary-first normal output, bounded failure output, complete verbose output, and output-size evidence -> pass
+    - `R16`-`R20`, `R19a`-`R19d` -> `T4`, `T7`, `T10`, `T12`, `T14`, `T16` -> adapter drift entry collection, CLI check mode, and selector/CI proof -> command identity, exit-code compatibility, and failure taxonomy -> pass
+    - `R27`-`R33` -> `T11`, `T12`, `T13` -> manifest-first adapter inspection helpers and adapter tests -> manifest-before-filesystem behavior, filesystem confirmation, no persistent cache, and no new dependency -> pass
+    - `R36`, `R37`, `AC1`-`AC11` -> `T3`, `T13`, `T15`, `T16` -> generated skills/adapters, release metadata, lifecycle artifacts, and broad smoke -> generated-output alignment, release validation, privacy boundary, and lifecycle validation -> pass
+  - Validation commands:
+    - `python scripts/validate-skills.py`
+    - `python scripts/test-skill-validator.py`
+    - `python scripts/test-adapter-distribution.py`
+    - `python scripts/build-skills.py --check`
+    - `python scripts/build-adapters.py --version 0.1.1 --check`
+    - `python scripts/build-adapters.py --version 0.1.1 --check --verbose`
+    - `python scripts/validate-adapters.py --version 0.1.1`
+    - `python scripts/validate-release.py --version v0.1.1`
+    - `python scripts/test-select-validation.py`
+    - `python scripts/test-change-metadata-validator.py`
+    - `python scripts/test-artifact-lifecycle-validator.py`
+    - `python scripts/select-validation.py --mode explicit --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md`
+    - `bash scripts/ci.sh --mode explicit --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md`
+    - `python scripts/validate-change-metadata.py docs/changes/token-and-runtime-efficient-scanning/change.yaml`
+    - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plan.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/proposals/2026-04-27-token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md`
+    - `bash scripts/ci.sh --mode broad-smoke`
+    - `git diff --check -- .`
+  - CI status: local repo-owned broad smoke passed. Hosted CI has not been observed from this environment.
+  - Artifact drift: none blocking. `docs/plan.md` and this plan body both keep the initiative active while moving the next stage from `verify` to `explain-change`.
+  - Warnings: broad smoke reported unrelated baseline lifecycle warnings for older draft proposal files outside this change.
 
 ## Outcome and retrospective
 
-- M1-M4 implementation milestones and first-pass `code-review` are complete. Final lifecycle closeout remains open until downstream verification and PR-readiness stages complete.
+- M1-M4 implementation milestones, first-pass `code-review`, and `verify` are complete. Final lifecycle closeout remains open until downstream explanation and PR-readiness stages complete.
 
 ## Readiness
 
-- M1-M4 and first-pass `code-review` are complete.
+- M1-M4, first-pass `code-review`, and `verify` are complete.
 - The active test spec is `specs/token-and-runtime-efficient-scanning.test.md`.
-- The next stage is `verify`.
-- The full initiative is not ready for downstream explanation or `pr` until verification completes.
+- The branch is `branch-ready` from the verification gate.
+- The next stage is `explain-change`.
+- The full initiative is not ready for `pr` until downstream explanation completes.
 
 ## Risks and follow-ups
 
