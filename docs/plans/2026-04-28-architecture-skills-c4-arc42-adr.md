@@ -329,6 +329,9 @@ The first implementation must not use newly added package-shape automation as pr
 - 2026-04-28: M3 created `docs/architecture/system/architecture.md` plus context and container Mermaid diagrams, merged durable architecture-method content from the change-local delta, and marked the delta as historical evidence after merge-back.
 - 2026-04-28: M4 updated the architecture and architecture-review skills for the C4, arc42, canonical-package, change-local-delta, merge-back, ADR, legacy-status, and full-file-read rules, then refreshed `.codex/skills/` and public adapter skill output through the existing generators.
 - 2026-04-28: M5 created and populated `docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md`, inventoried every current file under `docs/architecture/`, classified canonical package files as current canonical content, classified legacy Markdown architecture records as archived/historical snapshots pending normalization review, and added the follow-on plan to `docs/plan.md`.
+- 2026-04-28: first-pass `code-review` returned `clean-with-notes` with no blocking or required-change findings.
+- 2026-04-28: `verify` passed with verdict `ready`; branch-ready is satisfied, and the next stage is `explain-change`.
+- 2026-04-28: `explain-change` created `docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/explain-change.md` and recorded the problem-to-diff rationale plus PR handoff summary.
 
 ## Decision log
 
@@ -341,6 +344,7 @@ The first implementation must not use newly added package-shape automation as pr
 - 2026-04-28: implemented M3 as a documentation and diagram merge-back slice only. The canonical package is now the current architecture baseline, while `.mmd` diagram completeness remains manual-routed review evidence under the approved first-slice boundary.
 - 2026-04-28: implemented M4 by editing only canonical skill sources first, then refreshing generated `.codex/skills/` and `dist/adapters/` output through `scripts/build-skills.py` and `scripts/build-adapters.py --version 0.1.1`.
 - 2026-04-28: implemented M5 by creating the legacy normalization follow-on as an active plan rather than immediately mutating legacy architecture documents. This keeps R64's no-immediate-full-migration boundary while satisfying R65's populated inventory and classification requirement.
+- 2026-04-28: after direct `explain-change`, stop before `pr` while marking the explanation and PR handoff rationale complete. PR body readiness and PR opening remain owned by the `pr` stage.
 
 ## Surprises and discoveries
 
@@ -432,13 +436,18 @@ The first implementation must not use newly added package-shape automation as pr
 - 2026-04-28: M5 `bash scripts/ci.sh --mode broad-smoke` passed.
 - 2026-04-28: M5 selector inspection `python scripts/select-validation.py --mode explicit --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/plan.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml` returned `status: ok` and selected `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `broad_smoke.repo`.
 - 2026-04-28: M5 selector-selected lifecycle command `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml --path docs/plan.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md` passed.
+- 2026-04-28: `explain-change` selector inspection `python scripts/select-validation.py --mode explicit --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/explain-change.md --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path docs/plan.md` returned `status: ok` and selected `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `broad_smoke.repo`.
+- 2026-04-28: `explain-change` `python scripts/validate-change-metadata.py docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml` passed.
+- 2026-04-28: `explain-change` `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/explain-change.md --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml --path docs/plan.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path docs/proposals/2026-04-28-architecture-skills-c4-arc42-adr.md --path specs/architecture-package-method.md --path specs/architecture-package-method.test.md --path docs/adr/ADR-20260428-architecture-package-method.md --path docs/architecture/system/architecture.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md` passed.
+- 2026-04-28: `explain-change` `git diff --check -- docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/explain-change.md docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md` passed.
+- 2026-04-28: `explain-change` `bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/explain-change.md --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path docs/plan.md` passed selected lifecycle, change-metadata, and broad-smoke checks.
 
 ## Outcome and retrospective
 
-- M1, M2, M3, M4, and M5 are complete. The architecture package method implementation milestones are complete, while downstream review, verification, explain-change, and PR stages remain.
+- M1, M2, M3, M4, M5, code-review, verify, and explain-change are complete. PR handoff remains.
 
 ## Readiness
 
-- Immediate next repository stage: `code-review` for the completed M5 slice.
+- Immediate next repository stage: `pr`.
 - Test spec readiness: complete; `specs/architecture-package-method.test.md` is active.
-- Next lifecycle stages after code-review: `verify`, then `explain-change` and `pr` if verification passes.
+- Branch readiness: `verify` passed with verdict `ready`; PR body readiness and PR opening remain owned by the `pr` stage.
