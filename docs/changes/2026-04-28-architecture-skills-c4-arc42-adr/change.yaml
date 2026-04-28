@@ -118,6 +118,44 @@ validation:
     result: pass_after_m3_closeout
   - command: python scripts/test-change-metadata-validator.py
     result: pass_after_m3_closeout
+  - command: python scripts/validate-skills.py
+    result: pass_after_m4
+  - command: python scripts/test-skill-validator.py
+    result: fail_expected_after_initial_m4_skill_edit_missing_exact_scan_sensitive_wording
+  - command: python scripts/test-skill-validator.py
+    result: pass_after_m4_wording_correction
+  - command: python scripts/build-skills.py --check
+    result: fail_expected_after_m4_skill_edit_generated_skills_stale
+  - command: python scripts/build-skills.py
+    result: pass_after_m4_generated_skill_refresh
+  - command: python scripts/build-adapters.py --version 0.1.1
+    result: pass_after_m4_generated_adapter_refresh
+  - command: python scripts/build-skills.py --check
+    result: pass_after_m4
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_after_m4_56_tests
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_after_m4
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_after_m4
+  - command: python scripts/test-select-validation.py
+    result: pass_after_m4_27_tests
+  - command: python scripts/select-validation.py --mode explicit --path skills/architecture/SKILL.md --path skills/architecture-review/SKILL.md --path .codex/skills/architecture/SKILL.md --path .codex/skills/architecture-review/SKILL.md --path dist/adapters/manifest.yaml
+    result: ok_after_m4_selected_skills_and_adapter_checks
+  - command: bash scripts/ci.sh --mode explicit --path skills/architecture/SKILL.md --path skills/architecture-review/SKILL.md --path .codex/skills/architecture/SKILL.md --path .codex/skills/architecture-review/SKILL.md --path dist/adapters/manifest.yaml
+    result: pass_after_m4_selected_skills_and_adapter_checks
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml
+    result: pass_after_m4_closeout_metadata
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_after_m4_closeout
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml --path docs/plan.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path specs/architecture-package-method.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260428-architecture-package-method.md
+    result: pass_after_m4_closeout
+  - command: python scripts/select-validation.py --mode explicit --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml
+    result: ok_after_m4_closeout_selected_lifecycle_change_metadata_and_broad_smoke
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: pass_after_m4_closeout
+  - command: git diff --check -- skills/architecture/SKILL.md skills/architecture-review/SKILL.md .codex/skills dist/adapters docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml
+    result: pass_after_m4
 changed_files:
   - docs/proposals/2026-04-28-architecture-skills-c4-arc42-adr.md
   - specs/architecture-package-method.md
@@ -143,6 +181,16 @@ changed_files:
   - AGENTS.md
   - docs/workflows.md
   - specs/rigorloop-workflow.md
+  - skills/architecture/SKILL.md
+  - skills/architecture-review/SKILL.md
+  - .codex/skills/architecture/SKILL.md
+  - .codex/skills/architecture-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/architecture/SKILL.md
+  - dist/adapters/claude/.claude/skills/architecture-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/architecture/SKILL.md
+  - dist/adapters/codex/.agents/skills/architecture-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/architecture/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/architecture-review/SKILL.md
 review:
-  status: m3_complete_ready_for_code_review
+  status: m4_complete_ready_for_code_review
   unresolved_items: 0

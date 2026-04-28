@@ -91,6 +91,7 @@ This plan intentionally keeps enforcement review-based for the first implementat
 - Validation commands:
   - Pass-gate commands:
     - `python scripts/test-artifact-lifecycle-validator.py`
+    - `python scripts/test-select-validation.py`
     - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-28-architecture-skills-c4-arc42-adr.md --path specs/architecture-package-method.md --path docs/adr/ADR-20260428-architecture-package-method.md --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml`
     - `bash scripts/ci.sh --mode explicit --path scripts/artifact_lifecycle_contracts.py --path scripts/artifact_lifecycle_validation.py --path scripts/test-artifact-lifecycle-validator.py`
     - `git diff --check -- scripts tests/fixtures/artifact-lifecycle docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md docs/plan.md docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml`
@@ -217,17 +218,18 @@ This plan intentionally keeps enforcement review-based for the first implementat
     - `python scripts/test-adapter-distribution.py`
     - `python scripts/build-adapters.py --version 0.1.1 --check`
     - `python scripts/validate-adapters.py --version 0.1.1`
+    - `python scripts/test-select-validation.py`
     - `bash scripts/ci.sh --mode explicit --path skills/architecture/SKILL.md --path skills/architecture-review/SKILL.md --path .codex/skills/architecture/SKILL.md --path .codex/skills/architecture-review/SKILL.md --path dist/adapters/manifest.yaml`
     - `git diff --check -- skills/architecture/SKILL.md skills/architecture-review/SKILL.md .codex/skills dist/adapters docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml`
 - Expected observable result: architecture skills teach and review the approved C4, arc42, canonical-package, change-local-delta, and ADR method, and generated outputs match canonical skills.
 - Commit message: `M4: align architecture skills with package method`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] lifecycle state reviewed; `docs/plan.md` remains active because the initiative is not complete
+  - [x] progress updated
+  - [x] decision log updated
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks: generated adapters could drift if only `.codex/skills/` is refreshed, or skill wording could imply heavy docs for leaf changes.
 - Rollback/recovery: revert canonical skill edits and rerun both generators so derived outputs return to the previous state.
 
@@ -325,6 +327,7 @@ The first implementation must not use newly added package-shape automation as pr
 - 2026-04-28: M1 implemented exact-path lifecycle compatibility for `docs/architecture/system/architecture.md`, kept legacy architecture Markdown on the older contract, and proved the canonical branch does not enforce package shape, C4 diagram files, or ADR presence.
 - 2026-04-28: M2 added `templates/architecture.md` and `templates/adr.md`, declared `templates/` as canonical authored workflow content in governance/workflow guidance, and added only a stage-level architecture package pointer to `specs/rigorloop-workflow.md`.
 - 2026-04-28: M3 created `docs/architecture/system/architecture.md` plus context and container Mermaid diagrams, merged durable architecture-method content from the change-local delta, and marked the delta as historical evidence after merge-back.
+- 2026-04-28: M4 updated the architecture and architecture-review skills for the C4, arc42, canonical-package, change-local-delta, merge-back, ADR, legacy-status, and full-file-read rules, then refreshed `.codex/skills/` and public adapter skill output through the existing generators.
 
 ## Decision log
 
@@ -335,6 +338,7 @@ The first implementation must not use newly added package-shape automation as pr
 - 2026-04-28: implemented M1 as lifecycle-only compatibility by adding a canonical architecture contract with no required sections. This satisfies R71 while preserving R72's no required arc42 section, C4 diagram, ADR-presence, or package-shape enforcement boundary.
 - 2026-04-28: implemented M2 without adding validator behavior or dependencies. Template content is reviewed manually under T2/T7/T8, while selector, lifecycle, and CI wrapper checks prove routing and touched lifecycle artifacts.
 - 2026-04-28: implemented M3 as a documentation and diagram merge-back slice only. The canonical package is now the current architecture baseline, while `.mmd` diagram completeness remains manual-routed review evidence under the approved first-slice boundary.
+- 2026-04-28: implemented M4 by editing only canonical skill sources first, then refreshing generated `.codex/skills/` and `dist/adapters/` output through `scripts/build-skills.py` and `scripts/build-adapters.py --version 0.1.1`.
 
 ## Surprises and discoveries
 
@@ -345,6 +349,8 @@ The first implementation must not use newly added package-shape automation as pr
 - `scripts/artifact_lifecycle_validation.py` was unaffected in M1 because exact-path compatibility could be expressed in the contract registry without changing validation flow, command output, selected coverage, or exit behavior.
 - M2 did not require changes under `scripts/` or generated output because `templates/` is already classified by the selector and the first implementation remains review-based for template content.
 - M3 selector inspection blocked the canonical `.mmd` diagram paths as expected. The manual route is architecture/code-review diff inspection because the first implementation intentionally does not add required C4-file enforcement.
+- M4 did not require new validation automation. Existing skill validation already enforces summary and stable-ID first reasoning plus full-file-read guidance for scan-sensitive skills.
+- M4 adapter generation refreshed adapter-embedded architecture skills only; `dist/adapters/manifest.yaml` remained content-identical after regeneration.
 
 ## Validation notes
 
@@ -392,13 +398,31 @@ The first implementation must not use newly added package-shape automation as pr
 - 2026-04-28: M3 closeout `python scripts/validate-change-metadata.py docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml` passed.
 - 2026-04-28: M3 closeout `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml --path docs/plan.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path specs/architecture-package-method.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260428-architecture-package-method.md` passed.
 - 2026-04-28: M3 closeout `python scripts/test-change-metadata-validator.py` passed.
+- 2026-04-28: M4 `python scripts/validate-skills.py` passed after canonical skill edits.
+- 2026-04-28: initial M4 `python scripts/test-skill-validator.py` failed because the edited architecture skills did not preserve the exact scan-sensitive `summary and stable-ID first`, `check IDs`, `file paths`, `line citations`, and whole-file-read wording; the skill wording was corrected before generation.
+- 2026-04-28: M4 `python scripts/test-skill-validator.py` passed after wording correction.
+- 2026-04-28: initial M4 `python scripts/build-skills.py --check` failed as expected after canonical skill edits because `.codex/skills/architecture*/SKILL.md` was stale; generated skills were refreshed with `python scripts/build-skills.py`.
+- 2026-04-28: M4 `python scripts/build-adapters.py --version 0.1.1` refreshed public adapter package skill output from canonical sources.
+- 2026-04-28: M4 `python scripts/build-skills.py --check` passed after generated skill refresh.
+- 2026-04-28: M4 `python scripts/test-adapter-distribution.py` passed with 56 tests.
+- 2026-04-28: M4 `python scripts/build-adapters.py --version 0.1.1 --check` passed and reported adapter output in sync.
+- 2026-04-28: M4 `python scripts/validate-adapters.py --version 0.1.1` passed.
+- 2026-04-28: M4 `python scripts/test-select-validation.py` passed with 27 tests.
+- 2026-04-28: M4 selector inspection `python scripts/select-validation.py --mode explicit --path skills/architecture/SKILL.md --path skills/architecture-review/SKILL.md --path .codex/skills/architecture/SKILL.md --path .codex/skills/architecture-review/SKILL.md --path dist/adapters/manifest.yaml` returned `status: ok` and selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, and `adapters.validate`.
+- 2026-04-28: M4 `bash scripts/ci.sh --mode explicit --path skills/architecture/SKILL.md --path skills/architecture-review/SKILL.md --path .codex/skills/architecture/SKILL.md --path .codex/skills/architecture-review/SKILL.md --path dist/adapters/manifest.yaml` passed all selected checks.
+- 2026-04-28: M4 closeout `python scripts/validate-change-metadata.py docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml` passed.
+- 2026-04-28: M4 closeout `python scripts/test-change-metadata-validator.py` passed.
+- 2026-04-28: M4 closeout `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml --path docs/plan.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path specs/architecture-package-method.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260428-architecture-package-method.md` passed.
+- 2026-04-28: M4 closeout `python scripts/select-validation.py --mode explicit --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml` returned `status: ok` and selected lifecycle, change-metadata, and broad-smoke checks because the active plan requires broad smoke.
+- 2026-04-28: M4 closeout `bash scripts/ci.sh --mode broad-smoke` passed.
+- 2026-04-28: M4 `git diff --check -- skills/architecture/SKILL.md skills/architecture-review/SKILL.md .codex/skills dist/adapters docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml` passed.
 
 ## Outcome and retrospective
 
-- M1, M2, and M3 are complete. M4 has not been started.
+- M1, M2, M3, and M4 are complete. M5 has not been started.
 
 ## Readiness
 
-- Immediate next repository stage: `code-review` for the completed M3 slice.
+- Immediate next repository stage: `code-review` for the completed M4 slice.
 - Test spec readiness: complete; `specs/architecture-package-method.test.md` is active.
-- Next implementation milestone after M3 review handoff: M4, `Update architecture skills and generated outputs`.
+- Next implementation milestone after M4 review handoff: M5, `Add legacy normalization follow-up and final closeout evidence`.
