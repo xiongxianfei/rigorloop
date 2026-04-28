@@ -4,17 +4,24 @@
 
 - approved
 
+Historical note: after M3 merge-back, this change-local delta is evidence for this change and no longer the current architecture source.
+
 ## Related artifacts
 
 - Proposal: `docs/proposals/2026-04-28-architecture-skills-c4-arc42-adr.md`
 - Spec: `specs/architecture-package-method.md`
 - ADR: `docs/adr/ADR-20260428-architecture-package-method.md`
+- Canonical package: `docs/architecture/system/architecture.md`
+- Canonical context diagram: `docs/architecture/system/diagrams/context.mmd`
+- Canonical container diagram: `docs/architecture/system/diagrams/container.mmd`
 - Context diagram: `docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/diagrams/context.mmd`
 - Container diagram: `docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/diagrams/container.mmd`
 
 ## Introduction and Goals
 
 This architecture delta defines how RigorLoop adopts the approved architecture package method for the architecture-method change itself. It is a change-local working artifact, not the canonical architecture package.
+
+After M3, durable current architecture content from this delta is merged into `docs/architecture/system/architecture.md`. Downstream architecture work must rely on the canonical package and accepted ADRs, while this delta remains historical evidence for this change.
 
 The implementation must create a canonical architecture package, add architecture and ADR templates, update workflow and governance guidance, update architecture skills, refresh generated skill and adapter output through existing generators, and preserve legacy architecture artifacts until a later normalization artifact classifies them.
 
@@ -74,8 +81,8 @@ This sequence avoids making the current validator reject the first canonical arc
 | `docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/architecture.md` | Change-local working architecture for this adoption change | authored delta |
 | `docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/diagrams/` | Change-local C4 source diagrams for review | authored delta diagrams |
 | `docs/adr/ADR-20260428-architecture-package-method.md` | Durable decision record for the architecture package method | accepted ADR |
-| `docs/architecture/system/` | Future canonical architecture package and C4 source diagrams | implementation deliverable |
-| `templates/architecture.md` and `templates/adr.md` | Future canonical scaffolds for package and ADR authoring | implementation deliverable |
+| `docs/architecture/system/` | Canonical architecture package and C4 source diagrams after M3 merge-back | implementation deliverable |
+| `templates/architecture.md` and `templates/adr.md` | Canonical scaffolds for package and ADR authoring after M2 | implementation deliverable |
 | `CONSTITUTION.md`, `AGENTS.md`, `docs/workflows.md` | Governance and operational summaries that must acknowledge `templates/` and the focused spec pointer | implementation deliverable |
 | `skills/architecture/SKILL.md` and `skills/architecture-review/SKILL.md` | Canonical skill guidance for authoring and reviewing the new method | implementation deliverable |
 | `.codex/skills/` and `dist/adapters/` | Generated runtime and public adapter surfaces refreshed from canonical skills | generated deliverable |
@@ -182,7 +189,7 @@ This ADR records the decision to adopt C4 plus official arc42 plus ADRs, one can
 ## Glossary
 
 - architecture delta: this change-local working architecture artifact.
-- canonical package: the future `docs/architecture/system/` package that becomes the current architecture source.
+- canonical package: the `docs/architecture/system/` package that becomes the current architecture source after M3 merge-back.
 - lifecycle-validator compatibility: the narrow script change that lets the new canonical arc42 package coexist with existing lifecycle validation.
 - merge-back: incorporating accepted durable content from this delta into the canonical package.
 
@@ -199,6 +206,4 @@ This ADR records the decision to adopt C4 plus official arc42 plus ADRs, one can
 
 ## Readiness
 
-Architecture review is complete and this change-local architecture delta is approved.
-
-Immediate next repository stage: `plan`.
+Architecture review is complete and this change-local architecture delta is approved. After M3 merge-back, this delta is historical evidence only; downstream architecture work must use `docs/architecture/system/architecture.md` plus accepted ADRs as current architecture guidance.

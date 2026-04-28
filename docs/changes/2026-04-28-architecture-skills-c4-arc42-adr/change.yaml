@@ -98,6 +98,26 @@ validation:
     result: pass_after_m2_closeout
   - command: python scripts/test-change-metadata-validator.py
     result: pass_after_m2_closeout
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260428-architecture-package-method.md --path specs/architecture-package-method.md
+    result: fail_expected_before_m3_missing_canonical_package
+  - command: rg -n "^## " docs/architecture/system/architecture.md docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/architecture.md
+    result: pass_after_m3_manual_arc42_heading_and_delta_history_inspection
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260428-architecture-package-method.md --path specs/architecture-package-method.md
+    result: pass_after_m3
+  - command: python scripts/select-validation.py --mode explicit --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/context.mmd --path docs/architecture/system/diagrams/container.mmd
+    result: blocked_expected_m3_mmd_paths_manual_routed_with_architecture_lifecycle_selected
+  - command: python scripts/select-validation.py --mode explicit --path docs/architecture/system/architecture.md
+    result: ok_after_m3_selected_artifact_lifecycle_validate
+  - command: bash scripts/ci.sh --mode explicit --path docs/architecture/system/architecture.md
+    result: pass_after_m3_selected_artifact_lifecycle_validate
+  - command: git diff --check -- docs/architecture/system docs/changes/2026-04-28-architecture-skills-c4-arc42-adr docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml
+    result: pass_after_m3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml
+    result: pass_after_m3_closeout_metadata
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml --path docs/plan.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path specs/architecture-package-method.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260428-architecture-package-method.md
+    result: pass_after_m3_closeout
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_after_m3_closeout
 changed_files:
   - docs/proposals/2026-04-28-architecture-skills-c4-arc42-adr.md
   - specs/architecture-package-method.md
@@ -105,6 +125,9 @@ changed_files:
   - docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/architecture.md
   - docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/diagrams/context.mmd
   - docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/diagrams/container.mmd
+  - docs/architecture/system/architecture.md
+  - docs/architecture/system/diagrams/context.mmd
+  - docs/architecture/system/diagrams/container.mmd
   - docs/adr/ADR-20260428-architecture-package-method.md
   - docs/plan.md
   - docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md
@@ -121,5 +144,5 @@ changed_files:
   - docs/workflows.md
   - specs/rigorloop-workflow.md
 review:
-  status: m2_complete_ready_for_code_review
+  status: m3_complete_ready_for_code_review
   unresolved_items: 0
