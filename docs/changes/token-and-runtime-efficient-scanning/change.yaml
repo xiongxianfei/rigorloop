@@ -31,6 +31,7 @@ requirements:
   - R19a
   - R19b
   - R19c
+  - R19d
   - R20
   - R21
   - R22
@@ -38,6 +39,9 @@ requirements:
   - R24
   - R25
   - R26
+  - R27
+  - R28
+  - R29
   - R30
   - R31
   - R32
@@ -57,6 +61,8 @@ tests:
   - T8
   - T9
   - T10
+  - T11
+  - T12
   - T13
   - T14
 validation:
@@ -120,6 +126,36 @@ validation:
   - command: git diff --check -- .
     result: pass
     reason: Reran after M2 code and artifact updates.
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_drift_entries_classify_generated_output_failures AdapterDistributionTests.test_manifest_first_inspection_precedes_filesystem_confirmation AdapterDistributionTests.test_manifest_errors_are_structured_and_displayed_completely
+    result: expected-failure
+    reason: New M3 tests failed before implementation because manifest-first inspection helper and manifest-error drift entries did not exist yet.
+  - command: python scripts/test-adapter-distribution.py
+    result: pass
+    reason: M3 adapter regression suite passed with 56 tests after adding manifest-first inspection and manifest-error coverage.
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass
+    reason: Clean adapter drift check remains 4 summary-first lines after manifest-first inspection.
+  - command: python scripts/build-adapters.py --version 0.1.1 --check --verbose
+    result: pass
+    reason: Verbose clean adapter drift check remains accepted and exits 0 after manifest-first inspection.
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md
+    result: expected-blocked
+    reason: Selector inspection selected adapters.regression, adapters.drift, adapters.validate, artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate, with the expected manual-routing block for `scripts/test-adapter-distribution.py`; broad smoke was not required.
+  - command: python scripts/test-select-validation.py
+    result: pass
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/token-and-runtime-efficient-scanning/change.yaml
+    result: pass
+    reason: Reran after M3 change-local metadata updates.
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plan.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/proposals/2026-04-27-token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md
+    result: pass
+    reason: Reran after M3 plan and change-local artifact updates.
+  - command: git diff --check -- .
+    result: pass
+    reason: Reran after M3 code and artifact updates.
 changed_files:
   - docs/workflows.md
   - scripts/test-skill-validator.py

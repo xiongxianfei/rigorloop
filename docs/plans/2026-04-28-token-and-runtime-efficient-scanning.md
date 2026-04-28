@@ -187,12 +187,12 @@ This plan uses two validation command types:
 - Expected observable result: adapter coverage checks use manifest inventory first without making the manifest authoritative over canonical sources or filesystem proof.
 - Commit message: `M3: inspect adapter manifest before filesystem confirmation`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks: treating manifest mismatch as drift could double-report failures or mask stale generated files.
 - Rollback/recovery: isolate manifest-first inventory as a pre-check that can be disabled while preserving canonical expected-file and filesystem comparison behavior.
 
@@ -277,7 +277,7 @@ This plan uses two validation command types:
 - [x] 2026-04-28: `specs/token-and-runtime-efficient-scanning.test.md` created and activated.
 - [x] 2026-04-28: M1 completed bounded extraction workflow guidance, first-slice scan-sensitive skill guidance, generated skill and adapter refresh, change-local baseline pack, and targeted validation.
 - [x] 2026-04-28: M2 completed structured adapter drift entries, summary-first normal output, complete verbose output, output-size evidence, and targeted adapter validation without implementing manifest-first collection.
-- [ ] M3 completed.
+- [x] 2026-04-28: M3 completed manifest-first adapter drift inspection, `manifest-error` entries for missing/malformed/inconsistent/mismatched manifests, and filesystem confirmation after manifest inspection.
 - [ ] M4 completed.
 - [ ] Final lifecycle closeout completed in both this plan and `docs/plan.md`.
 
@@ -291,6 +291,8 @@ This plan uses two validation command types:
 - 2026-04-28: M1 left `AGENTS.md`, `CONSTITUTION.md`, `specs/rigorloop-workflow.md`, and adapter drift logic unchanged with rationale recorded in `docs/changes/token-and-runtime-efficient-scanning/explain-change.md`.
 - 2026-04-28: M2 preserves `collect_adapter_drift` as the string-returning compatibility API and adds `collect_adapter_drift_entries` for structured formatter and category tests.
 - 2026-04-28: M2 keeps `manifest-error` as a reserved category in formatter counts so the full taxonomy is visible, but actual manifest-first collection and manifest-error regression coverage remain M3 work.
+- 2026-04-28: M3 uses a scoped in-process manifest inspection helper in the adapter drift family instead of a persistent cache or cross-command parser boundary.
+- 2026-04-28: M3 reports manifest contract failures as `manifest-error` entries and skips a duplicate ordinary `missing` or `stale` entry for `manifest.yaml`; non-manifest generated files still use `missing`, `stale`, and `unexpected`.
 
 ## Surprises and discoveries
 
@@ -320,17 +322,23 @@ This plan uses two validation command types:
 - 2026-04-28: M2 selector inspection `python scripts/select-validation.py --mode explicit --path scripts/build-adapters.py --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path scripts/validation_selection.py` returned the expected blocked/manual-routing result for `scripts/test-adapter-distribution.py`, selected `adapters.regression`, `adapters.drift`, `adapters.validate`, and `selector.regression`, and did not require broad smoke. The manual route `python scripts/test-adapter-distribution.py` passed.
 - 2026-04-28: M2 output-size evidence recorded representative clean normal output as legacy 1 line and shaped 4 lines, and representative many-drift normal output as legacy 35 lines and shaped 26 lines.
 - 2026-04-28: after M2 plan and change-local updates, `python scripts/validate-change-metadata.py docs/changes/token-and-runtime-efficient-scanning/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plan.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/proposals/2026-04-27-token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md`, and `git diff --check -- .` passed.
+- 2026-04-28: M3 TDD proof: `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_drift_entries_classify_generated_output_failures AdapterDistributionTests.test_manifest_first_inspection_precedes_filesystem_confirmation AdapterDistributionTests.test_manifest_errors_are_structured_and_displayed_completely` failed before implementation because the manifest-first helper and `manifest-error` drift entries were not implemented.
+- 2026-04-28: M3 narrow tests passed after implementation for generated-output failure classification, manifest-before-filesystem call order, and manifest-error normal/verbose output.
+- 2026-04-28: M3 adapter regression passed: `python scripts/test-adapter-distribution.py` ran 56 tests successfully.
+- 2026-04-28: M3 pass-gate commands passed: `python scripts/build-adapters.py --version 0.1.1 --check`; `python scripts/build-adapters.py --version 0.1.1 --check --verbose`; `python scripts/validate-adapters.py --version 0.1.1`.
+- 2026-04-28: M3 selector inspection `python scripts/select-validation.py --mode explicit --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md` returned the expected blocked/manual-routing result for `scripts/test-adapter-distribution.py`, selected `adapters.regression`, `adapters.drift`, `adapters.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`, and did not require broad smoke. The direct manual route `python scripts/test-adapter-distribution.py` passed.
+- 2026-04-28: M3 selected support checks passed: `python scripts/test-select-validation.py`; `python scripts/test-change-metadata-validator.py`; `python scripts/validate-change-metadata.py docs/changes/token-and-runtime-efficient-scanning/change.yaml`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plan.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/proposals/2026-04-27-token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md`; `git diff --check -- .`.
 
 ## Outcome and retrospective
 
-- M1 and M2 are complete and committed as reviewable implementation slices. M3-M4 remain open, so the full initiative outcome and retrospective remain open until implementation and final lifecycle closeout complete.
+- M1-M3 are complete and committed as reviewable implementation slices. M4 remains open, so the full initiative outcome and retrospective remain open until implementation and final lifecycle closeout complete.
 
 ## Readiness
 
-- M1 and M2 are ready for `code-review` as completed milestone slices.
-- Next implementation milestone: M3, add manifest-first adapter inspection.
+- M1-M3 are ready for `code-review` as completed milestone slices.
+- Next implementation milestone: M4, align generated output, lifecycle artifacts, and final validation.
 - The active test spec is `specs/token-and-runtime-efficient-scanning.test.md`.
-- The full initiative is not ready for final `verify`, `explain-change`, or `pr` until M3-M4 complete and final validation evidence is recorded.
+- The full initiative is not ready for final `verify`, `explain-change`, or `pr` until M4 completes and final validation evidence is recorded.
 
 ## Risks and follow-ups
 
