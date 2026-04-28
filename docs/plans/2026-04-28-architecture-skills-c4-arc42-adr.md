@@ -274,12 +274,12 @@ This plan intentionally keeps enforcement review-based for the first implementat
 - Expected observable result: all required method surfaces exist, generated output is synchronized, legacy migration follow-up is populated with an inventory and classification for every current `docs/architecture/` document, and final validation evidence is ready for code-review and verify.
 - Commit message: `M5: close architecture method rollout evidence`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
+  - [x] progress updated
+  - [x] decision log updated
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks: closeout could claim legacy architecture normalization is complete when only the follow-on artifact exists.
 - Rollback/recovery: revert closeout artifact and plan-index updates; keep legacy architecture documents explicitly unnormalized until the follow-on migration runs.
 
@@ -328,6 +328,7 @@ The first implementation must not use newly added package-shape automation as pr
 - 2026-04-28: M2 added `templates/architecture.md` and `templates/adr.md`, declared `templates/` as canonical authored workflow content in governance/workflow guidance, and added only a stage-level architecture package pointer to `specs/rigorloop-workflow.md`.
 - 2026-04-28: M3 created `docs/architecture/system/architecture.md` plus context and container Mermaid diagrams, merged durable architecture-method content from the change-local delta, and marked the delta as historical evidence after merge-back.
 - 2026-04-28: M4 updated the architecture and architecture-review skills for the C4, arc42, canonical-package, change-local-delta, merge-back, ADR, legacy-status, and full-file-read rules, then refreshed `.codex/skills/` and public adapter skill output through the existing generators.
+- 2026-04-28: M5 created and populated `docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md`, inventoried every current file under `docs/architecture/`, classified canonical package files as current canonical content, classified legacy Markdown architecture records as archived/historical snapshots pending normalization review, and added the follow-on plan to `docs/plan.md`.
 
 ## Decision log
 
@@ -339,6 +340,7 @@ The first implementation must not use newly added package-shape automation as pr
 - 2026-04-28: implemented M2 without adding validator behavior or dependencies. Template content is reviewed manually under T2/T7/T8, while selector, lifecycle, and CI wrapper checks prove routing and touched lifecycle artifacts.
 - 2026-04-28: implemented M3 as a documentation and diagram merge-back slice only. The canonical package is now the current architecture baseline, while `.mmd` diagram completeness remains manual-routed review evidence under the approved first-slice boundary.
 - 2026-04-28: implemented M4 by editing only canonical skill sources first, then refreshing generated `.codex/skills/` and `dist/adapters/` output through `scripts/build-skills.py` and `scripts/build-adapters.py --version 0.1.1`.
+- 2026-04-28: implemented M5 by creating the legacy normalization follow-on as an active plan rather than immediately mutating legacy architecture documents. This keeps R64's no-immediate-full-migration boundary while satisfying R65's populated inventory and classification requirement.
 
 ## Surprises and discoveries
 
@@ -351,6 +353,8 @@ The first implementation must not use newly added package-shape automation as pr
 - M3 selector inspection blocked the canonical `.mmd` diagram paths as expected. The manual route is architecture/code-review diff inspection because the first implementation intentionally does not add required C4-file enforcement.
 - M4 did not require new validation automation. Existing skill validation already enforces summary and stable-ID first reasoning plus full-file-read guidance for scan-sensitive skills.
 - M4 adapter generation refreshed adapter-embedded architecture skills only; `dist/adapters/manifest.yaml` remained content-identical after regeneration.
+- M5 inventory includes `.mmd` diagram files because the approved manual proof uses `find docs/architecture -type f | sort`; the follow-on artifact classifies those diagrams as current canonical content with the canonical package.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md` reported `validated 0 artifact files` because the current lifecycle validator does not validate concrete plan files as lifecycle-managed artifacts by themselves. The selector still routes plan paths to `artifact_lifecycle.validate`, and M5 records the command result exactly.
 
 ## Validation notes
 
@@ -416,13 +420,25 @@ The first implementation must not use newly added package-shape automation as pr
 - 2026-04-28: M4 closeout `python scripts/select-validation.py --mode explicit --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml` returned `status: ok` and selected lifecycle, change-metadata, and broad-smoke checks because the active plan requires broad smoke.
 - 2026-04-28: M4 closeout `bash scripts/ci.sh --mode broad-smoke` passed.
 - 2026-04-28: M4 `git diff --check -- skills/architecture/SKILL.md skills/architecture-review/SKILL.md .codex/skills dist/adapters docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml` passed.
+- 2026-04-28: M5 `find docs/architecture -type f | sort` produced 11 current architecture paths.
+- 2026-04-28: M5 manual inventory proof `while IFS= read -r path; do rg -F -q "$path" docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md || printf 'missing %s\n' "$path"; done < <(find docs/architecture -type f | sort)` produced no output, proving every current path appears in the follow-on artifact.
+- 2026-04-28: M5 `python scripts/select-validation.py --mode explicit --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/plan.md` returned `status: ok` and selected `artifact_lifecycle.validate`.
+- 2026-04-28: M5 `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/plan.md` passed with `validated 0 artifact files`.
+- 2026-04-28: M5 `python scripts/validate-change-metadata.py docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml` passed.
+- 2026-04-28: M5 `python scripts/test-change-metadata-validator.py` passed.
+- 2026-04-28: M5 `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-28-architecture-skills-c4-arc42-adr.md --path specs/architecture-package-method.md --path docs/adr/ADR-20260428-architecture-package-method.md --path docs/architecture/system/architecture.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml` passed.
+- 2026-04-28: M5 final lifecycle check `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-28-architecture-skills-c4-arc42-adr.md --path specs/architecture-package-method.md --path specs/architecture-package-method.test.md --path docs/adr/ADR-20260428-architecture-package-method.md --path docs/architecture/system/architecture.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml` passed.
+- 2026-04-28: M5 `git diff --check -- .` passed.
+- 2026-04-28: M5 `bash scripts/ci.sh --mode broad-smoke` passed.
+- 2026-04-28: M5 selector inspection `python scripts/select-validation.py --mode explicit --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/plan.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml` returned `status: ok` and selected `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `broad_smoke.repo`.
+- 2026-04-28: M5 selector-selected lifecycle command `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml --path docs/plan.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md` passed.
 
 ## Outcome and retrospective
 
-- M1, M2, M3, and M4 are complete. M5 has not been started.
+- M1, M2, M3, M4, and M5 are complete. The architecture package method implementation milestones are complete, while downstream review, verification, explain-change, and PR stages remain.
 
 ## Readiness
 
-- Immediate next repository stage: `code-review` for the completed M4 slice.
+- Immediate next repository stage: `code-review` for the completed M5 slice.
 - Test spec readiness: complete; `specs/architecture-package-method.test.md` is active.
-- Next implementation milestone after M4 review handoff: M5, `Add legacy normalization follow-up and final closeout evidence`.
+- Next lifecycle stages after code-review: `verify`, then `explain-change` and `pr` if verification passes.

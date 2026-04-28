@@ -156,6 +156,30 @@ validation:
     result: pass_after_m4_closeout
   - command: git diff --check -- skills/architecture/SKILL.md skills/architecture-review/SKILL.md .codex/skills dist/adapters docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml
     result: pass_after_m4
+  - command: find docs/architecture -type f | sort
+    result: pass_after_m5_11_paths_inventory_source
+  - command: while IFS= read -r path; do rg -F -q "$path" docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md || printf 'missing %s\n' "$path"; done < <(find docs/architecture -type f | sort)
+    result: pass_after_m5_no_missing_inventory_paths
+  - command: python scripts/select-validation.py --mode explicit --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/plan.md
+    result: ok_after_m5_selected_artifact_lifecycle_validate
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/plan.md
+    result: pass_after_m5_validated_0_artifact_files
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml
+    result: pass_after_m5
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_after_m5
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-28-architecture-skills-c4-arc42-adr.md --path specs/architecture-package-method.md --path docs/adr/ADR-20260428-architecture-package-method.md --path docs/architecture/system/architecture.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml
+    result: pass_after_m5
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-28-architecture-skills-c4-arc42-adr.md --path specs/architecture-package-method.md --path specs/architecture-package-method.test.md --path docs/adr/ADR-20260428-architecture-package-method.md --path docs/architecture/system/architecture.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml
+    result: pass_after_m5_final_lifecycle_scope
+  - command: git diff --check -- .
+    result: pass_after_m5
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: pass_after_m5
+  - command: python scripts/select-validation.py --mode explicit --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/plan.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml
+    result: ok_after_m5_selected_lifecycle_change_metadata_and_broad_smoke
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml --path docs/plan.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_m5_selected_lifecycle_scope
 changed_files:
   - docs/proposals/2026-04-28-architecture-skills-c4-arc42-adr.md
   - specs/architecture-package-method.md
@@ -181,6 +205,7 @@ changed_files:
   - AGENTS.md
   - docs/workflows.md
   - specs/rigorloop-workflow.md
+  - docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
   - skills/architecture/SKILL.md
   - skills/architecture-review/SKILL.md
   - .codex/skills/architecture/SKILL.md
@@ -192,5 +217,5 @@ changed_files:
   - dist/adapters/opencode/.opencode/skills/architecture/SKILL.md
   - dist/adapters/opencode/.opencode/skills/architecture-review/SKILL.md
 review:
-  status: m4_complete_ready_for_code_review
+  status: m5_complete_ready_for_code_review
   unresolved_items: 0
