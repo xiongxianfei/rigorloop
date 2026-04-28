@@ -230,12 +230,12 @@ This plan uses two validation command types:
 - Expected observable result: generated outputs are synchronized, lifecycle artifacts are consistent, and validation evidence supports handoff to `code-review`, `verify`, `explain-change`, and `pr`.
 - Commit message: `M4: validate token efficient scanning slice`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks: broad validation may expose unrelated baseline debt.
 - Rollback/recovery: keep unrelated debt separate; if generated drift appears, rerun the generator from canonical sources or revert the canonical edit that caused the drift.
 
@@ -278,7 +278,7 @@ This plan uses two validation command types:
 - [x] 2026-04-28: M1 completed bounded extraction workflow guidance, first-slice scan-sensitive skill guidance, generated skill and adapter refresh, change-local baseline pack, and targeted validation.
 - [x] 2026-04-28: M2 completed structured adapter drift entries, summary-first normal output, complete verbose output, output-size evidence, and targeted adapter validation without implementing manifest-first collection.
 - [x] 2026-04-28: M3 completed manifest-first adapter drift inspection, `manifest-error` entries for missing/malformed/inconsistent/mismatched manifests, and filesystem confirmation after manifest inspection.
-- [ ] M4 completed.
+- [x] 2026-04-28: M4 completed generated-output regeneration, selector/manual-route proof, release validation, artifact-lifecycle validation, and broad-smoke validation.
 - [ ] Final lifecycle closeout completed in both this plan and `docs/plan.md`.
 
 ## Decision log
@@ -293,10 +293,11 @@ This plan uses two validation command types:
 - 2026-04-28: M2 keeps `manifest-error` as a reserved category in formatter counts so the full taxonomy is visible, but actual manifest-first collection and manifest-error regression coverage remain M3 work.
 - 2026-04-28: M3 uses a scoped in-process manifest inspection helper in the adapter drift family instead of a persistent cache or cross-command parser boundary.
 - 2026-04-28: M3 reports manifest contract failures as `manifest-error` entries and skips a duplicate ordinary `missing` or `stale` entry for `manifest.yaml`; non-manifest generated files still use `missing`, `stale`, and `unexpected`.
+- 2026-04-28: M4 leaves the initiative active in `docs/plan.md` until downstream `code-review` and `verify` complete; the implementation state is ready for `code-review`, not PR-ready.
 
 ## Surprises and discoveries
 
-- None yet.
+- 2026-04-28: M4 broad smoke passed while reporting unrelated baseline warnings for older draft proposal files; those warnings are outside this change and did not block the related artifact lifecycle validation.
 
 ## Validation notes
 
@@ -328,17 +329,22 @@ This plan uses two validation command types:
 - 2026-04-28: M3 pass-gate commands passed: `python scripts/build-adapters.py --version 0.1.1 --check`; `python scripts/build-adapters.py --version 0.1.1 --check --verbose`; `python scripts/validate-adapters.py --version 0.1.1`.
 - 2026-04-28: M3 selector inspection `python scripts/select-validation.py --mode explicit --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md` returned the expected blocked/manual-routing result for `scripts/test-adapter-distribution.py`, selected `adapters.regression`, `adapters.drift`, `adapters.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`, and did not require broad smoke. The direct manual route `python scripts/test-adapter-distribution.py` passed.
 - 2026-04-28: M3 selected support checks passed: `python scripts/test-select-validation.py`; `python scripts/test-change-metadata-validator.py`; `python scripts/validate-change-metadata.py docs/changes/token-and-runtime-efficient-scanning/change.yaml`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plan.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/proposals/2026-04-27-token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md`; `git diff --check -- .`.
+- 2026-04-28: M4 regenerated derived outputs with `python scripts/build-skills.py` and `python scripts/build-adapters.py --version 0.1.1`; no generated diff remained.
+- 2026-04-28: M4 selector inspection `python scripts/select-validation.py --mode explicit --path docs/workflows.md --path skills/architecture/SKILL.md --path skills/architecture-review/SKILL.md --path skills/bugfix/SKILL.md --path skills/ci/SKILL.md --path skills/code-review/SKILL.md --path skills/explain-change/SKILL.md --path skills/implement/SKILL.md --path skills/plan/SKILL.md --path skills/plan-review/SKILL.md --path skills/pr/SKILL.md --path skills/project-map/SKILL.md --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path skills/research/SKILL.md --path skills/spec/SKILL.md --path skills/spec-review/SKILL.md --path skills/test-spec/SKILL.md --path skills/verify/SKILL.md --path skills/workflow/SKILL.md --path scripts/build-adapters.py --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md` returned the expected blocked/manual-routing result for `scripts/test-adapter-distribution.py`, selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `artifact_lifecycle.validate`, and `selector.regression`, and did not require broad smoke. The direct manual route is the M4 pass-gate `python scripts/test-adapter-distribution.py`.
+- 2026-04-28: M4 supported explicit CI passed with `bash scripts/ci.sh --mode explicit` on the same concrete path set minus `scripts/test-adapter-distribution.py`, executing `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `artifact_lifecycle.validate`, and `selector.regression`.
+- 2026-04-28: M4 remaining pass gates passed: `python scripts/build-adapters.py --version 0.1.1 --check --verbose`; `python scripts/validate-release.py --version v0.1.1`; `python scripts/test-artifact-lifecycle-validator.py`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-27-token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md`.
+- 2026-04-28: M4 broad smoke passed: `bash scripts/ci.sh --mode broad-smoke`.
+- 2026-04-28: after M4 artifact updates, `bash scripts/ci.sh --mode explicit --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md` passed, selecting `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`; `git diff --check -- .` passed.
 
 ## Outcome and retrospective
 
-- M1-M3 are complete and committed as reviewable implementation slices. M4 remains open, so the full initiative outcome and retrospective remain open until implementation and final lifecycle closeout complete.
+- M1-M4 implementation milestones are complete. Final lifecycle closeout remains open until downstream review and verification stages complete.
 
 ## Readiness
 
-- M1-M3 are ready for `code-review` as completed milestone slices.
-- Next implementation milestone: M4, align generated output, lifecycle artifacts, and final validation.
+- M1-M4 are ready for `code-review` as completed implementation slices.
 - The active test spec is `specs/token-and-runtime-efficient-scanning.test.md`.
-- The full initiative is not ready for final `verify`, `explain-change`, or `pr` until M4 completes and final validation evidence is recorded.
+- The full initiative is not ready for final `verify`, downstream explanation, or `pr` until code-review and verification complete.
 
 ## Risks and follow-ups
 

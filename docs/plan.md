@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-04-28 Token and runtime efficient scanning](plans/2026-04-28-token-and-runtime-efficient-scanning.md) - active execution plan for bounded extraction guidance, first-slice scan-sensitive skill updates, shaped `build-adapters.py --check` output with verbose detail, manifest-first adapter drift inspection, generated output refresh, and validation evidence; active test spec is `specs/token-and-runtime-efficient-scanning.test.md`, ready for `implement`.
+- [2026-04-28 Token and runtime efficient scanning](plans/2026-04-28-token-and-runtime-efficient-scanning.md) - active execution plan for bounded extraction guidance, first-slice scan-sensitive skill updates, shaped `build-adapters.py --check` output with verbose detail, manifest-first adapter drift inspection, generated output refresh, and validation evidence; implementation milestones M1-M4 are complete and ready for `code-review`.
 
 ## Blocked
 - none yet
