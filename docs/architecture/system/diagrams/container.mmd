@@ -1,0 +1,24 @@
+flowchart TB
+  subgraph repo[RigorLoop repository]
+    governance[Governance and workflow summaries]
+    lifecycle[Lifecycle artifacts]
+    canonical[Canonical architecture package]
+    changes[Change-local artifacts]
+    templates[Architecture and ADR templates]
+    skills[Canonical skills]
+    scripts[Validation and generation scripts]
+    generated[Generated Codex skills and public adapters]
+    legacy[Legacy architecture documents]
+  end
+
+  governance --> lifecycle
+  governance --> templates
+  lifecycle --> canonical
+  changes -->|durable content merges back| canonical
+  changes -->|durable decisions recorded as| lifecycle
+  templates --> lifecycle
+  skills --> generated
+  scripts -->|validates lifecycle, change metadata, skills, and generated drift| lifecycle
+  scripts --> generated
+  legacy -->|classified by follow-on normalization| canonical
+  canonical -->|summarizes and links ADRs| lifecycle

@@ -179,12 +179,12 @@ This plan intentionally keeps enforcement review-based for the first implementat
 - Expected observable result: `docs/architecture/system/` becomes the canonical current architecture package, and the change-local delta remains historical evidence only.
 - Commit message: `M3: add canonical architecture package`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] lifecycle state reviewed; `docs/plan.md` remains active because the initiative is not complete
+  - [x] progress updated
+  - [x] decision log updated
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks: canonical package could duplicate too much change-local detail or leave the merge-back boundary ambiguous.
 - Rollback/recovery: remove the canonical package files and restore the change-local delta as the only reviewed architecture evidence until a corrected package is ready.
 
@@ -324,6 +324,7 @@ The first implementation must not use newly added package-shape automation as pr
 - 2026-04-28: M1 tests were added first. The initial `python scripts/test-artifact-lifecycle-validator.py` run failed as expected because `docs/architecture/system/architecture.md` still required legacy architecture sections.
 - 2026-04-28: M1 implemented exact-path lifecycle compatibility for `docs/architecture/system/architecture.md`, kept legacy architecture Markdown on the older contract, and proved the canonical branch does not enforce package shape, C4 diagram files, or ADR presence.
 - 2026-04-28: M2 added `templates/architecture.md` and `templates/adr.md`, declared `templates/` as canonical authored workflow content in governance/workflow guidance, and added only a stage-level architecture package pointer to `specs/rigorloop-workflow.md`.
+- 2026-04-28: M3 created `docs/architecture/system/architecture.md` plus context and container Mermaid diagrams, merged durable architecture-method content from the change-local delta, and marked the delta as historical evidence after merge-back.
 
 ## Decision log
 
@@ -333,6 +334,7 @@ The first implementation must not use newly added package-shape automation as pr
 - 2026-04-28: made M5 create a populated legacy normalization plan rather than a placeholder because R65 requires inventory and classification before the repository can claim legacy architecture normalization is complete.
 - 2026-04-28: implemented M1 as lifecycle-only compatibility by adding a canonical architecture contract with no required sections. This satisfies R71 while preserving R72's no required arc42 section, C4 diagram, ADR-presence, or package-shape enforcement boundary.
 - 2026-04-28: implemented M2 without adding validator behavior or dependencies. Template content is reviewed manually under T2/T7/T8, while selector, lifecycle, and CI wrapper checks prove routing and touched lifecycle artifacts.
+- 2026-04-28: implemented M3 as a documentation and diagram merge-back slice only. The canonical package is now the current architecture baseline, while `.mmd` diagram completeness remains manual-routed review evidence under the approved first-slice boundary.
 
 ## Surprises and discoveries
 
@@ -342,6 +344,7 @@ The first implementation must not use newly added package-shape automation as pr
 - M1 fixture files under `tests/fixtures/artifact-lifecycle/` are unclassified by the v1 selector when passed directly. The selected proof for M1 is `artifact_lifecycle.regression` from the touched lifecycle validator scripts, plus direct regression-test execution and diff checks.
 - `scripts/artifact_lifecycle_validation.py` was unaffected in M1 because exact-path compatibility could be expressed in the contract registry without changing validation flow, command output, selected coverage, or exit behavior.
 - M2 did not require changes under `scripts/` or generated output because `templates/` is already classified by the selector and the first implementation remains review-based for template content.
+- M3 selector inspection blocked the canonical `.mmd` diagram paths as expected. The manual route is architecture/code-review diff inspection because the first implementation intentionally does not add required C4-file enforcement.
 
 ## Validation notes
 
@@ -379,13 +382,23 @@ The first implementation must not use newly added package-shape automation as pr
 - 2026-04-28: M2 closeout `python scripts/validate-change-metadata.py docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml` passed.
 - 2026-04-28: M2 closeout `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml --path docs/plan.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path specs/architecture-package-method.test.md --path specs/rigorloop-workflow.md` passed.
 - 2026-04-28: M2 closeout `python scripts/test-change-metadata-validator.py` passed.
+- 2026-04-28: initial M3 `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260428-architecture-package-method.md --path specs/architecture-package-method.md` failed as expected because the canonical package did not exist yet.
+- 2026-04-28: M3 manual heading inspection with `rg -n "^## " docs/architecture/system/architecture.md docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/architecture.md` confirmed the canonical package preserves lifecycle metadata before all 12 official arc42 section headings and the change-local delta records historical merge-back status.
+- 2026-04-28: M3 `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260428-architecture-package-method.md --path specs/architecture-package-method.md` passed.
+- 2026-04-28: M3 selector inspection `python scripts/select-validation.py --mode explicit --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/context.mmd --path docs/architecture/system/diagrams/container.mmd` returned `status: blocked` with `docs/architecture/system/architecture.md` selecting `artifact_lifecycle.validate` and both `.mmd` paths unclassified for manual routing.
+- 2026-04-28: M3 supported-path selector `python scripts/select-validation.py --mode explicit --path docs/architecture/system/architecture.md` returned `status: ok` and selected `artifact_lifecycle.validate`.
+- 2026-04-28: M3 `bash scripts/ci.sh --mode explicit --path docs/architecture/system/architecture.md` passed.
+- 2026-04-28: M3 `git diff --check -- docs/architecture/system docs/changes/2026-04-28-architecture-skills-c4-arc42-adr docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml` passed.
+- 2026-04-28: M3 closeout `python scripts/validate-change-metadata.py docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml` passed.
+- 2026-04-28: M3 closeout `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/change.yaml --path docs/plan.md --path docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md --path specs/architecture-package-method.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260428-architecture-package-method.md` passed.
+- 2026-04-28: M3 closeout `python scripts/test-change-metadata-validator.py` passed.
 
 ## Outcome and retrospective
 
-- M1 and M2 are complete. M3 has not been started.
+- M1, M2, and M3 are complete. M4 has not been started.
 
 ## Readiness
 
-- Immediate next repository stage: `code-review` for the completed M2 slice.
+- Immediate next repository stage: `code-review` for the completed M3 slice.
 - Test spec readiness: complete; `specs/architecture-package-method.test.md` is active.
-- Next implementation milestone after M2 review handoff: M3, `Create canonical architecture package and merge back durable content`.
+- Next implementation milestone after M3 review handoff: M4, `Update architecture skills and generated outputs`.
