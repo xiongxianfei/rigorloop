@@ -279,6 +279,8 @@ This plan uses two validation command types:
 - [x] 2026-04-28: M2 completed structured adapter drift entries, summary-first normal output, complete verbose output, output-size evidence, and targeted adapter validation without implementing manifest-first collection.
 - [x] 2026-04-28: M3 completed manifest-first adapter drift inspection, `manifest-error` entries for missing/malformed/inconsistent/mismatched manifests, and filesystem confirmation after manifest inspection.
 - [x] 2026-04-28: M4 completed generated-output regeneration, selector/manual-route proof, release validation, artifact-lifecycle validation, and broad-smoke validation.
+- [x] 2026-04-28: first-pass `code-review` returned `clean-with-notes` with no blocking or required-change findings and recommended `verify` as the next stage.
+- [x] 2026-04-28: post-review lifecycle bookkeeping synchronized the spec, test spec, active plan, plan index, and change-local pack so tracked readiness points to `verify`.
 - [ ] Final lifecycle closeout completed in both this plan and `docs/plan.md`.
 
 ## Decision log
@@ -294,6 +296,7 @@ This plan uses two validation command types:
 - 2026-04-28: M3 uses a scoped in-process manifest inspection helper in the adapter drift family instead of a persistent cache or cross-command parser boundary.
 - 2026-04-28: M3 reports manifest contract failures as `manifest-error` entries and skips a duplicate ordinary `missing` or `stale` entry for `manifest.yaml`; non-manifest generated files still use `missing`, `stale`, and `unexpected`.
 - 2026-04-28: M4 leaves the initiative active in `docs/plan.md` until downstream `code-review` and `verify` complete; the implementation state is ready for `code-review`, not PR-ready.
+- 2026-04-28: After clean first-pass `code-review`, keep the initiative active until `verify` and downstream explanation/PR handoff complete; the implementation state is ready for `verify`, not PR-ready.
 
 ## Surprises and discoveries
 
@@ -335,16 +338,30 @@ This plan uses two validation command types:
 - 2026-04-28: M4 remaining pass gates passed: `python scripts/build-adapters.py --version 0.1.1 --check --verbose`; `python scripts/validate-release.py --version v0.1.1`; `python scripts/test-artifact-lifecycle-validator.py`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-27-token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md`.
 - 2026-04-28: M4 broad smoke passed: `bash scripts/ci.sh --mode broad-smoke`.
 - 2026-04-28: after M4 artifact updates, `bash scripts/ci.sh --mode explicit --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md` passed, selecting `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`; `git diff --check -- .` passed.
+- 2026-04-28: first-pass `code-review` record for `c929147..618c4f5`.
+  - Review status: `clean-with-notes`
+  - Findings: no blocking or required-change findings.
+  - Checklist coverage: pass for spec alignment, test coverage, edge cases, error handling, architecture boundaries, compatibility, security/privacy, generated output drift, unrelated changes, and validation evidence.
+  - Residual risks: final `verify`, downstream explanation/PR handoff, and lifecycle closeout remained pending; broad-smoke warnings were unrelated baseline warnings for older draft proposal files.
+  - Recommended next stage: `verify`
+- 2026-04-28: post-code-review lifecycle sync updated tracked readiness and validated with:
+  - `python scripts/select-validation.py --mode explicit --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md`
+  - `bash scripts/ci.sh --mode explicit --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md`
+  - `python scripts/validate-change-metadata.py docs/changes/token-and-runtime-efficient-scanning/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plan.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/proposals/2026-04-27-token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md`
+  - `git diff --check -- .`
+  - Result: passed.
 
 ## Outcome and retrospective
 
-- M1-M4 implementation milestones are complete. Final lifecycle closeout remains open until downstream review and verification stages complete.
+- M1-M4 implementation milestones and first-pass `code-review` are complete. Final lifecycle closeout remains open until downstream verification and PR-readiness stages complete.
 
 ## Readiness
 
-- M1-M4 are ready for `code-review` as completed implementation slices.
+- M1-M4 and first-pass `code-review` are complete.
 - The active test spec is `specs/token-and-runtime-efficient-scanning.test.md`.
-- The full initiative is not ready for final `verify`, downstream explanation, or `pr` until code-review and verification complete.
+- The next stage is `verify`.
+- The full initiative is not ready for downstream explanation or `pr` until verification completes.
 
 ## Risks and follow-ups
 
