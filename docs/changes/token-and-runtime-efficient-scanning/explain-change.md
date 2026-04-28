@@ -2,7 +2,7 @@
 
 ## Summary
 
-M1 adds the bounded extraction guidance required by the approved token and runtime efficient scanning spec. M2 shapes the first named script output, `python scripts/build-adapters.py --version <version> --check`, so normal adapter drift output is summary-first and bounded while `--verbose` keeps complete diagnostics available. M3 makes adapter drift collection inspect `dist/adapters/manifest.yaml` before filesystem confirmation and reports manifest contract problems as `manifest-error`. M4 closes the implementation slice by regenerating derived outputs, running selected validation, release validation, lifecycle validation, and broad smoke. The first-pass `code-review` returned `clean-with-notes`; the next stage is `verify`.
+M1 adds the bounded extraction guidance required by the approved token and runtime efficient scanning spec. M2 shapes the first named script output, `python scripts/build-adapters.py --version <version> --check`, so normal adapter drift output is summary-first and bounded while `--verbose` keeps complete diagnostics available. M3 makes adapter drift collection inspect `dist/adapters/manifest.yaml` before filesystem confirmation and reports manifest contract problems as `manifest-error`. M4 closes the implementation slice by regenerating derived outputs, running selected validation, release validation, lifecycle validation, and broad smoke. The first-pass `code-review` returned `clean-with-notes`, and `verify` passed with verdict `ready`; the next stage is `explain-change`.
 
 ## Decision trail
 
@@ -11,7 +11,7 @@ M1 adds the bounded extraction guidance required by the approved token and runti
 - Test spec: `specs/token-and-runtime-efficient-scanning.test.md`
 - Plan: `docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md`
 - Milestones completed: M1, add bounded extraction and skill guidance; M2, shape adapter drift check output; M3, add manifest-first adapter inspection; M4, align generated output, lifecycle artifacts, and final validation
-- Requirements covered through M4: `R1`-`R37`. First-pass `code-review` is complete; downstream `verify` and PR handoff remain separate workflow stages.
+- Requirements covered through M4: `R1`-`R37`. First-pass `code-review` and `verify` are complete; downstream explanation and PR handoff remain separate workflow stages.
 
 ## Diff rationale by area
 
@@ -48,8 +48,11 @@ M1 adds the bounded extraction guidance required by the approved token and runti
   - Durable location: `docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md`
   - Recommended next stage: `verify`
 - `verify`
-  - Status: pending.
-  - Scope: final artifact-code-test coherence, lifecycle state, validation evidence, and PR readiness checks after this post-review lifecycle sync.
+  - Verdict: `ready`
+  - Result: no blockers, no stale lifecycle drift, no generated-output drift, and no missing validation evidence.
+  - Broad smoke: passed with unrelated baseline warnings for older draft proposal files outside this change.
+  - Durable location: `docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md`
+  - Recommended next stage: `explain-change`
 
 ## Tests added or changed
 
@@ -125,4 +128,4 @@ Additional validation results are recorded in the active plan.
 
 ## Readiness
 
-M1-M4 implementation and first-pass `code-review` are complete. The next stage is `verify`; downstream explanation and PR handoff remain separate workflow stages after verification.
+M1-M4 implementation, first-pass `code-review`, and `verify` are complete. The branch is `branch-ready` from the verification gate. The next stage is `explain-change`; PR handoff remains a later workflow stage.

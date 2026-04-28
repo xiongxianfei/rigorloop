@@ -203,6 +203,54 @@ validation:
   - command: git diff --check -- .
     result: pass
     reason: Reran after post-code-review lifecycle readiness updates.
+  - command: python scripts/validate-skills.py
+    result: pass
+    reason: Verify reran canonical skill validation for the completed slice.
+  - command: python scripts/test-skill-validator.py
+    result: pass
+    reason: Verify reran the workflow and scan-sensitive skill guidance regression tests.
+  - command: python scripts/test-adapter-distribution.py
+    result: pass
+    reason: Verify reran the adapter drift, output shaping, manifest-first, taxonomy, release, and adapter validation regression suite with 56 tests.
+  - command: python scripts/build-skills.py --check
+    result: pass
+    reason: Verify confirmed generated Codex skills remain synchronized with canonical skills.
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass
+    reason: Verify confirmed generated public adapter output remains synchronized.
+  - command: python scripts/build-adapters.py --version 0.1.1 --check --verbose
+    result: pass
+    reason: Verify confirmed verbose adapter drift check still exits cleanly and remains deterministic for clean output.
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass
+  - command: python scripts/validate-release.py --version v0.1.1
+    result: pass
+  - command: python scripts/test-select-validation.py
+    result: pass
+    reason: Verify reran selector regression coverage; 26 tests passed.
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass
+    reason: Verify reran lifecycle validator regression coverage; 34 tests passed.
+  - command: python scripts/validate-change-metadata.py docs/changes/token-and-runtime-efficient-scanning/change.yaml
+    result: pass
+    reason: Verify reran change metadata validation for the completed slice.
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plan.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/proposals/2026-04-27-token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md
+    result: pass
+    reason: Verify reran explicit lifecycle validation for the authoritative artifact set.
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: pass
+    reason: Verify broad smoke passed on the current branch; artifact lifecycle emitted unrelated baseline warnings for older draft proposal files outside this change.
+  - command: git diff --check -- .
+    result: pass
+    reason: Verify reran whitespace validation for the completed slice.
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md
+    result: pass
+    reason: Post-verify lifecycle sync selected artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate; broad smoke was not required by the selector.
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md
+    result: pass
+    reason: Post-verify lifecycle sync executed the selected artifact lifecycle and change metadata checks.
 changed_files:
   - docs/workflows.md
   - scripts/test-skill-validator.py
@@ -224,3 +272,8 @@ review:
   unresolved_items: 0
   location: docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md
   required_next_stage: verify
+verification:
+  status: ready
+  branch_ready: true
+  location: docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md
+  required_next_stage: explain-change
