@@ -28,7 +28,8 @@ Do not silently blend conflicting higher-priority instructions. Call out the con
 - Preserve user changes unless explicitly asked to revert them.
 - When behavior changes, update the relevant spec, test spec, docs, or examples in the same change when this repository uses them.
 - Reuse existing scripts and workflows before inventing new commands or processes.
-- Edit canonical workflow content in `docs/`, `specs/`, `skills/`, `schemas/`, and `scripts/`.
+- Edit canonical workflow content in `docs/`, `specs/`, `skills/`, `schemas/`, `scripts/`, and `templates/`.
+- Keep architecture and ADR scaffolds under `templates/`; do not place template-like files under `docs/architecture/` or `docs/adr/`.
 - Do not hand-edit generated Codex compatibility output in `.codex/skills/`.
 - Do not hand-edit generated public adapter package output in `dist/adapters/`.
 - Public adapter packages for Codex, Claude Code, and opencode are generated under `dist/adapters/`; `.codex/skills/` remains a separate generated local Codex runtime mirror.

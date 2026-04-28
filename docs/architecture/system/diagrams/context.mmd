@@ -1,0 +1,18 @@
+flowchart LR
+  contributor[Contributor or agent]
+  reviewer[Reviewer or maintainer]
+  github[Git and PR review]
+  adapters[Codex, Claude Code, and opencode users]
+
+  subgraph repo_boundary[RigorLoop repository boundary]
+    repo[RigorLoop repository system]
+    validation[Repository-owned validation scripts]
+    generated[Generated runtime and adapter packages]
+  end
+
+  contributor -->|authors specs, architecture, ADRs, templates, skills, and plans| repo
+  reviewer -->|reviews diffs, C4 views, arc42 sections, ADRs, and evidence| repo
+  github -->|runs repository-owned checks and carries review history| validation
+  repo -->|selects and executes validation| validation
+  repo -->|generates synchronized guidance| generated
+  generated -->|published or copied adapter guidance| adapters

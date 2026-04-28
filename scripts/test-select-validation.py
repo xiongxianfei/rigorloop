@@ -367,6 +367,30 @@ class ValidationSelectionTests(unittest.TestCase):
                 "status": "ok",
                 "checks": {"artifact_lifecycle.validate"},
             },
+            {
+                "path": "docs/changes/2026-04-25-example/architecture.md",
+                "category": "change-local-lifecycle",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/diagrams/context.mmd",
+                "category": "change-local-lifecycle",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/architecture/system/diagrams/context.mmd",
+                "category": "architecture-diagram",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "tests/fixtures/artifact-lifecycle/valid-canonical-arc42-architecture/docs/architecture/system/architecture.md",
+                "category": "artifact-lifecycle-fixtures",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.regression"},
+            },
         ]
 
         for case in cases:
@@ -417,6 +441,27 @@ class ValidationSelectionTests(unittest.TestCase):
         self.assertFalse(payload["blocking_results"])
         self.assertIn("selector.regression", selected_ids(payload))
         self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
+
+    def test_architecture_support_paths_route_without_manual_blocks(self) -> None:
+        result = self.select(
+            [
+                "docs/architecture/system/diagrams/context.mmd",
+                "docs/architecture/system/diagrams/container.mmd",
+                "docs/changes/2026-04-25-example/architecture.md",
+                "docs/changes/2026-04-25-example/diagrams/context.mmd",
+                "tests/fixtures/artifact-lifecycle/valid-canonical-arc42-architecture/docs/architecture/system/architecture.md",
+            ]
+        )
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertFalse(payload["unclassified_paths"])
+        self.assertFalse(payload["blocking_results"])
+        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
+        self.assertIn("artifact_lifecycle.regression", selected_ids(payload))
+        lifecycle_check = next(check for check in payload["selected_checks"] if check["id"] == "artifact_lifecycle.validate")
+        self.assertIn("docs/architecture/system/architecture.md", lifecycle_check["paths"])
+        self.assertIn("docs/changes/2026-04-25-example/change.yaml", lifecycle_check["paths"])
 
     def test_broad_smoke_sources_are_attributed(self) -> None:
         temp_root = Path(tempfile.mkdtemp(prefix="validation-selection-broad-smoke-"))
