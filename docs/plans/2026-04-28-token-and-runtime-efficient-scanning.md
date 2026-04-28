@@ -150,12 +150,12 @@ This plan uses two validation command types:
 - Expected observable result: normal adapter drift checks are concise and failure-focused; verbose checks expose full diagnostic detail; exit behavior and selected-check identity remain unchanged.
 - Commit message: `M2: shape adapter drift output`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks: summarization could hide the actionable failure, or internal return-type changes could break callers.
 - Rollback/recovery: keep the structured collector separable from validation logic so the CLI formatter can be reverted to the prior one-entry-per-line output without changing drift detection.
 
@@ -276,7 +276,7 @@ This plan uses two validation command types:
 - [x] 2026-04-28: `plan-review` approved the concrete execution sequence.
 - [x] 2026-04-28: `specs/token-and-runtime-efficient-scanning.test.md` created and activated.
 - [x] 2026-04-28: M1 completed bounded extraction workflow guidance, first-slice scan-sensitive skill guidance, generated skill and adapter refresh, change-local baseline pack, and targeted validation.
-- [ ] M2 completed.
+- [x] 2026-04-28: M2 completed structured adapter drift entries, summary-first normal output, complete verbose output, output-size evidence, and targeted adapter validation without implementing manifest-first collection.
 - [ ] M3 completed.
 - [ ] M4 completed.
 - [ ] Final lifecycle closeout completed in both this plan and `docs/plan.md`.
@@ -289,6 +289,8 @@ This plan uses two validation command types:
 - 2026-04-28: Include broad smoke in final validation because the planned work spans workflow guidance, canonical skills, generated adapters, and repository-owned validation behavior.
 - 2026-04-28: M2 owns generated-output failure categories and `canonical-source-error`; M3 owns manifest-first collection and therefore `manifest-error` collection, validation, and regression tests.
 - 2026-04-28: M1 left `AGENTS.md`, `CONSTITUTION.md`, `specs/rigorloop-workflow.md`, and adapter drift logic unchanged with rationale recorded in `docs/changes/token-and-runtime-efficient-scanning/explain-change.md`.
+- 2026-04-28: M2 preserves `collect_adapter_drift` as the string-returning compatibility API and adds `collect_adapter_drift_entries` for structured formatter and category tests.
+- 2026-04-28: M2 keeps `manifest-error` as a reserved category in formatter counts so the full taxonomy is visible, but actual manifest-first collection and manifest-error regression coverage remain M3 work.
 
 ## Surprises and discoveries
 
@@ -311,17 +313,24 @@ This plan uses two validation command types:
 - 2026-04-28: M1 selector inspection passed for `docs/workflows.md`, `scripts/test-skill-validator.py`, the 19 concrete `skills/<name>/SKILL.md` paths, the change-local pack, and lifecycle artifacts. It selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.drift`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`; broad smoke was not required and there were no blocking results.
 - 2026-04-28: M1 explicit CI wrapper passed for the same authored path set, executing the selected checks listed above.
 - 2026-04-28: after M1 plan and change-local updates, `python scripts/validate-change-metadata.py docs/changes/token-and-runtime-efficient-scanning/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plan.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/proposals/2026-04-27-token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md`, and `git diff --check -- .` passed.
+- 2026-04-28: M2 TDD proof: `python scripts/test-adapter-distribution.py` failed before implementation because the new tests imported missing structured drift entry and formatter helpers.
+- 2026-04-28: M2 adapter regression passed: `python scripts/test-adapter-distribution.py` ran 54 tests successfully after implementing structured drift entries, normal and verbose formatters, no-cache proof, output-size evidence, and CLI compatibility coverage.
+- 2026-04-28: M2 pass-gate commands passed: `python scripts/build-adapters.py --version 0.1.1 --check`; `python scripts/build-adapters.py --version 0.1.1 --check --verbose`; `python scripts/validate-adapters.py --version 0.1.1`; `python scripts/test-select-validation.py`.
+- 2026-04-28: M2 invalid verbose boundary proof passed: `python scripts/build-adapters.py --version 0.1.1 --verbose` failed as expected with exit code 2 and `--verbose is only supported with --check`.
+- 2026-04-28: M2 selector inspection `python scripts/select-validation.py --mode explicit --path scripts/build-adapters.py --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path scripts/validation_selection.py` returned the expected blocked/manual-routing result for `scripts/test-adapter-distribution.py`, selected `adapters.regression`, `adapters.drift`, `adapters.validate`, and `selector.regression`, and did not require broad smoke. The manual route `python scripts/test-adapter-distribution.py` passed.
+- 2026-04-28: M2 output-size evidence recorded representative clean normal output as legacy 1 line and shaped 4 lines, and representative many-drift normal output as legacy 35 lines and shaped 26 lines.
+- 2026-04-28: after M2 plan and change-local updates, `python scripts/validate-change-metadata.py docs/changes/token-and-runtime-efficient-scanning/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plan.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/proposals/2026-04-27-token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md`, and `git diff --check -- .` passed.
 
 ## Outcome and retrospective
 
-- M1 is complete and committed as a reviewable implementation slice. M2-M4 remain open, so the full initiative outcome and retrospective remain open until implementation and final lifecycle closeout complete.
+- M1 and M2 are complete and committed as reviewable implementation slices. M3-M4 remain open, so the full initiative outcome and retrospective remain open until implementation and final lifecycle closeout complete.
 
 ## Readiness
 
-- M1 is ready for `code-review` as a completed milestone slice.
-- Next implementation milestone: M2, shape adapter drift check output.
+- M1 and M2 are ready for `code-review` as completed milestone slices.
+- Next implementation milestone: M3, add manifest-first adapter inspection.
 - The active test spec is `specs/token-and-runtime-efficient-scanning.test.md`.
-- The full initiative is not ready for final `verify`, `explain-change`, or `pr` until M2-M4 complete and final validation evidence is recorded.
+- The full initiative is not ready for final `verify`, `explain-change`, or `pr` until M3-M4 complete and final validation evidence is recorded.
 
 ## Risks and follow-ups
 

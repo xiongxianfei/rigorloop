@@ -45,6 +45,16 @@ TARGET_INCOMPATIBILITY_PATTERNS = {
     "claude": re.compile(r"\bnot compatible with Claude Code\b", re.IGNORECASE),
     "opencode": re.compile(r"\bnot compatible with opencode\b", re.IGNORECASE),
 }
+ADAPTER_DRIFT_CATEGORIES = (
+    "missing",
+    "stale",
+    "unexpected",
+    "canonical-source-error",
+    "manifest-error",
+)
+NORMAL_OUTPUT_TARGET_LINES = 40
+NORMAL_OUTPUT_WARNING_LINES = 80
+NORMAL_FAILURE_ENTRY_LIMIT = 10
 
 
 @dataclass(frozen=True)
@@ -116,6 +126,23 @@ class AdapterManifest:
     version: str
     skills: dict[str, ManifestSkillEntry]
     command_aliases: dict[str, CommandAliasSection]
+
+
+@dataclass(frozen=True)
+class AdapterDriftEntry:
+    category: str
+    path: Path
+    detail: str
+
+    @property
+    def message(self) -> str:
+        if self.category == "missing":
+            return f"missing generated adapter file: {self.path}"
+        if self.category == "stale":
+            return f"stale generated adapter file: {self.path}"
+        if self.category == "unexpected":
+            return f"unexpected generated adapter file: {self.path}"
+        return self.detail
 
 
 @dataclass(frozen=True)
@@ -899,6 +926,66 @@ def _collect_generated_files(root: Path) -> dict[Path, Path]:
     }
 
 
+def collect_adapter_drift_entries(
+    version: str,
+    *,
+    skills_root: Path = CANONICAL_SKILLS_DIR,
+    template_root: Path = ADAPTER_TEMPLATE_ROOT,
+    output_root: Path = ADAPTER_OUTPUT_ROOT,
+) -> tuple[AdapterDriftEntry, ...]:
+    """Collect structured generated adapter drift entries."""
+
+    canonical_errors = _canonical_skill_source_errors(skills_root)
+    if canonical_errors:
+        return tuple(
+            AdapterDriftEntry(
+                category="canonical-source-error",
+                path=skills_root,
+                detail=error,
+            )
+            for error in canonical_errors
+        )
+
+    expected = expected_adapter_files(
+        version,
+        skills_root=skills_root,
+        template_root=template_root,
+    )
+    existing = _collect_generated_files(output_root)
+    entries: list[AdapterDriftEntry] = []
+
+    for relative_path, expected_text in expected.items():
+        generated_path = output_root / relative_path
+        if relative_path not in existing:
+            entries.append(
+                AdapterDriftEntry(
+                    category="missing",
+                    path=generated_path,
+                    detail="generated adapter file is missing",
+                )
+            )
+            continue
+        if existing[relative_path].read_text(encoding="utf-8") != expected_text:
+            entries.append(
+                AdapterDriftEntry(
+                    category="stale",
+                    path=generated_path,
+                    detail="generated adapter file differs from canonical sources",
+                )
+            )
+
+    for relative_path in sorted(set(existing) - set(expected)):
+        entries.append(
+            AdapterDriftEntry(
+                category="unexpected",
+                path=output_root / relative_path,
+                detail="generated adapter file is not expected from canonical sources",
+            )
+        )
+
+    return tuple(entries)
+
+
 def collect_adapter_drift(
     version: str,
     *,
@@ -908,30 +995,117 @@ def collect_adapter_drift(
 ) -> list[str]:
     """Collect missing, stale, and unexpected generated adapter output."""
 
-    canonical_errors = _canonical_skill_source_errors(skills_root)
-    if canonical_errors:
-        return canonical_errors
+    return [
+        entry.message
+        for entry in collect_adapter_drift_entries(
+            version,
+            skills_root=skills_root,
+            template_root=template_root,
+            output_root=output_root,
+        )
+    ]
 
-    expected = expected_adapter_files(
-        version,
-        skills_root=skills_root,
-        template_root=template_root,
-    )
-    existing = _collect_generated_files(output_root)
-    errors: list[str] = []
 
-    for relative_path, expected_text in expected.items():
-        generated_path = output_root / relative_path
-        if relative_path not in existing:
-            errors.append(f"missing generated adapter file: {generated_path}")
-            continue
-        if existing[relative_path].read_text(encoding="utf-8") != expected_text:
-            errors.append(f"stale generated adapter file: {generated_path}")
+def _adapter_drift_counts(entries: Iterable[AdapterDriftEntry]) -> dict[str, int]:
+    counts = {category: 0 for category in ADAPTER_DRIFT_CATEGORIES}
+    for entry in entries:
+        counts[entry.category] = counts.get(entry.category, 0) + 1
+    return counts
 
-    for relative_path in sorted(set(existing) - set(expected)):
-        errors.append(f"unexpected generated adapter file: {output_root / relative_path}")
 
-    return errors
+def _adapter_drift_action(category: str, version: str) -> str:
+    if category in {"missing", "stale", "unexpected"}:
+        return f"rerun python scripts/build-adapters.py --version {version}"
+    if category == "canonical-source-error":
+        return "fix the canonical skill source before regenerating adapters"
+    if category == "manifest-error":
+        return "fix or regenerate the generated adapter manifest"
+    return "inspect the failure detail"
+
+
+def _adapter_drift_count_summary(entries: tuple[AdapterDriftEntry, ...]) -> str:
+    counts = _adapter_drift_counts(entries)
+    parts = [f"total={len(entries)}"]
+    parts.extend(f"{category}={counts.get(category, 0)}" for category in ADAPTER_DRIFT_CATEGORIES)
+    return " ".join(parts)
+
+
+def _append_over_budget_warning(lines: list[str]) -> list[str]:
+    if len(lines) > NORMAL_OUTPUT_WARNING_LINES:
+        lines.append(
+            (
+                f"warning: normal output exceeded {NORMAL_OUTPUT_WARNING_LINES} lines; "
+                "rerun with --verbose for complete detail."
+            )
+        )
+    return lines
+
+
+def format_adapter_drift_normal(
+    entries: Iterable[AdapterDriftEntry],
+    *,
+    version: str,
+    output_root: Path = ADAPTER_OUTPUT_ROOT,
+    max_entries: int = NORMAL_FAILURE_ENTRY_LIMIT,
+) -> str:
+    """Render summary-first normal adapter drift output."""
+
+    entry_tuple = tuple(entries)
+    if not entry_tuple:
+        return "\n".join(
+            [
+                "adapters.drift: ok",
+                f"version: {version}",
+                f"output_root: {output_root}",
+                "status: generated adapter output is in sync",
+            ]
+        )
+
+    displayed = entry_tuple[:max_entries]
+    lines = [
+        "adapters.drift: failed",
+        f"version: {version}",
+        f"output_root: {output_root}",
+        f"failures: {_adapter_drift_count_summary(entry_tuple)}",
+        f"displayed: {len(displayed)} of {len(entry_tuple)}",
+    ]
+    for entry in displayed:
+        lines.append(f"- {entry.category}: {entry.path}")
+        lines.append(f"  action: {_adapter_drift_action(entry.category, version)}; {entry.detail}")
+    omitted = len(entry_tuple) - len(displayed)
+    if omitted:
+        lines.append(
+            f"omitted: {omitted} failure entries; rerun with --verbose for complete detail."
+        )
+    return "\n".join(_append_over_budget_warning(lines))
+
+
+def format_adapter_drift_verbose(
+    entries: Iterable[AdapterDriftEntry],
+    *,
+    version: str,
+    output_root: Path = ADAPTER_OUTPUT_ROOT,
+) -> str:
+    """Render complete deterministic adapter drift output."""
+
+    entry_tuple = tuple(entries)
+    if not entry_tuple:
+        return format_adapter_drift_normal(
+            entry_tuple,
+            version=version,
+            output_root=output_root,
+        )
+
+    lines = [
+        "adapters.drift: failed",
+        f"version: {version}",
+        f"output_root: {output_root}",
+        f"failures: {_adapter_drift_count_summary(entry_tuple)}",
+    ]
+    for entry in entry_tuple:
+        lines.append(f"- {entry.category}: {entry.path}")
+        lines.append(f"  detail: {entry.detail}")
+    return "\n".join(lines)
 
 
 def _remove_empty_directories(root: Path) -> None:

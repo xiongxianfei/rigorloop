@@ -1,5 +1,5 @@
 change_id: token-and-runtime-efficient-scanning
-title: Add bounded extraction guidance
+title: Implement token and runtime efficient scanning slice
 classification: planned
 risk: medium
 artifacts:
@@ -15,19 +15,50 @@ requirements:
   - R4
   - R5
   - R6
+  - R7
+  - R8
+  - R9
   - R10
   - R11
   - R12
   - R13
   - R14
   - R15
+  - R16
+  - R17
+  - R18
+  - R19
+  - R19a
+  - R19b
+  - R19c
+  - R20
+  - R21
+  - R22
+  - R23
+  - R24
+  - R25
+  - R26
+  - R30
+  - R31
+  - R32
+  - R33
   - R34
   - R35
   - R36
+  - R37
 tests:
   - T1
   - T2
   - T3
+  - T4
+  - T5
+  - T6
+  - T7
+  - T8
+  - T9
+  - T10
+  - T13
+  - T14
 validation:
   - command: python scripts/test-skill-validator.py
     result: pass
@@ -58,6 +89,37 @@ validation:
     result: pass
   - command: git diff --check -- .
     result: pass
+  - command: python scripts/test-adapter-distribution.py
+    result: pass
+    reason: M2 adapter drift regression suite passed with 54 tests after adding structured drift, normal/verbose output, no-cache, output-size, and CLI compatibility tests.
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass
+    reason: Clean adapter drift check exits 0 and prints a 4-line summary-first `adapters.drift` success output.
+  - command: python scripts/build-adapters.py --version 0.1.1 --check --verbose
+    result: pass
+    reason: Verbose clean adapter drift check remains accepted and exits 0.
+  - command: python scripts/build-adapters.py --version 0.1.1 --verbose
+    result: expected-failure
+    reason: Expected invalid form failed with exit code 2 and clear argparse error because `--verbose` is only meaningful with `--check`.
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass
+  - command: python scripts/test-select-validation.py
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/build-adapters.py --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path scripts/validation_selection.py
+    result: expected-blocked
+    reason: Selector inspection produced the expected blocked/manual-routing result for `scripts/test-adapter-distribution.py`; the manual route `python scripts/test-adapter-distribution.py` passed, and selected checks kept `adapters.drift` on the existing command identity.
+  - command: output-size evidence for adapter drift normal output
+    result: pass
+    reason: Representative clean output changed from legacy 1 line to shaped 4 lines; representative many-drift output changed from legacy 35 lines to shaped 26 lines.
+  - command: python scripts/validate-change-metadata.py docs/changes/token-and-runtime-efficient-scanning/change.yaml
+    result: pass
+    reason: Reran after M2 change-local metadata updates.
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plan.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/proposals/2026-04-27-token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md
+    result: pass
+    reason: Reran after M2 plan and change-local artifact updates.
+  - command: git diff --check -- .
+    result: pass
+    reason: Reran after M2 code and artifact updates.
 changed_files:
   - docs/workflows.md
   - scripts/test-skill-validator.py
@@ -71,6 +133,9 @@ changed_files:
   - docs/proposals/2026-04-27-token-and-runtime-efficient-scanning.md
   - specs/token-and-runtime-efficient-scanning.md
   - specs/token-and-runtime-efficient-scanning.test.md
+  - scripts/build-adapters.py
+  - scripts/adapter_distribution.py
+  - scripts/test-adapter-distribution.py
 review:
   status: ready-for-code-review
   unresolved_items: 0
