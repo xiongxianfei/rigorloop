@@ -2,7 +2,7 @@
 
 ## Summary
 
-M1 adds the bounded extraction guidance required by the approved token and runtime efficient scanning spec. M2 shapes the first named script output, `python scripts/build-adapters.py --version <version> --check`, so normal adapter drift output is summary-first and bounded while `--verbose` keeps complete diagnostics available. M3 makes adapter drift collection inspect `dist/adapters/manifest.yaml` before filesystem confirmation and reports manifest contract problems as `manifest-error`.
+M1 adds the bounded extraction guidance required by the approved token and runtime efficient scanning spec. M2 shapes the first named script output, `python scripts/build-adapters.py --version <version> --check`, so normal adapter drift output is summary-first and bounded while `--verbose` keeps complete diagnostics available. M3 makes adapter drift collection inspect `dist/adapters/manifest.yaml` before filesystem confirmation and reports manifest contract problems as `manifest-error`. M4 closes the implementation slice by regenerating derived outputs, running selected validation, release validation, lifecycle validation, and broad smoke.
 
 ## Decision trail
 
@@ -10,8 +10,8 @@ M1 adds the bounded extraction guidance required by the approved token and runti
 - Spec: `specs/token-and-runtime-efficient-scanning.md`
 - Test spec: `specs/token-and-runtime-efficient-scanning.test.md`
 - Plan: `docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md`
-- Milestones completed: M1, add bounded extraction and skill guidance; M2, shape adapter drift check output; M3, add manifest-first adapter inspection
-- Requirements covered through M3: `R1`-`R37`. Final M4 repository-wide alignment and broad-smoke validation remain open.
+- Milestones completed: M1, add bounded extraction and skill guidance; M2, shape adapter drift check output; M3, add manifest-first adapter inspection; M4, align generated output, lifecycle artifacts, and final validation
+- Requirements covered through M4: `R1`-`R37`. Downstream `code-review`, `verify`, and PR handoff remain separate workflow stages.
 
 ## Diff rationale by area
 
@@ -27,6 +27,7 @@ M1 adds the bounded extraction guidance required by the approved token and runti
 | `scripts/test-adapter-distribution.py` | Adds M2 coverage for clean output, bounded drift output, verbose determinism, generated-output categories, canonical-source categories, no persistent cache writes, output-size evidence, and CLI compatibility. | Proves the display change preserves actionable detail, complete verbose diagnostics, and command compatibility. | `python scripts/test-adapter-distribution.py` |
 | `scripts/adapter_distribution.py` | Adds in-process manifest inspection before generated-file traversal and converts missing, malformed, inconsistent, version-mismatched, or stale manifest contract evidence into `manifest-error` drift entries. | Satisfies M3 manifest-first and manifest-error behavior while preserving filesystem drift confirmation for non-manifest files. | `T11`, `T12`, `python scripts/test-adapter-distribution.py` |
 | `scripts/test-adapter-distribution.py` | Adds M3 coverage for manifest-before-filesystem call order, manifest-error normal and verbose display, and continued non-manifest missing/stale/unexpected detection. | Proves manifest evidence is used first but is not treated as authoritative over canonical sources or filesystem state. | Initial failing M3 targeted test run, then passing adapter regression suite |
+| Change-local and plan artifacts | Records M4 generated-output alignment, selector proof, release validation, lifecycle validation, and broad-smoke evidence. | Satisfies `T16`, `AC9`, and `AC11` without changing runtime behavior after M3. | M4 pass-gate commands and `bash scripts/ci.sh --mode broad-smoke` |
 
 ## Aligned-surface audit
 
@@ -36,7 +37,8 @@ M1 adds the bounded extraction guidance required by the approved token and runti
 | `CONSTITUTION.md` | unaffected with rationale | M1 changes operational evidence-collection guidance, not the repository's source-of-truth order, lifecycle policy, or governing principles. |
 | `specs/rigorloop-workflow.md` | unaffected with rationale | The approved M1 scope names contributor workflow guidance and scan-sensitive skills; durable workflow-spec changes are not required for this first milestone. |
 | Manifest-first adapter inspection | implemented | M3 reads and validates `dist/adapters/manifest.yaml` before generated-file traversal and keeps canonical expected files plus filesystem comparison in the proof path. |
-| Generated `.codex/skills/` and `dist/adapters/` | unaffected with rationale | M3 changes adapter drift inspection code and tests only; no canonical skill or adapter template changed, so generated output was checked but not regenerated. |
+| Generated `.codex/skills/` and `dist/adapters/` | synchronized through generators | M4 reran `python scripts/build-skills.py` and `python scripts/build-adapters.py --version 0.1.1`; no generated diff remained. |
+| Release metadata | validated | M4 changed no release metadata content, but `python scripts/validate-release.py --version v0.1.1` passed as the release validation proof. |
 
 ## Tests added or changed
 
@@ -83,6 +85,14 @@ M1 adds the bounded extraction guidance required by the approved token and runti
 - `python scripts/build-adapters.py --version 0.1.1 --check`
 - `python scripts/build-adapters.py --version 0.1.1 --check --verbose`
 - `python scripts/validate-adapters.py --version 0.1.1`
+- `python scripts/build-skills.py`
+- `python scripts/build-adapters.py --version 0.1.1`
+- `python scripts/select-validation.py --mode explicit` with the M4 concrete path set selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `artifact_lifecycle.validate`, and `selector.regression`; it blocked only on the expected manual route for `scripts/test-adapter-distribution.py`.
+- `bash scripts/ci.sh --mode explicit` with the supported M4 path set executed the selected checks successfully.
+- `python scripts/validate-release.py --version v0.1.1`
+- `python scripts/test-artifact-lifecycle-validator.py`
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-27-token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md`
+- `bash scripts/ci.sh --mode broad-smoke`
 
 M2 output-size evidence:
 
@@ -98,10 +108,10 @@ Additional validation results are recorded in the active plan.
 - M1 did not change adapter drift output, `--verbose` support, failure taxonomy, manifest-first collection, selected check coverage, or command exit behavior.
 - M2 changes only adapter drift check output shape and structured reporting; it does not change selected check coverage, generated adapter validation semantics, or sync behavior.
 - M3 implements manifest-first collection and `manifest-error` regression coverage.
-- M3 does not perform final M4 generated-output, release, artifact-lifecycle, broad-smoke, or PR-readiness validation.
+- M4 performs generated-output, release, artifact-lifecycle, selector, and broad-smoke validation without adding runtime behavior.
 - Generated `.codex/skills/` and `dist/adapters/` were produced through existing generator commands.
 - No new external dependency, parser boundary, persistent cache, or hosted CI behavior change is introduced.
 
 ## Readiness
 
-M1-M3 are complete and ready for `code-review` as reviewable milestone slices. M4 remains open for the full initiative, so final `verify`, `explain-change`, and `pr` are not ready yet.
+M1-M4 implementation is complete and ready for `code-review`. Final `verify`, downstream explanation, and PR handoff remain separate workflow stages after review.
