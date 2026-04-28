@@ -31,6 +31,24 @@ Notes:
 - A material review finding is incomplete unless it has evidence, a required outcome, and a safe resolution path or `needs-decision` rationale.
 - `learn` is advice-only. Treat it as an explicit follow-up when a durable lesson actually emerged or another approved rule elevates it.
 
+## Efficient Evidence Collection
+
+- Use bounded extraction as the default first pass for large files, repeated scans, generated output, and validation logs.
+- Start with inventories, headings, stable IDs, path lists, counts, or matching line numbers before reading broad file content.
+- After locating relevant lines, read exact ranges first; broaden to neighboring sections or a full-file read only when needed.
+- Prefer check IDs, requirement IDs, test IDs, file paths, counts, and line citations before raw excerpts or pasted logs.
+- Use summary-first, failure-focused, and diff-focused normal output by default. Expand only when needed with `--verbose` or an equivalent documented escape hatch.
+- Normal output budgets:
+  - routine command output target: 40 lines
+  - routine command output warning threshold: 80 lines
+  - single excerpt target: 12 lines
+  - single excerpt warning threshold: 20 lines
+  - multi-file summary default: one summary line per file, with details only for changed, failing, or explicitly requested files
+- Do not print every parsed field, every unchanged file, large excerpts, repeated path lists, or routine command output by default.
+- Output budgets guide readability and token use; they must not change validation semantics, selected check coverage, or command exit behavior.
+- When normal output omits detail, it must say how to request the omitted detail.
+- A full-file read is required when the file itself is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on understanding the whole source-of-truth artifact.
+
 ## Change-Local Artifacts
 
 - Fast-lane work may omit `docs/changes/<change-id>/` only when the approved fast-lane policy allows omission.

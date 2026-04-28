@@ -45,6 +45,16 @@ TARGET_INCOMPATIBILITY_PATTERNS = {
     "claude": re.compile(r"\bnot compatible with Claude Code\b", re.IGNORECASE),
     "opencode": re.compile(r"\bnot compatible with opencode\b", re.IGNORECASE),
 }
+ADAPTER_DRIFT_CATEGORIES = (
+    "missing",
+    "stale",
+    "unexpected",
+    "canonical-source-error",
+    "manifest-error",
+)
+NORMAL_OUTPUT_TARGET_LINES = 40
+NORMAL_OUTPUT_WARNING_LINES = 80
+NORMAL_FAILURE_ENTRY_LIMIT = 10
 
 
 @dataclass(frozen=True)
@@ -116,6 +126,31 @@ class AdapterManifest:
     version: str
     skills: dict[str, ManifestSkillEntry]
     command_aliases: dict[str, CommandAliasSection]
+
+
+@dataclass(frozen=True)
+class AdapterDriftEntry:
+    category: str
+    path: Path
+    detail: str
+
+    @property
+    def message(self) -> str:
+        if self.category == "missing":
+            return f"missing generated adapter file: {self.path}"
+        if self.category == "stale":
+            return f"stale generated adapter file: {self.path}"
+        if self.category == "unexpected":
+            return f"unexpected generated adapter file: {self.path}"
+        return self.detail
+
+
+@dataclass(frozen=True)
+class _AdapterManifestInspection:
+    path: Path
+    manifest: AdapterManifest | None
+    text: str | None
+    entries: tuple[AdapterDriftEntry, ...]
 
 
 @dataclass(frozen=True)
@@ -860,6 +895,21 @@ def expected_adapter_files(
     """Return the complete expected generated adapter file map."""
 
     reports = _validated_skill_reports(skills_root)
+    return _expected_adapter_files_from_reports(
+        version,
+        reports,
+        template_root=template_root,
+    )
+
+
+def _expected_adapter_files_from_reports(
+    version: str,
+    reports: tuple[SkillPortabilityReport, ...],
+    *,
+    template_root: Path = ADAPTER_TEMPLATE_ROOT,
+) -> dict[Path, str]:
+    """Return expected generated adapter files from already collected reports."""
+
     expected: dict[Path, str] = {
         Path("manifest.yaml"): render_manifest_yaml(version, reports),
     }
@@ -899,6 +949,274 @@ def _collect_generated_files(root: Path) -> dict[Path, Path]:
     }
 
 
+def _manifest_error_entry(path: Path, detail: str) -> AdapterDriftEntry:
+    return AdapterDriftEntry(category="manifest-error", path=path, detail=detail)
+
+
+def _inspect_generated_adapter_manifest(output_root: Path) -> _AdapterManifestInspection:
+    manifest_path = output_root / "manifest.yaml"
+    if not manifest_path.is_file():
+        return _AdapterManifestInspection(
+            path=manifest_path,
+            manifest=None,
+            text=None,
+            entries=(
+                _manifest_error_entry(
+                    manifest_path,
+                    "generated adapter manifest is missing",
+                ),
+            ),
+        )
+
+    try:
+        text = manifest_path.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError) as exc:
+        return _AdapterManifestInspection(
+            path=manifest_path,
+            manifest=None,
+            text=None,
+            entries=(
+                _manifest_error_entry(
+                    manifest_path,
+                    f"generated adapter manifest is unreadable: {exc}",
+                ),
+            ),
+        )
+
+    try:
+        manifest = parse_manifest_yaml(text, manifest_path)
+    except ValueError as exc:
+        return _AdapterManifestInspection(
+            path=manifest_path,
+            manifest=None,
+            text=text,
+            entries=(
+                _manifest_error_entry(
+                    manifest_path,
+                    f"generated adapter manifest is malformed: {exc}",
+                ),
+            ),
+        )
+
+    return _AdapterManifestInspection(
+        path=manifest_path,
+        manifest=manifest,
+        text=text,
+        entries=(),
+    )
+
+
+def _manifest_command_alias_contract_errors(version: str, manifest: AdapterManifest) -> list[str]:
+    errors: list[str] = []
+    unsupported_tools = sorted(set(manifest.command_aliases) - {"opencode"})
+    for tool in unsupported_tools:
+        errors.append(f"unsupported command alias tool: {tool}")
+
+    if not _supports_opencode_command_aliases(version):
+        if manifest.command_aliases:
+            errors.append(f"manifest command aliases are not supported for adapter version {version}")
+        return errors
+
+    section = manifest.command_aliases.get("opencode")
+    if section is None:
+        errors.append("manifest missing command_aliases.opencode")
+        section_aliases: dict[str, str] = {}
+    else:
+        section_aliases = section.aliases
+        if section.count != len(section.aliases):
+            errors.append(
+                f"command_aliases.opencode.count mismatch: expected {len(section.aliases)}, "
+                f"found {section.count}"
+            )
+
+    expected_aliases = _expected_opencode_command_alias_paths()
+    for alias, expected_path in expected_aliases.items():
+        if alias not in section_aliases:
+            errors.append(f"opencode command alias missing from manifest: {alias}: {expected_path}")
+
+    for alias, alias_path in section_aliases.items():
+        if alias not in OPENCODE_COMMAND_ALIASES:
+            errors.append(f"unexpected opencode command alias in manifest: {alias}: {alias_path}")
+        if not alias_path.startswith("dist/adapters/opencode/.opencode/commands/"):
+            errors.append(
+                f"opencode command alias path must be under "
+                f"dist/adapters/opencode/.opencode/commands: {alias}: {alias_path}"
+            )
+            continue
+        if PurePosixPath(alias_path).stem != alias:
+            errors.append(f"opencode command alias filename stem mismatch: {alias}: {alias_path}")
+        expected_path = expected_aliases.get(alias)
+        if expected_path is not None and alias_path != expected_path:
+            errors.append(
+                f"opencode command alias path mismatch: {alias}: expected {expected_path}, "
+                f"found {alias_path}"
+            )
+
+    return errors
+
+
+def _manifest_contract_entries(
+    version: str,
+    inspection: _AdapterManifestInspection,
+    reports: tuple[SkillPortabilityReport, ...],
+) -> tuple[AdapterDriftEntry, ...]:
+    entries = list(inspection.entries)
+    manifest = inspection.manifest
+    if manifest is None:
+        return tuple(entries)
+
+    specific_start = len(entries)
+    if manifest.version != version:
+        entries.append(
+            _manifest_error_entry(
+                inspection.path,
+                (
+                    "generated adapter manifest version mismatch: "
+                    f"expected {version}, found {manifest.version}"
+                ),
+            )
+        )
+
+    report_by_name = {report.name: report for report in reports}
+    for skill_name, report in report_by_name.items():
+        entry = manifest.skills.get(skill_name)
+        if entry is None:
+            entries.append(
+                _manifest_error_entry(
+                    inspection.path,
+                    f"generated adapter manifest omits canonical skill: {skill_name}",
+                )
+            )
+            continue
+        invalid_adapters = sorted(set(entry.adapters) - set(SUPPORTED_ADAPTERS))
+        if invalid_adapters:
+            entries.append(
+                _manifest_error_entry(
+                    inspection.path,
+                    (
+                        "generated adapter manifest lists unsupported adapter for "
+                        f"{skill_name}: {', '.join(invalid_adapters)}"
+                    ),
+                )
+            )
+        if entry.adapters != report.included_adapters:
+            entries.append(
+                _manifest_error_entry(
+                    inspection.path,
+                    (
+                        f"adapter list mismatch: {skill_name}: "
+                        f"expected {report.included_adapters}, found {entry.adapters}"
+                    ),
+                )
+            )
+        if entry.portable != report.portable:
+            entries.append(
+                _manifest_error_entry(
+                    inspection.path,
+                    (
+                        f"portable flag mismatch: {skill_name}: "
+                        f"expected {report.portable}, found {entry.portable}"
+                    ),
+                )
+            )
+        if not entry.portable and not entry.reason:
+            entries.append(
+                _manifest_error_entry(
+                    inspection.path,
+                    f"non-portable manifest entry missing reason: {skill_name}",
+                )
+            )
+
+    for skill_name in sorted(set(manifest.skills) - set(report_by_name)):
+        entries.append(
+            _manifest_error_entry(
+                inspection.path,
+                f"generated adapter manifest lists unknown skill: {skill_name}",
+            )
+        )
+
+    for error in _manifest_command_alias_contract_errors(version, manifest):
+        entries.append(_manifest_error_entry(inspection.path, error))
+
+    if inspection.text is not None and len(entries) == specific_start:
+        expected_manifest = render_manifest_yaml(version, reports)
+        if inspection.text != expected_manifest:
+            entries.append(
+                _manifest_error_entry(
+                    inspection.path,
+                    "generated adapter manifest differs from expected generated-output contract",
+                )
+            )
+
+    return tuple(entries)
+
+
+def collect_adapter_drift_entries(
+    version: str,
+    *,
+    skills_root: Path = CANONICAL_SKILLS_DIR,
+    template_root: Path = ADAPTER_TEMPLATE_ROOT,
+    output_root: Path = ADAPTER_OUTPUT_ROOT,
+) -> tuple[AdapterDriftEntry, ...]:
+    """Collect structured generated adapter drift entries."""
+
+    reports = collect_skill_reports(skills_root) if skills_root.exists() else ()
+    canonical_errors = _canonical_skill_source_errors(skills_root, reports)
+    if canonical_errors:
+        return tuple(
+            AdapterDriftEntry(
+                category="canonical-source-error",
+                path=skills_root,
+                detail=error,
+            )
+            for error in canonical_errors
+        )
+
+    manifest_inspection = _inspect_generated_adapter_manifest(output_root)
+    manifest_entries = _manifest_contract_entries(version, manifest_inspection, reports)
+    expected = _expected_adapter_files_from_reports(
+        version,
+        reports=reports,
+        template_root=template_root,
+    )
+    existing = _collect_generated_files(output_root)
+    entries: list[AdapterDriftEntry] = list(manifest_entries)
+    skip_manifest_file_drift = bool(manifest_entries)
+
+    for relative_path, expected_text in expected.items():
+        if skip_manifest_file_drift and relative_path == Path("manifest.yaml"):
+            continue
+        generated_path = output_root / relative_path
+        if relative_path not in existing:
+            entries.append(
+                AdapterDriftEntry(
+                    category="missing",
+                    path=generated_path,
+                    detail="generated adapter file is missing",
+                )
+            )
+            continue
+        if existing[relative_path].read_text(encoding="utf-8") != expected_text:
+            entries.append(
+                AdapterDriftEntry(
+                    category="stale",
+                    path=generated_path,
+                    detail="generated adapter file differs from canonical sources",
+                )
+            )
+
+    for relative_path in sorted(set(existing) - set(expected)):
+        entries.append(
+            AdapterDriftEntry(
+                category="unexpected",
+                path=output_root / relative_path,
+                detail="generated adapter file is not expected from canonical sources",
+            )
+        )
+
+    return tuple(entries)
+
+
 def collect_adapter_drift(
     version: str,
     *,
@@ -908,30 +1226,117 @@ def collect_adapter_drift(
 ) -> list[str]:
     """Collect missing, stale, and unexpected generated adapter output."""
 
-    canonical_errors = _canonical_skill_source_errors(skills_root)
-    if canonical_errors:
-        return canonical_errors
+    return [
+        entry.message
+        for entry in collect_adapter_drift_entries(
+            version,
+            skills_root=skills_root,
+            template_root=template_root,
+            output_root=output_root,
+        )
+    ]
 
-    expected = expected_adapter_files(
-        version,
-        skills_root=skills_root,
-        template_root=template_root,
-    )
-    existing = _collect_generated_files(output_root)
-    errors: list[str] = []
 
-    for relative_path, expected_text in expected.items():
-        generated_path = output_root / relative_path
-        if relative_path not in existing:
-            errors.append(f"missing generated adapter file: {generated_path}")
-            continue
-        if existing[relative_path].read_text(encoding="utf-8") != expected_text:
-            errors.append(f"stale generated adapter file: {generated_path}")
+def _adapter_drift_counts(entries: Iterable[AdapterDriftEntry]) -> dict[str, int]:
+    counts = {category: 0 for category in ADAPTER_DRIFT_CATEGORIES}
+    for entry in entries:
+        counts[entry.category] = counts.get(entry.category, 0) + 1
+    return counts
 
-    for relative_path in sorted(set(existing) - set(expected)):
-        errors.append(f"unexpected generated adapter file: {output_root / relative_path}")
 
-    return errors
+def _adapter_drift_action(category: str, version: str) -> str:
+    if category in {"missing", "stale", "unexpected"}:
+        return f"rerun python scripts/build-adapters.py --version {version}"
+    if category == "canonical-source-error":
+        return "fix the canonical skill source before regenerating adapters"
+    if category == "manifest-error":
+        return "fix or regenerate the generated adapter manifest"
+    return "inspect the failure detail"
+
+
+def _adapter_drift_count_summary(entries: tuple[AdapterDriftEntry, ...]) -> str:
+    counts = _adapter_drift_counts(entries)
+    parts = [f"total={len(entries)}"]
+    parts.extend(f"{category}={counts.get(category, 0)}" for category in ADAPTER_DRIFT_CATEGORIES)
+    return " ".join(parts)
+
+
+def _append_over_budget_warning(lines: list[str]) -> list[str]:
+    if len(lines) > NORMAL_OUTPUT_WARNING_LINES:
+        lines.append(
+            (
+                f"warning: normal output exceeded {NORMAL_OUTPUT_WARNING_LINES} lines; "
+                "rerun with --verbose for complete detail."
+            )
+        )
+    return lines
+
+
+def format_adapter_drift_normal(
+    entries: Iterable[AdapterDriftEntry],
+    *,
+    version: str,
+    output_root: Path = ADAPTER_OUTPUT_ROOT,
+    max_entries: int = NORMAL_FAILURE_ENTRY_LIMIT,
+) -> str:
+    """Render summary-first normal adapter drift output."""
+
+    entry_tuple = tuple(entries)
+    if not entry_tuple:
+        return "\n".join(
+            [
+                "adapters.drift: ok",
+                f"version: {version}",
+                f"output_root: {output_root}",
+                "status: generated adapter output is in sync",
+            ]
+        )
+
+    displayed = entry_tuple[:max_entries]
+    lines = [
+        "adapters.drift: failed",
+        f"version: {version}",
+        f"output_root: {output_root}",
+        f"failures: {_adapter_drift_count_summary(entry_tuple)}",
+        f"displayed: {len(displayed)} of {len(entry_tuple)}",
+    ]
+    for entry in displayed:
+        lines.append(f"- {entry.category}: {entry.path}")
+        lines.append(f"  action: {_adapter_drift_action(entry.category, version)}; {entry.detail}")
+    omitted = len(entry_tuple) - len(displayed)
+    if omitted:
+        lines.append(
+            f"omitted: {omitted} failure entries; rerun with --verbose for complete detail."
+        )
+    return "\n".join(_append_over_budget_warning(lines))
+
+
+def format_adapter_drift_verbose(
+    entries: Iterable[AdapterDriftEntry],
+    *,
+    version: str,
+    output_root: Path = ADAPTER_OUTPUT_ROOT,
+) -> str:
+    """Render complete deterministic adapter drift output."""
+
+    entry_tuple = tuple(entries)
+    if not entry_tuple:
+        return format_adapter_drift_normal(
+            entry_tuple,
+            version=version,
+            output_root=output_root,
+        )
+
+    lines = [
+        "adapters.drift: failed",
+        f"version: {version}",
+        f"output_root: {output_root}",
+        f"failures: {_adapter_drift_count_summary(entry_tuple)}",
+    ]
+    for entry in entry_tuple:
+        lines.append(f"- {entry.category}: {entry.path}")
+        lines.append(f"  detail: {entry.detail}")
+    return "\n".join(lines)
 
 
 def _remove_empty_directories(root: Path) -> None:

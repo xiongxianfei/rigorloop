@@ -95,6 +95,14 @@ Milestones should be small enough for one review loop and one coherent commit. A
 - Do not proceed to implementation until `plan-review` and `test-spec` are ready unless using the fast lane.
 - If planning reveals spec or architecture gaps, update those artifacts first.
 
+## Evidence collection efficiency
+
+Use summary and stable-ID first reasoning before broad reads or raw excerpts. Prefer check IDs, requirement IDs, test IDs, file paths, counts, and line citations when inspecting large files, repeated scans, generated output, or validation output. Read exact ranges after locating relevant lines, then expand only when the narrower evidence is insufficient.
+
+## When full-file read is required
+
+Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
+
 ## Expected output
 
 - concrete plan file path;

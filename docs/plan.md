@@ -9,6 +9,7 @@ This file tracks active, blocked, done, and superseded plans.
 - none yet
 
 ## Done
+- [2026-04-28 Token and runtime efficient scanning](plans/2026-04-28-token-and-runtime-efficient-scanning.md) - completed execution plan for bounded extraction guidance, first-slice scan-sensitive skill updates, shaped `build-adapters.py --check` output with verbose detail, manifest-first adapter drift inspection, generated output refresh, validation evidence, verification, explain-change, and PR handoff readiness.
 - [2026-04-25 Test layering and change-scoped validation](plans/2026-04-25-test-layering-and-change-scoped-validation.md) - completed execution plan for adding the JSON validation selector, wiring `scripts/ci.sh` to selector output, preserving source-attributed broad-smoke triggers, recording manual proof ownership, aligning workflow guidance, and closing review/verification evidence.
 - [2026-04-25 Review finding resolution contract implementation](plans/2026-04-25-review-finding-resolution-contract.md) - completed execution plan for review finding completeness, review-log and review-resolution structure, closeout validation, workflow guidance, generated skill and adapter sync, and lifecycle closeout.
 - [2026-04-24 Skill invocation commands for adapter packages](plans/2026-04-24-skill-invocation-commands-for-adapters.md) - completed execution plan for `v0.1.1` OpenCode command aliases, Claude/OpenCode invocation docs, manifest command path metadata, release verification, smoke evidence, and lifecycle closeout.
