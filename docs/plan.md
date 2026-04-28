@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- none yet
+- [2026-04-28 Architecture skills C4 arc42 ADR](plans/2026-04-28-architecture-skills-c4-arc42-adr.md) - active execution plan for adopting the C4, official arc42, and ADR architecture package method, including lifecycle-validator compatibility, templates, governance and workflow guidance, canonical architecture package baseline, skill updates, generated output refresh, and legacy normalization follow-up.
 
 ## Blocked
 - none yet
