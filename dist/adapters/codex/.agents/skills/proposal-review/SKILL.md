@@ -72,6 +72,14 @@ When workflow-managed review findings are recorded under `docs/changes/<change-i
 - In v1, `proposal-review` is a gate, not an automatic handoff into `spec`; report approval, revision needs, or blocker state without implying `spec` auto-starts.
 - If the user explicitly wants to continue into `spec`, that must come from a separate workflow or user request rather than this review stage auto-continuing on its own.
 
+## Evidence collection efficiency
+
+Use summary and stable-ID first reasoning before broad reads or raw excerpts. Prefer check IDs, requirement IDs, test IDs, file paths, counts, and line citations when inspecting large files, repeated scans, generated output, or validation output. Read exact ranges after locating relevant lines, then expand only when the narrower evidence is insufficient.
+
+## When full-file read is required
+
+Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
+
 ## Expected output
 
 - verdict: approve, revise, or rethink;

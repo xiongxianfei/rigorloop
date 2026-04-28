@@ -74,6 +74,14 @@ When workflow-managed review findings are recorded under `docs/changes/<change-i
 - In v1, `spec-review` does not auto-continue into `architecture`, `plan`, or `test-spec`; it reports review outcome, immediate next repository stage, eventual `test-spec` readiness, and any stop condition, then stops there unless the user explicitly requests a later stage.
 - Keep review-to-next-authoring transitions out of scope in this skill's wording.
 
+## Evidence collection efficiency
+
+Use summary and stable-ID first reasoning before broad reads or raw excerpts. Prefer check IDs, requirement IDs, test IDs, file paths, counts, and line citations when inspecting large files, repeated scans, generated output, or validation output. Read exact ranges after locating relevant lines, then expand only when the narrower evidence is insufficient.
+
+## When full-file read is required
+
+Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
+
 ## Expected output
 
 - review outcome: `approved`, `changes-requested`, `blocked`, or `inconclusive`;

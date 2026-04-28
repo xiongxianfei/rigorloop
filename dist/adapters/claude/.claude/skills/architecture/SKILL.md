@@ -116,6 +116,14 @@ For this repository's current ADR contract:
 - If the design still has open questions that block safe review, stop and report the blocker instead of implying `architecture-review` can proceed.
 - This v1 contract does not imply `architecture-review -> plan`; review-to-next-authoring transitions remain outside the autoprogression boundary unless a later approved change adds them.
 
+## Evidence collection efficiency
+
+Use summary and stable-ID first reasoning before broad reads or raw excerpts. Prefer check IDs, requirement IDs, test IDs, file paths, counts, and line citations when inspecting large files, repeated scans, generated output, or validation output. Read exact ranges after locating relevant lines, then expand only when the narrower evidence is insufficient.
+
+## When full-file read is required
+
+Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
+
 ## Expected output
 
 - architecture doc path and ADR paths;
