@@ -66,6 +66,9 @@ Canonical authored workflow content lives in:
 - `skills/`
 - `schemas/`
 - `scripts/`
+- `templates/`
+
+Templates under `templates/` are canonical authored scaffolds. They are not lifecycle-managed architecture or ADR records, and template-like files MUST NOT be placed under `docs/architecture/` or `docs/adr/`.
 
 Generated Codex compatibility output under `.codex/skills/` MUST NOT be hand-edited. It is derived output, not the source of truth.
 
