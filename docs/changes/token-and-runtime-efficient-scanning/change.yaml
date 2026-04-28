@@ -1,0 +1,337 @@
+change_id: token-and-runtime-efficient-scanning
+title: Implement token and runtime efficient scanning slice
+classification: planned
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-04-27-token-and-runtime-efficient-scanning.md
+  spec: specs/token-and-runtime-efficient-scanning.md
+  plan: docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md
+  test_spec: specs/token-and-runtime-efficient-scanning.test.md
+  explain_change: docs/changes/token-and-runtime-efficient-scanning/explain-change.md
+requirements:
+  - R1
+  - R2
+  - R3
+  - R4
+  - R5
+  - R6
+  - R7
+  - R8
+  - R9
+  - R10
+  - R11
+  - R12
+  - R13
+  - R14
+  - R15
+  - R16
+  - R17
+  - R18
+  - R19
+  - R19a
+  - R19b
+  - R19c
+  - R19d
+  - R20
+  - R21
+  - R22
+  - R23
+  - R24
+  - R25
+  - R26
+  - R27
+  - R28
+  - R29
+  - R30
+  - R31
+  - R32
+  - R33
+  - R34
+  - R35
+  - R36
+  - R37
+tests:
+  - T1
+  - T2
+  - T3
+  - T4
+  - T5
+  - T6
+  - T7
+  - T8
+  - T9
+  - T10
+  - T11
+  - T12
+  - T13
+  - T14
+  - T15
+  - T16
+validation:
+  - command: python scripts/test-skill-validator.py
+    result: pass
+    reason: New M1 contract tests failed before guidance edits and passed after workflow and skill updates.
+  - command: python scripts/validate-skills.py
+    result: pass
+  - command: python scripts/build-skills.py
+    result: pass
+  - command: python scripts/build-adapters.py --version 0.1.1
+    result: pass
+  - command: python scripts/test-select-validation.py
+    result: pass
+  - command: python scripts/build-skills.py --check
+    result: pass
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/token-and-runtime-efficient-scanning/change.yaml
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path docs/workflows.md --path scripts/test-skill-validator.py --path <19 first-slice skills> --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path <lifecycle artifacts>
+    result: pass
+    reason: Selected skills.validate, skills.regression, skills.drift, adapters.drift, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, and selector.regression; broad smoke was not required.
+  - command: bash scripts/ci.sh --mode explicit --path docs/workflows.md --path scripts/test-skill-validator.py --path <19 first-slice skills> --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path <lifecycle artifacts>
+    result: pass
+    reason: Executed the selected M1 checks successfully.
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plan.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/proposals/2026-04-27-token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md
+    result: pass
+  - command: git diff --check -- .
+    result: pass
+  - command: python scripts/test-adapter-distribution.py
+    result: pass
+    reason: M2 adapter drift regression suite passed with 54 tests after adding structured drift, normal/verbose output, no-cache, output-size, and CLI compatibility tests.
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass
+    reason: Clean adapter drift check exits 0 and prints a 4-line summary-first `adapters.drift` success output.
+  - command: python scripts/build-adapters.py --version 0.1.1 --check --verbose
+    result: pass
+    reason: Verbose clean adapter drift check remains accepted and exits 0.
+  - command: python scripts/build-adapters.py --version 0.1.1 --verbose
+    result: expected-failure
+    reason: Expected invalid form failed with exit code 2 and clear argparse error because `--verbose` is only meaningful with `--check`.
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass
+  - command: python scripts/test-select-validation.py
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/build-adapters.py --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path scripts/validation_selection.py
+    result: expected-blocked
+    reason: Before PR-stage CI repair, selector inspection produced the expected blocked/manual-routing result for `scripts/test-adapter-distribution.py`; the manual route `python scripts/test-adapter-distribution.py` passed, and selected checks kept `adapters.drift` on the existing command identity.
+  - command: output-size evidence for adapter drift normal output
+    result: pass
+    reason: Representative clean output changed from legacy 1 line to shaped 4 lines; representative many-drift output changed from legacy 35 lines to shaped 26 lines.
+  - command: python scripts/validate-change-metadata.py docs/changes/token-and-runtime-efficient-scanning/change.yaml
+    result: pass
+    reason: Reran after M2 change-local metadata updates.
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plan.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/proposals/2026-04-27-token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md
+    result: pass
+    reason: Reran after M2 plan and change-local artifact updates.
+  - command: git diff --check -- .
+    result: pass
+    reason: Reran after M2 code and artifact updates.
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_drift_entries_classify_generated_output_failures AdapterDistributionTests.test_manifest_first_inspection_precedes_filesystem_confirmation AdapterDistributionTests.test_manifest_errors_are_structured_and_displayed_completely
+    result: expected-failure
+    reason: New M3 tests failed before implementation because manifest-first inspection helper and manifest-error drift entries did not exist yet.
+  - command: python scripts/test-adapter-distribution.py
+    result: pass
+    reason: M3 adapter regression suite passed with 56 tests after adding manifest-first inspection and manifest-error coverage.
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass
+    reason: Clean adapter drift check remains 4 summary-first lines after manifest-first inspection.
+  - command: python scripts/build-adapters.py --version 0.1.1 --check --verbose
+    result: pass
+    reason: Verbose clean adapter drift check remains accepted and exits 0 after manifest-first inspection.
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md
+    result: expected-blocked
+    reason: Before PR-stage CI repair, selector inspection selected adapters.regression, adapters.drift, adapters.validate, artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate, with the expected manual-routing block for `scripts/test-adapter-distribution.py`; broad smoke was not required.
+  - command: python scripts/test-select-validation.py
+    result: pass
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/token-and-runtime-efficient-scanning/change.yaml
+    result: pass
+    reason: Reran after M3 change-local metadata updates.
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plan.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/proposals/2026-04-27-token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md
+    result: pass
+    reason: Reran after M3 plan and change-local artifact updates.
+  - command: git diff --check -- .
+    result: pass
+    reason: Reran after M3 code and artifact updates.
+  - command: python scripts/build-skills.py
+    result: pass
+    reason: M4 regenerated derived Codex skills from canonical skills; no generated diff remained.
+  - command: python scripts/build-adapters.py --version 0.1.1
+    result: pass
+    reason: M4 regenerated public adapter output from canonical skills and adapter templates; no generated diff remained.
+  - command: python scripts/select-validation.py --mode explicit --path docs/workflows.md --path skills/architecture/SKILL.md --path skills/architecture-review/SKILL.md --path skills/bugfix/SKILL.md --path skills/ci/SKILL.md --path skills/code-review/SKILL.md --path skills/explain-change/SKILL.md --path skills/implement/SKILL.md --path skills/plan/SKILL.md --path skills/plan-review/SKILL.md --path skills/pr/SKILL.md --path skills/project-map/SKILL.md --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path skills/research/SKILL.md --path skills/spec/SKILL.md --path skills/spec-review/SKILL.md --path skills/test-spec/SKILL.md --path skills/verify/SKILL.md --path skills/workflow/SKILL.md --path scripts/build-adapters.py --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md
+    result: expected-blocked
+    reason: Before PR-stage CI repair, M4 selector inspection selected skills.validate, skills.regression, skills.drift, adapters.regression, adapters.drift, adapters.validate, artifact_lifecycle.validate, and selector.regression; it blocked only on the expected manual route for scripts/test-adapter-distribution.py.
+  - command: bash scripts/ci.sh --mode explicit --path docs/workflows.md --path skills/architecture/SKILL.md --path skills/architecture-review/SKILL.md --path skills/bugfix/SKILL.md --path skills/ci/SKILL.md --path skills/code-review/SKILL.md --path skills/explain-change/SKILL.md --path skills/implement/SKILL.md --path skills/plan/SKILL.md --path skills/plan-review/SKILL.md --path skills/pr/SKILL.md --path skills/project-map/SKILL.md --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path skills/research/SKILL.md --path skills/spec/SKILL.md --path skills/spec-review/SKILL.md --path skills/test-spec/SKILL.md --path skills/verify/SKILL.md --path skills/workflow/SKILL.md --path scripts/build-adapters.py --path scripts/adapter_distribution.py --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md
+    result: pass
+    reason: Before PR-stage CI repair, M4 explicit CI executed the supported selected checks; the unsupported adapter-distribution test path used the direct manual pass-gate route.
+  - command: python scripts/build-adapters.py --version 0.1.1 --check --verbose
+    result: pass
+    reason: M4 verbose adapter drift check remained deterministic and concise for clean output.
+  - command: python scripts/validate-release.py --version v0.1.1
+    result: pass
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-27-token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md
+    result: pass
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: pass
+    reason: Broad smoke passed; artifact lifecycle reported unrelated baseline warnings for older draft proposal files outside this change.
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md
+    result: pass
+    reason: Post-M4 artifact updates selected artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate.
+  - command: git diff --check -- .
+    result: pass
+    reason: Reran after M4 artifact updates.
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md
+    result: pass
+    reason: Post-code-review lifecycle sync selected artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate; broad smoke was not required.
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md
+    result: pass
+    reason: Post-code-review lifecycle sync executed the selected artifact lifecycle and change metadata checks.
+  - command: python scripts/validate-change-metadata.py docs/changes/token-and-runtime-efficient-scanning/change.yaml
+    result: pass
+    reason: Reran after recording the clean first-pass code-review outcome.
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plan.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/proposals/2026-04-27-token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md
+    result: pass
+    reason: Reran after post-code-review lifecycle readiness updates.
+  - command: git diff --check -- .
+    result: pass
+    reason: Reran after post-code-review lifecycle readiness updates.
+  - command: python scripts/validate-skills.py
+    result: pass
+    reason: Verify reran canonical skill validation for the completed slice.
+  - command: python scripts/test-skill-validator.py
+    result: pass
+    reason: Verify reran the workflow and scan-sensitive skill guidance regression tests.
+  - command: python scripts/test-adapter-distribution.py
+    result: pass
+    reason: Verify reran the adapter drift, output shaping, manifest-first, taxonomy, release, and adapter validation regression suite with 56 tests.
+  - command: python scripts/build-skills.py --check
+    result: pass
+    reason: Verify confirmed generated Codex skills remain synchronized with canonical skills.
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass
+    reason: Verify confirmed generated public adapter output remains synchronized.
+  - command: python scripts/build-adapters.py --version 0.1.1 --check --verbose
+    result: pass
+    reason: Verify confirmed verbose adapter drift check still exits cleanly and remains deterministic for clean output.
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass
+  - command: python scripts/validate-release.py --version v0.1.1
+    result: pass
+  - command: python scripts/test-select-validation.py
+    result: pass
+    reason: Verify reran selector regression coverage; 26 tests passed.
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass
+    reason: Verify reran lifecycle validator regression coverage; 34 tests passed.
+  - command: python scripts/validate-change-metadata.py docs/changes/token-and-runtime-efficient-scanning/change.yaml
+    result: pass
+    reason: Verify reran change metadata validation for the completed slice.
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plan.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/proposals/2026-04-27-token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md
+    result: pass
+    reason: Verify reran explicit lifecycle validation for the authoritative artifact set.
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: pass
+    reason: Verify broad smoke passed on the current branch; artifact lifecycle emitted unrelated baseline warnings for older draft proposal files outside this change.
+  - command: git diff --check -- .
+    result: pass
+    reason: Verify reran whitespace validation for the completed slice.
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md
+    result: pass
+    reason: Post-verify lifecycle sync selected artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate; broad smoke was not required by the selector.
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md
+    result: pass
+    reason: Post-verify lifecycle sync executed the selected artifact lifecycle and change metadata checks.
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md
+    result: pass
+    reason: Explain-change closeout selected artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate; broad smoke was not required by the selector.
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md
+    result: pass
+    reason: Explain-change closeout executed the selected artifact lifecycle and change metadata checks.
+  - command: python scripts/validate-change-metadata.py docs/changes/token-and-runtime-efficient-scanning/change.yaml
+    result: pass
+    reason: Explain-change closeout change metadata validation passed.
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plan.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/proposals/2026-04-27-token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md
+    result: pass
+    reason: Explain-change closeout lifecycle validation passed for the authoritative artifact set.
+  - command: git diff --check -- .
+    result: pass
+    reason: Explain-change closeout whitespace validation passed.
+  - command: python scripts/validate-change-metadata.py docs/changes/token-and-runtime-efficient-scanning/change.yaml
+    result: pass
+    reason: PR handoff change metadata validation passed after closing lifecycle state.
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plan.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/proposals/2026-04-27-token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md
+    result: pass
+    reason: PR handoff lifecycle validation passed with the plan moved to Done.
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/plan.md
+    result: pass
+    reason: PR handoff wrapper proof executed artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate for the lifecycle closeout paths.
+  - command: bash scripts/ci.sh --mode pr --base origin/main --head HEAD
+    result: expected-blocked
+    reason: Before PR-stage CI repair, local PR-mode wrapper reported the approved selector v1 manual-routing boundary for scripts/test-adapter-distribution.py. The later selector repair entries supersede this boundary.
+  - command: python scripts/test-select-validation.py
+    result: pass
+    reason: PR-stage CI repair added selector regression coverage; 27 tests passed and scripts/test-adapter-distribution.py routes as adapters in explicit and PR modes.
+  - command: python scripts/select-validation.py --mode explicit --path scripts/build-adapters.py --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path scripts/validation_selection.py
+    result: pass
+    reason: PR-stage selector repair selected adapters.regression, adapters.drift, adapters.validate, and selector.regression with no blocking results.
+  - command: bash scripts/ci.sh --mode explicit --path scripts/test-adapter-distribution.py
+    result: pass
+    reason: PR-stage selector repair executed adapters.regression, adapters.drift, and adapters.validate for the adapter regression script path without a blocking selector result.
+  - command: bash scripts/ci.sh --mode pr --base origin/main --head HEAD
+    result: pass
+    reason: PR-stage selector repair made local PR-mode CI pass with scripts/test-adapter-distribution.py routed through deterministic adapter checks instead of manual routing.
+  - command: bash scripts/ci.sh --mode local
+    result: pass
+    reason: PR-stage selector repair closeout selected artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, and selector.regression for the dirty worktree.
+  - command: python scripts/validate-change-metadata.py docs/changes/token-and-runtime-efficient-scanning/change.yaml
+    result: pass
+    reason: PR-stage selector repair closeout change metadata validation passed.
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/token-and-runtime-efficient-scanning/change.yaml --path docs/changes/token-and-runtime-efficient-scanning/explain-change.md --path docs/plan.md --path docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md --path docs/proposals/2026-04-27-token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.md --path specs/token-and-runtime-efficient-scanning.test.md
+    result: pass
+    reason: PR-stage selector repair closeout lifecycle validation passed for authoritative artifacts.
+  - command: git diff --check -- .
+    result: pass
+    reason: PR-stage selector repair closeout whitespace validation passed after lifecycle and metadata updates.
+changed_files:
+  - docs/workflows.md
+  - scripts/test-skill-validator.py
+  - skills/
+  - .codex/skills/
+  - dist/adapters/
+  - docs/changes/token-and-runtime-efficient-scanning/change.yaml
+  - docs/changes/token-and-runtime-efficient-scanning/explain-change.md
+  - docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md
+  - docs/plan.md
+  - docs/proposals/2026-04-27-token-and-runtime-efficient-scanning.md
+  - specs/token-and-runtime-efficient-scanning.md
+  - specs/token-and-runtime-efficient-scanning.test.md
+  - scripts/build-adapters.py
+  - scripts/adapter_distribution.py
+  - scripts/test-adapter-distribution.py
+  - scripts/validation_selection.py
+  - scripts/test-select-validation.py
+review:
+  status: pr handoff ready
+  unresolved_items: 0
+  location: docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md
+  required_next_stage: none
+verification:
+  status: ready
+  branch_ready: true
+  location: docs/plans/2026-04-28-token-and-runtime-efficient-scanning.md
+  required_next_stage: explain-change
+explanation:
+  status: complete
+  pr_handoff_ready: true
+  location: docs/changes/token-and-runtime-efficient-scanning/explain-change.md
+  required_next_stage: pr

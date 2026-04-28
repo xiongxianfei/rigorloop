@@ -326,6 +326,12 @@ class ValidationSelectionTests(unittest.TestCase):
                 "checks": {"adapters.regression", "adapters.drift", "adapters.validate"},
             },
             {
+                "path": "scripts/test-adapter-distribution.py",
+                "category": "adapters",
+                "status": "ok",
+                "checks": {"adapters.regression", "adapters.drift", "adapters.validate"},
+            },
+            {
                 "path": "scripts/validate-skills.py",
                 "category": "validator-skills",
                 "status": "ok",
@@ -482,6 +488,37 @@ class ValidationSelectionTests(unittest.TestCase):
         self.assertIn("broad_smoke.repo", selected_ids(main_payload))
         self.assertTrue(main_payload["broad_smoke_required"])
         self.assertIn({"type": "mode", "value": "main"}, main_payload["broad_smoke"]["sources"])
+
+    def test_pr_mode_routes_adapter_distribution_test_script_to_adapter_checks(self) -> None:
+        repo = self.make_git_repo()
+        base = self.git_output(repo, "rev-parse", "HEAD")
+        (repo / "scripts").mkdir()
+        adapter_test = repo / "scripts" / "test-adapter-distribution.py"
+        adapter_test.write_text("print('adapter tests')\n", encoding="utf-8")
+        subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True, text=True)
+        subprocess.run(
+            ["git", "commit", "-m", "add adapter test"],
+            cwd=repo,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        head = self.git_output(repo, "rev-parse", "HEAD")
+
+        result = run_selector("--mode", "pr", "--base", base, "--head", head, cwd=repo)
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        payload = parse_stdout(result)
+
+        self.assertEqual(payload["status"], "ok")
+        self.assertEqual(payload["changed_paths"], ["scripts/test-adapter-distribution.py"])
+        self.assertIn(
+            {"path": "scripts/test-adapter-distribution.py", "category": "adapters"},
+            payload["classified_paths"],
+        )
+        self.assertTrue(
+            {"adapters.regression", "adapters.drift", "adapters.validate"}.issubset(selected_ids(payload))
+        )
+        self.assertFalse(payload["blocking_results"])
 
     def test_ci_wrapper_executes_selector_selected_path_and_root_checks(self) -> None:
         result = run_ci(

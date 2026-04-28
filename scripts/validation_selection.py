@@ -695,6 +695,7 @@ def _path_category(path: str) -> str | None:
     if path.startswith("scripts/adapter_templates/") or path in {
         "scripts/adapter_distribution.py",
         "scripts/build-adapters.py",
+        "scripts/test-adapter-distribution.py",
         "scripts/validate-adapters.py",
     }:
         return "adapters"
