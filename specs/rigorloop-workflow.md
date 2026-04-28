@@ -138,6 +138,8 @@ R6. The default full lifecycle for non-trivial work MUST be documented using the
 | `learn`               | retrospective           | advice                            | surprising, repeated, failed, or large changes                                       |
 
 
+R6a. When architecture is required, the `architecture` stage MUST produce or update the architecture package defined by `specs/architecture-package-method.md` before planning continues. This workflow spec owns only stage-level routing and handoff for that method; the focused architecture package method spec owns the C4, arc42, ADR, template, and package lifecycle contract.
+
 R7. The starter kit MUST document stage expectations using the following enforcement model:
 - `advice`: recommended when useful but not required for every eligible change;
 - `default`: expected for normal non-trivial work unless explicitly waived;

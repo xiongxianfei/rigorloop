@@ -179,6 +179,25 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
             "docs/architecture/2026-04-20-valid-architecture.md",
         )
 
+    def test_valid_canonical_arc42_architecture_passes(self) -> None:
+        self.assertFixturePasses(
+            "valid-canonical-arc42-architecture",
+            "docs/architecture/system/architecture.md",
+        )
+
+    def test_canonical_architecture_compatibility_does_not_enforce_package_shape(self) -> None:
+        self.assertFixturePasses(
+            "canonical-architecture-lifecycle-only",
+            "docs/architecture/system/architecture.md",
+        )
+
+    def test_canonical_arc42_contract_is_path_scoped(self) -> None:
+        self.assertFixtureFails(
+            "invalid-canonical-arc42-legacy-path",
+            "docs/architecture/2026-04-20-canonical-shaped-architecture.md",
+            "missing required 'Related artifacts' section",
+        )
+
     def test_valid_adr_passes(self) -> None:
         self.assertFixturePasses(
             "valid-adr",

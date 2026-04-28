@@ -482,6 +482,16 @@ def _apply_path_selection(
         )
         return
 
+    if category == "architecture-diagram":
+        architecture_doc = _architecture_doc_for_diagram(path)
+        _add_check(
+            selected,
+            "artifact_lifecycle.validate",
+            "Changed architecture diagram requires validation of its architecture package context.",
+            path=architecture_doc or path,
+        )
+        return
+
     if category == "plan-index":
         context_paths = _plan_index_context_paths(changed_paths)
         if not context_paths:
@@ -545,6 +555,14 @@ def _apply_path_selection(
             selected,
             "artifact_lifecycle.regression",
             "Changed artifact lifecycle validator requires lifecycle regression fixtures.",
+        )
+        return
+
+    if category == "artifact-lifecycle-fixtures":
+        _add_check(
+            selected,
+            "artifact_lifecycle.regression",
+            "Changed artifact lifecycle fixture requires lifecycle regression fixtures.",
         )
         return
 
@@ -686,6 +704,8 @@ def _build_result(
 
 def _path_category(path: str) -> str | None:
     parts = path.split("/")
+    if path.startswith("tests/fixtures/artifact-lifecycle/"):
+        return "artifact-lifecycle-fixtures"
     if path.startswith("skills/"):
         return "skills"
     if path.startswith(".codex/skills/"):
@@ -723,11 +743,13 @@ def _path_category(path: str) -> str | None:
             return "change-metadata"
         if parts[3] in {"review-log.md", "review-resolution.md"} or parts[3] == "reviews":
             return "review-artifacts"
-        if parts[3] == "explain-change.md":
+        if parts[3] in {"explain-change.md", "architecture.md"} or parts[3] == "diagrams":
             return "change-local-lifecycle"
         return "change-local-unsupported"
     if path == "docs/plan.md":
         return "plan-index"
+    if path.startswith("docs/architecture/") and path.endswith(".mmd"):
+        return "architecture-diagram"
     if _is_lifecycle_path(path):
         return "lifecycle"
     if path.startswith("docs/releases/"):
@@ -770,6 +792,19 @@ def _change_root_change_yaml(path: str) -> str | None:
     if root:
         return f"{root}change.yaml"
     return None
+
+
+def _architecture_doc_for_diagram(path: str) -> str | None:
+    parts = path.split("/")
+    if len(parts) < 4 or parts[0] != "docs" or parts[1] != "architecture":
+        return None
+    try:
+        diagrams_index = parts.index("diagrams")
+    except ValueError:
+        return None
+    if diagrams_index <= 2:
+        return None
+    return "/".join([*parts[:diagrams_index], "architecture.md"])
 
 
 def _plan_index_context_paths(changed_paths: tuple[str, ...]) -> list[str]:

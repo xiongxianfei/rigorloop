@@ -68,6 +68,15 @@ ARCHITECTURE_CONTRACT = ArtifactContract(
     required_sections=("Related artifacts", "Summary", "Requirements covered", "Proposed architecture", "Interfaces and contracts"),
 )
 
+CANONICAL_ARCHITECTURE_CONTRACT = ArtifactContract(
+    class_name="architecture",
+    allowed_statuses=ARCHITECTURE_CONTRACT.allowed_statuses,
+    settlement_statuses=ARCHITECTURE_CONTRACT.settlement_statuses,
+    terminal_statuses=ARCHITECTURE_CONTRACT.terminal_statuses,
+    # First-slice compatibility is lifecycle-only; package-shape checks remain review-based.
+    required_sections=(),
+)
+
 ADR_CONTRACT = ArtifactContract(
     class_name="adr",
     allowed_statuses=frozenset(
@@ -103,6 +112,8 @@ def classify_artifact(relative_path: Path, text: str | None = None) -> ArtifactC
         if _is_lifecycle_managed_spec(text):
             return SPEC_CONTRACT
         return None
+    if path_text == "docs/architecture/system/architecture.md":
+        return CANONICAL_ARCHITECTURE_CONTRACT
     if path_text.startswith("docs/architecture/") and name.endswith(".md"):
         return ARCHITECTURE_CONTRACT
     if path_text.startswith("docs/adr/") and name.endswith(".md"):
