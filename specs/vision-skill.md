@@ -256,6 +256,10 @@ R77. An explicit vision-conflict exception MUST be recorded in both the proposal
 
 R78. If a proposal with an explicit vision-conflict exception is part of a non-trivial change, the exception SHOULD also be summarized in `explain-change.md`.
 
+R79. `README.md` MUST be classified as a supported `readme` validation surface when it is touched by the vision-skill implementation.
+
+R80. Selector routing MUST select lightweight README validation for changed `README.md`, and MUST select vision marker validation when a standalone vision marker block is present or when the `vision` skill is in scope.
+
 ## Inputs and outputs
 
 Inputs:
@@ -282,6 +286,7 @@ Outputs:
 - Adding the skill and creating the initial vision are separate actions.
 - Content outside README vision markers remains author-owned.
 - Generated skill and adapter output remains derived from canonical authored skill sources.
+- `README.md` is a classified validation surface for this implementation, not a PR-mode `unclassified-path` blocker.
 
 ## Error and boundary behavior
 
@@ -306,7 +311,7 @@ Rollback removes the canonical `vision` skill, reverts proposal/proposal-review 
 
 The skill's normal response follows R56 through R60. For revise mode, the response states whether the revision was substantive or editorial when that classification was determined.
 
-Validation output remains the existing repository-owned skill, generated-output, adapter, lifecycle, and selector validation output.
+Validation output remains the existing repository-owned skill, generated-output, adapter, lifecycle, README, and selector validation output.
 
 ## Security and privacy
 
@@ -353,7 +358,7 @@ No runtime performance behavior is introduced. Evidence collection behavior is g
 - AC6. Generated `.codex/skills/` output is synchronized through `scripts/build-skills.py`.
 - AC7. Generated `dist/adapters/` output is synchronized through `scripts/build-adapters.py`.
 - AC8. README marker ownership is documented in the skill without requiring a helper script.
-- AC9. Existing validation selectors identify the changed skill, generated-output, lifecycle, and workflow surfaces without requiring broad smoke unless an authoritative trigger adds it.
+- AC9. Existing validation selectors identify the changed skill, generated-output, lifecycle, workflow, and README surfaces without requiring broad smoke unless an authoritative trigger adds it; `README.md` must not block PR-mode CI as `unclassified-path`.
 - AC10. `CONSTITUTION.md`, `AGENTS.md`, and applicable workflow or README ownership guidance document the `vision.md` source-of-truth boundary.
 - AC11. README marker insertion behavior is deterministic and preserves content outside the generated marker block.
 - AC12. Proposal-review explicit exceptions for vision conflicts include owner or stage, evidence, rationale against proposal and vision revision, recording location, and future-trigger classification.

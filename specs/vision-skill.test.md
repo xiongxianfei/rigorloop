@@ -18,7 +18,7 @@
 - Contract tests inspect authored Markdown surfaces because the first implementation is a skill and governance change, not a new executable README mirror helper.
 - Skill validation uses `python scripts/validate-skills.py`, `python scripts/test-skill-validator.py`, and focused content scans to prove the canonical `vision`, `proposal`, and `proposal-review` skills carry the required behavior.
 - Generated-output integration uses existing generator and adapter checks so `.codex/skills/` and `dist/adapters/` remain derived from canonical `skills/`.
-- Selector and lifecycle tests use existing repository-owned scripts to prove supported paths are classified, `README.md` remains an explicit manual route while unclassified, broad smoke is honored from the active plan, and final closeout validates every authoritative lifecycle artifact.
+- Selector and lifecycle tests use existing repository-owned scripts to prove supported paths are classified, `README.md` routes as a lightweight `readme` surface instead of an unclassified blocker, broad smoke is honored from the active plan, and final closeout validates every authoritative lifecycle artifact.
 - Manual verification is limited to README ownership wording and marker-behavior wording because no README mirror helper is implemented in this slice.
 
 ## Requirement coverage map
@@ -35,6 +35,7 @@
 | `R61`-`R64` | `T5`, `T12` | Sensitive information and external research boundaries are documented in the skill. |
 | `R65`-`R68` | `T5`, `T12` | Plain Markdown and bounded-read behavior are documented in the skill. |
 | `R69`-`R74` | `T4`, `T12` | README marker insertion and edit-boundary behavior are documented in the skill. |
+| `R79`-`R80` | `T9`, `T12` | README selector routing selects lightweight README validation and marker validation when marker state or vision-skill scope requires it. |
 
 ## Example coverage map
 
@@ -60,7 +61,8 @@
 - Mirror mode finds README front-matter already current: `T2`
 - Generated adapter output omits portable `vision` skill: `T8`
 - Legacy proposal lacks `Vision fit`: `T6`
-- `README.md` remains selector-unclassified in v1: `T9`
+- `README.md` is touched in PR mode with the vision skill in scope: `T9`
+- `README.md` has no standalone marker block but mentions marker strings inline: `T9`, `T11`
 
 ## Acceptance criteria coverage map
 
@@ -219,7 +221,7 @@
   - Agents can follow conflicting precedence, lifecycle, or README ownership guidance.
 - Automation location:
   - Focused `rg` scans plus manual review
-  - `python scripts/select-validation.py --mode explicit --path README.md` as expected blocked selector inspection with manual route
+  - `python scripts/select-validation.py --mode explicit --path README.md` confirms `README.md` is classified as `readme`
 
 ### T8. Generated Codex and adapter outputs are refreshed only through existing generators
 
@@ -245,9 +247,9 @@
 - Automation location:
   - Existing generated-output and adapter commands from M3 and M4
 
-### T9. Selector routing proves classified paths and README manual routing
+### T9. Selector routing proves classified paths and README validation routing
 
-- Covers: `AC9`, EC11
+- Covers: `R79`-`R80`, `AC9`, EC11
 - Level: integration
 - Fixture/setup:
   - changed canonical skill, governance, generated-output, lifecycle, and README paths
@@ -255,15 +257,18 @@
   - Run `python scripts/test-select-validation.py`.
   - Run selector explicit mode for canonical governance and skill paths listed in M2.
   - Run selector explicit mode for generated paths listed in M3.
-  - Run `python scripts/select-validation.py --mode explicit --path README.md` and record the expected blocked `unclassified-path` result.
-  - Use the documented manual route for README: `git diff --check -- README.md` plus review against `R51`, `R54`, `R55`, and `AC10`.
+  - Run `python scripts/select-validation.py --mode explicit --path README.md` and confirm `readme.validate` is selected without `unclassified-path`.
+  - Run PR-mode selector coverage that includes `README.md` and `skills/vision/SKILL.md`, and confirm `readme.validate` and `readme.vision_markers` are selected without blocking.
+  - Run `python scripts/validate-readme.py README.md` and `python scripts/validate-readme.py README.md --vision-markers`.
+  - Continue manual review of README ownership wording against `R51`, `R54`, `R55`, and `AC10`.
 - Expected result:
-  - Classified paths select the expected repository-owned checks, while README remains a deliberate manual route in v1.
+  - Classified paths select the expected repository-owned checks, `README.md` routes as `readme`, and marker validation runs when the marker block is present or the vision skill is in scope.
 - Failure proves:
-  - Validation routing either misses changed surfaces or pretends unclassified README edits are covered by selected CI.
+  - Validation routing either misses changed surfaces or lets approved README edits block PR-mode CI as `unclassified-path`.
 - Automation location:
   - `python scripts/test-select-validation.py`
   - `python scripts/select-validation.py --mode explicit ...`
+  - `python scripts/validate-readme.py`
 
 ### T10. Change metadata and lifecycle validation include the matching test spec
 
@@ -332,7 +337,7 @@
 - If implementation adds focused regression assertions, place them in existing repository-owned test modules such as `scripts/test-skill-validator.py` rather than adding a new validator.
 - Generated-output tests use existing adapter fixtures under `tests/fixtures/adapters/`.
 - Skill validation tests use existing skill fixtures under `tests/fixtures/skills/` when fixture changes are needed.
-- Manual README proof uses the real `README.md` diff because no mirror helper script exists in this slice.
+- README proof uses the real `README.md` diff plus lightweight README validation because no mirror helper script exists in this slice.
 
 ## Mocking/stubbing policy
 
@@ -343,7 +348,7 @@
 ## Migration or compatibility tests
 
 - Existing proposals remain valid without `Vision fit` until substantively revised; verify by inspecting proposal/proposal-review guidance rather than rewriting old proposals.
-- Existing README content remains author-owned outside future vision markers; verify by diff review and `git diff --check -- README.md`.
+- Existing README content remains author-owned outside future vision markers; verify by diff review, `python scripts/validate-readme.py README.md --vision-markers`, and `git diff --check -- README.md`.
 - Generated adapter compatibility is validated through `python scripts/test-adapter-distribution.py`, `python scripts/build-adapters.py --version 0.1.1 --check`, and `python scripts/validate-adapters.py --version 0.1.1`.
 - Existing lifecycle order remains unchanged; verify `docs/workflows.md` and relevant skill guidance do not insert `vision` into the normal lifecycle chain.
 
@@ -370,6 +375,7 @@
 - Confirm no root `vision.md` exists after M1 and M4.
 - Confirm README has no generated vision front-matter inserted by this implementation.
 - Confirm README ownership wording is clear enough for future marker-bounded generation.
+- Confirm `README.md` is classified as `readme` and does not block PR-mode selector routing as `unclassified-path`.
 - Confirm proposal and proposal-review guidance uses exactly the approved `Vision fit` values.
 - Confirm governance wording keeps `CONSTITUTION.md` above `vision.md` and README front-matter below `vision.md`.
 - Confirm generated adapter manifest includes `vision` as a portable skill but does not add an opencode command alias unless the existing alias policy includes it.
@@ -385,7 +391,7 @@
 
 ## Uncovered gaps
 
-- None. Requirements are covered by contract checks, existing repository-owned validation commands, generated-output integration checks, selector inspection, manual README review, or final closeout validation.
+- None. Requirements are covered by contract checks, existing repository-owned validation commands, generated-output integration checks, README validation, selector inspection, manual README review, or final closeout validation.
 
 ## Next artifacts
 

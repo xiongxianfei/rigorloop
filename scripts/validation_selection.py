@@ -89,6 +89,16 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "python scripts/validate-release.py --version <version>",
         "release",
     ),
+    "readme.validate": CheckCatalogEntry(
+        "readme.validate",
+        "python scripts/validate-readme.py README.md",
+        "readme",
+    ),
+    "readme.vision_markers": CheckCatalogEntry(
+        "readme.vision_markers",
+        "python scripts/validate-readme.py README.md --vision-markers",
+        "readme",
+    ),
     "selector.regression": CheckCatalogEntry(
         "selector.regression",
         "python scripts/test-select-validation.py",
@@ -297,6 +307,13 @@ def select_validation(request: SelectionRequest) -> SelectionResult:
             affected_roots=affected_roots,
             blocking_results=blocking_results,
             release_versions=release_versions,
+        )
+
+    if _readme_marker_validation_required(tuple(changed_paths), repo_root=repo_root):
+        _add_check(
+            selected,
+            "readme.vision_markers",
+            "README vision markers require marker-boundary validation.",
         )
 
     broad_smoke_sources = _broad_smoke_sources(request, changed_paths=changed_paths, repo_root=repo_root)
@@ -533,6 +550,10 @@ def _apply_path_selection(
         _add_check(selected, "release.validate", "Changed release artifact requires release validation.", version=version)
         return
 
+    if category == "readme":
+        _add_check(selected, "readme.validate", "Changed README requires lightweight README validation.")
+        return
+
     if category in {"selector", "ci-wrapper"}:
         reason = (
             "Changed CI wrapper requires selector and wrapper regression fixtures."
@@ -704,6 +725,8 @@ def _build_result(
 
 def _path_category(path: str) -> str | None:
     parts = path.split("/")
+    if path == "README.md":
+        return "readme"
     if path.startswith("tests/fixtures/artifact-lifecycle/"):
         return "artifact-lifecycle-fixtures"
     if path.startswith("skills/"):
@@ -719,7 +742,12 @@ def _path_category(path: str) -> str | None:
         "scripts/validate-adapters.py",
     }:
         return "adapters"
-    if path in {"scripts/select-validation.py", "scripts/validation_selection.py", "scripts/test-select-validation.py"}:
+    if path in {
+        "scripts/select-validation.py",
+        "scripts/validation_selection.py",
+        "scripts/test-select-validation.py",
+        "scripts/validate-readme.py",
+    }:
         return "selector"
     if path == "scripts/ci.sh":
         return "ci-wrapper"
@@ -881,6 +909,39 @@ def _broad_smoke_sources(
         if source not in sources:
             sources.append(source)
     return sources
+
+
+def _readme_marker_validation_required(changed_paths: tuple[str, ...], *, repo_root: Path) -> bool:
+    readme_changed = "README.md" in changed_paths
+    return _vision_skill_in_scope(changed_paths) or (readme_changed and _readme_has_standalone_marker_block(repo_root))
+
+
+def _vision_skill_in_scope(changed_paths: tuple[str, ...]) -> bool:
+    for path in changed_paths:
+        if path == "skills/vision/SKILL.md":
+            return True
+        if path == ".codex/skills/vision/SKILL.md":
+            return True
+        if path.endswith("/skills/vision/SKILL.md") and path.startswith("dist/adapters/"):
+            return True
+        if path in {"specs/vision-skill.md", "specs/vision-skill.test.md"}:
+            return True
+        if path.endswith("vision-skill.md") and (path.startswith("docs/proposals/") or path.startswith("docs/plans/")):
+            return True
+        if path.startswith("docs/changes/") and "vision-skill" in path:
+            return True
+    return False
+
+
+def _readme_has_standalone_marker_block(repo_root: Path) -> bool:
+    readme = repo_root / "README.md"
+    if not readme.is_file():
+        return False
+    try:
+        lines = readme.read_text(encoding="utf-8").splitlines()
+    except UnicodeDecodeError:
+        return False
+    return "<!-- vision:start -->" in lines or "<!-- vision:end -->" in lines
 
 
 def _trigger_source_type(path: str) -> str | None:

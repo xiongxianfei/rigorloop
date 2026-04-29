@@ -16,6 +16,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SELECTOR = ROOT / "scripts" / "select-validation.py"
 CI = ROOT / "scripts" / "ci.sh"
+README_VALIDATOR = ROOT / "scripts" / "validate-readme.py"
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from validation_selection import (  # noqa: E402
@@ -40,6 +41,8 @@ EXPECTED_CATALOG = {
     "change_metadata.regression": "python scripts/test-change-metadata-validator.py",
     "change_metadata.validate": "python scripts/validate-change-metadata.py <change-yaml>...",
     "release.validate": "python scripts/validate-release.py --version <version>",
+    "readme.validate": "python scripts/validate-readme.py README.md",
+    "readme.vision_markers": "python scripts/validate-readme.py README.md --vision-markers",
     "selector.regression": "python scripts/test-select-validation.py",
     "broad_smoke.repo": "bash scripts/ci.sh --mode broad-smoke",
 }
@@ -425,6 +428,41 @@ class ValidationSelectionTests(unittest.TestCase):
         self.assertIn("selector.regression", selected_ids(payload))
         self.assertFalse(payload["blocking_results"])
 
+    def test_readme_path_selects_lightweight_readme_validation(self) -> None:
+        result = self.select(["README.md"])
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertIn({"path": "README.md", "category": "readme"}, payload["classified_paths"])
+        self.assertEqual(payload["unclassified_paths"], [])
+        self.assertIn("readme.validate", selected_ids(payload))
+        self.assertNotIn("readme.vision_markers", selected_ids(payload))
+        self.assertFalse(payload["blocking_results"])
+
+    def test_readme_marker_validation_is_selected_for_marker_block_or_vision_scope(self) -> None:
+        temp_root = Path(tempfile.mkdtemp(prefix="validation-selection-readme-markers-"))
+        self.addCleanupTree(temp_root)
+        (temp_root / "README.md").write_text(
+            "# Example\n\n<!-- vision:start -->\nGenerated summary.\n<!-- vision:end -->\n",
+            encoding="utf-8",
+        )
+
+        marker_result = select_validation(
+            SelectionRequest(mode="explicit", paths=("README.md",), repo_root=temp_root)
+        )
+        marker_payload = marker_result.to_json_dict()
+
+        self.assertEqual(marker_result.status, "ok")
+        self.assertTrue({"readme.validate", "readme.vision_markers"}.issubset(selected_ids(marker_payload)))
+
+        scoped_result = self.select(["README.md", "skills/vision/SKILL.md"])
+        scoped_payload = scoped_result.to_json_dict()
+
+        self.assertEqual(scoped_result.status, "ok")
+        self.assertTrue({"readme.validate", "readme.vision_markers"}.issubset(selected_ids(scoped_payload)))
+        self.assertFalse(scoped_payload["unclassified_paths"])
+        self.assertFalse(scoped_payload["blocking_results"])
+
     def test_pr_handoff_surfaces_select_deterministic_checks(self) -> None:
         result = self.select(
             [
@@ -564,6 +602,67 @@ class ValidationSelectionTests(unittest.TestCase):
             {"adapters.regression", "adapters.drift", "adapters.validate"}.issubset(selected_ids(payload))
         )
         self.assertFalse(payload["blocking_results"])
+
+    def test_pr_mode_routes_readme_without_unclassified_block(self) -> None:
+        repo = self.make_git_repo()
+        base = self.git_output(repo, "rev-parse", "HEAD")
+        (repo / "README.md").write_text("# Example\n\nVision ownership wording.\n", encoding="utf-8")
+        (repo / "skills" / "vision").mkdir(parents=True)
+        (repo / "skills" / "vision" / "SKILL.md").write_text("# Vision\n", encoding="utf-8")
+        subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True, text=True)
+        subprocess.run(
+            ["git", "commit", "-m", "add readme and vision skill"],
+            cwd=repo,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        head = self.git_output(repo, "rev-parse", "HEAD")
+
+        result = run_selector("--mode", "pr", "--base", base, "--head", head, cwd=repo)
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        payload = parse_stdout(result)
+
+        self.assertEqual(payload["status"], "ok")
+        self.assertIn({"path": "README.md", "category": "readme"}, payload["classified_paths"])
+        self.assertEqual(payload["unclassified_paths"], [])
+        self.assertTrue({"readme.validate", "readme.vision_markers"}.issubset(selected_ids(payload)))
+        self.assertFalse(payload["blocking_results"])
+
+    def test_readme_validator_accepts_absent_or_valid_standalone_marker_block(self) -> None:
+        temp_root = Path(tempfile.mkdtemp(prefix="validation-selection-readme-validator-"))
+        self.addCleanupTree(temp_root)
+        readme = temp_root / "README.md"
+        readme.write_text(
+            "# Example\n\nInline `<!-- vision:start -->` text is not a generated marker block.\n",
+            encoding="utf-8",
+        )
+
+        absent = subprocess.run(
+            [sys.executable, str(README_VALIDATOR), str(readme), "--vision-markers"],
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(absent.returncode, 0, msg=absent.stdout + absent.stderr)
+
+        readme.write_text(
+            "# Example\n\n<!-- vision:start -->\nGenerated summary.\n<!-- vision:end -->\n",
+            encoding="utf-8",
+        )
+        valid = subprocess.run(
+            [sys.executable, str(README_VALIDATOR), str(readme), "--vision-markers"],
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(valid.returncode, 0, msg=valid.stdout + valid.stderr)
+
+        readme.write_text("# Example\n\n<!-- vision:start -->\nMissing end.\n", encoding="utf-8")
+        malformed = subprocess.run(
+            [sys.executable, str(README_VALIDATOR), str(readme), "--vision-markers"],
+            capture_output=True,
+            text=True,
+        )
+        self.assertNotEqual(malformed.returncode, 0)
 
     def test_ci_wrapper_executes_selector_selected_path_and_root_checks(self) -> None:
         result = run_ci(
