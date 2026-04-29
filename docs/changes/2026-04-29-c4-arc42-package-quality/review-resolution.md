@@ -4,6 +4,7 @@ Closeout status: closed
 
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m2-r1
+Review closeout: code-review-m3-r1
 
 ### code-review-m1-r1
 
@@ -17,5 +18,9 @@ Validation target: Run review-artifact validation and the M1 selected validation
 Validation evidence: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-04-29-c4-arc42-package-quality`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-29-c4-arc42-package-quality`, and `bash scripts/ci.sh --mode explicit --path templates/architecture.md --path templates/diagram-styles.mmd --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/changes/2026-04-29-c4-arc42-package-quality/reviews/code-review-m1-r1.md --path docs/changes/2026-04-29-c4-arc42-package-quality/review-log.md --path docs/changes/2026-04-29-c4-arc42-package-quality/review-resolution.md --path docs/plan.md` passed.
 
 ### code-review-m2-r1
+
+No material findings; no resolution entry required.
+
+### code-review-m3-r1
 
 No material findings; no resolution entry required.
