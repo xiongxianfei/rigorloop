@@ -1,7 +1,14 @@
 # Skill Invocation Commands for Adapter Packages Architecture
 
 ## Status
-- approved
+- archived
+
+## Closeout
+
+- Final disposition: archived/historical snapshot.
+- Canonical current architecture: `docs/architecture/system/architecture.md`.
+- Merge-back evidence: `docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md`.
+- Archive rationale: accepted current OpenCode command-alias, manifest `command_aliases`, generated command wrapper, validation, security, and release-evidence content was merged into the canonical package during legacy architecture normalization. This file preserves the historical skill invocation command design rationale and should not be used as the current architecture source for downstream work.
 
 ## Related artifacts
 
@@ -315,19 +322,15 @@ None that block execution planning.
 
 ## Next artifacts
 
-- `docs/plans/2026-04-24-skill-invocation-commands-for-adapters.md`
-- `specs/skill-invocation-commands-for-adapters.test.md`
-- Change-local artifacts under `docs/changes/2026-04-24-skill-invocation-commands-for-adapters/` during implementation.
+None for this archived record. Current architecture truth lives in `docs/architecture/system/architecture.md`.
 
 ## Follow-on artifacts
 
-- Execution plan: `docs/plans/2026-04-24-skill-invocation-commands-for-adapters.md`
-- Test spec: `specs/skill-invocation-commands-for-adapters.test.md`
+- Final disposition: archived/historical snapshot after accepted current content was merged into `docs/architecture/system/architecture.md`.
+- Historical scope: skill invocation command design rationale and original patch-release architecture context.
 
 ## Readiness
 
-Architecture review is complete and this design is approved.
+This architecture record is archived as historical evidence.
 
-The execution plan is active and the matching test spec is active.
-
-Immediate next repository stage: `implement`.
+No current downstream workflow handoff is owned by this artifact. Downstream work should use `docs/architecture/system/architecture.md` as the current architecture source, `specs/skill-invocation-commands-for-adapters.md` for the behavior contract, and `docs/adr/ADR-20260424-generated-adapter-packages.md` for the durable adapter-package decision.

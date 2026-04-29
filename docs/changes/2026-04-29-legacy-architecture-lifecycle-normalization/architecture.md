@@ -141,6 +141,23 @@ M3 merged accepted current architecture truth into `docs/architecture/system/arc
 
 The canonical sweep also removed stale current-state references to the completed architecture-method rollout plan, old M3/M4/M5 handoff text, and outdated wording that said diagrams and change-local architecture deltas were manual-routed. Current wording says those paths route to existing non-enforcement lifecycle checks while architecture sufficiency remains manual review evidence.
 
+## M4 Lifecycle Disposition
+
+M4 archived all eight top-level legacy Markdown architecture records after M3 merged their accepted current content into `docs/architecture/system/architecture.md`. The canonical package did not need another content edit in M4 because M3 already completed the current-state merge-back and selector-routing sweep; M4 only changed legacy lifecycle metadata, closeout notes, and stale lifecycle handoff sections.
+
+| Legacy architecture record | Final disposition | Current architecture source | Historical scope preserved |
+| --- | --- | --- | --- |
+| `docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md` | `archived` | `docs/architecture/system/architecture.md` plus `docs/adr/ADR-20260419-repository-source-layout.md` | first-release source-layout and generated-output rationale |
+| `docs/architecture/2026-04-20-artifact-status-lifecycle-ownership.md` | `archived` | `docs/architecture/system/architecture.md` plus `specs/artifact-status-lifecycle-ownership.md` | artifact lifecycle ownership and validator design rationale |
+| `docs/architecture/2026-04-21-docs-changes-usage-policy.md` | `archived` | `docs/architecture/system/architecture.md` plus `specs/docs-changes-usage-policy.md` | docs-changes usage policy rationale |
+| `docs/architecture/2026-04-21-workflow-stage-autoprogression.md` | `archived` | `docs/architecture/system/architecture.md` plus `specs/workflow-stage-autoprogression.md` | workflow-stage autoprogression rationale |
+| `docs/architecture/2026-04-24-multi-agent-adapter-distribution.md` | `archived` | `docs/architecture/system/architecture.md` plus `docs/adr/ADR-20260424-generated-adapter-packages.md` | multi-agent adapter distribution and release architecture rationale |
+| `docs/architecture/2026-04-24-review-finding-resolution-contract.md` | `archived` | `docs/architecture/system/architecture.md` plus `specs/review-finding-resolution-contract.md` | review finding resolution and validator design rationale |
+| `docs/architecture/2026-04-24-skill-invocation-commands-for-adapters.md` | `archived` | `docs/architecture/system/architecture.md` plus `docs/adr/ADR-20260424-generated-adapter-packages.md` | generated command-alias adapter extension rationale |
+| `docs/architecture/2026-04-25-test-layering-and-change-scoped-validation.md` | `archived` | `docs/architecture/system/architecture.md` plus `specs/test-layering-and-change-scoped-validation.md` | selector, CI wrapper, and validation-layering rationale |
+
+Each legacy record now states that it is historical evidence only and that downstream architecture work should use the canonical package rather than the legacy snapshot.
+
 ## Solution Strategy
 
 Normalize in a sequence that prevents data loss:
@@ -159,7 +176,7 @@ Normalize in a sequence that prevents data loss:
 | --- | --- | --- |
 | `docs/architecture/system/architecture.md` | Canonical architecture source of truth | updated in M3 |
 | `docs/architecture/system/diagrams/*.mmd` | Canonical C4 diagram sources | unchanged |
-| `docs/architecture/*.md` | Legacy architecture records to compare and later normalize | unchanged |
+| `docs/architecture/*.md` | Legacy architecture records to compare and later normalize | archived in M4 after M3 merge-back |
 | `docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md` | Working comparison and merge-back evidence for this change | created |
 | `docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml` | Change metadata and validation routing | created |
 | `specs/legacy-architecture-lifecycle-normalization.test.md` | Focused proof map for this follow-on | active |
@@ -223,6 +240,7 @@ The governing architecture method decision remains `docs/adr/ADR-20260428-archit
 | Legacy status changes happen too early | M0 through M3 explicitly exclude legacy architecture status edits. |
 | Later comparison misses a legacy record | M1 must refresh inventory and add one comparison row per top-level legacy Markdown record. |
 | Canonical merge-back creates false final-normalization claims | M3 records that M4 lifecycle disposition and M5 closeout remain pending. |
+| Archived legacy records are mistaken for current architecture | M4 closeout notes point downstream work to `docs/architecture/system/architecture.md`. |
 
 ## Glossary
 
@@ -279,9 +297,20 @@ The governing architecture method decision remains `docs/adr/ADR-20260428-archit
 - Forbidden automation check: M3 did not add validators, dependencies, command output changes, command exit behavior changes, or package-shape enforcement.
 - T9 security/readability inspection: touched artifacts use repository-relative paths and contain no secrets, credentials, tokens, private keys, or machine-local debug-only data.
 
+## M4 Evidence
+
+- Same-slice requirements: `R63`-`R66`, `R73`-`R75`.
+- Same-slice tests: `T7`, `T8`, `T9`.
+- Legacy Markdown records archived: 8.
+- Canonical architecture edits: none; M3 already completed accepted current-content merge-back.
+- C4 diagram edits: none; lifecycle disposition does not change actors, system boundary, or container boundary.
+- Historical body content preservation: M4 edits are limited to status metadata, closeout notes, canonical package references, stale `Next artifacts` cleanup, stale `Follow-on artifacts` cleanup, and terminal readiness wording.
+- Current source-of-truth pointer: every archived legacy record points to `docs/architecture/system/architecture.md`.
+- T9 security/readability inspection: touched artifacts use repository-relative paths and contain no secrets, credentials, private keys, or machine-local debug-only data.
+
 ## Next Artifacts
 
-- M4 legacy lifecycle disposition after M3 code-review.
+- M5 final closeout after M4 code-review.
 
 ## Follow-on Artifacts
 
@@ -289,4 +318,4 @@ The governing architecture method decision remains `docs/adr/ADR-20260428-archit
 
 ## Readiness
 
-This change-local architecture delta has completed the M3 canonical merge-back slice. It is ready for M3 code-review; M4 legacy lifecycle disposition may start only after that review passes.
+This change-local architecture delta has completed the M4 legacy lifecycle disposition slice. It is ready for M4 code-review; final closeout remains pending in M5.

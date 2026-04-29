@@ -1,7 +1,14 @@
 # Artifact Status Lifecycle Ownership Design
 
 ## Status
-- approved
+- archived
+
+## Closeout
+
+- Final disposition: archived/historical snapshot.
+- Canonical current architecture: `docs/architecture/system/architecture.md`.
+- Merge-back evidence: `docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md`.
+- Archive rationale: accepted current lifecycle-validator, artifact-local status, scope-resolution, block-versus-warning, and CI-integration content was merged into the canonical package during legacy architecture normalization. This file preserves the historical lifecycle ownership design rationale and should not be used as the current architecture source for downstream work.
 
 ## Related artifacts
 
@@ -445,8 +452,6 @@ Rejected.
 
 ## Readiness
 
-This architecture is approved.
+This architecture record is archived as historical evidence.
 
-Architecture review is complete. No further architecture-review-stage action is pending for this artifact.
-
-No separate ADR is required before planning. The next stage should be `plan`, followed by `test-spec` and implementation.
+No current downstream workflow handoff is owned by this artifact. Downstream work should use `docs/architecture/system/architecture.md` as the current architecture source and the related spec or ADR for the lifecycle contract.

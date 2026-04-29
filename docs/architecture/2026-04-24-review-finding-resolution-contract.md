@@ -2,7 +2,14 @@
 
 ## Status
 
-- approved
+- archived
+
+## Closeout
+
+- Final disposition: archived/historical snapshot.
+- Canonical current architecture: `docs/architecture/system/architecture.md`.
+- Merge-back evidence: `docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md`.
+- Archive rationale: accepted current review record, review log, review resolution, material finding closeout, and review-artifact validator boundary content was merged into the canonical package during legacy architecture normalization. This file preserves the historical review finding resolution architecture rationale and should not be used as the current architecture source for downstream work.
 
 ## Related artifacts
 
@@ -407,17 +414,15 @@ This could catch weak findings, but it is rejected for v1 because the approved c
 
 ## Next artifacts
 
-- implement
-- code-review
-- verify
+None for this archived record. Current architecture truth lives in `docs/architecture/system/architecture.md`.
 
 ## Follow-on artifacts
 
-- `docs/changes/2026-04-24-review-finding-resolution-contract/reviews/architecture-review-r1.md`
-- `docs/changes/2026-04-24-review-finding-resolution-contract/reviews/architecture-review-r2.md`
-- `docs/plans/2026-04-25-review-finding-resolution-contract.md`
-- `specs/review-finding-resolution-contract.test.md`
+- Final disposition: archived/historical snapshot after accepted current content was merged into `docs/architecture/system/architecture.md`.
+- Historical scope: review finding resolution architecture rationale, review-record shape, and original validator design context.
 
 ## Readiness
 
-Approved by `architecture-review-r2`. Plan-review approved the active plan. Test spec is active. The active plan and test spec now govern the execution lane.
+This architecture record is archived as historical evidence.
+
+No current downstream workflow handoff is owned by this artifact. Downstream work should use `docs/architecture/system/architecture.md` as the current architecture source and `specs/review-finding-resolution-contract.md` for the behavior contract.

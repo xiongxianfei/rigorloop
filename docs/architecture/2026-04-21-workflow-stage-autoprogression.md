@@ -1,7 +1,14 @@
 # Workflow Stage Autoprogression Design
 
 ## Status
-- approved
+- archived
+
+## Closeout
+
+- Final disposition: archived/historical snapshot.
+- Canonical current architecture: `docs/architecture/system/architecture.md`.
+- Merge-back evidence: `docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md`.
+- Archive rationale: accepted current lane-aware continuation, isolated direct stage, direct `pr`, and stop-condition content was merged into the canonical package during legacy architecture normalization. This file preserves the historical workflow-stage autoprogression design rationale and should not be used as the current architecture source for downstream work.
 
 ## Related artifacts
 
@@ -248,17 +255,15 @@ These questions do not block planning or implementation sequencing.
 
 ## Next artifacts
 
-- `specs/workflow-stage-autoprogression.test.md`
-- update `specs/rigorloop-workflow.md`, `docs/workflows.md`, `AGENTS.md`, and the affected canonical skills during implementation
-- `docs/plans/2026-04-21-workflow-stage-autoprogression.md`
+None for this archived record. Current architecture truth lives in `docs/architecture/system/architecture.md`.
 
 ## Follow-on artifacts
 
-- `docs/plans/2026-04-21-workflow-stage-autoprogression.md`
+- Final disposition: archived/historical snapshot after accepted current content was merged into `docs/architecture/system/architecture.md`.
+- Historical scope: workflow-stage autoprogression design rationale and original rollout context.
 
 ## Readiness
 
-- This architecture is approved.
-- Architecture review is complete.
-- The next stage is `plan`.
-- No separate ADR is required unless implementation expands into repo-owned executable workflow orchestration.
+This architecture record is archived as historical evidence.
+
+No current downstream workflow handoff is owned by this artifact. Downstream work should use `docs/architecture/system/architecture.md` as the current architecture source and `specs/workflow-stage-autoprogression.md` for the behavior contract.
