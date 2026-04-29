@@ -2,15 +2,15 @@
 
 ## Status
 
-- active
+- approved
 
-This is change-local working architecture for `2026-04-29-legacy-architecture-lifecycle-normalization`. It is not the canonical architecture package. Durable current architecture content accepted during this change must merge into `docs/architecture/system/architecture.md`; after merge-back, this file remains historical evidence only.
+Historical note: this change-local architecture delta is evidence for `2026-04-29-legacy-architecture-lifecycle-normalization`. It is not the canonical architecture package. Durable current architecture content accepted during this change has been merged into `docs/architecture/system/architecture.md`; after merge-back, this file remains historical evidence only.
 
 ## Related Artifacts
 
 - Governing spec: `specs/architecture-package-method.md`
-- Active plan: `docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md`
-- Active test spec: `specs/legacy-architecture-lifecycle-normalization.test.md`
+- Plan: `docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md`
+- Test spec: `specs/legacy-architecture-lifecycle-normalization.test.md`
 - Canonical architecture package: `docs/architecture/system/architecture.md`
 - Architecture method ADR: `docs/adr/ADR-20260428-architecture-package-method.md`
 - Change metadata: `docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml`
@@ -239,7 +239,7 @@ The governing architecture method decision remains `docs/adr/ADR-20260428-archit
 | Change-local delta is mistaken for canonical architecture | The status note and source-of-truth sections identify it as working evidence only. |
 | Legacy status changes happen too early | M0 through M3 explicitly exclude legacy architecture status edits. |
 | Later comparison misses a legacy record | M1 must refresh inventory and add one comparison row per top-level legacy Markdown record. |
-| Canonical merge-back creates false final-normalization claims | M3 records that M4 lifecycle disposition and M5 closeout remain pending. |
+| Canonical merge-back creates false final-normalization claims | M5 records final closeout only after M3 merge-back, M4 lifecycle disposition, and final validation for every changed legacy record. |
 | Archived legacy records are mistaken for current architecture | M4 closeout notes point downstream work to `docs/architecture/system/architecture.md`. |
 
 ## Glossary
@@ -308,9 +308,20 @@ The governing architecture method decision remains `docs/adr/ADR-20260428-archit
 - Current source-of-truth pointer: every archived legacy record points to `docs/architecture/system/architecture.md`.
 - T9 security/readability inspection: touched artifacts use repository-relative paths and contain no secrets, credentials, private keys, or machine-local debug-only data.
 
+## M5 Evidence
+
+- Same-slice requirements: `R63`-`R66`, `R73`-`R75`.
+- Same-slice tests: `T10`, `T11`, `T12`.
+- Final inventory count: 11 current files under `docs/architecture/`.
+- Legacy Markdown records revalidated: 8 archived records.
+- Canonical baseline freshness: `docs/architecture/system/architecture.md` no longer says M4 lifecycle disposition or M5 closeout is pending.
+- Plan/index lifecycle: `docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md` is `done` and `docs/plan.md` lists the plan under Done.
+- Explanation artifact: `docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/explain-change.md` links the problem, spec, plan, canonical package updates, legacy dispositions, tests, and validation evidence.
+- Broad smoke: not run for M5 because selector output did not include `broad_smoke.repo`.
+
 ## Next Artifacts
 
-- M5 final closeout after M4 code-review.
+- None yet.
 
 ## Follow-on Artifacts
 
@@ -318,4 +329,4 @@ The governing architecture method decision remains `docs/adr/ADR-20260428-archit
 
 ## Readiness
 
-This change-local architecture delta has completed the M4 legacy lifecycle disposition slice. It is ready for M4 code-review; final closeout remains pending in M5.
+This change-local architecture delta has completed M5 final closeout. It is historical evidence only; downstream architecture work should use `docs/architecture/system/architecture.md` as the current canonical architecture package.

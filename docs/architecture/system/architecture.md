@@ -43,7 +43,7 @@ The goals are:
 - `.codex/skills/` and `dist/adapters/` are generated output and must not be hand-edited.
 - `docs/releases/<version>/release.yaml` and `docs/releases/<version>/release-notes.md` are authored release evidence, not generated release-note substitutes.
 - First implementation remains review-based for architecture package completeness; required package-shape, C4-file, and ADR-presence enforcement automation is deferred.
-- Legacy documents under `docs/architecture/` remain valid historical or legacy artifacts until a follow-on normalization artifact classifies them.
+- Top-level legacy documents under `docs/architecture/*.md` are archived historical artifacts after accepted current content has been merged into this canonical package.
 
 ## Context and Scope
 
@@ -56,7 +56,7 @@ The canonical scope includes:
 - repository-owned validation and generation scripts;
 - generated Codex runtime skills, public adapter packages, adapter manifests, and command aliases;
 - authored release metadata, tracked release notes, and maintainer smoke evidence;
-- legacy architecture documents that still need lifecycle normalization.
+- archived legacy architecture documents that remain historical evidence after lifecycle normalization.
 
 The canonical scope excludes runtime application infrastructure, databases, service APIs, and production telemetry because this repository is a workflow and adapter starter kit rather than a deployed service.
 
@@ -85,7 +85,7 @@ This strategy keeps the method practical for normal contributors while making ar
 | Artifact validators | Validate lifecycle artifacts, change metadata, review artifacts, adapter packages, release metadata, and generated drift | `scripts/validate-artifact-lifecycle.py`, `scripts/validate-change-metadata.py`, `scripts/validate-review-artifacts.py`, `scripts/build-adapters.py --check`, `scripts/validate-adapters.py`, `scripts/validate-release.py`, `scripts/release-verify.sh` |
 | Generated runtime mirrors and adapters | Derived guidance for Codex and public adapter packages | `.codex/skills/`, `dist/adapters/`, `dist/adapters/manifest.yaml`, `dist/adapters/opencode/.opencode/commands/` |
 | Release evidence | Authored release contract, notes, and smoke evidence | `docs/releases/<version>/release.yaml`, `docs/releases/<version>/release-notes.md` |
-| Legacy architecture documents | Previously approved architecture records awaiting normalization classification | `docs/architecture/*.md` |
+| Legacy architecture documents | Archived historical records whose accepted current content has been merged into the canonical package | `docs/architecture/*.md` |
 
 See `docs/architecture/system/diagrams/container.mmd` for the C4 container view.
 
@@ -177,14 +177,14 @@ Architecture artifacts and diagrams must not include secrets, credentials, priva
 
 ### Legacy architecture handling
 
-Existing legacy architecture documents remain in place until the follow-on normalization artifact inventories and classifies each one. Until then, the repository must not claim that every older architecture artifact has already been normalized into this package.
+The legacy normalization follow-on inventoried every current `docs/architecture/` file, merged accepted current content into this package, and archived the eight top-level legacy Markdown records. Those legacy records remain historical evidence only; downstream architecture work uses this canonical package.
 
 ## Architecture Decisions
 
 - `docs/adr/ADR-20260428-architecture-package-method.md` records the durable decision to adopt C4 plus official arc42 plus ADRs, one canonical architecture package, change-local deltas for architecture-significant work, templates under `templates/`, Mermaid source diagrams for the first implementation, and review-based first adoption.
 - `docs/adr/ADR-20260419-repository-source-layout.md` records the repository source layout decision that separates canonical sources from generated runtime output.
 - `docs/adr/ADR-20260424-generated-adapter-packages.md` records the generated adapter package boundary that this method preserves.
-- No new ADR is created by the legacy normalization M3 merge-back because it documents current architecture truth without changing source layout, adapter generation or packaging, validation architecture, release architecture, or workflow-stage behavior. Existing approved specs and legacy architecture records remain the historical evidence for those prior implementation choices until M4 assigns final legacy lifecycle disposition.
+- No new ADR is created by the legacy normalization merge-back because it documents current architecture truth without changing source layout, adapter generation or packaging, validation architecture, release architecture, or workflow-stage behavior. Existing approved specs and archived legacy architecture records remain the historical evidence for those prior implementation choices.
 
 ## Quality Requirements
 
@@ -192,7 +192,7 @@ Existing legacy architecture documents remain in place until the follow-on norma
 | --- | --- |
 | Reviewability | Architecture, diagrams, templates, and ADRs are repository text that can be reviewed in diffs. |
 | Traceability | Architecture changes link proposal, spec, plan, test spec, ADRs, and validation evidence. |
-| Compatibility | Legacy architecture records remain valid until explicitly normalized, superseded, or archived. |
+| Compatibility | Archived legacy architecture records remain valid historical evidence while current architecture truth lives in the canonical package. |
 | Proportionality | Leaf changes that do not affect architecture boundaries or decisions are not forced to update this package. |
 | Determinism | Generated skill and adapter output remains reproducible from canonical sources. |
 | Maintainability | The workflow spec stays stage-level while the focused method spec owns the detailed architecture contract. |
@@ -203,7 +203,7 @@ Existing legacy architecture documents remain in place until the follow-on norma
 
 | Risk or debt | Current handling |
 | --- | --- |
-| Legacy architecture documents can confuse contributors before normalization is complete | The legacy normalization plan inventories, compares, merges current content, and then assigns final lifecycle disposition. |
+| Archived legacy architecture documents can be mistaken for current architecture truth | Each archived record points to this canonical package, and final closeout validation covers every changed legacy document. |
 | First implementation relies on review rather than structural package enforcement | Approved spec intentionally defers enforcement automation until a real package proves the shape. |
 | C4 context and container views may be too coarse for future module-level changes | Add component diagrams only when container-level structure no longer explains affected responsibilities. |
 | Change-local deltas could become competing sources if merge-back is skipped | Architecture-review, code-review, and verify must treat unmerged durable architecture truth as incomplete. |
@@ -222,8 +222,7 @@ Existing legacy architecture documents remain in place until the follow-on norma
 
 ## Next artifacts
 
-- M4 legacy architecture lifecycle disposition in `docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md`.
-- M5 final closeout for the legacy normalization plan.
+- None yet.
 
 ## Follow-on artifacts
 
@@ -231,4 +230,4 @@ Existing legacy architecture documents remain in place until the follow-on norma
 
 ## Readiness
 
-This package is the current canonical architecture baseline after legacy-domain merge-back. Legacy top-level architecture records still require M4 lifecycle disposition and M5 final closeout before the repository may claim all legacy architecture artifacts are normalized.
+This package is the current canonical architecture baseline after legacy-domain merge-back and M5 closeout. The eight top-level legacy architecture records are archived historical evidence, and downstream architecture work should use this package as the current source.
