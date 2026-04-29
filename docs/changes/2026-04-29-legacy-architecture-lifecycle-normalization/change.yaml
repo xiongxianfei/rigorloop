@@ -1,0 +1,259 @@
+change_id: 2026-04-29-legacy-architecture-lifecycle-normalization
+title: Normalize legacy architecture lifecycle records
+classification: planned
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-04-28-architecture-skills-c4-arc42-adr.md
+  spec: specs/architecture-package-method.md
+  architecture: docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md
+  adr: docs/adr/ADR-20260428-architecture-package-method.md
+  plan: docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+  test_spec: specs/legacy-architecture-lifecycle-normalization.test.md
+  explain_change: docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/explain-change.md
+canonical_artifacts:
+  architecture_package: docs/architecture/system/architecture.md
+requirements:
+  - specs/architecture-package-method.md R37-R39
+  - specs/architecture-package-method.md R44-R48
+  - specs/architecture-package-method.md R63-R66
+  - specs/architecture-package-method.md R72
+  - specs/architecture-package-method.md R73-R75
+tests:
+  - specs/legacy-architecture-lifecycle-normalization.test.md T1
+  - specs/legacy-architecture-lifecycle-normalization.test.md T2
+  - specs/legacy-architecture-lifecycle-normalization.test.md T3
+  - specs/legacy-architecture-lifecycle-normalization.test.md T4
+  - specs/legacy-architecture-lifecycle-normalization.test.md T5
+  - specs/legacy-architecture-lifecycle-normalization.test.md T6
+  - specs/legacy-architecture-lifecycle-normalization.test.md T7
+  - specs/legacy-architecture-lifecycle-normalization.test.md T8
+  - specs/legacy-architecture-lifecycle-normalization.test.md T9
+  - specs/legacy-architecture-lifecycle-normalization.test.md T10
+  - specs/legacy-architecture-lifecycle-normalization.test.md T11
+  - specs/legacy-architecture-lifecycle-normalization.test.md T12
+validation:
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml
+    result: fail_expected_before_m0_missing_change_yaml
+    reason: T1 red proof before creating the M0 change-local metadata surface.
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path specs/legacy-architecture-lifecycle-normalization.test.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_m0
+    reason: Selected artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate; broad smoke was not required.
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml
+    result: pass_after_m0
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_after_m0
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path specs/legacy-architecture-lifecycle-normalization.test.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/plan.md
+    result: pass_after_m0
+  - command: git diff --check -- docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization specs/legacy-architecture-lifecycle-normalization.test.md docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_m0
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path specs/legacy-architecture-lifecycle-normalization.test.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_m0
+    reason: Executed the selected artifact lifecycle and change metadata checks.
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization
+    result: pass_after_code_review_r1_fix
+    reason: Preserved and closed the material M0 code-review finding after adding the canonical architecture package citation.
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-log.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-resolution.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r1.md --path specs/legacy-architecture-lifecycle-normalization.test.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_code_review_r1_fix
+    reason: Selected review_artifacts.validate, artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate; broad smoke was not required.
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-log.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-resolution.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r1.md --path specs/legacy-architecture-lifecycle-normalization.test.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_code_review_r1_fix
+    reason: Executed the selected review artifact, artifact lifecycle, and change metadata checks.
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization
+    result: pass_after_code_review_r2_fix
+    reason: Preserved and closed the material M0 code-review finding after adding the proposal citation.
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-log.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-resolution.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r1.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r2.md --path specs/legacy-architecture-lifecycle-normalization.test.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_code_review_r2_fix
+    reason: Selected review_artifacts.validate, artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate; broad smoke was not required.
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-log.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-resolution.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r1.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r2.md --path specs/legacy-architecture-lifecycle-normalization.test.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_code_review_r2_fix
+    reason: Executed the selected review artifact, artifact lifecycle, and change metadata checks.
+  - command: while IFS= read -r path; do rg -F -q "$path" docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md || printf 'missing-from-delta %s\n' "$path"; done < <(find docs/architecture -maxdepth 1 -type f -name '*.md' | sort)
+    result: gap_expected_before_m1
+    reason: T2 red proof before adding one comparison row per top-level legacy Markdown architecture record.
+  - command: find docs/architecture -type f | sort
+    result: pass_after_m1
+    reason: Listed 11 current architecture files.
+  - command: while IFS= read -r path; do rg -F -q "$path" docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md || printf 'missing-from-plan %s\n' "$path"; done < <(find docs/architecture -type f | sort)
+    result: pass_after_m1
+    reason: Produced no output; every current architecture path appears in the active plan.
+  - command: while IFS= read -r path; do rg -F -q "$path" docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md || printf 'missing-from-delta %s\n' "$path"; done < <(find docs/architecture -maxdepth 1 -type f -name '*.md' | sort)
+    result: pass_after_m1
+    reason: Produced no output; every top-level legacy Markdown architecture record appears in the change-local comparison matrix.
+  - command: python scripts/select-validation.py --mode explicit --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml
+    result: pass_after_m1
+    reason: Selected artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate; broad smoke was not required.
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml
+    result: pass_after_m1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml
+    result: pass_after_m1
+  - command: git diff --check -- docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization
+    result: pass_after_m1
+  - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml
+    result: pass_after_m1
+    reason: Executed selected artifact lifecycle and change metadata checks.
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization
+    result: pass_after_code_review_r3_fix
+    reason: Preserved and closed the material M1 code-review finding after updating the stale readiness handoff paragraph.
+  - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-log.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-resolution.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r3.md
+    result: pass_after_code_review_r3_fix
+    reason: Executed selected review artifact, artifact lifecycle, and change metadata checks.
+  - command: rg -n "M2 Domain Comparison" docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md
+    result: gap_expected_before_m2
+    reason: T3 red proof before adding domain comparison, merge-back, ADR, and disposition recommendations.
+  - command: python scripts/select-validation.py --mode explicit --path docs/architecture/system/diagrams/context.mmd --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md
+    result: pass_after_m2
+    reason: Selector inspection classified the diagram as architecture-diagram and the delta as change-local-lifecycle, selecting artifact_lifecycle.validate only.
+  - command: rg -n "source layout|generated|adapter|workflow|lifecycle|review|validation|selector|CI|ADR|merge-back|historical-only" docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md
+    result: pass_after_m2
+    reason: Found the M2 domain comparison vocabulary needed by T3.
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_m2
+    reason: Selected artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate; broad smoke was not required.
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml
+    result: pass_after_m2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_m2
+  - command: git diff --check -- docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_m2
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_m2
+    reason: Executed selected artifact lifecycle and change metadata checks.
+  - command: python -c 'from pathlib import Path; bt=chr(96); text=Path("docs/architecture/system/architecture.md").read_text(); stale=[p for p in ("docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md", "M3 "+bt+"code-review"+bt, "M3 "+bt+"verify"+bt, "M4 skill and generated-output update", "M5 legacy architecture normalization follow-on artifact before final completion claims", "diagrams and change-local architecture deltas remain manual-routed review evidence in the first adoption slice") if p in text]; assert not stale, stale'
+    result: fail_expected_before_m3
+    reason: T6 red proof before sweeping stale canonical current-state references.
+  - command: python scripts/select-validation.py --mode explicit --path docs/architecture/system/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_m3
+    reason: Selected artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate; broad smoke was not required.
+  - command: bash scripts/ci.sh --mode explicit --path docs/architecture/system/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_m3
+    reason: Executed selected artifact lifecycle and change metadata checks.
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml
+    result: pass_after_m3
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/architecture/system/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_m3
+  - command: rg -n "manual-routed|selector routing|non-enforcement|change-local architecture|\\.mmd" docs/architecture/system/architecture.md docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md
+    result: pass_after_m3
+    reason: Found current selector-routing and non-enforcement wording after the canonical sweep.
+  - command: python -c 'from pathlib import Path; bt=chr(96); text=Path("docs/architecture/system/architecture.md").read_text(); stale=[p for p in ("docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md", "M3 "+bt+"code-review"+bt, "M3 "+bt+"verify"+bt, "M4 skill and generated-output update", "M5 legacy architecture normalization follow-on artifact before final completion claims", "diagrams and change-local architecture deltas remain manual-routed review evidence in the first adoption slice") if p in text]; assert not stale, stale'
+    result: pass_after_m3
+  - command: git diff --check -- docs/architecture/system docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_m3
+  - command: python scripts/select-validation.py --mode explicit --path docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md --path docs/architecture/2026-04-20-artifact-status-lifecycle-ownership.md --path docs/architecture/2026-04-21-docs-changes-usage-policy.md --path docs/architecture/2026-04-21-workflow-stage-autoprogression.md --path docs/architecture/2026-04-24-multi-agent-adapter-distribution.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/architecture/2026-04-24-skill-invocation-commands-for-adapters.md --path docs/architecture/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/architecture/system/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml
+    result: pass_after_m4
+    reason: Selected artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate; broad smoke was not required.
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md --path docs/architecture/2026-04-20-artifact-status-lifecycle-ownership.md --path docs/architecture/2026-04-21-docs-changes-usage-policy.md --path docs/architecture/2026-04-21-workflow-stage-autoprogression.md --path docs/architecture/2026-04-24-multi-agent-adapter-distribution.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/architecture/2026-04-24-skill-invocation-commands-for-adapters.md --path docs/architecture/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/architecture/system/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml
+    result: pass_after_m4
+    reason: Validated the eight archived legacy records, canonical package, and change metadata path in explicit-paths mode.
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml
+    result: pass_after_m4
+  - command: rg -n "Status|superseded|archived|canonical architecture|docs/architecture/system/architecture.md" docs/architecture/*.md
+    result: pass_after_m4
+    reason: Found archived status, canonical package pointers, and final disposition text for every top-level legacy Markdown record.
+  - command: git diff --check -- docs/architecture docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_m4
+  - command: bash scripts/ci.sh --mode explicit --path docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md --path docs/architecture/2026-04-20-artifact-status-lifecycle-ownership.md --path docs/architecture/2026-04-21-docs-changes-usage-policy.md --path docs/architecture/2026-04-21-workflow-stage-autoprogression.md --path docs/architecture/2026-04-24-multi-agent-adapter-distribution.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/architecture/2026-04-24-skill-invocation-commands-for-adapters.md --path docs/architecture/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/architecture/system/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml
+    result: pass_after_m4
+    reason: Executed selected artifact lifecycle and change metadata checks.
+  - command: python scripts/select-validation.py --mode explicit --path docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md --path docs/architecture/2026-04-20-artifact-status-lifecycle-ownership.md --path docs/architecture/2026-04-21-docs-changes-usage-policy.md --path docs/architecture/2026-04-21-workflow-stage-autoprogression.md --path docs/architecture/2026-04-24-multi-agent-adapter-distribution.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/architecture/2026-04-24-skill-invocation-commands-for-adapters.md --path docs/architecture/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/architecture/system/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_m4
+    reason: Extra touched-surface selector proof after plan and change-local architecture evidence updates; selected artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate.
+  - command: bash scripts/ci.sh --mode explicit --path docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md --path docs/architecture/2026-04-20-artifact-status-lifecycle-ownership.md --path docs/architecture/2026-04-21-docs-changes-usage-policy.md --path docs/architecture/2026-04-21-workflow-stage-autoprogression.md --path docs/architecture/2026-04-24-multi-agent-adapter-distribution.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/architecture/2026-04-24-skill-invocation-commands-for-adapters.md --path docs/architecture/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/architecture/system/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_m4
+    reason: Extra touched-surface CI proof after plan and change-local architecture evidence updates.
+  - command: find docs/architecture -type f | sort
+    result: pass_after_m5
+    reason: Listed 11 current architecture paths for final closeout.
+  - command: while IFS= read -r path; do rg -F -q "$path" docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md || printf 'missing-from-plan %s\n' "$path"; done < <(find docs/architecture -type f | sort)
+    result: pass_after_m5
+    reason: Produced no output; every current architecture path appears in the plan inventory.
+  - command: python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/explain-change.md
+    result: pass_after_m5
+    reason: Selected artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate; broad smoke was not required.
+  - command: python scripts/select-validation.py --mode explicit --path docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md --path docs/architecture/2026-04-20-artifact-status-lifecycle-ownership.md --path docs/architecture/2026-04-21-docs-changes-usage-policy.md --path docs/architecture/2026-04-21-workflow-stage-autoprogression.md --path docs/architecture/2026-04-24-multi-agent-adapter-distribution.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/architecture/2026-04-24-skill-invocation-commands-for-adapters.md --path docs/architecture/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/architecture/system/architecture.md
+    result: pass_after_m5
+    reason: Selected artifact_lifecycle.validate only; broad smoke was not required.
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml
+    result: pass_after_m5
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_after_m5
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/explain-change.md --path specs/legacy-architecture-lifecycle-normalization.test.md --path docs/architecture/system/architecture.md
+    result: pass_after_m5
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md --path docs/architecture/2026-04-20-artifact-status-lifecycle-ownership.md --path docs/architecture/2026-04-21-docs-changes-usage-policy.md --path docs/architecture/2026-04-21-workflow-stage-autoprogression.md --path docs/architecture/2026-04-24-multi-agent-adapter-distribution.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/architecture/2026-04-24-skill-invocation-commands-for-adapters.md --path docs/architecture/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/architecture/system/architecture.md
+    result: pass_after_m5
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/explain-change.md --path docs/architecture/system/architecture.md
+    result: pass_after_m5
+    reason: Executed selected artifact lifecycle and change metadata checks.
+  - command: bash scripts/ci.sh --mode explicit --path docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md --path docs/architecture/2026-04-20-artifact-status-lifecycle-ownership.md --path docs/architecture/2026-04-21-docs-changes-usage-policy.md --path docs/architecture/2026-04-21-workflow-stage-autoprogression.md --path docs/architecture/2026-04-24-multi-agent-adapter-distribution.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/architecture/2026-04-24-skill-invocation-commands-for-adapters.md --path docs/architecture/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/architecture/system/architecture.md
+    result: pass_after_m5
+    reason: Executed selected artifact lifecycle checks for every legacy architecture document changed in M4 plus the canonical package.
+  - command: python -c 'from pathlib import Path; bt=chr(96); text=Path("docs/architecture/system/architecture.md").read_text(); stale=[p for p in ("docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md", "M3 "+bt+"code-review"+bt, "M3 "+bt+"verify"+bt, "M4 skill and generated-output update", "M5 legacy architecture normalization follow-on artifact before final completion claims", "diagrams and change-local architecture deltas remain manual-routed review evidence in the first adoption slice") if p in text]; assert not stale, stale'
+    result: pass_after_m5
+  - command: rg -n "Status|superseded|archived|canonical architecture|docs/architecture/system/architecture.md" docs/architecture/*.md
+    result: pass_after_m5
+    reason: Found archived status, canonical package pointers, and final disposition text for every top-level legacy Markdown record.
+  - command: git diff --check -- .
+    result: pass_after_m5
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/explain-change.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/plan.md --path docs/architecture/system/architecture.md
+    result: pass_after_m5
+    reason: Extra touched-surface selector proof after updating the change-local architecture delta final status and readiness.
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/explain-change.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/plan.md --path docs/architecture/system/architecture.md
+    result: pass_after_m5
+    reason: Extra touched-surface CI proof after updating the change-local architecture delta final status and readiness.
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization
+    result: pass_after_m5
+    reason: Supplemental proof that earlier material review findings remain closed after M5 metadata and explanation updates.
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization
+    result: pass_after_code_review_r4
+    reason: Validated review-log, review-resolution, and the clean M5 code-review record.
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-log.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-resolution.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r4.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_code_review_r4
+    reason: Selected review_artifacts.validate, artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate.
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-log.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-resolution.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r4.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_code_review_r4
+    reason: Executed selected review artifact, artifact lifecycle, and change metadata checks.
+  - command: python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/explain-change.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-log.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-resolution.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r4.md --path specs/legacy-architecture-lifecycle-normalization.test.md --path docs/architecture/system/architecture.md --path docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md --path docs/architecture/2026-04-20-artifact-status-lifecycle-ownership.md --path docs/architecture/2026-04-21-docs-changes-usage-policy.md --path docs/architecture/2026-04-21-workflow-stage-autoprogression.md --path docs/architecture/2026-04-24-multi-agent-adapter-distribution.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/architecture/2026-04-24-skill-invocation-commands-for-adapters.md --path docs/architecture/2026-04-25-test-layering-and-change-scoped-validation.md
+    result: pass_after_verify
+    reason: Selected review_artifacts.validate, artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate; broad smoke was not required.
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/explain-change.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-log.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-resolution.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r4.md --path specs/legacy-architecture-lifecycle-normalization.test.md --path docs/architecture/system/architecture.md --path docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md --path docs/architecture/2026-04-20-artifact-status-lifecycle-ownership.md --path docs/architecture/2026-04-21-docs-changes-usage-policy.md --path docs/architecture/2026-04-21-workflow-stage-autoprogression.md --path docs/architecture/2026-04-24-multi-agent-adapter-distribution.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/architecture/2026-04-24-skill-invocation-commands-for-adapters.md --path docs/architecture/2026-04-25-test-layering-and-change-scoped-validation.md
+    result: pass_after_verify
+    reason: Executed selected review artifact, artifact lifecycle, and change metadata checks.
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization
+    result: pass_after_verify
+  - command: find docs/architecture -type f | sort
+    result: pass_after_verify
+    reason: Listed 11 current architecture paths.
+  - command: while IFS= read -r path; do rg -F -q "$path" docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md || printf 'missing-from-plan %s\n' "$path"; done < <(find docs/architecture -type f | sort)
+    result: pass_after_verify
+    reason: Produced no output; every current architecture path remains represented in the plan inventory.
+  - command: python -c 'from pathlib import Path; bt=chr(96); text=Path("docs/architecture/system/architecture.md").read_text(); stale=[p for p in ("docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md", "M3 "+bt+"code-review"+bt, "M3 "+bt+"verify"+bt, "M4 skill and generated-output update", "M5 legacy architecture normalization follow-on artifact before final completion claims", "diagrams and change-local architecture deltas remain manual-routed review evidence in the first adoption slice") if p in text]; assert not stale, stale'
+    result: pass_after_verify
+  - command: rg -n "Status|superseded|archived|canonical architecture|docs/architecture/system/architecture.md" docs/architecture/*.md
+    result: pass_after_verify
+    reason: Found archived status, canonical package pointers, and final disposition text for every top-level legacy Markdown record.
+  - command: git diff --check HEAD~6..HEAD -- .
+    result: pass_after_verify
+changed_files:
+  - docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md
+  - docs/architecture/2026-04-20-artifact-status-lifecycle-ownership.md
+  - docs/architecture/2026-04-21-docs-changes-usage-policy.md
+  - docs/architecture/2026-04-21-workflow-stage-autoprogression.md
+  - docs/architecture/2026-04-24-multi-agent-adapter-distribution.md
+  - docs/architecture/2026-04-24-review-finding-resolution-contract.md
+  - docs/architecture/2026-04-24-skill-invocation-commands-for-adapters.md
+  - docs/architecture/2026-04-25-test-layering-and-change-scoped-validation.md
+  - docs/architecture/system/architecture.md
+  - docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml
+  - docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md
+  - docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/explain-change.md
+  - docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-log.md
+  - docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-resolution.md
+  - docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r1.md
+  - docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r2.md
+  - docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r3.md
+  - docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r4.md
+  - docs/plan.md
+  - docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+  - specs/legacy-architecture-lifecycle-normalization.test.md
+review:
+  status: verified_explained_ready_for_pr
+  unresolved_items: 0
