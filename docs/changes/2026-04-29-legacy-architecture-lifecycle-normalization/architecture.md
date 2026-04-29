@@ -110,7 +110,7 @@ M2 compares all eight top-level legacy Markdown architecture records by domain a
 
 | Legacy architecture record | M3 merge-back candidates | Historical-only content | ADR handling | Conflict or M3 handling | Disposition recommendation |
 | --- | --- | --- | --- | --- | --- |
-| `docs/architecture/2026-04-25-test-layering-and-change-scoped-validation.md` | Selector module as validation-routing source, stable check IDs, check catalog, broad-smoke trigger model, `scripts/ci.sh` execution wrapper, non-fail-open unclassified paths, and manual-proof ownership. | First-slice path-category rollout details, old selector fallback discussion, and rejected dependency-graph alternatives. | No separate ADR recommended; the legacy record treats selector routing as a spec-approved contract. M3 should record no-new-ADR rationale unless selector ownership changes. | Current selector behavior routes architecture diagrams and change-local architecture deltas to existing lifecycle validation. Canonical architecture still contains stale manual-routed wording, so M3 must correct the Runtime View validation flow. | Supersede or archive after M3 with canonical package and selector/test-layering spec as replacement. |
+| `docs/architecture/2026-04-25-test-layering-and-change-scoped-validation.md` | Selector module as validation-routing source, stable check IDs, check catalog, broad-smoke trigger model, `scripts/ci.sh` execution wrapper, non-fail-open unclassified paths, and manual-proof ownership. | First-slice path-category rollout details, old selector fallback discussion, and rejected dependency-graph alternatives. | No separate ADR recommended; the legacy record treats selector routing as a spec-approved contract. M3 should record no-new-ADR rationale unless selector ownership changes. | At M2, current selector behavior routed architecture diagrams and change-local architecture deltas to existing lifecycle validation while canonical architecture still contained stale manual-routed wording; M3 corrected the Runtime View validation flow. | Supersede or archive after M3 with canonical package and selector/test-layering spec as replacement. |
 
 ### Selector and CI Current-State Check
 
@@ -122,7 +122,24 @@ M2 also compared the validation/CI record against current `scripts/validation_se
 - `change.yaml` routes to `change_metadata.validate` and `change_metadata.regression`.
 - None of these selected checks validate C4 diagram sufficiency, arc42 section completeness, ADR presence, or architecture package shape. Those remain manual review evidence under the review-based rollout.
 
-The selector/CI comparison creates an M3 task: replace stale canonical wording that still says diagrams and change-local architecture deltas remain manual-routed, while preserving the rule that architecture sufficiency remains manual review evidence.
+The selector/CI comparison created an M3 task that is now complete: canonical wording now says diagrams and change-local architecture deltas route to existing non-enforcement lifecycle checks, while architecture sufficiency remains manual review evidence.
+
+## M3 Canonical Merge-Back
+
+M3 merged accepted current architecture truth into `docs/architecture/system/architecture.md` without changing C4 context or container boundaries. The existing C4 diagrams already contain the same repository actors and containers; the merge-back changed canonical arc42 prose only.
+
+| Legacy architecture record | Canonical merge-back result | Historical-only content left for M4 | ADR handling |
+| --- | --- | --- | --- |
+| `docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md` | Source-of-truth roots, `docs/changes/<change-id>/`, plan template, generated `.codex/skills/`, and thin CI wrapper details are represented in Architecture Constraints, Building Block View, Runtime View, Deployment View, Crosscutting Concepts, and Architecture Decisions. | First-release template context, early drift examples, and rejected larger initial layout. | Existing `ADR-20260419-repository-source-layout` remains linked. |
+| `docs/architecture/2026-04-24-multi-agent-adapter-distribution.md` | `dist/adapters/`, `scripts/adapter_templates/`, generated manifest, release metadata, tracked release notes, release verification, and generated-surface validation are represented in Context and Scope, Building Block View, Runtime View, Deployment View, Crosscutting Concepts, and Quality Requirements. | RC/final release gate details and rejected adapter-layout alternatives. | Existing `ADR-20260424-generated-adapter-packages` remains linked. |
+| `docs/architecture/2026-04-24-skill-invocation-commands-for-adapters.md` | OpenCode command aliases, curated lifecycle command wrappers, `command_aliases` manifest detail, and command-alias validation/security constraints are represented in Building Block View, Runtime View, Crosscutting Concepts, and Deployment View. | Patch-release-specific rollout details, smoke-evidence examples, and rejected command-wrapper alternatives. | Existing generated-adapter ADR is sufficient because command aliases remain an additive generated package detail. |
+| `docs/architecture/2026-04-20-artifact-status-lifecycle-ownership.md` | Artifact-local status, lifecycle validator ownership, class-specific lifecycle contracts, explicit scope modes, block-versus-warning behavior, and CI integration are represented in Building Block View, Runtime View, Crosscutting Concepts, and Quality Requirements. | Pre-implementation context, old rollout sequencing, and rejected broad schema/framework alternatives. | No new ADR: M3 documents existing validation architecture and does not change the executable lifecycle registry. Future validation-architecture changes should create or supersede an ADR when they meet `R44`-`R45`. |
+| `docs/architecture/2026-04-21-docs-changes-usage-policy.md` | Baseline `change.yaml` plus durable Markdown reasoning, default `explain-change.md`, conditional `review-resolution.md` and `verify-report.md`, and scalar artifact-map shape are represented in Building Block View and Runtime View. | Original packaging-policy motivation and old top-level explain migration context. | Existing source-layout ADR covers `docs/changes/` as authored source; no new ADR is required for this documentation merge-back. |
+| `docs/architecture/2026-04-21-workflow-stage-autoprogression.md` | Lane-aware continuation, isolated direct stage requests, direct `pr` boundary, and stop conditions are represented in Runtime View. | V1 rollout checklist and rejected executable-router alternatives. | No new ADR: M3 does not introduce executable orchestration or change workflow-stage behavior. |
+| `docs/architecture/2026-04-24-review-finding-resolution-contract.md` | Detailed review records, `review-log.md`, `review-resolution.md`, material finding closeout, and review artifact validator boundaries are represented in Building Block View, Runtime View, Crosscutting Concepts, and Quality Requirements. | Historical parser design detail, skill/generated-output update context, and rejected semantic-review automation. | No new ADR: review artifacts remain authored change-local evidence under the source-layout boundary. |
+| `docs/architecture/2026-04-25-test-layering-and-change-scoped-validation.md` | Selector ownership, stable check IDs, broad-smoke triggers, `scripts/ci.sh`, non-fail-open unclassified paths, manual proof ownership, and current architecture support path routing are represented in Runtime View and Crosscutting Concepts. | First-slice path-category rollout detail and rejected dependency-graph alternatives. | No new ADR: selector routing remains a spec-approved validation contract, and M3 does not change selector behavior. |
+
+The canonical sweep also removed stale current-state references to the completed architecture-method rollout plan, old M3/M4/M5 handoff text, and outdated wording that said diagrams and change-local architecture deltas were manual-routed. Current wording says those paths route to existing non-enforcement lifecycle checks while architecture sufficiency remains manual review evidence.
 
 ## Solution Strategy
 
@@ -138,9 +155,9 @@ Normalize in a sequence that prevents data loss:
 
 ## Building Block View
 
-| Building block | Responsibility | M0 state |
+| Building block | Responsibility | Current state |
 | --- | --- | --- |
-| `docs/architecture/system/architecture.md` | Canonical architecture source of truth | unchanged |
+| `docs/architecture/system/architecture.md` | Canonical architecture source of truth | updated in M3 |
 | `docs/architecture/system/diagrams/*.mmd` | Canonical C4 diagram sources | unchanged |
 | `docs/architecture/*.md` | Legacy architecture records to compare and later normalize | unchanged |
 | `docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md` | Working comparison and merge-back evidence for this change | created |
@@ -181,13 +198,13 @@ Legacy records remain unchanged in M0. Final legacy lifecycle status changes are
 
 ### Validation Boundary
 
-M0 validation uses existing selector, change metadata, artifact lifecycle, and whitespace checks. It does not add or require new architecture package enforcement.
+Validation uses existing selector, change metadata, artifact lifecycle, CI-wrapper, and whitespace checks. It does not add or require new architecture package enforcement.
 
 ## Architecture Decisions
 
-No new ADR is required for M0. The governing architecture method decision remains `docs/adr/ADR-20260428-architecture-package-method.md`.
+No new ADR is required for M3. M3 merged current architecture documentation only; it did not introduce or revise source layout, adapter generation or packaging, validation architecture, release architecture, or workflow-stage behavior.
 
-Later milestones must add or link ADRs if domain comparison finds durable architecture decisions not already represented.
+The governing architecture method decision remains `docs/adr/ADR-20260428-architecture-package-method.md`. The source-layout and generated-adapter decisions remain `docs/adr/ADR-20260419-repository-source-layout.md` and `docs/adr/ADR-20260424-generated-adapter-packages.md`.
 
 ## Quality Requirements
 
@@ -203,8 +220,9 @@ Later milestones must add or link ADRs if domain comparison finds durable archit
 | Risk | Mitigation |
 | --- | --- |
 | Change-local delta is mistaken for canonical architecture | The status note and source-of-truth sections identify it as working evidence only. |
-| Legacy status changes happen too early | M0 explicitly excludes legacy architecture status edits. |
+| Legacy status changes happen too early | M0 through M3 explicitly exclude legacy architecture status edits. |
 | Later comparison misses a legacy record | M1 must refresh inventory and add one comparison row per top-level legacy Markdown record. |
+| Canonical merge-back creates false final-normalization claims | M3 records that M4 lifecycle disposition and M5 closeout remain pending. |
 
 ## Glossary
 
@@ -248,9 +266,22 @@ Later milestones must add or link ADRs if domain comparison finds durable archit
 - Canonical architecture edits: none in M2.
 - T9 security/readability inspection: touched artifacts use repository-relative paths and contain no secrets, credentials, tokens, private keys, or machine-local debug-only data.
 
+## M3 Evidence
+
+- Same-slice requirements: `R37`-`R39`, `R44`-`R48`, `R63`-`R66`, `R72`-`R75`.
+- Same-slice tests: `T5`, `T6`, `T9`, `T12`.
+- Canonical package edits: `docs/architecture/system/architecture.md` updated with accepted current content from all eight legacy records.
+- C4 diagram edits: none; no actor, system boundary, or container boundary changed.
+- Legacy architecture status edits: none in M3.
+- ADR edits: none; no new durable decision was introduced or revised by this documentation merge-back.
+- Historical-only content left for M4: legacy release rollout details, old implementation sequencing, rejected alternatives, historical parser detail, old smoke examples, and first-slice path-category rollout detail remain in the legacy records.
+- Selector current-state sweep: canonical Runtime View now says architecture diagram source files and change-local architecture deltas route to existing non-enforcement lifecycle checks, while C4 sufficiency, arc42 completeness, ADR need, and package shape remain manual review evidence.
+- Forbidden automation check: M3 did not add validators, dependencies, command output changes, command exit behavior changes, or package-shape enforcement.
+- T9 security/readability inspection: touched artifacts use repository-relative paths and contain no secrets, credentials, tokens, private keys, or machine-local debug-only data.
+
 ## Next Artifacts
 
-- M3 canonical merge-back after M2 code-review.
+- M4 legacy lifecycle disposition after M3 code-review.
 
 ## Follow-on Artifacts
 
@@ -258,4 +289,4 @@ Later milestones must add or link ADRs if domain comparison finds durable archit
 
 ## Readiness
 
-This change-local architecture delta has completed the M2 domain comparison slice. It is ready for M2 code-review; M3 canonical merge-back may start only after that review passes.
+This change-local architecture delta has completed the M3 canonical merge-back slice. It is ready for M3 code-review; M4 legacy lifecycle disposition may start only after that review passes.

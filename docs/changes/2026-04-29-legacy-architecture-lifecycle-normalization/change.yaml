@@ -16,13 +16,17 @@ requirements:
   - specs/architecture-package-method.md R37-R39
   - specs/architecture-package-method.md R44-R48
   - specs/architecture-package-method.md R63-R66
+  - specs/architecture-package-method.md R72
   - specs/architecture-package-method.md R73-R75
 tests:
   - specs/legacy-architecture-lifecycle-normalization.test.md T1
   - specs/legacy-architecture-lifecycle-normalization.test.md T2
   - specs/legacy-architecture-lifecycle-normalization.test.md T3
   - specs/legacy-architecture-lifecycle-normalization.test.md T4
+  - specs/legacy-architecture-lifecycle-normalization.test.md T5
+  - specs/legacy-architecture-lifecycle-normalization.test.md T6
   - specs/legacy-architecture-lifecycle-normalization.test.md T9
+  - specs/legacy-architecture-lifecycle-normalization.test.md T12
 validation:
   - command: python scripts/validate-change-metadata.py docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml
     result: fail_expected_before_m0_missing_change_yaml
@@ -110,7 +114,28 @@ validation:
   - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
     result: pass_after_m2
     reason: Executed selected artifact lifecycle and change metadata checks.
+  - command: python -c 'from pathlib import Path; bt=chr(96); text=Path("docs/architecture/system/architecture.md").read_text(); stale=[p for p in ("docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md", "M3 "+bt+"code-review"+bt, "M3 "+bt+"verify"+bt, "M4 skill and generated-output update", "M5 legacy architecture normalization follow-on artifact before final completion claims", "diagrams and change-local architecture deltas remain manual-routed review evidence in the first adoption slice") if p in text]; assert not stale, stale'
+    result: fail_expected_before_m3
+    reason: T6 red proof before sweeping stale canonical current-state references.
+  - command: python scripts/select-validation.py --mode explicit --path docs/architecture/system/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_m3
+    reason: Selected artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate; broad smoke was not required.
+  - command: bash scripts/ci.sh --mode explicit --path docs/architecture/system/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_m3
+    reason: Executed selected artifact lifecycle and change metadata checks.
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml
+    result: pass_after_m3
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/architecture/system/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_m3
+  - command: rg -n "manual-routed|selector routing|non-enforcement|change-local architecture|\\.mmd" docs/architecture/system/architecture.md docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md
+    result: pass_after_m3
+    reason: Found current selector-routing and non-enforcement wording after the canonical sweep.
+  - command: python -c 'from pathlib import Path; bt=chr(96); text=Path("docs/architecture/system/architecture.md").read_text(); stale=[p for p in ("docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md", "M3 "+bt+"code-review"+bt, "M3 "+bt+"verify"+bt, "M4 skill and generated-output update", "M5 legacy architecture normalization follow-on artifact before final completion claims", "diagrams and change-local architecture deltas remain manual-routed review evidence in the first adoption slice") if p in text]; assert not stale, stale'
+    result: pass_after_m3
+  - command: git diff --check -- docs/architecture/system docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_m3
 changed_files:
+  - docs/architecture/system/architecture.md
   - docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml
   - docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md
   - docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-log.md
@@ -121,5 +146,5 @@ changed_files:
   - docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
   - specs/legacy-architecture-lifecycle-normalization.test.md
 review:
-  status: m2_ready_for_code_review
+  status: m3_ready_for_code_review
   unresolved_items: 0
