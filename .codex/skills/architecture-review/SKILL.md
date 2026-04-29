@@ -47,6 +47,38 @@ Check the approved package model before broader design critique:
 - Merge-back: accepted durable content from a change-local delta is represented in the canonical package before completion.
 - Legacy status: older `docs/architecture/` documents are not implied to be normalized unless the legacy normalization artifact classifies them.
 
+## Package Quality Checks
+
+Treat these as common architecture-review finding triggers:
+
+- embedded or duplicated diagram source in `architecture.md` instead of one linked authored diagram source file;
+- generic non-C4 flowchart that does not distinguish people, system under review, external systems, and containers;
+- wrong C4 level, such as internal containers shown in the system context diagram or component detail forced into the container diagram;
+- missing C4 role classes in Mermaid flowchart or graph diagrams;
+- missing technology labels where relevant for containers;
+- unlabeled relationships or relationships that mix classification with runtime or dependency flow without explanation;
+- flat Building Block View that is only a folder or source-path catalog when multiple responsibilities or containers are involved;
+- duplicated ADR rationale in arc42 section 9 instead of concise ADR links and one-line summaries;
+- weak quality-scenario content that names qualities without stimulus, environment, response, or measure;
+- Deployment View repeats source layout instead of explaining packaging, execution, generated output, release, or distribution boundaries.
+
+Add or request a component diagram only when the refined container view and Building Block View still cannot explain important internal responsibilities, boundaries, or interactions.
+
+## Finding Format
+
+Use this simple shape for architecture-review findings:
+
+```text
+Finding: <one-sentence problem>
+Location: <file path and section/line, or diagram name>
+Severity: <blocker | material | minor>
+Recommendation: <what should change>
+```
+
+Severity MUST use `blocker`, `material`, or `minor`. Do not require mandatory C4-level classification; location provides the traceability when a finding is diagram-specific.
+
+This simple architecture-review format does not replace the repository-wide material-finding contract. Material findings still require evidence, required outcome, and a safe resolution path or `needs-decision` rationale.
+
 ## Review dimensions
 
 Evaluate each with `pass`, `concern`, or `block`:

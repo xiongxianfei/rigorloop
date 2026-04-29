@@ -25,9 +25,27 @@ Read, if present:
 - research artifacts and `docs/project-map.md`
 - existing source interfaces, schemas, APIs, modules, CI, deployment config
 
-## Default Package Model
+## Output Shape
+
+Produce or update:
+
+- `docs/changes/<change-id>/architecture.md` for change-local deltas, or
+- the canonical architecture package when maintaining the baseline;
+- C4 system context diagram;
+- C4 container diagram;
+- ADRs when durable decisions are introduced.
+
+Use `templates/architecture.md` for the full 12-section arc42 structure. Use `templates/diagram-styles.mmd` for Mermaid flowchart or graph C4 role styles. Use `templates/adr.md` for ADR structure.
+
+Full worked examples, if needed, belong outside this skill body, for example in `skills/architecture/references/architecture-example.md`.
+
+## When to Use / When Not to Use
 
 Use the approved C4, arc42, and ADR method when architecture work is required.
+
+Use architecture work when the change affects multiple components, data flow, generated-output flow, deployment, packaging, adapters, quality targets, cross-cutting rules, security boundaries, or durable decisions.
+
+Do not create or update architecture artifacts for leaf changes that do not affect architecture boundaries, data flow, generated-output flow, deployment, packaging, adapters, quality targets, cross-cutting rules, or durable decisions. Record a no-architecture-impact rationale in the plan, test spec, change metadata, or PR evidence instead.
 
 Canonical current architecture lives at:
 
@@ -46,30 +64,13 @@ docs/changes/<change-id>/diagrams/
 
 Use a change-local architecture delta only when the change is architecture-significant enough to need reviewable working design reasoning before accepted content is merged into the canonical package. A change-local delta is not a competing canonical source. After acceptance, merge durable content back into the canonical package and leave the delta as historical evidence only.
 
-Use `templates/architecture.md` and `templates/adr.md` as scaffolds. They are canonical authored templates, not live architecture or ADR records.
-
-Leaf changes that do not affect architecture boundaries, data flow, generated-output flow, deployment, packaging, adapters, quality targets, cross-cutting rules, or durable decisions should record a no-architecture-impact rationale instead of creating or updating architecture artifacts.
-
 ## arc42 Sections
 
-The canonical `architecture.md` uses repository lifecycle metadata before all 12 official arc42 sections, in this order:
+The canonical `architecture.md` uses repository lifecycle metadata before all 12 official arc42 sections. Keep sections concise; use `Not applicable` only with a short rationale. Do not remove or rename official arc42 sections to make the document lighter.
 
-1. Introduction and Goals
-2. Architecture Constraints
-3. Context and Scope
-4. Solution Strategy
-5. Building Block View
-6. Runtime View
-7. Deployment View
-8. Crosscutting Concepts
-9. Architecture Decisions
-10. Quality Requirements
-11. Risks and Technical Debt
-12. Glossary
+Use the template for section structure. In the skill output, name only the sections changed or explicitly unaffected with rationale.
 
-Keep the content concise. Do not remove or rename sections to make the document lighter. Use `Not applicable` only with a short rationale.
-
-Sections 1 through 5 should usually contain current-system content for real architecture work. Update section 6 when behavior, orchestration, failure paths, command flow, generated-output flow, or operational flow changes. Update section 7 when environments, packaging, generated outputs, adapters, release layout, infrastructure, or execution boundaries change. Update section 8 when validation, security, caching, portability, generation, observability, or other cross-cutting rules change. Section 9 is always present and either links ADRs or states that no ADRs are required for the update.
+Update section 6 when behavior, orchestration, failure paths, command flow, generated-output flow, or operational flow changes. Update section 7 when environments, packaging, generated outputs, adapters, release layout, infrastructure, or execution boundaries change. Update section 8 when validation, security, caching, portability, generation, observability, or other cross-cutting rules change. Section 9 is always present and either links ADRs or states that no ADRs are required for the update.
 
 ## C4 Guidance
 
@@ -78,9 +79,13 @@ Default required C4 diagrams for the canonical package:
 - system context diagram: `docs/architecture/system/diagrams/context.mmd`
 - container diagram: `docs/architecture/system/diagrams/container.mmd`
 
-Use Mermaid source text for the first implementation. Add a component diagram only when container-level structure is not enough to explain changed responsibilities, internal boundaries, or interactions. Add a deployment diagram only when infrastructure, runtime environment, packaging, adapter distribution, or deployment mapping needs visual explanation beyond arc42 section 7.
+Use separate Mermaid `.mmd` source files for default diagrams and link them from `architecture.md` with relative Markdown links. Do not embed package diagrams in Markdown. For Mermaid flowchart or graph diagrams, use `templates/diagram-styles.mmd` or an explicitly equivalent copied block so people, systems, external systems, and containers are distinguishable.
+
+Add a component diagram only when container-level structure is not enough to explain changed responsibilities, internal boundaries, or interactions. Add a deployment diagram only when infrastructure, runtime environment, packaging, adapter distribution, or deployment mapping needs visual explanation beyond arc42 section 7.
 
 Update the lowest affected C4 level first, then propagate upward only when the higher-level view actually changes. Do not make generated images, screenshots, or external diagram links the only source of truth.
+
+Minimal context snippet:
 
 ```mermaid
 C4Context
@@ -89,9 +94,22 @@ C4Context
   Rel(contributor, repo, "Authors and reviews architecture artifacts")
 ```
 
+Minimal container snippet:
+
+```mermaid
+C4Container
+  Person(contributor, "Contributor or agent")
+  System_Boundary(repo, "RigorLoop repository") {
+    Container(skills, "Canonical skills", "Markdown", "Authoring source")
+    Container(templates, "Architecture templates", "Markdown/Mermaid", "Scaffolds architecture packages")
+  }
+  Rel(contributor, skills, "Updates")
+  Rel(skills, templates, "References")
+```
+
 Keep diagrams small and accurate. Prefer multiple focused diagrams over one unreadable diagram.
 
-## ADR Rules
+## ADR Triggers
 
 Create an ADR when the change introduces or revises a durable architecture decision, including:
 
@@ -106,12 +124,6 @@ Create an ADR when the change introduces or revises a durable architecture decis
 Use `templates/adr.md` and store real ADRs under `docs/adr/`. Each ADR includes title, status, context, decision, alternatives considered, consequences, and follow-up.
 
 Accepted or active ADRs are decision history. Later changes should supersede or deprecate an old ADR with a new ADR or explicit lifecycle update rather than rewriting the old decision as if it had always been different.
-
-Status vocabulary:
-
-```text
-draft | proposed | accepted | active | deprecated | superseded | archived | abandoned
-```
 
 ## Authoring Rules
 

@@ -7,14 +7,16 @@
 ## Related artifacts
 
 - Proposal: `docs/proposals/2026-04-28-architecture-skills-c4-arc42-adr.md`
+- Proposal refinement: `docs/proposals/2026-04-29-c4-arc42-package-quality.md`
 - Spec: `specs/architecture-package-method.md`
 - Test spec: `specs/architecture-package-method.test.md`
 - Legacy normalization plan: `docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md`
 - Method ADR: `docs/adr/ADR-20260428-architecture-package-method.md`
 - Change-local architecture delta: `docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/architecture.md`
+- Package-quality architecture delta: `docs/changes/2026-04-29-c4-arc42-package-quality/architecture.md`
 - Legacy normalization delta: `docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md`
-- C4 system context diagram: `docs/architecture/system/diagrams/context.mmd`
-- C4 container diagram: `docs/architecture/system/diagrams/container.mmd`
+- C4 system context diagram: `diagrams/context.mmd`
+- C4 container diagram: `diagrams/container.mmd`
 
 ## Introduction and Goals
 
@@ -30,7 +32,7 @@ The goals are:
 - preserve durable decisions in ADRs;
 - preserve review, verification, and closeout evidence in repository artifacts;
 - keep generated output reproducible from canonical sources;
-- keep first adoption review-based until real package usage proves the shape.
+- keep first adoption and package-quality refinement review-based until real package usage proves which checks are worth automating.
 
 ## Architecture Constraints
 
@@ -44,6 +46,8 @@ The goals are:
 - `docs/releases/<version>/release.yaml` and `docs/releases/<version>/release-notes.md` are authored release evidence, not generated release-note substitutes.
 - First implementation remains review-based for architecture package completeness; required package-shape, C4-file, and ADR-presence enforcement automation is deferred.
 - Top-level legacy documents under `docs/architecture/*.md` are archived historical artifacts after accepted current content has been merged into this canonical package.
+- Package diagrams live as separate authored source files under `diagrams/`; default Mermaid diagrams use `.mmd` files and are linked from `architecture.md` by relative path.
+- Mermaid flowchart C4 diagrams use explicit person, system, external, and container styling; container labels include technology when relevant to review.
 
 ## Context and Scope
 
@@ -60,7 +64,7 @@ The canonical scope includes:
 
 The canonical scope excludes runtime application infrastructure, databases, service APIs, and production telemetry because this repository is a workflow and adapter starter kit rather than a deployed service.
 
-See `docs/architecture/system/diagrams/context.mmd` for the C4 system context view.
+See [`diagrams/context.mmd`](diagrams/context.mmd) for the C4 system context view.
 
 ## Solution Strategy
 
@@ -72,22 +76,35 @@ This strategy keeps the method practical for normal contributors while making ar
 
 ## Building Block View
 
-| Building block | Responsibility | Current source |
-| --- | --- | --- |
-| Governance and workflow summaries | Define source-of-truth order, repository defaults, workflow routing, and contributor expectations | `CONSTITUTION.md`, `AGENTS.md`, `docs/workflows.md` |
-| Lifecycle artifacts | Carry proposal, spec, architecture, ADR, plan, test-spec, and change metadata states | `docs/proposals/`, `specs/`, `docs/architecture/`, `docs/adr/`, `docs/plans/`, `docs/changes/` |
-| Canonical architecture package | Long-lived current architecture source of truth | `docs/architecture/system/` |
-| Change-local deltas | Temporary working architecture for architecture-significant changes and historical evidence after merge-back | `docs/changes/<change-id>/architecture.md` and optional diagrams |
-| Change-local evidence pack | Machine-readable traceability and durable reasoning for non-trivial work | `docs/changes/<change-id>/change.yaml`, `explain-change.md`, conditional `review-resolution.md`, conditional `verify-report.md`, and `reviews/*.md` |
-| Templates | Canonical scaffolding for architecture and ADR authoring | `templates/architecture.md`, `templates/adr.md` |
-| Canonical skills and adapter templates | Source instructions for workflow stages and thin adapter entrypoints | `skills/`, `scripts/adapter_templates/` |
-| Validation selector and CI wrapper | Classify changed paths, select stable check IDs, and run repository-owned proof commands | `scripts/validation_selection.py`, `scripts/select-validation.py`, `scripts/ci.sh` |
-| Artifact validators | Validate lifecycle artifacts, change metadata, review artifacts, adapter packages, release metadata, and generated drift | `scripts/validate-artifact-lifecycle.py`, `scripts/validate-change-metadata.py`, `scripts/validate-review-artifacts.py`, `scripts/build-adapters.py --check`, `scripts/validate-adapters.py`, `scripts/validate-release.py`, `scripts/release-verify.sh` |
-| Generated runtime mirrors and adapters | Derived guidance for Codex and public adapter packages | `.codex/skills/`, `dist/adapters/`, `dist/adapters/manifest.yaml`, `dist/adapters/opencode/.opencode/commands/` |
-| Release evidence | Authored release contract, notes, and smoke evidence | `docs/releases/<version>/release.yaml`, `docs/releases/<version>/release-notes.md` |
-| Legacy architecture documents | Archived historical records whose accepted current content has been merged into the canonical package | `docs/architecture/*.md` |
+See [`diagrams/container.mmd`](diagrams/container.mmd) for the C4 container view.
 
-See `docs/architecture/system/diagrams/container.mmd` for the C4 container view.
+### Level 1 White-Box: RigorLoop Repository System
+
+The repository system is composed of authored guidance, lifecycle artifacts, validation and generation scripts, generated adapter outputs, and release evidence. Authored surfaces define intent and contracts; scripts provide deterministic proof and generated-output refresh; generated surfaces are derived and must not become sources of truth.
+
+| Container | Responsibility | Technology / source |
+| --- | --- | --- |
+| Governance and workflow guidance | Defines source-of-truth order, repository defaults, workflow routing, and contributor expectations | Markdown in `CONSTITUTION.md`, `AGENTS.md`, `docs/workflows.md` |
+| Lifecycle artifacts | Carry proposal, spec, architecture, ADR, plan, test-spec, and change metadata states | Markdown/YAML in `docs/proposals/`, `specs/`, `docs/architecture/`, `docs/adr/`, `docs/plans/`, `docs/changes/` |
+| Canonical architecture package | Long-lived current architecture source of truth, including arc42 prose and C4 diagram source | Markdown and Mermaid in `docs/architecture/system/` |
+| Change-local evidence | Temporary working architecture, change metadata, explanation, review resolution, and verification evidence | Markdown/YAML in `docs/changes/<change-id>/` |
+| Templates and diagram styles | Canonical scaffolding for architecture, ADRs, and shared Mermaid C4 role styling | Markdown/Mermaid under `templates/` |
+| Canonical skills and adapter templates | Source instructions for workflow stages and thin adapter entrypoints | Markdown in `skills/`, templates in `scripts/adapter_templates/` |
+| Validation and generation scripts | Select checks, validate artifacts, refresh generated output, and prove drift status | Python and shell under `scripts/` |
+| Generated runtime mirrors and adapters | Derived Codex runtime skills and public adapter packages for supported agent tools | Generated files under `.codex/skills/` and `dist/adapters/` |
+| Release evidence | Authored release contract, notes, and maintainer smoke evidence | YAML/Markdown under `docs/releases/<version>/` |
+| Legacy architecture archive | Historical architecture records retained after accepted current content is merged here | Archived Markdown under `docs/architecture/*.md` |
+
+### Level 2 White-Box: Validation and Generation Scripts
+
+The validation and generation container has four important internal responsibilities:
+
+- selector and CI wrapper: `scripts/validation_selection.py`, `scripts/select-validation.py`, and `scripts/ci.sh` classify paths, select stable check IDs, and run repository-owned proof commands;
+- lifecycle and change validators: `scripts/validate-artifact-lifecycle.py`, `scripts/validate-change-metadata.py`, and `scripts/validate-review-artifacts.py` validate artifact status, change metadata, and material review closeout structure;
+- skill and adapter generation: `scripts/build-skills.py`, `scripts/build-adapters.py`, and adapter distribution helpers refresh `.codex/skills/` and `dist/adapters/` from canonical sources;
+- release and adapter validation: `scripts/validate-adapters.py`, `scripts/validate-release.py`, and `scripts/release-verify.sh` check generated packages, manifests, release metadata, tracked release notes, and smoke evidence.
+
+This decomposition is prose-only for now. A component diagram should be added when future validation work changes these internal responsibilities enough that prose no longer explains the selector, validator, generator, and CI-wrapper relationships.
 
 ## Runtime View
 
@@ -131,19 +148,19 @@ See `docs/architecture/system/diagrams/container.mmd` for the C4 container view.
 
 ## Deployment View
 
-RigorLoop has no deployed service, database, or runtime infrastructure for this architecture method. Deployment is repository packaging and publication:
+RigorLoop has no deployed service, database, or runtime infrastructure for this architecture method. The deployment boundary is repository packaging and publication.
 
-- authored source artifacts remain in `docs/`, `specs/`, `skills/`, `schemas/`, `scripts/`, and `templates/`;
-- canonical architecture lives in `docs/architecture/system/`;
-- ADRs live in `docs/adr/`;
-- change-local evidence lives in `docs/changes/<change-id>/`;
-- review records, review logs, review resolutions, and verify reports live in the relevant change-local pack when their workflow triggers apply;
-- release metadata and tracked release notes live in `docs/releases/<version>/`;
-- generated Codex runtime skills live in `.codex/skills/`;
-- generated public adapter packages, manifests, and OpenCode command aliases live in `dist/adapters/`;
-- GitHub Actions remain thin wrappers around repository-owned scripts.
+Authored content is reviewed in Git and distributed as repository files. Generated guidance is produced from canonical sources by existing repository generators, then validated for drift before release or PR readiness. GitHub Actions do not own validation behavior; they set up execution and delegate to repository-owned scripts.
 
-Rollback reverts the authored method artifacts, canonical package, templates, skill changes, generated refresh, and narrow lifecycle compatibility. No runtime data migration is required.
+The main execution and publication boundaries are:
+
+- local contributor shell: runs selector, CI wrapper, validation, generation, and drift checks;
+- GitHub Actions: runs the same repository-owned scripts in hosted CI when configured;
+- generated local Codex mirror: `.codex/skills/`, derived from canonical `skills/`;
+- public adapter packages: `dist/adapters/`, derived from canonical skills and adapter templates;
+- release evidence: tracked `docs/releases/<version>/release.yaml`, release notes, and maintainer smoke evidence used by release verification.
+
+Rollback reverts the authored method artifacts, canonical package changes, templates, skill changes, generated refresh, and narrow lifecycle compatibility. No runtime data migration is required.
 
 ## Crosscutting Concepts
 
@@ -158,6 +175,10 @@ Lifecycle-managed artifacts keep status in the artifact. Current architecture ar
 ### Validation layering
 
 The selector owns routing and stable check IDs. Validation scripts own proof work. Manual review owns C4 diagram sufficiency, arc42 completeness, ADR need, and architecture package shape until a later approved automation contract changes that. Architecture support paths may select lifecycle checks for deterministic CI routing, but that routing is not architecture-package enforcement.
+
+### Diagram source policy
+
+Package diagrams have one authored source file and are linked from `architecture.md` by relative path. Default Mermaid diagrams use `.mmd` files under the package `diagrams/` directory. Mermaid flowchart or graph C4 diagrams use shared role classes for people, the system under review, external systems, and containers; generated images, if added later for publication, are derived output and are not edited by hand.
 
 ### Generated output
 
@@ -181,23 +202,22 @@ The legacy normalization follow-on inventoried every current `docs/architecture/
 
 ## Architecture Decisions
 
-- `docs/adr/ADR-20260428-architecture-package-method.md` records the durable decision to adopt C4 plus official arc42 plus ADRs, one canonical architecture package, change-local deltas for architecture-significant work, templates under `templates/`, Mermaid source diagrams for the first implementation, and review-based first adoption.
-- `docs/adr/ADR-20260419-repository-source-layout.md` records the repository source layout decision that separates canonical sources from generated runtime output.
-- `docs/adr/ADR-20260424-generated-adapter-packages.md` records the generated adapter package boundary that this method preserves.
-- No new ADR is created by the legacy normalization merge-back because it documents current architecture truth without changing source layout, adapter generation or packaging, validation architecture, release architecture, or workflow-stage behavior. Existing approved specs and archived legacy architecture records remain the historical evidence for those prior implementation choices.
+- `docs/adr/ADR-20260428-architecture-package-method.md`: default C4 plus official arc42 plus ADR architecture package method.
+- `docs/adr/ADR-20260419-repository-source-layout.md`: repository source layout and canonical-source/generated-output separation.
+- `docs/adr/ADR-20260424-generated-adapter-packages.md`: generated public adapter package boundary.
+
+No additional ADR is required for the 2026-04-29 package-quality refinement because it sharpens the accepted method without changing the durable architecture decision.
 
 ## Quality Requirements
 
-| Quality | Requirement |
-| --- | --- |
-| Reviewability | Architecture, diagrams, templates, and ADRs are repository text that can be reviewed in diffs. |
-| Traceability | Architecture changes link proposal, spec, plan, test spec, ADRs, and validation evidence. |
-| Compatibility | Archived legacy architecture records remain valid historical evidence while current architecture truth lives in the canonical package. |
-| Proportionality | Leaf changes that do not affect architecture boundaries or decisions are not forced to update this package. |
-| Determinism | Generated skill and adapter output remains reproducible from canonical sources. |
-| Maintainability | The workflow spec stays stage-level while the focused method spec owns the detailed architecture contract. |
-| Security | Architecture artifacts avoid secrets and document trust boundaries when relevant. |
-| Review closeout | Material findings stay open until review-resolution evidence records final dispositions and required validation. |
+| Quality | Scenario | Measure |
+| --- | --- | --- |
+| Reviewability | A reviewer opens a PR that changes the canonical architecture package. | The affected arc42 sections, diagram source files, and ADR links are visible as repository text in the PR diff; no external binary diagram is required to review the change. |
+| Traceability | A contributor changes architecture guidance for diagrams, skills, templates, or generated output. | The change links the accepted proposal, approved spec, architecture delta or canonical package update, ADR decision if required, plan, test spec, and validation evidence. |
+| Proportionality | A leaf change does not affect architecture boundaries, data flow, generated-output flow, deployment, packaging, quality targets, cross-cutting rules, or durable decisions. | The change can record no-architecture-impact rationale without moving this package. |
+| Determinism | Canonical skill guidance changes and generated guidance must be refreshed. | `.codex/skills/` and `dist/adapters/` are produced through existing generators and drift checks prove they match canonical sources. |
+| Review closeout | Architecture-review records a material finding. | The finding includes evidence, required outcome, and a safe resolution path or `needs-decision` rationale before it drives fixes. |
+| Security | Architecture work touches trust boundaries, permissions, data exposure, or secret handling. | The relevant architecture prose or diagram states the boundary, and no artifact includes secrets, credentials, private keys, or machine-local debug-only data. |
 
 ## Risks and Technical Debt
 
@@ -207,6 +227,7 @@ The legacy normalization follow-on inventoried every current `docs/architecture/
 | First implementation relies on review rather than structural package enforcement | Approved spec intentionally defers enforcement automation until a real package proves the shape. |
 | C4 context and container views may be too coarse for future module-level changes | Add component diagrams only when container-level structure no longer explains affected responsibilities. |
 | Change-local deltas could become competing sources if merge-back is skipped | Architecture-review, code-review, and verify must treat unmerged durable architecture truth as incomplete. |
+| Architecture-review finding format could be mistaken for a replacement of material-finding closeout | The focused spec and this package keep the simple finding fields separate from the repository-wide material-finding contract. |
 
 ## Glossary
 
@@ -216,18 +237,23 @@ The legacy normalization follow-on inventoried every current `docs/architecture/
 - canonical architecture package: the long-lived current architecture source under `docs/architecture/system/`.
 - change-local architecture delta: temporary working architecture under `docs/changes/<change-id>/`.
 - generated output: derived files under `.codex/skills/` and `dist/adapters/`.
+- material finding: review finding that must include evidence, required outcome, and safe resolution path or `needs-decision` rationale before it drives fixes.
 - merge-back: incorporating accepted durable content from a change-local delta into the canonical architecture package.
 - non-enforcement lifecycle routing: selector-selected validation that checks artifact lifecycle compatibility without proving C4 sufficiency, arc42 completeness, ADR need, or architecture package shape.
 - review artifact: authored change-local review evidence such as `reviews/*.md`, `review-log.md`, or `review-resolution.md`.
 
 ## Next artifacts
 
-- None yet.
+- Implementation for the 2026-04-29 package-quality refinement.
+- Code-review after implementation completes.
 
 ## Follow-on artifacts
 
-- None yet.
+- Legacy architecture lifecycle normalization: completed; top-level legacy architecture records are archived historical evidence.
+- Architecture-review for the 2026-04-29 package-quality refinement: approved on 2026-04-29 with no findings.
+- Plan-review for the 2026-04-29 package-quality refinement: approved on 2026-04-29 after PR-F1 corrected M5 sequencing.
+- Test spec update: `specs/architecture-package-method.test.md` active on 2026-04-29 for R76-R118 and AC14-AC20.
 
 ## Readiness
 
-This package is the current canonical architecture baseline after legacy-domain merge-back and M5 closeout. The eight top-level legacy architecture records are archived historical evidence, and downstream architecture work should use this package as the current source.
+This canonical package update is approved after `architecture-review` for the 2026-04-29 package-quality refinement. It is ready to support implementation of the remaining template, skill, and generated-output work.

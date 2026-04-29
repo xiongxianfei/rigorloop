@@ -7,12 +7,15 @@
 ## Related proposal
 
 - [Architecture Skills with C4, arc42, and ADRs](../docs/proposals/2026-04-28-architecture-skills-c4-arc42-adr.md)
+- [C4, arc42, and Architecture Skill Quality Refinement](../docs/proposals/2026-04-29-c4-arc42-package-quality.md)
 
 ## Goal and context
 
-This spec defines RigorLoop's contributor-visible architecture package method for architecture work that is required by the workflow. The method standardizes one living canonical architecture baseline, change-local architecture deltas when a specific change needs working design reasoning, C4 diagrams for structural views, arc42 for the written architecture structure, and ADRs for durable decisions.
+This spec defines RigorLoop's contributor-visible architecture package method for architecture work that is required by the workflow. The method standardizes one living canonical architecture baseline, change-local architecture deltas when a specific change needs working design reasoning, C4 diagrams for structural views, arc42 for the written architecture structure, ADRs for durable decisions, and concise architecture skill guidance that keeps the method usable.
 
 The goal is to make architecture work consistent and reviewable without making every feature rewrite the architecture baseline. Architecture-changing work should update the smallest affected part of the canonical package, record durable decisions as ADRs, and preserve enough change-local evidence for review when design reasoning happens before merge-back.
+
+The 2026-04-29 refinement keeps the accepted C4 plus arc42 plus ADR method, but tightens the quality contract for diagram source layout, C4 semantics, arc42 section content, architecture skill content, templates, and architecture-review finding format.
 
 ## Glossary
 
@@ -25,6 +28,10 @@ The goal is to make architecture work consistent and reviewable without making e
 - ADR: an Architecture Decision Record under `docs/adr/` that preserves an important architecture decision, alternatives, consequences, and follow-up.
 - durable architecture decision: a decision that changes or constrains long-lived system boundaries, packaging, validation, generated output, portability, release behavior, caching/indexing, or major workflow architecture.
 - diagram-as-code: a C4 diagram stored as reviewable text in the repository rather than only as an external image or proprietary binary.
+- diagram-source policy: the rules for storing one authored source file per architecture diagram under the relevant package's `diagrams/` directory and linking it from `architecture.md`. Default Mermaid diagrams use `.mmd` source files.
+- quality scenario: a concise quality requirement stated as stimulus, environment, response, and measurable outcome.
+- shared diagram styles: C4 role styling definitions stored in `templates/diagram-styles.mmd` for Mermaid flowchart or graph diagrams.
+- architecture-review finding: a review record with a finding, location, severity, and recommendation; material findings also satisfy the repository-wide material-finding contract.
 - merge-back: the act of incorporating accepted change-local architecture content into the canonical architecture package and recording durable decisions as ADRs.
 - legacy architecture artifact: an existing architecture document under `docs/architecture/` created before this method is adopted and not yet normalized into the canonical package lifecycle.
 
@@ -72,6 +79,39 @@ Given older approved architecture documents already exist under `docs/architectu
 When this method is adopted
 Then the repository may apply the new canonical package rule prospectively
 And it must not claim all legacy architecture artifacts have been normalized until a migration artifact inventories and classifies them.
+
+### Example E7: diagrams are separate source files
+
+Given `docs/architecture/system/architecture.md` explains the canonical context
+When the Context and Scope section references the context diagram
+Then it links to `diagrams/context.mmd` with a relative Markdown link
+And it does not embed a Mermaid block or duplicate the diagram source.
+
+### Example E8: flowchart diagrams carry C4 semantics
+
+Given the container diagram uses Mermaid `flowchart` syntax instead of native Mermaid C4 syntax
+When a reviewer opens `docs/architecture/system/diagrams/container.mmd`
+Then the diagram applies shared person, system, external, and container classes
+And container labels include technology
+And relationships are labeled with intent.
+
+### Example E9: component diagram is conditional
+
+Given the refined container diagram and Building Block View explain a container's responsibility, collaborators, and change impact
+When the architecture update is reviewed
+Then no component diagram is required.
+
+Given a container still needs more than about three sentences of internal explanation in the Building Block View
+When that internal structure affects contributor reasoning
+Then a component diagram may be required for that container.
+
+### Example E10: review findings stay simple
+
+Given architecture-review finds that a runtime scenario contradicts the container diagram
+When the reviewer records the finding
+Then the finding records a description, location, severity, and recommendation
+And if the finding is material, it also records evidence, required outcome, and a safe resolution path or `needs-decision` rationale
+And it is not forced into a C4 level taxonomy.
 
 ## Requirements
 
@@ -128,7 +168,7 @@ R16. Section 8, `Crosscutting Concepts`, MUST be updated when a change introduce
 
 R17. Section 9, `Architecture Decisions`, MUST always be present and MUST either summarize and link relevant ADRs or state that no ADRs are required for the current package or update.
 
-R18. Section 10, `Quality Requirements`, MUST name the most relevant quality attributes for the architecture package, even when the section is short.
+R18. Section 10, `Quality Requirements`, MUST name the most relevant quality attributes for the architecture package, even when the section is short, or state `Not applicable` with rationale when quality requirements are genuinely irrelevant.
 
 R19. Section 11, `Risks and Technical Debt`, MUST record known architecture risks, deferred cleanup, and technical debt that affect the package or update.
 
@@ -223,7 +263,7 @@ R56. `skills/architecture/SKILL.md` MUST be updated to use this C4, arc42, canon
 
 R57. `skills/architecture-review/SKILL.md` MUST be updated to review C4 sufficiency, all 12 arc42 sections, Runtime View and Deployment View conditions, change-local delta merge-back, and ADR completeness.
 
-R58. Generated `.codex/skills/` and public adapter package output MUST be refreshed only through the existing generation path when canonical skill guidance changes.
+R58. Generated `.codex/skills/` and `dist/adapters/` output MUST be refreshed only through the existing generation path when canonical skill guidance changes.
 
 R59. The first positive example of this method MUST be the architecture-method change itself.
 
@@ -259,11 +299,98 @@ R74. Architecture diagrams and prose SHOULD describe trust boundaries, permissio
 
 R75. Contributor-facing Markdown templates and diagrams SHOULD use clear headings, stable paths, and concise text so reviewers can navigate them with ordinary repository review tools.
 
+R76. Required default architecture diagrams MUST live as separate Mermaid `.mmd` source files under the relevant package's `diagrams/` directory unless a later approved artifact applies the R28 text-based source format allowance.
+
+R77. `architecture.md` MUST reference diagram source files with clickable relative Markdown links, such as `[diagrams/context.mmd](diagrams/context.mmd)`.
+
+R78. `architecture.md` MUST NOT contain embedded Mermaid diagram blocks for package diagrams.
+
+R79. Diagram source MUST NOT be copied or inlined into multiple Markdown documents.
+
+R80. Each diagram MUST have exactly one authored source file. For default Mermaid diagrams, that source file MUST be an `.mmd` file.
+
+R81. Diagram filenames MUST use lowercase kebab-case and indicate the C4 level or arc42 section, such as `context.mmd`, `container.mmd`, `component-validation.mmd`, `runtime-adapter-generation.mmd`, or `deployment.mmd`.
+
+R82. A diagram referenced from multiple documents MUST live in one authored source file, and other documents MUST link to that file instead of duplicating it.
+
+R83. Generated diagram images, if produced for publication, MUST live in a generated or ignored location such as `diagrams/rendered/` and MUST NOT be edited by hand.
+
+R84. Diagram lifecycle status MUST be inherited from the parent architecture package; diagram source files MUST NOT carry independent lifecycle status metadata.
+
+R85. Change-local architecture diagrams MUST mirror the package layout under `docs/changes/<change-id>/diagrams/`.
+
+R86. After merge-back, durable diagram changes MUST be represented in the canonical package's `diagrams/` directory when they change current architecture truth, while change-local copies remain historical evidence only.
+
+R87. C4 diagrams MUST express C4 semantics. Native Mermaid `C4Context` and `C4Container` syntax MAY be used, but stable Mermaid `flowchart` or `graph` syntax is acceptable when it expresses C4 roles through the shared styling convention.
+
+R88. Mermaid `flowchart` or `graph` C4 diagrams MUST use the shared C4 role styling definitions from `templates/diagram-styles.mmd` or an explicitly equivalent copied block.
+
+R89. Mermaid `flowchart` or `graph` C4 diagrams MUST apply classes that distinguish people, the system under review, external systems, and containers.
+
+R90. Container labels in Mermaid `flowchart` or `graph` C4 diagrams MUST include technology in the form `Name<br/>[Technology]` when the container's technology is relevant to review.
+
+R91. C4 diagram relationships MUST be labeled with intent.
+
+R92. The C4 system context diagram MUST show the system under review as a single system and MUST NOT decompose internal containers as context-level elements.
+
+R93. The C4 container diagram MUST show major containers, relevant actors or external systems, technology annotations, and intent-labeled relationships.
+
+R94. Component diagrams MUST be added only when a refined container diagram and Building Block View cannot explain important internal responsibilities, boundaries, or interactions.
+
+R95. A component diagram SHOULD be considered when one container needs more than about three sentences of internal explanation in the Building Block View.
+
+R96. The Building Block View MUST describe the system as a hierarchy, including a system-level white-box view and important container or responsibility decompositions when needed.
+
+R97. The Building Block View MUST NOT be only a flat source-path or folder catalog when the architecture package describes multiple responsibilities or containers.
+
+R98. Section 9, `Architecture Decisions`, MUST keep ADR references concise and link-focused.
+
+R99. Section 9 MUST NOT duplicate detailed ADR rationale that belongs in the ADR.
+
+R100. Section 10, `Quality Requirements`, SHOULD express substantive quality requirements as lightweight scenarios with stimulus, environment, response, and response measure.
+
+R101. `templates/architecture.md` MUST include a commented quality-scenario scaffold for section 10 rather than rendered placeholder content.
+
+R102. A package MAY mark Quality Requirements as `Not applicable` only with a one-line rationale when quality requirements are genuinely irrelevant for the package or update.
+
+R103. Section 7, `Deployment View`, MUST explain repository packaging, publication or distribution, generated artifacts, release evidence, and execution boundaries when those concerns are relevant.
+
+R104. Section 7 SHOULD avoid repeating source layout details already covered by the Building Block View unless the source location is part of the deployment or packaging boundary.
+
+R105. `templates/diagram-styles.mmd` MUST exist as the shared Mermaid C4 styling source for flowchart or graph diagrams.
+
+R106. `templates/architecture.md` MUST guide authors to reference diagrams with relative links and to keep diagram source in separate source files, using `.mmd` for default Mermaid diagrams.
+
+R107. `templates/architecture.md` MUST guide authors toward hierarchical building blocks, concise deployment boundary content, and link-focused ADR summaries.
+
+R108. `skills/architecture/SKILL.md` MUST remain concise and MUST NOT include a full worked architecture example in the skill body.
+
+R109. `skills/architecture/SKILL.md` MUST include one short output shape, one minimal C4 context snippet, one minimal C4 container snippet, one ADR trigger list, and one when-to-use/when-not-to-use section.
+
+R110. The architecture skill output shape MUST direct authors to produce or update a change-local architecture delta or canonical architecture package, C4 context and container diagrams, and ADRs when durable decisions are introduced.
+
+R111. Full worked architecture examples, if needed, MUST live outside the architecture skill body in a reference file such as `skills/architecture/references/architecture-example.md`.
+
+R112. `skills/architecture-review/SKILL.md` MUST require architecture-review findings to record finding, location, severity, and recommendation.
+
+R113. Architecture-review finding severity MUST use `blocker`, `material`, or `minor`.
+
+R114. Architecture-review findings MUST include a location such as a file path and section or line, or a diagram name.
+
+R115. Architecture-review findings MUST NOT require mandatory C4-level classification.
+
+R116. The simple architecture-review finding format MUST NOT replace the repository-wide material-finding contract.
+
+R117. Material architecture-review findings MUST also include evidence, required outcome, and a safe resolution path or `needs-decision` rationale.
+
+R118. A later approved change MAY add a small finding category field only if review evidence shows that severity and location lose useful trend signal.
+
 ## Inputs and outputs
 
 Inputs:
 
 - accepted proposal direction for C4, arc42, ADRs, canonical architecture, change-local deltas, templates, and review-based rollout;
+- accepted proposal direction for C4 and arc42 package quality refinement, including diagram source policy, skill-content policy, template additions, and review finding format;
 - requests or workflow stages that require architecture work;
 - existing specs, architecture documents, ADRs, plans, test specs, workflow summaries, skills, templates, generated skill output, and adapter packages;
 - change-local artifacts under `docs/changes/<change-id>/`;
@@ -279,6 +406,9 @@ Outputs:
 - change-local architecture deltas under `docs/changes/<change-id>/` only when needed;
 - templates under `templates/`;
 - updated governance, workflow summary, and architecture skill guidance;
+- `templates/diagram-styles.mmd` as the shared Mermaid C4 styling source;
+- relative links from `architecture.md` to package diagram source files;
+- concise architecture-review findings using finding, location, severity, and recommendation;
 - review evidence rather than new required enforcement automation in the first implementation.
 
 ## State and invariants
@@ -288,6 +418,9 @@ Outputs:
 - ADRs preserve durable decisions separately from the arc42 architecture narrative.
 - The arc42 12-section model remains intact even when sections are concise or marked `Not applicable`.
 - C4 diagrams remain source-text artifacts that reviewers can diff.
+- Package diagrams have one authored source file and are referenced from `architecture.md` by relative link. Default Mermaid diagrams use `.mmd` source files.
+- Diagram lifecycle follows the parent architecture package.
+- The architecture skill teaches process, the architecture template teaches structure, and reference examples teach style.
 - `templates/` is canonical authored workflow content once the first implementation updates the governing source-boundary guidance.
 - `.codex/skills/` and `dist/adapters/` remain generated output and are not hand-edited.
 - Existing legacy architecture artifacts are not automatically normalized merely because this spec is approved.
@@ -299,6 +432,10 @@ Outputs:
 - If a change-local architecture delta contains durable current architecture truth but no merge-back path, `architecture-review`, `verify`, or PR review must treat the change as incomplete.
 - If a durable architecture decision is captured only in prose and no ADR is created, architecture review must require either an ADR or an explicit rationale that the decision is not durable.
 - If an external or binary diagram is provided without a source-text diagram, it may supplement review but must not satisfy required C4 diagram evidence.
+- If `architecture.md` embeds a Mermaid diagram block for a package diagram, architecture-review must require moving that diagram to a separate `.mmd` file and replacing the embedded block with a relative link.
+- If a Mermaid flowchart or graph diagram lacks C4 role classes, technology labels where relevant, or intent-labeled relationships, architecture-review must treat that as a C4 sufficiency finding.
+- If an architecture-review finding omits finding, location, severity, or recommendation, the review record is incomplete.
+- If a material architecture-review finding omits evidence, required outcome, and a safe resolution path or `needs-decision` rationale, the material finding is incomplete.
 - If a legacy architecture artifact conflicts with the canonical package before migration completes, downstream work must rely on the approved spec, accepted ADRs, and canonical package, and the conflict must be recorded for the legacy normalization artifact.
 - If a proposed implementation adds required architecture-package validation automation in the first slice, it violates this spec unless the spec has first been superseded or amended.
 
@@ -308,7 +445,9 @@ This method is a documentation, workflow, and architecture-guidance change. It d
 
 Adoption is prospective. New architecture work after implementation must follow this method. Existing `docs/architecture/` documents may remain in their current lifecycle state until the follow-on legacy normalization artifact inventories and classifies them.
 
-Rollback can revert the focused spec, templates, workflow pointer, governance boundary update, skill updates, generated skill refresh, canonical package baseline, and first example artifacts. Because this method does not create runtime state, rollback requires no data migration.
+The 2026-04-29 refinement is compatible with the original method because it keeps Mermaid `.mmd` as the first implementation diagram format, allows native Mermaid C4 syntax or equivalent flowchart/graph styling, and does not add required validators.
+
+Rollback can revert the focused spec, templates, workflow pointer, governance boundary update, skill updates, generated `.codex/skills/` and `dist/adapters/` refresh, canonical package baseline, and first example artifacts. Because this method does not create runtime state, rollback requires no data migration.
 
 ## Observability
 
@@ -318,7 +457,10 @@ The observable proof for this method is repository artifact state and review evi
 - `architecture-review` validates the first canonical package and any architecture-significant change-local delta against this method;
 - artifact lifecycle validation checks statuses for touched proposals, specs, architecture documents, test specs, and ADRs;
 - skill validation checks canonical skill shape after architecture skill updates;
-- adapter and generated skill drift checks prove generated output was refreshed when canonical skill guidance changes;
+- adapter and generated skill drift checks prove `.codex/skills/` and `dist/adapters/` output was refreshed when canonical skill guidance changes;
+- architecture-review evidence records whether diagrams use separate authored source files, relative links, C4 semantics, shared styling when applicable, and intent-labeled relationships;
+- architecture-review evidence records finding, location, severity, and recommendation for architecture-review findings;
+- material architecture-review finding evidence records the repository-wide material-finding fields: evidence, required outcome, and a safe resolution path or `needs-decision` rationale;
 - final verification names the exact validation commands run.
 
 No runtime logs, metrics, traces, audit events, or user-visible service status changes are required by this spec.
@@ -341,7 +483,7 @@ R75 defines contributor-facing readability expectations for Markdown templates a
 
 This method must not add required runtime work.
 
-The first implementation should keep authoring and review overhead proportional by requiring context and container diagrams by default, making component and deployment diagrams conditional, allowing concise arc42 sections, and deferring required enforcement automation.
+The first implementation should keep authoring and review overhead proportional by requiring context and container diagrams by default, making component and deployment diagrams conditional, allowing concise arc42 sections, keeping architecture skills concise, and deferring required enforcement automation.
 
 ## Edge cases
 
@@ -355,6 +497,11 @@ The first implementation should keep authoring and review overhead proportional 
 8. If an architecture package needs a non-Mermaid diagram format, document the text-based format choice before relying on it.
 9. If the architecture-method change itself produces a change-local delta, treat that delta as working evidence and merge durable content into the canonical package before completion.
 10. If a future validator is added for this method, update or supersede this spec before making the validator a required pass gate.
+11. If an architecture document links to a diagram outside its package, ensure that the linked file is the single authored source and that the relative path remains valid from the referencing document.
+12. If Mermaid native C4 syntax is not practical in the review surface, use flowchart or graph syntax with the shared styling convention instead of weakening C4 role clarity.
+13. If a component diagram is requested before the container view is clear, refine the container view and Building Block View first.
+14. If a quality requirement cannot be made measurable, record the best available reviewable scenario or mark the section `Not applicable` with rationale when no quality requirement is relevant.
+15. If a review finding spans multiple C4 levels or contradicts another arc42 section, record it with the directly affected locations and severity rather than forcing a C4 level classification.
 
 ## Non-goals
 
@@ -367,6 +514,10 @@ The first implementation should keep authoring and review overhead proportional 
 - Adding required structural architecture validators in the first implementation.
 - Changing validation semantics, selected check coverage, command output, or command exit behavior beyond the narrow existing-lifecycle-validator compatibility update required by R71 and R72.
 - Adding a new external diagramming dependency in the first implementation.
+- Requiring native Mermaid C4 syntax when equivalent Mermaid flowchart or graph syntax expresses C4 semantics through shared styling.
+- Embedding Mermaid diagram source directly in `architecture.md`.
+- Requiring a full worked example in `skills/architecture/SKILL.md`.
+- Requiring architecture-review findings to classify every issue by C4 level.
 
 ## Acceptance criteria
 
@@ -396,26 +547,42 @@ AC12. The first implementation includes the R71 lifecycle-validator compatibilit
 
 AC13. Targeted validation for this spec passes with artifact lifecycle validation, diff whitespace checks, and the repository CI wrapper for the touched proposal and spec paths.
 
+AC14. This spec defines one authored source file per diagram under package `diagrams/` directories, specifies `.mmd` for default Mermaid diagrams, and requires relative links from `architecture.md`.
+
+AC15. This spec defines C4 semantics for Mermaid diagrams, including native Mermaid C4 as optional and shared flowchart or graph styling as acceptable.
+
+AC16. This spec requires `templates/diagram-styles.mmd` and a commented quality-scenario scaffold in `templates/architecture.md`.
+
+AC17. This spec defines container-first component diagram discipline and the Building Block View hierarchy expectation.
+
+AC18. This spec defines concise architecture-skill content and keeps full worked examples outside the skill body.
+
+AC19. This spec defines the architecture-review finding shape, keeps material findings aligned with the repository-wide material-finding contract, and rejects mandatory C4-level classification.
+
+AC20. This spec requires generated `.codex/skills/` and `dist/adapters/` output to be refreshed through the existing generator when canonical skill guidance changes.
+
 ## Open questions
 
 None.
 
 ## Next artifacts
 
-- `spec-review` for this spec.
-- Architecture package and architecture-review for the architecture-method change when required.
-- Execution plan after spec review and any required architecture work.
-- Test spec after plan review.
-- First implementation slice for templates, governance boundary updates, workflow pointer, skills, canonical package baseline, and first example.
+- Implementation slice for the diagram-source policy, template additions, skills, canonical package refinement, and generated output refresh when required.
+- Code-review after implementation completes.
 
 ## Follow-on artifacts
 
 - `spec-review`: approved on 2026-04-28 after lifecycle status metadata, completion timing, workflow-summary update, and lifecycle-validator compatibility clarifications.
+- Proposal refinement: `docs/proposals/2026-04-29-c4-arc42-package-quality.md` accepted on 2026-04-29.
+- `spec-review`: approved on 2026-04-29 after diagram source wording and architecture-review material-finding contract wording were corrected.
+- Architecture update: `docs/architecture/system/architecture.md` and `docs/changes/2026-04-29-c4-arc42-package-quality/architecture.md` approved by `architecture-review` on 2026-04-29.
+- Execution plan: `docs/plans/2026-04-29-c4-arc42-package-quality.md` approved by `plan-review` on 2026-04-29 after PR-F1 corrected M5 sequencing.
+- Test spec update: `specs/architecture-package-method.test.md` active on 2026-04-29 for R76-R118 and AC14-AC20.
 
 ## Readiness
 
-Spec review is complete and this spec is approved.
+This focused spec update is approved.
 
-Immediate next repository stage: `architecture`, because this change affects architecture boundaries, canonical architecture package guidance, and ADR/template workflow boundaries.
+Immediate next repository stage: `implement` M3.
 
-Eventual `test-spec` readiness: conditionally-ready after required architecture and execution plan work complete.
+Implementation readiness: M1 and M2 implementation and code-review closeout are complete in `docs/plans/2026-04-29-c4-arc42-package-quality.md`. M3-M5 remain pending.
