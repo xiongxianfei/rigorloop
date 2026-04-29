@@ -139,11 +139,11 @@ This plan uses two validation command types:
 - Expected observable result: contributors and agents have a single source-of-truth story for vision, README front-matter, proposal fit, and exception handling.
 - Commit message: `M2: align vision governance and proposal guidance`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - Governance wording could accidentally reorder behavior specs below vision for behavior contracts.
   - README changes are not selector-classified.
@@ -255,6 +255,7 @@ This plan uses two validation command types:
 - 2026-04-30: matching test spec created at `specs/vision-skill.test.md`.
 - 2026-04-30: M1 added focused skill-validator regression coverage first, then added `skills/vision/SKILL.md`.
 - 2026-04-30: M1 code-review fix clarified that missing README markers stop `mirror` and `revise` before file modification unless explicit handling is authorized.
+- 2026-04-30: M2 added `Vision fit` proposal/proposal-review guidance and aligned governance, workflow, and README ownership surfaces around `vision.md`.
 
 ## Decision log
 
@@ -262,6 +263,7 @@ This plan uses two validation command types:
 - 2026-04-29: broad smoke required by this plan because the initiative touches governance, README ownership, canonical skills, generated skills, and generated public adapters.
 - 2026-04-29: README selector blocking is treated as selector inspection with manual routing because `README.md` is unclassified by the current selector.
 - 2026-04-30: M1 intentionally leaves generated `.codex/skills/` and `dist/adapters/` refresh to M3, as planned; selector inspection for the changed canonical skill identifies generated drift checks that are not M1 pass gates.
+- 2026-04-30: M2 canonical proposal and proposal-review skill edits also leave generated `.codex/skills/` and `dist/adapters/` refresh to M3, as planned.
 
 ## Surprises and discoveries
 
@@ -297,12 +299,22 @@ This plan uses two validation command types:
   - `python scripts/select-validation.py --mode explicit --path skills/vision/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-04-29-vision-skill.md` selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.drift`, `artifact_lifecycle.validate`, and `broad_smoke.repo`; generated drift and adapter drift checks remain deferred to M3 by the approved milestone split.
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-04-29-vision-skill.md --path docs/proposals/2026-04-29-vision-skill.md --path specs/vision-skill.md --path specs/vision-skill.test.md` passed.
   - `git diff --check -- skills/vision/SKILL.md scripts/test-skill-validator.py docs/plans/2026-04-29-vision-skill.md` passed.
+- 2026-04-30 M2 implementation:
+  - `python scripts/test-skill-validator.py` failed before the M2 edits because the new regression required `Vision fit` and `vision.md` source-of-truth guidance that was not yet present.
+  - `python scripts/validate-skills.py` passed.
+  - `python scripts/test-skill-validator.py` passed.
+  - `test ! -e vision.md` passed.
+  - `python scripts/test-select-validation.py` passed.
+  - `python scripts/select-validation.py --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md` selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.drift`, and `selector.regression`; generated drift and adapter drift checks remain deferred to M3 by the approved milestone split.
+  - `python scripts/select-validation.py --mode explicit --path README.md` blocked with `unclassified-path` as expected; manual route is README ownership wording review plus `git diff --check -- README.md`.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-04-29-vision-skill.md --path docs/proposals/2026-04-29-vision-skill.md --path specs/vision-skill.md --path specs/vision-skill.test.md` passed.
+  - `git diff --check -- CONSTITUTION.md AGENTS.md docs/workflows.md README.md skills/proposal/SKILL.md skills/proposal-review/SKILL.md docs/plans/2026-04-29-vision-skill.md scripts/test-skill-validator.py` passed.
 
 ## Outcome and retrospective
 
-- Active. M1 is complete; M2-M4 remain pending.
+- Active. M1 and M2 are complete; M3-M4 remain pending.
 
 ## Readiness
 
-- M1 is complete.
-- The immediate next implementation milestone is M2, `Align governance and proposal guidance`.
+- M1 and M2 are complete.
+- The immediate next implementation milestone is M3, `Refresh generated skill and adapter outputs`.

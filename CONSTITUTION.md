@@ -24,6 +24,18 @@ Rules derived from a lower-priority artifact MUST NOT silently override a higher
 
 `AGENTS.md` and `docs/workflows.md` are operating guides. They SHOULD summarize and point to the governing artifacts above, not compete with them.
 
+For project vision and proposal-fit questions, the source-of-truth order is:
+
+1. `CONSTITUTION.md`
+2. `vision.md`
+3. `specs/`
+4. proposals
+5. README front-matter
+
+`vision.md` is the canonical project-vision artifact for project identity, target users, commitments, refusals, and proposal-fit reference. It is subordinate to `CONSTITUTION.md` and does not replace specs, proposals, architecture artifacts, or execution plans.
+
+Proposals created or substantively revised after this spec is adopted include `Vision fit`. README content between `<!-- vision:start -->` and `<!-- vision:end -->` is generated from `vision.md`. README front-matter is not the source of truth when it conflicts with `vision.md`.
+
 ## Spec-driven rules
 
 Changes that affect externally observable behavior MUST have an approved spec before implementation.
