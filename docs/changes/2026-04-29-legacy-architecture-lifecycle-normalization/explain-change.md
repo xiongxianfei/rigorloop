@@ -90,6 +90,13 @@ Hosted CI was also observed through PR #21:
 
 - `gh pr checks 21` reported `ci` passing for the PR branch.
 
+## Alternatives Rejected
+
+- Do not leave top-level legacy architecture files as current approved artifacts, because that preserves the source-of-truth ambiguity this follow-on was created to resolve.
+- Do not rewrite historical body content in archived legacy records, because their value after closeout is historical evidence rather than current architecture truth.
+- Do not add package-shape or diagram enforcement automation in this follow-on, because the approved architecture-method rollout kept first adoption review-based.
+- Do not add a new ADR, because the follow-on normalizes existing architecture lifecycle state without introducing or revising a durable architecture decision.
+
 ## Scope Control
 
 - No historical body content in the archived legacy architecture records was rewritten to match the current canonical package.
