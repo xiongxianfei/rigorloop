@@ -202,6 +202,15 @@ validation:
   - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization
     result: pass_after_m5
     reason: Supplemental proof that earlier material review findings remain closed after M5 metadata and explanation updates.
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization
+    result: pass_after_code_review_r4
+    reason: Validated review-log, review-resolution, and the clean M5 code-review record.
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-log.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-resolution.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r4.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_code_review_r4
+    reason: Selected review_artifacts.validate, artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate.
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-log.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-resolution.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r4.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_code_review_r4
+    reason: Executed selected review artifact, artifact lifecycle, and change metadata checks.
 changed_files:
   - docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md
   - docs/architecture/2026-04-20-artifact-status-lifecycle-ownership.md
@@ -220,9 +229,10 @@ changed_files:
   - docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r1.md
   - docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r2.md
   - docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r3.md
+  - docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r4.md
   - docs/plan.md
   - docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
   - specs/legacy-architecture-lifecycle-normalization.test.md
 review:
-  status: m5_ready_for_code_review
+  status: m5_code_review_clean_ready_for_verify
   unresolved_items: 0
