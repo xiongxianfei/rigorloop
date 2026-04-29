@@ -6,6 +6,7 @@ Review closeout: code-review-m1-r1
 Review closeout: code-review-m2-r1
 Review closeout: code-review-m3-r1
 Review closeout: code-review-m4-r1
+Review closeout: code-review-m5-r1
 
 ### code-review-m1-r1
 
@@ -27,5 +28,9 @@ No material findings; no resolution entry required.
 No material findings; no resolution entry required.
 
 ### code-review-m4-r1
+
+No material findings; no resolution entry required.
+
+### code-review-m5-r1
 
 No material findings; no resolution entry required.
