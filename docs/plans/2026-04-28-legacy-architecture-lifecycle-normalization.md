@@ -1,6 +1,6 @@
 # Legacy Architecture Lifecycle Normalization Plan
 
-- Status: active
+- Status: done
 - Owner: maintainers
 - Start date: 2026-04-28
 - Last updated: 2026-04-29
@@ -13,7 +13,7 @@ Normalize legacy architecture artifacts under `docs/architecture/` after adoptio
 
 This plan is the required follow-on artifact for `specs/architecture-package-method.md` R65. It inventories every current file under `docs/architecture/`, classifies each file, records rationale, names a canonical replacement or merge-back target where applicable, and identifies the remaining work needed to complete lifecycle normalization.
 
-This plan does not claim that legacy architecture normalization is complete. It is the starting inventory and routing artifact for that later work.
+This plan now records the completed inventory, domain comparison, canonical merge-back, legacy lifecycle disposition, and final closeout evidence for the current `docs/architecture/` tree.
 
 ## Why Now
 
@@ -27,7 +27,7 @@ The architecture package method now defines one canonical architecture package u
 - Canonical architecture package: `docs/architecture/system/architecture.md`.
 - Architecture method ADR: `docs/adr/ADR-20260428-architecture-package-method.md`.
 - Plan index: `docs/plan.md`.
-- Planned change-local pack:
+- Change-local pack:
   - `docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml`
   - `docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md`
   - `docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/explain-change.md`
@@ -60,13 +60,13 @@ The architecture package method now defines one canonical architecture package u
 - Rewriting historical legacy architecture body content beyond concise lifecycle disposition notes and replacement pointers.
 - Changing legacy artifact statuses before comparison, merge-back review, and disposition decisions are recorded.
 - Adding package-shape, C4-file, or ADR-presence enforcement automation.
-- Claiming every legacy architecture artifact has already been normalized.
+- Claiming legacy normalization without inventory, merge-back, lifecycle disposition, and closeout validation.
 
 ## Constraints
 
 - `docs/architecture/system/architecture.md` is the current canonical architecture source.
 - `docs/architecture/system/diagrams/context.mmd` and `docs/architecture/system/diagrams/container.mmd` are current canonical C4 source diagrams.
-- Legacy Markdown files under `docs/architecture/*.md` remain approved historical records until a later normalization pass changes their lifecycle status or records supersession.
+- Legacy Markdown files under `docs/architecture/*.md` are archived historical records after M4 lifecycle disposition and M5 final closeout validation.
 - Durable current-system content discovered in a legacy document must merge into the canonical package before downstream work relies on it as current architecture truth.
 - Durable decisions discovered in legacy documents must remain linked to existing ADRs or be captured in a new ADR if no suitable ADR exists.
 
@@ -98,14 +98,14 @@ docs/architecture/system/diagrams/context.mmd
 
 | Path | Classification | Rationale | Canonical replacement or merge-back target | Remaining follow-up work |
 | --- | --- | --- | --- | --- |
-| `docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md` | archived/historical snapshot (`Status: archived`) | Approved pre-canonical first-release architecture record. It explains the original repository source layout and generated-output boundary, but it is not the current canonical package after `docs/architecture/system/` exists. | `docs/architecture/system/architecture.md` sections 3, 5, 7, and 8; `docs/adr/ADR-20260419-repository-source-layout.md`. | M4 complete: accepted current content was merged in M3, this artifact now records archived disposition and canonical package pointer. M5 must revalidate final lifecycle state. |
-| `docs/architecture/2026-04-20-artifact-status-lifecycle-ownership.md` | archived/historical snapshot (`Status: archived`) | Approved change-specific design for artifact lifecycle ownership before the canonical package lifecycle. It remains useful history for validator and lifecycle decisions but is not the current architecture baseline. | `docs/architecture/system/architecture.md` sections 5, 6, and 8; related lifecycle specs and validator scripts. | M4 complete: accepted current content was merged in M3, this artifact now records archived disposition and canonical package pointer. M5 must revalidate final lifecycle state. |
-| `docs/architecture/2026-04-21-docs-changes-usage-policy.md` | archived/historical snapshot (`Status: archived`) | Approved change-specific design for `docs/changes/` usage. The canonical package now owns current repository architecture, while this file preserves the historical design rationale for the docs-changes policy. | `docs/architecture/system/architecture.md` sections 5, 6, and 8; `specs/docs-changes-usage-policy.md`. | M4 complete: accepted current content was merged in M3, this artifact now records archived disposition and canonical package pointer. M5 must revalidate final lifecycle state. |
-| `docs/architecture/2026-04-21-workflow-stage-autoprogression.md` | archived/historical snapshot (`Status: archived`) | Approved architecture record for a prior workflow-stage change. It predates the canonical package and should not be treated as the current system architecture source. | `docs/architecture/system/architecture.md` sections 5, 6, and 8; `specs/workflow-stage-autoprogression.md`; `specs/rigorloop-workflow.md`. | M4 complete: accepted current content was merged in M3, this artifact now records archived disposition and canonical package pointer. M5 must revalidate final lifecycle state. |
-| `docs/architecture/2026-04-24-multi-agent-adapter-distribution.md` | archived/historical snapshot (`Status: archived`) | Approved adapter distribution architecture created before the canonical package. It remains historical evidence for adapter packaging and generated-output decisions but is not the current canonical architecture package. | `docs/architecture/system/architecture.md` sections 5, 7, and 8; `docs/adr/ADR-20260424-generated-adapter-packages.md`. | M4 complete: accepted current content was merged in M3, this artifact now records archived disposition and canonical package pointer. M5 must revalidate final lifecycle state. |
-| `docs/architecture/2026-04-24-review-finding-resolution-contract.md` | archived/historical snapshot (`Status: archived`) | Approved change-specific design for review finding resolution. It is historical evidence for review artifact structure and closeout rules, while current system architecture now belongs in the canonical package. | `docs/architecture/system/architecture.md` sections 5, 6, and 8; `specs/review-finding-resolution-contract.md`. | M4 complete: accepted current content was merged in M3, this artifact now records archived disposition and canonical package pointer. M5 must revalidate final lifecycle state. |
-| `docs/architecture/2026-04-24-skill-invocation-commands-for-adapters.md` | archived/historical snapshot (`Status: archived`) | Approved architecture for adapter command aliases and invocation surfaces. It predates canonical architecture and remains historical design evidence for adapter release behavior. | `docs/architecture/system/architecture.md` sections 5, 7, and 8; `docs/adr/ADR-20260424-generated-adapter-packages.md`. | M4 complete: accepted current content was merged in M3, this artifact now records archived disposition and canonical package pointer. M5 must revalidate final lifecycle state. |
-| `docs/architecture/2026-04-25-test-layering-and-change-scoped-validation.md` | archived/historical snapshot (`Status: archived`) | Approved design for validation selector and CI layering before canonical architecture adoption. It remains historical evidence for validation architecture but is not the current canonical package. | `docs/architecture/system/architecture.md` sections 5, 6, and 8; `specs/test-layering-and-change-scoped-validation.md`. | M4 complete: accepted current content was merged in M3, this artifact now records archived disposition and canonical package pointer. M5 must revalidate final lifecycle state. |
+| `docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md` | archived/historical snapshot (`Status: archived`) | Approved pre-canonical first-release architecture record. It explains the original repository source layout and generated-output boundary, but it is not the current canonical package after `docs/architecture/system/` exists. | `docs/architecture/system/architecture.md` sections 3, 5, 7, and 8; `docs/adr/ADR-20260419-repository-source-layout.md`. | M5 complete: accepted current content was merged in M3, archived disposition was recorded in M4, and final lifecycle state was revalidated in M5. |
+| `docs/architecture/2026-04-20-artifact-status-lifecycle-ownership.md` | archived/historical snapshot (`Status: archived`) | Approved change-specific design for artifact lifecycle ownership before the canonical package lifecycle. It remains useful history for validator and lifecycle decisions but is not the current architecture baseline. | `docs/architecture/system/architecture.md` sections 5, 6, and 8; related lifecycle specs and validator scripts. | M5 complete: accepted current content was merged in M3, archived disposition was recorded in M4, and final lifecycle state was revalidated in M5. |
+| `docs/architecture/2026-04-21-docs-changes-usage-policy.md` | archived/historical snapshot (`Status: archived`) | Approved change-specific design for `docs/changes/` usage. The canonical package now owns current repository architecture, while this file preserves the historical design rationale for the docs-changes policy. | `docs/architecture/system/architecture.md` sections 5, 6, and 8; `specs/docs-changes-usage-policy.md`. | M5 complete: accepted current content was merged in M3, archived disposition was recorded in M4, and final lifecycle state was revalidated in M5. |
+| `docs/architecture/2026-04-21-workflow-stage-autoprogression.md` | archived/historical snapshot (`Status: archived`) | Approved architecture record for a prior workflow-stage change. It predates the canonical package and should not be treated as the current system architecture source. | `docs/architecture/system/architecture.md` sections 5, 6, and 8; `specs/workflow-stage-autoprogression.md`; `specs/rigorloop-workflow.md`. | M5 complete: accepted current content was merged in M3, archived disposition was recorded in M4, and final lifecycle state was revalidated in M5. |
+| `docs/architecture/2026-04-24-multi-agent-adapter-distribution.md` | archived/historical snapshot (`Status: archived`) | Approved adapter distribution architecture created before the canonical package. It remains historical evidence for adapter packaging and generated-output decisions but is not the current canonical architecture package. | `docs/architecture/system/architecture.md` sections 5, 7, and 8; `docs/adr/ADR-20260424-generated-adapter-packages.md`. | M5 complete: accepted current content was merged in M3, archived disposition was recorded in M4, and final lifecycle state was revalidated in M5. |
+| `docs/architecture/2026-04-24-review-finding-resolution-contract.md` | archived/historical snapshot (`Status: archived`) | Approved change-specific design for review finding resolution. It is historical evidence for review artifact structure and closeout rules, while current system architecture now belongs in the canonical package. | `docs/architecture/system/architecture.md` sections 5, 6, and 8; `specs/review-finding-resolution-contract.md`. | M5 complete: accepted current content was merged in M3, archived disposition was recorded in M4, and final lifecycle state was revalidated in M5. |
+| `docs/architecture/2026-04-24-skill-invocation-commands-for-adapters.md` | archived/historical snapshot (`Status: archived`) | Approved architecture for adapter command aliases and invocation surfaces. It predates canonical architecture and remains historical design evidence for adapter release behavior. | `docs/architecture/system/architecture.md` sections 5, 7, and 8; `docs/adr/ADR-20260424-generated-adapter-packages.md`. | M5 complete: accepted current content was merged in M3, archived disposition was recorded in M4, and final lifecycle state was revalidated in M5. |
+| `docs/architecture/2026-04-25-test-layering-and-change-scoped-validation.md` | archived/historical snapshot (`Status: archived`) | Approved design for validation selector and CI layering before canonical architecture adoption. It remains historical evidence for validation architecture but is not the current canonical package. | `docs/architecture/system/architecture.md` sections 5, 6, and 8; `specs/test-layering-and-change-scoped-validation.md`. | M5 complete: accepted current content was merged in M3, archived disposition was recorded in M4, and final lifecycle state was revalidated in M5. |
 | `docs/architecture/system/architecture.md` | current canonical content | This file is the canonical architecture package created by the C4, arc42, and ADR method rollout. | Self; change-local deltas merge accepted durable content here. | Keep updated for architecture-significant changes; normalize legacy content into this package where still current. |
 | `docs/architecture/system/diagrams/container.mmd` | current canonical content | This Mermaid source-text C4 container diagram is part of the default canonical architecture package. | Self; referenced by `docs/architecture/system/architecture.md`. | Keep synchronized with canonical Building Block View and generated-output/container boundary changes. |
 | `docs/architecture/system/diagrams/context.mmd` | current canonical content | This Mermaid source-text C4 system context diagram is part of the default canonical architecture package. | Self; referenced by `docs/architecture/system/architecture.md`. | Keep synchronized when external actors, systems, or repository context changes. |
@@ -329,12 +329,12 @@ docs/architecture/system/diagrams/context.mmd
    - Expected observable result: the legacy normalization plan is closed, the plan index agrees with the plan body, the canonical baseline is no longer stale, every changed legacy artifact reached its intended lifecycle state, and final validation evidence is durable.
    - milestone commit message: `M5: close legacy architecture normalization`
    - milestone closeout checklist:
-     - [ ] targeted validation passed
-     - [ ] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
-     - [ ] progress updated
-     - [ ] decision log updated if needed
-     - [ ] validation notes updated
-     - [ ] milestone committed
+     - [x] targeted validation passed
+     - [x] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
+     - [x] progress updated
+     - [x] decision log updated if needed
+     - [x] validation notes updated
+     - [x] milestone committed
 
 ## Progress
 
@@ -353,6 +353,7 @@ docs/architecture/system/diagrams/context.mmd
 - 2026-04-29: M2 compared all eight legacy Markdown records by source/generated/adapters, workflow/lifecycle/review, and validation/CI domains; it recorded merge-back candidates, historical-only content, ADR handling, and disposition recommendations without editing canonical architecture or legacy statuses.
 - 2026-04-29: M3 merged accepted current content from all eight legacy Markdown records into `docs/architecture/system/architecture.md`, swept stale completed-rollout and selector-routing wording, and recorded historical-only leftovers in the change-local architecture delta without editing legacy lifecycle statuses.
 - 2026-04-29: M4 archived all eight top-level legacy Markdown architecture records, added canonical package pointers and archive rationale, and updated stale lifecycle handoff sections without rewriting historical architecture body content.
+- 2026-04-29: M5 closed the normalization evidence by refreshing inventory proof, updating stale canonical closeout wording, adding `explain-change.md`, synchronizing `docs/plan.md`, and validating both the plan/index/change surfaces and every legacy architecture document changed in M4.
 
 ## Decision Log
 
@@ -369,6 +370,8 @@ docs/architecture/system/diagrams/context.mmd
 - 2026-04-29: M3 did not create a new ADR because it documented existing current architecture truth and did not introduce or revise source layout, adapter generation or packaging, validation architecture, release architecture, or workflow-stage behavior.
 - 2026-04-29: M4 used `archived` rather than `superseded` for all eight legacy Markdown records because each now preserves historical design rationale after accepted current content merged into the canonical package. The canonical replacement for current architecture truth is still explicit in each closeout note.
 - 2026-04-29: M4 left `docs/architecture/system/architecture.md` content unchanged because M3 already completed the accepted current-content merge-back; M4 changed only legacy lifecycle disposition surfaces and change-local evidence.
+- 2026-04-29: M5 updated `docs/architecture/system/architecture.md` again to remove stale "M4/M5 pending" closeout language because final closeout must prove the canonical baseline is current after lifecycle normalization, not merely that the legacy files are archived.
+- 2026-04-29: M5 did not run broad smoke because both M5 selector commands returned no `broad_smoke.repo` selected check.
 
 ## Surprises and Discoveries
 
@@ -377,6 +380,7 @@ docs/architecture/system/diagrams/context.mmd
 - M3 confirmed the canonical architecture package had stale completed-rollout plan references and old milestone handoffs; the M3 canonical sweep removed those references.
 - M3 confirmed the canonical architecture Runtime View still described `.mmd` diagrams and change-local architecture deltas as manual-routed; the M3 sweep replaced that with current non-enforcement lifecycle routing language.
 - M4 confirmed the eight legacy records already had the required architecture sections for lifecycle validation, so the disposition pass could stay limited to status metadata, closeout notes, canonical pointers, stale `Next artifacts` or `Follow-on artifacts` cleanup, and terminal readiness wording.
+- M5 confirmed the canonical architecture package still had stale post-M3 closeout wording after M4; final closeout therefore included a current-state sweep of canonical legacy-normalization text.
 
 ## Validation Notes
 
@@ -445,21 +449,37 @@ docs/architecture/system/diagrams/context.mmd
 - 2026-04-29: M4 T9 scan `rg -n '(secret|credential|private key|token|/home/|xiongxianfei|debug-only|machine-local)' docs/architecture/*.md docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md` returned only policy or self-audit references; no committed secret, credential, private key, machine-local path, or debug-only artifact was found.
 - 2026-04-29: M4 extra touched-surface `python scripts/select-validation.py --mode explicit --path docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md --path docs/architecture/2026-04-20-artifact-status-lifecycle-ownership.md --path docs/architecture/2026-04-21-docs-changes-usage-policy.md --path docs/architecture/2026-04-21-workflow-stage-autoprogression.md --path docs/architecture/2026-04-24-multi-agent-adapter-distribution.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/architecture/2026-04-24-skill-invocation-commands-for-adapters.md --path docs/architecture/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/architecture/system/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md` returned `status: ok` and selected `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
 - 2026-04-29: M4 extra touched-surface `bash scripts/ci.sh --mode explicit --path docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md --path docs/architecture/2026-04-20-artifact-status-lifecycle-ownership.md --path docs/architecture/2026-04-21-docs-changes-usage-policy.md --path docs/architecture/2026-04-21-workflow-stage-autoprogression.md --path docs/architecture/2026-04-24-multi-agent-adapter-distribution.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/architecture/2026-04-24-skill-invocation-commands-for-adapters.md --path docs/architecture/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/architecture/system/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md` passed selected artifact lifecycle and change metadata checks.
+- 2026-04-29: M5 `find docs/architecture -type f | sort` produced 11 current architecture paths.
+- 2026-04-29: M5 `while IFS= read -r path; do rg -F -q "$path" docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md || printf 'missing-from-plan %s\n' "$path"; done < <(find docs/architecture -type f | sort)` produced no output.
+- 2026-04-29: M5 `python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/explain-change.md` returned `status: ok` and selected `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`; broad smoke was not required.
+- 2026-04-29: M5 `python scripts/select-validation.py --mode explicit --path docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md --path docs/architecture/2026-04-20-artifact-status-lifecycle-ownership.md --path docs/architecture/2026-04-21-docs-changes-usage-policy.md --path docs/architecture/2026-04-21-workflow-stage-autoprogression.md --path docs/architecture/2026-04-24-multi-agent-adapter-distribution.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/architecture/2026-04-24-skill-invocation-commands-for-adapters.md --path docs/architecture/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/architecture/system/architecture.md` returned `status: ok` and selected `artifact_lifecycle.validate`; broad smoke was not required.
+- 2026-04-29: M5 `python scripts/validate-change-metadata.py docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml` passed.
+- 2026-04-29: M5 `python scripts/test-change-metadata-validator.py` passed.
+- 2026-04-29: M5 `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/explain-change.md --path specs/legacy-architecture-lifecycle-normalization.test.md --path docs/architecture/system/architecture.md` passed.
+- 2026-04-29: M5 `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md --path docs/architecture/2026-04-20-artifact-status-lifecycle-ownership.md --path docs/architecture/2026-04-21-docs-changes-usage-policy.md --path docs/architecture/2026-04-21-workflow-stage-autoprogression.md --path docs/architecture/2026-04-24-multi-agent-adapter-distribution.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/architecture/2026-04-24-skill-invocation-commands-for-adapters.md --path docs/architecture/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/architecture/system/architecture.md` passed.
+- 2026-04-29: M5 `bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/explain-change.md --path docs/architecture/system/architecture.md` passed selected artifact lifecycle and change metadata checks.
+- 2026-04-29: M5 `bash scripts/ci.sh --mode explicit --path docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md --path docs/architecture/2026-04-20-artifact-status-lifecycle-ownership.md --path docs/architecture/2026-04-21-docs-changes-usage-policy.md --path docs/architecture/2026-04-21-workflow-stage-autoprogression.md --path docs/architecture/2026-04-24-multi-agent-adapter-distribution.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/architecture/2026-04-24-skill-invocation-commands-for-adapters.md --path docs/architecture/2026-04-25-test-layering-and-change-scoped-validation.md --path docs/architecture/system/architecture.md` passed selected artifact lifecycle checks.
+- 2026-04-29: M5 stale-string assertion `python -c 'from pathlib import Path; bt=chr(96); text=Path("docs/architecture/system/architecture.md").read_text(); stale=[p for p in ("docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md", "M3 "+bt+"code-review"+bt, "M3 "+bt+"verify"+bt, "M4 skill and generated-output update", "M5 legacy architecture normalization follow-on artifact before final completion claims", "diagrams and change-local architecture deltas remain manual-routed review evidence in the first adoption slice") if p in text]; assert not stale, stale'` passed.
+- 2026-04-29: M5 `rg -n "Status|superseded|archived|canonical architecture|docs/architecture/system/architecture.md" docs/architecture/*.md` found archived status, canonical package pointers, and final disposition text for every top-level legacy Markdown record.
+- 2026-04-29: M5 `git diff --check -- .` passed.
+- 2026-04-29: M5 extra touched-surface `python scripts/select-validation.py --mode explicit --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/explain-change.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/plan.md --path docs/architecture/system/architecture.md` returned `status: ok` and selected `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+- 2026-04-29: M5 extra touched-surface `bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/explain-change.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/plan.md --path docs/architecture/system/architecture.md` passed selected artifact lifecycle and change metadata checks.
+- 2026-04-29: M5 supplemental `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization` passed, confirming earlier material review findings remain closed.
 
 ## Outcome and Retrospective
 
-- This follow-on plan is active. Inventory, domain comparison, canonical merge-back, and legacy lifecycle disposition are complete; final closeout remains pending.
-- The repository must continue to avoid claiming that all legacy architecture artifacts have already been normalized until this plan is completed.
+- Done. Inventory, domain comparison, canonical merge-back, legacy lifecycle disposition, final closeout evidence, and plan/index synchronization are complete for the current `docs/architecture/` tree.
+- The eight top-level legacy Markdown architecture records are archived historical evidence; current architecture truth lives in `docs/architecture/system/architecture.md`.
 
 ## Readiness
 
-- Plan-review approved this plan on 2026-04-29.
-- Active test spec exists at `specs/legacy-architecture-lifecycle-normalization.test.md`.
-- M4 is complete. Ready for `code-review` of the M4 slice before M5.
+- Immediate next repository stage: `code-review` for the M5 final closeout slice.
+- Test spec readiness: complete; `specs/legacy-architecture-lifecycle-normalization.test.md` covers final closeout through `T10`, `T11`, and `T12`.
+- Plan/index readiness: synchronized; this plan is `done` and `docs/plan.md` lists it under Done.
 
 ## Risks and Follow-Ups
 
 - Risk: contributors may still cite an older architecture snapshot as current architecture truth.
-  Mitigation: use `docs/architecture/system/architecture.md` as the canonical package and this plan as the legacy classification map until normalization completes.
+  Mitigation: every top-level legacy Markdown record now has `Status: archived`, a closeout note, and a canonical package pointer.
 - Risk: archiving legacy records without content review could lose current architecture details.
-  Mitigation: M1 refreshes inventory, M2 records domain comparison, and M3 performs canonical merge-back before M4 records final legacy lifecycle disposition.
+  Mitigation: M1 refreshed inventory, M2 recorded domain comparison, M3 performed canonical merge-back, M4 recorded legacy lifecycle disposition, and M5 revalidated every changed legacy record.
