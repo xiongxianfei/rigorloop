@@ -191,11 +191,11 @@ This plan uses two validation command types:
 - Expected observable result: generated Codex and public adapter outputs include the new `vision` skill and updated proposal/review skill copies with no drift.
 - Commit message: `M3: refresh generated vision skill outputs`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - Generated output may include broad adapter entrypoint changes from updated skill inventory.
 - Rollback/recovery:
@@ -257,6 +257,7 @@ This plan uses two validation command types:
 - 2026-04-30: M1 code-review fix clarified that missing README markers stop `mirror` and `revise` before file modification unless explicit handling is authorized.
 - 2026-04-30: M2 added `Vision fit` proposal/proposal-review guidance and aligned governance, workflow, and README ownership surfaces around `vision.md`.
 - 2026-04-30: CR-M2-F1 tightened absent-root-vision `Vision fit` handling so proposals must use exactly `no vision exists yet` and proposal-review must request revision for nonexistent-vision claims.
+- 2026-04-30: M3 refreshed generated `.codex/skills/` and public adapter output through `scripts/build-skills.py` and `scripts/build-adapters.py --version 0.1.1`.
 
 ## Decision log
 
@@ -265,6 +266,7 @@ This plan uses two validation command types:
 - 2026-04-29: README selector blocking is treated as selector inspection with manual routing because `README.md` is unclassified by the current selector.
 - 2026-04-30: M1 intentionally leaves generated `.codex/skills/` and `dist/adapters/` refresh to M3, as planned; selector inspection for the changed canonical skill identifies generated drift checks that are not M1 pass gates.
 - 2026-04-30: M2 canonical proposal and proposal-review skill edits also leave generated `.codex/skills/` and `dist/adapters/` refresh to M3, as planned.
+- 2026-04-30: M3 did not add an opencode `vision` command alias; opencode command aliases remain limited to the existing curated lifecycle command set while the full `vision` skill is present under opencode skills.
 
 ## Surprises and discoveries
 
@@ -318,12 +320,26 @@ This plan uses two validation command types:
   - `python scripts/test-select-validation.py` passed.
   - `python scripts/select-validation.py --mode explicit --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-04-29-vision-skill.md` selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.drift`, `artifact_lifecycle.validate`, and `broad_smoke.repo`; generated drift, adapter drift, and broad smoke remain deferred until M3 refreshes generated output.
   - `git diff --check -- skills/proposal/SKILL.md skills/proposal-review/SKILL.md scripts/test-skill-validator.py docs/plans/2026-04-29-vision-skill.md` passed.
+- 2026-04-30 M3 implementation:
+  - `python scripts/build-skills.py --check` failed before generation because generated proposal and proposal-review skills were stale and `.codex/skills/vision/SKILL.md` was missing.
+  - `python scripts/build-adapters.py --version 0.1.1 --check` failed before generation because the manifest omitted `vision`, generated adapter skill files for `vision` were missing, and generated proposal/proposal-review adapter skill files were stale.
+  - `python scripts/test-adapter-distribution.py` failed before generation because repository generated adapter output was stale.
+  - `python scripts/build-skills.py` passed and refreshed generated `.codex/skills/` output.
+  - `python scripts/build-adapters.py --version 0.1.1` passed and refreshed generated public adapter output under `dist/adapters/`.
+  - Manifest and file inspection confirmed `vision` is included for codex, claude, and opencode adapters; `.codex/skills/vision/SKILL.md` exists; adapter `vision` skill files exist; opencode command aliases do not include `vision`.
+  - `python scripts/build-skills.py --check` passed.
+  - `python scripts/test-adapter-distribution.py` passed.
+  - `python scripts/build-adapters.py --version 0.1.1 --check` passed.
+  - `python scripts/validate-adapters.py --version 0.1.1` passed.
+  - `python scripts/select-validation.py --mode explicit --path .codex/skills/vision/SKILL.md --path .codex/skills/proposal/SKILL.md --path .codex/skills/proposal-review/SKILL.md --path dist/adapters/manifest.yaml --path dist/adapters/codex/AGENTS.md --path dist/adapters/claude/CLAUDE.md --path dist/adapters/opencode/AGENTS.md --path dist/adapters/codex/.agents/skills/vision/SKILL.md --path dist/adapters/codex/.agents/skills/proposal/SKILL.md --path dist/adapters/codex/.agents/skills/proposal-review/SKILL.md --path dist/adapters/claude/.claude/skills/vision/SKILL.md --path dist/adapters/claude/.claude/skills/proposal/SKILL.md --path dist/adapters/claude/.claude/skills/proposal-review/SKILL.md --path dist/adapters/opencode/.opencode/skills/vision/SKILL.md --path dist/adapters/opencode/.opencode/skills/proposal/SKILL.md --path dist/adapters/opencode/.opencode/skills/proposal-review/SKILL.md` selected `skills.drift`, `adapters.regression`, `adapters.drift`, and `adapters.validate`; all selected commands passed.
+  - `git diff --check -- .codex/skills dist/adapters docs/plans/2026-04-29-vision-skill.md` passed.
+  - `bash scripts/ci.sh --mode broad-smoke` passed.
 
 ## Outcome and retrospective
 
-- Active. M1 and M2 are complete; M3-M4 remain pending.
+- Active. M1, M2, and M3 are complete; M4 remains pending.
 
 ## Readiness
 
-- M1 and M2 are complete.
-- The immediate next implementation milestone is M3, `Refresh generated skill and adapter outputs`.
+- M1, M2, and M3 are complete.
+- The immediate next implementation milestone is M4, `Change-local closeout and full validation handoff`.
