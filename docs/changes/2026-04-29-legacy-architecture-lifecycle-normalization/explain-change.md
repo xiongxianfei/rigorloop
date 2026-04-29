@@ -86,6 +86,10 @@ Post-review verify also reran the all-touched selector and CI wrapper checks:
 
 The M5 and verify selector output did not select `broad_smoke.repo`, so broad smoke was not part of the pass gate.
 
+Hosted CI was also observed through PR #21:
+
+- `gh pr checks 21` reported `ci` passing for the PR branch.
+
 ## Scope Control
 
 - No historical body content in the archived legacy architecture records was rewritten to match the current canonical package.
@@ -96,7 +100,7 @@ The M5 and verify selector output did not select `broad_smoke.repo`, so broad sm
 
 ## Risks And Follow-Ups
 
-- Hosted CI has not been observed for the M5 commit from this environment.
+- Hosted CI is observed and passing for PR #21; no hosted-CI evidence gap remains for the branch.
 - Future architecture-significant work should update `docs/architecture/system/architecture.md` directly or use a change-local delta only as temporary working evidence before merge-back.
 - Future package-shape enforcement still requires a later approved contract; this follow-on intentionally stays review-based.
 
