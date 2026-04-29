@@ -88,6 +88,39 @@ validation:
   - command: bash scripts/ci.sh --mode explicit --path templates/architecture.md --path templates/diagram-styles.mmd --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/changes/2026-04-29-c4-arc42-package-quality/reviews/code-review-m1-r1.md --path docs/changes/2026-04-29-c4-arc42-package-quality/review-log.md --path docs/changes/2026-04-29-c4-arc42-package-quality/review-resolution.md --path docs/plan.md
     result: pass_after_m1_code_review
     reason: Executed selected review artifact, lifecycle, change metadata, selector regression, and broad-smoke checks.
+  - command: python scripts/test-skill-validator.py
+    result: expected_fail_before_m2_skill_update
+    reason: New architecture-skill regression failed before the required M2 skill shape was implemented.
+  - command: python scripts/validate-skills.py
+    result: pass_after_m2
+  - command: python scripts/test-skill-validator.py
+    result: pass_after_m2
+  - command: python scripts/build-skills.py --check
+    result: expected_fail_before_m2_generation
+    reason: Generated Codex architecture skill mirror was stale after the canonical skill edit.
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: expected_fail_before_m2_generation
+    reason: Generated adapter architecture skill copies were stale after the canonical skill edit.
+  - command: python scripts/build-skills.py
+    result: pass_after_m2
+    reason: Refreshed generated Codex skill output through the existing generator.
+  - command: python scripts/build-adapters.py --version 0.1.1
+    result: pass_after_m2
+    reason: Refreshed public adapter output through the existing generator.
+  - command: python scripts/build-skills.py --check
+    result: pass_after_m2
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_after_m2
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_after_m2
+  - command: python scripts/select-validation.py --mode explicit --path skills/architecture/SKILL.md --path scripts/test-skill-validator.py --path .codex/skills/architecture/SKILL.md --path dist/adapters/claude/.claude/skills/architecture/SKILL.md --path dist/adapters/codex/.agents/skills/architecture/SKILL.md --path dist/adapters/opencode/.opencode/skills/architecture/SKILL.md --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/plan.md
+    result: pass_after_m2
+    reason: Selected skills.validate, skills.regression, skills.drift, adapters.regression, adapters.drift, adapters.validate, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, and broad_smoke.repo for the final M2 touched surface.
+  - command: git diff --check -- skills/architecture/SKILL.md scripts/test-skill-validator.py .codex/skills/architecture/SKILL.md dist/adapters/claude/.claude/skills/architecture/SKILL.md dist/adapters/codex/.agents/skills/architecture/SKILL.md dist/adapters/opencode/.opencode/skills/architecture/SKILL.md docs/plans/2026-04-29-c4-arc42-package-quality.md docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml docs/plan.md
+    result: pass_after_m2
+  - command: bash scripts/ci.sh --mode explicit --path skills/architecture/SKILL.md --path scripts/test-skill-validator.py --path .codex/skills/architecture/SKILL.md --path dist/adapters/claude/.claude/skills/architecture/SKILL.md --path dist/adapters/codex/.agents/skills/architecture/SKILL.md --path dist/adapters/opencode/.opencode/skills/architecture/SKILL.md --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/plan.md
+    result: pass_after_m2
+    reason: Executed the final selector-selected M2 checks, including broad smoke from the active plan trigger.
 changed_files:
   - docs/proposals/2026-04-29-c4-arc42-package-quality.md
   - specs/architecture-package-method.md
@@ -104,6 +137,12 @@ changed_files:
   - docs/changes/2026-04-29-c4-arc42-package-quality/reviews/code-review-m1-r1.md
   - docs/changes/2026-04-29-c4-arc42-package-quality/review-log.md
   - docs/changes/2026-04-29-c4-arc42-package-quality/review-resolution.md
+  - skills/architecture/SKILL.md
+  - scripts/test-skill-validator.py
+  - .codex/skills/architecture/SKILL.md
+  - dist/adapters/claude/.claude/skills/architecture/SKILL.md
+  - dist/adapters/codex/.agents/skills/architecture/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/architecture/SKILL.md
 review:
-  status: m1-code-review-closed-ready-for-m2
+  status: m2-implemented-ready-for-code-review
   unresolved_items: 0

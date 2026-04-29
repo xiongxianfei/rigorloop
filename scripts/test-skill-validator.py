@@ -133,6 +133,37 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                 self.assertIn("bounded searches disagree", body)
                 self.assertIn("behavior-changing edit depends on the whole source-of-truth artifact", body)
 
+    def test_architecture_skill_defines_concise_c4_arc42_adr_output_shape(self) -> None:
+        body = (ROOT / "skills" / "architecture" / "SKILL.md").read_text(encoding="utf-8")
+        required_terms = [
+            "## When to Use / When Not to Use",
+            "## Output Shape",
+            "Produce or update:",
+            "`docs/changes/<change-id>/architecture.md`",
+            "canonical architecture package",
+            "C4 system context diagram",
+            "C4 container diagram",
+            "ADRs when durable decisions are introduced",
+            "Use `templates/architecture.md` for the full 12-section arc42 structure.",
+            "```mermaid\nC4Context",
+            "```mermaid\nC4Container",
+            "## ADR Triggers",
+            "skills/architecture/references/architecture-example.md",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, body)
+
+        forbidden_terms = [
+            "## Full Worked Example",
+            "### Full Worked Example",
+            "## Worked Example",
+            "### Worked Example",
+        ]
+        for term in forbidden_terms:
+            with self.subTest(term=term):
+                self.assertNotIn(term, body)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

@@ -100,17 +100,22 @@ The architecture-stage work already refined and passed review for the canonical 
 - Validation commands:
   - `python scripts/validate-skills.py`
   - `python scripts/test-skill-validator.py`
-  - `python scripts/select-validation.py --mode explicit --path skills/architecture/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml`
-  - `bash scripts/ci.sh --mode explicit --path skills/architecture/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml`
-  - `git diff --check -- skills/architecture/SKILL.md scripts/test-skill-validator.py docs/plans/2026-04-29-c4-arc42-package-quality.md docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml`
+  - `python scripts/build-skills.py`
+  - `python scripts/build-adapters.py --version 0.1.1`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/build-adapters.py --version 0.1.1 --check`
+  - `python scripts/validate-adapters.py --version 0.1.1`
+  - `python scripts/select-validation.py --mode explicit --path skills/architecture/SKILL.md --path scripts/test-skill-validator.py --path .codex/skills/architecture/SKILL.md --path dist/adapters/claude/.claude/skills/architecture/SKILL.md --path dist/adapters/codex/.agents/skills/architecture/SKILL.md --path dist/adapters/opencode/.opencode/skills/architecture/SKILL.md --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/plan.md`
+  - `bash scripts/ci.sh --mode explicit --path skills/architecture/SKILL.md --path scripts/test-skill-validator.py --path .codex/skills/architecture/SKILL.md --path dist/adapters/claude/.claude/skills/architecture/SKILL.md --path dist/adapters/codex/.agents/skills/architecture/SKILL.md --path dist/adapters/opencode/.opencode/skills/architecture/SKILL.md --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/plan.md`
+  - `git diff --check -- skills/architecture/SKILL.md scripts/test-skill-validator.py .codex/skills/architecture/SKILL.md dist/adapters/claude/.claude/skills/architecture/SKILL.md dist/adapters/codex/.agents/skills/architecture/SKILL.md dist/adapters/opencode/.opencode/skills/architecture/SKILL.md docs/plans/2026-04-29-c4-arc42-package-quality.md docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml docs/plan.md`
 - Expected observable result: architecture authors get compact process guidance and are directed to templates for structure instead of a long skill body.
 - Commit message: `M2: tighten architecture authoring skill`
 - Milestone closeout:
-  - validation passed
-  - progress updated
-  - decision log updated if needed
-  - validation notes updated
-  - milestone committed
+  - [x] targeted validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks: the skill may become too verbose or duplicate the full template.
 - Rollback/recovery: trim examples back to the required snippets and leave detailed structure in `templates/architecture.md`.
 
@@ -249,6 +254,7 @@ Validation starts with the smallest milestone-specific checks, then expands to s
 - 2026-04-29: plan-review approved the revised plan; test-spec updated `specs/architecture-package-method.test.md` for R76-R118 and AC14-AC20.
 - 2026-04-29: implemented M1 template and diagram-style scaffolding in `templates/architecture.md` and `templates/diagram-styles.mmd`; M2-M5 remain pending.
 - 2026-04-29: code-review M1 R1 found stale readiness handoff wording (CR1-F1); the finding was accepted and closed by updating readiness to point to M2 after M1 code-review.
+- 2026-04-29: implemented M2 architecture authoring skill update in `skills/architecture/SKILL.md`, added skill-validator regression coverage, and refreshed generated Codex skill plus public adapter output through existing generators because selector-selected drift checks require generated output to stay in sync.
 
 ## Decision log
 
@@ -256,10 +262,12 @@ Validation starts with the smallest milestone-specific checks, then expands to s
 - 2026-04-29: keep generated output refresh in its own milestone so canonical skill edits can be reviewed before generated mirrors and adapter packages change.
 - 2026-04-29: require broad smoke at final validation because the initiative crosses skills, generated output, templates, lifecycle artifacts, and architecture docs.
 - 2026-04-29: keep M1 review-based by adding template scaffolding only; no package-shape, C4-file, ADR-presence, or arc42-section enforcement automation was added.
+- 2026-04-29: M2 refreshed generated `.codex/skills/architecture/SKILL.md` and adapter architecture skill copies through generators even though generated refresh has a later dedicated milestone, because the selector-selected M2 checks include `skills.drift` and `adapters.drift`. M4 remains necessary after M3 to refresh architecture-review generated output.
 
 ## Surprises and discoveries
 
 - 2026-04-29: M1 selector routing includes `selector.regression` for changed `templates/` paths in addition to lifecycle, change metadata, and broad-smoke checks.
+- 2026-04-29: M2 canonical skill edits immediately made generated skill and adapter drift checks fail; required M2 validation could not pass without generator refresh.
 
 ## Validation notes
 
@@ -285,6 +293,19 @@ Validation starts with the smallest milestone-specific checks, then expands to s
 - 2026-04-29: M1 code-review `python scripts/select-validation.py --mode explicit --path templates/architecture.md --path templates/diagram-styles.mmd --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/changes/2026-04-29-c4-arc42-package-quality/reviews/code-review-m1-r1.md --path docs/changes/2026-04-29-c4-arc42-package-quality/review-log.md --path docs/changes/2026-04-29-c4-arc42-package-quality/review-resolution.md --path docs/plan.md` returned `status: ok` and selected review artifact, lifecycle, change metadata, selector regression, and broad-smoke checks.
 - 2026-04-29: M1 code-review `git diff --check -- docs/changes/2026-04-29-c4-arc42-package-quality docs/plans/2026-04-29-c4-arc42-package-quality.md docs/plan.md` passed.
 - 2026-04-29: M1 code-review `bash scripts/ci.sh --mode explicit --path templates/architecture.md --path templates/diagram-styles.mmd --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/changes/2026-04-29-c4-arc42-package-quality/reviews/code-review-m1-r1.md --path docs/changes/2026-04-29-c4-arc42-package-quality/review-log.md --path docs/changes/2026-04-29-c4-arc42-package-quality/review-resolution.md --path docs/plan.md` passed selected review artifact, lifecycle, change metadata, selector regression, and broad-smoke checks.
+- 2026-04-29: M2 pre-implementation `python scripts/test-skill-validator.py` failed as expected after adding the architecture-skill regression because `skills/architecture/SKILL.md` did not yet include the required output-shape, C4 container snippet, ADR trigger heading, use/skip heading, and reference-example boundary.
+- 2026-04-29: M2 `python scripts/validate-skills.py` passed.
+- 2026-04-29: M2 `python scripts/test-skill-validator.py` passed after updating `skills/architecture/SKILL.md`.
+- 2026-04-29: M2 pre-generation `python scripts/build-skills.py --check` failed as expected because `.codex/skills/architecture/SKILL.md` was stale after the canonical skill edit.
+- 2026-04-29: M2 pre-generation `python scripts/build-adapters.py --version 0.1.1 --check` failed as expected with three stale architecture adapter skill files after the canonical skill edit.
+- 2026-04-29: M2 `python scripts/build-skills.py` refreshed generated Codex skill output.
+- 2026-04-29: M2 `python scripts/build-adapters.py --version 0.1.1` refreshed public adapter output.
+- 2026-04-29: M2 `python scripts/build-skills.py --check` passed.
+- 2026-04-29: M2 `python scripts/build-adapters.py --version 0.1.1 --check` passed.
+- 2026-04-29: M2 `python scripts/validate-adapters.py --version 0.1.1` passed.
+- 2026-04-29: M2 final `python scripts/select-validation.py --mode explicit --path skills/architecture/SKILL.md --path scripts/test-skill-validator.py --path .codex/skills/architecture/SKILL.md --path dist/adapters/claude/.claude/skills/architecture/SKILL.md --path dist/adapters/codex/.agents/skills/architecture/SKILL.md --path dist/adapters/opencode/.opencode/skills/architecture/SKILL.md --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/plan.md` returned `status: ok` and selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `broad_smoke.repo`.
+- 2026-04-29: M2 final `git diff --check -- skills/architecture/SKILL.md scripts/test-skill-validator.py .codex/skills/architecture/SKILL.md dist/adapters/claude/.claude/skills/architecture/SKILL.md dist/adapters/codex/.agents/skills/architecture/SKILL.md dist/adapters/opencode/.opencode/skills/architecture/SKILL.md docs/plans/2026-04-29-c4-arc42-package-quality.md docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml docs/plan.md` passed.
+- 2026-04-29: M2 final `bash scripts/ci.sh --mode explicit --path skills/architecture/SKILL.md --path scripts/test-skill-validator.py --path .codex/skills/architecture/SKILL.md --path dist/adapters/claude/.claude/skills/architecture/SKILL.md --path dist/adapters/codex/.agents/skills/architecture/SKILL.md --path dist/adapters/opencode/.opencode/skills/architecture/SKILL.md --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/plan.md` passed selected skill, generated skill drift, adapter regression/drift/validation, lifecycle, change metadata, and broad-smoke checks.
 
 ## Outcome and retrospective
 
@@ -292,6 +313,6 @@ Validation starts with the smallest milestone-specific checks, then expands to s
 
 ## Readiness
 
-- Immediate next repository stage: `implement` M2.
+- Immediate next repository stage: `code-review` for M2.
 - Test spec readiness: active; `specs/architecture-package-method.test.md` covers R76-R118 and AC14-AC20 for this refinement.
-- Implementation readiness: M1 implementation and M1 code-review closeout are complete; M2 is ready to start.
+- Implementation readiness: M1 implementation and M1 code-review closeout are complete; M2 implementation is ready for code-review. M3-M5 remain pending.
