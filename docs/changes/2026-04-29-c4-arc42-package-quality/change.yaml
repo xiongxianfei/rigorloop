@@ -227,6 +227,36 @@ validation:
   - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-29-c4-arc42-package-quality/reviews/code-review-m4-r1.md --path docs/changes/2026-04-29-c4-arc42-package-quality/review-log.md --path docs/changes/2026-04-29-c4-arc42-package-quality/review-resolution.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/plan.md
     result: pass_after_m4_code_review
     reason: Executed selected review artifact, lifecycle, change metadata, and broad-smoke checks.
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml
+    result: pass_after_m5
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_after_m5
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-29-c4-arc42-package-quality.md --path specs/architecture-package-method.md --path specs/architecture-package-method.test.md --path docs/architecture/system/architecture.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/changes/2026-04-29-c4-arc42-package-quality/architecture.md --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/plan.md
+    result: pass_after_m5
+  - command: python scripts/validate-skills.py
+    result: pass_after_m5
+  - command: python scripts/test-skill-validator.py
+    result: pass_after_m5
+  - command: python scripts/build-skills.py --check
+    result: pass_after_m5
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_after_m5
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_after_m5
+  - command: python scripts/test-select-validation.py
+    result: pass_after_m5
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_after_m5
+  - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-04-29-c4-arc42-package-quality.md --path specs/architecture-package-method.md --path specs/architecture-package-method.test.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/context.mmd --path docs/architecture/system/diagrams/container.mmd --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/changes/2026-04-29-c4-arc42-package-quality/architecture.md --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/plan.md --path templates/architecture.md --path templates/diagram-styles.mmd --path skills/architecture/SKILL.md --path skills/architecture-review/SKILL.md --path .codex/skills/architecture/SKILL.md --path .codex/skills/architecture-review/SKILL.md --path dist/adapters/manifest.yaml
+    result: pass_after_m5
+    reason: Selected skill, generated skill drift, adapter regression/drift/validation, lifecycle, change metadata, selector regression, and broad-smoke checks for M5 lifecycle closeout.
+  - command: git diff --check -- .
+    result: pass_after_m5
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-04-29-c4-arc42-package-quality.md --path specs/architecture-package-method.md --path specs/architecture-package-method.test.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/context.mmd --path docs/architecture/system/diagrams/container.mmd --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/changes/2026-04-29-c4-arc42-package-quality/architecture.md --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/plan.md --path templates/architecture.md --path templates/diagram-styles.mmd --path skills/architecture/SKILL.md --path skills/architecture-review/SKILL.md --path .codex/skills/architecture/SKILL.md --path .codex/skills/architecture-review/SKILL.md --path dist/adapters/manifest.yaml
+    result: pass_after_m5
+    reason: Executed selected skill, generated skill drift, adapter regression/drift/validation, lifecycle, change metadata, selector regression, and broad-smoke checks.
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: pass_after_m5
 changed_files:
   - docs/proposals/2026-04-29-c4-arc42-package-quality.md
   - specs/architecture-package-method.md
@@ -258,5 +288,5 @@ changed_files:
   - docs/changes/2026-04-29-c4-arc42-package-quality/reviews/code-review-m3-r1.md
   - docs/changes/2026-04-29-c4-arc42-package-quality/reviews/code-review-m4-r1.md
 review:
-  status: m4-code-review-clean-ready-for-m5
+  status: m5-implemented-ready-for-code-review
   unresolved_items: 0
