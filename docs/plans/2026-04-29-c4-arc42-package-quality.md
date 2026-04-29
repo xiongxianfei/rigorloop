@@ -267,6 +267,7 @@ Validation starts with the smallest milestone-specific checks, then expands to s
 - 2026-04-29: implemented M2 architecture authoring skill update in `skills/architecture/SKILL.md`, added skill-validator regression coverage, and refreshed generated Codex skill plus public adapter output through existing generators because selector-selected drift checks require generated output to stay in sync.
 - 2026-04-29: code-review M2 R1 passed with no material findings; recorded the clean review under `docs/changes/2026-04-29-c4-arc42-package-quality/reviews/code-review-m2-r1.md`.
 - 2026-04-29: implemented M3 architecture-review skill update in `skills/architecture-review/SKILL.md`, added regression coverage for the simple finding format and material-finding contract preservation, and refreshed generated Codex skill plus public adapter output through existing generators because selector-selected drift checks require generated output to stay in sync.
+- 2026-04-29: code-review M3 R1 passed with no material findings; recorded the clean review under `docs/changes/2026-04-29-c4-arc42-package-quality/reviews/code-review-m3-r1.md`.
 
 ## Decision log
 
@@ -344,6 +345,11 @@ Validation starts with the smallest milestone-specific checks, then expands to s
 - 2026-04-29: M3 final `python scripts/select-validation.py --mode explicit --path skills/architecture-review/SKILL.md --path scripts/test-skill-validator.py --path .codex/skills/architecture-review/SKILL.md --path dist/adapters/claude/.claude/skills/architecture-review/SKILL.md --path dist/adapters/codex/.agents/skills/architecture-review/SKILL.md --path dist/adapters/opencode/.opencode/skills/architecture-review/SKILL.md --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/plan.md` returned `status: ok` and selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, artifact lifecycle, change metadata, and broad-smoke checks.
 - 2026-04-29: M3 final `git diff --check -- skills/architecture-review/SKILL.md scripts/test-skill-validator.py .codex/skills/architecture-review/SKILL.md dist/adapters/claude/.claude/skills/architecture-review/SKILL.md dist/adapters/codex/.agents/skills/architecture-review/SKILL.md dist/adapters/opencode/.opencode/skills/architecture-review/SKILL.md docs/plans/2026-04-29-c4-arc42-package-quality.md docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml docs/plan.md` passed.
 - 2026-04-29: M3 final `bash scripts/ci.sh --mode explicit --path skills/architecture-review/SKILL.md --path scripts/test-skill-validator.py --path .codex/skills/architecture-review/SKILL.md --path dist/adapters/claude/.claude/skills/architecture-review/SKILL.md --path dist/adapters/codex/.agents/skills/architecture-review/SKILL.md --path dist/adapters/opencode/.opencode/skills/architecture-review/SKILL.md --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/plan.md` passed selected skill, generated skill drift, adapter regression/drift/validation, lifecycle, change metadata, and broad-smoke checks.
+- 2026-04-29: M3 code-review closeout `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-04-29-c4-arc42-package-quality` passed.
+- 2026-04-29: M3 code-review closeout `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-29-c4-arc42-package-quality` passed.
+- 2026-04-29: M3 code-review closeout `python scripts/select-validation.py --mode explicit --path docs/changes/2026-04-29-c4-arc42-package-quality/reviews/code-review-m3-r1.md --path docs/changes/2026-04-29-c4-arc42-package-quality/review-log.md --path docs/changes/2026-04-29-c4-arc42-package-quality/review-resolution.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/plan.md` returned `status: ok` and selected review artifact, lifecycle, change metadata, and broad-smoke checks.
+- 2026-04-29: M3 code-review closeout `git diff --check -- docs/changes/2026-04-29-c4-arc42-package-quality docs/plans/2026-04-29-c4-arc42-package-quality.md docs/plan.md` passed.
+- 2026-04-29: M3 code-review closeout `bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-29-c4-arc42-package-quality/reviews/code-review-m3-r1.md --path docs/changes/2026-04-29-c4-arc42-package-quality/review-log.md --path docs/changes/2026-04-29-c4-arc42-package-quality/review-resolution.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/plan.md` passed selected review artifact, lifecycle, change metadata, and broad-smoke checks.
 
 ## Outcome and retrospective
 
@@ -351,6 +357,6 @@ Validation starts with the smallest milestone-specific checks, then expands to s
 
 ## Readiness
 
-- Immediate next repository stage: `code-review` for M3.
+- Immediate next repository stage: `implement` M4.
 - Test spec readiness: active; `specs/architecture-package-method.test.md` covers R76-R118 and AC14-AC20 for this refinement.
-- Implementation readiness: M1 and M2 implementation and code-review closeout are complete. M3 implementation is complete and ready for code-review. M4-M5 remain pending.
+- Implementation readiness: M1, M2, and M3 implementation and code-review closeout are complete. M4-M5 remain pending.
