@@ -170,12 +170,12 @@ docs/architecture/system/diagrams/context.mmd
    - Expected observable result: current inventory and comparison evidence are complete before domain-level review starts.
    - milestone commit message: `M1: refresh legacy architecture inventory`
    - milestone closeout checklist:
-     - [ ] targeted validation passed
-     - [ ] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
-     - [ ] progress updated
-     - [ ] decision log updated if needed
-     - [ ] validation notes updated
-     - [ ] milestone committed
+     - [x] targeted validation passed
+     - [x] lifecycle state unchanged; no `docs/plan.md` update required
+     - [x] progress updated
+     - [x] decision log updated
+     - [x] validation notes updated
+     - [x] milestone committed
 
 2. M2. Compare legacy architecture records by domain
    - Goal: review legacy records in smaller domain groups and decide what durable current content or decisions must merge back.
@@ -348,6 +348,7 @@ docs/architecture/system/diagrams/context.mmd
 - 2026-04-29: M0 implemented the change-local metadata and working architecture delta under `docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/`; no legacy architecture statuses or canonical architecture content changed.
 - 2026-04-29: M0 code-review-r1 requested an explicit canonical architecture package citation in change metadata; the fix added `canonical_artifacts.architecture_package` and recorded the accepted disposition in change-local review artifacts.
 - 2026-04-29: M0 code-review-r2 requested the missing accepted proposal citation in change metadata; the fix added `artifacts.proposal` and recorded the accepted disposition in change-local review artifacts.
+- 2026-04-29: M1 refreshed the architecture inventory and added an eight-row legacy Markdown comparison matrix to the change-local architecture delta; no canonical architecture content or legacy lifecycle status changed.
 
 ## Decision Log
 
@@ -357,6 +358,7 @@ docs/architecture/system/diagrams/context.mmd
 - 2026-04-29: chose a focused test spec `specs/legacy-architecture-lifecycle-normalization.test.md` for this follow-on instead of reusing the completed architecture-method test spec, because this work now has its own change-local pack, milestones, and final lifecycle closeout.
 - 2026-04-29: split canonical merge-back from lifecycle disposition so legacy files are not archived or superseded until current content and durable decisions have been reviewed.
 - 2026-04-29: used `docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md` as the M0 durable Markdown reasoning surface; `explain-change.md` remains a planned M5 closeout artifact as defined by the approved plan.
+- 2026-04-29: kept M1 comparison rows at the "may contain / needs review" level instead of making merge-back or ADR decisions, because M2 owns domain comparison and M3 owns canonical merge-back.
 
 ## Surprises and Discoveries
 
@@ -394,6 +396,15 @@ docs/architecture/system/diagrams/context.mmd
 - 2026-04-29: M0 review-fix `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization` passed after recording `code-review-r2` and accepting `CR2-F1`.
 - 2026-04-29: M0 review-fix `python scripts/select-validation.py --mode explicit --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-log.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-resolution.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r1.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r2.md --path specs/legacy-architecture-lifecycle-normalization.test.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md` returned `status: ok` and selected `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
 - 2026-04-29: M0 review-fix `bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-log.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-resolution.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r1.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r2.md --path specs/legacy-architecture-lifecycle-normalization.test.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md` passed selected review artifact, artifact lifecycle, and change metadata checks.
+- 2026-04-29: M1 red proof `while IFS= read -r path; do rg -F -q "$path" docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md || printf 'missing-from-delta %s\n' "$path"; done < <(find docs/architecture -maxdepth 1 -type f -name '*.md' | sort)` listed all eight top-level legacy Markdown records before the comparison matrix was added.
+- 2026-04-29: M1 `find docs/architecture -type f | sort` produced 11 paths, unchanged from the plan inventory.
+- 2026-04-29: M1 `while IFS= read -r path; do rg -F -q "$path" docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md || printf 'missing-from-plan %s\n' "$path"; done < <(find docs/architecture -type f | sort)` produced no output.
+- 2026-04-29: M1 `while IFS= read -r path; do rg -F -q "$path" docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md || printf 'missing-from-delta %s\n' "$path"; done < <(find docs/architecture -maxdepth 1 -type f -name '*.md' | sort)` produced no output.
+- 2026-04-29: M1 `python scripts/select-validation.py --mode explicit --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml` returned `status: ok` and selected `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+- 2026-04-29: M1 `python scripts/validate-change-metadata.py docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml` passed.
+- 2026-04-29: M1 `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml` passed with `validated 4 artifact files`.
+- 2026-04-29: M1 `git diff --check -- docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization` passed.
+- 2026-04-29: M1 `bash scripts/ci.sh --mode explicit --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml` passed selected artifact lifecycle and change metadata checks.
 
 ## Outcome and Retrospective
 
@@ -404,7 +415,7 @@ docs/architecture/system/diagrams/context.mmd
 
 - Plan-review approved this plan on 2026-04-29.
 - Active test spec exists at `specs/legacy-architecture-lifecycle-normalization.test.md`.
-- M0 code-review-r1 finding `CR1-F1` and code-review-r2 finding `CR2-F1` are resolved. Ready for `code-review` rerun of the M0 slice before M1.
+- M1 is complete. Ready for `code-review` of the M1 slice before M2.
 
 ## Risks and Follow-Ups
 
