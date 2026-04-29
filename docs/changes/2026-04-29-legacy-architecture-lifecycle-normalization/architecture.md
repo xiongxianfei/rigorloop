@@ -203,4 +203,4 @@ Later milestones must add or link ADRs if domain comparison finds durable archit
 
 ## Readiness
 
-This change-local architecture delta is ready for M0 validation. It becomes the working comparison surface for M1 after M0 validation passes.
+This change-local architecture delta has completed the M1 inventory and comparison-basis slice. It is ready for M1 code-review rerun; M2 domain comparison may start only after that review passes.

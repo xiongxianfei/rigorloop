@@ -349,6 +349,7 @@ docs/architecture/system/diagrams/context.mmd
 - 2026-04-29: M0 code-review-r1 requested an explicit canonical architecture package citation in change metadata; the fix added `canonical_artifacts.architecture_package` and recorded the accepted disposition in change-local review artifacts.
 - 2026-04-29: M0 code-review-r2 requested the missing accepted proposal citation in change metadata; the fix added `artifacts.proposal` and recorded the accepted disposition in change-local review artifacts.
 - 2026-04-29: M1 refreshed the architecture inventory and added an eight-row legacy Markdown comparison matrix to the change-local architecture delta; no canonical architecture content or legacy lifecycle status changed.
+- 2026-04-29: M1 code-review-r3 requested current-state readiness wording in the touched change-local architecture delta; the fix updated only that readiness paragraph and recorded `CR3-F1`.
 
 ## Decision Log
 
@@ -405,6 +406,8 @@ docs/architecture/system/diagrams/context.mmd
 - 2026-04-29: M1 `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml` passed with `validated 4 artifact files`.
 - 2026-04-29: M1 `git diff --check -- docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization` passed.
 - 2026-04-29: M1 `bash scripts/ci.sh --mode explicit --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml` passed selected artifact lifecycle and change metadata checks.
+- 2026-04-29: M1 review-fix `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization` passed after recording `code-review-r3` and accepting `CR3-F1`.
+- 2026-04-29: M1 review-fix `bash scripts/ci.sh --mode explicit --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-log.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-resolution.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r3.md` passed selected review artifact, artifact lifecycle, and change metadata checks.
 
 ## Outcome and Retrospective
 
@@ -415,7 +418,7 @@ docs/architecture/system/diagrams/context.mmd
 
 - Plan-review approved this plan on 2026-04-29.
 - Active test spec exists at `specs/legacy-architecture-lifecycle-normalization.test.md`.
-- M1 is complete. Ready for `code-review` of the M1 slice before M2.
+- M1 code-review-r3 finding `CR3-F1` is resolved. Ready for `code-review` rerun of the M1 slice before M2.
 
 ## Risks and Follow-Ups
 

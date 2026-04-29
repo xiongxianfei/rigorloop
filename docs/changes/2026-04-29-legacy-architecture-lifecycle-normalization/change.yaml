@@ -78,6 +78,12 @@ validation:
   - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml
     result: pass_after_m1
     reason: Executed selected artifact lifecycle and change metadata checks.
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization
+    result: pass_after_code_review_r3_fix
+    reason: Preserved and closed the material M1 code-review finding after updating the stale readiness handoff paragraph.
+  - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-log.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-resolution.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r3.md
+    result: pass_after_code_review_r3_fix
+    reason: Executed selected review artifact, artifact lifecycle, and change metadata checks.
 changed_files:
   - docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml
   - docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md
@@ -85,8 +91,9 @@ changed_files:
   - docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-resolution.md
   - docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r1.md
   - docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r2.md
+  - docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r3.md
   - docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
   - specs/legacy-architecture-lifecycle-normalization.test.md
 review:
-  status: m1_ready_for_code_review
+  status: code_review_r3_resolved_ready_for_rerun
   unresolved_items: 0
