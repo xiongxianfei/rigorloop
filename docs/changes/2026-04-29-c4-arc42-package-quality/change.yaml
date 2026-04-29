@@ -76,6 +76,18 @@ validation:
   - command: bash scripts/ci.sh --mode explicit --path templates/architecture.md --path templates/diagram-styles.mmd --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml
     result: pass_after_m1
     reason: Executed selected lifecycle, change metadata, selector regression, and broad-smoke checks.
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-04-29-c4-arc42-package-quality
+    result: pass_after_m1_code_review
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-29-c4-arc42-package-quality
+    result: pass_after_m1_code_review
+  - command: python scripts/select-validation.py --mode explicit --path templates/architecture.md --path templates/diagram-styles.mmd --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/changes/2026-04-29-c4-arc42-package-quality/reviews/code-review-m1-r1.md --path docs/changes/2026-04-29-c4-arc42-package-quality/review-log.md --path docs/changes/2026-04-29-c4-arc42-package-quality/review-resolution.md --path docs/plan.md
+    result: pass_after_m1_code_review
+    reason: Selected review artifact, lifecycle, change metadata, selector regression, and broad-smoke checks for the M1 code-review closeout.
+  - command: git diff --check -- docs/changes/2026-04-29-c4-arc42-package-quality docs/plans/2026-04-29-c4-arc42-package-quality.md docs/plan.md
+    result: pass_after_m1_code_review
+  - command: bash scripts/ci.sh --mode explicit --path templates/architecture.md --path templates/diagram-styles.mmd --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/changes/2026-04-29-c4-arc42-package-quality/reviews/code-review-m1-r1.md --path docs/changes/2026-04-29-c4-arc42-package-quality/review-log.md --path docs/changes/2026-04-29-c4-arc42-package-quality/review-resolution.md --path docs/plan.md
+    result: pass_after_m1_code_review
+    reason: Executed selected review artifact, lifecycle, change metadata, selector regression, and broad-smoke checks.
 changed_files:
   - docs/proposals/2026-04-29-c4-arc42-package-quality.md
   - specs/architecture-package-method.md
@@ -89,6 +101,9 @@ changed_files:
   - docs/plan.md
   - templates/architecture.md
   - templates/diagram-styles.mmd
+  - docs/changes/2026-04-29-c4-arc42-package-quality/reviews/code-review-m1-r1.md
+  - docs/changes/2026-04-29-c4-arc42-package-quality/review-log.md
+  - docs/changes/2026-04-29-c4-arc42-package-quality/review-resolution.md
 review:
-  status: m1-implemented-ready-for-code-review
+  status: m1-code-review-closed-ready-for-m2
   unresolved_items: 0

@@ -248,6 +248,7 @@ Validation starts with the smallest milestone-specific checks, then expands to s
 - 2026-04-29: revised M5 after plan-review finding PR-F1 to keep `code-review` and `verify` as downstream gates rather than implementation milestone prerequisites.
 - 2026-04-29: plan-review approved the revised plan; test-spec updated `specs/architecture-package-method.test.md` for R76-R118 and AC14-AC20.
 - 2026-04-29: implemented M1 template and diagram-style scaffolding in `templates/architecture.md` and `templates/diagram-styles.mmd`; M2-M5 remain pending.
+- 2026-04-29: code-review M1 R1 found stale readiness handoff wording (CR1-F1); the finding was accepted and closed by updating readiness to point to M2 after M1 code-review.
 
 ## Decision log
 
@@ -279,6 +280,11 @@ Validation starts with the smallest milestone-specific checks, then expands to s
 - 2026-04-29: M1 `python scripts/select-validation.py --mode explicit --path templates/architecture.md --path templates/diagram-styles.mmd --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml` returned `status: ok` and selected `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `selector.regression`, and `broad_smoke.repo`.
 - 2026-04-29: M1 `git diff --check -- templates docs/plans/2026-04-29-c4-arc42-package-quality.md docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml` passed.
 - 2026-04-29: M1 `bash scripts/ci.sh --mode explicit --path templates/architecture.md --path templates/diagram-styles.mmd --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml` passed selected lifecycle, change metadata, selector regression, and broad-smoke checks.
+- 2026-04-29: M1 code-review `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-04-29-c4-arc42-package-quality` passed.
+- 2026-04-29: M1 code-review `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-29-c4-arc42-package-quality` passed.
+- 2026-04-29: M1 code-review `python scripts/select-validation.py --mode explicit --path templates/architecture.md --path templates/diagram-styles.mmd --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/changes/2026-04-29-c4-arc42-package-quality/reviews/code-review-m1-r1.md --path docs/changes/2026-04-29-c4-arc42-package-quality/review-log.md --path docs/changes/2026-04-29-c4-arc42-package-quality/review-resolution.md --path docs/plan.md` returned `status: ok` and selected review artifact, lifecycle, change metadata, selector regression, and broad-smoke checks.
+- 2026-04-29: M1 code-review `git diff --check -- docs/changes/2026-04-29-c4-arc42-package-quality docs/plans/2026-04-29-c4-arc42-package-quality.md docs/plan.md` passed.
+- 2026-04-29: M1 code-review `bash scripts/ci.sh --mode explicit --path templates/architecture.md --path templates/diagram-styles.mmd --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/changes/2026-04-29-c4-arc42-package-quality/reviews/code-review-m1-r1.md --path docs/changes/2026-04-29-c4-arc42-package-quality/review-log.md --path docs/changes/2026-04-29-c4-arc42-package-quality/review-resolution.md --path docs/plan.md` passed selected review artifact, lifecycle, change metadata, selector regression, and broad-smoke checks.
 
 ## Outcome and retrospective
 
@@ -286,6 +292,6 @@ Validation starts with the smallest milestone-specific checks, then expands to s
 
 ## Readiness
 
-- Immediate next repository stage: `implement`.
+- Immediate next repository stage: `implement` M2.
 - Test spec readiness: active; `specs/architecture-package-method.test.md` covers R76-R118 and AC14-AC20 for this refinement.
-- Implementation readiness: M1 implementation is ready for `code-review`; M2-M5 remain pending after the M1 review gate.
+- Implementation readiness: M1 implementation and M1 code-review closeout are complete; M2 is ready to start.
