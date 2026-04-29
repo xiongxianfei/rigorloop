@@ -33,7 +33,7 @@ The approved plan required normalization in order: inventory first, domain compa
 | `docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md` | Records M5 evidence, final readiness, and historical-only status for the change-local delta | Preserve reviewable merge-back and disposition evidence without letting the delta compete with the canonical package | spec `R37`-`R39`, `R63`-`R66` | `T10`, `T11` |
 | `docs/architecture/*.md` legacy records | Archives all eight top-level legacy Markdown architecture records with canonical package pointers and closeout notes | Preserve historical rationale while stopping legacy snapshots from acting as current architecture sources | plan M4, spec `R63`-`R66` | `T7`, `T8`, M5 legacy lifecycle validation |
 | `docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml` | Records final changed files, T10/T11/T12 coverage, M5 validation commands, and review handoff state | Keep traceability and validation evidence machine-readable for final review and PR handoff | `T11` | change metadata validation |
-| `docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-*` | Preserves CR1-F1, CR2-F1, and CR3-F1 review resolutions from earlier slices | Keep material review findings durable and closed with evidence | review-resolution contract | review artifact validation |
+| `docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-*` | Preserves CR1-F1, CR2-F1, CR3-F1, and the clean M5 code-review record | Keep material review findings durable and closed with evidence | review-resolution contract | review artifact validation |
 
 ## Tests And Proof
 
@@ -53,7 +53,7 @@ The change had three material code-review findings before M5:
 - `CR2-F1`: accepted by adding the proposal artifact reference to `change.yaml`.
 - `CR3-F1`: accepted by updating only the stale readiness paragraph in the touched change-local architecture delta.
 
-All three findings are closed in `docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-resolution.md`.
+All three findings are closed in `docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-resolution.md`. The M5 code-review record is `clean-with-notes` and adds no required-change findings.
 
 ## Validation Evidence
 
@@ -73,7 +73,18 @@ M5 validation ran the approved plan commands:
 - `rg -n "Status|superseded|archived|canonical architecture|docs/architecture/system/architecture.md" docs/architecture/*.md`
 - `git diff --check -- .`
 
-The M5 selector output did not select `broad_smoke.repo`, so broad smoke was not part of the M5 pass gate.
+Post-review verify also reran the all-touched selector and CI wrapper checks:
+
+- `python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/explain-change.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-log.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-resolution.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r4.md --path specs/legacy-architecture-lifecycle-normalization.test.md --path docs/architecture/system/architecture.md --path docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md --path docs/architecture/2026-04-20-artifact-status-lifecycle-ownership.md --path docs/architecture/2026-04-21-docs-changes-usage-policy.md --path docs/architecture/2026-04-21-workflow-stage-autoprogression.md --path docs/architecture/2026-04-24-multi-agent-adapter-distribution.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/architecture/2026-04-24-skill-invocation-commands-for-adapters.md --path docs/architecture/2026-04-25-test-layering-and-change-scoped-validation.md`
+- `bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/explain-change.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-log.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-resolution.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r4.md --path specs/legacy-architecture-lifecycle-normalization.test.md --path docs/architecture/system/architecture.md --path docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md --path docs/architecture/2026-04-20-artifact-status-lifecycle-ownership.md --path docs/architecture/2026-04-21-docs-changes-usage-policy.md --path docs/architecture/2026-04-21-workflow-stage-autoprogression.md --path docs/architecture/2026-04-24-multi-agent-adapter-distribution.md --path docs/architecture/2026-04-24-review-finding-resolution-contract.md --path docs/architecture/2026-04-24-skill-invocation-commands-for-adapters.md --path docs/architecture/2026-04-25-test-layering-and-change-scoped-validation.md`
+- `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization`
+- `find docs/architecture -type f | sort`
+- `while IFS= read -r path; do rg -F -q "$path" docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md || printf 'missing-from-plan %s\n' "$path"; done < <(find docs/architecture -type f | sort)`
+- `python -c 'from pathlib import Path; bt=chr(96); text=Path("docs/architecture/system/architecture.md").read_text(); stale=[p for p in ("docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md", "M3 "+bt+"code-review"+bt, "M3 "+bt+"verify"+bt, "M4 skill and generated-output update", "M5 legacy architecture normalization follow-on artifact before final completion claims", "diagrams and change-local architecture deltas remain manual-routed review evidence in the first adoption slice") if p in text]; assert not stale, stale'`
+- `rg -n "Status|superseded|archived|canonical architecture|docs/architecture/system/architecture.md" docs/architecture/*.md`
+- `git diff --check HEAD~6..HEAD -- .`
+
+The M5 and verify selector output did not select `broad_smoke.repo`, so broad smoke was not part of the pass gate.
 
 ## Scope Control
 
@@ -91,5 +102,5 @@ The M5 selector output did not select `broad_smoke.repo`, so broad smoke was not
 
 ## Readiness
 
-- `implement` for M5 is complete.
-- The next repository stage is `code-review` for final closeout.
+- `implement`, `code-review`, `verify`, and `explain-change` are complete for M5 final closeout.
+- The next repository stage is `pr`.
