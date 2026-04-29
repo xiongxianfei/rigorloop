@@ -1,24 +1,43 @@
 flowchart TB
-  subgraph repo[RigorLoop repository]
-    governance[Governance and workflow summaries]
-    lifecycle[Lifecycle artifacts]
-    canonical[Canonical architecture package]
-    changes[Change-local artifacts]
-    templates[Architecture and ADR templates]
-    skills[Canonical skills]
-    scripts[Validation and generation scripts]
-    generated[Generated Codex skills and public adapters]
-    legacy[Legacy architecture documents]
+  contributor["Contributor or agent"]:::person
+  reviewer["Reviewer or maintainer"]:::person
+  execution["Local shell and GitHub Actions<br/>[Validation execution]"]:::external
+  adapter_user["Codex, Claude Code, and opencode user"]:::person
+
+  subgraph repo["RigorLoop repository<br/>[Git repository]"]
+    governance["Governance and workflow guidance<br/>[Markdown]"]:::container
+    lifecycle["Lifecycle artifacts<br/>[Markdown and YAML]"]:::container
+    architecture["Canonical architecture package<br/>[Markdown and Mermaid]"]:::container
+    changes["Change-local evidence<br/>[Markdown and YAML]"]:::container
+    templates["Templates and diagram styles<br/>[Markdown and Mermaid]"]:::container
+    skills["Canonical skills and adapter templates<br/>[Markdown and templates]"]:::container
+    scripts["Validation and generation scripts<br/>[Python and shell]"]:::container
+    generated["Generated runtime mirrors and adapters<br/>[Generated Markdown, YAML, and command files]"]:::container
+    release["Release evidence<br/>[YAML, Markdown, smoke evidence]"]:::container
+    legacy["Legacy architecture archive<br/>[Archived Markdown]"]:::container
   end
 
-  governance --> lifecycle
-  governance --> templates
-  lifecycle --> canonical
-  changes -->|durable content merges back| canonical
-  changes -->|durable decisions recorded as| lifecycle
-  templates --> lifecycle
-  skills --> generated
-  scripts -->|validates lifecycle, change metadata, skills, and generated drift| lifecycle
-  scripts --> generated
-  legacy -->|classified by follow-on normalization| canonical
-  canonical -->|summarizes and links ADRs| lifecycle
+  contributor -->|authors and updates| lifecycle
+  contributor -->|uses scaffolds from| templates
+  contributor -->|edits canonical sources in| skills
+  reviewer -->|reviews C4, arc42, ADRs, and evidence in| architecture
+  reviewer -->|reviews lifecycle state and closeout in| changes
+  governance -->|defines routing and source-of-truth rules for| lifecycle
+  governance -->|declares authored/generated boundaries for| skills
+  lifecycle -->|requires current architecture truth from| architecture
+  changes -->|merge durable architecture content back into| architecture
+  changes -->|record durable decisions as ADRs in| lifecycle
+  templates -->|scaffold architecture and ADR records in| lifecycle
+  skills -->|are transformed by| scripts
+  scripts -->|refresh| generated
+  scripts -->|validate lifecycle, metadata, review artifacts, release data, and drift for| lifecycle
+  scripts -->|run in| execution
+  release -->|describes publication of| generated
+  generated -->|is consumed by| adapter_user
+  legacy -->|preserves historical evidence after merge-back to| architecture
+  architecture -->|summarizes and links ADRs in| lifecycle
+
+  classDef person fill:#08427b,stroke:#073b6f,color:#fff
+  classDef system fill:#1168bd,stroke:#0e5aa7,color:#fff
+  classDef external fill:#999,stroke:#666,color:#fff
+  classDef container fill:#438dd5,stroke:#3c7fc0,color:#fff
