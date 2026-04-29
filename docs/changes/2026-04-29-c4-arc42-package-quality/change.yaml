@@ -1,0 +1,94 @@
+change_id: 2026-04-29-c4-arc42-package-quality
+title: Refine C4, arc42, and architecture skill quality
+classification: planned
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-04-29-c4-arc42-package-quality.md
+  spec: specs/architecture-package-method.md
+  architecture: docs/changes/2026-04-29-c4-arc42-package-quality/architecture.md
+  plan: docs/plans/2026-04-29-c4-arc42-package-quality.md
+  test_spec: specs/architecture-package-method.test.md
+  adr: docs/adr/ADR-20260428-architecture-package-method.md
+canonical_artifacts:
+  architecture_package: docs/architecture/system/architecture.md
+requirements:
+  - specs/architecture-package-method.md R76-R118
+  - specs/architecture-package-method.md AC14-AC20
+tests:
+  - architecture-review checks for canonical package and change-local delta
+  - active test-spec coverage for R76-R118 and AC14-AC20
+validation:
+  - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-04-29-c4-arc42-package-quality.md --path specs/architecture-package-method.md
+    result: pass_after_spec_review_fixes
+    reason: Selected artifact_lifecycle.validate for the accepted proposal and focused spec update.
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-29-c4-arc42-package-quality.md --path specs/architecture-package-method.md
+    result: pass_after_spec_review_fixes
+  - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-04-29-c4-arc42-package-quality.md --path specs/architecture-package-method.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/context.mmd --path docs/architecture/system/diagrams/container.mmd --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/changes/2026-04-29-c4-arc42-package-quality/architecture.md
+    result: pass_after_architecture
+    reason: Selected artifact lifecycle validation, change metadata validation, and change metadata regression checks; broad smoke was not required.
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml
+    result: pass_after_architecture
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_after_architecture
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-29-c4-arc42-package-quality.md --path specs/architecture-package-method.md --path docs/architecture/system/architecture.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/changes/2026-04-29-c4-arc42-package-quality/architecture.md
+    result: pass_after_architecture
+  - command: git diff --check -- docs/proposals/2026-04-29-c4-arc42-package-quality.md specs/architecture-package-method.md docs/architecture/system docs/changes/2026-04-29-c4-arc42-package-quality
+    result: pass_after_architecture
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-04-29-c4-arc42-package-quality.md --path specs/architecture-package-method.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/context.mmd --path docs/architecture/system/diagrams/container.mmd --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/changes/2026-04-29-c4-arc42-package-quality/architecture.md
+    result: pass_after_architecture
+    reason: Executed the selected artifact lifecycle and change metadata checks.
+  - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-04-29-c4-arc42-package-quality.md --path specs/architecture-package-method.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/context.mmd --path docs/architecture/system/diagrams/container.mmd --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/changes/2026-04-29-c4-arc42-package-quality/architecture.md --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/plan.md
+    result: pass_after_plan
+    reason: Selected artifact lifecycle, change metadata, and broad-smoke checks because the active draft plan requires broad smoke.
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml
+    result: pass_after_plan
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_after_plan
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-29-c4-arc42-package-quality.md --path specs/architecture-package-method.md --path docs/architecture/system/architecture.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/changes/2026-04-29-c4-arc42-package-quality/architecture.md --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/plan.md
+    result: pass_after_plan
+  - command: git diff --check -- docs/proposals/2026-04-29-c4-arc42-package-quality.md specs/architecture-package-method.md docs/architecture/system docs/changes/2026-04-29-c4-arc42-package-quality docs/plans/2026-04-29-c4-arc42-package-quality.md docs/plan.md
+    result: pass_after_plan
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-04-29-c4-arc42-package-quality.md --path specs/architecture-package-method.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/context.mmd --path docs/architecture/system/diagrams/container.mmd --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/changes/2026-04-29-c4-arc42-package-quality/architecture.md --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/plan.md
+    result: pass_after_plan
+    reason: Executed selected lifecycle, change metadata, and broad-smoke checks.
+  - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-04-29-c4-arc42-package-quality.md --path specs/architecture-package-method.md --path specs/architecture-package-method.test.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/context.mmd --path docs/architecture/system/diagrams/container.mmd --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/changes/2026-04-29-c4-arc42-package-quality/architecture.md --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/plan.md
+    result: pass_after_test_spec
+    reason: Selected artifact lifecycle, change metadata, and broad-smoke checks because the active reviewed plan requires broad smoke.
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml
+    result: pass_after_test_spec
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_after_test_spec
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-04-29-c4-arc42-package-quality.md --path specs/architecture-package-method.md --path specs/architecture-package-method.test.md --path docs/architecture/system/architecture.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/changes/2026-04-29-c4-arc42-package-quality/architecture.md --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/plan.md
+    result: pass_after_test_spec
+  - command: git diff --check -- docs/proposals/2026-04-29-c4-arc42-package-quality.md specs/architecture-package-method.md specs/architecture-package-method.test.md docs/architecture/system docs/changes/2026-04-29-c4-arc42-package-quality docs/plans/2026-04-29-c4-arc42-package-quality.md docs/plan.md
+    result: pass_after_test_spec
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-04-29-c4-arc42-package-quality.md --path specs/architecture-package-method.md --path specs/architecture-package-method.test.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/context.mmd --path docs/architecture/system/diagrams/container.mmd --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/changes/2026-04-29-c4-arc42-package-quality/architecture.md --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/plan.md
+    result: pass_after_test_spec
+    reason: Executed selected lifecycle, change metadata, and broad-smoke checks.
+  - command: rg -n "diagram-styles|diagrams/context\\.mmd|diagrams/container\\.mmd|Quality scenarios|Building Block View|Architecture Decisions|Deployment View" templates/architecture.md templates/diagram-styles.mmd
+    result: pass_after_m1
+    reason: Confirmed M1 template and shared style scaffold terms are present.
+  - command: python scripts/select-validation.py --mode explicit --path templates/architecture.md --path templates/diagram-styles.mmd --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml
+    result: pass_after_m1
+    reason: Selected artifact lifecycle, change metadata, selector regression, and broad-smoke checks for M1.
+  - command: git diff --check -- templates docs/plans/2026-04-29-c4-arc42-package-quality.md docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml
+    result: pass_after_m1
+  - command: bash scripts/ci.sh --mode explicit --path templates/architecture.md --path templates/diagram-styles.mmd --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml
+    result: pass_after_m1
+    reason: Executed selected lifecycle, change metadata, selector regression, and broad-smoke checks.
+changed_files:
+  - docs/proposals/2026-04-29-c4-arc42-package-quality.md
+  - specs/architecture-package-method.md
+  - docs/architecture/system/architecture.md
+  - docs/architecture/system/diagrams/context.mmd
+  - docs/architecture/system/diagrams/container.mmd
+  - docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml
+  - docs/changes/2026-04-29-c4-arc42-package-quality/architecture.md
+  - docs/plans/2026-04-29-c4-arc42-package-quality.md
+  - specs/architecture-package-method.test.md
+  - docs/plan.md
+  - templates/architecture.md
+  - templates/diagram-styles.mmd
+review:
+  status: m1-implemented-ready-for-code-review
+  unresolved_items: 0

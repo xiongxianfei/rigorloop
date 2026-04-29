@@ -1,18 +1,20 @@
 flowchart LR
-  contributor[Contributor or agent]
-  reviewer[Reviewer or maintainer]
-  github[Git and PR review]
-  adapters[Codex, Claude Code, and opencode users]
+  contributor["Contributor or agent"]:::person
+  reviewer["Reviewer or maintainer"]:::person
+  adapter_user["Codex, Claude Code, and opencode user"]:::person
+  repo["RigorLoop repository<br/>[Git-first workflow and adapter starter kit]"]:::system
+  git["Git and PR review<br/>[Review platform]"]:::external
+  execution["Local shell and GitHub Actions<br/>[Validation execution]"]:::external
+  package_surface["Generated adapter package consumers<br/>[External runtime surfaces]"]:::external
 
-  subgraph repo_boundary[RigorLoop repository boundary]
-    repo[RigorLoop repository system]
-    validation[Repository-owned validation scripts]
-    generated[Generated runtime and adapter packages]
-  end
+  contributor -->|authors proposals, specs, architecture, skills, templates, and changes| repo
+  reviewer -->|reviews diffs, C4 views, ADRs, and evidence| repo
+  repo -->|publishes reviewable branch and PR history through| git
+  repo -->|delegates repository-owned validation commands to| execution
+  repo -->|generates synchronized guidance for| package_surface
+  adapter_user -->|installs or copies generated guidance from| package_surface
 
-  contributor -->|authors specs, architecture, ADRs, templates, skills, and plans| repo
-  reviewer -->|reviews diffs, C4 views, arc42 sections, ADRs, and evidence| repo
-  github -->|runs repository-owned checks and carries review history| validation
-  repo -->|selects and executes validation| validation
-  repo -->|generates synchronized guidance| generated
-  generated -->|published or copied adapter guidance| adapters
+  classDef person fill:#08427b,stroke:#073b6f,color:#fff
+  classDef system fill:#1168bd,stroke:#0e5aa7,color:#fff
+  classDef external fill:#999,stroke:#666,color:#fff
+  classDef container fill:#438dd5,stroke:#3c7fc0,color:#fff
