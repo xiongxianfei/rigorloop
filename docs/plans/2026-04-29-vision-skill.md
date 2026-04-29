@@ -254,6 +254,7 @@ This plan uses two validation command types:
 - 2026-04-29: plan index updated and plan-creation validation passed.
 - 2026-04-30: matching test spec created at `specs/vision-skill.test.md`.
 - 2026-04-30: M1 added focused skill-validator regression coverage first, then added `skills/vision/SKILL.md`.
+- 2026-04-30: M1 code-review fix clarified that missing README markers stop `mirror` and `revise` before file modification unless explicit handling is authorized.
 
 ## Decision log
 
@@ -286,6 +287,16 @@ This plan uses two validation command types:
   - `python scripts/test-skill-validator.py` passed.
   - `test ! -e vision.md` passed.
   - `rg -n "create|revise|mirror|vision:start|vision:end|500 words|CONSTITUTION.md|README front-matter" skills/vision/SKILL.md` passed.
+- 2026-04-30 M1 code-review fix:
+  - `python scripts/test-skill-validator.py` failed before the skill edit because the new regression required explicit create-only marker insertion and `mirror`/`revise` stop behavior.
+  - `python scripts/test-skill-validator.py` passed after the skill edit.
+  - `python scripts/validate-skills.py skills/vision/SKILL.md` passed.
+  - `python scripts/validate-skills.py` passed.
+  - `test ! -e vision.md` passed.
+  - `rg -n "create|revise|mirror|vision:start|vision:end|500 words|CONSTITUTION.md|README front-matter" skills/vision/SKILL.md` passed.
+  - `python scripts/select-validation.py --mode explicit --path skills/vision/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-04-29-vision-skill.md` selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.drift`, `artifact_lifecycle.validate`, and `broad_smoke.repo`; generated drift and adapter drift checks remain deferred to M3 by the approved milestone split.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-04-29-vision-skill.md --path docs/proposals/2026-04-29-vision-skill.md --path specs/vision-skill.md --path specs/vision-skill.test.md` passed.
+  - `git diff --check -- skills/vision/SKILL.md scripts/test-skill-validator.py docs/plans/2026-04-29-vision-skill.md` passed.
 
 ## Outcome and retrospective
 
