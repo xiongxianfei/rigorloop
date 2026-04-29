@@ -290,6 +290,14 @@ validation:
     reason: Executed selected artifact lifecycle, change metadata, and broad-smoke checks.
   - command: git diff --check -- docs/changes/2026-04-29-c4-arc42-package-quality/explain-change.md docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml docs/plans/2026-04-29-c4-arc42-package-quality.md docs/plan.md
     result: pass_after_explain_change
+  - command: python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/changes/2026-04-29-c4-arc42-package-quality/explain-change.md
+    result: pass_after_pr_closeout
+    reason: Selected artifact lifecycle, change metadata, and broad-smoke checks for PR-stage lifecycle closeout.
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/changes/2026-04-29-c4-arc42-package-quality/explain-change.md
+    result: pass_after_pr_closeout
+    reason: Executed selected artifact lifecycle, change metadata, and broad-smoke checks.
+  - command: git diff --check -- docs/plan.md docs/plans/2026-04-29-c4-arc42-package-quality.md docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml docs/changes/2026-04-29-c4-arc42-package-quality/explain-change.md
+    result: pass_after_pr_closeout
 changed_files:
   - docs/proposals/2026-04-29-c4-arc42-package-quality.md
   - specs/architecture-package-method.md
@@ -323,5 +331,5 @@ changed_files:
   - docs/changes/2026-04-29-c4-arc42-package-quality/reviews/code-review-m5-r1.md
   - docs/changes/2026-04-29-c4-arc42-package-quality/explain-change.md
 review:
-  status: explained-ready-for-pr
+  status: pr-ready
   unresolved_items: 0

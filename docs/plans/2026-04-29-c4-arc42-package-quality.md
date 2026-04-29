@@ -274,6 +274,7 @@ Validation starts with the smallest milestone-specific checks, then expands to s
 - 2026-04-29: code-review M5 R1 passed with no material findings; recorded the clean review under `docs/changes/2026-04-29-c4-arc42-package-quality/reviews/code-review-m5-r1.md`.
 - 2026-04-29: verify passed for the full changed-file set; branch-ready evidence is recorded and the next workflow stage is `explain-change`.
 - 2026-04-29: explain-change completed in `docs/changes/2026-04-29-c4-arc42-package-quality/explain-change.md`; the next workflow stage is `pr`.
+- 2026-04-29: PR-stage lifecycle closeout moved this plan to Done in `docs/plan.md` and marked the change PR-ready after validation.
 
 ## Decision log
 
@@ -400,14 +401,17 @@ Validation starts with the smallest milestone-specific checks, then expands to s
 - 2026-04-29: explain-change `python scripts/select-validation.py --mode explicit --path docs/changes/2026-04-29-c4-arc42-package-quality/explain-change.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/plan.md` returned `status: ok` and selected artifact lifecycle, change metadata, and broad-smoke checks.
 - 2026-04-29: explain-change `bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-29-c4-arc42-package-quality/explain-change.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/plan.md` passed selected artifact lifecycle, change metadata, and broad-smoke checks.
 - 2026-04-29: explain-change `git diff --check -- docs/changes/2026-04-29-c4-arc42-package-quality/explain-change.md docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml docs/plans/2026-04-29-c4-arc42-package-quality.md docs/plan.md` passed.
+- 2026-04-29: PR closeout `python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/changes/2026-04-29-c4-arc42-package-quality/explain-change.md` returned `status: ok` and selected artifact lifecycle, change metadata, and broad-smoke checks.
+- 2026-04-29: PR closeout `bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/changes/2026-04-29-c4-arc42-package-quality/explain-change.md` passed selected artifact lifecycle, change metadata, and broad-smoke checks.
+- 2026-04-29: PR closeout `git diff --check -- docs/plan.md docs/plans/2026-04-29-c4-arc42-package-quality.md docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml docs/changes/2026-04-29-c4-arc42-package-quality/explain-change.md` passed.
 
 ## Outcome and retrospective
 
 - Implementation milestones M1-M5 are complete. The change added diagram/template scaffolding, concise architecture authoring guidance, architecture-review package-quality guidance, generated-output synchronization through existing generators, and lifecycle closeout evidence without adding package-shape enforcement automation.
-- Implementation, code-review, verify, and explain-change are complete for M1-M5. PR readiness remains downstream and must not be implied complete by explain-change.
+- Done. Implementation, code-review, verify, explain-change, and PR-stage lifecycle closeout are complete for M1-M5. The plan is ready for PR opening.
 
 ## Readiness
 
-- Immediate next repository stage: `pr`.
+- Immediate next repository stage: `pr` open.
 - Test spec readiness: active; `specs/architecture-package-method.test.md` covers R76-R118 and AC14-AC20 for this refinement.
-- Branch readiness: branch-ready and explanation-ready for `pr`; M1-M5 implementation, code-review, verify, and explain-change are complete. PR readiness remains pending until the PR stage.
+- Plan/index readiness: synchronized; this plan is `done` and `docs/plan.md` lists it under Done. Branch readiness, explanation readiness, and PR body readiness are satisfied for PR opening.
