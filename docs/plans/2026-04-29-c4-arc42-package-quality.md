@@ -273,6 +273,7 @@ Validation starts with the smallest milestone-specific checks, then expands to s
 - 2026-04-29: implemented M5 lifecycle closeout by synchronizing the plan body, plan index, change metadata, validation evidence, and implementation readiness for the next `code-review` gate.
 - 2026-04-29: code-review M5 R1 passed with no material findings; recorded the clean review under `docs/changes/2026-04-29-c4-arc42-package-quality/reviews/code-review-m5-r1.md`.
 - 2026-04-29: verify passed for the full changed-file set; branch-ready evidence is recorded and the next workflow stage is `explain-change`.
+- 2026-04-29: explain-change completed in `docs/changes/2026-04-29-c4-arc42-package-quality/explain-change.md`; the next workflow stage is `pr`.
 
 ## Decision log
 
@@ -396,14 +397,17 @@ Validation starts with the smallest milestone-specific checks, then expands to s
 - 2026-04-29: verify `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-29-c4-arc42-package-quality` passed.
 - 2026-04-29: verify `bash scripts/ci.sh --mode broad-smoke` passed.
 - 2026-04-29: verify `git diff --check -- .` passed.
+- 2026-04-29: explain-change `python scripts/select-validation.py --mode explicit --path docs/changes/2026-04-29-c4-arc42-package-quality/explain-change.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/plan.md` returned `status: ok` and selected artifact lifecycle, change metadata, and broad-smoke checks.
+- 2026-04-29: explain-change `bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-29-c4-arc42-package-quality/explain-change.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/plan.md` passed selected artifact lifecycle, change metadata, and broad-smoke checks.
+- 2026-04-29: explain-change `git diff --check -- docs/changes/2026-04-29-c4-arc42-package-quality/explain-change.md docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml docs/plans/2026-04-29-c4-arc42-package-quality.md docs/plan.md` passed.
 
 ## Outcome and retrospective
 
 - Implementation milestones M1-M5 are complete. The change added diagram/template scaffolding, concise architecture authoring guidance, architecture-review package-quality guidance, generated-output synchronization through existing generators, and lifecycle closeout evidence without adding package-shape enforcement automation.
-- Implementation, code-review, and verify are complete for M1-M5. `explain-change` and PR readiness remain downstream and must not be implied complete by verify.
+- Implementation, code-review, verify, and explain-change are complete for M1-M5. PR readiness remains downstream and must not be implied complete by explain-change.
 
 ## Readiness
 
-- Immediate next repository stage: `explain-change`.
+- Immediate next repository stage: `pr`.
 - Test spec readiness: active; `specs/architecture-package-method.test.md` covers R76-R118 and AC14-AC20 for this refinement.
-- Branch readiness: branch-ready for `explain-change`; M1-M5 implementation, code-review, and verify are complete. PR readiness remains pending.
+- Branch readiness: branch-ready and explanation-ready for `pr`; M1-M5 implementation, code-review, verify, and explain-change are complete. PR readiness remains pending until the PR stage.
