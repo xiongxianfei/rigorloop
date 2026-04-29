@@ -32,7 +32,7 @@ The first implementation creates the method and distribution surface. Initial pr
 - `README.md` is public project overview. Its future vision front-matter block is generated from `vision.md`, but this implementation does not create the initial `vision.md` or generated front-matter.
 - `docs/workflows.md` documents proposal flow and source ownership; it needs enough guidance to keep `vision` upstream of the per-change lifecycle.
 - `scripts/build-skills.py` owns `.codex/skills/` generation. `scripts/build-adapters.py --version 0.1.1` owns public adapter package generation.
-- The selector currently treats `README.md` as unclassified. README changes in this initiative use selector inspection plus an explicit manual route instead of pretending selected CI can validate README directly.
+- `README.md` is an approved touched surface for this initiative. Selector routing must classify it as `readme`, select lightweight README validation, and select vision marker validation when a standalone marker block is present or the vision skill is in scope.
 
 ## Non-goals
 
@@ -55,14 +55,15 @@ The first implementation creates the method and distribution surface. Initial pr
 | `R40`-`R42` | `skills/vision/SKILL.md`, `docs/workflows.md`, and governance wording that keeps `vision` upstream and not a lifecycle stage |
 | `R43`-`R45` | `.codex/skills/`, `dist/adapters/`, `dist/adapters/manifest.yaml`, and generated entrypoint refresh through existing generators |
 | `R46`-`R55` | `CONSTITUTION.md`, `AGENTS.md`, `docs/workflows.md`, and README ownership guidance |
-| `AC1`-`AC12` | Milestones M1-M4 together |
+| `R79`-`R80` | `scripts/validation_selection.py`, `scripts/validate-readme.py`, and `scripts/test-select-validation.py` README routing and marker validation |
+| `AC1`-`AC12` | Milestones M1-M5 together |
 
 ## Validation command types
 
 This plan uses two validation command types:
 
 - Pass-gate commands are expected to succeed as written and are required for milestone completion.
-- Selector inspection / manual-routing proofs are used for unsupported or intentionally unclassified paths. A blocked selector result is expected only when the plan records the manual route that replaces selected CI for that path.
+- Selector inspections prove selected checks for supported paths. A blocked selector result is acceptable only for unsupported paths when the plan records the manual route that replaces selected CI for that path.
 
 ## Milestones
 
@@ -134,7 +135,8 @@ This plan uses two validation command types:
   - `python scripts/test-skill-validator.py`
   - `python scripts/test-select-validation.py`
   - `python scripts/select-validation.py --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md`
-  - `python scripts/select-validation.py --mode explicit --path README.md` as selector inspection; expected result is blocked with `unclassified-path`, and the manual route is `git diff --check -- README.md` plus review of README ownership wording against `R51`, `R54`, `R55`, and `AC10`.
+  - `python scripts/select-validation.py --mode explicit --path README.md` selects `readme.validate` without `unclassified-path`.
+  - `python scripts/validate-readme.py README.md`
   - `git diff --check -- CONSTITUTION.md AGENTS.md docs/workflows.md README.md skills/proposal/SKILL.md skills/proposal-review/SKILL.md docs/plans/2026-04-29-vision-skill.md`
 - Expected observable result: contributors and agents have a single source-of-truth story for vision, README front-matter, proposal fit, and exception handling.
 - Commit message: `M2: align vision governance and proposal guidance`
@@ -146,7 +148,7 @@ This plan uses two validation command types:
   - [x] milestone committed
 - Risks:
   - Governance wording could accidentally reorder behavior specs below vision for behavior contracts.
-  - README changes are not selector-classified.
+  - README routing could regress and block PR-mode CI as `unclassified-path`.
 - Rollback/recovery:
   - Revert the authored guidance changes. Generated outputs are still not refreshed until M3.
 
@@ -232,7 +234,9 @@ This plan uses two validation command types:
   - `python scripts/validate-change-metadata.py docs/changes/2026-04-29-vision-skill/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-04-29-vision-skill.md --path docs/proposals/2026-04-29-vision-skill.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/changes/2026-04-29-vision-skill/change.yaml`
   - `bash scripts/ci.sh --mode broad-smoke`
-  - `python scripts/select-validation.py --mode explicit --path README.md` as selector inspection; expected result is blocked with `unclassified-path`, and the manual route is `git diff --check -- README.md` plus documented review of README ownership wording against `R51`, `R54`, `R55`, and `AC10`.
+  - `python scripts/select-validation.py --mode explicit --path README.md` selects `readme.validate` without `unclassified-path`.
+  - `python scripts/validate-readme.py README.md`
+  - `python scripts/validate-readme.py README.md --vision-markers`
   - `git diff --check -- .`
 - Expected observable result: all authored, generated, lifecycle, and change-local surfaces are coherent and ready for code-review; PR/explain readiness still depends on downstream `code-review`, `verify`, and `explain-change`.
 - Commit message: `M4: close vision skill implementation`
@@ -248,6 +252,55 @@ This plan uses two validation command types:
 - Rollback/recovery:
   - Revert the M4 change-local metadata and plan-index updates if earlier milestones need to be reopened.
 
+### M5. Resolve README selector PR blocker
+
+- Goal: Fix the verify-discovered PR-mode selector blocker by routing `README.md` through deterministic README validation instead of treating it as `unclassified-path`.
+- Requirements: `R79`-`R80`, `AC9`.
+- Files/components likely touched:
+  - `scripts/validation_selection.py`
+  - `scripts/validate-readme.py`
+  - `scripts/test-select-validation.py`
+  - `specs/vision-skill.md`
+  - `specs/vision-skill.test.md`
+  - `docs/plans/2026-04-29-vision-skill.md`
+  - `docs/changes/2026-04-29-vision-skill/change.yaml`
+  - `docs/plan.md`
+- Dependencies:
+  - M1-M4 complete
+  - verify identified `README.md` as a PR-mode `unclassified-path` blocker
+- Tests to add/update:
+  - add PR-mode selector regression coverage proving `README.md` is classified as `readme`
+  - add marker-validation selection coverage for standalone marker blocks and vision-skill scope
+- Implementation steps:
+  - Add `readme.validate` and `readme.vision_markers` selector catalog entries.
+  - Classify root `README.md` as `readme`.
+  - Add a lightweight README validator that checks Markdown readability and validates standalone vision marker boundaries when requested.
+  - Select marker validation when a standalone vision marker block is present or the vision skill is in scope.
+  - Update lifecycle artifacts that previously described README as an unclassified manual route.
+- Validation commands:
+  - `python scripts/test-select-validation.py`
+  - `python scripts/select-validation.py --mode explicit --path README.md`
+  - `python scripts/validate-readme.py README.md`
+  - `python scripts/validate-readme.py README.md --vision-markers`
+  - `python scripts/select-validation.py --mode pr --base origin/main --head HEAD`
+  - `bash scripts/ci.sh --mode pr --base origin/main --head HEAD`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-04-29-vision-skill/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-04-29-vision-skill.md --path docs/proposals/2026-04-29-vision-skill.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/changes/2026-04-29-vision-skill/change.yaml`
+  - `git diff --check -- .`
+- Expected observable result: PR-mode selector and CI classify `README.md` as `readme`, run lightweight README validation, run vision marker validation for this vision-skill-scoped change, and no longer block as `unclassified-path`.
+- Commit message: `M5: route README selector validation`
+- Milestone closeout:
+  - [x] targeted validation passed
+  - [x] PR-mode validation passed
+  - [x] lifecycle and change metadata validation passed
+  - [x] progress updated
+  - [x] validation notes updated
+  - [x] milestone committed
+- Risks:
+  - README marker validation could accidentally treat inline documentation of marker strings as a generated marker block.
+- Rollback/recovery:
+  - Revert the selector and README validator additions and reopen verify with `README.md` as a known PR-mode blocker.
+
 ## Progress
 
 - 2026-04-29: plan created from accepted proposal and approved spec.
@@ -259,12 +312,14 @@ This plan uses two validation command types:
 - 2026-04-30: CR-M2-F1 tightened absent-root-vision `Vision fit` handling so proposals must use exactly `no vision exists yet` and proposal-review must request revision for nonexistent-vision claims.
 - 2026-04-30: M3 refreshed generated `.codex/skills/` and public adapter output through `scripts/build-skills.py` and `scripts/build-adapters.py --version 0.1.1`.
 - 2026-04-30: M4 added the change-local metadata pack and synchronized the plan index with implementation closeout readiness.
+- 2026-04-30: Verify found PR-mode CI blocked on `README.md` as `unclassified-path`; M5 adds README selector routing and lightweight README validation.
 
 ## Decision log
 
 - 2026-04-29: no separate architecture artifact required because the approved spec changes workflow guidance, skills, README ownership, and generated distribution output without a new architecture boundary.
 - 2026-04-29: broad smoke required by this plan because the initiative touches governance, README ownership, canonical skills, generated skills, and generated public adapters.
-- 2026-04-29: README selector blocking is treated as selector inspection with manual routing because `README.md` is unclassified by the current selector.
+- 2026-04-29: the initial plan treated README selector blocking as selector inspection with manual routing because `README.md` was unclassified at the time.
+- 2026-04-30: M5 changes that decision for this approved touched surface; `README.md` is now a `readme` surface with lightweight README validation and conditional vision marker validation.
 - 2026-04-30: M1 intentionally leaves generated `.codex/skills/` and `dist/adapters/` refresh to M3, as planned; selector inspection for the changed canonical skill identifies generated drift checks that are not M1 pass gates.
 - 2026-04-30: M2 canonical proposal and proposal-review skill edits also leave generated `.codex/skills/` and `dist/adapters/` refresh to M3, as planned.
 - 2026-04-30: M3 did not add an opencode `vision` command alias; opencode command aliases remain limited to the existing curated lifecycle command set while the full `vision` skill is present under opencode skills.
@@ -311,7 +366,7 @@ This plan uses two validation command types:
   - `test ! -e vision.md` passed.
   - `python scripts/test-select-validation.py` passed.
   - `python scripts/select-validation.py --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md` selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.drift`, and `selector.regression`; generated drift and adapter drift checks remain deferred to M3 by the approved milestone split.
-  - `python scripts/select-validation.py --mode explicit --path README.md` blocked with `unclassified-path` as expected; manual route is README ownership wording review plus `git diff --check -- README.md`.
+  - Pre-M5, `python scripts/select-validation.py --mode explicit --path README.md` blocked with `unclassified-path`; verify later rejected that route for PR-mode CI and M5 replaced it with deterministic README validation.
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-04-29-vision-skill.md --path docs/proposals/2026-04-29-vision-skill.md --path specs/vision-skill.md --path specs/vision-skill.test.md` passed.
   - `git diff --check -- CONSTITUTION.md AGENTS.md docs/workflows.md README.md skills/proposal/SKILL.md skills/proposal-review/SKILL.md docs/plans/2026-04-29-vision-skill.md scripts/test-skill-validator.py` passed.
 - 2026-04-30 CR-M2-F1 code-review fix:
@@ -349,19 +404,34 @@ This plan uses two validation command types:
   - `python scripts/test-change-metadata-validator.py` passed.
   - `python scripts/validate-change-metadata.py docs/changes/2026-04-29-vision-skill/change.yaml` passed.
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-04-29-vision-skill.md --path docs/proposals/2026-04-29-vision-skill.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/changes/2026-04-29-vision-skill/change.yaml` passed.
-  - `python scripts/select-validation.py --mode explicit --path README.md` blocked with `unclassified-path` as expected; manual route is README ownership wording review plus `git diff --check -- README.md`.
+  - Pre-M5, `python scripts/select-validation.py --mode explicit --path README.md` blocked with `unclassified-path`; verify later rejected that route for PR-mode CI and M5 replaced it with deterministic README validation.
   - `test ! -e vision.md` passed.
   - `! rg -n '^<!-- vision:start -->$|^<!-- vision:end -->$' README.md` passed, confirming no generated README vision front-matter marker block was inserted.
   - `! git diff --name-only origin/main..HEAD -- scripts | rg -n 'vision|readme|front'` passed, confirming no README mirror helper script was introduced.
   - `git diff --check -- README.md` passed.
   - `bash scripts/ci.sh --mode broad-smoke` passed.
   - `git diff --check -- .` passed.
+- 2026-04-30 M5 README selector blocker fix:
+  - Focused `python scripts/test-select-validation.py ValidationSelectionTests.test_catalog_matches_v1_contract ValidationSelectionTests.test_readme_path_selects_lightweight_readme_validation ValidationSelectionTests.test_readme_marker_validation_is_selected_for_marker_block_or_vision_scope ValidationSelectionTests.test_pr_mode_routes_readme_without_unclassified_block ValidationSelectionTests.test_readme_validator_accepts_absent_or_valid_standalone_marker_block` failed before implementation because the selector catalog lacked README checks, `README.md` was unclassified, and `scripts/validate-readme.py` did not exist.
+  - The same focused selector regression command passed after the selector and README validator changes.
+  - `python scripts/test-select-validation.py` passed.
+  - `python scripts/select-validation.py --mode explicit --path README.md` passed and selected `readme.validate` without `unclassified-path`.
+  - `python scripts/validate-readme.py README.md` passed.
+  - `python scripts/validate-readme.py README.md --vision-markers` passed and confirmed no standalone marker block is present.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-04-29-vision-skill/change.yaml` passed.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-04-29-vision-skill.md --path docs/proposals/2026-04-29-vision-skill.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/changes/2026-04-29-vision-skill/change.yaml` passed.
+  - `python scripts/select-validation.py --mode local` passed with no unclassified paths and selected `readme.vision_markers` because the vision-skill surfaces are in scope.
+  - `git diff --check -- .` passed.
+  - `bash scripts/ci.sh --mode local` passed, including selected README marker validation, selector regression, change metadata, artifact lifecycle, and plan-triggered broad smoke.
+  - After the M5 commit, `python scripts/select-validation.py --mode pr --base origin/main --head HEAD` passed with `README.md` classified as `readme`, no unclassified paths, and both `readme.validate` and `readme.vision_markers` selected.
+  - After the M5 commit, `bash scripts/ci.sh --mode pr --base origin/main --head HEAD` passed, including README validation and PR-mode broad smoke. The broad-smoke lifecycle pass reported existing unrelated warnings for legacy proposal files and exited successfully.
 
 ## Outcome and retrospective
 
-- Active. M1 through M4 implementation closeout is complete; code-review remains the next gate before verify, explain-change, and PR readiness.
+- Active. M1 through M4 implementation closeout is complete; M5 has resolved the README selector blocker and PR-mode validation passes. Code-review, verify, explain-change, and PR readiness remain downstream gates.
 
 ## Readiness
 
 - M1 through M4 are complete.
+- M5 final validation is complete.
 - The immediate next repository stage is `code-review`; `verify`, `explain-change`, and PR readiness remain downstream gates.

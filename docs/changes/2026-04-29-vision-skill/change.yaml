@@ -31,13 +31,14 @@ generated_artifacts:
   opencode_proposal_skill: dist/adapters/opencode/.opencode/skills/proposal/SKILL.md
   opencode_proposal_review_skill: dist/adapters/opencode/.opencode/skills/proposal-review/SKILL.md
 requirements:
-  - specs/vision-skill.md R1-R78
+  - specs/vision-skill.md R1-R80
   - specs/vision-skill.md AC1-AC12
 tests:
   - specs/vision-skill.test.md T1-T12
   - scripts/test-skill-validator.py focused skill contract regressions
   - scripts/test-adapter-distribution.py generated adapter regressions
   - scripts/test-select-validation.py selector routing regressions
+  - scripts/validate-readme.py lightweight README and vision marker validation
   - scripts/test-change-metadata-validator.py change metadata regressions
 validation:
   - command: python scripts/validate-change-metadata.py docs/changes/2026-04-29-vision-skill/change.yaml
@@ -67,8 +68,25 @@ validation:
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-04-29-vision-skill.md --path docs/proposals/2026-04-29-vision-skill.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/changes/2026-04-29-vision-skill/change.yaml
     result: pass_after_m4
   - command: python scripts/select-validation.py --mode explicit --path README.md
-    result: blocked_expected_after_m4
-    reason: README.md remains unclassified by the v1 selector; manual route was used.
+    result: pass_after_m5
+    reason: README.md is classified as readme and selects readme.validate.
+  - command: python scripts/validate-readme.py README.md
+    result: pass_after_m5
+  - command: python scripts/validate-readme.py README.md --vision-markers
+    result: pass_after_m5
+    reason: Inline marker-string documentation is not treated as a generated marker block.
+  - command: python scripts/select-validation.py --mode local
+    result: pass_after_m5
+    reason: Local selector selected README marker validation for vision-skill-scoped changes and reported no unclassified paths.
+  - command: bash scripts/ci.sh --mode local
+    result: pass_after_m5
+    reason: Selected local CI passed, including selector regression, README marker validation, lifecycle, change metadata, and broad smoke.
+  - command: python scripts/select-validation.py --mode pr --base origin/main --head HEAD
+    result: pass_after_m5
+    reason: PR-mode selector classified README.md as readme, selected readme.validate and readme.vision_markers, and reported no unclassified paths.
+  - command: bash scripts/ci.sh --mode pr --base origin/main --head HEAD
+    result: pass_after_m5
+    reason: PR-mode CI passed without README.md selector blocking.
   - command: test ! -e vision.md
     result: pass_after_m4
   - command: "! rg -n '^<!-- vision:start -->$|^<!-- vision:end -->$' README.md"
@@ -105,6 +123,9 @@ changed_files:
   - docs/plans/2026-04-29-vision-skill.md
   - docs/proposals/2026-04-29-vision-skill.md
   - docs/workflows.md
+  - scripts/test-select-validation.py
+  - scripts/validate-readme.py
+  - scripts/validation_selection.py
   - scripts/test-skill-validator.py
   - skills/proposal-review/SKILL.md
   - skills/proposal/SKILL.md
@@ -114,7 +135,7 @@ changed_files:
 manual_proof:
   root_vision_created: false
   readme_front_matter_inserted: false
-  readme_manual_route: README.md remains selector-unclassified; manual proof is README ownership wording review plus git diff whitespace validation.
+  readme_selector_route: README.md is classified as readme; manual proof remains limited to ownership wording and the absence of generated front-matter in this slice.
   explain_change_deferred: docs/changes/2026-04-29-vision-skill/explain-change.md is intentionally deferred to the downstream explain-change stage.
 review:
   status: ready_for_code_review
