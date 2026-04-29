@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- none yet
+- [2026-04-29 Vision skill](plans/2026-04-29-vision-skill.md) - active execution plan for adding the upstream `vision` skill, `Vision fit` proposal guidance, governance/source-of-truth updates, README ownership wording, and generated skill/adapter refresh without creating the initial `vision.md`.
 
 ## Blocked
 - none yet

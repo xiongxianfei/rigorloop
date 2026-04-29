@@ -31,6 +31,7 @@ SCAN_SENSITIVE_SKILLS = [
     "spec-review",
     "test-spec",
     "verify",
+    "vision",
     "workflow",
 ]
 
@@ -185,6 +186,45 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "Do not require mandatory C4-level classification",
             "does not replace the repository-wide material-finding contract",
             "evidence, required outcome, and a safe resolution path or `needs-decision` rationale",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, body)
+
+    def test_vision_skill_defines_modes_boundaries_and_readme_marker_contract(self) -> None:
+        body = (ROOT / "skills" / "vision" / "SKILL.md").read_text(encoding="utf-8")
+        required_terms = [
+            "name: vision",
+            "project vision and matching README front-matter",
+            "## Modes",
+            "create",
+            "revise",
+            "mirror",
+            "Do not create the initial `vision.md` just because this skill is installed",
+            "`vision.md` is canonical",
+            "`CONSTITUTION.md` outranks `vision.md`",
+            "<!-- vision:start -->",
+            "<!-- vision:end -->",
+            "first H1 block",
+            "malformed, nested, or multiple vision marker pairs",
+            "Mode used:",
+            "Files changed:",
+            "README front-matter:",
+            "Assumptions:",
+            "Sections changed:",
+            "secrets",
+            "credentials",
+            "private local filesystem paths",
+            "private machine names",
+            "personal data not explicitly intended for publication",
+            "must not fetch external information unless",
+            "distinguish researched facts from project assumptions",
+            "plain Markdown",
+            "rendered tables, diagrams, HTML layout, or generated assets",
+            "compact project inputs",
+            "full-file reads",
+            "summary and stable-ID first",
+            "When full-file read is required",
         ]
         for term in required_terms:
             with self.subTest(term=term):
