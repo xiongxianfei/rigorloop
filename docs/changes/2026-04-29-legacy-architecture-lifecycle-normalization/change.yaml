@@ -13,11 +13,16 @@ artifacts:
 canonical_artifacts:
   architecture_package: docs/architecture/system/architecture.md
 requirements:
+  - specs/architecture-package-method.md R37-R39
+  - specs/architecture-package-method.md R44-R48
   - specs/architecture-package-method.md R63-R66
   - specs/architecture-package-method.md R73-R75
 tests:
   - specs/legacy-architecture-lifecycle-normalization.test.md T1
   - specs/legacy-architecture-lifecycle-normalization.test.md T2
+  - specs/legacy-architecture-lifecycle-normalization.test.md T3
+  - specs/legacy-architecture-lifecycle-normalization.test.md T4
+  - specs/legacy-architecture-lifecycle-normalization.test.md T9
 validation:
   - command: python scripts/validate-change-metadata.py docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml
     result: fail_expected_before_m0_missing_change_yaml
@@ -84,6 +89,27 @@ validation:
   - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-log.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-resolution.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r3.md
     result: pass_after_code_review_r3_fix
     reason: Executed selected review artifact, artifact lifecycle, and change metadata checks.
+  - command: rg -n "M2 Domain Comparison" docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md
+    result: gap_expected_before_m2
+    reason: T3 red proof before adding domain comparison, merge-back, ADR, and disposition recommendations.
+  - command: python scripts/select-validation.py --mode explicit --path docs/architecture/system/diagrams/context.mmd --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md
+    result: pass_after_m2
+    reason: Selector inspection classified the diagram as architecture-diagram and the delta as change-local-lifecycle, selecting artifact_lifecycle.validate only.
+  - command: rg -n "source layout|generated|adapter|workflow|lifecycle|review|validation|selector|CI|ADR|merge-back|historical-only" docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md
+    result: pass_after_m2
+    reason: Found the M2 domain comparison vocabulary needed by T3.
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_m2
+    reason: Selected artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate; broad smoke was not required.
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml
+    result: pass_after_m2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_m2
+  - command: git diff --check -- docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_m2
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_m2
+    reason: Executed selected artifact lifecycle and change metadata checks.
 changed_files:
   - docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml
   - docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md
@@ -95,5 +121,5 @@ changed_files:
   - docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
   - specs/legacy-architecture-lifecycle-normalization.test.md
 review:
-  status: code_review_r3_resolved_ready_for_rerun
+  status: m2_ready_for_code_review
   unresolved_items: 0
