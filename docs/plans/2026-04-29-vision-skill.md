@@ -237,12 +237,12 @@ This plan uses two validation command types:
 - Expected observable result: all authored, generated, lifecycle, and change-local surfaces are coherent and ready for code-review; PR/explain readiness still depends on downstream `code-review`, `verify`, and `explain-change`.
 - Commit message: `M4: close vision skill implementation`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] broad smoke passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] broad smoke passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - Final validation can expose stale generated output or lifecycle mismatches across proposal, spec, plan, and change metadata.
 - Rollback/recovery:
@@ -258,6 +258,7 @@ This plan uses two validation command types:
 - 2026-04-30: M2 added `Vision fit` proposal/proposal-review guidance and aligned governance, workflow, and README ownership surfaces around `vision.md`.
 - 2026-04-30: CR-M2-F1 tightened absent-root-vision `Vision fit` handling so proposals must use exactly `no vision exists yet` and proposal-review must request revision for nonexistent-vision claims.
 - 2026-04-30: M3 refreshed generated `.codex/skills/` and public adapter output through `scripts/build-skills.py` and `scripts/build-adapters.py --version 0.1.1`.
+- 2026-04-30: M4 added the change-local metadata pack and synchronized the plan index with implementation closeout readiness.
 
 ## Decision log
 
@@ -267,10 +268,11 @@ This plan uses two validation command types:
 - 2026-04-30: M1 intentionally leaves generated `.codex/skills/` and `dist/adapters/` refresh to M3, as planned; selector inspection for the changed canonical skill identifies generated drift checks that are not M1 pass gates.
 - 2026-04-30: M2 canonical proposal and proposal-review skill edits also leave generated `.codex/skills/` and `dist/adapters/` refresh to M3, as planned.
 - 2026-04-30: M3 did not add an opencode `vision` command alias; opencode command aliases remain limited to the existing curated lifecycle command set while the full `vision` skill is present under opencode skills.
+- 2026-04-30: M4 keeps `docs/changes/2026-04-29-vision-skill/explain-change.md` absent because this plan assigns the final durable explanation to the downstream `explain-change` stage after code-review and verify.
 
 ## Surprises and discoveries
 
-- none yet
+- 2026-04-30: README ownership guidance intentionally names the vision marker strings, so manual proof for "no generated README front-matter was inserted" uses exact standalone marker-line checks instead of raw marker-string search.
 
 ## Validation notes
 
@@ -334,12 +336,32 @@ This plan uses two validation command types:
   - `python scripts/select-validation.py --mode explicit --path .codex/skills/vision/SKILL.md --path .codex/skills/proposal/SKILL.md --path .codex/skills/proposal-review/SKILL.md --path dist/adapters/manifest.yaml --path dist/adapters/codex/AGENTS.md --path dist/adapters/claude/CLAUDE.md --path dist/adapters/opencode/AGENTS.md --path dist/adapters/codex/.agents/skills/vision/SKILL.md --path dist/adapters/codex/.agents/skills/proposal/SKILL.md --path dist/adapters/codex/.agents/skills/proposal-review/SKILL.md --path dist/adapters/claude/.claude/skills/vision/SKILL.md --path dist/adapters/claude/.claude/skills/proposal/SKILL.md --path dist/adapters/claude/.claude/skills/proposal-review/SKILL.md --path dist/adapters/opencode/.opencode/skills/vision/SKILL.md --path dist/adapters/opencode/.opencode/skills/proposal/SKILL.md --path dist/adapters/opencode/.opencode/skills/proposal-review/SKILL.md` selected `skills.drift`, `adapters.regression`, `adapters.drift`, and `adapters.validate`; all selected commands passed.
   - `git diff --check -- .codex/skills dist/adapters docs/plans/2026-04-29-vision-skill.md` passed.
   - `bash scripts/ci.sh --mode broad-smoke` passed.
+- 2026-04-30 M4 implementation:
+  - `python scripts/validate-change-metadata.py docs/changes/2026-04-29-vision-skill/change.yaml` failed before metadata creation because the M4 change metadata file did not exist.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-04-29-vision-skill.md --path docs/proposals/2026-04-29-vision-skill.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/changes/2026-04-29-vision-skill/change.yaml` failed before metadata creation because the M4 change metadata file did not exist.
+  - `python scripts/validate-skills.py` passed.
+  - `python scripts/test-skill-validator.py` passed.
+  - `python scripts/build-skills.py --check` passed.
+  - `python scripts/test-adapter-distribution.py` passed.
+  - `python scripts/build-adapters.py --version 0.1.1 --check` passed.
+  - `python scripts/validate-adapters.py --version 0.1.1` passed.
+  - `python scripts/test-select-validation.py` passed.
+  - `python scripts/test-change-metadata-validator.py` passed.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-04-29-vision-skill/change.yaml` passed.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-04-29-vision-skill.md --path docs/proposals/2026-04-29-vision-skill.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/changes/2026-04-29-vision-skill/change.yaml` passed.
+  - `python scripts/select-validation.py --mode explicit --path README.md` blocked with `unclassified-path` as expected; manual route is README ownership wording review plus `git diff --check -- README.md`.
+  - `test ! -e vision.md` passed.
+  - `! rg -n '^<!-- vision:start -->$|^<!-- vision:end -->$' README.md` passed, confirming no generated README vision front-matter marker block was inserted.
+  - `! git diff --name-only origin/main..HEAD -- scripts | rg -n 'vision|readme|front'` passed, confirming no README mirror helper script was introduced.
+  - `git diff --check -- README.md` passed.
+  - `bash scripts/ci.sh --mode broad-smoke` passed.
+  - `git diff --check -- .` passed.
 
 ## Outcome and retrospective
 
-- Active. M1, M2, and M3 are complete; M4 remains pending.
+- Active. M1 through M4 implementation closeout is complete; code-review remains the next gate before verify, explain-change, and PR readiness.
 
 ## Readiness
 
-- M1, M2, and M3 are complete.
-- The immediate next implementation milestone is M4, `Change-local closeout and full validation handoff`.
+- M1 through M4 are complete.
+- The immediate next repository stage is `code-review`; `verify`, `explain-change`, and PR readiness remain downstream gates.

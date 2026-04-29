@@ -1,0 +1,121 @@
+change_id: 2026-04-29-vision-skill
+title: Add upstream vision skill and proposal fit guidance
+classification: planned
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-04-29-vision-skill.md
+  spec: specs/vision-skill.md
+  plan: docs/plans/2026-04-29-vision-skill.md
+  test_spec: specs/vision-skill.test.md
+canonical_artifacts:
+  vision_skill: skills/vision/SKILL.md
+  proposal_skill: skills/proposal/SKILL.md
+  proposal_review_skill: skills/proposal-review/SKILL.md
+governance_artifacts:
+  constitution: CONSTITUTION.md
+  agents: AGENTS.md
+  workflows: docs/workflows.md
+  readme_ownership: README.md
+generated_artifacts:
+  codex_vision_skill: .codex/skills/vision/SKILL.md
+  codex_proposal_skill: .codex/skills/proposal/SKILL.md
+  codex_proposal_review_skill: .codex/skills/proposal-review/SKILL.md
+  adapter_manifest: dist/adapters/manifest.yaml
+  claude_vision_skill: dist/adapters/claude/.claude/skills/vision/SKILL.md
+  claude_proposal_skill: dist/adapters/claude/.claude/skills/proposal/SKILL.md
+  claude_proposal_review_skill: dist/adapters/claude/.claude/skills/proposal-review/SKILL.md
+  codex_adapter_vision_skill: dist/adapters/codex/.agents/skills/vision/SKILL.md
+  codex_adapter_proposal_skill: dist/adapters/codex/.agents/skills/proposal/SKILL.md
+  codex_adapter_proposal_review_skill: dist/adapters/codex/.agents/skills/proposal-review/SKILL.md
+  opencode_vision_skill: dist/adapters/opencode/.opencode/skills/vision/SKILL.md
+  opencode_proposal_skill: dist/adapters/opencode/.opencode/skills/proposal/SKILL.md
+  opencode_proposal_review_skill: dist/adapters/opencode/.opencode/skills/proposal-review/SKILL.md
+requirements:
+  - specs/vision-skill.md R1-R78
+  - specs/vision-skill.md AC1-AC12
+tests:
+  - specs/vision-skill.test.md T1-T12
+  - scripts/test-skill-validator.py focused skill contract regressions
+  - scripts/test-adapter-distribution.py generated adapter regressions
+  - scripts/test-select-validation.py selector routing regressions
+  - scripts/test-change-metadata-validator.py change metadata regressions
+validation:
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-29-vision-skill/change.yaml
+    result: expected_fail_before_m4_metadata_creation
+    reason: The M4 metadata file did not exist before this milestone.
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-04-29-vision-skill.md --path docs/proposals/2026-04-29-vision-skill.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/changes/2026-04-29-vision-skill/change.yaml
+    result: expected_fail_before_m4_metadata_creation
+    reason: The explicit lifecycle scope referenced the missing M4 metadata file.
+  - command: python scripts/validate-skills.py
+    result: pass_after_m4
+  - command: python scripts/test-skill-validator.py
+    result: pass_after_m4
+  - command: python scripts/build-skills.py --check
+    result: pass_after_m4
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_after_m4
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_after_m4
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_after_m4
+  - command: python scripts/test-select-validation.py
+    result: pass_after_m4
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_after_m4
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-29-vision-skill/change.yaml
+    result: pass_after_m4
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-04-29-vision-skill.md --path docs/proposals/2026-04-29-vision-skill.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/changes/2026-04-29-vision-skill/change.yaml
+    result: pass_after_m4
+  - command: python scripts/select-validation.py --mode explicit --path README.md
+    result: blocked_expected_after_m4
+    reason: README.md remains unclassified by the v1 selector; manual route was used.
+  - command: test ! -e vision.md
+    result: pass_after_m4
+  - command: "! rg -n '^<!-- vision:start -->$|^<!-- vision:end -->$' README.md"
+    result: pass_after_m4
+    reason: No generated README vision front-matter marker block was inserted.
+  - command: "! git diff --name-only origin/main..HEAD -- scripts | rg -n 'vision|readme|front'"
+    result: pass_after_m4
+    reason: No README mirror helper script was introduced.
+  - command: git diff --check -- README.md
+    result: pass_after_m4
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: pass_after_m4
+  - command: git diff --check -- .
+    result: pass_after_m4
+changed_files:
+  - .codex/skills/proposal-review/SKILL.md
+  - .codex/skills/proposal/SKILL.md
+  - .codex/skills/vision/SKILL.md
+  - AGENTS.md
+  - CONSTITUTION.md
+  - README.md
+  - dist/adapters/claude/.claude/skills/proposal-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/proposal/SKILL.md
+  - dist/adapters/claude/.claude/skills/vision/SKILL.md
+  - dist/adapters/codex/.agents/skills/proposal-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/proposal/SKILL.md
+  - dist/adapters/codex/.agents/skills/vision/SKILL.md
+  - dist/adapters/manifest.yaml
+  - dist/adapters/opencode/.opencode/skills/proposal-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/proposal/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/vision/SKILL.md
+  - docs/changes/2026-04-29-vision-skill/change.yaml
+  - docs/plan.md
+  - docs/plans/2026-04-29-vision-skill.md
+  - docs/proposals/2026-04-29-vision-skill.md
+  - docs/workflows.md
+  - scripts/test-skill-validator.py
+  - skills/proposal-review/SKILL.md
+  - skills/proposal/SKILL.md
+  - skills/vision/SKILL.md
+  - specs/vision-skill.md
+  - specs/vision-skill.test.md
+manual_proof:
+  root_vision_created: false
+  readme_front_matter_inserted: false
+  readme_manual_route: README.md remains selector-unclassified; manual proof is README ownership wording review plus git diff whitespace validation.
+  explain_change_deferred: docs/changes/2026-04-29-vision-skill/explain-change.md is intentionally deferred to the downstream explain-change stage.
+review:
+  status: ready_for_code_review
+  unresolved_items: 0
