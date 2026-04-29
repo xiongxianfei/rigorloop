@@ -256,6 +256,7 @@ This plan uses two validation command types:
 - 2026-04-30: M1 added focused skill-validator regression coverage first, then added `skills/vision/SKILL.md`.
 - 2026-04-30: M1 code-review fix clarified that missing README markers stop `mirror` and `revise` before file modification unless explicit handling is authorized.
 - 2026-04-30: M2 added `Vision fit` proposal/proposal-review guidance and aligned governance, workflow, and README ownership surfaces around `vision.md`.
+- 2026-04-30: CR-M2-F1 tightened absent-root-vision `Vision fit` handling so proposals must use exactly `no vision exists yet` and proposal-review must request revision for nonexistent-vision claims.
 
 ## Decision log
 
@@ -309,6 +310,14 @@ This plan uses two validation command types:
   - `python scripts/select-validation.py --mode explicit --path README.md` blocked with `unclassified-path` as expected; manual route is README ownership wording review plus `git diff --check -- README.md`.
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-04-29-vision-skill.md --path docs/proposals/2026-04-29-vision-skill.md --path specs/vision-skill.md --path specs/vision-skill.test.md` passed.
   - `git diff --check -- CONSTITUTION.md AGENTS.md docs/workflows.md README.md skills/proposal/SKILL.md skills/proposal-review/SKILL.md docs/plans/2026-04-29-vision-skill.md scripts/test-skill-validator.py` passed.
+- 2026-04-30 CR-M2-F1 code-review fix:
+  - `python scripts/test-skill-validator.py` failed before the skill edits because the new regression required exact absent-root-vision `Vision fit` behavior.
+  - `python scripts/test-skill-validator.py` passed after the skill edits.
+  - `python scripts/validate-skills.py` passed.
+  - `test ! -e vision.md` passed.
+  - `python scripts/test-select-validation.py` passed.
+  - `python scripts/select-validation.py --mode explicit --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-04-29-vision-skill.md` selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.drift`, `artifact_lifecycle.validate`, and `broad_smoke.repo`; generated drift, adapter drift, and broad smoke remain deferred until M3 refreshes generated output.
+  - `git diff --check -- skills/proposal/SKILL.md skills/proposal-review/SKILL.md scripts/test-skill-validator.py docs/plans/2026-04-29-vision-skill.md` passed.
 
 ## Outcome and retrospective
 
