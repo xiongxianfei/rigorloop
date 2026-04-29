@@ -51,7 +51,9 @@ Allowed `Vision fit` values are:
 - `intentionally proposes a vision revision`
 - `no vision exists yet`
 
-If root `vision.md` exists, `Vision fit` must not say `no vision exists yet`. If root `vision.md` does not exist, `Vision fit` should say `no vision exists yet`.
+If root `vision.md` exists, `Vision fit` must not say `no vision exists yet`.
+
+When root `vision.md` is absent, proposal-review must request revision if `Vision fit` is missing or replaced with a claim that fits, conflicts with, or revises a nonexistent vision.
 
 If a proposal conflicts with `vision.md`, classify the required outcome as exactly one of:
 

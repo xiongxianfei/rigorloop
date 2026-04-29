@@ -246,6 +246,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "may conflict with the current vision",
             "intentionally proposes a vision revision",
             "no vision exists yet",
+            "When root `vision.md` is absent, proposals must use the exact `Vision fit` value `no vision exists yet`.",
             "must not silently redefine project vision",
             "Legacy proposals",
         ]
@@ -257,6 +258,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "Check the proposal's `Vision fit` section",
             "created or substantively revised after the vision spec was adopted",
             "request revision",
+            "When root `vision.md` is absent, proposal-review must request revision if `Vision fit` is missing or replaced with a claim that fits, conflicts with, or revises a nonexistent vision.",
             "revise proposal",
             "revise vision",
             "record explicit exception",

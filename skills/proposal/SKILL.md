@@ -67,7 +67,7 @@ The section states exactly one of:
 - `intentionally proposes a vision revision`
 - `no vision exists yet`
 
-Use `no vision exists yet` only when root `vision.md` is absent. If root `vision.md` exists, choose one of the current-vision outcomes.
+When root `vision.md` is absent, proposals must use the exact `Vision fit` value `no vision exists yet`. If root `vision.md` exists, choose one of the current-vision outcomes and do not use `no vision exists yet`.
 
 A proposal must not silently redefine project vision outside the `Vision fit` section and normal proposal rationale.
 
