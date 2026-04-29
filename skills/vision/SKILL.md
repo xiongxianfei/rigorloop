@@ -124,11 +124,15 @@ Generated README front-matter includes only:
 
 The front-matter must be derived from `vision.md`, not independently authored.
 
+Automatic marker insertion is allowed only in `create` mode.
+
 If README already contains one valid marker block, replace only content inside the marker block and preserve all content outside it.
 
-If README has no marker block and contains a Markdown H1, insert the marker block immediately after the first H1 block. The first H1 block is the first line matching `# <title>` plus any immediately following badge/image lines or blank lines directly attached to that heading.
+In `create` mode, if README has no marker block and contains a Markdown H1, insert the marker block immediately after the first H1 block. The first H1 block is the first line matching `# <title>` plus any immediately following badge/image lines or blank lines directly attached to that heading.
 
-If README has no H1, insert the marker block at the start of the file and preserve existing content after it.
+In `create` mode, if README has no H1, insert the marker block at the start of the file and preserve existing content after it.
+
+In `mirror` or `revise`, missing or malformed markers stop the skill before file modification unless the user explicitly authorizes marker insertion or skipping README mirroring.
 
 If README has malformed, nested, or multiple vision marker pairs, stop and request explicit handling instead of rewriting README broadly.
 
