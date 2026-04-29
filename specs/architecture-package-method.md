@@ -583,6 +583,6 @@ None.
 
 This focused spec update is approved.
 
-Immediate next repository stage: `implement`, because plan-review approved the package-quality plan and the matching test spec is active.
+Immediate next repository stage: `implement` M3.
 
-Implementation readiness: ready to start M1 in `docs/plans/2026-04-29-c4-arc42-package-quality.md`.
+Implementation readiness: M1 and M2 implementation and code-review closeout are complete in `docs/plans/2026-04-29-c4-arc42-package-quality.md`. M3-M5 remain pending.
