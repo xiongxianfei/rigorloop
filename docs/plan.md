@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-04-29 C4 arc42 package quality refinement](plans/2026-04-29-c4-arc42-package-quality.md) - active execution plan; M1 template and diagram-style scaffolding is implemented for code-review, with architecture and architecture-review skills, generated output, and lifecycle closeout still pending.
+- [2026-04-29 C4 arc42 package quality refinement](plans/2026-04-29-c4-arc42-package-quality.md) - active execution plan; M1 template and diagram-style scaffolding plus M1 code-review closeout are complete, with architecture and architecture-review skills, generated output, and lifecycle closeout still pending.
 
 ## Blocked
 - none yet
