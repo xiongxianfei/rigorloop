@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-04-29 C4 arc42 package quality refinement](plans/2026-04-29-c4-arc42-package-quality.md) - active execution plan; M1-M5 implementation and code-review are complete, with verify, explain-change, and PR readiness still pending.
+- [2026-04-29 C4 arc42 package quality refinement](plans/2026-04-29-c4-arc42-package-quality.md) - active execution plan; M1-M5 implementation, code-review, and verify are complete, with explain-change and PR readiness still pending.
 
 ## Blocked
 - none yet
