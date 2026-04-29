@@ -354,6 +354,7 @@ docs/architecture/system/diagrams/context.mmd
 - 2026-04-29: M3 merged accepted current content from all eight legacy Markdown records into `docs/architecture/system/architecture.md`, swept stale completed-rollout and selector-routing wording, and recorded historical-only leftovers in the change-local architecture delta without editing legacy lifecycle statuses.
 - 2026-04-29: M4 archived all eight top-level legacy Markdown architecture records, added canonical package pointers and archive rationale, and updated stale lifecycle handoff sections without rewriting historical architecture body content.
 - 2026-04-29: M5 closed the normalization evidence by refreshing inventory proof, updating stale canonical closeout wording, adding `explain-change.md`, synchronizing `docs/plan.md`, and validating both the plan/index/change surfaces and every legacy architecture document changed in M4.
+- 2026-04-29: `code-review-r4` reviewed M5 final closeout and returned `clean-with-notes` with no blocking or required-change findings.
 
 ## Decision Log
 
@@ -465,15 +466,19 @@ docs/architecture/system/diagrams/context.mmd
 - 2026-04-29: M5 extra touched-surface `python scripts/select-validation.py --mode explicit --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/explain-change.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/plan.md --path docs/architecture/system/architecture.md` returned `status: ok` and selected `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
 - 2026-04-29: M5 extra touched-surface `bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/explain-change.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/plan.md --path docs/architecture/system/architecture.md` passed selected artifact lifecycle and change metadata checks.
 - 2026-04-29: M5 supplemental `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization` passed, confirming earlier material review findings remain closed.
+- 2026-04-29: M5 code-review artifact `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization` passed after adding `code-review-r4`.
+- 2026-04-29: M5 code-review artifact `python scripts/select-validation.py --mode explicit --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-log.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-resolution.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r4.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md` returned `status: ok` and selected `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+- 2026-04-29: M5 code-review artifact `bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-log.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-resolution.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r4.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md` passed selected review artifact, artifact lifecycle, and change metadata checks.
 
 ## Outcome and Retrospective
 
 - Done. Inventory, domain comparison, canonical merge-back, legacy lifecycle disposition, final closeout evidence, and plan/index synchronization are complete for the current `docs/architecture/` tree.
 - The eight top-level legacy Markdown architecture records are archived historical evidence; current architecture truth lives in `docs/architecture/system/architecture.md`.
+- M5 code-review returned `clean-with-notes`; no material review findings remain open.
 
 ## Readiness
 
-- Immediate next repository stage: `code-review` for the M5 final closeout slice.
+- Immediate next repository stage: `verify`.
 - Test spec readiness: complete; `specs/legacy-architecture-lifecycle-normalization.test.md` covers final closeout through `T10`, `T11`, and `T12`.
 - Plan/index readiness: synchronized; this plan is `done` and `docs/plan.md` lists it under Done.
 
