@@ -1,7 +1,14 @@
 # RigorLoop First-Release Repository Architecture
 
 ## Status
-- approved
+- archived
+
+## Closeout
+
+- Final disposition: archived/historical snapshot.
+- Canonical current architecture: `docs/architecture/system/architecture.md`.
+- Merge-back evidence: `docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md`.
+- Archive rationale: accepted current source-layout, generated-output, change-memory, planning, and CI-wrapper content was merged into the canonical package during legacy architecture normalization. This file preserves first-release repository architecture rationale and should not be used as the current architecture source for downstream work.
 
 ## Related artifacts
 

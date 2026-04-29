@@ -2,7 +2,14 @@
 
 ## Status
 
-- approved
+- archived
+
+## Closeout
+
+- Final disposition: archived/historical snapshot.
+- Canonical current architecture: `docs/architecture/system/architecture.md`.
+- Merge-back evidence: `docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md`.
+- Archive rationale: accepted current selector ownership, stable check ID, broad-smoke trigger, `scripts/ci.sh`, unclassified-path, manual-proof, and architecture support path routing content was merged into the canonical package during legacy architecture normalization. This file preserves the historical test layering and change-scoped validation architecture rationale and should not be used as the current architecture source for downstream work.
 
 ## Related artifacts
 
@@ -390,18 +397,15 @@ None.
 
 ## Next artifacts
 
-- `docs/plans/2026-04-25-test-layering-and-change-scoped-validation.md`
-- `plan-review`
-- `specs/test-layering-and-change-scoped-validation.test.md`
-- Implementation after plan-review and test-spec
+None for this archived record. Current architecture truth lives in `docs/architecture/system/architecture.md`.
 
 ## Follow-on artifacts
 
-- `docs/changes/2026-04-25-test-layering-and-change-scoped-validation/reviews/architecture-review-r1.md`
-- `docs/changes/2026-04-25-test-layering-and-change-scoped-validation/reviews/architecture-review-r2.md`
-- `docs/changes/2026-04-25-test-layering-and-change-scoped-validation/review-resolution.md`
-- `docs/plans/2026-04-25-test-layering-and-change-scoped-validation.md`
+- Final disposition: archived/historical snapshot after accepted current content was merged into `docs/architecture/system/architecture.md`.
+- Historical scope: test layering and change-scoped validation architecture rationale, selector design, and original rollout context.
 
 ## Readiness
 
-Approved by `architecture-review-r2`. The execution plan is active and ready for `plan-review`; the test spec should be created after plan-review before implementation.
+This architecture record is archived as historical evidence.
+
+No current downstream workflow handoff is owned by this artifact. Downstream work should use `docs/architecture/system/architecture.md` as the current architecture source and `specs/test-layering-and-change-scoped-validation.md` for the behavior contract.

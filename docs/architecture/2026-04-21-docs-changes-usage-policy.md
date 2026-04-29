@@ -1,7 +1,14 @@
 # Docs Changes Usage Policy Design
 
 ## Status
-- approved
+- archived
+
+## Closeout
+
+- Final disposition: archived/historical snapshot.
+- Canonical current architecture: `docs/architecture/system/architecture.md`.
+- Merge-back evidence: `docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md`.
+- Archive rationale: accepted current change-local pack, durable reasoning, conditional review/verify artifact, and scalar artifact-map content was merged into the canonical package during legacy architecture normalization. This file preserves the historical docs-changes usage policy rationale and should not be used as the current architecture source for downstream work.
 
 ## Related artifacts
 
@@ -245,20 +252,15 @@ flowchart LR
 
 ## Next artifacts
 
-- `specs/docs-changes-usage-policy.test.md`
-- summary-surface updates in `specs/rigorloop-workflow.md`, `docs/workflows.md`, `AGENTS.md`, and `CONSTITUTION.md` during implementation
-- any repo-owned change-metadata validator or fixture updates needed to support the approved contract
+None for this archived record. Current architecture truth lives in `docs/architecture/system/architecture.md`.
 
 ## Follow-on artifacts
 
-- `specs/docs-changes-usage-policy.test.md`
+- Final disposition: archived/historical snapshot after accepted current content was merged into `docs/architecture/system/architecture.md`.
+- Historical scope: docs-changes usage policy design rationale and original rollout context.
 
 ## Readiness
 
-This architecture is approved.
+This architecture record is archived as historical evidence.
 
-No further `architecture-review` action is pending.
-
-Test-spec work is now tracked in `specs/docs-changes-usage-policy.test.md`.
-
-The next stage is `implement`.
+No current downstream workflow handoff is owned by this artifact. Downstream work should use `docs/architecture/system/architecture.md` as the current architecture source and `specs/docs-changes-usage-policy.md` for the behavior contract.

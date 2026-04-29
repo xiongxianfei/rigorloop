@@ -1,7 +1,14 @@
 # Multi-Agent Adapter Distribution Architecture
 
 ## Status
-- approved
+- archived
+
+## Closeout
+
+- Final disposition: archived/historical snapshot.
+- Canonical current architecture: `docs/architecture/system/architecture.md`.
+- Merge-back evidence: `docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md`.
+- Archive rationale: accepted current adapter-package, generated-manifest, release-metadata, tracked release-notes, generated-surface validation, and release-verification content was merged into the canonical package during legacy architecture normalization. This file preserves the historical multi-agent adapter distribution design rationale and should not be used as the current architecture source for downstream work.
 
 ## Related artifacts
 
@@ -435,19 +442,15 @@ The execution plan should still decide the milestone order and exact fixture cov
 
 ## Next artifacts
 
-- `docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md`
-- `specs/multi-agent-adapters-first-public-release.test.md`
-- Change-local artifacts under `docs/changes/<change-id>/` during implementation.
+None for this archived record. Current architecture truth lives in `docs/architecture/system/architecture.md`.
 
 ## Follow-on artifacts
 
-- `docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md`
-- `specs/multi-agent-adapters-first-public-release.test.md`
+- Final disposition: archived/historical snapshot after accepted current content was merged into `docs/architecture/system/architecture.md`.
+- Historical scope: multi-agent adapter distribution design rationale and original release architecture context.
 
 ## Readiness
 
-Architecture review is complete and this design is approved.
+This architecture record is archived as historical evidence.
 
-The execution plan exists, and the matching test spec is active.
-
-Immediate next repository stage: `implement`.
+No current downstream workflow handoff is owned by this artifact. Downstream work should use `docs/architecture/system/architecture.md` as the current architecture source, `specs/multi-agent-adapters-first-public-release.md` for the behavior contract, and `docs/adr/ADR-20260424-generated-adapter-packages.md` for the durable adapter-package decision.
