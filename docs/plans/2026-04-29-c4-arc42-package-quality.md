@@ -185,11 +185,11 @@ The architecture-stage work already refined and passed review for the canonical 
 - Expected observable result: generated `.codex/skills/` and `dist/adapters/` outputs match canonical skills and adapter validations pass.
 - Commit message: `M4: refresh generated architecture skill outputs`
 - Milestone closeout:
-  - validation passed
-  - progress updated
-  - decision log updated if needed
-  - validation notes updated
-  - milestone committed
+  - [x] targeted validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks: generated outputs may partially refresh or include unrelated generated churn.
 - Rollback/recovery: revert generated outputs, rerun both generators from clean canonical skill sources, and re-run drift checks before continuing.
 
@@ -268,6 +268,7 @@ Validation starts with the smallest milestone-specific checks, then expands to s
 - 2026-04-29: code-review M2 R1 passed with no material findings; recorded the clean review under `docs/changes/2026-04-29-c4-arc42-package-quality/reviews/code-review-m2-r1.md`.
 - 2026-04-29: implemented M3 architecture-review skill update in `skills/architecture-review/SKILL.md`, added regression coverage for the simple finding format and material-finding contract preservation, and refreshed generated Codex skill plus public adapter output through existing generators because selector-selected drift checks require generated output to stay in sync.
 - 2026-04-29: code-review M3 R1 passed with no material findings; recorded the clean review under `docs/changes/2026-04-29-c4-arc42-package-quality/reviews/code-review-m3-r1.md`.
+- 2026-04-29: implemented M4 generated-output sync by rerunning the existing skill and adapter generators after M2 and M3; no generated file diff was produced because earlier milestone validation had already refreshed the required generated output.
 
 ## Decision log
 
@@ -275,14 +276,16 @@ Validation starts with the smallest milestone-specific checks, then expands to s
 - 2026-04-29: keep generated output refresh in its own milestone so canonical skill edits can be reviewed before generated mirrors and adapter packages change.
 - 2026-04-29: require broad smoke at final validation because the initiative crosses skills, generated output, templates, lifecycle artifacts, and architecture docs.
 - 2026-04-29: keep M1 review-based by adding template scaffolding only; no package-shape, C4-file, ADR-presence, or arc42-section enforcement automation was added.
-- 2026-04-29: M2 refreshed generated `.codex/skills/architecture/SKILL.md` and adapter architecture skill copies through generators even though generated refresh has a later dedicated milestone, because the selector-selected M2 checks include `skills.drift` and `adapters.drift`. M4 remains necessary after M3 to refresh architecture-review generated output.
+- 2026-04-29: M2 refreshed generated `.codex/skills/architecture/SKILL.md` and adapter architecture skill copies through generators even though generated refresh has a later dedicated milestone, because the selector-selected M2 checks include `skills.drift` and `adapters.drift`. M4 remains necessary as the final generated-output sync check after M3.
 - 2026-04-29: M3 refreshed generated `.codex/skills/architecture-review/SKILL.md` and adapter architecture-review skill copies through generators even though generated refresh has a later dedicated milestone, because the selector-selected M3 checks include `skills.drift` and `adapters.drift`. M4 remains necessary as the final generated-output sync check after M3 review.
+- 2026-04-29: M4 is an idempotent generated-output sync milestone for this run because M2 and M3 already refreshed generated skill and adapter output when selector-selected drift checks required it.
 
 ## Surprises and discoveries
 
 - 2026-04-29: M1 selector routing includes `selector.regression` for changed `templates/` paths in addition to lifecycle, change metadata, and broad-smoke checks.
 - 2026-04-29: M2 canonical skill edits immediately made generated skill and adapter drift checks fail; required M2 validation could not pass without generator refresh.
 - 2026-04-29: M3 canonical architecture-review skill edits immediately made generated skill and adapter drift checks fail; required M3 validation could not pass without generator refresh.
+- 2026-04-29: M4 generator reruns produced no file diff; generated output was already synchronized by the earlier selector-required M2 and M3 refreshes.
 
 ## Validation notes
 
@@ -350,6 +353,16 @@ Validation starts with the smallest milestone-specific checks, then expands to s
 - 2026-04-29: M3 code-review closeout `python scripts/select-validation.py --mode explicit --path docs/changes/2026-04-29-c4-arc42-package-quality/reviews/code-review-m3-r1.md --path docs/changes/2026-04-29-c4-arc42-package-quality/review-log.md --path docs/changes/2026-04-29-c4-arc42-package-quality/review-resolution.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/plan.md` returned `status: ok` and selected review artifact, lifecycle, change metadata, and broad-smoke checks.
 - 2026-04-29: M3 code-review closeout `git diff --check -- docs/changes/2026-04-29-c4-arc42-package-quality docs/plans/2026-04-29-c4-arc42-package-quality.md docs/plan.md` passed.
 - 2026-04-29: M3 code-review closeout `bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-29-c4-arc42-package-quality/reviews/code-review-m3-r1.md --path docs/changes/2026-04-29-c4-arc42-package-quality/review-log.md --path docs/changes/2026-04-29-c4-arc42-package-quality/review-resolution.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/plan.md` passed selected review artifact, lifecycle, change metadata, and broad-smoke checks.
+- 2026-04-29: M4 `python scripts/build-skills.py` passed and produced no generated file diff.
+- 2026-04-29: M4 `python scripts/build-adapters.py --version 0.1.1` passed and produced no generated file diff.
+- 2026-04-29: M4 `python scripts/build-skills.py --check` passed.
+- 2026-04-29: M4 `python scripts/build-adapters.py --version 0.1.1 --check` passed.
+- 2026-04-29: M4 `python scripts/validate-adapters.py --version 0.1.1` passed.
+- 2026-04-29: M4 `python scripts/test-adapter-distribution.py` passed.
+- 2026-04-29: M4 `python scripts/test-select-validation.py` passed.
+- 2026-04-29: M4 final `python scripts/select-validation.py --mode explicit --path skills/architecture/SKILL.md --path skills/architecture-review/SKILL.md --path .codex/skills/architecture/SKILL.md --path .codex/skills/architecture-review/SKILL.md --path dist/adapters/manifest.yaml --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/plan.md` returned `status: ok` and selected skill, generated skill drift, adapter regression/drift/validation, lifecycle, change metadata, and broad-smoke checks.
+- 2026-04-29: M4 final `git diff --check -- skills/architecture/SKILL.md skills/architecture-review/SKILL.md .codex/skills dist/adapters docs/plans/2026-04-29-c4-arc42-package-quality.md docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml docs/plan.md` passed.
+- 2026-04-29: M4 final `bash scripts/ci.sh --mode explicit --path skills/architecture/SKILL.md --path skills/architecture-review/SKILL.md --path .codex/skills/architecture/SKILL.md --path .codex/skills/architecture-review/SKILL.md --path dist/adapters/manifest.yaml --path docs/plans/2026-04-29-c4-arc42-package-quality.md --path docs/changes/2026-04-29-c4-arc42-package-quality/change.yaml --path docs/plan.md` passed selected skill, generated skill drift, adapter regression/drift/validation, lifecycle, change metadata, and broad-smoke checks.
 
 ## Outcome and retrospective
 
@@ -357,6 +370,6 @@ Validation starts with the smallest milestone-specific checks, then expands to s
 
 ## Readiness
 
-- Immediate next repository stage: `implement` M4.
+- Immediate next repository stage: `code-review` for M4.
 - Test spec readiness: active; `specs/architecture-package-method.test.md` covers R76-R118 and AC14-AC20 for this refinement.
-- Implementation readiness: M1, M2, and M3 implementation and code-review closeout are complete. M4-M5 remain pending.
+- Implementation readiness: M1, M2, and M3 implementation and code-review closeout are complete. M4 implementation is complete and ready for code-review. M5 remains pending.
