@@ -3,6 +3,7 @@ title: Normalize legacy architecture lifecycle records
 classification: planned
 risk: medium
 artifacts:
+  proposal: docs/proposals/2026-04-28-architecture-skills-c4-arc42-adr.md
   spec: specs/architecture-package-method.md
   architecture: docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md
   adr: docs/adr/ADR-20260428-architecture-package-method.md
@@ -43,14 +44,24 @@ validation:
   - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-log.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-resolution.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r1.md --path specs/legacy-architecture-lifecycle-normalization.test.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
     result: pass_after_code_review_r1_fix
     reason: Executed the selected review artifact, artifact lifecycle, and change metadata checks.
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization
+    result: pass_after_code_review_r2_fix
+    reason: Preserved and closed the material M0 code-review finding after adding the proposal citation.
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-log.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-resolution.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r1.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r2.md --path specs/legacy-architecture-lifecycle-normalization.test.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_code_review_r2_fix
+    reason: Selected review_artifacts.validate, artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate; broad smoke was not required.
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-log.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-resolution.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r1.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r2.md --path specs/legacy-architecture-lifecycle-normalization.test.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_code_review_r2_fix
+    reason: Executed the selected review artifact, artifact lifecycle, and change metadata checks.
 changed_files:
   - docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml
   - docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md
   - docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-log.md
   - docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-resolution.md
   - docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r1.md
+  - docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r2.md
   - docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
   - specs/legacy-architecture-lifecycle-normalization.test.md
 review:
-  status: code_review_r1_resolved_ready_for_rerun
+  status: code_review_r2_resolved_ready_for_rerun
   unresolved_items: 0
