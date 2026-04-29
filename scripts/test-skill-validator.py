@@ -233,6 +233,64 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             with self.subTest(term=term):
                 self.assertIn(term, body)
 
+    def test_proposal_skills_define_vision_fit_contract(self) -> None:
+        proposal_body = (ROOT / "skills" / "proposal" / "SKILL.md").read_text(encoding="utf-8")
+        proposal_review_body = (
+            ROOT / "skills" / "proposal-review" / "SKILL.md"
+        ).read_text(encoding="utf-8")
+
+        proposal_terms = [
+            "`Vision fit`",
+            "new or substantively revised proposals",
+            "fits the current vision",
+            "may conflict with the current vision",
+            "intentionally proposes a vision revision",
+            "no vision exists yet",
+            "must not silently redefine project vision",
+            "Legacy proposals",
+        ]
+        for term in proposal_terms:
+            with self.subTest(skill="proposal", term=term):
+                self.assertIn(term, proposal_body)
+
+        proposal_review_terms = [
+            "Check the proposal's `Vision fit` section",
+            "created or substantively revised after the vision spec was adopted",
+            "request revision",
+            "revise proposal",
+            "revise vision",
+            "record explicit exception",
+            "approving owner or owning stage",
+            "evidence for the conflict",
+            "why proposal revision is not chosen",
+            "why vision revision is not chosen",
+            "where the exception is recorded",
+            "one-time",
+            "future vision-revision trigger",
+            "`explain-change.md`",
+        ]
+        for term in proposal_review_terms:
+            with self.subTest(skill="proposal-review", term=term):
+                self.assertIn(term, proposal_review_body)
+
+    def test_governance_workflow_and_readme_define_vision_source_of_truth(self) -> None:
+        constitution = (ROOT / "CONSTITUTION.md").read_text(encoding="utf-8")
+        self.assertIn("2. `vision.md`", constitution)
+        self.assertIn("3. `specs/`", constitution)
+        self.assertIn("README front-matter", constitution)
+
+        required_terms = [
+            "`vision.md` is the canonical project-vision artifact",
+            "created or substantively revised after this spec is adopted include `Vision fit`",
+            "README content between `<!-- vision:start -->` and `<!-- vision:end -->` is generated from `vision.md`",
+            "README front-matter is not the source of truth when it conflicts with `vision.md`",
+        ]
+        for relative_path in ["AGENTS.md", "docs/workflows.md", "README.md"]:
+            body = (ROOT / relative_path).read_text(encoding="utf-8")
+            for term in required_terms:
+                with self.subTest(path=relative_path, term=term):
+                    self.assertIn(term, body)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

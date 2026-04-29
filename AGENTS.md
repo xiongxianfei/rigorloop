@@ -33,6 +33,8 @@ Do not silently blend conflicting higher-priority instructions. Call out the con
 - Do not hand-edit generated Codex compatibility output in `.codex/skills/`.
 - Do not hand-edit generated public adapter package output in `dist/adapters/`.
 - Public adapter packages for Codex, Claude Code, and opencode are generated under `dist/adapters/`; `.codex/skills/` remains a separate generated local Codex runtime mirror.
+- `vision.md` is the canonical project-vision artifact. Proposals created or substantively revised after this spec is adopted include `Vision fit`.
+- README content between `<!-- vision:start -->` and `<!-- vision:end -->` is generated from `vision.md`; README front-matter is not the source of truth when it conflicts with `vision.md`.
 - For non-trivial work, the baseline change-local artifact pack is `docs/changes/<change-id>/change.yaml` plus durable Markdown reasoning. Standalone `review-resolution.md` and `verify-report.md` remain conditional under the workflow contract.
 - When material review findings exist, record complete findings with evidence, required outcome, and safe resolution or `needs-decision` rationale. Use `review-resolution.md` dispositions `accepted`, `rejected`, `deferred`, `partially-accepted`, or `needs-decision`; `needs-decision` keeps `Closeout status: open`, while `Closeout status: closed` requires final dispositions, validation evidence, and no `review-log.md` open findings.
 - Keep `AGENTS.md` practical. Move workflow detail to `docs/workflows.md` and feature-specific detail to `specs/`.
@@ -44,6 +46,8 @@ Use a plan first for work that is multi-file, risky, ambiguous, architecture-aff
 For the lifecycle contract, follow `specs/rigorloop-workflow.md`.
 
 Use `docs/workflows.md` for the short operational summary.
+
+The `vision` skill is upstream of the per-change workflow, not a normal lifecycle stage. Use it at project genesis or when proposal review or learning surfaces a vision-level conflict.
 
 Once proposal, spec, and architecture are already settled, execution usually proceeds through:
 
