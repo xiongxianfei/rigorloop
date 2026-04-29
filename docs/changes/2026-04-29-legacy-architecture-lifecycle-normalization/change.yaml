@@ -1,0 +1,42 @@
+change_id: 2026-04-29-legacy-architecture-lifecycle-normalization
+title: Normalize legacy architecture lifecycle records
+classification: planned
+risk: medium
+artifacts:
+  spec: specs/architecture-package-method.md
+  architecture: docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md
+  adr: docs/adr/ADR-20260428-architecture-package-method.md
+  plan: docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+  test_spec: specs/legacy-architecture-lifecycle-normalization.test.md
+  explain_change: docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/explain-change.md
+requirements:
+  - specs/architecture-package-method.md R63-R66
+  - specs/architecture-package-method.md R73-R75
+tests:
+  - specs/legacy-architecture-lifecycle-normalization.test.md T1
+validation:
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml
+    result: fail_expected_before_m0_missing_change_yaml
+    reason: T1 red proof before creating the M0 change-local metadata surface.
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path specs/legacy-architecture-lifecycle-normalization.test.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_m0
+    reason: Selected artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate; broad smoke was not required.
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml
+    result: pass_after_m0
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_after_m0
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path specs/legacy-architecture-lifecycle-normalization.test.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/plan.md
+    result: pass_after_m0
+  - command: git diff --check -- docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization specs/legacy-architecture-lifecycle-normalization.test.md docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_m0
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path specs/legacy-architecture-lifecycle-normalization.test.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+    result: pass_after_m0
+    reason: Executed the selected artifact lifecycle and change metadata checks.
+changed_files:
+  - docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml
+  - docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md
+  - docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md
+  - specs/legacy-architecture-lifecycle-normalization.test.md
+review:
+  status: pending
+  unresolved_items: 0
