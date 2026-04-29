@@ -252,12 +252,12 @@ docs/architecture/system/diagrams/context.mmd
    - Expected observable result: canonical architecture reflects accepted legacy current content, current selector-routing behavior, and no stale current-state references to the completed architecture-method rollout.
    - milestone commit message: `M3: merge legacy architecture content into canonical package`
    - milestone closeout checklist:
-     - [ ] targeted validation passed
-     - [ ] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
-     - [ ] progress updated
-     - [ ] decision log updated if needed
-     - [ ] validation notes updated
-     - [ ] milestone committed
+     - [x] targeted validation passed
+     - [x] lifecycle state unchanged; no `docs/plan.md` update required
+     - [x] progress updated
+     - [x] decision log updated
+     - [x] validation notes updated
+     - [x] milestone committed
 
 4. M4. Normalize legacy lifecycle disposition
    - Goal: update each legacy architecture record with accepted historical lifecycle disposition after merge-back decisions are complete.
@@ -351,6 +351,7 @@ docs/architecture/system/diagrams/context.mmd
 - 2026-04-29: M1 refreshed the architecture inventory and added an eight-row legacy Markdown comparison matrix to the change-local architecture delta; no canonical architecture content or legacy lifecycle status changed.
 - 2026-04-29: M1 code-review-r3 requested current-state readiness wording in the touched change-local architecture delta; the fix updated only that readiness paragraph and recorded `CR3-F1`.
 - 2026-04-29: M2 compared all eight legacy Markdown records by source/generated/adapters, workflow/lifecycle/review, and validation/CI domains; it recorded merge-back candidates, historical-only content, ADR handling, and disposition recommendations without editing canonical architecture or legacy statuses.
+- 2026-04-29: M3 merged accepted current content from all eight legacy Markdown records into `docs/architecture/system/architecture.md`, swept stale completed-rollout and selector-routing wording, and recorded historical-only leftovers in the change-local architecture delta without editing legacy lifecycle statuses.
 
 ## Decision Log
 
@@ -363,13 +364,15 @@ docs/architecture/system/diagrams/context.mmd
 - 2026-04-29: kept M1 comparison rows at the "may contain / needs review" level instead of making merge-back or ADR decisions, because M2 owns domain comparison and M3 owns canonical merge-back.
 - 2026-04-29: M2 treated `docs/architecture/system/architecture.md` as unchanged and deferred all accepted-content merge-back, final ADR creation/no-ADR rationale, and legacy lifecycle status edits to M3 and M4.
 - 2026-04-29: M2 recorded that selector routing for architecture diagrams and change-local architecture deltas now uses existing lifecycle validation checks, while architecture sufficiency remains manual review evidence.
+- 2026-04-29: M3 did not update C4 diagrams because the merge-back changed canonical arc42 prose only; no actor, system boundary, or container boundary changed.
+- 2026-04-29: M3 did not create a new ADR because it documented existing current architecture truth and did not introduce or revise source layout, adapter generation or packaging, validation architecture, release architecture, or workflow-stage behavior.
 
 ## Surprises and Discoveries
 
 - The current `docs/architecture/` tree includes Mermaid source diagrams as files that must be listed by the inventory proof.
 - Legacy architecture records are all Markdown files at the top of `docs/architecture/`; the new canonical package is the only subdirectory-based architecture package today.
-- The canonical architecture package still contains wording from the first adoption slice that says `.mmd` diagrams and change-local architecture deltas remain manual-routed, while current selector behavior now routes those paths to existing non-enforcement checks. M3 must correct this wording.
-- The canonical architecture package also contains current-state references to the completed architecture-method rollout plan and old milestone handoffs. M3 must sweep those along with selector-routing wording.
+- M3 confirmed the canonical architecture package had stale completed-rollout plan references and old milestone handoffs; the M3 canonical sweep removed those references.
+- M3 confirmed the canonical architecture Runtime View still described `.mmd` diagrams and change-local architecture deltas as manual-routed; the M3 sweep replaced that with current non-enforcement lifecycle routing language.
 
 ## Validation Notes
 
@@ -419,17 +422,25 @@ docs/architecture/system/diagrams/context.mmd
 - 2026-04-29: M2 `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md` passed.
 - 2026-04-29: M2 `git diff --check -- docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md` passed.
 - 2026-04-29: M2 `bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md` passed selected artifact lifecycle and change metadata checks.
+- 2026-04-29: M3 red proof `python -c 'from pathlib import Path; bt=chr(96); text=Path("docs/architecture/system/architecture.md").read_text(); stale=[p for p in ("docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md", "M3 "+bt+"code-review"+bt, "M3 "+bt+"verify"+bt, "M4 skill and generated-output update", "M5 legacy architecture normalization follow-on artifact before final completion claims", "diagrams and change-local architecture deltas remain manual-routed review evidence in the first adoption slice") if p in text]; assert not stale, stale'` failed before edits with the expected stale canonical strings.
+- 2026-04-29: M3 `python scripts/select-validation.py --mode explicit --path docs/architecture/system/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md` returned `status: ok` and selected `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`; broad smoke was not required.
+- 2026-04-29: M3 `bash scripts/ci.sh --mode explicit --path docs/architecture/system/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md` passed selected artifact lifecycle and change metadata checks.
+- 2026-04-29: M3 `python scripts/validate-change-metadata.py docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml` passed.
+- 2026-04-29: M3 `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/architecture/system/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md` passed with `validated 5 artifact files`.
+- 2026-04-29: M3 `rg -n "manual-routed|selector routing|non-enforcement|change-local architecture|\\.mmd" docs/architecture/system/architecture.md docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md` found the expected current selector-routing and non-enforcement evidence.
+- 2026-04-29: M3 stale-string assertion `python -c 'from pathlib import Path; bt=chr(96); text=Path("docs/architecture/system/architecture.md").read_text(); stale=[p for p in ("docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md", "M3 "+bt+"code-review"+bt, "M3 "+bt+"verify"+bt, "M4 skill and generated-output update", "M5 legacy architecture normalization follow-on artifact before final completion claims", "diagrams and change-local architecture deltas remain manual-routed review evidence in the first adoption slice") if p in text]; assert not stale, stale'` passed.
+- 2026-04-29: M3 `git diff --check -- docs/architecture/system docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md` passed.
 
 ## Outcome and Retrospective
 
-- This follow-on plan is active. Inventory and domain comparison are complete; canonical merge-back and legacy lifecycle disposition remain pending.
+- This follow-on plan is active. Inventory, domain comparison, and canonical merge-back are complete; legacy lifecycle disposition and final closeout remain pending.
 - The repository must continue to avoid claiming that all legacy architecture artifacts have already been normalized until this plan is completed.
 
 ## Readiness
 
 - Plan-review approved this plan on 2026-04-29.
 - Active test spec exists at `specs/legacy-architecture-lifecycle-normalization.test.md`.
-- M2 is complete. Ready for `code-review` of the M2 slice before M3.
+- M3 is complete. Ready for `code-review` of the M3 slice before M4.
 
 ## Risks and Follow-Ups
 
