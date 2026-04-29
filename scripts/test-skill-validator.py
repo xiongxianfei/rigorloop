@@ -164,6 +164,32 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             with self.subTest(term=term):
                 self.assertNotIn(term, body)
 
+    def test_architecture_review_skill_preserves_simple_finding_and_material_contract(self) -> None:
+        body = (ROOT / "skills" / "architecture-review" / "SKILL.md").read_text(encoding="utf-8")
+        required_terms = [
+            "embedded or duplicated diagram source",
+            "generic non-C4 flowchart",
+            "wrong C4 level",
+            "missing C4 role classes",
+            "missing technology labels where relevant",
+            "unlabeled relationships",
+            "flat Building Block View",
+            "duplicated ADR rationale",
+            "weak quality-scenario content",
+            "Deployment View repeats source layout",
+            "Finding:",
+            "Location:",
+            "Severity:",
+            "Recommendation:",
+            "`blocker`, `material`, or `minor`",
+            "Do not require mandatory C4-level classification",
+            "does not replace the repository-wide material-finding contract",
+            "evidence, required outcome, and a safe resolution path or `needs-decision` rationale",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, body)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
