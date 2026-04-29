@@ -46,6 +46,45 @@ The legacy records may contain:
 - durable decisions already represented by ADRs;
 - durable decisions that require a new ADR or explicit no-ADR rationale.
 
+## M1 Inventory Refresh and Comparison Basis
+
+The M1 inventory source is:
+
+```sh
+find docs/architecture -type f | sort
+```
+
+The current inventory contains 11 files:
+
+```text
+docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md
+docs/architecture/2026-04-20-artifact-status-lifecycle-ownership.md
+docs/architecture/2026-04-21-docs-changes-usage-policy.md
+docs/architecture/2026-04-21-workflow-stage-autoprogression.md
+docs/architecture/2026-04-24-multi-agent-adapter-distribution.md
+docs/architecture/2026-04-24-review-finding-resolution-contract.md
+docs/architecture/2026-04-24-skill-invocation-commands-for-adapters.md
+docs/architecture/2026-04-25-test-layering-and-change-scoped-validation.md
+docs/architecture/system/architecture.md
+docs/architecture/system/diagrams/container.mmd
+docs/architecture/system/diagrams/context.mmd
+```
+
+The canonical package files are already represented in the active plan as current canonical content. M1 adds the top-level legacy Markdown comparison basis below so M2 can compare by domain without guessing which files are in scope.
+
+| Legacy architecture record | M1 comparison group | May contain current canonical content | Historical-only rationale to preserve | Durable decision / ADR review | M1 status |
+| --- | --- | --- | --- | --- | --- |
+| `docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md` | source layout / generated boundary | Yes: source layout, canonical-source boundaries, generated-output boundaries | First-release repository architecture rationale | Check existing `docs/adr/ADR-20260419-repository-source-layout.md` coverage | pending M2 comparison |
+| `docs/architecture/2026-04-20-artifact-status-lifecycle-ownership.md` | workflow / lifecycle / validation | Yes: lifecycle ownership, validator boundaries, artifact status rules | Original lifecycle ownership design rationale | Decide whether lifecycle-validator architecture needs ADR coverage | pending M2 comparison |
+| `docs/architecture/2026-04-21-docs-changes-usage-policy.md` | workflow / change-local artifacts | Yes: `docs/changes/` ownership and change-local artifact boundaries | Historical docs-changes policy design rationale | Check whether change-local artifact policy is already ADR-covered or spec-only | pending M2 comparison |
+| `docs/architecture/2026-04-21-workflow-stage-autoprogression.md` | workflow / stage routing | Yes: autoprogression boundaries and stage handoff behavior | Historical workflow-stage design rationale | Check whether durable workflow-stage decisions need ADR links | pending M2 comparison |
+| `docs/architecture/2026-04-24-multi-agent-adapter-distribution.md` | adapters / generated output / release | Yes: adapter packaging, generated output, release boundary details | Historical adapter-distribution design rationale | Check existing `docs/adr/ADR-20260424-generated-adapter-packages.md` coverage | pending M2 comparison |
+| `docs/architecture/2026-04-24-review-finding-resolution-contract.md` | review / lifecycle / workflow | Yes: review artifact boundaries and closeout flow | Historical review-resolution contract rationale | Check whether durable review-artifact decisions need ADR coverage | pending M2 comparison |
+| `docs/architecture/2026-04-24-skill-invocation-commands-for-adapters.md` | adapters / invocation surface | Yes: adapter command alias and invocation surface details | Historical command-surface design rationale | Check existing generated-adapter ADR coverage | pending M2 comparison |
+| `docs/architecture/2026-04-25-test-layering-and-change-scoped-validation.md` | validation / CI / selector routing | Yes: selector routing, CI wrapper, validation layering | Historical validation-layering design rationale | Check whether durable selector/CI architecture needs ADR coverage | pending M2 comparison |
+
+M1 does not decide final disposition, merge-back content, or ADR creation. It only records a complete comparison basis for M2.
+
 ## Solution Strategy
 
 Normalize in a sequence that prevents data loss:
@@ -143,9 +182,19 @@ Later milestones must add or link ADRs if domain comparison finds durable archit
 - Canonical architecture edits: none in M0.
 - Durable Markdown reasoning: this architecture delta is the M0 durable reasoning surface; `explain-change.md` is planned for M5 closeout.
 
+## M1 Evidence
+
+- Same-slice requirements: `R63`-`R66`, `R73`-`R75`.
+- Same-slice tests: `T2`.
+- Inventory source: `find docs/architecture -type f | sort`.
+- Inventory count: 11 files.
+- Top-level legacy Markdown comparison rows: 8.
+- Legacy architecture status edits: none in M1.
+- Canonical architecture edits: none in M1.
+- M2 dependency: domain comparison must decide merge-back candidates, ADR needs, and final disposition recommendations.
+
 ## Next Artifacts
 
-- M1 inventory refresh and comparison basis.
 - M2 domain comparison after M1.
 
 ## Follow-on Artifacts
