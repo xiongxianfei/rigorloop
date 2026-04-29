@@ -346,6 +346,7 @@ docs/architecture/system/diagrams/context.mmd
 - 2026-04-29: plan revised after follow-up plan-review to require an M3 canonical current-state sweep and M5 final closeout validation for every legacy architecture document changed in M4.
 - 2026-04-29: active focused test spec created at `specs/legacy-architecture-lifecycle-normalization.test.md`.
 - 2026-04-29: M0 implemented the change-local metadata and working architecture delta under `docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/`; no legacy architecture statuses or canonical architecture content changed.
+- 2026-04-29: M0 code-review-r1 requested an explicit canonical architecture package citation in change metadata; the fix added `canonical_artifacts.architecture_package` and recorded the accepted disposition in change-local review artifacts.
 
 ## Decision Log
 
@@ -386,6 +387,9 @@ docs/architecture/system/diagrams/context.mmd
 - 2026-04-29: M0 `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path specs/legacy-architecture-lifecycle-normalization.test.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md --path docs/plan.md` passed with `validated 3 artifact files`.
 - 2026-04-29: M0 `git diff --check -- docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization specs/legacy-architecture-lifecycle-normalization.test.md docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md` passed.
 - 2026-04-29: M0 `bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path specs/legacy-architecture-lifecycle-normalization.test.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md` passed selected artifact lifecycle and change metadata checks.
+- 2026-04-29: M0 review-fix `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization` passed after recording `code-review-r1` and accepting `CR1-F1`.
+- 2026-04-29: M0 review-fix `python scripts/select-validation.py --mode explicit --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-log.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-resolution.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r1.md --path specs/legacy-architecture-lifecycle-normalization.test.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md` returned `status: ok` and selected `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+- 2026-04-29: M0 review-fix `bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/change.yaml --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-log.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/review-resolution.md --path docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/reviews/code-review-r1.md --path specs/legacy-architecture-lifecycle-normalization.test.md --path docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md` passed selected review artifact, artifact lifecycle, and change metadata checks.
 
 ## Outcome and Retrospective
 
@@ -396,7 +400,7 @@ docs/architecture/system/diagrams/context.mmd
 
 - Plan-review approved this plan on 2026-04-29.
 - Active test spec exists at `specs/legacy-architecture-lifecycle-normalization.test.md`.
-- M0 is complete. Ready for `code-review` of the M0 slice before M1.
+- M0 code-review-r1 finding `CR1-F1` is resolved. Ready for `code-review` rerun of the M0 slice before M1.
 
 ## Risks and Follow-Ups
 
