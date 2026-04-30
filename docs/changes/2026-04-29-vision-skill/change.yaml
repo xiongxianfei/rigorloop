@@ -7,6 +7,7 @@ artifacts:
   spec: specs/vision-skill.md
   plan: docs/plans/2026-04-29-vision-skill.md
   test_spec: specs/vision-skill.test.md
+  explain_change: docs/changes/2026-04-29-vision-skill/explain-change.md
 canonical_artifacts:
   vision_skill: skills/vision/SKILL.md
   proposal_skill: skills/proposal/SKILL.md
@@ -101,6 +102,18 @@ validation:
   - command: bash scripts/ci.sh --mode pr --base origin/main --head HEAD
     result: pass_after_verify_readiness_correction
     reason: PR-mode CI passed after readiness-only artifact corrections.
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-04-29-vision-skill/explain-change.md --path docs/changes/2026-04-29-vision-skill/change.yaml --path docs/plans/2026-04-29-vision-skill.md --path docs/plan.md --path specs/vision-skill.md --path specs/vision-skill.test.md
+    result: pass_after_explain_change
+    reason: Selector included lifecycle, change metadata, and plan-required broad smoke for the explanation closeout surfaces.
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-29-vision-skill/explain-change.md --path docs/changes/2026-04-29-vision-skill/change.yaml --path docs/plans/2026-04-29-vision-skill.md --path docs/plan.md --path specs/vision-skill.md --path specs/vision-skill.test.md
+    result: pass_after_explain_change
+    reason: Explicit CI ran selected lifecycle, change metadata, and broad smoke checks for the explanation closeout surfaces.
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-29-vision-skill/change.yaml
+    result: pass_after_explain_change
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-29-vision-skill/change.yaml --path docs/changes/2026-04-29-vision-skill/explain-change.md --path docs/plan.md --path docs/plans/2026-04-29-vision-skill.md --path docs/proposals/2026-04-29-vision-skill.md --path specs/vision-skill.md --path specs/vision-skill.test.md
+    result: pass_after_explain_change
+  - command: git diff --check -- .
+    result: pass_after_explain_change
   - command: test ! -e vision.md
     result: pass_after_m4
   - command: "! rg -n '^<!-- vision:start -->$|^<!-- vision:end -->$' README.md"
@@ -133,6 +146,7 @@ changed_files:
   - dist/adapters/opencode/.opencode/skills/proposal/SKILL.md
   - dist/adapters/opencode/.opencode/skills/vision/SKILL.md
   - docs/changes/2026-04-29-vision-skill/change.yaml
+  - docs/changes/2026-04-29-vision-skill/explain-change.md
   - docs/plan.md
   - docs/plans/2026-04-29-vision-skill.md
   - docs/proposals/2026-04-29-vision-skill.md
@@ -150,7 +164,7 @@ manual_proof:
   root_vision_created: false
   readme_front_matter_inserted: false
   readme_selector_route: README.md is classified as readme; manual proof remains limited to ownership wording and the absence of generated front-matter in this slice.
-  explain_change_deferred: docs/changes/2026-04-29-vision-skill/explain-change.md is intentionally deferred to the downstream explain-change stage.
+  explain_change_created: docs/changes/2026-04-29-vision-skill/explain-change.md records durable rationale after verify.
 review:
   status: clean_with_notes
   unresolved_items: 0
@@ -163,3 +177,8 @@ verification:
   location: docs/plans/2026-04-29-vision-skill.md
   required_next_stage: explain-change
   notes: Verify reran targeted and PR-mode validation successfully, then corrected stale tracked handoff metadata and spec/test-spec Readiness wording. Validation passed after those corrections.
+explanation:
+  status: complete
+  pr_handoff_ready: true
+  location: docs/changes/2026-04-29-vision-skill/explain-change.md
+  required_next_stage: pr
