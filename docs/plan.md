@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- none yet
+- [2026-04-30 Vision skill quality refinement](plans/2026-04-30-vision-skill-quality-refinement.md) - active execution plan for adding vision drafting heuristics, consolidating edit authorization, converting mode behavior to one table, enforcing substantive revision traceability, and refreshing generated skill or adapter output.
 
 ## Blocked
 - none yet

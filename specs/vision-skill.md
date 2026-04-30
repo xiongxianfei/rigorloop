@@ -7,6 +7,7 @@
 ## Related proposal
 
 - [Vision Skill](../docs/proposals/2026-04-29-vision-skill.md)
+- [Vision Skill Quality Refinement](../docs/proposals/2026-04-30-vision-skill-quality-refinement.md)
 
 ## Goal and context
 
@@ -15,6 +16,10 @@ This spec defines the contributor-visible contract for a new `vision` skill and 
 The vision skill is upstream of the normal per-change workflow. It is not a new lifecycle stage between proposal, spec, architecture, planning, implementation, review, verification, and PR.
 
 The first implementation of this spec adds the skill and routing guidance. It does not create the initial `vision.md`; that project-level content is created later by explicitly invoking the accepted skill in `create` mode.
+
+This revision defines a quality refinement for the already-shipped skill. The refinement keeps the approved vision contract intact while adding drafting heuristics, consolidating overlapping edit-authorization guidance, moving workflow-fit guidance before detailed mode behavior, and replacing advisory substantive-revision traceability with an enforceable causal-link rule.
+
+The approved root `vision.md` is not revised by this spec update.
 
 ## Glossary
 
@@ -26,6 +31,8 @@ The first implementation of this spec adds the skill and routing guidance. It do
 - mirror mode: the `vision` skill mode that leaves `vision.md` unchanged and regenerates README front-matter from it.
 - substantive revision: a vision change caused by a proposal, incident, learning, or project-direction drift.
 - editorial revision: a typo, wording, or README mirror-only change that does not change project meaning.
+- drafting heuristics: non-normative authoring questions in the `vision` skill that help produce sharper vision text before finalizing generated or revised content.
+- edit authorization: the skill guidance that says which source is canonical and which modes may edit `vision.md` or README front-matter.
 - `Vision fit`: a proposal section that states how the proposed direction relates to `vision.md`.
 - explicit exception: a proposal-review outcome that allows a proposal to proceed despite a vision conflict without revising the proposal or vision.
 
@@ -82,6 +89,31 @@ And a proposal says `may conflict with the current vision`
 When proposal-review confirms the conflict
 Then the review outcome identifies whether the next action is revise proposal, revise vision, or record explicit exception.
 
+### Example E8: drafting heuristics catch weak first drafts
+
+Given the user invokes `vision create`
+When the skill drafts the initial vision
+Then the skill uses drafting questions for differentiator, pain points, checkable commitments, observable falsifiability, audience fit, and scope refusals before finalizing the vision text.
+
+### Example E9: competitor naming remains optional
+
+Given the skill asks how the project differs from alternatives
+When naming a specific competitor would date the vision or create unnecessary positioning risk
+Then the skill may name an alternative class instead of a specific tool.
+
+### Example E10: substantive revision traceability is enforced
+
+Given `vision.md` exists
+And a substantive revise-mode invocation is tied to an existing or required change-local pack
+When the causal link is absent from the required change-local artifacts
+Then the skill stops before finalizing and reports the missing traceability record.
+
+### Example E11: workflow fit is visible before mechanics
+
+Given a contributor opens the `vision` skill
+When they read the opening guidance
+Then they see that the skill is upstream of the per-change workflow before detailed mode behavior.
+
 ## Requirements
 
 R1. The repository MUST add a canonical authored `vision` skill under `skills/vision/SKILL.md`.
@@ -125,7 +157,7 @@ R17. Revise mode MUST regenerate README front-matter after changing `vision.md`.
 
 R18. A substantive revise-mode invocation MUST ask or confirm whether the revision is substantive or editorial before finalizing the output.
 
-R19. For substantive revisions, the `vision` skill MUST remind the contributor to record the causal link in the relevant `docs/changes/<change-id>/change.yaml` and `docs/changes/<change-id>/explain-change.md` when a change-local pack exists.
+R19. For substantive revisions tied to an existing or required change-local pack, the `vision` skill MUST require the causal link to be recorded in the relevant `docs/changes/<change-id>/change.yaml` and `docs/changes/<change-id>/explain-change.md` before finalizing.
 
 R20. Editorial revisions and mirror-only changes MUST NOT require a new change-local pack solely because the vision skill ran.
 
@@ -260,6 +292,34 @@ R79. `README.md` MUST be classified as a supported `readme` validation surface w
 
 R80. Selector routing MUST select lightweight README validation for changed `README.md`, and MUST select vision marker validation when a standalone vision marker block is present or when the `vision` skill is in scope.
 
+R81. The `vision` skill MUST place workflow-fit guidance immediately after the opening purpose/scope paragraphs and before any Inputs to read, Modes, README behavior, Rules, Output paths, or Failure modes sections. The workflow-fit guidance MUST be visible before detailed mode behavior begins.
+
+R82. The `vision` skill MUST include drafting heuristics after vision content guidance and before README front-matter guidance.
+
+R83. Drafting heuristics MUST be phrased as authoring questions or checks, not as additional required `vision.md` sections.
+
+R84. Drafting heuristics MUST ask how the project differs from an alternative class or specific tool and what tradeoff the project makes.
+
+R85. Drafting heuristics MUST ask whether project pain points are embedded in the differentiator rather than presented as an unrelated complaint list.
+
+R86. Drafting heuristics MUST ask whether commitments are concrete enough for a future reviewer to check.
+
+R87. Drafting heuristics MUST ask whether falsifiability conditions are observable from behavior or artifacts.
+
+R88. Drafting heuristics MUST ask whether the audience statement rules out at least one plausible non-fit.
+
+R89. Drafting heuristics MUST ask whether scope refusals are concrete enough to block misaligned proposals.
+
+R90. Drafting heuristics MUST allow either an alternative class or a specific tool for differentiator comparison; they MUST NOT require naming a specific competitor.
+
+R91. The `vision` skill MUST present `create`, `revise`, and `mirror` mode behavior in one Markdown table. The table MUST include columns for Mode, When it applies, Authorized edits, README behavior, and Stop or clarification conditions. The table MUST include exactly one row for each mode: `create`, `revise`, and `mirror`.
+
+R92. The `vision` skill MUST consolidate source-of-truth, mode authorization, and existing-vision overwrite protection into one edit-authorization section.
+
+R93. The edit-authorization section MUST state that `CONSTITUTION.md` outranks `vision.md`, `vision.md` outranks README front-matter, create/revise/mirror are the only authorized edit paths, and existing visions are not overwritten without clear revise or mirror intent.
+
+R94. Revise-mode output for a substantive revision MUST report whether the required causal link was recorded or not required.
+
 ## Inputs and outputs
 
 Inputs:
@@ -271,11 +331,13 @@ Inputs:
 
 Outputs:
 
-- `vision.md` in create and revise mode;
-- README front-matter between the marker pair in create, revise, and mirror mode;
+- `vision.md` in create and revise mode when the skill is invoked for vision authoring;
+- README front-matter between the marker pair in create, revise, and mirror mode when the skill is invoked for README mirroring;
 - `skills/vision/SKILL.md` as the canonical authored skill;
-- updated `skills/proposal/SKILL.md` and `skills/proposal-review/SKILL.md` guidance;
-- generated `.codex/skills/` and `dist/adapters/` output after the existing generators run.
+- updated `skills/proposal/SKILL.md` and `skills/proposal-review/SKILL.md` guidance when proposal-fit behavior changes;
+- generated `.codex/skills/` and `dist/adapters/` output after canonical skill changes and existing generator runs.
+
+Quality-refinement outputs are limited to the `vision` skill contract and generated skill or adapter output unless spec review identifies drift in another authoritative surface.
 
 ## State and invariants
 
@@ -287,6 +349,7 @@ Outputs:
 - Content outside README vision markers remains author-owned.
 - Generated skill and adapter output remains derived from canonical authored skill sources.
 - `README.md` is a classified validation surface for this implementation, not a PR-mode `unclassified-path` blocker.
+- Drafting heuristics guide authoring quality but do not change the required vision sections, 500-word cap, README marker behavior, or source-of-truth order.
 
 ## Error and boundary behavior
 
@@ -296,20 +359,21 @@ Outputs:
 - Missing or malformed README markers outside create-mode marker insertion require explicit handling.
 - A generated or revised `vision.md` over 500 words is invalid and must be shortened before completion.
 - A proposal with a stale or missing `Vision fit` section after this spec applies must be revised before proposal-review can approve it.
+- A substantive vision revision tied to an existing or required change-local pack stops before finalization when the causal link is missing from the required change-local artifacts.
 
 ## Compatibility and migration
 
 Existing proposals, README content, and workflow artifacts remain valid when this spec is adopted. Existing proposals are grandfathered until they are substantively revised.
 
-The repository currently has no root `vision.md`. The first skill implementation therefore changes skill and guidance surfaces only. The initial `vision.md` and README front-matter are created later through explicit `vision create` use and review.
+The first skill implementation was completed before a root `vision.md` existed. A root `vision.md` now exists and remains out of scope for this refinement.
 
 When canonical skills change, generated `.codex/skills/` and `dist/adapters/` output must be refreshed through existing generators so adapter packages remain deterministic.
 
-Rollback removes the canonical `vision` skill, reverts proposal/proposal-review guidance, reruns existing generators, and either keeps or removes any later `vision.md` according to the rollback decision for that separate vision-authoring change.
+Rollback for the quality refinement reverts the touched canonical spec and skill guidance, then reruns existing generators. It does not remove the previously approved `vision` skill or root `vision.md`.
 
 ## Observability
 
-The skill's normal response follows R56 through R60. For revise mode, the response states whether the revision was substantive or editorial when that classification was determined.
+The skill's normal response follows R56 through R60 and R94. For revise mode, the response states whether the revision was substantive or editorial when that classification was determined.
 
 Validation output remains the existing repository-owned skill, generated-output, adapter, lifecycle, README, and selector validation output.
 
@@ -337,6 +401,9 @@ No runtime performance behavior is introduced. Evidence collection behavior is g
 8. A user asks mirror mode and README front-matter already matches `vision.md`: the skill reports no content changes.
 9. A generated adapter omits `vision` even though portability rules include it: adapter validation or drift checking must fail through existing generated-output checks.
 10. A legacy proposal without `Vision fit` is read for history only: no revision is required solely for that absence.
+11. A first-draft vision names no alternatives and states only abstract values: the drafting heuristics prompt comparative positioning and checkable commitments before finalization.
+12. A substantive vision revision has an existing change-local pack but no causal link: the skill stops before finalizing until the link is recorded or the revision is reclassified with rationale.
+13. A differentiator can compare against an alternative class without naming a specific competitor: the skill accepts that comparison when it explains the tradeoff.
 
 ## Non-goals
 
@@ -347,6 +414,10 @@ No runtime performance behavior is introduced. Evidence collection behavior is g
 - Rewrite existing proposals to add `Vision fit`.
 - Turn the vision into a roadmap, feature list, status tracker, requirements spec, architecture document, or project-management system.
 - Change adapter portability rules beyond adding the new canonical skill source.
+- Revise the approved root `vision.md` as part of the quality refinement.
+- Require specific competitor names in generated or revised vision text.
+- Extract or consolidate shared evidence-collection guidance across skills.
+- Change the 500-word cap or required section order for `vision.md`.
 
 ## Acceptance criteria
 
@@ -362,6 +433,13 @@ No runtime performance behavior is introduced. Evidence collection behavior is g
 - AC10. `CONSTITUTION.md`, `AGENTS.md`, and applicable workflow or README ownership guidance document the `vision.md` source-of-truth boundary.
 - AC11. README marker insertion behavior is deterministic and preserves content outside the generated marker block.
 - AC12. Proposal-review explicit exceptions for vision conflicts include owner or stage, evidence, rationale against proposal and vision revision, recording location, and future-trigger classification.
+- AC13. The `vision` skill contains drafting heuristics covering differentiator comparison, pain points, checkable commitments, observable falsifiability, audience fit, and refusals.
+- AC14. The drafting heuristics allow an alternative class or specific tool and do not require naming a specific competitor.
+- AC15. The `vision` skill places workflow-fit guidance immediately after the opening purpose/scope paragraphs and before Inputs to read, Modes, README behavior, Rules, Output paths, or Failure modes sections.
+- AC16. The `vision` skill presents create, revise, and mirror mode behavior in one Markdown table with exactly the required columns and exactly one row for each mode.
+- AC17. The `vision` skill consolidates source-of-truth, mode authorization, and existing-vision overwrite protection into one edit-authorization section.
+- AC18. Substantive revise-mode guidance requires the causal link before finalizing when a change-local pack exists or is required.
+- AC19. Shared evidence-collection guidance remains outside the refinement scope.
 
 ## Open questions
 
@@ -369,13 +447,18 @@ No runtime performance behavior is introduced. Evidence collection behavior is g
 
 ## Next artifacts
 
-- execution plan
-- test spec after plan approval
+- implementation after the matching test spec is active
+- code-review after implementation completes
 
 ## Follow-on artifacts
 
-- None yet.
+- `spec-review`: approved on 2026-04-30 after R81 workflow-fit placement and R91 mode-table wording were made directly testable.
+- Execution plan: [2026-04-30 Vision skill quality refinement](../docs/plans/2026-04-30-vision-skill-quality-refinement.md)
+- `plan-review`: approved on 2026-04-30 with no material findings.
+- Test spec update: [Vision Skill Test Spec](vision-skill.test.md) is active for the 2026-04-30 refinement.
 
 ## Readiness
 
-This spec is approved, implemented, and merged through PR #23. No repository workflow stage remains pending for the first `vision` skill implementation. Creating the initial root `vision.md` remains a separate explicit `vision create` invocation.
+Approved after `spec-review`; the linked execution plan passed `plan-review`, and the matching test spec is active.
+
+Immediate next repository stage: `implement` M1 in `docs/plans/2026-04-30-vision-skill-quality-refinement.md`.
