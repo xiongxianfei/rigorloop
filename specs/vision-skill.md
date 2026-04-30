@@ -378,4 +378,4 @@ No runtime performance behavior is introduced. Evidence collection behavior is g
 
 ## Readiness
 
-This spec is approved and implemented in the current vision-skill branch. M1 through M5 are complete, code-review is clean, verify has passed, and explain-change is complete. The immediate next repository stage is `pr`.
+This spec is approved, implemented, and merged through PR #23. No repository workflow stage remains pending for the first `vision` skill implementation. Creating the initial root `vision.md` remains a separate explicit `vision create` invocation.

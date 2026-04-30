@@ -1,10 +1,10 @@
 # Vision Skill Execution Plan
 
-- Status: active
+- Status: done
 - Owner: maintainers
 - Start date: 2026-04-29
 - Last updated: 2026-04-30
-- Related issue or PR: none yet
+- Related issue or PR: PR #23
 - Supersedes: none
 - broad_smoke_required: true
 - broad_smoke_reason: Planned initiative touches governance, public README ownership, canonical skills, generated Codex skill mirrors, generated public adapter packages, lifecycle-managed artifacts, and proposal workflow guidance.
@@ -314,6 +314,7 @@ This plan uses two validation command types:
 - 2026-04-30: M4 added the change-local metadata pack and synchronized the plan index with implementation closeout readiness.
 - 2026-04-30: Verify found PR-mode CI blocked on `README.md` as `unclassified-path`; M5 adds README selector routing and lightweight README validation.
 - 2026-04-30: Explain-change created `docs/changes/2026-04-29-vision-skill/explain-change.md` after verify and updated the plan/change handoff to `pr`.
+- 2026-04-30: PR #23 merged into `main` at `992d380a6c085bcf612cc627a2c038c0d1a1ff25`; post-merge cleanup moved this plan to `Done`.
 
 ## Decision log
 
@@ -431,10 +432,11 @@ This plan uses two validation command types:
   - Metadata correction updated this plan and `docs/changes/2026-04-29-vision-skill/change.yaml`; lifecycle and change metadata validation passed after the correction.
   - Final verify found stale Readiness handoff wording in `specs/vision-skill.md` and `specs/vision-skill.test.md`; those paragraphs were updated and lifecycle, change metadata, selector, and PR-mode CI validation passed after the correction.
   - Explain-change created `docs/changes/2026-04-29-vision-skill/explain-change.md`; selector, explicit CI, lifecycle, change metadata, and whitespace validation passed after the explanation artifact and handoff metadata were updated.
+  - Post-merge cleanup moved this plan from `Active` to `Done` after PR #23 merged; selector, explicit CI, lifecycle, change metadata, and whitespace validation passed for the cleanup surfaces.
 
 ## Outcome and retrospective
 
-- Active. M1 through M5 implementation closeout is complete. Code-review completed clean with notes and no findings. Verify reran the required validation set successfully and corrected stale tracked handoff metadata plus spec/test-spec readiness wording. Explain-change is complete. `pr` is the immediate next repository stage.
+- Done. M1 through M5 implementation closeout is complete. Code-review completed clean with notes and no findings. Verify reran the required validation set successfully and corrected stale tracked handoff metadata plus spec/test-spec readiness wording. Explain-change is complete. PR #23 merged into `main` at `992d380a6c085bcf612cc627a2c038c0d1a1ff25`.
 
 ## Readiness
 
@@ -442,4 +444,5 @@ This plan uses two validation command types:
 - Code-review is complete with no findings.
 - Verify validation passed after tracked metadata and readiness corrections.
 - Explain-change is complete and recorded in `docs/changes/2026-04-29-vision-skill/explain-change.md`.
-- The immediate next repository stage is `pr`.
+- PR #23 is merged.
+- No repository workflow stage remains pending for this plan. The follow-up `vision create` invocation remains separate project-vision work, not part of this implementation plan.

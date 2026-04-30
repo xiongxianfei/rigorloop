@@ -148,11 +148,11 @@ Those verify findings were resolved by tracked metadata/readiness updates before
 
 - The branch is `branch-ready` from verify evidence.
 - `explain-change` is complete and recorded in this file.
-- The active plan and change metadata now point to `pr` as the next stage.
-- PR-stage work should summarize the nine branch commits, cite this artifact, and observe hosted CI when available.
+- PR #23 opened, hosted CI passed, and the PR merged into `main` at `992d380a6c085bcf612cc627a2c038c0d1a1ff25`.
+- Post-merge cleanup moved the plan to `Done`.
 
 ## Readiness
 
 - `implement`, `code-review`, `verify`, and `explain-change` are complete for this change.
-- The next repository stage is `pr`.
-- `pr-body-ready` and `pr-open-ready` are not claimed here; those belong to the PR stage.
+- PR #23 is merged.
+- No repository workflow stage remains pending for this implementation.

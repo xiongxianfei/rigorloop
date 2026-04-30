@@ -406,4 +406,4 @@
 
 ## Readiness
 
-This test spec remains the active proof map for the vision skill implementation. M1 through M5 are complete, code-review is clean, verify has passed, and explain-change is complete. The immediate next repository stage is `pr`.
+This test spec remains the proof map for the merged vision skill implementation. M1 through M5 are complete, code-review is clean, verify has passed, explain-change is complete, and PR #23 is merged. No repository workflow stage remains pending for this implementation.

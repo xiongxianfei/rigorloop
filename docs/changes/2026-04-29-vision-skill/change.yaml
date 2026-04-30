@@ -114,6 +114,18 @@ validation:
     result: pass_after_explain_change
   - command: git diff --check -- .
     result: pass_after_explain_change
+  - command: python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-04-29-vision-skill.md --path docs/changes/2026-04-29-vision-skill/change.yaml --path docs/changes/2026-04-29-vision-skill/explain-change.md --path specs/vision-skill.md --path specs/vision-skill.test.md
+    result: pass_after_post_merge_cleanup
+    reason: Selector included lifecycle, change metadata, README marker validation, and plan-required broad smoke for the post-merge lifecycle cleanup surfaces.
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-04-29-vision-skill.md --path docs/changes/2026-04-29-vision-skill/change.yaml --path docs/changes/2026-04-29-vision-skill/explain-change.md --path specs/vision-skill.md --path specs/vision-skill.test.md
+    result: pass_after_post_merge_cleanup
+    reason: Explicit CI ran selected lifecycle, change metadata, README marker validation, and broad smoke checks for the post-merge lifecycle cleanup.
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-29-vision-skill/change.yaml
+    result: pass_after_post_merge_cleanup
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-29-vision-skill/change.yaml --path docs/changes/2026-04-29-vision-skill/explain-change.md --path docs/plan.md --path docs/plans/2026-04-29-vision-skill.md --path docs/proposals/2026-04-29-vision-skill.md --path specs/vision-skill.md --path specs/vision-skill.test.md
+    result: pass_after_post_merge_cleanup
+  - command: git diff --check -- .
+    result: pass_after_post_merge_cleanup
   - command: test ! -e vision.md
     result: pass_after_m4
   - command: "! rg -n '^<!-- vision:start -->$|^<!-- vision:end -->$' README.md"
@@ -182,3 +194,8 @@ explanation:
   pr_handoff_ready: true
   location: docs/changes/2026-04-29-vision-skill/explain-change.md
   required_next_stage: pr
+pr:
+  status: merged
+  url: https://github.com/xiongxianfei/rigorloop/pull/23
+  merge_commit: 992d380a6c085bcf612cc627a2c038c0d1a1ff25
+  required_next_stage: none
