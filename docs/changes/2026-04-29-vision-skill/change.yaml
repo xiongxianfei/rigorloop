@@ -91,6 +91,16 @@ validation:
     result: pass_after_verify_metadata_correction
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-04-29-vision-skill.md --path docs/proposals/2026-04-29-vision-skill.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/changes/2026-04-29-vision-skill/change.yaml
     result: pass_after_verify_metadata_correction
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-29-vision-skill/change.yaml
+    result: pass_after_verify_readiness_correction
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-04-29-vision-skill.md --path docs/proposals/2026-04-29-vision-skill.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/changes/2026-04-29-vision-skill/change.yaml
+    result: pass_after_verify_readiness_correction
+  - command: python scripts/select-validation.py --mode pr --base origin/main --head HEAD
+    result: pass_after_verify_readiness_correction
+    reason: PR-mode selector remained clean after readiness-only artifact corrections.
+  - command: bash scripts/ci.sh --mode pr --base origin/main --head HEAD
+    result: pass_after_verify_readiness_correction
+    reason: PR-mode CI passed after readiness-only artifact corrections.
   - command: test ! -e vision.md
     result: pass_after_m4
   - command: "! rg -n '^<!-- vision:start -->$|^<!-- vision:end -->$' README.md"
@@ -152,4 +162,4 @@ verification:
   branch_ready: true
   location: docs/plans/2026-04-29-vision-skill.md
   required_next_stage: explain-change
-  notes: Verify reran targeted and PR-mode validation successfully, then blocked only on stale tracked handoff metadata. This metadata update resolves that blocker.
+  notes: Verify reran targeted and PR-mode validation successfully, then corrected stale tracked handoff metadata and spec/test-spec Readiness wording. Validation passed after those corrections.
