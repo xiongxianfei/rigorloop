@@ -3,12 +3,13 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-04-29 Vision skill](plans/2026-04-29-vision-skill.md) - active execution plan for adding the upstream `vision` skill, `Vision fit` proposal guidance, governance/source-of-truth updates, README ownership wording, generated skill/adapter refresh, README selector routing, verification, and explain-change closeout without creating the initial `vision.md`; next stage is `pr`.
+- none yet
 
 ## Blocked
 - none yet
 
 ## Done
+- [2026-04-29 Vision skill](plans/2026-04-29-vision-skill.md) - completed execution plan for adding the upstream `vision` skill, `Vision fit` proposal guidance, governance/source-of-truth updates, README ownership wording, generated skill/adapter refresh, README selector routing, verification, explain-change, and merged PR #23 without creating the initial `vision.md`.
 - [2026-04-29 C4 arc42 package quality refinement](plans/2026-04-29-c4-arc42-package-quality.md) - completed package-quality refinement for canonical C4 diagrams, arc42 section guidance, diagram templates, architecture skills, generated skill outputs, review evidence, verify evidence, and PR handoff readiness.
 - [2026-04-28 Legacy architecture lifecycle normalization](plans/2026-04-28-legacy-architecture-lifecycle-normalization.md) - completed follow-on plan for inventorying every current `docs/architecture/` file, merging accepted legacy current content into the canonical architecture package, archiving eight top-level legacy architecture records, adding final closeout explanation, and validating both canonical freshness and changed legacy lifecycle state.
 - [2026-04-28 Architecture skills C4 arc42 ADR](plans/2026-04-28-architecture-skills-c4-arc42-adr.md) - completed execution plan for adopting the C4, official arc42, and ADR architecture package method, including lifecycle-validator compatibility, templates, governance and workflow guidance, canonical architecture package baseline, skill updates, generated output refresh, legacy normalization follow-up creation, verification, explain-change, and PR handoff readiness.
