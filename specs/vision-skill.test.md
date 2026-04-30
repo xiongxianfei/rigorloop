@@ -402,17 +402,17 @@
 
 ## Next artifacts
 
-- `implement` for M1-M3 in `docs/plans/2026-04-30-vision-skill-quality-refinement.md`.
-- `code-review` after implementation completes and plan validation notes are updated.
+- `code-review` for the completed M1-M3 implementation in `docs/plans/2026-04-30-vision-skill-quality-refinement.md`.
 - `verify` after code-review is clean or findings are resolved.
 - `explain-change` and `pr` after verify reports branch readiness.
 
 ## Follow-on artifacts
 
 - `plan-review`: approved on 2026-04-30 with no material findings.
+- Implementation: M1-M3 are complete and final implementation proof is recorded in the active plan and change-local evidence.
 
 ## Readiness
 
 This test spec is the active proof map for the 2026-04-30 vision skill quality refinement.
 
-Immediate next repository stage: `implement` M1 in `docs/plans/2026-04-30-vision-skill-quality-refinement.md`.
+Immediate next repository stage: `code-review` for the completed M1-M3 implementation in `docs/plans/2026-04-30-vision-skill-quality-refinement.md`.

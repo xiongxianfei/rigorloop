@@ -184,11 +184,11 @@ The plan preserves the approved project vision, README marker contract, source-o
 - Expected observable result: lifecycle artifacts, proof map, canonical skill, focused tests, generated output, and change-local metadata are coherent and ready for first-pass `code-review`.
 - Commit message: `M3: close vision skill refinement`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - Lifecycle validation can expose drift between the approved spec, test spec, plan, and change metadata.
 - Rollback/recovery:
@@ -223,6 +223,8 @@ The plan preserves the approved project vision, README marker contract, source-o
 - 2026-04-30: M1 targeted validation passed; generated skill and adapter drift checks are intentionally deferred to M2.
 - 2026-04-30: M2 generated Codex and public adapter vision skill output refreshed through `scripts/build-skills.py` and `scripts/build-adapters.py --version 0.1.1`.
 - 2026-04-30: M2 targeted generator, adapter, selector, and explicit CI validation passed.
+- 2026-04-30: M3 lifecycle handoff text updated in the accepted proposal, approved spec, active test spec, active plan, and change-local evidence.
+- 2026-04-30: M3 final targeted validation passed; implementation is ready for first-pass `code-review`.
 
 ## Decision log
 
@@ -230,6 +232,7 @@ The plan preserves the approved project vision, README marker contract, source-o
 - 2026-04-30: Repository broad smoke is not required by this plan; targeted structural, generator, adapter, selector, and lifecycle checks cover the touched surfaces.
 - 2026-04-30: M1 creates the baseline change-local pack before M3 because implementation-stage changes are non-trivial; M3 remains responsible for generated-output and final closeout updates.
 - 2026-04-30: Claude and opencode generated skill copies intentionally omit `argument-hint`; Codex runtime and Codex adapter copies match the canonical skill byte-for-byte.
+- 2026-04-30: `docs/plan.md` remains unchanged in M3 because the initiative stays in Active until downstream code-review, verify, explain-change, PR, and final Done closeout.
 
 ## Surprises and discoveries
 
@@ -272,14 +275,26 @@ The plan preserves the approved project vision, README marker contract, source-o
   - `bash scripts/ci.sh --mode explicit --path .codex/skills/vision/SKILL.md --path dist/adapters/codex/.agents/skills/vision/SKILL.md --path dist/adapters/claude/.claude/skills/vision/SKILL.md --path dist/adapters/opencode/.opencode/skills/vision/SKILL.md`
 - 2026-04-30: M2 full selected CI over generated output plus updated plan and change-local evidence passed:
   - `bash scripts/ci.sh --mode explicit --path .codex/skills/vision/SKILL.md --path dist/adapters/codex/.agents/skills/vision/SKILL.md --path dist/adapters/claude/.claude/skills/vision/SKILL.md --path dist/adapters/opencode/.opencode/skills/vision/SKILL.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md`
+- 2026-04-30: M3 final targeted validation passed:
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/test-adapter-distribution.py`
+  - `python scripts/build-adapters.py --version 0.1.1 --check`
+  - `python scripts/validate-adapters.py --version 0.1.1`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/proposals/2026-04-30-vision-skill-quality-refinement.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml`
+  - `python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/proposals/2026-04-30-vision-skill-quality-refinement.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path skills/vision/SKILL.md --path scripts/test-skill-validator.py --path .codex/skills/vision/SKILL.md --path dist/adapters/codex/.agents/skills/vision/SKILL.md --path dist/adapters/claude/.claude/skills/vision/SKILL.md --path dist/adapters/opencode/.opencode/skills/vision/SKILL.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md`
+  - `bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/proposals/2026-04-30-vision-skill-quality-refinement.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path skills/vision/SKILL.md --path scripts/test-skill-validator.py --path .codex/skills/vision/SKILL.md --path dist/adapters/codex/.agents/skills/vision/SKILL.md --path dist/adapters/claude/.claude/skills/vision/SKILL.md --path dist/adapters/opencode/.opencode/skills/vision/SKILL.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md`
+  - `git diff --check -- .`
 
 ## Outcome and retrospective
 
-- Active plan. Outcome will be filled after implementation, review, verification, and closeout.
+- Implementation milestones M1-M3 are complete. Outcome remains open until review, verification, explain-change, PR, and final closeout.
 
 ## Readiness
 
-- M2 complete and ready for `code-review`; M3 lifecycle closeout remains pending after review or explicit continuation.
+- M3 complete and ready for first-pass `code-review`.
 
 ## Risks and follow-ups
 
