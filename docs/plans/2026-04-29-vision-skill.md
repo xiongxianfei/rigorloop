@@ -313,6 +313,7 @@ This plan uses two validation command types:
 - 2026-04-30: M3 refreshed generated `.codex/skills/` and public adapter output through `scripts/build-skills.py` and `scripts/build-adapters.py --version 0.1.1`.
 - 2026-04-30: M4 added the change-local metadata pack and synchronized the plan index with implementation closeout readiness.
 - 2026-04-30: Verify found PR-mode CI blocked on `README.md` as `unclassified-path`; M5 adds README selector routing and lightweight README validation.
+- 2026-04-30: Explain-change created `docs/changes/2026-04-29-vision-skill/explain-change.md` after verify and updated the plan/change handoff to `pr`.
 
 ## Decision log
 
@@ -323,7 +324,7 @@ This plan uses two validation command types:
 - 2026-04-30: M1 intentionally leaves generated `.codex/skills/` and `dist/adapters/` refresh to M3, as planned; selector inspection for the changed canonical skill identifies generated drift checks that are not M1 pass gates.
 - 2026-04-30: M2 canonical proposal and proposal-review skill edits also leave generated `.codex/skills/` and `dist/adapters/` refresh to M3, as planned.
 - 2026-04-30: M3 did not add an opencode `vision` command alias; opencode command aliases remain limited to the existing curated lifecycle command set while the full `vision` skill is present under opencode skills.
-- 2026-04-30: M4 keeps `docs/changes/2026-04-29-vision-skill/explain-change.md` absent because this plan assigns the final durable explanation to the downstream `explain-change` stage after code-review and verify.
+- 2026-04-30: M4 kept `docs/changes/2026-04-29-vision-skill/explain-change.md` absent because this plan assigned the final durable explanation to the downstream `explain-change` stage after code-review and verify; explain-change has now created that artifact.
 
 ## Surprises and discoveries
 
@@ -429,14 +430,16 @@ This plan uses two validation command types:
   - Verify reran targeted and PR-mode validation successfully, then blocked only on stale tracked handoff metadata in this plan and `docs/changes/2026-04-29-vision-skill/change.yaml`.
   - Metadata correction updated this plan and `docs/changes/2026-04-29-vision-skill/change.yaml`; lifecycle and change metadata validation passed after the correction.
   - Final verify found stale Readiness handoff wording in `specs/vision-skill.md` and `specs/vision-skill.test.md`; those paragraphs were updated and lifecycle, change metadata, selector, and PR-mode CI validation passed after the correction.
+  - Explain-change created `docs/changes/2026-04-29-vision-skill/explain-change.md`; selector, explicit CI, lifecycle, change metadata, and whitespace validation passed after the explanation artifact and handoff metadata were updated.
 
 ## Outcome and retrospective
 
-- Active. M1 through M5 implementation closeout is complete. Code-review completed clean with notes and no findings. Verify reran the required validation set successfully and corrected stale tracked handoff metadata plus spec/test-spec readiness wording. `explain-change` is the immediate next repository stage; PR readiness remains downstream.
+- Active. M1 through M5 implementation closeout is complete. Code-review completed clean with notes and no findings. Verify reran the required validation set successfully and corrected stale tracked handoff metadata plus spec/test-spec readiness wording. Explain-change is complete. `pr` is the immediate next repository stage.
 
 ## Readiness
 
 - M1 through M5 are complete.
 - Code-review is complete with no findings.
 - Verify validation passed after tracked metadata and readiness corrections.
-- The immediate next repository stage is `explain-change`; PR readiness remains downstream.
+- Explain-change is complete and recorded in `docs/changes/2026-04-29-vision-skill/explain-change.md`.
+- The immediate next repository stage is `pr`.
