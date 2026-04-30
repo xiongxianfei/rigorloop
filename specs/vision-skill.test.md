@@ -406,4 +406,4 @@
 
 ## Readiness
 
-This test spec is active as the proof map for the vision skill implementation. After this test spec is validated, the next repository stage is `implement`.
+This test spec remains the active proof map for the vision skill implementation. M1 through M5 are complete, code-review is clean, and verify has passed after tracked lifecycle metadata and readiness drift were corrected. The immediate next repository stage is `explain-change`; PR readiness remains downstream.

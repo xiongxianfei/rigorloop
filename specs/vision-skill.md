@@ -378,4 +378,4 @@ No runtime performance behavior is introduced. Evidence collection behavior is g
 
 ## Readiness
 
-This spec is approved. The immediate next repository stage is `plan`; eventual `test-spec` readiness is conditional on plan approval.
+This spec is approved and implemented in the current vision-skill branch. M1 through M5 are complete, code-review is clean, and verify has passed after tracked lifecycle metadata and readiness drift were corrected. The immediate next repository stage is `explain-change`; PR readiness remains downstream.

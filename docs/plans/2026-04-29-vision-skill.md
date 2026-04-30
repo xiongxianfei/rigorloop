@@ -428,14 +428,15 @@ This plan uses two validation command types:
   - Code-review completed clean with notes and no findings.
   - Verify reran targeted and PR-mode validation successfully, then blocked only on stale tracked handoff metadata in this plan and `docs/changes/2026-04-29-vision-skill/change.yaml`.
   - Metadata correction updated this plan and `docs/changes/2026-04-29-vision-skill/change.yaml`; lifecycle and change metadata validation passed after the correction.
+  - Final verify found stale Readiness handoff wording in `specs/vision-skill.md` and `specs/vision-skill.test.md`; those paragraphs were updated and lifecycle, change metadata, selector, and PR-mode CI validation passed after the correction.
 
 ## Outcome and retrospective
 
-- Active. M1 through M5 implementation closeout is complete. Code-review completed clean with notes and no findings. Verify reran the required validation set successfully and found only stale tracked handoff metadata, which this update resolves. `explain-change` is the immediate next repository stage; PR readiness remains downstream.
+- Active. M1 through M5 implementation closeout is complete. Code-review completed clean with notes and no findings. Verify reran the required validation set successfully and corrected stale tracked handoff metadata plus spec/test-spec readiness wording. `explain-change` is the immediate next repository stage; PR readiness remains downstream.
 
 ## Readiness
 
 - M1 through M5 are complete.
 - Code-review is complete with no findings.
-- Verify validation passed after the tracked metadata correction.
+- Verify validation passed after tracked metadata and readiness corrections.
 - The immediate next repository stage is `explain-change`; PR readiness remains downstream.
