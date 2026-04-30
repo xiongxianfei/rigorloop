@@ -141,11 +141,11 @@ The plan preserves the approved project vision, README marker contract, source-o
 - Expected observable result: generated Codex and public adapter skill copies match the canonical `vision` skill with no hand edits.
 - Commit message: `M2: refresh generated vision skill refinement`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - Generator output may include broader adapter text churn if templates or manifests derive from changed skill metadata.
 - Rollback/recovery:
@@ -221,12 +221,15 @@ The plan preserves the approved project vision, README marker contract, source-o
 - 2026-04-30: M1 canonical `skills/vision/SKILL.md` revision completed; focused skill-validator assertions pass.
 - 2026-04-30: M1 baseline change-local artifact pack created early for durable implementation traceability.
 - 2026-04-30: M1 targeted validation passed; generated skill and adapter drift checks are intentionally deferred to M2.
+- 2026-04-30: M2 generated Codex and public adapter vision skill output refreshed through `scripts/build-skills.py` and `scripts/build-adapters.py --version 0.1.1`.
+- 2026-04-30: M2 targeted generator, adapter, selector, and explicit CI validation passed.
 
 ## Decision log
 
 - 2026-04-30: Architecture is not required because the refinement changes guidance, tests, generated output, and lifecycle artifacts without introducing a new runtime or design boundary.
 - 2026-04-30: Repository broad smoke is not required by this plan; targeted structural, generator, adapter, selector, and lifecycle checks cover the touched surfaces.
 - 2026-04-30: M1 creates the baseline change-local pack before M3 because implementation-stage changes are non-trivial; M3 remains responsible for generated-output and final closeout updates.
+- 2026-04-30: Claude and opencode generated skill copies intentionally omit `argument-hint`; Codex runtime and Codex adapter copies match the canonical skill byte-for-byte.
 
 ## Surprises and discoveries
 
@@ -254,6 +257,21 @@ The plan preserves the approved project vision, README marker contract, source-o
   - `git diff --check -- specs/vision-skill.test.md scripts/test-skill-validator.py skills/vision/SKILL.md docs/plans/2026-04-30-vision-skill-quality-refinement.md docs/changes/2026-04-30-vision-skill-quality-refinement`
 - 2026-04-30: selector inspection passed with generated-output checks deferred to M2:
   - `python scripts/select-validation.py --mode explicit --path specs/vision-skill.test.md --path scripts/test-skill-validator.py --path skills/vision/SKILL.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md`
+- 2026-04-30: M2 pre-generation drift proof failed as expected:
+  - `python scripts/build-skills.py --check`
+  - `python scripts/build-adapters.py --version 0.1.1 --check`
+- 2026-04-30: M2 generated output refresh completed:
+  - `python scripts/build-skills.py`
+  - `python scripts/build-adapters.py --version 0.1.1`
+- 2026-04-30: M2 targeted validation passed:
+  - `python scripts/build-skills.py --check`
+  - `python scripts/test-adapter-distribution.py`
+  - `python scripts/build-adapters.py --version 0.1.1 --check`
+  - `python scripts/validate-adapters.py --version 0.1.1`
+  - `python scripts/select-validation.py --mode explicit --path .codex/skills/vision/SKILL.md --path dist/adapters/codex/.agents/skills/vision/SKILL.md --path dist/adapters/claude/.claude/skills/vision/SKILL.md --path dist/adapters/opencode/.opencode/skills/vision/SKILL.md`
+  - `bash scripts/ci.sh --mode explicit --path .codex/skills/vision/SKILL.md --path dist/adapters/codex/.agents/skills/vision/SKILL.md --path dist/adapters/claude/.claude/skills/vision/SKILL.md --path dist/adapters/opencode/.opencode/skills/vision/SKILL.md`
+- 2026-04-30: M2 full selected CI over generated output plus updated plan and change-local evidence passed:
+  - `bash scripts/ci.sh --mode explicit --path .codex/skills/vision/SKILL.md --path dist/adapters/codex/.agents/skills/vision/SKILL.md --path dist/adapters/claude/.claude/skills/vision/SKILL.md --path dist/adapters/opencode/.opencode/skills/vision/SKILL.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md`
 
 ## Outcome and retrospective
 
@@ -261,7 +279,7 @@ The plan preserves the approved project vision, README marker contract, source-o
 
 ## Readiness
 
-- M1 complete and ready for `code-review`; M2 generated-output refresh remains pending after review or explicit continuation.
+- M2 complete and ready for `code-review`; M3 lifecycle closeout remains pending after review or explicit continuation.
 
 ## Risks and follow-ups
 

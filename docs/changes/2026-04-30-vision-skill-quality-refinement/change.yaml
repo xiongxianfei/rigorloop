@@ -54,12 +54,44 @@ validation:
     reason: Generated adapter output is refreshed in M2.
   - command: git diff --check -- specs/vision-skill.test.md scripts/test-skill-validator.py skills/vision/SKILL.md docs/plans/2026-04-30-vision-skill-quality-refinement.md docs/changes/2026-04-30-vision-skill-quality-refinement
     result: pass_after_m1
+  - command: python scripts/build-skills.py --check
+    result: expected_fail_before_m2_generation
+    reason: .codex/skills/vision/SKILL.md was stale before the M2 generated-output refresh.
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: expected_fail_before_m2_generation
+    reason: Claude, Codex, and opencode generated adapter vision skill copies were stale before M2.
+  - command: python scripts/build-skills.py
+    result: pass_after_m2_generation
+  - command: python scripts/build-adapters.py --version 0.1.1
+    result: pass_after_m2_generation
+  - command: python scripts/build-skills.py --check
+    result: pass_after_m2
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_after_m2
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_after_m2
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_after_m2
+  - command: python scripts/select-validation.py --mode explicit --path .codex/skills/vision/SKILL.md --path dist/adapters/codex/.agents/skills/vision/SKILL.md --path dist/adapters/claude/.claude/skills/vision/SKILL.md --path dist/adapters/opencode/.opencode/skills/vision/SKILL.md
+    result: pass_after_m2
+    selected_check_ids: skills.drift, adapters.regression, adapters.drift, adapters.validate, readme.vision_markers
+  - command: bash scripts/ci.sh --mode explicit --path .codex/skills/vision/SKILL.md --path dist/adapters/codex/.agents/skills/vision/SKILL.md --path dist/adapters/claude/.claude/skills/vision/SKILL.md --path dist/adapters/opencode/.opencode/skills/vision/SKILL.md
+    result: pass_after_m2
+  - command: bash scripts/ci.sh --mode explicit --path .codex/skills/vision/SKILL.md --path dist/adapters/codex/.agents/skills/vision/SKILL.md --path dist/adapters/claude/.claude/skills/vision/SKILL.md --path dist/adapters/opencode/.opencode/skills/vision/SKILL.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md
+    result: pass_after_m2
+    selected_check_ids: skills.drift, adapters.regression, adapters.drift, adapters.validate, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, readme.vision_markers
+  - command: git diff --check -- .codex/skills/vision/SKILL.md dist/adapters docs/plans/2026-04-30-vision-skill-quality-refinement.md docs/changes/2026-04-30-vision-skill-quality-refinement
+    result: pass_after_m2
 changed_files:
   - docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml
   - docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md
   - docs/plan.md
   - docs/plans/2026-04-30-vision-skill-quality-refinement.md
   - docs/proposals/2026-04-30-vision-skill-quality-refinement.md
+  - .codex/skills/vision/SKILL.md
+  - dist/adapters/claude/.claude/skills/vision/SKILL.md
+  - dist/adapters/codex/.agents/skills/vision/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/vision/SKILL.md
   - scripts/test-skill-validator.py
   - skills/vision/SKILL.md
   - specs/vision-skill.md
@@ -68,6 +100,6 @@ review:
   status: pending_code_review
   unresolved_items: 0
 implementation:
-  status: m1_validated
-  generated_output_refreshed: false
-  note: M1 updates canonical skill guidance and focused assertions only; generated output refresh is deferred to M2.
+  status: m2_validated
+  generated_output_refreshed: true
+  note: M2 refreshed generated Codex and public adapter vision skill output through the existing generators.

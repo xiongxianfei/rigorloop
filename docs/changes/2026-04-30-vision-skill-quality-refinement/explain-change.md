@@ -4,7 +4,7 @@
 
 M1 refines the canonical `vision` skill and focused skill-validator assertions so the skill pushes stronger first-pass vision drafts instead of only blocking bad outputs.
 
-Generated `.codex/skills/` and `dist/adapters/` output is intentionally deferred to M2. Root `vision.md` and README front-matter remain out of scope for this refinement.
+M2 refreshes generated `.codex/skills/` and `dist/adapters/` output through the existing generators. Root `vision.md` and README front-matter remain out of scope for this refinement.
 
 ## Source Artifacts
 
@@ -19,13 +19,14 @@ Generated `.codex/skills/` and `dist/adapters/` output is intentionally deferred
 | --- | --- | --- |
 | `scripts/test-skill-validator.py` | Added focused assertions for workflow-fit placement, drafting heuristics, consolidated edit authorization, mode-table shape, and enforceable revise-mode traceability. | The implementation surface is skill text, so tests need stable contract assertions that fail before the guidance exists. |
 | `skills/vision/SKILL.md` | Moved workflow fit near the top, consolidated source-of-truth and overwrite rules into edit authorization, converted mode behavior to one table, added drafting heuristics, and made substantive revise-mode traceability explicit. | Matches the approved refinement while preserving create/revise/mirror behavior, README marker rules, and source-of-truth order. |
+| `.codex/skills/vision/SKILL.md` and `dist/adapters/*/skills/vision/SKILL.md` | Refreshed the generated vision skill copies through `scripts/build-skills.py` and `scripts/build-adapters.py --version 0.1.1`. | Keeps generated Codex runtime and public adapter packages synchronized with the canonical refined skill without hand edits. |
 | Change-local evidence | Added this artifact pack during M1. | Implementation-stage changes are non-trivial, so the causal link should be durable before later generated-output and closeout milestones. |
 
 ## Scope Control
 
 - No root `vision.md` revision is part of this refinement.
 - No README front-matter content is changed by M1.
-- No generated `.codex/skills/` or `dist/adapters/` files are hand-edited.
+- Generated `.codex/skills/` and `dist/adapters/` files are updated only through repository generators.
 - Shared evidence-collection boilerplate extraction remains out of scope.
 - Proposal, proposal-review, and governance behavior are not broadened in M1.
 
@@ -44,6 +45,20 @@ Generated `.codex/skills/` and `dist/adapters/` output is intentionally deferred
 
 Selector inspection passed and selected generated skill and adapter drift checks. Those checks are deferred to M2 because generated output refresh is the next milestone, not part of M1.
 
+M2 validation:
+
+- `python scripts/build-skills.py --check` failed before M2 generation because `.codex/skills/vision/SKILL.md` was stale.
+- `python scripts/build-adapters.py --version 0.1.1 --check` failed before M2 generation because three generated adapter vision skill copies were stale.
+- `python scripts/build-skills.py` passed.
+- `python scripts/build-adapters.py --version 0.1.1` passed.
+- `python scripts/build-skills.py --check` passed.
+- `python scripts/test-adapter-distribution.py` passed.
+- `python scripts/build-adapters.py --version 0.1.1 --check` passed.
+- `python scripts/validate-adapters.py --version 0.1.1` passed.
+- `python scripts/select-validation.py --mode explicit --path .codex/skills/vision/SKILL.md --path dist/adapters/codex/.agents/skills/vision/SKILL.md --path dist/adapters/claude/.claude/skills/vision/SKILL.md --path dist/adapters/opencode/.opencode/skills/vision/SKILL.md` selected `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, and `readme.vision_markers`.
+- `bash scripts/ci.sh --mode explicit --path .codex/skills/vision/SKILL.md --path dist/adapters/codex/.agents/skills/vision/SKILL.md --path dist/adapters/claude/.claude/skills/vision/SKILL.md --path dist/adapters/opencode/.opencode/skills/vision/SKILL.md` passed.
+- `bash scripts/ci.sh --mode explicit --path .codex/skills/vision/SKILL.md --path dist/adapters/codex/.agents/skills/vision/SKILL.md --path dist/adapters/claude/.claude/skills/vision/SKILL.md --path dist/adapters/opencode/.opencode/skills/vision/SKILL.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md` passed.
+
 ## Readiness
 
-M1 targeted validation has passed. This milestone is ready for code-review before M2 generated-output refresh.
+M2 targeted validation has passed. This milestone is ready for code-review before M3 closeout.
