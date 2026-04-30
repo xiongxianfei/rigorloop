@@ -447,8 +447,7 @@ No runtime performance behavior is introduced. Evidence collection behavior is g
 
 ## Next artifacts
 
-- implementation after the matching test spec is active
-- code-review after implementation completes
+- code-review for the completed M1-M3 implementation
 
 ## Follow-on artifacts
 
@@ -456,9 +455,10 @@ No runtime performance behavior is introduced. Evidence collection behavior is g
 - Execution plan: [2026-04-30 Vision skill quality refinement](../docs/plans/2026-04-30-vision-skill-quality-refinement.md)
 - `plan-review`: approved on 2026-04-30 with no material findings.
 - Test spec update: [Vision Skill Test Spec](vision-skill.test.md) is active for the 2026-04-30 refinement.
+- Implementation: M1-M3 are complete and final implementation proof is recorded in the active plan and change-local evidence.
 
 ## Readiness
 
-Approved after `spec-review`; the linked execution plan passed `plan-review`, and the matching test spec is active.
+Approved after `spec-review`; the linked execution plan passed `plan-review`, the matching test spec is active, and implementation closeout is ready for first-pass `code-review`.
 
-Immediate next repository stage: `implement` M1 in `docs/plans/2026-04-30-vision-skill-quality-refinement.md`.
+Immediate next repository stage: `code-review` for the completed M1-M3 implementation in `docs/plans/2026-04-30-vision-skill-quality-refinement.md`.

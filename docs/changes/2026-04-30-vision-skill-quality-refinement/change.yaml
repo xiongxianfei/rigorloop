@@ -82,6 +82,30 @@ validation:
     selected_check_ids: skills.drift, adapters.regression, adapters.drift, adapters.validate, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, readme.vision_markers
   - command: git diff --check -- .codex/skills/vision/SKILL.md dist/adapters docs/plans/2026-04-30-vision-skill-quality-refinement.md docs/changes/2026-04-30-vision-skill-quality-refinement
     result: pass_after_m2
+  - command: python scripts/validate-skills.py
+    result: pass_after_m3
+  - command: python scripts/test-skill-validator.py
+    result: pass_after_m3
+  - command: python scripts/build-skills.py --check
+    result: pass_after_m3
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_after_m3
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_after_m3
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_after_m3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml
+    result: pass_after_m3
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/proposals/2026-04-30-vision-skill-quality-refinement.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml
+    result: pass_after_m3
+  - command: python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/proposals/2026-04-30-vision-skill-quality-refinement.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path skills/vision/SKILL.md --path scripts/test-skill-validator.py --path .codex/skills/vision/SKILL.md --path dist/adapters/codex/.agents/skills/vision/SKILL.md --path dist/adapters/claude/.claude/skills/vision/SKILL.md --path dist/adapters/opencode/.opencode/skills/vision/SKILL.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md
+    result: pass_after_m3
+    selected_check_ids: skills.validate, skills.regression, skills.drift, adapters.regression, adapters.drift, adapters.validate, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, readme.vision_markers
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/proposals/2026-04-30-vision-skill-quality-refinement.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path skills/vision/SKILL.md --path scripts/test-skill-validator.py --path .codex/skills/vision/SKILL.md --path dist/adapters/codex/.agents/skills/vision/SKILL.md --path dist/adapters/claude/.claude/skills/vision/SKILL.md --path dist/adapters/opencode/.opencode/skills/vision/SKILL.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md
+    result: pass_after_m3
+    selected_check_ids: skills.validate, skills.regression, skills.drift, adapters.regression, adapters.drift, adapters.validate, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, readme.vision_markers
+  - command: git diff --check -- .
+    result: pass_after_m3
 changed_files:
   - docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml
   - docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md
@@ -100,6 +124,9 @@ review:
   status: pending_code_review
   unresolved_items: 0
 implementation:
-  status: m2_validated
+  status: m3_validated
   generated_output_refreshed: true
-  note: M2 refreshed generated Codex and public adapter vision skill output through the existing generators.
+  note: M3 synchronized lifecycle state and final implementation validation evidence before first-pass code-review.
+closeout:
+  docs_plan_updated: false
+  docs_plan_rationale: docs/plan.md remains correct because the initiative is still active until downstream review, verify, explain-change, and PR closeout.

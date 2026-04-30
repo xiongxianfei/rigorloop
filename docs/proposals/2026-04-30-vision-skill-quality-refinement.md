@@ -207,8 +207,11 @@ None.
 
 ## Follow-on artifacts
 
-- Draft spec update: `specs/vision-skill.md`
+- Spec update: `specs/vision-skill.md`
+- Test spec update: `specs/vision-skill.test.md`
+- Execution plan: `docs/plans/2026-04-30-vision-skill-quality-refinement.md`
+- Change-local evidence: `docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml`
 
 ## Readiness
 
-Accepted and ready for `spec`.
+Accepted. Implementation closeout is ready for first-pass `code-review`.
