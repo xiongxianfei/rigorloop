@@ -225,6 +225,9 @@ The plan preserves the approved project vision, README marker contract, source-o
 - 2026-04-30: M2 targeted generator, adapter, selector, and explicit CI validation passed.
 - 2026-04-30: M3 lifecycle handoff text updated in the accepted proposal, approved spec, active test spec, active plan, and change-local evidence.
 - 2026-04-30: M3 final targeted validation passed; implementation is ready for first-pass `code-review`.
+- 2026-04-30: Code review found CR1-F1, a missing explicit revise-mode ask-or-confirm gate for `substantive` versus `editorial` classification.
+- 2026-04-30: CR1-F1 accepted and fixed in the canonical `vision` skill, focused skill-validator assertions, generated Codex skill output, and generated public adapter output.
+- 2026-04-30: Review log and review-resolution artifacts added for CR1-F1 and closed after targeted validation.
 
 ## Decision log
 
@@ -233,6 +236,7 @@ The plan preserves the approved project vision, README marker contract, source-o
 - 2026-04-30: M1 creates the baseline change-local pack before M3 because implementation-stage changes are non-trivial; M3 remains responsible for generated-output and final closeout updates.
 - 2026-04-30: Claude and opencode generated skill copies intentionally omit `argument-hint`; Codex runtime and Codex adapter copies match the canonical skill byte-for-byte.
 - 2026-04-30: `docs/plan.md` remains unchanged in M3 because the initiative stays in Active until downstream code-review, verify, explain-change, PR, and final Done closeout.
+- 2026-04-30: CR1-F1 is handled as review-resolution rather than changing the approved spec because R18 and T2 already required the ask-or-confirm gate.
 
 ## Surprises and discoveries
 
@@ -287,14 +291,32 @@ The plan preserves the approved project vision, README marker contract, source-o
   - `python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/proposals/2026-04-30-vision-skill-quality-refinement.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path skills/vision/SKILL.md --path scripts/test-skill-validator.py --path .codex/skills/vision/SKILL.md --path dist/adapters/codex/.agents/skills/vision/SKILL.md --path dist/adapters/claude/.claude/skills/vision/SKILL.md --path dist/adapters/opencode/.opencode/skills/vision/SKILL.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md`
   - `bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/proposals/2026-04-30-vision-skill-quality-refinement.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path skills/vision/SKILL.md --path scripts/test-skill-validator.py --path .codex/skills/vision/SKILL.md --path dist/adapters/codex/.agents/skills/vision/SKILL.md --path dist/adapters/claude/.claude/skills/vision/SKILL.md --path dist/adapters/opencode/.opencode/skills/vision/SKILL.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md`
   - `git diff --check -- .`
+- 2026-04-30: CR1-F1 regression proof and generated-output validation passed:
+  - `python scripts/test-skill-validator.py` failed before the canonical skill fix for the new ask-or-confirm assertion.
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/build-skills.py`
+  - `python scripts/build-adapters.py --version 0.1.1`
+  - `python scripts/validate-skills.py`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/test-adapter-distribution.py`
+  - `python scripts/build-adapters.py --version 0.1.1 --check`
+  - `python scripts/validate-adapters.py --version 0.1.1`
+  - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-04-30-vision-skill-quality-refinement`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-30-vision-skill-quality-refinement`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/proposals/2026-04-30-vision-skill-quality-refinement.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md`
+  - `python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/proposals/2026-04-30-vision-skill-quality-refinement.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path skills/vision/SKILL.md --path scripts/test-skill-validator.py --path .codex/skills/vision/SKILL.md --path dist/adapters/codex/.agents/skills/vision/SKILL.md --path dist/adapters/claude/.claude/skills/vision/SKILL.md --path dist/adapters/opencode/.opencode/skills/vision/SKILL.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/reviews/code-review-r1.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/review-log.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/review-resolution.md` selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `readme.vision_markers`
+  - `bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/proposals/2026-04-30-vision-skill-quality-refinement.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path skills/vision/SKILL.md --path scripts/test-skill-validator.py --path .codex/skills/vision/SKILL.md --path dist/adapters/codex/.agents/skills/vision/SKILL.md --path dist/adapters/claude/.claude/skills/vision/SKILL.md --path dist/adapters/opencode/.opencode/skills/vision/SKILL.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/reviews/code-review-r1.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/review-log.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/review-resolution.md`
+  - `bash scripts/ci.sh --mode broad-smoke`
+  - `git diff --check -- .`
 
 ## Outcome and retrospective
 
-- Implementation milestones M1-M3 are complete. Outcome remains open until review, verification, explain-change, PR, and final closeout.
+- Implementation milestones M1-M3 are complete and CR1-F1 review-resolution is closed. Outcome remains open until code-review rerun, verification, explain-change, PR, and final closeout.
 
 ## Readiness
 
-- M3 complete and ready for first-pass `code-review`.
+- CR1-F1 is resolved and ready for `code-review` rerun.
 
 ## Risks and follow-ups
 

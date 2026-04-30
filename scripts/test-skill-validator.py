@@ -253,6 +253,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "existing visions are not overwritten without clear `revise` or `mirror` intent",
             "existing or required change-local pack",
             "before finalizing",
+            "ask or confirm whether the revision is `substantive` or `editorial` before finalizing",
             "required causal link was recorded or not required",
         ]
         for term in required_terms:
