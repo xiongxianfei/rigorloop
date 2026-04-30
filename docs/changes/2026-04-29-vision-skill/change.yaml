@@ -87,6 +87,10 @@ validation:
   - command: bash scripts/ci.sh --mode pr --base origin/main --head HEAD
     result: pass_after_m5
     reason: PR-mode CI passed without README.md selector blocking.
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-29-vision-skill/change.yaml
+    result: pass_after_verify_metadata_correction
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-04-29-vision-skill.md --path docs/proposals/2026-04-29-vision-skill.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/changes/2026-04-29-vision-skill/change.yaml
+    result: pass_after_verify_metadata_correction
   - command: test ! -e vision.md
     result: pass_after_m4
   - command: "! rg -n '^<!-- vision:start -->$|^<!-- vision:end -->$' README.md"
@@ -138,5 +142,14 @@ manual_proof:
   readme_selector_route: README.md is classified as readme; manual proof remains limited to ownership wording and the absence of generated front-matter in this slice.
   explain_change_deferred: docs/changes/2026-04-29-vision-skill/explain-change.md is intentionally deferred to the downstream explain-change stage.
 review:
-  status: ready_for_code_review
+  status: clean_with_notes
   unresolved_items: 0
+  result: no_findings
+  location: chat code-review after M5 README selector fix
+  required_next_stage: verify
+verification:
+  status: ready
+  branch_ready: true
+  location: docs/plans/2026-04-29-vision-skill.md
+  required_next_stage: explain-change
+  notes: Verify reran targeted and PR-mode validation successfully, then blocked only on stale tracked handoff metadata. This metadata update resolves that blocker.
