@@ -4,7 +4,7 @@
 
 M1 refines the canonical `vision` skill and focused skill-validator assertions so the skill pushes stronger first-pass vision drafts instead of only blocking bad outputs.
 
-M2 refreshes generated `.codex/skills/` and `dist/adapters/` output through the existing generators. M3 synchronizes lifecycle state and final implementation proof. CR1-F1 fixes the missing revise-mode ask-or-confirm gate found by code review. Root `vision.md` and README front-matter remain out of scope for this refinement.
+M2 refreshes generated `.codex/skills/` and `dist/adapters/` output through the existing generators. M3 synchronizes lifecycle state and final implementation proof. CR1-F1 fixes the missing revise-mode ask-or-confirm gate found by code review. `code-review-r2` returned `clean-with-notes`, and verification now has branch-ready evidence. Root `vision.md` and README front-matter remain out of scope for this refinement.
 
 ## Source Artifacts
 
@@ -21,8 +21,8 @@ M2 refreshes generated `.codex/skills/` and `dist/adapters/` output through the 
 | `skills/vision/SKILL.md` | Moved workflow fit near the top, consolidated source-of-truth and overwrite rules into edit authorization, converted mode behavior to one table, added drafting heuristics, and made substantive revise-mode traceability explicit. | Matches the approved refinement while preserving create/revise/mirror behavior, README marker rules, and source-of-truth order. |
 | `skills/vision/SKILL.md` and `scripts/test-skill-validator.py` | Added explicit revise-mode wording to ask or confirm whether a revision is `substantive` or `editorial` before finalizing, plus focused assertion coverage. | Resolves CR1-F1 against R18 and T2 without changing the approved spec. |
 | `.codex/skills/vision/SKILL.md` and `dist/adapters/*/skills/vision/SKILL.md` | Refreshed the generated vision skill copies through `scripts/build-skills.py` and `scripts/build-adapters.py --version 0.1.1`. | Keeps generated Codex runtime and public adapter packages synchronized with the canonical refined skill without hand edits. |
-| Lifecycle artifacts | Updated proposal, spec, test spec, plan, and change-local evidence to point at first-pass `code-review` after M3 instead of earlier implementation stages. | Prevents stale handoff state before review and verify inspect lifecycle-managed artifacts. |
-| Review artifacts | Added `reviews/code-review-r1.md`, `review-log.md`, and `review-resolution.md` for CR1-F1. | Preserves the first-pass finding and records the accepted fix before downstream verify. |
+| Lifecycle artifacts | Updated proposal, spec, test spec, plan, and change-local evidence to point at first-pass `code-review` after M3 instead of earlier implementation stages, then synchronized post-review readiness after `code-review-r2` and `verify`. | Prevents stale handoff state before review and verify inspect lifecycle-managed artifacts. |
+| Review artifacts | Added `reviews/code-review-r1.md`, `reviews/code-review-r2.md`, `review-log.md`, and `review-resolution.md`. | Preserves the first-pass finding, records the accepted fix, and makes the clean review rerun durable before downstream handoff. |
 | Change-local evidence | Added this artifact pack during M1. | Implementation-stage changes are non-trivial, so the causal link should be durable before later generated-output and closeout milestones. |
 
 ## Scope Control
@@ -32,7 +32,7 @@ M2 refreshes generated `.codex/skills/` and `dist/adapters/` output through the 
 - Generated `.codex/skills/` and `dist/adapters/` files are updated only through repository generators.
 - Shared evidence-collection boilerplate extraction remains out of scope.
 - Proposal, proposal-review, and governance behavior are not broadened in M1.
-- `docs/plan.md` remains active and unchanged because the initiative has not reached verify, explain-change, PR, or Done closeout.
+- `docs/plan.md` remains active and unchanged because the initiative has reached branch-ready verification but has not reached explain-change, PR handoff, or Done closeout.
 
 ## Validation Evidence
 
@@ -97,6 +97,16 @@ CR1-F1 review-resolution validation:
 - `bash scripts/ci.sh --mode broad-smoke` passed.
 - `git diff --check -- .` passed.
 
+Post-review lifecycle sync and verification:
+
+- `code-review-r2` returned `clean-with-notes` with no blocking or required-change findings.
+- `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-30-vision-skill-quality-refinement` passed.
+- `python scripts/validate-change-metadata.py docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml` passed.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/proposals/2026-04-30-vision-skill-quality-refinement.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md` passed.
+- `python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/proposals/2026-04-30-vision-skill-quality-refinement.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path skills/vision/SKILL.md --path scripts/test-skill-validator.py --path .codex/skills/vision/SKILL.md --path dist/adapters/codex/.agents/skills/vision/SKILL.md --path dist/adapters/claude/.claude/skills/vision/SKILL.md --path dist/adapters/opencode/.opencode/skills/vision/SKILL.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/reviews/code-review-r1.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/reviews/code-review-r2.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/review-log.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/review-resolution.md` selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `readme.vision_markers`.
+- `bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/proposals/2026-04-30-vision-skill-quality-refinement.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path skills/vision/SKILL.md --path scripts/test-skill-validator.py --path .codex/skills/vision/SKILL.md --path dist/adapters/codex/.agents/skills/vision/SKILL.md --path dist/adapters/claude/.claude/skills/vision/SKILL.md --path dist/adapters/opencode/.opencode/skills/vision/SKILL.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/reviews/code-review-r1.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/reviews/code-review-r2.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/review-log.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/review-resolution.md` passed.
+- `git diff --check -- docs/changes/2026-04-30-vision-skill-quality-refinement docs/plans/2026-04-30-vision-skill-quality-refinement.md` passed.
+
 ## Readiness
 
-CR1-F1 review-resolution has closed. The implementation is ready for `code-review` rerun.
+CR1-F1 review-resolution has closed, `code-review-r2` is clean, and `verify` has branch-ready evidence. The next workflow stage is `explain-change`; PR body and open readiness remain downstream.

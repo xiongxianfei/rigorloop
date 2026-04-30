@@ -228,6 +228,9 @@ The plan preserves the approved project vision, README marker contract, source-o
 - 2026-04-30: Code review found CR1-F1, a missing explicit revise-mode ask-or-confirm gate for `substantive` versus `editorial` classification.
 - 2026-04-30: CR1-F1 accepted and fixed in the canonical `vision` skill, focused skill-validator assertions, generated Codex skill output, and generated public adapter output.
 - 2026-04-30: Review log and review-resolution artifacts added for CR1-F1 and closed after targeted validation.
+- 2026-04-30: `code-review-r2` returned `clean-with-notes` with no blocking or required-change findings after the CR1-F1 fix.
+- 2026-04-30: `verify` initially found stale tracked lifecycle state because the clean code-review rerun had not been recorded durably; review and readiness artifacts were synchronized before rerunning validation.
+- 2026-04-30: `verify` passed with verdict `ready`; branch-ready is satisfied and the next workflow stage is `explain-change`.
 
 ## Decision log
 
@@ -237,6 +240,7 @@ The plan preserves the approved project vision, README marker contract, source-o
 - 2026-04-30: Claude and opencode generated skill copies intentionally omit `argument-hint`; Codex runtime and Codex adapter copies match the canonical skill byte-for-byte.
 - 2026-04-30: `docs/plan.md` remains unchanged in M3 because the initiative stays in Active until downstream code-review, verify, explain-change, PR, and final Done closeout.
 - 2026-04-30: CR1-F1 is handled as review-resolution rather than changing the approved spec because R18 and T2 already required the ask-or-confirm gate.
+- 2026-04-30: `code-review-r2` is recorded as a tracked clean review artifact because branch-ready cannot rely on a chat-only review result. `docs/plan.md` remains Active after verify because explain-change, PR handoff, and final Done closeout are still downstream.
 
 ## Surprises and discoveries
 
@@ -309,14 +313,21 @@ The plan preserves the approved project vision, README marker contract, source-o
   - `bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/proposals/2026-04-30-vision-skill-quality-refinement.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path skills/vision/SKILL.md --path scripts/test-skill-validator.py --path .codex/skills/vision/SKILL.md --path dist/adapters/codex/.agents/skills/vision/SKILL.md --path dist/adapters/claude/.claude/skills/vision/SKILL.md --path dist/adapters/opencode/.opencode/skills/vision/SKILL.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/reviews/code-review-r1.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/review-log.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/review-resolution.md`
   - `bash scripts/ci.sh --mode broad-smoke`
   - `git diff --check -- .`
+- 2026-04-30: post-code-review lifecycle sync validation passed:
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-30-vision-skill-quality-refinement`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/proposals/2026-04-30-vision-skill-quality-refinement.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md`
+  - `python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/proposals/2026-04-30-vision-skill-quality-refinement.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path skills/vision/SKILL.md --path scripts/test-skill-validator.py --path .codex/skills/vision/SKILL.md --path dist/adapters/codex/.agents/skills/vision/SKILL.md --path dist/adapters/claude/.claude/skills/vision/SKILL.md --path dist/adapters/opencode/.opencode/skills/vision/SKILL.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/reviews/code-review-r1.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/reviews/code-review-r2.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/review-log.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/review-resolution.md`
+  - `bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/proposals/2026-04-30-vision-skill-quality-refinement.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path skills/vision/SKILL.md --path scripts/test-skill-validator.py --path .codex/skills/vision/SKILL.md --path dist/adapters/codex/.agents/skills/vision/SKILL.md --path dist/adapters/claude/.claude/skills/vision/SKILL.md --path dist/adapters/opencode/.opencode/skills/vision/SKILL.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/reviews/code-review-r1.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/reviews/code-review-r2.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/review-log.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/review-resolution.md`
+  - `git diff --check -- docs/changes/2026-04-30-vision-skill-quality-refinement docs/plans/2026-04-30-vision-skill-quality-refinement.md`
 
 ## Outcome and retrospective
 
-- Implementation milestones M1-M3 are complete and CR1-F1 review-resolution is closed. Outcome remains open until code-review rerun, verification, explain-change, PR, and final closeout.
+- Implementation milestones M1-M3 are complete, CR1-F1 review-resolution is closed, `code-review-r2` is clean, and `verify` passed with branch-ready evidence. Outcome remains open until explain-change, PR handoff, and final closeout.
 
 ## Readiness
 
-- CR1-F1 is resolved and ready for `code-review` rerun.
+- Branch-ready from `verify`; next workflow stage is `explain-change`. `pr-body-ready` and `pr-open-ready` remain owned by downstream PR preparation.
 
 ## Risks and follow-ups
 
