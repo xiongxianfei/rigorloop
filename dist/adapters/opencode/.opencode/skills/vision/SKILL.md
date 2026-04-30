@@ -59,10 +59,12 @@ Use exactly one mode.
 | Mode | When it applies | Authorized edits | README behavior | Stop or clarification conditions |
 | --- | --- | --- | --- | --- |
 | `create` | No root `vision.md` exists and the user clearly asks to produce the project vision. | Create root `vision.md`; insert the README marker block when needed. | Create or replace README front-matter at the deterministic marker location. Report assumptions and open vision-level questions. | If a root `vision.md` already exists, stop unless the user changes intent to `revise` or `mirror`. |
-| `revise` | Root `vision.md` exists and the user names a section or project-level change to revise. | Update only the named section unless the change necessarily cascades; if it cascades, say why. Classify the revision as substantive or editorial before finalizing. | Regenerate README front-matter after the vision edit. Report sections changed. | If the section is unnamed, ask which section is being revised. If a substantive revision is tied to an existing or required change-local pack, require the causal link in `docs/changes/<change-id>/change.yaml` and `docs/changes/<change-id>/explain-change.md` before finalizing. |
+| `revise` | Root `vision.md` exists and the user names a section or project-level change to revise. | Update only the named section unless the change necessarily cascades; if it cascades, say why. Ask or confirm whether the revision is `substantive` or `editorial` before finalizing. | Regenerate README front-matter after the vision edit. Report sections changed. | If the section is unnamed, ask which section is being revised. If a substantive revision is tied to an existing or required change-local pack, require the causal link in `docs/changes/<change-id>/change.yaml` and `docs/changes/<change-id>/explain-change.md` before finalizing. |
 | `mirror` | Root `vision.md` exists and remains current. | Leave `vision.md` unchanged. | Regenerate README front-matter from `vision.md`; if it already matches, report that no content changed. | If root `vision.md` is missing, stop because there is no canonical source to mirror. |
 
 Editorial revisions and mirror-only changes do not require a new change-local pack solely because this skill ran.
+
+In revise mode, ask or confirm whether the revision is `substantive` or `editorial` before finalizing.
 
 For substantive revise-mode output, report whether the required causal link was recorded or not required.
 
@@ -172,6 +174,7 @@ Report:
 - README front-matter: created, replaced, unchanged, or not applicable
 - Assumptions: required in create mode
 - Sections changed: required in revise mode
+- Revision classification: `substantive` or `editorial`, required in revise mode
 - `vision.md` unchanged: required in mirror mode
 - For substantive revise mode: whether the required causal link was recorded or not required
 - open questions suitable for human review before treating the vision as current
