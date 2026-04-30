@@ -1,0 +1,73 @@
+change_id: 2026-04-30-vision-skill-quality-refinement
+title: Refine vision skill quality guidance
+classification: planned
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-04-30-vision-skill-quality-refinement.md
+  spec: specs/vision-skill.md
+  plan: docs/plans/2026-04-30-vision-skill-quality-refinement.md
+  test_spec: specs/vision-skill.test.md
+  explain_change: docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md
+canonical_artifacts:
+  vision_skill: skills/vision/SKILL.md
+  focused_skill_tests: scripts/test-skill-validator.py
+generated_artifacts:
+  codex_vision_skill: .codex/skills/vision/SKILL.md
+  claude_vision_skill: dist/adapters/claude/.claude/skills/vision/SKILL.md
+  codex_adapter_vision_skill: dist/adapters/codex/.agents/skills/vision/SKILL.md
+  opencode_vision_skill: dist/adapters/opencode/.opencode/skills/vision/SKILL.md
+requirements:
+  - specs/vision-skill.md R19
+  - specs/vision-skill.md R81-R94
+  - specs/vision-skill.md AC13-AC19
+tests:
+  - specs/vision-skill.test.md T1-T11
+  - scripts/test-skill-validator.py vision quality refinement assertions
+validation:
+  - command: python scripts/test-skill-validator.py
+    result: expected_fail_before_m1_skill_revision
+    reason: Focused assertions failed before the canonical vision skill carried the new guidance.
+  - command: python scripts/validate-skills.py skills/vision/SKILL.md
+    result: pass_after_m1
+  - command: python scripts/validate-skills.py
+    result: pass_after_m1
+  - command: python scripts/test-skill-validator.py
+    result: pass_after_m1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml
+    result: pass_after_m1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md
+    result: pass_after_m1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path specs/vision-skill.test.md
+    result: pass_after_m1
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_after_m1
+  - command: python scripts/validate-readme.py README.md --vision-markers
+    result: pass_after_m1
+  - command: python scripts/select-validation.py --mode explicit --path specs/vision-skill.test.md --path scripts/test-skill-validator.py --path skills/vision/SKILL.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md
+    result: pass_after_m1_with_m2_drift_checks_deferred
+    reason: Selector selected generated skill and adapter drift checks, which are intentionally deferred to M2 after canonical skill validation passes.
+  - command: python scripts/build-skills.py --check
+    result: deferred_to_m2
+    reason: Generated Codex skill output is refreshed in M2.
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: deferred_to_m2
+    reason: Generated adapter output is refreshed in M2.
+  - command: git diff --check -- specs/vision-skill.test.md scripts/test-skill-validator.py skills/vision/SKILL.md docs/plans/2026-04-30-vision-skill-quality-refinement.md docs/changes/2026-04-30-vision-skill-quality-refinement
+    result: pass_after_m1
+changed_files:
+  - docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml
+  - docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md
+  - docs/plan.md
+  - docs/plans/2026-04-30-vision-skill-quality-refinement.md
+  - docs/proposals/2026-04-30-vision-skill-quality-refinement.md
+  - scripts/test-skill-validator.py
+  - skills/vision/SKILL.md
+  - specs/vision-skill.md
+  - specs/vision-skill.test.md
+review:
+  status: pending_code_review
+  unresolved_items: 0
+implementation:
+  status: m1_validated
+  generated_output_refreshed: false
+  note: M1 updates canonical skill guidance and focused assertions only; generated output refresh is deferred to M2.

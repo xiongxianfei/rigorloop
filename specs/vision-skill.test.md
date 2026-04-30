@@ -7,140 +7,178 @@
 ## Related spec and plan
 
 - Spec: `specs/vision-skill.md`
-- Plan: `docs/plans/2026-04-29-vision-skill.md`
-- Proposal: `docs/proposals/2026-04-29-vision-skill.md`
-- Architecture: not required. The approved spec changes skill, governance, README ownership, proposal guidance, and generated distribution surfaces without adding a runtime boundary, data store, service, or architecture package.
-- Spec-review findings: approved on 2026-04-29 after source-of-truth rank, governance update, mode reporting, privacy, external research, README marker insertion, and vision-conflict exception rules were added.
-- Plan-review findings: approved after M4 lifecycle validation was updated to include this test spec.
+- Active plan: `docs/plans/2026-04-30-vision-skill-quality-refinement.md`
+- Related proposal: `docs/proposals/2026-04-30-vision-skill-quality-refinement.md`
+- Prior implementation plan: `docs/plans/2026-04-29-vision-skill.md`
+- Prior proposal: `docs/proposals/2026-04-29-vision-skill.md`
+- Architecture: not required. The approved refinement changes skill guidance, focused test assertions, generated output, and lifecycle artifacts without adding a runtime boundary, data store, service, dependency, deployment boundary, or architecture package.
+- Spec-review findings: approved on 2026-04-30 after R81 workflow-fit placement and R91 mode-table wording were made directly testable.
+- Plan-review findings: approved on 2026-04-30 with no material findings. Immediate handoff is `test-spec`; implementation follows only after this proof map is active.
 
 ## Testing strategy
 
-- Contract tests inspect authored Markdown surfaces because the first implementation is a skill and governance change, not a new executable README mirror helper.
-- Skill validation uses `python scripts/validate-skills.py`, `python scripts/test-skill-validator.py`, and focused content scans to prove the canonical `vision`, `proposal`, and `proposal-review` skills carry the required behavior.
+- Contract tests inspect authored Markdown because the change is a workflow-skill guidance refinement, not a new executable README mirror helper.
+- Focused assertions in `scripts/test-skill-validator.py` prove the new skill-contract shape: workflow-fit placement, drafting heuristics, one mode table, consolidated edit authorization, and enforceable substantive-revision traceability.
+- Existing skill validation continues to prove canonical skill structure through `python scripts/validate-skills.py`.
 - Generated-output integration uses existing generator and adapter checks so `.codex/skills/` and `dist/adapters/` remain derived from canonical `skills/`.
-- Selector and lifecycle tests use existing repository-owned scripts to prove supported paths are classified, `README.md` routes as a lightweight `readme` surface instead of an unclassified blocker, broad smoke is honored from the active plan, and final closeout validates every authoritative lifecycle artifact.
-- Manual verification is limited to README ownership wording and marker-behavior wording because no README mirror helper is implemented in this slice.
+- Selector, lifecycle, and change-metadata validation prove the active plan, approved spec, active test spec, change-local metadata, and generated-output surfaces stay coherent.
+- Manual review is limited to wording and diff-scope checks that are not worth encoding as a prose-quality validator.
 
 ## Requirement coverage map
 
 | Requirement IDs | Test IDs | Notes |
 | --- | --- | --- |
-| `R1`-`R4` | `T1`, `T12` | Canonical skill exists, validates, uses `name: vision`, and defines create/revise/mirror modes. |
-| `R5`-`R20` | `T2`, `T3`, `T12` | Mode behavior, overwrite protection, no initial `vision.md`, and substantive revision reminders are proven through skill contract checks. |
-| `R21`-`R28`, `R56`-`R60` | `T2`, `T5`, `T12` | Vision content shape and mode output reporting are documented in the skill. |
-| `R29`-`R39`, `R75`-`R78` | `T6`, `T12` | Proposal and proposal-review guidance cover `Vision fit`, conflicts, and explicit exceptions. |
-| `R40`-`R42` | `T1`, `T7`, `T12` | Vision remains upstream, not a normal lifecycle stage, and no README helper script is required. |
-| `R43`-`R45` | `T8`, `T9`, `T12` | Generated `.codex/skills/` and public adapters are refreshed and checked through existing generators. |
-| `R46`-`R55` | `T7`, `T12` | Governance, workflow, AGENTS, and README ownership guidance document the `vision.md` source-of-truth boundary. |
-| `R61`-`R64` | `T5`, `T12` | Sensitive information and external research boundaries are documented in the skill. |
-| `R65`-`R68` | `T5`, `T12` | Plain Markdown and bounded-read behavior are documented in the skill. |
-| `R69`-`R74` | `T4`, `T12` | README marker insertion and edit-boundary behavior are documented in the skill. |
-| `R79`-`R80` | `T9`, `T12` | README selector routing selects lightweight README validation and marker validation when marker state or vision-skill scope requires it. |
+| `R1`-`R4` | `T1`, `T11` | Canonical skill metadata, description, and supported mode names remain valid. |
+| `R5`-`R20`, `R56`-`R60`, `R91`, `R94` | `T2`, `T11` | Mode behavior is converted to one table while preserving stop conditions, output reporting, and enforcing causal-link traceability. |
+| `R21`-`R28`, `R61`-`R68`, `R82`-`R90` | `T3`, `T11` | Vision content, privacy, research, Markdown, bounded-read rules, and drafting heuristics are proven through skill text. |
+| `R40`-`R42`, `R46`-`R55`, `R81`, `R92`-`R93` | `T4`, `T6`, `T11` | Workflow fit, source-of-truth order, edit authorization, and lifecycle non-stage boundaries remain explicit. |
+| `R10`-`R13`, `R25`-`R26`, `R69`-`R74` | `T5`, `T11` | README marker behavior remains deterministic and marker-bounded. |
+| `R29`-`R39`, `R75`-`R78` | `T7`, `T11` | Proposal and proposal-review `Vision fit` behavior remains a regression guard. |
+| `R8`, `R20`, quality-refinement non-goals | `T8`, `T11` | The refinement does not revise root `vision.md`, change README marker behavior, or extract shared boilerplate. |
+| `R43`-`R45` | `T9`, `T11` | Generated skill and adapter output is refreshed only through existing generators. |
+| `R79`-`R80` | `T10`, `T11` | README selector routing and marker validation remain covered when the vision skill is in scope. |
 
 ## Example coverage map
 
 | Example | Test IDs | Notes |
 | --- | --- | --- |
-| `E1` | `T2`, `T4` | Create mode is documented as the only path that creates initial `vision.md` and README front-matter. |
-| `E2` | `T3`, `T8` | Adding the skill and generated outputs does not create root `vision.md`. |
-| `E3` | `T2` | Existing vision plus unclear mode stops before overwrite. |
-| `E4` | `T4` | Mirror mode edits only README front-matter. |
-| `E5` | `T6` | Proposal guidance requires `Vision fit` when a vision exists. |
-| `E6` | `T6` | Proposal guidance uses `no vision exists yet` when no root vision exists. |
-| `E7` | `T6` | Proposal-review classifies conflicts as revise proposal, revise vision, or explicit exception. |
+| `E1` | `T2`, `T5` | Create mode still creates root vision and README front-matter only when invoked. |
+| `E2` | `T8`, `T9` | Adding or refining the skill does not itself create root vision content. |
+| `E3` | `T2`, `T4` | Existing vision plus unclear mode still stops before overwrite. |
+| `E4` | `T2`, `T5` | Mirror mode leaves `vision.md` unchanged and edits only README front-matter. |
+| `E5` | `T7` | Proposal guidance still requires `Vision fit` when a vision exists. |
+| `E6` | `T7` | Proposal guidance still handles the no-vision case. |
+| `E7` | `T7` | Proposal-review still classifies vision conflicts. |
+| `E8` | `T3` | Drafting heuristics cover differentiator, pain points, commitments, falsifiability, audience, and refusals. |
+| `E9` | `T3` | Alternative-class comparison is accepted without requiring a named competitor. |
+| `E10` | `T2` | Substantive revision traceability blocks finalization when the required causal link is missing. |
+| `E11` | `T4` | Workflow-fit guidance appears before detailed mode mechanics. |
 
 ## Edge case coverage
 
-- Root `vision.md` exists and README lacks markers: `T2`, `T4`
-- Root `vision.md` does not exist and README already has markers: `T4`
-- README has malformed, nested, or multiple marker pairs: `T4`
-- Proposal says `fits the current vision` while no `vision.md` exists: `T6`
-- Proposal omits `Vision fit` after adoption: `T6`
-- Vision revision changes scope but is labeled editorial: `T2`, `T5`
+- Root `vision.md` exists and README lacks markers: `T2`, `T5`
+- Root `vision.md` does not exist and README already has markers: `T5`
+- README has malformed, nested, or multiple marker pairs: `T5`
+- Proposal says `fits the current vision` while no `vision.md` exists: `T7`
+- Proposal omits `Vision fit` after adoption: `T7`
+- Vision revision changes scope but is labeled editorial: `T2`
 - User asks to revise an unnamed section: `T2`
 - Mirror mode finds README front-matter already current: `T2`
-- Generated adapter output omits portable `vision` skill: `T8`
-- Legacy proposal lacks `Vision fit`: `T6`
-- `README.md` is touched in PR mode with the vision skill in scope: `T9`
-- `README.md` has no standalone marker block but mentions marker strings inline: `T9`, `T11`
+- Generated adapter output omits portable `vision` skill: `T9`
+- Legacy proposal lacks `Vision fit`: `T7`
+- First-draft vision names no alternatives and states only abstract values: `T3`
+- Substantive vision revision has an existing change-local pack but no causal link: `T2`
+- Differentiator compares against an alternative class without naming a competitor: `T3`
 
 ## Acceptance criteria coverage map
 
 | Acceptance criterion | Test IDs | Notes |
 | --- | --- | --- |
 | `AC1` | `T1`, `T2` | Authored `vision` skill validates and documents modes. |
-| `AC2` | `T3` | Root `vision.md` is absent after the skill implementation. |
-| `AC3` | `T6` | Proposal skill requires `Vision fit` for new or substantively revised proposals after adoption. |
-| `AC4` | `T6` | Proposal-review checks `Vision fit` and classifies conflicts. |
-| `AC5` | `T7` | Workflow guidance does not add `vision` to the normal lifecycle chain. |
-| `AC6` | `T8` | Generated `.codex/skills/` output is synchronized through `scripts/build-skills.py`. |
-| `AC7` | `T8` | Generated public adapter output is synchronized through `scripts/build-adapters.py`. |
-| `AC8` | `T4` | README marker ownership is documented without a helper script. |
-| `AC9` | `T9`, `T12` | Selector-selected validation covers changed paths, with broad smoke only from the active plan trigger. |
-| `AC10` | `T7` | Governance and ownership guidance document the vision source-of-truth boundary. |
-| `AC11` | `T4` | README marker insertion is deterministic and preserves content outside the marker block. |
-| `AC12` | `T6` | Explicit vision-conflict exception guidance includes required owner, evidence, rationale, record location, and trigger classification. |
+| `AC2` | `T8`, `T11` | Refinement does not create or revise root vision content as a side effect. |
+| `AC3` | `T7` | Proposal guidance remains covered. |
+| `AC4` | `T7` | Proposal-review guidance remains covered. |
+| `AC5` | `T4`, `T6` | Workflow guidance keeps `vision` outside the normal lifecycle. |
+| `AC6` | `T9` | Generated `.codex/skills/` output is synchronized through `build-skills.py`. |
+| `AC7` | `T9` | Generated public adapter output is synchronized through `build-adapters.py`. |
+| `AC8` | `T5` | README marker ownership stays documented without a helper script. |
+| `AC9` | `T10`, `T11` | Selector-selected validation covers README marker routing and changed lifecycle surfaces. |
+| `AC10` | `T6` | Governance and ownership guidance remain aligned. |
+| `AC11` | `T5` | README marker insertion and replacement boundaries remain deterministic. |
+| `AC12` | `T7` | Explicit vision-conflict exception guidance remains covered. |
+| `AC13` | `T3` | Drafting heuristics cover differentiator, pain points, commitments, falsifiability, audience, and refusals. |
+| `AC14` | `T3` | Drafting heuristics allow an alternative class or specific tool and do not require a named competitor. |
+| `AC15` | `T4` | Workflow-fit guidance placement is asserted. |
+| `AC16` | `T2` | Mode behavior appears in one Markdown table with exact columns and rows. |
+| `AC17` | `T4` | Source-of-truth, mode authorization, and overwrite protection are consolidated. |
+| `AC18` | `T2` | Substantive revise-mode causal-link guidance is enforceable before finalizing. |
+| `AC19` | `T8`, `T11` | Shared evidence-collection extraction remains out of scope. |
 
 ## Test cases
 
-### T1. Canonical vision skill validates and defines the supported modes
+### T1. Canonical vision skill validates and keeps base metadata
 
-- Covers: `R1`-`R4`, `R40`-`R42`, `AC1`
+- Covers: `R1`-`R4`, `R40`-`R42`, `AC1`, `AC5`
 - Level: contract
 - Fixture/setup:
   - `skills/vision/SKILL.md`
 - Steps:
   - Run `python scripts/validate-skills.py skills/vision/SKILL.md`.
-  - Inspect the skill metadata for `name: vision`.
+  - Inspect metadata for `name: vision`.
   - Inspect the description for project vision and README front-matter ownership.
-  - Inspect the body for exactly the supported mode names: `create`, `revise`, and `mirror`.
-  - Inspect the body for upstream-not-lifecycle-stage wording and no required README helper script.
+  - Inspect the skill for exactly the supported mode names: `create`, `revise`, and `mirror`.
+  - Inspect the skill for upstream-not-lifecycle-stage wording and no required README helper script.
 - Expected result:
-  - The authored skill validates and exposes the approved mode contract.
+  - The authored skill remains valid and keeps the approved top-level invocation contract.
 - Failure proves:
-  - Contributors cannot reliably invoke or distribute the new skill contract.
+  - The refinement broke the portable skill contract before behavior-specific assertions run.
 - Automation location:
   - `python scripts/validate-skills.py skills/vision/SKILL.md`
-  - Optional focused assertions in `scripts/test-skill-validator.py`
+  - `scripts/test-skill-validator.py`
 
-### T2. Vision skill documents mode behavior, overwrite protection, and output shape
+### T2. Mode table and substantive revision traceability are enforceable
 
-- Covers: `R5`-`R7`, `R9`-`R20`, `R21`-`R28`, `R56`-`R60`, `E1`, `E3`, EC1, EC6, EC7, EC8
+- Covers: `R5`-`R20`, `R56`-`R60`, `R91`, `R94`, `E1`, `E3`, `E4`, `E10`, `AC16`, `AC18`
 - Level: contract
 - Fixture/setup:
   - `skills/vision/SKILL.md`
 - Steps:
-  - Inspect create mode for root `vision.md` creation and README front-matter generation.
-  - Inspect unclear existing-vision behavior for a stop-and-ask rule before edits.
-  - Inspect mirror mode for `vision.md` unchanged and README front-matter regeneration.
-  - Inspect revise mode for named-section edits, cascade explanation, substantive/editorial classification, and change-local reminder wording.
-  - Inspect the content rules: 500-word cap, plain language, no requirements vocabulary, no implementation details, required vision sections, README subset, and output reporting.
+  - Assert the skill has one Markdown table covering `create`, `revise`, and `mirror`.
+  - Assert the table has columns for Mode, When it applies, Authorized edits, README behavior, and Stop or clarification conditions.
+  - Assert the table has exactly one row for each mode.
+  - Assert unclear existing-vision requests stop for clarification before editing.
+  - Assert revise mode still limits edits to the named section unless a cascade is explained.
+  - Assert revise mode asks or confirms substantive versus editorial classification before finalizing.
+  - Assert substantive revisions tied to an existing or required change-local pack require causal links in `docs/changes/<change-id>/change.yaml` and `docs/changes/<change-id>/explain-change.md` before finalizing.
+  - Assert the old soft wording, such as "remind the contributor", is absent.
+  - Assert revise-mode output reports whether the required causal link was recorded or not required.
 - Expected result:
-  - The skill tells an agent exactly when to create, revise, mirror, stop, report, or remind about change-local traceability.
+  - Mode behavior is faster to compare and the traceability rule is a real gate instead of advice.
 - Failure proves:
-  - A future run could overwrite authorial judgment, create an uncontrolled vision artifact, or produce an invalid vision shape.
+  - The primary refinement either lost existing stop conditions or left substantive traceability unenforceable.
 - Automation location:
-  - Focused content assertions in `scripts/test-skill-validator.py`, or milestone `rg` scans from the active plan.
+  - Focused assertions in `scripts/test-skill-validator.py`
 
-### T3. First implementation does not create root vision.md
+### T3. Drafting heuristics improve authoring without adding hidden requirements
 
-- Covers: `R8`, `E2`, `AC2`
-- Level: smoke
+- Covers: `R21`-`R24`, `R61`-`R68`, `R82`-`R90`, `E8`, `E9`, `AC13`, `AC14`
+- Level: contract
 - Fixture/setup:
-  - repository root after M1 and final M4 validation
+  - `skills/vision/SKILL.md`
 - Steps:
-  - Run `test ! -e vision.md`.
-  - Confirm generated output refreshes in M3 do not add root `vision.md`.
+  - Assert a drafting-heuristics section appears after vision content guidance and before README front-matter guidance.
+  - Assert heuristics are phrased as authoring questions or checks, not as additional required `vision.md` sections.
+  - Assert the heuristics ask about an alternative class or specific tool, the tradeoff being made, embedded pain points, checkable commitments, observable falsifiability, audience non-fit, and concrete refusals.
+  - Assert the wording explicitly allows either an alternative class or a specific tool and does not require a named competitor.
+  - Assert the existing 500-word cap, plain-language rule, no requirements vocabulary, no implementation details, plain Markdown, privacy, external research, and bounded-read rules remain present.
 - Expected result:
-  - The root `vision.md` path is absent until a later explicit `vision create` invocation.
+  - The skill guides stronger first drafts without changing the approved `vision.md` shape or creating competitor-name requirements.
 - Failure proves:
-  - The implementation created project-level authorial content as a side effect of adding the skill.
+  - The refinement either remains too vague to improve drafts or silently expands the vision contract.
 - Automation location:
-  - M1 validation command and M4 final validation notes
+  - Focused assertions in `scripts/test-skill-validator.py`
 
-### T4. README marker behavior is deterministic and marker-bounded
+### T4. Workflow fit and edit authorization are visible before mechanics
 
-- Covers: `R10`-`R13`, `R25`-`R26`, `R69`-`R74`, `E1`, `E4`, EC1, EC2, EC3, `AC8`, `AC11`
+- Covers: `R9`, `R40`, `R46`-`R47`, `R81`, `R92`-`R93`, `E11`, `AC15`, `AC17`
+- Level: contract
+- Fixture/setup:
+  - `skills/vision/SKILL.md`
+- Steps:
+  - Assert workflow-fit guidance appears immediately after the opening purpose/scope paragraphs.
+  - Assert workflow-fit guidance appears before Inputs to read, Modes, README behavior, Rules, Output paths, or Failure modes sections.
+  - Assert source-of-truth, mode authorization, and existing-vision overwrite protection are consolidated into one edit-authorization section.
+  - Assert that section states `CONSTITUTION.md` outranks `vision.md`, `vision.md` outranks README front-matter, create/revise/mirror are the only authorized edit paths, and existing visions are not overwritten without clear revise or mirror intent.
+- Expected result:
+  - Contributors see the workflow role before details and have one canonical edit-authorization rule to follow.
+- Failure proves:
+  - The skill can still be skimmed as a normal lifecycle stage or contain repeated, drift-prone edit rules.
+- Automation location:
+  - Focused assertions in `scripts/test-skill-validator.py`
+
+### T5. README marker behavior remains deterministic and marker-bounded
+
+- Covers: `R10`-`R13`, `R25`-`R26`, `R69`-`R74`, `E1`, `E4`, `AC8`, `AC11`
 - Level: contract/manual
 - Fixture/setup:
   - `skills/vision/SKILL.md`
@@ -151,56 +189,16 @@
   - Inspect no-H1 behavior for start-of-file insertion.
   - Inspect valid marker behavior for replacing only content inside the marker block.
   - Inspect malformed, nested, or multiple marker behavior for stop-and-request-explicit-handling.
-  - Confirm no helper script is introduced in this first implementation.
+  - Confirm no README mirror helper script is introduced.
 - Expected result:
-  - README front-matter ownership is deterministic and does not authorize broad README rewrites.
+  - README front-matter ownership remains deterministic and does not authorize broad README rewrites.
 - Failure proves:
-  - The v1 marker contract is ambiguous or silently permits edits outside generated front-matter.
+  - The readability cleanup weakened the existing README safety contract.
 - Automation location:
-  - Focused content assertions in `scripts/test-skill-validator.py`, plus manual review of README ownership wording.
+  - `scripts/test-skill-validator.py`
+  - Manual diff review
 
-### T5. Vision skill documents privacy, research, Markdown, and bounded-read boundaries
-
-- Covers: `R21`-`R23`, `R61`-`R68`, EC6
-- Level: contract
-- Fixture/setup:
-  - `skills/vision/SKILL.md`
-- Steps:
-  - Inspect the skill for sensitive-information exclusions: secrets, credentials, private local paths, private machine names, and personal data not intended for publication.
-  - Inspect external research rules requiring explicit user request or a research-backed workflow mode, with researched facts distinguished from assumptions.
-  - Inspect plain Markdown rules that avoid tables, diagrams, HTML layout, and generated assets as requirements for understanding.
-  - Inspect bounded-read guidance that starts from compact inputs and escalates to full-file reads only when compact inputs are missing, conflicting, or insufficient.
-- Expected result:
-  - The skill prevents public-vision leakage, unrequested research, unreadable output, and needless broad reads.
-- Failure proves:
-  - The vision skill can expose private data, overclaim research, or inflate evidence collection.
-- Automation location:
-  - Focused content assertions in `scripts/test-skill-validator.py`
-
-### T6. Proposal and proposal-review skills enforce Vision fit behavior
-
-- Covers: `R29`-`R39`, `R75`-`R78`, `E5`, `E6`, `E7`, EC4, EC5, EC10, `AC3`, `AC4`, `AC12`
-- Level: contract
-- Fixture/setup:
-  - `skills/proposal/SKILL.md`
-  - `skills/proposal-review/SKILL.md`
-- Steps:
-  - Inspect proposal guidance for a required `Vision fit` section on new and substantively revised proposals after adoption.
-  - Inspect the exact allowed values, including `no vision exists yet`.
-  - Inspect guidance that prevents silently redefining project vision.
-  - Inspect proposal-review guidance for missing-section handling and conflict classification.
-  - Inspect explicit exception guidance for owner or stage, evidence, why proposal and vision revision were not chosen, record location, and future-trigger classification.
-  - Inspect legacy-proposal wording so historical proposals are not invalid solely because they lack `Vision fit`.
-- Expected result:
-  - Proposal authors and reviewers have one visible proposal-fit decision point without rewriting legacy proposals.
-- Failure proves:
-  - Proposal review can miss vision conflicts or demand retroactive churn on legacy artifacts.
-- Automation location:
-  - `python scripts/validate-skills.py`
-  - `python scripts/test-skill-validator.py`
-  - Focused `rg` scans if no dedicated regression is added
-
-### T7. Governance and public ownership surfaces document the vision source-of-truth boundary
+### T6. Governance and workflow source boundaries remain aligned
 
 - Covers: `R40`-`R42`, `R46`-`R55`, `AC5`, `AC10`
 - Level: contract/manual
@@ -210,27 +208,71 @@
   - `docs/workflows.md`
   - `README.md`
 - Steps:
-  - Inspect `CONSTITUTION.md` for `vision.md` below `CONSTITUTION.md` and above README front-matter in the vision source-of-truth story.
-  - Inspect `AGENTS.md` and `docs/workflows.md` for concise operational guidance: `vision` is upstream and not a normal per-change stage.
-  - Inspect README ownership guidance for generated marker-bounded front-matter from `vision.md`.
-  - Confirm README front-matter is not independently authoritative when it conflicts with `vision.md`.
-  - Confirm workflow guidance does not insert `vision` into the normal lifecycle chain.
+  - Inspect `CONSTITUTION.md` for `vision.md` below `CONSTITUTION.md` and above README front-matter in the vision source-of-truth order.
+  - Inspect `AGENTS.md`, `docs/workflows.md`, and README ownership guidance for `vision.md` as the canonical project-vision artifact.
+  - Confirm proposal guidance remains summarized as `Vision fit` for proposals created or substantively revised after adoption.
+  - Confirm the normal lifecycle chain does not include `vision`.
+  - If implementation touches none of these files, record `unaffected with rationale` in the active plan or change-local metadata.
 - Expected result:
-  - Governance, workflow, and README ownership surfaces all tell the same source-of-truth story.
+  - Existing governance and workflow surfaces remain coherent without unnecessary edits.
 - Failure proves:
-  - Agents can follow conflicting precedence, lifecycle, or README ownership guidance.
+  - The refinement either caused governance drift or made unrelated governance changes without need.
 - Automation location:
-  - Focused `rg` scans plus manual review
-  - `python scripts/select-validation.py --mode explicit --path README.md` confirms `README.md` is classified as `readme`
+  - Existing assertions in `scripts/test-skill-validator.py`
+  - Manual review of unchanged or changed surfaces
 
-### T8. Generated Codex and adapter outputs are refreshed only through existing generators
+### T7. Proposal and proposal-review Vision fit behavior remains covered
 
-- Covers: `R43`-`R45`, `E2`, EC9, `AC6`, `AC7`
+- Covers: `R29`-`R39`, `R75`-`R78`, `E5`, `E6`, `E7`, `AC3`, `AC4`, `AC12`
+- Level: contract
+- Fixture/setup:
+  - `skills/proposal/SKILL.md`
+  - `skills/proposal-review/SKILL.md`
+- Steps:
+  - Inspect proposal guidance for a required `Vision fit` section on new and substantively revised proposals after adoption.
+  - Inspect the exact allowed values, including `no vision exists yet`.
+  - Inspect guidance that prevents silently redefining project vision.
+  - Inspect proposal-review guidance for missing-section handling and conflict classification.
+  - Inspect explicit exception guidance for owner or stage, evidence, rationale against proposal and vision revision, record location, and future-trigger classification.
+  - If implementation touches none of these files, record `unaffected with rationale`.
+- Expected result:
+  - Proposal-fit behavior remains stable while the vision skill itself is refined.
+- Failure proves:
+  - The refinement introduced drift in adjacent proposal workflow behavior.
+- Automation location:
+  - Existing assertions in `scripts/test-skill-validator.py`
+
+### T8. Scope guard prevents unintended project vision or shared-boilerplate changes
+
+- Covers: `R8`, `R20`, `R41`-`R42`, `AC2`, `AC19`, quality-refinement non-goals
+- Level: smoke/manual
+- Fixture/setup:
+  - repository diff for the active plan
+  - `vision.md`
+  - `README.md`
+  - portable skill files
+- Steps:
+  - Inspect the implementation diff to confirm this refinement does not revise root `vision.md`.
+  - Inspect README diff to confirm marker behavior or front-matter content is not changed by this refinement unless a later approved scope explicitly requires it.
+  - Confirm no README mirror helper script is introduced.
+  - Confirm no shared evidence-collection extraction or cross-skill boilerplate consolidation is included.
+  - Confirm editorial and mirror-only changes still do not require a new change-local pack solely because the vision skill ran.
+- Expected result:
+  - The refinement stays inside the approved vision skill quality scope.
+- Failure proves:
+  - The implementation crossed a non-goal boundary or conflated this refinement with broader cleanup.
+- Automation location:
+  - Manual diff review
+  - Final `git diff --check -- .`
+
+### T9. Generated Codex and adapter outputs are refreshed only through generators
+
+- Covers: `R43`-`R45`, `AC6`, `AC7`
 - Level: integration
 - Fixture/setup:
-  - canonical skill sources under `skills/`
-  - generated Codex mirror under `.codex/skills/`
-  - generated public adapters under `dist/adapters/`
+  - canonical `skills/vision/SKILL.md`
+  - generated `.codex/skills/vision/SKILL.md`
+  - generated `dist/adapters/*/skills/vision/SKILL.md` paths
 - Steps:
   - Run `python scripts/build-skills.py`.
   - Run `python scripts/build-adapters.py --version 0.1.1`.
@@ -238,123 +280,85 @@
   - Run `python scripts/test-adapter-distribution.py`.
   - Run `python scripts/build-adapters.py --version 0.1.1 --check`.
   - Run `python scripts/validate-adapters.py --version 0.1.1`.
-  - Inspect generated manifest and adapter skill output for `vision` inclusion when portability rules allow it.
-  - Confirm opencode command aliases are not added for `vision` unless existing alias policy includes it.
+  - Inspect generated `vision` skill copies for expected canonical changes and no hand-edited drift.
 - Expected result:
-  - Generated outputs include the new portable skill and updated proposal/review guidance without hand edits or drift.
+  - Generated runtime and adapter outputs match the canonical refined skill.
 - Failure proves:
-  - Distribution surfaces are stale, manually edited, or inconsistent with canonical skill sources.
+  - Distribution surfaces are stale, manually edited, or inconsistent with canonical sources.
 - Automation location:
-  - Existing generated-output and adapter commands from M3 and M4
+  - Existing generator and adapter commands
 
-### T9. Selector routing proves classified paths and README validation routing
+### T10. Selector routing continues to cover README marker and lifecycle surfaces
 
-- Covers: `R79`-`R80`, `AC9`, EC11
+- Covers: `R79`-`R80`, `AC9`
 - Level: integration
 - Fixture/setup:
-  - changed canonical skill, governance, generated-output, lifecycle, and README paths
-- Steps:
-  - Run `python scripts/test-select-validation.py`.
-  - Run selector explicit mode for canonical governance and skill paths listed in M2.
-  - Run selector explicit mode for generated paths listed in M3.
-  - Run `python scripts/select-validation.py --mode explicit --path README.md` and confirm `readme.validate` is selected without `unclassified-path`.
-  - Run PR-mode selector coverage that includes `README.md` and `skills/vision/SKILL.md`, and confirm `readme.validate` and `readme.vision_markers` are selected without blocking.
-  - Run `python scripts/validate-readme.py README.md` and `python scripts/validate-readme.py README.md --vision-markers`.
-  - Continue manual review of README ownership wording against `R51`, `R54`, `R55`, and `AC10`.
-- Expected result:
-  - Classified paths select the expected repository-owned checks, `README.md` routes as `readme`, and marker validation runs when the marker block is present or the vision skill is in scope.
-- Failure proves:
-  - Validation routing either misses changed surfaces or lets approved README edits block PR-mode CI as `unclassified-path`.
-- Automation location:
-  - `python scripts/test-select-validation.py`
-  - `python scripts/select-validation.py --mode explicit ...`
-  - `python scripts/validate-readme.py`
-
-### T10. Change metadata and lifecycle validation include the matching test spec
-
-- Covers: all requirements as closeout evidence
-- Level: integration
-- Fixture/setup:
-  - `docs/changes/2026-04-29-vision-skill/change.yaml`
-  - `docs/plan.md`
-  - `docs/plans/2026-04-29-vision-skill.md`
-  - `docs/proposals/2026-04-29-vision-skill.md`
-  - `specs/vision-skill.md`
-  - `specs/vision-skill.test.md`
-- Steps:
-  - Run `python scripts/test-change-metadata-validator.py`.
-  - Run `python scripts/validate-change-metadata.py docs/changes/2026-04-29-vision-skill/change.yaml`.
-  - Run the M4 lifecycle command, including `--path specs/vision-skill.test.md`.
-  - Confirm `change.yaml` records proposal, spec, plan, test spec, canonical skill, governance, README, and generated-output artifacts.
-- Expected result:
-  - Final closeout validates every lifecycle-managed authoritative artifact for this planned initiative.
-- Failure proves:
-  - The implementation can appear complete while omitting the active proof map or change-local metadata.
-- Automation location:
-  - M4 validation commands
-
-### T11. No unintended project-vision or README-front-matter content is introduced
-
-- Covers: `R8`, `R11`, `R41`-`R42`, non-goals
-- Level: smoke/manual
-- Fixture/setup:
-  - repository root
+  - changed lifecycle, spec, test-spec, skill, generated-output, and change-local paths
   - `README.md`
-  - generated outputs after M3
 - Steps:
-  - Run `test ! -e vision.md`.
-  - Inspect README diff to confirm the implementation updates ownership guidance only and does not insert generated `<!-- vision:start -->` front-matter.
-  - Confirm no new README mirror helper script is introduced.
-  - Confirm the normal lifecycle string does not include `vision`.
+  - Run selector explicit mode for changed lifecycle and skill paths.
+  - Run `python scripts/select-validation.py --mode explicit --path README.md` when README validation is relevant.
+  - Run `python scripts/validate-readme.py README.md --vision-markers` when selected or when README markers are present.
+  - Confirm no changed path is reported as `unclassified-path`.
 - Expected result:
-  - The change installs the method without authoring the initial project vision or generated README front-matter.
+  - Selector-selected validation covers the refinement without broad smoke unless a later authoritative trigger requires it.
 - Failure proves:
-  - The implementation crossed the proposal non-goal boundary.
+  - The active validation plan can miss changed surfaces or regress README marker routing.
 - Automation location:
-  - M1, M2, and M4 validation plus manual diff review
+  - `python scripts/select-validation.py --mode explicit ...`
+  - `python scripts/validate-readme.py README.md --vision-markers`
 
-### T12. Final implementation gate runs targeted validation and broad smoke
+### T11. Final targeted closeout proves lifecycle, tests, and generated output
 
-- Covers: all requirements and `AC1`-`AC12`
+- Covers: all requirements and `AC1`-`AC19`
 - Level: smoke
 - Fixture/setup:
-  - all M1-M4 implementation changes
+  - all M1-M3 implementation changes
+  - `docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml`
 - Steps:
-  - Run all M4 validation commands.
-  - Run `bash scripts/ci.sh --mode broad-smoke` because the active plan requires broad smoke.
+  - Run `python scripts/validate-skills.py`.
+  - Run `python scripts/test-skill-validator.py`.
+  - Run `python scripts/build-skills.py --check`.
+  - Run `python scripts/test-adapter-distribution.py`.
+  - Run `python scripts/build-adapters.py --version 0.1.1 --check`.
+  - Run `python scripts/validate-adapters.py --version 0.1.1`.
+  - Run `python scripts/validate-change-metadata.py docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml`.
+  - Run lifecycle validation over `docs/plan.md`, the active plan, proposal, spec, test spec, and change metadata.
+  - Run `bash scripts/ci.sh --mode explicit` over the changed authoritative paths named in the active plan.
   - Run `git diff --check -- .`.
   - Record commands and results in the active plan validation notes and change-local metadata.
 - Expected result:
-  - The implementation is ready for first-pass `code-review`; PR and explain readiness remain downstream of code-review and verify.
+  - The refinement is ready for first-pass `code-review`; PR and explain readiness remain downstream of code-review and verify.
 - Failure proves:
-  - The implementation is not ready to leave implementation, even if targeted local checks passed earlier.
+  - The implementation is not ready to leave implementation, even if focused local checks passed earlier.
 - Automation location:
-  - M4 validation commands
+  - M3 validation commands in `docs/plans/2026-04-30-vision-skill-quality-refinement.md`
 
 ## Fixtures and data
 
 - No new persistent fixtures are required by default.
-- If implementation adds focused regression assertions, place them in existing repository-owned test modules such as `scripts/test-skill-validator.py` rather than adding a new validator.
-- Generated-output tests use existing adapter fixtures under `tests/fixtures/adapters/`.
-- Skill validation tests use existing skill fixtures under `tests/fixtures/skills/` when fixture changes are needed.
-- README proof uses the real `README.md` diff plus lightweight README validation because no mirror helper script exists in this slice.
+- Add focused assertions to existing `scripts/test-skill-validator.py` rather than creating a new validator.
+- Generated-output tests use existing adapter fixture and distribution checks.
+- Skill validation tests use the real canonical `skills/vision/SKILL.md`.
+- README proof uses the real `README.md` and marker validation because no mirror helper script is in scope.
 
 ## Mocking/stubbing policy
 
 - Do not mock repository-owned validation commands in milestone proof.
 - Existing adapter tests may continue using temporary directories and in-process helper calls for generated-output fixtures.
-- Do not stub `scripts/build-skills.py`, `scripts/build-adapters.py`, selector behavior, or artifact lifecycle validation in final M4 proof.
+- Do not stub `scripts/build-skills.py`, `scripts/build-adapters.py`, selector behavior, artifact lifecycle validation, or change-metadata validation in final proof.
 
 ## Migration or compatibility tests
 
-- Existing proposals remain valid without `Vision fit` until substantively revised; verify by inspecting proposal/proposal-review guidance rather than rewriting old proposals.
-- Existing README content remains author-owned outside future vision markers; verify by diff review, `python scripts/validate-readme.py README.md --vision-markers`, and `git diff --check -- README.md`.
-- Generated adapter compatibility is validated through `python scripts/test-adapter-distribution.py`, `python scripts/build-adapters.py --version 0.1.1 --check`, and `python scripts/validate-adapters.py --version 0.1.1`.
-- Existing lifecycle order remains unchanged; verify `docs/workflows.md` and relevant skill guidance do not insert `vision` into the normal lifecycle chain.
+- Existing proposals remain valid without `Vision fit` until substantively revised; verify by preserving proposal and proposal-review guidance, not by rewriting old proposals.
+- Existing README content remains author-owned outside vision markers; verify through skill wording and diff review.
+- Existing root `vision.md` remains out of scope for this refinement; verify no refinement diff changes it.
+- Generated adapter compatibility is validated through existing adapter distribution, build-check, and adapter validation commands.
+- Existing lifecycle order remains unchanged; verify the skill and workflow guidance do not insert `vision` into the normal lifecycle chain.
 
 ## Observability verification
 
-- The skill's required user-facing run output is verified by contract text: mode used, files changed, README front-matter action, create-mode assumptions, revise-mode sections changed, and mirror-mode unchanged `vision.md`.
+- The skill's required user-facing run output is verified by contract text: mode used, files changed, README front-matter action, create-mode assumptions, revise-mode sections changed, mirror-mode unchanged `vision.md`, and R94 causal-link status for substantive revisions.
 - No runtime logs, metrics, traces, or audit events are introduced.
 - Final implementation evidence is recorded through plan validation notes and change-local metadata.
 
@@ -362,48 +366,53 @@
 
 - Inspect the `vision` skill for sensitive-information exclusions and confirmation behavior before public inclusion.
 - Inspect the `vision` skill for the external research boundary and researched-fact versus assumption reporting.
-- Do not include secrets, credentials, private local paths, private machine names, or personal data in `vision.md`, README front-matter examples, tests, or generated adapter output.
+- Confirm new drafting heuristics do not encourage publishing secrets, private local paths, private machine names, personal data, or unrequested external facts.
 
 ## Performance checks
 
 - No runtime performance behavior is introduced.
-- Evidence collection performance is covered by bounded-read guidance in the `vision` skill and existing output-budget guidance in workflow documentation.
-- Do not add broad scans beyond the active plan's explicit validation commands.
+- Evidence collection performance remains covered by bounded-read guidance in the skill and existing workflow output-budget guidance.
+- Do not add broad scans beyond the active plan's explicit validation commands unless a later authoritative trigger requires broad smoke.
 
 ## Manual QA checklist
 
-- Confirm no root `vision.md` exists after M1 and M4.
-- Confirm README has no generated vision front-matter inserted by this implementation.
-- Confirm README ownership wording is clear enough for future marker-bounded generation.
-- Confirm `README.md` is classified as `readme` and does not block PR-mode selector routing as `unclassified-path`.
-- Confirm proposal and proposal-review guidance uses exactly the approved `Vision fit` values.
-- Confirm governance wording keeps `CONSTITUTION.md` above `vision.md` and README front-matter below `vision.md`.
-- Confirm generated adapter manifest includes `vision` as a portable skill but does not add an opencode command alias unless the existing alias policy includes it.
+- Confirm workflow-fit guidance appears before detailed mode mechanics.
+- Confirm mode behavior is represented by exactly one Markdown table with the required columns and one row per mode.
+- Confirm edit authorization is consolidated and does not weaken overwrite protection.
+- Confirm drafting heuristics are questions or checks and not new `vision.md` sections.
+- Confirm competitor naming remains optional.
+- Confirm revise-mode traceability no longer uses soft "remind" wording for substantive revisions tied to a change-local pack.
+- Confirm root `vision.md` and README front-matter are not revised by this refinement.
+- Confirm generated skill and adapter copies match canonical skill output.
 
 ## What not to test
 
-- Do not create or validate the initial project `vision.md` in this implementation.
-- Do not test actual README marker insertion with a helper script; no helper script is in scope.
-- Do not rewrite existing proposals to add `Vision fit`.
+- Do not run actual `vision create`, `vision revise`, or `vision mirror` as an external agent workflow; this slice tests the skill contract text.
+- Do not create, revise, or validate root `vision.md` content as part of this refinement.
+- Do not test a README mirror helper script; no helper script is in scope.
+- Do not rewrite legacy proposals to add `Vision fit`.
 - Do not test external Codex, Claude Code, or opencode execution.
 - Do not fetch external research for vision drafting.
-- Do not use snapshots as the only assertion for skill behavior; assert required contract wording directly.
+- Do not score generated vision prose quality with a validator; assert the required drafting heuristics instead.
+- Do not extract or consolidate shared evidence-collection boilerplate across skills.
 
 ## Uncovered gaps
 
-- None. Requirements are covered by contract checks, existing repository-owned validation commands, generated-output integration checks, README validation, selector inspection, manual README review, or final closeout validation.
+- None. Requirements are covered by focused skill assertions, contract inspection, existing repository-owned validation commands, generated-output integration checks, selector inspection, manual diff review, or final lifecycle closeout validation.
 
 ## Next artifacts
 
-- `implement` for M1-M4 in `docs/plans/2026-04-29-vision-skill.md`.
+- `implement` for M1-M3 in `docs/plans/2026-04-30-vision-skill-quality-refinement.md`.
 - `code-review` after implementation completes and plan validation notes are updated.
 - `verify` after code-review is clean or findings are resolved.
 - `explain-change` and `pr` after verify reports branch readiness.
 
 ## Follow-on artifacts
 
-- None yet.
+- `plan-review`: approved on 2026-04-30 with no material findings.
 
 ## Readiness
 
-This test spec remains the proof map for the merged vision skill implementation. M1 through M5 are complete, code-review is clean, verify has passed, explain-change is complete, and PR #23 is merged. No repository workflow stage remains pending for this implementation.
+This test spec is the active proof map for the 2026-04-30 vision skill quality refinement.
+
+Immediate next repository stage: `implement` M1 in `docs/plans/2026-04-30-vision-skill-quality-refinement.md`.
