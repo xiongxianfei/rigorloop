@@ -37,6 +37,40 @@ Evaluate each dimension with `pass`, `concern`, or `block`:
 9. **Rollout realism**: is compatibility, migration, rollback, and observability considered?
 10. **Readiness for spec**: are open questions small enough to continue?
 
+## Vision fit review
+
+Check the proposal's `Vision fit` section.
+
+If the proposal was created or substantively revised after the vision spec was adopted and lacks `Vision fit`, request revision. Legacy proposals are not invalid solely because they lack `Vision fit`.
+
+Allowed `Vision fit` values are:
+
+- `fits the current vision`
+- `may conflict with the current vision`
+- `intentionally proposes a vision revision`
+- `no vision exists yet`
+
+If root `vision.md` exists, `Vision fit` must not say `no vision exists yet`.
+
+When root `vision.md` is absent, proposal-review must request revision if `Vision fit` is missing or replaced with a claim that fits, conflicts with, or revises a nonexistent vision.
+
+If a proposal conflicts with `vision.md`, classify the required outcome as exactly one of:
+
+- revise proposal
+- revise vision
+- record explicit exception
+
+An explicit exception must include:
+
+- approving owner or owning stage
+- evidence for the conflict
+- why proposal revision is not chosen
+- why vision revision is not chosen
+- where the exception is recorded
+- whether the exception is one-time or establishes a future vision-revision trigger
+
+The exception must be recorded in both the proposal's `Vision fit` section and the proposal-review output. If the proposal is part of a non-trivial change, recommend summarizing the exception in `explain-change.md`.
+
 ## Adversarial questions
 
 Ask these when useful:

@@ -25,6 +25,12 @@ Do not use RigorLoop when:
 3. Inspect the [shipped proof-of-value example](docs/changes/0001-skill-validator/).
 4. If the approach fits, start from the lifecycle artifacts under [docs/](docs/), [specs/](specs/), and [skills/](skills/).
 
+## Vision and README Ownership
+
+`vision.md` is the canonical project-vision artifact. Proposals created or substantively revised after this spec is adopted include `Vision fit`.
+
+README content between `<!-- vision:start -->` and `<!-- vision:end -->` is generated from `vision.md`. README front-matter is not the source of truth when it conflicts with `vision.md`.
+
 ## Adapter Packages
 
 RigorLoop ships generated adapter packages for Codex, Claude Code, and opencode under `dist/adapters/`.

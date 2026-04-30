@@ -31,6 +31,7 @@ SCAN_SENSITIVE_SKILLS = [
     "spec-review",
     "test-spec",
     "verify",
+    "vision",
     "workflow",
 ]
 
@@ -189,6 +190,108 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         for term in required_terms:
             with self.subTest(term=term):
                 self.assertIn(term, body)
+
+    def test_vision_skill_defines_modes_boundaries_and_readme_marker_contract(self) -> None:
+        body = (ROOT / "skills" / "vision" / "SKILL.md").read_text(encoding="utf-8")
+        required_terms = [
+            "name: vision",
+            "project vision and matching README front-matter",
+            "## Modes",
+            "create",
+            "revise",
+            "mirror",
+            "Do not create the initial `vision.md` just because this skill is installed",
+            "`vision.md` is canonical",
+            "`CONSTITUTION.md` outranks `vision.md`",
+            "<!-- vision:start -->",
+            "<!-- vision:end -->",
+            "first H1 block",
+            "Automatic marker insertion is allowed only in `create` mode.",
+            "In `mirror` or `revise`, missing or malformed markers stop the skill before file modification",
+            "explicitly authorizes marker insertion or skipping README mirroring",
+            "malformed, nested, or multiple vision marker pairs",
+            "Mode used:",
+            "Files changed:",
+            "README front-matter:",
+            "Assumptions:",
+            "Sections changed:",
+            "secrets",
+            "credentials",
+            "private local filesystem paths",
+            "private machine names",
+            "personal data not explicitly intended for publication",
+            "must not fetch external information unless",
+            "distinguish researched facts from project assumptions",
+            "plain Markdown",
+            "rendered tables, diagrams, HTML layout, or generated assets",
+            "compact project inputs",
+            "full-file reads",
+            "summary and stable-ID first",
+            "When full-file read is required",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, body)
+
+    def test_proposal_skills_define_vision_fit_contract(self) -> None:
+        proposal_body = (ROOT / "skills" / "proposal" / "SKILL.md").read_text(encoding="utf-8")
+        proposal_review_body = (
+            ROOT / "skills" / "proposal-review" / "SKILL.md"
+        ).read_text(encoding="utf-8")
+
+        proposal_terms = [
+            "`Vision fit`",
+            "new or substantively revised proposals",
+            "fits the current vision",
+            "may conflict with the current vision",
+            "intentionally proposes a vision revision",
+            "no vision exists yet",
+            "When root `vision.md` is absent, proposals must use the exact `Vision fit` value `no vision exists yet`.",
+            "must not silently redefine project vision",
+            "Legacy proposals",
+        ]
+        for term in proposal_terms:
+            with self.subTest(skill="proposal", term=term):
+                self.assertIn(term, proposal_body)
+
+        proposal_review_terms = [
+            "Check the proposal's `Vision fit` section",
+            "created or substantively revised after the vision spec was adopted",
+            "request revision",
+            "When root `vision.md` is absent, proposal-review must request revision if `Vision fit` is missing or replaced with a claim that fits, conflicts with, or revises a nonexistent vision.",
+            "revise proposal",
+            "revise vision",
+            "record explicit exception",
+            "approving owner or owning stage",
+            "evidence for the conflict",
+            "why proposal revision is not chosen",
+            "why vision revision is not chosen",
+            "where the exception is recorded",
+            "one-time",
+            "future vision-revision trigger",
+            "`explain-change.md`",
+        ]
+        for term in proposal_review_terms:
+            with self.subTest(skill="proposal-review", term=term):
+                self.assertIn(term, proposal_review_body)
+
+    def test_governance_workflow_and_readme_define_vision_source_of_truth(self) -> None:
+        constitution = (ROOT / "CONSTITUTION.md").read_text(encoding="utf-8")
+        self.assertIn("2. `vision.md`", constitution)
+        self.assertIn("3. `specs/`", constitution)
+        self.assertIn("README front-matter", constitution)
+
+        required_terms = [
+            "`vision.md` is the canonical project-vision artifact",
+            "created or substantively revised after this spec is adopted include `Vision fit`",
+            "README content between `<!-- vision:start -->` and `<!-- vision:end -->` is generated from `vision.md`",
+            "README front-matter is not the source of truth when it conflicts with `vision.md`",
+        ]
+        for relative_path in ["AGENTS.md", "docs/workflows.md", "README.md"]:
+            body = (ROOT / relative_path).read_text(encoding="utf-8")
+            for term in required_terms:
+                with self.subTest(path=relative_path, term=term):
+                    self.assertIn(term, body)
 
 
 if __name__ == "__main__":
