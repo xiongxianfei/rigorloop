@@ -63,6 +63,9 @@ skills:
   verify:
     portable: true
     adapters: [codex, claude, opencode]
+  vision:
+    portable: true
+    adapters: [codex, claude, opencode]
   workflow:
     portable: true
     adapters: [codex, claude, opencode]
