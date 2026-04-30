@@ -425,13 +425,17 @@ This plan uses two validation command types:
   - `bash scripts/ci.sh --mode local` passed, including selected README marker validation, selector regression, change metadata, artifact lifecycle, and plan-triggered broad smoke.
   - After the M5 commit, `python scripts/select-validation.py --mode pr --base origin/main --head HEAD` passed with `README.md` classified as `readme`, no unclassified paths, and both `readme.validate` and `readme.vision_markers` selected.
   - After the M5 commit, `bash scripts/ci.sh --mode pr --base origin/main --head HEAD` passed, including README validation and PR-mode broad smoke. The broad-smoke lifecycle pass reported existing unrelated warnings for legacy proposal files and exited successfully.
+  - Code-review completed clean with notes and no findings.
+  - Verify reran targeted and PR-mode validation successfully, then blocked only on stale tracked handoff metadata in this plan and `docs/changes/2026-04-29-vision-skill/change.yaml`.
+  - Metadata correction updated this plan and `docs/changes/2026-04-29-vision-skill/change.yaml`; lifecycle and change metadata validation passed after the correction.
 
 ## Outcome and retrospective
 
-- Active. M1 through M4 implementation closeout is complete; M5 has resolved the README selector blocker and PR-mode validation passes. Code-review, verify, explain-change, and PR readiness remain downstream gates.
+- Active. M1 through M5 implementation closeout is complete. Code-review completed clean with notes and no findings. Verify reran the required validation set successfully and found only stale tracked handoff metadata, which this update resolves. `explain-change` is the immediate next repository stage; PR readiness remains downstream.
 
 ## Readiness
 
-- M1 through M4 are complete.
-- M5 final validation is complete.
-- The immediate next repository stage is `code-review`; `verify`, `explain-change`, and PR readiness remain downstream gates.
+- M1 through M5 are complete.
+- Code-review is complete with no findings.
+- Verify validation passed after the tracked metadata correction.
+- The immediate next repository stage is `explain-change`; PR readiness remains downstream.
