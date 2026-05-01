@@ -276,7 +276,7 @@ verification:
   branch_ready: true
   location: docs/plans/2026-04-30-vision-skill-quality-refinement.md
   required_next_stage: pr
-  notes: Verify reran PR-mode selector inspection, review closeout validation, whitespace validation, and PR-mode local CI at the current branch tip. Hosted CI was not observed.
+  notes: Verify reran PR-mode selector inspection, review closeout validation, whitespace validation, and PR-mode local CI at the current branch tip. Hosted CI passed on PR #24.
 explanation:
   status: complete
   pr_handoff_ready: true
@@ -286,7 +286,9 @@ closeout:
   docs_plan_updated: true
   docs_plan_rationale: docs/plan.md moved the initiative from Active to Done during PR handoff because implementation, review, verify, explanation, and PR handoff readiness are complete before merge.
 pr:
-  status: handoff_ready
+  status: merged
+  url: https://github.com/xiongxianfei/rigorloop/pull/24
+  merge_commit: 3ee2df8ba53df87814b0e9afb3f3bdf8aec76cd3
   pr_body_ready: true
   pr_open_ready: true
-  required_next_stage: pr_open
+  required_next_stage: none

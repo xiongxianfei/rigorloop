@@ -66,7 +66,7 @@ Key validation evidence is recorded in `docs/changes/2026-04-30-vision-skill-qua
 - `python scripts/select-validation.py --mode pr --base 28f1736 --head HEAD` passed during verify rerun and selected the expected skill, adapter, review artifact, lifecycle, metadata, README, vision marker, and selector checks.
 - `bash scripts/ci.sh --mode pr --base 28f1736 --head HEAD` passed during verify rerun.
 
-Hosted CI has not been observed from this local environment. Local branch-ready verification has passed; `pr` still owns `pr-body-ready` and `pr-open-ready`.
+Hosted CI passed on PR #24 after the PR opened.
 
 ## Review Resolution Summary
 
@@ -97,9 +97,9 @@ Review closeout is recorded in `docs/changes/2026-04-30-vision-skill-quality-ref
 
 ## Risks And Follow-Ups
 
-- Hosted CI still needs to be observed by the PR stage or reported as unavailable.
+- Hosted CI passed on PR #24.
 - Final lifecycle closeout is recorded in both `docs/plan.md` and `docs/plans/2026-04-30-vision-skill-quality-refinement.md`; no merge-dependent plan cleanup remains.
 
 ## Readiness
 
-This explanation is current through PR lifecycle closeout and the final local PR-mode CI rerun. Branch-ready, `pr-body-ready`, and `pr-open-ready` are satisfied locally; the remaining PR-stage actions are pushing the review branch, opening the PR, and observing hosted CI.
+This explanation is current through PR #24 merge. Branch-ready, `pr-body-ready`, `pr-open-ready`, hosted CI, and merge completion are satisfied.

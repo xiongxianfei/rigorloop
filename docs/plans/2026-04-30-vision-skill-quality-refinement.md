@@ -4,7 +4,7 @@
 - Owner: maintainers
 - Start date: 2026-04-30
 - Last updated: 2026-05-01
-- Related issue or PR: PR handoff ready; URL assigned by `pr` stage
+- Related issue or PR: PR #24 merged at https://github.com/xiongxianfei/rigorloop/pull/24
 - Supersedes: none
 - broad_smoke_required: false
 - broad_smoke_reason: The first refinement is limited to the vision skill contract, matching proof map, focused skill-validator assertions, and generated skill or adapter output. Existing structural and selector-selected checks cover those surfaces without repository broad smoke.
@@ -367,11 +367,11 @@ The plan preserves the approved project vision, README marker contract, source-o
 
 ## Outcome and retrospective
 
-- Implementation milestones M1-M3 are complete, CR1-F1 review-resolution is closed, `code-review-r2` and `code-review-r3` are clean, the root `vision.md` selector blocker found by verify is fixed with regression coverage, the direct explain-change artifact is current, verify rerun passed at current branch tip, and PR handoff readiness is complete.
+- Implementation milestones M1-M3 are complete, CR1-F1 review-resolution is closed, `code-review-r2` and `code-review-r3` are clean, the root `vision.md` selector blocker found by verify is fixed with regression coverage, the direct explain-change artifact is current, verify rerun passed at current branch tip, PR #24 merged, and hosted CI passed.
 
 ## Readiness
 
-- Lifecycle closeout is complete in this plan body and `docs/plan.md`. The branch is ready for pull request opening; hosted CI status remains owned by the opened PR.
+- Lifecycle closeout is complete in this plan body and `docs/plan.md`. PR #24 is merged with merge commit `3ee2df8ba53df87814b0e9afb3f3bdf8aec76cd3`.
 
 ## Risks and follow-ups
 
