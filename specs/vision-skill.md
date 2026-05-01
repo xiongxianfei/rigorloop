@@ -288,9 +288,9 @@ R77. An explicit vision-conflict exception MUST be recorded in both the proposal
 
 R78. If a proposal with an explicit vision-conflict exception is part of a non-trivial change, the exception SHOULD also be summarized in `explain-change.md`.
 
-R79. `README.md` MUST be classified as a supported `readme` validation surface when it is touched by the vision-skill implementation.
+R79. `README.md` and root `vision.md` MUST be classified as supported validation surfaces when they are touched by vision-skill work.
 
-R80. Selector routing MUST select lightweight README validation for changed `README.md`, and MUST select vision marker validation when a standalone vision marker block is present or when the `vision` skill is in scope.
+R80. Selector routing MUST select lightweight README validation for changed `README.md`, MUST select vision marker validation for changed root `vision.md`, and MUST select vision marker validation when a standalone vision marker block is present or when the `vision` skill is in scope.
 
 R81. The `vision` skill MUST place workflow-fit guidance immediately after the opening purpose/scope paragraphs and before any Inputs to read, Modes, README behavior, Rules, Output paths, or Failure modes sections. The workflow-fit guidance MUST be visible before detailed mode behavior begins.
 
@@ -429,7 +429,7 @@ No runtime performance behavior is introduced. Evidence collection behavior is g
 - AC6. Generated `.codex/skills/` output is synchronized through `scripts/build-skills.py`.
 - AC7. Generated `dist/adapters/` output is synchronized through `scripts/build-adapters.py`.
 - AC8. README marker ownership is documented in the skill without requiring a helper script.
-- AC9. Existing validation selectors identify the changed skill, generated-output, lifecycle, workflow, and README surfaces without requiring broad smoke unless an authoritative trigger adds it; `README.md` must not block PR-mode CI as `unclassified-path`.
+- AC9. Existing validation selectors identify the changed skill, generated-output, lifecycle, workflow, README, and root `vision.md` surfaces without requiring broad smoke unless an authoritative trigger adds it; `README.md` and `vision.md` must not block PR-mode CI as `unclassified-path`.
 - AC10. `CONSTITUTION.md`, `AGENTS.md`, and applicable workflow or README ownership guidance document the `vision.md` source-of-truth boundary.
 - AC11. README marker insertion behavior is deterministic and preserves content outside the generated marker block.
 - AC12. Proposal-review explicit exceptions for vision conflicts include owner or stage, evidence, rationale against proposal and vision revision, recording location, and future-trigger classification.

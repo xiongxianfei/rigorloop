@@ -11,18 +11,23 @@ artifacts:
 canonical_artifacts:
   vision_skill: skills/vision/SKILL.md
   focused_skill_tests: scripts/test-skill-validator.py
+  validation_selector: scripts/validation_selection.py
+  selector_tests: scripts/test-select-validation.py
 generated_artifacts:
   codex_vision_skill: .codex/skills/vision/SKILL.md
   claude_vision_skill: dist/adapters/claude/.claude/skills/vision/SKILL.md
   codex_adapter_vision_skill: dist/adapters/codex/.agents/skills/vision/SKILL.md
   opencode_vision_skill: dist/adapters/opencode/.opencode/skills/vision/SKILL.md
 requirements:
+  - specs/vision-skill.md R79-R80
   - specs/vision-skill.md R19
   - specs/vision-skill.md R81-R94
+  - specs/vision-skill.md AC9
   - specs/vision-skill.md AC13-AC19
 tests:
   - specs/vision-skill.test.md T1-T11
   - scripts/test-skill-validator.py vision quality refinement assertions
+  - scripts/test-select-validation.py root vision selector assertions
 validation:
   - command: python scripts/test-skill-validator.py
     result: expected_fail_before_m1_skill_revision
@@ -157,6 +162,27 @@ validation:
     selected_check_ids: skills.validate, skills.regression, skills.drift, adapters.regression, adapters.drift, adapters.validate, review_artifacts.validate, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, readme.vision_markers
   - command: git diff --check -- docs/changes/2026-04-30-vision-skill-quality-refinement docs/plans/2026-04-30-vision-skill-quality-refinement.md
     result: pass_after_code_review_r2_lifecycle_sync
+  - command: python scripts/test-select-validation.py ValidationSelectionTests.test_root_vision_path_selects_marker_validation_without_unclassified_block ValidationSelectionTests.test_pr_mode_routes_root_vision_without_unclassified_block
+    result: expected_fail_before_vision_path_selector_fix
+    reason: Root vision.md was unclassified before selector coverage was added.
+  - command: python scripts/test-select-validation.py ValidationSelectionTests.test_root_vision_path_selects_marker_validation_without_unclassified_block ValidationSelectionTests.test_pr_mode_routes_root_vision_without_unclassified_block
+    result: pass_after_vision_path_selector_fix
+  - command: python scripts/test-select-validation.py
+    result: pass_after_vision_path_selector_fix
+  - command: python scripts/select-validation.py --mode explicit --path .codex/skills/vision/SKILL.md --path README.md --path dist/adapters/claude/.claude/skills/vision/SKILL.md --path dist/adapters/codex/.agents/skills/vision/SKILL.md --path dist/adapters/opencode/.opencode/skills/vision/SKILL.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/review-log.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/review-resolution.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/reviews/code-review-r1.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/reviews/code-review-r2.md --path docs/plan.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/proposals/2026-04-30-vision-skill-quality-refinement.md --path scripts/test-skill-validator.py --path scripts/test-select-validation.py --path scripts/validation_selection.py --path skills/vision/SKILL.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path vision.md
+    result: pass_after_vision_path_selector_fix
+    selected_check_ids: skills.validate, skills.regression, skills.drift, adapters.regression, adapters.drift, adapters.validate, review_artifacts.validate, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, readme.validate, readme.vision_markers, selector.regression
+  - command: bash scripts/ci.sh --mode explicit --path .codex/skills/vision/SKILL.md --path README.md --path dist/adapters/claude/.claude/skills/vision/SKILL.md --path dist/adapters/codex/.agents/skills/vision/SKILL.md --path dist/adapters/opencode/.opencode/skills/vision/SKILL.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/review-log.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/review-resolution.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/reviews/code-review-r1.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/reviews/code-review-r2.md --path docs/plan.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/proposals/2026-04-30-vision-skill-quality-refinement.md --path scripts/test-skill-validator.py --path scripts/test-select-validation.py --path scripts/validation_selection.py --path skills/vision/SKILL.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path vision.md
+    result: pass_after_vision_path_selector_fix
+    selected_check_ids: skills.validate, skills.regression, skills.drift, adapters.regression, adapters.drift, adapters.validate, review_artifacts.validate, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, readme.validate, readme.vision_markers, selector.regression
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml
+    result: pass_after_vision_path_selector_fix
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/proposals/2026-04-30-vision-skill-quality-refinement.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md
+    result: pass_after_vision_path_selector_fix
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-30-vision-skill-quality-refinement
+    result: pass_after_vision_path_selector_fix
+  - command: git diff --check -- .
+    result: pass_after_vision_path_selector_fix
 changed_files:
   - docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml
   - docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md
@@ -172,16 +198,20 @@ changed_files:
   - dist/adapters/codex/.agents/skills/vision/SKILL.md
   - dist/adapters/opencode/.opencode/skills/vision/SKILL.md
   - scripts/test-skill-validator.py
+  - scripts/test-select-validation.py
+  - scripts/validation_selection.py
   - skills/vision/SKILL.md
   - specs/vision-skill.md
   - specs/vision-skill.test.md
+  - README.md
+  - vision.md
 review:
-  status: verified_branch_ready_pending_explain_change
+  status: selector_fix_pending_code_review_rerun
   unresolved_items: 0
 implementation:
-  status: verified_branch_ready
+  status: selector_fix_implemented
   generated_output_refreshed: true
-  note: CR1-F1 added the missing revise-mode ask-or-confirm gate, refreshed generated output, closed review-resolution, recorded code-review-r2 as clean-with-notes, and passed verify with branch-ready evidence.
+  note: CR1-F1 added the missing revise-mode ask-or-confirm gate, refreshed generated output, closed review-resolution, recorded code-review-r2 as clean-with-notes, passed verify, then received a selector fix so root vision.md no longer blocks PR-mode validation as unclassified.
 closeout:
   docs_plan_updated: false
-  docs_plan_rationale: docs/plan.md remains correct because the initiative is still active until downstream explain-change, PR handoff, and final closeout.
+  docs_plan_rationale: docs/plan.md remains correct because the initiative is still active until downstream code-review rerun, verify, explain-change, PR handoff, and final closeout.

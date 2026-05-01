@@ -36,7 +36,7 @@
 | `R29`-`R39`, `R75`-`R78` | `T7`, `T11` | Proposal and proposal-review `Vision fit` behavior remains a regression guard. |
 | `R8`, `R20`, quality-refinement non-goals | `T8`, `T11` | The refinement does not revise root `vision.md`, change README marker behavior, or extract shared boilerplate. |
 | `R43`-`R45` | `T9`, `T11` | Generated skill and adapter output is refreshed only through existing generators. |
-| `R79`-`R80` | `T10`, `T11` | README selector routing and marker validation remain covered when the vision skill is in scope. |
+| `R79`-`R80` | `T10`, `T11` | README and root `vision.md` selector routing plus marker validation remain covered when the vision skill is in scope. |
 
 ## Example coverage map
 
@@ -183,6 +183,7 @@
 - Fixture/setup:
   - `skills/vision/SKILL.md`
   - `README.md`
+  - root `vision.md`
 - Steps:
   - Inspect the skill for the exact marker pair `<!-- vision:start -->` and `<!-- vision:end -->`.
   - Inspect create-mode guidance for deterministic marker insertion after the first H1 block, including attached badge/image lines and blanks.
@@ -298,6 +299,8 @@
 - Steps:
   - Run selector explicit mode for changed lifecycle and skill paths.
   - Run `python scripts/select-validation.py --mode explicit --path README.md` when README validation is relevant.
+  - Run `python scripts/select-validation.py --mode explicit --path vision.md` when root project vision validation routing is relevant.
+  - Run PR-mode selector coverage for a branch that changes root `vision.md`.
   - Run `python scripts/validate-readme.py README.md --vision-markers` when selected or when README markers are present.
   - Confirm no changed path is reported as `unclassified-path`.
 - Expected result:
@@ -352,7 +355,7 @@
 
 - Existing proposals remain valid without `Vision fit` until substantively revised; verify by preserving proposal and proposal-review guidance, not by rewriting old proposals.
 - Existing README content remains author-owned outside vision markers; verify through skill wording and diff review.
-- Existing root `vision.md` remains out of scope for this refinement; verify no refinement diff changes it.
+- Existing root `vision.md` creation remains separate from the quality refinement; verify selector routing covers root `vision.md` when it is changed.
 - Generated adapter compatibility is validated through existing adapter distribution, build-check, and adapter validation commands.
 - Existing lifecycle order remains unchanged; verify the skill and workflow guidance do not insert `vision` into the normal lifecycle chain.
 
