@@ -1,0 +1,73 @@
+change_id: 2026-05-01-vision-skill-simplification-and-vision-md-migration
+title: Vision skill simplification and VISION.md migration
+classification: workflow-governance-migration
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-01-vision-skill-simplification-and-vision-md-migration.md
+  spec: specs/vision-skill-simplification-and-vision-md-migration.md
+  plan: docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md
+  test_spec: specs/vision-skill-simplification-and-vision-md-migration.test.md
+  explain_change: docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/explain-change.md
+requirements:
+  - R9
+  - R10
+  - R11
+  - R12
+  - R15
+  - R66
+  - R67
+  - R68
+  - R69
+  - R70
+  - R71
+  - R83
+  - AC10
+  - AC11
+  - AC12
+  - AC19
+  - AC20
+tests:
+  - specs/vision-skill-simplification-and-vision-md-migration.test.md T9
+validation:
+  - command: python scripts/test-select-validation.py
+    result: expected_fail_before_m1_selector_implementation
+    reason: New uppercase root vision and both-path conflict assertions failed before selector support was added.
+  - command: python scripts/test-select-validation.py
+    result: pass_after_m1_selector_implementation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml
+    result: pass_after_m1
+  - command: python scripts/select-validation.py --mode explicit --path VISION.md
+    result: pass_after_m1
+    selected_check_ids: readme.vision_markers
+  - command: python scripts/select-validation.py --mode explicit --path vision.md
+    result: pass_after_m1
+    selected_check_ids: readme.vision_markers
+  - command: python scripts/select-validation.py --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py
+    result: pass_after_m1
+    selected_check_ids: selector.regression
+  - command: bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py
+    result: pass_after_m1
+    selected_check_ids: selector.regression
+  - command: python scripts/select-validation.py --mode explicit --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/explain-change.md
+    result: pass_after_m1_extra_evidence
+    selected_check_ids: artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, readme.vision_markers
+  - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/explain-change.md
+    result: pass_after_m1_extra_evidence
+    selected_check_ids: artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, readme.vision_markers
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path docs/proposals/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.test.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml
+    result: pass_after_m1_extra_evidence
+  - command: git diff --check -- scripts/validation_selection.py scripts/test-select-validation.py docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration
+    result: pass_after_m1
+changed_files:
+  - docs/plan.md
+  - docs/proposals/2026-05-01-vision-skill-simplification-and-vision-md-migration.md
+  - specs/vision-skill-simplification-and-vision-md-migration.md
+  - specs/vision-skill-simplification-and-vision-md-migration.test.md
+  - docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md
+  - docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml
+  - docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/explain-change.md
+  - scripts/validation_selection.py
+  - scripts/test-select-validation.py
+review:
+  status: not_started
+  unresolved_items: 0
