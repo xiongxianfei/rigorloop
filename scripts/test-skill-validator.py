@@ -233,6 +233,75 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             with self.subTest(term=term):
                 self.assertIn(term, body)
 
+    def test_vision_skill_quality_refinement_contract(self) -> None:
+        body = (ROOT / "skills" / "vision" / "SKILL.md").read_text(encoding="utf-8")
+        required_terms = [
+            "## Drafting Heuristics",
+            "alternative class or specific tool",
+            "tradeoff",
+            "pain points",
+            "checkable",
+            "observable",
+            "at least one plausible non-fit",
+            "concrete enough to block misaligned proposals",
+            "not additional `vision.md` sections",
+            "does not require naming a specific competitor",
+            "## Edit Authorization",
+            "`CONSTITUTION.md` outranks `vision.md`",
+            "`vision.md` outranks README front-matter",
+            "only authorized edit paths",
+            "existing visions are not overwritten without clear `revise` or `mirror` intent",
+            "existing or required change-local pack",
+            "before finalizing",
+            "ask or confirm whether the revision is `substantive` or `editorial` before finalizing",
+            "required causal link was recorded or not required",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, body)
+
+        forbidden_terms = [
+            "remind the contributor",
+            "## Source Of Truth",
+            "## Existing Vision Protection",
+        ]
+        for term in forbidden_terms:
+            with self.subTest(term=term):
+                self.assertNotIn(term, body)
+
+    def test_vision_skill_quality_refinement_structure(self) -> None:
+        body = (ROOT / "skills" / "vision" / "SKILL.md").read_text(encoding="utf-8")
+
+        workflow_index = body.index("## Workflow Fit")
+        inputs_index = body.index("## Inputs To Read")
+        modes_index = body.index("## Modes")
+        vision_content_index = body.index("## Vision Content")
+        drafting_index = body.index("## Drafting Heuristics")
+        readme_index = body.index("## README Front-Matter")
+
+        self.assertLess(workflow_index, inputs_index)
+        self.assertLess(inputs_index, modes_index)
+        self.assertLess(vision_content_index, drafting_index)
+        self.assertLess(drafting_index, readme_index)
+
+        mode_table_lines = [
+            line
+            for line in body.splitlines()
+            if line.startswith("| `create` |")
+            or line.startswith("| `revise` |")
+            or line.startswith("| `mirror` |")
+        ]
+        self.assertEqual(
+            [line.split("|")[1].strip() for line in mode_table_lines],
+            ["`create`", "`revise`", "`mirror`"],
+            msg="expected exactly one ordered mode-table row for create, revise, and mirror",
+        )
+        self.assertEqual(len(mode_table_lines), 3)
+        self.assertIn(
+            "| Mode | When it applies | Authorized edits | README behavior | Stop or clarification conditions |",
+            body,
+        )
+
     def test_proposal_skills_define_vision_fit_contract(self) -> None:
         proposal_body = (ROOT / "skills" / "proposal" / "SKILL.md").read_text(encoding="utf-8")
         proposal_review_body = (

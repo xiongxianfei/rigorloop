@@ -554,6 +554,14 @@ def _apply_path_selection(
         _add_check(selected, "readme.validate", "Changed README requires lightweight README validation.")
         return
 
+    if category == "vision":
+        _add_check(
+            selected,
+            "readme.vision_markers",
+            "Changed root vision requires README vision marker validation.",
+        )
+        return
+
     if category in {"selector", "ci-wrapper"}:
         reason = (
             "Changed CI wrapper requires selector and wrapper regression fixtures."
@@ -727,6 +735,8 @@ def _path_category(path: str) -> str | None:
     parts = path.split("/")
     if path == "README.md":
         return "readme"
+    if path == "vision.md":
+        return "vision"
     if path.startswith("tests/fixtures/artifact-lifecycle/"):
         return "artifact-lifecycle-fixtures"
     if path.startswith("skills/"):

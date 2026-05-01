@@ -13,6 +13,14 @@ A vision answers: what is this, who is it for, what does it commit to, what does
 
 This is not a proposal, spec, architecture document, roadmap, task tracker, or README maintenance pass. It describes project identity and scope. It does not describe how the project is built.
 
+## Workflow Fit
+
+This skill is upstream of the normal per-change workflow. It does not hand off to another stage on completion.
+
+Use it at project genesis, or when proposal review or learn surfaces a vision-level conflict. Do not run it just because a feature was added, an architecture changed, or README needs ordinary setup instructions.
+
+Future proposals should be checked against `vision.md` when it exists, but proposal requirements still belong in proposals and specs.
+
 ## Inputs To Read
 
 Start with compact project inputs when available:
@@ -29,59 +37,37 @@ Use summary and stable-ID first reasoning before broad reads or raw excerpts. Pr
 
 Escalate from compact inputs to broader reads or full-file reads only when compact inputs are missing, conflicting, or insufficient to decide project-level framing.
 
-## Source Of Truth
+## Edit Authorization
 
 `CONSTITUTION.md` outranks `vision.md`.
 
-`vision.md` is canonical for project vision and proposal-fit reasoning. README front-matter is generated from `vision.md` and is not independently authoritative.
+`vision.md` is canonical for project-vision content.
+
+`vision.md` outranks README front-matter. README front-matter is generated from `vision.md` and is not independently authoritative.
+
+The only authorized edit paths are `create`, `revise`, and `mirror`.
 
 Do not edit README front-matter directly to express a vision change. Edit `vision.md`, then run this skill in `mirror` mode.
 
 Do not create the initial `vision.md` just because this skill is installed. The first `vision.md` is created only by an explicit create-mode invocation.
 
+If root `vision.md` exists and the user's request does not clearly specify `revise` or `mirror`, stop and ask which mode applies before editing; existing visions are not overwritten without clear `revise` or `mirror` intent.
+
 ## Modes
 
 Use exactly one mode.
 
-### create
-
-Use create mode when no root `vision.md` exists and the user clearly asks to produce the project vision.
-
-Create:
-
-- root `vision.md`
-- README front-matter at the deterministic marker location
-
-Report assumptions and open vision-level questions.
-
-### revise
-
-Use revise mode when root `vision.md` exists and the user names a section or project-level change to revise.
-
-Update only the named section unless the change necessarily cascades to another section. If it cascades, say why. Regenerate README front-matter after the vision edit.
-
-Before finalizing, classify the revision as substantive or editorial. A substantive revision is caused by a proposal, incident, learning, or project-direction drift. When a change-local pack exists, remind the contributor to record the causal link in:
-
-```text
-docs/changes/<change-id>/change.yaml
-docs/changes/<change-id>/explain-change.md
-```
+| Mode | When it applies | Authorized edits | README behavior | Stop or clarification conditions |
+| --- | --- | --- | --- | --- |
+| `create` | No root `vision.md` exists and the user clearly asks to produce the project vision. | Create root `vision.md`; insert the README marker block when needed. | Create or replace README front-matter at the deterministic marker location. Report assumptions and open vision-level questions. | If a root `vision.md` already exists, stop unless the user changes intent to `revise` or `mirror`. |
+| `revise` | Root `vision.md` exists and the user names a section or project-level change to revise. | Update only the named section unless the change necessarily cascades; if it cascades, say why. Ask or confirm whether the revision is `substantive` or `editorial` before finalizing. | Regenerate README front-matter after the vision edit. Report sections changed. | If the section is unnamed, ask which section is being revised. If a substantive revision is tied to an existing or required change-local pack, require the causal link in `docs/changes/<change-id>/change.yaml` and `docs/changes/<change-id>/explain-change.md` before finalizing. |
+| `mirror` | Root `vision.md` exists and remains current. | Leave `vision.md` unchanged. | Regenerate README front-matter from `vision.md`; if it already matches, report that no content changed. | If root `vision.md` is missing, stop because there is no canonical source to mirror. |
 
 Editorial revisions and mirror-only changes do not require a new change-local pack solely because this skill ran.
 
-If the user asks to revise an unnamed section, ask which section is being revised before editing.
+In revise mode, ask or confirm whether the revision is `substantive` or `editorial` before finalizing.
 
-### mirror
-
-Use mirror mode when root `vision.md` exists and remains current.
-
-Leave `vision.md` unchanged and regenerate README front-matter from it. If README front-matter already matches, report that no content changed.
-
-If root `vision.md` is missing, stop because there is no canonical source to mirror.
-
-## Existing Vision Protection
-
-If root `vision.md` exists and the user's request does not clearly specify `revise` or `mirror`, stop and ask which mode applies before editing. Do not silently overwrite authorial judgment.
+For substantive revise-mode output, report whether the required causal link was recorded or not required.
 
 ## Vision Content
 
@@ -105,6 +91,19 @@ Include sections, in this order, with plain-language headings:
 8. Open questions, only when vision-level uncertainty remains
 
 Concrete and verifiable language beats abstract claims. Scope refusals should be real enough to guide future proposal decisions.
+
+## Drafting Heuristics
+
+Use these as authoring questions or checks, not additional `vision.md` sections:
+
+- Differentiator: what alternative class or specific tool is this different from, and what tradeoff does this project make?
+- Pain points: are the project pain points embedded in the differentiator instead of presented as an unrelated complaint list?
+- Commitments: is each commitment concrete and checkable by a future reviewer?
+- Falsifiability: are the failure conditions observable from behavior or artifacts?
+- Audience: does the audience statement rule out at least one plausible non-fit?
+- Refusals: are scope refusals concrete enough to block misaligned proposals?
+
+The differentiator comparison may name an alternative class or a specific tool. It does not require naming a specific competitor.
 
 ## README Front-Matter
 
@@ -148,14 +147,6 @@ The skill must not fetch external information unless the user explicitly request
 
 If external research is used, distinguish researched facts from project assumptions.
 
-## Workflow Fit
-
-This skill is upstream of the normal per-change workflow. It does not hand off to another stage on completion.
-
-Use it at project genesis, or when proposal review or learn surfaces a vision-level conflict. Do not run it just because a feature was added, an architecture changed, or README needs ordinary setup instructions.
-
-Future proposals should be checked against `vision.md` when it exists, but proposal requirements still belong in proposals and specs.
-
 ## Rules
 
 - Do not create or revise `vision.md` unless the mode authorizes that edit.
@@ -184,5 +175,7 @@ Report:
 - README front-matter: created, replaced, unchanged, or not applicable
 - Assumptions: required in create mode
 - Sections changed: required in revise mode
+- Revision classification: `substantive` or `editorial`, required in revise mode
 - `vision.md` unchanged: required in mirror mode
+- For substantive revise mode: whether the required causal link was recorded or not required
 - open questions suitable for human review before treating the vision as current
