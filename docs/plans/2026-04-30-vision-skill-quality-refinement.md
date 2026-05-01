@@ -234,6 +234,7 @@ The plan preserves the approved project vision, README marker contract, source-o
 - 2026-04-30: `verify` passed with verdict `ready`; branch-ready is satisfied and the next workflow stage is `explain-change`.
 - 2026-05-01: A follow-up verify pass found root `vision.md` blocked PR-mode CI as `unclassified-path`; selector coverage and regression tests were added for root `vision.md`.
 - 2026-05-01: `code-review-r3` reviewed the post-`code-review-r2` diff, including root `vision.md`, README front-matter, lifecycle sync, and selector coverage, and returned `clean-with-notes` with no material findings.
+- 2026-05-01: Direct `explain-change` refresh rewrote the change explanation around the current branch state and recorded that PR handoff remains blocked until verify rerun.
 
 ## Decision log
 
@@ -341,14 +342,19 @@ The plan preserves the approved project vision, README marker contract, source-o
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/proposals/2026-04-30-vision-skill-quality-refinement.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md`
   - `python scripts/select-validation.py --mode explicit --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/review-log.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/review-resolution.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/reviews/code-review-r3.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md` selected `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `readme.vision_markers`
   - `bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/review-log.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/review-resolution.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/reviews/code-review-r3.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md`
+- 2026-05-01: direct `explain-change` refresh validation passed:
+  - `python scripts/validate-change-metadata.py docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/proposals/2026-04-30-vision-skill-quality-refinement.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-30-vision-skill-quality-refinement`
+  - `bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/plans/2026-04-30-vision-skill-quality-refinement.md`
 
 ## Outcome and retrospective
 
-- Implementation milestones M1-M3 are complete, CR1-F1 review-resolution is closed, `code-review-r2` and `code-review-r3` are clean, and the root `vision.md` selector blocker found by verify is fixed with regression coverage. Outcome remains open until verify rerun, explain-change, PR handoff, and final closeout.
+- Implementation milestones M1-M3 are complete, CR1-F1 review-resolution is closed, `code-review-r2` and `code-review-r3` are clean, the root `vision.md` selector blocker found by verify is fixed with regression coverage, and the direct explain-change artifact is current. Outcome remains open until verify rerun, PR handoff, and final closeout.
 
 ## Readiness
 
-- Root `vision.md` selector blocker is fixed and `code-review-r3` is clean. The initiative is ready for `verify` rerun; `explain-change`, `pr-body-ready`, and `pr-open-ready` remain downstream.
+- Root `vision.md` selector blocker is fixed, `code-review-r3` is clean, and the direct explanation artifact is current. The initiative is ready for `verify` rerun; `pr-body-ready` and `pr-open-ready` remain downstream.
 
 ## Risks and follow-ups
 
