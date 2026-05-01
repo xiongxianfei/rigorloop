@@ -1,10 +1,10 @@
 # Vision Skill Quality Refinement Execution Plan
 
-- Status: active
+- Status: done
 - Owner: maintainers
 - Start date: 2026-04-30
 - Last updated: 2026-05-01
-- Related issue or PR: none yet
+- Related issue or PR: PR handoff ready; URL assigned by `pr` stage
 - Supersedes: none
 - broad_smoke_required: false
 - broad_smoke_reason: The first refinement is limited to the vision skill contract, matching proof map, focused skill-validator assertions, and generated skill or adapter output. Existing structural and selector-selected checks cover those surfaces without repository broad smoke.
@@ -236,6 +236,7 @@ The plan preserves the approved project vision, README marker contract, source-o
 - 2026-05-01: `code-review-r3` reviewed the post-`code-review-r2` diff, including root `vision.md`, README front-matter, lifecycle sync, and selector coverage, and returned `clean-with-notes` with no material findings.
 - 2026-05-01: Direct `explain-change` refresh rewrote the change explanation around the current branch state and recorded that PR handoff remains blocked until verify rerun.
 - 2026-05-01: `verify` reran on the current branch tip after `code-review-r3` and direct `explain-change`; branch-ready is satisfied and the next stage is `pr`.
+- 2026-05-01: During `pr`, lifecycle closeout moved this plan to Done and moved the plan index entry from Active to Done before opening the pull request.
 
 ## Decision log
 
@@ -358,14 +359,19 @@ The plan preserves the approved project vision, README marker contract, source-o
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/proposals/2026-04-30-vision-skill-quality-refinement.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md`
   - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-30-vision-skill-quality-refinement`
   - `bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md`
+- 2026-05-01: PR lifecycle closeout validation passed:
+  - `python scripts/validate-change-metadata.py docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/proposals/2026-04-30-vision-skill-quality-refinement.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md`
+  - `git diff --check -- docs/plan.md docs/plans/2026-04-30-vision-skill-quality-refinement.md docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml`
+  - `bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml`
 
 ## Outcome and retrospective
 
-- Implementation milestones M1-M3 are complete, CR1-F1 review-resolution is closed, `code-review-r2` and `code-review-r3` are clean, the root `vision.md` selector blocker found by verify is fixed with regression coverage, the direct explain-change artifact is current, and verify rerun passed at current branch tip. Outcome remains open until PR handoff and final closeout.
+- Implementation milestones M1-M3 are complete, CR1-F1 review-resolution is closed, `code-review-r2` and `code-review-r3` are clean, the root `vision.md` selector blocker found by verify is fixed with regression coverage, the direct explain-change artifact is current, verify rerun passed at current branch tip, and PR handoff readiness is complete.
 
 ## Readiness
 
-- Root `vision.md` selector blocker is fixed, `code-review-r3` is clean, the direct explanation artifact is current, and `verify` reports branch-ready. The initiative is ready for `pr`; `pr-body-ready` and `pr-open-ready` remain downstream.
+- Lifecycle closeout is complete in this plan body and `docs/plan.md`. The branch is ready for pull request opening; hosted CI status remains owned by the opened PR.
 
 ## Risks and follow-ups
 
