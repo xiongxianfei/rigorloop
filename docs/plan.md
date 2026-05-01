@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- none yet
+- [2026-05-01 Vision skill simplification and VISION.md migration](plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md) - active execution plan for migrating root `vision.md` to `VISION.md`, retiring user-facing vision modes, updating active contracts and governance, adding selector/validator coverage, and refreshing generated skill and adapter output.
 
 ## Blocked
 - none yet
