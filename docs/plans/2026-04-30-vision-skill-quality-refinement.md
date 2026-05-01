@@ -3,7 +3,7 @@
 - Status: active
 - Owner: maintainers
 - Start date: 2026-04-30
-- Last updated: 2026-04-30
+- Last updated: 2026-05-01
 - Related issue or PR: none yet
 - Supersedes: none
 - broad_smoke_required: false
@@ -233,6 +233,7 @@ The plan preserves the approved project vision, README marker contract, source-o
 - 2026-04-30: `verify` initially found stale tracked lifecycle state because the clean code-review rerun had not been recorded durably; review and readiness artifacts were synchronized before rerunning validation.
 - 2026-04-30: `verify` passed with verdict `ready`; branch-ready is satisfied and the next workflow stage is `explain-change`.
 - 2026-05-01: A follow-up verify pass found root `vision.md` blocked PR-mode CI as `unclassified-path`; selector coverage and regression tests were added for root `vision.md`.
+- 2026-05-01: `code-review-r3` reviewed the post-`code-review-r2` diff, including root `vision.md`, README front-matter, lifecycle sync, and selector coverage, and returned `clean-with-notes` with no material findings.
 
 ## Decision log
 
@@ -329,14 +330,25 @@ The plan preserves the approved project vision, README marker contract, source-o
   - `python scripts/test-select-validation.py`
   - `python scripts/select-validation.py --mode explicit --path .codex/skills/vision/SKILL.md --path README.md --path dist/adapters/claude/.claude/skills/vision/SKILL.md --path dist/adapters/codex/.agents/skills/vision/SKILL.md --path dist/adapters/opencode/.opencode/skills/vision/SKILL.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/review-log.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/review-resolution.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/reviews/code-review-r1.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/reviews/code-review-r2.md --path docs/plan.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/proposals/2026-04-30-vision-skill-quality-refinement.md --path scripts/test-skill-validator.py --path scripts/test-select-validation.py --path scripts/validation_selection.py --path skills/vision/SKILL.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path vision.md`
   - `bash scripts/ci.sh --mode explicit --path .codex/skills/vision/SKILL.md --path README.md --path dist/adapters/claude/.claude/skills/vision/SKILL.md --path dist/adapters/codex/.agents/skills/vision/SKILL.md --path dist/adapters/opencode/.opencode/skills/vision/SKILL.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/review-log.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/review-resolution.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/reviews/code-review-r1.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/reviews/code-review-r2.md --path docs/plan.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/proposals/2026-04-30-vision-skill-quality-refinement.md --path scripts/test-skill-validator.py --path scripts/test-select-validation.py --path scripts/validation_selection.py --path skills/vision/SKILL.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path vision.md`
+- 2026-05-01: `code-review-r3` focused proof passed:
+  - `python scripts/test-select-validation.py ValidationSelectionTests.test_root_vision_path_selects_marker_validation_without_unclassified_block ValidationSelectionTests.test_pr_mode_routes_root_vision_without_unclassified_block`
+  - `python scripts/select-validation.py --mode explicit --path vision.md --path README.md --path scripts/validation_selection.py --path scripts/test-select-validation.py` selected `readme.validate`, `readme.vision_markers`, and `selector.regression`
+  - `python scripts/validate-readme.py README.md --vision-markers`
+  - `git diff --check fd7111d..2d83ac1 --`
+- 2026-05-01: `code-review-r3` lifecycle and review-artifact validation passed:
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-30-vision-skill-quality-refinement`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md --path docs/proposals/2026-04-30-vision-skill-quality-refinement.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md`
+  - `python scripts/select-validation.py --mode explicit --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/review-log.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/review-resolution.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/reviews/code-review-r3.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md` selected `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `readme.vision_markers`
+  - `bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/review-log.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/review-resolution.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/reviews/code-review-r3.md --path docs/plans/2026-04-30-vision-skill-quality-refinement.md`
 
 ## Outcome and retrospective
 
-- Implementation milestones M1-M3 are complete, CR1-F1 review-resolution is closed, `code-review-r2` is clean, and the root `vision.md` selector blocker found by verify is fixed with regression coverage. Outcome remains open until code-review rerun, verify rerun, explain-change, PR handoff, and final closeout.
+- Implementation milestones M1-M3 are complete, CR1-F1 review-resolution is closed, `code-review-r2` and `code-review-r3` are clean, and the root `vision.md` selector blocker found by verify is fixed with regression coverage. Outcome remains open until verify rerun, explain-change, PR handoff, and final closeout.
 
 ## Readiness
 
-- Root `vision.md` selector blocker is fixed and ready for `code-review` rerun. `verify`, `explain-change`, `pr-body-ready`, and `pr-open-ready` remain downstream.
+- Root `vision.md` selector blocker is fixed and `code-review-r3` is clean. The initiative is ready for `verify` rerun; `explain-change`, `pr-body-ready`, and `pr-open-ready` remain downstream.
 
 ## Risks and follow-ups
 

@@ -33,7 +33,7 @@ M2 refreshes generated `.codex/skills/` and `dist/adapters/` output through the 
 - Generated `.codex/skills/` and `dist/adapters/` files are updated only through repository generators.
 - Shared evidence-collection boilerplate extraction remains out of scope.
 - Proposal, proposal-review, and governance behavior are not broadened in M1.
-- `docs/plan.md` remains active and unchanged because the initiative has not completed the new code-review rerun, verify rerun, explain-change, PR handoff, or Done closeout.
+- `docs/plan.md` remains active and unchanged because the initiative has not completed verify rerun, explain-change, PR handoff, or Done closeout.
 
 ## Validation Evidence
 
@@ -118,4 +118,4 @@ Root vision selector fix:
 
 ## Readiness
 
-CR1-F1 review-resolution has closed, `code-review-r2` is clean, and the root `vision.md` selector blocker is fixed with regression coverage. The new selector change is ready for `code-review` rerun before verify and downstream PR handoff.
+CR1-F1 review-resolution has closed, `code-review-r2` is clean, and the root `vision.md` selector blocker is fixed with regression coverage. `code-review-r3` reviewed the post-r2 diff and found no material findings. The initiative is ready for verify rerun before downstream PR handoff.
