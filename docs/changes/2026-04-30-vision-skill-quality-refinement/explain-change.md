@@ -63,8 +63,10 @@ Key validation evidence is recorded in `docs/changes/2026-04-30-vision-skill-qua
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...` passed for the plan, proposal, spec, test spec, change metadata, and this explanation.
 - `bash scripts/ci.sh --mode explicit ...code-review-r3...` passed after recording the third review.
 - `bash scripts/ci.sh --mode explicit --path docs/changes/2026-04-30-vision-skill-quality-refinement/explain-change.md --path docs/changes/2026-04-30-vision-skill-quality-refinement/change.yaml --path docs/plans/2026-04-30-vision-skill-quality-refinement.md` passed after refreshing this explanation.
+- `python scripts/select-validation.py --mode pr --base 28f1736 --head HEAD` passed during verify rerun and selected the expected skill, adapter, review artifact, lifecycle, metadata, README, vision marker, and selector checks.
+- `bash scripts/ci.sh --mode pr --base 28f1736 --head HEAD` passed during verify rerun.
 
-Hosted CI has not been observed from this local environment. A fresh `verify` rerun is still required after `code-review-r3` before PR readiness can be claimed.
+Hosted CI has not been observed from this local environment. Local branch-ready verification has passed; `pr` still owns `pr-body-ready` and `pr-open-ready`.
 
 ## Review Resolution Summary
 
@@ -95,10 +97,9 @@ Review closeout is recorded in `docs/changes/2026-04-30-vision-skill-quality-ref
 
 ## Risks And Follow-Ups
 
-- `verify` must rerun after tracked `code-review-r3` before branch-ready or PR handoff can be claimed.
-- Hosted CI has not been observed.
-- `docs/plan.md` remains active until verify, PR handoff, and final Done closeout complete.
+- Hosted CI still needs to be observed by the PR stage or reported as unavailable.
+- `docs/plan.md` remains active until PR handoff and final Done closeout complete.
 
 ## Readiness
 
-This explanation is current through the tracked `code-review-r3` record. It is not a PR-ready claim. The next required stage is `verify`; PR handoff remains blocked until verify reports branch-ready. If verify changes readiness evidence, refresh this explanation before PR handoff.
+This explanation is current through the verify rerun after tracked `code-review-r3`. Branch-ready is satisfied locally. The next required stage is `pr`, which owns `pr-body-ready` and `pr-open-ready`.
