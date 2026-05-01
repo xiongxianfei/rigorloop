@@ -98,8 +98,8 @@ Review closeout is recorded in `docs/changes/2026-04-30-vision-skill-quality-ref
 ## Risks And Follow-Ups
 
 - Hosted CI still needs to be observed by the PR stage or reported as unavailable.
-- `docs/plan.md` remains active until PR handoff and final Done closeout complete.
+- Final lifecycle closeout is recorded in both `docs/plan.md` and `docs/plans/2026-04-30-vision-skill-quality-refinement.md`; no merge-dependent plan cleanup remains.
 
 ## Readiness
 
-This explanation is current through the verify rerun after tracked `code-review-r3`. Branch-ready is satisfied locally. The next required stage is `pr`, which owns `pr-body-ready` and `pr-open-ready`.
+This explanation is current through PR lifecycle closeout and the final local PR-mode CI rerun. Branch-ready, `pr-body-ready`, and `pr-open-ready` are satisfied locally; the remaining PR-stage actions are pushing the review branch, opening the PR, and observing hosted CI.
