@@ -80,6 +80,16 @@ A proposal must not silently redefine project vision outside the `Vision fit` se
 
 Legacy proposals are not invalid solely because they lack `Vision fit`; add it only when the proposal is new or substantively revised after adoption.
 
+## Standing artifact gates
+
+A substantive proposal is any proposal that chooses product direction, user-facing behavior, workflow policy, architecture direction, compatibility policy, release policy, or contributor-visible contract.
+
+`VISION.md` absence blocks the first substantive proposal unless the proposal is bootstrap work to create or migrate project vision.
+
+`CONSTITUTION.md` absence blocks governance adoption, workflow-governance changes, and source-of-truth changes unless the proposal is bootstrap work to create or migrate the constitution.
+
+Bootstrap proposals must identify the bootstrap exception in `Vision fit`. If the proposal is not bootstrap work and the required standing artifact is missing, stop before drafting a substantive proposal.
+
 ## Decision quality checklist
 
 Before marking accepted or ready for review, verify:
@@ -107,7 +117,7 @@ Before marking accepted or ready for review, verify:
 
 ## Workflow handoff behavior
 
-- In a workflow-managed flow, successful `proposal` completion hands off to `proposal-review` when that review is the next required or default downstream stage.
+- In a workflow-managed flow, successful `proposal` completion hands off to `proposal-review` when that review is the next mandatory or triggered downstream stage.
 - If open questions or direction gaps still block review, stop and report the blocker instead of implying that `proposal-review` can proceed.
 - This v1 contract does not imply `proposal-review -> spec`; review-to-next-authoring transitions remain outside the autoprogression boundary unless a later approved change adds them.
 

@@ -49,15 +49,19 @@ Use `docs/workflows.md` for the short operational summary.
 
 The `vision` skill is upstream of the per-change workflow, not a normal lifecycle stage. Use it at project genesis or when proposal review or learning surfaces a vision-level conflict.
 
+`docs/project-map.md`, when present, is a living reference. Do not rely on it when it is absent, known-stale, contradicted, or missing the relied-on area unless you refresh it or record a no-map rationale.
+
+Use `explore` and `research` as on-demand support when ambiguity, option expansion, or current external facts affect the decision. `learn` is periodic or explicitly invoked; close a triggered lesson by capturing it, scheduling a follow-up, or recording an explicit no-learn rationale.
+
 Once proposal, spec, and architecture are already settled, execution usually proceeds through:
 
-`plan -> plan-review -> test-spec -> implement -> code-review -> verify -> ci when needed -> explain-change -> pr`
+`plan -> plan-review -> test-spec -> implement -> code-review -> review-resolution when triggered -> verify -> ci-maintenance when triggered -> explain-change -> pr`
 
-In workflow-managed completion flows, continue automatically into the next required or default downstream stage when the approved autoprogression contract says to do so. Do not wait for redundant user confirmation to enter a known review or PR gate. Review-only or explicitly isolated stage requests stay isolated, direct `pr` still opens the PR when readiness passes, and fast-lane and bugfix execution remain explicit-step unless a higher-priority artifact broadens them.
+In workflow-managed completion flows, continue automatically into the next mandatory or triggered downstream stage when the approved autoprogression contract says to do so. Do not wait for redundant user confirmation to enter a known review or PR gate. Review-only or explicitly isolated stage requests stay isolated, direct `pr` still opens the PR when readiness passes, and fast-lane and bugfix execution remain explicit-step unless a higher-priority artifact broadens them.
 
 Add `plan-review` before spec work when the task is risky, cross-cutting, or hard to sequence cleanly.
 
-Use `bugfix` for bugs, `ci` for GitHub Actions or automation changes when workflow automation for a material risk is missing or stale, and `pr` only when the branch is already ready for review.
+Use `bugfix` for bugs, `ci` for ci-maintenance when GitHub Actions or related automation for a material risk is missing, stale, or wrong, and `pr` only when the branch is already ready for review.
 
 ## Plan file policy
 

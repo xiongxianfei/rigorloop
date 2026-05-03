@@ -20,32 +20,24 @@ Your job is not to replace the specialized skills. Your job is to route work thr
 6. **Small-batch**: prefer one reviewable milestone or PR at a time.
 7. **Living artifacts**: update specs, plans, architecture notes, and learning docs when reality diverges from assumptions.
 
-## Canonical artifact order
+## Workflow Categories
 
-For significant work, use this order:
+The workflow spec owns the full category and routing contract. Use these categories when routing work:
 
-```text
-constitution / project context
-→ project-map when architecture is unclear
-→ explore
-→ research when assumptions need evidence
-→ proposal
-→ proposal-review
-→ spec
-→ spec-review
-→ architecture
-→ architecture-review when risk is meaningful
-→ plan
-→ plan-review
-→ test-spec
-→ implement
-→ code-review
-→ verify including CI when available
-→ explain-change
-→ pr
-```
+- Standing artifacts: `VISION.md` and `CONSTITUTION.md`.
+  - `VISION.md` absence blocks the first substantive proposal unless the proposal bootstraps project vision.
+  - `CONSTITUTION.md` absence blocks governance adoption, workflow-governance changes, and source-of-truth changes unless the proposal bootstraps the constitution.
+- Living references: `docs/project-map.md`.
+  - Do not rely on the map when it is absent, known-stale, contradicted, or missing the relied-on area. Refresh it or record a no-map rationale before reliance.
+- Workflow infrastructure: `specs/rigorloop-workflow.md`, `docs/workflows.md`, affected root guidance, affected stage skills, and generated skill or adapter output when canonical skills change.
+- On-demand support: `explore` and `research`.
+  - Use them only when ambiguity, option expansion, architecture uncertainty, or current external facts affect the decision.
+- Per-change chain:
+  - `proposal -> proposal-review -> spec -> spec-review -> architecture -> architecture-review -> plan -> plan-review -> test-spec -> implement -> code-review -> review-resolution when triggered -> verify -> ci-maintenance when triggered -> explain-change -> pr`
+- Periodic artifacts: `learn`.
+  - Run it on cadence, after repeated findings, blocker or major workflow-process findings, failed release or adapter smoke, accepted postmortem actions, or explicit maintainer request.
 
-Treat `learn` as an advice-only follow-up when a durable lesson actually emerged or another approved rule elevates it.
+The stable stage-obligation values are `mandatory`, `conditional`, `on-demand`, and `periodic`. Conditional and on-demand work blocks downstream only after the trigger is active, the artifact is cited as a dependency, or a higher-priority artifact requires it. Periodic work blocks downstream only when a higher-priority artifact explicitly makes it blocking.
 
 When a lower-level skill says a different order, this orchestrator wins.
 
@@ -89,29 +81,15 @@ Rules:
 
 Use for new product behavior, API changes, data contracts, migrations, risky refactors, UI flows, safety-sensitive changes, or any change spanning multiple components.
 
-Default stage order:
+Full-lifecycle routing starts from the per-change chain:
 
-1. `constitution` if project principles are missing or stale.
-2. `project-map` if the architecture is not clear enough to make safe choices.
-3. `explore` to expand the option space.
-4. `research` only for uncertain technical, domain, market, UX, legal, or operational assumptions.
-5. `proposal` to choose the direction and define the change boundary.
-6. `proposal-review` to challenge value, scope, risks, and alternatives.
-7. `spec` to define observable behavior.
-8. `spec-review` to make the contract testable and complete.
-9. `architecture` to make system design and ADRs visible.
-10. `architecture-review` for high-impact or cross-component designs.
-11. `plan` to create the execution plan after spec and architecture are stable.
-12. `plan-review` before implementation.
-13. `test-spec` before test code and production code.
-14. `implement` milestone by milestone with tests first.
-15. `code-review` in independent-review mode with a first-pass review record before any review-driven fixes.
-16. `verify` to check artifact/code/test coherence.
-17. `ci` when GitHub workflow automation for a material risk is missing or stale.
-18. `explain-change` to summarize why the diff exists.
-19. `pr` to prepare and open the pull request when ready.
+```text
+proposal -> proposal-review -> spec -> spec-review -> architecture -> architecture-review -> plan -> plan-review -> test-spec -> implement -> code-review -> review-resolution when triggered -> verify -> ci-maintenance when triggered -> explain-change -> pr
+```
 
-Follow with `learn` only when a durable lesson actually emerged.
+Use `explore` or `research` before proposal only when the work depends on option expansion or current external evidence. Use `docs/project-map.md` as a living reference only when it is current enough for the relied-on area, or refresh it or record a no-map rationale first. Follow with `learn` only when a periodic or explicit trigger occurs.
+
+`ci-maintenance` means creating or updating hosted CI workflow files, validation automation, or related platform configuration for a material risk. Validation execution remains under `verify`.
 
 For ordinary non-trivial work in the full-feature lane, carry the baseline change-local pack:
 
@@ -235,21 +213,21 @@ Rules:
 - In v1, workflow-managed autoprogression applies only to:
   - `proposal -> proposal-review`
   - `spec -> spec-review`
-  - `architecture -> architecture-review` when that review stage is the next required or default downstream step
+  - `architecture -> architecture-review` when that review stage is the next mandatory or triggered downstream stage
   - full-feature execution from `implement` through `pr`
 - In the full-feature lane, continue through this downstream chain unless a stop condition applies:
   - `implement -> code-review`
   - `code-review -> review-resolution -> code-review` only for first-pass `changes-requested` findings that are fixable within current approved scope
   - `code-review -> verify` only for first-pass `clean-with-notes` once the review gate is satisfied
-  - `verify -> ci` when the governing workflow contract elevates `ci`; otherwise `verify -> explain-change`
-  - `ci -> explain-change`
+  - `verify -> ci-maintenance when triggered -> explain-change`; otherwise `verify -> explain-change`
+  - `ci-maintenance -> explain-change`
   - `explain-change -> pr`
 - In workflow-managed full-feature runs, autoprogressed `code-review` must emit its first-pass review record before any review-driven fix begins.
 - In workflow-managed full-feature runs, first-pass `blocked` and `inconclusive` stop instead of entering `review-resolution`.
 - Direct `proposal-review`, `spec-review`, `architecture-review`, `code-review`, `verify`, and `explain-change` stay isolated by default unless the user explicitly asks for end-to-end continuation.
 - Direct `pr` remains in scope and still performs the `pr` stage itself when readiness passes. Isolation only prevents downstream continuation beyond `pr`.
 - Fast-lane and bugfix execution remain on the repository's existing explicit-step behavior in v1.
-- Advice-only stages such as `learn` do not auto-run by default.
+- On-demand and periodic actions such as `explore`, `research`, and `learn` do not auto-run by default.
 
 ### Documentation or governance lane
 
@@ -329,7 +307,7 @@ Do not overwrite older durable artifacts for a new initiative. Create a new date
 
 For high-impact changes, produce the artifact and clearly mark whether it is ready for the next stage.
 
-Do not ask for redundant approval merely to enter an already-known next required or default downstream stage in a workflow-managed flow.
+Do not ask for redundant approval merely to enter an already-known next mandatory or triggered downstream stage in a workflow-managed flow.
 
 Pause instead when:
 

@@ -559,6 +559,86 @@ class ValidationSelectionTests(unittest.TestCase):
         self.assertIn("docs/architecture/system/architecture.md", lifecycle_check["paths"])
         self.assertIn("docs/changes/2026-04-25-example/change.yaml", lifecycle_check["paths"])
 
+    def test_workflow_refactor_surface_set_selects_expected_checks(self) -> None:
+        paths = [
+            "CONSTITUTION.md",
+            "AGENTS.md",
+            "README.md",
+            "docs/workflows.md",
+            "docs/plan.md",
+            "docs/plans/2026-05-03-workflow-refactor.md",
+            "docs/proposals/2026-05-01-workflow-refactor.md",
+            "specs/rigorloop-workflow.md",
+            "specs/rigorloop-workflow.test.md",
+            "skills/workflow/SKILL.md",
+            ".codex/skills/workflow/SKILL.md",
+            "dist/adapters/codex/.agents/skills/workflow/SKILL.md",
+            "scripts/test-select-validation.py",
+            "scripts/test-artifact-lifecycle-validator.py",
+            "scripts/test-skill-validator.py",
+            "docs/changes/2026-05-03-workflow-refactor/change.yaml",
+            "docs/changes/2026-05-03-workflow-refactor/explain-change.md",
+            "docs/changes/2026-05-03-workflow-refactor/review-log.md",
+            "docs/changes/2026-05-03-workflow-refactor/review-resolution.md",
+        ]
+
+        result = self.select(paths)
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertEqual(payload["unclassified_paths"], [])
+        self.assertEqual(payload["blocking_results"], [])
+        expected_categories = {
+            "CONSTITUTION.md": "governance",
+            "AGENTS.md": "governance",
+            "README.md": "readme",
+            "docs/workflows.md": "workflow-guidance",
+            "docs/plan.md": "plan-index",
+            "docs/plans/2026-05-03-workflow-refactor.md": "lifecycle",
+            "docs/proposals/2026-05-01-workflow-refactor.md": "lifecycle",
+            "specs/rigorloop-workflow.md": "lifecycle",
+            "specs/rigorloop-workflow.test.md": "lifecycle",
+            "skills/workflow/SKILL.md": "skills",
+            ".codex/skills/workflow/SKILL.md": "generated-skills",
+            "dist/adapters/codex/.agents/skills/workflow/SKILL.md": "generated-adapters",
+            "scripts/test-select-validation.py": "selector",
+            "scripts/test-artifact-lifecycle-validator.py": "validator-artifact-lifecycle",
+            "scripts/test-skill-validator.py": "validator-skills",
+            "docs/changes/2026-05-03-workflow-refactor/change.yaml": "change-metadata",
+            "docs/changes/2026-05-03-workflow-refactor/explain-change.md": "change-local-lifecycle",
+            "docs/changes/2026-05-03-workflow-refactor/review-log.md": "review-artifacts",
+            "docs/changes/2026-05-03-workflow-refactor/review-resolution.md": "review-artifacts",
+        }
+        for path, category in expected_categories.items():
+            with self.subTest(path=path):
+                self.assertIn({"path": path, "category": category}, payload["classified_paths"])
+
+        self.assertTrue(
+            {
+                "skills.validate",
+                "skills.regression",
+                "skills.drift",
+                "adapters.regression",
+                "adapters.drift",
+                "adapters.validate",
+                "review_artifacts.validate",
+                "artifact_lifecycle.regression",
+                "artifact_lifecycle.validate",
+                "change_metadata.regression",
+                "change_metadata.validate",
+                "readme.validate",
+                "readme.vision_markers",
+                "selector.regression",
+            }.issubset(selected_ids(payload))
+        )
+        self.assertFalse(payload["broad_smoke_required"])
+        lifecycle_check = next(check for check in payload["selected_checks"] if check["id"] == "artifact_lifecycle.validate")
+        self.assertIn("docs/plan.md", lifecycle_check["paths"])
+        self.assertIn("docs/plans/2026-05-03-workflow-refactor.md", lifecycle_check["paths"])
+        self.assertIn("docs/proposals/2026-05-01-workflow-refactor.md", lifecycle_check["paths"])
+        self.assertIn("specs/rigorloop-workflow.md", lifecycle_check["paths"])
+        self.assertIn("specs/rigorloop-workflow.test.md", lifecycle_check["paths"])
+
     def test_broad_smoke_sources_are_attributed(self) -> None:
         temp_root = Path(tempfile.mkdtemp(prefix="validation-selection-broad-smoke-"))
         self.addCleanupTree(temp_root)
@@ -582,6 +662,40 @@ class ValidationSelectionTests(unittest.TestCase):
         sources = payload["broad_smoke"]["sources"]
         self.assertIn({"type": "explicit_flag", "value": "--broad-smoke"}, sources)
         self.assertIn({"type": "active_plan", "path": "docs/plans/active.md"}, sources)
+
+    def test_broad_smoke_sources_include_test_spec_and_review_resolution_context(self) -> None:
+        temp_root = Path(tempfile.mkdtemp(prefix="validation-selection-broad-smoke-"))
+        self.addCleanupTree(temp_root)
+        context_files = {
+            "docs/plans/active.md": "broad_smoke_required: true\n",
+            "specs/example.test.md": "- broad smoke required before final verify\n",
+            "docs/changes/example/review-resolution.md": "- broad smoke required by review closeout\n",
+        }
+        for relative_path, content in context_files.items():
+            target = temp_root / relative_path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(content, encoding="utf-8")
+
+        result = select_validation(
+            SelectionRequest(
+                mode="explicit",
+                paths=("skills/code-review/SKILL.md",),
+                trigger_context_paths=tuple(context_files),
+                repo_root=temp_root,
+            )
+        )
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertTrue(payload["broad_smoke_required"])
+        self.assertIn("broad_smoke.repo", selected_ids(payload))
+        sources = payload["broad_smoke"]["sources"]
+        self.assertIn({"type": "active_plan", "path": "docs/plans/active.md"}, sources)
+        self.assertIn({"type": "test_spec", "path": "specs/example.test.md"}, sources)
+        self.assertIn(
+            {"type": "review_resolution", "path": "docs/changes/example/review-resolution.md"},
+            sources,
+        )
 
     def test_release_mode_selects_release_validation_and_broad_smoke(self) -> None:
         result = run_selector("--mode", "release", "--release-version", "v0.1.1")

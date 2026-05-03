@@ -399,6 +399,112 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                 with self.subTest(file=label, term=term):
                     self.assertNotIn(term, body)
 
+    def test_workflow_refactor_stage_skill_guidance_alignment(self) -> None:
+        workflow = (ROOT / "skills" / "workflow" / "SKILL.md").read_text(encoding="utf-8")
+        proposal = (ROOT / "skills" / "proposal" / "SKILL.md").read_text(encoding="utf-8")
+        proposal_review = (
+            ROOT / "skills" / "proposal-review" / "SKILL.md"
+        ).read_text(encoding="utf-8")
+        ci = (ROOT / "skills" / "ci" / "SKILL.md").read_text(encoding="utf-8")
+        learn = (ROOT / "skills" / "learn" / "SKILL.md").read_text(encoding="utf-8")
+        verify = (ROOT / "skills" / "verify" / "SKILL.md").read_text(encoding="utf-8")
+
+        workflow_terms = [
+            "## Workflow Categories",
+            "Standing artifacts",
+            "Living references",
+            "Workflow infrastructure",
+            "On-demand support",
+            "Per-change chain",
+            "Periodic artifacts",
+            "`mandatory`",
+            "`conditional`",
+            "`on-demand`",
+            "`periodic`",
+            "next mandatory or triggered downstream stage",
+            "ci-maintenance when triggered",
+        ]
+        for term in workflow_terms:
+            with self.subTest(skill="workflow", term=term):
+                self.assertIn(term, workflow)
+
+        workflow_forbidden = [
+            "constitution / project context",
+            "project-map when architecture is unclear",
+            "Treat `learn` as an advice-only follow-up",
+            "Advice-only stages such as `learn`",
+            "next required or default downstream stage",
+            "verify -> ci ->",
+            "`ci` when GitHub workflow automation",
+        ]
+        for term in workflow_forbidden:
+            with self.subTest(skill="workflow", term=term):
+                self.assertNotIn(term, workflow)
+
+        proposal_terms = [
+            "A substantive proposal is any proposal that chooses product direction",
+            "`VISION.md` absence blocks the first substantive proposal",
+            "`CONSTITUTION.md` absence blocks governance adoption",
+            "Bootstrap proposals",
+            "identify the bootstrap exception in `Vision fit`",
+            "next mandatory or triggered downstream stage",
+        ]
+        for term in proposal_terms:
+            with self.subTest(skill="proposal", term=term):
+                self.assertIn(term, proposal)
+
+        proposal_review_terms = [
+            "Bootstrap proposals",
+            "identify the bootstrap exception in `Vision fit`",
+            "request revision if the bootstrap exception is missing",
+            "standing artifact gate",
+        ]
+        for term in proposal_review_terms:
+            with self.subTest(skill="proposal-review", term=term):
+                self.assertIn(term, proposal_review)
+
+        ci_terms = [
+            "ci-maintenance",
+            "CI infrastructure",
+            "It does not run validation",
+            "does not design tests",
+            "does not specify validation commands",
+            "does not wait for existing CI checks",
+            "validation execution stays under `verify`",
+        ]
+        for term in ci_terms:
+            with self.subTest(skill="ci", term=term):
+                self.assertIn(term, ci)
+
+        learn_terms = [
+            "`learn` is periodic or explicitly invoked",
+            "repeated review findings",
+            "blocker or major workflow-process findings",
+            "failed release or adapter smoke",
+            "accepted postmortem action",
+            "explicit maintainer request",
+            "capture the lesson immediately",
+            "scheduled follow-up",
+            "explicit no-learn rationale",
+            "blocks downstream only when a higher-priority artifact explicitly makes it blocking",
+            "contributor-visible tracked or review-visible surface",
+        ]
+        for term in learn_terms:
+            with self.subTest(skill="learn", term=term):
+                self.assertIn(term, learn)
+        self.assertNotIn("advice-only", learn)
+
+        verify_terms = [
+            "next mandatory or triggered downstream stage",
+            "ci-maintenance",
+            "hosted workflow automation or related CI infrastructure",
+        ]
+        for term in verify_terms:
+            with self.subTest(skill="verify", term=term):
+                self.assertIn(term, verify)
+        self.assertNotIn("next required or default downstream stage", verify)
+        self.assertNotIn("downstream stage is `ci`", verify)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
