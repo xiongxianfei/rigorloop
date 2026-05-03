@@ -156,6 +156,11 @@ Verify evidence:
 - `git diff --check origin/main..HEAD --` passed.
 - Root vision inspection reported only `./VISION.md`, and `git ls-files -- vision.md VISION.md` reported only `VISION.md`.
 
+PR lifecycle closeout evidence:
+
+- `python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/explain-change.md` passed and selected `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `readme.vision_markers`.
+- `bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/explain-change.md` passed.
+
 ## Review Resolution Summary
 
 - code-review rounds: 2
@@ -168,7 +173,7 @@ Verify evidence:
 
 ## Outcome and Retrospective
 
-M1 is implemented, committed, code-reviewed, and has had verify-readiness wording corrected. M2 authored-surface implementation was code-reviewed with no blocking findings. M3 generated-output refresh is implemented. code-review-r1 found CR1-F1, the accepted selector fix is implemented, follow-up code-review returned `clean-with-notes`, and verify passed. Do not treat the overall initiative as PR-open-ready until explain-change and PR handoff complete.
+M1 is implemented, committed, code-reviewed, and has had verify-readiness wording corrected. M2 authored-surface implementation was code-reviewed with no blocking findings. M3 generated-output refresh is implemented. code-review-r1 found CR1-F1, the accepted selector fix is implemented, follow-up code-review returned `clean-with-notes`, verify passed, explain-change is refreshed, and lifecycle closeout is complete in the plan index and plan body.
 
 ## Risks and Follow-ups
 
@@ -182,7 +187,8 @@ M1 is implemented, committed, code-reviewed, and has had verify-readiness wordin
 - Retire user-facing `vision` skill modes while keeping overwrite, README marker, substantive/editorial, and causal-link safety gates.
 - Preserve approved project vision prose and avoid mass-rewriting historical lowercase references.
 - Close `CR1-F1` and verify the branch with PR-mode selector-selected CI.
+- Complete lifecycle closeout in `docs/plan.md` and the plan body before PR opening.
 
 ## Readiness
 
-Branch-ready after verify and durable explanation refresh. Ready for `pr`.
+PR-open-ready after verify, durable explanation refresh, and lifecycle closeout.

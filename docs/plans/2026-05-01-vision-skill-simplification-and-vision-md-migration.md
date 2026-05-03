@@ -2,7 +2,7 @@
 
 ## Status
 
-- active
+- done
 
 - Owner: maintainers
 - Start date: 2026-05-01
@@ -282,6 +282,7 @@ Repository broad smoke is not planned by default. If plan-review, test-spec, sel
 - 2026-05-03: Follow-up code-review after CR1-F1 returned `clean-with-notes` with no blocking or required-change findings.
 - 2026-05-03: Verify passed PR-mode selector-selected validation for the full tracked branch diff and found no lifecycle, review closeout, generated-output, or migration blockers.
 - 2026-05-03: Explain-change refreshed the durable rationale with the explicit problem statement, decision trail, alternatives rejected, review-resolution summary, risk/follow-up notes, and PR handoff summary.
+- 2026-05-03: PR lifecycle closeout moved this plan and `docs/plan.md` to done before PR opening, as required when final state is known before PR.
 
 ## Decision Log
 
@@ -381,11 +382,13 @@ Repository broad smoke is not planned by default. If plan-review, test-spec, sel
 - 2026-05-03: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path docs/proposals/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.test.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/explain-change.md` passed after the explain-change refresh.
 - 2026-05-03: `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/explain-change.md` passed after the explain-change refresh.
 - 2026-05-03: `git diff --check -- docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md` passed after the explain-change refresh.
+- 2026-05-03: `python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/explain-change.md` passed after PR lifecycle closeout and selected `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `readme.vision_markers`.
+- 2026-05-03: `bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/explain-change.md` passed after PR lifecycle closeout.
 
 ## Outcome and Retrospective
 
-M1 is implemented, committed, code-reviewed, and has had verify-readiness wording corrected. M2 authored-surface implementation was code-reviewed with no blocking findings. M3 generated-output refresh is implemented. code-review-r1 found CR1-F1, the accepted selector fix is implemented, follow-up code-review returned `clean-with-notes`, verify passed, and explain-change refreshed the durable rationale. Do not treat the overall initiative as PR-open-ready until PR handoff complete.
+M1 is implemented, committed, code-reviewed, and has had verify-readiness wording corrected. M2 authored-surface implementation was code-reviewed with no blocking findings. M3 generated-output refresh is implemented. code-review-r1 found CR1-F1, the accepted selector fix is implemented, follow-up code-review returned `clean-with-notes`, verify passed, explain-change refreshed the durable rationale, and lifecycle closeout is complete in this plan body and `docs/plan.md`.
 
 ## Readiness
 
-Branch-ready after verify and explain-change. Ready for `pr`.
+PR handoff-ready after verify, explain-change, and lifecycle closeout. Ready for PR opening.
