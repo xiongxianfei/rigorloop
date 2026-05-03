@@ -470,14 +470,56 @@ class ValidationSelectionTests(unittest.TestCase):
         self.assertFalse(scoped_payload["blocking_results"])
 
     def test_root_vision_path_selects_marker_validation_without_unclassified_block(self) -> None:
-        result = self.select(["vision.md"])
+        for path in ("vision.md", "VISION.md"):
+            with self.subTest(path=path):
+                result = self.select([path])
+                payload = result.to_json_dict()
+
+                self.assertEqual(result.status, "ok")
+                self.assertIn({"path": path, "category": "vision"}, payload["classified_paths"])
+                self.assertEqual(payload["unclassified_paths"], [])
+                self.assertIn("readme.vision_markers", selected_ids(payload))
+                self.assertFalse(payload["blocking_results"])
+
+    def test_root_vision_path_conflict_blocks_validation(self) -> None:
+        temp_root = Path(tempfile.mkdtemp(prefix="validation-selection-vision-conflict-"))
+        self.addCleanupTree(temp_root)
+        (temp_root / "vision.md").write_text("# Legacy Vision\n", encoding="utf-8")
+        (temp_root / "VISION.md").write_text("# Canonical Vision\n", encoding="utf-8")
+
+        for path in ("vision.md", "VISION.md"):
+            with self.subTest(path=path):
+                result = select_validation(
+                    SelectionRequest(mode="explicit", paths=(path,), repo_root=temp_root)
+                )
+                payload = result.to_json_dict()
+
+                self.assertEqual(result.status, "blocked")
+                self.assertIn({"path": path, "category": "vision"}, payload["classified_paths"])
+                self.assertEqual(payload["unclassified_paths"], [])
+                self.assertIn("readme.vision_markers", selected_ids(payload))
+                self.assertIn("vision-path-conflict", {item["code"] for item in payload["blocking_results"]})
+
+    def test_root_vision_path_conflict_blocks_unrelated_changed_path(self) -> None:
+        temp_root = Path(tempfile.mkdtemp(prefix="validation-selection-vision-conflict-"))
+        self.addCleanupTree(temp_root)
+        (temp_root / "README.md").write_text(
+            "# Example\n\n<!-- vision:start -->\nGenerated summary.\n<!-- vision:end -->\n",
+            encoding="utf-8",
+        )
+        (temp_root / "vision.md").write_text("# Legacy Vision\n", encoding="utf-8")
+        (temp_root / "VISION.md").write_text("# Canonical Vision\n", encoding="utf-8")
+
+        result = select_validation(
+            SelectionRequest(mode="explicit", paths=("README.md",), repo_root=temp_root)
+        )
         payload = result.to_json_dict()
 
-        self.assertEqual(result.status, "ok")
-        self.assertIn({"path": "vision.md", "category": "vision"}, payload["classified_paths"])
+        self.assertEqual(result.status, "blocked")
+        self.assertIn({"path": "README.md", "category": "readme"}, payload["classified_paths"])
         self.assertEqual(payload["unclassified_paths"], [])
-        self.assertIn("readme.vision_markers", selected_ids(payload))
-        self.assertFalse(payload["blocking_results"])
+        self.assertTrue({"readme.validate", "readme.vision_markers"}.issubset(selected_ids(payload)))
+        self.assertIn("vision-path-conflict", {item["code"] for item in payload["blocking_results"]})
 
     def test_pr_handoff_surfaces_select_deterministic_checks(self) -> None:
         result = self.select(
@@ -646,16 +688,51 @@ class ValidationSelectionTests(unittest.TestCase):
         self.assertFalse(payload["blocking_results"])
 
     def test_pr_mode_routes_root_vision_without_unclassified_block(self) -> None:
+        for path in ("vision.md", "VISION.md"):
+            with self.subTest(path=path):
+                repo = self.make_git_repo()
+                base = self.git_output(repo, "rev-parse", "HEAD")
+                (repo / "README.md").write_text(
+                    "# Example\n\n<!-- vision:start -->\nGenerated summary.\n<!-- vision:end -->\n",
+                    encoding="utf-8",
+                )
+                (repo / path).write_text("# Project Vision\n\n## Pitch\n\nExample vision.\n", encoding="utf-8")
+                subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True, text=True)
+                subprocess.run(
+                    ["git", "commit", "-m", "add root vision"],
+                    cwd=repo,
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                )
+                head = self.git_output(repo, "rev-parse", "HEAD")
+
+                result = run_selector("--mode", "pr", "--base", base, "--head", head, cwd=repo)
+                self.assertEqual(result.returncode, 0, msg=result.stderr)
+                payload = parse_stdout(result)
+
+                self.assertEqual(payload["status"], "ok")
+                self.assertIn({"path": path, "category": "vision"}, payload["classified_paths"])
+                self.assertEqual(payload["unclassified_paths"], [])
+                self.assertTrue({"readme.validate", "readme.vision_markers"}.issubset(selected_ids(payload)))
+                self.assertFalse(payload["blocking_results"])
+
+    def test_pr_mode_blocks_reintroduced_legacy_vision_without_unclassified_block(self) -> None:
         repo = self.make_git_repo()
-        base = self.git_output(repo, "rev-parse", "HEAD")
-        (repo / "README.md").write_text(
-            "# Example\n\n<!-- vision:start -->\nGenerated summary.\n<!-- vision:end -->\n",
-            encoding="utf-8",
-        )
-        (repo / "vision.md").write_text("# Project Vision\n\n## Pitch\n\nExample vision.\n", encoding="utf-8")
+        (repo / "VISION.md").write_text("# Project Vision\n\n## Pitch\n\nExample vision.\n", encoding="utf-8")
         subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True, text=True)
         subprocess.run(
-            ["git", "commit", "-m", "add root vision"],
+            ["git", "commit", "-m", "add canonical vision"],
+            cwd=repo,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        base = self.git_output(repo, "rev-parse", "HEAD")
+        (repo / "vision.md").write_text("# Legacy Vision\n", encoding="utf-8")
+        subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True, text=True)
+        subprocess.run(
+            ["git", "commit", "-m", "reintroduce legacy vision"],
             cwd=repo,
             check=True,
             capture_output=True,
@@ -664,14 +741,14 @@ class ValidationSelectionTests(unittest.TestCase):
         head = self.git_output(repo, "rev-parse", "HEAD")
 
         result = run_selector("--mode", "pr", "--base", base, "--head", head, cwd=repo)
-        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertEqual(result.returncode, 2, msg=result.stderr)
         payload = parse_stdout(result)
 
-        self.assertEqual(payload["status"], "ok")
+        self.assertEqual(payload["status"], "blocked")
         self.assertIn({"path": "vision.md", "category": "vision"}, payload["classified_paths"])
         self.assertEqual(payload["unclassified_paths"], [])
-        self.assertTrue({"readme.validate", "readme.vision_markers"}.issubset(selected_ids(payload)))
-        self.assertFalse(payload["blocking_results"])
+        self.assertIn("readme.vision_markers", selected_ids(payload))
+        self.assertIn("vision-path-conflict", {item["code"] for item in payload["blocking_results"]})
 
     def test_readme_validator_accepts_absent_or_valid_standalone_marker_block(self) -> None:
         temp_root = Path(tempfile.mkdtemp(prefix="validation-selection-readme-validator-"))
