@@ -345,10 +345,10 @@ None. Requirements are covered by focused skill assertions, selector tests, READ
 
 ## Next artifacts
 
-- `code-review` for M2 authored-surface implementation
+- `code-review` for completed M1-M3 implementation
 - `verify`
-- `implement` M3 generated skill and adapter output refresh after M2 review and verification
-- final `code-review`, `verify`, `explain-change`, and `pr`
+- `explain-change`
+- `pr`
 
 ## Follow-on artifacts
 
@@ -358,4 +358,4 @@ None. Requirements are covered by focused skill assertions, selector tests, READ
 
 This test spec is the active proof map for the consolidated `vision` skill contract and `VISION.md` migration.
 
-Immediate next repository stage: `code-review` for M2 authored-surface implementation from [2026-05-01 Vision Skill Simplification and VISION.md Migration](../docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md).
+Immediate next repository stage: `code-review` for the completed M1-M3 implementation from [2026-05-01 Vision Skill Simplification and VISION.md Migration](../docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md).

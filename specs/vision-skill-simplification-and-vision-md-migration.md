@@ -487,17 +487,18 @@ None.
 
 ## Next artifacts
 
-- `code-review` for M2 authored-surface implementation
+- `code-review` for completed M1-M3 implementation
 - `verify`
-- `implement` M3 generated-output refresh after M2 review and verification
-- final `code-review`, `verify`, `explain-change`, and `pr`
+- `explain-change`
+- `pr`
 
 ## Follow-on artifacts
 
 - Plan: [2026-05-01 Vision Skill Simplification and VISION.md Migration](../docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md)
 - Test spec: [Vision Skill Simplification and VISION.md Migration Test Spec](vision-skill-simplification-and-vision-md-migration.test.md)
 - M1 implementation: selector and validation support committed.
-- M2 implementation: authored-surface migration ready for code-review.
+- M2 implementation: authored-surface migration completed and code-reviewed with no blocking findings.
+- M3 implementation: generated-output refresh and lifecycle evidence updates completed.
 
 ## Readiness
 

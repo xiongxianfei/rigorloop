@@ -44,18 +44,20 @@ Check the proposal's `Vision fit` section.
 
 If the proposal was created or substantively revised after the vision spec was adopted and lacks `Vision fit`, request revision. Legacy proposals are not invalid solely because they lack `Vision fit`.
 
-Allowed `Vision fit` values are:
+Allowed `Vision fit` values are the exact first non-empty line in the section:
 
 - `fits the current vision`
 - `may conflict with the current vision`
-- `intentionally proposes a vision revision`
+- `proposes a vision revision`
 - `no vision exists yet`
 
-If root `vision.md` exists, `Vision fit` must not say `no vision exists yet`.
+If root `VISION.md` exists, `Vision fit` must not say `no vision exists yet`.
 
-When root `vision.md` is absent, proposal-review must request revision if `Vision fit` is missing or replaced with a claim that fits, conflicts with, or revises a nonexistent vision.
+When neither root `VISION.md` nor migration-recognized legacy root `vision.md` exists, proposal-review must request revision if `Vision fit` is missing or replaced with a claim that fits, conflicts with, or revises a nonexistent vision.
 
-If a proposal conflicts with `vision.md`, classify the required outcome as exactly one of:
+During the `vision.md` to `VISION.md` migration, do not treat the repository as visionless solely because uppercase `VISION.md` has not yet replaced migration-recognized legacy root `vision.md`.
+
+If a proposal conflicts with `VISION.md`, classify the required outcome as exactly one of:
 
 - revise proposal
 - revise vision
