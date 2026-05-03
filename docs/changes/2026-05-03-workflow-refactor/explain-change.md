@@ -2,7 +2,7 @@
 
 ## Status
 
-M4 complete; ready for `code-review`.
+Verify complete; branch-ready; ready for final `explain-change`.
 
 ## Source artifacts
 
@@ -68,8 +68,10 @@ The final learn artifact model is deferred to a later learn refactor. M1 records
 
 Validation evidence is recorded in `change.yaml` and the active plan. The final M4 proof covers change metadata validation, skill validation, skill regression fixtures, generated Codex skill drift, public adapter regression, adapter drift, adapter validation, selector regression, artifact lifecycle regression, explicit lifecycle validation over proposal/spec/test-spec/plan/change-local artifacts, and explicit-path CI over the changed authoritative surfaces.
 
+The verify pass reran the final repository-owned proof over the tracked branch state after `code-review-m4-r1`. It confirmed generated skill and adapter output are in sync, review-resolution is closed, lifecycle-managed artifacts are coherent, the baseline change-local pack exists, and explicit-path CI passes without a broad-smoke trigger. Hosted CI was not observed locally; `.github/workflows/ci.yml` delegates pull-request and main-branch runs to `scripts/ci.sh`.
+
 ## Review closeout
 
 `code-review-m1-r1` found one stale-plan wording defect. `review-resolution.md` records the accepted disposition and the plan now states that `specs/rigorloop-workflow.test.md` is active and was updated by the `test-spec` stage before M1.
 
-`code-review-m2-r1` and `code-review-m3-r1` returned `clean-with-notes` with no material findings. M4 implementation is ready for `code-review`; `verify` still owns any later branch-ready conclusion.
+`code-review-m2-r1`, `code-review-m3-r1`, and `code-review-m4-r1` returned `clean-with-notes` with no material findings. The verify pass found no blockers and marked the branch ready for final `explain-change`.
