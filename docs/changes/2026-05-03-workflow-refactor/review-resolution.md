@@ -5,6 +5,7 @@ Closeout status: closed
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m2-r1
 Review closeout: code-review-m3-r1
+Review closeout: code-review-m4-r1
 
 ### code-review-m1-r1
 
@@ -22,5 +23,9 @@ Validation evidence: `python scripts/validate-review-artifacts.py --mode structu
 No material findings; no resolution entry required.
 
 ### code-review-m3-r1
+
+No material findings; no resolution entry required.
+
+### code-review-m4-r1
 
 No material findings; no resolution entry required.
