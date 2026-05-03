@@ -10,6 +10,8 @@ M3 refreshes generated `.codex/skills/` and public adapter skill copies from the
 
 CR1-F1 fixes the first code-review finding by making root `vision.md` and root `VISION.md` coexistence block validation globally, even when the selected changed path is unrelated to either vision file.
 
+The follow-up code-review for CR1-F1 returned `clean-with-notes` with no blocking or required-change findings.
+
 ## Decision Trail
 
 - Proposal: `docs/proposals/2026-05-01-vision-skill-simplification-and-vision-md-migration.md`
@@ -134,8 +136,8 @@ CR1-F1 evidence:
 
 ## Outcome and Retrospective
 
-M1 is implemented, committed, code-reviewed, and has had verify-readiness wording corrected. M2 authored-surface implementation was code-reviewed with no blocking findings. M3 generated-output refresh is implemented. code-review-r1 found CR1-F1, and the accepted selector fix is implemented. Do not treat the overall initiative as branch-ready until follow-up code-review, verify, explain-change, and PR handoff complete.
+M1 is implemented, committed, code-reviewed, and has had verify-readiness wording corrected. M2 authored-surface implementation was code-reviewed with no blocking findings. M3 generated-output refresh is implemented. code-review-r1 found CR1-F1, the accepted selector fix is implemented, and follow-up code-review returned `clean-with-notes`. Do not treat the overall initiative as branch-ready until verify, explain-change, and PR handoff complete.
 
 ## Readiness
 
-Ready for follow-up `code-review` after the accepted CR1-F1 selector fix.
+Ready for `verify` after clean follow-up code-review.
