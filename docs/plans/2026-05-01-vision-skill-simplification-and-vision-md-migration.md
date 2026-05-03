@@ -280,6 +280,7 @@ Repository broad smoke is not planned by default. If plan-review, test-spec, sel
 - 2026-05-03: code-review-r1 requested one fix: root `vision.md` and `VISION.md` coexistence must block validation globally, not only when a root vision path is selected.
 - 2026-05-03: CR1-F1 was accepted and fixed by making the selector conflict check global and adding an unrelated-path regression for `README.md`.
 - 2026-05-03: Follow-up code-review after CR1-F1 returned `clean-with-notes` with no blocking or required-change findings.
+- 2026-05-03: Verify passed PR-mode selector-selected validation for the full tracked branch diff and found no lifecycle, review closeout, generated-output, or migration blockers.
 
 ## Decision Log
 
@@ -370,11 +371,15 @@ Repository broad smoke is not planned by default. If plan-review, test-spec, sel
 - 2026-05-03: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path docs/proposals/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.test.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/explain-change.md` passed after recording code-review-r2.
 - 2026-05-03: `bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/explain-change.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/review-log.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/review-resolution.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/reviews/code-review-r2.md --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md` passed after recording code-review-r2.
 - 2026-05-03: `git diff --check -- docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md` passed after recording code-review-r2.
+- 2026-05-03: `python scripts/select-validation.py --mode pr --base origin/main --head HEAD` passed during verify and selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `readme.validate`, `readme.vision_markers`, and `selector.regression`.
+- 2026-05-03: `bash scripts/ci.sh --mode pr --base origin/main --head HEAD` passed during verify.
+- 2026-05-03: `git diff --check origin/main..HEAD --` passed during verify.
+- 2026-05-03: root vision inspection during verify reported only `./VISION.md`, and `git ls-files -- vision.md VISION.md` reported only `VISION.md`.
 
 ## Outcome and Retrospective
 
-M1 is implemented, committed, code-reviewed, and has had verify-readiness wording corrected. M2 authored-surface implementation was code-reviewed with no blocking findings. M3 generated-output refresh is implemented. code-review-r1 found CR1-F1, the accepted selector fix is implemented, and follow-up code-review returned `clean-with-notes`. Do not treat the overall initiative as branch-ready until verify, explain-change, and PR handoff complete.
+M1 is implemented, committed, code-reviewed, and has had verify-readiness wording corrected. M2 authored-surface implementation was code-reviewed with no blocking findings. M3 generated-output refresh is implemented. code-review-r1 found CR1-F1, the accepted selector fix is implemented, follow-up code-review returned `clean-with-notes`, and verify passed. Do not treat the overall initiative as PR-open-ready until explain-change and PR handoff complete.
 
 ## Readiness
 
-Ready for `verify` after clean follow-up code-review.
+Branch-ready after verify. Ready for `explain-change`.
