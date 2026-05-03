@@ -11,7 +11,11 @@ You are preserving useful lessons so future work improves.
 
 Do not fabricate lessons. Capture what was actually learned from evidence.
 
-`learn` is advice-only in the current workflow contract. Do not auto-run it by default; use it only when the user explicitly requests it or another approved artifact elevates it for the active change.
+`learn` is periodic or explicitly invoked. It is triggered by repeated review findings, blocker or major workflow-process findings, failed release or adapter smoke, accepted postmortem action, cadence, or explicit maintainer request.
+
+When a trigger occurs, either capture the lesson immediately or record a scheduled follow-up. If no durable lesson should be captured, record an explicit no-learn rationale.
+
+Triggered `learn` blocks downstream only when a higher-priority artifact explicitly makes it blocking, such as an active plan, `review-resolution`, postmortem action, release contract, or maintainer decision. Until the future learn refactor defines final learning surfaces, scheduled follow-ups and no-learn rationales must be recorded in a contributor-visible tracked or review-visible surface.
 
 ## Inputs to read
 
@@ -39,6 +43,7 @@ Choose the narrowest durable home:
 - **Architecture orientation** → `docs/project-map.md`.
 - **Plan outcome** → completed plan’s outcome/retrospective section.
 - **General retrospective** → `docs/retrospectives/YYYY-MM-DD-slug.md`.
+- **Temporary follow-up or no-learn rationale before the learn refactor** → active plan, `docs/changes/<change-id>/change.yaml`, `review-resolution.md`, `explain-change.md`, PR body or draft PR body, linked issue, or named governance artifact.
 
 `learn` is retrospective capture, not the authoritative owner of `docs/plan.md` or plan-body lifecycle transitions. If lifecycle bookkeeping is stale, fix the plan/index surfaces directly instead of treating the retrospective as the closeout mechanism.
 
