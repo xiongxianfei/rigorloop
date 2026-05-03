@@ -4,6 +4,7 @@ Closeout status: closed
 
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m2-r1
+Review closeout: code-review-m3-r1
 
 ### code-review-m1-r1
 
@@ -17,5 +18,9 @@ Validation target: Rerun lifecycle validation, change metadata validation, revie
 Validation evidence: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-03-workflow-refactor`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-03-workflow-refactor`, `python scripts/validate-change-metadata.py docs/changes/2026-05-03-workflow-refactor/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`, `python scripts/select-validation.py --mode explicit ...`, `bash scripts/ci.sh --mode explicit ...`, and `git diff --check -- docs/plans/2026-05-03-workflow-refactor.md docs/changes/2026-05-03-workflow-refactor` passed after the plan wording fix and review-resolution records were added.
 
 ### code-review-m2-r1
+
+No material findings; no resolution entry required.
+
+### code-review-m3-r1
 
 No material findings; no resolution entry required.

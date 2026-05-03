@@ -141,6 +141,35 @@ validation:
     selected_check_ids: skills.regression, artifact_lifecycle.regression, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, readme.validate, readme.vision_markers, selector.regression
   - command: git diff --check -- scripts docs/plans/2026-05-03-workflow-refactor.md docs/changes/2026-05-03-workflow-refactor/change.yaml
     result: pass_after_m3
+  - command: python scripts/select-validation.py --mode explicit --path scripts/test-select-validation.py --path scripts/test-artifact-lifecycle-validator.py --path docs/plans/2026-05-03-workflow-refactor.md --path docs/changes/2026-05-03-workflow-refactor/change.yaml
+    result: pass_during_code_review_m3_r1
+    selected_check_ids: selector.regression, artifact_lifecycle.regression, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate
+  - command: python scripts/test-select-validation.py
+    result: pass_during_code_review_m3_r1
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_during_code_review_m3_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-03-workflow-refactor/change.yaml
+    result: pass_during_code_review_m3_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-01-workflow-refactor.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/plan.md --path docs/plans/2026-05-03-workflow-refactor.md --path docs/changes/2026-05-03-workflow-refactor/change.yaml
+    result: pass_during_code_review_m3_r1
+  - command: git diff --check HEAD~1..HEAD -- scripts/test-select-validation.py scripts/test-artifact-lifecycle-validator.py docs/plans/2026-05-03-workflow-refactor.md docs/changes/2026-05-03-workflow-refactor/change.yaml
+    result: pass_during_code_review_m3_r1
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-03-workflow-refactor
+    result: pass_after_code_review_m3_r1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-03-workflow-refactor
+    result: pass_after_code_review_m3_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-03-workflow-refactor/change.yaml
+    result: pass_after_code_review_m3_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-01-workflow-refactor.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/plan.md --path docs/plans/2026-05-03-workflow-refactor.md --path docs/changes/2026-05-03-workflow-refactor/change.yaml --path docs/changes/2026-05-03-workflow-refactor/review-log.md --path docs/changes/2026-05-03-workflow-refactor/review-resolution.md --path docs/changes/2026-05-03-workflow-refactor/reviews/code-review-m3-r1.md
+    result: pass_after_code_review_m3_r1
+  - command: python scripts/select-validation.py --mode explicit --path docs/plans/2026-05-03-workflow-refactor.md --path docs/changes/2026-05-03-workflow-refactor/change.yaml --path docs/changes/2026-05-03-workflow-refactor/review-log.md --path docs/changes/2026-05-03-workflow-refactor/review-resolution.md --path docs/changes/2026-05-03-workflow-refactor/reviews/code-review-m3-r1.md
+    result: pass_after_code_review_m3_r1
+    selected_check_ids: review_artifacts.validate, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate
+  - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-03-workflow-refactor.md --path docs/changes/2026-05-03-workflow-refactor/change.yaml --path docs/changes/2026-05-03-workflow-refactor/review-log.md --path docs/changes/2026-05-03-workflow-refactor/review-resolution.md --path docs/changes/2026-05-03-workflow-refactor/reviews/code-review-m3-r1.md
+    result: pass_after_code_review_m3_r1
+    selected_check_ids: review_artifacts.validate, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate
+  - command: git diff --check -- docs/plans/2026-05-03-workflow-refactor.md docs/changes/2026-05-03-workflow-refactor
+    result: pass_after_code_review_m3_r1
 changed_files:
   - CONSTITUTION.md
   - AGENTS.md
@@ -157,6 +186,7 @@ changed_files:
   - docs/changes/2026-05-03-workflow-refactor/review-resolution.md
   - docs/changes/2026-05-03-workflow-refactor/reviews/code-review-m1-r1.md
   - docs/changes/2026-05-03-workflow-refactor/reviews/code-review-m2-r1.md
+  - docs/changes/2026-05-03-workflow-refactor/reviews/code-review-m3-r1.md
   - skills/workflow/SKILL.md
   - skills/proposal/SKILL.md
   - skills/proposal-review/SKILL.md
@@ -191,5 +221,5 @@ changed_files:
   - dist/adapters/opencode/.opencode/skills/learn/SKILL.md
   - dist/adapters/opencode/.opencode/skills/verify/SKILL.md
 review:
-  status: closed_after_code_review_m2_r1
+  status: closed_after_code_review_m3_r1
   unresolved_items: 0
