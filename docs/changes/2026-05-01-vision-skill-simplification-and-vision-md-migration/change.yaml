@@ -288,3 +288,8 @@ verification:
   lifecycle_closeout_status: complete
   explain_change_status: refreshed_for_pr_handoff
   note: PR-mode selector-selected CI passed for the tracked branch diff; hosted CI was not observed locally.
+pr:
+  status: open
+  number: 25
+  url: https://github.com/xiongxianfei/rigorloop/pull/25
+  branch: vision-skill-simplification-and-vision-md-migration
