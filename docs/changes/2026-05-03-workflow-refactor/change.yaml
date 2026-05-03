@@ -103,6 +103,25 @@ validation:
   - command: bash scripts/ci.sh --mode explicit --path <M2-current-diff-paths>
     result: pass_after_m2
     selected_check_ids: skills.validate, skills.regression, skills.drift, adapters.regression, adapters.drift, adapters.validate, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate
+  - command: bash scripts/ci.sh --mode explicit --path <M2-commit-paths>
+    result: pass_after_code_review_m2_r1
+    selected_check_ids: skills.validate, skills.regression, skills.drift, adapters.regression, adapters.drift, adapters.validate, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-03-workflow-refactor
+    result: pass_after_code_review_m2_r1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-03-workflow-refactor
+    result: pass_after_code_review_m2_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-03-workflow-refactor/change.yaml
+    result: pass_after_code_review_m2_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-01-workflow-refactor.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/plan.md --path docs/plans/2026-05-03-workflow-refactor.md --path docs/changes/2026-05-03-workflow-refactor/change.yaml --path docs/changes/2026-05-03-workflow-refactor/explain-change.md --path docs/changes/2026-05-03-workflow-refactor/review-log.md --path docs/changes/2026-05-03-workflow-refactor/review-resolution.md --path docs/changes/2026-05-03-workflow-refactor/reviews/code-review-m2-r1.md
+    result: pass_after_code_review_m2_r1
+  - command: git diff --check -- docs/plans/2026-05-03-workflow-refactor.md docs/changes/2026-05-03-workflow-refactor
+    result: pass_after_code_review_m2_r1
+  - command: python scripts/select-validation.py --mode explicit --path <code-review-m2-r1-paths>
+    result: pass_after_code_review_m2_r1
+    selected_check_ids: review_artifacts.validate, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate
+  - command: bash scripts/ci.sh --mode explicit --path <code-review-m2-r1-paths>
+    result: pass_after_code_review_m2_r1
+    selected_check_ids: review_artifacts.validate, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate
 changed_files:
   - CONSTITUTION.md
   - AGENTS.md
@@ -118,6 +137,7 @@ changed_files:
   - docs/changes/2026-05-03-workflow-refactor/review-log.md
   - docs/changes/2026-05-03-workflow-refactor/review-resolution.md
   - docs/changes/2026-05-03-workflow-refactor/reviews/code-review-m1-r1.md
+  - docs/changes/2026-05-03-workflow-refactor/reviews/code-review-m2-r1.md
   - skills/workflow/SKILL.md
   - skills/proposal/SKILL.md
   - skills/proposal-review/SKILL.md
@@ -150,5 +170,5 @@ changed_files:
   - dist/adapters/opencode/.opencode/skills/learn/SKILL.md
   - dist/adapters/opencode/.opencode/skills/verify/SKILL.md
 review:
-  status: pending_code_review_m2
+  status: closed_after_code_review_m2_r1
   unresolved_items: 0
