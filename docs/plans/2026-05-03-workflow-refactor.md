@@ -25,7 +25,7 @@ This is workflow-governance work. It changes contributor-visible policy and oper
 - Spec: [RigorLoop Workflow](../../specs/rigorloop-workflow.md), approved after spec-review on 2026-05-03.
 - Spec-review outcome: approved with no material findings after the standing-artifact gates, project-map minimal rule, `Runs for every change` semantics, nonblocking `learn` closeout, affected-surface alignment, and temporary learn-recording surfaces were added.
 - Architecture: not required. The approved work is a workflow-governance and artifact-routing refactor without a runtime or system-shape boundary.
-- Test spec: [RigorLoop workflow test spec](../../specs/rigorloop-workflow.test.md) is currently archived and must be updated or reactivated by the immediate `test-spec` stage before implementation.
+- Test spec: [RigorLoop workflow test spec](../../specs/rigorloop-workflow.test.md) is active and was updated by the `test-spec` stage before M1 implementation.
 - Project map: `docs/project-map.md` is absent. No-map rationale: this plan does not rely on a repository map for architecture or module-boundary claims; orientation comes from the approved proposal, approved workflow spec, `CONSTITUTION.md`, `AGENTS.md`, `docs/workflows.md`, README, affected skills, and bounded file inventories. If implementation later relies on repository-shape claims outside these known workflow surfaces, refresh `docs/project-map.md` or record a narrower no-map rationale before relying on those claims.
 
 ## Context and Orientation
@@ -48,7 +48,7 @@ This is workflow-governance work. It changes contributor-visible policy and oper
 | `README.md` | updated in M1 for the category model, per-change chain, no-map rule, on-demand support, periodic learn, `ci-maintenance`, and verification boundary |
 | `docs/workflows.md` | updated in M1 with workflow categories, stable obligation values, per-change chain, project-map no-reliance, learn closeout, review-resolution, `ci-maintenance`, and autoprogression wording |
 | `specs/rigorloop-workflow.md` | affected; status normalized to approved and used as the canonical contract |
-| `specs/rigorloop-workflow.test.md` | affected; immediate `test-spec` stage must update it from archived historical coverage to current proof map |
+| `specs/rigorloop-workflow.test.md` | updated by the immediate `test-spec` stage before M1; active proof map for this refactor |
 | Stage skills | affected where they duplicate old routing, handoff, `ci`, learn, project-map, or proposal-prerequisite wording |
 | `.codex/skills/` and `dist/adapters/` | affected only after canonical skill guidance changes; regenerate through existing scripts |
 | `docs/project-map.md` | absent; no reliance in this plan unless later refreshed or bypassed with rationale |
@@ -371,6 +371,15 @@ The final command list must be updated during implementation to include every to
   - `bash scripts/ci.sh --mode explicit --path CONSTITUTION.md --path AGENTS.md --path README.md --path docs/workflows.md --path docs/plan.md --path docs/plans/2026-05-03-workflow-refactor.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/changes/2026-05-03-workflow-refactor/change.yaml --path docs/changes/2026-05-03-workflow-refactor/explain-change.md`
   - `git diff --check -- CONSTITUTION.md AGENTS.md README.md docs/workflows.md docs/plan.md docs/plans/2026-05-03-workflow-refactor.md specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md docs/changes/2026-05-03-workflow-refactor`
   - Selected check IDs: `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `readme.validate`, `readme.vision_markers`, `selector.regression`.
+- 2026-05-03 M1 review-resolution checks passed after fixing stale test-spec status wording in this plan:
+  - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-03-workflow-refactor`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-03-workflow-refactor`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-03-workflow-refactor/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-01-workflow-refactor.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/plan.md --path docs/plans/2026-05-03-workflow-refactor.md --path docs/changes/2026-05-03-workflow-refactor/change.yaml --path docs/changes/2026-05-03-workflow-refactor/explain-change.md --path docs/changes/2026-05-03-workflow-refactor/review-resolution.md`
+  - `python scripts/select-validation.py --mode explicit --path docs/plans/2026-05-03-workflow-refactor.md --path docs/changes/2026-05-03-workflow-refactor/change.yaml --path docs/changes/2026-05-03-workflow-refactor/explain-change.md --path docs/changes/2026-05-03-workflow-refactor/review-log.md --path docs/changes/2026-05-03-workflow-refactor/review-resolution.md --path docs/changes/2026-05-03-workflow-refactor/reviews/code-review-m1-r1.md`
+  - `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-03-workflow-refactor.md --path docs/changes/2026-05-03-workflow-refactor/change.yaml --path docs/changes/2026-05-03-workflow-refactor/explain-change.md --path docs/changes/2026-05-03-workflow-refactor/review-log.md --path docs/changes/2026-05-03-workflow-refactor/review-resolution.md --path docs/changes/2026-05-03-workflow-refactor/reviews/code-review-m1-r1.md`
+  - `git diff --check -- docs/plans/2026-05-03-workflow-refactor.md docs/changes/2026-05-03-workflow-refactor`
+  - Selected check IDs: `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`.
 
 ## Outcome and Retrospective
 

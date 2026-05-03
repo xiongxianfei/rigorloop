@@ -36,3 +36,7 @@ The final learn artifact model is deferred to a later learn refactor. M1 records
 ## Validation
 
 M1 validation evidence is recorded in `change.yaml` and the active plan. Selector-selected proof covered artifact lifecycle validation, change metadata regression and validation, README validation, README vision marker validation, and selector regression coverage.
+
+## Review closeout
+
+`code-review-m1-r1` found one stale-plan wording defect. `review-resolution.md` records the accepted disposition and the plan now states that `specs/rigorloop-workflow.test.md` is active and was updated by the `test-spec` stage before M1.
