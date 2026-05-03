@@ -339,8 +339,8 @@ The final command list must be updated during implementation to include every to
 - [x] Code review complete.
 - [x] Review-resolution complete if triggered.
 - [x] Verify complete.
-- [ ] Explain-change complete.
-- [ ] PR ready.
+- [x] Explain-change complete.
+- [x] PR ready.
 
 ## Decision Log
 
@@ -358,6 +358,7 @@ The final command list must be updated during implementation to include every to
 - 2026-05-03: `code-review-m4-r1` returned `clean-with-notes`; no new review-resolution work was triggered.
 - 2026-05-03: Verify did not run broad smoke because `broad_smoke_required` is `false` and selector output reported no broad-smoke trigger.
 - 2026-05-03: Verify did not trigger `ci-maintenance`; existing `.github/workflows/ci.yml` delegates pull-request and main-branch validation to `scripts/ci.sh`.
+- 2026-05-03: Final explain-change expanded the existing milestone summary into the required reviewer-facing rationale artifact before PR handoff.
 
 ## Surprises and Discoveries
 
@@ -368,6 +369,7 @@ The final command list must be updated during implementation to include every to
 - M4 found no additional affected operating or governance surfaces to defer. `docs/project-map.md` remains absent and not relied on, and the final learn artifact model remains intentionally outside this refactor.
 - M4 code review reran targeted metadata, review-artifact closeout, lifecycle, and whitespace checks over the review surface and found no required fixes.
 - Verify found one stale pre-verify sentence in `explain-change.md`; it was updated before the final validation pass.
+- Final explain-change found no new affected surfaces or validation gaps. The remaining lifecycle transition to `Done` is merge-dependent.
 
 ## Validation Notes
 
@@ -470,6 +472,12 @@ The final command list must be updated during implementation to include every to
   - `bash scripts/ci.sh --mode explicit --path .codex/skills/ci/SKILL.md --path .codex/skills/learn/SKILL.md --path .codex/skills/proposal-review/SKILL.md --path .codex/skills/proposal/SKILL.md --path .codex/skills/verify/SKILL.md --path .codex/skills/workflow/SKILL.md --path AGENTS.md --path CONSTITUTION.md --path README.md --path dist/adapters/claude/.claude/skills/ci/SKILL.md --path dist/adapters/claude/.claude/skills/learn/SKILL.md --path dist/adapters/claude/.claude/skills/proposal-review/SKILL.md --path dist/adapters/claude/.claude/skills/proposal/SKILL.md --path dist/adapters/claude/.claude/skills/verify/SKILL.md --path dist/adapters/claude/.claude/skills/workflow/SKILL.md --path dist/adapters/codex/.agents/skills/ci/SKILL.md --path dist/adapters/codex/.agents/skills/learn/SKILL.md --path dist/adapters/codex/.agents/skills/proposal-review/SKILL.md --path dist/adapters/codex/.agents/skills/proposal/SKILL.md --path dist/adapters/codex/.agents/skills/verify/SKILL.md --path dist/adapters/codex/.agents/skills/workflow/SKILL.md --path dist/adapters/opencode/.opencode/skills/ci/SKILL.md --path dist/adapters/opencode/.opencode/skills/learn/SKILL.md --path dist/adapters/opencode/.opencode/skills/proposal-review/SKILL.md --path dist/adapters/opencode/.opencode/skills/proposal/SKILL.md --path dist/adapters/opencode/.opencode/skills/verify/SKILL.md --path dist/adapters/opencode/.opencode/skills/workflow/SKILL.md --path docs/changes/2026-05-03-workflow-refactor/change.yaml --path docs/changes/2026-05-03-workflow-refactor/explain-change.md --path docs/changes/2026-05-03-workflow-refactor/review-log.md --path docs/changes/2026-05-03-workflow-refactor/review-resolution.md --path docs/changes/2026-05-03-workflow-refactor/reviews/code-review-m1-r1.md --path docs/changes/2026-05-03-workflow-refactor/reviews/code-review-m2-r1.md --path docs/changes/2026-05-03-workflow-refactor/reviews/code-review-m3-r1.md --path docs/changes/2026-05-03-workflow-refactor/reviews/code-review-m4-r1.md --path docs/plan.md --path docs/plans/2026-05-03-workflow-refactor.md --path docs/proposals/2026-05-01-workflow-refactor.md --path docs/workflows.md --path scripts/test-artifact-lifecycle-validator.py --path scripts/test-select-validation.py --path scripts/test-skill-validator.py --path skills/ci/SKILL.md --path skills/learn/SKILL.md --path skills/proposal-review/SKILL.md --path skills/proposal/SKILL.md --path skills/verify/SKILL.md --path skills/workflow/SKILL.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md`
   - `git diff --check --`
   - Selected check IDs: `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.validate`, `artifact_lifecycle.regression`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `readme.validate`, `readme.vision_markers`, `selector.regression`.
+- 2026-05-03 final explain-change and PR-handoff checks passed:
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-03-workflow-refactor/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-01-workflow-refactor.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/plan.md --path docs/plans/2026-05-03-workflow-refactor.md --path docs/changes/2026-05-03-workflow-refactor/change.yaml --path docs/changes/2026-05-03-workflow-refactor/explain-change.md --path docs/changes/2026-05-03-workflow-refactor/review-log.md --path docs/changes/2026-05-03-workflow-refactor/review-resolution.md --path docs/changes/2026-05-03-workflow-refactor/reviews/code-review-m4-r1.md`
+  - `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-03-workflow-refactor.md --path docs/changes/2026-05-03-workflow-refactor/change.yaml --path docs/changes/2026-05-03-workflow-refactor/explain-change.md`
+  - `git diff --check --`
+  - Selected check IDs: `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`.
 
 ## Outcome and Retrospective
 
@@ -477,4 +485,4 @@ The final command list must be updated during implementation to include every to
 
 ## Readiness
 
-Verify completed with no blockers. The branch is ready for final `explain-change`; `pr` remains pending.
+Final explain-change is complete. The branch is ready for `pr`; the remaining plan-index transition to `Done` is merge-dependent.
