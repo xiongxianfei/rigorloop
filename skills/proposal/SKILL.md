@@ -23,7 +23,8 @@ Read, if present:
 - related specs
 - related architecture docs or ADRs
 - related issues, incidents, or user feedback
-- root `vision.md` when present
+- root `VISION.md` when present
+- migration-recognized legacy root `vision.md` when `VISION.md` has not replaced it yet
 
 ## Output path
 
@@ -41,7 +42,7 @@ Do not overwrite an older proposal for a new initiative.
 2. **Problem**: the user or system problem being solved.
 3. **Goals**: outcomes the change should produce.
 4. **Non-goals**: explicitly out-of-scope work.
-5. **Vision fit**: relationship to root `vision.md`.
+5. **Vision fit**: relationship to root `VISION.md`.
 6. **Context**: relevant repo, product, architecture, or operational background.
 7. **Options considered**: summarize at least three options or link to `explore`.
 8. **Recommended direction**: selected approach and rationale.
@@ -60,14 +61,20 @@ Do not overwrite an older proposal for a new initiative.
 
 Include `Vision fit` in new or substantively revised proposals after the vision spec is adopted.
 
-The section states exactly one of:
+The first non-empty line of the section states exactly one of:
 
 - `fits the current vision`
 - `may conflict with the current vision`
-- `intentionally proposes a vision revision`
+- `proposes a vision revision`
 - `no vision exists yet`
 
-When root `vision.md` is absent, proposals must use the exact `Vision fit` value `no vision exists yet`. If root `vision.md` exists, choose one of the current-vision outcomes and do not use `no vision exists yet`.
+When neither root `VISION.md` nor migration-recognized legacy root `vision.md` exists, proposals must use the exact `Vision fit` value `no vision exists yet`.
+
+If root `VISION.md` exists, choose one of the current-vision outcomes and do not use `no vision exists yet`.
+
+During the `vision.md` to `VISION.md` migration, do not use `no vision exists yet` solely because `VISION.md` has not yet replaced migration-recognized legacy root `vision.md`.
+
+A short explanatory paragraph may follow the status line.
 
 A proposal must not silently redefine project vision outside the `Vision fit` section and normal proposal rationale.
 
@@ -81,7 +88,7 @@ Before marking accepted or ready for review, verify:
 - the recommended option is compared against alternatives;
 - non-goals protect the scope;
 - user value is explicit;
-- `Vision fit` is present and consistent with root `vision.md` when required;
+- `Vision fit` is present and consistent with root `VISION.md` when required;
 - architecture impact is acknowledged;
 - testing and verification are plausible;
 - risks are specific enough to act on;
