@@ -36,6 +36,8 @@ For project vision and proposal-fit questions, the source-of-truth order is:
 
 Proposals created or substantively revised after this spec is adopted include `Vision fit`. README content between `<!-- vision:start -->` and `<!-- vision:end -->` is generated from `VISION.md`. README front-matter is not the source of truth when it conflicts with `VISION.md`.
 
+`docs/project-map.md`, when present, is a living reference rather than a standing artifact. Contributors MUST NOT rely on it when it is absent, known-stale, contradicted by the current repository, or missing the relied-on area unless they refresh it or record a no-map rationale.
+
 ## Spec-driven rules
 
 Changes that affect externally observable behavior MUST have an approved spec before implementation.
@@ -154,9 +156,9 @@ Until repository-specific release checks replace the current conservative templa
 
 `code-review` and `verify` MUST happen before non-trivial changes are considered ready for PR.
 
-In workflow-managed completion flows, agents MUST continue into the next required or default downstream stage when an approved autoprogression spec says continuation applies. Review-only or otherwise isolated stage requests MUST remain isolated by default, except that direct `pr` still performs PR opening when readiness passes.
+In workflow-managed completion flows, agents MUST continue into the next mandatory or triggered downstream stage when an approved autoprogression spec says continuation applies. Review-only or otherwise isolated stage requests MUST remain isolated by default, except that direct `pr` still performs PR opening when readiness passes.
 
-Fast-lane and bugfix execution remain explicit-step unless a higher-priority approved artifact broadens their automation scope. Advice-only stages such as `learn` MUST NOT auto-run by default unless a higher-priority approved artifact elevates them.
+Fast-lane and bugfix execution remain explicit-step unless a higher-priority approved artifact broadens their automation scope. On-demand or periodic actions such as `explore`, `research`, and `learn` MUST NOT auto-run by default unless a higher-priority approved artifact elevates them.
 
 When review feedback exists, each material finding MUST include evidence, a required outcome, and a safe resolution path or `needs-decision` rationale before it drives fixes.
 
@@ -168,11 +170,11 @@ When material findings exist for a non-trivial change, dispositions MUST be reco
 
 Behavior changes MUST update the relevant spec, test spec, docs, fixtures, or examples in the same change when those artifacts exist.
 
-Workflow or governance changes MUST update `CONSTITUTION.md`, `AGENTS.md`, and `docs/workflows.md` when their guidance is affected.
+Workflow or governance changes MUST update affected operating and governance guidance, including `CONSTITUTION.md`, `AGENTS.md`, and `docs/workflows.md` when their guidance is affected. If an affected surface is intentionally unchanged, contributors MUST record it as unaffected with rationale or defer it with owner and follow-up in a contributor-visible tracked or review-visible surface.
 
 Architecture or boundary changes MUST update the relevant architecture document or ADR.
 
-When a change leaves durable lessons for future contributors, the repository SHOULD capture them through the `learn` stage instead of leaving them only in chat or PR comments.
+When a change leaves durable lessons for future contributors, the repository SHOULD capture them through the periodic or explicitly invoked `learn` stage instead of leaving them only in chat or PR comments.
 
 ## Agent behavior rules
 

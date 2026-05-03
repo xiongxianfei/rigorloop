@@ -522,6 +522,102 @@ artifacts:
         self.assertIn("specs/related-history.test.md", checked_paths)
         self.assertNotIn("specs/future-stale.test.md", checked_paths)
 
+    def test_plan_index_context_expands_to_workflow_authority_artifacts(self) -> None:
+        fixture_root = copy_fixture("related-scope")
+        self.addCleanupTree(fixture_root)
+        plan_index = fixture_root / "docs" / "plan.md"
+        plan_index.write_text(
+            """# Plan index
+
+## Active
+- [Related plan](plans/2026-04-20-related-plan.md)
+""",
+            encoding="utf-8",
+        )
+        test_spec = fixture_root / "specs" / "related-spec.test.md"
+        test_spec.write_text(
+            """# Related test spec
+
+## Status
+
+- active
+
+## Related spec and plan
+
+- Spec: `specs/related-spec.md`
+- Plan: `docs/plans/2026-04-20-related-plan.md`
+
+## Testing strategy
+
+- Validate the workflow authority chain.
+
+## Requirement coverage map
+
+| Requirement IDs | Covered by | Level | Notes |
+| --- | --- | --- | --- |
+| `R1` | `T1` | integration | plan authority expansion |
+
+## Test cases
+
+### T1. Plan authority expansion
+
+- Covers: R1
+- Level: integration
+- Fixture/setup:
+- Steps:
+- Expected result:
+- Failure proves:
+- Automation location:
+""",
+            encoding="utf-8",
+        )
+        plan_path = fixture_root / "docs" / "plans" / "2026-04-20-related-plan.md"
+        plan_path.write_text(
+            plan_path.read_text(encoding="utf-8")
+            + "\n- Test spec: `specs/related-spec.test.md`\n",
+            encoding="utf-8",
+        )
+
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=[
+                "docs/plan.md",
+                "docs/plans/2026-04-20-related-plan.md",
+            ],
+        )
+
+        self.assertFalse(result.blocking_findings)
+        checked_paths = {path.as_posix() for path in result.checked_artifacts}
+        self.assertIn("docs/proposals/2026-04-20-related-proposal.md", checked_paths)
+        self.assertIn("specs/related-spec.md", checked_paths)
+        self.assertIn("specs/related-spec.test.md", checked_paths)
+        self.assertIn("docs/architecture/2026-04-20-related-architecture.md", checked_paths)
+
+    def test_plan_context_blocks_invalid_referenced_workflow_authority(self) -> None:
+        fixture_root = copy_fixture("related-scope")
+        self.addCleanupTree(fixture_root)
+        spec_path = fixture_root / "specs" / "related-spec.md"
+        spec_path.write_text(
+            spec_path.read_text(encoding="utf-8").replace("- approved", "- reviewed", 1),
+            encoding="utf-8",
+        )
+
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=["docs/plans/2026-04-20-related-plan.md"],
+        )
+
+        self.assertTrue(result.blocking_findings)
+        self.assertTrue(
+            any(
+                finding.path.as_posix().endswith("specs/related-spec.md")
+                and "invalid status 'reviewed' for spec" in finding.message
+                for finding in result.blocking_findings
+            )
+        )
+
     def test_local_mode_blocks_related_and_warns_unrelated_baseline(self) -> None:
         fixture_root = copy_fixture("local-scope")
         self.addCleanupTree(fixture_root)

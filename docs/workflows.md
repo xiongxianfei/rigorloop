@@ -20,14 +20,42 @@ This file is the short operational summary for working in this repository. The n
 - README content between `<!-- vision:start -->` and `<!-- vision:end -->` is generated from `VISION.md`.
 - README front-matter is not the source of truth when it conflicts with `VISION.md`.
 
-## Full Lifecycle
+## Workflow Categories
 
-`constitution / project-map when needed -> explore -> research when needed -> proposal -> proposal-review -> spec -> spec-review -> architecture -> architecture-review when needed -> plan -> plan-review -> test-spec -> implement -> code-review -> verify -> ci when GitHub workflow automation for a material risk is missing or stale -> explain-change -> pr`
+- Standing artifacts: `VISION.md` and `CONSTITUTION.md`.
+  - `VISION.md` absence blocks the first substantive proposal unless the proposal bootstraps project vision.
+  - `CONSTITUTION.md` absence blocks governance adoption, workflow-governance changes, and source-of-truth changes unless the proposal bootstraps the constitution.
+- Living references: `docs/project-map.md`.
+  - Do not rely on the map when it is absent, known-stale, contradicted, or missing the relied-on area. Refresh it or record a no-map rationale before reliance.
+  - Calendar freshness thresholds, markers, and the full project-map revision workflow are deferred.
+- Workflow infrastructure: `specs/rigorloop-workflow.md`, this summary, affected root guidance, affected stage skills, and generated skill or adapter output when canonical skills change.
+  - Workflow-governance changes update affected surfaces, mark them unaffected with rationale, or defer them with owner and follow-up in a tracked or review-visible surface.
+- On-demand support: `explore` and `research`.
+  - Use them when ambiguity, option expansion, architecture uncertainty, external facts, platform behavior, standards, laws, pricing, or other current evidence affects the decision.
+- Per-change chain:
+  - `proposal -> proposal-review -> spec -> spec-review -> architecture -> architecture-review -> plan -> plan-review -> test-spec -> implement -> code-review -> review-resolution when triggered -> verify -> ci-maintenance when triggered -> explain-change -> pr`
+  - `review-resolution` runs only when material review findings, non-final dispositions, or review outcomes require explicit closeout.
+  - `ci-maintenance` is conditional support when hosted workflow automation or related CI infrastructure for a material risk is missing, stale, or wrong.
+- Periodic artifacts: `learn`.
+  - Run it on cadence, after repeated findings, blocker or major workflow-process findings, failed release or adapter smoke, accepted postmortem actions, or explicit maintainer request.
+  - Triggered `learn` is closed by immediate capture, scheduled follow-up, or explicit no-learn rationale. It blocks downstream only when a higher-priority artifact makes it blocking.
+
+## Stage Obligations
+
+The workflow spec owns the full stage-obligation table. The stable obligation values are:
+
+| Obligation | Meaning |
+| --- | --- |
+| `mandatory` | Required whenever the row's trigger applies. |
+| `conditional` | Required only when the trigger applies or the artifact or action is cited as a dependency. |
+| `on-demand` | Created or run only when explicitly invoked or when the work depends on it. |
+| `periodic` | Run on cadence, incident, repeated finding, failed smoke, accepted postmortem action, or maintainer request. |
 
 Notes:
 
-- `ci` means creating or updating GitHub workflows or related automation for a material risk. It does not mean waiting for routine CI to run.
-- Not every stage is required for every change; stage classification and enforcement rules are defined in `specs/rigorloop-workflow.md`.
+- `explore` and `research` are on-demand support, not default prerequisites.
+- `learn` is periodic or explicitly invoked, not a default final per-change stage.
+- `ci-maintenance` means creating or updating hosted CI workflow files, validation automation, or platform configuration. It does not mean running validation, designing tests, specifying validation commands, or waiting for existing CI checks.
 - After `spec-review`, the immediate next stage is still `architecture` when needed, otherwise `plan`. Any mention of eventual `test-spec` readiness is downstream readiness, not a stage skip.
 - `plan-review` remains the normal immediate handoff into `test-spec`. If implementation readiness is mentioned there, it is downstream readiness rather than the handoff itself.
 - In the execution lane, stage-owned language stays split: `implement` reports implementation completion or readiness for `code-review`; `code-review` owns review findings; `verify` owns `branch-ready`; `pr` owns `pr-body-ready` and `pr-open-ready`.
@@ -37,7 +65,6 @@ Notes:
 - `code-review` may inspect staged or unstaged diffs, but cited governing artifacts only support a clean branch-scoped conclusion when they are confirmed in tracked governing branch state.
 - Missing tracked governing authority blocks `clean-with-notes` but does not suppress independently supported findings, and named edge cases need direct proof for clean review or `branch-ready`.
 - A material review finding is incomplete unless it has evidence, a required outcome, and a safe resolution path or `needs-decision` rationale.
-- `learn` is advice-only. Treat it as an explicit follow-up when a durable lesson actually emerged or another approved rule elevates it.
 
 ## Architecture Packages
 
@@ -82,15 +109,15 @@ Notes:
 - In v1, workflow-managed autoprogression applies only to:
   - `proposal -> proposal-review`
   - `spec -> spec-review`
-  - `architecture -> architecture-review` when that review stage is the next required or default downstream step
-  - full-feature execution from `implement -> code-review -> verify -> ci when triggered -> explain-change -> pr`
+  - `architecture -> architecture-review` when that review stage is the next mandatory or triggered downstream step
+  - full-feature execution from `implement -> code-review -> review-resolution when triggered -> verify -> ci-maintenance when triggered -> explain-change -> pr`
 - In workflow-managed full-feature runs, `code-review` first emits a first-pass review record grounded in the actual diff, upstream artifacts, checklist coverage, and validation evidence before any review-driven fixes begin.
 - In workflow-managed full-feature runs, first-pass `clean-with-notes` continues to `verify`, first-pass `changes-requested` continues to `review-resolution`, and first-pass `blocked` or `inconclusive` stops.
 - Clean reviews require checklist coverage plus no-finding rationale. Positive notes are optional and only useful when they add specific evidence-backed context.
 - Direct `pr` remains in scope and opens the PR when readiness passes.
 - Direct `proposal-review`, `spec-review`, `architecture-review`, `code-review`, `verify`, and `explain-change` stay isolated by default unless the user asks to carry the change through completion.
 - Fast-lane and bugfix execution stay on the repository's existing explicit-step behavior in v1.
-- `learn` remains advice-only and does not auto-run by default.
+- On-demand and periodic actions such as `explore`, `research`, and `learn` do not auto-run by default.
 - Stop automatic continuation when the user explicitly pauses, validation fails, a review or design issue needs a real decision, permissions or tooling block the next step, or the next action would be stronger than PR creation such as merge, release, deploy, or destructive Git operations.
 - Autoprogression does not replace lifecycle bookkeeping. After `code-review`, `verify`, or other review gates change the real initiative state, update the active plan, any affected active test spec, and `docs/plan.md` before claiming downstream readiness.
 

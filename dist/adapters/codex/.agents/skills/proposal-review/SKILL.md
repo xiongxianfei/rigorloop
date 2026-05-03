@@ -74,6 +74,14 @@ An explicit exception must include:
 
 The exception must be recorded in both the proposal's `Vision fit` section and the proposal-review output. If the proposal is part of a non-trivial change, recommend summarizing the exception in `explain-change.md`.
 
+## Standing artifact gate review
+
+Bootstrap proposals that proceed without an existing required standing artifact must identify the bootstrap exception in `Vision fit`.
+
+When reviewing, request revision if the bootstrap exception is missing, if the proposal silently bypasses a `VISION.md` absence gate for a first substantive proposal, or if it silently bypasses a `CONSTITUTION.md` absence gate for governance adoption, workflow-governance changes, or source-of-truth changes.
+
+This standing artifact gate check is required before proposal-review accepts bootstrap or governance-related direction.
+
 ## Adversarial questions
 
 Ask these when useful:
