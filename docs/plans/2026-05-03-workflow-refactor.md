@@ -2,12 +2,12 @@
 
 ## Status
 
-- active
+- done
 
 - Owner: maintainers
 - Start date: 2026-05-03
 - Last updated: 2026-05-03
-- Related issue or PR: none yet
+- Related issue or PR: PR #26 merged at https://github.com/xiongxianfei/rigorloop/pull/26
 - Supersedes: none
 - selected_workflow_contract: refactored
 - broad_smoke_required: false
@@ -359,6 +359,7 @@ The final command list must be updated during implementation to include every to
 - 2026-05-03: Verify did not run broad smoke because `broad_smoke_required` is `false` and selector output reported no broad-smoke trigger.
 - 2026-05-03: Verify did not trigger `ci-maintenance`; existing `.github/workflows/ci.yml` delegates pull-request and main-branch validation to `scripts/ci.sh`.
 - 2026-05-03: Final explain-change expanded the existing milestone summary into the required reviewer-facing rationale artifact before PR handoff.
+- 2026-05-03: PR #26 merged. The merge-dependent lifecycle transition to `Done` is now complete in this plan body and `docs/plan.md`.
 
 ## Surprises and Discoveries
 
@@ -478,11 +479,17 @@ The final command list must be updated during implementation to include every to
   - `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-03-workflow-refactor.md --path docs/changes/2026-05-03-workflow-refactor/change.yaml --path docs/changes/2026-05-03-workflow-refactor/explain-change.md`
   - `git diff --check --`
   - Selected check IDs: `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`.
+- 2026-05-03 post-merge lifecycle closeout checks passed:
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-03-workflow-refactor/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-03-workflow-refactor.md --path docs/changes/2026-05-03-workflow-refactor/change.yaml --path docs/changes/2026-05-03-workflow-refactor/explain-change.md`
+  - `bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-03-workflow-refactor.md --path docs/changes/2026-05-03-workflow-refactor/change.yaml --path docs/changes/2026-05-03-workflow-refactor/explain-change.md`
+  - `git diff --check --`
+  - Selected check IDs: `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`.
 
 ## Outcome and Retrospective
 
-- Pending implementation and PR closeout.
+Implementation, review, verify, explain-change, PR handoff, and merged PR #26 are complete. The refactor is now the active workflow baseline, with the project-map lifecycle mechanics and final learn artifact model left as focused follow-ups.
 
 ## Readiness
 
-Final explain-change is complete. The branch is ready for `pr`; the remaining plan-index transition to `Done` is merge-dependent.
+Lifecycle complete through merged PR #26.
