@@ -277,6 +277,8 @@ Repository broad smoke is not planned by default. If plan-review, test-spec, sel
 - 2026-05-03: M2 updated README, governance, workflow guidance, active vision specs/test specs, `vision`, `proposal`, and `proposal-review` skills, and focused skill-validator coverage for `VISION.md`, state-based behavior, safety gates, and proposal `Vision fit` status lines.
 - 2026-05-03: M3 refreshed generated `.codex/skills/` and public adapter skill copies from canonical skills. The generated diff was limited to the expected `vision`, `proposal`, and `proposal-review` skill copies.
 - 2026-05-03: M3 updated lifecycle evidence, test-spec handoff wording, and change-local metadata for the completed M1-M3 implementation.
+- 2026-05-03: code-review-r1 requested one fix: root `vision.md` and `VISION.md` coexistence must block validation globally, not only when a root vision path is selected.
+- 2026-05-03: CR1-F1 was accepted and fixed by making the selector conflict check global and adding an unrelated-path regression for `README.md`.
 
 ## Decision Log
 
@@ -350,11 +352,21 @@ Repository broad smoke is not planned by default. If plan-review, test-spec, sel
 - 2026-05-03: `python scripts/select-validation.py --mode explicit --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.test.md --path specs/vision-skill.test.md --path specs/vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/explain-change.md` passed after M3 lifecycle evidence updates.
 - 2026-05-03: `bash scripts/ci.sh --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path README.md --path VISION.md --path vision.md --path specs/vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.test.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path skills/vision/SKILL.md --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path scripts/validation_selection.py --path scripts/test-select-validation.py --path scripts/test-skill-validator.py --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml` passed after M3 generated-output refresh.
 - 2026-05-03: `git diff --check -- .` passed after M3 generated-output refresh.
+- 2026-05-03: `python scripts/test-select-validation.py` failed before CR1-F1 implementation for `test_root_vision_path_conflict_blocks_unrelated_changed_path`, proving both root vision files could coexist without blocking an unrelated `README.md` selection.
+- 2026-05-03: `python scripts/test-select-validation.py` passed after the CR1-F1 fix.
+- 2026-05-03: `python scripts/select-validation.py --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py` passed after the CR1-F1 fix and selected `selector.regression`.
+- 2026-05-03: `bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py` passed after the CR1-F1 fix.
+- 2026-05-03: `git diff --check -- scripts/validation_selection.py scripts/test-select-validation.py` passed after the CR1-F1 fix.
+- 2026-05-03: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration` passed after recording code-review-r1 and its resolution.
+- 2026-05-03: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration` passed after closing CR1-F1.
+- 2026-05-03: `python scripts/validate-change-metadata.py docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml` passed after CR1-F1 evidence updates.
+- 2026-05-03: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path docs/proposals/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.test.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml` passed after CR1-F1 evidence updates.
+- 2026-05-03: `bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path specs/vision-skill-simplification-and-vision-md-migration.test.md --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/explain-change.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/review-log.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/review-resolution.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/reviews/code-review-r1.md` passed after CR1-F1 evidence updates.
 
 ## Outcome and Retrospective
 
-M1 is implemented, committed, code-reviewed, and has had verify-readiness wording corrected. M2 authored-surface implementation was code-reviewed with no blocking findings. M3 generated-output refresh is implemented. Do not treat the overall initiative as branch-ready until final code-review, verify, explain-change, and PR handoff complete.
+M1 is implemented, committed, code-reviewed, and has had verify-readiness wording corrected. M2 authored-surface implementation was code-reviewed with no blocking findings. M3 generated-output refresh is implemented. code-review-r1 found CR1-F1, and the accepted selector fix is implemented. Do not treat the overall initiative as branch-ready until the follow-up code-review, verify, explain-change, and PR handoff complete.
 
 ## Readiness
 
-Ready for `code-review` on the completed M1-M3 `VISION.md` migration implementation.
+Ready for follow-up `code-review` after the accepted CR1-F1 selector fix.

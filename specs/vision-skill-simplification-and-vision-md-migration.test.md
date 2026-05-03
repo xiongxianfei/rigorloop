@@ -299,6 +299,7 @@
   - Assert explicit-mode and PR-mode selection for root `VISION.md` selects README vision marker validation or equivalent repository-owned proof.
   - Assert migration-time legacy root `vision.md` is classified so deletion, rename, or migration does not block as `unclassified-path`.
   - Assert both root files existing blocks or fails validation.
+  - Assert both root files existing blocks or fails validation even when the selected changed path is unrelated to either root vision file.
   - Assert reintroduced root `vision.md` after migration is classified as legacy or conflict instead of ignored.
   - Assert selector-selected CI runs the expected checks for changed selector and selector-test paths.
 - Expected result:
