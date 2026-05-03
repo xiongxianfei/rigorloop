@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- none yet
+- [2026-05-03 Workflow refactor](plans/2026-05-03-workflow-refactor.md) - active execution plan for implementing the approved workflow category model, stable stage-obligation taxonomy, `ci-maintenance` label, minimal project-map no-reliance rule, periodic `learn` handling, affected-surface alignment, skill guidance updates, generated-output refresh, validation, and PR closeout.
 
 ## Blocked
 - none yet
