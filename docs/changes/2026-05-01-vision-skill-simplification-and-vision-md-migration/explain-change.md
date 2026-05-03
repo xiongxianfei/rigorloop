@@ -6,14 +6,14 @@ M1 adds selector support for the `VISION.md` migration before the root artifact 
 
 M2 renames the root vision artifact to `VISION.md` and updates authored governance, specs, README ownership, proposal guidance, proposal-review guidance, and the canonical `vision` skill. The `vision` skill now uses state-based behavior while preserving overwrite protection, README marker safety, substantive/editorial confirmation, and causal-link gating.
 
-Generated `.codex/skills/` and `dist/adapters/` output remains intentionally stale after M2 because M3 owns generator refresh.
+M3 refreshes generated `.codex/skills/` and public adapter skill copies from the canonical skills. The generated diff is limited to the expected `vision`, `proposal`, and `proposal-review` skill copies.
 
 ## Decision Trail
 
 - Proposal: `docs/proposals/2026-05-01-vision-skill-simplification-and-vision-md-migration.md`
 - Spec: `specs/vision-skill-simplification-and-vision-md-migration.md`, especially `R1`-`R83` and `AC1`-`AC21`.
 - Test spec: `specs/vision-skill-simplification-and-vision-md-migration.test.md` `T1`-`T13`.
-- Plan: `docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md` M1-M2.
+- Plan: `docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md` M1-M3.
 - Architecture: none required; this is selector and validation routing only.
 
 ## Diff Rationale By Area
@@ -28,8 +28,10 @@ Generated `.codex/skills/` and `dist/adapters/` output remains intentionally sta
 | `skills/vision/SKILL.md` | Replaced user-facing mode table behavior with state-based establishment, update, and README sync guidance. | Simplifies the user interface while preserving no-overwrite, no silent marker insertion, substantive/editorial, and causal-link gates. | `python scripts/validate-skills.py`; `python scripts/test-skill-validator.py`. |
 | `skills/proposal/SKILL.md`, `skills/proposal-review/SKILL.md` | Updated `Vision fit` guidance to use `VISION.md`, status-line values, migration-recognized legacy behavior, and `proposes a vision revision`. | Aligns proposal creation and review with the new canonical artifact and approved status-line contract. | `python scripts/test-skill-validator.py`. |
 | `scripts/test-skill-validator.py` | Added focused assertions for active spec retirement, state-based skill behavior, `VISION.md` governance, and proposal `Vision fit` rules. | Ensures the old path and user-facing mode requirements cannot quietly re-enter active surfaces. | Red before M2 authored changes; green after M2 authored changes. |
+| `.codex/skills/` generated skill copies | Regenerated local Codex runtime mirrors for `vision`, `proposal`, and `proposal-review`. | Keeps installed/runtime skill output aligned with canonical skill sources after the `VISION.md` migration. | `python scripts/build-skills.py`; `python scripts/build-skills.py --check`. |
+| `dist/adapters/` generated skill copies | Regenerated Claude, Codex, and opencode adapter skill copies for `vision`, `proposal`, and `proposal-review`. | Keeps public adapter packages aligned with canonical skill sources after the `VISION.md` migration. | `python scripts/build-adapters.py --version 0.1.1`; `python scripts/build-adapters.py --version 0.1.1 --check`; `python scripts/validate-adapters.py --version 0.1.1`. |
 | `docs/changes/...` | Added `change.yaml` and this explanation. | Provides the required durable traceability pack for the non-trivial migration. | `python scripts/validate-change-metadata.py .../change.yaml`. |
-| Active plan | Records M1-M2 progress, validation, expected generated drift before M3, and the exact-path filesystem discovery. | Keeps the living execution plan current during implementation. | Plan is included in lifecycle and whitespace validation. |
+| Active plan | Records M1-M3 progress, validation, generated-output refresh, and the exact-path filesystem discovery. | Keeps the living execution plan current during implementation. | Plan is included in lifecycle and whitespace validation. |
 
 ## Tests Added Or Changed
 
@@ -47,7 +49,8 @@ Generated `.codex/skills/` and `dist/adapters/` output remains intentionally sta
 - Root `vision.md` is not renamed in M1.
 - M2 renames root `vision.md` to `VISION.md` without changing project vision prose.
 - The existing project vision content is not changed.
-- Generated `.codex/skills/` and `dist/adapters/` output is not touched in M1 or M2.
+- Generated `.codex/skills/` and `dist/adapters/` output is refreshed only in M3 through repository generators.
+- M3 generated output did not change adapter manifests or command aliases.
 - The conflict check uses exact root directory entries and Git index paths so case-insensitive filesystems do not falsely report a conflict when only one path is actually present.
 - Historical proposals, plans, reviews, and change-local records are not mass-rewritten solely for lowercase `vision.md` references.
 
@@ -95,3 +98,29 @@ M2 evidence:
 - `python scripts/validate-change-metadata.py docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml` passed after M2 lifecycle metadata updates.
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path docs/proposals/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.test.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml` passed after M2 lifecycle metadata updates.
 - `git diff --name-status --find-renames HEAD -- vision.md VISION.md` reported `R100 vision.md VISION.md`; root directory inspection reported only `./VISION.md`.
+
+M3 evidence:
+
+- `python scripts/build-skills.py` passed and refreshed generated `.codex/skills/` output.
+- `python scripts/build-adapters.py --version 0.1.1` passed and refreshed generated public adapter output.
+- `git diff --name-status --find-renames` showed only generated `vision`, `proposal`, and `proposal-review` skill copies under `.codex/skills/` and `dist/adapters/`.
+- `python scripts/validate-skills.py` passed.
+- `python scripts/test-skill-validator.py` passed.
+- `python scripts/test-select-validation.py` passed.
+- `python scripts/build-skills.py --check` passed.
+- `python scripts/test-adapter-distribution.py` passed.
+- `python scripts/build-adapters.py --version 0.1.1 --check` passed.
+- `python scripts/validate-adapters.py --version 0.1.1` passed.
+- `python scripts/validate-readme.py README.md --vision-markers` passed.
+- `python scripts/validate-change-metadata.py docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml` passed.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path docs/proposals/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.test.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml` passed.
+- `bash scripts/ci.sh --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path README.md --path VISION.md --path vision.md --path specs/vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.test.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path skills/vision/SKILL.md --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path scripts/validation_selection.py --path scripts/test-select-validation.py --path scripts/test-skill-validator.py --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml` passed.
+- `git diff --check -- .` passed.
+
+## Outcome and Retrospective
+
+M1 is implemented, committed, code-reviewed, and has had verify-readiness wording corrected. M2 authored-surface implementation was code-reviewed with no blocking findings. M3 generated-output refresh is implemented. Do not treat the overall initiative as branch-ready until final code-review, verify, explain-change, and PR handoff complete.
+
+## Readiness
+
+Ready for `code-review` on the completed M1-M3 `VISION.md` migration implementation.

@@ -22,12 +22,14 @@ requirements:
   - R69
   - R70
   - R71
+  - R72-R74
   - R75-R82
   - R83
   - AC1-AC9
   - AC10
   - AC11
   - AC12
+  - AC13-AC14
   - AC15-AC18
   - AC19
   - AC20
@@ -42,6 +44,7 @@ tests:
   - specs/vision-skill-simplification-and-vision-md-migration.test.md T7
   - specs/vision-skill-simplification-and-vision-md-migration.test.md T8
   - specs/vision-skill-simplification-and-vision-md-migration.test.md T9
+  - specs/vision-skill-simplification-and-vision-md-migration.test.md T10
   - specs/vision-skill-simplification-and-vision-md-migration.test.md T11
   - specs/vision-skill-simplification-and-vision-md-migration.test.md T12
   - specs/vision-skill-simplification-and-vision-md-migration.test.md T13
@@ -129,6 +132,41 @@ validation:
   - command: git diff --name-status --find-renames HEAD -- vision.md VISION.md
     result: pass_after_m2_rename_proof
     output: R100 vision.md VISION.md
+  - command: python scripts/build-skills.py
+    result: pass_after_m3_generated_output_refresh
+  - command: python scripts/build-adapters.py --version 0.1.1
+    result: pass_after_m3_generated_output_refresh
+  - command: git diff --name-status --find-renames
+    result: pass_after_m3_generated_output_review
+    output: Only generated vision, proposal, and proposal-review skill copies changed under .codex/skills and dist/adapters.
+  - command: python scripts/validate-skills.py
+    result: pass_after_m3_generated_output_refresh
+  - command: python scripts/test-skill-validator.py
+    result: pass_after_m3_generated_output_refresh
+  - command: python scripts/test-select-validation.py
+    result: pass_after_m3_generated_output_refresh
+  - command: python scripts/build-skills.py --check
+    result: pass_after_m3_generated_output_refresh
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_after_m3_generated_output_refresh
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_after_m3_generated_output_refresh
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_after_m3_generated_output_refresh
+  - command: python scripts/validate-readme.py README.md --vision-markers
+    result: pass_after_m3_generated_output_refresh
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml
+    result: pass_after_m3_lifecycle_evidence_update
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path docs/proposals/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.test.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml
+    result: pass_after_m3_lifecycle_evidence_update
+  - command: python scripts/select-validation.py --mode explicit --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.test.md --path specs/vision-skill.test.md --path specs/vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/explain-change.md
+    result: pass_after_m3_lifecycle_evidence_update
+    selected_check_ids: artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, readme.vision_markers
+  - command: bash scripts/ci.sh --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path README.md --path VISION.md --path vision.md --path specs/vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.test.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path skills/vision/SKILL.md --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path scripts/validation_selection.py --path scripts/test-select-validation.py --path scripts/test-skill-validator.py --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml
+    result: pass_after_m3_generated_output_refresh
+    selected_check_ids: skills.validate, skills.regression, skills.drift, adapters.drift, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, readme.validate, readme.vision_markers, selector.regression
+  - command: git diff --check -- .
+    result: pass_after_m3_generated_output_refresh
 changed_files:
   - docs/plan.md
   - docs/proposals/2026-05-01-vision-skill-simplification-and-vision-md-migration.md
@@ -151,6 +189,18 @@ changed_files:
   - scripts/validation_selection.py
   - scripts/test-select-validation.py
   - scripts/test-skill-validator.py
+  - .codex/skills/vision/SKILL.md
+  - .codex/skills/proposal/SKILL.md
+  - .codex/skills/proposal-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/vision/SKILL.md
+  - dist/adapters/claude/.claude/skills/proposal/SKILL.md
+  - dist/adapters/claude/.claude/skills/proposal-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/vision/SKILL.md
+  - dist/adapters/codex/.agents/skills/proposal/SKILL.md
+  - dist/adapters/codex/.agents/skills/proposal-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/vision/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/proposal/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/proposal-review/SKILL.md
 review:
-  status: pending_m2_code_review
+  status: pending_final_code_review
   unresolved_items: 0

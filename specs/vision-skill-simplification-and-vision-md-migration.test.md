@@ -477,8 +477,8 @@ None. Requirements are covered by focused skill assertions, selector tests, READ
 ## Next artifacts
 
 - `implement` M1: completed selector and validation support for root `VISION.md`, legacy root `vision.md`, README marker selection, and both-file conflict behavior.
-- `implement` M2: authored `VISION.md` migration, governance/docs/spec/skill updates, and focused skill-validator updates completed; ready for code-review.
-- `implement` M3: generated skill and adapter output refresh plus lifecycle closeout.
+- `implement` M2: authored `VISION.md` migration, governance/docs/spec/skill updates, and focused skill-validator updates completed; code-review returned no blocking findings.
+- `implement` M3: generated skill and adapter output refresh plus lifecycle closeout completed.
 - `code-review`
 - `verify`
 - `explain-change`
@@ -492,4 +492,4 @@ None yet.
 
 This test spec is the active proof map for the `VISION.md` migration and vision skill simplification.
 
-Immediate next repository stage: `code-review` for M2 authored-surface implementation from [2026-05-01 Vision Skill Simplification and VISION.md Migration](../docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md).
+Immediate next repository stage: `code-review` for the completed M1-M3 implementation from [2026-05-01 Vision Skill Simplification and VISION.md Migration](../docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md).

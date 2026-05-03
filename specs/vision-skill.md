@@ -383,9 +383,10 @@ None.
 
 ## Next artifacts
 
-- code-review for the M2 authored-surface implementation
+- code-review for the completed M1-M3 implementation
 - verify
-- implement M3 generated-output refresh after M2 review and verification
+- explain-change
+- pr
 
 ## Follow-on artifacts
 
@@ -394,6 +395,7 @@ None.
 - Execution plan: [2026-05-01 Vision Skill Simplification and VISION.md Migration](../docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md)
 - Test spec update: [Vision Skill Test Spec](vision-skill.test.md) is active for the consolidated vision skill contract.
 - Focused migration test spec: [Vision Skill Simplification and VISION.md Migration Test Spec](vision-skill-simplification-and-vision-md-migration.test.md)
+- M3 implementation: generated-output refresh and lifecycle evidence updates completed.
 
 ## Readiness
 
