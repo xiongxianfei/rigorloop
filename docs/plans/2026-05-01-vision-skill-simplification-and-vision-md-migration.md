@@ -7,7 +7,7 @@
 - Owner: maintainers
 - Start date: 2026-05-01
 - Last updated: 2026-05-03
-- Related issue or PR: PR #25 (open)
+- Related issue or PR: PR #25 merged at https://github.com/xiongxianfei/rigorloop/pull/25
 - Supersedes: none
 - broad_smoke_required: false
 - broad_smoke_reason: This migration changes governance, specs, skills, selector routing, validators, root Markdown artifacts, and generated outputs. The approved spec requires focused selector, skill, lifecycle, README marker, generated-output, and adapter checks; no runtime service, release packaging, schema, or deployment boundary requires repository broad smoke by default.
@@ -284,6 +284,7 @@ Repository broad smoke is not planned by default. If plan-review, test-spec, sel
 - 2026-05-03: Explain-change refreshed the durable rationale with the explicit problem statement, decision trail, alternatives rejected, review-resolution summary, risk/follow-up notes, and PR handoff summary.
 - 2026-05-03: PR lifecycle closeout moved this plan and `docs/plan.md` to done before PR opening, as required when final state is known before PR.
 - 2026-05-03: PR #25 opened for review at `https://github.com/xiongxianfei/rigorloop/pull/25`.
+- 2026-05-03: PR #25 merged at merge commit `a6e1a14b9a411f232ffc384fc5608d8134233f80`.
 
 ## Decision Log
 
@@ -388,8 +389,8 @@ Repository broad smoke is not planned by default. If plan-review, test-spec, sel
 
 ## Outcome and Retrospective
 
-M1 is implemented, committed, code-reviewed, and has had verify-readiness wording corrected. M2 authored-surface implementation was code-reviewed with no blocking findings. M3 generated-output refresh is implemented. code-review-r1 found CR1-F1, the accepted selector fix is implemented, follow-up code-review returned `clean-with-notes`, verify passed, explain-change refreshed the durable rationale, lifecycle closeout is complete in this plan body and `docs/plan.md`, and PR #25 is open for review.
+M1 is implemented, committed, code-reviewed, and has had verify-readiness wording corrected. M2 authored-surface implementation was code-reviewed with no blocking findings. M3 generated-output refresh is implemented. code-review-r1 found CR1-F1, the accepted selector fix is implemented, follow-up code-review returned `clean-with-notes`, verify passed, explain-change refreshed the durable rationale, lifecycle closeout is complete in this plan body and `docs/plan.md`, and PR #25 is merged.
 
 ## Readiness
 
-PR #25 is open for review.
+Lifecycle complete through merged PR #25.
