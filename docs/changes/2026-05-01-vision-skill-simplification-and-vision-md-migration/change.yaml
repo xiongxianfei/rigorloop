@@ -208,6 +208,17 @@ validation:
     selected_check_ids: review_artifacts.validate, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, readme.vision_markers
   - command: git diff --check -- docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md
     result: pass_after_code_review_r2_recording
+  - command: python scripts/select-validation.py --mode pr --base origin/main --head HEAD
+    result: pass_after_verify
+    selected_check_ids: skills.validate, skills.regression, skills.drift, adapters.regression, adapters.drift, adapters.validate, review_artifacts.validate, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, readme.validate, readme.vision_markers, selector.regression
+  - command: bash scripts/ci.sh --mode pr --base origin/main --head HEAD
+    result: pass_after_verify
+    selected_check_ids: skills.validate, skills.regression, skills.drift, adapters.regression, adapters.drift, adapters.validate, review_artifacts.validate, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, readme.validate, readme.vision_markers, selector.regression
+  - command: git diff --check origin/main..HEAD --
+    result: pass_after_verify
+  - command: find . -maxdepth 1 \( -name 'vision.md' -o -name 'VISION.md' \) -print | sort && git ls-files -- vision.md VISION.md
+    result: pass_after_verify
+    output: root contains ./VISION.md, and Git tracks VISION.md only.
 changed_files:
   - docs/plan.md
   - docs/proposals/2026-05-01-vision-skill-simplification-and-vision-md-migration.md
@@ -249,3 +260,10 @@ changed_files:
 review:
   status: clean_after_code_review_r2
   unresolved_items: 0
+verification:
+  status: branch_ready_after_verify
+  branch_ready: true
+  next_stage: explain-change
+  broad_smoke_required: false
+  broad_smoke_result: not_required
+  note: PR-mode selector-selected CI passed for the tracked branch diff; hosted CI was not observed locally.

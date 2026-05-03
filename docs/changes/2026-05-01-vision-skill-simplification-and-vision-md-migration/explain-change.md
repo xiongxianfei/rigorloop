@@ -134,10 +134,17 @@ CR1-F1 evidence:
 - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration` passed after closing CR1-F1.
 - `bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path specs/vision-skill-simplification-and-vision-md-migration.test.md --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/explain-change.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/review-log.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/review-resolution.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/reviews/code-review-r1.md` passed after CR1-F1 evidence updates.
 
+Verify evidence:
+
+- `python scripts/select-validation.py --mode pr --base origin/main --head HEAD` passed and selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `readme.validate`, `readme.vision_markers`, and `selector.regression`.
+- `bash scripts/ci.sh --mode pr --base origin/main --head HEAD` passed.
+- `git diff --check origin/main..HEAD --` passed.
+- Root vision inspection reported only `./VISION.md`, and `git ls-files -- vision.md VISION.md` reported only `VISION.md`.
+
 ## Outcome and Retrospective
 
-M1 is implemented, committed, code-reviewed, and has had verify-readiness wording corrected. M2 authored-surface implementation was code-reviewed with no blocking findings. M3 generated-output refresh is implemented. code-review-r1 found CR1-F1, the accepted selector fix is implemented, and follow-up code-review returned `clean-with-notes`. Do not treat the overall initiative as branch-ready until verify, explain-change, and PR handoff complete.
+M1 is implemented, committed, code-reviewed, and has had verify-readiness wording corrected. M2 authored-surface implementation was code-reviewed with no blocking findings. M3 generated-output refresh is implemented. code-review-r1 found CR1-F1, the accepted selector fix is implemented, follow-up code-review returned `clean-with-notes`, and verify passed. Do not treat the overall initiative as PR-open-ready until explain-change and PR handoff complete.
 
 ## Readiness
 
-Ready for `verify` after clean follow-up code-review.
+Branch-ready after verify. Ready for `explain-change`.
