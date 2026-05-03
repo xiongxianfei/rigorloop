@@ -12,12 +12,19 @@ CR1-F1 fixes the first code-review finding by making root `vision.md` and root `
 
 The follow-up code-review for CR1-F1 returned `clean-with-notes` with no blocking or required-change findings.
 
+## Problem
+
+The repository had an established project-vision artifact at root `vision.md`, while root public and governance entrypoints already used uppercase names such as `README.md`, `AGENTS.md`, and `CONSTITUTION.md`. The `vision` skill also exposed `create`, `revise`, and `mirror` as user-facing modes even though the project wanted a simpler state-based interface with the same safety gates.
+
+That created active contract drift across governance docs, skills, specs, selector routing, README front-matter, generated skill output, and public adapter output. The change needed to make `VISION.md` canonical, retire the old mode model, preserve the existing approved vision prose, and prove the migration did not leave both `vision.md` and `VISION.md` as competing root artifacts.
+
 ## Decision Trail
 
-- Proposal: `docs/proposals/2026-05-01-vision-skill-simplification-and-vision-md-migration.md`
-- Spec: `specs/vision-skill-simplification-and-vision-md-migration.md`, especially `R1`-`R83` and `AC1`-`AC21`.
+- Exploration: no separate `explore` artifact was created; the proposal records the compared options directly.
+- Proposal decision: `docs/proposals/2026-05-01-vision-skill-simplification-and-vision-md-migration.md` selected the option to rename root `vision.md` to `VISION.md` and remove user-facing `create`, `revise`, and `mirror` modes while preserving safety gates.
+- Requirements: `specs/vision-skill-simplification-and-vision-md-migration.md` `R1`-`R83` and `AC1`-`AC21`.
 - Test spec: `specs/vision-skill-simplification-and-vision-md-migration.test.md` `T1`-`T13`.
-- Plan: `docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md` M1-M3.
+- Plan milestones: `docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md` M1 selector support, M2 authored migration, M3 generated-output refresh, plus CR1-F1 follow-up.
 - Architecture: none required; this is selector and validation routing only.
 
 ## Diff Rationale By Area
@@ -59,6 +66,14 @@ The follow-up code-review for CR1-F1 returned `clean-with-notes` with no blockin
 - M3 generated output did not change adapter manifests or command aliases.
 - The conflict check uses exact root directory entries and Git index paths so case-insensitive filesystems do not falsely report a conflict when only one path is actually present.
 - Historical proposals, plans, reviews, and change-local records are not mass-rewritten solely for lowercase `vision.md` references.
+
+## Alternatives Rejected
+
+- Keep lowercase `vision.md` and the explicit mode model: rejected because it preserved the naming inconsistency and kept the heavier skill interface.
+- Rename to `VISION.md` but keep explicit modes: rejected because it solved path consistency without simplifying how contributors use the skill.
+- Simplify the skill but keep lowercase `vision.md`: rejected because it deferred the source-of-truth migration and left active proposal/proposal-review guidance tied to the old path.
+- Add a README sync helper script or a new `vision-review` skill: rejected as out of scope for this focused migration.
+- Rewrite historical artifacts solely to replace `vision.md` references: rejected because historical records remain valid as records of what was true when they were written.
 
 ## Verification Evidence
 
@@ -141,10 +156,33 @@ Verify evidence:
 - `git diff --check origin/main..HEAD --` passed.
 - Root vision inspection reported only `./VISION.md`, and `git ls-files -- vision.md VISION.md` reported only `VISION.md`.
 
+## Review Resolution Summary
+
+- code-review rounds: 2
+- material findings: 1
+- accepted findings: 1
+- unresolved findings: 0
+- closeout: `docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/review-resolution.md` is closed
+
+`CR1-F1` found that both-root-vision coexistence detection was path-scoped instead of global. The accepted fix made coexistence detection global within `select_validation` and added the unrelated-path regression for `README.md`. Follow-up `code-review-r2` returned `clean-with-notes`.
+
 ## Outcome and Retrospective
 
 M1 is implemented, committed, code-reviewed, and has had verify-readiness wording corrected. M2 authored-surface implementation was code-reviewed with no blocking findings. M3 generated-output refresh is implemented. code-review-r1 found CR1-F1, the accepted selector fix is implemented, follow-up code-review returned `clean-with-notes`, and verify passed. Do not treat the overall initiative as PR-open-ready until explain-change and PR handoff complete.
 
+## Risks and Follow-ups
+
+- Hosted CI has not been observed locally; local PR-mode selected CI passed.
+- The unrelated untracked workflow-refactor proposal remains outside this change and should not be included in this PR unless it gets its own workflow.
+- No follow-up implementation work is required for the `VISION.md` migration itself.
+
+## PR Handoff Summary
+
+- Rename root `vision.md` to `VISION.md` and update active governance, README, specs, skills, selectors, and generated outputs accordingly.
+- Retire user-facing `vision` skill modes while keeping overwrite, README marker, substantive/editorial, and causal-link safety gates.
+- Preserve approved project vision prose and avoid mass-rewriting historical lowercase references.
+- Close `CR1-F1` and verify the branch with PR-mode selector-selected CI.
+
 ## Readiness
 
-Branch-ready after verify. Ready for `explain-change`.
+Branch-ready after verify and durable explanation refresh. Ready for `pr`.

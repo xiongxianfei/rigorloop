@@ -219,6 +219,18 @@ validation:
   - command: find . -maxdepth 1 \( -name 'vision.md' -o -name 'VISION.md' \) -print | sort && git ls-files -- vision.md VISION.md
     result: pass_after_verify
     output: root contains ./VISION.md, and Git tracks VISION.md only.
+  - command: python scripts/select-validation.py --mode explicit --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/explain-change.md
+    result: pass_after_explain_change_refresh
+    selected_check_ids: artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, readme.vision_markers
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml
+    result: pass_after_explain_change_refresh
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path docs/proposals/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.test.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/explain-change.md
+    result: pass_after_explain_change_refresh
+  - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/explain-change.md
+    result: pass_after_explain_change_refresh
+    selected_check_ids: artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, readme.vision_markers
+  - command: git diff --check -- docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md
+    result: pass_after_explain_change_refresh
 changed_files:
   - docs/plan.md
   - docs/proposals/2026-05-01-vision-skill-simplification-and-vision-md-migration.md
@@ -263,7 +275,8 @@ review:
 verification:
   status: branch_ready_after_verify
   branch_ready: true
-  next_stage: explain-change
+  next_stage: pr
   broad_smoke_required: false
   broad_smoke_result: not_required
+  explain_change_status: refreshed_for_pr_handoff
   note: PR-mode selector-selected CI passed for the tracked branch diff; hosted CI was not observed locally.
