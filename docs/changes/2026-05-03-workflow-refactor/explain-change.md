@@ -2,76 +2,143 @@
 
 ## Status
 
-Verify complete; branch-ready; ready for final `explain-change`.
+Explain-change complete; ready for `pr`.
 
-## Source artifacts
+## Summary
 
-- Proposal: `docs/proposals/2026-05-01-workflow-refactor.md`
-- Spec: `specs/rigorloop-workflow.md`
-- Test spec: `specs/rigorloop-workflow.test.md`
-- Plan: `docs/plans/2026-05-03-workflow-refactor.md`
+This change refactors RigorLoop workflow guidance around lifecycle categories instead of one overloaded linear chain. Standing artifacts, living references, workflow infrastructure, on-demand artifacts, per-change stages, and periodic learning now have distinct rules and handoff behavior.
 
-## M1 changes
+The branch updates the approved workflow proposal, workflow spec, test spec, root guidance, operational workflow summary, affected stage skills, generated skill and adapter output, selector and lifecycle regression coverage, and change-local review and verification evidence.
 
-M1 aligns root and contributor-facing workflow guidance with the approved workflow category model. The changed guidance distinguishes standing artifacts, living references, workflow infrastructure, on-demand artifacts, the per-change chain, and periodic learning.
+The implementation keeps `specs/rigorloop-workflow.md` as the canonical workflow contract, keeps `docs/workflows.md` as the short operating summary, separates `ci-maintenance` from validation execution, treats `review-resolution` as closeout rather than a review stage, and records that `docs/project-map.md` is absent and not relied on for this refactor.
 
-The root guidance now treats `docs/project-map.md` as a living reference that cannot be relied on when absent, stale, contradicted, or missing the relied-on area. This change records a no-map rationale in the plan because M1 relies on approved workflow artifacts and bounded root guidance, not on repository-shape claims from a project map.
+## Problem
 
-The M1 guidance also separates `ci-maintenance` from validation execution, keeps `review-resolution` as closeout for material review findings rather than a review stage, and describes `learn` as periodic or explicitly invoked rather than part of the default per-change chain.
+The old workflow summary mixed fundamentally different lifecycle concepts into one chain: standing governance, project-map context, exploration, research, proposal/spec stages, implementation, validation, CI, learning, and PR. That made it unclear what is mandatory, what is conditional, what is on demand, what can go stale, and what blocks downstream work.
 
-## M2 changes
+The refactor needed to make those categories explicit, preserve the already-landed `VISION.md` source-of-truth migration, move `explore` and `research` out of the default per-change chain, move `learn` to periodic or explicit retrospective work, define the `project-map` no-reliance rule without implementing the full project-map lifecycle, and align the affected docs, skills, generated outputs, and validation proof.
 
-M2 aligns canonical stage skills with the approved workflow contract. `skills/workflow/SKILL.md` now routes by categories, obligation values, triggers, `review-resolution`, and `ci-maintenance` instead of the old overloaded chain.
+## Decision Trail
 
-`skills/proposal/SKILL.md` and `skills/proposal-review/SKILL.md` now state the standing-artifact gates for first substantive proposals, bootstrap exceptions, and governance/source-of-truth proposals. `skills/ci/SKILL.md` now presents CI work as `ci-maintenance` and separates CI infrastructure from validation execution, test design, and validation-command ownership.
+- Exploration: no separate `explore` artifact was created. The accepted proposal records the options and tradeoffs directly.
+- Proposal decision: `docs/proposals/2026-05-01-workflow-refactor.md` selected the category-model refactor and deferred the root vision rename, full project-map lifecycle, and final learn artifact model.
+- Spec: `specs/rigorloop-workflow.md` was approved with the category table, stage obligation metadata, standing-artifact gates, project-map no-reliance rule, learn closeout rule, `review-resolution` gate, `ci-maintenance` boundary, targeted proof rules, durable reasoning rules, and generated-output/source-of-truth boundaries.
+- Test spec: `specs/rigorloop-workflow.test.md` is active and maps the approved requirements to root guidance checks, skill assertions, selector regressions, lifecycle validation, generated-output checks, change metadata validation, and manual reviewable evidence.
+- Architecture / ADRs: none required. This is workflow-governance and artifact-routing work, not a runtime architecture, storage, API, deployment, or service-boundary change.
+- Plan: `docs/plans/2026-05-03-workflow-refactor.md` split the work into M1 root guidance, M2 skill/generated-output alignment, M3 validator coverage, and M4 change-local closeout and verification.
 
-`skills/learn/SKILL.md` now treats `learn` as periodic or explicitly invoked and records the approved temporary closeout options: immediate capture, scheduled follow-up, or explicit no-learn rationale. `skills/verify/SKILL.md` had stale downstream handoff wording, so M2 updates it to hand off to `ci-maintenance` only when hosted workflow automation or related CI infrastructure is triggered.
+## Diff Rationale By Area
 
-M2 also adds focused skill-validator assertions for these skill-contract guarantees and regenerates `.codex/skills/` plus generated public adapters under `dist/adapters/` from canonical skill sources.
+| File or area | Change | Reason | Source artifact | Test/evidence |
+| --- | --- | --- | --- | --- |
+| `docs/proposals/2026-05-01-workflow-refactor.md` | Added the accepted workflow-refactor proposal and updated it to build on canonical `VISION.md`. | Records the selected category-model direction and removes the superseded future vision-rename follow-up. | Proposal, `VISION.md` migration state | Artifact lifecycle validation |
+| `specs/rigorloop-workflow.md` | Added category rules, stage-obligation metadata, standing-artifact gates, project-map no-reliance, learn closeout, `review-resolution`, `ci-maintenance`, targeted proof, durable reasoning, and generated-output boundaries. | Makes the workflow definition inspectable and testable from one canonical contract. | R1-R12f, R20-R27 | `validate-artifact-lifecycle`, selector-selected CI |
+| `specs/rigorloop-workflow.test.md` | Expanded the proof map with T20-T28 and related manual checks. | Turns the approved workflow requirements into concrete tests and reviewable evidence. | Test-spec stage | `test-select-validation`, `test-artifact-lifecycle-validator`, `test-skill-validator` |
+| `CONSTITUTION.md`, `AGENTS.md`, `README.md`, `docs/workflows.md` | Rewrote operating guidance around the category model, obligation values, no-map rule, periodic `learn`, `review-resolution`, and `ci-maintenance`. | Keeps contributor-facing guidance aligned with the canonical workflow contract. | M1, R6-R9, R12, R24 | README validation, lifecycle validation, explicit CI |
+| `skills/workflow/SKILL.md` | Updated routing guidance to use categories, triggers, obligation values, and stage-owned readiness. | Prevents the workflow skill from reintroducing the old overloaded chain. | M2, R6-R7w | `test-skill-validator`, `validate-skills` |
+| `skills/proposal/SKILL.md`, `skills/proposal-review/SKILL.md` | Added standing-artifact gates, first-substantive-proposal handling, bootstrap exceptions, and review checks. | Ensures proposal creation and proposal-review enforce `VISION.md` and `CONSTITUTION.md` gates consistently. | R6a, R6e-R6h | `test-skill-validator` |
+| `skills/ci/SKILL.md` | Clarified the user-visible action as `ci-maintenance` and excluded validation execution, test design, and validation-command ownership. | Removes ambiguity between hosted CI infrastructure work and `verify`. | R9-R9b | `test-skill-validator`, explicit CI |
+| `skills/learn/SKILL.md` | Reframed `learn` as periodic or explicitly invoked, with immediate capture, scheduled follow-up, or no-learn rationale. | Keeps retrospective learning available without making it a default per-change stage. | R7ba-R7be | `test-skill-validator`; no-learn rationale in plan/explain-change |
+| `skills/verify/SKILL.md` | Updated downstream handoff wording so verify routes to `ci-maintenance` only when CI infrastructure is actually triggered. | Preserves `verify` as the branch-ready gate and avoids treating CI maintenance as routine validation execution. | R7rc, R9 | `test-skill-validator` |
+| `.codex/skills/` and `dist/adapters/` | Regenerated local Codex mirrors and public adapter skill copies from canonical skills. | Keeps generated runtime and adapter outputs in sync after canonical skill changes. | R20-R24a, R26-R27 | `build-skills --check`, `test-adapter-distribution`, `build-adapters --check`, `validate-adapters` |
+| `scripts/test-select-validation.py` | Added workflow-refactor surface coverage, generated-output routing coverage, broad-smoke trigger coverage, and active plan/test-spec/review-resolution trigger cases. | Proves the validation selector chooses targeted checks and does not require broad smoke without an authoritative trigger. | R8l-R8s, T25 | `python scripts/test-select-validation.py` |
+| `scripts/test-artifact-lifecycle-validator.py` | Added plan-context expansion and invalid workflow-authority regressions. | Proves touched plan context reaches authoritative proposal/spec/test-spec surfaces and blocks stale lifecycle states. | R8f-R8kg, T25 | `python scripts/test-artifact-lifecycle-validator.py` |
+| `scripts/test-skill-validator.py` | Added focused assertions for workflow-refactor skill guidance. | Prevents affected canonical skills from drifting back to old-chain, advice-only, or ambiguous CI wording. | M2, T21-T24, T26 | Red/green `python scripts/test-skill-validator.py` during M2 |
+| `docs/changes/2026-05-03-workflow-refactor/` | Added `change.yaml`, review records, review-resolution, and this explanation. | Provides durable traceability, review closeout, validation evidence, and reviewer-facing rationale for a non-trivial workflow-governance change. | R10-R12f, R25-R25h | Metadata, review-artifact, lifecycle, and CI validation |
+| `docs/plan.md`, `docs/plans/2026-05-03-workflow-refactor.md` | Added and maintained the active plan, milestone progress, decisions, validation notes, and PR readiness. | Keeps planned initiative state synchronized and reviewable before PR. | R8f-R8j | Lifecycle validation |
 
-## M3 changes
+## Tests Added Or Changed
 
-M3 adds repository-owned regression coverage for the refactored workflow proof map. `scripts/test-select-validation.py` now covers the workflow-refactor surface set across root guidance, lifecycle artifacts, canonical skill sources, generated skill output, generated adapter output, selector tests, lifecycle tests, skill-validator tests, change metadata, explain-change, review log, and review-resolution.
+- `scripts/test-select-validation.py`
+  - Adds workflow-refactor surface selection coverage for root guidance, lifecycle artifacts, canonical skill sources, generated skill output, generated adapter output, selector tests, lifecycle tests, skill-validator tests, change metadata, explanation, review log, and review-resolution.
+  - Adds broad-smoke source coverage so ordinary workflow-refactor paths stay targeted while active plan, test-spec, and review-resolution trigger contexts can require broad smoke.
+- `scripts/test-artifact-lifecycle-validator.py`
+  - Adds plan-context expansion coverage to proposal, spec, test spec, and architecture authority surfaces.
+  - Adds a regression proving invalid referenced workflow authority blocks validation when reached through a plan.
+- `scripts/test-skill-validator.py`
+  - Adds assertions that workflow, proposal, proposal-review, CI, learn, and verify skill guidance matches the refactored category, gate, handoff, `ci-maintenance`, and learn behavior.
+- `specs/rigorloop-workflow.test.md`
+  - Adds or expands T20-T28 for category visibility, standing-artifact gates, project-map no-reliance, stage obligations, triggered learn, handoff authority, selector/lifecycle proof, CI-maintenance, review-resolution, and change metadata traceability.
 
-The selector coverage also proves that broad smoke remains trigger-based: ordinary workflow-refactor paths do not require broad smoke, while active plan, test-spec, and review-resolution trigger contexts can elevate it when they explicitly require broad smoke.
+## Requirement Coverage
 
-`scripts/test-artifact-lifecycle-validator.py` now covers plan-context expansion to authoritative proposal, spec, test-spec, and architecture artifacts. It also proves that an invalid referenced workflow authority, such as a spec left in transitional `reviewed` status, blocks lifecycle validation when reached through the plan context.
+| Requirement group | Test coverage | Implementation evidence |
+| --- | --- | --- |
+| R1-R7be | T1, T20, T21, T22, T23 | `specs/rigorloop-workflow.md`, root guidance, `docs/workflows.md`, workflow/proposal/learn skills |
+| R7c-R7w | T3, T24 | Workflow-facing skill handoffs, stage-owned readiness wording, verify/pr authority split |
+| R8-R8s | T2, T13, T17, T25 | Active plan/index, selector-selected proof, lifecycle validator coverage, explicit CI wrapper behavior |
+| R9-R9b | T13, T14, T26 | `ci-maintenance` wording in workflow docs and `skills/ci/SKILL.md`; validation remains under `verify` |
+| R10-R12f | T3, T16, T27 | `explain-change.md`, `review-log.md`, closed `review-resolution.md`, concise review summary |
+| R20-R24a, R26-R27 | T4, T11, T12, T17 | Canonical/generated boundaries, generated skill and adapter drift checks, Git/PR/CI/human-review authority |
+| R25-R25h | T5, T6, T7, T28 | `change.yaml` with artifacts, requirements, tests, validation records, changed files, and review state |
 
-## M4 closeout evidence
+## Verification Evidence
 
-M4 closes the change-local evidence slice. The active change-local pack now links the accepted proposal, approved spec, active test spec, active plan, explain-change artifact, review-resolution ledger, touched files, validation records, and current review state through `change.yaml` and this Markdown rationale.
+Validation evidence is recorded in `docs/changes/2026-05-03-workflow-refactor/change.yaml` and the active plan. The final verify pass ran after code review and after generated outputs were refreshed.
 
-No additional project-map reliance was introduced. `docs/project-map.md` remains absent, and this change continues to rely on the approved proposal, approved workflow spec, active test spec, active plan, root guidance, affected skills, generated-output checks, and bounded file inventories rather than repository-shape claims from a map.
+- `python scripts/validate-change-metadata.py docs/changes/2026-05-03-workflow-refactor/change.yaml` - passed.
+- `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-03-workflow-refactor` - passed.
+- `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-03-workflow-refactor` - passed.
+- `python scripts/validate-skills.py` - passed.
+- `python scripts/test-skill-validator.py` - passed.
+- `python scripts/build-skills.py --check` - passed.
+- `python scripts/test-adapter-distribution.py` - passed.
+- `python scripts/build-adapters.py --version 0.1.1 --check` - passed.
+- `python scripts/validate-adapters.py --version 0.1.1` - passed.
+- `python scripts/test-select-validation.py` - passed.
+- `python scripts/test-artifact-lifecycle-validator.py` - passed.
+- `python scripts/test-change-metadata-validator.py` - passed.
+- `python scripts/select-validation.py --mode explicit ...` over the full workflow-refactor changed surface - passed; selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.validate`, `artifact_lifecycle.regression`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `readme.validate`, `readme.vision_markers`, and `selector.regression`.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...` over proposal, spec, test spec, plan, change metadata, explain-change, review log, review-resolution, and final code-review record - passed.
+- `bash scripts/ci.sh --mode explicit ...` over the full workflow-refactor changed surface - passed with the same selector-selected checks.
+- `git diff --check --` - passed.
 
-No `learn` trigger was raised during M4. The only material review finding was the already-closed M1 stale-plan wording defect, and later M2/M3 code reviews were clean-with-notes. There was no repeated review pattern, blocker or major workflow-process finding, failed release or adapter smoke, postmortem action, cadence run, or maintainer request requiring immediate learn capture or a scheduled learn follow-up.
+Hosted CI was not observed locally. The repository GitHub workflow is a thin wrapper that delegates pull-request and main-branch runs to `scripts/ci.sh`; local explicit CI passed.
 
-No standalone `verify-report.md` was added. The M4 validation evidence remains concise enough to record in `change.yaml` and the active plan; the later `verify` stage still owns the branch-ready conclusion.
+## Review Resolution Summary
 
-## Affected surfaces
+- Code-review rounds: 4.
+- Material findings: 1.
+- Accepted: 1.
+- Rejected: 0.
+- Deferred: 0.
+- Partially accepted: 0.
+- Needs decision: 0.
+- Unresolved findings: 0.
+- Review-resolution: `docs/changes/2026-05-03-workflow-refactor/review-resolution.md`.
 
-- `CONSTITUTION.md`: updated where current wording conflicted with the approved workflow contract.
-- `AGENTS.md`: updated for the practical execution chain, project-map no-reliance, learning, autoprogression, and `ci-maintenance` wording.
-- `README.md`: updated to present the category model and the per-change chain without implying that `explore`, `research`, `learn`, or CI infrastructure maintenance are default per-change stages.
-- `docs/workflows.md`: updated as the short operating summary for categories, obligations, handoffs, and stage boundaries.
-- `docs/plan.md` and `docs/plans/2026-05-03-workflow-refactor.md`: updated as lifecycle and execution-plan surfaces for the active refactor.
-- `skills/workflow/SKILL.md`, `skills/proposal/SKILL.md`, `skills/proposal-review/SKILL.md`, `skills/ci/SKILL.md`, `skills/learn/SKILL.md`, and `skills/verify/SKILL.md`: updated in M2 where local skill guidance was affected.
-- `.codex/skills/` and `dist/adapters/`: regenerated in M2 from canonical skill sources after the skill guidance changed.
-- `scripts/test-select-validation.py` and `scripts/test-artifact-lifecycle-validator.py`: updated in M3 to cover the selector and lifecycle proof required by the active test spec.
+`code-review-m1-r1` found stale plan wording that still described `specs/rigorloop-workflow.test.md` as archived even though the test-spec stage had activated it before M1. The finding was accepted, fixed in the plan, and validated. `code-review-m2-r1`, `code-review-m3-r1`, and `code-review-m4-r1` returned `clean-with-notes` with no material findings.
 
-## Deferred surfaces
+## Alternatives Rejected
 
-No affected operating or governance surface remains deferred for this refactor. `docs/project-map.md` is intentionally absent and not relied on.
+- Keep the current workflow chain: rejected because it keeps standing artifacts, living references, on-demand aids, per-change stages, and retrospective learning visually conflated.
+- Rewrite only `docs/workflows.md`: rejected because the real contract would still be scattered across the spec, skills, and generated outputs.
+- Bundle the full project-map lifecycle: rejected as too broad; this change keeps only the minimal no-reliance rule and defers freshness markers and revision workflow.
+- Bundle the final learn artifact model: rejected as too broad; this change records temporary allowed closeout surfaces and defers the three-surface learn model.
+- Rename `skills/ci/`: rejected because `ci-maintenance` is the contributor-visible action label, while the existing skill path can remain stable.
+- Run broad smoke by default: rejected because the approved workflow uses targeted selector-selected proof unless an authoritative source triggers broad smoke.
 
-The final learn artifact model is deferred to a later learn refactor. M1 records only the temporary workflow behavior required by the approved workflow spec: capture immediately, schedule follow-up, or record a no-learn rationale when a trigger occurs.
+## Scope Control
 
-## Validation
+- The completed `VISION.md` migration is not reopened.
+- The approved project vision content is not changed.
+- `docs/project-map.md` is not created because this refactor does not rely on repository-shape claims from a project map.
+- Project-map freshness markers, calendar thresholds, and skill behavior are deferred.
+- The final `learn` artifact model is deferred.
+- Generated `.codex/skills/` and `dist/adapters/` output was refreshed through repository generators, not hand-edited.
+- No runtime code, API, storage, deployment, or release packaging behavior is changed.
 
-Validation evidence is recorded in `change.yaml` and the active plan. The final M4 proof covers change metadata validation, skill validation, skill regression fixtures, generated Codex skill drift, public adapter regression, adapter drift, adapter validation, selector regression, artifact lifecycle regression, explicit lifecycle validation over proposal/spec/test-spec/plan/change-local artifacts, and explicit-path CI over the changed authoritative surfaces.
+## Risks And Follow-Ups
 
-The verify pass reran the final repository-owned proof over the tracked branch state after `code-review-m4-r1`. It confirmed generated skill and adapter output are in sync, review-resolution is closed, lifecycle-managed artifacts are coherent, the baseline change-local pack exists, and explicit-path CI passes without a broad-smoke trigger. Hosted CI was not observed locally; `.github/workflows/ci.yml` delegates pull-request and main-branch runs to `scripts/ci.sh`.
+- Hosted CI is not observed locally; local repository-owned explicit CI passed and `.github/workflows/ci.yml` delegates to the same wrapper.
+- The full project-map lifecycle remains a follow-up proposal.
+- The final learn artifact model remains a follow-up proposal.
+- Workflow wording is now more structured; future changes should avoid duplicating the whole routing table inside every stage skill.
 
-## Review closeout
+## PR Handoff Summary
 
-`code-review-m1-r1` found one stale-plan wording defect. `review-resolution.md` records the accepted disposition and the plan now states that `specs/rigorloop-workflow.test.md` is active and was updated by the `test-spec` stage before M1.
-
-`code-review-m2-r1`, `code-review-m3-r1`, and `code-review-m4-r1` returned `clean-with-notes` with no material findings. The verify pass found no blockers and marked the branch ready for final `explain-change`.
+- Refactor workflow guidance around standing artifacts, living references, workflow infrastructure, on-demand artifacts, per-change stages, and periodic learning.
+- Align root guidance, workflow summary, stage skills, generated skill output, public adapter output, selectors, lifecycle tests, and change-local artifacts with the approved workflow spec.
+- Preserve targeted selector-selected proof as the default and keep broad smoke trigger-based.
+- Close the only material review finding and verify the branch with explicit repository-owned validation.
+- Branch is ready for PR review.
