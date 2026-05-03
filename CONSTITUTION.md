@@ -27,14 +27,14 @@ Rules derived from a lower-priority artifact MUST NOT silently override a higher
 For project vision and proposal-fit questions, the source-of-truth order is:
 
 1. `CONSTITUTION.md`
-2. `vision.md`
+2. `VISION.md`
 3. `specs/`
 4. proposals
 5. README front-matter
 
-`vision.md` is the canonical project-vision artifact for project identity, target users, commitments, refusals, and proposal-fit reference. It is subordinate to `CONSTITUTION.md` and does not replace specs, proposals, architecture artifacts, or execution plans.
+`VISION.md` is the canonical project-vision artifact for project identity, target users, commitments, refusals, and proposal-fit reference. It is subordinate to `CONSTITUTION.md` and does not replace specs, proposals, architecture artifacts, or execution plans.
 
-Proposals created or substantively revised after this spec is adopted include `Vision fit`. README content between `<!-- vision:start -->` and `<!-- vision:end -->` is generated from `vision.md`. README front-matter is not the source of truth when it conflicts with `vision.md`.
+Proposals created or substantively revised after this spec is adopted include `Vision fit`. README content between `<!-- vision:start -->` and `<!-- vision:end -->` is generated from `VISION.md`. README front-matter is not the source of truth when it conflicts with `VISION.md`.
 
 ## Spec-driven rules
 

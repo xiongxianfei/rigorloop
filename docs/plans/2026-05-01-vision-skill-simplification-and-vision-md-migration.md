@@ -162,11 +162,11 @@ Implementation milestone M1 must not start until the focused test spec is active
 - Expected observable result: root `VISION.md` is the only canonical vision file, active authored guidance names `VISION.md`, old mode requirements are gone, and safety rules remain present.
 - Commit message: `M2: migrate vision contract to VISION.md`
 - Milestone closeout:
-  - [ ] validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] M2 authored-surface validation passed; generated drift checks are selected and deferred to M3 by design
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - A broad search-and-replace could rewrite historical artifacts or alter project vision content, both out of scope.
   - Removing mode words could accidentally remove safety gates that those modes previously carried.
@@ -272,6 +272,9 @@ Repository broad smoke is not planned by default. If plan-review, test-spec, sel
 - 2026-05-01: M1 baseline change-local artifact pack created under `docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/`.
 - 2026-05-03: M1 code-review returned `clean-with-notes`; verify found no selector behavior blockers and only blocked on stale readiness wording after M1 completion.
 - 2026-05-03: M1 readiness wording corrected so the active plan points to M2 instead of the already-completed M1 implementation slice.
+- 2026-05-03: M2 focused skill-validator assertions were added before authored guidance changes. The red phase failed on active lowercase `vision.md` canonical guidance, old user-facing mode requirements, missing state-based skill guidance, and old `Vision fit` status wording.
+- 2026-05-03: M2 renamed root `vision.md` to `VISION.md` with the safe two-step Git rename, leaving project vision prose unchanged.
+- 2026-05-03: M2 updated README, governance, workflow guidance, active vision specs/test specs, `vision`, `proposal`, and `proposal-review` skills, and focused skill-validator coverage for `VISION.md`, state-based behavior, safety gates, and proposal `Vision fit` status lines.
 
 ## Decision Log
 
@@ -279,6 +282,7 @@ Repository broad smoke is not planned by default. If plan-review, test-spec, sel
 - 2026-05-01: Selector support is planned before the root rename so `VISION.md` and legacy `vision.md` can be validated during migration instead of blocking as unclassified paths.
 - 2026-05-01: Repository broad smoke is not required by default; targeted lifecycle, selector, skill, README, generated-output, and adapter checks cover the approved change surfaces.
 - 2026-05-01: M1 conflict detection uses exact root directory entries plus Git index paths instead of `Path.is_file()` alone so case-insensitive filesystems do not report false coexistence when only one root vision entry exists.
+- 2026-05-03: M2 leaves generated `.codex/skills/` and `dist/adapters/` drift unresolved intentionally because M3 owns generator runs. Selector-selected generated drift is recorded as expected until M3.
 
 ## Surprises and Discoveries
 
@@ -310,11 +314,28 @@ Repository broad smoke is not planned by default. If plan-review, test-spec, sel
 - 2026-05-03: `python scripts/select-validation.py --mode explicit --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.test.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/explain-change.md` passed and selected `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `readme.vision_markers`.
 - 2026-05-03: `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.test.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/explain-change.md` passed after the M1 verify-readiness fix.
 - 2026-05-03: `git diff --check -- docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md specs/vision-skill-simplification-and-vision-md-migration.test.md docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration` passed after the M1 verify-readiness fix.
+- 2026-05-03: `python scripts/test-skill-validator.py` failed before M2 authored implementation for the new `VISION.md`, state-based behavior, no-user-facing-mode, and proposal `Vision fit` assertions.
+- 2026-05-03: `python scripts/test-skill-validator.py` passed after M2 authored implementation.
+- 2026-05-03: `python scripts/validate-skills.py` passed after M2 authored implementation.
+- 2026-05-03: `python scripts/validate-readme.py README.md --vision-markers` passed after M2 authored implementation.
+- 2026-05-03: `python scripts/select-validation.py --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path README.md --path VISION.md --path vision.md --path skills/vision/SKILL.md --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path specs/vision-skill.md --path specs/vision-skill.test.md` passed after M2 authored implementation and selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.drift`, `artifact_lifecycle.validate`, `readme.validate`, `readme.vision_markers`, and `selector.regression`.
+- 2026-05-03: `python scripts/test-select-validation.py` passed after M2 authored implementation.
+- 2026-05-03: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/vision-skill.md --path specs/vision-skill.test.md` passed after M2 authored implementation.
+- 2026-05-03: `python scripts/build-skills.py --check` failed as expected before M3 because `.codex/skills/proposal`, `.codex/skills/proposal-review`, and `.codex/skills/vision` are stale relative to canonical skills changed in M2.
+- 2026-05-03: `python scripts/build-adapters.py --version 0.1.1 --check` failed as expected before M3 because nine generated public adapter skill copies are stale relative to canonical skills changed in M2.
+- 2026-05-03: `bash scripts/ci.sh --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path README.md --path VISION.md --path vision.md --path skills/vision/SKILL.md --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path specs/vision-skill.md --path specs/vision-skill.test.md` failed as expected at selected check `skills.drift` before M3 generated-output refresh.
+- 2026-05-03: `git diff --check -- CONSTITUTION.md AGENTS.md docs/workflows.md README.md VISION.md vision.md specs/vision-skill.md specs/vision-skill.test.md skills/vision/SKILL.md skills/proposal/SKILL.md skills/proposal-review/SKILL.md scripts/test-skill-validator.py` passed after M2 authored implementation.
+- 2026-05-03: `python scripts/test-change-metadata-validator.py` passed after M2 lifecycle metadata updates.
+- 2026-05-03: `python scripts/validate-change-metadata.py docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml` passed after M2 lifecycle metadata updates.
+- 2026-05-03: `python scripts/validate-readme.py README.md` passed after M2 authored implementation.
+- 2026-05-03: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path docs/proposals/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.test.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml` passed after approved-spec readiness wording was normalized to avoid stale downstream-stage claims.
+- 2026-05-03: `python scripts/select-validation.py --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path README.md --path VISION.md --path vision.md --path specs/vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.test.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path skills/vision/SKILL.md --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/explain-change.md` passed after M2 lifecycle metadata updates.
+- 2026-05-03: `git diff --name-status --find-renames HEAD -- vision.md VISION.md` reported `R100 vision.md VISION.md`, and root directory inspection reported only `./VISION.md`.
 
 ## Outcome and Retrospective
 
-M1 is implemented, committed, code-reviewed, and has had verify-readiness wording corrected. Do not treat the overall initiative as branch-ready until M2-M3 implementation, focused validation, code-review, verify, explain-change, and PR handoff complete.
+M1 is implemented, committed, code-reviewed, and has had verify-readiness wording corrected. M2 authored-surface implementation is complete and ready for code-review. Do not treat the overall initiative as branch-ready until M2 code-review/verify, M3 generated-output refresh, final validation, explain-change, and PR handoff complete.
 
 ## Readiness
 
-Ready for `implement` M2: authored `VISION.md` migration, governance/docs/spec/skill updates, and focused skill-validator updates.
+Ready for `code-review` on M2 authored `VISION.md` migration surfaces. M3 generated-output refresh remains intentionally unstarted until M2 review and verification complete.

@@ -7,7 +7,7 @@ What makes it different: Most AI coding tools optimize for faster output. RigorL
 
 Who it is for: RigorLoop is for projects that value explicit requirements, small diffs, traceable rationale, and reproducible validation. It fits individual contributors, maintainers, and small teams using AI during software delivery.
 
-See [vision.md](vision.md) for goals, non-goals, and falsifiability.
+See [VISION.md](VISION.md) for goals, non-goals, and falsifiability.
 <!-- vision:end -->
 
 *Git-first starter kit for AI-assisted software delivery with explicit artifacts, review gates, and durable change history.*
@@ -37,9 +37,9 @@ Do not use RigorLoop when:
 
 ## Vision and README Ownership
 
-`vision.md` is the canonical project-vision artifact. Proposals created or substantively revised after this spec is adopted include `Vision fit`.
+`VISION.md` is the canonical project-vision artifact. Proposals created or substantively revised after this spec is adopted include `Vision fit`.
 
-README content between `<!-- vision:start -->` and `<!-- vision:end -->` is generated from `vision.md`. README front-matter is not the source of truth when it conflicts with `vision.md`.
+README content between `<!-- vision:start -->` and `<!-- vision:end -->` is generated from `VISION.md`. README front-matter is not the source of truth when it conflicts with `VISION.md`.
 
 ## Adapter Packages
 
