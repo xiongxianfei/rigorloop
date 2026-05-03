@@ -336,8 +336,8 @@ The final command list must be updated during implementation to include every to
 - [x] M2 complete: stage skills aligned and generated outputs refreshed.
 - [x] M3 complete: validator and regression coverage updated.
 - [x] M4 complete: change-local evidence and final verification closed.
-- [ ] Code review complete.
-- [ ] Review-resolution complete if triggered.
+- [x] Code review complete.
+- [x] Review-resolution complete if triggered.
 - [ ] Verify complete.
 - [ ] Explain-change complete.
 - [ ] PR ready.
@@ -355,6 +355,7 @@ The final command list must be updated during implementation to include every to
 - 2026-05-03: M3 added selector and lifecycle regression coverage without production validator changes because the existing selector and lifecycle expansion behavior already satisfied the approved workflow test spec.
 - 2026-05-03: M4 did not add a standalone `verify-report.md` because the closeout evidence remained concise enough in `change.yaml`, `explain-change.md`, and this plan. The later `verify` stage still owns branch-ready.
 - 2026-05-03: M4 recorded an explicit no-learn rationale because no new learn trigger occurred during closeout.
+- 2026-05-03: `code-review-m4-r1` returned `clean-with-notes`; no new review-resolution work was triggered.
 
 ## Surprises and Discoveries
 
@@ -363,6 +364,7 @@ The final command list must be updated during implementation to include every to
 - The first M2 skill-validator assertion for stale `verify -> ci` wording was too broad because it also matched `verify -> ci-maintenance`; the assertion now rejects the old bare-stage sequence without blocking the approved `ci-maintenance` wording.
 - M3 confirmed that workflow-refactor selector routing and lifecycle plan-context expansion were already implemented; the milestone only needed focused regression coverage.
 - M4 found no additional affected operating or governance surfaces to defer. `docs/project-map.md` remains absent and not relied on, and the final learn artifact model remains intentionally outside this refactor.
+- M4 code review reran targeted metadata, review-artifact closeout, lifecycle, and whitespace checks over the review surface and found no required fixes.
 
 ## Validation Notes
 
@@ -431,6 +433,22 @@ The final command list must be updated during implementation to include every to
   - `bash scripts/ci.sh --mode explicit --path CONSTITUTION.md --path AGENTS.md --path README.md --path docs/workflows.md --path docs/plan.md --path docs/plans/2026-05-03-workflow-refactor.md --path docs/proposals/2026-05-01-workflow-refactor.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path skills/workflow/SKILL.md --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path skills/ci/SKILL.md --path skills/learn/SKILL.md --path skills/verify/SKILL.md --path scripts/test-select-validation.py --path scripts/test-artifact-lifecycle-validator.py --path scripts/test-skill-validator.py --path docs/changes/2026-05-03-workflow-refactor/change.yaml --path docs/changes/2026-05-03-workflow-refactor/explain-change.md --path docs/changes/2026-05-03-workflow-refactor/review-log.md --path docs/changes/2026-05-03-workflow-refactor/review-resolution.md --path docs/changes/2026-05-03-workflow-refactor/reviews/code-review-m3-r1.md`
   - `git diff --check --`
   - Selected check IDs: `skills.validate`, `skills.regression`, `skills.drift`, `adapters.drift`, `review_artifacts.validate`, `artifact_lifecycle.regression`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `readme.validate`, `readme.vision_markers`, `selector.regression`.
+- 2026-05-03 code-review-m4-r1 checks passed:
+  - `python scripts/select-validation.py --mode explicit --path docs/plans/2026-05-03-workflow-refactor.md --path docs/changes/2026-05-03-workflow-refactor/change.yaml --path docs/changes/2026-05-03-workflow-refactor/explain-change.md`
+  - `python scripts/test-change-metadata-validator.py`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-03-workflow-refactor/change.yaml`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-03-workflow-refactor`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-01-workflow-refactor.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/plan.md --path docs/plans/2026-05-03-workflow-refactor.md --path docs/changes/2026-05-03-workflow-refactor/change.yaml --path docs/changes/2026-05-03-workflow-refactor/explain-change.md --path docs/changes/2026-05-03-workflow-refactor/review-log.md --path docs/changes/2026-05-03-workflow-refactor/review-resolution.md --path docs/changes/2026-05-03-workflow-refactor/reviews/code-review-m3-r1.md`
+  - `git diff --check HEAD~1..HEAD -- docs/changes/2026-05-03-workflow-refactor/change.yaml docs/changes/2026-05-03-workflow-refactor/explain-change.md docs/plans/2026-05-03-workflow-refactor.md`
+  - Selected check IDs: `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`.
+- 2026-05-03 code-review-m4-r1 recording checks passed:
+  - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-03-workflow-refactor`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-03-workflow-refactor`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-03-workflow-refactor/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-01-workflow-refactor.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/plan.md --path docs/plans/2026-05-03-workflow-refactor.md --path docs/changes/2026-05-03-workflow-refactor/change.yaml --path docs/changes/2026-05-03-workflow-refactor/explain-change.md --path docs/changes/2026-05-03-workflow-refactor/review-log.md --path docs/changes/2026-05-03-workflow-refactor/review-resolution.md --path docs/changes/2026-05-03-workflow-refactor/reviews/code-review-m4-r1.md`
+  - `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-03-workflow-refactor.md --path docs/changes/2026-05-03-workflow-refactor/change.yaml --path docs/changes/2026-05-03-workflow-refactor/review-log.md --path docs/changes/2026-05-03-workflow-refactor/review-resolution.md --path docs/changes/2026-05-03-workflow-refactor/reviews/code-review-m4-r1.md`
+  - `git diff --check -- docs/plans/2026-05-03-workflow-refactor.md docs/changes/2026-05-03-workflow-refactor`
+  - Selected check IDs: `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`.
 
 ## Outcome and Retrospective
 
@@ -438,4 +456,4 @@ The final command list must be updated during implementation to include every to
 
 ## Readiness
 
-M4 is complete and ready for `code-review`. `verify` still owns the branch-ready conclusion.
+`code-review-m4-r1` returned `clean-with-notes`; the initiative is ready for `verify`. `verify` still owns the branch-ready conclusion.
