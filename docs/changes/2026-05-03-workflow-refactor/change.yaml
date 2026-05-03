@@ -61,6 +61,48 @@ validation:
     selected_check_ids: review_artifacts.validate, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate
   - command: git diff --check -- docs/plans/2026-05-03-workflow-refactor.md docs/changes/2026-05-03-workflow-refactor
     result: pass_after_review_resolution
+  - command: python scripts/test-skill-validator.py
+    result: expected_fail_before_m2_skill_alignment
+    reason: Focused M2 assertions were added before paired skill wording changes; failures identified stale or missing skill guidance.
+  - command: python scripts/test-skill-validator.py
+    result: pass_after_m2
+  - command: rg -n 'constitution / project context|project-map when architecture is unclear|advice-only|learn remains advice-only|Treat `learn` as an advice-only|Advice-only stages|next required or default|verify -> ci ->|`ci` when GitHub workflow automation|ci when GitHub workflow automation|downstream stage is `ci`|Eventually enforce|advice/default|conditional default|enforced if' skills/workflow/SKILL.md skills/proposal/SKILL.md skills/proposal-review/SKILL.md skills/ci/SKILL.md skills/learn/SKILL.md skills/verify/SKILL.md
+    result: pass_after_m2
+    reason: No stale old-chain wording matched in the edited canonical stage skills.
+  - command: python scripts/validate-skills.py
+    result: pass_after_m2
+  - command: python scripts/build-skills.py --check
+    result: expected_fail_before_m2_generation
+    reason: Canonical skill changes made generated Codex skill output stale before regeneration.
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: expected_fail_before_m2_generation
+    reason: Canonical skill changes made public adapter output stale before regeneration.
+  - command: python scripts/build-skills.py
+    result: pass_after_m2
+  - command: python scripts/build-skills.py --check
+    result: pass_after_m2
+  - command: python scripts/build-adapters.py --version 0.1.1
+    result: pass_after_m2
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_after_m2
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_after_m2
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_after_m2
+  - command: git diff --check -- skills .codex/skills dist/adapters scripts/test-skill-validator.py
+    result: pass_after_m2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-03-workflow-refactor/change.yaml
+    result: pass_after_m2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-01-workflow-refactor.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/plan.md --path docs/plans/2026-05-03-workflow-refactor.md --path docs/changes/2026-05-03-workflow-refactor/change.yaml --path docs/changes/2026-05-03-workflow-refactor/explain-change.md --path docs/changes/2026-05-03-workflow-refactor/review-resolution.md
+    result: pass_after_m2
+  - command: git diff --check -- docs/plans/2026-05-03-workflow-refactor.md docs/changes/2026-05-03-workflow-refactor
+    result: pass_after_m2
+  - command: python scripts/select-validation.py --mode explicit --path <M2-current-diff-paths>
+    result: pass_after_m2
+    selected_check_ids: skills.validate, skills.regression, skills.drift, adapters.regression, adapters.drift, adapters.validate, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate
+  - command: bash scripts/ci.sh --mode explicit --path <M2-current-diff-paths>
+    result: pass_after_m2
+    selected_check_ids: skills.validate, skills.regression, skills.drift, adapters.regression, adapters.drift, adapters.validate, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate
 changed_files:
   - CONSTITUTION.md
   - AGENTS.md
@@ -76,6 +118,37 @@ changed_files:
   - docs/changes/2026-05-03-workflow-refactor/review-log.md
   - docs/changes/2026-05-03-workflow-refactor/review-resolution.md
   - docs/changes/2026-05-03-workflow-refactor/reviews/code-review-m1-r1.md
+  - skills/workflow/SKILL.md
+  - skills/proposal/SKILL.md
+  - skills/proposal-review/SKILL.md
+  - skills/ci/SKILL.md
+  - skills/learn/SKILL.md
+  - skills/verify/SKILL.md
+  - scripts/test-skill-validator.py
+  - .codex/skills/workflow/SKILL.md
+  - .codex/skills/proposal/SKILL.md
+  - .codex/skills/proposal-review/SKILL.md
+  - .codex/skills/ci/SKILL.md
+  - .codex/skills/learn/SKILL.md
+  - .codex/skills/verify/SKILL.md
+  - dist/adapters/claude/.claude/skills/workflow/SKILL.md
+  - dist/adapters/claude/.claude/skills/proposal/SKILL.md
+  - dist/adapters/claude/.claude/skills/proposal-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/ci/SKILL.md
+  - dist/adapters/claude/.claude/skills/learn/SKILL.md
+  - dist/adapters/claude/.claude/skills/verify/SKILL.md
+  - dist/adapters/codex/.agents/skills/workflow/SKILL.md
+  - dist/adapters/codex/.agents/skills/proposal/SKILL.md
+  - dist/adapters/codex/.agents/skills/proposal-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/ci/SKILL.md
+  - dist/adapters/codex/.agents/skills/learn/SKILL.md
+  - dist/adapters/codex/.agents/skills/verify/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/workflow/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/proposal/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/proposal-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/ci/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/learn/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/verify/SKILL.md
 review:
-  status: closed_after_code_review_m1_r1
+  status: pending_code_review_m2
   unresolved_items: 0

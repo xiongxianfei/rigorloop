@@ -6,9 +6,9 @@ description: >
 
 # CI workflow authoring and review
 
-You are designing automated verification that matches the feature risk without wasting compute.
+You are designing ci-maintenance: CI infrastructure that matches the feature risk without wasting compute.
 
-CI is part of verification. It should prove the right things at the right time.
+This skill creates and updates CI infrastructure: hosted CI workflow files, validation automation, and related platform configuration. It does not run validation, does not design tests, does not specify validation commands, and does not wait for existing CI checks. Local and hosted validation execution stays under `verify`; test design stays under `test-spec`; validation commands come from the spec, test spec, and plan.
 
 ## Inputs to read
 
@@ -22,7 +22,7 @@ Read:
 - package/build/test config;
 - changed paths and generated-code conventions.
 
-## CI design goals
+## CI-maintenance design goals
 
 - Fast PR feedback.
 - Scoped triggers.
@@ -72,8 +72,8 @@ Evaluate:
 
 ## Workflow handoff behavior
 
-- When `ci` is part of a workflow-managed full-feature flow and the governing workflow contract elevated it after `verify`, a successful `ci` stage hands off to `explain-change` unless a stop condition applies.
-- When `ci` is run for a narrower or explicitly isolated purpose, report the CI result without implying downstream continuation that was not requested.
+- When ci-maintenance is part of a workflow-managed full-feature flow and the governing workflow contract elevated it after `verify`, successful ci-maintenance hands off to `explain-change` unless a stop condition applies.
+- When `ci` is run for a narrower or explicitly isolated purpose, report the CI infrastructure result without implying downstream continuation that was not requested.
 - If the needed CI automation cannot be created or updated safely, stop and report the blocker instead of claiming the workflow is ready to continue.
 
 ## Evidence collection efficiency

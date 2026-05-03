@@ -49,8 +49,8 @@ This is workflow-governance work. It changes contributor-visible policy and oper
 | `docs/workflows.md` | updated in M1 with workflow categories, stable obligation values, per-change chain, project-map no-reliance, learn closeout, review-resolution, `ci-maintenance`, and autoprogression wording |
 | `specs/rigorloop-workflow.md` | affected; status normalized to approved and used as the canonical contract |
 | `specs/rigorloop-workflow.test.md` | updated by the immediate `test-spec` stage before M1; active proof map for this refactor |
-| Stage skills | affected where they duplicate old routing, handoff, `ci`, learn, project-map, or proposal-prerequisite wording |
-| `.codex/skills/` and `dist/adapters/` | affected only after canonical skill guidance changes; regenerate through existing scripts |
+| Stage skills | updated in M2 for workflow categories, standing-artifact gates, proposal-review gate checks, `ci-maintenance`, periodic/explicit `learn`, and stale handoff wording |
+| `.codex/skills/` and `dist/adapters/` | regenerated in M2 from canonical skill guidance through existing scripts |
 | `docs/project-map.md` | absent; no reliance in this plan unless later refreshed or bypassed with rationale |
 
 ## Non-Goals
@@ -333,7 +333,7 @@ The final command list must be updated during implementation to include every to
 - [x] Plan reviewed.
 - [x] Test spec updated and active.
 - [x] M1 complete: workflow summary and root governance aligned.
-- [ ] M2 complete: stage skills aligned and generated outputs refreshed.
+- [x] M2 complete: stage skills aligned and generated outputs refreshed.
 - [ ] M3 complete: validator and regression coverage updated.
 - [ ] M4 complete: change-local evidence and final verification closed.
 - [ ] Code review complete.
@@ -351,10 +351,13 @@ The final command list must be updated during implementation to include every to
 - 2026-05-03: Keep `test-spec` as the immediate next stage after `plan-review`; implementation milestones remain test-first within each milestone.
 - 2026-05-03: Do not run broad smoke by default. Focused selector, skill, lifecycle, generated-output, adapter, and explicit-path CI checks are sufficient unless a later artifact elevates broad smoke.
 - 2026-05-03: M1 created the baseline change-local pack early because implementation owns ordinary non-trivial change-local evidence, even though final closeout remains scheduled for M4.
+- 2026-05-03: M2 kept `skills/ci/` as the implementation path while using `ci-maintenance` as the visible stage/action label, per the approved spec.
 
 ## Surprises and Discoveries
 
 - M1 root guidance alignment did not require changing canonical stage skills, generated `.codex/skills/`, generated public adapters, or validator logic. Those surfaces remain scheduled for M2 and M3.
+- M2 found that `skills/verify/SKILL.md` had direct stale handoff wording and needed alignment even though the initial named skill list focused on workflow, proposal, proposal-review, CI, and learn.
+- The first M2 skill-validator assertion for stale `verify -> ci` wording was too broad because it also matched `verify -> ci-maintenance`; the assertion now rejects the old bare-stage sequence without blocking the approved `ci-maintenance` wording.
 
 ## Validation Notes
 
@@ -380,6 +383,22 @@ The final command list must be updated during implementation to include every to
   - `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-03-workflow-refactor.md --path docs/changes/2026-05-03-workflow-refactor/change.yaml --path docs/changes/2026-05-03-workflow-refactor/explain-change.md --path docs/changes/2026-05-03-workflow-refactor/review-log.md --path docs/changes/2026-05-03-workflow-refactor/review-resolution.md --path docs/changes/2026-05-03-workflow-refactor/reviews/code-review-m1-r1.md`
   - `git diff --check -- docs/plans/2026-05-03-workflow-refactor.md docs/changes/2026-05-03-workflow-refactor`
   - Selected check IDs: `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`.
+- 2026-05-03 M2 checks passed:
+  - `python scripts/test-skill-validator.py` first failed as expected after adding focused M2 assertions and before the paired skill wording changes.
+  - `python scripts/test-skill-validator.py`
+  - `rg -n <stale-stage-skill-patterns> skills/workflow/SKILL.md skills/proposal/SKILL.md skills/proposal-review/SKILL.md skills/ci/SKILL.md skills/learn/SKILL.md skills/verify/SKILL.md`
+  - `python scripts/validate-skills.py`
+  - `python scripts/build-skills.py --check` failed before regeneration with stale generated skill output, then passed after `python scripts/build-skills.py`.
+  - `python scripts/build-adapters.py --version 0.1.1 --check` failed before regeneration with stale generated adapter output, then passed after `python scripts/build-adapters.py --version 0.1.1`.
+  - `python scripts/validate-adapters.py --version 0.1.1`
+  - `python scripts/test-adapter-distribution.py`
+  - `git diff --check -- skills .codex/skills dist/adapters scripts/test-skill-validator.py`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-03-workflow-refactor/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-01-workflow-refactor.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/plan.md --path docs/plans/2026-05-03-workflow-refactor.md --path docs/changes/2026-05-03-workflow-refactor/change.yaml --path docs/changes/2026-05-03-workflow-refactor/explain-change.md --path docs/changes/2026-05-03-workflow-refactor/review-resolution.md`
+  - `git diff --check -- docs/plans/2026-05-03-workflow-refactor.md docs/changes/2026-05-03-workflow-refactor`
+  - `python scripts/select-validation.py --mode explicit --path <M2-current-diff-paths>`
+  - `bash scripts/ci.sh --mode explicit --path <M2-current-diff-paths>`
+  - Selected check IDs: `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`.
 
 ## Outcome and Retrospective
 
@@ -387,4 +406,4 @@ The final command list must be updated during implementation to include every to
 
 ## Readiness
 
-M1 is complete and ready for `code-review` before M2.
+M2 is complete and ready for `code-review` before M3.

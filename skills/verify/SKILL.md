@@ -112,8 +112,8 @@ For release smoke, inspect release metadata under `docs/releases/<version>/` rat
 
 ## Workflow handoff behavior
 
-- In a workflow-managed full-feature flow, successful `verify` hands off to the next required or default downstream stage for the lane.
-- In that full-feature lane, the downstream stage is `ci` when the governing workflow contract elevates it; otherwise it is `explain-change`.
+- In a workflow-managed full-feature flow, successful `verify` hands off to the next mandatory or triggered downstream stage for the lane.
+- In that full-feature lane, the downstream stage is ci-maintenance when hosted workflow automation or related CI infrastructure for a material risk is missing, stale, or wrong; otherwise it is `explain-change`.
 - Direct `verify` requests remain isolated by default unless the user explicitly asks to continue through completion.
 - When `verify` stops because of blockers or pause conditions, name the blocked next stage and the reason continuation stopped.
 

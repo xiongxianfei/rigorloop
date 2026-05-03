@@ -2,7 +2,7 @@
 
 ## Status
 
-M1 complete; ready for `code-review`.
+M2 complete; ready for `code-review`.
 
 ## Source artifacts
 
@@ -29,13 +29,23 @@ The M1 guidance also separates `ci-maintenance` from validation execution, keeps
 
 ## Deferred surfaces
 
-Canonical stage skills, generated `.codex/skills/`, generated public adapters, and validator/regression coverage remain scheduled for later milestones. M1 intentionally does not update them.
+Broader selector, lifecycle, and regression coverage remains scheduled for M3. M2 intentionally keeps project-map lifecycle mechanics and the final learn artifact model out of scope.
 
 The final learn artifact model is deferred to a later learn refactor. M1 records only the temporary workflow behavior required by the approved workflow spec: capture immediately, schedule follow-up, or record a no-learn rationale when a trigger occurs.
 
+## M2 changes
+
+M2 aligns canonical stage skills with the approved workflow contract. `skills/workflow/SKILL.md` now routes by categories, obligation values, triggers, `review-resolution`, and `ci-maintenance` instead of the old overloaded chain.
+
+`skills/proposal/SKILL.md` and `skills/proposal-review/SKILL.md` now state the standing-artifact gates for first substantive proposals, bootstrap exceptions, and governance/source-of-truth proposals. `skills/ci/SKILL.md` now presents CI work as `ci-maintenance` and separates CI infrastructure from validation execution, test design, and validation-command ownership.
+
+`skills/learn/SKILL.md` now treats `learn` as periodic or explicitly invoked and records the approved temporary closeout options: immediate capture, scheduled follow-up, or explicit no-learn rationale. `skills/verify/SKILL.md` had stale downstream handoff wording, so M2 updates it to hand off to `ci-maintenance` only when hosted workflow automation or related CI infrastructure is triggered.
+
+M2 also adds focused skill-validator assertions for these skill-contract guarantees and regenerates `.codex/skills/` plus generated public adapters under `dist/adapters/` from canonical skill sources.
+
 ## Validation
 
-M1 validation evidence is recorded in `change.yaml` and the active plan. Selector-selected proof covered artifact lifecycle validation, change metadata regression and validation, README validation, README vision marker validation, and selector regression coverage.
+M1 and M2 validation evidence is recorded in `change.yaml` and the active plan. M2 proof covered skill validation, skill regression fixtures, generated Codex skill drift, public adapter regression, adapter drift, adapter validation, and explicit-path CI over the touched M2 authored and generated surfaces.
 
 ## Review closeout
 
