@@ -8,6 +8,8 @@ M2 renames the root vision artifact to `VISION.md` and updates authored governan
 
 M3 refreshes generated `.codex/skills/` and public adapter skill copies from the canonical skills. The generated diff is limited to the expected `vision`, `proposal`, and `proposal-review` skill copies.
 
+CR1-F1 fixes the first code-review finding by making root `vision.md` and root `VISION.md` coexistence block validation globally, even when the selected changed path is unrelated to either vision file.
+
 ## Decision Trail
 
 - Proposal: `docs/proposals/2026-05-01-vision-skill-simplification-and-vision-md-migration.md`
@@ -22,6 +24,7 @@ M3 refreshes generated `.codex/skills/` and public adapter skill copies from the
 | --- | --- | --- | --- |
 | `scripts/test-select-validation.py` | Added assertions for explicit `VISION.md`, PR-mode `VISION.md`, both-path conflict, and reintroduced legacy `vision.md` after uppercase migration. | Proves migration routing and invalid coexistence before changing selector code. | `python scripts/test-select-validation.py` failed before implementation, then passed after the selector update. |
 | `scripts/validation_selection.py` | Added a shared root vision path set, classified `VISION.md` and `vision.md` as vision, selected marker validation through the existing vision path behavior, and added exact-path conflict detection. | Lets repository-owned validation route both migration paths and fail competing canonical/legacy states. | `python scripts/test-select-validation.py`; explicit selector commands for both root vision paths. |
+| `scripts/test-select-validation.py`, `scripts/validation_selection.py` CR1-F1 fix | Added an unrelated-path regression and made both-root-vision conflict detection global within `select_validation`. | Ensures repository-owned validation fails invalid coexistence even when the changed path is not `vision.md` or `VISION.md`. | Red/green `python scripts/test-select-validation.py`; selector-selected explicit CI for selector paths. |
 | `VISION.md` / `vision.md` | Renamed root `vision.md` to root `VISION.md` with the safe two-step Git rename. | Makes uppercase `VISION.md` the canonical root project-vision artifact while preserving the approved project vision prose. | `git diff --name-status --find-renames HEAD -- vision.md VISION.md` reports `R100 vision.md VISION.md`. |
 | `README.md`, `CONSTITUTION.md`, `AGENTS.md`, `docs/workflows.md` | Updated active source-of-truth, README ownership, and lifecycle guidance to reference `VISION.md`. | Removes active lowercase canonical-path drift and keeps README front-matter subordinate to the canonical vision artifact. | `python scripts/test-skill-validator.py`; `python scripts/validate-readme.py README.md --vision-markers`. |
 | `specs/vision-skill.md`, `specs/vision-skill.test.md` | Rewrote the active vision skill contract and proof map around `VISION.md`, state-based behavior, and legacy lowercase handling. | Retires approved lower-path and old mode requirements without dropping quality, security, README marker, or proposal-fit rules. | `python scripts/test-skill-validator.py`; artifact lifecycle validation for both files. |
@@ -37,6 +40,7 @@ M3 refreshes generated `.codex/skills/` and public adapter skill copies from the
 
 - `test_root_vision_path_selects_marker_validation_without_unclassified_block` now covers both `vision.md` and `VISION.md`.
 - `test_root_vision_path_conflict_blocks_validation` proves both exact root vision paths block validation.
+- `test_root_vision_path_conflict_blocks_unrelated_changed_path` proves both root vision files block validation even when the selected changed path is `README.md`.
 - `test_pr_mode_routes_root_vision_without_unclassified_block` now covers PR-mode routing for both root vision names.
 - `test_pr_mode_blocks_reintroduced_legacy_vision_without_unclassified_block` proves a legacy lowercase file reintroduced after uppercase migration is classified and blocked as a conflict.
 - `test_vision_skill_defines_state_based_boundaries_and_readme_marker_contract` now requires state-based `VISION.md` behavior and forbids the old mode interface.
@@ -117,10 +121,21 @@ M3 evidence:
 - `bash scripts/ci.sh --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path README.md --path VISION.md --path vision.md --path specs/vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.test.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path skills/vision/SKILL.md --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path scripts/validation_selection.py --path scripts/test-select-validation.py --path scripts/test-skill-validator.py --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml` passed.
 - `git diff --check -- .` passed.
 
+CR1-F1 evidence:
+
+- `python scripts/test-select-validation.py` failed before the selector fix for `test_root_vision_path_conflict_blocks_unrelated_changed_path`.
+- `python scripts/test-select-validation.py` passed after the selector fix.
+- `python scripts/select-validation.py --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py` passed after the selector fix and selected `selector.regression`.
+- `bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py` passed after the selector fix.
+- `git diff --check -- scripts/validation_selection.py scripts/test-select-validation.py` passed after the selector fix.
+- `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration` passed after recording code-review-r1 and its resolution.
+- `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration` passed after closing CR1-F1.
+- `bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path specs/vision-skill-simplification-and-vision-md-migration.test.md --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/explain-change.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/review-log.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/review-resolution.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/reviews/code-review-r1.md` passed after CR1-F1 evidence updates.
+
 ## Outcome and Retrospective
 
-M1 is implemented, committed, code-reviewed, and has had verify-readiness wording corrected. M2 authored-surface implementation was code-reviewed with no blocking findings. M3 generated-output refresh is implemented. Do not treat the overall initiative as branch-ready until final code-review, verify, explain-change, and PR handoff complete.
+M1 is implemented, committed, code-reviewed, and has had verify-readiness wording corrected. M2 authored-surface implementation was code-reviewed with no blocking findings. M3 generated-output refresh is implemented. code-review-r1 found CR1-F1, and the accepted selector fix is implemented. Do not treat the overall initiative as branch-ready until follow-up code-review, verify, explain-change, and PR handoff complete.
 
 ## Readiness
 
-Ready for `code-review` on the completed M1-M3 `VISION.md` migration implementation.
+Ready for follow-up `code-review` after the accepted CR1-F1 selector fix.

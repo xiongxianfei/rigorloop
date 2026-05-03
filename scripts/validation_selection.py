@@ -317,7 +317,7 @@ def select_validation(request: SelectionRequest) -> SelectionResult:
             "README vision markers require marker-boundary validation.",
         )
 
-    if _root_vision_conflict_in_scope(tuple(changed_paths), repo_root=repo_root):
+    if _root_vision_conflict_present(repo_root=repo_root):
         blocking_results.append(
             {
                 "code": "vision-path-conflict",
@@ -935,9 +935,7 @@ def _readme_marker_validation_required(changed_paths: tuple[str, ...], *, repo_r
     return _vision_skill_in_scope(changed_paths) or (readme_changed and _readme_has_standalone_marker_block(repo_root))
 
 
-def _root_vision_conflict_in_scope(changed_paths: tuple[str, ...], *, repo_root: Path) -> bool:
-    if not ROOT_VISION_PATHS.intersection(changed_paths):
-        return False
+def _root_vision_conflict_present(*, repo_root: Path) -> bool:
     return ROOT_VISION_PATHS.issubset(_root_vision_paths_present(repo_root))
 
 
