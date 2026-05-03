@@ -3,12 +3,13 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-03 Workflow refactor](plans/2026-05-03-workflow-refactor.md) - active execution plan for implementing the approved workflow category model, stable stage-obligation taxonomy, `ci-maintenance` label, minimal project-map no-reliance rule, periodic `learn` handling, affected-surface alignment, skill guidance updates, generated-output refresh, validation, and PR closeout.
+- none yet
 
 ## Blocked
 - none yet
 
 ## Done
+- [2026-05-03 Workflow refactor](plans/2026-05-03-workflow-refactor.md) - completed execution plan for implementing the workflow category model, stable stage-obligation taxonomy, `ci-maintenance` label, minimal project-map no-reliance rule, periodic `learn` handling, affected-surface alignment, skill guidance updates, generated-output refresh, validation, explain-change, and merged PR #26.
 - [2026-05-01 Vision skill simplification and VISION.md migration](plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md) - completed execution plan for migrating root `vision.md` to `VISION.md`, retiring user-facing vision modes, updating active contracts and governance, adding selector/validator coverage including global root-vision conflict detection, refreshing generated skill and adapter output, closing review and verification, refreshing explain-change, and merged PR #25.
 - [2026-04-30 Vision skill quality refinement](plans/2026-04-30-vision-skill-quality-refinement.md) - completed execution plan for adding vision drafting heuristics, consolidating edit authorization, converting mode behavior to one table, enforcing substantive revision traceability, refreshing generated skill and adapter output, adding the approved project vision and README front-matter, fixing root `vision.md` selector coverage, verification, explain-change, and merged PR #24.
 - [2026-04-29 Vision skill](plans/2026-04-29-vision-skill.md) - completed execution plan for adding the upstream `vision` skill, `Vision fit` proposal guidance, governance/source-of-truth updates, README ownership wording, generated skill/adapter refresh, README selector routing, verification, explain-change, and merged PR #23 without creating the initial `vision.md`.

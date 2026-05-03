@@ -2,7 +2,7 @@
 
 ## Status
 
-Explain-change complete; ready for `pr`.
+PR #26 merged; lifecycle closeout complete.
 
 ## Summary
 
@@ -93,7 +93,7 @@ Validation evidence is recorded in `docs/changes/2026-05-03-workflow-refactor/ch
 - `bash scripts/ci.sh --mode explicit ...` over the full workflow-refactor changed surface - passed with the same selector-selected checks.
 - `git diff --check --` - passed.
 
-Hosted CI was not observed locally. The repository GitHub workflow is a thin wrapper that delegates pull-request and main-branch runs to `scripts/ci.sh`; local explicit CI passed.
+Hosted CI passed on PR #26. The repository GitHub workflow is a thin wrapper that delegates pull-request and main-branch runs to `scripts/ci.sh`; local explicit and PR-mode CI passed before merge.
 
 ## Review Resolution Summary
 
@@ -135,10 +135,10 @@ Hosted CI was not observed locally. The repository GitHub workflow is a thin wra
 - The final learn artifact model remains a follow-up proposal.
 - Workflow wording is now more structured; future changes should avoid duplicating the whole routing table inside every stage skill.
 
-## PR Handoff Summary
+## Outcome
 
 - Refactor workflow guidance around standing artifacts, living references, workflow infrastructure, on-demand artifacts, per-change stages, and periodic learning.
 - Align root guidance, workflow summary, stage skills, generated skill output, public adapter output, selectors, lifecycle tests, and change-local artifacts with the approved workflow spec.
 - Preserve targeted selector-selected proof as the default and keep broad smoke trigger-based.
 - Close the only material review finding and verify the branch with explicit repository-owned validation.
-- Branch is ready for PR review.
+- PR #26 is merged at `https://github.com/xiongxianfei/rigorloop/pull/26`.
