@@ -6,7 +6,7 @@
 
 - Owner: maintainers
 - Start date: 2026-05-01
-- Last updated: 2026-05-01
+- Last updated: 2026-05-03
 - Related issue or PR: none yet
 - Supersedes: none
 - broad_smoke_required: false
@@ -270,6 +270,8 @@ Repository broad smoke is not planned by default. If plan-review, test-spec, sel
 - 2026-05-01: M1 selector assertions were added before implementation. The red phase failed on uppercase root `VISION.md` classification, both-path conflict handling, and legacy reintroduction after uppercase migration.
 - 2026-05-01: M1 selector implementation classified root `VISION.md` and legacy root `vision.md`, selected README vision-marker validation through the existing vision path behavior, and added a repository-owned both-path conflict block.
 - 2026-05-01: M1 baseline change-local artifact pack created under `docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/`.
+- 2026-05-03: M1 code-review returned `clean-with-notes`; verify found no selector behavior blockers and only blocked on stale readiness wording after M1 completion.
+- 2026-05-03: M1 readiness wording corrected so the active plan points to M2 instead of the already-completed M1 implementation slice.
 
 ## Decision Log
 
@@ -302,11 +304,17 @@ Repository broad smoke is not planned by default. If plan-review, test-spec, sel
 - 2026-05-01: `python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path docs/proposals/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.test.md` passed.
 - 2026-05-01: `bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path docs/proposals/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.test.md` passed.
 - 2026-05-01: `git diff --check -- docs/plan.md docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md docs/proposals/2026-05-01-vision-skill-simplification-and-vision-md-migration.md specs/vision-skill-simplification-and-vision-md-migration.md specs/vision-skill-simplification-and-vision-md-migration.test.md` passed.
+- 2026-05-03: `verify` for M1 passed functional selector, metadata, lifecycle, and selected CI checks, but blocked on stale plan and test-spec readiness wording.
+- 2026-05-03: `python scripts/validate-change-metadata.py docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml` passed after the M1 verify-readiness fix.
+- 2026-05-03: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path docs/proposals/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.test.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml` passed after the M1 verify-readiness fix.
+- 2026-05-03: `python scripts/select-validation.py --mode explicit --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.test.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/explain-change.md` passed and selected `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `readme.vision_markers`.
+- 2026-05-03: `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md --path specs/vision-skill-simplification-and-vision-md-migration.test.md --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/change.yaml --path docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration/explain-change.md` passed after the M1 verify-readiness fix.
+- 2026-05-03: `git diff --check -- docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md specs/vision-skill-simplification-and-vision-md-migration.test.md docs/changes/2026-05-01-vision-skill-simplification-and-vision-md-migration` passed after the M1 verify-readiness fix.
 
 ## Outcome and Retrospective
 
-This initiative has an approved plan and active test spec. Do not treat it as branch-ready until M1-M3 implementation, focused validation, code-review, verify, explain-change, and PR handoff complete.
+M1 is implemented, committed, code-reviewed, and has had verify-readiness wording corrected. Do not treat the overall initiative as branch-ready until M2-M3 implementation, focused validation, code-review, verify, explain-change, and PR handoff complete.
 
 ## Readiness
 
-Ready for `implement` M1: selector and validation support for root `VISION.md`, legacy root `vision.md`, README marker selection, and both-file conflict behavior.
+Ready for `implement` M2: authored `VISION.md` migration, governance/docs/spec/skill updates, and focused skill-validator updates.
