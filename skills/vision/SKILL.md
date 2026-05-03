@@ -2,7 +2,7 @@
 name: vision
 description: >
   Produce or update the project vision and matching README front-matter. Use at project genesis, or when accumulated proposals reveal that the current vision no longer reflects what the project is becoming. This skill is upstream of the per-change workflow and is not a normal lifecycle stage.
-argument-hint: [project name and one-line idea, create, mirror, or revise <section>]
+argument-hint: [project idea, update vision, or sync README]
 ---
 
 # Project Vision
@@ -19,7 +19,7 @@ This skill is upstream of the normal per-change workflow. It does not hand off t
 
 Use it at project genesis, or when proposal review or learn surfaces a vision-level conflict. Do not run it just because a feature was added, an architecture changed, or README needs ordinary setup instructions.
 
-Future proposals should be checked against `vision.md` when it exists, but proposal requirements still belong in proposals and specs.
+Future proposals should be checked against `VISION.md` when it exists, but proposal requirements still belong in proposals and specs.
 
 ## Inputs To Read
 
@@ -28,7 +28,8 @@ Start with compact project inputs when available:
 - `CONSTITUTION.md`
 - `AGENTS.md`
 - README front-matter between `<!-- vision:start -->` and `<!-- vision:end -->`
-- existing root `vision.md`
+- existing root `VISION.md`
+- legacy root `vision.md` during migration or conflict resolution
 - recent proposal summaries, especially proposals that touch scope or direction
 - `docs/project-map.md` when it helps project framing
 - prior research or exploration artifacts when the workflow already produced them
@@ -39,45 +40,61 @@ Escalate from compact inputs to broader reads or full-file reads only when compa
 
 ## Edit Authorization
 
-`CONSTITUTION.md` outranks `vision.md`.
+`CONSTITUTION.md` outranks `VISION.md`.
 
-`vision.md` is canonical for project-vision content.
+`VISION.md` is canonical for project-vision content.
 
-`vision.md` outranks README front-matter. README front-matter is generated from `vision.md` and is not independently authoritative.
+`VISION.md` outranks README front-matter. README front-matter is generated from `VISION.md` and is not independently authoritative.
 
-The only authorized edit paths are `create`, `revise`, and `mirror`.
+The skill follows state-based behavior from repository state and ordinary user intent. Do not ask users to choose `create`, `revise`, or `mirror` modes.
 
-Do not edit README front-matter directly to express a vision change. Edit `vision.md`, then run this skill in `mirror` mode.
+Do not create the initial `VISION.md` just because this skill is installed or invoked for ordinary README maintenance.
 
-Do not create the initial `vision.md` just because this skill is installed. The first `vision.md` is created only by an explicit create-mode invocation.
+Do not edit README front-matter directly to express a vision change. Edit `VISION.md`, then synchronize README from it.
 
-If root `vision.md` exists and the user's request does not clearly specify `revise` or `mirror`, stop and ask which mode applies before editing; existing visions are not overwritten without clear `revise` or `mirror` intent.
+Ensure existing visions are not overwritten without clear update intent; keep the current file unchanged and ask for clarification before editing.
 
-## Modes
+If both root `vision.md` and root `VISION.md` exist, stop and require an owner decision. Do not merge, delete, or overwrite either file automatically.
 
-Use exactly one mode.
+## State-Based Behavior
 
-| Mode | When it applies | Authorized edits | README behavior | Stop or clarification conditions |
-| --- | --- | --- | --- | --- |
-| `create` | No root `vision.md` exists and the user clearly asks to produce the project vision. | Create root `vision.md`; insert the README marker block when needed. | Create or replace README front-matter at the deterministic marker location. Report assumptions and open vision-level questions. | If a root `vision.md` already exists, stop unless the user changes intent to `revise` or `mirror`. |
-| `revise` | Root `vision.md` exists and the user names a section or project-level change to revise. | Update only the named section unless the change necessarily cascades; if it cascades, say why. Ask or confirm whether the revision is `substantive` or `editorial` before finalizing. | Regenerate README front-matter after the vision edit. Report sections changed. | If the section is unnamed, ask which section is being revised. If a substantive revision is tied to an existing or required change-local pack, require the causal link in `docs/changes/<change-id>/change.yaml` and `docs/changes/<change-id>/explain-change.md` before finalizing. |
-| `mirror` | Root `vision.md` exists and remains current. | Leave `vision.md` unchanged. | Regenerate README front-matter from `vision.md`; if it already matches, report that no content changed. | If root `vision.md` is missing, stop because there is no canonical source to mirror. |
+Interpret legacy words such as `create`, `revise`, or `mirror` only as natural-language hints about user intent. Apply the state-based rules below and do not report those words as operating modes.
 
-Editorial revisions and mirror-only changes do not require a new change-local pack solely because this skill ran.
+If no root `VISION.md` exists:
 
-In revise mode, ask or confirm whether the revision is `substantive` or `editorial` before finalizing.
+- If legacy root `vision.md` exists and root `VISION.md` does not, treat `vision.md` as migration input. Migration work may rename it to `VISION.md`; do not create a second competing vision file.
+- If neither root vision file exists and the user explicitly asks to establish project vision, create root `VISION.md`, generate README front-matter, insert README vision markers when missing using deterministic placement, and report assumptions plus open vision-level questions.
+- If the user did not clearly ask to establish project vision, stop and ask whether to create `VISION.md`. Do not edit README while that intent is unclear.
 
-For substantive revise-mode output, report whether the required causal link was recorded or not required.
+If root `VISION.md` exists and the user asks to update vision:
+
+- Update only the requested section or clearly related sections.
+- If a requested change necessarily cascades across sections, state why before finalizing.
+- If the section or update intent is unclear, stop and ask for clarification before editing.
+- Always ask or confirm whether the change is `substantive` or `editorial` before finalizing, even when the user proposes the classification.
+- Treat changes to project scope, target users, commitments, refusals, proposal-fit framing, or falsifiability as substantive unless an owner records a contrary rationale.
+- For substantive changes tied to an existing or required change-local pack, require the causal link in `docs/changes/<change-id>/change.yaml` and `docs/changes/<change-id>/explain-change.md` before finalizing.
+- Update README front-matter only inside an existing valid marker block.
+- When updating an existing `VISION.md` or syncing README, missing or malformed markers stop the skill unless the user explicitly authorizes marker insertion or skipping README synchronization.
+
+If root `VISION.md` exists and the user asks to sync README:
+
+- Leave `VISION.md` unchanged.
+- Update README front-matter only inside an existing valid marker block.
+- If README front-matter already matches, report that no content changed.
+- If README markers are missing, malformed, nested, or duplicated, stop unless the user explicitly authorizes marker insertion.
+
+Editorial updates and README-only synchronization do not require a new change-local pack solely because this skill ran.
 
 ## Vision Content
 
-Root `vision.md` stays at or under 500 words.
+Root `VISION.md` stays at or under 500 words.
 
 Use plain language. Do not use `MUST`, `SHOULD`, or `MAY` as requirements vocabulary in generated or revised vision text.
 
 Do not include feature lists, implementation details, architecture diagrams, status fields, decision logs, stakeholder tables, or priority columns.
 
-Use plain Markdown. `vision.md` must not require rendered tables, diagrams, HTML layout, or generated assets to be understood.
+Use plain Markdown. `VISION.md` must not require rendered tables, diagrams, HTML layout, or generated assets to be understood.
 
 Include sections, in this order, with plain-language headings:
 
@@ -94,7 +111,7 @@ Concrete and verifiable language beats abstract claims. Scope refusals should be
 
 ## Drafting Heuristics
 
-Use these as authoring questions or checks, not additional `vision.md` sections:
+Use these as authoring questions or checks, not additional `VISION.md` sections:
 
 - Differentiator: what alternative class or specific tool is this different from, and what tradeoff does this project make?
 - Pain points: are the project pain points embedded in the differentiator instead of presented as an unrelated complaint list?
@@ -119,27 +136,29 @@ Generated README front-matter includes only:
 - the pitch
 - the differentiator
 - the target audience
-- a link to `vision.md` for goals, non-goals, and falsifiability
+- a link to `VISION.md` for goals, non-goals, and falsifiability
 
-The front-matter must be derived from `vision.md`, not independently authored.
+The front-matter must be derived from `VISION.md`, not independently authored.
 
-Automatic marker insertion is allowed only in `create` mode.
+Automatic marker insertion is allowed only when creating the initial `VISION.md`.
 
 If README already contains one valid marker block, replace only content inside the marker block and preserve all content outside it.
 
-In `create` mode, if README has no marker block and contains a Markdown H1, insert the marker block immediately after the first H1 block. The first H1 block is the first line matching `# <title>` plus any immediately following badge/image lines or blank lines directly attached to that heading.
+During initial `VISION.md` creation, if README has no marker block and contains a Markdown H1, insert the marker block immediately after the first H1 block. The first H1 block is the first line matching `# <title>` plus any immediately following badge/image lines or blank lines directly attached to that heading.
 
-In `create` mode, if README has no H1, insert the marker block at the start of the file and preserve existing content after it.
+During initial `VISION.md` creation, if README has no H1, insert the marker block at the start of the file and preserve existing content after it.
 
-In `mirror` or `revise`, missing or malformed markers stop the skill before file modification unless the user explicitly authorizes marker insertion or skipping README mirroring.
+When updating an existing `VISION.md` or syncing README, missing or malformed markers stop the skill before file modification unless the user explicitly authorizes marker insertion or skipping README synchronization.
+
+This is the same gate as existing guidance that says the user explicitly authorizes marker insertion or skipping README mirroring.
 
 If README has malformed, nested, or multiple vision marker pairs, stop and request explicit handling instead of rewriting README broadly.
 
-Do not edit README content outside the marker block except to insert the marker block in create mode when it is missing.
+Do not edit README content outside the marker block except to insert the marker block when initial vision creation or explicit owner authorization allows insertion.
 
 ## Security And Research Boundaries
 
-`vision.md` and generated README front-matter must not include secrets, credentials, private local filesystem paths, private machine names, or personal data not explicitly intended for publication.
+`VISION.md` and generated README front-matter must not include secrets, credentials, private local filesystem paths, private machine names, or personal data not explicitly intended for publication.
 
 If sensitive or private content is present in inputs, omit it or ask for explicit confirmation before including it.
 
@@ -149,14 +168,14 @@ If external research is used, distinguish researched facts from project assumpti
 
 ## Rules
 
-- Do not create or revise `vision.md` unless the mode authorizes that edit.
-- Do not insert generated README vision front-matter outside create, revise, or mirror behavior.
-- Do not add a README mirror helper script as part of this skill.
+- Do not create or update `VISION.md` unless repository state and user intent authorize that edit.
+- Do not insert generated README vision front-matter during update or sync unless the user explicitly authorizes marker insertion.
+- Do not add a README synchronization helper script as part of this skill.
 - Do not make `vision` a normal lifecycle stage.
 - Do not silently redefine project vision through README edits.
 - Do not let the vision exceed 500 words.
 - Do not include implementation detail or architecture content.
-- Do not rewrite legacy proposals solely to add `Vision fit`.
+- Do not rewrite legacy proposals solely to add `Vision fit` or update historical `vision.md` references.
 
 ## Evidence Collection Efficiency
 
@@ -164,18 +183,17 @@ Use summary and stable-ID first reasoning before broad reads or raw excerpts. Pr
 
 ## When full-file read is required
 
-Full-file reads are required when creating or replacing root `vision.md`, when the whole file is the review target, when the relevant section cannot be isolated safely, when surrounding context can change the conclusion, when compact inputs are missing or conflicting, when bounded searches disagree or produce incomplete evidence, when README marker placement depends on the whole README structure, or when a behavior-changing edit depends on the whole source-of-truth artifact.
+Full-file reads are required when creating or replacing root `VISION.md`, when resolving legacy root `vision.md` migration or both-file conflicts, when the whole file is the review target, when the relevant section cannot be isolated safely, when surrounding context can change the conclusion, when compact inputs are missing or conflicting, when bounded searches disagree or produce incomplete evidence, when README marker placement depends on the whole README structure, or when a behavior-changing edit depends on the whole source-of-truth artifact.
 
 ## Expected output
 
 Report:
 
-- Mode used: `create`, `revise`, or `mirror`
 - Files changed:
-- README front-matter: created, replaced, unchanged, or not applicable
-- Assumptions: required in create mode
-- Sections changed: required in revise mode
-- Revision classification: `substantive` or `editorial`, required in revise mode
-- `vision.md` unchanged: required in mirror mode
-- For substantive revise mode: whether the required causal link was recorded or not required
+- README front-matter: created, replaced, unchanged, skipped, blocked, or not applicable
+- Assumptions: required when establishing the initial vision
+- Sections changed: required when updating vision
+- Revision classification: `substantive` or `editorial`, required when updating vision
+- `VISION.md` unchanged: required when syncing README only
+- For substantive updates: whether the required causal link was recorded or not required
 - open questions suitable for human review before treating the vision as current

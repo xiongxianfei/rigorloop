@@ -191,30 +191,33 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             with self.subTest(term=term):
                 self.assertIn(term, body)
 
-    def test_vision_skill_defines_modes_boundaries_and_readme_marker_contract(self) -> None:
+    def test_vision_skill_defines_state_based_boundaries_and_readme_marker_contract(self) -> None:
         body = (ROOT / "skills" / "vision" / "SKILL.md").read_text(encoding="utf-8")
         required_terms = [
             "name: vision",
             "project vision and matching README front-matter",
-            "## Modes",
-            "create",
-            "revise",
-            "mirror",
-            "Do not create the initial `vision.md` just because this skill is installed",
-            "`vision.md` is canonical",
-            "`CONSTITUTION.md` outranks `vision.md`",
+            "## State-Based Behavior",
+            "ordinary user intent",
+            "Do not ask users to choose `create`, `revise`, or `mirror` modes.",
+            "Do not create the initial `VISION.md` just because this skill is installed",
+            "`VISION.md` is canonical",
+            "`CONSTITUTION.md` outranks `VISION.md`",
+            "`VISION.md` outranks README front-matter",
+            "legacy root `vision.md`",
+            "both root `vision.md` and root `VISION.md`",
             "<!-- vision:start -->",
             "<!-- vision:end -->",
             "first H1 block",
-            "Automatic marker insertion is allowed only in `create` mode.",
-            "In `mirror` or `revise`, missing or malformed markers stop the skill before file modification",
+            "Automatic marker insertion is allowed only when creating the initial `VISION.md`.",
+            "When updating an existing `VISION.md` or syncing README",
+            "missing or malformed markers stop the skill before file modification",
             "explicitly authorizes marker insertion or skipping README mirroring",
             "malformed, nested, or multiple vision marker pairs",
-            "Mode used:",
             "Files changed:",
             "README front-matter:",
             "Assumptions:",
             "Sections changed:",
+            "`VISION.md` unchanged:",
             "secrets",
             "credentials",
             "private local filesystem paths",
@@ -233,6 +236,18 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             with self.subTest(term=term):
                 self.assertIn(term, body)
 
+        forbidden_terms = [
+            "## Modes",
+            "Use exactly one mode.",
+            "Mode used:",
+            "The only authorized edit paths are `create`, `revise`, and `mirror`.",
+            "Automatic marker insertion is allowed only in `create` mode.",
+            "In `mirror` or `revise`, missing or malformed markers stop the skill before file modification",
+        ]
+        for term in forbidden_terms:
+            with self.subTest(term=term):
+                self.assertNotIn(term, body)
+
     def test_vision_skill_quality_refinement_contract(self) -> None:
         body = (ROOT / "skills" / "vision" / "SKILL.md").read_text(encoding="utf-8")
         required_terms = [
@@ -244,16 +259,16 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "observable",
             "at least one plausible non-fit",
             "concrete enough to block misaligned proposals",
-            "not additional `vision.md` sections",
+            "not additional `VISION.md` sections",
             "does not require naming a specific competitor",
             "## Edit Authorization",
-            "`CONSTITUTION.md` outranks `vision.md`",
-            "`vision.md` outranks README front-matter",
-            "only authorized edit paths",
-            "existing visions are not overwritten without clear `revise` or `mirror` intent",
+            "`CONSTITUTION.md` outranks `VISION.md`",
+            "`VISION.md` outranks README front-matter",
+            "state-based behavior",
+            "existing visions are not overwritten without clear update intent",
             "existing or required change-local pack",
             "before finalizing",
-            "ask or confirm whether the revision is `substantive` or `editorial` before finalizing",
+            "ask or confirm whether the change is `substantive` or `editorial` before finalizing",
             "required causal link was recorded or not required",
         ]
         for term in required_terms:
@@ -264,6 +279,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "remind the contributor",
             "## Source Of Truth",
             "## Existing Vision Protection",
+            "only authorized edit paths",
         ]
         for term in forbidden_terms:
             with self.subTest(term=term):
@@ -274,33 +290,21 @@ class SkillValidatorFixtureTests(unittest.TestCase):
 
         workflow_index = body.index("## Workflow Fit")
         inputs_index = body.index("## Inputs To Read")
-        modes_index = body.index("## Modes")
+        state_index = body.index("## State-Based Behavior")
         vision_content_index = body.index("## Vision Content")
         drafting_index = body.index("## Drafting Heuristics")
         readme_index = body.index("## README Front-Matter")
 
         self.assertLess(workflow_index, inputs_index)
-        self.assertLess(inputs_index, modes_index)
+        self.assertLess(inputs_index, state_index)
+        self.assertLess(state_index, vision_content_index)
         self.assertLess(vision_content_index, drafting_index)
         self.assertLess(drafting_index, readme_index)
 
-        mode_table_lines = [
-            line
-            for line in body.splitlines()
-            if line.startswith("| `create` |")
-            or line.startswith("| `revise` |")
-            or line.startswith("| `mirror` |")
-        ]
-        self.assertEqual(
-            [line.split("|")[1].strip() for line in mode_table_lines],
-            ["`create`", "`revise`", "`mirror`"],
-            msg="expected exactly one ordered mode-table row for create, revise, and mirror",
-        )
-        self.assertEqual(len(mode_table_lines), 3)
-        self.assertIn(
-            "| Mode | When it applies | Authorized edits | README behavior | Stop or clarification conditions |",
-            body,
-        )
+        self.assertNotIn("| Mode |", body)
+        self.assertNotIn("| `create` |", body)
+        self.assertNotIn("| `revise` |", body)
+        self.assertNotIn("| `mirror` |", body)
 
     def test_proposal_skills_define_vision_fit_contract(self) -> None:
         proposal_body = (ROOT / "skills" / "proposal" / "SKILL.md").read_text(encoding="utf-8")
@@ -313,9 +317,11 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "new or substantively revised proposals",
             "fits the current vision",
             "may conflict with the current vision",
-            "intentionally proposes a vision revision",
+            "proposes a vision revision",
             "no vision exists yet",
-            "When root `vision.md` is absent, proposals must use the exact `Vision fit` value `no vision exists yet`.",
+            "first non-empty line",
+            "When neither root `VISION.md` nor migration-recognized legacy root `vision.md` exists, proposals must use the exact `Vision fit` value `no vision exists yet`.",
+            "If root `VISION.md` exists, choose one of the current-vision outcomes",
             "must not silently redefine project vision",
             "Legacy proposals",
         ]
@@ -327,7 +333,8 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "Check the proposal's `Vision fit` section",
             "created or substantively revised after the vision spec was adopted",
             "request revision",
-            "When root `vision.md` is absent, proposal-review must request revision if `Vision fit` is missing or replaced with a claim that fits, conflicts with, or revises a nonexistent vision.",
+            "When neither root `VISION.md` nor migration-recognized legacy root `vision.md` exists, proposal-review must request revision if `Vision fit` is missing or replaced with a claim that fits, conflicts with, or revises a nonexistent vision.",
+            "If root `VISION.md` exists, `Vision fit` must not say `no vision exists yet`.",
             "revise proposal",
             "revise vision",
             "record explicit exception",
@@ -346,21 +353,51 @@ class SkillValidatorFixtureTests(unittest.TestCase):
 
     def test_governance_workflow_and_readme_define_vision_source_of_truth(self) -> None:
         constitution = (ROOT / "CONSTITUTION.md").read_text(encoding="utf-8")
-        self.assertIn("2. `vision.md`", constitution)
+        self.assertIn("2. `VISION.md`", constitution)
         self.assertIn("3. `specs/`", constitution)
         self.assertIn("README front-matter", constitution)
 
         required_terms = [
-            "`vision.md` is the canonical project-vision artifact",
+            "`VISION.md` is the canonical project-vision artifact",
             "created or substantively revised after this spec is adopted include `Vision fit`",
-            "README content between `<!-- vision:start -->` and `<!-- vision:end -->` is generated from `vision.md`",
-            "README front-matter is not the source of truth when it conflicts with `vision.md`",
+            "README content between `<!-- vision:start -->` and `<!-- vision:end -->` is generated from `VISION.md`",
+            "README front-matter is not the source of truth when it conflicts with `VISION.md`",
         ]
         for relative_path in ["AGENTS.md", "docs/workflows.md", "README.md"]:
             body = (ROOT / relative_path).read_text(encoding="utf-8")
             for term in required_terms:
                 with self.subTest(path=relative_path, term=term):
                     self.assertIn(term, body)
+
+    def test_active_vision_spec_retires_lowercase_path_and_user_facing_modes(self) -> None:
+        spec = (ROOT / "specs" / "vision-skill.md").read_text(encoding="utf-8")
+        test_spec = (ROOT / "specs" / "vision-skill.test.md").read_text(encoding="utf-8")
+
+        required_terms = [
+            "`VISION.md`: the canonical project vision document at the repository root.",
+            "state-based behavior",
+            "establish project vision",
+            "update vision",
+            "sync README",
+            "legacy root `vision.md`",
+            "no longer exposes `create`, `revise`, or `mirror` as user-facing modes",
+        ]
+        for term in required_terms:
+            with self.subTest(file="spec", term=term):
+                self.assertIn(term, spec)
+
+        forbidden_terms = [
+            "MUST define exactly these operating modes",
+            "Create mode MUST create",
+            "Mirror mode MUST",
+            "Revise mode MUST",
+            "Every `vision` skill run MUST report the mode used",
+            "mode used, files changed",
+        ]
+        for body, label in ((spec, "spec"), (test_spec, "test_spec")):
+            for term in forbidden_terms:
+                with self.subTest(file=label, term=term):
+                    self.assertNotIn(term, body)
 
 
 if __name__ == "__main__":

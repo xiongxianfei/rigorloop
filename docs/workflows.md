@@ -14,11 +14,11 @@ This file is the short operational summary for working in this repository. The n
 
 ## Project Vision
 
-- `vision.md` is the canonical project-vision artifact for project identity, target users, commitments, refusals, and proposal-fit reference.
+- `VISION.md` is the canonical project-vision artifact for project identity, target users, commitments, refusals, and proposal-fit reference.
 - The `vision` skill is upstream of the per-change workflow, not a normal lifecycle stage.
 - Proposals created or substantively revised after this spec is adopted include `Vision fit`.
-- README content between `<!-- vision:start -->` and `<!-- vision:end -->` is generated from `vision.md`.
-- README front-matter is not the source of truth when it conflicts with `vision.md`.
+- README content between `<!-- vision:start -->` and `<!-- vision:end -->` is generated from `VISION.md`.
+- README front-matter is not the source of truth when it conflicts with `VISION.md`.
 
 ## Full Lifecycle
 

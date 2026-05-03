@@ -487,21 +487,18 @@ None.
 
 ## Next artifacts
 
-- `spec-review`
-- focused test spec
-- execution plan
-- implementation
-- generated-output validation
-- code-review
-- verify
-- explain-change
-- pr
+- `code-review` for M2 authored-surface implementation
+- `verify`
+- `implement` M3 generated-output refresh after M2 review and verification
+- final `code-review`, `verify`, `explain-change`, and `pr`
 
 ## Follow-on artifacts
 
 - Plan: [2026-05-01 Vision Skill Simplification and VISION.md Migration](../docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md)
 - Test spec: [Vision Skill Simplification and VISION.md Migration Test Spec](vision-skill-simplification-and-vision-md-migration.test.md)
+- M1 implementation: selector and validation support committed.
+- M2 implementation: authored-surface migration ready for code-review.
 
 ## Readiness
 
-Approved after `spec-review`. The linked execution plan passed `plan-review`, the focused test spec is active, and the immediate next repository stage is `implement` M1.
+Approved after `spec-review`. The linked execution plan and focused test spec track downstream implementation and review state for the migration.
