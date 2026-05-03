@@ -188,8 +188,8 @@ M1 is implemented, committed, code-reviewed, and has had verify-readiness wordin
 - Preserve approved project vision prose and avoid mass-rewriting historical lowercase references.
 - Close `CR1-F1` and verify the branch with PR-mode selector-selected CI.
 - Complete lifecycle closeout in `docs/plan.md` and the plan body before PR opening.
-- Open PR #25 at `https://github.com/xiongxianfei/rigorloop/pull/25`.
+- Merge PR #25 at `https://github.com/xiongxianfei/rigorloop/pull/25`.
 
 ## Readiness
 
-PR #25 is open for review after verify, durable explanation refresh, and lifecycle closeout.
+PR #25 is merged after verify, durable explanation refresh, and lifecycle closeout.

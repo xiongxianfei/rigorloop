@@ -289,7 +289,9 @@ verification:
   explain_change_status: refreshed_for_pr_handoff
   note: PR-mode selector-selected CI passed for the tracked branch diff; hosted CI was not observed locally.
 pr:
-  status: open
+  status: merged
   number: 25
   url: https://github.com/xiongxianfei/rigorloop/pull/25
   branch: vision-skill-simplification-and-vision-md-migration
+  merged_at: 2026-05-03T12:30:19Z
+  merge_commit: a6e1a14b9a411f232ffc384fc5608d8134233f80
