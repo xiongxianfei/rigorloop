@@ -100,9 +100,18 @@ Do not use Codex `$skill` syntax for Claude Code or OpenCode. Claude Code one-sh
 
 ## Workflow At A Glance
 
-Non-trivial work follows the reference lifecycle:
+Non-trivial work uses explicit lifecycle categories:
 
-`constitution / project-map when needed -> explore -> research when needed -> proposal -> proposal-review -> spec -> spec-review -> architecture -> architecture-review when needed -> plan -> plan-review -> test-spec -> implement -> code-review -> verify -> ci when GitHub workflow automation for a material risk is missing or stale -> explain-change -> pr -> learn`
+- Standing artifacts: `VISION.md` and `CONSTITUTION.md`
+- Living references: `docs/project-map.md` when repository shape is not obvious enough for safe reliance
+- Workflow infrastructure: specs, workflow summaries, affected root guidance, affected skills, and generated outputs
+- On-demand support: `explore` and `research`
+- Per-change chain: `proposal -> proposal-review -> spec -> spec-review -> architecture -> architecture-review -> plan -> plan-review -> test-spec -> implement -> code-review -> review-resolution when triggered -> verify -> ci-maintenance when triggered -> explain-change -> pr`
+- Periodic learning: `learn`
+
+`explore` and `research` run only when ambiguity, options, or current external facts matter. `learn` is periodic or explicitly invoked, not a final stage for every change. `ci-maintenance` means updating hosted workflow automation or related CI infrastructure; validation execution belongs to `verify`.
+
+Do not rely on `docs/project-map.md` when it is absent, stale, contradicted, or missing the relied-on area; refresh it or record a no-map rationale first.
 
 Trivial work may use the fast lane:
 
@@ -146,6 +155,7 @@ The normative contract lives in [specs/rigorloop-workflow.md](specs/rigorloop-wo
 
 - a fast lane for trivial or low-risk work
 - a full lifecycle for non-trivial work
+- standing artifacts, living references, on-demand support, a per-change chain, and periodic learning as distinct lifecycle categories
 - canonical workflow sources in `docs/`, `specs/`, `skills/`, `schemas/`, and `scripts/`
 - generated Codex compatibility output in `.codex/skills/`
 - generated public adapter packages in `dist/adapters/`

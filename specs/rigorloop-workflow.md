@@ -7,10 +7,13 @@
 
 - [RigorLoop Project Direction](../docs/proposals/2026-04-19-rigorloop-project-direction.md)
 - [Implementation Milestone Commit Policy](../docs/proposals/2026-04-19-implementation-milestone-commit-policy.md)
+- [Workflow Refactor](../docs/proposals/2026-05-01-workflow-refactor.md)
 
 ## Goal and context
 
 This spec defines the externally observable workflow contract for the first RigorLoop starter-kit release. The goal is to make AI-assisted software delivery explicit, reviewable, and auditable for individual contributors and maintainers without forcing the full artifact lifecycle onto trivial work.
+
+This amendment updates the workflow contract around explicit artifact categories, stable stage-obligation metadata, living-reference handling, and workflow-handoff ownership. It keeps `specs/rigorloop-workflow.md` as the canonical workflow definition and keeps `docs/workflows.md` as the short operational summary.
 
 RigorLoop is a Git-first starter kit. It does not replace pull requests, CI, or human review. It provides a repeatable path, artifact model, and validation rules so contributors can move from idea to reviewed change with traceable evidence.
 
@@ -27,7 +30,7 @@ RigorLoop is a Git-first starter kit. It does not replace pull requests, CI, or 
 - `adapter`: tool-specific guidance or generated output layered on top of generic workflow content.
 - `workflow-managed completion flow`: a change flow that is being carried through its normal downstream stages toward completion under the active lane.
 - `isolated stage request`: a request for the output of one stage only, such as standalone review, verification, or explanation work.
-- `immediate next repository stage`: the next required or default downstream repository stage for the current lane and invocation context.
+- `immediate next repository stage`: the next mandatory or triggered downstream repository stage for the current lane and invocation context.
 - `downstream readiness`: an assessment of whether a later stage can be relied on after required intermediate stages complete.
 - `eventual test-spec readiness`: the downstream-readiness assessment for later `test-spec` authoring.
 - `stop condition`: a documented reason the workflow must stop rather than continue into downstream reliance or stage continuation.
@@ -42,6 +45,15 @@ RigorLoop is a Git-first starter kit. It does not replace pull requests, CI, or 
 - `targeted proof`: selector-selected validation checks that directly prove the changed surfaces and governing dependencies before review handoff.
 - `broad smoke`: broader repository validation run before final handoff, main, release, or another authoritative trigger; it is not the default first proof for every local edit.
 - `manual proof`: durable structured evidence for a check that cannot reasonably be automated.
+- `standing artifact`: a project-level governance or identity artifact that is created once near project genesis or governance adoption and revised deliberately.
+- `living reference`: a durable reference artifact that helps contributors reason about the repository but can go stale and must be refreshed or bypassed with rationale before reliance when absent, known-stale, contradicted, or missing the relied-on area.
+- `known-stale project-map`: a `docs/project-map.md` with current evidence that its claims about the relied-on area conflict with repository paths, ownership, runtime flow, test layout, generated output, or another map claim. This refactor defines no calendar threshold.
+- `workflow infrastructure`: the workflow spec, summary, skill guidance, and handoff pointers that govern how stages route and block.
+- `on-demand artifact`: an artifact or action created only when the work depends on option expansion, external facts, or another explicit trigger.
+- `per-change chain`: the stage sequence used to move one change from direction to reviewed PR package.
+- `periodic artifact`: an artifact or action run on cadence, incident, repeated finding, postmortem action, or explicit maintainer request rather than for every change.
+- `stage obligation`: one of `mandatory`, `conditional`, `on-demand`, or `periodic`.
+- `ci-maintenance`: the visible workflow label for creating or updating hosted CI workflow files, validation automation, or platform configuration. It does not mean running validation.
 
 ## Examples first
 
@@ -74,6 +86,36 @@ Then one pull request may contain both milestone commits if the combined review 
 Given a contributor makes a fast-lane change or a non-trivial unplanned single-slice change with no plan-defined milestone boundary
 When they commit the change
 Then the workflow does not require the `M<n>: <completed milestone outcome>` subject format for that commit.
+
+### Example E6: workflow category routing
+
+Given a contributor starts a non-trivial workflow-governance change
+When they inspect the workflow contract
+Then they see standing artifacts, living references, workflow infrastructure, on-demand artifacts, per-change stages, and periodic learning as distinct lifecycle categories instead of one overloaded linear prefix.
+
+### Example E7: project-map no-reliance rule
+
+Given architecture work depends on a repository map
+When `docs/project-map.md` is absent, known-stale, contradicted by current repository structure, or missing the relied-on area
+Then the contributor refreshes the map or records a no-map rationale before relying on repository-shape claims downstream.
+
+### Example E8: review-resolution closeout gate
+
+Given `code-review` records material findings for a non-trivial change
+When those findings are still open or have non-final dispositions
+Then `verify`, final `explain-change`, and `pr` do not proceed until required review-resolution closeout is complete.
+
+### Example E9: CI maintenance is not validation execution
+
+Given validation commands already exist and hosted CI can run them
+When a contributor reaches verification
+Then the `verify` stage owns validation evidence, while `ci-maintenance` runs only if hosted workflow automation or related CI infrastructure is missing, stale, or wrong for a material risk.
+
+### Example E10: learn runs on triggers, not by default
+
+Given a small ordinary change completes with no repeated findings, incidents, failed release smoke, postmortem action, cadence run, or maintainer request
+When the PR package is ready
+Then `learn` is not treated as a final per-change stage.
 
 ## Requirements
 
@@ -114,53 +156,95 @@ R5. The fast-lane spec MUST be present in at least one contributor-visible locat
 - commit message;
 - dedicated change note linked from the PR.
 
-R6. The default full lifecycle for non-trivial work MUST be documented using the following stage-classification table:
-| Stage                 | Role                    | Start as                          | Eventually enforce when                                                              |
-| --------------------- | ----------------------- | --------------------------------- | ------------------------------------------------------------------------------------ |
-| `explore`             | expand options          | advice                            | strategic, ambiguous, architecture-level, or high-risk work                          |
-| `research`            | verify external facts   | advice                            | claims depend on current external docs, APIs, versions, or competitors               |
-| `proposal`            | choose direction        | default                           | new feature, public behavior change, or workflow change                              |
-| `proposal-review`     | challenge direction     | advice/default                    | major feature, risky direction, or maintainer-requested                              |
-| `spec`                | define behavior         | default                           | any user-visible or agent-visible behavior change                                    |
-| `spec-review`         | check ambiguity         | default                           | public behavior, schemas, workflow stages, or skill trigger rules                    |
-| `architecture`        | define system shape     | conditional default               | boundaries, generated artifacts, package layout, CI, storage, or integrations change |
-| `architecture-review` | challenge design        | advice                            | high-risk or multi-module architecture change                                        |
-| `plan`                | sequence implementation | default                           | multi-step work or more than trivial changes                                         |
-| `plan-review`         | validate execution plan | default                           | multi-milestone work                                                                 |
-| `test-spec`           | define proof            | default                           | any behavior change                                                                  |
-| `implement`           | make change             | enforced                          | always                                                                               |
-| `code-review`         | inspect diff            | default                           | all non-trivial PRs                                                                  |
-| `review-resolution`   | handle suggestions      | enforced if review comments exist | any material review finding, non-final disposition, or review outcome requiring closeout |
-| `verify`              | prove result            | enforced                          | every PR                                                                             |
-| `ci`                  | create or update risk-focused GitHub workflows | conditional default | automation needed to cover a material risk is missing or stale                       |
-| `explain-change`      | explain final diff      | default                           | standalone artifact for non-trivial work; PR summary for all work                    |
-| `pr`                  | review package          | enforced                          | every contribution                                                                   |
-| `learn`               | retrospective           | advice                            | surprising, repeated, failed, or large changes                                       |
+R6. The workflow contract MUST document workflow categories using the following category table:
 
+| Category | Artifacts or stages | Creation rule | Revision or refresh rule | Staleness or absence check | Dependents |
+| --- | --- | --- | --- | --- | --- |
+| Standing artifacts | `VISION.md`, `CONSTITUTION.md` | Created once near project genesis or governance adoption. | Revised deliberately when project identity or governing principles change. | Absence gates differ by artifact and are defined in `R6a`. | All proposal, spec, workflow, and review stages. |
+| Living references | `docs/project-map.md` | Created when repository structure is not obvious enough for safe architecture or planning. | Refreshed or bypassed with a no-map rationale before reliance when absent, known-stale, contradicted, or missing the relied-on area. | Detailed freshness markers, calendar thresholds, and revision workflow are deferred to a focused project-map lifecycle change. | Architecture, plan, code-review, and onboarding-heavy work. |
+| Workflow infrastructure | `specs/rigorloop-workflow.md`, `docs/workflows.md`, affected root operating guidance, affected stage skills, and generated skill or adapter outputs when canonical skills change. | Created and maintained as workflow governance. | Revised when stage order, routing, handoff, obligation, or category policy changes. | Unresolved drift across affected operating and governance surfaces blocks workflow-change readiness. | Every lifecycle stage. |
+| On-demand artifacts | `explore`, `research`. | Created only when the problem warrants durable option expansion or external evidence. | Revised when their assumptions or findings are materially outdated. | Absence is not a blocker unless the current work depends on unresolved options or uncertain facts. | Proposal, spec, architecture, and plan when their decisions depend on the artifact. |
+| Per-change chain | `proposal -> proposal-review -> spec -> spec-review -> architecture -> architecture-review -> plan -> plan-review -> test-spec -> implement -> code-review -> review-resolution -> verify -> explain-change -> pr`, with conditional `ci-maintenance` support. | Created or run according to stage-obligation metadata. | Updated as the change moves through the lifecycle. | Missing required or triggered actions block downstream readiness. | The current change and PR package. |
+| Periodic artifacts | `learn`. | Run on cadence, after incidents, repeated findings, failed release or adapter smoke, accepted postmortem actions, or explicit maintainer request. | Revised by adding or updating lessons, not by changing lifecycle state. | Absence does not block ordinary PRs when the trigger is closed by lesson capture, a scheduled follow-up, or an explicit no-learn rationale; it blocks only when a higher-priority artifact makes it blocking. | Future proposals, specs, workflow updates, and skill refinements. |
 
-R6a. When architecture is required, the `architecture` stage MUST produce or update the architecture package defined by `specs/architecture-package-method.md` before planning continues. This workflow spec owns only stage-level routing and handoff for that method; the focused architecture package method spec owns the C4, arc42, ADR, template, and package lifecycle contract.
+R6a. Standing artifacts include `VISION.md` and `CONSTITUTION.md`, but their absence has different gates. Their absence effects MUST be documented using the following table:
 
-R7. The starter kit MUST document stage expectations using the following enforcement model:
-- `advice`: recommended when useful but not required for every eligible change;
-- `default`: expected for normal non-trivial work unless explicitly waived;
-- `enforced`: missing evidence blocks the change from being considered complete.
+| Artifact | Role | Absence effect |
+| --- | --- | --- |
+| `VISION.md` | Project identity, target users, commitments, refusals, proposal-fit reference. | Blocks the first substantive proposal unless the proposal bootstraps vision. |
+| `CONSTITUTION.md` | Repository governance, source-of-truth hierarchy, workflow principles. | Blocks governance adoption, workflow-governance changes, and source-of-truth changes unless the proposal bootstraps constitution. |
 
-R7a. When the stage-classification table uses a combined classification, it MUST be interpreted as follows:
-- `advice/default`: advice by default, but elevated to `default` when the listed trigger applies;
-- `conditional default`: not required for every change, but treated as `default` when the listed trigger applies;
-- `enforced if review comments exist`: not required when no review feedback exists, but treated as `enforced` when review feedback exists.
+R6b. `docs/project-map.md` MUST be treated as a living reference. Consumers MUST NOT rely on it when it is absent, known-stale, contradicted by the current repository, or missing the relied-on area. They MUST refresh it or record a no-map rationale.
 
-R7b. The "Eventually enforce when" column in the stage-classification table MUST be treated as the authoritative trigger list for elevating a stage from its starting classification to a stricter expectation.
+R6c. This workflow refactor MUST NOT define calendar thresholds, freshness markers, or the full project-map revision workflow.
+
+R6d. Workflow-governance changes MUST keep affected operating and governance guidance aligned. Affected surfaces MAY include `CONSTITUTION.md`, `AGENTS.md`, `README.md` when it contains workflow, contribution, or operating guidance, `docs/workflows.md`, `specs/rigorloop-workflow.md`, affected stage skills, generated `.codex/skills/`, and generated public adapters under `dist/adapters/` when canonical skills change.
+
+R6da. A workflow-governance change MUST NOT be ready for downstream handoff until each affected surface is updated, explicitly marked unaffected with rationale, or recorded as deferred with owner and follow-up.
+
+R6db. Unaffected-surface rationales and affected-surface deferrals under `R6da` MUST be recorded in a contributor-visible tracked or review-visible surface, such as the accepted proposal, approved spec, active plan, `docs/changes/<change-id>/change.yaml`, `review-resolution.md`, `explain-change.md`, PR body or draft PR body, linked issue, or the affected governance artifact. Chat-only notes MUST NOT satisfy this recording requirement.
+
+R6e. A substantive proposal is any proposal that chooses product direction, user-facing behavior, workflow policy, architecture direction, compatibility policy, release policy, or contributor-visible contract.
+
+R6f. `VISION.md` absence MUST block the first substantive proposal unless the proposal is bootstrap work to create or migrate the project vision.
+
+R6g. `CONSTITUTION.md` absence MUST block governance adoption, workflow-governance changes, and source-of-truth changes unless the proposal is bootstrap work to create or migrate the constitution.
+
+R6h. Bootstrap proposals under `R6f` or `R6g` MUST identify the bootstrap exception in `Vision fit`, and `proposal-review` MUST check that exemption.
+
+R6i. When architecture is required, the `architecture` stage MUST produce or update the architecture package defined by `specs/architecture-package-method.md` before planning continues. This workflow spec owns only stage-level routing and handoff for that method; the focused architecture package method spec owns the C4, arc42, ADR, template, and package lifecycle contract.
+
+R7. The starter kit MUST document stage expectations using the following obligation model:
+- `mandatory`: required whenever the row's trigger applies;
+- `conditional`: required only when the trigger applies or the artifact/action is cited as a dependency;
+- `on-demand`: created or run only when explicitly invoked or when the current work depends on its output;
+- `periodic`: run on cadence, incident, repeated finding, failed smoke, accepted postmortem action, or explicit maintainer request rather than as a per-change stage.
+
+R7a. The full lifecycle for non-trivial work MUST be documented using the following stage-obligation table. The `Runs for every change` column applies within the full-lifecycle lane after the row trigger makes the stage applicable; it MUST NOT override fast-lane eligibility or the trigger column.
+
+| Stage or action | Role | Obligation | Trigger | Runs for every change | Blocks downstream when missing |
+| --- | --- | --- | --- | --- | --- |
+| `explore` | Expand options. | `on-demand` | Strategic ambiguity, unclear problem framing, option expansion, architecture-level uncertainty, or maintainer request. | `false` | `true` |
+| `research` | Verify external facts. | `on-demand` | Current external docs, APIs, versions, competitors, standards, laws, pricing, or operational facts affect the decision. | `false` | `true` |
+| `proposal` | Choose direction. | `mandatory` | New direction, public behavior, workflow policy, architecture direction, compatibility policy, release policy, or contributor-visible contract. | `true` | `true` |
+| `proposal-review` | Challenge direction. | `conditional` | Workflow-governance, direction-setting, high-risk, or maintainer-requested proposals. | `false` | `true` |
+| `spec` | Define behavior or contract. | `mandatory` | Externally observable behavior, workflow policy, schema, generated output, compatibility, security-sensitive behavior, or public contributor expectation changes. | `true` | `true` |
+| `spec-review` | Check ambiguity and testability. | `mandatory` | Behavior, workflow, schema, compatibility, or safety-sensitive changes. | `true` | `true` |
+| `architecture` | Define system shape. | `conditional` | Boundary, data flow, generated package, CI infrastructure, integration, storage, deployment, or long-lived design impact. | `false` | `true` |
+| `architecture-review` | Challenge design. | `conditional` | High-risk, cross-component, migration-heavy, security-sensitive, or hard-to-reverse design. | `false` | `true` |
+| `plan` | Sequence implementation. | `conditional` | Multi-file, risky, ambiguous, migration-heavy, sequencing-sensitive, or milestone-based work. | `false` | `true` |
+| `plan-review` | Validate execution plan. | `conditional` | Multi-milestone, sequencing-sensitive, recovery-sensitive, or maintainer-requested work. | `false` | `true` |
+| `test-spec` | Define proof. | `mandatory` | Behavior or workflow-contract proof is required. | `true` | `true` |
+| `implement` | Make the change. | `mandatory` | The accepted contract is ready to change tracked artifacts. | `true` | `true` |
+| `code-review` | Inspect the diff. | `mandatory` | Non-trivial changes. | `true` | `true` |
+| `review-resolution` | Close review findings. | `conditional` | Material review findings, non-final dispositions, or review outcomes require explicit closeout. | `false` | `true` |
+| `verify` | Prove result. | `mandatory` | Every contributed change. | `true` | `true` |
+| `ci-maintenance` | Create or update hosted CI workflow automation. | `conditional` | Hosted workflow automation or related CI infrastructure for a material risk is missing, stale, or wrong. | `false` | `true` |
+| `explain-change` | Explain final diff. | `mandatory` | Non-trivial changes require standalone durable explanation; all changes require PR-summary explanation. | `true` | `true` |
+| `pr` | Prepare review package. | `mandatory` | Every contributed change. | `true` | `true` |
+| `learn` | Capture retrospective lessons. | `periodic` | Repeated review findings, blocker or major workflow-process findings, failed release or adapter smoke, accepted postmortem action changing workflow guidance, cadence run, or explicit maintainer request. | `false` | `false` |
+
+R7b. For conditional and on-demand rows, downstream blocking applies only after the trigger is active, the artifact/action has been cited as a dependency, or a higher-priority artifact requires it. For periodic rows, downstream blocking applies only when a higher-priority artifact explicitly makes the triggered periodic work blocking.
+
+R7ba. `learn` is a periodic or explicitly invoked retrospective artifact. When a `learn` trigger occurs, the workflow MUST either capture the lesson immediately or record a follow-up to capture it later.
+
+R7bb. Triggered `learn` MUST NOT block ordinary `verify`, final `explain-change`, or `pr` closeout by default.
+
+R7bc. Triggered `learn` MUST block downstream only when a higher-priority artifact explicitly makes it blocking, such as an active plan, `review-resolution`, postmortem action, release contract, or maintainer decision.
+
+R7bd. If no higher-priority blocking artifact exists for a triggered `learn`, the required closeout action MUST be to record the scheduled follow-up or an explicit no-learn rationale.
+
+R7be. Until a focused `learn` refactor defines the final learning artifact model, scheduled `learn` follow-ups and explicit no-learn rationales MUST be recorded in a contributor-visible tracked or review-visible surface, such as the active plan, `docs/changes/<change-id>/change.yaml`, `review-resolution.md`, `explain-change.md`, PR body or draft PR body, linked issue, or a named governance artifact. Chat-only notes MUST NOT satisfy this recording requirement.
 
 R7c. The starter kit MUST distinguish workflow-managed completion flows from isolated stage requests when deciding whether a stage result should continue automatically into a downstream stage.
 
-R7d. When an approved continuation contract applies, a workflow-managed completion flow MUST continue automatically into the next required or default downstream stage for the current lane unless a documented stop condition applies. Redundant user re-invocation MUST NOT be required merely to enter that already-known downstream stage.
+R7d. When an approved continuation contract applies, a workflow-managed completion flow MUST continue automatically into the next mandatory or triggered downstream stage for the current lane unless a documented stop condition applies. Redundant user re-invocation MUST NOT be required merely to enter that already-known downstream stage.
 
 R7e. Unless a later approved change broadens scope, v1 continuation applies only to:
-- authoring-to-review handoffs for `proposal`, `spec`, and `architecture` when the matching review stage is the next required or default downstream step;
+- authoring-to-review handoffs for `proposal`, `spec`, and `architecture` when the matching review stage is the next mandatory or triggered downstream step;
 - full-feature execution flow from `implement` through `pr`.
 
-R7f. In v1, fast-lane and bugfix execution remain explicit-step by default, and advice-only stages such as `learn` MUST NOT auto-run unless the user explicitly requests them or a later approved rule elevates them.
+R7f. In v1, fast-lane and bugfix execution remain explicit-step by default, and on-demand or periodic actions such as `explore`, `research`, and `learn` MUST NOT auto-run unless the user explicitly requests them or a later approved rule elevates them.
 
 R7g. Direct invocation of `pr` remains allowed. Isolation prevents downstream continuation beyond `pr`, but it MUST NOT downgrade `pr` itself from opening a pull request when readiness passes.
 
@@ -230,7 +314,7 @@ R7vb. Unresolved named edge-case proof gaps MUST block `branch-ready`.
 
 R7w. These branch-reality and traceability rules supplement the earlier `code-review` independence contract. They MUST NOT remove the first-pass review record, approved review statuses, workflow-managed `review-resolution` handoff for fixable findings, or isolated-review stop behavior defined by the governing workflow artifacts.
 
-R8. The starter kit MUST treat the following stages as enforced for every contributed change:
+R8. The starter kit MUST treat the following stages as mandatory for every contributed change:
 - implement;
 - verify;
 - pr.
@@ -312,7 +396,9 @@ R8s. Manual proof records MUST identify the check, result, performer, date, evid
 
 R9. Once repository CI exists, the starter kit MUST treat routine CI validation results as enforced for every pull request.
 
-R9a. In the lifecycle stage table, `ci` MUST refer to creating or updating GitHub workflows or related repository automation needed to cover material change risk. It MUST NOT refer only to waiting for existing CI checks to run.
+R9a. In the lifecycle stage table, `ci-maintenance` MUST refer to creating or updating hosted CI workflow files, validation automation, or related platform configuration needed to cover material change risk. It MUST NOT refer to running validation, designing tests, specifying validation commands, or waiting for existing CI checks to run.
+
+R9b. The existing `skills/ci/` path MAY remain the skill entrypoint for CI infrastructure work as long as contributor-visible workflow guidance uses `ci-maintenance` for the stage/action label and keeps validation execution under `verify`.
 
 R10. The starter kit MUST treat `explain-change` as:
 - required in PR summary form for every change;
@@ -514,6 +600,8 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 
 - contributor change classification;
 - repository guidance and workflow docs;
+- standing artifacts and living references;
+- stage-obligation metadata;
 - change artifacts and PR text;
 - local validation commands and CI workflow configuration;
 - tool-specific adapter inputs when an adapter is enabled.
@@ -521,6 +609,8 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 ### Outputs
 
 - contributor-visible workflow documentation;
+- workflow category guidance;
+- stage-obligation tables;
 - durable change artifacts;
 - PR summary and validation notes;
 - machine-readable change metadata for non-trivial work at `docs/changes/<change-id>/change.yaml`;
@@ -531,7 +621,10 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 
 - Canonical workflow content remains editable source material.
 - Generated distribution content remains rebuildable derived output.
-- Every enforced stage has contributor-visible evidence.
+- Every mandatory or triggered blocking stage has contributor-visible evidence.
+- Stage-obligation values remain stable and machine-checkable: `mandatory`, `conditional`, `on-demand`, and `periodic`.
+- `specs/rigorloop-workflow.md` remains the canonical workflow definition, while `docs/workflows.md` remains a summary.
+- Skill handoff sections summarize local preconditions, outputs, failure modes, and brief next-stage pointers without duplicating the full workflow contract.
 - Fast-lane work stays limited to trivial or low-risk changes.
 - Full-lifecycle work remains traceable from proposal/spec direction through PR summary and verification evidence.
 - Completed planned milestones remain visible as coherent branch or pull-request review boundaries even when multiple milestones share one pull request.
@@ -542,6 +635,12 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - A fast-lane change missing the required spec fields in `R4` MUST be considered incomplete.
 - A planned milestone closed without the completion evidence required by `R8a` or without the standardized milestone commit subject required by `R8b` MUST be considered incomplete.
 - A non-trivial change missing required PR explanation or validation evidence MUST be considered incomplete.
+- A substantive proposal attempted without `VISION.md` MUST stop unless it is explicit bootstrap work under `R6f`.
+- Governance adoption, workflow-governance, or source-of-truth changes attempted without `CONSTITUTION.md` MUST stop unless the proposal is explicit bootstrap work under `R6g`.
+- Architecture, plan, code-review, or onboarding-heavy work that would rely on `docs/project-map.md` MUST stop, refresh the map, or record a no-map rationale when the map is absent, known-stale, contradicted, or missing the relied-on area.
+- Workflow-governance changes with affected operating or governance surfaces that are not updated, explicitly marked unaffected with rationale, or deferred with owner and follow-up MUST be considered incomplete.
+- `verify`, final `explain-change`, and `pr` MUST stop while required `review-resolution` closeout remains open.
+- Triggered `learn` MUST NOT stop ordinary `verify`, final `explain-change`, or `pr` when no higher-priority artifact makes it blocking and the scheduled follow-up or explicit no-learn rationale is recorded.
 - Invalid skill structure MUST fail local validation and CI validation.
 - Generated-output drift MUST fail the drift check until derived output is rebuilt or the change is reverted.
 - The starter kit MUST allow validation to run without requiring network access or Codex installation for the baseline structural checks.
@@ -556,6 +655,11 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - Repositories adopting lifecycle-managed artifact ownership MAY phase migration of unrelated stale baseline artifacts, but they MUST normalize stale touched or relied-on artifacts before downstream stages rely on them as current guidance.
 - Repositories that squash, rebase, or otherwise rewrite commit history MAY collapse milestone commit boundaries after merge. The first-release contract guarantees milestone visibility during branch and pull-request review, not preservation under every default-branch merge strategy.
 - For new non-trivial work, the default standalone durable reasoning artifact is `docs/changes/<change-id>/explain-change.md`. Approved legacy top-level explain artifacts under `docs/explain/` remain valid until migrated or retired.
+- In-flight work MAY complete on the workflow contract that was active when it started unless the active owner opts into the refactored model or the work touches refactored workflow surfaces directly.
+- Planned initiatives and change-local metadata SHOULD record the selected workflow contract, such as `pre-refactor` or `refactored`, when that distinction affects review or verification.
+- The `vision.md` to `VISION.md` migration is already complete for this repository. This workflow refactor MUST use `VISION.md` as the standing project-vision artifact and MUST NOT reintroduce lowercase `vision.md` as canonical.
+- The project-map lifecycle markers, calendar freshness thresholds, and project-map revision workflow are deferred to a focused follow-up and MUST NOT be invented in this workflow refactor.
+- The final `learn` artifact model is deferred to a focused follow-up and MUST NOT be invented in this workflow refactor. This refactor defines only temporary recording surfaces for scheduled `learn` follow-ups and explicit no-learn rationales.
 
 ## Observability
 
@@ -564,6 +668,7 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - When review feedback exists, the recorded review resolution MUST be visible to reviewers in the PR, explain-change artifact, or a standalone review-resolution artifact.
 - `change.yaml` SHOULD make artifact and validation traceability inspectable without reading every Markdown artifact.
 - For planned milestone work, contributor-visible branch or pull-request history SHOULD make milestone boundaries visible through the standardized milestone commit subjects defined in `R8b`.
+- Workflow summary and skill guidance SHOULD make category, obligation, and handoff ownership visible enough that contributors do not need chat history to know which stage blocks downstream readiness.
 
 ## Security and privacy
 
@@ -600,6 +705,14 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 15. Successful `spec-review` may still say the immediate next repository stage is `architecture` while separately reporting eventual `test-spec` readiness `conditionally-ready`.
 16. `inconclusive` may record a missing-input stop condition without naming any immediate next repository stage.
 17. `plan-review` may mention implementation readiness only after preserving `test-spec` as the immediate next handoff.
+18. `explore` and `research` may be absent from a normal non-trivial change when the problem and facts are already settled, but they block downstream reliance after their triggers are active or their artifacts are cited as dependencies.
+19. `learn` may be absent from an ordinary PR package, but a repeated finding, blocker or major workflow-process finding, failed release or adapter smoke, accepted postmortem action, cadence run, or explicit maintainer request must be closed by immediate lesson capture, a scheduled follow-up, or an explicit no-learn rationale. It blocks downstream only when a higher-priority artifact explicitly makes it blocking.
+20. `ci-maintenance` may be skipped when hosted workflow automation already covers the material risk, but it is required when automation is missing, stale, or wrong.
+21. A repository without `docs/project-map.md`, with a known-stale or contradicted map, or with a map missing the relied-on area may proceed only when consumers do not rely on the map or record a no-map rationale for the relevant architecture, planning, review, or onboarding-heavy decision.
+22. A bootstrap proposal may proceed without an existing `VISION.md` only when its `Vision fit` explicitly identifies that it is creating or migrating the missing standing artifact.
+23. A bootstrap proposal may proceed without an existing `CONSTITUTION.md` for governance adoption, workflow-governance, or source-of-truth changes only when its `Vision fit` explicitly identifies that it is creating or migrating the missing constitution.
+24. A change with open material review findings may not proceed to `verify`, final `explain-change`, or `pr` even when implementation tests pass.
+25. Existing active work may finish under its starting workflow contract unless it opts into the refactored contract or touches refactored workflow surfaces directly.
 
 ## Non-goals
 
@@ -608,6 +721,11 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - Enforcing subjective writing-quality scores in early CI.
 - Requiring the full lifecycle for trivial or low-risk work.
 - Hardcoding every future adapter implementation detail into the first workflow contract.
+- Implementing detailed project-map freshness markers, calendar thresholds, or revision workflow in this refactor.
+- Implementing the final `learn` artifact model, including per-session `docs/learn/YYYY-MM-DD-<slug>.md` output, topic-organized `docs/learnings/<topic>.md`, or action-routing rules beyond the temporary recording surfaces in `R7be`.
+- Removing `explore`, `research`, or `learn`; they remain available through their trigger rules.
+- Rewriting project vision content or revisiting the completed `VISION.md` migration.
+- Renaming the `skills/ci/` directory as a contract requirement.
 
 ## Acceptance criteria
 
@@ -615,7 +733,9 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - A contributor can follow the documented full lifecycle for the skill validator example and produce linked durable artifacts plus validation evidence.
 - A contributor can close a planned milestone with updated plan evidence and a standardized milestone commit without being forced to open a separate pull request for that milestone.
 - A contributor can make a fast-lane or non-trivial single-slice change without using a milestone-formatted commit and still remain within the workflow contract.
-- The workflow clearly distinguishes what is advice, default, and enforced.
+- The workflow clearly distinguishes standing artifacts, living references, workflow infrastructure, on-demand artifacts, the per-change chain, and periodic artifacts.
+- The workflow clearly distinguishes `mandatory`, `conditional`, `on-demand`, and `periodic` obligations.
+- A contributor can tell which stage-like actions run for every change and which block downstream only when triggered.
 - The starter kit contract clearly separates generic methodology from Codex-specific adapters and generated output.
 - The first CI contract is limited to structural validation, validator fixture testing, and generated-output drift detection.
 - A contributor can distinguish settlement states from closeout or terminal states for lifecycle-managed proposals, specs, test specs, architecture docs, and ADRs without relying on chat history.
@@ -627,9 +747,29 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - A reviewer can distinguish milestone commit boundaries from pull-request boundaries by inspecting standardized milestone commit subjects and the associated plan updates.
 - A reviewer can tell when `spec-review` is reporting immediate next repository stage versus eventual `test-spec` readiness without inferring that `test-spec` skips required intermediate stages.
 - A reviewer can tell that `plan-review` preserves `test-spec` as the immediate next handoff even when later implementation readiness is also discussed.
+- A contributor can tell that `explore` and `research` are on-demand support rather than default prerequisites.
+- A contributor can tell that triggered `learn` is closed by immediate capture, scheduled follow-up, or explicit no-learn rationale, that non-captured `learn` closeout is recorded in an allowed contributor-visible tracked or review-visible surface, and that triggered `learn` blocks downstream only when a higher-priority artifact explicitly makes it blocking.
+- A contributor can tell that `ci-maintenance` means CI infrastructure maintenance and not validation execution.
+- A contributor can tell that `review-resolution` is the closeout stage for review findings and that open required closeout blocks `verify`, final `explain-change`, and `pr`.
+- A contributor can tell that `docs/project-map.md` is a living reference and must be refreshed or bypassed with a no-map rationale before reliance when absent, known-stale, contradicted, or missing the relied-on area.
+- A contributor can tell that `VISION.md` and `CONSTITUTION.md` are standing artifacts with different absence gates.
+- A reviewer can confirm that affected operating and governance surfaces are updated, explicitly marked unaffected with rationale, or deferred with owner and follow-up in an allowed contributor-visible tracked or review-visible surface.
 
 ## Open questions
 
-- None for the workflow contract. Exact repository layout details may be delegated to the architecture artifact as long as the source-of-truth separation and required contract paths in this spec are preserved.
+- None blocking. The `skills/ci/` path remains allowed while the visible stage/action label becomes `ci-maintenance`; periodic `learn` cadence and the final learn artifact model remain outside this refactor beyond the minimum triggers and temporary recording surfaces in `R7a` through `R7be`.
 
-Spec review is complete. This approved spec now governs the merged first-release workflow baseline.
+## Next artifacts
+
+- `plan-review` for [Workflow Refactor Execution Plan](../docs/plans/2026-05-03-workflow-refactor.md).
+- Matching update to `specs/rigorloop-workflow.test.md` after plan-review.
+
+## Follow-on artifacts
+
+- `proposal`: [Workflow Refactor](../docs/proposals/2026-05-01-workflow-refactor.md)
+- `plan`: [Workflow Refactor Execution Plan](../docs/plans/2026-05-03-workflow-refactor.md)
+- Future focused `learn` refactor to define per-session `docs/learn/YYYY-MM-DD-<slug>.md` output, topic-organized `docs/learnings/<topic>.md`, and action routing into affected artifacts or ADRs.
+
+## Readiness
+
+Approved after spec review. Immediate next repository stage is `plan-review` for the execution plan; eventual `test-spec` readiness is conditional on that plan being accepted.

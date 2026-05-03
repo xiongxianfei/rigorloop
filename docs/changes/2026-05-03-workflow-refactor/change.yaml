@@ -1,0 +1,61 @@
+change_id: 2026-05-03-workflow-refactor
+title: Workflow refactor
+classification: workflow-governance
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-01-workflow-refactor.md
+  spec: specs/rigorloop-workflow.md
+  test_spec: specs/rigorloop-workflow.test.md
+  plan: docs/plans/2026-05-03-workflow-refactor.md
+  explain_change: docs/changes/2026-05-03-workflow-refactor/explain-change.md
+requirements:
+  - specs/rigorloop-workflow.md R1-R7be
+  - specs/rigorloop-workflow.md R8-R8s
+  - specs/rigorloop-workflow.md R9-R12f
+  - specs/rigorloop-workflow.md R20-R24a
+  - specs/rigorloop-workflow.md R26-R27
+tests:
+  - specs/rigorloop-workflow.test.md T1
+  - specs/rigorloop-workflow.test.md T2
+  - specs/rigorloop-workflow.test.md T3
+  - specs/rigorloop-workflow.test.md T4
+  - specs/rigorloop-workflow.test.md T13
+  - specs/rigorloop-workflow.test.md T16
+  - specs/rigorloop-workflow.test.md T20
+  - specs/rigorloop-workflow.test.md T21
+  - specs/rigorloop-workflow.test.md T22
+  - specs/rigorloop-workflow.test.md T23
+  - specs/rigorloop-workflow.test.md T24
+  - specs/rigorloop-workflow.test.md T25
+  - specs/rigorloop-workflow.test.md T26
+validation:
+  - command: rg -n 'constitution / project-map|ci when|advice-only|next required or default|required or default|ci when triggered|-> learn|learn remains advice-only|default downstream|stage classification|ci` means' README.md AGENTS.md CONSTITUTION.md docs/workflows.md
+    result: pass_after_m1
+    reason: No stale old-chain wording matched in the root guidance surfaces.
+  - command: python scripts/select-validation.py --mode explicit --path CONSTITUTION.md --path AGENTS.md --path README.md --path docs/workflows.md --path docs/plan.md --path docs/plans/2026-05-03-workflow-refactor.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/changes/2026-05-03-workflow-refactor/change.yaml --path docs/changes/2026-05-03-workflow-refactor/explain-change.md
+    result: pass_after_m1
+    selected_check_ids: artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, readme.validate, readme.vision_markers, selector.regression
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-01-workflow-refactor.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/plan.md --path docs/plans/2026-05-03-workflow-refactor.md --path docs/changes/2026-05-03-workflow-refactor/change.yaml --path docs/changes/2026-05-03-workflow-refactor/explain-change.md
+    result: pass_after_m1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-03-workflow-refactor/change.yaml
+    result: pass_after_m1
+  - command: bash scripts/ci.sh --mode explicit --path CONSTITUTION.md --path AGENTS.md --path README.md --path docs/workflows.md --path docs/plan.md --path docs/plans/2026-05-03-workflow-refactor.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/changes/2026-05-03-workflow-refactor/change.yaml --path docs/changes/2026-05-03-workflow-refactor/explain-change.md
+    result: pass_after_m1
+    selected_check_ids: artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, readme.validate, readme.vision_markers, selector.regression
+  - command: git diff --check -- CONSTITUTION.md AGENTS.md README.md docs/workflows.md docs/plan.md docs/plans/2026-05-03-workflow-refactor.md specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md docs/changes/2026-05-03-workflow-refactor
+    result: pass_after_m1
+changed_files:
+  - CONSTITUTION.md
+  - AGENTS.md
+  - README.md
+  - docs/workflows.md
+  - docs/plan.md
+  - docs/proposals/2026-05-01-workflow-refactor.md
+  - docs/plans/2026-05-03-workflow-refactor.md
+  - specs/rigorloop-workflow.md
+  - specs/rigorloop-workflow.test.md
+  - docs/changes/2026-05-03-workflow-refactor/change.yaml
+  - docs/changes/2026-05-03-workflow-refactor/explain-change.md
+review:
+  status: not_started
+  unresolved_items: 0
