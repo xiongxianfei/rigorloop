@@ -37,7 +37,7 @@ This file is the short operational summary for working in this repository. The n
   - `review-resolution` runs only when material review findings, non-final dispositions, or review outcomes require explicit closeout.
   - `ci-maintenance` is conditional support when hosted workflow automation or related CI infrastructure for a material risk is missing, stale, or wrong.
 - Periodic artifacts: `learn`.
-  - Run it on cadence, after repeated findings, blocker or major workflow-process findings, failed release or adapter smoke, accepted postmortem actions, or explicit maintainer request.
+  - Run it on cadence, after incident response, contributor observation, repeated findings, blocker or major workflow-process findings, failed release or adapter smoke, accepted postmortem actions, or explicit maintainer request.
   - When a learn session reaches Frame, record it under `docs/learn/sessions/YYYY-MM-DD-<slug>.md`; durable topic guidance uses `docs/learn/topics/<topic>.md` only when confirmed durable lessons justify it.
   - Pre-session scheduled follow-up, deferral, or no-learn rationale can close a trigger only when `learn` does not actually run as a session. Triggered `learn` blocks downstream only when a higher-priority artifact makes it blocking.
 
@@ -50,7 +50,7 @@ The workflow spec owns the full stage-obligation table. The stable obligation va
 | `mandatory` | Required whenever the row's trigger applies. |
 | `conditional` | Required only when the trigger applies or the artifact or action is cited as a dependency. |
 | `on-demand` | Created or run only when explicitly invoked or when the work depends on it. |
-| `periodic` | Run on cadence, incident, repeated finding, failed smoke, accepted postmortem action, or maintainer request. |
+| `periodic` | Run on cadence, incident response, contributor observation, repeated finding, failed smoke, accepted postmortem action, or maintainer request. |
 
 Notes:
 

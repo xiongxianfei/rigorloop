@@ -236,6 +236,8 @@ This is workflow-governance and documentation-infrastructure work. It changes co
 - [x] 2026-05-04: Plan-review approved with no material findings after selector sequencing was fixed.
 - [x] 2026-05-04: Test spec authored and marked active.
 - [x] 2026-05-04: M1 complete.
+- [x] 2026-05-04: M1 `code-review` round 1 finding `CR-M1-F1` accepted and resolved.
+- [x] 2026-05-04: M1 `code-review` round 2 completed with `clean-with-notes`.
 - [ ] M2 complete.
 - [ ] M3 complete.
 - [ ] M4 complete.
@@ -252,6 +254,7 @@ This is workflow-governance and documentation-infrastructure work. It changes co
 
 - `docs/project-map.md` is absent; this plan records a no-map rationale and does not rely on it.
 - `README.md` mentions periodic learning as a lifecycle category but does not define learn artifact surfaces; M1 leaves it unchanged and records it as unaffected in `docs/changes/2026-05-04-learn-artifact-model/change.yaml`.
+- M1 code-review found that two affected surfaces omitted incident response and contributor observation from the learn trigger list even though the workflow contract and learn artifact spec included them. The targeted fix restored those trigger classes in `docs/workflows.md` and `specs/rigorloop-workflow.test.md`.
 
 ## Validation Notes
 
@@ -271,6 +274,22 @@ This is workflow-governance and documentation-infrastructure work. It changes co
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-04-learn-artifact-model/change.yaml`
   - `bash scripts/ci.sh --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path specs/learn-artifact-model.md --path specs/learn-artifact-model.test.md --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/plan.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md`
   - `git diff --check -- CONSTITUTION.md AGENTS.md docs/workflows.md README.md specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md specs/learn-artifact-model.md specs/learn-artifact-model.test.md docs/plans/2026-05-04-learn-artifact-model.md docs/plan.md docs/changes/2026-05-04-learn-artifact-model`
+- 2026-05-04: M1 review-resolution validation passed after resolving `CR-M1-F1`.
+  - `rg -n 'temporary learn|future learn refactor|final learn artifact model is deferred|docs/learnings|docs/retrospectives|Until a focused \`learn\` refactor|scheduled \`learn\` follow-ups and explicit no-learn rationales|temporary recording surfaces|Future focused \`learn\` refactor' specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md docs/workflows.md AGENTS.md CONSTITUTION.md README.md`
+  - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-04-learn-artifact-model`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-04-learn-artifact-model`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-04-learn-artifact-model/change.yaml`
+  - `python scripts/select-validation.py --mode explicit --path docs/workflows.md --path specs/rigorloop-workflow.test.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/review-log.md --path docs/changes/2026-05-04-learn-artifact-model/review-resolution.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r1.md`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md --path docs/changes/2026-05-04-learn-artifact-model/review-log.md --path docs/changes/2026-05-04-learn-artifact-model/review-resolution.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r1.md --path docs/plan.md --path docs/plans/2026-05-04-learn-artifact-model.md --path specs/learn-artifact-model.md --path specs/learn-artifact-model.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md`
+  - `bash scripts/ci.sh --mode explicit --path docs/workflows.md --path specs/rigorloop-workflow.test.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/review-log.md --path docs/changes/2026-05-04-learn-artifact-model/review-resolution.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r1.md`
+  - `git diff --check -- docs/workflows.md specs/rigorloop-workflow.test.md docs/changes/2026-05-04-learn-artifact-model`
+- 2026-05-04: M1 code-review round 2 validation passed.
+  - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-04-learn-artifact-model`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-04-learn-artifact-model`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-04-learn-artifact-model/change.yaml`
+  - `python scripts/select-validation.py --mode explicit --path docs/workflows.md --path specs/rigorloop-workflow.test.md --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md --path docs/changes/2026-05-04-learn-artifact-model/review-log.md --path docs/changes/2026-05-04-learn-artifact-model/review-resolution.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r2.md`
+  - `bash scripts/ci.sh --mode explicit --path docs/workflows.md --path specs/rigorloop-workflow.test.md --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md --path docs/changes/2026-05-04-learn-artifact-model/review-log.md --path docs/changes/2026-05-04-learn-artifact-model/review-resolution.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r2.md`
+  - `git diff --check -- docs/workflows.md specs/rigorloop-workflow.test.md docs/plans/2026-05-04-learn-artifact-model.md docs/changes/2026-05-04-learn-artifact-model`
 
 ## Outcome And Retrospective
 
@@ -278,6 +297,6 @@ This is workflow-governance and documentation-infrastructure work. It changes co
 
 ## Readiness
 
-M1 is ready for `code-review`.
+M1 is code-review clean and ready for `verify`.
 
 Stop before M2 unless the workflow continues after code review. Implementation must keep this plan's progress, decisions, discoveries, and validation notes current as later milestones proceed.
