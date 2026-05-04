@@ -244,7 +244,7 @@ This is workflow-governance and documentation-infrastructure work. It changes co
 - [x] 2026-05-04: M2 selector tests written first; representative learn paths failed as unclassified before implementation.
 - [x] 2026-05-04: M2 implementation complete; `docs/learn/README.md`, `docs/learn/sessions/**`, and `docs/learn/topics/**` now classify as lightweight `learn-artifact` paths.
 - [x] M2 complete.
-- [x] 2026-05-04: M2 `code-review` round 1 finding `CR-M2-F1` accepted and resolved; round 2 is pending.
+- [x] 2026-05-04: M2 `code-review` round 1 finding `CR-M2-F1` accepted and resolved before round 2.
 - [x] 2026-05-04: M2 `code-review` round 2 completed with `clean-with-notes`.
 - [x] 2026-05-04: M2 verified as a milestone slice; full initiative branch-ready is deferred until M3-M4 complete.
 - [ ] M3 complete.
