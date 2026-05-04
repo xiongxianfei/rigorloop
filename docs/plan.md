@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- none yet
+- [2026-05-04 Learn artifact model](plans/2026-05-04-learn-artifact-model.md) - active implementation plan for adopting canonical `docs/learn/sessions/**` and `docs/learn/topics/**` surfaces, aligning workflow and governance guidance, updating the learn skill, adding selector recognition for learn artifact paths, refreshing generated outputs, and validating the final learn artifact model.
 
 ## Blocked
 - none yet
