@@ -58,7 +58,8 @@ The implementation needed to align the governing contracts, validator coverage, 
 
 | Finding | Disposition | Resolution |
 | --- | --- | --- |
-| `CR-M2-F1` | accepted | Created reconstructed review evidence for the M2 finding, fixed stale summary/scope wording, and validated the review-log/review-resolution closeout. |
+| `CR1-F1` | accepted | Created reconstructed review evidence for the M2 finding, fixed stale summary/scope wording, and validated the review-log/review-resolution closeout. |
+| `CR2-F1` | accepted | Corrected the review-resolution summary to use the actual durable Finding ID `CR1-F1` for the earlier reconstructed finding. |
 
 The later M3 direct code-review was clean and produced no material findings, so no new detailed review record or resolution entry was required.
 
