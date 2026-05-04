@@ -2,7 +2,7 @@
 
 ## Status
 
-M1 implemented; code-review clean after review-resolution.
+M1 verified; M2-M4 not started.
 
 ## Summary
 
@@ -55,3 +55,9 @@ Additional M1 validation is recorded in the active plan and `change.yaml`.
 The finding was accepted in `review-resolution.md`. The fix adds those trigger classes to the operational workflow summary and `T23`; review-resolution validation passed with review artifact validation, lifecycle validation, selector-selected explicit CI, change metadata validation, stale-term scan, and whitespace validation.
 
 `code-review` round 2 found no blocking or required-change findings for the M1 slice. M2-M4 remain unimplemented by design.
+
+## Verification State
+
+M1 verification passed for the committed M1 slice. The verifier checked review closeout, stale learn-surface wording, whitespace across the two M1 commits, selector-selected validation for the full touched surface, and explicit-path CI. The selector chose `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
+
+This is not full initiative `branch-ready`: M2 selector recognition, M3 learn skill/index/generated output, and M4 final lifecycle closeout remain open.
