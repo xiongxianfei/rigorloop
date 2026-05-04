@@ -67,7 +67,10 @@ require_option_value() {
 
 available_cpu_count() {
   local cpu_count=""
-  if command -v getconf >/dev/null 2>&1; then
+  if [[ -n "${RIGORLOOP_CI_CPU_COUNT_FIXTURE:-}" ]]; then
+    cpu_count="$RIGORLOOP_CI_CPU_COUNT_FIXTURE"
+  fi
+  if [[ ! "$cpu_count" =~ ^[1-9][0-9]*$ ]] && command -v getconf >/dev/null 2>&1; then
     cpu_count="$(getconf _NPROCESSORS_ONLN 2>/dev/null || true)"
   fi
   if [[ ! "$cpu_count" =~ ^[1-9][0-9]*$ ]] && command -v nproc >/dev/null 2>&1; then
@@ -343,9 +346,10 @@ run_selected_mode() {
     set -e
   fi
 
-  python - "$selector_output" "$selector_exit" "$timeout_seconds" "$verbose" <<'PY'
+  python - "$selector_output" "$selector_exit" "$timeout_seconds" "$verbose" "$jobs" "$fail_fast" <<'PY'
 from __future__ import annotations
 
+from concurrent.futures import FIRST_COMPLETED, Future, ThreadPoolExecutor, wait
 import json
 import os
 import shlex
@@ -358,7 +362,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path("scripts").resolve()))
 
-from validation_selection import DEFAULT_ADAPTER_VERSION, catalog_command  # noqa: E402
+from validation_selection import DEFAULT_ADAPTER_VERSION, catalog_command, is_parallel_safe_check  # noqa: E402
 
 
 def fail(message: str, code: int = 4) -> None:
@@ -372,6 +376,7 @@ class CheckPlan:
     command: str
     args: list[str]
     reason: str | None
+    parallel_safe: bool
 
 
 @dataclass
@@ -426,6 +431,18 @@ def prepare_output(result: CheckResult) -> None:
         notes.append("stderr decode error")
     if notes:
         result.exit_reason = result.exit_reason + "; " + "; ".join(notes)
+
+
+def not_started_result(plan: CheckPlan) -> CheckResult:
+    return CheckResult(
+        plan=plan,
+        status="not started",
+        exit_reason="fail-fast cancelled remaining queue",
+        elapsed_seconds=0.0,
+        stdout_bytes=b"",
+        stderr_bytes=b"",
+        exit_code=125,
+    )
 
 
 def run_one_check(plan: CheckPlan, *, timeout_seconds: int | None) -> CheckResult:
@@ -515,6 +532,126 @@ def run_one_check(plan: CheckPlan, *, timeout_seconds: int | None) -> CheckResul
     )
 
 
+def check_timeout_for(plan: CheckPlan, timeout_seconds: int) -> int | None:
+    # broad_smoke.repo delegates to the non-recursive broad-smoke path. Do
+    # not add a selected-check outer timeout around that wrapper delegation.
+    if plan.check_id == "broad_smoke.repo":
+        return None
+    return timeout_seconds
+
+
+def run_planned_check(plan: CheckPlan, *, timeout_seconds: int) -> CheckResult:
+    return run_one_check(plan, timeout_seconds=check_timeout_for(plan, timeout_seconds))
+
+
+def runner_error_result(plan: CheckPlan, exc: BaseException) -> CheckResult:
+    return CheckResult(
+        plan=plan,
+        status="exited",
+        exit_reason=f"runner error: {exc}",
+        elapsed_seconds=0.0,
+        stdout_bytes=b"",
+        stderr_bytes=b"",
+        exit_code=4,
+    )
+
+
+def run_parallel_safe_chunk(
+    chunk: list[CheckPlan],
+    *,
+    jobs: int,
+    timeout_seconds: int,
+    fail_fast: bool,
+) -> list[CheckResult]:
+    results: list[CheckResult | None] = [None] * len(chunk)
+    next_to_start = 0
+    stop_launching = False
+    max_workers = min(jobs, len(chunk))
+
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        running: dict[Future[CheckResult], int] = {}
+
+        def launch_next() -> None:
+            nonlocal next_to_start
+            future = executor.submit(
+                run_planned_check,
+                chunk[next_to_start],
+                timeout_seconds=timeout_seconds,
+            )
+            running[future] = next_to_start
+            next_to_start += 1
+
+        while next_to_start < len(chunk) and len(running) < max_workers:
+            launch_next()
+
+        while running:
+            done, _ = wait(running, return_when=FIRST_COMPLETED)
+            for future in done:
+                result_index = running.pop(future)
+                try:
+                    result = future.result()
+                except BaseException as exc:  # pragma: no cover - defensive runner boundary
+                    result = runner_error_result(chunk[result_index], exc)
+                results[result_index] = result
+                if fail_fast and result.status != "passed":
+                    stop_launching = True
+            while (
+                not stop_launching
+                and next_to_start < len(chunk)
+                and len(running) < max_workers
+            ):
+                launch_next()
+
+    if stop_launching:
+        while next_to_start < len(chunk):
+            results[next_to_start] = not_started_result(chunk[next_to_start])
+            next_to_start += 1
+
+    return [result for result in results if result is not None]
+
+
+def run_scheduled_checks(
+    plans: list[CheckPlan],
+    *,
+    jobs: int,
+    timeout_seconds: int,
+    fail_fast: bool,
+) -> list[CheckResult]:
+    results: list[CheckResult] = []
+    index = 0
+    stop_launching = False
+
+    while index < len(plans):
+        if stop_launching:
+            results.extend(not_started_result(plan) for plan in plans[index:])
+            break
+
+        plan = plans[index]
+        if plan.parallel_safe and jobs > 1:
+            chunk: list[CheckPlan] = []
+            while index < len(plans) and plans[index].parallel_safe:
+                chunk.append(plans[index])
+                index += 1
+            chunk_results = run_parallel_safe_chunk(
+                chunk,
+                jobs=jobs,
+                timeout_seconds=timeout_seconds,
+                fail_fast=fail_fast,
+            )
+            results.extend(chunk_results)
+            if fail_fast and any(result.status != "passed" for result in chunk_results):
+                stop_launching = True
+            continue
+
+        result = run_planned_check(plan, timeout_seconds=timeout_seconds)
+        results.append(result)
+        index += 1
+        if fail_fast and result.status != "passed":
+            stop_launching = True
+
+    return results
+
+
 def print_summary(results: list[CheckResult]) -> None:
     print("Selected CI check summary:")
     print("check ID | status | exit reason | elapsed")
@@ -559,6 +696,8 @@ selector_output = Path(sys.argv[1])
 selector_exit = int(sys.argv[2])
 timeout_seconds = int(sys.argv[3])
 verbose = bool(int(sys.argv[4]))
+jobs = int(sys.argv[5])
+fail_fast = bool(int(sys.argv[6]))
 try:
     payload = json.loads(selector_output.read_text(encoding="utf-8"))
 except json.JSONDecodeError as exc:
@@ -644,7 +783,15 @@ for check in selected_checks:
     if check_id == "broad_smoke.repo":
         args = ["bash", "scripts/ci.sh", "--mode", "broad-smoke"]
     reason = check.get("reason")
-    plans.append(CheckPlan(check_id=check_id, command=expected_command, args=args, reason=reason if isinstance(reason, str) else None))
+    plans.append(
+        CheckPlan(
+            check_id=check_id,
+            command=expected_command,
+            args=args,
+            reason=reason if isinstance(reason, str) else None,
+            parallel_safe=is_parallel_safe_check(check_id),
+        )
+    )
 
 for plan in plans:
     print(f"==> Run selected check: {plan.check_id}")
@@ -652,12 +799,12 @@ for plan in plans:
         print(f"Reason: {plan.reason}")
     print("+ " + command_display(plan.args))
 
-results = []
-for plan in plans:
-    # broad_smoke.repo delegates to the non-recursive broad-smoke path. Do
-    # not add a selected-check outer timeout around that wrapper delegation.
-    check_timeout = None if plan.check_id == "broad_smoke.repo" else timeout_seconds
-    results.append(run_one_check(plan, timeout_seconds=check_timeout))
+results = run_scheduled_checks(
+    plans,
+    jobs=jobs,
+    timeout_seconds=timeout_seconds,
+    fail_fast=fail_fast,
+)
 for result in results:
     prepare_output(result)
 
