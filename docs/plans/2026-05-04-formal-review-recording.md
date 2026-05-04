@@ -328,6 +328,7 @@ Implementation milestones are test-first within their scope: add or update the r
 - [x] 2026-05-04: M4 implemented with full touched-surface validation, review artifact closeout validation, adapter distribution validation, lifecycle metadata updates, and a refreshed change-local explanation through M1-M4.
 - [x] 2026-05-04: M4 code-review returned `clean-with-notes` with no material findings. The clean review is settled artifact-locally in this plan; no detailed review record or review-resolution update is required.
 - [x] 2026-05-04: Verify passed for the final artifact set after M4 code-review, including review artifact closeout, lifecycle validation, selector-selected explicit CI, and final explanation refresh.
+- [x] 2026-05-04: PR handoff completed by opening PR #28.
 
 ## Decision Log
 
@@ -449,17 +450,24 @@ Implementation milestones are test-first within their scope: add or update the r
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-04-formal-review-recording.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/plan.md --path docs/plans/2026-05-04-formal-review-recording.md --path docs/changes/2026-05-04-formal-review-recording/change.yaml --path docs/changes/2026-05-04-formal-review-recording/explain-change.md`
   - `python scripts/select-validation.py --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path docs/proposals/2026-05-04-formal-review-recording.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path skills/architecture-review/SKILL.md --path skills/plan-review/SKILL.md --path skills/code-review/SKILL.md --path skills/workflow/SKILL.md --path skills/verify/SKILL.md --path skills/explain-change/SKILL.md --path skills/pr/SKILL.md --path scripts/test-review-artifact-validator.py --path scripts/review_artifact_validation.py --path scripts/test-skill-validator.py --path docs/plan.md --path docs/plans/2026-05-04-formal-review-recording.md --path docs/changes/2026-05-04-formal-review-recording/change.yaml --path docs/changes/2026-05-04-formal-review-recording/explain-change.md`
   - `bash scripts/ci.sh --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path docs/proposals/2026-05-04-formal-review-recording.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path skills/architecture-review/SKILL.md --path skills/plan-review/SKILL.md --path skills/code-review/SKILL.md --path skills/workflow/SKILL.md --path skills/verify/SKILL.md --path skills/explain-change/SKILL.md --path skills/pr/SKILL.md --path scripts/test-review-artifact-validator.py --path scripts/review_artifact_validation.py --path scripts/test-skill-validator.py --path docs/plan.md --path docs/plans/2026-05-04-formal-review-recording.md --path docs/changes/2026-05-04-formal-review-recording/change.yaml --path docs/changes/2026-05-04-formal-review-recording/explain-change.md`
+- 2026-05-04: PR handoff lifecycle update validation passed after opening PR #28:
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-04-formal-review-recording`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-04-formal-review-recording/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-04-formal-review-recording.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/plan.md --path docs/plans/2026-05-04-formal-review-recording.md --path docs/changes/2026-05-04-formal-review-recording/change.yaml --path docs/changes/2026-05-04-formal-review-recording/explain-change.md`
+  - `bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-04-formal-review-recording.md --path docs/changes/2026-05-04-formal-review-recording/change.yaml --path docs/changes/2026-05-04-formal-review-recording/explain-change.md --path docs/proposals/2026-05-04-formal-review-recording.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md`
+  - `git diff --check --`
+  - `rg -n '[[:blank:]]$|\\t' docs/plan.md docs/plans/2026-05-04-formal-review-recording.md docs/changes/2026-05-04-formal-review-recording`
 
 ## Outcome And Retrospective
 
-- Active. M1-M4 implementation milestones, M4 code-review, verify, and final explain-change are complete. PR handoff has not run yet.
+- Active. M1-M4 implementation milestones, M4 code-review, verify, final explain-change, and PR handoff are complete. PR #28 is open; merge closeout has not run yet.
 
 ## Readiness
 
 - Branch-ready after verify.
-- Ready for PR handoff.
-- Later workflow stages should continue with PR preparation and opening if the PR gate is satisfied.
+- PR #28 is open.
+- Later workflow stages should complete merge-dependent closeout after the PR is merged.
 
 ## Risks And Follow-Ups
 
-- Follow-up: prepare and open the PR if the PR gate is satisfied.
+- Follow-up: after PR #28 merges, mark this plan done in `docs/plan.md` and the plan body.
