@@ -2,7 +2,7 @@
 
 ## Status
 
-M3 implemented and code-review clean; M4 not started.
+M3 implemented, code-review clean, and verified; M4 not started.
 
 ## Summary
 
@@ -120,3 +120,11 @@ This is not full initiative `branch-ready`: M3 review and M4 final lifecycle clo
 ## M3 Review State
 
 `code-review` round 1 found no blocking or required-change findings for the M3 slice. The review record is `docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r1.md`.
+
+## M3 Verification State
+
+M3 verification passed for the committed M3 slice. The verifier checked review closeout, `docs/plan.md` versus the active plan body, whitespace across the two M3 commits, selector-selected validation for the full M3 touched surface, generated skill and adapter drift, adapter validation, review artifact validation, lifecycle validation, and change metadata validation.
+
+The selector-selected CI run passed with `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+
+This is not full initiative `branch-ready`: M4 final validation and lifecycle closeout remain open.
