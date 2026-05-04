@@ -8,12 +8,13 @@
 - [RigorLoop Project Direction](../docs/proposals/2026-04-19-rigorloop-project-direction.md)
 - [Implementation Milestone Commit Policy](../docs/proposals/2026-04-19-implementation-milestone-commit-policy.md)
 - [Workflow Refactor](../docs/proposals/2026-05-01-workflow-refactor.md)
+- [Optimize Learn Skill](../docs/proposals/2026-05-03-optimize-learn-skill.md)
 
 ## Goal and context
 
 This spec defines the externally observable workflow contract for the first RigorLoop starter-kit release. The goal is to make AI-assisted software delivery explicit, reviewable, and auditable for individual contributors and maintainers without forcing the full artifact lifecycle onto trivial work.
 
-This amendment updates the workflow contract around explicit artifact categories, stable stage-obligation metadata, living-reference handling, and workflow-handoff ownership. It keeps `specs/rigorloop-workflow.md` as the canonical workflow definition and keeps `docs/workflows.md` as the short operational summary.
+This amendment updates the workflow contract around explicit artifact categories, stable stage-obligation metadata, living-reference handling, workflow-handoff ownership, and the final learn artifact model. It keeps `specs/rigorloop-workflow.md` as the canonical workflow definition and keeps `docs/workflows.md` as the short operational summary.
 
 RigorLoop is a Git-first starter kit. It does not replace pull requests, CI, or human review. It provides a repeatable path, artifact model, and validation rules so contributors can move from idea to reviewed change with traceable evidence.
 
@@ -38,6 +39,9 @@ RigorLoop is a Git-first starter kit. It does not replace pull requests, CI, or 
 - `tracked governing branch state`: the tracked Git state that can support branch-scoped authority or readiness conclusions for the reviewed change.
 - `governing artifact`: a proposal, spec, test spec, architecture document, ADR, plan, or other cited workflow artifact used as review or readiness authority.
 - `local-only governing artifact`: a governing artifact visible in the local worktree but absent from tracked governing branch state.
+- `learn session`: a periodic, incident-driven, contributor-observed, or explicitly requested retrospective run that examines evidence and records what was or was not learned.
+- `learn session record`: the dated historical record for one learn session under `docs/learn/sessions/`.
+- `learn topic file`: curated topic-organized guidance under `docs/learn/topics/`.
 - `branch-ready`: the `verify` stage conclusion that the tracked branch state satisfies required validation and authoritative-artifact checks.
 - `pr-body-ready`: the `pr` stage conclusion that the PR body is accurate, concise, and grounded in verified artifacts.
 - `pr-open-ready`: the `pr` stage conclusion that branch, base, remote, worktree, PR body, and action prerequisites are ready for PR opening.
@@ -165,7 +169,7 @@ R6. The workflow contract MUST document workflow categories using the following 
 | Workflow infrastructure | `specs/rigorloop-workflow.md`, `docs/workflows.md`, affected root operating guidance, affected stage skills, and generated skill or adapter outputs when canonical skills change. | Created and maintained as workflow governance. | Revised when stage order, routing, handoff, obligation, or category policy changes. | Unresolved drift across affected operating and governance surfaces blocks workflow-change readiness. | Every lifecycle stage. |
 | On-demand artifacts | `explore`, `research`. | Created only when the problem warrants durable option expansion or external evidence. | Revised when their assumptions or findings are materially outdated. | Absence is not a blocker unless the current work depends on unresolved options or uncertain facts. | Proposal, spec, architecture, and plan when their decisions depend on the artifact. |
 | Per-change chain | `proposal -> proposal-review -> spec -> spec-review -> architecture -> architecture-review -> plan -> plan-review -> test-spec -> implement -> code-review -> review-resolution -> verify -> explain-change -> pr`, with conditional `ci-maintenance` support. | Created or run according to stage-obligation metadata. | Updated as the change moves through the lifecycle. | Missing required or triggered actions block downstream readiness. | The current change and PR package. |
-| Periodic artifacts | `learn`. | Run on cadence, after incidents, repeated findings, failed release or adapter smoke, accepted postmortem actions, or explicit maintainer request. | Revised by adding or updating lessons, not by changing lifecycle state. | Absence does not block ordinary PRs when the trigger is closed by lesson capture, a scheduled follow-up, or an explicit no-learn rationale; it blocks only when a higher-priority artifact makes it blocking. | Future proposals, specs, workflow updates, and skill refinements. |
+| Periodic artifacts | `learn`. | Run on cadence, after incidents, contributor observations, repeated findings, failed release or adapter smoke, accepted postmortem actions, or explicit maintainer request. When a session reaches Frame, create or update `docs/learn/sessions/YYYY-MM-DD-<slug>.md`. | Revised by adding or updating session records, curated topic guidance, or affected action-owning artifacts, not by changing lifecycle state. | Absence does not block ordinary PRs. Triggered `learn` blocks only when a higher-priority artifact makes it blocking; if a trigger is closed before a session runs, the scheduled follow-up, deferral, or no-learn rationale must be recorded in a tracked or review-visible surface. | Future proposals, specs, workflow updates, skill refinements, ADRs, and action-owning artifacts. |
 
 R6a. Standing artifacts include `VISION.md` and `CONSTITUTION.md`, but their absence has different gates. Their absence effects MUST be documented using the following table:
 
@@ -222,19 +226,21 @@ R7a. The full lifecycle for non-trivial work MUST be documented using the follow
 | `ci-maintenance` | Create or update hosted CI workflow automation. | `conditional` | Hosted workflow automation or related CI infrastructure for a material risk is missing, stale, or wrong. | `false` | `true` |
 | `explain-change` | Explain final diff. | `mandatory` | Non-trivial changes require standalone durable explanation; all changes require PR-summary explanation. | `true` | `true` |
 | `pr` | Prepare review package. | `mandatory` | Every contributed change. | `true` | `true` |
-| `learn` | Capture retrospective lessons. | `periodic` | Repeated review findings, blocker or major workflow-process findings, failed release or adapter smoke, accepted postmortem action changing workflow guidance, cadence run, or explicit maintainer request. | `false` | `false` |
+| `learn` | Capture retrospective lessons. | `periodic` | Cadence run, incident response, contributor observation, repeated review findings, blocker or major workflow-process findings, failed release or adapter smoke, accepted postmortem action changing workflow guidance, or explicit maintainer request. | `false` | `false` |
 
 R7b. For conditional and on-demand rows, downstream blocking applies only after the trigger is active, the artifact/action has been cited as a dependency, or a higher-priority artifact requires it. For periodic rows, downstream blocking applies only when a higher-priority artifact explicitly makes the triggered periodic work blocking.
 
-R7ba. `learn` is a periodic or explicitly invoked retrospective artifact. When a `learn` trigger occurs, the workflow MUST either capture the lesson immediately or record a follow-up to capture it later.
+R7ba. `learn` is a periodic or explicitly invoked retrospective artifact. A cadence run, incident response, contributor observation, repeated review finding, blocker or major workflow-process finding, failed release or adapter smoke, accepted postmortem action changing workflow guidance, or explicit maintainer request MUST be sufficient to trigger `learn`.
 
 R7bb. Triggered `learn` MUST NOT block ordinary `verify`, final `explain-change`, or `pr` closeout by default.
 
 R7bc. Triggered `learn` MUST block downstream only when a higher-priority artifact explicitly makes it blocking, such as an active plan, `review-resolution`, postmortem action, release contract, or maintainer decision.
 
-R7bd. If no higher-priority blocking artifact exists for a triggered `learn`, the required closeout action MUST be to record the scheduled follow-up or an explicit no-learn rationale.
+R7bd. If a `learn` invocation reaches the `Frame` phase, it MUST create or update a tracked session record under `docs/learn/sessions/YYYY-MM-DD-<slug>.md`. This requirement applies even when the session finds no observations or no durable lesson.
 
-R7be. Until a focused `learn` refactor defines the final learning artifact model, scheduled `learn` follow-ups and explicit no-learn rationales MUST be recorded in a contributor-visible tracked or review-visible surface, such as the active plan, `docs/changes/<change-id>/change.yaml`, `review-resolution.md`, `explain-change.md`, PR body or draft PR body, linked issue, or a named governance artifact. Chat-only notes MUST NOT satisfy this recording requirement.
+R7be. Review-visible no-record surfaces for scheduled follow-up, deferral, or explicit no-learn rationale MUST be allowed only for pre-session trigger closeout when `learn` does not actually run as a session. Chat-only notes MUST NOT satisfy required tracked or review-visible closeout.
+
+R7bf. Learn session routing MUST follow `specs/learn-artifact-model.md`: session records live under `docs/learn/sessions/`, durable topic guidance lives under `docs/learn/topics/` only when confirmed durable lessons justify it, and behavior, workflow, validation, skill, architecture, or decision changes go to the affected action-owning artifact. Topic files are curated guidance and MUST NOT override authoritative artifacts.
 
 R7c. The starter kit MUST distinguish workflow-managed completion flows from isolated stage requests when deciding whether a stage result should continue automatically into a downstream stage.
 
@@ -640,7 +646,7 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - Architecture, plan, code-review, or onboarding-heavy work that would rely on `docs/project-map.md` MUST stop, refresh the map, or record a no-map rationale when the map is absent, known-stale, contradicted, or missing the relied-on area.
 - Workflow-governance changes with affected operating or governance surfaces that are not updated, explicitly marked unaffected with rationale, or deferred with owner and follow-up MUST be considered incomplete.
 - `verify`, final `explain-change`, and `pr` MUST stop while required `review-resolution` closeout remains open.
-- Triggered `learn` MUST NOT stop ordinary `verify`, final `explain-change`, or `pr` when no higher-priority artifact makes it blocking and the scheduled follow-up or explicit no-learn rationale is recorded.
+- Triggered `learn` MUST NOT stop ordinary `verify`, final `explain-change`, or `pr` when no higher-priority artifact makes it blocking and either the pre-session closeout is recorded or the session record captures the outcome after Frame.
 - Invalid skill structure MUST fail local validation and CI validation.
 - Generated-output drift MUST fail the drift check until derived output is rebuilt or the change is reverted.
 - The starter kit MUST allow validation to run without requiring network access or Codex installation for the baseline structural checks.
@@ -659,7 +665,7 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - Planned initiatives and change-local metadata SHOULD record the selected workflow contract, such as `pre-refactor` or `refactored`, when that distinction affects review or verification.
 - The `vision.md` to `VISION.md` migration is already complete for this repository. This workflow refactor MUST use `VISION.md` as the standing project-vision artifact and MUST NOT reintroduce lowercase `vision.md` as canonical.
 - The project-map lifecycle markers, calendar freshness thresholds, and project-map revision workflow are deferred to a focused follow-up and MUST NOT be invented in this workflow refactor.
-- The final `learn` artifact model is deferred to a focused follow-up and MUST NOT be invented in this workflow refactor. This refactor defines only temporary recording surfaces for scheduled `learn` follow-ups and explicit no-learn rationales.
+- The final `learn` artifact model is defined by `specs/learn-artifact-model.md`. Existing pre-adoption learning notes outside `docs/learn/` may remain unless a later approved migration plan relies on them as current guidance.
 
 ## Observability
 
@@ -706,7 +712,7 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 16. `inconclusive` may record a missing-input stop condition without naming any immediate next repository stage.
 17. `plan-review` may mention implementation readiness only after preserving `test-spec` as the immediate next handoff.
 18. `explore` and `research` may be absent from a normal non-trivial change when the problem and facts are already settled, but they block downstream reliance after their triggers are active or their artifacts are cited as dependencies.
-19. `learn` may be absent from an ordinary PR package, but a repeated finding, blocker or major workflow-process finding, failed release or adapter smoke, accepted postmortem action, cadence run, or explicit maintainer request must be closed by immediate lesson capture, a scheduled follow-up, or an explicit no-learn rationale. It blocks downstream only when a higher-priority artifact explicitly makes it blocking.
+19. `learn` may be absent from an ordinary PR package, but a repeated finding, blocker or major workflow-process finding, failed release or adapter smoke, accepted postmortem action, cadence run, incident response, contributor observation, or explicit maintainer request must be closed through a `docs/learn/sessions/**` session record once Frame is reached, or through a scheduled follow-up, deferral, or explicit no-learn rationale before a session runs. It blocks downstream only when a higher-priority artifact explicitly makes it blocking.
 20. `ci-maintenance` may be skipped when hosted workflow automation already covers the material risk, but it is required when automation is missing, stale, or wrong.
 21. A repository without `docs/project-map.md`, with a known-stale or contradicted map, or with a map missing the relied-on area may proceed only when consumers do not rely on the map or record a no-map rationale for the relevant architecture, planning, review, or onboarding-heavy decision.
 22. A bootstrap proposal may proceed without an existing `VISION.md` only when its `Vision fit` explicitly identifies that it is creating or migrating the missing standing artifact.
@@ -722,7 +728,7 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - Requiring the full lifecycle for trivial or low-risk work.
 - Hardcoding every future adapter implementation detail into the first workflow contract.
 - Implementing detailed project-map freshness markers, calendar thresholds, or revision workflow in this refactor.
-- Implementing the final `learn` artifact model, including per-session `docs/learn/YYYY-MM-DD-<slug>.md` output, topic-organized `docs/learnings/<topic>.md`, or action-routing rules beyond the temporary recording surfaces in `R7be`.
+- Creating learn session templates, topic templates, empty topic files, a fixed topic taxonomy, automated lesson triage, or historical-note migration.
 - Removing `explore`, `research`, or `learn`; they remain available through their trigger rules.
 - Rewriting project vision content or revisiting the completed `VISION.md` migration.
 - Renaming the `skills/ci/` directory as a contract requirement.
@@ -748,7 +754,7 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - A reviewer can tell when `spec-review` is reporting immediate next repository stage versus eventual `test-spec` readiness without inferring that `test-spec` skips required intermediate stages.
 - A reviewer can tell that `plan-review` preserves `test-spec` as the immediate next handoff even when later implementation readiness is also discussed.
 - A contributor can tell that `explore` and `research` are on-demand support rather than default prerequisites.
-- A contributor can tell that triggered `learn` is closed by immediate capture, scheduled follow-up, or explicit no-learn rationale, that non-captured `learn` closeout is recorded in an allowed contributor-visible tracked or review-visible surface, and that triggered `learn` blocks downstream only when a higher-priority artifact explicitly makes it blocking.
+- A contributor can tell that triggered `learn` creates a tracked session record after Frame, that pre-session follow-up, deferral, or no-learn closeout is recorded in an allowed contributor-visible tracked or review-visible surface, that durable topic guidance uses `docs/learn/topics/**`, and that triggered `learn` blocks downstream only when a higher-priority artifact explicitly makes it blocking.
 - A contributor can tell that `ci-maintenance` means CI infrastructure maintenance and not validation execution.
 - A contributor can tell that `review-resolution` is the closeout stage for review findings and that open required closeout blocks `verify`, final `explain-change`, and `pr`.
 - A contributor can tell that `docs/project-map.md` is a living reference and must be refreshed or bypassed with a no-map rationale before reliance when absent, known-stale, contradicted, or missing the relied-on area.
@@ -757,19 +763,21 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 
 ## Open questions
 
-- None blocking. The `skills/ci/` path remains allowed while the visible stage/action label becomes `ci-maintenance`; periodic `learn` cadence and the final learn artifact model remain outside this refactor beyond the minimum triggers and temporary recording surfaces in `R7a` through `R7be`.
+- None blocking. The `skills/ci/` path remains allowed while the visible stage/action label becomes `ci-maintenance`; detailed periodic `learn` cadence scheduling remains outside this workflow contract.
 
 ## Next artifacts
 
-- `plan-review` for [Workflow Refactor Execution Plan](../docs/plans/2026-05-03-workflow-refactor.md).
-- Matching update to `specs/rigorloop-workflow.test.md` after plan-review.
+- None for the workflow-refactor lifecycle. Current learn-model implementation follow-ons are listed below.
 
 ## Follow-on artifacts
 
 - `proposal`: [Workflow Refactor](../docs/proposals/2026-05-01-workflow-refactor.md)
 - `plan`: [Workflow Refactor Execution Plan](../docs/plans/2026-05-03-workflow-refactor.md)
-- Future focused `learn` refactor to define per-session `docs/learn/YYYY-MM-DD-<slug>.md` output, topic-organized `docs/learnings/<topic>.md`, and action routing into affected artifacts or ADRs.
+- `learn proposal`: [Optimize Learn Skill](../docs/proposals/2026-05-03-optimize-learn-skill.md)
+- `learn spec`: [Learn Artifact Model](learn-artifact-model.md)
+- `learn test spec`: [Learn Artifact Model test spec](learn-artifact-model.test.md)
+- `learn plan`: [Learn Artifact Model Implementation Plan](../docs/plans/2026-05-04-learn-artifact-model.md)
 
 ## Readiness
 
-Approved after spec review. Immediate next repository stage is `plan-review` for the execution plan; eventual `test-spec` readiness is conditional on that plan being accepted.
+Approved current workflow contract. The learn artifact model is governed by `specs/learn-artifact-model.md` and implemented through its active plan and test spec.
