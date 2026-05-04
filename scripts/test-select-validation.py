@@ -2135,6 +2135,11 @@ raise SystemExit(3)
                 "scripts/select-validation.py",
                 "scripts/ci.sh --mode explicit",
                 "scripts/ci.sh --mode broad-smoke",
+                "--jobs",
+                "--jobs 1",
+                "--timeout",
+                "--fail-fast",
+                "--verbose",
                 "skills.validate",
                 "review_artifacts.validate",
                 "broad_smoke.repo",
@@ -2176,6 +2181,24 @@ raise SystemExit(3)
                 content = (ROOT / path).read_text(encoding="utf-8")
                 for term in required_terms:
                     self.assertIn(term, content)
+
+    def test_hosted_ci_remains_thin_and_matrix_free(self) -> None:
+        workflow = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+
+        self.assertIn("bash scripts/ci.sh --mode pr", workflow)
+        self.assertIn("bash scripts/ci.sh --mode main", workflow)
+        forbidden_terms = [
+            "matrix:",
+            "check-id:",
+            "fromJson",
+            "scripts/select-validation.py",
+            "actions/cache",
+            "distributed",
+            "sandbox",
+        ]
+        for term in forbidden_terms:
+            with self.subTest(term=term):
+                self.assertNotIn(term, workflow)
 
     def test_local_mode_discovers_tracked_and_untracked_git_paths(self) -> None:
         repo = self.make_git_repo()

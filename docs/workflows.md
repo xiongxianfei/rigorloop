@@ -207,6 +207,8 @@ Run these structural checks before PR:
 
 Use `bash scripts/ci.sh` with an explicit mode to run checks through the repository-owned CI wrapper and report the commands you actually ran. Hosted PR CI uses `--mode pr --base <sha> --head <sha>`, main CI uses `--mode main --base <sha> --head <sha>`, and release automation uses release-specific validation. No-argument `bash scripts/ci.sh` remains legacy broad smoke, not the normal first proof step.
 
+Selected-check execution supports bounded local parallelism. Use `--jobs <N>` to cap concurrent reviewed parallel-safe checks; when omitted, the wrapper uses available CPU count minus one with a floor of one. Use `--jobs 1` for explicit sequential execution when debugging races or reducing local resource pressure. Use `--timeout <seconds>` to override the 60-second per-check timeout, `--fail-fast` to stop launching queued checks after an observed failure while preserving already-started check results, and `--verbose` to include successful check output in stable order.
+
 Ordinary contributors do not need all supported tools installed locally for non-smoke validation. Repository-owned checks validate generated package structure, drift, manifests, release metadata, and security without invoking Codex, Claude Code, or opencode.
 
 Reserve `python scripts/validate-artifact-lifecycle.py --mode local` for clean worktrees only. When unrelated drafts, untracked files, or other local-only changes are present, use `--mode explicit-paths`, the diff-derived CI modes, or `bash scripts/ci.sh` instead of treating `local` mode as milestone proof.
@@ -216,6 +218,7 @@ When a change updates canonical `skills/`, keep generated `.codex/skills/` outpu
 ## CI And Release
 
 - `.github/workflows/ci.yml` should remain a thin wrapper around repo-owned validation commands. It may set up required tooling and pass explicit diff inputs, but validation logic belongs in `scripts/ci.sh`.
+- The hosted CI workflow stays matrix-free in this first bounded-parallelism slice. Future hosted fan-out, if approved later, should consume stable check IDs from repository-owned scripts instead of duplicating selector path classification or hardcoded selected-check lists in workflow YAML.
 - `scripts/release-verify.sh` is the repository-owned release gate for `v0.1.0-rc.1`, `v0.1.0`, and `v0.1.1`. It accepts a tag argument or `GITHUB_REF_NAME`, checks generated adapters and release metadata, and consumes tracked release notes from `docs/releases/<tag>/release-notes.md`.
 - RC releases may be published before full manual smoke only when non-smoke gates pass and no smoke row records `fail`. Stable releases require passing Codex, Claude Code, and opencode smoke rows.
 
