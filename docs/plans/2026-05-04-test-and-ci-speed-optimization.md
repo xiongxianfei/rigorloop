@@ -374,7 +374,7 @@ Use targeted proof first for each milestone, then broaden only when the touched 
   - Result: expected failure before implementation. New regressions failed because the M1 runner streamed child output live, stopped after the first selected-check failure, lacked a stable summary/output model, did not enforce per-check timeout, and did not isolate undecodable child output.
 - 2026-05-05: M2 focused regression suite passed:
   - `python scripts/test-select-validation.py`
-  - Result: 48 tests passed after adding the deterministic sequential result model, per-check output capture, timeout handling, signal attribution, unavailable-command summary rows, and verbose successful-output reporting.
+  - Result: 49 tests passed after adding the deterministic sequential result model, per-check output capture, timeout handling, signal attribution, unavailable-command summary rows, verbose successful-output reporting, large-output isolation proof, and default-timeout constant proof.
 - 2026-05-05: M2 focused wrapper proof passed:
   - `bash scripts/ci.sh --mode explicit --path scripts/ci.sh --jobs 1 --timeout 60 --verbose`
   - Selected `selector.regression`; the summary reported `selector.regression | passed | ok`.
@@ -389,6 +389,19 @@ Use targeted proof first for each milestone, then broaden only when the touched 
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-04-test-and-ci-speed-optimization/change.yaml --path docs/changes/2026-05-04-test-and-ci-speed-optimization/explain-change.md --path docs/plan.md --path docs/plans/2026-05-04-test-and-ci-speed-optimization.md --path docs/proposals/2026-05-04-test-and-ci-speed-optimization.md --path specs/test-and-ci-speed-optimization.md --path specs/test-and-ci-speed-optimization.test.md`
   - `git diff --check -- scripts/ci.sh scripts/test-select-validation.py specs/test-and-ci-speed-optimization.test.md docs/plans/2026-05-04-test-and-ci-speed-optimization.md docs/changes/2026-05-04-test-and-ci-speed-optimization docs/plan.md`
   - `rg -n '[[:blank:]]$|\\t' scripts/ci.sh scripts/test-select-validation.py specs/test-and-ci-speed-optimization.test.md docs/plans/2026-05-04-test-and-ci-speed-optimization.md docs/changes/2026-05-04-test-and-ci-speed-optimization docs/plan.md`
+- 2026-05-05: M2 code-review R2 recorded and CR2-F1 resolution proof passed:
+  - Review record: `docs/changes/2026-05-04-test-and-ci-speed-optimization/reviews/code-review-r2.md`
+  - Resolution: added the missing large-output isolation test and default-timeout constant assertion.
+  - `python scripts/test-select-validation.py`
+  - Result: 49 tests passed.
+  - `bash scripts/ci.sh --mode explicit --path scripts/test-select-validation.py --path docs/changes/2026-05-04-test-and-ci-speed-optimization/review-log.md --path docs/changes/2026-05-04-test-and-ci-speed-optimization/review-resolution.md --path docs/changes/2026-05-04-test-and-ci-speed-optimization/reviews/code-review-r2.md --path docs/changes/2026-05-04-test-and-ci-speed-optimization/change.yaml --path docs/changes/2026-05-04-test-and-ci-speed-optimization/explain-change.md --path docs/plans/2026-05-04-test-and-ci-speed-optimization.md --jobs 1`
+  - Result: selected checks passed: `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `selector.regression`, and `broad_smoke.repo`.
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-04-test-and-ci-speed-optimization`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-04-test-and-ci-speed-optimization/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-04-test-and-ci-speed-optimization/change.yaml --path docs/changes/2026-05-04-test-and-ci-speed-optimization/explain-change.md --path docs/plan.md --path docs/plans/2026-05-04-test-and-ci-speed-optimization.md --path docs/proposals/2026-05-04-test-and-ci-speed-optimization.md --path specs/test-and-ci-speed-optimization.md --path specs/test-and-ci-speed-optimization.test.md`
+  - `git diff --check -- scripts/ci.sh scripts/test-select-validation.py specs/test-and-ci-speed-optimization.test.md docs/plans/2026-05-04-test-and-ci-speed-optimization.md docs/changes/2026-05-04-test-and-ci-speed-optimization docs/plan.md`
+  - `rg -n '[[:blank:]]$|\\t' scripts/ci.sh scripts/test-select-validation.py specs/test-and-ci-speed-optimization.test.md docs/plans/2026-05-04-test-and-ci-speed-optimization.md docs/changes/2026-05-04-test-and-ci-speed-optimization docs/plan.md`
+  - Result: all passed; whitespace scan found no matches.
 
 ## Outcome and Retrospective
 
