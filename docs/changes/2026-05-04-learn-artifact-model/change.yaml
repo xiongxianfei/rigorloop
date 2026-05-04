@@ -281,6 +281,20 @@ validation:
     reason: Final explain-change closeout selected and ran artifact lifecycle and change metadata checks for the dirty closeout surface.
   - command: git diff --check -- docs/plan.md docs/plans/2026-05-04-learn-artifact-model.md docs/changes/2026-05-04-learn-artifact-model/change.yaml docs/changes/2026-05-04-learn-artifact-model/explain-change.md
     result: pass_after_explain_change
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-04-learn-artifact-model/change.yaml
+    result: pass_after_pr_handoff
+    reason: PR handoff change metadata validation passed after closing lifecycle state.
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-03-optimize-learn-skill.md --path specs/learn-artifact-model.md --path specs/learn-artifact-model.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/plan.md --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md --path docs/changes/2026-05-04-learn-artifact-model/review-log.md --path docs/changes/2026-05-04-learn-artifact-model/review-resolution.md
+    result: pass_after_pr_handoff
+    reason: PR handoff lifecycle validation passed with the plan moved to Done.
+  - command: bash scripts/ci.sh --mode local
+    result: pass_after_pr_handoff
+    reason: PR handoff wrapper proof executed artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate for the lifecycle closeout paths.
+  - command: bash scripts/ci.sh --mode pr --base origin/main --head HEAD
+    result: pass_after_pr_handoff
+    reason: Local PR-mode CI passed for the branch range after PR handoff lifecycle closeout.
+  - command: git diff --check -- docs/plan.md docs/plans/2026-05-04-learn-artifact-model.md docs/changes/2026-05-04-learn-artifact-model/change.yaml docs/changes/2026-05-04-learn-artifact-model/explain-change.md
+    result: pass_after_pr_handoff
 changed_files:
   - AGENTS.md
   - CONSTITUTION.md
@@ -346,4 +360,5 @@ notes:
   - M4 final validation and lifecycle closeout completed.
   - Direct final code-review completed with no blocking or required-change findings and did not trigger new review-resolution work.
   - Final verify passed locally, including PR-mode CI; hosted CI was not observed.
-  - Final explain-change closeout completed. PR handoff remains the next stage.
+  - Final explain-change closeout completed.
+  - PR handoff lifecycle closeout moved the plan to Done in both `docs/plan.md` and the active plan body before opening the PR.
