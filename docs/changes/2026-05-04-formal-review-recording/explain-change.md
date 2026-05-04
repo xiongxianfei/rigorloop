@@ -27,6 +27,14 @@ No architecture artifact was required for M1. The approved spec reuses the exist
 | `docs/plan.md` and this plan | Kept the initiative active and documented M1 progress and validation evidence. | Maintains lifecycle traceability while later milestones remain open. |
 | `docs/changes/2026-05-04-formal-review-recording/` | Added the baseline change-local `change.yaml` and this durable explanation. | Satisfies the non-trivial change-local artifact baseline for M1. |
 
+## M2 Changes
+
+| File or area | Change | Reason |
+| --- | --- | --- |
+| `scripts/test-review-artifact-validator.py` | Added tests for all supported formal lifecycle stages, explicit `pr-review` rejection, upstream material `spec-review` Finding ID traceability, no-material `plan-review` `rethink` records without `review-resolution.md`, and closeout blocking for `rethink` and `inconclusive`. | Provides executable proof for the stage-neutral review-artifact contract and no-material non-approval edge cases. |
+| `scripts/review_artifact_validation.py` | Added `rethink` and `inconclusive` to the closeout blocking review status set. | Matches the approved stage-owned non-approval outcome vocabulary in the formal review recording and review finding resolution specs. |
+| `docs/plans/2026-05-04-formal-review-recording.md` and `change.yaml` | Recorded M2 progress, the expected failing test, passing validation, and changed file traceability. | Keeps implementation evidence current for the active plan and change-local metadata. |
+
 ## Scope Boundaries
 
 - M1 does not change `scripts/review_artifact_validation.py` or validator fixtures.
@@ -34,6 +42,8 @@ No architecture artifact was required for M1. The approved spec reuses the exist
 - M1 does not create `review-resolution.md` because no material review findings exist for this milestone.
 - M1 does not add a dedicated `pr-review` stage.
 - M1 does not make review files authoritative for proposal, spec, architecture, ADR, or plan status.
+- M2 does not update review-stage skills or generated output; M3 owns that surface.
+- M2 does not create committed review-artifact fixtures because temporary fixture roots keep the coverage focused and avoid extra reusable fixture shape.
 
 ## Validation
 
@@ -48,6 +58,20 @@ M1 validation passed with the plan's explicit scope:
 
 The first metadata validation attempt failed because `validation: []` was rejected by the repository metadata validator. The placeholder was replaced with explicit validation records and the metadata validator passed afterward.
 
+M2 validation passed with the plan's explicit scope:
+
+- `python scripts/test-review-artifact-validator.py`
+- `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-04-24-review-finding-resolution-contract`
+- `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-24-review-finding-resolution-contract`
+- `python scripts/select-validation.py --mode explicit --path scripts/test-review-artifact-validator.py --path scripts/review_artifact_validation.py --path specs/formal-review-recording.test.md --path docs/plans/2026-05-04-formal-review-recording.md --path docs/changes/2026-05-04-formal-review-recording/change.yaml --path docs/changes/2026-05-04-formal-review-recording/explain-change.md`
+- `python scripts/validate-change-metadata.py docs/changes/2026-05-04-formal-review-recording/change.yaml`
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-04-formal-review-recording.md --path docs/changes/2026-05-04-formal-review-recording/change.yaml --path docs/changes/2026-05-04-formal-review-recording/explain-change.md --path specs/formal-review-recording.test.md`
+- `bash scripts/ci.sh --mode explicit --path scripts/test-review-artifact-validator.py --path scripts/review_artifact_validation.py --path specs/formal-review-recording.test.md --path docs/plans/2026-05-04-formal-review-recording.md --path docs/changes/2026-05-04-formal-review-recording/change.yaml --path docs/changes/2026-05-04-formal-review-recording/explain-change.md`
+- `git diff --check -- scripts/test-review-artifact-validator.py scripts/review_artifact_validation.py tests/fixtures/review-artifacts docs/plans/2026-05-04-formal-review-recording.md docs/changes/2026-05-04-formal-review-recording`
+- `rg -n '[[:blank:]]$|\\t' scripts/test-review-artifact-validator.py scripts/review_artifact_validation.py docs/plans/2026-05-04-formal-review-recording.md docs/changes/2026-05-04-formal-review-recording`
+
+The M2 tests intentionally failed before the validator update because `rethink` and `inconclusive` were not yet in the closeout blocking status set. After adding those statuses, the focused suite passed.
+
 ## Readiness
 
-M1 is a milestone slice, not full feature completion. The next implementation milestone is M2 validator coverage.
+M1 and M2 are milestone slices, not full feature completion. The next implementation milestone is M3 review skill guidance and generated output after M2 review.
