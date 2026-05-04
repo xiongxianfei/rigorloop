@@ -3,6 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
+- [2026-05-04 Test and CI speed optimization](plans/2026-05-04-test-and-ci-speed-optimization.md) - active execution plan for bounded parallel selected-check execution in `scripts/ci.sh`; plan-review is approved, the test spec is active, and implementation M1 is next.
 - [2026-05-04 Formal review recording](plans/2026-05-04-formal-review-recording.md) - active execution plan for making formal lifecycle review recording stage-neutral across proposal, spec, architecture, plan, and code review. M1-M4 implementation milestones, M4 code-review, verify, final explain-change, and PR handoff are complete; PR #28 is open and merge closeout remains.
 
 ## Blocked

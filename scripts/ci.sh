@@ -4,11 +4,17 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
+DEFAULT_TIMEOUT_SECONDS=60
+
 mode=""
 base=""
 head=""
 release_version=""
 broad_smoke=0
+jobs=""
+timeout_seconds="$DEFAULT_TIMEOUT_SECONDS"
+fail_fast=0
+verbose=0
 paths=()
 
 usage() {
@@ -21,8 +27,66 @@ Usage:
   bash scripts/ci.sh --mode release --release-version <version>
   bash scripts/ci.sh --mode broad-smoke
 
+Execution options:
+  --jobs <positive-integer>       Limit selected-check concurrency.
+  --timeout <positive-seconds>    Per-check timeout, default 60 seconds.
+  --fail-fast                     Stop launching queued checks after a failure.
+  --verbose                       Print successful check output when supported.
+
 When no --mode is supplied, ci.sh defaults to --mode broad-smoke for legacy compatibility.
+When --jobs is omitted, ci.sh uses available CPU count minus one with a floor of one.
 EOF
+}
+
+fail_invalid_positive_integer() {
+  local flag="$1"
+  local value="$2"
+  if [[ -z "$value" ]]; then
+    echo "Invalid $flag: expected a positive integer, got empty value." >&2
+  else
+    echo "Invalid $flag: expected a positive integer, got '$value'." >&2
+  fi
+  exit 4
+}
+
+validate_positive_integer() {
+  local flag="$1"
+  local value="$2"
+  if [[ ! "$value" =~ ^[1-9][0-9]*$ ]]; then
+    fail_invalid_positive_integer "$flag" "$value"
+  fi
+}
+
+require_option_value() {
+  local flag="$1"
+  local count="$2"
+  if [[ "$count" -lt 2 ]]; then
+    fail_invalid_positive_integer "$flag" ""
+  fi
+}
+
+available_cpu_count() {
+  local cpu_count=""
+  if command -v getconf >/dev/null 2>&1; then
+    cpu_count="$(getconf _NPROCESSORS_ONLN 2>/dev/null || true)"
+  fi
+  if [[ ! "$cpu_count" =~ ^[1-9][0-9]*$ ]] && command -v nproc >/dev/null 2>&1; then
+    cpu_count="$(nproc 2>/dev/null || true)"
+  fi
+  if [[ ! "$cpu_count" =~ ^[1-9][0-9]*$ ]]; then
+    cpu_count=1
+  fi
+  echo "$cpu_count"
+}
+
+default_jobs() {
+  local cpu_count
+  cpu_count="$(available_cpu_count)"
+  if [[ "$cpu_count" -gt 1 ]]; then
+    echo $((cpu_count - 1))
+  else
+    echo 1
+  fi
 }
 
 run_check() {
@@ -199,6 +263,26 @@ parse_args() {
         ;;
       --broad-smoke)
         broad_smoke=1
+        shift
+        ;;
+      --jobs)
+        require_option_value "$1" "$#"
+        jobs="${2:-}"
+        validate_positive_integer "$1" "$jobs"
+        shift 2
+        ;;
+      --timeout)
+        require_option_value "$1" "$#"
+        timeout_seconds="${2:-}"
+        validate_positive_integer "$1" "$timeout_seconds"
+        shift 2
+        ;;
+      --fail-fast)
+        fail_fast=1
+        shift
+        ;;
+      --verbose)
+        verbose=1
         shift
         ;;
       -h|--help)
@@ -386,6 +470,10 @@ PY
 }
 
 parse_args "$@"
+
+if [[ -z "$jobs" ]]; then
+  jobs="$(default_jobs)"
+fi
 
 if [[ -z "$mode" ]]; then
   echo "No --mode supplied; defaulting to --mode broad-smoke for legacy compatibility."
