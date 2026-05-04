@@ -11,6 +11,8 @@
 - Plan: [Workflow Refactor Execution Plan](../docs/plans/2026-05-03-workflow-refactor.md), active.
 - Related follow-on spec: [Learn Artifact Model](learn-artifact-model.md), approved.
 - Related follow-on test spec: [Learn Artifact Model test spec](learn-artifact-model.test.md), active.
+- Related follow-on spec: [Formal Review Recording](formal-review-recording.md), approved.
+- Related follow-on test spec: [Formal Review Recording test spec](formal-review-recording.test.md), active.
 - Architecture: not required. The approved refactor changes workflow governance, documentation, skills, validators, and generated output without runtime architecture or deployment boundaries.
 - Spec-review: approved with no material findings after the standing-artifact gates, project-map minimal rule, `Runs for every change` semantics, nonblocking `learn` closeout, affected-surface alignment, and learn artifact model linkage were added.
 
@@ -23,6 +25,7 @@
 - Treat `specs/rigorloop-workflow.test.md` as the active proof-planning surface for this refactor until the implementation is closed out.
 - Keep deferred project-map lifecycle mechanics out of this test spec except for explicit non-goal checks.
 - Treat final learn artifact modeling as a cross-spec alignment point here; detailed session, topic, evidence, classification, and routing proof lives in `specs/learn-artifact-model.test.md`.
+- Treat formal review recording as a cross-spec alignment point here; detailed review-artifact fixture coverage lives in `specs/formal-review-recording.test.md`, while this test spec proves the workflow contract does not contradict stage-neutral recording, clean-review settlement, or conditional review-resolution behavior.
 
 ## Requirement coverage map
 
@@ -38,7 +41,8 @@
 | `R8ja`-`R8kg` | `T18`, `T25` | manual, integration | Lifecycle states, stale authoritative artifact handling, PR reference behavior |
 | `R8l`-`R8s` | `T13`, `T17`, `T25` | integration, smoke, manual | Selector-selected proof, CI wrapper semantics, broad-smoke triggers, manual proof records |
 | `R9`-`R9b`, `R18`, `R19` | `T13`, `T14`, `T26` | smoke, manual, integration | Routine CI, thin hosted wrapper, and `ci-maintenance` boundary |
-| `R10`-`R12f` | `T3`, `T16`, `T27` | manual, integration | Durable reasoning, PR summary, review-resolution closeout, and verify-report conditionality |
+| `R10`-`R12f` | `T3`, `T16`, `T27` | manual, integration | Durable reasoning, PR summary, review-resolution closeout, formal review recording triggers, and verify-report conditionality |
+| `R12an`-`R12av` | `T27` | manual, integration | Stage-neutral detailed-record triggers, material/no-material initial review-record roots, and artifact-local status boundary |
 | `R13`, `R14`, `R14a`, `R14b` | `T15` | integration | Golden-path skill-validator example and rich-example proportionality |
 | `R15`, `R15a` | `T8`, `T9`, `T10` | integration | Canonical skill validation and intentionally simple rule set |
 | `R16` | `T9`, `T10` | integration | Required skill-validator fixture failures |
@@ -57,7 +61,7 @@
 | `E5` | `T2` | Non-milestone work does not require milestone commit subjects |
 | `E6` | `T20`, `T22` | Category routing and stage obligations are visible |
 | `E7` | `T21` | Project-map absence, staleness, contradiction, or missing area requires refresh or no-map rationale before reliance |
-| `E8` | `T27` | Required review-resolution closeout blocks downstream stages |
+| `E8` | `T27` | Required review-resolution closeout blocks downstream stages and formal review records stay discoverable when triggered |
 | `E9` | `T26` | `ci-maintenance` is infrastructure maintenance, not validation execution |
 | `E10` | `T23` | `learn` is trigger-based and not a default final per-change stage |
 
@@ -75,6 +79,9 @@
 - Accepted or approved lifecycle artifacts can remain current guidance when readiness text is truthful: `T18`, `T25`
 - Final PR text cannot add new authoritative references without renewed verification: `T3`, `T25`, `T28`
 - Ordinary non-trivial changes may use `change.yaml` plus `explain-change.md` while review-resolution and verify-report remain conditional: `T16`, `T27`, `T28`
+- Formal reviews with no material findings and no detailed-record trigger may settle in the reviewed artifact without empty review artifacts: `T27`
+- Formal reviews with no material findings but a stage-owned non-approval outcome still create an indexed detailed review record without requiring empty `review-resolution.md`: `T27`
+- Material upstream formal review findings open a review-record root before fixes proceed: `T27`
 - The `docs/changes/0001-skill-validator/` example remains richer than the universal minimum: `T15`
 - Approved legacy top-level explain artifacts remain valid until retired: `T3`, `T16`
 - `spec-review` and `plan-review` preserve immediate handoff versus downstream readiness: `T24`
@@ -618,9 +625,12 @@
 
 ### T27. Review-resolution closeout blocks downstream stages when required
 
-- Covers: `R12a`-`R12f`, `E8`
+- Covers: `R12a`-`R12f`, `R12an`-`R12av`, `E8`
 - Level: manual, integration
 - Fixture/setup:
+  - `specs/formal-review-recording.md`
+  - `specs/formal-review-recording.test.md`
+  - `specs/review-finding-resolution-contract.md`
   - `docs/workflows.md`
   - `skills/code-review/SKILL.md`
   - `skills/verify/SKILL.md`
@@ -631,14 +641,19 @@
   - review artifacts under `docs/changes/<change-id>/` when material findings exist
 - Steps:
   - Confirm material findings require evidence, required outcome, and safe resolution or `needs-decision` rationale.
+  - Confirm detailed formal lifecycle review records are stage-neutral across `proposal-review`, `spec-review`, `architecture-review`, `plan-review`, and `code-review`.
+  - Confirm detailed review records are required for material findings, stage-owned non-approval outcomes that block downstream progress or require revision, reconstructed evidence, closeout-evidence citation, and explicit reviewer or maintainer request.
+  - Confirm clean required formal reviews can settle in the reviewed artifact when no detailed-record trigger applies.
+  - Confirm no-material detailed records require `review-log.md` but do not require an empty `review-resolution.md` solely because `reviews/` exists.
+  - Confirm material initial review-record roots include `review-resolution.md`, while no-material initial roots do not.
   - Confirm `review-resolution.md` dispositions are limited to approved values.
   - Confirm `needs-decision`, `Closeout status: open`, missing disposition evidence, or open `review-log.md` findings block `verify`, final `explain-change`, and `pr`.
   - If this refactor creates material findings, run `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-03-workflow-refactor`.
   - Run `python scripts/test-review-artifact-validator.py` when validator behavior is changed or relied on for a new review artifact assertion.
 - Expected result:
-  - Required review-resolution closeout cannot be skipped or silently replaced by implementation fixes alone.
+- Required review-resolution closeout cannot be skipped or silently replaced by implementation fixes alone, and no-material review events remain discoverable without empty resolution files.
 - Failure proves:
-  - Material review findings can be lost between code-review and final PR readiness.
+  - Material review findings or upstream non-approval review events can be lost between formal review and final PR readiness.
 - Automation location:
   - M4 when review-resolution is triggered; validator tests only when review-artifact validation changes or is explicitly selected.
 
@@ -757,6 +772,7 @@
 - [ ] `learn` is periodic or explicitly invoked, uses final `docs/learn/sessions/**` session records after Frame, and permits no-record closeout only before a session runs.
 - [ ] `ci-maintenance` means CI infrastructure maintenance and not validation execution.
 - [ ] `review-resolution` is closeout for material review findings and blocks downstream while open.
+- [ ] Formal review recording is stage-neutral, proportionally triggered, and does not require empty `review-resolution.md` for no-material detailed records.
 - [ ] `VISION.md` and `CONSTITUTION.md` are standing artifacts with distinct absence gates.
 - [ ] `docs/project-map.md` is a living reference and cannot be relied on when absent, stale, contradicted, or missing the relied-on area without refresh or no-map rationale.
 - [ ] Every affected operating or governance surface is updated, marked unaffected with rationale, or deferred with owner and follow-up.

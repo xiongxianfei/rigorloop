@@ -34,6 +34,19 @@ SCAN_SENSITIVE_SKILLS = [
     "vision",
     "workflow",
 ]
+FORMAL_REVIEW_SKILLS = [
+    "proposal-review",
+    "spec-review",
+    "architecture-review",
+    "plan-review",
+    "code-review",
+]
+DOWNSTREAM_REVIEW_CLOSEOUT_SKILLS = [
+    "workflow",
+    "verify",
+    "explain-change",
+    "pr",
+]
 
 
 def run_validator(target: Path) -> subprocess.CompletedProcess[str]:
@@ -598,6 +611,45 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             for term in forbidden_terms:
                 with self.subTest(file=label, term=term):
                     self.assertNotIn(term, body)
+
+    def test_formal_review_skills_define_detailed_record_triggers(self) -> None:
+        required_terms = [
+            "detailed review record triggers",
+            "material findings",
+            "stage-owned non-approval outcomes that block downstream progress or require revision",
+            "reconstructed review evidence",
+            "closeout evidence citation",
+            "explicit reviewer or maintainer request",
+            "clean reviews can settle artifact-locally",
+            "no-material detailed records need `review-log.md` but not an empty `review-resolution.md`",
+            "artifact-local settlement must not replace detailed review records when a trigger applies",
+            "stable `Finding ID`",
+            "disposition in `review-resolution.md`",
+            "`pr-review`",
+            "unsupported review stage",
+        ]
+        for skill_name in FORMAL_REVIEW_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            for term in required_terms:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, body)
+
+    def test_downstream_skills_preserve_review_closeout_boundaries(self) -> None:
+        required_terms = [
+            "review-log.md",
+            "Closeout status: open",
+            "Closeout status: closed",
+            "needs-decision",
+            "stage-owned non-approval outcome",
+            "same-stage later review round or explicit reviewer or owner closeout",
+            "`review-resolution.md` alone is not a silent substitute",
+            "no-material detailed records need `review-log.md` but not an empty `review-resolution.md`",
+        ]
+        for skill_name in DOWNSTREAM_REVIEW_CLOSEOUT_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            for term in required_terms:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, body)
 
 
 if __name__ == "__main__":
