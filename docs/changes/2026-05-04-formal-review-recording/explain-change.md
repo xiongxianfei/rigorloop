@@ -112,8 +112,7 @@ After opening PR #28, the PR handoff lifecycle update also passed artifact lifec
 
 ## Risks And Follow-Ups
 
-- Hosted CI has not been observed in this environment.
-- Hosted PR CI is pending after PR #28 opens.
+- Hosted PR CI is checked on PR #28; repository-owned local validation evidence is recorded above.
 - Merge-dependent plan closeout remains after PR #28 merges.
 
 ## Readiness
