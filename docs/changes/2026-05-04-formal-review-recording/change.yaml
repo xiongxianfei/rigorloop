@@ -154,6 +154,20 @@ validation:
   - command: bash scripts/ci.sh --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path docs/proposals/2026-05-04-formal-review-recording.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path skills/architecture-review/SKILL.md --path skills/plan-review/SKILL.md --path skills/code-review/SKILL.md --path skills/workflow/SKILL.md --path skills/verify/SKILL.md --path skills/explain-change/SKILL.md --path skills/pr/SKILL.md --path scripts/test-review-artifact-validator.py --path scripts/review_artifact_validation.py --path scripts/test-skill-validator.py --path docs/plan.md --path docs/plans/2026-05-04-formal-review-recording.md --path docs/changes/2026-05-04-formal-review-recording/change.yaml --path docs/changes/2026-05-04-formal-review-recording/explain-change.md
     result: pass_after_verify
     selected_check_ids: skills.validate, skills.regression, skills.drift, adapters.drift, review_artifacts.regression, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, selector.regression
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-04-formal-review-recording
+    result: pass_after_pr_handoff
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-04-formal-review-recording/change.yaml
+    result: pass_after_pr_handoff
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-04-formal-review-recording.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/plan.md --path docs/plans/2026-05-04-formal-review-recording.md --path docs/changes/2026-05-04-formal-review-recording/change.yaml --path docs/changes/2026-05-04-formal-review-recording/explain-change.md
+    result: pass_after_pr_handoff
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-04-formal-review-recording.md --path docs/changes/2026-05-04-formal-review-recording/change.yaml --path docs/changes/2026-05-04-formal-review-recording/explain-change.md --path docs/proposals/2026-05-04-formal-review-recording.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md
+    result: pass_after_pr_handoff
+    selected_check_ids: artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate
+  - command: git diff --check --
+    result: pass_after_pr_handoff
+  - command: rg -n '[[:blank:]]$|\\t' docs/plan.md docs/plans/2026-05-04-formal-review-recording.md docs/changes/2026-05-04-formal-review-recording
+    result: pass_after_pr_handoff
+    reason: No trailing whitespace or tab matches.
 changed_files:
   - AGENTS.md
   - CONSTITUTION.md

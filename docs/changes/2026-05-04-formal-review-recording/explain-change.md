@@ -6,7 +6,7 @@ This change implements the approved formal review recording contract through the
 
 Formal lifecycle review records are now stage-neutral across `proposal-review`, `spec-review`, `architecture-review`, `plan-review`, and `code-review`. Detailed review records are required only when the approved trigger policy applies, clean reviews can remain artifact-local, no-material detailed records do not require empty `review-resolution.md` files, material findings remain traceable through stable Finding IDs, and `pr-review` remains unsupported.
 
-M1-M4 implementation milestones, M4 code-review, verify, and final explain-change are complete. PR handoff still owns PR readiness.
+M1-M4 implementation milestones, M4 code-review, verify, final explain-change, and PR handoff are complete. PR #28 is open.
 
 ## Problem
 
@@ -92,6 +92,8 @@ The verify gate passed after M4 code-review with the final tracked artifact stat
 - `python scripts/select-validation.py --mode explicit --path <final changed surface>` selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.drift`, `review_artifacts.regression`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
 - `bash scripts/ci.sh --mode explicit --path <final changed surface>` passed the selected checks.
 
+After opening PR #28, the PR handoff lifecycle update also passed artifact lifecycle validation, change metadata validation, review artifact closeout validation, explicit CI for the lifecycle surfaces, `git diff --check --`, and the whitespace scan.
+
 ## Alternatives Rejected
 
 - Requiring detailed records for every clean review: rejected because the approved contract keeps clean reviews artifact-local when no detailed-record trigger applies.
@@ -106,13 +108,14 @@ The verify gate passed after M4 code-review with the final tracked artifact stat
 - No new review directory taxonomy was added.
 - Historical change packs were not migrated.
 - Generated `.codex/skills/` and `dist/adapters/` output was refreshed only through repository generators.
-- The plan remains Active after verify because PR handoff has not completed.
+- The plan remains Active after PR handoff because merge closeout has not completed.
 
 ## Risks And Follow-Ups
 
 - Hosted CI has not been observed in this environment.
-- `pr` still owns PR body readiness and PR opening.
+- Hosted PR CI is pending after PR #28 opens.
+- Merge-dependent plan closeout remains after PR #28 merges.
 
 ## Readiness
 
-Verify passed and the branch is ready for PR handoff.
+PR #28 is open and ready for reviewer attention.
