@@ -5,7 +5,7 @@
 - Owner: maintainers
 - Start date: 2026-05-04
 - Last updated: 2026-05-04
-- Related issue or PR: none yet
+- Related issue or PR: PR #27 opened at https://github.com/xiongxianfei/rigorloop/pull/27
 - Supersedes: none
 - selected_workflow_contract: refactored
 - broad_smoke_required: false
@@ -260,6 +260,7 @@ This is workflow-governance and documentation-infrastructure work. It changes co
 - [x] 2026-05-04: Final `explain-change` closeout refreshed the durable reviewer-facing rationale; PR handoff remains.
 - [x] 2026-05-04: PR handoff prepared. Lifecycle state is closed in this plan body and `docs/plan.md`.
 - [x] Final lifecycle closeout completed in both this plan and `docs/plan.md`.
+- [x] 2026-05-04: PR #27 opened at https://github.com/xiongxianfei/rigorloop/pull/27.
 
 ## Decision Log
 
@@ -274,6 +275,7 @@ This is workflow-governance and documentation-infrastructure work. It changes co
 - 2026-05-04: M4 does not add a standalone `verify-report.md` because implementation closeout evidence remains concise enough in `change.yaml`, `explain-change.md`, and this plan. The later `verify` stage still owns branch-ready validation.
 - 2026-05-04: Final `explain-change` keeps the initiative under `Active` because direct stage execution stops before PR handoff; the remaining lifecycle transition is owned by the `pr` stage or later merge closeout.
 - 2026-05-04: During `pr`, close the plan as done before opening the pull request because M1-M4, code-review, verify, explain-change, and PR handoff readiness are complete before merge.
+- 2026-05-04: After opening PR #27, record the PR link in the plan body and plan index so reviewer-facing lifecycle state points to the actual review surface.
 
 ## Surprises And Discoveries
 
@@ -436,10 +438,10 @@ This is workflow-governance and documentation-infrastructure work. It changes co
 
 ## Outcome And Retrospective
 
-- Done. M1-M4 implementation milestones, direct final `code-review`, `$verify`, final `explain-change`, and PR handoff readiness are complete.
+- Done. M1-M4 implementation milestones, direct final `code-review`, `$verify`, final `explain-change`, PR handoff readiness, and opened PR #27 are complete.
 
 ## Readiness
 
 M1-M4 implementation, direct final `code-review`, `$verify`, final `explain-change` closeout, and PR handoff readiness are complete. The next implementation milestone is none.
 
-PR opening is owned by the current `pr` stage. Merge-dependent lifecycle updates, if any, can be handled after merge.
+PR #27 is open at https://github.com/xiongxianfei/rigorloop/pull/27. Merge-dependent lifecycle updates, if any, can be handled after merge.
