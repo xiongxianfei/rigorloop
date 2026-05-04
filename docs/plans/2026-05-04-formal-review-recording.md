@@ -327,6 +327,7 @@ Implementation milestones are test-first within their scope: add or update the r
 - [x] 2026-05-04: M3 implemented with skill-validator coverage for stable formal review recording guidance, canonical review-stage and downstream closeout skill updates, regenerated `.codex/skills/`, and regenerated public adapter output.
 - [x] 2026-05-04: M4 implemented with full touched-surface validation, review artifact closeout validation, adapter distribution validation, lifecycle metadata updates, and a refreshed change-local explanation through M1-M4.
 - [x] 2026-05-04: M4 code-review returned `clean-with-notes` with no material findings. The clean review is settled artifact-locally in this plan; no detailed review record or review-resolution update is required.
+- [x] 2026-05-04: Verify passed for the final artifact set after M4 code-review, including review artifact closeout, lifecycle validation, selector-selected explicit CI, and final explanation refresh.
 
 ## Decision Log
 
@@ -336,6 +337,7 @@ Implementation milestones are test-first within their scope: add or update the r
 - 2026-05-04: M3 uses stable phrase checks only -> the skill validator asserts the durable review-recording boundaries while leaving broader review-quality prose to manual review.
 - 2026-05-04: Keep the plan active after M4 implementation -> M1-M4 implementation milestones are complete, but downstream code-review, verify, final explain-change, and PR handoff still own branch readiness and PR readiness.
 - 2026-05-04: Record the clean M4 code-review artifact-locally -> the review produced no material findings and no detailed-record trigger, so the plan records the result without creating an empty review file.
+- 2026-05-04: No CI-maintenance stage triggered -> repository-owned explicit CI, review artifact closeout validation, skill drift checks, adapter drift checks, and lifecycle validation passed without exposing missing or stale hosted workflow automation for this change.
 
 ## Surprises And Discoveries
 
@@ -441,17 +443,23 @@ Implementation milestones are test-first within their scope: add or update the r
 - 2026-05-04: M4 whitespace and diff checks passed:
   - `rg -n '[[:blank:]]$|\\t' docs/plan.md docs/plans/2026-05-04-formal-review-recording.md docs/changes/2026-05-04-formal-review-recording`
   - `git diff --check --`
+- 2026-05-04: Verify gate passed after M4 code-review:
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-04-formal-review-recording`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-04-formal-review-recording/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-04-formal-review-recording.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/plan.md --path docs/plans/2026-05-04-formal-review-recording.md --path docs/changes/2026-05-04-formal-review-recording/change.yaml --path docs/changes/2026-05-04-formal-review-recording/explain-change.md`
+  - `python scripts/select-validation.py --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path docs/proposals/2026-05-04-formal-review-recording.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path skills/architecture-review/SKILL.md --path skills/plan-review/SKILL.md --path skills/code-review/SKILL.md --path skills/workflow/SKILL.md --path skills/verify/SKILL.md --path skills/explain-change/SKILL.md --path skills/pr/SKILL.md --path scripts/test-review-artifact-validator.py --path scripts/review_artifact_validation.py --path scripts/test-skill-validator.py --path docs/plan.md --path docs/plans/2026-05-04-formal-review-recording.md --path docs/changes/2026-05-04-formal-review-recording/change.yaml --path docs/changes/2026-05-04-formal-review-recording/explain-change.md`
+  - `bash scripts/ci.sh --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path docs/proposals/2026-05-04-formal-review-recording.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path skills/architecture-review/SKILL.md --path skills/plan-review/SKILL.md --path skills/code-review/SKILL.md --path skills/workflow/SKILL.md --path skills/verify/SKILL.md --path skills/explain-change/SKILL.md --path skills/pr/SKILL.md --path scripts/test-review-artifact-validator.py --path scripts/review_artifact_validation.py --path scripts/test-skill-validator.py --path docs/plan.md --path docs/plans/2026-05-04-formal-review-recording.md --path docs/changes/2026-05-04-formal-review-recording/change.yaml --path docs/changes/2026-05-04-formal-review-recording/explain-change.md`
 
 ## Outcome And Retrospective
 
-- Active. M1-M4 implementation milestones and M4 code-review are complete. Downstream verify, final explain-change, and PR handoff have not run for the complete implementation yet.
+- Active. M1-M4 implementation milestones, M4 code-review, verify, and final explain-change are complete. PR handoff has not run yet.
 
 ## Readiness
 
-- Ready for verify.
-- M1-M4 are complete implementation slices and M4 code-review is clean, but the full feature is not branch-ready until downstream verify completes.
-- Later workflow stages should continue with verify, final explain-change, and PR handoff.
+- Branch-ready after verify.
+- Ready for PR handoff.
+- Later workflow stages should continue with PR preparation and opening if the PR gate is satisfied.
 
 ## Risks And Follow-Ups
 
-- Follow-up: run verify, then final explain-change and PR handoff if the verify gate is satisfied.
+- Follow-up: prepare and open the PR if the PR gate is satisfied.
