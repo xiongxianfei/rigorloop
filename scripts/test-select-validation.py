@@ -172,6 +172,27 @@ class ValidationSelectionTests(unittest.TestCase):
                 self.assertEqual(CHECK_CATALOG[check_id].command_template, command)
                 self.assertTrue(CHECK_CATALOG[check_id].category)
 
+    def test_catalog_records_initial_parallel_safe_allowlist(self) -> None:
+        from validation_selection import is_parallel_safe_check
+
+        expected_parallel_safe = {
+            "adapters.regression",
+            "artifact_lifecycle.regression",
+            "change_metadata.regression",
+            "review_artifacts.regression",
+            "selector.regression",
+            "skills.regression",
+        }
+
+        self.assertEqual(
+            {check_id for check_id in CHECK_CATALOG if is_parallel_safe_check(check_id)},
+            expected_parallel_safe,
+        )
+        for check_id, entry in CHECK_CATALOG.items():
+            with self.subTest(check_id=check_id):
+                self.assertIsInstance(entry.parallel_safe, bool)
+                self.assertEqual(entry.parallel_safe, check_id in expected_parallel_safe)
+
     def test_cli_outputs_json_for_classified_skill_path(self) -> None:
         result = run_selector("--mode", "explicit", "--path", "skills/code-review/SKILL.md")
         self.assertEqual(result.returncode, 0, msg=result.stderr)
@@ -1141,6 +1162,150 @@ class ValidationSelectionTests(unittest.TestCase):
                 self.assertEqual(result.returncode, 0, msg=output)
                 traced = trace.read_text(encoding="utf-8").splitlines()
                 self.assertEqual(traced[-len(expected) :], expected)
+
+    def test_ci_wrapper_accepts_execution_flags_without_forwarding_to_selector(self) -> None:
+        fixture = self.write_selector_fixture(self.minimal_selector_payload())
+        trace = Path(tempfile.mkdtemp(prefix="validation-selection-flags-")) / "argv.txt"
+        self.addCleanupTree(trace.parent)
+
+        cases = [
+            (
+                [
+                    "--mode",
+                    "explicit",
+                    "--path",
+                    "skills/code-review/SKILL.md",
+                    "--jobs",
+                    "2",
+                    "--timeout",
+                    "60",
+                    "--fail-fast",
+                    "--verbose",
+                ],
+                ["--mode", "explicit", "--path", "skills/code-review/SKILL.md"],
+            ),
+            (
+                [
+                    "--mode",
+                    "pr",
+                    "--base",
+                    "base-sha",
+                    "--head",
+                    "head-sha",
+                    "--jobs",
+                    "1",
+                    "--timeout",
+                    "120",
+                ],
+                ["--mode", "pr", "--base", "base-sha", "--head", "head-sha"],
+            ),
+            (
+                [
+                    "--mode",
+                    "main",
+                    "--base",
+                    "before-sha",
+                    "--head",
+                    "after-sha",
+                    "--verbose",
+                ],
+                ["--mode", "main", "--base", "before-sha", "--head", "after-sha"],
+            ),
+            (
+                [
+                    "--mode",
+                    "release",
+                    "--release-version",
+                    "v0.1.1",
+                    "--fail-fast",
+                    "--jobs",
+                    "3",
+                ],
+                ["--mode", "release", "--release-version", "v0.1.1"],
+            ),
+        ]
+
+        for args, expected in cases:
+            with self.subTest(args=args):
+                trace.write_text("", encoding="utf-8")
+                result = run_ci(
+                    *args,
+                    env={
+                        "RIGORLOOP_SELECTOR_FIXTURE": str(fixture),
+                        "RIGORLOOP_CI_SELECTOR_ARGV_FILE": str(trace),
+                    },
+                )
+                output = result.stdout + result.stderr
+
+                self.assertEqual(result.returncode, 0, msg=output)
+                traced = trace.read_text(encoding="utf-8").splitlines()
+                self.assertEqual(traced[-len(expected) :], expected)
+
+        broad_smoke = run_ci(
+            "--mode",
+            "broad-smoke",
+            "--jobs",
+            "1",
+            "--timeout",
+            "60",
+            "--fail-fast",
+            "--verbose",
+            env={"RIGORLOOP_CI_BROAD_SMOKE_STUB": "1"},
+        )
+        self.assertEqual(broad_smoke.returncode, 0, msg=broad_smoke.stdout + broad_smoke.stderr)
+        self.assertIn("Broad smoke stub", broad_smoke.stdout + broad_smoke.stderr)
+
+    def test_ci_wrapper_rejects_invalid_execution_flags_before_selector(self) -> None:
+        fixture = self.write_selector_fixture(
+            self.minimal_selector_payload(
+                selected_checks=[
+                    {
+                        "id": "broad_smoke.repo",
+                        "command": "bash scripts/ci.sh --mode broad-smoke",
+                        "reason": "must not run when wrapper arguments are invalid",
+                    }
+                ]
+            )
+        )
+        trace = Path(tempfile.mkdtemp(prefix="validation-selection-invalid-flags-")) / "argv.txt"
+        self.addCleanupTree(trace.parent)
+
+        cases = [
+            ("--jobs", "0"),
+            ("--jobs", "-1"),
+            ("--jobs", "abc"),
+            ("--jobs", ""),
+            ("--jobs", "unlimited"),
+            ("--timeout", "0"),
+            ("--timeout", "-1"),
+            ("--timeout", "abc"),
+            ("--timeout", ""),
+        ]
+
+        for flag, value in cases:
+            with self.subTest(flag=flag, value=value):
+                if trace.exists():
+                    trace.unlink()
+                result = run_ci(
+                    "--mode",
+                    "explicit",
+                    "--path",
+                    "skills/code-review/SKILL.md",
+                    flag,
+                    value,
+                    env={
+                        "RIGORLOOP_SELECTOR_FIXTURE": str(fixture),
+                        "RIGORLOOP_CI_SELECTOR_ARGV_FILE": str(trace),
+                        "RIGORLOOP_CI_BROAD_SMOKE_STUB": "1",
+                    },
+                )
+                output = result.stdout + result.stderr
+
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(f"Invalid {flag}", output)
+                self.assertFalse(trace.exists(), msg=output)
+                self.assertNotIn("Selector mode:", output)
+                self.assertNotIn("Run selected check:", output)
 
     def test_ci_wrapper_delegates_broad_smoke_non_recursively(self) -> None:
         malformed_fixture = self.write_selector_fixture("not json")
