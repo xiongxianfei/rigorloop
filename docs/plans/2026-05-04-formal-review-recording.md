@@ -329,6 +329,7 @@ Implementation milestones are test-first within their scope: add or update the r
 - [x] 2026-05-04: M4 code-review returned `clean-with-notes` with no material findings. The clean review is settled artifact-locally in this plan; no detailed review record or review-resolution update is required.
 - [x] 2026-05-04: Verify passed for the final artifact set after M4 code-review, including review artifact closeout, lifecycle validation, selector-selected explicit CI, and final explanation refresh.
 - [x] 2026-05-04: PR handoff completed by opening PR #28.
+- [x] 2026-05-04: Code-review finding `CR2-F1` resolved by correcting the explanation summary from non-existent `CR-M2-F1` to the actual Finding ID `CR1-F1`, then adding reconstructed review evidence and review-resolution closeout for the finding.
 
 ## Decision Log
 
@@ -457,6 +458,14 @@ Implementation milestones are test-first within their scope: add or update the r
   - `bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-04-formal-review-recording.md --path docs/changes/2026-05-04-formal-review-recording/change.yaml --path docs/changes/2026-05-04-formal-review-recording/explain-change.md --path docs/proposals/2026-05-04-formal-review-recording.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md`
   - `git diff --check --`
   - `rg -n '[[:blank:]]$|\\t' docs/plan.md docs/plans/2026-05-04-formal-review-recording.md docs/changes/2026-05-04-formal-review-recording`
+- 2026-05-04: `CR2-F1` finding ID correction validation passed:
+  - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-04-formal-review-recording`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-04-formal-review-recording`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-04-formal-review-recording/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-04-formal-review-recording.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/plan.md --path docs/plans/2026-05-04-formal-review-recording.md --path docs/changes/2026-05-04-formal-review-recording/change.yaml --path docs/changes/2026-05-04-formal-review-recording/explain-change.md`
+  - `bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-04-formal-review-recording/change.yaml --path docs/changes/2026-05-04-formal-review-recording/explain-change.md --path docs/changes/2026-05-04-formal-review-recording/review-log.md --path docs/changes/2026-05-04-formal-review-recording/review-resolution.md --path docs/changes/2026-05-04-formal-review-recording/reviews/code-review-r2.md --path docs/plans/2026-05-04-formal-review-recording.md --path docs/plan.md --path docs/proposals/2026-05-04-formal-review-recording.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md`
+  - `git diff --check --`
+  - `rg -n '[[:blank:]]$|\\t' docs/changes/2026-05-04-formal-review-recording docs/plans/2026-05-04-formal-review-recording.md docs/plan.md`
 
 ## Outcome And Retrospective
 
