@@ -2,7 +2,7 @@
 
 ## Status
 
-M1 implemented; awaiting `code-review`.
+M1 implemented; code-review clean after review-resolution.
 
 ## Summary
 
@@ -50,4 +50,8 @@ Additional M1 validation is recorded in the active plan and `change.yaml`.
 
 ## Review State
 
-No code review has run yet. This milestone is ready for `code-review`.
+`code-review` round 1 requested one targeted fix, `CR-M1-F1`, because `docs/workflows.md` and `specs/rigorloop-workflow.test.md` omitted the incident response and contributor observation trigger classes required by the workflow contract and learn artifact spec.
+
+The finding was accepted in `review-resolution.md`. The fix adds those trigger classes to the operational workflow summary and `T23`; review-resolution validation passed with review artifact validation, lifecycle validation, selector-selected explicit CI, change metadata validation, stale-term scan, and whitespace validation.
+
+`code-review` round 2 found no blocking or required-change findings for the M1 slice. M2-M4 remain unimplemented by design.

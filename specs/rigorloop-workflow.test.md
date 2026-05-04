@@ -531,7 +531,7 @@
   - active plan and change-local pack
 - Steps:
   - Confirm `learn` is periodic or explicitly invoked, not a default final per-change stage.
-  - Confirm triggers include repeated findings, blocker or major workflow-process findings, failed release or adapter smoke, accepted postmortem actions, cadence, and maintainer request.
+  - Confirm triggers include cadence, incident response, contributor observation, repeated findings, blocker or major workflow-process findings, failed release or adapter smoke, accepted postmortem actions, and maintainer request.
   - Confirm a `learn` invocation that reaches Frame creates or updates `docs/learn/sessions/YYYY-MM-DD-<slug>.md`, including empty or no-durable-lesson sessions.
   - Confirm durable topic guidance is routed to `docs/learn/topics/<topic>.md` only when confirmed durable lessons justify it.
   - Confirm action-changing lessons route to the authoritative affected artifact rather than treating topic files as policy.
