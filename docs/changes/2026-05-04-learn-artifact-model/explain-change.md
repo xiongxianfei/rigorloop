@@ -121,10 +121,16 @@ This is not full initiative `branch-ready`: M3 review and M4 final lifecycle clo
 
 `code-review` round 1 found no blocking or required-change findings for the M3 slice. The review record is `docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r1.md`.
 
+A follow-up M3 review found `CR-M3-R2-F1`: the learn skill omitted the `R29` rule that maintainer-driven rule adoption without accumulated evidence is not durable learn capture. The finding was accepted in `review-resolution.md`.
+
+The resolution adds explicit R29 guidance to `skills/learn/SKILL.md`, adds stable skill-validator assertions for accumulated evidence, `direction`, proposal work, later ADR production, and accepted authoritative artifacts, and refreshes generated Codex skill and public adapter output. `code-review` round 3 found no blocking or required-change findings after that fix.
+
 ## M3 Verification State
 
 M3 verification passed for the committed M3 slice. The verifier checked review closeout, `docs/plan.md` versus the active plan body, whitespace across the two M3 commits, selector-selected validation for the full M3 touched surface, generated skill and adapter drift, adapter validation, review artifact validation, lifecycle validation, and change metadata validation.
 
 The selector-selected CI run passed with `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+
+After resolving `CR-M3-R2-F1`, targeted validation passed again for skill validation, skill-validator regression, generated skill drift, adapter regression, adapter drift, adapter validation, review artifact validation, and whitespace checks.
 
 This is not full initiative `branch-ready`: M4 final validation and lifecycle closeout remain open.

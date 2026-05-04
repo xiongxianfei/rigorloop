@@ -253,6 +253,8 @@ This is workflow-governance and documentation-infrastructure work. It changes co
 - [x] M3 complete.
 - [x] 2026-05-04: M3 `code-review` round 1 completed with `clean-with-notes`.
 - [x] 2026-05-04: M3 verified as a milestone slice; full initiative branch-ready is deferred until M4 completes final validation and lifecycle closeout.
+- [x] 2026-05-04: M3 `code-review` round 2 finding `CR-M3-R2-F1` accepted and resolved; the learn skill now covers maintainer-driven rule adoption without accumulated evidence.
+- [x] 2026-05-04: M3 `code-review` round 3 completed with `clean-with-notes`.
 - [ ] M4 complete.
 
 ## Decision Log
@@ -272,6 +274,7 @@ This is workflow-governance and documentation-infrastructure work. It changes co
 - M1 code-review found that two affected surfaces omitted incident response and contributor observation from the learn trigger list even though the workflow contract and learn artifact spec included them. The targeted fix restored those trigger classes in `docs/workflows.md` and `specs/rigorloop-workflow.test.md`.
 - M2 does not create `docs/learn/README.md` or any session/topic file; selector recognition now makes those paths safe for M3 to create and selector-validate.
 - M3 adapter generation initially treated `learn` as non-portable when the skill mentioned `.codex/skills/` without public adapter alternatives. Naming `dist/adapters/`, `.agents/skills`, `.claude/skills`, and `.opencode/skills` in the generated-output boundary restored generated adapter coverage.
+- M3 follow-up code-review found that the learn skill omitted the `R29` maintainer-driven rule-adoption edge case. The targeted fix added that guidance to the canonical skill, protected it in skill-validator coverage, and regenerated skill and adapter outputs.
 
 ## Validation Notes
 
@@ -372,10 +375,23 @@ This is workflow-governance and documentation-infrastructure work. It changes co
   - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-04-learn-artifact-model`
   - `git diff --check HEAD~2..HEAD -- skills/learn/SKILL.md docs/learn/README.md scripts/test-skill-validator.py .codex/skills/learn/SKILL.md dist/adapters/claude/.claude/skills/learn/SKILL.md dist/adapters/codex/.agents/skills/learn/SKILL.md dist/adapters/opencode/.opencode/skills/learn/SKILL.md docs/plans/2026-05-04-learn-artifact-model.md docs/changes/2026-05-04-learn-artifact-model`
   - `bash scripts/ci.sh --mode explicit --path skills/learn/SKILL.md --path docs/learn/README.md --path scripts/test-skill-validator.py --path .codex/skills/learn/SKILL.md --path dist/adapters/claude/.claude/skills/learn/SKILL.md --path dist/adapters/codex/.agents/skills/learn/SKILL.md --path dist/adapters/opencode/.opencode/skills/learn/SKILL.md --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md --path docs/changes/2026-05-04-learn-artifact-model/review-log.md --path docs/changes/2026-05-04-learn-artifact-model/review-resolution.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r1.md`
+- 2026-05-04: M3 review-resolution validation passed after resolving `CR-M3-R2-F1`.
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/validate-skills.py`
+  - `python scripts/build-skills.py`
+  - `python scripts/build-adapters.py --version 0.1.1`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/build-adapters.py --version 0.1.1 --check`
+  - `python scripts/validate-adapters.py --version 0.1.1`
+  - `python scripts/select-validation.py --mode explicit --path skills/learn/SKILL.md --path scripts/test-skill-validator.py --path .codex/skills/learn/SKILL.md --path dist/adapters/claude/.claude/skills/learn/SKILL.md --path dist/adapters/codex/.agents/skills/learn/SKILL.md --path dist/adapters/opencode/.opencode/skills/learn/SKILL.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r2.md`
+  - `bash scripts/ci.sh --mode explicit --path skills/learn/SKILL.md --path scripts/test-skill-validator.py --path .codex/skills/learn/SKILL.md --path dist/adapters/claude/.claude/skills/learn/SKILL.md --path dist/adapters/codex/.agents/skills/learn/SKILL.md --path dist/adapters/opencode/.opencode/skills/learn/SKILL.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r2.md --path docs/changes/2026-05-04-learn-artifact-model/review-log.md --path docs/changes/2026-05-04-learn-artifact-model/review-resolution.md`
+  - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-04-learn-artifact-model`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-04-learn-artifact-model`
+  - `git diff --check -- skills/learn/SKILL.md scripts/test-skill-validator.py .codex/skills/learn/SKILL.md dist/adapters/claude/.claude/skills/learn/SKILL.md dist/adapters/codex/.agents/skills/learn/SKILL.md dist/adapters/opencode/.opencode/skills/learn/SKILL.md docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r2.md docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r3.md docs/changes/2026-05-04-learn-artifact-model/review-log.md docs/changes/2026-05-04-learn-artifact-model/review-resolution.md`
 
 ## Outcome And Retrospective
 
-- Active. M1-M3 are verified; M4 is not started.
+- Active. M1-M3 are verified; latest M3 review is `clean-with-notes`; M4 is not started.
 
 ## Readiness
 

@@ -4,6 +4,7 @@ Closeout status: closed
 
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m2-r1
+Review closeout: code-review-m3-r2
 
 ### code-review-m1-r1
 
@@ -36,5 +37,20 @@ Validation evidence: Passed after the targeted fix: review artifact validation i
 No material findings. No resolution entry is required for this clean review round.
 
 ### code-review-m3-r1
+
+No material findings. No resolution entry is required for this clean review round.
+
+### code-review-m3-r2
+
+Finding ID: CR-M3-R2-F1
+Disposition: accepted
+Owner: implementer
+Owning stage: implement
+Chosen action: Add explicit maintainer-driven rule-adoption guidance to `skills/learn/SKILL.md`, protect that wording in `scripts/test-skill-validator.py`, and refresh generated Codex skill and public adapter output through repository generators.
+Rationale: The finding identifies a direct gap against `specs/learn-artifact-model.md` `R29` and `specs/learn-artifact-model.test.md` `T7`.
+Validation target: Rerun skill validation, skill-validator regression, generated skill drift, adapter regression, adapter drift, adapter validation, review artifact validation, change metadata validation, artifact lifecycle validation, selector-selected explicit CI, and whitespace validation.
+Validation evidence: Passed after the targeted fix: skill validation; skill-validator regression; generated skill drift; adapter drift; adapter validation; selector-selected explicit CI choosing `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, and `review_artifacts.validate`; whitespace validation.
+
+### code-review-m3-r3
 
 No material findings. No resolution entry is required for this clean review round.
