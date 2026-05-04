@@ -12,6 +12,8 @@ You are running a learn session only when learning is periodic or explicitly inv
 
 Do not fabricate lessons. The trigger decides whether a session may run; evidence decides what the session captures. A single event remains `observation` or `no-durable-lesson` unless the evidence shows a reusable pattern or systemic gap. Maintainer request, incident response, contributor observation, cadence, and explicit invocation do not lower the evidence standard for durable guidance.
 
+Maintainer-driven rule adoption without accumulated evidence is not durable learn capture. If a maintainer proposes or requests a new rule, but the learn session lacks accumulated evidence such as repeated review findings, repeated incidents, failed smoke patterns, recurring validation gaps, or prior session evidence, classify the observation as `direction`, not `durable-lesson`, and route it to proposal work. The proposal may later produce an ADR, workflow spec update, skill change, or other authoritative artifact if accepted. Do not add the rule directly to `docs/learn/topics/<topic>.md` as durable guidance unless there is accumulated evidence or an accepted authoritative artifact to cite.
+
 ## Output Surfaces
 
 When a learn invocation reaches the Frame phase, create or update a tracked session record at `docs/learn/sessions/YYYY-MM-DD-<slug>.md`. This applies even when the session is empty or produces `no-durable-lesson`.
