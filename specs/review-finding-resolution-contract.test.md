@@ -10,6 +10,8 @@
 - Plan: `docs/plans/2026-04-25-review-finding-resolution-contract.md`
 - Proposal: `docs/proposals/2026-04-24-review-finding-resolution-contract.md`
 - Architecture: `docs/architecture/2026-04-24-review-finding-resolution-contract.md`
+- Related follow-on spec: `specs/formal-review-recording.md`
+- Related follow-on test spec: `specs/formal-review-recording.test.md`
 - Spec-review findings: resolved in `docs/changes/2026-04-24-review-finding-resolution-contract/reviews/spec-review-r2.md`
 - Architecture-review findings: resolved in `docs/changes/2026-04-24-review-finding-resolution-contract/reviews/architecture-review-r2.md`
 - Plan-review findings: approved with no required edits
@@ -23,6 +25,7 @@
 - CI tests verify that `scripts/ci.sh` invokes review-artifact structure validation only for changed or explicitly selected `docs/changes/<change-id>/` roots and does not retroactively fail unrelated historical artifacts.
 - Security and privacy checks assert that review-artifact validation uses only local repository files, does not require network access or secrets, and reports paths, line numbers, IDs, mode, and short reasons rather than large copied excerpts.
 - Non-smoke validation must run with Python standard library code and repository files only. It must not require installed Codex, Claude Code, OpenCode, network access, hosted CI, or external review tools.
+- Manual contract tests cover the formal review recording trigger policy: stage-neutral detailed records, clean artifact-local settlement, material and no-material initial review-record roots, and conditional `review-resolution.md`.
 
 ## Requirement coverage map
 
@@ -31,6 +34,7 @@
 | `R1`-`R1d` | `T1`, `T11` | Complete finding guidance and incomplete-finding boundary in review-stage guidance. |
 | `R2`-`R2l` | `T2`, `T3`, `T13` | Detailed review metadata, exact-one Review ID, stage scope, stability, and per-change uniqueness. |
 | `R2m`, `R2m-exception`, `R2n`, `R2o` | `T2`, `T8`, `T11` | First-pass timing, reconstructed records, append-only review history, and resolution/update surfaces. |
+| `R2p`-`R2w` | `T17` | Stage-neutral detailed-record triggers, clean artifact-local settlement, material/no-material initial review-record roots, and conditional `review-resolution.md`. |
 | `R3`-`R3p` | `T3`, `T7`, `T13` | Required review-log, canonical `### Review entry` blocks, resolution links, closed open-finding state, exact-once ledger references, and prose exclusion. |
 | `R4`-`R4c` | `T4`, `T8` | Material Finding IDs, uniqueness, stable format, and non-material no-ID path. |
 | `R5`-`R5i` | `T4`, `T5`, `T7`, `T11` | Required review-resolution entries, initial entries before fixes, final action, validation target, and suggested-vs-final action split. |
@@ -60,6 +64,7 @@
 | `E10` | `T7` | `Closeout status: open` blocks final closeout. |
 | `E11` | `T2` | Reconstructed review records are explicit and preserve evidence/fidelity notes. |
 | `E12` | `T3` | Review-log uses canonical line blocks and exact field labels. |
+| `E13` | `T17` | No-material non-approval review records are indexed without requiring empty `review-resolution.md`. |
 
 ## Edge case coverage
 
@@ -84,6 +89,9 @@
 - Edge case 19, late reconstructed review record: `T2`
 - Edge case 20, closed handoff with stale open findings in review-log: `T7`
 - Edge case 21, malformed review-log resolution link: `T3`
+- Edge case 22, no-material `plan-review` non-approval outcome: `T17`
+- Edge case 23, material upstream review before a change-local root exists: `T17`
+- Edge case 24, clean required review settled in the reviewed artifact: `T17`
 
 ## Test cases
 
@@ -458,6 +466,33 @@
   - `python scripts/build-adapters.py --version 0.1.1 --check`
   - `python scripts/validate-adapters.py --version 0.1.1`
 
+### T17. Formal review recording trigger policy stays proportional
+
+- Covers: `R2p`-`R2w`, `R3`, `R3k`, `R3l`, `R5`, `R8f`, `R8g`, `R13`, `R13a`, `R13b`, `E13`, edge cases 22, 23, 24
+- Level: contract, manual
+- Fixture/setup:
+  - `specs/formal-review-recording.md`
+  - `specs/formal-review-recording.test.md`
+  - `specs/review-finding-resolution-contract.md`
+  - `specs/rigorloop-workflow.md`
+  - `docs/workflows.md`
+  - `CONSTITUTION.md`
+  - `AGENTS.md`
+- Steps:
+  - Confirm detailed review files are required for material findings, stage-owned non-approval outcomes that block downstream progress or require revision, reconstructed review evidence, closeout evidence citation, and explicit reviewer or maintainer request.
+  - Confirm clean required reviews with no detailed-record trigger may settle in the reviewed artifact without empty `reviews/`, `review-log.md`, or `review-resolution.md` files.
+  - Confirm a material initial review-record root includes `change.yaml`, `review-log.md`, `review-resolution.md`, and the detailed review file.
+  - Confirm a no-material initial review-record root includes `change.yaml`, `review-log.md`, and the detailed review file, but does not require an empty `review-resolution.md` solely because `reviews/` exists.
+  - Confirm the review-log `Resolution:` field remains a symbolic ledger field and does not by itself require a `review-resolution.md` file when no material findings or other resolution trigger exists.
+  - Confirm the initial review-record root is not described as the final non-trivial change-local pack.
+- Expected result:
+  - Formal lifecycle review records preserve material and blocking review events without adding boilerplate for clean or no-material cases.
+- Failure proves:
+  - Contributors can either lose upstream review history or create unnecessary empty review-resolution files.
+- Automation location:
+  - Manual review during formal review recording M1.
+  - Executable upstream-stage and no-material fixture coverage is owned by `specs/formal-review-recording.test.md` M2.
+
 ## Fixtures and data
 
 Planned fixture root:
@@ -468,7 +503,7 @@ tests/fixtures/review-artifacts/
 
 Fixture families:
 
-- valid structure fixtures: `valid-detailed-review`, `valid-review-log`, `valid-material-findings`, `valid-open-resolution`, `valid-closed-resolution`, `clean-review-with-log`, `no-review-artifacts`
+- valid structure fixtures: `valid-detailed-review`, `valid-review-log`, `valid-material-findings`, `valid-open-resolution`, `valid-closed-resolution`, `clean-review-with-log`, `no-review-artifacts`; formal review recording M2 may add representative upstream-stage and no-material fixtures or temporary roots
 - review record failures: `missing-review-fields`, `multiple-review-ids`, `duplicate-review-ids`, `reconstructed-missing-metadata`
 - review-log failures: `missing-review-log`, `log-missing-review-id`, `log-unknown-review-id`, `log-duplicate-review-id`, `log-prose-review-id-only`, `log-missing-required-field`, `log-malformed-resolution-link`
 - finding/resolution failures: `duplicate-finding-ids`, `missing-resolution-file`, `missing-resolution-entry`, `unknown-resolution-finding`, `unsupported-disposition`
@@ -513,6 +548,7 @@ Fixtures should use small Markdown files with the canonical labels from the spec
 
 - No manual QA is required for parser, validator, docs, or generated-output drift behavior.
 - Manual review during `code-review` should inspect at least one real change-local review artifact created during this initiative to confirm the guidance is usable.
+- Manual review during the formal review recording implementation should inspect the material/no-material initial root wording before validator fixture work begins.
 - Manual maintainer decisions remain required for any future `needs-decision` finding; automation only checks the recorded structure.
 
 ## What not to test

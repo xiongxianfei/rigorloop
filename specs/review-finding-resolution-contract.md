@@ -19,6 +19,7 @@ This spec intentionally expands the current workflow disposition vocabulary from
 ## Glossary
 
 - `review record`: a durable review artifact or review output that records the review stage, target, status, findings, and suggested resolution path.
+- `formal lifecycle review`: one of `proposal-review`, `spec-review`, `architecture-review`, `plan-review`, or `code-review`.
 - `detailed review file`: a Markdown file under `docs/changes/<change-id>/reviews/` that preserves one formal lifecycle review round.
 - `Review ID`: a stable identifier for one detailed review file.
 - `review-log.md`: the change-local index that lists detailed review records and their outcomes.
@@ -34,6 +35,9 @@ This spec intentionally expands the current workflow disposition vocabulary from
 - `reconstructed review record`: a late durable review record created after review-driven fixes have already begun, explicitly labeled as reconstructed and preserving original review evidence when available.
 - `authorized owner`: the maintainer, reviewer, plan owner, spec owner, architecture owner, or other role identified by the repository workflow as allowed to resolve or defer the decision.
 - `reviewer or owner closeout`: explicit approval from the relevant reviewer or authorized owner that a review outcome requiring revision no longer blocks the next workflow stage.
+- `stage-owned non-approval outcome`: a review outcome in that stage's vocabulary that blocks downstream progress or requires revision.
+- `initial review-record root`: the smallest `docs/changes/<change-id>/` root created before review-driven fixes or downstream routing when a detailed review file is required but no change-local root exists yet.
+- `artifact-local settlement`: final status, decision log, readiness, follow-on, or closeout text in the reviewed proposal, spec, architecture artifact, ADR, or plan.
 - `semantic review-quality automation`: automation that judges whether a finding's evidence is persuasive, a suggested solution is best, or a disposition is substantively correct.
 - `generated public adapter`: generated installable adapter output under `dist/adapters/`.
 
@@ -120,6 +124,15 @@ When structural validation reads the ledger
 Then each counted ledger entry is a `### Review entry` block
 And each counted block contains exactly one `Review ID: <id>` line plus stage, round, status, detailed record, resolution, material findings, and open findings lines.
 
+### Example E13: no-material non-approval review record has no empty resolution
+
+Given `plan-review` returns `rethink`
+And the review creates no material findings
+When that outcome blocks downstream routing
+Then `docs/changes/<change-id>/reviews/plan-review-r1.md` is created
+And `review-log.md` indexes `plan-review-r1`
+And no empty `review-resolution.md` is required solely for that review event.
+
 ## Requirements
 
 R1. A material review finding MUST include evidence supporting the finding.
@@ -140,7 +153,9 @@ R2b. Stage values MUST identify the formal lifecycle review stage that produced 
 
 R2c. Formal lifecycle review stages for `reviews/` are `proposal-review`, `spec-review`, `architecture-review`, `plan-review`, and `code-review`.
 
-R2d. Maintainer PR review comments MUST NOT be required in `reviews/` for this version.
+R2d. A dedicated `pr-review` stage MUST NOT be treated as a valid formal lifecycle review stage unless a later approved spec explicitly adds it and updates validation.
+
+R2da. Maintainer PR review comments MUST NOT be automatically copied into `reviews/` for this version.
 
 R2e. Round values MUST identify the review round for that stage.
 
@@ -172,6 +187,27 @@ R2n. Detailed review files MUST preserve first-pass review history and MUST NOT 
 
 R2o. Corrections, decisions, fixes, and validation evidence for findings MUST be recorded in `review-resolution.md`, a later review round, or other explicit closeout artifact rather than by mutating the first-pass review record.
 
+R2p. A detailed review file MUST be created for a formal lifecycle review when any of the following is true:
+- the review produces material findings;
+- the review returns a stage-owned non-approval outcome that blocks downstream progress or requires revision;
+- the review is reconstructed;
+- the review findings will be cited as closeout evidence;
+- a reviewer or maintainer explicitly requests a detailed record.
+
+R2q. Stage-owned non-approval outcomes MUST include `revise`, `changes-requested`, `blocked`, `rethink`, `inconclusive`, and equivalent stage-specific outcomes that prevent downstream progress.
+
+R2r. A clean formal review with no material findings MUST NOT require an empty detailed review file solely because the review was required.
+
+R2s. A required formal review with no material findings MAY be recorded through artifact-local settlement when no `R2p` trigger applies.
+
+R2t. If a workflow-managed formal review triggers a detailed review file before a change-local root exists, the change MUST create an initial review-record root before review-driven fixes or downstream routing proceed.
+
+R2u. If material findings exist, the initial review-record root MUST include `docs/changes/<change-id>/change.yaml`, `docs/changes/<change-id>/review-log.md`, `docs/changes/<change-id>/review-resolution.md`, and `docs/changes/<change-id>/reviews/<stage>-r<n>.md`.
+
+R2v. If no material findings exist, but `R2p` still requires a detailed review file, the initial review-record root MUST include `docs/changes/<change-id>/change.yaml`, `docs/changes/<change-id>/review-log.md`, and `docs/changes/<change-id>/reviews/<stage>-r<n>.md`. `review-resolution.md` MUST NOT be created solely because `reviews/` exists.
+
+R2w. The initial review-record root exists to preserve the review event and make it discoverable. It MUST NOT be treated as the final non-trivial change-local pack.
+
 R3. If `docs/changes/<change-id>/reviews/` exists, `docs/changes/<change-id>/review-log.md` MUST exist.
 
 R3a. `review-log.md` MUST reference every Review ID from detailed review files under `reviews/`.
@@ -197,6 +233,8 @@ R3j. `verify`, final `explain-change` closeout, and `pr` handoff MUST NOT procee
 R3k. Each review-log entry MUST contain exactly one `Resolution:` line in the canonical form `Resolution: review-resolution.md#<Review ID>`.
 
 R3l. For v1, `Resolution:` is a repository-internal symbolic resolution reference. Structural validation MUST fail when the field is missing, the target file is not exactly `review-resolution.md`, the anchor does not exactly match the entry's Review ID, or the referenced Review ID cannot be found in `review-resolution.md` when that artifact exists.
+
+R3la. The symbolic `Resolution:` ledger field MUST NOT by itself require a `review-resolution.md` file when no material findings or other approved review-resolution trigger exists.
 
 R3m. For v1, each parseable `review-log.md` ledger entry MUST use this line-based block format:
 
@@ -307,7 +345,7 @@ R8d. `verify` MUST block when any material Finding ID is missing from `review-re
 
 R8e. `pr` handoff MUST NOT proceed while any material Finding ID is missing from `review-resolution.md`.
 
-R8f. If a formal review outcome is `revise`, `changes-requested`, or `blocked`, the change MUST NOT advance to the next workflow stage until the same review stage is rerun or explicit reviewer or authorized owner closeout is recorded.
+R8f. If a formal review outcome is a stage-owned non-approval outcome that blocks downstream progress or requires revision, including `revise`, `changes-requested`, `blocked`, `rethink`, `inconclusive`, or an equivalent stage-specific outcome, the change MUST NOT advance to the next workflow stage until the same review stage is rerun or explicit reviewer or authorized owner closeout is recorded.
 
 R8g. `review-resolution.md` alone MUST NOT silently replace a required re-review or explicit closeout when the first-pass review outcome blocks downstream progress.
 
@@ -371,6 +409,7 @@ R14a. Stage tables, review-resolution rules, governance summaries, and skills MU
 Inputs:
 
 - formal lifecycle review records;
+- artifact-local settlement in reviewed artifacts when clean formal reviews do not trigger detailed records;
 - detailed review files under `docs/changes/<change-id>/reviews/` when present;
 - `docs/changes/<change-id>/review-log.md` when `reviews/` exists;
 - `docs/changes/<change-id>/review-resolution.md` when material findings exist;
@@ -380,6 +419,7 @@ Inputs:
 Outputs:
 
 - complete review findings with evidence, required outcome, and safe resolution or decision-needed rationale;
+- initial review-record roots for triggered formal reviews before a change-local root exists;
 - review-log index entries for detailed review files;
 - initial and final review-resolution state with top-level closeout status plus finding-level disposition, owner, action, rationale, validation target, and evidence;
 - verification proof that accepted fixes worked;
@@ -392,6 +432,10 @@ Outputs:
 - Every detailed review file identifies the reviewer.
 - Every detailed review file has exactly one Review ID.
 - First-pass review records are created before review-driven fixes.
+- Detailed review files are created for material findings, blocking stage-owned non-approval outcomes, reconstructed review evidence, closeout evidence citation, and explicit durable-record requests.
+- Clean formal reviews remain artifact-local when no detailed-record trigger applies.
+- No-material detailed records are indexed by `review-log.md` without requiring empty `review-resolution.md`.
+- Initial review-record roots do not replace the final non-trivial change-local pack.
 - Review IDs are unique within a change.
 - Every Review ID in `reviews/` is indexed exactly once by `review-log.md`.
 - Review-log entries identify detailed record paths, statuses, material findings, and open finding state.
@@ -409,6 +453,9 @@ Outputs:
 - If a material finding is incomplete, the review record must be corrected before a fix loop relies on it.
 - If review-driven fixes begin before the first-pass review record exists, the workflow state is invalid and may be repaired only through a reconstructed review record satisfying `R2m-exception`.
 - If the original review output cannot be reconstructed with durable evidence, the workflow must stop for an authorized owner decision.
+- If a required detailed review file is missing, review-driven fixes or downstream routing must stop until the review evidence is created or reconstructed.
+- If a formal review has no material findings and no `R2p` trigger, artifact-local settlement is sufficient and no empty review artifacts are required.
+- If a no-material `R2p` trigger requires a detailed review file before a change-local root exists, the initial review-record root needs `change.yaml`, `review-log.md`, and the detailed review file, but not an empty `review-resolution.md`.
 - If `reviews/` exists without `review-log.md`, structural validation fails.
 - If a detailed review file lacks Review ID, stage, round, target, or status, structural validation fails.
 - If a detailed review file lacks reviewer, structural validation fails.
@@ -433,6 +480,7 @@ Outputs:
 
 - This feature changes workflow-stage policy and review-gate behavior, so it requires the full lifecycle.
 - Existing historical review artifacts do not need retroactive migration unless they are touched, generated, or relied on as current authoritative guidance for a new change.
+- Existing clean review settlements in proposals, specs, architecture artifacts, ADRs, or plans remain valid historical evidence when no detailed-record trigger applied.
 - Existing references that list only `accepted`, `rejected`, and `deferred` must be updated when they govern current behavior.
 - The new `partially-accepted` and `needs-decision` values are additive for authoring review-resolution records, but `needs-decision` is not a closeout value.
 - Rollback may revert the expanded vocabulary and structural validation while preserving the older requirement that review items have accepted, rejected, or deferred dispositions with rationale.
@@ -479,16 +527,20 @@ Outputs:
 13. Maintainer PR comments are not copied into `reviews/` by this version unless a future approved change adds that behavior.
 14. Semantic disagreement about whether review evidence is persuasive is not decided by structural validation.
 15. Canonical skill changes without regenerated public adapter output fail generated-output drift validation.
-16. A first-pass review with `revise`, `changes-requested`, or `blocked` cannot be closed by editing `review-resolution.md` alone.
+16. A first-pass review with a stage-owned non-approval outcome that blocks downstream progress or requires revision cannot be closed by editing `review-resolution.md` alone.
 17. An accepted resolution entry remains unresolved while `review-resolution.md` has `Closeout status: open`.
 18. A `review-log.md` prose mention of a Review ID does not count as the required ledger entry unless it uses the documented parseable review-log form.
 19. A late review record created after fixes began is valid only when it is labeled `Record mode: reconstructed` and preserves durable original review evidence or a fidelity-loss note.
 20. A closed handoff with any `Open findings:` IDs still listed in `review-log.md` is invalid.
 21. A review-log `Resolution:` field that points outside `review-resolution.md`, uses an anchor different from the entry Review ID, duplicates the field, or references a missing review-resolution Review ID is invalid.
+22. A clean required `proposal-review` can settle through proposal status and decision log without creating review files.
+23. A `plan-review` with `rethink` but no material findings creates a detailed review file and `review-log.md`, but no empty `review-resolution.md`.
+24. A material `architecture-review` finding before any change-local root creates an initial review-record root with `review-resolution.md` before design fixes proceed.
+25. A final PR-ready handoff is incomplete if only the initial review-record root exists and durable Markdown reasoning was never added.
 
 ## Non-goals
 
-- Capturing maintainer PR review comments into `reviews/` in this version.
+- Automatically copying maintainer PR review comments into `reviews/` in this version.
 - Automating semantic review-quality judgment.
 - Requiring a full review artifact pack for every non-trivial change.
 - Requiring empty review-resolution files for clean reviews.
@@ -508,12 +560,15 @@ Outputs:
 - `verify` blocks unresolved `needs-decision` findings.
 - `verify` blocks `Closeout status: open` and accepted or partially accepted findings without validation evidence.
 - `verify` checks validation evidence for accepted and partially accepted findings.
-- A change with `revise`, `changes-requested`, or `blocked` review outcome cannot advance without same-stage re-review or explicit reviewer or owner closeout.
+- A change with a stage-owned non-approval review outcome that blocks downstream progress or requires revision cannot advance without same-stage re-review or explicit reviewer or owner closeout.
 - `explain-change.md` summarizes review-driven changes without duplicating the full review transcript.
 - The PR body summarizes review-resolution counts and links `review-resolution.md`.
 - Structural validation detects missing review-log, missing Review ID fields, missing reviewer, invalid reconstructed records, multiple Review IDs in one detailed file, duplicate Review IDs, dangling review-log references, malformed resolution links, incomplete review-log ledger entries, duplicate Finding IDs, material findings missing from review-resolution, unsupported disposition values, open top-level closeout status in closeout-gated validation, stale open findings in closeout-gated validation, and review-resolution references to missing findings.
 - Adapter generation and validation catch stale `.codex/skills/` or `dist/adapters/` output after canonical adapter-shipped skill changes.
 - Clean reviews remain lightweight and do not create empty review-resolution boilerplate.
+- A contributor can tell which formal lifecycle review outcomes require a detailed review file.
+- A contributor can create a no-material initial review-record root without creating an empty `review-resolution.md`.
+- A reviewer can distinguish the initial review-record root from the final non-trivial change-local pack.
 
 ## Open questions
 
