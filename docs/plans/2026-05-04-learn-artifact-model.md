@@ -244,6 +244,7 @@ This is workflow-governance and documentation-infrastructure work. It changes co
 - [x] 2026-05-04: M2 selector tests written first; representative learn paths failed as unclassified before implementation.
 - [x] 2026-05-04: M2 implementation complete; `docs/learn/README.md`, `docs/learn/sessions/**`, and `docs/learn/topics/**` now classify as lightweight `learn-artifact` paths.
 - [x] M2 complete.
+- [x] 2026-05-04: M2 `code-review` round 1 finding `CR-M2-F1` accepted and resolved; round 2 is pending.
 - [ ] M3 complete.
 - [ ] M4 complete.
 
@@ -313,13 +314,22 @@ This is workflow-governance and documentation-infrastructure work. It changes co
   - `bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md`
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-04-learn-artifact-model/change.yaml`
   - `git diff --check -- scripts/validation_selection.py scripts/test-select-validation.py docs/plans/2026-05-04-learn-artifact-model.md docs/changes/2026-05-04-learn-artifact-model`
+- 2026-05-04: M2 review-resolution validation initially failed because the first review record omitted the required `Finding ID:` field for `CR-M2-F1`; the review record was corrected and validation passed.
+  - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-04-learn-artifact-model`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-04-learn-artifact-model`
+- 2026-05-04: M2 review-resolution validation passed after fixing the stale plan outcome and review record format.
+  - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-04-learn-artifact-model`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-04-learn-artifact-model`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-04-learn-artifact-model/change.yaml`
+  - `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md --path docs/changes/2026-05-04-learn-artifact-model/review-log.md --path docs/changes/2026-05-04-learn-artifact-model/review-resolution.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m2-r1.md`
+  - `git diff --check -- docs/plans/2026-05-04-learn-artifact-model.md docs/changes/2026-05-04-learn-artifact-model`
 
 ## Outcome And Retrospective
 
-- Active. M1 is implemented; M2-M4 are not started.
+- Active. M1-M2 are implemented; M3-M4 are not started.
 
 ## Readiness
 
-M2 is implemented and awaiting `code-review`. The full initiative is not branch-ready because M3-M4 remain incomplete.
+M2 review round 1 finding `CR-M2-F1` is resolved and awaiting `code-review` round 2. The full initiative is not branch-ready because M3-M4 remain incomplete.
 
 Stop before M3 unless the workflow continues after code review. Implementation must keep this plan's progress, decisions, discoveries, and validation notes current as later milestones proceed.
