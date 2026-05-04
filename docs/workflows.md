@@ -38,7 +38,8 @@ This file is the short operational summary for working in this repository. The n
   - `ci-maintenance` is conditional support when hosted workflow automation or related CI infrastructure for a material risk is missing, stale, or wrong.
 - Periodic artifacts: `learn`.
   - Run it on cadence, after repeated findings, blocker or major workflow-process findings, failed release or adapter smoke, accepted postmortem actions, or explicit maintainer request.
-  - Triggered `learn` is closed by immediate capture, scheduled follow-up, or explicit no-learn rationale. It blocks downstream only when a higher-priority artifact makes it blocking.
+  - When a learn session reaches Frame, record it under `docs/learn/sessions/YYYY-MM-DD-<slug>.md`; durable topic guidance uses `docs/learn/topics/<topic>.md` only when confirmed durable lessons justify it.
+  - Pre-session scheduled follow-up, deferral, or no-learn rationale can close a trigger only when `learn` does not actually run as a session. Triggered `learn` blocks downstream only when a higher-priority artifact makes it blocking.
 
 ## Stage Obligations
 
@@ -54,7 +55,7 @@ The workflow spec owns the full stage-obligation table. The stable obligation va
 Notes:
 
 - `explore` and `research` are on-demand support, not default prerequisites.
-- `learn` is periodic or explicitly invoked, not a default final per-change stage.
+- `learn` is periodic or explicitly invoked, not a default final per-change stage. It uses tracked session records after Frame and review-visible no-record closeout only before a session runs.
 - `ci-maintenance` means creating or updating hosted CI workflow files, validation automation, or platform configuration. It does not mean running validation, designing tests, specifying validation commands, or waiting for existing CI checks.
 - After `spec-review`, the immediate next stage is still `architecture` when needed, otherwise `plan`. Any mention of eventual `test-spec` readiness is downstream readiness, not a stage skip.
 - `plan-review` remains the normal immediate handoff into `test-spec`. If implementation readiness is mentioned there, it is downstream readiness rather than the handoff itself.

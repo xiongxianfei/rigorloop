@@ -9,8 +9,10 @@
 - Spec: [RigorLoop Workflow](rigorloop-workflow.md), approved.
 - Proposal: [Workflow Refactor](../docs/proposals/2026-05-01-workflow-refactor.md), accepted.
 - Plan: [Workflow Refactor Execution Plan](../docs/plans/2026-05-03-workflow-refactor.md), active.
+- Related follow-on spec: [Learn Artifact Model](learn-artifact-model.md), approved.
+- Related follow-on test spec: [Learn Artifact Model test spec](learn-artifact-model.test.md), active.
 - Architecture: not required. The approved refactor changes workflow governance, documentation, skills, validators, and generated output without runtime architecture or deployment boundaries.
-- Spec-review: approved with no material findings after the standing-artifact gates, project-map minimal rule, `Runs for every change` semantics, nonblocking `learn` closeout, affected-surface alignment, and temporary learn-recording surfaces were added.
+- Spec-review: approved with no material findings after the standing-artifact gates, project-map minimal rule, `Runs for every change` semantics, nonblocking `learn` closeout, affected-surface alignment, and learn artifact model linkage were added.
 
 ## Testing strategy
 
@@ -19,7 +21,8 @@
 - Use focused skill-validator assertions only for stable, machine-checkable skill guidance such as required labels, forbidden stale labels, handoff boundaries, and generated-output drift.
 - Use selector-selected targeted proof as the first validation layer for changed paths; use broad smoke only when an authoritative trigger elevates it.
 - Treat `specs/rigorloop-workflow.test.md` as the active proof-planning surface for this refactor until the implementation is closed out.
-- Keep deferred project-map lifecycle mechanics and final learn artifact modeling out of this test spec except for explicit non-goal checks.
+- Keep deferred project-map lifecycle mechanics out of this test spec except for explicit non-goal checks.
+- Treat final learn artifact modeling as a cross-spec alignment point here; detailed session, topic, evidence, classification, and routing proof lives in `specs/learn-artifact-model.test.md`.
 
 ## Requirement coverage map
 
@@ -29,7 +32,7 @@
 | `R6`-`R6db`, `R20`-`R24a`, `R26`, `R27` | `T4`, `T20` | manual, integration | Category model, affected-surface alignment, source-of-truth and generated-output boundaries |
 | `R6a`-`R6i` | `T20`, `T21` | manual, integration | Standing artifact gates, bootstrap exceptions, project-map no-reliance, architecture-package routing |
 | `R7`-`R7b` | `T20`, `T22` | manual, integration | Stable obligation values, trigger behavior, and `Runs for every change` semantics |
-| `R7ba`-`R7be` | `T23` | manual, integration | Periodic `learn`, default nonblocking closeout, and temporary recording surfaces |
+| `R7ba`-`R7bf` | `T23` | manual, integration | Periodic `learn`, default nonblocking behavior, session-record closeout, and final learn artifact model linkage |
 | `R7c`-`R7w` | `T24` | manual, integration | Autoprogression, immediate handoff language, stage-owned authority, tracked-branch review and verify claims |
 | `R8`-`R8j` | `T2` | manual | Planned milestone lifecycle, plan/index coherence, and milestone commits |
 | `R8ja`-`R8kg` | `T18`, `T25` | manual, integration | Lifecycle states, stale authoritative artifact handling, PR reference behavior |
@@ -76,7 +79,7 @@
 - Approved legacy top-level explain artifacts remain valid until retired: `T3`, `T16`
 - `spec-review` and `plan-review` preserve immediate handoff versus downstream readiness: `T24`
 - `explore` and `research` are on-demand support and block only after trigger or dependency reliance: `T22`
-- Triggered `learn` closes by immediate capture, scheduled follow-up, or no-learn rationale and blocks only when a higher-priority artifact makes it blocking: `T23`
+- Triggered `learn` closes through the final learn artifact model when a session reaches Frame, or through pre-session scheduled follow-up, deferral, or no-learn rationale when no session runs; it blocks only when a higher-priority artifact makes it blocking: `T23`
 - `ci-maintenance` may be skipped when hosted automation already covers the material risk: `T26`
 - Missing, stale, contradicted, or incomplete `docs/project-map.md` cannot be relied on without refresh or no-map rationale: `T21`
 - Bootstrap proposals without `VISION.md` or `CONSTITUTION.md` must identify the exception in `Vision fit`: `T21`
@@ -516,25 +519,28 @@
 - Automation location:
   - Manual review during M1/M2 and focused assertions during M3 if stable.
 
-### T23. Triggered learn has nonblocking default closeout
+### T23. Triggered learn uses final learn surfaces without becoming a default stage
 
-- Covers: `R7ba`, `R7bb`, `R7bc`, `R7bd`, `R7be`, `E10`
+- Covers: `R7ba`, `R7bb`, `R7bc`, `R7bd`, `R7be`, `R7bf`, `E10`
 - Level: manual, integration
 - Fixture/setup:
+  - `specs/rigorloop-workflow.md`
+  - `specs/learn-artifact-model.md`
+  - `specs/learn-artifact-model.test.md`
   - `docs/workflows.md`
-  - `skills/learn/SKILL.md`
-  - `skills/workflow/SKILL.md`
   - active plan and change-local pack
 - Steps:
   - Confirm `learn` is periodic or explicitly invoked, not a default final per-change stage.
   - Confirm triggers include repeated findings, blocker or major workflow-process findings, failed release or adapter smoke, accepted postmortem actions, cadence, and maintainer request.
-  - Confirm triggered learn is closed by immediate capture, scheduled follow-up, or explicit no-learn rationale.
+  - Confirm a `learn` invocation that reaches Frame creates or updates `docs/learn/sessions/YYYY-MM-DD-<slug>.md`, including empty or no-durable-lesson sessions.
+  - Confirm durable topic guidance is routed to `docs/learn/topics/<topic>.md` only when confirmed durable lessons justify it.
+  - Confirm action-changing lessons route to the authoritative affected artifact rather than treating topic files as policy.
+  - Confirm pre-session no-record closeout is allowed only when `learn` does not actually run as a session.
   - Confirm triggered learn blocks downstream only when a higher-priority artifact explicitly makes it blocking.
-  - Confirm scheduled follow-ups or no-learn rationales use allowed tracked or review-visible surfaces until the future learn refactor.
 - Expected result:
-  - Ordinary PR closeout does not block on learn by default, but triggered learning cannot disappear silently.
+  - Ordinary PR closeout does not block on learn by default, but triggered learning uses tracked final learn surfaces once a session runs.
 - Failure proves:
-  - `learn` either becomes process theater for every change or loses required durable follow-up.
+  - `learn` either becomes process theater for every change, loses required durable follow-up, or falls back to superseded temporary surfaces.
 - Automation location:
   - Manual review during M1/M2 and final M4 change-local evidence review.
 
@@ -718,7 +724,7 @@
 - `T20` verifies affected workflow-governance surfaces are updated, explicitly marked unaffected, or deferred with owner and follow-up.
 - `T21` verifies the `VISION.md` migration is treated as already complete and lowercase `vision.md` is not reintroduced as canonical.
 - `T21` verifies project-map lifecycle markers and freshness thresholds are not invented in this refactor.
-- `T23` verifies final learn artifact design is deferred while temporary learn follow-up recording still works.
+- `T23` verifies the workflow spec links to the final learn artifact model while preserving nonblocking default behavior.
 - `T26` verifies the `skills/ci/` path remains compatible while contributor-facing stage language uses `ci-maintenance`.
 - `T25` verifies in-flight work can record its selected workflow contract without forcing unrelated active work to churn.
 
@@ -727,7 +733,7 @@
 - `T13` verifies selector-selected checks and CI wrapper output use stable check IDs.
 - `T18` verifies validation failures are path-specific and contributor-actionable.
 - `T20` verifies affected-surface dispositions are review-visible.
-- `T23` verifies learn follow-ups or no-learn rationales are not chat-only.
+- `T23` verifies learn sessions and pre-session closeouts are not chat-only.
 - `T27` verifies review-resolution closeout records evidence, dispositions, and blocking state.
 - `T28` verifies change metadata and explain-change artifacts trace the final implementation.
 
@@ -748,7 +754,7 @@
 - [ ] `README.md`, `docs/workflows.md`, `AGENTS.md`, and `CONSTITUTION.md` present the approved category model without reintroducing the old overloaded chain as the default workflow.
 - [ ] The per-change chain excludes default `explore`, default `research`, final per-change `learn`, and ambiguous `ci` wording.
 - [ ] `explore` and `research` are described as on-demand support.
-- [ ] `learn` is periodic or explicitly invoked, with immediate capture, scheduled follow-up, or no-learn rationale as closeout.
+- [ ] `learn` is periodic or explicitly invoked, uses final `docs/learn/sessions/**` session records after Frame, and permits no-record closeout only before a session runs.
 - [ ] `ci-maintenance` means CI infrastructure maintenance and not validation execution.
 - [ ] `review-resolution` is closeout for material review findings and blocks downstream while open.
 - [ ] `VISION.md` and `CONSTITUTION.md` are standing artifacts with distinct absence gates.
@@ -762,7 +768,7 @@
 
 - Do not test subjective writing quality, philosophy, or style preferences in workflow or skill prose.
 - Do not implement or test project-map calendar thresholds, freshness markers, or the full project-map revision workflow.
-- Do not implement or test the final learn artifact model with per-session `docs/learn/` output, topic-organized `docs/learnings/`, or action-routing rules beyond temporary recording surfaces.
+- Do not test detailed session-record, topic-file, evidence, classification, or routing behavior here; `specs/learn-artifact-model.test.md` owns that proof.
 - Do not rename or require renaming `skills/ci/`.
 - Do not re-test or re-migrate root `vision.md` to `VISION.md`; this refactor only ensures `VISION.md` remains canonical.
 - Do not test hosted GitHub release publishing end to end.
@@ -773,7 +779,7 @@
 
 - None blocking at the spec, architecture, or planning level.
 - Project-map lifecycle mechanics are intentionally deferred to a focused follow-up.
-- Final learn artifact design is intentionally deferred to a focused follow-up.
+- Detailed learn-session behavior is covered by `specs/learn-artifact-model.test.md`.
 - If implementation discovers that a stable workflow guarantee cannot be tested manually or through existing scripts, update this test spec or return to plan-review before widening implementation scope.
 
 ## Next artifacts

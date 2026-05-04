@@ -174,7 +174,7 @@ Workflow or governance changes MUST update affected operating and governance gui
 
 Architecture or boundary changes MUST update the relevant architecture document or ADR.
 
-When a change leaves durable lessons for future contributors, the repository SHOULD capture them through the periodic or explicitly invoked `learn` stage instead of leaving them only in chat or PR comments.
+When a change leaves durable lessons for future contributors, the repository SHOULD capture them through the periodic or explicitly invoked `learn` stage instead of leaving them only in chat or PR comments. Learn sessions that reach Frame use tracked records under `docs/learn/sessions/`, with durable topic guidance under `docs/learn/topics/` only when confirmed reusable lessons justify it.
 
 ## Agent behavior rules
 
