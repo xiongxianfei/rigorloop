@@ -1375,8 +1375,77 @@ raise SystemExit(1)
         self.assertIn("--- stderr (decode error; replacement text) ---", output)
         self.assertIn("bad-stderr-", output)
 
+    def test_ci_wrapper_keeps_large_output_isolated_per_check(self) -> None:
+        workspace = self.make_ci_workspace()
+        self.write_fake_script(
+            workspace,
+            "scripts/test-skill-validator.py",
+            """
+import sys
+
+sys.stdout.write("SKILLS_STDOUT_BEGIN\\n")
+sys.stdout.write("skills-stdout-line\\n" * 5000)
+sys.stderr.write("skills-stderr-line\\n" * 5000)
+sys.stdout.write("SKILLS_STDOUT_END\\n")
+raise SystemExit(2)
+""".lstrip(),
+        )
+        self.write_fake_script(
+            workspace,
+            "scripts/test-adapter-distribution.py",
+            """
+import sys
+
+sys.stdout.write("ADAPTERS_STDOUT_BEGIN\\n")
+sys.stdout.write("adapters-stdout-line\\n" * 5000)
+sys.stderr.write("adapters-stderr-line\\n" * 5000)
+sys.stdout.write("ADAPTERS_STDOUT_END\\n")
+raise SystemExit(3)
+""".lstrip(),
+        )
+        fixture = self.write_selector_fixture(
+            self.minimal_selector_payload(
+                selected_checks=[
+                    self.selected_check("skills.regression", "python scripts/test-skill-validator.py"),
+                    self.selected_check("adapters.regression", "python scripts/test-adapter-distribution.py"),
+                ]
+            )
+        )
+
+        result = self.run_workspace_ci(
+            workspace,
+            fixture,
+            "--mode",
+            "explicit",
+            "--path",
+            "scripts/test-skill-validator.py",
+            "--jobs",
+            "1",
+        )
+        assert isinstance(result.stdout, str)
+        output = result.stdout + result.stderr
+
+        self.assertNotEqual(result.returncode, 0)
+        skills_start = output.index("==> skills.regression (exited)")
+        adapters_start = output.index("==> adapters.regression (exited)")
+        skills_section = output[skills_start:adapters_start]
+        adapters_section = output[adapters_start:]
+
+        self.assertIn("skills.regression | exited | exit code 2 |", output)
+        self.assertIn("adapters.regression | exited | exit code 3 |", output)
+        self.assertIn("SKILLS_STDOUT_BEGIN", skills_section)
+        self.assertIn("skills-stderr-line", skills_section)
+        self.assertNotIn("ADAPTERS_STDOUT_BEGIN", skills_section)
+        self.assertIn("ADAPTERS_STDOUT_BEGIN", adapters_section)
+        self.assertIn("adapters-stderr-line", adapters_section)
+        self.assertNotIn("SKILLS_STDOUT_BEGIN", adapters_section)
+
     def test_ci_wrapper_timeout_and_signal_failures_have_distinct_statuses(self) -> None:
         workspace = self.make_ci_workspace()
+        self.assertRegex(
+            (workspace / "scripts" / "ci.sh").read_text(encoding="utf-8"),
+            r"(?m)^DEFAULT_TIMEOUT_SECONDS=60$",
+        )
         self.write_fake_script(
             workspace,
             "scripts/test-skill-validator.py",

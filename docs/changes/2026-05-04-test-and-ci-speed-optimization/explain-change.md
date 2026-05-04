@@ -62,7 +62,7 @@ The initial allowlist marks only reviewed regression scripts. Source inspection 
   - Passed.
 - `python scripts/test-select-validation.py`
   - First M2 run: expected failure before implementation. New M2 regressions exposed live child output, fail-first execution, missing summary/output sections, missing timeout enforcement, and invalid-byte leakage.
-  - Second M2 run: passed with 48 tests after adding the sequential captured-result runner.
+  - Final M2 run: passed with 49 tests after adding the sequential captured-result runner, large-output isolation proof, and default-timeout constant proof.
 - `bash scripts/ci.sh --mode explicit --path scripts/ci.sh --jobs 1 --timeout 60 --verbose`
   - Passed with `selector.regression` selected, proving the new summary and verbose successful-output path through the wrapper.
 - `python scripts/select-validation.py --mode explicit --path scripts/ci.sh --path scripts/test-select-validation.py --path specs/test-and-ci-speed-optimization.test.md --path docs/plans/2026-05-04-test-and-ci-speed-optimization.md --path docs/changes/2026-05-04-test-and-ci-speed-optimization/change.yaml --path docs/changes/2026-05-04-test-and-ci-speed-optimization/explain-change.md --path docs/proposals/2026-05-04-test-and-ci-speed-optimization.md --path specs/test-and-ci-speed-optimization.md --path docs/plan.md`
