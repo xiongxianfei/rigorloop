@@ -115,7 +115,10 @@ Keep `review-resolution.md` and `verify-report.md` conditional. Do not treat the
 - `Closeout status: open` means one or more material findings remain unresolved for handoff.
 - `Closeout status: closed` means every material finding has a final disposition plus required action, rationale, follow-up, and validation evidence.
 - A closed handoff requires `review-log.md` to list no open findings.
-- A review outcome requiring revision still needs a later same-stage review round or explicit reviewer or owner closeout evidence; `review-resolution.md` alone is not a silent substitute for required re-review.
+- Detailed review record triggers are material findings, stage-owned non-approval outcomes that block downstream progress or require revision, reconstructed review evidence, closeout evidence citation, and explicit reviewer or maintainer request.
+- A stage-owned non-approval outcome requiring revision still needs a same-stage later review round or explicit reviewer or owner closeout evidence naming the original Review ID; `review-resolution.md` alone is not a silent substitute for required re-review.
+- For no-material review events, no-material detailed records need `review-log.md` but not an empty `review-resolution.md`.
+- Do not add a dedicated `pr-review` stage; it is unsupported unless a later approved spec extends the stage set. A material maintainer PR comment that needs disposition must first be promoted into a supported formal lifecycle review record with a stable `Finding ID`.
 
 ### Review-stage handoff versus downstream readiness
 

@@ -64,6 +64,9 @@ Requirement → Test IDs → Files changed → Evidence → Status
 6. Treat a missing required baseline change-local pack as a blocker, not acceptable silence.
 7. When material review findings exist, run `python scripts/validate-review-artifacts.py --mode closeout docs/changes/<change-id>` and inspect `review-resolution.md`.
 8. Block on `Closeout status: open`, any `needs-decision` disposition, stale `review-log.md` open findings, missing final action, missing rationale, missing follow-up record, or missing `Validation evidence` required for an accepted fix.
+8a. `Closeout status: closed` requires final dispositions for all material findings and no stale `review-log.md` open findings.
+8b. A stage-owned non-approval outcome that blocks downstream progress or requires revision needs a same-stage later review round or explicit reviewer or owner closeout naming the original Review ID; `review-resolution.md` alone is not a silent substitute.
+8c. For no-material review events, no-material detailed records need `review-log.md` but not an empty `review-resolution.md`.
 9. For lifecycle-managed artifacts, treat stale or inconsistent touched, referenced, generated, or authoritative artifacts as blockers. Report unrelated stale baseline artifacts as warnings instead of blocking the change.
 10. For planned initiatives, compare `docs/plan.md` against the plan body and treat stale lifecycle state as a blocker. At minimum, block on completed, blocked, or superseded work still listed under `## Active`; conflicting index-versus-body state; or a plan body marked done, blocked, or superseded while still presenting itself as active or in progress.
 11. Confirm targeted proof ran for the changed surfaces, preferably through `python scripts/select-validation.py` or `bash scripts/ci.sh --mode explicit --path <path>...`, and record stable selected check IDs where useful.
