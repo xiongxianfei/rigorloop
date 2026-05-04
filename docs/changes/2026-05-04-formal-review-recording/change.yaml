@@ -8,6 +8,7 @@ artifacts:
   test_spec: specs/formal-review-recording.test.md
   plan: docs/plans/2026-05-04-formal-review-recording.md
   explain_change: docs/changes/2026-05-04-formal-review-recording/explain-change.md
+  review_resolution: docs/changes/2026-05-04-formal-review-recording/review-resolution.md
 requirements:
   - specs/formal-review-recording.md R1-R16b
   - specs/review-finding-resolution-contract.md R2p-R2w, R3la, R8f
@@ -59,6 +60,21 @@ validation:
   - command: rg -n '[[:blank:]]$|\\t' scripts/test-review-artifact-validator.py scripts/review_artifact_validation.py docs/plans/2026-05-04-formal-review-recording.md docs/changes/2026-05-04-formal-review-recording
     result: pass_after_m2
     reason: No trailing whitespace or tab matches.
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-04-formal-review-recording
+    result: pass_after_cr1_reconstructed_review
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-04-formal-review-recording
+    result: pass_after_cr1_reconstructed_review
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-04-formal-review-recording/change.yaml
+    result: fail_before_cr1_review_log_artifact_key_fix
+    reason: `artifacts.review_log` is not a canonical artifact key; `review_log` belongs under the optional `review` pointer fields.
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-04-formal-review-recording/change.yaml
+    result: pass_after_cr1_review_log_artifact_key_fix
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-04-formal-review-recording/change.yaml --path docs/changes/2026-05-04-formal-review-recording/explain-change.md --path docs/changes/2026-05-04-formal-review-recording/review-log.md --path docs/changes/2026-05-04-formal-review-recording/review-resolution.md --path docs/changes/2026-05-04-formal-review-recording/reviews/code-review-r1.md
+    result: pass_after_cr1_reconstructed_review
+    selected_check_ids: review_artifacts.validate, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-04-formal-review-recording/change.yaml --path docs/changes/2026-05-04-formal-review-recording/explain-change.md --path docs/changes/2026-05-04-formal-review-recording/review-log.md --path docs/changes/2026-05-04-formal-review-recording/review-resolution.md --path docs/changes/2026-05-04-formal-review-recording/reviews/code-review-r1.md
+    result: pass_after_cr1_reconstructed_review
+    selected_check_ids: review_artifacts.validate, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate
 changed_files:
   - AGENTS.md
   - CONSTITUTION.md
@@ -68,6 +84,9 @@ changed_files:
   - docs/plans/2026-05-04-formal-review-recording.md
   - docs/changes/2026-05-04-formal-review-recording/change.yaml
   - docs/changes/2026-05-04-formal-review-recording/explain-change.md
+  - docs/changes/2026-05-04-formal-review-recording/review-log.md
+  - docs/changes/2026-05-04-formal-review-recording/review-resolution.md
+  - docs/changes/2026-05-04-formal-review-recording/reviews/code-review-r1.md
   - specs/formal-review-recording.md
   - specs/formal-review-recording.test.md
   - specs/review-finding-resolution-contract.md
@@ -77,5 +96,7 @@ changed_files:
   - scripts/review_artifact_validation.py
   - scripts/test-review-artifact-validator.py
 review:
-  status: none
+  status: closed
   unresolved_items: 0
+  review_log: docs/changes/2026-05-04-formal-review-recording/review-log.md
+  review_resolution: docs/changes/2026-05-04-formal-review-recording/review-resolution.md

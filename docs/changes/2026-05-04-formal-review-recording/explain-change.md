@@ -2,9 +2,9 @@
 
 ## Summary
 
-This change implements the first milestone of the approved formal review recording work. M1 aligns the governing workflow and review-resolution contracts so detailed review records are stage-neutral across proposal, spec, architecture, plan, and code review, while keeping clean reviews proportional and artifact-local when no detailed-record trigger applies.
+This change implements the first two milestones of the approved formal review recording work. M1 aligns the governing workflow and review-resolution contracts so detailed review records are stage-neutral across proposal, spec, architecture, plan, and code review, while keeping clean reviews proportional and artifact-local when no detailed-record trigger applies. M2 adds validator coverage for upstream formal review records, no-material non-approval records, traceable material findings, unsupported `pr-review` records, and closeout blocking for `rethink` and `inconclusive`.
 
-The implementation is intentionally limited to contract and governance alignment. Validator fixture work, review-stage skill guidance, generated-output refresh, final verification, and PR closeout remain in later milestones.
+The implementation remains a milestone slice. Review-stage skill guidance, generated-output refresh, final verification, and PR closeout remain in later milestones.
 
 ## Source Artifacts
 
