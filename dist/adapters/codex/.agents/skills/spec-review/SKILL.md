@@ -55,6 +55,24 @@ If a safe resolution cannot be chosen without an owner decision, use a `needs-de
 
 When workflow-managed review findings are recorded under `docs/changes/<change-id>/reviews/`, preserve the first-pass review record before fixes and record dispositions in `review-resolution.md`.
 
+## Detailed Review Records
+
+Use these detailed review record triggers for workflow-managed formal lifecycle reviews:
+
+- material findings
+- stage-owned non-approval outcomes that block downstream progress or require revision
+- reconstructed review evidence
+- closeout evidence citation
+- explicit reviewer or maintainer request
+
+Examples of stage-owned non-approval outcomes include `revise`, `changes-requested`, `blocked`, `rethink`, `inconclusive`, and equivalent blocking stage-specific outcomes.
+
+When a detailed review file is created, `review-log.md` indexes it. Material findings need stable `Finding ID` values and disposition in `review-resolution.md`.
+
+In this contract, clean reviews can settle artifact-locally when no detailed review record triggers apply. For no-material review events, no-material detailed records need `review-log.md` but not an empty `review-resolution.md`. Likewise, artifact-local settlement must not replace detailed review records when a trigger applies.
+
+Do not add a dedicated `pr-review` stage. It is an unsupported review stage unless a later approved spec extends the stage set. A material maintainer PR comment that needs disposition must first be promoted into a supported formal lifecycle review record with a stable `Finding ID`.
+
 ## Rules
 
 - Do not approve vague or untestable `MUST` requirements.

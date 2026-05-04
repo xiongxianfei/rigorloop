@@ -227,12 +227,12 @@ Implementation milestones are test-first within their scope: add or update the r
 - Expected observable result: review-stage skill users see the same detailed-record triggers and routing boundaries as the approved spec, and generated outputs match canonical skill sources.
 - Commit message: `M3: align formal review skills`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks: skill wording may become too long or duplicate the feature spec instead of giving operator guidance.
 - Rollback/recovery: revert the affected canonical skill sections, rerun generators, and keep M1 contracts as the source of truth while narrower skill wording is reviewed.
 
@@ -324,12 +324,14 @@ Implementation milestones are test-first within their scope: add or update the r
 - [x] 2026-05-04: Test spec authored at `specs/formal-review-recording.test.md` and marked active after plan-review approval.
 - [x] 2026-05-04: M1 implemented by updating paired test specs first, then aligning review-resolution, workflow, operational, and governance wording with the approved stage-neutral formal review recording contract.
 - [x] 2026-05-04: M2 implemented with upstream-stage review artifact validator coverage, no-material `plan-review` structure coverage without `review-resolution.md`, explicit `pr-review` rejection, and closeout blocking for `rethink` and `inconclusive`.
+- [x] 2026-05-04: M3 implemented with skill-validator coverage for stable formal review recording guidance, canonical review-stage and downstream closeout skill updates, regenerated `.codex/skills/`, and regenerated public adapter output.
 
 ## Decision Log
 
 - 2026-05-04: Architecture artifact not required -> the approved spec reuses existing review artifact paths and validator architecture without adding a new storage or parser model.
 - 2026-05-04: Keep implementation in four milestones -> contract alignment, validator coverage, skill/generated output alignment, and final closeout are reviewable slices with distinct proof surfaces.
 - 2026-05-04: Test spec comes after plan-review -> repository workflow requires concrete plan context before `test-spec` authoring for this non-trivial workflow change.
+- 2026-05-04: M3 uses stable phrase checks only -> the skill validator asserts the durable review-recording boundaries while leaving broader review-quality prose to manual review.
 
 ## Surprises And Discoveries
 
@@ -338,6 +340,7 @@ Implementation milestones are test-first within their scope: add or update the r
 - Existing validator tests include a clean review with `review-log.md` and no `review-resolution.md`, but representative upstream-stage no-material coverage still belongs in the test spec and M2.
 - The change metadata validator rejects an empty inline `validation: []` placeholder. M1 records explicit validation entries instead.
 - M2 test-first work showed the parser already accepted supported upstream stages and rejected unsupported stages, but closeout mode did not yet treat `rethink` and `inconclusive` as blocking stage-owned non-approval outcomes.
+- M3 did not require generator logic changes; canonical skill edits were enough, and repository generators propagated the wording to `.codex/skills/` and `dist/adapters/`.
 
 ## Validation Notes
 
@@ -387,17 +390,42 @@ Implementation milestones are test-first within their scope: add or update the r
 - 2026-05-04: M2 whitespace and diff checks passed:
   - `rg -n '[[:blank:]]$|\\t' scripts/test-review-artifact-validator.py scripts/review_artifact_validation.py docs/plans/2026-05-04-formal-review-recording.md docs/changes/2026-05-04-formal-review-recording`
   - `git diff --check -- scripts/test-review-artifact-validator.py scripts/review_artifact_validation.py tests/fixtures/review-artifacts docs/plans/2026-05-04-formal-review-recording.md docs/changes/2026-05-04-formal-review-recording`
+- 2026-05-04: M3 skill-validator tests failed before canonical skill guidance changed because the formal review skills lacked the detailed-record trigger wording and downstream closeout skills lacked the stable no-material, same-stage closeout, and review-resolution boundary phrases:
+  - `python scripts/test-skill-validator.py`
+- 2026-05-04: M3 skill-validator tests passed after adding the stable formal review recording guidance:
+  - `python scripts/test-skill-validator.py`
+- 2026-05-04: M3 canonical skill validation passed:
+  - `python scripts/validate-skills.py`
+- 2026-05-04: M3 generated output was refreshed from canonical skills:
+  - `python scripts/build-skills.py`
+  - `python scripts/build-adapters.py --version 0.1.1`
+- 2026-05-04: M3 generated-output drift checks and adapter validation passed:
+  - `python scripts/build-skills.py --check`
+  - `python scripts/build-adapters.py --version 0.1.1 --check`
+  - `python scripts/validate-adapters.py --version 0.1.1`
+  - `python scripts/test-adapter-distribution.py`
+- 2026-05-04: M3 selector check passed with `broad_smoke_required: false`; selected checks were `skills.validate`, `skills.regression`, `skills.drift`, `adapters.drift`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`:
+  - `python scripts/select-validation.py --mode explicit --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path skills/architecture-review/SKILL.md --path skills/plan-review/SKILL.md --path skills/code-review/SKILL.md --path skills/workflow/SKILL.md --path skills/verify/SKILL.md --path skills/explain-change/SKILL.md --path skills/pr/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-04-formal-review-recording.md --path docs/changes/2026-05-04-formal-review-recording/change.yaml`
+- 2026-05-04: M3 change metadata validation passed:
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-04-formal-review-recording/change.yaml`
+- 2026-05-04: M3 lifecycle validation passed:
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-04-formal-review-recording.md --path docs/changes/2026-05-04-formal-review-recording/change.yaml`
+- 2026-05-04: M3 explicit CI passed with selector-selected checks:
+  - `bash scripts/ci.sh --mode explicit --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path skills/architecture-review/SKILL.md --path skills/plan-review/SKILL.md --path skills/code-review/SKILL.md --path skills/workflow/SKILL.md --path skills/verify/SKILL.md --path skills/explain-change/SKILL.md --path skills/pr/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-04-formal-review-recording.md --path docs/changes/2026-05-04-formal-review-recording/change.yaml`
+- 2026-05-04: M3 whitespace and diff checks passed:
+  - `rg -n '[[:blank:]]$|\\t' skills scripts/test-skill-validator.py docs/plans/2026-05-04-formal-review-recording.md docs/changes/2026-05-04-formal-review-recording`
+  - `git diff --check -- skills scripts/test-skill-validator.py .codex/skills dist/adapters docs/plans/2026-05-04-formal-review-recording.md docs/changes/2026-05-04-formal-review-recording`
 
 ## Outcome And Retrospective
 
-- Active. M1 contract and governance alignment and M2 validator coverage are complete. M3 review skill guidance and generated-output alignment has not started.
+- Active. M1 contract and governance alignment, M2 validator coverage, and M3 review skill guidance plus generated-output alignment are complete. M4 final validation and lifecycle closeout has not started.
 
 ## Readiness
 
-- Ready for M3 implementation after M2 code-review.
-- M1 and M2 are complete milestone slices, but the full feature is not yet ready for final verify or PR handoff.
-- Later implementation should continue with M3 and keep this plan's progress, decisions, discoveries, and validation notes current.
+- Ready for M3 code-review, then M4 implementation if the review gate is satisfied.
+- M1, M2, and M3 are complete milestone slices, but the full feature is not yet ready for final verify or PR handoff.
+- Later implementation should continue with M4 and keep this plan's progress, decisions, discoveries, and validation notes current.
 
 ## Risks And Follow-Ups
 
-- Follow-up: code-review M2, then implement M3 review skill guidance and generated output.
+- Follow-up: code-review M3, then implement M4 final validation and lifecycle closeout.

@@ -92,6 +92,9 @@ File | Change | Reason | Source artifact | Test/evidence
 - Do not justify unrelated changes; flag them.
 - Do not claim a requirement drove a change unless the link is real.
 - Do not hide validation gaps.
+- Material finding closeout must not proceed at `Closeout status: open`; `Closeout status: closed` requires final dispositions, no `needs-decision`, and no stale `review-log.md` open findings.
+- A stage-owned non-approval outcome that blocks downstream progress or requires revision needs a same-stage later review round or explicit reviewer or owner closeout naming the original Review ID; `review-resolution.md` alone is not a silent substitute.
+- For no-material review events, no-material detailed records need `review-log.md` but not an empty `review-resolution.md`.
 - Do not proceed when `review-resolution.md` is missing, open, still contains `needs-decision`, or `review-log.md` still lists open findings for material findings that must close before handoff.
 - Do not duplicate transcript content from detailed reviews; keep review-resolution discussion concise and link the durable artifact.
 - Do not invent alternatives that were never considered; mark them as hindsight if added.
