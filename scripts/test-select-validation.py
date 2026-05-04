@@ -6,6 +6,7 @@ from __future__ import annotations
 import json
 import os
 import shutil
+import signal
 import subprocess
 import sys
 import tempfile
@@ -71,6 +72,23 @@ def run_ci(
         cwd=cwd,
         capture_output=True,
         text=True,
+        env=run_env,
+    )
+
+
+def run_ci_bytes(
+    *args: str,
+    env: dict[str, str] | None = None,
+    script: Path = CI,
+    cwd: Path = ROOT,
+) -> subprocess.CompletedProcess[bytes]:
+    run_env = os.environ.copy()
+    if env:
+        run_env.update(env)
+    return subprocess.run(
+        ["bash", str(script), *args],
+        cwd=cwd,
+        capture_output=True,
         env=run_env,
     )
 
@@ -161,6 +179,54 @@ class ValidationSelectionTests(unittest.TestCase):
             "blocking_results": blocking_results or [],
             "rationale": [],
         }
+
+    def make_ci_workspace(self) -> Path:
+        workspace = Path(tempfile.mkdtemp(prefix="validation-selection-ci-workspace-"))
+        self.addCleanupTree(workspace)
+        (workspace / "scripts").mkdir()
+        shutil.copy2(CI, workspace / "scripts" / "ci.sh")
+        shutil.copy2(ROOT / "scripts" / "validation_selection.py", workspace / "scripts" / "validation_selection.py")
+        return workspace
+
+    def write_fake_script(self, workspace: Path, relative_path: str, body: str) -> Path:
+        script = workspace / relative_path
+        script.parent.mkdir(parents=True, exist_ok=True)
+        script.write_text(body, encoding="utf-8")
+        return script
+
+    def selected_check(self, check_id: str, command: str, **extra: object) -> dict[str, object]:
+        check: dict[str, object] = {
+            "id": check_id,
+            "command": command,
+            "reason": f"{check_id} fixture",
+        }
+        check.update(extra)
+        return check
+
+    def run_workspace_ci(
+        self,
+        workspace: Path,
+        fixture: Path,
+        *args: str,
+        text: bool = True,
+        env: dict[str, str] | None = None,
+    ) -> subprocess.CompletedProcess[str] | subprocess.CompletedProcess[bytes]:
+        run_env = {"RIGORLOOP_SELECTOR_FIXTURE": str(fixture)}
+        if env:
+            run_env.update(env)
+        if text:
+            return run_ci(
+                *args,
+                env=run_env,
+                script=workspace / "scripts" / "ci.sh",
+                cwd=workspace,
+            )
+        return run_ci_bytes(
+            *args,
+            env=run_env,
+            script=workspace / "scripts" / "ci.sh",
+            cwd=workspace,
+        )
 
     def select(self, paths: list[str], *, mode: str = "explicit", **kwargs):
         return select_validation(SelectionRequest(mode=mode, paths=tuple(paths), repo_root=ROOT, **kwargs))
@@ -1089,6 +1155,289 @@ class ValidationSelectionTests(unittest.TestCase):
         self.assertIn("Run selected check: release.validate", output)
         self.assertIn("Selected check release.validate failed", output)
 
+    def test_ci_wrapper_jobs_one_uses_stable_summary_and_hides_success_output(self) -> None:
+        workspace = self.make_ci_workspace()
+        order_file = workspace / "order.txt"
+        self.write_fake_script(
+            workspace,
+            "scripts/test-skill-validator.py",
+            """
+import os
+import sys
+from pathlib import Path
+
+with Path(os.environ["ORDER_FILE"]).open("a", encoding="utf-8") as handle:
+    handle.write("skills-start\\n")
+print("SKILLS_STDOUT")
+print("SKILLS_STDERR", file=sys.stderr)
+with Path(os.environ["ORDER_FILE"]).open("a", encoding="utf-8") as handle:
+    handle.write("skills-end\\n")
+""".lstrip(),
+        )
+        self.write_fake_script(
+            workspace,
+            "scripts/test-adapter-distribution.py",
+            """
+import os
+import sys
+from pathlib import Path
+
+with Path(os.environ["ORDER_FILE"]).open("a", encoding="utf-8") as handle:
+    handle.write("adapters-start\\n")
+print("ADAPTERS_STDOUT")
+print("ADAPTERS_STDERR", file=sys.stderr)
+with Path(os.environ["ORDER_FILE"]).open("a", encoding="utf-8") as handle:
+    handle.write("adapters-end\\n")
+""".lstrip(),
+        )
+        fixture = self.write_selector_fixture(
+            self.minimal_selector_payload(
+                selected_checks=[
+                    self.selected_check("skills.regression", "python scripts/test-skill-validator.py"),
+                    self.selected_check("adapters.regression", "python scripts/test-adapter-distribution.py"),
+                ]
+            )
+        )
+
+        result = self.run_workspace_ci(
+            workspace,
+            fixture,
+            "--mode",
+            "explicit",
+            "--path",
+            "scripts/test-skill-validator.py",
+            "--jobs",
+            "1",
+            env={"ORDER_FILE": str(order_file)},
+        )
+        assert isinstance(result.stdout, str)
+        output = result.stdout + result.stderr
+
+        self.assertEqual(result.returncode, 0, msg=output)
+        self.assertEqual(
+            order_file.read_text(encoding="utf-8").splitlines(),
+            ["skills-start", "skills-end", "adapters-start", "adapters-end"],
+        )
+        self.assertIn("Selected CI check summary:", output)
+        self.assertIn("skills.regression | passed | ok |", output)
+        self.assertIn("adapters.regression | passed | ok |", output)
+        self.assertLess(
+            output.index("skills.regression | passed | ok |"),
+            output.index("adapters.regression | passed | ok |"),
+        )
+        self.assertNotIn("SKILLS_STDOUT", output)
+        self.assertNotIn("ADAPTERS_STDERR", output)
+        self.assertIn("Selected CI checks passed.", output)
+
+    def test_ci_wrapper_run_to_completion_reports_failed_output_after_summary(self) -> None:
+        workspace = self.make_ci_workspace()
+        marker = workspace / "second-ran.txt"
+        self.write_fake_script(
+            workspace,
+            "scripts/test-skill-validator.py",
+            """
+import sys
+
+print("FIRST_STDOUT")
+print("FIRST_STDERR", file=sys.stderr)
+raise SystemExit(7)
+""".lstrip(),
+        )
+        self.write_fake_script(
+            workspace,
+            "scripts/test-adapter-distribution.py",
+            """
+import os
+from pathlib import Path
+
+Path(os.environ["SECOND_MARKER"]).write_text("ran", encoding="utf-8")
+print("SECOND_STDOUT")
+""".lstrip(),
+        )
+        fixture = self.write_selector_fixture(
+            self.minimal_selector_payload(
+                selected_checks=[
+                    self.selected_check("skills.regression", "python scripts/test-skill-validator.py"),
+                    self.selected_check("adapters.regression", "python scripts/test-adapter-distribution.py"),
+                ]
+            )
+        )
+
+        result = self.run_workspace_ci(
+            workspace,
+            fixture,
+            "--mode",
+            "explicit",
+            "--path",
+            "scripts/test-skill-validator.py",
+            "--jobs",
+            "1",
+            env={"SECOND_MARKER": str(marker)},
+        )
+        assert isinstance(result.stdout, str)
+        output = result.stdout + result.stderr
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertTrue(marker.exists(), msg=output)
+        self.assertIn("skills.regression | exited | exit code 7 |", output)
+        self.assertIn("adapters.regression | passed | ok |", output)
+        self.assertLess(output.index("Selected CI check summary:"), output.index("Failed selected check output:"))
+        self.assertIn("==> skills.regression (exited)", output)
+        self.assertIn("--- stdout ---", output)
+        self.assertIn("FIRST_STDOUT", output)
+        self.assertIn("--- stderr ---", output)
+        self.assertIn("FIRST_STDERR", output)
+        self.assertNotIn("SECOND_STDOUT", output)
+
+    def test_ci_wrapper_verbose_prints_successful_output_in_stable_order(self) -> None:
+        workspace = self.make_ci_workspace()
+        self.write_fake_script(
+            workspace,
+            "scripts/test-skill-validator.py",
+            "import sys\nprint('SKILL_VERBOSE_STDOUT')\nprint('SKILL_VERBOSE_STDERR', file=sys.stderr)\n",
+        )
+        self.write_fake_script(
+            workspace,
+            "scripts/test-adapter-distribution.py",
+            "print('ADAPTER_VERBOSE_STDOUT')\n",
+        )
+        fixture = self.write_selector_fixture(
+            self.minimal_selector_payload(
+                selected_checks=[
+                    self.selected_check("skills.regression", "python scripts/test-skill-validator.py"),
+                    self.selected_check("adapters.regression", "python scripts/test-adapter-distribution.py"),
+                ]
+            )
+        )
+
+        result = self.run_workspace_ci(
+            workspace,
+            fixture,
+            "--mode",
+            "explicit",
+            "--path",
+            "scripts/test-skill-validator.py",
+            "--jobs",
+            "1",
+            "--verbose",
+        )
+        assert isinstance(result.stdout, str)
+        output = result.stdout + result.stderr
+
+        self.assertEqual(result.returncode, 0, msg=output)
+        self.assertIn("Selected check output:", output)
+        self.assertLess(output.index("==> skills.regression (passed)"), output.index("==> adapters.regression (passed)"))
+        self.assertIn("SKILL_VERBOSE_STDOUT", output)
+        self.assertIn("SKILL_VERBOSE_STDERR", output)
+        self.assertIn("ADAPTER_VERBOSE_STDOUT", output)
+
+    def test_ci_wrapper_reports_decode_failures_without_emitting_invalid_bytes(self) -> None:
+        workspace = self.make_ci_workspace()
+        self.write_fake_script(
+            workspace,
+            "scripts/test-skill-validator.py",
+            """
+import sys
+
+sys.stdout.buffer.write(b"valid-before-stdout\\n")
+sys.stdout.buffer.write(b"bad-stdout-\\xff\\n")
+sys.stderr.buffer.write(b"bad-stderr-\\xfe\\n")
+raise SystemExit(1)
+""".lstrip(),
+        )
+        fixture = self.write_selector_fixture(
+            self.minimal_selector_payload(
+                selected_checks=[
+                    self.selected_check("skills.regression", "python scripts/test-skill-validator.py"),
+                ]
+            )
+        )
+
+        result = self.run_workspace_ci(
+            workspace,
+            fixture,
+            "--mode",
+            "explicit",
+            "--path",
+            "scripts/test-skill-validator.py",
+            "--jobs",
+            "1",
+            text=False,
+        )
+        assert isinstance(result.stdout, bytes)
+        combined = result.stdout + result.stderr
+        output = combined.decode("utf-8")
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("skills.regression | exited | exit code 1; stdout decode error; stderr decode error |", output)
+        self.assertIn("--- stdout (decode error; replacement text) ---", output)
+        self.assertIn("bad-stdout-", output)
+        self.assertIn("--- stderr (decode error; replacement text) ---", output)
+        self.assertIn("bad-stderr-", output)
+
+    def test_ci_wrapper_timeout_and_signal_failures_have_distinct_statuses(self) -> None:
+        workspace = self.make_ci_workspace()
+        self.write_fake_script(
+            workspace,
+            "scripts/test-skill-validator.py",
+            "import time\nprint('before-timeout', flush=True)\ntime.sleep(5)\n",
+        )
+        timeout_fixture = self.write_selector_fixture(
+            self.minimal_selector_payload(
+                selected_checks=[
+                    self.selected_check("skills.regression", "python scripts/test-skill-validator.py"),
+                ]
+            )
+        )
+
+        timed_out = self.run_workspace_ci(
+            workspace,
+            timeout_fixture,
+            "--mode",
+            "explicit",
+            "--path",
+            "scripts/test-skill-validator.py",
+            "--jobs",
+            "1",
+            "--timeout",
+            "1",
+        )
+        assert isinstance(timed_out.stdout, str)
+        timeout_output = timed_out.stdout + timed_out.stderr
+
+        self.assertNotEqual(timed_out.returncode, 0)
+        self.assertIn("skills.regression | timed out | timeout after 1s |", timeout_output)
+        self.assertIn("before-timeout", timeout_output)
+
+        self.write_fake_script(
+            workspace,
+            "scripts/test-skill-validator.py",
+            f"import os, signal\nos.kill(os.getpid(), {signal.SIGTERM})\n",
+        )
+        signal_fixture = self.write_selector_fixture(
+            self.minimal_selector_payload(
+                selected_checks=[
+                    self.selected_check("skills.regression", "python scripts/test-skill-validator.py"),
+                ]
+            )
+        )
+
+        killed = self.run_workspace_ci(
+            workspace,
+            signal_fixture,
+            "--mode",
+            "explicit",
+            "--path",
+            "scripts/test-skill-validator.py",
+            "--jobs",
+            "1",
+        )
+        assert isinstance(killed.stdout, str)
+        signal_output = killed.stdout + killed.stderr
+
+        self.assertNotEqual(killed.returncode, 0)
+        self.assertIn("skills.regression | killed | signal SIGTERM (15) |", signal_output)
+
     def test_ci_wrapper_reports_unavailable_selected_command(self) -> None:
         temp_root = Path(tempfile.mkdtemp(prefix="validation-selection-ci-missing-"))
         self.addCleanupTree(temp_root)
@@ -1121,7 +1470,7 @@ class ValidationSelectionTests(unittest.TestCase):
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("Run selected check: release.validate", output)
-        self.assertIn("command is unavailable: scripts/validate-release.py", output)
+        self.assertIn("release.validate | unavailable | command unavailable: scripts/validate-release.py |", output)
 
     def test_ci_wrapper_forwards_mode_arguments_to_selector(self) -> None:
         fixture = self.write_selector_fixture(self.minimal_selector_payload())
@@ -1339,6 +1688,7 @@ class ValidationSelectionTests(unittest.TestCase):
             "explicit",
             "--path",
             "skills/code-review/SKILL.md",
+            "--verbose",
             env={
                 "RIGORLOOP_SELECTOR_FIXTURE": str(fixture),
                 "RIGORLOOP_CI_BROAD_SMOKE_STUB": "1",
