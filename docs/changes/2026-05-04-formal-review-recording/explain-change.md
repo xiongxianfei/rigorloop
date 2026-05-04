@@ -6,7 +6,7 @@ This change implements the approved formal review recording contract through the
 
 Formal lifecycle review records are now stage-neutral across `proposal-review`, `spec-review`, `architecture-review`, `plan-review`, and `code-review`. Detailed review records are required only when the approved trigger policy applies, clean reviews can remain artifact-local, no-material detailed records do not require empty `review-resolution.md` files, material findings remain traceable through stable Finding IDs, and `pr-review` remains unsupported.
 
-M1-M4 implementation milestones are complete. Downstream code-review, verify, final explain-change, and PR handoff still own branch readiness and PR readiness.
+M1-M4 implementation milestones and M4 code-review are complete. Downstream verify, final explain-change, and PR handoff still own branch readiness and PR readiness.
 
 ## Problem
 
@@ -37,7 +37,7 @@ The implementation needed to align the governing contracts, validator coverage, 
 | Downstream closeout skills | Update `workflow`, `verify`, `explain-change`, and `pr` with no-material record and closeout blocking boundaries. | Preserves `R12`-`R13` downstream handoff rules. | Skill validator and explicit CI. |
 | Generated outputs | Regenerate `.codex/skills/**` and `dist/adapters/**` from canonical skills. | Satisfies `R15a` without hand-editing generated files. | Build drift checks and adapter validation. |
 | `docs/changes/2026-05-04-formal-review-recording/` | Adds and updates change metadata, explanation, review log, review-resolution, and reconstructed review evidence. | Provides durable traceability for the non-trivial workflow-governance change. | Change metadata and review artifact validation. |
-| `docs/plan.md` and the plan body | Track M1-M4 completion while keeping the initiative Active for downstream gates. | Keeps lifecycle state accurate until review, verify, final explanation, and PR handoff complete. | Artifact lifecycle validation. |
+| `docs/plan.md` and the plan body | Track M1-M4 completion and clean M4 code-review while keeping the initiative Active for downstream gates. | Keeps lifecycle state accurate until verify, final explanation, and PR handoff complete. | Artifact lifecycle validation. |
 
 ## Tests Added Or Changed
 
@@ -61,6 +61,8 @@ The implementation needed to align the governing contracts, validator coverage, 
 | `CR-M2-F1` | accepted | Created reconstructed review evidence for the M2 finding, fixed stale summary/scope wording, and validated the review-log/review-resolution closeout. |
 
 The later M3 direct code-review was clean and produced no material findings, so no new detailed review record or resolution entry was required.
+
+M4 code-review returned `clean-with-notes` with no blocking or required-change findings. Because it produced no material findings and no detailed-record trigger, the result is recorded artifact-locally in the plan instead of creating an empty review file.
 
 ## Validation Evidence
 
@@ -96,7 +98,7 @@ Broad smoke was not required by the plan, selector output, or review state.
 - No new review directory taxonomy was added.
 - Historical change packs were not migrated.
 - Generated `.codex/skills/` and `dist/adapters/` output was refreshed only through repository generators.
-- The plan remains Active after M4 because downstream code-review, verify, final explain-change, and PR handoff have not completed.
+- The plan remains Active after M4 because downstream verify, final explain-change, and PR handoff have not completed.
 
 ## Risks And Follow-Ups
 
@@ -106,4 +108,4 @@ Broad smoke was not required by the plan, selector output, or review state.
 
 ## Readiness
 
-M1-M4 implementation milestones are complete and committed through this closeout slice. The next workflow stage is M4 code-review; if that gate passes, continue to verify.
+M1-M4 implementation milestones and M4 code-review are complete. The next workflow stage is verify.
