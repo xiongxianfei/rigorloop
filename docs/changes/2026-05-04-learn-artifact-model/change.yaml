@@ -169,6 +169,17 @@ validation:
     selected_check_ids: skills.validate, skills.regression, skills.drift, adapters.regression, adapters.drift, adapters.validate, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate
   - command: git diff --check -- skills/learn/SKILL.md docs/learn/README.md scripts/test-skill-validator.py .codex/skills/learn/SKILL.md dist/adapters/claude/.claude/skills/learn/SKILL.md dist/adapters/codex/.agents/skills/learn/SKILL.md dist/adapters/opencode/.opencode/skills/learn/SKILL.md docs/plans/2026-05-04-learn-artifact-model.md docs/changes/2026-05-04-learn-artifact-model
     result: pass_after_m3
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-04-learn-artifact-model
+    result: pass_after_m3_code_review_r1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-04-learn-artifact-model
+    result: pass_after_m3_code_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-04-learn-artifact-model/change.yaml
+    result: pass_after_m3_code_review_r1
+  - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md --path docs/changes/2026-05-04-learn-artifact-model/review-log.md --path docs/changes/2026-05-04-learn-artifact-model/review-resolution.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r1.md
+    result: pass_after_m3_code_review_r1
+    selected_check_ids: review_artifacts.validate, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate
+  - command: git diff --check -- docs/plans/2026-05-04-learn-artifact-model.md docs/changes/2026-05-04-learn-artifact-model
+    result: pass_after_m3_code_review_r1
 changed_files:
   - AGENTS.md
   - CONSTITUTION.md
@@ -188,6 +199,7 @@ changed_files:
   - docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r2.md
   - docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m2-r1.md
   - docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m2-r2.md
+  - docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r1.md
   - scripts/validation_selection.py
   - scripts/test-select-validation.py
   - skills/learn/SKILL.md
@@ -198,7 +210,7 @@ changed_files:
   - dist/adapters/codex/.agents/skills/learn/SKILL.md
   - dist/adapters/opencode/.opencode/skills/learn/SKILL.md
 review:
-  status: m3_pending_code_review
+  status: m3_review_clean_with_notes
   unresolved_items: 0
 selected_workflow_contract: refactored
 broad_smoke_required: false
@@ -212,4 +224,5 @@ notes:
   - M2 is verified as a milestone slice. The full initiative is not branch-ready because M3-M4 remain incomplete.
   - M3 implements canonical learn skill guidance, adds the lightweight `docs/learn/README.md` index, and refreshes generated Codex skill and public adapter outputs through repository generators.
   - M3 does not add session templates, topic templates, empty topic files, a fixed topic taxonomy, or historical-note migration.
-  - M3 is implemented and ready for code-review. The full initiative is not branch-ready because M3 review and M4 final lifecycle closeout remain incomplete.
+  - M3 code-review round 1 completed with `clean-with-notes`.
+  - M3 is implemented and reviewed. The full initiative is not branch-ready because M3 verification and M4 final lifecycle closeout remain incomplete.

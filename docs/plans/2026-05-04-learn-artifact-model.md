@@ -251,6 +251,7 @@ This is workflow-governance and documentation-infrastructure work. It changes co
 - [x] 2026-05-04: M3 implementation complete; `skills/learn/SKILL.md` now guides Frame, Observe, Classify, and Route; `docs/learn/README.md` is the lightweight namespace index; generated skill and public adapter outputs were refreshed.
 - [x] 2026-05-04: M3 selector-selected CI passed for canonical skill, learn index, regression test, generated Codex skill output, generated public adapter output, plan, and change metadata.
 - [x] M3 complete.
+- [x] 2026-05-04: M3 `code-review` round 1 completed with `clean-with-notes`.
 - [ ] M4 complete.
 
 ## Decision Log
@@ -358,13 +359,19 @@ This is workflow-governance and documentation-infrastructure work. It changes co
   - `python scripts/select-validation.py --mode explicit --path skills/learn/SKILL.md --path docs/learn/README.md --path scripts/test-skill-validator.py --path .codex/skills/learn/SKILL.md --path dist/adapters/claude/.claude/skills/learn/SKILL.md --path dist/adapters/codex/.agents/skills/learn/SKILL.md --path dist/adapters/opencode/.opencode/skills/learn/SKILL.md --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md`
   - `bash scripts/ci.sh --mode explicit --path skills/learn/SKILL.md --path docs/learn/README.md --path scripts/test-skill-validator.py --path .codex/skills/learn/SKILL.md --path dist/adapters/claude/.claude/skills/learn/SKILL.md --path dist/adapters/codex/.agents/skills/learn/SKILL.md --path dist/adapters/opencode/.opencode/skills/learn/SKILL.md --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md`
   - `git diff --check -- skills/learn/SKILL.md docs/learn/README.md scripts/test-skill-validator.py .codex/skills/learn/SKILL.md dist/adapters/claude/.claude/skills/learn/SKILL.md dist/adapters/codex/.agents/skills/learn/SKILL.md dist/adapters/opencode/.opencode/skills/learn/SKILL.md docs/plans/2026-05-04-learn-artifact-model.md docs/changes/2026-05-04-learn-artifact-model`
+- 2026-05-04: M3 code-review round 1 validation passed.
+  - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-04-learn-artifact-model`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-04-learn-artifact-model`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-04-learn-artifact-model/change.yaml`
+  - `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md --path docs/changes/2026-05-04-learn-artifact-model/review-log.md --path docs/changes/2026-05-04-learn-artifact-model/review-resolution.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r1.md`
+  - `git diff --check -- docs/plans/2026-05-04-learn-artifact-model.md docs/changes/2026-05-04-learn-artifact-model`
 
 ## Outcome And Retrospective
 
-- Active. M1-M2 are verified; M3 is implemented and ready for `code-review`; M4 is not started.
+- Active. M1-M2 are verified; M3 implementation review is `clean-with-notes`; M4 is not started.
 
 ## Readiness
 
-M3 is implemented as a milestone slice and ready for `code-review`. The full initiative is not branch-ready because M3 review and M4 final lifecycle closeout remain incomplete.
+M3 is implemented and reviewed as a milestone slice. The full initiative is not branch-ready because M3 verification and M4 final lifecycle closeout remain incomplete.
 
 Stop before M4 unless the user explicitly starts the next milestone. Implementation must keep this plan's progress, decisions, discoveries, and validation notes current as later milestones proceed.

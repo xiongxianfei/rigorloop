@@ -2,7 +2,7 @@
 
 ## Status
 
-M3 implemented; code-review pending; M4 not started.
+M3 implemented and code-review clean; M4 not started.
 
 ## Summary
 
@@ -116,3 +116,7 @@ This is not full initiative `branch-ready`: M3 review and M4 final lifecycle clo
 - `python scripts/validate-adapters.py --version 0.1.1` - passed.
 - `bash scripts/ci.sh --mode explicit --path skills/learn/SKILL.md --path docs/learn/README.md --path scripts/test-skill-validator.py --path .codex/skills/learn/SKILL.md --path dist/adapters/claude/.claude/skills/learn/SKILL.md --path dist/adapters/codex/.agents/skills/learn/SKILL.md --path dist/adapters/opencode/.opencode/skills/learn/SKILL.md --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md` - passed; selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
 - `git diff --check -- skills/learn/SKILL.md docs/learn/README.md scripts/test-skill-validator.py .codex/skills/learn/SKILL.md dist/adapters/claude/.claude/skills/learn/SKILL.md dist/adapters/codex/.agents/skills/learn/SKILL.md dist/adapters/opencode/.opencode/skills/learn/SKILL.md docs/plans/2026-05-04-learn-artifact-model.md docs/changes/2026-05-04-learn-artifact-model` - passed.
+
+## M3 Review State
+
+`code-review` round 1 found no blocking or required-change findings for the M3 slice. The review record is `docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r1.md`.
