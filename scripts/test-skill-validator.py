@@ -505,6 +505,90 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         self.assertNotIn("next required or default downstream stage", verify)
         self.assertNotIn("downstream stage is `ci`", verify)
 
+    def test_learn_skill_final_artifact_model_and_bounded_process(self) -> None:
+        skill_body = (ROOT / "skills" / "learn" / "SKILL.md").read_text(encoding="utf-8")
+        readme_path = ROOT / "docs" / "learn" / "README.md"
+        self.assertTrue(readme_path.exists(), "docs/learn/README.md must exist as the learn namespace index")
+        readme_body = readme_path.read_text(encoding="utf-8")
+
+        required_skill_terms = [
+            "`docs/learn/sessions/YYYY-MM-DD-<slug>.md`",
+            "`docs/learn/topics/<topic>.md`",
+            "Frame",
+            "Observe",
+            "Classify",
+            "Route",
+            "primary classification",
+            "secondary routes",
+            "`observation`",
+            "`durable-lesson`",
+            "`artifact-update`",
+            "`decision`",
+            "`direction`",
+            "`process-follow-up`",
+            "`no-durable-lesson`",
+            "contributor confirmation",
+            "confirmed-by",
+            "candidate classifications",
+            "no-learn rationale",
+            "single event",
+            "systemic gap",
+            "maintainer request",
+            "incident response",
+            "contributor observation",
+            "periodic learn sessions",
+            "time window start",
+            "time window end",
+            "window basis",
+            "bounded evidence",
+            "trigger statement and named artifacts",
+            "exact sections first",
+            "full-file reads only when narrower evidence is insufficient",
+            "topic files are curated guidance",
+            "must not override",
+            "action-owning artifact",
+            "`docs/roadmap.md`",
+            "pre-session trigger closeout",
+            "Frame phase",
+            "repository-owned generators",
+        ]
+        for term in required_skill_terms:
+            with self.subTest(file="learn skill", term=term):
+                self.assertIn(term, skill_body)
+
+        required_readme_terms = [
+            "docs/learn/",
+            "sessions/",
+            "topics/",
+            "`docs/learn/sessions/YYYY-MM-DD-<slug>.md`",
+            "`docs/learn/topics/<topic>.md`",
+            "raw historical session records",
+            "curated durable topic guidance",
+            "session record is the primary output",
+            "Topic files are curated guidance",
+            "not authoritative",
+            "No templates",
+            "No empty topic taxonomy",
+            "remove, revise, or absorb",
+            "traceability",
+        ]
+        for term in required_readme_terms:
+            with self.subTest(file="learn readme", term=term):
+                self.assertIn(term, readme_body)
+
+        forbidden_terms = [
+            "docs/retrospectives",
+            "docs/learnings",
+            "future learn refactor",
+            "temporary learn refactor",
+            "General retrospective",
+            "Until the future learn refactor",
+        ]
+        for body, label in ((skill_body, "learn skill"), (readme_body, "learn readme")):
+            for term in forbidden_terms:
+                with self.subTest(file=label, term=term):
+                    self.assertNotIn(term, body)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

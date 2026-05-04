@@ -121,11 +121,11 @@ This is workflow-governance and documentation-infrastructure work. It changes co
 - Expected observable result: the validation selector recognizes the new learn artifact namespace without treating raw session records or curated topic files as lifecycle-managed specs.
 - Commit message: `M2: classify learn artifact paths`
 - Milestone closeout:
-  - [ ] validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks: sending `docs/learn/**` through the wrong validator could make valid learn sessions fail because they are not lifecycle-managed artifacts.
 - Rollback/recovery: revert selector category changes and keep `docs/learn/**` path recognition deferred until a safer lightweight category is defined.
 
@@ -150,17 +150,17 @@ This is workflow-governance and documentation-infrastructure work. It changes co
   - `python scripts/build-skills.py --check`
   - `python scripts/build-adapters.py --version 0.1.1 --check`
   - `python scripts/validate-adapters.py --version 0.1.1`
-  - `python scripts/select-validation.py --mode explicit --path skills/learn/SKILL.md --path docs/learn/README.md --path scripts/test-skill-validator.py --path .codex/skills/learn/SKILL.md --path dist/adapters/claude/.claude/skills/learn/SKILL.md --path dist/adapters/codex/.agents/skills/learn/SKILL.md --path dist/adapters/opencode/.opencode/skills/learn/SKILL.md --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml`
-  - `bash scripts/ci.sh --mode explicit --path skills/learn/SKILL.md --path docs/learn/README.md --path scripts/test-skill-validator.py --path .codex/skills/learn/SKILL.md --path dist/adapters/claude/.claude/skills/learn/SKILL.md --path dist/adapters/codex/.agents/skills/learn/SKILL.md --path dist/adapters/opencode/.opencode/skills/learn/SKILL.md --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml`
+  - `python scripts/select-validation.py --mode explicit --path skills/learn/SKILL.md --path docs/learn/README.md --path scripts/test-skill-validator.py --path .codex/skills/learn/SKILL.md --path dist/adapters/claude/.claude/skills/learn/SKILL.md --path dist/adapters/codex/.agents/skills/learn/SKILL.md --path dist/adapters/opencode/.opencode/skills/learn/SKILL.md --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md`
+  - `bash scripts/ci.sh --mode explicit --path skills/learn/SKILL.md --path docs/learn/README.md --path scripts/test-skill-validator.py --path .codex/skills/learn/SKILL.md --path dist/adapters/claude/.claude/skills/learn/SKILL.md --path dist/adapters/codex/.agents/skills/learn/SKILL.md --path dist/adapters/opencode/.opencode/skills/learn/SKILL.md --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md`
   - `git diff --check -- skills/learn/SKILL.md docs/learn/README.md scripts/test-skill-validator.py .codex/skills/learn/SKILL.md dist/adapters/claude/.claude/skills/learn/SKILL.md dist/adapters/codex/.agents/skills/learn/SKILL.md dist/adapters/opencode/.opencode/skills/learn/SKILL.md docs/plans/2026-05-04-learn-artifact-model.md docs/changes/2026-05-04-learn-artifact-model`
 - Expected observable result: invoking `learn` gives contributors process guidance and canonical paths that match the approved spec, and generated outputs match canonical skill source.
 - Commit message: `M3: implement learn skill artifact routing`
 - Milestone closeout:
-  - [ ] validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks: the skill may become a template disguised as guidance, or generated outputs may drift if generators are not run.
 - Rollback/recovery: revert canonical skill/index changes, rerun generators, and keep workflow contract in M1 as the source of truth while correcting skill wording.
 
@@ -247,7 +247,10 @@ This is workflow-governance and documentation-infrastructure work. It changes co
 - [x] 2026-05-04: M2 `code-review` round 1 finding `CR-M2-F1` accepted and resolved before round 2.
 - [x] 2026-05-04: M2 `code-review` round 2 completed with `clean-with-notes`.
 - [x] 2026-05-04: M2 verified as a milestone slice; full initiative branch-ready is deferred until M3-M4 complete.
-- [ ] M3 complete.
+- [x] 2026-05-04: M3 skill-validator regression was written before implementation; it failed as expected because `docs/learn/README.md` did not exist and the canonical learn guidance was still old.
+- [x] 2026-05-04: M3 implementation complete; `skills/learn/SKILL.md` now guides Frame, Observe, Classify, and Route; `docs/learn/README.md` is the lightweight namespace index; generated skill and public adapter outputs were refreshed.
+- [x] 2026-05-04: M3 selector-selected CI passed for canonical skill, learn index, regression test, generated Codex skill output, generated public adapter output, plan, and change metadata.
+- [x] M3 complete.
 - [ ] M4 complete.
 
 ## Decision Log
@@ -258,6 +261,7 @@ This is workflow-governance and documentation-infrastructure work. It changes co
 - 2026-05-04: Selector recognition must precede the learn skill/index milestone because current validation selection blocks unclassified `docs/learn/**` paths.
 - 2026-05-04: M1 keeps detailed learn-session procedure in `specs/learn-artifact-model.md` and `specs/learn-artifact-model.test.md`; `specs/rigorloop-workflow.md` owns only workflow-level routing, nonblocking behavior, and source-of-truth boundaries.
 - 2026-05-04: M2 classifies learn paths as `learn-artifact` and selects no validator for those paths. This keeps validation lightweight until session/topic shapes are proven by usage or a later validator contract.
+- 2026-05-04: M3 names public adapter output and install-location alternatives alongside `.codex/skills/` in the learn skill's generated-output boundary so repository generators keep `learn` portable across Codex, Claude, and opencode adapters.
 
 ## Surprises And Discoveries
 
@@ -265,6 +269,7 @@ This is workflow-governance and documentation-infrastructure work. It changes co
 - `README.md` mentions periodic learning as a lifecycle category but does not define learn artifact surfaces; M1 leaves it unchanged and records it as unaffected in `docs/changes/2026-05-04-learn-artifact-model/change.yaml`.
 - M1 code-review found that two affected surfaces omitted incident response and contributor observation from the learn trigger list even though the workflow contract and learn artifact spec included them. The targeted fix restored those trigger classes in `docs/workflows.md` and `specs/rigorloop-workflow.test.md`.
 - M2 does not create `docs/learn/README.md` or any session/topic file; selector recognition now makes those paths safe for M3 to create and selector-validate.
+- M3 adapter generation initially treated `learn` as non-portable when the skill mentioned `.codex/skills/` without public adapter alternatives. Naming `dist/adapters/`, `.agents/skills`, `.claude/skills`, and `.opencode/skills` in the generated-output boundary restored generated adapter coverage.
 
 ## Validation Notes
 
@@ -340,13 +345,26 @@ This is workflow-governance and documentation-infrastructure work. It changes co
   - `python scripts/select-validation.py --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md --path docs/changes/2026-05-04-learn-artifact-model/review-log.md --path docs/changes/2026-05-04-learn-artifact-model/review-resolution.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m2-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m2-r2.md`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md --path docs/plans/2026-05-04-learn-artifact-model.md`
   - `bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md --path docs/changes/2026-05-04-learn-artifact-model/review-log.md --path docs/changes/2026-05-04-learn-artifact-model/review-resolution.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m2-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m2-r2.md`
+- 2026-05-04: M3 pre-implementation skill-validator regression failed as expected.
+  - `python scripts/test-skill-validator.py`
+- 2026-05-04: M3 implementation validation passed.
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/validate-skills.py`
+  - `python scripts/build-skills.py`
+  - `python scripts/build-adapters.py --version 0.1.1`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/build-adapters.py --version 0.1.1 --check`
+  - `python scripts/validate-adapters.py --version 0.1.1`
+  - `python scripts/select-validation.py --mode explicit --path skills/learn/SKILL.md --path docs/learn/README.md --path scripts/test-skill-validator.py --path .codex/skills/learn/SKILL.md --path dist/adapters/claude/.claude/skills/learn/SKILL.md --path dist/adapters/codex/.agents/skills/learn/SKILL.md --path dist/adapters/opencode/.opencode/skills/learn/SKILL.md --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md`
+  - `bash scripts/ci.sh --mode explicit --path skills/learn/SKILL.md --path docs/learn/README.md --path scripts/test-skill-validator.py --path .codex/skills/learn/SKILL.md --path dist/adapters/claude/.claude/skills/learn/SKILL.md --path dist/adapters/codex/.agents/skills/learn/SKILL.md --path dist/adapters/opencode/.opencode/skills/learn/SKILL.md --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md`
+  - `git diff --check -- skills/learn/SKILL.md docs/learn/README.md scripts/test-skill-validator.py .codex/skills/learn/SKILL.md dist/adapters/claude/.claude/skills/learn/SKILL.md dist/adapters/codex/.agents/skills/learn/SKILL.md dist/adapters/opencode/.opencode/skills/learn/SKILL.md docs/plans/2026-05-04-learn-artifact-model.md docs/changes/2026-05-04-learn-artifact-model`
 
 ## Outcome And Retrospective
 
-- Active. M1-M2 are verified; M3-M4 are not started.
+- Active. M1-M2 are verified; M3 is implemented and ready for `code-review`; M4 is not started.
 
 ## Readiness
 
-M2 is verified as a milestone slice. The full initiative is not branch-ready because M3-M4 remain incomplete.
+M3 is implemented as a milestone slice and ready for `code-review`. The full initiative is not branch-ready because M3 review and M4 final lifecycle closeout remain incomplete.
 
-Stop before M3 unless the user explicitly starts the next milestone. Implementation must keep this plan's progress, decisions, discoveries, and validation notes current as later milestones proceed.
+Stop before M4 unless the user explicitly starts the next milestone. Implementation must keep this plan's progress, decisions, discoveries, and validation notes current as later milestones proceed.
