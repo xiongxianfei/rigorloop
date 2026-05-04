@@ -162,7 +162,11 @@ Fast-lane and bugfix execution remain explicit-step unless a higher-priority app
 
 When review feedback exists, each material finding MUST include evidence, a required outcome, and a safe resolution path or `needs-decision` rationale before it drives fixes.
 
+Workflow-managed formal reviews that produce material findings, stage-owned non-approval outcomes that block downstream progress or require revision, reconstructed evidence, closeout evidence citations, or explicit durable-record requests MUST preserve a detailed review record before review-driven fixes or downstream routing proceed.
+
 When material findings exist for a non-trivial change, dispositions MUST be recorded in `review-resolution.md` using only `accepted`, `rejected`, `deferred`, `partially-accepted`, or `needs-decision`. `needs-decision` is not final and blocks `verify`, `explain-change`, and `pr` until resolved or explicitly deferred by an authorized owner.
+
+Clean required formal reviews with no material findings MAY settle in the reviewed artifact when no detailed-record trigger applies. A no-material detailed review record requires `review-log.md` but MUST NOT create an empty `review-resolution.md` solely because `reviews/` exists.
 
 `review-resolution.md` MUST use top-level `Closeout status: open` or `Closeout status: closed`. `Closeout status: closed` requires final dispositions, no `review-log.md` open findings, plus the disposition-specific action, rationale, follow-up, and validation evidence records required by the governing spec.
 

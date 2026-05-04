@@ -37,6 +37,7 @@ Do not silently blend conflicting higher-priority instructions. Call out the con
 - README content between `<!-- vision:start -->` and `<!-- vision:end -->` is generated from `VISION.md`; README front-matter is not the source of truth when it conflicts with `VISION.md`.
 - For non-trivial work, the baseline change-local artifact pack is `docs/changes/<change-id>/change.yaml` plus durable Markdown reasoning. Standalone `review-resolution.md` and `verify-report.md` remain conditional under the workflow contract.
 - When material review findings exist, record complete findings with evidence, required outcome, and safe resolution or `needs-decision` rationale. Use `review-resolution.md` dispositions `accepted`, `rejected`, `deferred`, `partially-accepted`, or `needs-decision`; `needs-decision` keeps `Closeout status: open`, while `Closeout status: closed` requires final dispositions, validation evidence, and no `review-log.md` open findings.
+- Workflow-managed formal reviews create detailed review records when they produce material findings, stage-owned non-approval outcomes that block downstream progress or require revision, reconstructed evidence, closeout evidence citations, or explicit durable-record requests. Clean reviews may settle artifact-locally when no detailed-record trigger applies; no-material detailed records need `review-log.md` but not an empty `review-resolution.md`.
 - Keep `AGENTS.md` practical. Move workflow detail to `docs/workflows.md` and feature-specific detail to `specs/`.
 
 ## Planning and workflow

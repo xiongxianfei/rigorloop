@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- none yet
+- [2026-05-04 Formal review recording](plans/2026-05-04-formal-review-recording.md) - active execution plan for making formal lifecycle review recording stage-neutral across proposal, spec, architecture, plan, and code review, with proportional detailed-record triggers, validator coverage, skill guidance alignment, generated-output refresh when needed, and lifecycle closeout.
 
 ## Blocked
 - none yet

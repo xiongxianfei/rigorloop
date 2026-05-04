@@ -468,6 +468,24 @@ R12al. A first-pass review outcome that requires revision, changes, or blocks do
 
 R12am. `verify`, final `explain-change` closeout, and `pr` handoff MUST NOT proceed while `review-log.md` still lists open findings.
 
+R12an. A detailed review file MUST be created for a formal lifecycle review when the review produces material findings, returns a stage-owned non-approval outcome that blocks downstream progress or requires revision, is reconstructed, will be cited as closeout evidence, or is explicitly requested by a reviewer or maintainer.
+
+R12ao. Formal lifecycle review stages for detailed review files are `proposal-review`, `spec-review`, `architecture-review`, `plan-review`, and `code-review`. A dedicated `pr-review` detailed file MUST NOT be used unless a later approved spec extends the allowed stage set and validator.
+
+R12ap. Stage-owned non-approval outcomes MUST include `revise`, `changes-requested`, `blocked`, `rethink`, `inconclusive`, and equivalent stage-specific outcomes that prevent downstream progress.
+
+R12aq. A clean formal review with no material findings MUST NOT require an empty detailed review file solely because the review was required. It MAY be recorded through artifact-local settlement when no detailed-record trigger applies.
+
+R12ar. When a workflow-managed formal review triggers a detailed review file before a change-local root exists, the change MUST create an initial review-record root before review-driven fixes or downstream routing proceed.
+
+R12as. If material findings exist, the initial review-record root MUST include `change.yaml`, `review-log.md`, `review-resolution.md`, and `reviews/<stage>-r<n>.md`.
+
+R12at. If no material findings exist, but a detailed review file is still required, the initial review-record root MUST include `change.yaml`, `review-log.md`, and `reviews/<stage>-r<n>.md`. It MUST NOT include an empty `review-resolution.md` solely because `reviews/` exists.
+
+R12au. The initial review-record root MUST NOT be treated as the final non-trivial change-local pack. Final handoff for non-trivial work still needs `change.yaml` plus durable Markdown reasoning under `R14b`.
+
+R12av. Review files MUST preserve review event evidence and finding closeout. They MUST NOT replace proposal, spec, architecture artifact, ADR, or plan status.
+
 R12b. Routine non-material review notes MAY remain in PR body, the explain-change artifact, or another contributor-visible review surface when they do not require material finding disposition.
 
 R12c. A standalone `review-resolution.md` artifact MUST be used when any of the following is true:
@@ -645,6 +663,7 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - Governance adoption, workflow-governance, or source-of-truth changes attempted without `CONSTITUTION.md` MUST stop unless the proposal is explicit bootstrap work under `R6g`.
 - Architecture, plan, code-review, or onboarding-heavy work that would rely on `docs/project-map.md` MUST stop, refresh the map, or record a no-map rationale when the map is absent, known-stale, contradicted, or missing the relied-on area.
 - Workflow-governance changes with affected operating or governance surfaces that are not updated, explicitly marked unaffected with rationale, or deferred with owner and follow-up MUST be considered incomplete.
+- Review-driven fixes or downstream routing after a formal lifecycle review MUST stop when a required detailed review file or required initial review-record root is missing.
 - `verify`, final `explain-change`, and `pr` MUST stop while required `review-resolution` closeout remains open.
 - Triggered `learn` MUST NOT stop ordinary `verify`, final `explain-change`, or `pr` when no higher-priority artifact makes it blocking and either the pre-session closeout is recorded or the session record captures the outcome after Frame.
 - Invalid skill structure MUST fail local validation and CI validation.
@@ -672,6 +691,7 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - Verification evidence for non-trivial work MUST record the commands run and their results in a contributor-visible location.
 - PR text MUST state validation run or a no-test rationale for every change.
 - When review feedback exists, the recorded review resolution MUST be visible to reviewers in the PR, explain-change artifact, or a standalone review-resolution artifact.
+- Triggered detailed formal review records MUST be discoverable through `review-log.md` when they exist, while clean artifact-local settlements remain discoverable in the reviewed artifact.
 - `change.yaml` SHOULD make artifact and validation traceability inspectable without reading every Markdown artifact.
 - For planned milestone work, contributor-visible branch or pull-request history SHOULD make milestone boundaries visible through the standardized milestone commit subjects defined in `R8b`.
 - Workflow summary and skill guidance SHOULD make category, obligation, and handoff ownership visible enough that contributors do not need chat history to know which stage blocks downstream readiness.
@@ -719,6 +739,10 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 23. A bootstrap proposal may proceed without an existing `CONSTITUTION.md` for governance adoption, workflow-governance, or source-of-truth changes only when its `Vision fit` explicitly identifies that it is creating or migrating the missing constitution.
 24. A change with open material review findings may not proceed to `verify`, final `explain-change`, or `pr` even when implementation tests pass.
 25. Existing active work may finish under its starting workflow contract unless it opts into the refactored contract or touches refactored workflow surfaces directly.
+26. A clean required `proposal-review` may settle in proposal status or decision log without creating empty review artifacts when no detailed-record trigger applies.
+27. A no-material `plan-review` with `rethink` creates a detailed review file and `review-log.md`, but not an empty `review-resolution.md`.
+28. A material `architecture-review` finding before any change-local root creates an initial review-record root with `review-resolution.md` before design fixes proceed.
+29. A final PR-ready handoff is incomplete if only the initial review-record root exists and durable Markdown reasoning was never added.
 
 ## Non-goals
 
@@ -757,6 +781,8 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - A contributor can tell that triggered `learn` creates a tracked session record after Frame, that pre-session follow-up, deferral, or no-learn closeout is recorded in an allowed contributor-visible tracked or review-visible surface, that durable topic guidance uses `docs/learn/topics/**`, and that triggered `learn` blocks downstream only when a higher-priority artifact explicitly makes it blocking.
 - A contributor can tell that `ci-maintenance` means CI infrastructure maintenance and not validation execution.
 - A contributor can tell that `review-resolution` is the closeout stage for review findings and that open required closeout blocks `verify`, final `explain-change`, and `pr`.
+- A contributor can tell which formal lifecycle review outcomes require detailed review files, when clean reviews remain artifact-local, and when no-material review records omit empty `review-resolution.md`.
+- A reviewer can distinguish an initial review-record root from the final non-trivial change-local pack.
 - A contributor can tell that `docs/project-map.md` is a living reference and must be refreshed or bypassed with a no-map rationale before reliance when absent, known-stale, contradicted, or missing the relied-on area.
 - A contributor can tell that `VISION.md` and `CONSTITUTION.md` are standing artifacts with different absence gates.
 - A reviewer can confirm that affected operating and governance surfaces are updated, explicitly marked unaffected with rationale, or deferred with owner and follow-up in an allowed contributor-visible tracked or review-visible surface.
