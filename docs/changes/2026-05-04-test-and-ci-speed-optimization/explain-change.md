@@ -1,4 +1,4 @@
-# Test and CI Speed Optimization M1-M3 Explain Change
+# Test and CI Speed Optimization M1-M4 Explain Change
 
 ## Summary
 
@@ -8,7 +8,7 @@ M2 replaces ad hoc selected-check execution with a deterministic sequential resu
 
 M3 adds bounded scheduling for reviewed parallel-safe checks. Consecutive allowlisted checks can run concurrently up to `--jobs`, non-allowlisted checks run alone, default execution continues launching queued work after failures, and `--fail-fast` stops only queued checks that have not started while preserving already-started results.
 
-Contributor guidance and hosted-CI boundary proof remain in M4.
+M4 documents the wrapper execution flags in contributor guidance, adds a contract test that hosted CI remains thin and matrix-free, leaves `.github/workflows/ci.yml` unchanged because it already delegates to `scripts/ci.sh`, and records final six-script plus broad-smoke proof.
 
 ## Decision Trail
 
@@ -16,7 +16,7 @@ Contributor guidance and hosted-CI boundary proof remain in M4.
 - Spec: `specs/test-and-ci-speed-optimization.md`
 - Test spec: `specs/test-and-ci-speed-optimization.test.md`
 - Plan: `docs/plans/2026-05-04-test-and-ci-speed-optimization.md`
-- Milestones: M1, catalog metadata and wrapper flag contract; M2, deterministic sequential runner and failure attribution; M3, bounded parallel scheduling and fail-fast
+- Milestones: M1, catalog metadata and wrapper flag contract; M2, deterministic sequential runner and failure attribution; M3, bounded parallel scheduling and fail-fast; M4, contributor guidance and final proof
 
 ## Diff Rationale
 
@@ -24,18 +24,20 @@ Contributor guidance and hosted-CI boundary proof remain in M4.
 | --- | --- | --- | --- |
 | `scripts/validation_selection.py` | adds `parallel_safe` catalog metadata and marks only the six reviewed regression check IDs safe | satisfies the allowlist boundary without changing selector routing or command identities | `python scripts/test-select-validation.py` |
 | `scripts/ci.sh` | parses `--jobs`, `--timeout`, `--fail-fast`, and `--verbose`; adds default timeout and CPU-minus-one default job helper; adds the captured-result runner and bounded scheduler | establishes the wrapper-level invocation contract, deterministic summaries, output capture, timeout handling, failure attribution, parallel-safe bounded execution, non-allowlisted serial execution, and fail-fast queued cancellation | `python scripts/test-select-validation.py` |
-| `scripts/test-select-validation.py` | adds M1 regression tests for catalog metadata and wrapper flags, M2 regression tests for sequential reporting, and M3 regression tests for concurrent allowlisted execution, non-allowlisted isolation, default jobs, run-to-completion, and fail-fast | proves the new contract before production code and guards selector/wrapper boundary compatibility | red then green `python scripts/test-select-validation.py` |
+| `scripts/test-select-validation.py` | adds M1 regression tests for catalog metadata and wrapper flags, M2 regression tests for sequential reporting, M3 regression tests for concurrent scheduling, and M4 contract tests for workflow guidance plus hosted CI boundary behavior | proves the new contract before production code and guards selector/wrapper and workflow-boundary compatibility | red then green `python scripts/test-select-validation.py` |
+| `docs/workflows.md` | documents `--jobs`, `--jobs 1`, `--timeout`, `--fail-fast`, `--verbose`, and the matrix-free hosted-CI boundary | makes the completed wrapper behavior discoverable without implying caching, matrix fan-out, or hosted-CI redesign | `python scripts/test-select-validation.py` |
+| `.github/workflows/ci.yml` | unchanged | inspection and T17 proof show the workflow already delegates to `scripts/ci.sh` for PR and main modes without matrix fan-out, hardcoded check IDs, caching, distributed execution, or sandbox setup | `python scripts/test-select-validation.py` |
 | `docs/changes/2026-05-04-test-and-ci-speed-optimization/` | creates the baseline change-local pack | satisfies the non-trivial change evidence contract | change metadata validation |
-| `docs/plans/2026-05-04-test-and-ci-speed-optimization.md` and `docs/plan.md` | records M1-M3 progress and validation evidence | keeps the active plan and plan index current during implementation | selector-selected validation |
+| `docs/plans/2026-05-04-test-and-ci-speed-optimization.md` and `docs/plan.md` | records M1-M4 progress and validation evidence | keeps the active plan and plan index current during implementation | selector-selected validation |
 
 ## Same-Slice Completeness
 
-- In scope through M3: M1 requirements `R2`, `R2a`, `R2b`, `R2c`, `R3`, `R3a`, `R3b`, `R4`, `R4c`, `R4d`, `R5`, `R7`, `R10`, `R16`, `R16a`, and `R20`; M2 requirements `R1`, `R2a`, `R3c`, `R3d`, `R3e`, `R6`, `R8`-`R14`, `R16`, `R16a`, and `R20`; M3 requirements `R2c`, `R2d`, `R4a`, `R4b`, `R6`, `R7`-`R7c`, `R8a`, `R9a`, `R9c`, `R10b`, `R11`, `R12`, and `R20`.
-- Out of scope through M3: hosted CI matrix fan-out, caching, distributed execution, sandboxing, and final contributor guidance.
-- `docs/workflows.md` is intentionally unchanged until M4 because contributor guidance belongs after the scheduler behavior exists end to end.
-- `.github/workflows/ci.yml` is intentionally unchanged because the approved first slice keeps hosted CI topology and matrix fan-out out of scope.
-- `docs/architecture/system/architecture.md` is intentionally unchanged because M1-M3 preserve the existing selector, catalog, wrapper, and hosted CI boundaries without introducing a new helper module or parser boundary.
+- In scope through M4: M1 requirements `R2`, `R2a`, `R2b`, `R2c`, `R3`, `R3a`, `R3b`, `R4`, `R4c`, `R4d`, `R5`, `R7`, `R10`, `R16`, `R16a`, and `R20`; M2 requirements `R1`, `R2a`, `R3c`, `R3d`, `R3e`, `R6`, `R8`-`R14`, `R16`, `R16a`, and `R20`; M3 requirements `R2c`, `R2d`, `R4a`, `R4b`, `R6`, `R7`-`R7c`, `R8a`, `R9a`, `R9c`, `R10b`, `R11`, `R12`, and `R20`; M4 requirements `R9`, `R10`, `R15`, `R17`-`R20`, and acceptance criteria `AC1`-`AC9`.
+- Out of scope through M4: hosted CI matrix fan-out, caching, distributed execution, sandboxing, persistent result caching, and per-check resource isolation.
+- `.github/workflows/ci.yml` is intentionally unchanged in M4 because the tracked workflow already calls `scripts/ci.sh --mode pr` and `scripts/ci.sh --mode main` without duplicating selector path classification, stable check lists, or matrix axes.
+- `docs/architecture/system/architecture.md` is intentionally unchanged because M1-M4 preserve the existing selector, catalog, wrapper, and hosted CI boundaries without introducing a new helper module or parser boundary.
 - `specs/test-and-ci-speed-optimization.test.md` is intentionally unchanged in M3 because it already contained the required `T4`, `T6`, `T7`, `T8`, and `T9` scheduler cases.
+- `specs/test-and-ci-speed-optimization.test.md` is intentionally unchanged in M4 because it already contained the required `T15`-`T19` final proof, hosted-CI boundary, and safety-evidence cases.
 
 ## Parallel-Safety Evidence
 
@@ -101,7 +103,34 @@ The initial allowlist marks only reviewed regression scripts. Source inspection 
   - Passed.
 - `rg -n '[[:blank:]]$|\\t' scripts/ci.sh scripts/test-select-validation.py docs/plan.md docs/plans/2026-05-04-test-and-ci-speed-optimization.md docs/changes/2026-05-04-test-and-ci-speed-optimization`
   - Returned no matches.
+- `python scripts/test-select-validation.py`
+  - First M4 run: expected failure before documentation update. New T17 coverage exposed missing wrapper-flag guidance in `docs/workflows.md`.
+  - Second M4 run: passed with 55 tests after adding the workflow-guidance flag assertions and hosted-CI matrix-free assertions.
+- `bash scripts/ci.sh --mode explicit --path scripts/test-skill-validator.py --path scripts/test-adapter-distribution.py --path scripts/test-change-metadata-validator.py --path scripts/test-review-artifact-validator.py --path scripts/test-select-validation.py --path scripts/test-artifact-lifecycle-validator.py --jobs 6`
+  - Passed selected checks `skills.regression`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.regression`, `artifact_lifecycle.regression`, `change_metadata.regression`, and `selector.regression`.
+- `python scripts/select-validation.py --mode explicit --path docs/workflows.md --path .github/workflows/ci.yml --path scripts/ci.sh --path scripts/validation_selection.py --path scripts/test-select-validation.py --path specs/test-and-ci-speed-optimization.md --path specs/test-and-ci-speed-optimization.test.md --path docs/proposals/2026-05-04-test-and-ci-speed-optimization.md --path docs/plans/2026-05-04-test-and-ci-speed-optimization.md --path docs/plan.md`
+  - Passed and selected `artifact_lifecycle.validate`, `selector.regression`, and `broad_smoke.repo`.
+- `bash scripts/ci.sh --mode explicit --path docs/workflows.md --path .github/workflows/ci.yml --path scripts/ci.sh --path scripts/validation_selection.py --path scripts/test-select-validation.py --path specs/test-and-ci-speed-optimization.md --path specs/test-and-ci-speed-optimization.test.md --path docs/proposals/2026-05-04-test-and-ci-speed-optimization.md --path docs/plans/2026-05-04-test-and-ci-speed-optimization.md --path docs/plan.md --jobs 2`
+  - Passed selected checks `artifact_lifecycle.validate`, `selector.regression`, and `broad_smoke.repo`.
+- `bash scripts/ci.sh --mode broad-smoke`
+  - Passed direct broad smoke.
+- `rg -n "matrix:|check-id:|fromJson|select-validation|scripts/ci.sh|actions/cache" .github/workflows/ci.yml docs/workflows.md`
+  - Returned only expected documentation and wrapper-call references; no matrix, check-id, fromJson, or actions/cache matches were present.
+- `python scripts/validate-change-metadata.py docs/changes/2026-05-04-test-and-ci-speed-optimization/change.yaml`
+  - Passed after M4 closeout evidence updates.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-04-test-and-ci-speed-optimization/change.yaml --path docs/changes/2026-05-04-test-and-ci-speed-optimization/explain-change.md --path docs/plan.md --path docs/plans/2026-05-04-test-and-ci-speed-optimization.md --path docs/proposals/2026-05-04-test-and-ci-speed-optimization.md --path specs/test-and-ci-speed-optimization.md --path specs/test-and-ci-speed-optimization.test.md`
+  - Passed after M4 closeout evidence updates.
+- `python scripts/select-validation.py --mode explicit --path docs/workflows.md --path .github/workflows/ci.yml --path scripts/test-select-validation.py --path docs/plan.md --path docs/plans/2026-05-04-test-and-ci-speed-optimization.md --path docs/changes/2026-05-04-test-and-ci-speed-optimization/change.yaml --path docs/changes/2026-05-04-test-and-ci-speed-optimization/explain-change.md`
+  - Passed and selected `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `selector.regression`, and `broad_smoke.repo`.
+- `bash scripts/ci.sh --mode explicit --path docs/workflows.md --path .github/workflows/ci.yml --path scripts/test-select-validation.py --path docs/plan.md --path docs/plans/2026-05-04-test-and-ci-speed-optimization.md --path docs/changes/2026-05-04-test-and-ci-speed-optimization/change.yaml --path docs/changes/2026-05-04-test-and-ci-speed-optimization/explain-change.md --jobs 2`
+  - Passed selected checks `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `selector.regression`, and `broad_smoke.repo`.
+- `bash scripts/ci.sh --mode broad-smoke`
+  - Passed direct broad smoke after closeout evidence updates.
+- `git diff --check -- docs/workflows.md .github/workflows/ci.yml scripts/ci.sh scripts/validation_selection.py scripts/test-select-validation.py specs/test-and-ci-speed-optimization.md specs/test-and-ci-speed-optimization.test.md docs/proposals/2026-05-04-test-and-ci-speed-optimization.md docs/plans/2026-05-04-test-and-ci-speed-optimization.md docs/plan.md docs/changes/2026-05-04-test-and-ci-speed-optimization`
+  - Passed.
+- `rg -n '[[:blank:]]$|\\t' docs/workflows.md scripts/test-select-validation.py docs/plan.md docs/plans/2026-05-04-test-and-ci-speed-optimization.md docs/changes/2026-05-04-test-and-ci-speed-optimization`
+  - Returned no matches.
 
 ## Readiness
 
-M1, M2, and M3 implementation are complete. M4 remains the next implementation milestone after this M3 closeout commit.
+M1, M2, M3, and M4 implementation are complete. The change is ready for code-review.
