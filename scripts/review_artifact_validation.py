@@ -17,7 +17,15 @@ APPROVED_DISPOSITIONS = frozenset(
         "needs-decision",
     }
 )
-BLOCKING_REVIEW_STATUSES = frozenset({"revise", "changes-requested", "blocked"})
+BLOCKING_REVIEW_STATUSES = frozenset(
+    {
+        "revise",
+        "changes-requested",
+        "blocked",
+        "rethink",
+        "inconclusive",
+    }
+)
 FORMAL_REVIEW_STAGES = frozenset(
     {
         "proposal-review",

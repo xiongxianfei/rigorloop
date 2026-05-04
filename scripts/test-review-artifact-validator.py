@@ -95,6 +95,87 @@ def valid_log_text(material_findings: str = "CR1-F1", open_findings: str = "CR1-
     """
 
 
+def review_text(
+    *,
+    review_id: str,
+    stage: str,
+    status: str,
+    finding_id: str | None = None,
+) -> str:
+    finding_block = (
+        f"""
+        ## Findings
+
+        Finding ID: {finding_id}
+        Severity: major
+        Evidence: `specs/formal-review-recording.md` requires upstream review evidence.
+        Required outcome: Preserve the material upstream review finding.
+        Safe resolution: Record traceable review-resolution disposition.
+        """
+        if finding_id
+        else """
+        ## Findings
+
+        No material findings.
+        """
+    )
+    return f"""
+    # {stage} R1
+
+    Review ID: {review_id}
+    Stage: {stage}
+    Round: 1
+    Reviewer: Codex review artifact validator test
+    Target: docs/changes/example
+    Status: {status}
+
+    {finding_block}
+    """
+
+
+def review_log_text(
+    *,
+    review_id: str,
+    stage: str,
+    status: str,
+    detailed_record: str,
+    material_findings: str = "None",
+    open_findings: str = "None",
+    round_value: str = "1",
+) -> str:
+    return f"""
+    # Review Log
+
+    ### Review entry
+    Review ID: {review_id}
+    Stage: {stage}
+    Round: {round_value}
+    Status: {status}
+    Detailed record: {detailed_record}
+    Resolution: review-resolution.md#{review_id}
+    Material findings: {material_findings}
+    Open findings: {open_findings}
+    """
+
+
+def resolution_text(*, review_id: str, finding_id: str) -> str:
+    return f"""
+    # Review Resolution
+
+    Closeout status: open
+
+    ### {review_id}
+
+    Finding ID: {finding_id}
+    Disposition: accepted
+    Owner: implementer
+    Owning stage: implement
+    Chosen action: Preserve the upstream formal review record.
+    Rationale: The finding changes tracked workflow evidence.
+    Validation target: Run review artifact validator tests.
+    """
+
+
 def accepted_closed_resolution_text() -> str:
     return """
     # Review Resolution
@@ -241,6 +322,154 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
         write_text(root / "reviews" / "code-review-r1.md", valid_clean_review_text())
         write_text(root / "review-log.md", valid_log_text("None", "None").replace("changes-requested", "approved"))
         self.assertPasses(root)
+
+    def test_all_formal_lifecycle_stages_are_supported_and_pr_review_is_rejected(self) -> None:
+        for stage in [
+            "proposal-review",
+            "spec-review",
+            "architecture-review",
+            "plan-review",
+            "code-review",
+        ]:
+            with self.subTest(stage=stage):
+                root = Path(tempfile.mkdtemp(prefix=f"review-artifact-{stage}-"))
+                self.addCleanupTree(root)
+                review_id = f"{stage}-r1"
+                review_path = f"reviews/{review_id}.md"
+                write_text(
+                    root / review_path,
+                    review_text(review_id=review_id, stage=stage, status="approved"),
+                )
+                write_text(
+                    root / "review-log.md",
+                    review_log_text(
+                        review_id=review_id,
+                        stage=stage,
+                        status="approved",
+                        detailed_record=review_path,
+                    ),
+                )
+                self.assertPasses(root)
+
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-pr-review-"))
+        self.addCleanupTree(root)
+        write_text(
+            root / "reviews" / "pr-review-r1.md",
+            review_text(review_id="pr-review-r1", stage="pr-review", status="approved"),
+        )
+        write_text(
+            root / "review-log.md",
+            review_log_text(
+                review_id="pr-review-r1",
+                stage="pr-review",
+                status="approved",
+                detailed_record="reviews/pr-review-r1.md",
+            ),
+        )
+        self.assertFails(root, "unknown review stage 'pr-review'")
+
+    def test_upstream_material_review_traceability_is_validated(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-upstream-material-"))
+        self.addCleanupTree(root)
+        write_text(
+            root / "reviews" / "spec-review-r1.md",
+            review_text(
+                review_id="spec-review-r1",
+                stage="spec-review",
+                status="changes-requested",
+                finding_id="SR1-F1",
+            ),
+        )
+        write_text(
+            root / "review-log.md",
+            review_log_text(
+                review_id="spec-review-r1",
+                stage="spec-review",
+                status="changes-requested",
+                detailed_record="reviews/spec-review-r1.md",
+                material_findings="SR1-F1",
+                open_findings="SR1-F1",
+            ),
+        )
+        write_text(root / "review-resolution.md", resolution_text(review_id="spec-review-r1", finding_id="SR1-F1"))
+        self.assertPasses(root)
+
+        missing_resolution = Path(tempfile.mkdtemp(prefix="review-artifact-upstream-material-missing-"))
+        self.addCleanupTree(missing_resolution)
+        shutil.copytree(root, missing_resolution, dirs_exist_ok=True)
+        (missing_resolution / "review-resolution.md").unlink()
+        self.assertFails(missing_resolution, "material findings require review-resolution.md")
+
+        unknown_finding = Path(tempfile.mkdtemp(prefix="review-artifact-upstream-material-unknown-"))
+        self.addCleanupTree(unknown_finding)
+        shutil.copytree(root, unknown_finding, dirs_exist_ok=True)
+        write_text(
+            unknown_finding / "review-resolution.md",
+            resolution_text(review_id="spec-review-r1", finding_id="SR1-F99"),
+        )
+        self.assertFails(unknown_finding, "review-resolution.md references unknown Finding ID")
+
+    def test_no_material_plan_review_rethink_passes_structure_without_resolution(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-plan-rethink-"))
+        self.addCleanupTree(root)
+        write_text(
+            root / "reviews" / "plan-review-r1.md",
+            review_text(review_id="plan-review-r1", stage="plan-review", status="rethink"),
+        )
+        write_text(
+            root / "review-log.md",
+            review_log_text(
+                review_id="plan-review-r1",
+                stage="plan-review",
+                status="rethink",
+                detailed_record="reviews/plan-review-r1.md",
+            ),
+        )
+        result = self.validate(root)
+        self.assertFalse(result.blocking_findings)
+        self.assertEqual(result.review_count, 1)
+        self.assertEqual(result.finding_count, 0)
+        self.assertEqual(result.review_log_entry_count, 1)
+        self.assertEqual(result.resolution_entry_count, 0)
+
+    def test_stage_owned_non_approval_closeout_includes_rethink_and_inconclusive(self) -> None:
+        for status in ["rethink", "inconclusive"]:
+            with self.subTest(status=status):
+                root = Path(tempfile.mkdtemp(prefix=f"review-artifact-{status}-closeout-"))
+                self.addCleanupTree(root)
+                write_text(
+                    root / "reviews" / "plan-review-r1.md",
+                    review_text(review_id="plan-review-r1", stage="plan-review", status=status),
+                )
+                write_text(
+                    root / "review-log.md",
+                    review_log_text(
+                        review_id="plan-review-r1",
+                        stage="plan-review",
+                        status=status,
+                        detailed_record="reviews/plan-review-r1.md",
+                    ),
+                )
+                self.assertCloseoutFails(root, "blocking review outcome requires same-stage re-review or explicit closeout")
+
+                write_text(
+                    root / "reviews" / "plan-review-r2.md",
+                    review_text(review_id="plan-review-r2", stage="plan-review", status="approved").replace(
+                        "Round: 1",
+                        "Round: 2",
+                    ),
+                )
+                with (root / "review-log.md").open("a", encoding="utf-8") as handle:
+                    handle.write(
+                        review_log_text(
+                            review_id="plan-review-r2",
+                            stage="plan-review",
+                            status="approved",
+                            detailed_record="reviews/plan-review-r2.md",
+                            round_value="2",
+                        )
+                    )
+                self.assertCloseoutPasses(root)
 
     def test_reviews_directory_requires_review_log(self) -> None:
         root = self.fixture()

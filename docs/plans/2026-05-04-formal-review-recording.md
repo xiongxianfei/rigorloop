@@ -147,6 +147,7 @@ Implementation milestones are test-first within their scope: add or update the r
   - `scripts/review_artifact_validation.py` only if tests expose a contract mismatch
   - `tests/fixtures/review-artifacts/**` only if fixture reuse is clearer than inline temporary fixtures
   - `docs/changes/2026-05-04-formal-review-recording/change.yaml`
+  - `docs/changes/2026-05-04-formal-review-recording/explain-change.md`
   - this plan
 - Dependencies:
   - M1 contract wording stable
@@ -164,18 +165,18 @@ Implementation milestones are test-first within their scope: add or update the r
 - Validation commands:
   - `python scripts/test-review-artifact-validator.py`
   - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-04-24-review-finding-resolution-contract`
-  - `python scripts/select-validation.py --mode explicit --path scripts/test-review-artifact-validator.py --path scripts/review_artifact_validation.py --path specs/formal-review-recording.test.md --path docs/plans/2026-05-04-formal-review-recording.md --path docs/changes/2026-05-04-formal-review-recording/change.yaml`
-  - `bash scripts/ci.sh --mode explicit --path scripts/test-review-artifact-validator.py --path scripts/review_artifact_validation.py --path specs/formal-review-recording.test.md --path docs/plans/2026-05-04-formal-review-recording.md --path docs/changes/2026-05-04-formal-review-recording/change.yaml`
+  - `python scripts/select-validation.py --mode explicit --path scripts/test-review-artifact-validator.py --path scripts/review_artifact_validation.py --path specs/formal-review-recording.test.md --path docs/plans/2026-05-04-formal-review-recording.md --path docs/changes/2026-05-04-formal-review-recording/change.yaml --path docs/changes/2026-05-04-formal-review-recording/explain-change.md`
+  - `bash scripts/ci.sh --mode explicit --path scripts/test-review-artifact-validator.py --path scripts/review_artifact_validation.py --path specs/formal-review-recording.test.md --path docs/plans/2026-05-04-formal-review-recording.md --path docs/changes/2026-05-04-formal-review-recording/change.yaml --path docs/changes/2026-05-04-formal-review-recording/explain-change.md`
   - `git diff --check -- scripts/test-review-artifact-validator.py scripts/review_artifact_validation.py tests/fixtures/review-artifacts docs/plans/2026-05-04-formal-review-recording.md docs/changes/2026-05-04-formal-review-recording`
 - Expected observable result: repository-owned tests demonstrate that upstream detailed review files are valid, no-material detailed records do not need `review-resolution.md`, material findings still require traceable dispositions, and `pr-review` remains unsupported.
 - Commit message: `M2: cover upstream formal review records`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks: tests could lock in overly specific prose or fixture shapes beyond the structural contract.
 - Rollback/recovery: remove brittle assertions and replace them with stable field/path/relationship checks mapped to requirement IDs in the test spec.
 
@@ -322,6 +323,7 @@ Implementation milestones are test-first within their scope: add or update the r
 - [x] 2026-05-04: Plan-review finding `FRR-PLAN-1` resolved by adding the existing matching test specs for `specs/review-finding-resolution-contract.md` and `specs/rigorloop-workflow.md` to M1 likely touched files, test update rules, validation commands, and M4 final validation when paired governing specs are touched.
 - [x] 2026-05-04: Test spec authored at `specs/formal-review-recording.test.md` and marked active after plan-review approval.
 - [x] 2026-05-04: M1 implemented by updating paired test specs first, then aligning review-resolution, workflow, operational, and governance wording with the approved stage-neutral formal review recording contract.
+- [x] 2026-05-04: M2 implemented with upstream-stage review artifact validator coverage, no-material `plan-review` structure coverage without `review-resolution.md`, explicit `pr-review` rejection, and closeout blocking for `rethink` and `inconclusive`.
 
 ## Decision Log
 
@@ -335,6 +337,7 @@ Implementation milestones are test-first within their scope: add or update the r
 - `scripts/review_artifact_validation.py` already recognizes all formal lifecycle review stages named by the approved spec.
 - Existing validator tests include a clean review with `review-log.md` and no `review-resolution.md`, but representative upstream-stage no-material coverage still belongs in the test spec and M2.
 - The change metadata validator rejects an empty inline `validation: []` placeholder. M1 records explicit validation entries instead.
+- M2 test-first work showed the parser already accepted supported upstream stages and rejected unsupported stages, but closeout mode did not yet treat `rethink` and `inconclusive` as blocking stage-owned non-approval outcomes.
 
 ## Validation Notes
 
@@ -366,17 +369,35 @@ Implementation milestones are test-first within their scope: add or update the r
 - 2026-05-04: M1 whitespace and diff checks passed:
   - `rg -n '[[:blank:]]$|\\t' CONSTITUTION.md AGENTS.md docs/workflows.md docs/proposals/2026-05-04-formal-review-recording.md specs/formal-review-recording.md specs/formal-review-recording.test.md specs/review-finding-resolution-contract.md specs/review-finding-resolution-contract.test.md specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md docs/plan.md docs/plans/2026-05-04-formal-review-recording.md docs/changes/2026-05-04-formal-review-recording`
   - `git diff --check -- CONSTITUTION.md AGENTS.md docs/workflows.md docs/proposals/2026-05-04-formal-review-recording.md specs/formal-review-recording.md specs/formal-review-recording.test.md specs/review-finding-resolution-contract.md specs/review-finding-resolution-contract.test.md specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md docs/plan.md docs/plans/2026-05-04-formal-review-recording.md docs/changes/2026-05-04-formal-review-recording`
+- 2026-05-04: M2 focused validator tests failed before implementation because closeout mode did not treat `rethink` and `inconclusive` as blocking stage-owned non-approval outcomes:
+  - `python scripts/test-review-artifact-validator.py`
+- 2026-05-04: M2 focused validator tests passed after adding upstream-stage fixtures and extending the blocking closeout status set:
+  - `python scripts/test-review-artifact-validator.py`
+- 2026-05-04: M2 historical review-artifact validation passed for the existing review-finding resolution change root:
+  - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-04-24-review-finding-resolution-contract`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-04-24-review-finding-resolution-contract`
+- 2026-05-04: M2 selector check passed with `broad_smoke_required: false`; selected checks were `review_artifacts.regression`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`:
+  - `python scripts/select-validation.py --mode explicit --path scripts/test-review-artifact-validator.py --path scripts/review_artifact_validation.py --path specs/formal-review-recording.test.md --path docs/plans/2026-05-04-formal-review-recording.md --path docs/changes/2026-05-04-formal-review-recording/change.yaml --path docs/changes/2026-05-04-formal-review-recording/explain-change.md`
+- 2026-05-04: M2 change metadata validation passed:
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-04-formal-review-recording/change.yaml`
+- 2026-05-04: M2 lifecycle validation passed:
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-04-formal-review-recording.md --path docs/changes/2026-05-04-formal-review-recording/change.yaml --path docs/changes/2026-05-04-formal-review-recording/explain-change.md --path specs/formal-review-recording.test.md`
+- 2026-05-04: M2 explicit CI passed with selector-selected checks:
+  - `bash scripts/ci.sh --mode explicit --path scripts/test-review-artifact-validator.py --path scripts/review_artifact_validation.py --path specs/formal-review-recording.test.md --path docs/plans/2026-05-04-formal-review-recording.md --path docs/changes/2026-05-04-formal-review-recording/change.yaml --path docs/changes/2026-05-04-formal-review-recording/explain-change.md`
+- 2026-05-04: M2 whitespace and diff checks passed:
+  - `rg -n '[[:blank:]]$|\\t' scripts/test-review-artifact-validator.py scripts/review_artifact_validation.py docs/plans/2026-05-04-formal-review-recording.md docs/changes/2026-05-04-formal-review-recording`
+  - `git diff --check -- scripts/test-review-artifact-validator.py scripts/review_artifact_validation.py tests/fixtures/review-artifacts docs/plans/2026-05-04-formal-review-recording.md docs/changes/2026-05-04-formal-review-recording`
 
 ## Outcome And Retrospective
 
-- Active. M1 contract and governance alignment is complete. M2 validator coverage has not started.
+- Active. M1 contract and governance alignment and M2 validator coverage are complete. M3 review skill guidance and generated-output alignment has not started.
 
 ## Readiness
 
-- Ready for M2 implementation.
-- M1 is complete and committed as a milestone slice, but the full feature is not yet ready for final code review, verify, or PR handoff.
-- Later implementation should continue with M2 and keep this plan's progress, decisions, discoveries, and validation notes current.
+- Ready for M3 implementation after M2 code-review.
+- M1 and M2 are complete milestone slices, but the full feature is not yet ready for final verify or PR handoff.
+- Later implementation should continue with M3 and keep this plan's progress, decisions, discoveries, and validation notes current.
 
 ## Risks And Follow-Ups
 
-- Follow-up: implement M2 validator coverage.
+- Follow-up: code-review M2, then implement M3 review skill guidance and generated output.
