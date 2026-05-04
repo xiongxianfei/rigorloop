@@ -1,170 +1,145 @@
 # Learn Artifact Model Change Explanation
 
-## Status
-
-M4 implemented and validated; ready for code-review. The change is not branch-ready until downstream code-review, verify, final explain-change closeout, and PR handoff complete.
-
 ## Summary
 
-This change aligns the workflow contract, selector behavior, learn skill guidance, learn namespace index, and generated outputs with the approved final learn artifact model.
+This change implements the approved learn artifact model across the workflow contract, governance summaries, selector behavior, canonical `learn` skill guidance, the lightweight `docs/learn/` index, generated Codex skill output, generated public adapter output, and change-local lifecycle evidence.
 
-The workflow spec no longer treats learn output as a temporary follow-up or no-learn rationale surface. A learn invocation that reaches Frame now records a tracked session under `docs/learn/sessions/YYYY-MM-DD-<slug>.md`; durable topic guidance is under `docs/learn/topics/<topic>.md` only when confirmed durable lessons justify it; behavior-changing lessons route to the authoritative action-owning artifact.
+The model gives `learn` one canonical session-record namespace, optional curated topic guidance, contributor-confirmed classification before routing, and explicit action routing into authoritative artifacts. It also keeps `learn` periodic or explicitly triggered rather than making it a mandatory final step for every change.
 
-## Source Artifacts
+First-pass implementation, direct code-review follow-up, `$verify`, and this final explanation closeout are complete. The next workflow stage is `pr`; this direct `$explain-change` request stops before preparing or opening the PR.
+
+## Problem
+
+The prior workflow treated final learn artifact handling as deferred and mixed several possible recording surfaces: temporary no-learn rationale, scheduled follow-up notes, old retrospective paths, and future learn refactor language. The accepted proposal and approved spec narrowed that into a single process: run a learn session only when triggered, record any session that reaches Frame, keep durable topic guidance curated and non-authoritative, and route behavior changes to the affected authoritative artifact.
+
+The implementation needed to align contributor-facing guidance, validation selection, generated skill mirrors, and change evidence without adding templates, empty topic files, a prebuilt taxonomy, or mandatory per-change learn work.
+
+## Decision Trail
 
 - Proposal: `docs/proposals/2026-05-03-optimize-learn-skill.md`
-- Spec: `specs/learn-artifact-model.md`
-- Test spec: `specs/learn-artifact-model.test.md`
-- Plan: `docs/plans/2026-05-04-learn-artifact-model.md`
-- Workflow contract: `specs/rigorloop-workflow.md`
+- Proposal decision: use a light first slice with `docs/learn/sessions/**`, `docs/learn/topics/**`, affected authoritative artifacts, ADRs/proposals when warranted, no templates, no archive infrastructure, and no roadmap fallback for untracked follow-ups.
+- Spec: `specs/learn-artifact-model.md`, requirements `R1`-`R47`.
+- Workflow spec update: `specs/rigorloop-workflow.md`, requirements `R7ba`-`R7bf`.
+- Test spec: `specs/learn-artifact-model.test.md`, tests `T1`-`T14`, plus `specs/rigorloop-workflow.test.md` `T23`.
+- Architecture/ADR decision: no separate architecture or ADR was required. The accepted scope changes repository workflow, documentation, selector routing, skill guidance, and generated output; it does not introduce runtime architecture, persistence, deployment, external integration, or a durable architecture decision.
+- Plan: `docs/plans/2026-05-04-learn-artifact-model.md`.
+- Milestones completed: M1 workflow and governance alignment; M2 learn path selector recognition; M3 learn skill, learn index, and generated output; M4 final validation and lifecycle closeout.
 
-## M1 Diff Rationale
+## Diff Rationale By Area
 
-| File or area | Change | Reason | Proof |
+| File or area | Change | Reason | Source and evidence |
 | --- | --- | --- | --- |
-| `specs/rigorloop-workflow.test.md` | Updated `T23` and related coverage language before the implementation docs changed. | Establishes the M1 proof expectation that workflow guidance links to the final learn artifact model and no longer treats final learn modeling as deferred. | Manual contract proof in `T23`; stale-term scan. |
-| `specs/rigorloop-workflow.md` | Replaced temporary learn closeout wording with final session-record, pre-session no-record, topic-file, and action-owning artifact rules. | Makes the workflow spec point contributors to the approved learn model while preserving nonblocking default behavior. | `R7ba`-`R7bf`; artifact lifecycle validation. |
-| `docs/workflows.md` | Added the short operational version of session-record and pre-session closeout rules. | Keeps the workflow summary aligned with the canonical contract without duplicating all learn skill details. | Selector-selected CI. |
-| `AGENTS.md` | Updated practical agent guidance for triggered learn closeout after Frame versus pre-session closeout. | Prevents agent guidance from sending learn output back to temporary surfaces. | Selector-selected CI. |
-| `CONSTITUTION.md` | Added the durable learn-output principle under documentation rules. | Keeps governance-level guidance aligned for durable lessons without expanding into a template. | Selector-selected CI. |
-| `README.md` | Reviewed and left unchanged. | It mentions periodic learning as a lifecycle category but does not define or conflict with learn artifact surfaces. | Unaffected rationale in `change.yaml`. |
-| `docs/changes/2026-05-04-learn-artifact-model/` | Added baseline change metadata and this explanation. | Required durable reasoning and traceability pack for ordinary non-trivial work. | Change metadata validation. |
+| `docs/proposals/2026-05-03-optimize-learn-skill.md` | Captures the accepted direction for session files, topic guidance, action-owning artifacts, light structure, and follow-up routing. | Establishes the decision basis before the spec and implementation. | Proposal accepted; plan source artifact. |
+| `specs/learn-artifact-model.md` | Adds the final learn contract, including canonical paths, phases, classifications, routing, topic authority, bounded evidence, selector recognition, and generated-output refresh. | Provides the authoritative behavior contract for `R1`-`R47`. | `specs/learn-artifact-model.test.md` `T1`-`T14`; lifecycle validation. |
+| `specs/learn-artifact-model.test.md` | Maps every requirement group and edge case to manual, integration, selector, skill-validator, generated-output, and final CI checks. | Makes the human-readable workflow and executable selector/skill behavior testable. | Test spec coverage table; lifecycle validation. |
+| `specs/rigorloop-workflow.md` and `specs/rigorloop-workflow.test.md` | Replaces temporary learn closeout wording with final trigger, session-record, pre-session no-record, topic-file, and authoritative-artifact routing rules. | Satisfies `R45`, `R46`, and workflow `R7ba`-`R7bf` without turning `learn` into a default final per-change stage. | `T23`; stale-term scan; explicit CI. |
+| `docs/workflows.md`, `AGENTS.md`, and `CONSTITUTION.md` | Aligns operational and governance guidance with triggered learn sessions, `docs/learn/` surfaces, no-learn closeout boundaries, and durable lesson routing. | Prevents lower-level contributor guidance from preserving the deferred or temporary model. | `T1`, `T6`; stale-term scan; explicit CI. |
+| `scripts/validation_selection.py` | Classifies `docs/learn/README.md`, `docs/learn/sessions/**`, and `docs/learn/topics/**` as lightweight known learn artifact paths. | Satisfies `R44` and keeps raw session/topic records out of lifecycle validation. | `scripts/test-select-validation.py`; selector regression. |
+| `scripts/test-select-validation.py` | Adds representative learn namespace regression coverage. | Proves the selector recognizes the new paths before any `docs/learn/**` artifact is created. | `test_learn_artifact_paths_are_known_lightweight_paths`; `python scripts/test-select-validation.py`. |
+| `skills/learn/SKILL.md` | Rewrites the canonical learn skill around Frame, Observe, Classify, and Route; requires evidence-bound observations, contributor confirmation, one primary classification, secondary routes, bounded evidence, and R29 maintainer-rule-adoption handling. | Implements the operator guidance for `R2`-`R43`, including the rule that maintainer requests alone route to proposal work rather than durable learn capture. | `scripts/test-skill-validator.py`; `python scripts/validate-skills.py`. |
+| `docs/learn/README.md` | Adds a lightweight namespace index for `sessions/` and `topics/`. | Makes the new paths discoverable without adding templates, empty topic files, or a taxonomy. | `T2`, `T8`, selector-selected CI. |
+| `scripts/test-skill-validator.py` | Adds stable wording checks for canonical paths, phases, classification model, confirmation, bounded evidence, generated-output boundaries, and R29 rule adoption. | Protects the durable parts of the skill guidance while leaving session/topic shapes template-free. | `test_learn_skill_final_artifact_model_and_bounded_process`. |
+| `.codex/skills/learn/SKILL.md` | Regenerated from canonical `skills/learn/SKILL.md`. | Keeps the local Codex runtime mirror generated rather than hand-edited. | `python scripts/build-skills.py --check`. |
+| `dist/adapters/claude/.claude/skills/learn/SKILL.md`, `dist/adapters/codex/.agents/skills/learn/SKILL.md`, `dist/adapters/opencode/.opencode/skills/learn/SKILL.md` | Regenerated public adapter learn skills. | Keeps Claude Code, Codex adapter, and opencode outputs aligned with the canonical skill. | `python scripts/build-adapters.py --version 0.1.1 --check`; `python scripts/validate-adapters.py --version 0.1.1`. |
+| `docs/plan.md` and `docs/plans/2026-05-04-learn-artifact-model.md` | Tracks milestone completion, validation notes, review/verify/explain-change status, and remaining PR handoff. | Keeps the active plan index and plan body synchronized while the initiative remains Active until PR closeout. | Artifact lifecycle validation. |
+| `docs/changes/2026-05-04-learn-artifact-model/change.yaml` | Records requirements, tests, changed files, validation evidence, review status, verification status, and explanation status. | Provides machine-readable traceability for the non-trivial workflow-governance change. | `python scripts/validate-change-metadata.py`. |
+| `docs/changes/2026-05-04-learn-artifact-model/review-log.md`, `review-resolution.md`, and `reviews/code-review-*.md` | Records the tracked M1-M3 review rounds and closes all material findings. | Preserves review traceability without duplicating detailed review transcripts in this explanation. | Review artifact validation in structure and closeout modes. |
 
-## Scope Control
+## Tests Added Or Changed
 
-- M1 does not edit `skills/learn/SKILL.md`; that is M3.
-- M1 does not create `docs/learn/README.md`; that is M3 after selector recognition in M2.
-- M1 does not add selector path recognition; that is M2.
-- M1 does not refresh generated `.codex/skills/` or public adapter output; that follows canonical skill changes in M3.
-- M1 does not add session or topic templates, empty topic files, fixed taxonomy, issue tracker integration, or historical-note migration.
+- `specs/learn-artifact-model.test.md`
+  - `T1` covers workflow/governance alignment and temporary-surface retirement.
+  - `T2` covers the lightweight canonical namespace.
+  - `T3` covers session fields, phases, empty outcomes, and periodic windows.
+  - `T4` covers one primary classification, secondary routes, and confirmation before routing.
+  - `T5` and `T6` cover routing destinations, follow-up tracking, and no-record boundaries.
+  - `T7` covers trigger types, single-event evidence, and `R29` maintainer-driven rule adoption.
+  - `T8` covers topic authority and curated topic lifecycle.
+  - `T9` covers bounded evidence collection.
+  - `T10` covers selector recognition.
+  - `T11` and `T12` cover skill-validator and generated-output checks.
+  - `T13` covers private incident detail handling.
+  - `T14` covers final explicit-path validation across the full change surface.
+- `specs/rigorloop-workflow.test.md`
+  - `T23` now proves the workflow-level learn contract points to the final model and preserves the nonblocking trigger boundary.
+- `scripts/test-select-validation.py`
+  - `test_learn_artifact_paths_are_known_lightweight_paths` proves `docs/learn/README.md`, `docs/learn/sessions/**`, and `docs/learn/topics/**` are recognized without selecting lifecycle validation.
+- `scripts/test-skill-validator.py`
+  - `test_learn_skill_final_artifact_model_and_bounded_process` proves the stable skill guidance for paths, phases, classifications, confirmation, bounded evidence, generated boundaries, and R29.
+
+These test levels are intentionally mixed. Human-readable process contracts are covered by spec/test-spec review and explicit artifact validation; executable repository behavior is covered by selector, skill-validator, generated-output drift, adapter validation, and selected CI checks.
+
+## Review And Verification Outcomes
+
+- Tracked code-review evidence:
+  - `review-log.md` contains seven tracked review entries for M1-M3.
+  - Three material findings were recorded and accepted: `CR-M1-F1`, `CR-M2-F1`, and `CR-M3-R2-F1`.
+  - All material findings are closed in `review-resolution.md`.
+  - No `needs-decision` dispositions remain and no review-log entry lists open findings.
+- Direct final code-review:
+  - The M4 direct `code-review` request completed with no blocking or required-change findings.
+  - Because it produced no material findings, it did not require a new review-resolution entry.
+- `$verify`:
+  - Verdict: pass.
+  - Result: no blockers, no generated-output drift, no lifecycle drift, no missing review closeout, and local PR-mode CI passed.
+  - Hosted CI was not observed from this environment.
+  - Broad smoke was not required by the active plan or selector-selected validation.
+
+## Review Resolution Summary
+
+`docs/changes/2026-05-04-learn-artifact-model/review-resolution.md` is closed.
+
+| Finding | Disposition | Resolution |
+| --- | --- | --- |
+| `CR-M1-F1` | accepted | Added incident response and contributor observation trigger coverage to `docs/workflows.md` and `specs/rigorloop-workflow.test.md`. |
+| `CR-M2-F1` | accepted | Updated stale M2 plan outcome wording after selector implementation. |
+| `CR-M3-R2-F1` | accepted | Added explicit R29 maintainer-driven rule-adoption guidance, skill-validator coverage, and regenerated skill/adapter output. |
+
+Clean tracked rounds required no resolution entries: `code-review-m1-r2`, `code-review-m2-r2`, `code-review-m3-r1`, and `code-review-m3-r3`.
 
 ## Validation Evidence
 
-- `rg -n 'temporary learn|future learn refactor|final learn artifact model is deferred|docs/learnings|docs/retrospectives|Until a focused \`learn\` refactor|scheduled \`learn\` follow-ups and explicit no-learn rationales|temporary recording surfaces|Future focused \`learn\` refactor' specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md docs/workflows.md AGENTS.md CONSTITUTION.md README.md` - passed.
-- `python scripts/select-validation.py --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path specs/learn-artifact-model.md --path specs/learn-artifact-model.test.md --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/plan.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md` - passed; selected `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
-- `python scripts/validate-change-metadata.py docs/changes/2026-05-04-learn-artifact-model/change.yaml` - passed.
-- `bash scripts/ci.sh --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path specs/learn-artifact-model.md --path specs/learn-artifact-model.test.md --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/plan.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md` - passed.
-- `git diff --check -- CONSTITUTION.md AGENTS.md docs/workflows.md README.md specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md specs/learn-artifact-model.md specs/learn-artifact-model.test.md docs/plans/2026-05-04-learn-artifact-model.md docs/plan.md docs/changes/2026-05-04-learn-artifact-model` - passed.
+Milestone validation evidence is recorded in `docs/plans/2026-05-04-learn-artifact-model.md` and `change.yaml`. Final validation included:
 
-Additional M1 validation is recorded in the active plan and `change.yaml`.
-
-## Review State
-
-`code-review` round 1 requested one targeted fix, `CR-M1-F1`, because `docs/workflows.md` and `specs/rigorloop-workflow.test.md` omitted the incident response and contributor observation trigger classes required by the workflow contract and learn artifact spec.
-
-The finding was accepted in `review-resolution.md`. The fix adds those trigger classes to the operational workflow summary and `T23`; review-resolution validation passed with review artifact validation, lifecycle validation, selector-selected explicit CI, change metadata validation, stale-term scan, and whitespace validation.
-
-`code-review` round 2 found no blocking or required-change findings for the M1 slice. M2-M4 remain unimplemented by design.
-
-## Verification State
-
-M1 verification passed for the committed M1 slice. The verifier checked review closeout, stale learn-surface wording, whitespace across the two M1 commits, selector-selected validation for the full touched surface, and explicit-path CI. The selector chose `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
-
-This is not full initiative `branch-ready`: M2 selector recognition, M3 learn skill/index/generated output, and M4 final lifecycle closeout remain open.
-
-## M2 Diff Rationale
-
-| File or area | Change | Reason | Proof |
-| --- | --- | --- | --- |
-| `scripts/test-select-validation.py` | Added `test_learn_artifact_paths_are_known_lightweight_paths`. | Proves `docs/learn/README.md`, `docs/learn/sessions/**`, and `docs/learn/topics/**` are known paths and are not lifecycle-validated as specs, plans, ADRs, or architecture docs. | Test failed before selector implementation, then passed after M2. |
-| `scripts/validation_selection.py` | Added `learn-artifact` classification for the lightweight learn namespace. | Satisfies `R44` without creating `docs/learn/**` content before M3 and without over-validating raw session/topic records. | `python scripts/test-select-validation.py`; representative explicit selector run. |
-| `docs/plans/2026-05-04-learn-artifact-model.md` and `change.yaml` | Recorded M2 progress, validation, and scope boundary. | Keeps implementation-owned plan state and change metadata aligned with the real milestone. | Selector-selected explicit CI. |
-
-## M2 Scope Control
-
-- M2 does not create `docs/learn/README.md`; M3 owns that after selector recognition.
-- M2 does not edit `skills/learn/SKILL.md` or generated skill/adapter output; M3 owns those surfaces.
-- M2 does not add structural validators or templates for learn session/topic content.
-
-## M2 Review Resolution
-
-`code-review` round 1 found `CR-M2-F1`: the active plan's `Outcome And Retrospective` section still said M2 had not started after M2 was implemented. The finding was accepted, and the plan now records M1-M2 as implemented with M3-M4 still not started.
-
-`code-review` round 2 found no blocking or required-change findings for the M2 slice.
-
-## M2 Verification
-
-M2 verification passed for the committed M2 slice. The verifier checked selector regression coverage, representative learn-path selector output, review closeout, whitespace across the three M2 commits, selector-selected validation for the full M2 touched surface, and explicit-path CI. The selector chose `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression` for the full touched surface.
-
-This is not full initiative `branch-ready`: M3 review and M4 final lifecycle closeout remain open.
-
-## M3 Diff Rationale
-
-| File or area | Change | Reason | Proof |
-| --- | --- | --- | --- |
-| `scripts/test-skill-validator.py` | Added `test_learn_skill_final_artifact_model_and_bounded_process` before changing the skill. | Locks the approved Frame, Observe, Classify, Route process; canonical `docs/learn/` paths; one primary classification; secondary routes; confirmation; bounded evidence; and lightweight index boundaries. | Test failed before implementation because the index was absent and old learn guidance remained; passed after M3. |
-| `skills/learn/SKILL.md` | Rewrote the learn operator guidance around Frame, Observe, Classify, and Route. | Makes `learn` a guided evidence process instead of a retrospective template, with contributor-confirmed routing into session records, topic guidance, action-owning artifacts, ADRs, proposals, or no-learn rationales. | `python scripts/test-skill-validator.py`; `python scripts/validate-skills.py`. |
-| `docs/learn/README.md` | Added a lightweight namespace index for `sessions/` and `topics/`. | Gives contributors the canonical path model without introducing templates, empty topic files, or a prebuilt taxonomy. | M3 selector-selected CI. |
-| Generated skill and adapter output | Refreshed `.codex/skills/learn/SKILL.md` and public adapter learn skill files through repository generators. | Keeps generated runtime mirrors and public adapter packages aligned with canonical `skills/learn/SKILL.md`. | `python scripts/build-skills.py --check`; `python scripts/build-adapters.py --version 0.1.1 --check`; `python scripts/validate-adapters.py --version 0.1.1`. |
-| Plan and change metadata | Recorded M3 progress, validation, and the adapter portability discovery. | Keeps implementation-owned lifecycle evidence aligned with the actual milestone. | `python scripts/validate-change-metadata.py`; selector-selected explicit CI. |
-
-## M3 Scope Control
-
-- M3 does not add session templates, topic templates, empty topic files, or a fixed topic taxonomy.
-- M3 does not migrate historical notes into `docs/learn/`.
-- M3 does not make `learn` mandatory for every change.
-- M3 does not start M4 lifecycle closeout.
-
-## M3 Validation
-
-- `python scripts/test-skill-validator.py` - failed before implementation for the expected missing-index and stale-guidance reasons, then passed after M3.
-- `python scripts/validate-skills.py` - passed.
-- `python scripts/build-skills.py` - passed.
-- `python scripts/build-adapters.py --version 0.1.1` - passed after the generated-output boundary named public adapter alternatives alongside `.codex/skills/`.
-- `python scripts/build-skills.py --check` - passed.
-- `python scripts/build-adapters.py --version 0.1.1 --check` - passed.
-- `python scripts/validate-adapters.py --version 0.1.1` - passed.
-- `bash scripts/ci.sh --mode explicit --path skills/learn/SKILL.md --path docs/learn/README.md --path scripts/test-skill-validator.py --path .codex/skills/learn/SKILL.md --path dist/adapters/claude/.claude/skills/learn/SKILL.md --path dist/adapters/codex/.agents/skills/learn/SKILL.md --path dist/adapters/opencode/.opencode/skills/learn/SKILL.md --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md` - passed; selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
-- `git diff --check -- skills/learn/SKILL.md docs/learn/README.md scripts/test-skill-validator.py .codex/skills/learn/SKILL.md dist/adapters/claude/.claude/skills/learn/SKILL.md dist/adapters/codex/.agents/skills/learn/SKILL.md dist/adapters/opencode/.opencode/skills/learn/SKILL.md docs/plans/2026-05-04-learn-artifact-model.md docs/changes/2026-05-04-learn-artifact-model` - passed.
-
-## M3 Review State
-
-`code-review` round 1 found no blocking or required-change findings for the M3 slice. The review record is `docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r1.md`.
-
-A follow-up M3 review found `CR-M3-R2-F1`: the learn skill omitted the `R29` rule that maintainer-driven rule adoption without accumulated evidence is not durable learn capture. The finding was accepted in `review-resolution.md`.
-
-The resolution adds explicit R29 guidance to `skills/learn/SKILL.md`, adds stable skill-validator assertions for accumulated evidence, `direction`, proposal work, later ADR production, and accepted authoritative artifacts, and refreshes generated Codex skill and public adapter output. `code-review` round 3 found no blocking or required-change findings after that fix.
-
-## M3 Verification State
-
-M3 verification passed for the committed M3 slice. The verifier checked review closeout, `docs/plan.md` versus the active plan body, whitespace across the two M3 commits, selector-selected validation for the full M3 touched surface, generated skill and adapter drift, adapter validation, review artifact validation, lifecycle validation, and change metadata validation.
-
-The selector-selected CI run passed with `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
-
-After resolving `CR-M3-R2-F1`, targeted validation passed again for skill validation, skill-validator regression, generated skill drift, adapter regression, adapter drift, adapter validation, review artifact validation, and whitespace checks.
-
-This is not full initiative `branch-ready`: M4 final validation and lifecycle closeout remain open.
-
-## M4 Diff Rationale
-
-| File or area | Change | Reason | Proof |
-| --- | --- | --- | --- |
-| `docs/plan.md` | Updated the active plan index entry to say M1-M4 implementation is complete while downstream review and readiness gates remain. | Keeps the plan index aligned with the active plan body without moving the initiative to Done prematurely. | Artifact lifecycle validation; selector-selected explicit CI. |
-| `docs/plans/2026-05-04-learn-artifact-model.md` | Closed M4 milestone checkboxes, recorded progress, lifecycle-state rationale, validation notes, and readiness. | M4 owns final implementation evidence and lifecycle closeout for the implementation phase. | M4 explicit validation commands and whitespace validation. |
-| `docs/changes/2026-05-04-learn-artifact-model/change.yaml` | Added M4 validation evidence and changed review state to `m4_ready_for_code_review`. | Keeps change metadata aligned with the actual implementation state without claiming review-clean or branch-ready status. | Change metadata validation; selector-selected explicit CI. |
-| `docs/changes/2026-05-04-learn-artifact-model/explain-change.md` | Added this M4 closeout rationale and current readiness statement. | Gives reviewers one concise explanation for why only lifecycle/evidence surfaces changed in M4. | Artifact lifecycle validation. |
-
-## M4 Scope Control
-
-- M4 does not change the approved learn behavior, selector behavior, canonical skill guidance, generated output, or adapter packaging.
-- M4 does not add session templates, topic templates, empty topic files, a fixed topic taxonomy, historical-note migration, or a standalone `verify-report.md`.
-- M4 keeps the initiative under `Active` because implementation is complete, but downstream `code-review`, `verify`, final explanation closeout, and PR handoff still own branch readiness.
-
-## M4 Validation
-
-- `python scripts/validate-skills.py` - passed.
-- `python scripts/test-skill-validator.py` - passed.
-- `python scripts/test-select-validation.py` - passed.
-- `python scripts/build-skills.py --check` - passed.
-- `python scripts/build-adapters.py --version 0.1.1 --check` - passed.
-- `python scripts/validate-adapters.py --version 0.1.1` - passed.
+- `bash scripts/ci.sh --mode explicit --path <full M4 changed surface>` - passed; selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
+- `bash scripts/ci.sh --mode pr --base origin/main --head HEAD` - passed locally.
 - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-04-learn-artifact-model` - passed.
 - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-04-learn-artifact-model` - passed.
-- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-03-optimize-learn-skill.md --path specs/learn-artifact-model.md --path specs/learn-artifact-model.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/plan.md --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md --path docs/changes/2026-05-04-learn-artifact-model/review-log.md --path docs/changes/2026-05-04-learn-artifact-model/review-resolution.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r2.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m2-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m2-r2.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r2.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r3.md` - passed.
-- `python scripts/select-validation.py --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path docs/learn/README.md --path docs/proposals/2026-05-03-optimize-learn-skill.md --path specs/learn-artifact-model.md --path specs/learn-artifact-model.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path skills/learn/SKILL.md --path scripts/test-skill-validator.py --path scripts/validation_selection.py --path scripts/test-select-validation.py --path .codex/skills/learn/SKILL.md --path dist/adapters/claude/.claude/skills/learn/SKILL.md --path dist/adapters/codex/.agents/skills/learn/SKILL.md --path dist/adapters/opencode/.opencode/skills/learn/SKILL.md --path docs/plan.md --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md --path docs/changes/2026-05-04-learn-artifact-model/review-log.md --path docs/changes/2026-05-04-learn-artifact-model/review-resolution.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r2.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m2-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m2-r2.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r2.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r3.md` - passed; selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
-- `bash scripts/ci.sh --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path docs/learn/README.md --path docs/proposals/2026-05-03-optimize-learn-skill.md --path specs/learn-artifact-model.md --path specs/learn-artifact-model.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path skills/learn/SKILL.md --path scripts/test-skill-validator.py --path scripts/validation_selection.py --path scripts/test-select-validation.py --path .codex/skills/learn/SKILL.md --path dist/adapters/claude/.claude/skills/learn/SKILL.md --path dist/adapters/codex/.agents/skills/learn/SKILL.md --path dist/adapters/opencode/.opencode/skills/learn/SKILL.md --path docs/plan.md --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md --path docs/changes/2026-05-04-learn-artifact-model/review-log.md --path docs/changes/2026-05-04-learn-artifact-model/review-resolution.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r2.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m2-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m2-r2.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r2.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r3.md` - passed; selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
+- `python scripts/validate-change-metadata.py docs/changes/2026-05-04-learn-artifact-model/change.yaml` - passed.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths <authoritative artifact set>` - passed.
+- `git diff --check origin/main..HEAD` - passed.
 - `git diff --check --` - passed.
+- Stale learn-surface scan over workflow, governance, README, and learn skill surfaces - passed after the corrected single-quoted pattern rerun.
 
-## Current Readiness
+Post-verify explain-change closeout validation is recorded in the plan and `change.yaml`.
 
-M4 implementation is complete and ready for `code-review`. The active plan intentionally remains under `Active` in `docs/plan.md` until downstream review and readiness gates complete.
+## Alternatives Rejected
+
+- Keeping both `docs/learn/` and `docs/learnings/`: rejected because similar path names would confuse raw session records with curated topic guidance.
+- Using topic files as policy: rejected because topic files are curated guidance and must not override specs, ADRs, workflow docs, skill files, accepted proposals, plans, or other authoritative artifacts.
+- Adding session or topic templates in the first slice: rejected because the approved proposal defers templates until actual usage reveals a stable shape worth codifying.
+- Adding empty topic files, a prebuilt taxonomy, or archive infrastructure: rejected because the first implementation should use the lightest structure that solves the current problem.
+- Falling back to `docs/roadmap.md` for untracked learn follow-ups: rejected because unowned roadmap accumulation weakens prioritization; use an issue, active plan, or proposal instead.
+- Treating maintainer-requested rule adoption as durable learn capture without accumulated evidence: rejected by `R29`; route that work to proposal deliberation.
+- Hand-editing generated `.codex/skills/` or `dist/adapters/`: rejected because generated outputs must remain reproducible from canonical skill source and generator commands.
+- Creating a top-level `docs/explain/` artifact: rejected because this ordinary non-trivial change already has the required change-local explanation surface.
+
+## Scope Control
+
+- This change does not make `learn` mandatory for every change.
+- It does not make `learn` own plan lifecycle, review-resolution closeout, verification readiness, PR readiness, or CI status.
+- It does not create session templates, topic templates, empty topic files, a fixed topic taxonomy, historical-note migration, issue-tracker automation, or background lesson triage.
+- It does not change product runtime behavior, deployment, persistence, external APIs, or release packaging.
+- It does not add structural validation for session/topic file content; selector support is intentionally lightweight.
+- It does not move the active plan to Done. The plan remains Active until PR or merge lifecycle closeout updates it.
+
+## Risks And Follow-Ups
+
+- Hosted CI remains external and unobserved until the PR runs in GitHub Actions.
+- Session and topic file shapes are intentionally not templated yet; a later proposal can add templates or validators if usage shows a stable shape.
+- The direct M4 code-review was clean but not added as a tracked review record because the direct request produced no material findings. The tracked review-resolution surface remains closed and complete for all material findings.
+- PR body preparation and PR opening remain owned by the `pr` stage.
+
+## Readiness
+
+M1-M4 implementation, tracked review-resolution closeout, direct final code-review, `$verify`, and final `$explain-change` are complete. The change is ready for PR handoff after this closeout diff is committed. Direct `$explain-change` execution stops before preparing or opening the PR.
