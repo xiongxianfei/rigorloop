@@ -411,6 +411,26 @@ class ValidationSelectionTests(unittest.TestCase):
                         {item["code"] for item in payload["blocking_results"]},
                     )
 
+    def test_learn_artifact_paths_are_known_lightweight_paths(self) -> None:
+        paths = [
+            "docs/learn/README.md",
+            "docs/learn/sessions/2026-05-04-example.md",
+            "docs/learn/topics/verification.md",
+        ]
+
+        result = self.select(paths)
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertEqual(payload["unclassified_paths"], [])
+        self.assertEqual(payload["blocking_results"], [])
+        for path in paths:
+            with self.subTest(path=path):
+                self.assertIn({"path": path, "category": "learn-artifact"}, payload["classified_paths"])
+
+        self.assertNotIn("artifact_lifecycle.validate", selected_ids(payload))
+        self.assertEqual(payload["selected_checks"], [])
+
     def test_selector_and_validation_script_paths_select_regressions(self) -> None:
         result = self.select(["scripts/select-validation.py", "scripts/validate-review-artifacts.py"])
         payload = result.to_json_dict()

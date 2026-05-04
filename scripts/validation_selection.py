@@ -563,6 +563,9 @@ def _apply_path_selection(
         _add_check(selected, "readme.validate", "Changed README requires lightweight README validation.")
         return
 
+    if category == "learn-artifact":
+        return
+
     if category == "vision":
         _add_check(
             selected,
@@ -797,6 +800,8 @@ def _path_category(path: str) -> str | None:
         return "plan-index"
     if path.startswith("docs/architecture/") and path.endswith(".mmd"):
         return "architecture-diagram"
+    if _is_learn_artifact_path(path):
+        return "learn-artifact"
     if _is_lifecycle_path(path):
         return "lifecycle"
     if path.startswith("docs/releases/"):
@@ -830,6 +835,16 @@ def _is_lifecycle_path(path: str) -> bool:
     if path.startswith("docs/plans/") and path.endswith(".md"):
         return True
     if path.startswith("docs/explain/") and path.endswith(".md"):
+        return True
+    return False
+
+
+def _is_learn_artifact_path(path: str) -> bool:
+    if path == "docs/learn/README.md":
+        return True
+    if path.startswith("docs/learn/sessions/") and path.endswith(".md"):
+        return True
+    if path.startswith("docs/learn/topics/") and path.endswith(".md"):
         return True
     return False
 
