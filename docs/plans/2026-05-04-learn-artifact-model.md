@@ -190,12 +190,12 @@ This is workflow-governance and documentation-infrastructure work. It changes co
 - Expected observable result: all touched authoritative and generated surfaces agree on the final learn artifact model and validation evidence is ready for `code-review`.
 - Commit message: `M4: close learn artifact model implementation`
 - Milestone closeout:
-  - [ ] validation passed
-  - [ ] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] validation passed
+  - [x] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks: final validation may reveal stale lifecycle-managed artifacts that were referenced by the plan or explain-change.
 - Rollback/recovery: fix stale touched/referenced artifacts before verify; if the implementation must be abandoned, mark this plan blocked or superseded and restore temporary learn guidance consistently.
 
@@ -255,7 +255,8 @@ This is workflow-governance and documentation-infrastructure work. It changes co
 - [x] 2026-05-04: M3 verified as a milestone slice; full initiative branch-ready is deferred until M4 completes final validation and lifecycle closeout.
 - [x] 2026-05-04: M3 `code-review` round 2 finding `CR-M3-R2-F1` accepted and resolved; the learn skill now covers maintainer-driven rule adoption without accumulated evidence.
 - [x] 2026-05-04: M3 `code-review` round 3 completed with `clean-with-notes`.
-- [ ] M4 complete.
+- [x] 2026-05-04: M4 final validation and lifecycle closeout completed; the plan remains active until downstream code-review, verify, explain-change closeout, and PR handoff complete.
+- [x] M4 complete.
 
 ## Decision Log
 
@@ -266,6 +267,8 @@ This is workflow-governance and documentation-infrastructure work. It changes co
 - 2026-05-04: M1 keeps detailed learn-session procedure in `specs/learn-artifact-model.md` and `specs/learn-artifact-model.test.md`; `specs/rigorloop-workflow.md` owns only workflow-level routing, nonblocking behavior, and source-of-truth boundaries.
 - 2026-05-04: M2 classifies learn paths as `learn-artifact` and selects no validator for those paths. This keeps validation lightweight until session/topic shapes are proven by usage or a later validator contract.
 - 2026-05-04: M3 names public adapter output and install-location alternatives alongside `.codex/skills/` in the learn skill's generated-output boundary so repository generators keep `learn` portable across Codex, Claude, and opencode adapters.
+- 2026-05-04: M4 leaves the initiative under `Active` in `docs/plan.md` because implementation is complete but downstream code-review, verify, final explanation closeout, and PR handoff still own branch readiness and Done transition.
+- 2026-05-04: M4 does not add a standalone `verify-report.md` because implementation closeout evidence remains concise enough in `change.yaml`, `explain-change.md`, and this plan. The later `verify` stage still owns branch-ready validation.
 
 ## Surprises And Discoveries
 
@@ -275,6 +278,7 @@ This is workflow-governance and documentation-infrastructure work. It changes co
 - M2 does not create `docs/learn/README.md` or any session/topic file; selector recognition now makes those paths safe for M3 to create and selector-validate.
 - M3 adapter generation initially treated `learn` as non-portable when the skill mentioned `.codex/skills/` without public adapter alternatives. Naming `dist/adapters/`, `.agents/skills`, `.claude/skills`, and `.opencode/skills` in the generated-output boundary restored generated adapter coverage.
 - M3 follow-up code-review found that the learn skill omitted the `R29` maintainer-driven rule-adoption edge case. The targeted fix added that guidance to the canonical skill, protected it in skill-validator coverage, and regenerated skill and adapter outputs.
+- M4 found no additional affected operating, governance, selector, skill, generated-output, or docs-change surfaces to defer. `docs/project-map.md` remains absent and not relied on.
 
 ## Validation Notes
 
@@ -388,13 +392,27 @@ This is workflow-governance and documentation-infrastructure work. It changes co
   - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-04-learn-artifact-model`
   - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-04-learn-artifact-model`
   - `git diff --check -- skills/learn/SKILL.md scripts/test-skill-validator.py .codex/skills/learn/SKILL.md dist/adapters/claude/.claude/skills/learn/SKILL.md dist/adapters/codex/.agents/skills/learn/SKILL.md dist/adapters/opencode/.opencode/skills/learn/SKILL.md docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r2.md docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r3.md docs/changes/2026-05-04-learn-artifact-model/review-log.md docs/changes/2026-05-04-learn-artifact-model/review-resolution.md`
+- 2026-05-04: M4 checks passed.
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/test-select-validation.py`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/build-adapters.py --version 0.1.1 --check`
+  - `python scripts/validate-adapters.py --version 0.1.1`
+  - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-04-learn-artifact-model`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-04-learn-artifact-model`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-03-optimize-learn-skill.md --path specs/learn-artifact-model.md --path specs/learn-artifact-model.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/plan.md --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md --path docs/changes/2026-05-04-learn-artifact-model/review-log.md --path docs/changes/2026-05-04-learn-artifact-model/review-resolution.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r2.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m2-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m2-r2.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r2.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r3.md`
+  - `python scripts/select-validation.py --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path docs/learn/README.md --path docs/proposals/2026-05-03-optimize-learn-skill.md --path specs/learn-artifact-model.md --path specs/learn-artifact-model.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path skills/learn/SKILL.md --path scripts/test-skill-validator.py --path scripts/validation_selection.py --path scripts/test-select-validation.py --path .codex/skills/learn/SKILL.md --path dist/adapters/claude/.claude/skills/learn/SKILL.md --path dist/adapters/codex/.agents/skills/learn/SKILL.md --path dist/adapters/opencode/.opencode/skills/learn/SKILL.md --path docs/plan.md --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md --path docs/changes/2026-05-04-learn-artifact-model/review-log.md --path docs/changes/2026-05-04-learn-artifact-model/review-resolution.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r2.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m2-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m2-r2.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r2.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r3.md`
+  - `bash scripts/ci.sh --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path docs/learn/README.md --path docs/proposals/2026-05-03-optimize-learn-skill.md --path specs/learn-artifact-model.md --path specs/learn-artifact-model.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path skills/learn/SKILL.md --path scripts/test-skill-validator.py --path scripts/validation_selection.py --path scripts/test-select-validation.py --path .codex/skills/learn/SKILL.md --path dist/adapters/claude/.claude/skills/learn/SKILL.md --path dist/adapters/codex/.agents/skills/learn/SKILL.md --path dist/adapters/opencode/.opencode/skills/learn/SKILL.md --path docs/plan.md --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md --path docs/changes/2026-05-04-learn-artifact-model/review-log.md --path docs/changes/2026-05-04-learn-artifact-model/review-resolution.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r2.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m2-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m2-r2.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r2.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r3.md`
+  - `git diff --check --`
+  - Selected check IDs: `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
 
 ## Outcome And Retrospective
 
-- Active. M1-M3 are verified; latest M3 review is `clean-with-notes`; M4 is not started.
+- Active. M1-M4 implementation is complete and validated. The final learn artifact model is implemented across workflow/governance guidance, selector recognition, canonical learn skill guidance, the lightweight learn index, generated Codex skill output, public adapter output, and change-local evidence. The latest M3 review is `clean-with-notes`; M4 is ready for `code-review`.
 
 ## Readiness
 
-M3 is verified as a milestone slice. The full initiative is not branch-ready because M4 final validation and lifecycle closeout remain incomplete.
+M4 implementation is complete and ready for `code-review`. The full initiative is not branch-ready until downstream code-review, verify, final explain-change closeout, and PR handoff complete.
 
-Stop before M4 unless the user explicitly starts the next milestone. Implementation must keep this plan's progress, decisions, discoveries, and validation notes current as later milestones proceed.
+Keep this plan under `Active` in `docs/plan.md` until downstream review and readiness gates complete. Move it to Done only when lifecycle closeout reaches PR or merge completion under the governing workflow.

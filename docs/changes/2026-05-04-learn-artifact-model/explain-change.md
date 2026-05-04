@@ -2,7 +2,7 @@
 
 ## Status
 
-M3 implemented, code-review clean, and verified; M4 not started.
+M4 implemented and validated; ready for code-review. The change is not branch-ready until downstream code-review, verify, final explain-change closeout, and PR handoff complete.
 
 ## Summary
 
@@ -134,3 +134,37 @@ The selector-selected CI run passed with `skills.validate`, `skills.regression`,
 After resolving `CR-M3-R2-F1`, targeted validation passed again for skill validation, skill-validator regression, generated skill drift, adapter regression, adapter drift, adapter validation, review artifact validation, and whitespace checks.
 
 This is not full initiative `branch-ready`: M4 final validation and lifecycle closeout remain open.
+
+## M4 Diff Rationale
+
+| File or area | Change | Reason | Proof |
+| --- | --- | --- | --- |
+| `docs/plan.md` | Updated the active plan index entry to say M1-M4 implementation is complete while downstream review and readiness gates remain. | Keeps the plan index aligned with the active plan body without moving the initiative to Done prematurely. | Artifact lifecycle validation; selector-selected explicit CI. |
+| `docs/plans/2026-05-04-learn-artifact-model.md` | Closed M4 milestone checkboxes, recorded progress, lifecycle-state rationale, validation notes, and readiness. | M4 owns final implementation evidence and lifecycle closeout for the implementation phase. | M4 explicit validation commands and whitespace validation. |
+| `docs/changes/2026-05-04-learn-artifact-model/change.yaml` | Added M4 validation evidence and changed review state to `m4_ready_for_code_review`. | Keeps change metadata aligned with the actual implementation state without claiming review-clean or branch-ready status. | Change metadata validation; selector-selected explicit CI. |
+| `docs/changes/2026-05-04-learn-artifact-model/explain-change.md` | Added this M4 closeout rationale and current readiness statement. | Gives reviewers one concise explanation for why only lifecycle/evidence surfaces changed in M4. | Artifact lifecycle validation. |
+
+## M4 Scope Control
+
+- M4 does not change the approved learn behavior, selector behavior, canonical skill guidance, generated output, or adapter packaging.
+- M4 does not add session templates, topic templates, empty topic files, a fixed topic taxonomy, historical-note migration, or a standalone `verify-report.md`.
+- M4 keeps the initiative under `Active` because implementation is complete, but downstream `code-review`, `verify`, final explanation closeout, and PR handoff still own branch readiness.
+
+## M4 Validation
+
+- `python scripts/validate-skills.py` - passed.
+- `python scripts/test-skill-validator.py` - passed.
+- `python scripts/test-select-validation.py` - passed.
+- `python scripts/build-skills.py --check` - passed.
+- `python scripts/build-adapters.py --version 0.1.1 --check` - passed.
+- `python scripts/validate-adapters.py --version 0.1.1` - passed.
+- `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-04-learn-artifact-model` - passed.
+- `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-04-learn-artifact-model` - passed.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-03-optimize-learn-skill.md --path specs/learn-artifact-model.md --path specs/learn-artifact-model.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/plan.md --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md --path docs/changes/2026-05-04-learn-artifact-model/review-log.md --path docs/changes/2026-05-04-learn-artifact-model/review-resolution.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r2.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m2-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m2-r2.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r2.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r3.md` - passed.
+- `python scripts/select-validation.py --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path docs/learn/README.md --path docs/proposals/2026-05-03-optimize-learn-skill.md --path specs/learn-artifact-model.md --path specs/learn-artifact-model.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path skills/learn/SKILL.md --path scripts/test-skill-validator.py --path scripts/validation_selection.py --path scripts/test-select-validation.py --path .codex/skills/learn/SKILL.md --path dist/adapters/claude/.claude/skills/learn/SKILL.md --path dist/adapters/codex/.agents/skills/learn/SKILL.md --path dist/adapters/opencode/.opencode/skills/learn/SKILL.md --path docs/plan.md --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md --path docs/changes/2026-05-04-learn-artifact-model/review-log.md --path docs/changes/2026-05-04-learn-artifact-model/review-resolution.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r2.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m2-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m2-r2.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r2.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r3.md` - passed; selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
+- `bash scripts/ci.sh --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path docs/learn/README.md --path docs/proposals/2026-05-03-optimize-learn-skill.md --path specs/learn-artifact-model.md --path specs/learn-artifact-model.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path skills/learn/SKILL.md --path scripts/test-skill-validator.py --path scripts/validation_selection.py --path scripts/test-select-validation.py --path .codex/skills/learn/SKILL.md --path dist/adapters/claude/.claude/skills/learn/SKILL.md --path dist/adapters/codex/.agents/skills/learn/SKILL.md --path dist/adapters/opencode/.opencode/skills/learn/SKILL.md --path docs/plan.md --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md --path docs/changes/2026-05-04-learn-artifact-model/review-log.md --path docs/changes/2026-05-04-learn-artifact-model/review-resolution.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r2.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m2-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m2-r2.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r2.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m3-r3.md` - passed; selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
+- `git diff --check --` - passed.
+
+## Current Readiness
+
+M4 implementation is complete and ready for `code-review`. The active plan intentionally remains under `Active` in `docs/plan.md` until downstream review and readiness gates complete.
