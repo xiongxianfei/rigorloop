@@ -115,6 +115,17 @@ validation:
     selected_check_ids: review_artifacts.validate, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate
   - command: git diff --check -- docs/plans/2026-05-04-learn-artifact-model.md docs/changes/2026-05-04-learn-artifact-model
     result: pass_after_m2_review_resolution
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-04-learn-artifact-model
+    result: pass_after_m2_code_review_r2
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-04-learn-artifact-model
+    result: pass_after_m2_code_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-04-learn-artifact-model/change.yaml
+    result: pass_after_m2_code_review_r2
+  - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md --path docs/changes/2026-05-04-learn-artifact-model/review-log.md --path docs/changes/2026-05-04-learn-artifact-model/review-resolution.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m2-r2.md
+    result: pass_after_m2_code_review_r2
+    selected_check_ids: review_artifacts.validate, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate
+  - command: git diff --check -- docs/plans/2026-05-04-learn-artifact-model.md docs/changes/2026-05-04-learn-artifact-model
+    result: pass_after_m2_code_review_r2
 changed_files:
   - AGENTS.md
   - CONSTITUTION.md
@@ -133,10 +144,11 @@ changed_files:
   - docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r1.md
   - docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r2.md
   - docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m2-r1.md
+  - docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m2-r2.md
   - scripts/validation_selection.py
   - scripts/test-select-validation.py
 review:
-  status: m2_review_finding_resolved_pending_rereview
+  status: m2_clean_with_notes
   unresolved_items: 0
 selected_workflow_contract: refactored
 broad_smoke_required: false
@@ -146,3 +158,4 @@ notes:
   - M1 is verified as a milestone slice. The full initiative is not branch-ready because M2-M4 remain incomplete.
   - M2 classifies learn artifact paths only. It intentionally does not create `docs/learn/**` files and does not add lifecycle validation for raw session or topic records.
   - M2 code-review round 1 found stale plan outcome text; the finding was accepted and resolved before rerunning code-review.
+  - M2 code-review round 2 completed with `clean-with-notes`; M2 verification remains pending.

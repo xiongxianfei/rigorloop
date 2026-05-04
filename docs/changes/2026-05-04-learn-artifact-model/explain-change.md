@@ -2,7 +2,7 @@
 
 ## Status
 
-M2 implemented; awaiting `code-review`.
+M2 code-review clean; awaiting `verify`.
 
 ## Summary
 
@@ -79,3 +79,5 @@ This is not full initiative `branch-ready`: M2 selector recognition, M3 learn sk
 ## M2 Review Resolution
 
 `code-review` round 1 found `CR-M2-F1`: the active plan's `Outcome And Retrospective` section still said M2 had not started after M2 was implemented. The finding was accepted, and the plan now records M1-M2 as implemented with M3-M4 still not started.
+
+`code-review` round 2 found no blocking or required-change findings for the M2 slice.

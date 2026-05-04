@@ -30,3 +30,7 @@ Chosen action: Update the active plan `Outcome And Retrospective` line so it sta
 Rationale: The finding identifies stale lifecycle state inside the active plan after the M2 implementation commit.
 Validation target: Rerun review artifact validation, change metadata validation, selector-selected explicit CI for the touched plan and change-local surfaces, and whitespace validation.
 Validation evidence: Passed after the targeted fix: review artifact validation in structure and closeout modes; change metadata validation; selector-selected explicit CI choosing `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`; whitespace validation.
+
+### code-review-m2-r2
+
+No material findings. No resolution entry is required for this clean review round.
