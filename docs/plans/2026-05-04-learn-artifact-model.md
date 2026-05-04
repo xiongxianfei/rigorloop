@@ -115,6 +115,8 @@ This is workflow-governance and documentation-infrastructure work. It changes co
   - `python scripts/select-validation.py --mode explicit --path docs/learn/README.md --path docs/learn/sessions/2026-05-04-example.md --path docs/learn/topics/verification.md`
   - `python scripts/select-validation.py --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml`
   - `bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml`
+  - `bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-04-learn-artifact-model/change.yaml`
   - `git diff --check -- scripts/validation_selection.py scripts/test-select-validation.py docs/plans/2026-05-04-learn-artifact-model.md docs/changes/2026-05-04-learn-artifact-model`
 - Expected observable result: the validation selector recognizes the new learn artifact namespace without treating raw session records or curated topic files as lifecycle-managed specs.
 - Commit message: `M2: classify learn artifact paths`
@@ -239,7 +241,9 @@ This is workflow-governance and documentation-infrastructure work. It changes co
 - [x] 2026-05-04: M1 `code-review` round 1 finding `CR-M1-F1` accepted and resolved.
 - [x] 2026-05-04: M1 `code-review` round 2 completed with `clean-with-notes`.
 - [x] 2026-05-04: M1 verified as a milestone slice; full initiative branch-ready is deferred until M2-M4 complete.
-- [ ] M2 complete.
+- [x] 2026-05-04: M2 selector tests written first; representative learn paths failed as unclassified before implementation.
+- [x] 2026-05-04: M2 implementation complete; `docs/learn/README.md`, `docs/learn/sessions/**`, and `docs/learn/topics/**` now classify as lightweight `learn-artifact` paths.
+- [x] M2 complete.
 - [ ] M3 complete.
 - [ ] M4 complete.
 
@@ -250,12 +254,14 @@ This is workflow-governance and documentation-infrastructure work. It changes co
 - 2026-05-04: Selector recognition for `docs/learn/**` should be a lightweight category rather than lifecycle validation because session records and topic files are not lifecycle-managed specs, plans, ADRs, or architecture artifacts.
 - 2026-05-04: Selector recognition must precede the learn skill/index milestone because current validation selection blocks unclassified `docs/learn/**` paths.
 - 2026-05-04: M1 keeps detailed learn-session procedure in `specs/learn-artifact-model.md` and `specs/learn-artifact-model.test.md`; `specs/rigorloop-workflow.md` owns only workflow-level routing, nonblocking behavior, and source-of-truth boundaries.
+- 2026-05-04: M2 classifies learn paths as `learn-artifact` and selects no validator for those paths. This keeps validation lightweight until session/topic shapes are proven by usage or a later validator contract.
 
 ## Surprises And Discoveries
 
 - `docs/project-map.md` is absent; this plan records a no-map rationale and does not rely on it.
 - `README.md` mentions periodic learning as a lifecycle category but does not define learn artifact surfaces; M1 leaves it unchanged and records it as unaffected in `docs/changes/2026-05-04-learn-artifact-model/change.yaml`.
 - M1 code-review found that two affected surfaces omitted incident response and contributor observation from the learn trigger list even though the workflow contract and learn artifact spec included them. The targeted fix restored those trigger classes in `docs/workflows.md` and `specs/rigorloop-workflow.test.md`.
+- M2 does not create `docs/learn/README.md` or any session/topic file; selector recognition now makes those paths safe for M3 to create and selector-validate.
 
 ## Validation Notes
 
@@ -297,6 +303,16 @@ This is workflow-governance and documentation-infrastructure work. It changes co
   - `git diff --check HEAD~2..HEAD -- CONSTITUTION.md AGENTS.md docs/workflows.md specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md specs/learn-artifact-model.md specs/learn-artifact-model.test.md docs/proposals/2026-05-03-optimize-learn-skill.md docs/plan.md docs/plans/2026-05-04-learn-artifact-model.md docs/changes/2026-05-04-learn-artifact-model`
   - `python scripts/select-validation.py --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path specs/learn-artifact-model.md --path specs/learn-artifact-model.test.md --path docs/proposals/2026-05-03-optimize-learn-skill.md --path docs/plan.md --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md --path docs/changes/2026-05-04-learn-artifact-model/review-log.md --path docs/changes/2026-05-04-learn-artifact-model/review-resolution.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r2.md`
   - `bash scripts/ci.sh --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path specs/learn-artifact-model.md --path specs/learn-artifact-model.test.md --path docs/proposals/2026-05-03-optimize-learn-skill.md --path docs/plan.md --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md --path docs/changes/2026-05-04-learn-artifact-model/review-log.md --path docs/changes/2026-05-04-learn-artifact-model/review-resolution.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r2.md`
+- 2026-05-04: M2 pre-implementation selector regression failed as expected.
+  - `python scripts/test-select-validation.py`
+- 2026-05-04: M2 selector implementation validation passed.
+  - `python scripts/test-select-validation.py`
+  - `python scripts/select-validation.py --mode explicit --path docs/learn/README.md --path docs/learn/sessions/2026-05-04-example.md --path docs/learn/topics/verification.md`
+  - `python scripts/select-validation.py --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml`
+  - `bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml`
+  - `bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-04-learn-artifact-model/change.yaml`
+  - `git diff --check -- scripts/validation_selection.py scripts/test-select-validation.py docs/plans/2026-05-04-learn-artifact-model.md docs/changes/2026-05-04-learn-artifact-model`
 
 ## Outcome And Retrospective
 
@@ -304,6 +320,6 @@ This is workflow-governance and documentation-infrastructure work. It changes co
 
 ## Readiness
 
-M1 is verified as a milestone slice. The full initiative is not branch-ready because M2-M4 remain incomplete.
+M2 is implemented and awaiting `code-review`. The full initiative is not branch-ready because M3-M4 remain incomplete.
 
-Stop before M2 unless the workflow continues after code review. Implementation must keep this plan's progress, decisions, discoveries, and validation notes current as later milestones proceed.
+Stop before M3 unless the workflow continues after code review. Implementation must keep this plan's progress, decisions, discoveries, and validation notes current as later milestones proceed.

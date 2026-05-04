@@ -2,7 +2,7 @@
 
 ## Status
 
-M1 verified; M2-M4 not started.
+M2 implemented; awaiting `code-review`.
 
 ## Summary
 
@@ -61,3 +61,17 @@ The finding was accepted in `review-resolution.md`. The fix adds those trigger c
 M1 verification passed for the committed M1 slice. The verifier checked review closeout, stale learn-surface wording, whitespace across the two M1 commits, selector-selected validation for the full touched surface, and explicit-path CI. The selector chose `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
 
 This is not full initiative `branch-ready`: M2 selector recognition, M3 learn skill/index/generated output, and M4 final lifecycle closeout remain open.
+
+## M2 Diff Rationale
+
+| File or area | Change | Reason | Proof |
+| --- | --- | --- | --- |
+| `scripts/test-select-validation.py` | Added `test_learn_artifact_paths_are_known_lightweight_paths`. | Proves `docs/learn/README.md`, `docs/learn/sessions/**`, and `docs/learn/topics/**` are known paths and are not lifecycle-validated as specs, plans, ADRs, or architecture docs. | Test failed before selector implementation, then passed after M2. |
+| `scripts/validation_selection.py` | Added `learn-artifact` classification for the lightweight learn namespace. | Satisfies `R44` without creating `docs/learn/**` content before M3 and without over-validating raw session/topic records. | `python scripts/test-select-validation.py`; representative explicit selector run. |
+| `docs/plans/2026-05-04-learn-artifact-model.md` and `change.yaml` | Recorded M2 progress, validation, and scope boundary. | Keeps implementation-owned plan state and change metadata aligned with the real milestone. | Selector-selected explicit CI. |
+
+## M2 Scope Control
+
+- M2 does not create `docs/learn/README.md`; M3 owns that after selector recognition.
+- M2 does not edit `skills/learn/SKILL.md` or generated skill/adapter output; M3 owns those surfaces.
+- M2 does not add structural validators or templates for learn session/topic content.

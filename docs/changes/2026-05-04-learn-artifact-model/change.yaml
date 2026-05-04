@@ -15,6 +15,7 @@ requirements:
 tests:
   - specs/learn-artifact-model.test.md T1-T14
   - specs/rigorloop-workflow.test.md T23
+  - scripts/test-select-validation.py test_learn_artifact_paths_are_known_lightweight_paths
 validation:
   - command: rg -n 'temporary learn|future learn refactor|final learn artifact model is deferred|docs/learnings|docs/retrospectives|Until a focused `learn` refactor|scheduled `learn` follow-ups and explicit no-learn rationales|temporary recording surfaces|Future focused `learn` refactor' specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md docs/workflows.md AGENTS.md CONSTITUTION.md README.md
     result: pass_after_m1
@@ -75,6 +76,28 @@ validation:
   - command: bash scripts/ci.sh --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path specs/learn-artifact-model.md --path specs/learn-artifact-model.test.md --path docs/proposals/2026-05-03-optimize-learn-skill.md --path docs/plan.md --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md --path docs/changes/2026-05-04-learn-artifact-model/review-log.md --path docs/changes/2026-05-04-learn-artifact-model/review-resolution.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r2.md
     result: pass_after_m1_verify
     selected_check_ids: review_artifacts.validate, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, selector.regression
+  - command: python scripts/test-select-validation.py
+    result: fail_expected_before_m2
+    reason: New regression test proved `docs/learn/**` representative paths were blocked as unclassified before selector implementation.
+  - command: python scripts/test-select-validation.py
+    result: pass_after_m2
+  - command: python scripts/select-validation.py --mode explicit --path docs/learn/README.md --path docs/learn/sessions/2026-05-04-example.md --path docs/learn/topics/verification.md
+    result: pass_after_m2
+    selected_check_ids: none
+    reason: Representative learn paths are classified as `learn-artifact`, produce no unclassified paths or blocking results, and remain lightweight with no lifecycle validation selected.
+  - command: python scripts/select-validation.py --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml
+    result: pass_after_m2
+    selected_check_ids: artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, selector.regression
+  - command: bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml
+    result: pass_after_m2
+    selected_check_ids: artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, selector.regression
+  - command: bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md
+    result: pass_after_m2
+    selected_check_ids: artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, selector.regression
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-04-learn-artifact-model/change.yaml
+    result: pass_after_m2
+  - command: git diff --check -- scripts/validation_selection.py scripts/test-select-validation.py docs/plans/2026-05-04-learn-artifact-model.md docs/changes/2026-05-04-learn-artifact-model
+    result: pass_after_m2
 changed_files:
   - AGENTS.md
   - CONSTITUTION.md
@@ -92,8 +115,10 @@ changed_files:
   - docs/changes/2026-05-04-learn-artifact-model/review-resolution.md
   - docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r1.md
   - docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m1-r2.md
+  - scripts/validation_selection.py
+  - scripts/test-select-validation.py
 review:
-  status: clean-with-notes
+  status: m2_pending_code_review
   unresolved_items: 0
 selected_workflow_contract: refactored
 broad_smoke_required: false
@@ -101,3 +126,4 @@ notes:
   - M1 aligns workflow and governance surfaces only. Selector recognition, learn skill guidance, docs/learn/README.md, and generated outputs are later milestones.
   - README.md was reviewed and left unchanged because it mentions periodic learning as a category but does not define learn artifact surfaces or conflict with the final model.
   - M1 is verified as a milestone slice. The full initiative is not branch-ready because M2-M4 remain incomplete.
+  - M2 classifies learn artifact paths only. It intentionally does not create `docs/learn/**` files and does not add lifecycle validation for raw session or topic records.
