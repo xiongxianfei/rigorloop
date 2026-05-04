@@ -1,8 +1,6 @@
 # Learn Artifact Model Implementation Plan
 
-## Status
-
-- active
+- Status: done
 
 - Owner: maintainers
 - Start date: 2026-05-04
@@ -260,6 +258,8 @@ This is workflow-governance and documentation-infrastructure work. It changes co
 - [x] 2026-05-04: Direct final `code-review` completed with no blocking or required-change findings; no new review-resolution work was triggered.
 - [x] 2026-05-04: `$verify` passed with no blockers, local PR-mode CI passed, and hosted CI remained unobserved.
 - [x] 2026-05-04: Final `explain-change` closeout refreshed the durable reviewer-facing rationale; PR handoff remains.
+- [x] 2026-05-04: PR handoff prepared. Lifecycle state is closed in this plan body and `docs/plan.md`.
+- [x] Final lifecycle closeout completed in both this plan and `docs/plan.md`.
 
 ## Decision Log
 
@@ -273,6 +273,7 @@ This is workflow-governance and documentation-infrastructure work. It changes co
 - 2026-05-04: M4 left the initiative under `Active` in `docs/plan.md` because implementation was complete but downstream code-review, verify, final explanation closeout, and PR handoff still owned branch readiness and Done transition at that point.
 - 2026-05-04: M4 does not add a standalone `verify-report.md` because implementation closeout evidence remains concise enough in `change.yaml`, `explain-change.md`, and this plan. The later `verify` stage still owns branch-ready validation.
 - 2026-05-04: Final `explain-change` keeps the initiative under `Active` because direct stage execution stops before PR handoff; the remaining lifecycle transition is owned by the `pr` stage or later merge closeout.
+- 2026-05-04: During `pr`, close the plan as done before opening the pull request because M1-M4, code-review, verify, explain-change, and PR handoff readiness are complete before merge.
 
 ## Surprises And Discoveries
 
@@ -426,13 +427,19 @@ This is workflow-governance and documentation-infrastructure work. It changes co
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-03-optimize-learn-skill.md --path specs/learn-artifact-model.md --path specs/learn-artifact-model.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/plan.md --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md --path docs/changes/2026-05-04-learn-artifact-model/review-log.md --path docs/changes/2026-05-04-learn-artifact-model/review-resolution.md`
   - `bash scripts/ci.sh --mode local`
   - `git diff --check -- docs/plan.md docs/plans/2026-05-04-learn-artifact-model.md docs/changes/2026-05-04-learn-artifact-model/change.yaml docs/changes/2026-05-04-learn-artifact-model/explain-change.md`
+- 2026-05-04: PR handoff lifecycle closeout validation passed.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-04-learn-artifact-model/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-03-optimize-learn-skill.md --path specs/learn-artifact-model.md --path specs/learn-artifact-model.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/plan.md --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md --path docs/changes/2026-05-04-learn-artifact-model/review-log.md --path docs/changes/2026-05-04-learn-artifact-model/review-resolution.md`
+  - `bash scripts/ci.sh --mode local`
+  - `bash scripts/ci.sh --mode pr --base origin/main --head HEAD`
+  - `git diff --check -- docs/plan.md docs/plans/2026-05-04-learn-artifact-model.md docs/changes/2026-05-04-learn-artifact-model/change.yaml docs/changes/2026-05-04-learn-artifact-model/explain-change.md`
 
 ## Outcome And Retrospective
 
-- Active. M1-M4 implementation is complete and validated. The final learn artifact model is implemented across workflow/governance guidance, selector recognition, canonical learn skill guidance, the lightweight learn index, generated Codex skill output, public adapter output, and change-local evidence. Direct final `code-review`, `$verify`, and final `explain-change` closeout are complete. PR handoff remains.
+- Done. M1-M4 implementation milestones, direct final `code-review`, `$verify`, final `explain-change`, and PR handoff readiness are complete.
 
 ## Readiness
 
-M1-M4 implementation, direct final `code-review`, `$verify`, and final `explain-change` closeout are complete. The next stage is `pr`; direct `$explain-change` execution stops before preparing or opening the PR.
+M1-M4 implementation, direct final `code-review`, `$verify`, final `explain-change` closeout, and PR handoff readiness are complete. The next implementation milestone is none.
 
-Keep this plan under `Active` in `docs/plan.md` until PR or merge lifecycle closeout completes. Move it to Done only when lifecycle closeout reaches PR or merge completion under the governing workflow.
+PR opening is owned by the current `pr` stage. Merge-dependent lifecycle updates, if any, can be handled after merge.
