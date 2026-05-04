@@ -1,5 +1,5 @@
 change_id: 2026-05-04-test-and-ci-speed-optimization
-title: Add CI wrapper M1 parallelism flag and catalog metadata
+title: Add CI wrapper selected-check reporting groundwork
 classification: planned
 risk: medium
 artifacts:
@@ -21,8 +21,25 @@ requirements:
   - specs/test-and-ci-speed-optimization.md R4c
   - specs/test-and-ci-speed-optimization.md R4d
   - specs/test-and-ci-speed-optimization.md R5
+  - specs/test-and-ci-speed-optimization.md R6
   - specs/test-and-ci-speed-optimization.md R7
+  - specs/test-and-ci-speed-optimization.md R8
+  - specs/test-and-ci-speed-optimization.md R8a
+  - specs/test-and-ci-speed-optimization.md R8b
+  - specs/test-and-ci-speed-optimization.md R8c
+  - specs/test-and-ci-speed-optimization.md R9
+  - specs/test-and-ci-speed-optimization.md R9a
+  - specs/test-and-ci-speed-optimization.md R9b
+  - specs/test-and-ci-speed-optimization.md R9c
+  - specs/test-and-ci-speed-optimization.md R9d
   - specs/test-and-ci-speed-optimization.md R10
+  - specs/test-and-ci-speed-optimization.md R10a
+  - specs/test-and-ci-speed-optimization.md R10b
+  - specs/test-and-ci-speed-optimization.md R11
+  - specs/test-and-ci-speed-optimization.md R12
+  - specs/test-and-ci-speed-optimization.md R13
+  - specs/test-and-ci-speed-optimization.md R13a
+  - specs/test-and-ci-speed-optimization.md R14
   - specs/test-and-ci-speed-optimization.md R16
   - specs/test-and-ci-speed-optimization.md R16a
   - specs/test-and-ci-speed-optimization.md R20
@@ -30,7 +47,15 @@ tests:
   - specs/test-and-ci-speed-optimization.test.md T1
   - specs/test-and-ci-speed-optimization.test.md T2
   - specs/test-and-ci-speed-optimization.test.md T3
+  - specs/test-and-ci-speed-optimization.test.md T5
+  - specs/test-and-ci-speed-optimization.test.md T8
+  - specs/test-and-ci-speed-optimization.test.md T10
+  - specs/test-and-ci-speed-optimization.test.md T11
+  - specs/test-and-ci-speed-optimization.test.md T12
+  - specs/test-and-ci-speed-optimization.test.md T13
+  - specs/test-and-ci-speed-optimization.test.md T14
   - scripts/test-select-validation.py M1 catalog and wrapper flag regressions
+  - scripts/test-select-validation.py M2 deterministic selected-check reporting regressions
 validation:
   - command: python scripts/test-select-validation.py
     result: fail_expected_before_m1
@@ -62,6 +87,26 @@ validation:
   - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-04-formal-review-recording.md --path docs/changes/2026-05-04-formal-review-recording/explain-change.md --path docs/changes/2026-05-04-test-and-ci-speed-optimization/change.yaml --path docs/changes/2026-05-04-test-and-ci-speed-optimization/review-log.md --path docs/changes/2026-05-04-test-and-ci-speed-optimization/review-resolution.md --path docs/changes/2026-05-04-test-and-ci-speed-optimization/reviews/code-review-r1.md
     result: pass_after_cr1_resolution
     selected_check_ids: review_artifacts.validate, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate
+  - command: python scripts/test-select-validation.py
+    result: fail_expected_before_m2
+    reason: New M2 regressions failed before the selected-check result model existed.
+  - command: python scripts/test-select-validation.py
+    result: pass_after_m2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-04-test-and-ci-speed-optimization/change.yaml
+    result: pass_after_m2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-04-test-and-ci-speed-optimization/change.yaml --path docs/changes/2026-05-04-test-and-ci-speed-optimization/explain-change.md --path docs/plan.md --path docs/plans/2026-05-04-test-and-ci-speed-optimization.md --path docs/proposals/2026-05-04-test-and-ci-speed-optimization.md --path specs/test-and-ci-speed-optimization.md --path specs/test-and-ci-speed-optimization.test.md
+    result: pass_after_m2
+  - command: bash scripts/ci.sh --mode explicit --path scripts/ci.sh --jobs 1 --timeout 60 --verbose
+    result: pass_after_m2
+    selected_check_ids: selector.regression
+  - command: python scripts/select-validation.py --mode explicit --path scripts/ci.sh --path scripts/test-select-validation.py --path specs/test-and-ci-speed-optimization.test.md --path docs/plans/2026-05-04-test-and-ci-speed-optimization.md --path docs/changes/2026-05-04-test-and-ci-speed-optimization/change.yaml --path docs/changes/2026-05-04-test-and-ci-speed-optimization/explain-change.md --path docs/proposals/2026-05-04-test-and-ci-speed-optimization.md --path specs/test-and-ci-speed-optimization.md --path docs/plan.md
+    result: pass_after_m2
+    selected_check_ids: artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, selector.regression, broad_smoke.repo
+  - command: bash scripts/ci.sh --mode explicit --path scripts/ci.sh --path scripts/test-select-validation.py --path specs/test-and-ci-speed-optimization.test.md --path docs/plans/2026-05-04-test-and-ci-speed-optimization.md --path docs/changes/2026-05-04-test-and-ci-speed-optimization/change.yaml --path docs/changes/2026-05-04-test-and-ci-speed-optimization/explain-change.md --path docs/proposals/2026-05-04-test-and-ci-speed-optimization.md --path specs/test-and-ci-speed-optimization.md --path docs/plan.md --jobs 1
+    result: pass_after_m2
+    selected_check_ids: artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, selector.regression, broad_smoke.repo
+  - command: git diff --check -- scripts/ci.sh scripts/test-select-validation.py specs/test-and-ci-speed-optimization.test.md docs/plans/2026-05-04-test-and-ci-speed-optimization.md docs/changes/2026-05-04-test-and-ci-speed-optimization docs/plan.md
+    result: pass_after_m2
 changed_files:
   - docs/changes/2026-05-04-test-and-ci-speed-optimization/change.yaml
   - docs/changes/2026-05-04-test-and-ci-speed-optimization/explain-change.md
@@ -77,7 +122,7 @@ changed_files:
   - specs/test-and-ci-speed-optimization.md
   - specs/test-and-ci-speed-optimization.test.md
 review:
-  status: closed
+  status: pending_code_review
   unresolved_items: 0
   location: docs/plans/2026-05-04-test-and-ci-speed-optimization.md
   review_log: docs/changes/2026-05-04-test-and-ci-speed-optimization/review-log.md

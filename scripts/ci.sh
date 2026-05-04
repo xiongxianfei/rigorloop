@@ -343,13 +343,17 @@ run_selected_mode() {
     set -e
   fi
 
-  python - "$selector_output" "$selector_exit" <<'PY'
+  python - "$selector_output" "$selector_exit" "$timeout_seconds" "$verbose" <<'PY'
 from __future__ import annotations
 
 import json
+import os
 import shlex
+import signal
 import subprocess
 import sys
+import time
+from dataclasses import dataclass
 from pathlib import Path
 
 sys.path.insert(0, str(Path("scripts").resolve()))
@@ -362,8 +366,199 @@ def fail(message: str, code: int = 4) -> None:
     raise SystemExit(code)
 
 
+@dataclass
+class CheckPlan:
+    check_id: str
+    command: str
+    args: list[str]
+    reason: str | None
+
+
+@dataclass
+class CheckResult:
+    plan: CheckPlan
+    status: str
+    exit_reason: str
+    elapsed_seconds: float
+    stdout_bytes: bytes
+    stderr_bytes: bytes
+    exit_code: int
+    stdout_text: str = ""
+    stderr_text: str = ""
+    stdout_decode_error: bool = False
+    stderr_decode_error: bool = False
+
+
+def command_display(args: list[str]) -> str:
+    return " ".join(shlex.quote(arg) for arg in args)
+
+
+def unavailable_script_path(args: list[str]) -> str | None:
+    if not args:
+        return "empty command"
+    if args[0] in {"python", "bash"} and len(args) > 1 and args[1].startswith("scripts/"):
+        if not Path(args[1]).exists():
+            return args[1]
+    return None
+
+
+def signal_label(signal_number: int) -> str:
+    try:
+        return signal.Signals(signal_number).name
+    except ValueError:
+        return f"signal {signal_number}"
+
+
+def decode_stream(data: bytes) -> tuple[str, bool]:
+    try:
+        return data.decode("utf-8"), False
+    except UnicodeDecodeError:
+        return data.decode("utf-8", errors="replace"), True
+
+
+def prepare_output(result: CheckResult) -> None:
+    result.stdout_text, result.stdout_decode_error = decode_stream(result.stdout_bytes)
+    result.stderr_text, result.stderr_decode_error = decode_stream(result.stderr_bytes)
+    notes = []
+    if result.stdout_decode_error:
+        notes.append("stdout decode error")
+    if result.stderr_decode_error:
+        notes.append("stderr decode error")
+    if notes:
+        result.exit_reason = result.exit_reason + "; " + "; ".join(notes)
+
+
+def run_one_check(plan: CheckPlan, *, timeout_seconds: int | None) -> CheckResult:
+    unavailable = unavailable_script_path(plan.args)
+    if unavailable is not None:
+        return CheckResult(
+            plan=plan,
+            status="unavailable",
+            exit_reason=f"command unavailable: {unavailable}",
+            elapsed_seconds=0.0,
+            stdout_bytes=b"",
+            stderr_bytes=b"",
+            exit_code=127,
+        )
+
+    start = time.monotonic()
+    try:
+        process = subprocess.Popen(
+            plan.args,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            start_new_session=True,
+        )
+    except FileNotFoundError as exc:
+        return CheckResult(
+            plan=plan,
+            status="unavailable",
+            exit_reason=f"command unavailable: {exc.filename}",
+            elapsed_seconds=0.0,
+            stdout_bytes=b"",
+            stderr_bytes=b"",
+            exit_code=127,
+        )
+
+    try:
+        stdout_bytes, stderr_bytes = process.communicate(timeout=timeout_seconds)
+        elapsed = time.monotonic() - start
+    except subprocess.TimeoutExpired:
+        try:
+            os.killpg(process.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        except OSError:
+            process.kill()
+        stdout_bytes, stderr_bytes = process.communicate()
+        elapsed = time.monotonic() - start
+        return CheckResult(
+            plan=plan,
+            status="timed out",
+            exit_reason=f"timeout after {timeout_seconds}s",
+            elapsed_seconds=elapsed,
+            stdout_bytes=stdout_bytes,
+            stderr_bytes=stderr_bytes,
+            exit_code=124,
+        )
+
+    return_code = process.returncode
+    if return_code == 0:
+        return CheckResult(
+            plan=plan,
+            status="passed",
+            exit_reason="ok",
+            elapsed_seconds=elapsed,
+            stdout_bytes=stdout_bytes,
+            stderr_bytes=stderr_bytes,
+            exit_code=0,
+        )
+    if return_code < 0:
+        signal_number = -return_code
+        return CheckResult(
+            plan=plan,
+            status="killed",
+            exit_reason=f"signal {signal_label(signal_number)} ({signal_number})",
+            elapsed_seconds=elapsed,
+            stdout_bytes=stdout_bytes,
+            stderr_bytes=stderr_bytes,
+            exit_code=128 + signal_number,
+        )
+    return CheckResult(
+        plan=plan,
+        status="exited",
+        exit_reason=f"exit code {return_code}",
+        elapsed_seconds=elapsed,
+        stdout_bytes=stdout_bytes,
+        stderr_bytes=stderr_bytes,
+        exit_code=return_code,
+    )
+
+
+def print_summary(results: list[CheckResult]) -> None:
+    print("Selected CI check summary:")
+    print("check ID | status | exit reason | elapsed")
+    for result in results:
+        print(
+            f"{result.plan.check_id} | {result.status} | {result.exit_reason} | "
+            f"{result.elapsed_seconds:.2f}s"
+        )
+
+
+def print_stream(label: str, text: str, *, decode_error: bool) -> None:
+    if decode_error:
+        print(f"--- {label} (decode error; replacement text) ---")
+    else:
+        print(f"--- {label} ---")
+    if text:
+        print(text, end="" if text.endswith("\n") else "\n")
+    else:
+        print("(empty)")
+
+
+def print_result_output(results: list[CheckResult], *, verbose: bool) -> None:
+    printable = [result for result in results if verbose or result.status != "passed"]
+    if not printable:
+        return
+    if verbose:
+        print("Selected check output:")
+    else:
+        print("Failed selected check output:")
+    for result in printable:
+        print(f"==> {result.plan.check_id} ({result.status})")
+        print("Command: " + command_display(result.plan.args))
+        if result.stdout_bytes:
+            print_stream("stdout", result.stdout_text, decode_error=result.stdout_decode_error)
+        if result.stderr_bytes:
+            print_stream("stderr", result.stderr_text, decode_error=result.stderr_decode_error)
+        if not result.stdout_bytes and not result.stderr_bytes:
+            print("(no captured output)")
+
+
 selector_output = Path(sys.argv[1])
 selector_exit = int(sys.argv[2])
+timeout_seconds = int(sys.argv[3])
+verbose = bool(int(sys.argv[4]))
 try:
     payload = json.loads(selector_output.read_text(encoding="utf-8"))
 except json.JSONDecodeError as exc:
@@ -419,6 +614,7 @@ if not selected_checks:
     print("No selected checks to run.")
     raise SystemExit(0)
 
+plans: list[CheckPlan] = []
 for check in selected_checks:
     check_id = check.get("id")
     if not isinstance(check_id, str):
@@ -445,25 +641,34 @@ for check in selected_checks:
         )
 
     args = shlex.split(expected_command)
-    print(f"==> Run selected check: {check_id}")
-    if check.get("reason"):
-        print(f"Reason: {check['reason']}")
-    print("+ " + " ".join(shlex.quote(arg) for arg in args))
-
     if check_id == "broad_smoke.repo":
         args = ["bash", "scripts/ci.sh", "--mode", "broad-smoke"]
+    reason = check.get("reason")
+    plans.append(CheckPlan(check_id=check_id, command=expected_command, args=args, reason=reason if isinstance(reason, str) else None))
 
-    if args[0] in {"python", "bash"} and len(args) > 1 and args[1].startswith("scripts/"):
-        if not Path(args[1]).exists():
-            fail(f"Selected check {check_id} command is unavailable: {args[1]}", code=127)
+for plan in plans:
+    print(f"==> Run selected check: {plan.check_id}")
+    if plan.reason:
+        print(f"Reason: {plan.reason}")
+    print("+ " + command_display(plan.args))
 
-    try:
-        completed = subprocess.run(args)
-    except FileNotFoundError as exc:
-        fail(f"Selected check {check_id} command is unavailable: {exc.filename}", code=127)
-    if completed.returncode != 0:
-        fail(f"Selected check {check_id} failed with exit code {completed.returncode}", code=completed.returncode)
-    print()
+results = []
+for plan in plans:
+    # broad_smoke.repo delegates to the non-recursive broad-smoke path. Do
+    # not add a selected-check outer timeout around that wrapper delegation.
+    check_timeout = None if plan.check_id == "broad_smoke.repo" else timeout_seconds
+    results.append(run_one_check(plan, timeout_seconds=check_timeout))
+for result in results:
+    prepare_output(result)
+
+print_summary(results)
+print_result_output(results, verbose=verbose)
+
+failed_results = [result for result in results if result.status != "passed"]
+if failed_results:
+    for result in failed_results:
+        print(f"Selected check {result.plan.check_id} failed: {result.exit_reason}", file=sys.stderr)
+    raise SystemExit(failed_results[0].exit_code)
 
 print("Selected CI checks passed.")
 PY
