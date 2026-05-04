@@ -75,3 +75,7 @@ This is not full initiative `branch-ready`: M2 selector recognition, M3 learn sk
 - M2 does not create `docs/learn/README.md`; M3 owns that after selector recognition.
 - M2 does not edit `skills/learn/SKILL.md` or generated skill/adapter output; M3 owns those surfaces.
 - M2 does not add structural validators or templates for learn session/topic content.
+
+## M2 Review Resolution
+
+`code-review` round 1 found `CR-M2-F1`: the active plan's `Outcome And Retrospective` section still said M2 had not started after M2 was implemented. The finding was accepted, and the plan now records M1-M2 as implemented with M3-M4 still not started.
