@@ -2,7 +2,7 @@
 
 ## Status
 
-M2 code-review clean; awaiting `verify`.
+M2 verified; M3-M4 not started.
 
 ## Summary
 
@@ -81,3 +81,9 @@ This is not full initiative `branch-ready`: M2 selector recognition, M3 learn sk
 `code-review` round 1 found `CR-M2-F1`: the active plan's `Outcome And Retrospective` section still said M2 had not started after M2 was implemented. The finding was accepted, and the plan now records M1-M2 as implemented with M3-M4 still not started.
 
 `code-review` round 2 found no blocking or required-change findings for the M2 slice.
+
+## M2 Verification
+
+M2 verification passed for the committed M2 slice. The verifier checked selector regression coverage, representative learn-path selector output, review closeout, whitespace across the three M2 commits, selector-selected validation for the full M2 touched surface, and explicit-path CI. The selector chose `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression` for the full touched surface.
+
+This is not full initiative `branch-ready`: M3 learn skill/index/generated output and M4 final lifecycle closeout remain open.

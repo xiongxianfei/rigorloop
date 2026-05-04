@@ -246,6 +246,7 @@ This is workflow-governance and documentation-infrastructure work. It changes co
 - [x] M2 complete.
 - [x] 2026-05-04: M2 `code-review` round 1 finding `CR-M2-F1` accepted and resolved; round 2 is pending.
 - [x] 2026-05-04: M2 `code-review` round 2 completed with `clean-with-notes`.
+- [x] 2026-05-04: M2 verified as a milestone slice; full initiative branch-ready is deferred until M3-M4 complete.
 - [ ] M3 complete.
 - [ ] M4 complete.
 
@@ -331,13 +332,21 @@ This is workflow-governance and documentation-infrastructure work. It changes co
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-04-learn-artifact-model/change.yaml`
   - `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md --path docs/changes/2026-05-04-learn-artifact-model/review-log.md --path docs/changes/2026-05-04-learn-artifact-model/review-resolution.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m2-r2.md`
   - `git diff --check -- docs/plans/2026-05-04-learn-artifact-model.md docs/changes/2026-05-04-learn-artifact-model`
+- 2026-05-04: M2 verification passed for the committed M2 slice.
+  - `python scripts/test-select-validation.py`
+  - `python scripts/select-validation.py --mode explicit --path docs/learn/README.md --path docs/learn/sessions/2026-05-04-example.md --path docs/learn/topics/verification.md`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-04-learn-artifact-model`
+  - `git diff --check HEAD~3..HEAD -- scripts/validation_selection.py scripts/test-select-validation.py docs/plans/2026-05-04-learn-artifact-model.md docs/changes/2026-05-04-learn-artifact-model`
+  - `python scripts/select-validation.py --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md --path docs/changes/2026-05-04-learn-artifact-model/review-log.md --path docs/changes/2026-05-04-learn-artifact-model/review-resolution.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m2-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m2-r2.md`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md --path docs/plans/2026-05-04-learn-artifact-model.md`
+  - `bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md --path docs/changes/2026-05-04-learn-artifact-model/review-log.md --path docs/changes/2026-05-04-learn-artifact-model/review-resolution.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m2-r1.md --path docs/changes/2026-05-04-learn-artifact-model/reviews/code-review-m2-r2.md`
 
 ## Outcome And Retrospective
 
-- Active. M1-M2 are implemented; M3-M4 are not started.
+- Active. M1-M2 are verified; M3-M4 are not started.
 
 ## Readiness
 
-M2 `code-review` is clean and awaiting `verify`. The full initiative is not branch-ready because M3-M4 remain incomplete.
+M2 is verified as a milestone slice. The full initiative is not branch-ready because M3-M4 remain incomplete.
 
-Stop before M3 unless the workflow continues after code review. Implementation must keep this plan's progress, decisions, discoveries, and validation notes current as later milestones proceed.
+Stop before M3 unless the user explicitly starts the next milestone. Implementation must keep this plan's progress, decisions, discoveries, and validation notes current as later milestones proceed.
