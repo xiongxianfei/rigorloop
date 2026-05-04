@@ -2,11 +2,11 @@
 
 ## Status
 
-M2 verified; M3-M4 not started.
+M3 implemented; code-review pending; M4 not started.
 
 ## Summary
 
-This milestone aligns the workflow contract and governance guidance with the approved final learn artifact model.
+This change aligns the workflow contract, selector behavior, learn skill guidance, learn namespace index, and generated outputs with the approved final learn artifact model.
 
 The workflow spec no longer treats learn output as a temporary follow-up or no-learn rationale surface. A learn invocation that reaches Frame now records a tracked session under `docs/learn/sessions/YYYY-MM-DD-<slug>.md`; durable topic guidance is under `docs/learn/topics/<topic>.md` only when confirmed durable lessons justify it; behavior-changing lessons route to the authoritative action-owning artifact.
 
@@ -86,4 +86,33 @@ This is not full initiative `branch-ready`: M2 selector recognition, M3 learn sk
 
 M2 verification passed for the committed M2 slice. The verifier checked selector regression coverage, representative learn-path selector output, review closeout, whitespace across the three M2 commits, selector-selected validation for the full M2 touched surface, and explicit-path CI. The selector chose `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression` for the full touched surface.
 
-This is not full initiative `branch-ready`: M3 learn skill/index/generated output and M4 final lifecycle closeout remain open.
+This is not full initiative `branch-ready`: M3 review and M4 final lifecycle closeout remain open.
+
+## M3 Diff Rationale
+
+| File or area | Change | Reason | Proof |
+| --- | --- | --- | --- |
+| `scripts/test-skill-validator.py` | Added `test_learn_skill_final_artifact_model_and_bounded_process` before changing the skill. | Locks the approved Frame, Observe, Classify, Route process; canonical `docs/learn/` paths; one primary classification; secondary routes; confirmation; bounded evidence; and lightweight index boundaries. | Test failed before implementation because the index was absent and old learn guidance remained; passed after M3. |
+| `skills/learn/SKILL.md` | Rewrote the learn operator guidance around Frame, Observe, Classify, and Route. | Makes `learn` a guided evidence process instead of a retrospective template, with contributor-confirmed routing into session records, topic guidance, action-owning artifacts, ADRs, proposals, or no-learn rationales. | `python scripts/test-skill-validator.py`; `python scripts/validate-skills.py`. |
+| `docs/learn/README.md` | Added a lightweight namespace index for `sessions/` and `topics/`. | Gives contributors the canonical path model without introducing templates, empty topic files, or a prebuilt taxonomy. | M3 selector-selected CI. |
+| Generated skill and adapter output | Refreshed `.codex/skills/learn/SKILL.md` and public adapter learn skill files through repository generators. | Keeps generated runtime mirrors and public adapter packages aligned with canonical `skills/learn/SKILL.md`. | `python scripts/build-skills.py --check`; `python scripts/build-adapters.py --version 0.1.1 --check`; `python scripts/validate-adapters.py --version 0.1.1`. |
+| Plan and change metadata | Recorded M3 progress, validation, and the adapter portability discovery. | Keeps implementation-owned lifecycle evidence aligned with the actual milestone. | `python scripts/validate-change-metadata.py`; selector-selected explicit CI. |
+
+## M3 Scope Control
+
+- M3 does not add session templates, topic templates, empty topic files, or a fixed topic taxonomy.
+- M3 does not migrate historical notes into `docs/learn/`.
+- M3 does not make `learn` mandatory for every change.
+- M3 does not start M4 lifecycle closeout.
+
+## M3 Validation
+
+- `python scripts/test-skill-validator.py` - failed before implementation for the expected missing-index and stale-guidance reasons, then passed after M3.
+- `python scripts/validate-skills.py` - passed.
+- `python scripts/build-skills.py` - passed.
+- `python scripts/build-adapters.py --version 0.1.1` - passed after the generated-output boundary named public adapter alternatives alongside `.codex/skills/`.
+- `python scripts/build-skills.py --check` - passed.
+- `python scripts/build-adapters.py --version 0.1.1 --check` - passed.
+- `python scripts/validate-adapters.py --version 0.1.1` - passed.
+- `bash scripts/ci.sh --mode explicit --path skills/learn/SKILL.md --path docs/learn/README.md --path scripts/test-skill-validator.py --path .codex/skills/learn/SKILL.md --path dist/adapters/claude/.claude/skills/learn/SKILL.md --path dist/adapters/codex/.agents/skills/learn/SKILL.md --path dist/adapters/opencode/.opencode/skills/learn/SKILL.md --path docs/plans/2026-05-04-learn-artifact-model.md --path docs/changes/2026-05-04-learn-artifact-model/change.yaml --path docs/changes/2026-05-04-learn-artifact-model/explain-change.md` - passed; selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+- `git diff --check -- skills/learn/SKILL.md docs/learn/README.md scripts/test-skill-validator.py .codex/skills/learn/SKILL.md dist/adapters/claude/.claude/skills/learn/SKILL.md dist/adapters/codex/.agents/skills/learn/SKILL.md dist/adapters/opencode/.opencode/skills/learn/SKILL.md docs/plans/2026-05-04-learn-artifact-model.md docs/changes/2026-05-04-learn-artifact-model` - passed.
