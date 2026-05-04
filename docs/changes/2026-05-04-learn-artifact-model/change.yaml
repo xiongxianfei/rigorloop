@@ -362,3 +362,4 @@ notes:
   - Final verify passed locally, including PR-mode CI; hosted CI was not observed.
   - Final explain-change closeout completed.
   - PR handoff lifecycle closeout moved the plan to Done in both `docs/plan.md` and the active plan body before opening the PR.
+  - PR #27 opened at https://github.com/xiongxianfei/rigorloop/pull/27.
