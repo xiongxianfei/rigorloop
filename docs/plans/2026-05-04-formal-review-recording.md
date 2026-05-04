@@ -326,6 +326,7 @@ Implementation milestones are test-first within their scope: add or update the r
 - [x] 2026-05-04: M2 implemented with upstream-stage review artifact validator coverage, no-material `plan-review` structure coverage without `review-resolution.md`, explicit `pr-review` rejection, and closeout blocking for `rethink` and `inconclusive`.
 - [x] 2026-05-04: M3 implemented with skill-validator coverage for stable formal review recording guidance, canonical review-stage and downstream closeout skill updates, regenerated `.codex/skills/`, and regenerated public adapter output.
 - [x] 2026-05-04: M4 implemented with full touched-surface validation, review artifact closeout validation, adapter distribution validation, lifecycle metadata updates, and a refreshed change-local explanation through M1-M4.
+- [x] 2026-05-04: M4 code-review returned `clean-with-notes` with no material findings. The clean review is settled artifact-locally in this plan; no detailed review record or review-resolution update is required.
 
 ## Decision Log
 
@@ -334,6 +335,7 @@ Implementation milestones are test-first within their scope: add or update the r
 - 2026-05-04: Test spec comes after plan-review -> repository workflow requires concrete plan context before `test-spec` authoring for this non-trivial workflow change.
 - 2026-05-04: M3 uses stable phrase checks only -> the skill validator asserts the durable review-recording boundaries while leaving broader review-quality prose to manual review.
 - 2026-05-04: Keep the plan active after M4 implementation -> M1-M4 implementation milestones are complete, but downstream code-review, verify, final explain-change, and PR handoff still own branch readiness and PR readiness.
+- 2026-05-04: Record the clean M4 code-review artifact-locally -> the review produced no material findings and no detailed-record trigger, so the plan records the result without creating an empty review file.
 
 ## Surprises And Discoveries
 
@@ -442,14 +444,14 @@ Implementation milestones are test-first within their scope: add or update the r
 
 ## Outcome And Retrospective
 
-- Active. M1-M4 implementation milestones are complete. Downstream code-review, verify, final explain-change, and PR handoff have not run for the complete implementation yet.
+- Active. M1-M4 implementation milestones and M4 code-review are complete. Downstream verify, final explain-change, and PR handoff have not run for the complete implementation yet.
 
 ## Readiness
 
-- Ready for M4 code-review.
-- M1-M4 are complete implementation slices, but the full feature is not branch-ready until downstream verify completes.
-- Later workflow stages should continue with code-review, verify, final explain-change, and PR handoff.
+- Ready for verify.
+- M1-M4 are complete implementation slices and M4 code-review is clean, but the full feature is not branch-ready until downstream verify completes.
+- Later workflow stages should continue with verify, final explain-change, and PR handoff.
 
 ## Risks And Follow-Ups
 
-- Follow-up: code-review M4, then continue to verify if the review gate is satisfied.
+- Follow-up: run verify, then final explain-change and PR handoff if the verify gate is satisfied.
