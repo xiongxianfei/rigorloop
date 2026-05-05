@@ -123,4 +123,3 @@ Contributor confirmation status: confirmed for durable topic guidance by the exp
 - Topic created: `docs/learn/topics/plan-lifecycle-closeout.md`.
 - Candidate follow-up, not routed here: propose or implement validator/CI detection for Active plans that reference merged PRs.
 - Candidate follow-up, not routed here: update workflow or PR-stage guidance so merge-dependent Done deferrals require a tracked closeout obligation before PR handoff.
-

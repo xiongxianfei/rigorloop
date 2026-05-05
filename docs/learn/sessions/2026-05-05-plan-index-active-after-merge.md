@@ -113,4 +113,3 @@ No durable lesson was captured because the workflow already says merge-dependent
 
 - No follow-up was scheduled by this learn session.
 - Candidate follow-up, not routed here: update `docs/plan.md` and `docs/plans/2026-05-04-test-and-ci-speed-optimization.md` to record PR #29 as merged and move the plan to Done.
-

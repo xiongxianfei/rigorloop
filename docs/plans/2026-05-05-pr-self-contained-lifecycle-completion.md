@@ -426,6 +426,13 @@ Implementation milestones are test-first within their scope: add or update the r
 - 2026-05-05 M4 code-review:
   - Direct `code-review` of commit `e518725` returned `clean-with-notes` with no blocking or required-change findings.
   - No detailed review record was created because the clean direct review had no material finding or detailed-record trigger.
+- 2026-05-05 verify in progress:
+  - `python scripts/select-validation.py --mode pr --base origin/main --head HEAD` passed and selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.regression`, `review_artifacts.validate`, `artifact_lifecycle.regression`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `selector.regression`, and `broad_smoke.repo`.
+  - `bash scripts/ci.sh --mode pr --base origin/main --head HEAD` passed with the same selected check IDs.
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-05-pr-self-contained-lifecycle-completion` passed.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml` passed.
+  - `git diff --check origin/main...HEAD` failed before fix because two precursor learn session files in the PR diff had extra blank lines at EOF; those EOF-only whitespace issues were removed.
+  - `git diff --check origin/main` passed after the EOF-only whitespace fix.
 
 ## Outcome and Retrospective
 
