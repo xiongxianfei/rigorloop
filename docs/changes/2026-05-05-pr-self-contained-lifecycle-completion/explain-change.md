@@ -4,7 +4,7 @@
 
 This change implements the approved PR-self-contained lifecycle completion workflow amendment. M1 aligns the governing and operational guidance so repo-local lifecycle state changes are recorded in the PR that performs the transition before review opens, while true downstream events keep a plan active until the event occurs.
 
-The implementation is intentionally staged. M1 updates authoritative and operational prose plus the baseline change-local evidence. M2 adds validator behavior. M3 wires selector routing for warning-capable surfaces, updates canonical skill guidance, and refreshes generated outputs. M4 closes implementation evidence. Later code-review and verify completed cleanly; this explanation prepares the PR handoff while the plan remains active until PR handoff completes.
+The implementation is intentionally staged. M1 updates authoritative and operational prose plus the baseline change-local evidence. M2 adds validator behavior. M3 wires selector routing for warning-capable surfaces, updates canonical skill guidance, and refreshes generated outputs. M4 closes implementation evidence. Later code-review and verify completed cleanly; PR handoff is complete and the plan is recorded as Done in both lifecycle surfaces.
 
 ## Source Artifacts
 
@@ -37,7 +37,7 @@ The workflow allowed routine plan `Active` to `Done` closeout to wait until afte
 | `docs/learn/topics/plan-lifecycle-closeout.md` | updated | Converts the durable lesson away from merge-dependent closeout and toward PR-contained lifecycle synchronization plus true downstream event handling. |
 | `docs/plans/0000-00-00-example-plan.md` | unaffected with rationale | Existing wording already says to update the plan body and `docs/plan.md` in the same change when the lifecycle decision is known; it does not preserve the removed merge-dependent exception. |
 | `README.md` | unaffected with rationale | Current README points to workflow docs and does not carry the stale merge-dependent plan-closeout rule. |
-| Canonical stage skills and generated outputs | deferred to M3 | The active plan owns canonical skill updates and generated `.codex/skills/` plus `dist/adapters/` refresh in M3 so generated-output drift is handled in one coherent slice. |
+| Canonical stage skills and generated outputs | deferred to M3 | The plan owns canonical skill updates and generated `.codex/skills/` plus `dist/adapters/` refresh in M3 so generated-output drift is handled in one coherent slice. |
 
 ## SR-1 Resolution
 
@@ -45,7 +45,7 @@ Spec-review SR-1 asked where merge-dependent language classification is recorded
 
 ## M1 Validation
 
-M1 validation is recorded in `change.yaml` and the active plan.
+M1 validation is recorded in `change.yaml` and the plan body.
 
 - `rg -n 'Only merge-dependent ...' CONSTITUTION.md AGENTS.md docs/workflows.md docs/learn/topics/plan-lifecycle-closeout.md docs/plans/0000-00-00-example-plan.md README.md` produced no matches after M1 edits.
 - `python scripts/validate-change-metadata.py docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml` passed.

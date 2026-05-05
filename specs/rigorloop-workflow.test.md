@@ -14,7 +14,7 @@
 - Related follow-on spec: [Formal Review Recording](formal-review-recording.md), approved.
 - Related follow-on test spec: [Formal Review Recording test spec](formal-review-recording.test.md), active.
 - Related amendment proposal: [PR-Self-Contained Lifecycle Completion](../docs/proposals/2026-05-05-pr-self-contained-lifecycle-completion.md), accepted.
-- Active amendment plan: [PR-Self-Contained Lifecycle Completion Plan](../docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md), active.
+- Completed amendment plan: [PR-Self-Contained Lifecycle Completion Plan](../docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md), done.
 - Architecture: not required. The approved refactor and PR-self-contained lifecycle completion amendment change workflow governance, documentation, skills, validators, and generated output without runtime architecture or deployment boundaries.
 - Spec-review: approved with no material findings after the PR-self-contained lifecycle completion amendment was added; minor SR-1 asked the test spec to decide how merge-dependent language classification is recorded.
 - Plan-review: approved with no material findings for the PR-self-contained lifecycle completion plan. Minor non-blocking note: if README remains unchanged, final affected-surface evidence should mark it unaffected with rationale.
@@ -25,7 +25,7 @@
 - Use filesystem-backed integration tests for selector behavior, lifecycle validation, skill validation, generated-output drift, adapter generation, change metadata, and review artifact validation.
 - Use focused skill-validator assertions only for stable, machine-checkable skill guidance such as required labels, forbidden stale labels, handoff boundaries, and generated-output drift.
 - Use selector-selected targeted proof as the first validation layer for changed paths; use broad smoke only when an authoritative trigger elevates it.
-- Treat `specs/rigorloop-workflow.test.md` as the active proof-planning surface for the workflow contract and current amendment until implementation is closed out.
+- Treat `specs/rigorloop-workflow.test.md` as the active proof-planning and regression surface for the workflow contract and implemented amendment.
 - Keep deferred project-map lifecycle mechanics out of this test spec except for explicit non-goal checks.
 - Treat final learn artifact modeling as a cross-spec alignment point here; detailed session, topic, evidence, classification, and routing proof lives in `specs/learn-artifact-model.test.md`.
 - Treat formal review recording as a cross-spec alignment point here; detailed review-artifact fixture coverage lives in `specs/formal-review-recording.test.md`, while this test spec proves the workflow contract does not contradict stage-neutral recording, clean-review settlement, or conditional review-resolution behavior.
@@ -929,17 +929,16 @@
 - Merge-dependent language warning suppression after classification is intentionally not required in the first slice; the required proof is warning visibility plus contributor-visible classification before final handoff treats the warning as addressed.
 - If implementation discovers that a stable workflow guarantee cannot be tested manually or through existing scripts, update this test spec or return to plan-review before widening implementation scope.
 
-## Next artifacts
-
-- Implement M1 from [PR-Self-Contained Lifecycle Completion Plan](../docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md).
-- Code review, review-resolution if triggered, verify, explain-change, and PR after implementation milestones complete.
-
 ## Follow-on artifacts
 
-- None yet.
+- `implementation`: PR-self-contained lifecycle completion M1 through M4 complete.
+- `review-resolution`: material M2 code-review finding accepted, fixed, and closed.
+- `verify`: completed for PR handoff after PR-mode selected validation and broad smoke.
+- `explain-change`: completed in `docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/explain-change.md`.
+- `pr`: PR #30 opened for human review.
 
 ## Readiness
 
-Active proof-planning surface for the workflow contract and PR-self-contained lifecycle completion amendment. Next repository action is M1 execution under the active plan.
+Active proof-planning and regression surface for the workflow contract and PR-self-contained lifecycle completion amendment. The amendment implementation, review closeout, verification, explain-change, and PR handoff are complete in the current branch.
 
-Milestone work must add or update assertions before paired artifact changes, and each milestone closes only after the paired changes make those assertions and validation commands pass.
+Future milestone work must add or update assertions before paired artifact changes, and each milestone closes only after the paired changes make those assertions and validation commands pass.

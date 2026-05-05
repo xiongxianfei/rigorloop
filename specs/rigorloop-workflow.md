@@ -860,11 +860,6 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 
 - None for the PR-self-contained lifecycle completion amendment. The `skills/ci/` path remains allowed while the visible stage/action label becomes `ci-maintenance`; detailed periodic `learn` cadence scheduling remains outside this workflow contract.
 
-## Next artifacts
-
-- Implement M1 from the PR-self-contained lifecycle completion execution plan using the active workflow test spec.
-- Code review, review-resolution if triggered, verify, explain-change, and PR after implementation milestones complete.
-
 ## Follow-on artifacts
 
 - `proposal`: [Workflow Refactor](../docs/proposals/2026-05-01-workflow-refactor.md)
@@ -877,7 +872,12 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - `plan`: [PR-Self-Contained Lifecycle Completion Plan](../docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md)
 - `plan-review`: approved with no material findings.
 - `test-spec`: [RigorLoop workflow test spec](rigorloop-workflow.test.md) updated with PR-self-contained lifecycle completion coverage.
+- `implementation`: PR-self-contained lifecycle completion M1 through M4 complete.
+- `review-resolution`: material M2 code-review finding accepted, fixed, and closed.
+- `verify`: completed for PR handoff after PR-mode selected validation and broad smoke.
+- `explain-change`: completed in the change-local evidence pack.
+- `pr`: PR #30 opened for human review.
 
 ## Readiness
 
-Approved PR-self-contained lifecycle completion amendment. The execution plan is approved, the active test spec covers the amendment, and implementation is ready to start with M1 under the active plan.
+Approved workflow contract with the PR-self-contained lifecycle completion amendment implemented in PR #30. The current branch records the completed plan lifecycle state, review closeout, verification evidence, explain-change, and PR handoff before review.

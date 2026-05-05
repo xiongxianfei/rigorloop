@@ -56,7 +56,7 @@ validation:
     result: pass_after_m2
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-05-pr-self-contained-lifecycle-completion.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/plan.md --path docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md --path docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/review-log.md --path docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/review-resolution.md --path docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/reviews/code-review-m2-r1.md --path docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/reviews/code-review-m2-r2.md
     result: pass_after_m2_with_warnings
-    reason: Lifecycle validation passed with expected non-blocking lifecycle-language warnings classified in the active plan.
+    reason: Lifecycle validation passed with expected non-blocking lifecycle-language warnings classified in contributor-visible plan and change-local evidence.
   - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-05-pr-self-contained-lifecycle-completion
     result: pass_after_m2_review_resolution
   - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-05-pr-self-contained-lifecycle-completion
@@ -251,19 +251,19 @@ changed_files:
 review:
   status: clean_with_notes
   unresolved_items: 0
-  last_completed_review: m4_clean_with_notes_no_material_findings
-  required_next_stage: verify
+  last_completed_review: final_code_review_clean_with_notes_no_material_findings
+  required_next_stage: human_review
 implementation:
-  current_milestone: verify
-  milestone_status: M4_code_review_complete
-  notes: M4 records final implementation evidence and the direct M4 code-review is clean. The plan remains Active because verify, explain-change, and PR handoff still need to complete before the initiative can move to Done.
+  current_milestone: complete
+  milestone_status: all_milestones_complete
+  notes: M1 through M4 are complete, review closeout is recorded, verify and explain-change are complete, and PR handoff records the plan as Done in docs/plan.md and the plan body.
 verification:
-  status: ready_for_explain_change
-  required_next_stage: explain-change
-  notes: PR-mode selected validation passed with broad smoke after branch-level whitespace fix. The plan remains Active because explain-change and PR handoff still need to complete before Done.
+  status: complete
+  required_next_stage: human_review
+  notes: PR-mode selected validation passed with broad smoke after branch-level whitespace fix and after PR handoff. The plan lifecycle closeout is recorded in both docs/plan.md and the plan body before review.
 explanation:
   status: complete
-  required_next_stage: pr
+  required_next_stage: human_review
   location: docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/explain-change.md
   notes: Durable explanation now covers problem, decision trail, diff rationale, tests, review resolution, verification evidence, alternatives, scope control, risks, and PR handoff notes. PR handoff closeout records the plan as Done in docs/plan.md and the plan body.
 pr:
