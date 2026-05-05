@@ -4,7 +4,7 @@
 
 This change implements the approved PR-self-contained lifecycle completion workflow amendment. M1 aligns the governing and operational guidance so repo-local lifecycle state changes are recorded in the PR that performs the transition before review opens, while true downstream events keep a plan active until the event occurs.
 
-The implementation is intentionally staged. M1 updates authoritative and operational prose plus the baseline change-local evidence. M2 adds validator behavior, M3 updates canonical skill guidance and generated outputs, and M4 closes final evidence and lifecycle state.
+The implementation is intentionally staged. M1 updates authoritative and operational prose plus the baseline change-local evidence. M2 adds validator behavior. M3 wires selector routing for warning-capable surfaces, updates canonical skill guidance, and refreshes generated outputs. M4 closes final evidence and lifecycle state.
 
 ## Source Artifacts
 
@@ -66,6 +66,33 @@ The first stale-wording scan intentionally failed before M1 edits because stale 
 - `git diff --check -- <M2 edited surface>` produced no whitespace diagnostics.
 - `bash scripts/ci.sh --mode broad-smoke` passed after M2 review-resolution and clean re-review.
 
+## M3 Diff Rationale
+
+| Surface | M3 disposition | Rationale |
+| --- | --- | --- |
+| `scripts/validation_selection.py` | updated | Routes governance, workflow guidance, canonical skills, change metadata, and review artifacts through `artifact_lifecycle.validate` so tracked lifecycle-language warnings run where stale policy can be introduced. |
+| `scripts/test-select-validation.py` | updated | Adds failing-first selector coverage for PR-contained lifecycle warning surfaces and adjusts CI wrapper expectations for multi-path lifecycle validation commands. |
+| `skills/workflow/SKILL.md`, `skills/plan/SKILL.md`, `skills/implement/SKILL.md`, `skills/verify/SKILL.md`, `skills/explain-change/SKILL.md`, `skills/pr/SKILL.md` | updated | Replaces stale merge-dependent closeout guidance with the approved rule: lifecycle transitions are synchronized before review opens, true downstream completion events keep plans active, and merge itself is not the event. |
+| `scripts/test-skill-validator.py` | updated | Adds stable phrase coverage for the affected stage skills and guards against reintroducing the removed merge-dependent closeout wording. |
+| `.codex/skills/**`, `dist/adapters/**` | regenerated | Keeps generated Codex skill output and public adapter packages in sync with canonical skill guidance. |
+| `scripts/ci.sh` | unaffected with rationale | Existing per-check output buffering already preserves warning output from selected validation; selector routing was sufficient. |
+
+## M3 Validation
+
+- `python scripts/test-select-validation.py` failed before implementation with the expected new selector test failure.
+- `python scripts/test-skill-validator.py` failed before implementation with the expected new skill guidance failures.
+- `python scripts/test-select-validation.py` passed after implementation.
+- `python scripts/test-skill-validator.py` passed after implementation.
+- `python scripts/validate-skills.py` passed.
+- `python scripts/build-skills.py` regenerated `.codex/skills/`.
+- `python scripts/build-skills.py --check` passed.
+- `python scripts/build-adapters.py --version 0.1.1` regenerated public adapter output.
+- `python scripts/build-adapters.py --version 0.1.1 --check` passed.
+- `python scripts/validate-adapters.py --version 0.1.1` passed.
+- `python scripts/test-adapter-distribution.py` passed.
+- `python scripts/select-validation.py --mode explicit --path <M3 touched paths>` passed and selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
+- `bash scripts/ci.sh --mode explicit --path <M3 touched paths>` passed with the same selected check IDs.
+
 ## Current Readiness
 
-M1 is implemented, code-reviewed with no required changes, and verified. M2 is implemented, CR-M2-R1-F1 is accepted and resolved, and M2 re-review is clean. The next implementation milestone is M3, which aligns skills and generated outputs.
+M1 is implemented, code-reviewed with no required changes, and verified. M2 is implemented, CR-M2-R1-F1 is accepted and resolved, and M2 re-review is clean. M3 is implemented and ready for code-review. M4 is next after M3 review.

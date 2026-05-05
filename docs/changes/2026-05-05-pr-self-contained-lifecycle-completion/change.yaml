@@ -74,6 +74,40 @@ validation:
   - command: bash scripts/ci.sh --mode broad-smoke
     result: pass_after_m2_verify
     reason: Broad smoke passed after M2 review-resolution and clean re-review; lifecycle warnings are classified as expected reviewer-attention output or unrelated baseline warnings.
+  - command: python scripts/test-select-validation.py
+    result: fail_expected_before_m3
+    reason: The new selector test first failed because tracked PR-contained lifecycle warning surfaces did not select artifact_lifecycle.validate.
+  - command: python scripts/test-skill-validator.py
+    result: fail_expected_before_m3
+    reason: The new skill-guidance test first failed because affected stage skills lacked the required PR-contained lifecycle guidance and still contained stale merge-dependent closeout wording.
+  - command: python scripts/test-select-validation.py
+    result: pass_after_m3
+  - command: python scripts/test-skill-validator.py
+    result: pass_after_m3
+  - command: python scripts/validate-skills.py
+    result: pass_after_m3
+  - command: python scripts/build-skills.py
+    result: pass_after_m3
+  - command: python scripts/build-skills.py --check
+    result: pass_after_m3
+  - command: python scripts/build-adapters.py --version 0.1.1
+    result: pass_after_m3
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_after_m3
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_after_m3
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_after_m3
+  - command: python scripts/select-validation.py --mode explicit --path <M3 touched paths>
+    result: pass_after_m3
+    selected_check_ids: skills.validate, skills.regression, skills.drift, adapters.regression, adapters.drift, adapters.validate, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, selector.regression
+  - command: bash scripts/ci.sh --mode explicit --path <M3 touched paths>
+    result: pass_after_m3
+    selected_check_ids: skills.validate, skills.regression, skills.drift, adapters.regression, adapters.drift, adapters.validate, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, selector.regression
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml
+    result: pass_after_m3
+  - command: git diff --check -- scripts skills .codex/skills dist/adapters docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md docs/changes/2026-05-05-pr-self-contained-lifecycle-completion
+    result: pass_after_m3
 changed_files:
   - CONSTITUTION.md
   - AGENTS.md
@@ -99,10 +133,43 @@ changed_files:
   - tests/fixtures/artifact-lifecycle/plan-terminal-stale-readiness/
   - tests/fixtures/artifact-lifecycle/plan-downstream-active/
   - tests/fixtures/artifact-lifecycle/merge-dependent-language-warning/
+  - scripts/validation_selection.py
+  - scripts/test-select-validation.py
+  - scripts/test-skill-validator.py
+  - skills/workflow/SKILL.md
+  - skills/plan/SKILL.md
+  - skills/implement/SKILL.md
+  - skills/verify/SKILL.md
+  - skills/explain-change/SKILL.md
+  - skills/pr/SKILL.md
+  - .codex/skills/workflow/SKILL.md
+  - .codex/skills/plan/SKILL.md
+  - .codex/skills/implement/SKILL.md
+  - .codex/skills/verify/SKILL.md
+  - .codex/skills/explain-change/SKILL.md
+  - .codex/skills/pr/SKILL.md
+  - dist/adapters/codex/.agents/skills/workflow/SKILL.md
+  - dist/adapters/codex/.agents/skills/plan/SKILL.md
+  - dist/adapters/codex/.agents/skills/implement/SKILL.md
+  - dist/adapters/codex/.agents/skills/verify/SKILL.md
+  - dist/adapters/codex/.agents/skills/explain-change/SKILL.md
+  - dist/adapters/codex/.agents/skills/pr/SKILL.md
+  - dist/adapters/claude/.claude/skills/workflow/SKILL.md
+  - dist/adapters/claude/.claude/skills/plan/SKILL.md
+  - dist/adapters/claude/.claude/skills/implement/SKILL.md
+  - dist/adapters/claude/.claude/skills/verify/SKILL.md
+  - dist/adapters/claude/.claude/skills/explain-change/SKILL.md
+  - dist/adapters/claude/.claude/skills/pr/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/workflow/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/plan/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/implement/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/verify/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/explain-change/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/pr/SKILL.md
 review:
-  status: m2_clean_with_notes
+  status: m3_ready_for_code_review
   unresolved_items: 0
 implementation:
-  current_milestone: M3
-  milestone_status: M2_complete
-  notes: M2 added lifecycle validator coverage for plan index/body consistency, terminal plan readiness, merge-dependent lifecycle-language warnings, focused review-artifact closeout proof, and the resolved CR-M2-R1-F1 index-only validation fix. M3 aligns skills and generated outputs next.
+  current_milestone: M4
+  milestone_status: M3_complete
+  notes: M3 routes lifecycle-language warning validation for tracked policy and skill surfaces, updates canonical stage skill guidance, and refreshes generated Codex skill plus public adapter output. M4 closes final evidence after M3 code-review.

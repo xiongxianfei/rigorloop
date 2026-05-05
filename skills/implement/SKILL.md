@@ -136,7 +136,8 @@ Update the concrete plan with:
 - validation results;
 - known follow-ups or deferred work.
 - for planned initiatives, keep `docs/plan.md` as lifecycle bookkeeping rather than a milestone journal;
-- if lifecycle state changes during implementation, update both `docs/plan.md` and the plan body, or record why only a merge-dependent `Done` transition remains pending.
+- if lifecycle state changes during implementation, update both `docs/plan.md` and the plan body before the PR opens for review;
+- if completion depends on a true downstream completion event, keep the plan `Active`, name that event, and do not treat merge itself as the event.
 
 ## Evidence collection efficiency
 

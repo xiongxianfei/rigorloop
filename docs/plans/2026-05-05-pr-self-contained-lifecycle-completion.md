@@ -218,12 +218,12 @@ Implementation milestones are test-first within their scope: add or update the r
   - Selector-selected CI runs the new proof where lifecycle state can go stale, and generated skill/adapter guidance matches canonical sources.
 - Commit message: `M3: route pr-contained lifecycle checks`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - Selector routing may over-select lifecycle validation for ordinary prose-only changes.
 - Rollback/recovery:
@@ -318,7 +318,7 @@ Implementation milestones are test-first within their scope: add or update the r
 - [x] Test spec updated and active.
 - [x] M1 complete.
 - [x] M2 complete.
-- [ ] M3 complete.
+- [x] M3 complete.
 - [ ] M4 complete.
 - [ ] Code-review complete.
 - [ ] Verify complete.
@@ -332,6 +332,8 @@ Implementation milestones are test-first within their scope: add or update the r
 - 2026-05-05: Treat spec-review SR-1 as a test-spec decision -> the spec is approved, but the test spec must pick the observable classification-recording surface before implementation.
 - 2026-05-05: Treat merge-dependent warning classification as contributor-visible review evidence, not automatic warning suppression, for the first slice -> this resolves SR-1 without coupling warning detection to hosted PR metadata.
 - 2026-05-05: Emit one merge-dependent lifecycle-language warning per tracked file, not one per matching line -> this keeps reviewer attention visible without flooding selected-check output for specs and plans that discuss the old rule as historical context.
+- 2026-05-05: Route governance, workflow guidance, canonical skills, change metadata, and review artifacts through lifecycle-language warning validation -> those tracked surfaces can carry stale lifecycle policy even when their primary validators are selector, skill, metadata, or review-artifact checks.
+- 2026-05-05: Keep generated skill and adapter output out of artifact lifecycle validation -> generated drift and adapter validation own those files, while the canonical skill sources carry the lifecycle-language warning check.
 
 ## Surprises and Discoveries
 
@@ -341,6 +343,8 @@ Implementation milestones are test-first within their scope: add or update the r
 - M2 warning output intentionally flags this proposal, spec, test spec, plan, plan index, and M2 review-resolution records because they discuss the removed merge-dependent rule as historical context, rejected alternatives, requirements, warning behavior, or review evidence. That language is classified here as lifecycle-policy discussion and not as an instruction to defer this initiative's closeout after merge.
 - M2 review self-check found that a plan listed under both `Active` and `Done` could mask the stale `Active` listing. A focused regression fixture now covers that duplicate-index case.
 - M2 code-review found that changing only `docs/plan.md` could miss the linked plan body. CR-M2-R1-F1 is accepted and fixed by expanding index-in-scope validation to linked plan bodies when no selected plan body is already in scope, which avoids turning unrelated historical plan debt into blockers for normal selected validation.
+- M3 did not require `scripts/ci.sh` changes. Existing per-check stdout/stderr capture already preserves lifecycle warning output without interleaving, so selector routing was enough to expose the new warnings in selected CI.
+- M3 leaves learn artifacts as lightweight selected paths. The first routing slice covers tracked governance, workflow, plan/lifecycle, change-local, metadata, review, and skill surfaces; learn routing can be broadened later if a spec requires it.
 
 ## Validation Notes
 
@@ -381,16 +385,33 @@ Implementation milestones are test-first within their scope: add or update the r
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml` passed.
   - `git diff --check -- scripts tests/fixtures/artifact-lifecycle docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md docs/changes/2026-05-05-pr-self-contained-lifecycle-completion` produced no whitespace diagnostics.
   - `bash scripts/ci.sh --mode broad-smoke` passed after M2 review-resolution and clean re-review. The broad lifecycle pass reported expected reviewer-attention warnings for merge-dependent policy discussion and unrelated baseline warnings, with no blocking findings.
+- 2026-05-05 M3 validation:
+  - `python scripts/test-select-validation.py` failed before implementation with the expected new selector test failure: tracked PR-contained lifecycle warning surfaces did not yet select `artifact_lifecycle.validate`.
+  - `python scripts/test-skill-validator.py` failed before implementation with the expected new skill-guidance failures: affected stage skills lacked the required PR-contained lifecycle phrases and some still contained stale merge-dependent closeout wording.
+  - `python scripts/test-select-validation.py` passed after selector routing and CI-output assertion updates.
+  - `python scripts/test-skill-validator.py` passed after canonical workflow, plan, implement, verify, explain-change, and PR skill guidance updates.
+  - `python scripts/validate-skills.py` passed.
+  - `python scripts/build-skills.py` regenerated `.codex/skills/` from canonical skills.
+  - `python scripts/build-skills.py --check` passed.
+  - `python scripts/build-adapters.py --version 0.1.1` regenerated public adapter output from canonical skills.
+  - `python scripts/build-adapters.py --version 0.1.1 --check` passed.
+  - `python scripts/validate-adapters.py --version 0.1.1` passed.
+  - `python scripts/test-adapter-distribution.py` passed.
+  - `python scripts/select-validation.py --mode explicit --path <M3 touched paths>` passed and selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
+  - `bash scripts/ci.sh --mode explicit --path <M3 touched paths>` passed with the same selected check IDs.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml` passed after M3 evidence updates.
+  - `git diff --check -- scripts skills .codex/skills dist/adapters docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md docs/changes/2026-05-05-pr-self-contained-lifecycle-completion` produced no whitespace diagnostics after M3 evidence updates.
 
 ## Outcome and Retrospective
 
-- Active. M1 aligned governance and workflow guidance, M2 added lifecycle validator coverage and resolved CR-M2-R1-F1, and M3 is next.
+- Active. M1 aligned governance and workflow guidance, M2 added lifecycle validator coverage and resolved CR-M2-R1-F1, and M3 wired selector routing, stage skill guidance, and generated output. M4 is next.
 
 ## Readiness
 
 - M1 is complete and verified.
 - M2 code-review completed with CR-M2-R1-F1 accepted, fixed, resolved, and clean on re-review.
-- M3 is the next implementation milestone.
+- M3 is implemented and ready for code-review.
+- M4 is the next implementation milestone after M3 review.
 - Test-spec readiness: active; `specs/rigorloop-workflow.test.md` now maps the amendment to T29-T32 plus updated cross-cutting coverage.
 
 ## Risks and Follow-Ups
