@@ -315,7 +315,7 @@ Use targeted proof first for each milestone, then broaden only when the touched 
 - [x] Code-review complete.
 - [x] Verify complete.
 - [x] Explain-change complete.
-- [ ] PR ready.
+- [x] PR ready.
 
 ## Decision Log
 
@@ -511,12 +511,22 @@ Use targeted proof first for each milestone, then broaden only when the touched 
   - Passed.
   - `rg -n '[[:blank:]]$|\\t' docs/workflows.md scripts/test-select-validation.py docs/plan.md docs/plans/2026-05-04-test-and-ci-speed-optimization.md docs/changes/2026-05-04-test-and-ci-speed-optimization`
   - Result: no trailing whitespace or tabs found.
+- 2026-05-05: PR handoff readiness passed:
+  - Replayed the branch onto fresh `origin/main` as `2026-05-04-test-and-ci-speed-optimization`.
+  - `python scripts/select-validation.py --mode pr --base origin/main --head HEAD`
+  - Selected `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `selector.regression`, and `broad_smoke.repo`.
+  - `bash scripts/ci.sh --mode pr --base origin/main --head HEAD`
+  - Result: selected checks passed, including `broad_smoke.repo`.
+  - `git diff --check origin/main...HEAD`
+  - Passed.
+  - `rg -n '[[:blank:]]$|\\t' docs/workflows.md scripts/ci.sh scripts/test-select-validation.py scripts/validation_selection.py docs/plan.md docs/plans/2026-05-04-test-and-ci-speed-optimization.md docs/changes/2026-05-04-test-and-ci-speed-optimization specs/test-and-ci-speed-optimization.md specs/test-and-ci-speed-optimization.test.md`
+  - Result: no trailing whitespace or tabs found.
 
 ## Outcome and Retrospective
 
-- Initiative is active. M1, M2, M3, M4, direct code-review, verify, and explain-change are complete; PR handoff has not yet run.
+- Initiative is active. M1, M2, M3, M4, direct code-review, verify, explain-change, and PR handoff readiness are complete; merge-dependent Done state remains pending.
 
 ## Readiness
 
-- Ready for PR handoff.
+- Ready to open a PR.
 - Keep this plan current during implementation, including progress, decisions, discoveries, and validation notes.

@@ -36,6 +36,7 @@ The repository already had several independent validation scripts, but selected-
 | `scripts/test-select-validation.py` | Adds regression coverage for catalog metadata, wrapper flags, deterministic reporting, output isolation, timeout/signal/unavailable-command reporting, bounded scheduling, fail-fast, workflow guidance, and hosted CI boundaries. | Tests the contract at the selector/wrapper boundary without adding test-only production commands. | Test spec `T1`-`T19` | Red/green `python scripts/test-select-validation.py`; final 55-test pass |
 | `docs/workflows.md` | Documents `--jobs`, `--jobs 1`, `--timeout`, `--fail-fast`, `--verbose`, and the matrix-free hosted-CI boundary. | Makes the completed wrapper behavior discoverable while preserving deferred non-goals. | Spec `R17`-`R20`; test spec `T17` | `test_workflow_guidance_aligns_with_validation_layering_contract`; hosted CI inspection |
 | `.github/workflows/ci.yml` | Unchanged. | The existing workflow already delegates PR and main validation to `scripts/ci.sh`; changing it would exceed the first slice. | Spec `R17`-`R19`, `AC9` | `test_hosted_ci_remains_thin_and_matrix_free`; grep inspection |
+| `docs/plans/2026-05-04-formal-review-recording.md` and `docs/changes/2026-05-04-formal-review-recording/explain-change.md` | Records that the formal-review-recording initiative is closed and PR #28 is merged. | Resolves the earlier lifecycle drift found while closing `CR1-F1`; this is not part of CI behavior, but it is part of the reviewed branch diff. | Review finding closeout | Artifact lifecycle validation and PR-mode selected validation |
 | `docs/changes/2026-05-04-test-and-ci-speed-optimization/` | Maintains change metadata, review records, review resolution, and this explanation. | Satisfies the non-trivial change-local artifact pack and keeps review/verify evidence durable. | Governance docs-change baseline | Change metadata, review artifact, and lifecycle validation |
 | `docs/plans/2026-05-04-test-and-ci-speed-optimization.md` and `docs/plan.md` | Records milestone progress, review/verify/explain-change completion, validation notes, and next-stage readiness. | Keeps the active plan and plan index aligned with actual stage state. | Plan file policy and verify lifecycle rules | Artifact lifecycle validation and selected wrapper proof |
 
@@ -75,6 +76,12 @@ These are boundary-level tests because the risk sits at repository validation or
   - Passed.
 - `rg -n '[[:blank:]]$|\\t' docs/workflows.md scripts/test-select-validation.py docs/plan.md docs/plans/2026-05-04-test-and-ci-speed-optimization.md docs/changes/2026-05-04-test-and-ci-speed-optimization`
   - Returned no matches.
+- `python scripts/select-validation.py --mode pr --base origin/main --head HEAD`
+  - Passed and selected `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `selector.regression`, and `broad_smoke.repo`.
+- `bash scripts/ci.sh --mode pr --base origin/main --head HEAD`
+  - Passed the same selected checks, including `broad_smoke.repo`.
+- `git diff --check origin/main...HEAD`
+  - Passed after replaying the branch onto fresh `origin/main`.
 
 CI status: local repository CI proof passed. Hosted CI was not observed.
 

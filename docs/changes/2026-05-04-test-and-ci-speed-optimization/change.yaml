@@ -247,7 +247,18 @@ validation:
     result: pass_after_explain_change
   - command: if rg -n '[[:blank:]]$|\\t' docs/workflows.md scripts/test-select-validation.py docs/plan.md docs/plans/2026-05-04-test-and-ci-speed-optimization.md docs/changes/2026-05-04-test-and-ci-speed-optimization; then exit 1; else exit 0; fi
     result: pass_after_explain_change
+  - command: python scripts/select-validation.py --mode pr --base origin/main --head HEAD
+    result: pass_after_pr_handoff
+    selected_check_ids: review_artifacts.validate, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, selector.regression, broad_smoke.repo
+  - command: bash scripts/ci.sh --mode pr --base origin/main --head HEAD
+    result: pass_after_pr_handoff
+    selected_check_ids: review_artifacts.validate, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, selector.regression, broad_smoke.repo
+  - command: git diff --check origin/main...HEAD
+    result: pass_after_pr_handoff
+  - command: if rg -n '[[:blank:]]$|\\t' docs/workflows.md scripts/ci.sh scripts/test-select-validation.py scripts/validation_selection.py docs/plan.md docs/plans/2026-05-04-test-and-ci-speed-optimization.md docs/changes/2026-05-04-test-and-ci-speed-optimization specs/test-and-ci-speed-optimization.md specs/test-and-ci-speed-optimization.test.md; then exit 1; else exit 0; fi
+    result: pass_after_pr_handoff
 changed_files:
+  - docs/changes/2026-05-04-formal-review-recording/explain-change.md
   - docs/changes/2026-05-04-test-and-ci-speed-optimization/change.yaml
   - docs/changes/2026-05-04-test-and-ci-speed-optimization/explain-change.md
   - docs/changes/2026-05-04-test-and-ci-speed-optimization/review-log.md
@@ -255,6 +266,7 @@ changed_files:
   - docs/changes/2026-05-04-test-and-ci-speed-optimization/reviews/code-review-r1.md
   - docs/changes/2026-05-04-test-and-ci-speed-optimization/reviews/code-review-r2.md
   - docs/plan.md
+  - docs/plans/2026-05-04-formal-review-recording.md
   - docs/plans/2026-05-04-test-and-ci-speed-optimization.md
   - docs/proposals/2026-05-04-test-and-ci-speed-optimization.md
   - docs/workflows.md
@@ -280,3 +292,8 @@ explanation:
   pr_handoff_ready: true
   location: docs/changes/2026-05-04-test-and-ci-speed-optimization/explain-change.md
   required_next_stage: pr
+pr:
+  status: ready_to_open
+  pr_body_ready: true
+  pr_open_ready: true
+  required_next_stage: open_pr
