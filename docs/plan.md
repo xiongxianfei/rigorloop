@@ -3,12 +3,13 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-04 Test and CI speed optimization](plans/2026-05-04-test-and-ci-speed-optimization.md) - active execution plan for bounded parallel selected-check execution in `scripts/ci.sh`; plan-review is approved, the test spec is active, M1-M4, code-review, verify, explain-change, PR handoff readiness, and opened PR #29 are complete.
+- none yet
 
 ## Blocked
 - none yet
 
 ## Done
+- [2026-05-04 Test and CI speed optimization](plans/2026-05-04-test-and-ci-speed-optimization.md) - completed execution plan for bounded parallel selected-check execution in `scripts/ci.sh`, including reviewed parallel-safe metadata, deterministic reporting, bounded scheduling, workflow guidance, review closeout, verification, explain-change, PR handoff, and merged PR #29.
 - [2026-05-04 Formal review recording](plans/2026-05-04-formal-review-recording.md) - completed execution plan for making formal lifecycle review recording stage-neutral across proposal, spec, architecture, plan, and code review, including validator coverage, skill/generated output alignment, review closeout, verification, PR handoff, and merged PR #28.
 - [2026-05-04 Learn artifact model](plans/2026-05-04-learn-artifact-model.md) - completed execution plan for adopting canonical `docs/learn/sessions/**` and `docs/learn/topics/**` surfaces, aligning workflow and governance guidance, updating the learn skill, adding selector recognition for learn artifact paths, refreshing generated outputs, closing review and verification, refreshing explain-change, and merged PR #27.
 - [2026-05-03 Workflow refactor](plans/2026-05-03-workflow-refactor.md) - completed execution plan for implementing the workflow category model, stable stage-obligation taxonomy, `ci-maintenance` label, minimal project-map no-reliance rule, periodic `learn` handling, affected-surface alignment, skill guidance updates, generated-output refresh, validation, explain-change, and merged PR #26.

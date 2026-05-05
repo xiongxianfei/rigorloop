@@ -1,10 +1,10 @@
 # Test and CI Speed Optimization Implementation Plan
 
-- Status: active
+- Status: done
 - Owner: maintainers
 - Start date: 2026-05-04
 - Last updated: 2026-05-05
-- Related issue or PR: none yet
+- Related issue or PR: PR #29, merged 2026-05-05 at `76a8e837bf102652d90d11a8b083a00b8a011d83`
 - Supersedes: none
 - selected_workflow_contract: refactored
 - broad_smoke_required: true
@@ -316,6 +316,7 @@ Use targeted proof first for each milestone, then broaden only when the touched 
 - [x] Verify complete.
 - [x] Explain-change complete.
 - [x] PR ready.
+- [x] PR #29 merged.
 
 ## Decision Log
 
@@ -326,6 +327,7 @@ Use targeted proof first for each milestone, then broaden only when the touched 
 - 2026-05-05: Keep M3 scheduling inside `scripts/ci.sh` -> the embedded runner can use standard-library `ThreadPoolExecutor` around the existing per-check process runner without introducing a new module or changing selector ownership.
 - 2026-05-05: Add `RIGORLOOP_CI_CPU_COUNT_FIXTURE` as a test fixture hook only -> default job-count behavior can be deterministic in tests while wrapper defaults remain owned by `scripts/ci.sh`.
 - 2026-05-05: Leave `.github/workflows/ci.yml` unchanged in M4 -> inspection and the new T17 contract test show it already delegates to `scripts/ci.sh` without matrix fan-out, hardcoded check IDs, caching, distributed execution, or sandbox setup.
+- 2026-05-05: Close the merge-dependent lifecycle state after PR #29 merged -> `docs/plan.md` now moves this initiative to Done and this plan body records merged PR #29.
 
 ## Surprises and Discoveries
 
@@ -522,12 +524,18 @@ Use targeted proof first for each milestone, then broaden only when the touched 
   - `rg -n '[[:blank:]]$|\\t' docs/workflows.md scripts/ci.sh scripts/test-select-validation.py scripts/validation_selection.py docs/plan.md docs/plans/2026-05-04-test-and-ci-speed-optimization.md docs/changes/2026-05-04-test-and-ci-speed-optimization specs/test-and-ci-speed-optimization.md specs/test-and-ci-speed-optimization.test.md`
   - Result: no trailing whitespace or tabs found.
 - 2026-05-05: PR #29 opened at https://github.com/xiongxianfei/rigorloop/pull/29.
+- 2026-05-05: Post-merge lifecycle closeout validation passed:
+  - `python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-05-04-test-and-ci-speed-optimization.md`
+  - Selected `artifact_lifecycle.validate` and `broad_smoke.repo` because this plan sets `broad_smoke_required: true`.
+  - `bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-04-test-and-ci-speed-optimization.md`
+  - The run completed `artifact_lifecycle.validate` and delegated `broad_smoke.repo`; broad smoke passed.
+  - `git diff --check -- docs/plan.md docs/plans/2026-05-04-test-and-ci-speed-optimization.md`
+  - Passed.
 
 ## Outcome and Retrospective
 
-- Initiative is active. M1, M2, M3, M4, direct code-review, verify, explain-change, PR handoff readiness, and opened PR #29 are complete; merge-dependent Done state remains pending.
+- Done. M1, M2, M3, M4, direct code-review, verify, explain-change, PR handoff readiness, and merged PR #29 are complete.
 
 ## Readiness
 
-- PR #29 is open at https://github.com/xiongxianfei/rigorloop/pull/29.
-- Keep this plan current during implementation, including progress, decisions, discoveries, and validation notes.
+- Lifecycle complete through merged PR #29 at https://github.com/xiongxianfei/rigorloop/pull/29.
