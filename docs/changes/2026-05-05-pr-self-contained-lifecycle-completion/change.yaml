@@ -184,6 +184,9 @@ validation:
     result: pass_after_pr_handoff
   - command: git diff --check origin/main
     result: pass_after_pr_handoff
+  - command: gh pr create --base main --head learn/2026-05-05-plan-active-after-merge
+    result: opened_pr_30
+    url: https://github.com/xiongxianfei/rigorloop/pull/30
 changed_files:
   - CONSTITUTION.md
   - AGENTS.md
@@ -264,8 +267,9 @@ explanation:
   location: docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/explain-change.md
   notes: Durable explanation now covers problem, decision trail, diff rationale, tests, review resolution, verification evidence, alternatives, scope control, risks, and PR handoff notes. PR handoff closeout records the plan as Done in docs/plan.md and the plan body.
 pr:
-  status: ready_to_open
+  status: opened
+  url: https://github.com/xiongxianfei/rigorloop/pull/30
   pr_body_ready: true
   pr_open_ready: true
   required_next_stage: human_review
-  notes: PR handoff lifecycle closeout is recorded in docs/plan.md and the plan body before opening the PR for review.
+  notes: PR handoff lifecycle closeout is recorded in docs/plan.md and the plan body; PR #30 is open for review.

@@ -185,9 +185,10 @@ This change does not create a new lifecycle stage, does not change generated out
 - The implementation and internal review/verify gates are complete.
 - `docs/plan.md` and the plan body record this plan as Done in the same PR tree before review opens.
 - The PR body should call out that broad smoke was required by the touched CI-speed plan and passed in PR-mode CI.
+- PR #30 is open at https://github.com/xiongxianfei/rigorloop/pull/30.
 
 ## Current Readiness
 
 M1 is implemented, code-reviewed with no required changes, and verified. M2 is implemented, CR-M2-R1-F1 is accepted and resolved, and M2 re-review is clean. M3 direct code-review is clean. M4 direct code-review is clean. Verify passed. Explain-change is complete.
 
-PR handoff is prepared. `docs/plan.md` and the plan body both record this plan as Done in the current PR tree.
+PR handoff is complete through PR #30. `docs/plan.md` and the plan body both record this plan as Done in the current PR tree.

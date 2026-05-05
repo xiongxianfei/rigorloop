@@ -7,7 +7,7 @@
 - Owner: maintainers
 - Start date: 2026-05-05
 - Last updated: 2026-05-05
-- Related issue or PR: PR handoff prepared from branch `learn/2026-05-05-plan-active-after-merge`
+- Related issue or PR: PR #30, https://github.com/xiongxianfei/rigorloop/pull/30
 - Supersedes: none
 - selected_workflow_contract: refactored
 - broad_smoke_required: false
@@ -449,10 +449,11 @@ Implementation milestones are test-first within their scope: add or update the r
   - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-05-pr-self-contained-lifecycle-completion` passed.
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml` passed.
   - `git diff --check origin/main` passed.
+  - PR #30 opened at https://github.com/xiongxianfei/rigorloop/pull/30.
 
 ## Outcome and Retrospective
 
-- Done. M1 aligned governance and workflow guidance, M2 added lifecycle validator coverage and resolved CR-M2-R1-F1, M3 wired selector routing, stage skill guidance, and generated output, M4 closed implementation evidence, M4 code-review completed clean, verify passed, explain-change is complete, and PR handoff is prepared in this branch.
+- Done. M1 aligned governance and workflow guidance, M2 added lifecycle validator coverage and resolved CR-M2-R1-F1, M3 wired selector routing, stage skill guidance, and generated output, M4 closed implementation evidence, M4 code-review completed clean, verify passed, explain-change is complete, and PR #30 is open.
 
 ## Readiness
 
@@ -462,7 +463,7 @@ Implementation milestones are test-first within their scope: add or update the r
 - M4 direct code-review completed clean with no material findings.
 - Verify passed after branch-scope whitespace cleanup.
 - Explain-change is complete.
-- PR handoff is prepared from branch `learn/2026-05-05-plan-active-after-merge`.
+- PR handoff is complete through PR #30 at https://github.com/xiongxianfei/rigorloop/pull/30.
 - `docs/plan.md` lists this plan under `Done` in the same PR tree as this plan body.
 - Test-spec readiness: active; `specs/rigorloop-workflow.test.md` now maps the amendment to T29-T32 plus updated cross-cutting coverage.
 
