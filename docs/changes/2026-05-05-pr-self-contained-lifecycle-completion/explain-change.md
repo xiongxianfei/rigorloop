@@ -161,6 +161,7 @@ M3 and M4 direct code-reviews were clean with no material findings, so their res
 - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-05-pr-self-contained-lifecycle-completion` passed.
 - `python scripts/validate-change-metadata.py docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml` passed.
 - `git diff --check origin/main...HEAD` passed after removing EOF-only blank lines from two precursor learn session files.
+- PR handoff validation reran `python scripts/select-validation.py --mode pr --base origin/main --head HEAD` and `bash scripts/ci.sh --mode pr --base origin/main --head HEAD`; both passed with the same selected check IDs, including `broad_smoke.repo`.
 
 ## Alternatives Rejected
 
@@ -182,11 +183,11 @@ This change does not create a new lifecycle stage, does not change generated out
 ## PR Handoff Summary
 
 - The implementation and internal review/verify gates are complete.
-- `docs/plan.md` and the plan body intentionally remain Active until PR handoff records the final pre-review lifecycle state.
+- `docs/plan.md` and the plan body record this plan as Done in the same PR tree before review opens.
 - The PR body should call out that broad smoke was required by the touched CI-speed plan and passed in PR-mode CI.
 
 ## Current Readiness
 
 M1 is implemented, code-reviewed with no required changes, and verified. M2 is implemented, CR-M2-R1-F1 is accepted and resolved, and M2 re-review is clean. M3 direct code-review is clean. M4 direct code-review is clean. Verify passed. Explain-change is complete.
 
-`docs/plan.md` remains Active by design: PR handoff is not yet complete, so the plan is not Done under the PR-self-contained lifecycle rule.
+PR handoff is prepared. `docs/plan.md` and the plan body both record this plan as Done in the current PR tree.

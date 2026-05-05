@@ -172,6 +172,18 @@ validation:
     result: pass_after_explain_change
   - command: git diff --check -- docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/explain-change.md docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md
     result: pass_after_explain_change
+  - command: python scripts/select-validation.py --mode pr --base origin/main --head HEAD
+    result: pass_after_pr_handoff
+    selected_check_ids: skills.validate, skills.regression, skills.drift, adapters.regression, adapters.drift, adapters.validate, review_artifacts.regression, review_artifacts.validate, artifact_lifecycle.regression, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, selector.regression, broad_smoke.repo
+  - command: bash scripts/ci.sh --mode pr --base origin/main --head HEAD
+    result: pass_after_pr_handoff
+    selected_check_ids: skills.validate, skills.regression, skills.drift, adapters.regression, adapters.drift, adapters.validate, review_artifacts.regression, review_artifacts.validate, artifact_lifecycle.regression, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, selector.regression, broad_smoke.repo
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-05-pr-self-contained-lifecycle-completion
+    result: pass_after_pr_handoff
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml
+    result: pass_after_pr_handoff
+  - command: git diff --check origin/main
+    result: pass_after_pr_handoff
 changed_files:
   - CONSTITUTION.md
   - AGENTS.md
@@ -250,4 +262,10 @@ explanation:
   status: complete
   required_next_stage: pr
   location: docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/explain-change.md
-  notes: Durable explanation now covers problem, decision trail, diff rationale, tests, review resolution, verification evidence, alternatives, scope control, risks, and PR handoff notes. The plan remains Active until PR handoff completes.
+  notes: Durable explanation now covers problem, decision trail, diff rationale, tests, review resolution, verification evidence, alternatives, scope control, risks, and PR handoff notes. PR handoff closeout records the plan as Done in docs/plan.md and the plan body.
+pr:
+  status: ready_to_open
+  pr_body_ready: true
+  pr_open_ready: true
+  required_next_stage: human_review
+  notes: PR handoff lifecycle closeout is recorded in docs/plan.md and the plan body before opening the PR for review.
