@@ -191,11 +191,6 @@ None.
 | 2026-05-05 | Update `CONSTITUTION.md` with minimal targeted wording. | The constitution is the top repository governance surface and should not silently retain a weaker merge-triggered lifecycle model. | Leave the constitution unchanged and rely only on the workflow spec. |
 | 2026-05-05 | Defer merge-SHA recording rules entirely. | No current case requires immutable merge metadata, so specifying an exception now would over-design the policy. | Reserve a merge-SHA exception in this proposal. |
 
-## Next artifacts
-
-- Implement M1 from the active execution plan using the active workflow test spec.
-- Code review, review-resolution if triggered, verify, explain-change, and PR after implementation milestones complete.
-
 ## Follow-on artifacts
 
 - `proposal-review`: approved with no material findings.
@@ -204,7 +199,12 @@ None.
 - `plan`: [PR-Self-Contained Lifecycle Completion Plan](../plans/2026-05-05-pr-self-contained-lifecycle-completion.md).
 - `plan-review`: approved with no material findings.
 - `test-spec`: [RigorLoop workflow test spec](../../specs/rigorloop-workflow.test.md) updated with PR-self-contained lifecycle completion coverage.
+- `implementation`: M1 through M4 complete.
+- `review-resolution`: material M2 code-review finding accepted, fixed, and closed.
+- `verify`: completed for PR handoff after PR-mode selected validation and broad smoke.
+- `explain-change`: completed in `docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/explain-change.md`.
+- `pr`: PR #30 opened for human review.
 
 ## Readiness
 
-Accepted. The recommended direction, approved workflow spec amendment, approved execution plan, and active test-spec coverage are settled. Implementation is ready to start with M1 under the active plan.
+Accepted and implemented. The approved workflow spec amendment, test-spec coverage, execution plan, review closeout, verification evidence, explain-change, and PR handoff are complete; PR #30 is open for human review.
