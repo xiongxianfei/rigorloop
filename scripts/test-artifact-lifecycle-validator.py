@@ -155,6 +155,20 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
         self.assertTrue(result.blocking_findings, msg=f"expected fixture '{relative_fixture}' to fail")
         self.assertIn(expected_text, combined_messages)
 
+    def assertFixtureWarns(self, relative_fixture: str, path: str, expected_text: str) -> None:
+        result = self.validate_fixture(
+            relative_fixture,
+            mode="explicit-paths",
+            paths=[path],
+        )
+        combined_warnings = "\n".join(f.message for f in result.warning_findings)
+        self.assertFalse(
+            result.blocking_findings,
+            msg=f"expected fixture '{relative_fixture}' to warn without blocking, got blockers: {result.blocking_findings}",
+        )
+        self.assertTrue(result.warning_findings, msg=f"expected fixture '{relative_fixture}' to warn")
+        self.assertIn(expected_text, combined_warnings)
+
     def test_valid_proposal_passes(self) -> None:
         self.assertFixturePasses(
             "valid-proposal",
@@ -616,6 +630,54 @@ artifacts:
                 and "invalid status 'reviewed' for spec" in finding.message
                 for finding in result.blocking_findings
             )
+        )
+
+    def test_plan_done_under_active_index_fails(self) -> None:
+        self.assertFixtureFails(
+            "plan-index-completed-under-active",
+            "docs/plans/2026-05-01-completed-plan.md",
+            "completed, blocked, or superseded plan must not be listed under Active",
+        )
+
+    def test_plan_index_change_validates_linked_plan_body(self) -> None:
+        self.assertFixtureFails(
+            "plan-index-completed-under-active",
+            "docs/plan.md",
+            "completed, blocked, or superseded plan must not be listed under Active",
+        )
+
+    def test_plan_done_under_active_and_done_index_fails(self) -> None:
+        self.assertFixtureFails(
+            "plan-index-completed-under-active-and-done",
+            "docs/plans/2026-05-01-completed-plan.md",
+            "completed, blocked, or superseded plan must not be listed under Active",
+        )
+
+    def test_plan_index_and_body_status_disagreement_fails(self) -> None:
+        self.assertFixtureFails(
+            "plan-index-body-disagreement",
+            "docs/plans/2026-05-01-active-plan.md",
+            "docs/plan.md lists plan as done but plan body status is active",
+        )
+
+    def test_terminal_plan_with_active_readiness_fails(self) -> None:
+        self.assertFixtureFails(
+            "plan-terminal-stale-readiness",
+            "docs/plans/2026-05-01-stale-readiness-plan.md",
+            "terminal plan readiness still describes active or in-progress work",
+        )
+
+    def test_active_plan_with_true_downstream_event_passes(self) -> None:
+        self.assertFixturePasses(
+            "plan-downstream-active",
+            "docs/plans/2026-05-01-downstream-plan.md",
+        )
+
+    def test_merge_dependent_lifecycle_language_warns_without_blocking(self) -> None:
+        self.assertFixtureWarns(
+            "merge-dependent-language-warning",
+            "docs/plans/2026-05-01-merge-language-plan.md",
+            "merge-dependent lifecycle language requires reviewer attention",
         )
 
     def test_local_mode_blocks_related_and_warns_unrelated_baseline(self) -> None:
