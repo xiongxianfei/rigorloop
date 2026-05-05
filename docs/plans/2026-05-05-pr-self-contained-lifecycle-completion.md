@@ -320,7 +320,7 @@ Implementation milestones are test-first within their scope: add or update the r
 - [x] M2 complete.
 - [x] M3 complete.
 - [x] M4 complete.
-- [ ] Code-review complete.
+- [x] Code-review complete.
 - [ ] Verify complete.
 - [ ] Explain-change complete.
 - [ ] PR handoff complete.
@@ -336,6 +336,7 @@ Implementation milestones are test-first within their scope: add or update the r
 - 2026-05-05: Keep generated skill and adapter output out of artifact lifecycle validation -> generated drift and adapter validation own those files, while the canonical skill sources carry the lifecycle-language warning check.
 - 2026-05-05: Keep this plan `Active` after M4 implementation -> M4 completes the implementation milestone evidence, but final code-review, verify, explain-change, and PR handoff are still pending; merge itself is not a downstream completion event.
 - 2026-05-05: Settle the clean M3 code-review artifact-locally -> the direct M3 review had no material findings or detailed-record trigger, so the result is recorded in this plan, `change.yaml`, and `explain-change.md` instead of creating an empty review-resolution record.
+- 2026-05-05: Settle the clean M4 code-review artifact-locally -> the direct M4 review had no material findings or detailed-record trigger, so the result is recorded in this plan, `change.yaml`, and `explain-change.md` instead of creating an empty review-resolution record.
 
 ## Surprises and Discoveries
 
@@ -422,18 +423,22 @@ Implementation milestones are test-first within their scope: add or update the r
   - `bash scripts/ci.sh --mode explicit --path <all touched paths>` passed with the same selected check IDs.
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml` passed after M4 evidence edits.
   - `git diff --check -- <all touched paths>` produced no whitespace diagnostics after M4 evidence edits.
+- 2026-05-05 M4 code-review:
+  - Direct `code-review` of commit `e518725` returned `clean-with-notes` with no blocking or required-change findings.
+  - No detailed review record was created because the clean direct review had no material finding or detailed-record trigger.
 
 ## Outcome and Retrospective
 
-- Active. M1 aligned governance and workflow guidance, M2 added lifecycle validator coverage and resolved CR-M2-R1-F1, M3 wired selector routing, stage skill guidance, and generated output, and M4 closed implementation evidence. Final code-review, verify, explain-change, and PR handoff remain before this plan can move to Done.
+- Active. M1 aligned governance and workflow guidance, M2 added lifecycle validator coverage and resolved CR-M2-R1-F1, M3 wired selector routing, stage skill guidance, and generated output, M4 closed implementation evidence, and M4 code-review completed clean. Verify, explain-change, and PR handoff remain before this plan can move to Done.
 
 ## Readiness
 
 - M1 is complete and verified.
 - M2 code-review completed with CR-M2-R1-F1 accepted, fixed, resolved, and clean on re-review.
 - M3 direct code-review completed clean with no material findings.
-- M4 is implemented and ready for code-review.
-- `docs/plan.md` intentionally remains Active until code-review, verify, explain-change, and PR handoff complete in the current PR tree.
+- M4 direct code-review completed clean with no material findings.
+- Verify is next.
+- `docs/plan.md` intentionally remains Active until verify, explain-change, and PR handoff complete in the current PR tree.
 - Test-spec readiness: active; `specs/rigorloop-workflow.test.md` now maps the amendment to T29-T32 plus updated cross-cutting coverage.
 
 ## Risks and Follow-Ups
