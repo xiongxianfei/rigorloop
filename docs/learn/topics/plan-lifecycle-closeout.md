@@ -8,9 +8,8 @@ This topic is curated learn guidance. Authoritative lifecycle rules remain in `d
 - Primary classification: `durable-lesson`
 - Secondary routes: candidate workflow or validator follow-up, not yet routed
 
-Post-merge plan closeout is easy to miss because it happens after the PR already feels complete. Prefer moving implementation plans to Done before opening the PR when implementation, review-resolution, verification, explain-change, and PR handoff are complete.
+Post-merge plan closeout is easy to miss because it happens after the PR already feels complete. Move implementation plans to Done inside the PR that performs the lifecycle transition, before the PR opens for review, when implementation, review-resolution, verification, explain-change, and PR handoff are complete.
 
-Use merge-dependent Done only when the merge itself is the deciding completion event. When that exception is needed, create a tracked closeout obligation before opening the PR. The follow-up should name the owner, PR number, files to update, expected lifecycle wording, and validation command.
+If completion depends on a true downstream event, such as release, deploy, package publication, external migration, or an observed hosted result, keep the plan Active and name that event or follow-up condition. Do not use merge itself as a routine downstream completion event.
 
-If this keeps recurring, the next improvement should be automated detection: report an Active plan entry or active plan body that references a PR GitHub already reports as merged.
-
+If this keeps recurring, the next improvement should be automated detection: report an Active plan entry or active plan body whose tracked state conflicts with the PR-contained evidence or a named downstream completion event.

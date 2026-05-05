@@ -118,7 +118,7 @@ If the work changes externally observable behavior and no relevant spec exists, 
 - When repo-owned validation scripts exist, run those named commands before PR instead of inventing substitute checks.
 - For adapter package work, ordinary contributors do not need all supported tools installed locally; non-smoke validation is repository-owned through adapter generation, adapter validation, release metadata validation, and `scripts/release-verify.sh`.
 - Release automation must use tracked release notes under `docs/releases/<tag>/release-notes.md`; do not rely on generated release notes for adapter compatibility claims.
-- For planned initiatives, final lifecycle closeout updates both `docs/plan.md` and the plan body when lifecycle state changes, and `verify` treats stale lifecycle state between them as blocking PR readiness.
+- For planned initiatives, final lifecycle closeout updates both `docs/plan.md` and the plan body when lifecycle state changes. Synchronize that lifecycle state inside the PR that performs the transition before review opens; merge is not a routine trigger for later lifecycle closeout. `verify` treats stale lifecycle state between the index and plan body as blocking PR readiness.
 - Do not report success without naming the commands actually run.
 
 ## Change management
