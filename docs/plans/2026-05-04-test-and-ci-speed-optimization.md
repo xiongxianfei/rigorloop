@@ -312,9 +312,9 @@ Use targeted proof first for each milestone, then broaden only when the touched 
 - [x] M2 complete.
 - [x] M3 complete.
 - [x] M4 complete.
-- [ ] Code-review complete.
-- [ ] Verify complete.
-- [ ] Explain-change complete.
+- [x] Code-review complete.
+- [x] Verify complete.
+- [x] Explain-change complete.
 - [ ] PR ready.
 
 ## Decision Log
@@ -472,12 +472,51 @@ Use targeted proof first for each milestone, then broaden only when the touched 
   - Passed.
   - `rg -n '[[:blank:]]$|\\t' docs/workflows.md scripts/test-select-validation.py docs/plan.md docs/plans/2026-05-04-test-and-ci-speed-optimization.md docs/changes/2026-05-04-test-and-ci-speed-optimization`
   - Result: no trailing whitespace or tabs found.
+- 2026-05-05: Direct M4 code-review completed:
+  - Review status: `clean-with-notes`.
+  - Findings: no blocking or required-change findings.
+  - Recommended next stage: `verify`.
+- 2026-05-05: Verify passed after post-code-review lifecycle bookkeeping:
+  - `python scripts/select-validation.py --mode explicit --path docs/workflows.md --path .github/workflows/ci.yml --path scripts/test-select-validation.py --path docs/plan.md --path docs/plans/2026-05-04-test-and-ci-speed-optimization.md --path docs/changes/2026-05-04-test-and-ci-speed-optimization/change.yaml --path docs/changes/2026-05-04-test-and-ci-speed-optimization/explain-change.md`
+  - Selected `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `selector.regression`, and `broad_smoke.repo`.
+  - `bash scripts/ci.sh --mode explicit --path docs/workflows.md --path .github/workflows/ci.yml --path scripts/test-select-validation.py --path docs/plan.md --path docs/plans/2026-05-04-test-and-ci-speed-optimization.md --path docs/changes/2026-05-04-test-and-ci-speed-optimization/change.yaml --path docs/changes/2026-05-04-test-and-ci-speed-optimization/explain-change.md --jobs 2`
+  - Result: selected checks passed, including `broad_smoke.repo`.
+  - `bash scripts/ci.sh --mode broad-smoke`
+  - Result: direct broad smoke passed.
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-04-test-and-ci-speed-optimization`
+  - Result: review artifact closeout validation passed.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-04-test-and-ci-speed-optimization/change.yaml`
+  - Result: valid change metadata.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-04-test-and-ci-speed-optimization/change.yaml --path docs/changes/2026-05-04-test-and-ci-speed-optimization/explain-change.md --path docs/plan.md --path docs/plans/2026-05-04-test-and-ci-speed-optimization.md --path docs/proposals/2026-05-04-test-and-ci-speed-optimization.md --path specs/test-and-ci-speed-optimization.md --path specs/test-and-ci-speed-optimization.test.md`
+  - Result: artifact lifecycle validation passed.
+  - `git diff --check -- docs/workflows.md .github/workflows/ci.yml scripts/test-select-validation.py docs/plan.md docs/plans/2026-05-04-test-and-ci-speed-optimization.md docs/changes/2026-05-04-test-and-ci-speed-optimization`
+  - Passed.
+  - `rg -n '[[:blank:]]$|\\t' docs/workflows.md scripts/test-select-validation.py docs/plan.md docs/plans/2026-05-04-test-and-ci-speed-optimization.md docs/changes/2026-05-04-test-and-ci-speed-optimization`
+  - Result: no trailing whitespace or tabs found.
+- 2026-05-05: Explain-change closeout passed:
+  - Updated `docs/changes/2026-05-04-test-and-ci-speed-optimization/explain-change.md` with the completed problem-to-diff rationale, tests, review-resolution summary, verification evidence, alternatives rejected, scope control, risks, and PR handoff summary.
+  - `python scripts/select-validation.py --mode explicit --path docs/workflows.md --path .github/workflows/ci.yml --path scripts/test-select-validation.py --path docs/plan.md --path docs/plans/2026-05-04-test-and-ci-speed-optimization.md --path docs/changes/2026-05-04-test-and-ci-speed-optimization/change.yaml --path docs/changes/2026-05-04-test-and-ci-speed-optimization/explain-change.md`
+  - Selected `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `selector.regression`, and `broad_smoke.repo`.
+  - `bash scripts/ci.sh --mode explicit --path docs/workflows.md --path .github/workflows/ci.yml --path scripts/test-select-validation.py --path docs/plan.md --path docs/plans/2026-05-04-test-and-ci-speed-optimization.md --path docs/changes/2026-05-04-test-and-ci-speed-optimization/change.yaml --path docs/changes/2026-05-04-test-and-ci-speed-optimization/explain-change.md --jobs 2`
+  - Result: selected checks passed, including `broad_smoke.repo`.
+  - `bash scripts/ci.sh --mode broad-smoke`
+  - Result: direct broad smoke passed.
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-04-test-and-ci-speed-optimization`
+  - Result: review artifact closeout validation passed.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-04-test-and-ci-speed-optimization/change.yaml`
+  - Result: valid change metadata.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-04-test-and-ci-speed-optimization/change.yaml --path docs/changes/2026-05-04-test-and-ci-speed-optimization/explain-change.md --path docs/plan.md --path docs/plans/2026-05-04-test-and-ci-speed-optimization.md --path docs/proposals/2026-05-04-test-and-ci-speed-optimization.md --path specs/test-and-ci-speed-optimization.md --path specs/test-and-ci-speed-optimization.test.md`
+  - Result: artifact lifecycle validation passed.
+  - `git diff --check -- docs/workflows.md .github/workflows/ci.yml scripts/test-select-validation.py docs/plan.md docs/plans/2026-05-04-test-and-ci-speed-optimization.md docs/changes/2026-05-04-test-and-ci-speed-optimization`
+  - Passed.
+  - `rg -n '[[:blank:]]$|\\t' docs/workflows.md scripts/test-select-validation.py docs/plan.md docs/plans/2026-05-04-test-and-ci-speed-optimization.md docs/changes/2026-05-04-test-and-ci-speed-optimization`
+  - Result: no trailing whitespace or tabs found.
 
 ## Outcome and Retrospective
 
-- Initiative is active. M1, M2, M3, and M4 are complete; code-review has not yet run on M4.
+- Initiative is active. M1, M2, M3, M4, direct code-review, verify, and explain-change are complete; PR handoff has not yet run.
 
 ## Readiness
 
-- Ready for code-review.
+- Ready for PR handoff.
 - Keep this plan current during implementation, including progress, decisions, discoveries, and validation notes.
