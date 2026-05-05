@@ -6,7 +6,7 @@ This change implements the approved formal review recording contract through the
 
 Formal lifecycle review records are now stage-neutral across `proposal-review`, `spec-review`, `architecture-review`, `plan-review`, and `code-review`. Detailed review records are required only when the approved trigger policy applies, clean reviews can remain artifact-local, no-material detailed records do not require empty `review-resolution.md` files, material findings remain traceable through stable Finding IDs, and `pr-review` remains unsupported.
 
-M1-M4 implementation milestones, M4 code-review, verify, final explain-change, and PR handoff are complete. PR #28 is open.
+M1-M4 implementation milestones, M4 code-review, verify, final explain-change, PR handoff, and merged PR #28 are complete.
 
 ## Problem
 
@@ -37,7 +37,7 @@ The implementation needed to align the governing contracts, validator coverage, 
 | Downstream closeout skills | Update `workflow`, `verify`, `explain-change`, and `pr` with no-material record and closeout blocking boundaries. | Preserves `R12`-`R13` downstream handoff rules. | Skill validator and explicit CI. |
 | Generated outputs | Regenerate `.codex/skills/**` and `dist/adapters/**` from canonical skills. | Satisfies `R15a` without hand-editing generated files. | Build drift checks and adapter validation. |
 | `docs/changes/2026-05-04-formal-review-recording/` | Adds and updates change metadata, explanation, review log, review-resolution, and reconstructed review evidence. | Provides durable traceability for the non-trivial workflow-governance change. | Change metadata and review artifact validation. |
-| `docs/plan.md` and the plan body | Track M1-M4 completion, clean M4 code-review, verify, and final explanation while keeping the initiative Active until PR handoff. | Keeps lifecycle state accurate until PR handoff completes. | Artifact lifecycle validation. |
+| `docs/plan.md` and the plan body | Track M1-M4 completion, clean M4 code-review, verify, final explanation, PR handoff, and merged PR closeout. | Keeps lifecycle state accurate through merge-dependent closeout. | Artifact lifecycle validation. |
 
 ## Tests Added Or Changed
 
@@ -93,7 +93,7 @@ The verify gate passed after M4 code-review with the final tracked artifact stat
 - `python scripts/select-validation.py --mode explicit --path <final changed surface>` selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.drift`, `review_artifacts.regression`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
 - `bash scripts/ci.sh --mode explicit --path <final changed surface>` passed the selected checks.
 
-After opening PR #28, the PR handoff lifecycle update also passed artifact lifecycle validation, change metadata validation, review artifact closeout validation, explicit CI for the lifecycle surfaces, `git diff --check --`, and the whitespace scan.
+After opening PR #28, the PR handoff lifecycle update also passed artifact lifecycle validation, change metadata validation, review artifact closeout validation, explicit CI for the lifecycle surfaces, `git diff --check --`, and the whitespace scan. After PR #28 merged, the plan index and plan body were moved to done state.
 
 ## Alternatives Rejected
 
@@ -109,13 +109,13 @@ After opening PR #28, the PR handoff lifecycle update also passed artifact lifec
 - No new review directory taxonomy was added.
 - Historical change packs were not migrated.
 - Generated `.codex/skills/` and `dist/adapters/` output was refreshed only through repository generators.
-- The plan remains Active after PR handoff because merge closeout has not completed.
+- The plan is closed after PR #28 merged; no merge-dependent plan follow-up remains.
 
 ## Risks And Follow-Ups
 
-- Hosted PR CI is checked on PR #28; repository-owned local validation evidence is recorded above.
-- Merge-dependent plan closeout remains after PR #28 merges.
+- Hosted PR CI was checked on PR #28 before merge; repository-owned local validation evidence is recorded above.
+- Merge-dependent plan closeout is complete.
 
 ## Readiness
 
-PR #28 is open and ready for reviewer attention.
+Lifecycle complete through merged PR #28.
