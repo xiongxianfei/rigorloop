@@ -144,6 +144,12 @@ validation:
   - command: code-review M4 direct review of e518725 HEAD^..HEAD
     result: clean_with_notes_after_m4
     reason: Direct code-review found no blocking or required-change findings and no detailed-record trigger.
+  - command: git diff --check origin/main...HEAD
+    result: fail_before_verify_whitespace_fix
+    reason: Two precursor learn session files in the PR diff had an extra blank line at EOF.
+  - command: git diff --check origin/main
+    result: pass_after_verify_whitespace_fix
+    reason: Worktree branch diff against origin/main had no whitespace diagnostics after removing the two EOF-only blank lines.
 changed_files:
   - CONSTITUTION.md
   - AGENTS.md
@@ -153,7 +159,10 @@ changed_files:
   - specs/rigorloop-workflow.md
   - specs/rigorloop-workflow.test.md
   - docs/plan.md
+  - docs/plans/2026-05-04-test-and-ci-speed-optimization.md
   - docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md
+  - docs/learn/sessions/2026-05-05-plan-index-active-after-merge.md
+  - docs/learn/sessions/2026-05-05-recurring-plan-closeout-misses.md
   - docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml
   - docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/explain-change.md
   - docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/review-log.md
