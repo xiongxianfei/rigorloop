@@ -2,12 +2,12 @@
 
 ## Status
 
-- active
+- done
 
 - Owner: maintainers
 - Start date: 2026-05-05
 - Last updated: 2026-05-05
-- Related issue or PR: none yet
+- Related issue or PR: PR handoff prepared from branch `learn/2026-05-05-plan-active-after-merge`
 - Supersedes: none
 - selected_workflow_contract: refactored
 - broad_smoke_required: false
@@ -323,7 +323,7 @@ Implementation milestones are test-first within their scope: add or update the r
 - [x] Code-review complete.
 - [x] Verify complete.
 - [x] Explain-change complete.
-- [ ] PR handoff complete.
+- [x] PR handoff complete.
 
 ## Decision Log
 
@@ -442,10 +442,17 @@ Implementation milestones are test-first within their scope: add or update the r
   - `bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml --path docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/explain-change.md --path docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md` passed with the same selected check IDs.
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml` passed.
   - `git diff --check -- docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/explain-change.md docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md` passed.
+- 2026-05-05 PR handoff:
+  - `docs/plan.md` and this plan body now both record this plan as Done in the branch tree before PR review opens.
+  - `python scripts/select-validation.py --mode pr --base origin/main --head HEAD` passed and selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.regression`, `review_artifacts.validate`, `artifact_lifecycle.regression`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `selector.regression`, and `broad_smoke.repo`.
+  - `bash scripts/ci.sh --mode pr --base origin/main --head HEAD` passed with the same selected check IDs.
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-05-pr-self-contained-lifecycle-completion` passed.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml` passed.
+  - `git diff --check origin/main` passed.
 
 ## Outcome and Retrospective
 
-- Active. M1 aligned governance and workflow guidance, M2 added lifecycle validator coverage and resolved CR-M2-R1-F1, M3 wired selector routing, stage skill guidance, and generated output, M4 closed implementation evidence, M4 code-review completed clean, verify passed, and explain-change is complete. PR handoff remains before this plan can move to Done.
+- Done. M1 aligned governance and workflow guidance, M2 added lifecycle validator coverage and resolved CR-M2-R1-F1, M3 wired selector routing, stage skill guidance, and generated output, M4 closed implementation evidence, M4 code-review completed clean, verify passed, explain-change is complete, and PR handoff is prepared in this branch.
 
 ## Readiness
 
@@ -455,8 +462,8 @@ Implementation milestones are test-first within their scope: add or update the r
 - M4 direct code-review completed clean with no material findings.
 - Verify passed after branch-scope whitespace cleanup.
 - Explain-change is complete.
-- PR handoff is next.
-- `docs/plan.md` intentionally remains Active until PR handoff completes in the current PR tree.
+- PR handoff is prepared from branch `learn/2026-05-05-plan-active-after-merge`.
+- `docs/plan.md` lists this plan under `Done` in the same PR tree as this plan body.
 - Test-spec readiness: active; `specs/rigorloop-workflow.test.md` now maps the amendment to T29-T32 plus updated cross-cutting coverage.
 
 ## Risks and Follow-Ups
