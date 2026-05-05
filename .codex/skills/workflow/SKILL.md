@@ -51,7 +51,9 @@ For work that has a concrete plan file under `docs/plans/`:
 - `implement` keeps the active plan body's progress, decisions, discoveries, and validation notes current during execution.
 - Final lifecycle closeout updates both `docs/plan.md` and the plan body when lifecycle state changes.
 - `verify` blocks PR readiness when stale lifecycle state remains between the plan index and the plan body.
-- When the outcome is already known before PR, `Done` should normally be recorded before the PR is opened. Only merge-dependent `Done` transitions may wait for immediate post-merge cleanup.
+- When a PR performs a lifecycle transition, synchronize `docs/plan.md` and the plan body before the PR opens for review.
+- If completion depends on a true downstream completion event, keep the plan `Active`, name that event, and close it in a later PR or repository-owned automation.
+- The merge itself is not a routine downstream completion event.
 - `Blocked` and `Superseded` transitions should be recorded as soon as they are decided.
 - `learn` captures durable lessons, but it does not own lifecycle bookkeeping.
 
