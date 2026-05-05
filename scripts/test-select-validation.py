@@ -592,6 +592,26 @@ raise SystemExit({exit_code})
         self.assertIn("selector.regression", selected_ids(payload))
         self.assertFalse(payload["blocking_results"])
 
+    def test_pr_contained_lifecycle_warning_surfaces_select_lifecycle_validation(self) -> None:
+        paths = [
+            "AGENTS.md",
+            "CONSTITUTION.md",
+            "docs/workflows.md",
+            "skills/workflow/SKILL.md",
+            "docs/changes/2026-05-05-example/change.yaml",
+            "docs/changes/2026-05-05-example/review-resolution.md",
+        ]
+        result = self.select(paths)
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertFalse(payload["blocking_results"])
+        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
+        lifecycle_check = next(check for check in payload["selected_checks"] if check["id"] == "artifact_lifecycle.validate")
+        for path in paths:
+            with self.subTest(path=path):
+                self.assertIn(path, lifecycle_check["paths"])
+
     def test_readme_path_selects_lightweight_readme_validation(self) -> None:
         temp_root = Path(tempfile.mkdtemp(prefix="validation-selection-readme-no-markers-"))
         self.addCleanupTree(temp_root)
@@ -1083,7 +1103,15 @@ raise SystemExit({exit_code})
             output,
         )
         self.assertIn(
-            "python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/test-layering-and-change-scoped-validation.md",
+            "python scripts/validate-artifact-lifecycle.py --mode explicit-paths",
+            output,
+        )
+        self.assertIn(
+            "--path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/review-resolution.md",
+            output,
+        )
+        self.assertIn(
+            "--path specs/test-layering-and-change-scoped-validation.md",
             output,
         )
 

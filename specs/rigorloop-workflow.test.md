@@ -8,13 +8,16 @@
 
 - Spec: [RigorLoop Workflow](rigorloop-workflow.md), approved.
 - Proposal: [Workflow Refactor](../docs/proposals/2026-05-01-workflow-refactor.md), accepted.
-- Plan: [Workflow Refactor Execution Plan](../docs/plans/2026-05-03-workflow-refactor.md), active.
+- Historical plan: [Workflow Refactor Execution Plan](../docs/plans/2026-05-03-workflow-refactor.md), done.
 - Related follow-on spec: [Learn Artifact Model](learn-artifact-model.md), approved.
 - Related follow-on test spec: [Learn Artifact Model test spec](learn-artifact-model.test.md), active.
 - Related follow-on spec: [Formal Review Recording](formal-review-recording.md), approved.
 - Related follow-on test spec: [Formal Review Recording test spec](formal-review-recording.test.md), active.
-- Architecture: not required. The approved refactor changes workflow governance, documentation, skills, validators, and generated output without runtime architecture or deployment boundaries.
-- Spec-review: approved with no material findings after the standing-artifact gates, project-map minimal rule, `Runs for every change` semantics, nonblocking `learn` closeout, affected-surface alignment, and learn artifact model linkage were added.
+- Related amendment proposal: [PR-Self-Contained Lifecycle Completion](../docs/proposals/2026-05-05-pr-self-contained-lifecycle-completion.md), accepted.
+- Completed amendment plan: [PR-Self-Contained Lifecycle Completion Plan](../docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md), done.
+- Architecture: not required. The approved refactor and PR-self-contained lifecycle completion amendment change workflow governance, documentation, skills, validators, and generated output without runtime architecture or deployment boundaries.
+- Spec-review: approved with no material findings after the PR-self-contained lifecycle completion amendment was added; minor SR-1 asked the test spec to decide how merge-dependent language classification is recorded.
+- Plan-review: approved with no material findings for the PR-self-contained lifecycle completion plan. Minor non-blocking note: if README remains unchanged, final affected-surface evidence should mark it unaffected with rationale.
 
 ## Testing strategy
 
@@ -22,23 +25,27 @@
 - Use filesystem-backed integration tests for selector behavior, lifecycle validation, skill validation, generated-output drift, adapter generation, change metadata, and review artifact validation.
 - Use focused skill-validator assertions only for stable, machine-checkable skill guidance such as required labels, forbidden stale labels, handoff boundaries, and generated-output drift.
 - Use selector-selected targeted proof as the first validation layer for changed paths; use broad smoke only when an authoritative trigger elevates it.
-- Treat `specs/rigorloop-workflow.test.md` as the active proof-planning surface for this refactor until the implementation is closed out.
+- Treat `specs/rigorloop-workflow.test.md` as the active proof-planning and regression surface for the workflow contract and implemented amendment.
 - Keep deferred project-map lifecycle mechanics out of this test spec except for explicit non-goal checks.
 - Treat final learn artifact modeling as a cross-spec alignment point here; detailed session, topic, evidence, classification, and routing proof lives in `specs/learn-artifact-model.test.md`.
 - Treat formal review recording as a cross-spec alignment point here; detailed review-artifact fixture coverage lives in `specs/formal-review-recording.test.md`, while this test spec proves the workflow contract does not contradict stage-neutral recording, clean-review settlement, or conditional review-resolution behavior.
+- Treat PR-self-contained lifecycle completion as the current workflow amendment under test. A merge-dependent language warning is treated as addressed only when a contributor-visible tracked or review-visible surface classifies the wording as a true downstream completion event or stale lifecycle wording requiring correction; the first implementation slice does not need to suppress the warning automatically after classification.
 
 ## Requirement coverage map
 
 | Requirement IDs | Covered by | Level | Notes |
 | --- | --- | --- | --- |
 | `R1`-`R5`, `R25h` | `T1` | manual | Fast lane and two-lane contributor guidance |
-| `R6`-`R6db`, `R20`-`R24a`, `R26`, `R27` | `T4`, `T20` | manual, integration | Category model, affected-surface alignment, source-of-truth and generated-output boundaries |
+| `R6`-`R6dc`, `R20`-`R24a`, `R26`, `R27` | `T4`, `T20`, `T29` | manual, integration | Category model, affected-surface alignment, source-of-truth and generated-output boundaries |
 | `R6a`-`R6i` | `T20`, `T21` | manual, integration | Standing artifact gates, bootstrap exceptions, project-map no-reliance, architecture-package routing |
 | `R7`-`R7b` | `T20`, `T22` | manual, integration | Stable obligation values, trigger behavior, and `Runs for every change` semantics |
 | `R7ba`-`R7bf` | `T23` | manual, integration | Periodic `learn`, default nonblocking behavior, session-record closeout, and final learn artifact model linkage |
 | `R7c`-`R7w` | `T24` | manual, integration | Autoprogression, immediate handoff language, stage-owned authority, tracked-branch review and verify claims |
-| `R8`-`R8j` | `T2` | manual | Planned milestone lifecycle, plan/index coherence, and milestone commits |
-| `R8ja`-`R8kg` | `T18`, `T25` | manual, integration | Lifecycle states, stale authoritative artifact handling, PR reference behavior |
+| `R8`-`R8g`, `R8i`, `R8j` | `T2`, `T30` | manual, integration | Planned milestone lifecycle, plan/index coherence, and milestone commits |
+| `R8h`-`R8hc` | `T29`, `T30` | manual, integration | PR-self-contained plan lifecycle closeout and true downstream event handling |
+| `R8ja`-`R8jb` | `T30`, `T32` | manual, integration | Stale plan state and merge-dependent plan wording classification |
+| `R8k`-`R8kg` | `T18`, `T25` | manual, integration | Lifecycle states, stale authoritative artifact handling, PR reference behavior |
+| `R8kh`-`R8kj` | `T31`, `T32` | manual, integration | Broader repo-local lifecycle state, review-resolution closeout consistency, and tracked merge-dependent language warnings |
 | `R8l`-`R8s` | `T13`, `T17`, `T25` | integration, smoke, manual | Selector-selected proof, CI wrapper semantics, broad-smoke triggers, manual proof records |
 | `R9`-`R9b`, `R18`, `R19` | `T13`, `T14`, `T26` | smoke, manual, integration | Routine CI, thin hosted wrapper, and `ci-maintenance` boundary |
 | `R10`-`R12f` | `T3`, `T16`, `T27` | manual, integration | Durable reasoning, PR summary, review-resolution closeout, formal review recording triggers, and verify-report conditionality |
@@ -64,6 +71,9 @@
 | `E8` | `T27` | Required review-resolution closeout blocks downstream stages and formal review records stay discoverable when triggered |
 | `E9` | `T26` | `ci-maintenance` is infrastructure maintenance, not validation execution |
 | `E10` | `T23` | `learn` is trigger-based and not a default final per-change stage |
+| `E11` | `T29`, `T30` | Completing PR records plan `Done` in both plan index and plan body before review opens |
+| `E12` | `T29`, `T30` | True downstream release, deploy, publication, external migration, or unobserved hosted result keeps the plan active |
+| `E13` | `T31` | Review-resolution closeout and readiness wording stay self-contained in the PR tree |
 
 ## Edge case coverage
 
@@ -92,6 +102,11 @@
 - Bootstrap proposals without `VISION.md` or `CONSTITUTION.md` must identify the exception in `Vision fit`: `T21`
 - Open material review findings block `verify`, final `explain-change`, and `pr`: `T27`
 - In-flight work can finish under its starting workflow contract unless it opts in or touches refactored workflow surfaces: `T20`, `T25`
+- Draft PRs may run early CI without being review-open, but lifecycle state must synchronize before reviewer action resumes: `T29`
+- Reopened PRs and reused branches must satisfy PR-self-contained lifecycle completion before review continues: `T29`
+- Release, deploy, package publication, external migration, and unobserved hosted checks are true downstream events that can keep a plan active: `T29`, `T30`
+- Tracked wording such as "move to Done after merge" is warning evidence and becomes blocking when the PR already contains the completion evidence: `T30`, `T32`
+- A spec may remain `draft` while awaiting spec-review, but if spec-review approves it and downstream artifacts rely on it, the same PR records `approved` before review-ready handoff continues: `T31`
 
 ## Test cases
 
@@ -117,7 +132,7 @@
 
 ### T2. Planned milestone work rules are visible and unambiguous
 
-- Covers: `R8`, `R8a`, `R8b`, `R8c`, `R8d`, `R8e`, `R8f`, `R8g`, `R8h`, `R8i`, `R8j`, `E4`, `E5`
+- Covers: `R8`, `R8a`, `R8b`, `R8c`, `R8d`, `R8e`, `R8f`, `R8g`, `R8i`, `E4`, `E5`
 - Level: manual
 - Fixture/setup:
   - `specs/rigorloop-workflow.md`
@@ -129,7 +144,7 @@
 - Steps:
   - Confirm milestone closeout evidence, milestone commit format, and multi-milestone PR behavior are described consistently.
   - Confirm fast-lane or unplanned single-slice work is explicitly exempt from milestone-formatted commits.
-  - Confirm the active plan and plan index remain coherent when lifecycle state changes.
+  - Confirm the active plan and plan index remain coherent during milestone progress updates.
 - Expected result:
   - Planned milestone work has one clear closeout rule and one clear commit-boundary rule across the repo.
 - Failure proves:
@@ -464,8 +479,8 @@
   - `CONSTITUTION.md`
   - `AGENTS.md`
   - `README.md`
-  - `docs/plans/2026-05-03-workflow-refactor.md`
-  - `docs/changes/2026-05-03-workflow-refactor/change.yaml` when created
+  - `docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md`
+  - `docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml` when created
 - Steps:
   - Confirm the workflow summary and affected guidance expose standing artifacts, living references, workflow infrastructure, on-demand artifacts, per-change chain, and periodic artifacts.
   - Confirm workflow-governance surfaces are updated, explicitly marked unaffected with rationale, or recorded as deferred with owner and follow-up.
@@ -490,7 +505,7 @@
   - `skills/architecture/SKILL.md`
   - `skills/plan/SKILL.md`
   - `skills/code-review/SKILL.md`
-  - `docs/plans/2026-05-03-workflow-refactor.md`
+  - `docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md`
 - Steps:
   - Confirm `VISION.md` and `CONSTITUTION.md` have distinct absence gates and bootstrap exceptions.
   - Confirm bootstrap proposals must identify the exception in `Vision fit` and proposal-review checks it.
@@ -580,7 +595,7 @@
 
 ### T25. Selector, lifecycle, and broad-smoke behavior match the refactor
 
-- Covers: `R8ja`-`R8kg`, `R8l`-`R8s`
+- Covers: `R8k`-`R8kg`, `R8l`-`R8s`
 - Level: integration
 - Fixture/setup:
   - `scripts/select-validation.py`
@@ -648,34 +663,131 @@
   - Confirm material initial review-record roots include `review-resolution.md`, while no-material initial roots do not.
   - Confirm `review-resolution.md` dispositions are limited to approved values.
   - Confirm `needs-decision`, `Closeout status: open`, missing disposition evidence, or open `review-log.md` findings block `verify`, final `explain-change`, and `pr`.
-  - If this refactor creates material findings, run `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-03-workflow-refactor`.
+  - If this amendment creates material findings, run `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-05-pr-self-contained-lifecycle-completion`.
   - Run `python scripts/test-review-artifact-validator.py` when validator behavior is changed or relied on for a new review artifact assertion.
 - Expected result:
-- Required review-resolution closeout cannot be skipped or silently replaced by implementation fixes alone, and no-material review events remain discoverable without empty resolution files.
+  - Required review-resolution closeout cannot be skipped or silently replaced by implementation fixes alone, and no-material review events remain discoverable without empty resolution files.
 - Failure proves:
   - Material review findings or upstream non-approval review events can be lost between formal review and final PR readiness.
 - Automation location:
   - M4 when review-resolution is triggered; validator tests only when review-artifact validation changes or is explicitly selected.
 
-### T28. Active workflow-refactor change metadata is valid and traceable
+### T28. Active workflow-governance change metadata is valid and traceable
 
 - Covers: `R25`, `R25a`-`R25h`, `R10`-`R12f`
 - Level: integration, manual
 - Fixture/setup:
-  - `docs/changes/2026-05-03-workflow-refactor/change.yaml`
-  - `docs/changes/2026-05-03-workflow-refactor/explain-change.md`
+  - `docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml` when created
+  - `docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/explain-change.md` when created
+  - `docs/changes/2026-05-03-workflow-refactor/change.yaml` as historical reference only when relied on
   - optional review-resolution or verify-report artifacts if triggered
 - Steps:
   - Create the baseline non-trivial change-local pack before final verification.
-  - Run `python scripts/validate-change-metadata.py docs/changes/2026-05-03-workflow-refactor/change.yaml`.
+  - Run `python scripts/validate-change-metadata.py docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml`.
   - Confirm `change.yaml` links the proposal, spec, active test spec, active plan, touched artifacts, validation records, and review state.
   - Confirm Markdown artifacts carry narrative rationale and PR text remains the reviewer-facing summary.
 - Expected result:
-  - Reviewers can trace the workflow refactor through structured metadata plus durable Markdown reasoning.
+  - Reviewers can trace the current workflow-governance change through structured metadata plus durable Markdown reasoning.
 - Failure proves:
   - The active change has machine-readable metadata but insufficient human-readable rationale, or vice versa.
 - Automation location:
   - M4 validation and final `verify`.
+
+### T29. PR-self-contained lifecycle guidance is visible and bounded
+
+- Covers: `R6dc`, `R8h`-`R8hc`, `E11`, `E12`
+- Level: manual
+- Fixture/setup:
+  - `CONSTITUTION.md`
+  - `specs/rigorloop-workflow.md`
+  - `docs/workflows.md`
+  - `AGENTS.md`
+  - `docs/learn/topics/plan-lifecycle-closeout.md`
+  - `docs/plans/0000-00-00-example-plan.md`
+  - `docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md`
+- Steps:
+  - Confirm `CONSTITUTION.md` states that lifecycle synchronization happens in the PR performing the transition before review opens, and that merge is a fast-forward of pre-validated state rather than a trigger for further lifecycle changes.
+  - Confirm `docs/workflows.md`, affected skills, and learn/topic guidance no longer present routine merge-dependent `Done` as an allowed plan closeout path.
+  - Confirm guidance keeps true downstream completion events, such as release, deploy, package publication, external migration, or unobserved hosted checks, out of repo-local lifecycle state.
+  - Confirm draft PRs, reopened PRs, and reused branches synchronize repo-local lifecycle state before reviewers are asked to judge the branch.
+  - Confirm README is either updated or explicitly recorded as unaffected with rationale in the active plan or change-local evidence.
+- Expected result:
+  - Contributors can tell when to close lifecycle state in the current PR and when to leave a plan active for a true downstream event.
+- Failure proves:
+  - The repository can keep the old post-merge memory dependency alive through lower-priority guidance.
+- Automation location:
+  - Manual review during M1 and final M4 affected-surface review.
+
+### T30. Plan index/body lifecycle validation catches stale state
+
+- Covers: `R8h`-`R8hc`, `R8j`-`R8jb`, `E11`, `E12`
+- Level: integration
+- Fixture/setup:
+  - `scripts/artifact_lifecycle_validation.py`
+  - `scripts/test-artifact-lifecycle-validator.py`
+  - `scripts/validate-artifact-lifecycle.py`
+  - fixture repositories under `tests/fixtures/artifact-lifecycle/`
+  - temporary `docs/plan.md` and `docs/plans/*.md` files
+- Steps:
+  - Add failing coverage for a completed, blocked, or superseded plan still listed under `## Active` in `docs/plan.md`.
+  - Add failing coverage for `docs/plan.md` and the referenced plan body presenting conflicting lifecycle state.
+  - Add failing coverage for a done, blocked, or superseded plan body whose readiness still describes the plan as active or in progress.
+  - Add passing coverage for an active plan that names a true downstream completion event or follow-up condition.
+  - Add warning coverage for tracked plan lifecycle wording that implies lifecycle closeout after merge.
+  - Run `python scripts/test-artifact-lifecycle-validator.py`.
+  - Run `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md`.
+- Expected result:
+  - Stale plan/index lifecycle state is blocking, true downstream-event wording is allowed, and merge-dependent lifecycle wording is visible as reviewer-attention output unless the same evidence is also blocking.
+- Failure proves:
+  - Plans can still land with stale Active/Done state or hidden merge-dependent closeout promises.
+- Automation location:
+  - M2 lifecycle validator implementation and M4 final validation.
+
+### T31. Broader repo-local lifecycle inconsistency blocks branch-ready
+
+- Covers: `R8kh`, `R8ki`, `E13`
+- Level: integration, manual
+- Fixture/setup:
+  - `scripts/artifact_lifecycle_validation.py`
+  - `scripts/test-artifact-lifecycle-validator.py`
+  - `scripts/review_artifact_validation.py`
+  - `scripts/test-review-artifact-validator.py`
+  - lifecycle-managed proposal, spec, test-spec, architecture, or ADR fixtures as needed
+  - review artifacts under `docs/changes/<change-id>/`
+- Steps:
+  - Add fixture or manual proof for a lifecycle-managed proposal, spec, test spec, architecture document, or ADR whose status conflicts with relied-on PR-contained evidence.
+  - Add fixture or manual proof for active readiness wording in a test spec, verify report, explain-change artifact, or change-local artifact after the PR has completed and recorded its own scope.
+  - Add review-artifact proof that `review-resolution.md` cannot say `Closeout status: open` after all material findings have final dispositions and required evidence.
+  - Add review-artifact proof that `Closeout status: closed` fails when required findings, dispositions, rationale, follow-up, validation evidence, or `review-log.md` closeout evidence are missing.
+  - Run `python scripts/test-artifact-lifecycle-validator.py` and `python scripts/test-review-artifact-validator.py` when either validator is changed or relied on for this proof.
+- Expected result:
+  - Broader lifecycle artifact inconsistency blocks `branch-ready` for touched, referenced, generated, or authoritative artifacts, while unrelated stale baseline artifacts remain warnings.
+- Failure proves:
+  - The PR tree can claim current readiness while authoritative lifecycle artifacts still describe an earlier or incomplete state.
+- Automation location:
+  - M2 lifecycle/review-artifact validator implementation and M4 final verification.
+
+### T32. Tracked merge-dependent language is warned and classified
+
+- Covers: `R8jb`, `R8kj`
+- Level: integration, manual
+- Fixture/setup:
+  - tracked Markdown or YAML files containing lifecycle wording such as "after merge", "post-merge", or "once this lands"
+  - `scripts/artifact_lifecycle_validation.py`
+  - `scripts/test-artifact-lifecycle-validator.py`
+  - contributor-visible classification surfaces: the same tracked artifact, the active plan, `docs/changes/<change-id>/change.yaml`, `docs/changes/<change-id>/explain-change.md`, a formal review record, PR body, or draft PR body
+- Steps:
+  - Add warning coverage for tracked merge-dependent lifecycle wording.
+  - Confirm the warning names the tracked file and remains non-blocking unless another lifecycle inconsistency makes the same evidence blocking.
+  - Confirm first-slice detection inspects tracked files and does not require hosted PR-description event metadata.
+  - Confirm any remaining merge-dependent language warning is treated as addressed only when a contributor-visible tracked or review-visible surface classifies it as a true downstream completion event or stale lifecycle wording requiring correction.
+  - Do not require the validator to suppress the warning after classification in this first slice.
+- Expected result:
+  - Reviewers see merge-dependent lifecycle wording, and contributors must classify it before branch-ready or PR handoff treats the warning as addressed.
+- Failure proves:
+  - Merge-dependent lifecycle language can either hide in tracked files or be dismissed without a durable classification.
+- Automation location:
+  - M2 warning fixtures, M3 selector routing if needed, and M4 manual affected-surface review.
 
 ## Fixtures and data
 
@@ -683,7 +795,9 @@
   - `specs/rigorloop-workflow.md`
   - `specs/rigorloop-workflow.test.md`
   - `docs/proposals/2026-05-01-workflow-refactor.md`
-  - `docs/plans/2026-05-03-workflow-refactor.md`
+  - `docs/proposals/2026-05-05-pr-self-contained-lifecycle-completion.md`
+  - `docs/plans/2026-05-03-workflow-refactor.md` as historical context
+  - `docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md`
   - `docs/plan.md`
 - Contributor-facing guidance:
   - `README.md`
@@ -719,10 +833,12 @@
 - Existing fixtures:
   - `tests/fixtures/skills/`
   - `tests/fixtures/change-metadata/`
+  - `tests/fixtures/artifact-lifecycle/`
+  - `tests/fixtures/review-artifacts/` when review-resolution fixtures are added
   - `docs/changes/0001-skill-validator/`
 - New active change-local artifacts when created:
-  - `docs/changes/2026-05-03-workflow-refactor/change.yaml`
-  - `docs/changes/2026-05-03-workflow-refactor/explain-change.md`
+  - `docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml`
+  - `docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/explain-change.md`
   - optional review-resolution or verify-report artifacts when triggered
 
 ## Mocking and stubbing policy
@@ -732,6 +848,7 @@
 - Prefer real fixture directories and direct CLI invocations over tests that stub file contents.
 - If a test needs stale generated output, create it by controlled edits in a temp copy rather than mocking drift logic.
 - If a content assertion is too prose-sensitive, keep it as manual proof unless the approved contract supplies stable IDs, table headers, stage names, or allowed values.
+- Do not mock hosted PR metadata for merge-dependent language detection in this first slice. Use tracked files and review-visible manual evidence instead.
 
 ## Migration and compatibility tests
 
@@ -742,6 +859,8 @@
 - `T23` verifies the workflow spec links to the final learn artifact model while preserving nonblocking default behavior.
 - `T26` verifies the `skills/ci/` path remains compatible while contributor-facing stage language uses `ci-maintenance`.
 - `T25` verifies in-flight work can record its selected workflow contract without forcing unrelated active work to churn.
+- `T29` and `T30` verify existing merge-dependent closeout language is migrated when touched or relied on, while true downstream events keep lifecycle state active.
+- `T32` verifies first-slice warning detection stays repository-local and does not depend on hosted PR-description metadata.
 
 ## Observability verification
 
@@ -750,6 +869,9 @@
 - `T20` verifies affected-surface dispositions are review-visible.
 - `T23` verifies learn sessions and pre-session closeouts are not chat-only.
 - `T27` verifies review-resolution closeout records evidence, dispositions, and blocking state.
+- `T30` verifies plan lifecycle validation reports stale plan/index state with path-specific findings.
+- `T31` verifies broader lifecycle artifact inconsistency blocks `branch-ready` for touched, referenced, generated, or authoritative artifacts.
+- `T32` verifies merge-dependent language warnings identify the tracked file and require contributor-visible classification.
 - `T28` verifies change metadata and explain-change artifacts trace the final implementation.
 
 ## Security and privacy verification
@@ -773,6 +895,11 @@
 - [ ] `ci-maintenance` means CI infrastructure maintenance and not validation execution.
 - [ ] `review-resolution` is closeout for material review findings and blocks downstream while open.
 - [ ] Formal review recording is stage-neutral, proportionally triggered, and does not require empty `review-resolution.md` for no-material detailed records.
+- [ ] Plan lifecycle transitions happen inside the PR that performs the transition, before the PR opens for review.
+- [ ] Merge is described as a fast-forward of pre-validated lifecycle state, not a trigger for routine closeout.
+- [ ] True downstream completion events keep plans active and name the later event or follow-up condition.
+- [ ] Tracked merge-dependent language is warned, and any remaining warning has a contributor-visible classification before final handoff.
+- [ ] README is updated or explicitly marked unaffected with rationale for this workflow amendment.
 - [ ] `VISION.md` and `CONSTITUTION.md` are standing artifacts with distinct absence gates.
 - [ ] `docs/project-map.md` is a living reference and cannot be relied on when absent, stale, contradicted, or missing the relied-on area without refresh or no-map rationale.
 - [ ] Every affected operating or governance surface is updated, marked unaffected with rationale, or deferred with owner and follow-up.
@@ -790,25 +917,28 @@
 - Do not test hosted GitHub release publishing end to end.
 - Do not require network-dependent checks for baseline validation.
 - Do not test exact prose unless the assertion uses stable contract terms, section headings, table headers, stage names, or allowed values.
+- Do not inspect hosted PR-description event metadata for merge-dependent language detection in the first enforcement slice.
+- Do not define or test merge-SHA recording rules.
+- Do not treat deploy, release, package publication, external migration, or unobserved hosted checks as repo-local lifecycle state that can be made true by the PR tree.
 
 ## Uncovered gaps
 
 - None blocking at the spec, architecture, or planning level.
 - Project-map lifecycle mechanics are intentionally deferred to a focused follow-up.
 - Detailed learn-session behavior is covered by `specs/learn-artifact-model.test.md`.
+- Merge-dependent language warning suppression after classification is intentionally not required in the first slice; the required proof is warning visibility plus contributor-visible classification before final handoff treats the warning as addressed.
 - If implementation discovers that a stable workflow guarantee cannot be tested manually or through existing scripts, update this test spec or return to plan-review before widening implementation scope.
-
-## Next artifacts
-
-- Implement M1 from [Workflow Refactor Execution Plan](../docs/plans/2026-05-03-workflow-refactor.md).
-- Code review, review-resolution if triggered, verify, explain-change, and PR after implementation milestones complete.
 
 ## Follow-on artifacts
 
-- None yet.
+- `implementation`: PR-self-contained lifecycle completion M1 through M4 complete.
+- `review-resolution`: material M2 code-review finding accepted, fixed, and closed.
+- `verify`: completed for PR handoff after PR-mode selected validation and broad smoke.
+- `explain-change`: completed in `docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/explain-change.md`.
+- `pr`: PR #30 opened for human review.
 
 ## Readiness
 
-Active proof-planning surface for the workflow refactor. Next repository action is M1 execution under the active plan.
+Active proof-planning and regression surface for the workflow contract and PR-self-contained lifecycle completion amendment. The amendment implementation, review closeout, verification, explain-change, and PR handoff are complete in the current branch.
 
-Milestone work must add or update assertions before paired artifact changes, and each milestone closes only after the paired changes make those assertions and validation commands pass.
+Future milestone work must add or update assertions before paired artifact changes, and each milestone closes only after the paired changes make those assertions and validation commands pass.

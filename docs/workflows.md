@@ -125,6 +125,7 @@ Notes:
 - On-demand and periodic actions such as `explore`, `research`, and `learn` do not auto-run by default.
 - Stop automatic continuation when the user explicitly pauses, validation fails, a review or design issue needs a real decision, permissions or tooling block the next step, or the next action would be stronger than PR creation such as merge, release, deploy, or destructive Git operations.
 - Autoprogression does not replace lifecycle bookkeeping. After `code-review`, `verify`, or other review gates change the real initiative state, update the active plan, any affected active test spec, and `docs/plan.md` before claiming downstream readiness.
+- Repo-local lifecycle synchronization happens inside the PR that performs the lifecycle transition, before that PR opens for review. Merge integrates pre-validated state; it is not a routine trigger for further lifecycle closeout.
 
 ## Planned Milestone Work
 
@@ -132,7 +133,9 @@ Notes:
 - `docs/plan.md` is the lifecycle index for planned initiatives; concrete plan bodies live under `docs/plans/`.
 - During execution, `implement` keeps the active plan body's progress, decisions, discoveries, and validation notes current.
 - When a planned initiative changes lifecycle state, final lifecycle closeout updates both `docs/plan.md` and the plan body.
-- If a planned initiative's outcome is already known before PR creation, move it to `Done` in both `docs/plan.md` and the plan body before opening the PR. Only merge-dependent `Done` transitions should wait for immediate post-merge cleanup.
+- If a PR completes a planned initiative, move it to `Done` in both `docs/plan.md` and the plan body before opening the PR for review.
+- If completion depends on a true downstream event such as release, deploy, package publication, external migration, or an observed hosted result, keep the plan `Active` and name the downstream event or follow-up condition.
+- Do not use merge itself as a routine downstream completion event.
 - `verify` blocks PR readiness when stale lifecycle state remains between the plan index and the plan body.
 - Execution plans follow `docs/plans/0000-00-00-example-plan.md`.
 - Each completed planned milestone ends with a coherent commit using:
@@ -160,6 +163,8 @@ Notes:
 - `superseded` artifacts must identify their replacement with `superseded_by` or equivalent labeled text. `archived` artifacts do not require a replacement pointer.
 - `verify` blocks on stale lifecycle-managed artifacts that are touched, referenced, generated, or authoritative for the changed area, and it warns on unrelated stale baseline artifacts.
 - Draft PR-body references participate in `verify` only when draft PR text already exists. Before that, `verify` uses `docs/changes/<change-id>/change.yaml`, explain-change artifacts, the active plan, and other touched or referenced authoritative artifacts.
+- Broader repo-local lifecycle inconsistency blocks `branch-ready` when the inconsistent artifact is touched, referenced, generated, or authoritative for the changed area.
+- Tracked wording such as "after merge", "post-merge", or "once this lands" should be treated as a reviewer-attention warning unless it is corrected, classified as a true downstream event, or made blocking by a lifecycle inconsistency.
 
 ## Source Of Truth
 

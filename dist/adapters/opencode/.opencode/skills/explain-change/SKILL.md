@@ -98,6 +98,7 @@ File | Change | Reason | Source artifact | Test/evidence
 - Do not duplicate transcript content from detailed reviews; keep review-resolution discussion concise and link the durable artifact.
 - Do not invent alternatives that were never considered; mark them as hindsight if added.
 - Keep explanations readable for a human reviewer.
+- For planned initiatives, do not claim PR readiness unless lifecycle state made true by this PR is recorded before the PR opens for review. If completion depends on a true downstream completion event, say why the plan remains `Active`; merge itself is not that event.
 
 ## Workflow handoff behavior
 

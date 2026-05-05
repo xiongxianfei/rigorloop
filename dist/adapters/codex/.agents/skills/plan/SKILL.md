@@ -92,6 +92,8 @@ Milestones should be small enough for one review loop and one coherent commit. A
 - Do not omit validation commands.
 - Keep `docs/plan.md` as an index, not a second long-form plan body.
 - When planning starts a new initiative or replaces an older one, update the relevant `docs/plan.md` entry and plan body in the same planning change.
+- When a plan lifecycle transition is performed by a PR, plan the synchronized `docs/plan.md` and plan-body update before the PR opens for review.
+- If completion depends on a true downstream completion event, keep the plan `Active` and name that event; merge itself is not that event.
 - Do not create a plan that only the current chat context can understand.
 - Do not proceed to implementation until `plan-review` and `test-spec` are ready unless using the fast lane.
 - If planning reveals spec or architecture gaps, update those artifacts first.
