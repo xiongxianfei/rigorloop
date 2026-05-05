@@ -211,6 +211,42 @@ validation:
     result: pass_after_m4_closeout
   - command: if rg -n '[[:blank:]]$|\\t' docs/workflows.md scripts/test-select-validation.py docs/plan.md docs/plans/2026-05-04-test-and-ci-speed-optimization.md docs/changes/2026-05-04-test-and-ci-speed-optimization; then exit 1; else exit 0; fi
     result: pass_after_m4_closeout
+  - command: python scripts/select-validation.py --mode explicit --path docs/workflows.md --path .github/workflows/ci.yml --path scripts/test-select-validation.py --path docs/plan.md --path docs/plans/2026-05-04-test-and-ci-speed-optimization.md --path docs/changes/2026-05-04-test-and-ci-speed-optimization/change.yaml --path docs/changes/2026-05-04-test-and-ci-speed-optimization/explain-change.md
+    result: pass_after_verify
+    selected_check_ids: artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, selector.regression, broad_smoke.repo
+  - command: bash scripts/ci.sh --mode explicit --path docs/workflows.md --path .github/workflows/ci.yml --path scripts/test-select-validation.py --path docs/plan.md --path docs/plans/2026-05-04-test-and-ci-speed-optimization.md --path docs/changes/2026-05-04-test-and-ci-speed-optimization/change.yaml --path docs/changes/2026-05-04-test-and-ci-speed-optimization/explain-change.md --jobs 2
+    result: pass_after_verify
+    selected_check_ids: artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, selector.regression, broad_smoke.repo
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: pass_after_verify
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-04-test-and-ci-speed-optimization
+    result: pass_after_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-04-test-and-ci-speed-optimization/change.yaml
+    result: pass_after_verify
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-04-test-and-ci-speed-optimization/change.yaml --path docs/changes/2026-05-04-test-and-ci-speed-optimization/explain-change.md --path docs/plan.md --path docs/plans/2026-05-04-test-and-ci-speed-optimization.md --path docs/proposals/2026-05-04-test-and-ci-speed-optimization.md --path specs/test-and-ci-speed-optimization.md --path specs/test-and-ci-speed-optimization.test.md
+    result: pass_after_verify
+  - command: git diff --check -- docs/workflows.md .github/workflows/ci.yml scripts/test-select-validation.py docs/plan.md docs/plans/2026-05-04-test-and-ci-speed-optimization.md docs/changes/2026-05-04-test-and-ci-speed-optimization
+    result: pass_after_verify
+  - command: if rg -n '[[:blank:]]$|\\t' docs/workflows.md scripts/test-select-validation.py docs/plan.md docs/plans/2026-05-04-test-and-ci-speed-optimization.md docs/changes/2026-05-04-test-and-ci-speed-optimization; then exit 1; else exit 0; fi
+    result: pass_after_verify
+  - command: python scripts/select-validation.py --mode explicit --path docs/workflows.md --path .github/workflows/ci.yml --path scripts/test-select-validation.py --path docs/plan.md --path docs/plans/2026-05-04-test-and-ci-speed-optimization.md --path docs/changes/2026-05-04-test-and-ci-speed-optimization/change.yaml --path docs/changes/2026-05-04-test-and-ci-speed-optimization/explain-change.md
+    result: pass_after_explain_change
+    selected_check_ids: artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, selector.regression, broad_smoke.repo
+  - command: bash scripts/ci.sh --mode explicit --path docs/workflows.md --path .github/workflows/ci.yml --path scripts/test-select-validation.py --path docs/plan.md --path docs/plans/2026-05-04-test-and-ci-speed-optimization.md --path docs/changes/2026-05-04-test-and-ci-speed-optimization/change.yaml --path docs/changes/2026-05-04-test-and-ci-speed-optimization/explain-change.md --jobs 2
+    result: pass_after_explain_change
+    selected_check_ids: artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, selector.regression, broad_smoke.repo
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: pass_after_explain_change
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-04-test-and-ci-speed-optimization
+    result: pass_after_explain_change
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-04-test-and-ci-speed-optimization/change.yaml
+    result: pass_after_explain_change
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-04-test-and-ci-speed-optimization/change.yaml --path docs/changes/2026-05-04-test-and-ci-speed-optimization/explain-change.md --path docs/plan.md --path docs/plans/2026-05-04-test-and-ci-speed-optimization.md --path docs/proposals/2026-05-04-test-and-ci-speed-optimization.md --path specs/test-and-ci-speed-optimization.md --path specs/test-and-ci-speed-optimization.test.md
+    result: pass_after_explain_change
+  - command: git diff --check -- docs/workflows.md .github/workflows/ci.yml scripts/test-select-validation.py docs/plan.md docs/plans/2026-05-04-test-and-ci-speed-optimization.md docs/changes/2026-05-04-test-and-ci-speed-optimization
+    result: pass_after_explain_change
+  - command: if rg -n '[[:blank:]]$|\\t' docs/workflows.md scripts/test-select-validation.py docs/plan.md docs/plans/2026-05-04-test-and-ci-speed-optimization.md docs/changes/2026-05-04-test-and-ci-speed-optimization; then exit 1; else exit 0; fi
+    result: pass_after_explain_change
 changed_files:
   - docs/changes/2026-05-04-test-and-ci-speed-optimization/change.yaml
   - docs/changes/2026-05-04-test-and-ci-speed-optimization/explain-change.md
@@ -228,8 +264,19 @@ changed_files:
   - specs/test-and-ci-speed-optimization.md
   - specs/test-and-ci-speed-optimization.test.md
 review:
-  status: pending_code_review
+  status: clean_with_notes
   unresolved_items: 0
   location: docs/plans/2026-05-04-test-and-ci-speed-optimization.md
   review_log: docs/changes/2026-05-04-test-and-ci-speed-optimization/review-log.md
   review_resolution: docs/changes/2026-05-04-test-and-ci-speed-optimization/review-resolution.md
+  required_next_stage: verify
+verification:
+  status: ready
+  branch_ready: true
+  location: docs/plans/2026-05-04-test-and-ci-speed-optimization.md
+  required_next_stage: explain-change
+explanation:
+  status: complete
+  pr_handoff_ready: true
+  location: docs/changes/2026-05-04-test-and-ci-speed-optimization/explain-change.md
+  required_next_stage: pr
