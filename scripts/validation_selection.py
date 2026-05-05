@@ -458,6 +458,11 @@ def _apply_path_selection(
         _add_check(selected, "skills.regression", "Changed canonical skill source requires skill regression fixtures.")
         _add_check(selected, "skills.drift", "Changed canonical skill source requires generated skill drift check.")
         _add_check(selected, "adapters.drift", "Public adapter output can be affected by canonical skill changes.")
+        _add_lifecycle_warning_check(
+            selected,
+            path,
+            "Changed canonical skill source can carry lifecycle guidance and requires lifecycle-language warning validation.",
+        )
         return
 
     if category == "generated-skills":
@@ -480,6 +485,11 @@ def _apply_path_selection(
                 "Changed review artifact requires review artifact structure validation.",
                 affected_root=root,
             )
+        _add_lifecycle_warning_check(
+            selected,
+            path,
+            "Changed review artifact can carry lifecycle state and requires lifecycle-language warning validation.",
+        )
         return
 
     if category == "change-metadata":
@@ -493,6 +503,11 @@ def _apply_path_selection(
             path=path,
         )
         _add_check(selected, "change_metadata.regression", "Changed change metadata requires validator regression fixtures.")
+        _add_lifecycle_warning_check(
+            selected,
+            path,
+            "Changed change metadata can carry lifecycle state and requires lifecycle-language warning validation.",
+        )
         return
 
     if category == "lifecycle":
@@ -632,11 +647,24 @@ def _apply_path_selection(
         _add_check(selected, "skills.regression", "Changed skill validator requires skill regression fixtures.")
         return
 
-    if category in {"ci-workflow", "workflow-guidance", "governance", "templates"}:
+    if category in {"ci-workflow", "templates"}:
         _add_check(
             selected,
             "selector.regression",
             f"Changed {category} path requires selector and workflow routing regression fixtures.",
+        )
+        return
+
+    if category in {"workflow-guidance", "governance"}:
+        _add_check(
+            selected,
+            "selector.regression",
+            f"Changed {category} path requires selector and workflow routing regression fixtures.",
+        )
+        _add_lifecycle_warning_check(
+            selected,
+            path,
+            f"Changed {category} path can carry lifecycle policy and requires lifecycle-language warning validation.",
         )
         return
 
@@ -683,6 +711,14 @@ def _add_check(
         draft.affected_roots.add(affected_root)
     if version:
         draft.versions.add(version)
+
+
+def _add_lifecycle_warning_check(
+    selected: dict[str, SelectedCheckDraft],
+    path: str,
+    reason: str,
+) -> None:
+    _add_check(selected, "artifact_lifecycle.validate", reason, path=path)
 
 
 def _build_result(

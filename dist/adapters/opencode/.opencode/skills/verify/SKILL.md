@@ -68,6 +68,7 @@ Requirement → Test IDs → Files changed → Evidence → Status
 8c. For no-material review events, no-material detailed records need `review-log.md` but not an empty `review-resolution.md`.
 9. For lifecycle-managed artifacts, treat stale or inconsistent touched, referenced, generated, or authoritative artifacts as blockers. Report unrelated stale baseline artifacts as warnings instead of blocking the change.
 10. For planned initiatives, compare `docs/plan.md` against the plan body and treat stale lifecycle state as a blocker. At minimum, block on completed, blocked, or superseded work still listed under `## Active`; conflicting index-versus-body state; or a plan body marked done, blocked, or superseded while still presenting itself as active or in progress.
+10a. Confirm lifecycle transitions performed by this PR are recorded in both surfaces before the PR opens for review. If the plan remains `Active`, it must name a true downstream completion event; merge itself is not that event.
 11. Confirm targeted proof ran for the changed surfaces, preferably through `python scripts/select-validation.py` or `bash scripts/ci.sh --mode explicit --path <path>...`, and record stable selected check IDs where useful.
 12. For planned initiatives or other authoritative triggers, confirm broad smoke evidence exists. Common direct proof is `bash scripts/ci.sh --mode broad-smoke`; selector-triggered proof may appear as selected check `broad_smoke.repo`.
 13. If the active plan, test spec, review-resolution, or release metadata records `broad_smoke_required: true`, do not mark `branch-ready` without broad smoke evidence or an explicit blocker.
@@ -108,7 +109,7 @@ For release smoke, inspect release metadata under `docs/releases/<version>/` rat
 - Do not treat a planned initiative as `branch-ready` when lifecycle state is stale.
 - Do not treat material review findings as closed unless `review-resolution.md` is at `Closeout status: closed`, `review-log.md` lists no open findings, and closeout validation passes.
 - Do not continue past `needs-decision`; it is not a final disposition.
-- Do not accept deferring a known `Done` transition until after merge unless merged state is the deciding event for completion.
+- Do not accept deferring a known `Done` transition until after merge. A plan may remain `Active` only for a named true downstream completion event, and merge itself is not that event.
 - Do not move to PR if blockers remain.
 - Do not update artifacts silently; call out drift.
 

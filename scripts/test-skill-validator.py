@@ -47,6 +47,14 @@ DOWNSTREAM_REVIEW_CLOSEOUT_SKILLS = [
     "explain-change",
     "pr",
 ]
+PR_SELF_CONTAINED_LIFECYCLE_SKILLS = [
+    "workflow",
+    "plan",
+    "implement",
+    "verify",
+    "explain-change",
+    "pr",
+]
 
 
 def run_validator(target: Path) -> subprocess.CompletedProcess[str]:
@@ -650,6 +658,27 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             for term in required_terms:
                 with self.subTest(skill=skill_name, term=term):
                     self.assertIn(term, body)
+
+    def test_pr_self_contained_lifecycle_completion_skill_guidance(self) -> None:
+        required_terms = [
+            "before the PR opens for review",
+            "true downstream completion event",
+            "merge itself",
+        ]
+        forbidden_terms = [
+            "Only merge-dependent `Done` transitions may wait",
+            "immediate post-merge cleanup",
+            "record why only a merge-dependent `Done` transition remains pending",
+            "unless merged state is the deciding event",
+        ]
+        for skill_name in PR_SELF_CONTAINED_LIFECYCLE_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            for term in required_terms:
+                with self.subTest(skill=skill_name, required=term):
+                    self.assertIn(term, body)
+            for term in forbidden_terms:
+                with self.subTest(skill=skill_name, forbidden=term):
+                    self.assertNotIn(term, body)
 
 
 if __name__ == "__main__":

@@ -37,7 +37,7 @@ Before drafting or opening a PR, check:
 3. commits are present and scoped;
 4. tests and validation commands passed or gaps are documented;
 5. CI status is known when available;
-6. for planned initiatives, lifecycle closeout is already reflected in both `docs/plan.md` and the plan body when the final state is known before PR; only merge-dependent `Done` transitions may wait for immediate post-merge cleanup;
+6. for planned initiatives, lifecycle closeout is already reflected in both `docs/plan.md` and the plan body before the PR opens for review when final state is known; if completion depends on a true downstream completion event, the plan remains `Active` and names it; merge itself is not that event;
 7. for ordinary non-trivial work, the required docs-changes artifacts exist, including `docs/changes/<change-id>/change.yaml` plus durable reasoning, defaulting to `docs/changes/<change-id>/explain-change.md` unless an approved equivalent surface applies;
 8. material review findings are closed in `review-resolution.md`, with no `needs-decision` dispositions and no `review-log.md` open findings remaining;
 8a. `Closeout status: open` blocks PR handoff, and `Closeout status: closed` requires final dispositions for all material findings;

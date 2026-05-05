@@ -9,12 +9,13 @@
 - [Implementation Milestone Commit Policy](../docs/proposals/2026-04-19-implementation-milestone-commit-policy.md)
 - [Workflow Refactor](../docs/proposals/2026-05-01-workflow-refactor.md)
 - [Optimize Learn Skill](../docs/proposals/2026-05-03-optimize-learn-skill.md)
+- [PR-Self-Contained Lifecycle Completion](../docs/proposals/2026-05-05-pr-self-contained-lifecycle-completion.md)
 
 ## Goal and context
 
 This spec defines the externally observable workflow contract for the first RigorLoop starter-kit release. The goal is to make AI-assisted software delivery explicit, reviewable, and auditable for individual contributors and maintainers without forcing the full artifact lifecycle onto trivial work.
 
-This amendment updates the workflow contract around explicit artifact categories, stable stage-obligation metadata, living-reference handling, workflow-handoff ownership, and the final learn artifact model. It keeps `specs/rigorloop-workflow.md` as the canonical workflow definition and keeps `docs/workflows.md` as the short operational summary.
+This amendment updates the workflow contract around explicit artifact categories, stable stage-obligation metadata, living-reference handling, workflow-handoff ownership, the final learn artifact model, and PR-self-contained lifecycle completion. It keeps `specs/rigorloop-workflow.md` as the canonical workflow definition and keeps `docs/workflows.md` as the short operational summary.
 
 RigorLoop is a Git-first starter kit. It does not replace pull requests, CI, or human review. It provides a repeatable path, artifact model, and validation rules so contributors can move from idea to reviewed change with traceable evidence.
 
@@ -51,6 +52,11 @@ RigorLoop is a Git-first starter kit. It does not replace pull requests, CI, or 
 - `manual proof`: durable structured evidence for a check that cannot reasonably be automated.
 - `standing artifact`: a project-level governance or identity artifact that is created once near project genesis or governance adoption and revised deliberately.
 - `living reference`: a durable reference artifact that helps contributors reason about the repository but can go stale and must be refreshed or bypassed with rationale before reliance when absent, known-stale, contradicted, or missing the relied-on area.
+- `repo-local lifecycle state`: tracked repository state that records whether an artifact, plan, review resolution, change-local record, or readiness surface is draft, active, accepted, approved, done, blocked, superseded, closed, or otherwise current within the repository tree.
+- `PR-self-contained lifecycle completion`: the rule that a PR performing the work that makes a repo-local lifecycle state true records that state in the PR before it opens for review.
+- `downstream completion event`: a deploy, release, package publication, external migration, observed hosted result, or other event that cannot be made true by the PR tree itself.
+- `review-open PR`: a PR or equivalent review package that is ready for reviewer action. A draft PR used for early CI or discussion is not review-open until it is marked ready for review or otherwise asks reviewers to judge the branch as a reviewable package.
+- `merge-dependent language`: tracked wording such as "after merge", "post-merge", "once this lands", or equivalent wording that implies repo-local lifecycle state should change after merge.
 - `known-stale project-map`: a `docs/project-map.md` with current evidence that its claims about the relied-on area conflict with repository paths, ownership, runtime flow, test layout, generated output, or another map claim. This refactor defines no calendar threshold.
 - `workflow infrastructure`: the workflow spec, summary, skill guidance, and handoff pointers that govern how stages route and block.
 - `on-demand artifact`: an artifact or action created only when the work depends on option expansion, external facts, or another explicit trigger.
@@ -121,6 +127,24 @@ Given a small ordinary change completes with no repeated findings, incidents, fa
 When the PR package is ready
 Then `learn` is not treated as a final per-change stage.
 
+### Example E11: plan closes inside the completing PR
+
+Given a planned initiative completes implementation, review-resolution, verification, explain-change, and PR handoff inside one branch
+When the branch opens a review-open PR
+Then `docs/plan.md` and the plan body both record the initiative as `Done` in that PR rather than promising post-merge closeout.
+
+### Example E12: downstream completion keeps a plan active
+
+Given a planned initiative depends on a later release or deploy before it is actually complete
+When the code-change PR opens for review
+Then the plan remains `Active`, names the downstream completion event, and defers the `Done` transition to a later PR or automation after that event.
+
+### Example E13: broader lifecycle artifact state stays self-contained
+
+Given a PR resolves every material review finding and records the required dispositions and evidence
+When the PR opens for review after those fixes
+Then `review-resolution.md` records `Closeout status: closed` in the same PR, and `verify` treats contradictory open closeout wording as stale lifecycle state.
+
 ## Requirements
 
 R1. The starter kit MUST support two contributor-visible paths:
@@ -187,6 +211,8 @@ R6d. Workflow-governance changes MUST keep affected operating and governance gui
 R6da. A workflow-governance change MUST NOT be ready for downstream handoff until each affected surface is updated, explicitly marked unaffected with rationale, or recorded as deferred with owner and follow-up.
 
 R6db. Unaffected-surface rationales and affected-surface deferrals under `R6da` MUST be recorded in a contributor-visible tracked or review-visible surface, such as the accepted proposal, approved spec, active plan, `docs/changes/<change-id>/change.yaml`, `review-resolution.md`, `explain-change.md`, PR body or draft PR body, linked issue, or the affected governance artifact. Chat-only notes MUST NOT satisfy this recording requirement.
+
+R6dc. Workflow-governance changes that alter repo-local lifecycle synchronization MUST update `CONSTITUTION.md` with the changed governance rule. PR-self-contained lifecycle completion MUST be reflected in `CONSTITUTION.md` by stating that synchronization happens within the PR that performs the lifecycle transition before the PR opens for review, and that PR merge is a fast-forward of pre-validated state rather than a trigger for further lifecycle changes.
 
 R6e. A substantive proposal is any proposal that chooses product direction, user-facing behavior, workflow policy, architecture direction, compatibility policy, release policy, or contributor-visible contract.
 
@@ -347,7 +373,13 @@ R8f. For planned initiatives, `docs/plan.md` MUST remain the lifecycle index rat
 
 R8g. For planned initiatives, `implement` MUST keep the active plan body's progress, decisions, discoveries, and validation notes current during execution. When lifecycle state changes, final lifecycle closeout MUST update both `docs/plan.md` and the plan body.
 
-R8h. When the outcome is already known before PR creation, a `Done` transition SHOULD be recorded before the PR is opened. A merge-dependent `Done` transition MAY be completed in immediate post-merge cleanup only when merged state is the deciding event for completion.
+R8h. Synchronization of `docs/plan.md` and the plan body MUST happen within the PR that performs the planned-initiative lifecycle transition, before that PR opens for review. The merge of a PR MUST be treated as a fast-forward of pre-validated repository state, not as a trigger for further planned-initiative lifecycle changes.
+
+R8ha. When a PR performs the work that completes a planned initiative, the PR MUST record the `Done` transition in both `docs/plan.md` and the plan body before it opens for review.
+
+R8hb. When planned-initiative completion depends on a downstream completion event, the PR MUST keep the plan `Active`, name the downstream event or follow-up condition in contributor-visible plan wording, and defer the `Done` transition to a later PR or repository-owned automation after that event occurs.
+
+R8hc. A planned initiative MUST NOT use merge itself as a routine downstream completion event. Merge-SHA recording rules are out of scope until a later approved spec defines them.
 
 R8i. `Blocked` and `Superseded` lifecycle transitions for planned initiatives MUST be recorded as soon as they are decided.
 
@@ -357,6 +389,8 @@ R8ja. At minimum, stale lifecycle state includes:
 - a completed, blocked, or superseded planned initiative still listed under `## Active`;
 - `docs/plan.md` and the corresponding plan body presenting conflicting lifecycle state;
 - a plan body marked done, blocked, or superseded while still presenting itself as active or in progress through status or readiness wording.
+
+R8jb. A PR that opens for review with merge-dependent language in tracked plan lifecycle wording MUST classify that language as either a true downstream completion event or stale lifecycle wording requiring correction.
 
 R8k. Top-level lifecycle-managed workflow artifacts MUST keep their lifecycle status inside the artifact itself as tracked source of truth. Git branch state, PR state, merge state, and chat-only review outcomes MUST NOT replace artifact-local lifecycle state for proposals, top-level specs, test specs, architecture documents, or ADRs.
 
@@ -383,6 +417,16 @@ R8ke. `Next artifacts` MUST record planned next steps while an artifact remains 
 R8kf. `verify` MUST block on stale or inconsistent lifecycle-managed artifacts that are touched, referenced, generated, or authoritative for the changed area, and it MUST report unrelated stale baseline artifacts as warnings rather than blockers.
 
 R8kg. PR-body references participate in `verify` only when draft PR text already exists. Before PR text exists, `verify` MUST use the pre-PR handoff surfaces such as `docs/changes/<change-id>/change.yaml`, explain-change artifacts, the active plan, and the touched, referenced, generated, or authoritative artifacts for the changed area.
+
+R8kh. When a PR performs the work that makes a repo-local lifecycle state true for a lifecycle-managed artifact, review-resolution closeout, change-local artifact, readiness surface, or terminal artifact state, the PR MUST record that lifecycle state before it opens for review.
+
+R8ki. Broader lifecycle artifact inconsistency MUST block `branch-ready` when the inconsistent artifact is touched, referenced, generated, or authoritative for the changed area. At minimum, broader lifecycle artifact inconsistency includes:
+- a lifecycle-managed proposal, spec, test spec, architecture document, or ADR whose status conflicts with the PR-contained evidence it relies on;
+- `review-resolution.md` saying `Closeout status: open` after all material findings have final dispositions and required closeout evidence in the PR;
+- `review-resolution.md` saying `Closeout status: closed` while required findings, dispositions, rationale, follow-up, validation evidence, or `review-log.md` closeout evidence remain missing;
+- active test-spec, verify, explain-change, or change-local readiness wording that describes the PR as incomplete after the PR has completed and recorded its own scope.
+
+R8kj. Repository-owned validation or review guidance MUST flag merge-dependent language in tracked files as a non-blocking reviewer-attention warning unless another requirement makes the specific lifecycle inconsistency blocking. The first enforcement slice MUST NOT require inspecting hosted PR-description event metadata.
 
 R8l. Non-trivial implementation and review handoff SHOULD use targeted proof before broad smoke when the repository-owned selector can classify the changed surfaces.
 
@@ -626,6 +670,7 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - repository guidance and workflow docs;
 - standing artifacts and living references;
 - stage-obligation metadata;
+- repo-local lifecycle state in plans, lifecycle-managed artifacts, review-resolution closeout, readiness wording, and change-local artifacts;
 - change artifacts and PR text;
 - local validation commands and CI workflow configuration;
 - tool-specific adapter inputs when an adapter is enabled.
@@ -636,6 +681,8 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - workflow category guidance;
 - stage-obligation tables;
 - durable change artifacts;
+- synchronized repo-local lifecycle state for review-open PRs;
+- contributor-visible lifecycle warnings for tracked merge-dependent language;
 - PR summary and validation notes;
 - machine-readable change metadata for non-trivial work at `docs/changes/<change-id>/change.yaml`;
 - generated adapter distribution content;
@@ -652,12 +699,17 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - Fast-lane work stays limited to trivial or low-risk changes.
 - Full-lifecycle work remains traceable from proposal/spec direction through PR summary and verification evidence.
 - Completed planned milestones remain visible as coherent branch or pull-request review boundaries even when multiple milestones share one pull request.
+- Repo-local lifecycle state in a review-open PR is true within that PR's tracked tree.
+- Merge integrates pre-validated repo-local lifecycle state; it does not perform routine lifecycle closeout.
 
 ## Error and boundary behavior
 
 - A change classified as fast-lane but matching any full-lifecycle exclusion in `R3` MUST be rejected from fast-lane treatment.
 - A fast-lane change missing the required spec fields in `R4` MUST be considered incomplete.
 - A planned milestone closed without the completion evidence required by `R8a` or without the standardized milestone commit subject required by `R8b` MUST be considered incomplete.
+- A planned initiative completed by a PR but still listed as active in `docs/plan.md` or the plan body when that PR opens for review MUST be considered incomplete.
+- A PR with broader lifecycle artifact inconsistency under `R8ki` MUST be considered incomplete for `branch-ready`.
+- Merge-dependent language in tracked files MUST produce a reviewer-attention warning unless the language is corrected or classified as a true downstream completion event.
 - A non-trivial change missing required PR explanation or validation evidence MUST be considered incomplete.
 - A substantive proposal attempted without `VISION.md` MUST stop unless it is explicit bootstrap work under `R6f`.
 - Governance adoption, workflow-governance, or source-of-truth changes attempted without `CONSTITUTION.md` MUST stop unless the proposal is explicit bootstrap work under `R6g`.
@@ -682,6 +734,9 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - For new non-trivial work, the default standalone durable reasoning artifact is `docs/changes/<change-id>/explain-change.md`. Approved legacy top-level explain artifacts under `docs/explain/` remain valid until migrated or retired.
 - In-flight work MAY complete on the workflow contract that was active when it started unless the active owner opts into the refactored model or the work touches refactored workflow surfaces directly.
 - Planned initiatives and change-local metadata SHOULD record the selected workflow contract, such as `pre-refactor` or `refactored`, when that distinction affects review or verification.
+- Existing plans or lifecycle artifacts that already contain merge-dependent completion wording MAY be migrated through a one-time cleanup PR. New plans and lifecycle artifacts authored after this amendment is adopted MUST follow PR-self-contained lifecycle completion.
+- A lifecycle state that depends on a downstream completion event MUST remain active until a later PR or repository-owned automation records the state after that event.
+- Merge-SHA recording remains unspecified by this contract and MUST NOT be invented as an implicit exception to PR-self-contained lifecycle completion.
 - The `vision.md` to `VISION.md` migration is already complete for this repository. This workflow refactor MUST use `VISION.md` as the standing project-vision artifact and MUST NOT reintroduce lowercase `vision.md` as canonical.
 - The project-map lifecycle markers, calendar freshness thresholds, and project-map revision workflow are deferred to a focused follow-up and MUST NOT be invented in this workflow refactor.
 - The final `learn` artifact model is defined by `specs/learn-artifact-model.md`. Existing pre-adoption learning notes outside `docs/learn/` may remain unless a later approved migration plan relies on them as current guidance.
@@ -695,6 +750,7 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - `change.yaml` SHOULD make artifact and validation traceability inspectable without reading every Markdown artifact.
 - For planned milestone work, contributor-visible branch or pull-request history SHOULD make milestone boundaries visible through the standardized milestone commit subjects defined in `R8b`.
 - Workflow summary and skill guidance SHOULD make category, obligation, and handoff ownership visible enough that contributors do not need chat history to know which stage blocks downstream readiness.
+- PR-self-contained lifecycle completion warnings SHOULD be contributor-visible and identify the tracked file that contains merge-dependent language.
 
 ## Security and privacy
 
@@ -743,6 +799,11 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 27. A no-material `plan-review` with `rethink` creates a detailed review file and `review-log.md`, but not an empty `review-resolution.md`.
 28. A material `architecture-review` finding before any change-local root creates an initial review-record root with `review-resolution.md` before design fixes proceed.
 29. A final PR-ready handoff is incomplete if only the initial review-record root exists and durable Markdown reasoning was never added.
+30. A draft PR may run early CI or collect discussion without being review-open, but lifecycle state must be synchronized before the PR is marked ready for review or reviewers are asked to judge the branch as complete.
+31. A reopened PR or reused branch must satisfy PR-self-contained lifecycle completion before reviewer action resumes.
+32. A release, deploy, package publication, external migration, or unobserved hosted check may keep an otherwise implemented plan active because the completion event is downstream of the PR tree.
+33. A tracked plan sentence that says "move to Done after merge" is a warning candidate. It becomes blocking stale lifecycle state when the PR itself already contains the evidence that makes `Done` true.
+34. A top-level spec updated by a PR may remain `draft` while awaiting `spec-review`; if `spec-review` approves it and downstream artifacts rely on it, the same PR records `approved` before review-ready handoff continues.
 
 ## Non-goals
 
@@ -756,6 +817,9 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - Removing `explore`, `research`, or `learn`; they remain available through their trigger rules.
 - Rewriting project vision content or revisiting the completed `VISION.md` migration.
 - Renaming the `skills/ci/` directory as a contract requirement.
+- Inspecting hosted PR-description event metadata for merge-dependent language in the first enforcement slice.
+- Defining a merge-SHA recording exception before a real immutable-merge-metadata case exists.
+- Treating deploy, release, package publication, or external migration completion as repo-local lifecycle state that can be made true by the PR tree.
 
 ## Acceptance criteria
 
@@ -786,14 +850,15 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - A contributor can tell that `docs/project-map.md` is a living reference and must be refreshed or bypassed with a no-map rationale before reliance when absent, known-stale, contradicted, or missing the relied-on area.
 - A contributor can tell that `VISION.md` and `CONSTITUTION.md` are standing artifacts with different absence gates.
 - A reviewer can confirm that affected operating and governance surfaces are updated, explicitly marked unaffected with rationale, or deferred with owner and follow-up in an allowed contributor-visible tracked or review-visible surface.
+- A contributor can tell that plan lifecycle synchronization happens inside the PR that performs the lifecycle transition, before the PR opens for review.
+- A reviewer can tell that merge is a fast-forward of pre-validated repo-local lifecycle state, not a trigger for routine lifecycle closeout.
+- A contributor can keep a plan active when completion depends on a true downstream event and can identify the later event or follow-up condition.
+- A reviewer can see broader lifecycle artifact inconsistency block `branch-ready` for touched, referenced, generated, or authoritative lifecycle artifacts.
+- A reviewer can see merge-dependent language in tracked files flagged as a non-blocking reviewer-attention warning unless it is also a blocking lifecycle inconsistency.
 
 ## Open questions
 
-- None blocking. The `skills/ci/` path remains allowed while the visible stage/action label becomes `ci-maintenance`; detailed periodic `learn` cadence scheduling remains outside this workflow contract.
-
-## Next artifacts
-
-- None for the workflow-refactor lifecycle. Current learn-model implementation follow-ons are listed below.
+- None for the PR-self-contained lifecycle completion amendment. The `skills/ci/` path remains allowed while the visible stage/action label becomes `ci-maintenance`; detailed periodic `learn` cadence scheduling remains outside this workflow contract.
 
 ## Follow-on artifacts
 
@@ -803,7 +868,16 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - `learn spec`: [Learn Artifact Model](learn-artifact-model.md)
 - `learn test spec`: [Learn Artifact Model test spec](learn-artifact-model.test.md)
 - `learn plan`: [Learn Artifact Model Implementation Plan](../docs/plans/2026-05-04-learn-artifact-model.md)
+- `proposal`: [PR-Self-Contained Lifecycle Completion](../docs/proposals/2026-05-05-pr-self-contained-lifecycle-completion.md)
+- `plan`: [PR-Self-Contained Lifecycle Completion Plan](../docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md)
+- `plan-review`: approved with no material findings.
+- `test-spec`: [RigorLoop workflow test spec](rigorloop-workflow.test.md) updated with PR-self-contained lifecycle completion coverage.
+- `implementation`: PR-self-contained lifecycle completion M1 through M4 complete.
+- `review-resolution`: material M2 code-review finding accepted, fixed, and closed.
+- `verify`: completed for PR handoff after PR-mode selected validation and broad smoke.
+- `explain-change`: completed in the change-local evidence pack.
+- `pr`: PR #30 opened for human review.
 
 ## Readiness
 
-Approved current workflow contract. The learn artifact model is governed by `specs/learn-artifact-model.md` and implemented through its active plan and test spec.
+Approved workflow contract with the PR-self-contained lifecycle completion amendment implemented in PR #30. The current branch records the completed plan lifecycle state, review closeout, verification evidence, explain-change, and PR handoff before review.
