@@ -22,6 +22,7 @@ class CheckCatalogEntry:
     id: str
     command_template: str
     category: str
+    parallel_safe: bool = False
 
 
 CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
@@ -34,6 +35,7 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "skills.regression",
         "python scripts/test-skill-validator.py",
         "skills",
+        parallel_safe=True,
     ),
     "skills.drift": CheckCatalogEntry(
         "skills.drift",
@@ -44,6 +46,7 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "adapters.regression",
         "python scripts/test-adapter-distribution.py",
         "adapters",
+        parallel_safe=True,
     ),
     "adapters.drift": CheckCatalogEntry(
         "adapters.drift",
@@ -59,6 +62,7 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "review_artifacts.regression",
         "python scripts/test-review-artifact-validator.py",
         "review-artifacts",
+        parallel_safe=True,
     ),
     "review_artifacts.validate": CheckCatalogEntry(
         "review_artifacts.validate",
@@ -69,6 +73,7 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "artifact_lifecycle.regression",
         "python scripts/test-artifact-lifecycle-validator.py",
         "lifecycle",
+        parallel_safe=True,
     ),
     "artifact_lifecycle.validate": CheckCatalogEntry(
         "artifact_lifecycle.validate",
@@ -79,6 +84,7 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "change_metadata.regression",
         "python scripts/test-change-metadata-validator.py",
         "change-metadata",
+        parallel_safe=True,
     ),
     "change_metadata.validate": CheckCatalogEntry(
         "change_metadata.validate",
@@ -104,6 +110,7 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "selector.regression",
         "python scripts/test-select-validation.py",
         "selector",
+        parallel_safe=True,
     ),
     "broad_smoke.repo": CheckCatalogEntry(
         "broad_smoke.repo",
@@ -185,6 +192,12 @@ def exit_code_for_status(status: str) -> int:
 
 def selection_result_to_json(result: SelectionResult) -> str:
     return json.dumps(result.to_json_dict(), indent=2, sort_keys=False) + "\n"
+
+
+def is_parallel_safe_check(check_id: str) -> bool:
+    if check_id not in CHECK_CATALOG:
+        raise ValueError(f"unknown check ID: {check_id}")
+    return CHECK_CATALOG[check_id].parallel_safe
 
 
 def error_result(mode: str, message: str, *, code: str = "invalid-invocation") -> SelectionResult:

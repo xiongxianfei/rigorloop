@@ -1,10 +1,10 @@
 # Formal Review Recording Implementation Plan
 
-- Status: active
+- Status: done
 - Owner: maintainers
 - Start date: 2026-05-04
-- Last updated: 2026-05-04
-- Related issue or PR: none yet
+- Last updated: 2026-05-05
+- Related issue or PR: PR #28 merged at https://github.com/xiongxianfei/rigorloop/pull/28
 - Supersedes: none
 - selected_workflow_contract: refactored
 - broad_smoke_required: false
@@ -330,6 +330,7 @@ Implementation milestones are test-first within their scope: add or update the r
 - [x] 2026-05-04: Verify passed for the final artifact set after M4 code-review, including review artifact closeout, lifecycle validation, selector-selected explicit CI, and final explanation refresh.
 - [x] 2026-05-04: PR handoff completed by opening PR #28.
 - [x] 2026-05-04: Code-review finding `CR2-F1` resolved by correcting the explanation summary from non-existent `CR-M2-F1` to the actual Finding ID `CR1-F1`, then adding reconstructed review evidence and review-resolution closeout for the finding.
+- [x] 2026-05-05: PR #28 merged and merge-dependent lifecycle closeout completed by moving this plan to Done in `docs/plan.md` and the plan body.
 
 ## Decision Log
 
@@ -340,6 +341,7 @@ Implementation milestones are test-first within their scope: add or update the r
 - 2026-05-04: Keep the plan active after M4 implementation -> M1-M4 implementation milestones are complete, but downstream code-review, verify, final explain-change, and PR handoff still own branch readiness and PR readiness.
 - 2026-05-04: Record the clean M4 code-review artifact-locally -> the review produced no material findings and no detailed-record trigger, so the plan records the result without creating an empty review file.
 - 2026-05-04: No CI-maintenance stage triggered -> repository-owned explicit CI, review artifact closeout validation, skill drift checks, adapter drift checks, and lifecycle validation passed without exposing missing or stale hosted workflow automation for this change.
+- 2026-05-05: Close the merge-dependent lifecycle state after PR #28 merged -> `docs/plan.md` now moves this initiative to Done and the plan body records merged PR #28.
 
 ## Surprises And Discoveries
 
@@ -466,17 +468,21 @@ Implementation milestones are test-first within their scope: add or update the r
   - `bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-04-formal-review-recording/change.yaml --path docs/changes/2026-05-04-formal-review-recording/explain-change.md --path docs/changes/2026-05-04-formal-review-recording/review-log.md --path docs/changes/2026-05-04-formal-review-recording/review-resolution.md --path docs/changes/2026-05-04-formal-review-recording/reviews/code-review-r2.md --path docs/plans/2026-05-04-formal-review-recording.md --path docs/plan.md --path docs/proposals/2026-05-04-formal-review-recording.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md`
   - `git diff --check --`
   - `rg -n '[[:blank:]]$|\\t' docs/changes/2026-05-04-formal-review-recording docs/plans/2026-05-04-formal-review-recording.md docs/plan.md`
+- 2026-05-05: Post-merge lifecycle closeout validation passed after PR #28 merged:
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-04-formal-review-recording/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-04-formal-review-recording.md --path docs/changes/2026-05-04-formal-review-recording/change.yaml --path docs/changes/2026-05-04-formal-review-recording/explain-change.md`
+  - `bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-04-formal-review-recording.md --path docs/changes/2026-05-04-formal-review-recording/explain-change.md`
+  - `git diff --check -- docs/plan.md docs/plans/2026-05-04-formal-review-recording.md docs/changes/2026-05-04-formal-review-recording/explain-change.md`
+  - `rg -n '[[:blank:]]$|\\t' docs/plan.md docs/plans/2026-05-04-formal-review-recording.md docs/changes/2026-05-04-formal-review-recording/explain-change.md`
 
 ## Outcome And Retrospective
 
-- Active. M1-M4 implementation milestones, M4 code-review, verify, final explain-change, and PR handoff are complete. PR #28 is open; merge closeout has not run yet.
+- Done. M1-M4 implementation milestones, M4 code-review, verify, final explain-change, PR handoff, and merged PR #28 are complete.
 
 ## Readiness
 
-- Branch-ready after verify.
-- PR #28 is open.
-- Later workflow stages should complete merge-dependent closeout after the PR is merged.
+- Lifecycle complete through merged PR #28 at https://github.com/xiongxianfei/rigorloop/pull/28.
 
 ## Risks And Follow-Ups
 
-- Follow-up: after PR #28 merges, mark this plan done in `docs/plan.md` and the plan body.
+- None for this plan closeout.

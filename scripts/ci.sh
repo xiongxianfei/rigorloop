@@ -4,11 +4,17 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
+DEFAULT_TIMEOUT_SECONDS=60
+
 mode=""
 base=""
 head=""
 release_version=""
 broad_smoke=0
+jobs=""
+timeout_seconds="$DEFAULT_TIMEOUT_SECONDS"
+fail_fast=0
+verbose=0
 paths=()
 
 usage() {
@@ -21,8 +27,69 @@ Usage:
   bash scripts/ci.sh --mode release --release-version <version>
   bash scripts/ci.sh --mode broad-smoke
 
+Execution options:
+  --jobs <positive-integer>       Limit selected-check concurrency.
+  --timeout <positive-seconds>    Per-check timeout, default 60 seconds.
+  --fail-fast                     Stop launching queued checks after a failure.
+  --verbose                       Print successful check output when supported.
+
 When no --mode is supplied, ci.sh defaults to --mode broad-smoke for legacy compatibility.
+When --jobs is omitted, ci.sh uses available CPU count minus one with a floor of one.
 EOF
+}
+
+fail_invalid_positive_integer() {
+  local flag="$1"
+  local value="$2"
+  if [[ -z "$value" ]]; then
+    echo "Invalid $flag: expected a positive integer, got empty value." >&2
+  else
+    echo "Invalid $flag: expected a positive integer, got '$value'." >&2
+  fi
+  exit 4
+}
+
+validate_positive_integer() {
+  local flag="$1"
+  local value="$2"
+  if [[ ! "$value" =~ ^[1-9][0-9]*$ ]]; then
+    fail_invalid_positive_integer "$flag" "$value"
+  fi
+}
+
+require_option_value() {
+  local flag="$1"
+  local count="$2"
+  if [[ "$count" -lt 2 ]]; then
+    fail_invalid_positive_integer "$flag" ""
+  fi
+}
+
+available_cpu_count() {
+  local cpu_count=""
+  if [[ -n "${RIGORLOOP_CI_CPU_COUNT_FIXTURE:-}" ]]; then
+    cpu_count="$RIGORLOOP_CI_CPU_COUNT_FIXTURE"
+  fi
+  if [[ ! "$cpu_count" =~ ^[1-9][0-9]*$ ]] && command -v getconf >/dev/null 2>&1; then
+    cpu_count="$(getconf _NPROCESSORS_ONLN 2>/dev/null || true)"
+  fi
+  if [[ ! "$cpu_count" =~ ^[1-9][0-9]*$ ]] && command -v nproc >/dev/null 2>&1; then
+    cpu_count="$(nproc 2>/dev/null || true)"
+  fi
+  if [[ ! "$cpu_count" =~ ^[1-9][0-9]*$ ]]; then
+    cpu_count=1
+  fi
+  echo "$cpu_count"
+}
+
+default_jobs() {
+  local cpu_count
+  cpu_count="$(available_cpu_count)"
+  if [[ "$cpu_count" -gt 1 ]]; then
+    echo $((cpu_count - 1))
+  else
+    echo 1
+  fi
 }
 
 run_check() {
@@ -201,6 +268,26 @@ parse_args() {
         broad_smoke=1
         shift
         ;;
+      --jobs)
+        require_option_value "$1" "$#"
+        jobs="${2:-}"
+        validate_positive_integer "$1" "$jobs"
+        shift 2
+        ;;
+      --timeout)
+        require_option_value "$1" "$#"
+        timeout_seconds="${2:-}"
+        validate_positive_integer "$1" "$timeout_seconds"
+        shift 2
+        ;;
+      --fail-fast)
+        fail_fast=1
+        shift
+        ;;
+      --verbose)
+        verbose=1
+        shift
+        ;;
       -h|--help)
         usage
         exit 0
@@ -259,18 +346,23 @@ run_selected_mode() {
     set -e
   fi
 
-  python - "$selector_output" "$selector_exit" <<'PY'
+  python - "$selector_output" "$selector_exit" "$timeout_seconds" "$verbose" "$jobs" "$fail_fast" <<'PY'
 from __future__ import annotations
 
+from concurrent.futures import FIRST_COMPLETED, Future, ThreadPoolExecutor, wait
 import json
+import os
 import shlex
+import signal
 import subprocess
 import sys
+import time
+from dataclasses import dataclass
 from pathlib import Path
 
 sys.path.insert(0, str(Path("scripts").resolve()))
 
-from validation_selection import DEFAULT_ADAPTER_VERSION, catalog_command  # noqa: E402
+from validation_selection import DEFAULT_ADAPTER_VERSION, catalog_command, is_parallel_safe_check  # noqa: E402
 
 
 def fail(message: str, code: int = 4) -> None:
@@ -278,8 +370,334 @@ def fail(message: str, code: int = 4) -> None:
     raise SystemExit(code)
 
 
+@dataclass
+class CheckPlan:
+    check_id: str
+    command: str
+    args: list[str]
+    reason: str | None
+    parallel_safe: bool
+
+
+@dataclass
+class CheckResult:
+    plan: CheckPlan
+    status: str
+    exit_reason: str
+    elapsed_seconds: float
+    stdout_bytes: bytes
+    stderr_bytes: bytes
+    exit_code: int
+    stdout_text: str = ""
+    stderr_text: str = ""
+    stdout_decode_error: bool = False
+    stderr_decode_error: bool = False
+
+
+def command_display(args: list[str]) -> str:
+    return " ".join(shlex.quote(arg) for arg in args)
+
+
+def unavailable_script_path(args: list[str]) -> str | None:
+    if not args:
+        return "empty command"
+    if args[0] in {"python", "bash"} and len(args) > 1 and args[1].startswith("scripts/"):
+        if not Path(args[1]).exists():
+            return args[1]
+    return None
+
+
+def signal_label(signal_number: int) -> str:
+    try:
+        return signal.Signals(signal_number).name
+    except ValueError:
+        return f"signal {signal_number}"
+
+
+def decode_stream(data: bytes) -> tuple[str, bool]:
+    try:
+        return data.decode("utf-8"), False
+    except UnicodeDecodeError:
+        return data.decode("utf-8", errors="replace"), True
+
+
+def prepare_output(result: CheckResult) -> None:
+    result.stdout_text, result.stdout_decode_error = decode_stream(result.stdout_bytes)
+    result.stderr_text, result.stderr_decode_error = decode_stream(result.stderr_bytes)
+    notes = []
+    if result.stdout_decode_error:
+        notes.append("stdout decode error")
+    if result.stderr_decode_error:
+        notes.append("stderr decode error")
+    if notes:
+        result.exit_reason = result.exit_reason + "; " + "; ".join(notes)
+
+
+def not_started_result(plan: CheckPlan) -> CheckResult:
+    return CheckResult(
+        plan=plan,
+        status="not started",
+        exit_reason="fail-fast cancelled remaining queue",
+        elapsed_seconds=0.0,
+        stdout_bytes=b"",
+        stderr_bytes=b"",
+        exit_code=125,
+    )
+
+
+def run_one_check(plan: CheckPlan, *, timeout_seconds: int | None) -> CheckResult:
+    unavailable = unavailable_script_path(plan.args)
+    if unavailable is not None:
+        return CheckResult(
+            plan=plan,
+            status="unavailable",
+            exit_reason=f"command unavailable: {unavailable}",
+            elapsed_seconds=0.0,
+            stdout_bytes=b"",
+            stderr_bytes=b"",
+            exit_code=127,
+        )
+
+    start = time.monotonic()
+    try:
+        process = subprocess.Popen(
+            plan.args,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            start_new_session=True,
+        )
+    except FileNotFoundError as exc:
+        return CheckResult(
+            plan=plan,
+            status="unavailable",
+            exit_reason=f"command unavailable: {exc.filename}",
+            elapsed_seconds=0.0,
+            stdout_bytes=b"",
+            stderr_bytes=b"",
+            exit_code=127,
+        )
+
+    try:
+        stdout_bytes, stderr_bytes = process.communicate(timeout=timeout_seconds)
+        elapsed = time.monotonic() - start
+    except subprocess.TimeoutExpired:
+        try:
+            os.killpg(process.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        except OSError:
+            process.kill()
+        stdout_bytes, stderr_bytes = process.communicate()
+        elapsed = time.monotonic() - start
+        return CheckResult(
+            plan=plan,
+            status="timed out",
+            exit_reason=f"timeout after {timeout_seconds}s",
+            elapsed_seconds=elapsed,
+            stdout_bytes=stdout_bytes,
+            stderr_bytes=stderr_bytes,
+            exit_code=124,
+        )
+
+    return_code = process.returncode
+    if return_code == 0:
+        return CheckResult(
+            plan=plan,
+            status="passed",
+            exit_reason="ok",
+            elapsed_seconds=elapsed,
+            stdout_bytes=stdout_bytes,
+            stderr_bytes=stderr_bytes,
+            exit_code=0,
+        )
+    if return_code < 0:
+        signal_number = -return_code
+        return CheckResult(
+            plan=plan,
+            status="killed",
+            exit_reason=f"signal {signal_label(signal_number)} ({signal_number})",
+            elapsed_seconds=elapsed,
+            stdout_bytes=stdout_bytes,
+            stderr_bytes=stderr_bytes,
+            exit_code=128 + signal_number,
+        )
+    return CheckResult(
+        plan=plan,
+        status="exited",
+        exit_reason=f"exit code {return_code}",
+        elapsed_seconds=elapsed,
+        stdout_bytes=stdout_bytes,
+        stderr_bytes=stderr_bytes,
+        exit_code=return_code,
+    )
+
+
+def check_timeout_for(plan: CheckPlan, timeout_seconds: int) -> int | None:
+    # broad_smoke.repo delegates to the non-recursive broad-smoke path. Do
+    # not add a selected-check outer timeout around that wrapper delegation.
+    if plan.check_id == "broad_smoke.repo":
+        return None
+    return timeout_seconds
+
+
+def run_planned_check(plan: CheckPlan, *, timeout_seconds: int) -> CheckResult:
+    return run_one_check(plan, timeout_seconds=check_timeout_for(plan, timeout_seconds))
+
+
+def runner_error_result(plan: CheckPlan, exc: BaseException) -> CheckResult:
+    return CheckResult(
+        plan=plan,
+        status="exited",
+        exit_reason=f"runner error: {exc}",
+        elapsed_seconds=0.0,
+        stdout_bytes=b"",
+        stderr_bytes=b"",
+        exit_code=4,
+    )
+
+
+def run_parallel_safe_chunk(
+    chunk: list[CheckPlan],
+    *,
+    jobs: int,
+    timeout_seconds: int,
+    fail_fast: bool,
+) -> list[CheckResult]:
+    results: list[CheckResult | None] = [None] * len(chunk)
+    next_to_start = 0
+    stop_launching = False
+    max_workers = min(jobs, len(chunk))
+
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        running: dict[Future[CheckResult], int] = {}
+
+        def launch_next() -> None:
+            nonlocal next_to_start
+            future = executor.submit(
+                run_planned_check,
+                chunk[next_to_start],
+                timeout_seconds=timeout_seconds,
+            )
+            running[future] = next_to_start
+            next_to_start += 1
+
+        while next_to_start < len(chunk) and len(running) < max_workers:
+            launch_next()
+
+        while running:
+            done, _ = wait(running, return_when=FIRST_COMPLETED)
+            for future in done:
+                result_index = running.pop(future)
+                try:
+                    result = future.result()
+                except BaseException as exc:  # pragma: no cover - defensive runner boundary
+                    result = runner_error_result(chunk[result_index], exc)
+                results[result_index] = result
+                if fail_fast and result.status != "passed":
+                    stop_launching = True
+            while (
+                not stop_launching
+                and next_to_start < len(chunk)
+                and len(running) < max_workers
+            ):
+                launch_next()
+
+    if stop_launching:
+        while next_to_start < len(chunk):
+            results[next_to_start] = not_started_result(chunk[next_to_start])
+            next_to_start += 1
+
+    return [result for result in results if result is not None]
+
+
+def run_scheduled_checks(
+    plans: list[CheckPlan],
+    *,
+    jobs: int,
+    timeout_seconds: int,
+    fail_fast: bool,
+) -> list[CheckResult]:
+    results: list[CheckResult] = []
+    index = 0
+    stop_launching = False
+
+    while index < len(plans):
+        if stop_launching:
+            results.extend(not_started_result(plan) for plan in plans[index:])
+            break
+
+        plan = plans[index]
+        if plan.parallel_safe and jobs > 1:
+            chunk: list[CheckPlan] = []
+            while index < len(plans) and plans[index].parallel_safe:
+                chunk.append(plans[index])
+                index += 1
+            chunk_results = run_parallel_safe_chunk(
+                chunk,
+                jobs=jobs,
+                timeout_seconds=timeout_seconds,
+                fail_fast=fail_fast,
+            )
+            results.extend(chunk_results)
+            if fail_fast and any(result.status != "passed" for result in chunk_results):
+                stop_launching = True
+            continue
+
+        result = run_planned_check(plan, timeout_seconds=timeout_seconds)
+        results.append(result)
+        index += 1
+        if fail_fast and result.status != "passed":
+            stop_launching = True
+
+    return results
+
+
+def print_summary(results: list[CheckResult]) -> None:
+    print("Selected CI check summary:")
+    print("check ID | status | exit reason | elapsed")
+    for result in results:
+        print(
+            f"{result.plan.check_id} | {result.status} | {result.exit_reason} | "
+            f"{result.elapsed_seconds:.2f}s"
+        )
+
+
+def print_stream(label: str, text: str, *, decode_error: bool) -> None:
+    if decode_error:
+        print(f"--- {label} (decode error; replacement text) ---")
+    else:
+        print(f"--- {label} ---")
+    if text:
+        print(text, end="" if text.endswith("\n") else "\n")
+    else:
+        print("(empty)")
+
+
+def print_result_output(results: list[CheckResult], *, verbose: bool) -> None:
+    printable = [result for result in results if verbose or result.status != "passed"]
+    if not printable:
+        return
+    if verbose:
+        print("Selected check output:")
+    else:
+        print("Failed selected check output:")
+    for result in printable:
+        print(f"==> {result.plan.check_id} ({result.status})")
+        print("Command: " + command_display(result.plan.args))
+        if result.stdout_bytes:
+            print_stream("stdout", result.stdout_text, decode_error=result.stdout_decode_error)
+        if result.stderr_bytes:
+            print_stream("stderr", result.stderr_text, decode_error=result.stderr_decode_error)
+        if not result.stdout_bytes and not result.stderr_bytes:
+            print("(no captured output)")
+
+
 selector_output = Path(sys.argv[1])
 selector_exit = int(sys.argv[2])
+timeout_seconds = int(sys.argv[3])
+verbose = bool(int(sys.argv[4]))
+jobs = int(sys.argv[5])
+fail_fast = bool(int(sys.argv[6]))
 try:
     payload = json.loads(selector_output.read_text(encoding="utf-8"))
 except json.JSONDecodeError as exc:
@@ -335,6 +753,7 @@ if not selected_checks:
     print("No selected checks to run.")
     raise SystemExit(0)
 
+plans: list[CheckPlan] = []
 for check in selected_checks:
     check_id = check.get("id")
     if not isinstance(check_id, str):
@@ -361,31 +780,52 @@ for check in selected_checks:
         )
 
     args = shlex.split(expected_command)
-    print(f"==> Run selected check: {check_id}")
-    if check.get("reason"):
-        print(f"Reason: {check['reason']}")
-    print("+ " + " ".join(shlex.quote(arg) for arg in args))
-
     if check_id == "broad_smoke.repo":
         args = ["bash", "scripts/ci.sh", "--mode", "broad-smoke"]
+    reason = check.get("reason")
+    plans.append(
+        CheckPlan(
+            check_id=check_id,
+            command=expected_command,
+            args=args,
+            reason=reason if isinstance(reason, str) else None,
+            parallel_safe=is_parallel_safe_check(check_id),
+        )
+    )
 
-    if args[0] in {"python", "bash"} and len(args) > 1 and args[1].startswith("scripts/"):
-        if not Path(args[1]).exists():
-            fail(f"Selected check {check_id} command is unavailable: {args[1]}", code=127)
+for plan in plans:
+    print(f"==> Run selected check: {plan.check_id}")
+    if plan.reason:
+        print(f"Reason: {plan.reason}")
+    print("+ " + command_display(plan.args))
 
-    try:
-        completed = subprocess.run(args)
-    except FileNotFoundError as exc:
-        fail(f"Selected check {check_id} command is unavailable: {exc.filename}", code=127)
-    if completed.returncode != 0:
-        fail(f"Selected check {check_id} failed with exit code {completed.returncode}", code=completed.returncode)
-    print()
+results = run_scheduled_checks(
+    plans,
+    jobs=jobs,
+    timeout_seconds=timeout_seconds,
+    fail_fast=fail_fast,
+)
+for result in results:
+    prepare_output(result)
+
+print_summary(results)
+print_result_output(results, verbose=verbose)
+
+failed_results = [result for result in results if result.status != "passed"]
+if failed_results:
+    for result in failed_results:
+        print(f"Selected check {result.plan.check_id} failed: {result.exit_reason}", file=sys.stderr)
+    raise SystemExit(failed_results[0].exit_code)
 
 print("Selected CI checks passed.")
 PY
 }
 
 parse_args "$@"
+
+if [[ -z "$jobs" ]]; then
+  jobs="$(default_jobs)"
+fi
 
 if [[ -z "$mode" ]]; then
   echo "No --mode supplied; defaulting to --mode broad-smoke for legacy compatibility."
