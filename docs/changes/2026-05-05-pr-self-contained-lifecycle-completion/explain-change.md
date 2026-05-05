@@ -4,7 +4,7 @@
 
 This change implements the approved PR-self-contained lifecycle completion workflow amendment. M1 aligns the governing and operational guidance so repo-local lifecycle state changes are recorded in the PR that performs the transition before review opens, while true downstream events keep a plan active until the event occurs.
 
-The implementation is intentionally staged. M1 updates authoritative and operational prose plus the baseline change-local evidence. M2 adds validator behavior. M3 wires selector routing for warning-capable surfaces, updates canonical skill guidance, and refreshes generated outputs. M4 closes implementation evidence while keeping the plan active until final code-review, verify, explain-change, and PR handoff complete.
+The implementation is intentionally staged. M1 updates authoritative and operational prose plus the baseline change-local evidence. M2 adds validator behavior. M3 wires selector routing for warning-capable surfaces, updates canonical skill guidance, and refreshes generated outputs. M4 closes implementation evidence. Later code-review and verify completed cleanly; this explanation prepares the PR handoff while the plan remains active until PR handoff completes.
 
 ## Source Artifacts
 
@@ -12,6 +12,20 @@ The implementation is intentionally staged. M1 updates authoritative and operati
 - Spec: `specs/rigorloop-workflow.md`, especially `R6dc`, `R8h`-`R8hc`, `R8jb`, and `R8kh`-`R8kj`
 - Test spec: `specs/rigorloop-workflow.test.md`, especially `T29`-`T32`
 - Plan: `docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md`
+
+## Problem
+
+The workflow allowed routine plan `Active` to `Done` closeout to wait until after PR merge. That made the closeout structurally easy to forget: once the PR merged, attention moved on and `docs/plan.md` plus the plan body could stay stale. This branch also carries the incident context that exposed the problem: learn sessions and the PR #29 plan closeout that corrected the stale state.
+
+## Decision Trail
+
+| Decision source | Outcome |
+| --- | --- |
+| Proposal | Adopt PR-self-contained lifecycle completion: the PR that performs the lifecycle transition records it before review opens. |
+| Spec | `R6dc` requires constitution-level wording; `R8h`-`R8hc` require plan/index synchronization inside the PR and forbid merge as the routine downstream event; `R8jb` requires reviewer-visible merge-dependent language classification. |
+| Test spec | `T29`-`T32` define proof for visible guidance, validator behavior, spec/test-spec lifecycle state, and selected validation routing. |
+| Plan | M1 updates guidance, M2 adds lifecycle/review validation, M3 routes warnings through selector and skill surfaces, and M4 records final evidence. |
+| Review | M2 material finding `CR-M2-R1-F1` was accepted, fixed, and clean on re-review; M3 and M4 direct reviews were clean with no detailed-record trigger. |
 
 ## M1 Diff Rationale
 
@@ -97,10 +111,10 @@ The first stale-wording scan intentionally failed before M1 edits because stale 
 
 | Surface | M4 disposition | Rationale |
 | --- | --- | --- |
-| `docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml` | updated | Records M3 clean review, M4 validation, and moves implementation status to M4 complete / code-review next. |
-| `docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md` | updated | Marks M4 complete, records validation and lifecycle decisions, and keeps the plan Active until final downstream gates complete. |
+| `docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml` | updated | Records M3/M4 clean reviews, M4 and verify validation, branch-scope changed files, and current handoff status. |
+| `docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md` | updated | Marks M4, code-review, and verify complete; records validation and lifecycle decisions; keeps the plan Active until PR handoff completes. |
 | `docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/explain-change.md` | updated | Adds the M4 rationale and readiness state so PR handoff can use tracked evidence instead of chat memory. |
-| `docs/plan.md` | unaffected with rationale | The implementation milestone is complete, but the initiative is not Done until final code-review, verify, explain-change, and PR handoff are complete in the PR tree. |
+| `docs/plan.md` | unaffected with rationale | The implementation, code-review, and verify stages are complete, but the initiative is not Done until explain-change and PR handoff are complete in the PR tree. |
 
 ## M4 Validation
 
@@ -122,8 +136,57 @@ The first stale-wording scan intentionally failed before M1 edits because stale 
 - M4 direct `code-review` of commit `e518725` returned `clean-with-notes` with no material findings.
 - Verify passed after branch-scope PR-mode selector, PR-mode CI with broad smoke, review closeout validation, metadata validation, and whitespace cleanup for two precursor learn session files in the PR diff.
 
+## Tests Added or Changed
+
+| Test surface | What it proves |
+| --- | --- |
+| `scripts/test-artifact-lifecycle-validator.py` | Plan/index lifecycle disagreement, terminal stale readiness, duplicate Active/Done entries, true downstream Active plans, and merge-dependent language warnings. |
+| `scripts/test-review-artifact-validator.py` | `Closeout status: open` remains blocking even after material findings are otherwise resolved. |
+| `scripts/test-select-validation.py` | Selector routes tracked lifecycle-warning surfaces through `artifact_lifecycle.validate`, and CI command expectations match multi-path lifecycle validation. |
+| `scripts/test-skill-validator.py` | Affected canonical stage skills carry PR-contained lifecycle guidance and do not reintroduce removed merge-dependent closeout wording. |
+| Generated-output checks | `build-skills.py --check`, `build-adapters.py --version 0.1.1 --check`, adapter validation, and adapter distribution tests prove canonical and generated guidance stay synchronized. |
+
+## Review Resolution Summary
+
+Material findings: 1 accepted and closed (`CR-M2-R1-F1`). Rejected: 0. Deferred: 0. Partially accepted: 0. Needs decision: 0.
+
+Review-resolution record: `docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/review-resolution.md`.
+
+M3 and M4 direct code-reviews were clean with no material findings, so their results are recorded artifact-locally in the plan, `change.yaml`, and this explanation rather than as empty detailed review records.
+
+## Verification Evidence
+
+- `python scripts/select-validation.py --mode pr --base origin/main --head HEAD` passed and selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.regression`, `review_artifacts.validate`, `artifact_lifecycle.regression`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `selector.regression`, and `broad_smoke.repo`.
+- `bash scripts/ci.sh --mode pr --base origin/main --head HEAD` passed with the same selected check IDs, including broad smoke.
+- `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-05-pr-self-contained-lifecycle-completion` passed.
+- `python scripts/validate-change-metadata.py docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml` passed.
+- `git diff --check origin/main...HEAD` passed after removing EOF-only blank lines from two precursor learn session files.
+
+## Alternatives Rejected
+
+- Keep merge-dependent Done with reminders: rejected because the recurring stale-state issue is caused by relying on memory after merge.
+- Build post-merge automation first: rejected for this slice because PR-contained state removes the routine need for post-merge cleanup.
+- Suppress merge-dependent language warnings automatically after classification: rejected for the first slice; contributor-visible classification is enough.
+- Add caching, distributed execution, or broader workflow automation: out of scope for this lifecycle rule.
+
+## Scope Control
+
+This change does not create a new lifecycle stage, does not change generated output by hand, does not require every historical artifact to be migrated, and does not treat release, deploy, package publication, external migration, or unobserved hosted checks as PR-local completion events.
+
+## Risks and Follow-Ups
+
+- The branch includes precursor learn/closeout commits that motivated the change; verification therefore used the full `origin/main...HEAD` PR diff rather than only the M1-M4 commit range.
+- Generated skill and adapter output is intentionally included because canonical stage skill guidance changed.
+- No deferred product or spec decision remains. The remaining workflow step is PR handoff.
+
+## PR Handoff Summary
+
+- The implementation and internal review/verify gates are complete.
+- `docs/plan.md` and the plan body intentionally remain Active until PR handoff records the final pre-review lifecycle state.
+- The PR body should call out that broad smoke was required by the touched CI-speed plan and passed in PR-mode CI.
+
 ## Current Readiness
 
-M1 is implemented, code-reviewed with no required changes, and verified. M2 is implemented, CR-M2-R1-F1 is accepted and resolved, and M2 re-review is clean. M3 direct code-review is clean. M4 direct code-review is clean. Verify passed. Explain-change is next.
+M1 is implemented, code-reviewed with no required changes, and verified. M2 is implemented, CR-M2-R1-F1 is accepted and resolved, and M2 re-review is clean. M3 direct code-review is clean. M4 direct code-review is clean. Verify passed. Explain-change is complete.
 
-`docs/plan.md` remains Active by design: explain-change and PR handoff are not yet complete, so the plan is not Done under the PR-self-contained lifecycle rule.
+`docs/plan.md` remains Active by design: PR handoff is not yet complete, so the plan is not Done under the PR-self-contained lifecycle rule.

@@ -322,7 +322,7 @@ Implementation milestones are test-first within their scope: add or update the r
 - [x] M4 complete.
 - [x] Code-review complete.
 - [x] Verify complete.
-- [ ] Explain-change complete.
+- [x] Explain-change complete.
 - [ ] PR handoff complete.
 
 ## Decision Log
@@ -436,10 +436,16 @@ Implementation milestones are test-first within their scope: add or update the r
   - `python scripts/select-validation.py --mode pr --base origin/main --head HEAD` passed after the whitespace fix and selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.regression`, `review_artifacts.validate`, `artifact_lifecycle.regression`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `selector.regression`, and `broad_smoke.repo`.
   - `bash scripts/ci.sh --mode pr --base origin/main --head HEAD` passed after the whitespace fix with the same selected check IDs.
   - `git diff --check origin/main...HEAD` passed after the whitespace fix was committed.
+- 2026-05-05 explain-change:
+  - `docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/explain-change.md` now records the problem, decision trail, per-milestone diff rationale, tests, review-resolution summary, verification evidence, alternatives rejected, scope control, risks, and PR handoff notes.
+  - `python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml --path docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/explain-change.md --path docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md` passed and selected `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+  - `bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml --path docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/explain-change.md --path docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md` passed with the same selected check IDs.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml` passed.
+  - `git diff --check -- docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/explain-change.md docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md` passed.
 
 ## Outcome and Retrospective
 
-- Active. M1 aligned governance and workflow guidance, M2 added lifecycle validator coverage and resolved CR-M2-R1-F1, M3 wired selector routing, stage skill guidance, and generated output, M4 closed implementation evidence, M4 code-review completed clean, and verify passed. Explain-change and PR handoff remain before this plan can move to Done.
+- Active. M1 aligned governance and workflow guidance, M2 added lifecycle validator coverage and resolved CR-M2-R1-F1, M3 wired selector routing, stage skill guidance, and generated output, M4 closed implementation evidence, M4 code-review completed clean, verify passed, and explain-change is complete. PR handoff remains before this plan can move to Done.
 
 ## Readiness
 
@@ -448,8 +454,9 @@ Implementation milestones are test-first within their scope: add or update the r
 - M3 direct code-review completed clean with no material findings.
 - M4 direct code-review completed clean with no material findings.
 - Verify passed after branch-scope whitespace cleanup.
-- Explain-change is next.
-- `docs/plan.md` intentionally remains Active until explain-change and PR handoff complete in the current PR tree.
+- Explain-change is complete.
+- PR handoff is next.
+- `docs/plan.md` intentionally remains Active until PR handoff completes in the current PR tree.
 - Test-spec readiness: active; `specs/rigorloop-workflow.test.md` now maps the amendment to T29-T32 plus updated cross-cutting coverage.
 
 ## Risks and Follow-Ups
