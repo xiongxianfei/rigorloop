@@ -150,6 +150,18 @@ validation:
   - command: git diff --check origin/main
     result: pass_after_verify_whitespace_fix
     reason: Worktree branch diff against origin/main had no whitespace diagnostics after removing the two EOF-only blank lines.
+  - command: python scripts/select-validation.py --mode pr --base origin/main --head HEAD
+    result: pass_after_verify
+    selected_check_ids: skills.validate, skills.regression, skills.drift, adapters.regression, adapters.drift, adapters.validate, review_artifacts.regression, review_artifacts.validate, artifact_lifecycle.regression, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, selector.regression, broad_smoke.repo
+  - command: bash scripts/ci.sh --mode pr --base origin/main --head HEAD
+    result: pass_after_verify
+    selected_check_ids: skills.validate, skills.regression, skills.drift, adapters.regression, adapters.drift, adapters.validate, review_artifacts.regression, review_artifacts.validate, artifact_lifecycle.regression, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, selector.regression, broad_smoke.repo
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-05-pr-self-contained-lifecycle-completion
+    result: pass_after_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml
+    result: pass_after_verify
+  - command: git diff --check origin/main...HEAD
+    result: pass_after_verify
 changed_files:
   - CONSTITUTION.md
   - AGENTS.md
@@ -220,3 +232,7 @@ implementation:
   current_milestone: verify
   milestone_status: M4_code_review_complete
   notes: M4 records final implementation evidence and the direct M4 code-review is clean. The plan remains Active because verify, explain-change, and PR handoff still need to complete before the initiative can move to Done.
+verification:
+  status: ready_for_explain_change
+  required_next_stage: explain-change
+  notes: PR-mode selected validation passed with broad smoke after branch-level whitespace fix. The plan remains Active because explain-change and PR handoff still need to complete before Done.

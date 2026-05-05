@@ -120,9 +120,10 @@ The first stale-wording scan intentionally failed before M1 edits because stale 
 - `python scripts/validate-change-metadata.py docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml` passed after M4 evidence edits.
 - `git diff --check -- <all touched paths>` produced no whitespace diagnostics after M4 evidence edits.
 - M4 direct `code-review` of commit `e518725` returned `clean-with-notes` with no material findings.
+- Verify passed after branch-scope PR-mode selector, PR-mode CI with broad smoke, review closeout validation, metadata validation, and whitespace cleanup for two precursor learn session files in the PR diff.
 
 ## Current Readiness
 
-M1 is implemented, code-reviewed with no required changes, and verified. M2 is implemented, CR-M2-R1-F1 is accepted and resolved, and M2 re-review is clean. M3 direct code-review is clean. M4 direct code-review is clean. Verify is next.
+M1 is implemented, code-reviewed with no required changes, and verified. M2 is implemented, CR-M2-R1-F1 is accepted and resolved, and M2 re-review is clean. M3 direct code-review is clean. M4 direct code-review is clean. Verify passed. Explain-change is next.
 
-`docs/plan.md` remains Active by design: verify, explain-change, and PR handoff are not yet complete, so the plan is not Done under the PR-self-contained lifecycle rule.
+`docs/plan.md` remains Active by design: explain-change and PR handoff are not yet complete, so the plan is not Done under the PR-self-contained lifecycle rule.

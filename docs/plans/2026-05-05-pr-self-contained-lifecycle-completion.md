@@ -321,7 +321,7 @@ Implementation milestones are test-first within their scope: add or update the r
 - [x] M3 complete.
 - [x] M4 complete.
 - [x] Code-review complete.
-- [ ] Verify complete.
+- [x] Verify complete.
 - [ ] Explain-change complete.
 - [ ] PR handoff complete.
 
@@ -433,10 +433,13 @@ Implementation milestones are test-first within their scope: add or update the r
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml` passed.
   - `git diff --check origin/main...HEAD` failed before fix because two precursor learn session files in the PR diff had extra blank lines at EOF; those EOF-only whitespace issues were removed.
   - `git diff --check origin/main` passed after the EOF-only whitespace fix.
+  - `python scripts/select-validation.py --mode pr --base origin/main --head HEAD` passed after the whitespace fix and selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.regression`, `review_artifacts.validate`, `artifact_lifecycle.regression`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `selector.regression`, and `broad_smoke.repo`.
+  - `bash scripts/ci.sh --mode pr --base origin/main --head HEAD` passed after the whitespace fix with the same selected check IDs.
+  - `git diff --check origin/main...HEAD` passed after the whitespace fix was committed.
 
 ## Outcome and Retrospective
 
-- Active. M1 aligned governance and workflow guidance, M2 added lifecycle validator coverage and resolved CR-M2-R1-F1, M3 wired selector routing, stage skill guidance, and generated output, M4 closed implementation evidence, and M4 code-review completed clean. Verify, explain-change, and PR handoff remain before this plan can move to Done.
+- Active. M1 aligned governance and workflow guidance, M2 added lifecycle validator coverage and resolved CR-M2-R1-F1, M3 wired selector routing, stage skill guidance, and generated output, M4 closed implementation evidence, M4 code-review completed clean, and verify passed. Explain-change and PR handoff remain before this plan can move to Done.
 
 ## Readiness
 
@@ -444,8 +447,9 @@ Implementation milestones are test-first within their scope: add or update the r
 - M2 code-review completed with CR-M2-R1-F1 accepted, fixed, resolved, and clean on re-review.
 - M3 direct code-review completed clean with no material findings.
 - M4 direct code-review completed clean with no material findings.
-- Verify is next.
-- `docs/plan.md` intentionally remains Active until verify, explain-change, and PR handoff complete in the current PR tree.
+- Verify passed after branch-scope whitespace cleanup.
+- Explain-change is next.
+- `docs/plan.md` intentionally remains Active until explain-change and PR handoff complete in the current PR tree.
 - Test-spec readiness: active; `specs/rigorloop-workflow.test.md` now maps the amendment to T29-T32 plus updated cross-cutting coverage.
 
 ## Risks and Follow-Ups
