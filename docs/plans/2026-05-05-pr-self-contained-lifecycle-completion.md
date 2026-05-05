@@ -159,12 +159,12 @@ Implementation milestones are test-first within their scope: add or update the r
   - Stale lifecycle state blocks `branch-ready`, while merge-dependent language is reported as a visible warning unless it is also a blocking inconsistency.
 - Commit message: `M2: validate pr-contained lifecycle state`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] lifecycle state updated in `docs/plan.md` and this plan body if the milestone changed it
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - Warning detection may become noisy if it matches historical context or quoted rejected alternatives.
 - Rollback/recovery:
@@ -317,7 +317,7 @@ Implementation milestones are test-first within their scope: add or update the r
 - [x] Plan-review complete.
 - [x] Test spec updated and active.
 - [x] M1 complete.
-- [ ] M2 complete.
+- [x] M2 complete.
 - [ ] M3 complete.
 - [ ] M4 complete.
 - [ ] Code-review complete.
@@ -331,12 +331,16 @@ Implementation milestones are test-first within their scope: add or update the r
 - 2026-05-05: Keep broad smoke opt-in unless a later gate elevates it -> targeted selector-selected proof is sufficient for planning, while final verification can still run broader checks if required.
 - 2026-05-05: Treat spec-review SR-1 as a test-spec decision -> the spec is approved, but the test spec must pick the observable classification-recording surface before implementation.
 - 2026-05-05: Treat merge-dependent warning classification as contributor-visible review evidence, not automatic warning suppression, for the first slice -> this resolves SR-1 without coupling warning detection to hosted PR metadata.
+- 2026-05-05: Emit one merge-dependent lifecycle-language warning per tracked file, not one per matching line -> this keeps reviewer attention visible without flooding selected-check output for specs and plans that discuss the old rule as historical context.
 
 ## Surprises and Discoveries
 
 - Existing lifecycle validation validates top-level artifact status and related-scope expansion, but plan index/body lifecycle agreement still needs first-class coverage for this amendment.
 - Existing selector routing sends governance and workflow guidance to selector regression, while lifecycle validation runs for lifecycle and plan-index paths. The implementation must deliberately route any new tracked-file warning scope.
 - Canonical stage skills still contain stale merge-dependent closeout wording after M1; this is intentionally deferred to M3 with generated `.codex/skills/` and `dist/adapters/` refresh so canonical and generated skill output stay aligned in one slice.
+- M2 warning output intentionally flags this proposal, spec, test spec, plan, plan index, and M2 review-resolution records because they discuss the removed merge-dependent rule as historical context, rejected alternatives, requirements, warning behavior, or review evidence. That language is classified here as lifecycle-policy discussion and not as an instruction to defer this initiative's closeout after merge.
+- M2 review self-check found that a plan listed under both `Active` and `Done` could mask the stale `Active` listing. A focused regression fixture now covers that duplicate-index case.
+- M2 code-review found that changing only `docs/plan.md` could miss the linked plan body. CR-M2-R1-F1 is accepted and fixed by expanding index-in-scope validation to linked plan bodies when no selected plan body is already in scope, which avoids turning unrelated historical plan debt into blockers for normal selected validation.
 
 ## Validation Notes
 
@@ -363,15 +367,30 @@ Implementation milestones are test-first within their scope: add or update the r
   - `bash scripts/ci.sh --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path docs/learn/topics/plan-lifecycle-closeout.md --path docs/plans/0000-00-00-example-plan.md --path README.md --path docs/proposals/2026-05-05-pr-self-contained-lifecycle-completion.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/plan.md --path docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md --path docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml --path docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/explain-change.md` passed on the committed M1 tree with selected check IDs `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `readme.validate`, `readme.vision_markers`, and `selector.regression`.
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml` passed.
   - `git diff --check HEAD^ HEAD` produced no whitespace diagnostics.
+- 2026-05-05 M2 validation:
+  - `python scripts/test-artifact-lifecycle-validator.py` failed before implementation with four expected failing M2 lifecycle tests: completed plan under Active, plan index/body disagreement, terminal plan stale readiness, and merge-dependent lifecycle-language warning.
+  - `python scripts/test-artifact-lifecycle-validator.py` later failed during M2 self-check with the expected duplicate Active/Done index fixture before the parser was tightened to preserve all index sections for a plan.
+  - `python scripts/test-artifact-lifecycle-validator.py` later failed during M2 code-review with the expected index-only `docs/plan.md` regression before the validator expanded plan-index-only scope to linked plan bodies.
+  - `python scripts/test-review-artifact-validator.py` passed after adding focused closeout coverage for `Closeout status: open` after resolved material findings, confirming existing closeout-mode behavior.
+  - `python scripts/test-artifact-lifecycle-validator.py` passed after implementation.
+  - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-05-pr-self-contained-lifecycle-completion` passed after recording CR-M2-R1-F1, its resolution, and the clean M2 re-review.
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-05-pr-self-contained-lifecycle-completion` passed.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-05-pr-self-contained-lifecycle-completion.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/plan.md --path docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md --path docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/review-log.md --path docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/review-resolution.md --path docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/reviews/code-review-m2-r1.md --path docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/reviews/code-review-m2-r2.md` passed with non-blocking lifecycle-language warnings classified in Surprises and Discoveries.
+  - `python scripts/select-validation.py --mode explicit --path scripts/artifact_lifecycle_validation.py --path scripts/test-artifact-lifecycle-validator.py --path scripts/test-review-artifact-validator.py --path tests/fixtures/artifact-lifecycle/plan-index-completed-under-active --path tests/fixtures/artifact-lifecycle/plan-index-completed-under-active-and-done --path tests/fixtures/artifact-lifecycle/plan-index-body-disagreement --path tests/fixtures/artifact-lifecycle/plan-terminal-stale-readiness --path tests/fixtures/artifact-lifecycle/plan-downstream-active --path tests/fixtures/artifact-lifecycle/merge-dependent-language-warning --path docs/proposals/2026-05-05-pr-self-contained-lifecycle-completion.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/plan.md --path docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md --path docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml --path docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/explain-change.md --path docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/review-log.md --path docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/review-resolution.md --path docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/reviews/code-review-m2-r1.md --path docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/reviews/code-review-m2-r2.md` passed and selected `review_artifacts.regression`, `review_artifacts.validate`, `artifact_lifecycle.regression`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+  - `bash scripts/ci.sh --mode explicit --path scripts/artifact_lifecycle_validation.py --path scripts/test-artifact-lifecycle-validator.py --path scripts/test-review-artifact-validator.py --path tests/fixtures/artifact-lifecycle/plan-index-completed-under-active --path tests/fixtures/artifact-lifecycle/plan-index-completed-under-active-and-done --path tests/fixtures/artifact-lifecycle/plan-index-body-disagreement --path tests/fixtures/artifact-lifecycle/plan-terminal-stale-readiness --path tests/fixtures/artifact-lifecycle/plan-downstream-active --path tests/fixtures/artifact-lifecycle/merge-dependent-language-warning --path docs/proposals/2026-05-05-pr-self-contained-lifecycle-completion.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/plan.md --path docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md --path docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml --path docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/explain-change.md --path docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/review-log.md --path docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/review-resolution.md --path docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/reviews/code-review-m2-r1.md --path docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/reviews/code-review-m2-r2.md` passed with the same selected check IDs.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml` passed.
+  - `git diff --check -- scripts tests/fixtures/artifact-lifecycle docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md docs/changes/2026-05-05-pr-self-contained-lifecycle-completion` produced no whitespace diagnostics.
+  - `bash scripts/ci.sh --mode broad-smoke` passed after M2 review-resolution and clean re-review. The broad lifecycle pass reported expected reviewer-attention warnings for merge-dependent policy discussion and unrelated baseline warnings, with no blocking findings.
 
 ## Outcome and Retrospective
 
-- Active. M1 aligned governance and workflow guidance, passed code-review and verify, and M2 is next.
+- Active. M1 aligned governance and workflow guidance, M2 added lifecycle validator coverage and resolved CR-M2-R1-F1, and M3 is next.
 
 ## Readiness
 
 - M1 is complete and verified.
-- M2 is the next implementation milestone.
+- M2 code-review completed with CR-M2-R1-F1 accepted, fixed, resolved, and clean on re-review.
+- M3 is the next implementation milestone.
 - Test-spec readiness: active; `specs/rigorloop-workflow.test.md` now maps the amendment to T29-T32 plus updated cross-cutting coverage.
 
 ## Risks and Follow-Ups

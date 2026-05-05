@@ -41,6 +41,31 @@ M1 validation is recorded in `change.yaml` and the active plan.
 
 The first stale-wording scan intentionally failed before M1 edits because stale merge-dependent closeout wording still existed in workflow docs and canonical skills. Skill wording remains deferred to M3 with tracked rationale.
 
+## M2 Diff Rationale
+
+| Surface | M2 disposition | Rationale |
+| --- | --- | --- |
+| `scripts/artifact_lifecycle_validation.py` | updated | Adds plan index/body lifecycle agreement checks, terminal plan readiness checks, and non-blocking tracked merge-dependent lifecycle-language warnings. |
+| `scripts/test-artifact-lifecycle-validator.py` | updated | Adds failing-first coverage for completed plans under Active, duplicate Active/Done index entries, index-only plan changes, index/body disagreement, terminal stale readiness, true downstream active plans, and warning behavior. |
+| `tests/fixtures/artifact-lifecycle/**` | updated | Adds focused fixture repositories for the new lifecycle validator cases. |
+| `scripts/test-review-artifact-validator.py` | updated | Adds direct closeout-mode proof that `Closeout status: open` remains blocking even after material findings are resolved. |
+| `docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/reviews/**` | added | Records the M2 code-review finding, accepted resolution, and clean re-review. |
+
+## M2 Validation
+
+- `python scripts/test-artifact-lifecycle-validator.py` failed before implementation with the expected new M2 failures.
+- A follow-up M2 self-check added and first observed a failing duplicate Active/Done index fixture before tightening the parser.
+- M2 code-review added and first observed a failing index-only `docs/plan.md` fixture before expanding plan-index-only scope to linked plan bodies.
+- `python scripts/test-artifact-lifecycle-validator.py` passed after implementation.
+- `python scripts/test-review-artifact-validator.py` passed.
+- `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-05-pr-self-contained-lifecycle-completion` passed.
+- `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-05-pr-self-contained-lifecycle-completion` passed.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths <proposal/spec/test-spec/plan-index/plan>` passed with expected non-blocking lifecycle-language warnings.
+- `bash scripts/ci.sh --mode explicit <M2 surface>` passed selected checks `review_artifacts.regression`, `review_artifacts.validate`, `artifact_lifecycle.regression`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+- `python scripts/validate-change-metadata.py docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml` passed.
+- `git diff --check -- <M2 edited surface>` produced no whitespace diagnostics.
+- `bash scripts/ci.sh --mode broad-smoke` passed after M2 review-resolution and clean re-review.
+
 ## Current Readiness
 
-M1 is implemented, code-reviewed with no required changes, and verified. The next implementation milestone is M2, which adds lifecycle validator coverage.
+M1 is implemented, code-reviewed with no required changes, and verified. M2 is implemented, CR-M2-R1-F1 is accepted and resolved, and M2 re-review is clean. The next implementation milestone is M3, which aligns skills and generated outputs.

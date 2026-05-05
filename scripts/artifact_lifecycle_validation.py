@@ -20,6 +20,24 @@ STALE_READINESS_PATTERN = re.compile(
     r"next stage should be `?(proposal-review|spec-review|implement|implementation|pr|code-review)`?)",
     re.IGNORECASE,
 )
+PLAN_INDEX_SECTIONS = {
+    "Active": "active",
+    "Blocked": "blocked",
+    "Done": "done",
+    "Superseded": "superseded",
+}
+PLAN_TERMINAL_STATUSES = frozenset({"blocked", "done", "superseded"})
+PLAN_STATUS_LINE_PATTERN = re.compile(r"^\s*-\s*Status:\s*(?P<status>[A-Za-z][A-Za-z -]*)\s*$")
+PLAN_INDEX_LINK_PATTERN = re.compile(r"\[[^\]]+\]\((?P<path>[^)]+)\)")
+PLAN_STALE_TERMINAL_READINESS_PATTERN = re.compile(
+    r"(\b(?:still|remains|is|are)\s+active\b|\bin progress\b|"
+    r"\bnext (?:implementation )?milestone\b|ready for `?(?:review|pr|code-review|implement|implementation)`?)",
+    re.IGNORECASE,
+)
+MERGE_DEPENDENT_LANGUAGE_PATTERN = re.compile(
+    r"\b(after merge|post-merge|once this lands|merge-dependent)\b",
+    re.IGNORECASE,
+)
 PLAN_NON_SCOPE_SECTIONS = frozenset(
     {
         "Milestones",
@@ -133,6 +151,60 @@ def _extract_plan_refs(root: Path, path: Path, tracked_revision: str | None = No
     return {ref for ref in refs if _is_lifecycle_reference_path(root, ref)}
 
 
+def _extract_plan_body_status(text: str) -> str | None:
+    section_status = _extract_status(_parse_sections(text))
+    if section_status:
+        return section_status.lower()
+
+    for line in text.splitlines():
+        match = PLAN_STATUS_LINE_PATTERN.match(line)
+        if match:
+            return match.group("status").strip().lower()
+    return None
+
+
+def _is_plan_body_path(root: Path, path: Path) -> bool:
+    try:
+        relative = path.relative_to(root).as_posix()
+    except ValueError:
+        return False
+    return relative.startswith("docs/plans/") and relative.endswith(".md")
+
+
+def _is_plan_index_path(root: Path, path: Path) -> bool:
+    try:
+        return path.relative_to(root).as_posix() == "docs/plan.md"
+    except ValueError:
+        return False
+
+
+def _parse_plan_index(root: Path, tracked_revision: str | None = None) -> dict[Path, tuple[str, ...]]:
+    plan_index_path = root / "docs" / "plan.md"
+    if not _path_exists(root, plan_index_path, tracked_revision):
+        return {}
+
+    sections = _parse_sections(_read_repo_text(root, plan_index_path, tracked_revision))
+    entries: dict[Path, list[str]] = {}
+    for section, status in PLAN_INDEX_SECTIONS.items():
+        body = sections.get(section, "")
+        for line in body.splitlines():
+            if not line.lstrip().startswith("- "):
+                continue
+            if line.strip().lower() == "- none yet":
+                continue
+            for match in PLAN_INDEX_LINK_PATTERN.finditer(line):
+                raw_path = match.group("path").split("#", 1)[0]
+                if raw_path.startswith("plans/"):
+                    resolved = (plan_index_path.parent / raw_path).resolve()
+                    if not _is_relative_to(resolved, root):
+                        resolved = None
+                else:
+                    resolved = _normalize_repo_path(root, plan_index_path, raw_path)
+                if resolved is not None and _is_plan_body_path(root, resolved):
+                    entries.setdefault(resolved, []).append(status)
+    return {path: tuple(statuses) for path, statuses in entries.items()}
+
+
 def _contains_placeholder_text(text: str) -> bool:
     sanitized_lines: list[str] = []
     in_fence = False
@@ -173,6 +245,143 @@ def _extract_change_yaml_refs(root: Path, path: Path, tracked_revision: str | No
             refs.add(resolved)
 
     return refs
+
+
+def _plan_lifecycle_candidate_paths(
+    root: Path,
+    scope: ValidationScope,
+    index_statuses_by_path: dict[Path, tuple[str, ...]],
+) -> set[Path]:
+    candidates: set[Path] = set()
+    plan_index_in_scope = False
+    for path in (*scope.changed_paths, *scope.related_artifact_paths):
+        if _is_plan_body_path(root, path) and _path_exists(root, path, scope.tracked_revision):
+            candidates.add(path)
+        elif _is_plan_index_path(root, path):
+            plan_index_in_scope = True
+
+    if plan_index_in_scope and not candidates:
+        candidates.update(
+            plan_path
+            for plan_path in index_statuses_by_path
+            if _path_exists(root, plan_path, scope.tracked_revision)
+        )
+    return candidates
+
+
+def _validate_plan_lifecycle_consistency(
+    root: Path,
+    scope: ValidationScope,
+) -> tuple[list[ValidationFinding], list[ValidationFinding]]:
+    blocking: list[ValidationFinding] = []
+    warnings: list[ValidationFinding] = []
+    index_statuses_by_path = _parse_plan_index(root, scope.tracked_revision)
+
+    for plan_path in sorted(_plan_lifecycle_candidate_paths(root, scope, index_statuses_by_path)):
+        text = _read_repo_text(root, plan_path, scope.tracked_revision)
+        body_status = _extract_plan_body_status(text)
+        index_statuses = index_statuses_by_path.get(plan_path, ())
+
+        if body_status is None:
+            blocking.append(
+                ValidationFinding(
+                    severity="block",
+                    path=plan_path,
+                    artifact_class="plan",
+                    status=None,
+                    message="plan body missing lifecycle status",
+                )
+            )
+            continue
+
+        if "active" in index_statuses and body_status in PLAN_TERMINAL_STATUSES:
+            blocking.append(
+                ValidationFinding(
+                    severity="block",
+                    path=plan_path,
+                    artifact_class="plan",
+                    status=body_status,
+                    message="completed, blocked, or superseded plan must not be listed under Active",
+                )
+            )
+        elif index_statuses and body_status not in index_statuses:
+            index_label = ", ".join(index_statuses)
+            blocking.append(
+                ValidationFinding(
+                    severity="block",
+                    path=plan_path,
+                    artifact_class="plan",
+                    status=body_status,
+                    message=f"docs/plan.md lists plan as {index_label} but plan body status is {body_status}",
+                )
+            )
+
+        if body_status in PLAN_TERMINAL_STATUSES:
+            sections = _parse_sections(text)
+            readiness_text = "\n".join(
+                section
+                for section in (
+                    sections.get("Outcome and Retrospective", ""),
+                    sections.get("Readiness", ""),
+                )
+                if section
+            )
+            if PLAN_STALE_TERMINAL_READINESS_PATTERN.search(readiness_text):
+                blocking.append(
+                    ValidationFinding(
+                        severity="block",
+                        path=plan_path,
+                        artifact_class="plan",
+                        status=body_status,
+                        message="terminal plan readiness still describes active or in-progress work",
+                    )
+                )
+
+    return blocking, warnings
+
+
+def _merge_dependent_warning_paths(root: Path, scope: ValidationScope) -> set[Path]:
+    candidates: set[Path] = set()
+    for path in (*scope.changed_paths, *scope.related_artifact_paths):
+        if not _is_relative_to(path, root):
+            continue
+        relative = path.relative_to(root)
+        if _is_generated_output_path(relative):
+            continue
+        if path.suffix not in {".md", ".yaml"}:
+            continue
+        if _path_exists(root, path, scope.tracked_revision):
+            candidates.add(path)
+    return candidates
+
+
+def _validate_merge_dependent_language_warnings(root: Path, scope: ValidationScope) -> list[ValidationFinding]:
+    warnings: list[ValidationFinding] = []
+    for path in sorted(_merge_dependent_warning_paths(root, scope)):
+        text = _read_repo_text(root, path, scope.tracked_revision)
+        matches: list[tuple[int, str]] = []
+        for line_number, line in enumerate(text.splitlines(), start=1):
+            match = MERGE_DEPENDENT_LANGUAGE_PATTERN.search(line)
+            if match is None:
+                continue
+            matches.append((line_number, match.group(1)))
+        if matches:
+            first_line, first_match = matches[0]
+            extra_count = len(matches) - 1
+            suffix = f"; {extra_count} additional match(es)" if extra_count else ""
+            warnings.append(
+                ValidationFinding(
+                    severity="warn",
+                    path=path,
+                    artifact_class="lifecycle-language",
+                    status=None,
+                    message=(
+                        "merge-dependent lifecycle language requires reviewer attention "
+                        f"or contributor-visible classification (first match line {first_line}: {first_match}{suffix})"
+                    ),
+                )
+            )
+    return warnings
 
 
 def _parse_sections(text: str) -> dict[str, str]:
@@ -608,6 +817,11 @@ def validate_repository(
                     message=f"duplicate {artifact_class} identifier: {identifier}",
                 )
             )
+
+    plan_blockers, plan_warnings = _validate_plan_lifecycle_consistency(root_resolved, scope)
+    blocking_findings.extend(plan_blockers)
+    warning_findings.extend(plan_warnings)
+    warning_findings.extend(_validate_merge_dependent_language_warnings(root_resolved, scope))
 
     return ValidationResult(
         checked_artifacts=[path.relative_to(root_resolved) for path in scope.related_artifact_paths],

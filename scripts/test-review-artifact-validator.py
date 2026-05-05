@@ -742,6 +742,15 @@ Validation target: Run tests.
         root = self.fixture()
         write_text(
             root / "review-resolution.md",
+            accepted_closed_resolution_text().replace("Closeout status: closed", "Closeout status: open")
+            + "\nReview closeout: code-review-r1",
+        )
+        replace_field(root / "review-log.md", "Open findings", "None")
+        self.assertCloseoutFails(root, "Closeout status must be closed")
+
+        root = self.fixture()
+        write_text(
+            root / "review-resolution.md",
             accepted_closed_resolution_text() + "\n    Review closeout: code-review-r1",
         )
         self.assertCloseoutFails(root, "review-log Open findings must be empty for closed closeout")
