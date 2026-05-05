@@ -1,0 +1,61 @@
+change_id: 2026-05-05-pr-self-contained-lifecycle-completion
+title: PR-self-contained lifecycle completion
+classification: workflow-governance
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-05-pr-self-contained-lifecycle-completion.md
+  spec: specs/rigorloop-workflow.md
+  test_spec: specs/rigorloop-workflow.test.md
+  plan: docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md
+  explain_change: docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/explain-change.md
+requirements:
+  - specs/rigorloop-workflow.md R6dc
+  - specs/rigorloop-workflow.md R8h-R8hc
+  - specs/rigorloop-workflow.md R8jb
+  - specs/rigorloop-workflow.md R8kh-R8kj
+tests:
+  - specs/rigorloop-workflow.test.md T29
+  - specs/rigorloop-workflow.test.md T30
+  - specs/rigorloop-workflow.test.md T31
+  - specs/rigorloop-workflow.test.md T32
+validation:
+  - command: rg -n 'Only merge-dependent `Done` transitions should wait|Use merge-dependent Done only|merge-dependent `Done` transitions may wait|record why only a merge-dependent `Done` transition remains pending|Do not accept deferring a known `Done` transition until after merge|only merge-dependent `Done` transitions may wait' CONSTITUTION.md AGENTS.md docs/workflows.md docs/learn/topics/plan-lifecycle-closeout.md docs/plans/0000-00-00-example-plan.md README.md skills/workflow/SKILL.md skills/plan/SKILL.md skills/implement/SKILL.md skills/verify/SKILL.md skills/explain-change/SKILL.md skills/pr/SKILL.md
+    result: fail_expected_before_m1
+    reason: The pre-M1 scan found stale merge-dependent closeout wording in workflow docs and canonical skill surfaces.
+  - command: rg -n 'Only merge-dependent `Done` transitions should wait|Use merge-dependent Done only|merge-dependent `Done` transitions may wait|record why only a merge-dependent `Done` transition remains pending|Do not accept deferring a known `Done` transition until after merge|only merge-dependent `Done` transitions may wait' CONSTITUTION.md AGENTS.md docs/workflows.md docs/learn/topics/plan-lifecycle-closeout.md docs/plans/0000-00-00-example-plan.md README.md
+    result: pass_after_m1
+    reason: No stale merge-dependent closeout wording remained in M1-owned governance, workflow, learn-topic, plan-template, or README surfaces.
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml
+    result: pass_after_m1
+  - command: python scripts/select-validation.py --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path docs/learn/topics/plan-lifecycle-closeout.md --path docs/plans/0000-00-00-example-plan.md --path README.md --path docs/proposals/2026-05-05-pr-self-contained-lifecycle-completion.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/plan.md --path docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md --path docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml --path docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/explain-change.md
+    result: pass_after_m1
+    selected_check_ids: artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, readme.validate, readme.vision_markers, selector.regression
+  - command: bash scripts/ci.sh --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path docs/learn/topics/plan-lifecycle-closeout.md --path docs/plans/0000-00-00-example-plan.md --path README.md --path docs/proposals/2026-05-05-pr-self-contained-lifecycle-completion.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/plan.md --path docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md --path docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml --path docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/explain-change.md
+    result: pass_after_m1
+    selected_check_ids: artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, readme.validate, readme.vision_markers, selector.regression
+  - command: git diff --check -- CONSTITUTION.md AGENTS.md docs/workflows.md docs/learn/topics/plan-lifecycle-closeout.md specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md docs/plan.md docs/changes/2026-05-05-pr-self-contained-lifecycle-completion
+    result: pass_after_m1
+  - command: bash scripts/ci.sh --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path docs/learn/topics/plan-lifecycle-closeout.md --path docs/plans/0000-00-00-example-plan.md --path README.md --path docs/proposals/2026-05-05-pr-self-contained-lifecycle-completion.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/plan.md --path docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md --path docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml --path docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/explain-change.md
+    result: pass_after_m1_verify
+    selected_check_ids: artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, readme.validate, readme.vision_markers, selector.regression
+  - command: git diff --check HEAD^ HEAD
+    result: pass_after_m1_verify
+changed_files:
+  - CONSTITUTION.md
+  - AGENTS.md
+  - docs/workflows.md
+  - docs/learn/topics/plan-lifecycle-closeout.md
+  - docs/proposals/2026-05-05-pr-self-contained-lifecycle-completion.md
+  - specs/rigorloop-workflow.md
+  - specs/rigorloop-workflow.test.md
+  - docs/plan.md
+  - docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md
+  - docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml
+  - docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/explain-change.md
+review:
+  status: m1_clean_with_notes
+  unresolved_items: 0
+implementation:
+  current_milestone: M2
+  milestone_status: M1_complete
+  notes: M1 aligned governance and workflow guidance, passed code-review and verify, and M2 adds lifecycle validator coverage next.

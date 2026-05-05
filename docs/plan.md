@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- none yet
+- [2026-05-05 PR-self-contained lifecycle completion](plans/2026-05-05-pr-self-contained-lifecycle-completion.md) - active execution plan for making repo-local lifecycle state self-contained inside the PR that performs the transition, including governance guidance, workflow docs, lifecycle validation, tracked merge-dependent language warnings, skill/generated-output alignment, and final lifecycle closeout.
 
 ## Blocked
 - none yet

@@ -138,6 +138,8 @@ Non-trivial changes MUST leave contributor-visible verification evidence in the 
 
 For planned initiatives, final lifecycle closeout MUST update both `docs/plan.md` and the plan body when lifecycle state changes, and `verify` MUST treat stale lifecycle state between them as blocking PR readiness.
 
+Synchronization happens within the PR that performs the lifecycle transition, before the PR opens for review. The merge of a PR is a fast-forward of pre-validated state, not a trigger for further lifecycle changes.
+
 For lifecycle-managed proposals, specs, test specs, architecture documents, and ADRs, `verify` MUST block on stale or inconsistent artifacts that are touched, referenced, generated, or authoritative for the changed area, and it MUST report unrelated stale baseline artifacts as warnings instead of blockers.
 
 Before draft PR text exists, `verify` MUST use pre-PR handoff surfaces such as `docs/changes/<change-id>/change.yaml`, explain-change artifacts, the active plan, and other touched or referenced authoritative artifacts. Final PR text MUST NOT introduce new authoritative artifact references without rerunning `verify`.
