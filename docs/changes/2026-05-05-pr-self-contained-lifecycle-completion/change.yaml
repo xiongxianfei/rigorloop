@@ -141,6 +141,9 @@ validation:
     result: pass_after_m4_evidence_edits
   - command: git diff --check -- <all touched paths>
     result: pass_after_m4_evidence_edits
+  - command: code-review M4 direct review of e518725 HEAD^..HEAD
+    result: clean_with_notes_after_m4
+    reason: Direct code-review found no blocking or required-change findings and no detailed-record trigger.
 changed_files:
   - CONSTITUTION.md
   - AGENTS.md
@@ -200,10 +203,11 @@ changed_files:
   - dist/adapters/opencode/.opencode/skills/explain-change/SKILL.md
   - dist/adapters/opencode/.opencode/skills/pr/SKILL.md
 review:
-  status: m4_ready_for_code_review
+  status: clean_with_notes
   unresolved_items: 0
-  last_completed_review: m3_clean_with_notes_no_material_findings
+  last_completed_review: m4_clean_with_notes_no_material_findings
+  required_next_stage: verify
 implementation:
-  current_milestone: code-review
-  milestone_status: M4_complete
-  notes: M4 records final implementation evidence and keeps the plan Active because final code-review, verify, explain-change, and PR handoff still need to complete before the initiative can move to Done.
+  current_milestone: verify
+  milestone_status: M4_code_review_complete
+  notes: M4 records final implementation evidence and the direct M4 code-review is clean. The plan remains Active because verify, explain-change, and PR handoff still need to complete before the initiative can move to Done.
