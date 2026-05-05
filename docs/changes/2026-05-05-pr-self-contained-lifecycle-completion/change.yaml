@@ -108,6 +108,39 @@ validation:
     result: pass_after_m3
   - command: git diff --check -- scripts skills .codex/skills dist/adapters docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md docs/changes/2026-05-05-pr-self-contained-lifecycle-completion
     result: pass_after_m3
+  - command: code-review M3 direct review of 2dab908 HEAD^..HEAD
+    result: clean_with_notes_after_m3
+    reason: Direct code-review found no blocking or required-change findings and no detailed-record trigger.
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml
+    result: pass_before_m4_evidence_edits
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_after_m4
+  - command: python scripts/test-review-artifact-validator.py
+    result: pass_after_m4
+  - command: python scripts/test-select-validation.py
+    result: pass_after_m4
+  - command: python scripts/test-skill-validator.py
+    result: pass_after_m4
+  - command: python scripts/validate-skills.py
+    result: pass_after_m4
+  - command: python scripts/build-skills.py --check
+    result: pass_after_m4
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_after_m4
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_after_m4
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_after_m4
+  - command: python scripts/select-validation.py --mode explicit --path <all touched paths>
+    result: pass_after_m4
+    selected_check_ids: skills.validate, skills.regression, skills.drift, adapters.regression, adapters.drift, adapters.validate, review_artifacts.regression, review_artifacts.validate, artifact_lifecycle.regression, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, selector.regression
+  - command: bash scripts/ci.sh --mode explicit --path <all touched paths>
+    result: pass_after_m4
+    selected_check_ids: skills.validate, skills.regression, skills.drift, adapters.regression, adapters.drift, adapters.validate, review_artifacts.regression, review_artifacts.validate, artifact_lifecycle.regression, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, selector.regression
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml
+    result: pass_after_m4_evidence_edits
+  - command: git diff --check -- <all touched paths>
+    result: pass_after_m4_evidence_edits
 changed_files:
   - CONSTITUTION.md
   - AGENTS.md
@@ -167,9 +200,10 @@ changed_files:
   - dist/adapters/opencode/.opencode/skills/explain-change/SKILL.md
   - dist/adapters/opencode/.opencode/skills/pr/SKILL.md
 review:
-  status: m3_ready_for_code_review
+  status: m4_ready_for_code_review
   unresolved_items: 0
+  last_completed_review: m3_clean_with_notes_no_material_findings
 implementation:
-  current_milestone: M4
-  milestone_status: M3_complete
-  notes: M3 routes lifecycle-language warning validation for tracked policy and skill surfaces, updates canonical stage skill guidance, and refreshes generated Codex skill plus public adapter output. M4 closes final evidence after M3 code-review.
+  current_milestone: code-review
+  milestone_status: M4_complete
+  notes: M4 records final implementation evidence and keeps the plan Active because final code-review, verify, explain-change, and PR handoff still need to complete before the initiative can move to Done.

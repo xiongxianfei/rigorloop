@@ -4,7 +4,7 @@
 
 This change implements the approved PR-self-contained lifecycle completion workflow amendment. M1 aligns the governing and operational guidance so repo-local lifecycle state changes are recorded in the PR that performs the transition before review opens, while true downstream events keep a plan active until the event occurs.
 
-The implementation is intentionally staged. M1 updates authoritative and operational prose plus the baseline change-local evidence. M2 adds validator behavior. M3 wires selector routing for warning-capable surfaces, updates canonical skill guidance, and refreshes generated outputs. M4 closes final evidence and lifecycle state.
+The implementation is intentionally staged. M1 updates authoritative and operational prose plus the baseline change-local evidence. M2 adds validator behavior. M3 wires selector routing for warning-capable surfaces, updates canonical skill guidance, and refreshes generated outputs. M4 closes implementation evidence while keeping the plan active until final code-review, verify, explain-change, and PR handoff complete.
 
 ## Source Artifacts
 
@@ -93,6 +93,35 @@ The first stale-wording scan intentionally failed before M1 edits because stale 
 - `python scripts/select-validation.py --mode explicit --path <M3 touched paths>` passed and selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
 - `bash scripts/ci.sh --mode explicit --path <M3 touched paths>` passed with the same selected check IDs.
 
+## M4 Diff Rationale
+
+| Surface | M4 disposition | Rationale |
+| --- | --- | --- |
+| `docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml` | updated | Records M3 clean review, M4 validation, and moves implementation status to M4 complete / code-review next. |
+| `docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md` | updated | Marks M4 complete, records validation and lifecycle decisions, and keeps the plan Active until final downstream gates complete. |
+| `docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/explain-change.md` | updated | Adds the M4 rationale and readiness state so PR handoff can use tracked evidence instead of chat memory. |
+| `docs/plan.md` | unaffected with rationale | The implementation milestone is complete, but the initiative is not Done until final code-review, verify, explain-change, and PR handoff are complete in the PR tree. |
+
+## M4 Validation
+
+- M3 direct `code-review` of commit `2dab908` returned `clean-with-notes` with no material findings.
+- `python scripts/validate-change-metadata.py docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml` passed before M4 evidence edits.
+- `python scripts/test-artifact-lifecycle-validator.py` passed.
+- `python scripts/test-review-artifact-validator.py` passed.
+- `python scripts/test-select-validation.py` passed.
+- `python scripts/test-skill-validator.py` passed.
+- `python scripts/validate-skills.py` passed.
+- `python scripts/build-skills.py --check` passed.
+- `python scripts/build-adapters.py --version 0.1.1 --check` passed.
+- `python scripts/validate-adapters.py --version 0.1.1` passed.
+- `python scripts/test-adapter-distribution.py` passed.
+- `python scripts/select-validation.py --mode explicit --path <all touched paths>` passed and selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.regression`, `review_artifacts.validate`, `artifact_lifecycle.regression`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
+- `bash scripts/ci.sh --mode explicit --path <all touched paths>` passed with the same selected check IDs.
+- `python scripts/validate-change-metadata.py docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml` passed after M4 evidence edits.
+- `git diff --check -- <all touched paths>` produced no whitespace diagnostics after M4 evidence edits.
+
 ## Current Readiness
 
-M1 is implemented, code-reviewed with no required changes, and verified. M2 is implemented, CR-M2-R1-F1 is accepted and resolved, and M2 re-review is clean. M3 is implemented and ready for code-review. M4 is next after M3 review.
+M1 is implemented, code-reviewed with no required changes, and verified. M2 is implemented, CR-M2-R1-F1 is accepted and resolved, and M2 re-review is clean. M3 direct code-review is clean. M4 is implemented and ready for code-review.
+
+`docs/plan.md` remains Active by design: final code-review, verify, explain-change, and PR handoff are not yet complete, so the plan is not Done under the PR-self-contained lifecycle rule.
