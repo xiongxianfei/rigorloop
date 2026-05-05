@@ -293,7 +293,8 @@ explanation:
   location: docs/changes/2026-05-04-test-and-ci-speed-optimization/explain-change.md
   required_next_stage: pr
 pr:
-  status: ready_to_open
+  status: opened
+  url: https://github.com/xiongxianfei/rigorloop/pull/29
   pr_body_ready: true
   pr_open_ready: true
-  required_next_stage: open_pr
+  required_next_stage: merge

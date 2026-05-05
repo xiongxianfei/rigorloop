@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-04 Test and CI speed optimization](plans/2026-05-04-test-and-ci-speed-optimization.md) - active execution plan for bounded parallel selected-check execution in `scripts/ci.sh`; plan-review is approved, the test spec is active, M1-M4, code-review, verify, explain-change, and PR handoff readiness are complete.
+- [2026-05-04 Test and CI speed optimization](plans/2026-05-04-test-and-ci-speed-optimization.md) - active execution plan for bounded parallel selected-check execution in `scripts/ci.sh`; plan-review is approved, the test spec is active, M1-M4, code-review, verify, explain-change, PR handoff readiness, and opened PR #29 are complete.
 
 ## Blocked
 - none yet

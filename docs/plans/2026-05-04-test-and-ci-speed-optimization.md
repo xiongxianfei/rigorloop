@@ -521,12 +521,13 @@ Use targeted proof first for each milestone, then broaden only when the touched 
   - Passed.
   - `rg -n '[[:blank:]]$|\\t' docs/workflows.md scripts/ci.sh scripts/test-select-validation.py scripts/validation_selection.py docs/plan.md docs/plans/2026-05-04-test-and-ci-speed-optimization.md docs/changes/2026-05-04-test-and-ci-speed-optimization specs/test-and-ci-speed-optimization.md specs/test-and-ci-speed-optimization.test.md`
   - Result: no trailing whitespace or tabs found.
+- 2026-05-05: PR #29 opened at https://github.com/xiongxianfei/rigorloop/pull/29.
 
 ## Outcome and Retrospective
 
-- Initiative is active. M1, M2, M3, M4, direct code-review, verify, explain-change, and PR handoff readiness are complete; merge-dependent Done state remains pending.
+- Initiative is active. M1, M2, M3, M4, direct code-review, verify, explain-change, PR handoff readiness, and opened PR #29 are complete; merge-dependent Done state remains pending.
 
 ## Readiness
 
-- Ready to open a PR.
+- PR #29 is open at https://github.com/xiongxianfei/rigorloop/pull/29.
 - Keep this plan current during implementation, including progress, decisions, discoveries, and validation notes.
