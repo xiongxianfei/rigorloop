@@ -1,11 +1,11 @@
 # RigorLoop
 
 <!-- vision:start -->
-RigorLoop is a Git-first starter kit for AI-assisted software delivery. It keeps the reasoning, tests, and verification behind each AI-assisted change visible enough for human review.
+RigorLoop is a rigorous software engineering workflow for AI coding agents. It turns product intent into traceable proposals, requirements, tests, architecture, plans, implementation, validation evidence, and review decisions so humans can understand agent-produced changes with confidence.
 
-What makes it different: Most AI coding tools optimize for faster output. RigorLoop trades some speed for reviewability when code arrives faster than reviewers can validate it, agent state disappears into chat, and "tests pass" claims lack a spec-level walkthrough.
+What makes it different: Most AI coding tools optimize for faster output. RigorLoop optimizes for trustworthy change delivery by keeping source of truth, rationale, tests, design intent, validation evidence, and review concerns in durable project artifacts.
 
-Who it is for: RigorLoop is for projects that value explicit requirements, small diffs, traceable rationale, and reproducible validation. It fits individual contributors, maintainers, and small teams using AI during software delivery.
+Who it is for: RigorLoop is for individual contributors, maintainers, and teams that want AI agents to participate in serious software delivery without weakening engineering discipline.
 
 See [VISION.md](VISION.md) for goals, non-goals, and falsifiability.
 <!-- vision:end -->

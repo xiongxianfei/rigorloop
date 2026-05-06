@@ -1,0 +1,207 @@
+change_id: 2026-05-06-optimize-vision-skill-strategic-positioning-quality
+title: Optimize vision skill strategic positioning quality
+classification: workflow-governance-spec
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md
+  spec: specs/vision-skill.md
+  test_spec: specs/vision-skill.test.md
+  plan: docs/plans/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md
+  explain_change: docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/explain-change.md
+  review_resolution: docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-resolution.md
+requirements:
+  - Retrospectively preserve the material proposal-review finding for this proposal.
+  - Keep complete finding evidence, required outcome, safe resolution, and closeout evidence durable.
+  - Draft the vision skill strategic-positioning contract in the existing vision skill spec.
+  - Normalize the spec after approved spec-review before downstream planning relies on it.
+  - Create the execution plan and plan-index entry for implementation.
+  - Activate the matching test spec for the approved strategic-positioning contract before implementation.
+  - Update proof assertions, selector behavior, and canonical skill guidance for the approved strategic-positioning contract.
+  - Preserve durable positioning rationale for the current material RigorLoop vision repositioning.
+tests:
+  - Review artifact structure validation for the reconstructed proposal-review records.
+  - Review artifact structure validation for the spec-review finding record.
+  - Review artifact closeout validation after the accepted spec-review finding fix.
+  - Review artifact structure validation for the second spec-review finding record.
+  - Review artifact closeout validation after the approved spec-review rerun.
+  - Plan lifecycle index/body validation for the new active execution plan.
+  - Change metadata validation for this change-local pack.
+  - Artifact lifecycle validation for the accepted proposal, approved spec update, and active execution plan.
+  - Active test-spec proof map for strategic-positioning static assertions, selector negative proof, generated-output drift, and current repositioning rationale.
+  - Skill-validator assertions for strategic-positioning guidance, proposal `Vision fit` behavior, and retired lowercase path guidance.
+  - Selector regression tests for canonical `VISION.md` routing and retired lowercase `vision.md` negative proof.
+validation:
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality
+    result: pass_after_spec_review_r1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality
+    result: pass_before_spec_review_r1_open_finding
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality
+    result: pass_after_sr1_fix
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/change.yaml
+    result: pass_after_record_reconstruction
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/change.yaml --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-log.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-resolution.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/proposal-review-r1.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/proposal-review-r2.md --path docs/learn/sessions/2026-05-06-isolated-review-material-finding-records.md
+    result: pass_after_record_reconstruction
+  - command: rg -n '[[:blank:]]$|\\t' docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality docs/learn/sessions/2026-05-06-isolated-review-material-finding-records.md
+    result: pass_no_matches_after_record_reconstruction
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md --path specs/vision-skill.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/change.yaml --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-log.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-resolution.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/proposal-review-r1.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/proposal-review-r2.md
+    result: pass_after_spec_draft
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md --path specs/vision-skill.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/change.yaml --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-log.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-resolution.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/proposal-review-r1.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/proposal-review-r2.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/spec-review-r1.md
+    result: pass_after_spec_review_r1
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md --path specs/vision-skill.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/change.yaml --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-log.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-resolution.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/proposal-review-r1.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/proposal-review-r2.md --path docs/learn/sessions/2026-05-06-isolated-review-material-finding-records.md
+    result: pass_after_spec_draft
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md --path specs/vision-skill.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/change.yaml --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-log.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-resolution.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/proposal-review-r1.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/proposal-review-r2.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/spec-review-r1.md --path docs/learn/sessions/2026-05-06-isolated-review-material-finding-records.md
+    result: pass_after_sr1_fix
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality
+    result: pass_after_spec_review_r2_open_finding
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/change.yaml
+    result: pass_after_spec_review_r2_open_finding
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md --path specs/vision-skill.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/change.yaml --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-log.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-resolution.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/proposal-review-r1.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/proposal-review-r2.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/spec-review-r1.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/spec-review-r2.md
+    result: pass_after_spec_review_r2_open_finding
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md --path specs/vision-skill.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/change.yaml --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-log.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-resolution.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/proposal-review-r1.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/proposal-review-r2.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/spec-review-r1.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/spec-review-r2.md --path docs/learn/sessions/2026-05-06-isolated-review-material-finding-records.md
+    result: pass_after_spec_review_r2_open_finding
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality
+    result: pass_after_sr2_fix
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/change.yaml
+    result: pass_after_sr2_fix
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md --path specs/vision-skill.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/change.yaml --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-log.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-resolution.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/proposal-review-r1.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/proposal-review-r2.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/spec-review-r1.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/spec-review-r2.md
+    result: pass_after_sr2_fix
+  - command: git diff --check -- docs/proposals/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md specs/vision-skill.md docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality docs/learn/sessions/2026-05-06-isolated-review-material-finding-records.md
+    result: pass_after_sr2_fix
+  - command: rg -n '[[:blank:]]$|\\t' docs/proposals/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md specs/vision-skill.md docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality docs/learn/sessions/2026-05-06-isolated-review-material-finding-records.md
+    result: pass_no_matches_after_sr2_fix
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md --path specs/vision-skill.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/change.yaml --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-log.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-resolution.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/proposal-review-r1.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/proposal-review-r2.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/spec-review-r1.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/spec-review-r2.md --path docs/learn/sessions/2026-05-06-isolated-review-material-finding-records.md
+    result: pass_after_sr2_fix
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality
+    result: pass_after_spec_review_r3_closeout
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality
+    result: pass_after_spec_review_r3_closeout
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/change.yaml
+    result: pass_after_spec_review_r3_closeout
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md --path specs/vision-skill.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/change.yaml --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-log.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-resolution.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/proposal-review-r1.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/proposal-review-r2.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/spec-review-r1.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/spec-review-r2.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/spec-review-r3.md
+    result: pass_after_spec_review_r3_closeout
+  - command: git diff --check -- docs/proposals/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md specs/vision-skill.md docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality docs/learn/sessions/2026-05-06-isolated-review-material-finding-records.md
+    result: pass_after_spec_review_r3_closeout
+  - command: rg -n '[[:blank:]]$|\\t' docs/proposals/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md specs/vision-skill.md docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality docs/learn/sessions/2026-05-06-isolated-review-material-finding-records.md
+    result: pass_no_matches_after_spec_review_r3_closeout
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md --path specs/vision-skill.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/change.yaml --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-log.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-resolution.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/proposal-review-r1.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/proposal-review-r2.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/spec-review-r1.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/spec-review-r2.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/spec-review-r3.md --path docs/learn/sessions/2026-05-06-isolated-review-material-finding-records.md
+    result: pass_after_spec_review_r3_closeout
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/change.yaml
+    result: pass_after_plan_creation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md --path docs/proposals/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md --path specs/vision-skill.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/change.yaml --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-log.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-resolution.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/proposal-review-r1.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/proposal-review-r2.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/spec-review-r1.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/spec-review-r2.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/spec-review-r3.md
+    result: pass_with_lifecycle_language_warning_after_plan_creation
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality
+    result: pass_after_plan_creation
+  - command: git diff --check -- docs/plan.md docs/plans/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md docs/proposals/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md specs/vision-skill.md docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality docs/learn/sessions/2026-05-06-isolated-review-material-finding-records.md
+    result: pass_after_plan_creation
+  - command: rg -n '[[:blank:]]$|\\t' docs/plan.md docs/plans/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md docs/proposals/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md specs/vision-skill.md docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality docs/learn/sessions/2026-05-06-isolated-review-material-finding-records.md
+    result: pass_no_matches_after_plan_creation
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md --path docs/proposals/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md --path specs/vision-skill.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/change.yaml --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-log.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-resolution.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/proposal-review-r1.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/proposal-review-r2.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/spec-review-r1.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/spec-review-r2.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/spec-review-r3.md --path docs/learn/sessions/2026-05-06-isolated-review-material-finding-records.md
+    result: pass_after_plan_creation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/change.yaml
+    result: pass_after_test_spec_update
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md --path docs/proposals/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/change.yaml --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-log.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-resolution.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/proposal-review-r1.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/proposal-review-r2.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/spec-review-r1.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/spec-review-r2.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/spec-review-r3.md
+    result: pass_with_lifecycle_language_warning_after_test_spec_update
+  - command: git diff --check -- docs/plan.md docs/plans/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md docs/proposals/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md specs/vision-skill.md specs/vision-skill.test.md docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality docs/learn/sessions/2026-05-06-isolated-review-material-finding-records.md
+    result: pass_after_test_spec_update
+  - command: rg -n '[[:blank:]]$|\\t' docs/plan.md docs/plans/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md docs/proposals/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md specs/vision-skill.md specs/vision-skill.test.md docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality docs/learn/sessions/2026-05-06-isolated-review-material-finding-records.md
+    result: pass_no_matches_after_test_spec_update
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md --path docs/proposals/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/change.yaml --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-log.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-resolution.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/proposal-review-r1.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/proposal-review-r2.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/spec-review-r1.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/spec-review-r2.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/spec-review-r3.md --path docs/learn/sessions/2026-05-06-isolated-review-material-finding-records.md
+    result: pass_after_test_spec_update
+  - command: python scripts/test-skill-validator.py
+    result: pass_after_m1_m2_implementation
+  - command: python scripts/test-select-validation.py
+    result: pass_after_docs_vision_selector_route
+  - command: python scripts/validate-skills.py skills/vision/SKILL.md
+    result: pass_after_m2_implementation
+  - command: python scripts/validate-skills.py skills/proposal/SKILL.md
+    result: pass_after_m2_implementation
+  - command: python scripts/validate-skills.py skills/proposal-review/SKILL.md
+    result: pass_after_m2_implementation
+  - command: python scripts/validate-skills.py
+    result: pass_after_m2_implementation
+  - command: python scripts/validate-readme.py README.md --vision-markers
+    result: pass_after_m2_implementation
+  - command: python scripts/select-validation.py --mode explicit --path VISION.md
+    result: pass_after_m1_implementation
+  - command: python scripts/select-validation.py --mode explicit --path vision.md
+    result: blocked_expected_retired_lowercase_after_m1_implementation
+  - command: python scripts/select-validation.py --mode explicit --path docs/vision/strategic-positioning.md
+    result: pass_after_docs_vision_selector_route
+  - command: python scripts/select-validation.py --mode explicit --path specs/vision-skill.test.md --path scripts/test-skill-validator.py --path scripts/test-select-validation.py --path scripts/validation_selection.py
+    result: pass_after_m1_implementation
+  - command: bash scripts/ci.sh --mode explicit --path specs/vision-skill.test.md --path scripts/test-skill-validator.py --path scripts/test-select-validation.py --path scripts/validation_selection.py
+    result: pass_after_m1_implementation
+  - command: python scripts/build-skills.py
+    result: pass_generated_codex_skills_refreshed
+  - command: python scripts/build-adapters.py --version 0.1.1
+    result: pass_generated_adapters_refreshed
+  - command: python scripts/build-skills.py --check
+    result: pass_after_m3_generation
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_after_m3_generation
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_after_m3_generation
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_after_m3_generation
+  - command: python scripts/select-validation.py --mode explicit --path .codex/skills/vision/SKILL.md --path .codex/skills/proposal/SKILL.md --path .codex/skills/proposal-review/SKILL.md --path dist/adapters/codex/.agents/skills/vision/SKILL.md --path dist/adapters/codex/.agents/skills/proposal/SKILL.md --path dist/adapters/codex/.agents/skills/proposal-review/SKILL.md --path dist/adapters/claude/.claude/skills/vision/SKILL.md --path dist/adapters/claude/.claude/skills/proposal/SKILL.md --path dist/adapters/claude/.claude/skills/proposal-review/SKILL.md --path dist/adapters/opencode/.opencode/skills/vision/SKILL.md --path dist/adapters/opencode/.opencode/skills/proposal/SKILL.md --path dist/adapters/opencode/.opencode/skills/proposal-review/SKILL.md
+    result: pass_after_m3_generation
+  - command: bash scripts/ci.sh --mode explicit --path .codex/skills/vision/SKILL.md --path .codex/skills/proposal/SKILL.md --path .codex/skills/proposal-review/SKILL.md --path dist/adapters/codex/.agents/skills/vision/SKILL.md --path dist/adapters/codex/.agents/skills/proposal/SKILL.md --path dist/adapters/codex/.agents/skills/proposal-review/SKILL.md --path dist/adapters/claude/.claude/skills/vision/SKILL.md --path dist/adapters/claude/.claude/skills/proposal/SKILL.md --path dist/adapters/claude/.claude/skills/proposal-review/SKILL.md --path dist/adapters/opencode/.opencode/skills/vision/SKILL.md --path dist/adapters/opencode/.opencode/skills/proposal/SKILL.md --path dist/adapters/opencode/.opencode/skills/proposal-review/SKILL.md
+    result: pass_after_m3_generation
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality
+    result: pass_after_m4_closeout
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/change.yaml
+    result: pass_after_m4_closeout
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md --path docs/proposals/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/vision/strategic-positioning.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/change.yaml --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-log.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-resolution.md
+    result: pass_with_lifecycle_language_warning_after_m4_closeout
+  - command: git diff --check -- .
+    result: pass_after_m4_closeout
+  - command: rg -n '[[:blank:]]$|\\t' CONSTITUTION.md README.md VISION.md docs/plan.md docs/plans/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md docs/proposals/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md docs/vision docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality docs/learn/sessions/2026-05-06-isolated-review-material-finding-records.md specs/vision-skill.md specs/vision-skill.test.md skills/vision/SKILL.md skills/proposal/SKILL.md skills/proposal-review/SKILL.md scripts/test-skill-validator.py scripts/test-select-validation.py scripts/validation_selection.py .codex/skills/vision/SKILL.md .codex/skills/proposal/SKILL.md .codex/skills/proposal-review/SKILL.md dist/adapters/codex/.agents/skills/vision/SKILL.md dist/adapters/codex/.agents/skills/proposal/SKILL.md dist/adapters/codex/.agents/skills/proposal-review/SKILL.md dist/adapters/claude/.claude/skills/vision/SKILL.md dist/adapters/claude/.claude/skills/proposal/SKILL.md dist/adapters/claude/.claude/skills/proposal-review/SKILL.md dist/adapters/opencode/.opencode/skills/vision/SKILL.md dist/adapters/opencode/.opencode/skills/proposal/SKILL.md dist/adapters/opencode/.opencode/skills/proposal-review/SKILL.md
+    result: pass_no_matches_after_m4_closeout
+  - command: bash scripts/ci.sh --mode explicit $( (git diff --name-only; git ls-files --others --exclude-standard) | sort -u | sed 's/^/--path /' )
+    result: pass_after_m4_closeout
+changed_files:
+  - CONSTITUTION.md
+  - README.md
+  - VISION.md
+  - .codex/skills/proposal-review/SKILL.md
+  - .codex/skills/proposal/SKILL.md
+  - .codex/skills/vision/SKILL.md
+  - dist/adapters/claude/.claude/skills/proposal-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/proposal/SKILL.md
+  - dist/adapters/claude/.claude/skills/vision/SKILL.md
+  - dist/adapters/codex/.agents/skills/proposal-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/proposal/SKILL.md
+  - dist/adapters/codex/.agents/skills/vision/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/proposal-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/proposal/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/vision/SKILL.md
+  - docs/proposals/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md
+  - docs/plan.md
+  - docs/plans/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md
+  - docs/vision/strategic-positioning.md
+  - specs/vision-skill.md
+  - specs/vision-skill.test.md
+  - skills/vision/SKILL.md
+  - skills/proposal/SKILL.md
+  - skills/proposal-review/SKILL.md
+  - scripts/test-skill-validator.py
+  - scripts/test-select-validation.py
+  - scripts/validation_selection.py
+  - docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/change.yaml
+  - docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/explain-change.md
+  - docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-log.md
+  - docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-resolution.md
+  - docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/proposal-review-r1.md
+  - docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/proposal-review-r2.md
+  - docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/spec-review-r1.md
+  - docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/spec-review-r2.md
+  - docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/spec-review-r3.md
+  - docs/learn/sessions/2026-05-06-isolated-review-material-finding-records.md
+review:
+  status: closed
+  unresolved_items: 0
+  review_log: docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-log.md
+  review_resolution: docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-resolution.md
+  material_findings: 3
+  closed_findings: 3
+  open_findings: 0

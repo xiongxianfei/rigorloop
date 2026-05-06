@@ -53,9 +53,9 @@ Allowed `Vision fit` values are the exact first non-empty line in the section:
 
 If root `VISION.md` exists, `Vision fit` must not say `no vision exists yet`.
 
-When neither root `VISION.md` nor migration-recognized legacy root `vision.md` exists, proposal-review must request revision if `Vision fit` is missing or replaced with a claim that fits, conflicts with, or revises a nonexistent vision.
+When root `VISION.md` does not exist, proposal-review must request revision if `Vision fit` is missing or replaced with a claim that fits, conflicts with, or revises a nonexistent vision.
 
-During the `vision.md` to `VISION.md` migration, do not treat the repository as visionless solely because uppercase `VISION.md` has not yet replaced migration-recognized legacy root `vision.md`.
+Retired root `vision.md` must not prevent `no vision exists yet` when root `VISION.md` is absent.
 
 If a proposal conflicts with `VISION.md`, classify the required outcome as exactly one of:
 

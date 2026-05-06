@@ -9,6 +9,7 @@
 - [Vision Skill](../docs/proposals/2026-04-29-vision-skill.md)
 - [Vision Skill Quality Refinement](../docs/proposals/2026-04-30-vision-skill-quality-refinement.md)
 - [Vision Skill Simplification and VISION.md Migration](../docs/proposals/2026-05-01-vision-skill-simplification-and-vision-md-migration.md)
+- [Optimize Vision Skill Strategic Positioning Quality](../docs/proposals/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md)
 
 ## Goal and context
 
@@ -16,12 +17,14 @@ This spec defines the contributor-visible contract for the `vision` skill and ad
 
 The vision skill is upstream of the normal per-change workflow. It is not a lifecycle stage between proposal, spec, architecture, planning, implementation, review, verification, and PR.
 
-This active contract has been updated by the approved `VISION.md` migration. It retires the old lowercase canonical path and the old user-facing mode model while preserving the still-valid quality and safety rules from the original vision skill.
+This active contract has been updated by the approved `VISION.md` migration and the accepted strategic-positioning proposal. It retires the old lowercase canonical path, the old user-facing mode model, and active lowercase `vision.md` migration handling while preserving the still-valid quality and safety rules from the original vision skill.
+
+The strategic-positioning contract makes the skill identify the project's highest useful category, audience, pain, promise, mechanism, alternatives, tradeoff, compatibility surfaces, refusals, and falsifiability before drafting or materially repositioning `VISION.md`. For initial visions and material repositioning, the rationale is durable in `docs/vision/strategic-positioning.md`; `VISION.md` remains the canonical public-facing vision.
 
 ## Glossary
 
 - `VISION.md`: the canonical project vision document at the repository root.
-- legacy root `vision.md`: the lowercase root project-vision path recognized only as migration input or a legacy/conflict case after migration.
+- retired root `vision.md`: the lowercase root path that existed only as temporary migration state and is no longer a supported project-vision artifact, migration input, conflict participant, or no-vision exception.
 - README front-matter: the README section between `<!-- vision:start -->` and `<!-- vision:end -->`, generated from `VISION.md`.
 - marker pair: the exact `<!-- vision:start -->` and `<!-- vision:end -->` comments that bound generated README front-matter.
 - state-based behavior: `vision` skill behavior determined by repository state and ordinary user intent rather than by required user-facing modes.
@@ -29,8 +32,13 @@ This active contract has been updated by the approved `VISION.md` migration. It 
 - update vision: change canonical project-vision content in `VISION.md`.
 - sync README: regenerate README front-matter from `VISION.md` without changing `VISION.md`.
 - substantive revision: a vision change caused by a proposal, incident, learning, or project-direction drift.
+- material repositioning: a substantive revision that changes or re-centers the project category, primary user, primary pain, primary promise, core mechanism, strategic tradeoff, refusals, or falsifiability.
 - editorial revision: a typo, wording cleanup, or formatting-only change that does not change project meaning.
 - drafting heuristics: non-normative authoring questions in the `vision` skill that help produce sharper vision text before finalizing generated or revised content.
+- strategic-positioning pass: the pre-drafting analysis that identifies category, primary user, primary pain, primary promise, core mechanism, alternatives, tradeoff, compatibility surfaces, refusals, and falsifiability.
+- strategic-positioning rationale: the supporting project-local artifact at `docs/vision/strategic-positioning.md` that records the durable rationale behind initial or materially repositioned vision text.
+- compatibility surface: a tool, platform, file format, repository convention, hosting service, runtime, language, CI system, pull-request workflow, or package format that the project works with but that is not necessarily the project identity.
+- methodology-as-product: a project category where a methodology, workflow, protocol, or operating model is itself the thing being delivered.
 - `Vision fit`: a proposal section that states how the proposed direction relates to `VISION.md`.
 - explicit exception: a proposal-review outcome that allows a proposal to proceed despite a vision conflict without revising the proposal or vision.
 
@@ -38,11 +46,12 @@ This active contract has been updated by the approved `VISION.md` migration. It 
 
 ### Example E1: establishing the first vision is explicit
 
-Given neither root `VISION.md` nor legacy root `vision.md` exists
+Given root `VISION.md` does not exist
 When the user explicitly asks to establish project vision
 Then the skill creates root `VISION.md`
+And it creates `docs/vision/strategic-positioning.md`
 And it inserts deterministic README front-matter markers when needed
-And it reports assumptions and open vision-level questions.
+And it reports a concise strategic-positioning summary, assumptions, and open vision-level questions.
 
 ### Example E2: skill installation does not create vision
 
@@ -74,7 +83,7 @@ And the first non-empty line is one allowed status value.
 
 ### Example E6: no vision exists yet is explicit
 
-Given neither root `VISION.md` nor migration-recognized legacy root `vision.md` exists
+Given root `VISION.md` does not exist
 When the proposal skill creates a new proposal
 Then `Vision fit` states `no vision exists yet`.
 
@@ -92,6 +101,40 @@ When the user says `vision mirror`
 Then the skill may treat that wording as README sync intent
 But the skill applies state-based behavior and does not report a mode.
 
+### Example E9: methodology project leads with the workflow category
+
+Given project inputs describe an AI-agent engineering workflow using SDD, TDD, human-in-the-loop review, traceability, design-implementation consistency checks, Git, and CI
+When the skill drafts or materially repositions `VISION.md`
+Then the first sentence identifies the higher-level workflow or methodology category
+And Git and CI appear only as compatibility surfaces unless the owner explicitly chooses them as the product category.
+
+### Example E10: implementation substrate does not become the headline
+
+Given project inputs describe a Windows-native file manager built with WinUI, MSIX, and Shell APIs
+When the skill drafts `VISION.md`
+Then the pitch leads with the file-manager product category
+And the implementation substrate appears only when it materially affects the differentiator.
+
+### Example E11: true substrate products may lead with the substrate
+
+Given project inputs describe a Git extension for branch cleanup and release tagging
+When the skill drafts `VISION.md`
+Then the pitch may lead with Git because Git is the product category.
+
+### Example E12: material repositioning updates the rationale
+
+Given root `VISION.md` and `docs/vision/strategic-positioning.md` exist
+When the user approves a material repositioning of the project category and promise
+Then the skill updates both files
+And the final response reports the concise strategic-positioning summary and points to the rationale artifact.
+
+### Example E13: editorial updates leave the rationale untouched
+
+Given root `VISION.md` and `docs/vision/strategic-positioning.md` exist
+When the user requests a typo fix or README sync
+Then the skill keeps the strategic-positioning pass internal
+And it does not update `docs/vision/strategic-positioning.md` unless strategic assumptions changed or a conflict is found.
+
 ## Requirements
 
 ### Canonical artifact and source of truth
@@ -108,7 +151,7 @@ R5. README front-matter between `<!-- vision:start -->` and `<!-- vision:end -->
 
 R6. If README front-matter conflicts with `VISION.md`, `VISION.md` MUST be treated as the source of truth.
 
-R7. Active governance, workflow, README, proposal, proposal-review, and vision-skill guidance MUST NOT describe root `vision.md` as canonical after migration.
+R7. Active governance, workflow, README, proposal, proposal-review, vision-skill guidance, and repository validation MUST NOT describe root `vision.md` as canonical, migration input, a supported project-vision surface, a root-vision conflict participant, or a no-vision exception after migration.
 
 R8. Historical proposals, specs, plans, reviews, change-local artifacts, and PR records MUST NOT be rewritten solely to update old `vision.md` references.
 
@@ -138,11 +181,11 @@ R19. README-only sync output MUST report that `VISION.md` was unchanged.
 
 ### Establishment, update, and sync behavior
 
-R20. If neither root `VISION.md` nor legacy root `vision.md` exists and the user explicitly asks to establish project vision, the skill MUST create root `VISION.md`.
+R20. If root `VISION.md` does not exist and the user explicitly asks to establish project vision, the skill MUST create root `VISION.md`.
 
 R21. The skill MUST NOT create root `VISION.md` merely because the skill is installed or invoked for ordinary README maintenance.
 
-R22. If no canonical vision artifact exists and the user does not clearly ask to establish project vision, the skill MUST stop and ask whether to create `VISION.md`.
+R22. If root `VISION.md` does not exist and the user does not clearly ask to establish project vision, the skill MUST stop and ask whether to create `VISION.md`.
 
 R23. If root `VISION.md` exists and the user asks to update vision content, the skill MUST update only the requested section or clearly related sections.
 
@@ -160,25 +203,57 @@ R29. Editorial updates and README-only sync MUST NOT require a new change-local 
 
 R30. The skill MUST NOT silently overwrite an existing `VISION.md`.
 
-R31. If both root `vision.md` and root `VISION.md` exist, the skill MUST stop and require an owner decision before either file is merged, deleted, or overwritten.
+R31. If the user asks the skill to read, edit, merge, delete, or migrate retired root `vision.md`, the skill MUST stop and explain that root `VISION.md` is the only supported project-vision artifact unless the owner gives a separate non-vision-file instruction.
 
 ### Vision content and drafting quality
 
-R32. `VISION.md` generated or revised by the skill MUST be no more than 500 words.
+R32. `VISION.md` generated or revised by the skill MUST normally be at or under 750 words.
+
+R32a. For methodology, protocol, workflow, or operating-model projects, `VISION.md` MAY exceed 750 words only when the owner explicitly allows the extra length and the additional content is needed to explain the project category, methodology pillars, tradeoff, refusals, or falsifiability.
+
+R32b. `VISION.md` generated or revised by the skill MUST NOT exceed 900 words.
 
 R33. `VISION.md` generated or revised by the skill MUST use plain language and MUST NOT use `MUST`, `SHOULD`, or `MAY` as requirements vocabulary.
 
 R34. `VISION.md` generated or revised by the skill MUST NOT include implementation details, architecture diagrams, status fields, decision logs, stakeholder tables, priority columns, or feature lists.
 
-R35. `VISION.md` generated or revised by the skill MUST include sections, in order, covering pitch, differentiator, target audience, non-audience, commitments, refusals, falsifiability, and optional open questions.
+R35. `VISION.md` generated or revised by the skill MUST include concise sections that cover pitch, differentiator, target audience, non-audience, commitments, refusals, falsifiability, and optional open questions.
 
 R36. `VISION.md` MUST be readable as plain Markdown and MUST NOT require rendered tables, diagrams, HTML layout, or generated assets to understand the project vision.
 
-R37. Drafting heuristics MUST be phrased as authoring questions or checks, not as additional required `VISION.md` sections.
+R37. Drafting heuristics and strategic-positioning guidance MUST be phrased as authoring questions, checks, or pre-drafting steps, not as additional required `VISION.md` sections unless R82 allows one methodology-oriented section.
 
-R38. Drafting heuristics MUST ask about differentiator comparison, tradeoffs, embedded pain points, checkable commitments, observable falsifiability, audience non-fit, and concrete refusals.
+R38. Drafting heuristics MUST ask about differentiator comparison, tradeoffs, embedded pain points, checkable commitments, observable falsifiability, audience non-fit, concrete refusals, and whether a lower-level compatibility surface is being mistaken for the project category.
 
 R39. Drafting heuristics MUST allow either an alternative class or a specific tool for differentiator comparison and MUST NOT require naming a specific competitor.
+
+R73. Before drafting an initial `VISION.md` or materially repositioning an existing `VISION.md`, the skill MUST perform a strategic-positioning pass that identifies project category, primary user, primary pain, primary promise, core mechanism, alternatives, tradeoff, compatibility surfaces, refusals, and falsifiability.
+
+R74. For initial visions and material repositioning, the skill MUST write the strategic-positioning pass to `docs/vision/strategic-positioning.md` as supporting rationale.
+
+R75. `docs/vision/strategic-positioning.md` MUST include compact sections for category, primary user, primary pain, primary promise, core mechanism, alternatives, tradeoff, compatibility surfaces, refusals, and falsifiability.
+
+R76. `docs/vision/strategic-positioning.md` MUST state that `VISION.md` is the canonical project-vision artifact and that the positioning rationale does not independently override `VISION.md`.
+
+R77. If `docs/vision/strategic-positioning.md` conflicts with `VISION.md`, the skill MUST update the rationale or revise `VISION.md` through a substantive vision update; it MUST NOT treat the rationale as independently authoritative.
+
+R78. Editorial vision updates, README-only sync, and narrow section edits MUST NOT update `docs/vision/strategic-positioning.md` unless strategic assumptions changed or a conflict with `VISION.md` is found.
+
+R79. For substantive repositioning in repositories that use change-local packs, the skill MUST require `docs/changes/<change-id>/explain-change.md` to summarize the positioning delta and link to `docs/vision/strategic-positioning.md`.
+
+R80. The skill MUST treat repository layout, Git, CI, pull requests, runtime, package format, hosting platform, language, and template mechanics as compatibility surfaces unless the owner explicitly chooses one as the project category or the substrate is genuinely the product.
+
+R81. When project inputs describe a methodology, workflow, protocol, or operating model as the product, the skill MUST treat the methodology pillars or operating loop as project identity rather than implementation detail.
+
+R82. For methodology, workflow, protocol, or operating-model projects, the skill MAY add one optional methodology-oriented section only when available inputs identify concrete methodology pillars or an operating loop.
+
+R83. If the owner has not supplied enough detail for a methodology-oriented section, the skill MUST keep the standard section structure and report an open vision-level question instead of inventing methodology structure.
+
+R84. The first sentence of generated or materially repositioned `VISION.md` MUST name the highest-level project category supported by the inputs.
+
+R85. The pitch and differentiator MUST make the category, audience, outcome, core mechanism, alternative class, and tradeoff answerable from the opening sections, without requiring chat history.
+
+R86. Before reporting completion, the skill MUST check that the first sentence names the highest-level category, the differentiator includes a tradeoff, the core mechanism appears when essential, compatibility surfaces are not the main identity, audience non-fit is visible, commitments are checkable, refusals block tempting scope creep, falsifiability is observable, and the vision can guide proposal-fit review without chat history.
 
 ### README front-matter
 
@@ -226,9 +301,9 @@ A short explanatory paragraph MAY follow the status line.
 
 R54. If root `VISION.md` exists, `Vision fit` MUST NOT use `no vision exists yet`.
 
-R55. If neither root `VISION.md` nor migration-recognized legacy root `vision.md` exists, `Vision fit` MUST use `no vision exists yet`.
+R55. If root `VISION.md` does not exist, `Vision fit` MUST use `no vision exists yet`.
 
-R56. During this repository migration, proposals MUST NOT use `no vision exists yet` solely because `VISION.md` has not yet replaced migration-recognized legacy root `vision.md`.
+R56. Retired root `vision.md` MUST NOT prevent `Vision fit` from using `no vision exists yet` when root `VISION.md` is absent.
 
 R57. A proposal MUST NOT silently redefine project vision outside the `Vision fit` section and normal proposal rationale.
 
@@ -250,9 +325,9 @@ R64. Generated `.codex/skills/` output MUST be refreshed only through `scripts/b
 
 R65. Generated public adapter output under `dist/adapters/` MUST be refreshed only through `scripts/build-adapters.py`.
 
-R66. Selector routing MUST classify root `VISION.md` and migration-time legacy root `vision.md` as supported validation surfaces.
+R66. Selector routing MUST classify root `VISION.md` as a supported validation surface.
 
-R67. Repository-owned validation MUST block or fail when both root `vision.md` and root `VISION.md` exist.
+R67. Selector routing and repository-owned validation MUST NOT classify root `vision.md` as a supported root vision surface, migration input, root-vision conflict participant, or no-vision gate exception.
 
 R68. `VISION.md` and generated README front-matter MUST NOT include secrets, credentials, private local filesystem paths, private machine names, or personal data not explicitly intended for publication.
 
@@ -270,7 +345,8 @@ Inputs:
 
 - user request to establish project vision, update vision, or sync README;
 - root `VISION.md`, when present;
-- legacy root `vision.md`, when present during migration or conflict resolution;
+- retired root `vision.md`, only as an ordinary repository file when the user explicitly asks about that path;
+- `docs/vision/strategic-positioning.md`, when present;
 - README front-matter, when present;
 - project context from `CONSTITUTION.md`, `AGENTS.md`, README, project map, recent proposals, research, and exploration artifacts when present;
 - change-local pack when a substantive update is part of a non-trivial change.
@@ -278,30 +354,34 @@ Inputs:
 Outputs:
 
 - root `VISION.md` when the skill establishes or updates project vision;
+- `docs/vision/strategic-positioning.md` when the skill establishes project vision or materially repositions it;
 - README front-matter between the marker pair when generated or synchronized;
 - updated proposal and proposal-review guidance when proposal-fit behavior changes;
 - generated `.codex/skills/` and `dist/adapters/` output after canonical skill changes and generator runs;
-- user-facing `vision` skill output that reports changed files, README front-matter action, assumptions or open questions when relevant, sections changed when relevant, and substantive/editorial classification when relevant.
+- user-facing `vision` skill output that reports changed files, README front-matter action, assumptions or open questions when relevant, strategic-positioning summary when relevant, positioning rationale path when relevant, sections changed when relevant, and substantive/editorial classification when relevant.
 
 ## State and invariants
 
 - `VISION.md` is the canonical project vision.
-- Legacy root `vision.md` is not canonical after migration.
+- Retired root `vision.md` is not a supported project-vision artifact after migration.
+- `docs/vision/strategic-positioning.md` is supporting rationale and does not independently override `VISION.md`.
 - `VISION.md` is subordinate to `CONSTITUTION.md` and does not replace specs, proposals, architecture artifacts, ADRs, plans, test specs, review artifacts, verification evidence, or PR summaries.
 - README front-matter is generated from `VISION.md` and is not independently authoritative.
 - The vision skill is upstream of the per-change workflow.
 - Adding or updating the skill and establishing project vision remain separate actions unless the user explicitly asks to establish project vision.
 - Generated skill and adapter output remains derived from canonical authored skill sources.
-- Drafting heuristics guide authoring quality but do not change the required vision sections, 500-word cap, README marker behavior, or source-of-truth order.
+- Drafting heuristics and strategic-positioning checks guide authoring quality but do not turn `VISION.md` into a proposal, spec, architecture document, roadmap, requirements list, or task tracker.
 
 ## Error and boundary behavior
 
 - Existing `VISION.md` plus unclear update intent stops for clarification.
 - Missing `VISION.md` plus no establishment intent stops for clarification.
 - Missing `VISION.md` plus sync request stops because there is no canonical source to sync from.
-- Both root `vision.md` and root `VISION.md` existing stops skill behavior and blocks validation until an owner decision resolves the state.
+- Requests to treat retired root `vision.md` as project vision stop with a canonical-path explanation unless the owner gives a separate non-vision-file instruction.
 - Missing or malformed README markers outside initial establishment or explicit owner authorization stop the skill before file modification.
-- A generated or revised `VISION.md` over 500 words is invalid and must be shortened before completion.
+- A generated or revised `VISION.md` over 750 words without owner authorization is invalid and must be shortened before completion.
+- A generated or revised `VISION.md` over 900 words is invalid and must be shortened before completion.
+- A methodology-oriented section without concrete input pillars or an operating loop is invalid and must be removed or converted into an open vision-level question.
 - A proposal with stale or missing `Vision fit` after this contract applies must be revised before proposal-review can approve it.
 - A substantive vision update tied to an existing or required change-local pack stops before finalization when the causal link is missing from the required change-local artifacts.
 
@@ -309,17 +389,17 @@ Outputs:
 
 Existing proposals, specs, plans, reviews, change-local artifacts, and PR records remain historically valid when they mention `vision.md`. They are not rewritten solely for path text.
 
-For this repository migration, the final branch state must contain root `VISION.md` and must not contain root `vision.md`.
+For this repository, the migration is complete: active behavior must use root `VISION.md` and must not preserve lowercase `vision.md` migration support.
 
-For repositories before project vision has been established, neither root vision file may exist. In that state, proposals use `Vision fit` status `no vision exists yet`, and substantive proposals stop unless they are bootstrap work to create project vision or the workflow explicitly permits proceeding without one.
+For repositories before project vision has been established, root `VISION.md` may be absent. In that state, proposals use `Vision fit` status `no vision exists yet`, and substantive proposals stop unless they are bootstrap work to create project vision or the workflow explicitly permits proceeding without one.
 
 Legacy user requests that contain `create`, `revise`, or `mirror` may be interpreted as plain-language intent during compatibility, but those words are not operating modes and are not reported as modes.
 
-Rollback must restore exactly one canonical root vision artifact, update all active path references, refresh generated skill and adapter output, and rerun validation.
+Rollback must preserve root `VISION.md` as the only canonical project-vision artifact, update active path references, refresh generated skill and adapter output, and rerun validation.
 
 ## Observability
 
-The `vision` skill's user-facing response must report changed files, README front-matter action, assumptions or open questions when establishing project vision, sections changed and revision classification when updating vision, whether a substantive update's causal link was recorded or not required, and why the skill stopped when a boundary condition blocks editing.
+The `vision` skill's user-facing response must report changed files, README front-matter action, assumptions or open questions when establishing project vision, concise strategic-positioning summary and rationale path when relevant, sections changed and revision classification when updating vision, whether a substantive update's causal link was recorded or not required, and why the skill stopped when a boundary condition blocks editing.
 
 Validation output remains the repository-owned skill, generated-output, adapter, lifecycle, README, selector, and metadata validation output selected for touched paths.
 
@@ -337,24 +417,30 @@ No runtime performance behavior is introduced. Evidence collection behavior is g
 
 ## Edge cases
 
-1. Root `vision.md` exists and root `VISION.md` does not: migration treats lowercase as legacy input and produces uppercase as the only canonical file.
-2. Root `VISION.md` exists and root `vision.md` also exists: skill behavior stops and validation blocks until an owner decision resolves coexistence.
-3. Neither root vision file exists and README already has vision markers: establishing project vision may replace the marker content after creating `VISION.md`.
+1. Root `vision.md` exists and root `VISION.md` does not: the skill treats the repository as having no canonical project vision and asks whether to create `VISION.md` when establishment intent is unclear.
+2. Root `VISION.md` exists and root `vision.md` also exists: the skill uses `VISION.md` as canonical and does not merge, delete, or overwrite `vision.md` as project-vision behavior.
+3. Root `VISION.md` does not exist and README already has vision markers: establishing project vision may replace the marker content after creating `VISION.md`.
 4. Root `VISION.md` exists and README lacks markers: update or sync stops unless the user explicitly authorizes marker insertion or skipping README synchronization.
 5. README contains two `<!-- vision:start -->` markers: update or sync stops for explicit handling.
-6. A proposal created after adoption says `fits the current vision` while neither root `VISION.md` nor migration-recognized legacy root `vision.md` exists: proposal-review requests revision to `no vision exists yet`.
+6. A proposal created after adoption says `fits the current vision` while root `VISION.md` does not exist: proposal-review requests revision to `no vision exists yet`.
 7. A proposal created after adoption omits `Vision fit`: proposal-review requests revision.
 8. A vision update changes project scope but is labeled editorial: the skill surfaces the mismatch and treats it as substantive or asks for owner clarification.
 9. A user asks to update vision but names no section or direction: the skill asks for clarification before editing.
 10. A user asks to sync README and README front-matter already matches `VISION.md`: the skill reports no content changes.
 11. A historical proposal references `vision.md`: no update is required solely because the reference is historical.
 12. A request says `vision mirror`: the skill may treat it as README sync intent, but it does not require or report `mirror` mode.
+13. A RigorLoop-style methodology project input mentions Git and CI: the skill leads with the AI-agent engineering workflow category and records Git and CI as compatibility surfaces.
+14. An ordinary product input mentions an implementation substrate: the skill leads with the user-facing product category unless the owner explicitly chooses the substrate as identity.
+15. A true substrate product input describes a Git extension: the skill may lead with Git because Git is the product category.
+16. A material repositioning changes category or promise: the skill updates `VISION.md`, updates `docs/vision/strategic-positioning.md`, and records the delta in change-local rationale when a change-local pack is used.
+17. An editorial update fixes wording only: the skill does not update `docs/vision/strategic-positioning.md` unless assumptions changed or a conflict is found.
 
 ## Non-goals
 
 - Rewrite the approved project vision content.
 - Make `vision` a normal per-change workflow stage.
 - Add validator enforcement for vision prose quality.
+- Add a prompt-output evaluation harness for vision prose.
 - Add a README synchronization helper script.
 - Create a separate `vision-review` skill.
 - Rewrite old proposals, specs, plans, reviews, change-local artifacts, or PR records solely to replace historical `vision.md` text.
@@ -362,7 +448,7 @@ No runtime performance behavior is introduced. Evidence collection behavior is g
 - Change adapter portability rules beyond refreshing generated output for changed canonical skill guidance.
 - Require specific competitor names in generated or revised vision text.
 - Extract or consolidate shared evidence-collection guidance across skills.
-- Change the 500-word cap, required vision sections, drafting heuristics, privacy rules, or research boundaries except where wording must refer to `VISION.md`.
+- Force every project into a methodology, workflow, protocol, or operating-model template.
 
 ## Acceptance criteria
 
@@ -374,8 +460,14 @@ No runtime performance behavior is introduced. Evidence collection behavior is g
 - AC6. Proposal guidance requires `Vision fit` against `VISION.md` for new and substantively revised proposals.
 - AC7. Proposal-review checks `Vision fit` against `VISION.md` and preserves explicit exception requirements.
 - AC8. The normal lifecycle chain does not include `vision` as a required stage.
-- AC9. Active guidance no longer requires root `vision.md` as canonical or user-facing `create`, `revise`, and `mirror` operating modes.
+- AC9. Active guidance and repository validation no longer preserve root `vision.md` as canonical, migration input, a supported project-vision surface, a conflict participant, or a no-vision exception.
 - AC10. Still-valid vision safety and quality rules remain present after retiring the old path and mode model.
+- AC11. Initial and materially repositioned visions are grounded in a strategic-positioning pass.
+- AC12. Initial and materially repositioned visions create or update `docs/vision/strategic-positioning.md` as supporting rationale while keeping `VISION.md` canonical.
+- AC13. The skill distinguishes compatibility surfaces from project identity unless the owner chooses the substrate or the substrate is genuinely the product.
+- AC14. Methodology, workflow, protocol, and operating-model projects can include methodology pillars or one optional methodology-oriented section when inputs justify it.
+- AC15. Generated and revised visions obey the 750-word normal cap and the owner-authorized 900-word methodology cap.
+- AC16. Final skill output reports concise strategic-positioning summary and rationale path for initial or materially repositioned visions.
 
 ## Open questions
 
@@ -383,15 +475,17 @@ None.
 
 ## Next artifacts
 
-- code-review for the completed M1-M3 implementation
-- verify
-- explain-change
-- pr
+- plan-review for the strategic-positioning execution plan.
+- matching test-spec update covering strategic-positioning static assertions, `docs/vision/strategic-positioning.md`, lowercase `vision.md` retirement, selector behavior, and generated-output drift.
+- implementation after plan-review approval and active test-spec update.
 
 ## Follow-on artifacts
 
-- `spec-review`: approved on 2026-04-30 after R81 workflow-fit placement and R91 mode-table wording were made directly testable.
+- `spec-review`: approved on 2026-04-30 after workflow-fit placement and mode-table wording were made directly testable.
 - `spec-review`: approved on 2026-05-01 after the no-vision and migration-recognized legacy `vision.md` behavior was clarified for the `VISION.md` migration.
+- `proposal-review`: approved on 2026-05-06 after `PR-1` clarified lowercase `vision.md` retirement scope.
+- `spec-review`: approved on 2026-05-06 after `SR1-F1` and `SR2-F1` fixed the hard 900-word cap and matching boundary behavior.
+- Execution plan: [2026-05-06 Optimize Vision Skill Strategic Positioning Quality](../docs/plans/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md)
 - Execution plan: [2026-05-01 Vision Skill Simplification and VISION.md Migration](../docs/plans/2026-05-01-vision-skill-simplification-and-vision-md-migration.md)
 - Test spec update: [Vision Skill Test Spec](vision-skill.test.md) is active for the consolidated vision skill contract.
 - Focused migration test spec: [Vision Skill Simplification and VISION.md Migration Test Spec](vision-skill-simplification-and-vision-md-migration.test.md)
@@ -399,4 +493,4 @@ None.
 
 ## Readiness
 
-Approved after `spec-review`; the linked execution plan and matching test specs track downstream implementation and review state for the consolidated vision skill contract.
+Approved after spec-review. Ready for plan-review of the strategic-positioning execution plan, then matching test-spec update before implementation.
