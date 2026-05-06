@@ -313,6 +313,7 @@ Repository broad smoke is not planned by default. If plan-review, test-spec, sel
 - [x] M2 complete: canonical skill guidance and vision rationale artifacts updated.
 - [x] M3 complete: generated skill and adapter output refreshed.
 - [x] M4 complete: lifecycle closeout and final validation evidence synchronized.
+- [ ] code-review finding `CR1-F1` resolved and rerun clean.
 
 ## Decision Log
 
@@ -338,14 +339,16 @@ Repository broad smoke is not planned by default. If plan-review, test-spec, sel
 - 2026-05-06: M2 selected CI over canonical skill and rationale paths initially failed on `skills.drift` and `adapters.drift`, then passed after M3 refreshed generated output from canonical sources.
 - 2026-05-06: M3 generated-output proof passed with `python scripts/build-skills.py`, `python scripts/build-adapters.py --version 0.1.1`, `python scripts/build-skills.py --check`, `python scripts/build-adapters.py --version 0.1.1 --check`, `python scripts/test-adapter-distribution.py`, `python scripts/validate-adapters.py --version 0.1.1`, generated-path selector inspection, and generated-path selected CI.
 - 2026-05-06: M4 lifecycle proof passed with `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality`, `python scripts/validate-change-metadata.py docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/change.yaml`, explicit artifact lifecycle validation over plan/proposal/spec/test-spec/rationale/change-local review paths, `git diff --check -- .`, targeted trailing-whitespace scan, and final selected CI over the full changed-file set. Artifact lifecycle continued to emit the known reviewer-attention warning for older lifecycle wording in a Done entry in `docs/plan.md`.
+- 2026-05-06: First-pass code-review recorded `CR1-F1` and returned `changes-requested`. Review artifact structure validation, change metadata validation, artifact lifecycle validation, whitespace checks, and selected CI over the code-review record and lifecycle paths passed with review-resolution open.
 
 ## Outcome and Retrospective
 
-- Active. Implementation milestones M1 through M4 are complete. The plan remains Active for downstream code-review, verify, explain-change refresh, PR handoff, and PR-self-contained Done closeout.
+- Active. Implementation milestones M1 through M4 are complete. First-pass code-review requested changes for `CR1-F1`. The plan remains Active for review-resolution, code-review rerun, verify, explain-change refresh, PR handoff, and PR-self-contained Done closeout.
 
 ## Readiness
 
 - Plan-review approved.
 - Test spec active.
 - M1 through M4 implementation complete.
-- Ready for first-pass code-review.
+- First-pass code-review returned `changes-requested`.
+- Next: enter review-resolution for `CR1-F1`.

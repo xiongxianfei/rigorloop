@@ -4,7 +4,7 @@
 
 This record resolves material findings from formal lifecycle reviews for the vision skill strategic-positioning quality change.
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -58,3 +58,13 @@ Validation evidence: `specs/vision-skill.md` now says a generated or revised `VI
 Review closeout: spec-review-r3
 
 No material findings; no resolution entry required. The same-stage spec-review rerun approved the revised spec and closed `SR2-F1`.
+
+### code-review-r1
+
+Finding ID: CR1-F1
+Disposition: accepted
+Owner: implementer
+Owning stage: implement
+Chosen action: Update `skills/vision/SKILL.md` so explicit project-vision establishment creates root `VISION.md` whenever canonical `VISION.md` is absent, regardless of whether retired root `vision.md` exists. Add or tighten static assertion coverage so the stale "neither root vision file exists" condition cannot return. Regenerate `.codex/skills/` and `dist/adapters/` from canonical skill sources.
+Rationale: The finding is correct. The approved spec makes root `VISION.md` absence the deciding condition for explicit establishment and treats retired root `vision.md` as non-canonical. The current skill wording leaves a retired lowercase file able to alter active establishment behavior.
+Validation target: Rerun `python scripts/test-skill-validator.py`, targeted `python scripts/validate-skills.py skills/vision/SKILL.md`, `python scripts/build-skills.py --check`, `python scripts/build-adapters.py --version 0.1.1 --check`, `python scripts/validate-adapters.py --version 0.1.1`, selected CI over canonical/generated vision skill paths and review artifacts, review artifact validation, change metadata validation, lifecycle validation, and whitespace checks after the fix.
