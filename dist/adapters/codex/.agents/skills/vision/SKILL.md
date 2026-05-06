@@ -29,7 +29,7 @@ Start with compact project inputs when available:
 - `AGENTS.md`
 - README front-matter between `<!-- vision:start -->` and `<!-- vision:end -->`
 - existing root `VISION.md`
-- legacy root `vision.md` during migration or conflict resolution
+- retired root `vision.md`, only as an ordinary repository file when the user explicitly asks about that path
 - recent proposal summaries, especially proposals that touch scope or direction
 - `docs/project-map.md` when it helps project framing
 - prior research or exploration artifacts when the workflow already produced them
@@ -54,7 +54,9 @@ Do not edit README front-matter directly to express a vision change. Edit `VISIO
 
 Ensure existing visions are not overwritten without clear update intent; keep the current file unchanged and ask for clarification before editing.
 
-If both root `vision.md` and root `VISION.md` exist, stop and require an owner decision. Do not merge, delete, or overwrite either file automatically.
+Root `VISION.md` is the only supported project-vision artifact.
+
+If the user asks this skill to read, edit, merge, delete, or migrate retired root `vision.md` as project vision, stop and explain that root `VISION.md` is the only supported project-vision artifact unless the owner gives a separate non-vision-file instruction.
 
 ## State-Based Behavior
 
@@ -62,7 +64,6 @@ Interpret legacy words such as `create`, `revise`, or `mirror` only as natural-l
 
 If no root `VISION.md` exists:
 
-- If legacy root `vision.md` exists and root `VISION.md` does not, treat `vision.md` as migration input. Migration work may rename it to `VISION.md`; do not create a second competing vision file.
 - If neither root vision file exists and the user explicitly asks to establish project vision, create root `VISION.md`, generate README front-matter, insert README vision markers when missing using deterministic placement, and report assumptions plus open vision-level questions.
 - If the user did not clearly ask to establish project vision, stop and ask whether to create `VISION.md`. Do not edit README while that intent is unclear.
 
@@ -88,7 +89,11 @@ Editorial updates and README-only synchronization do not require a new change-lo
 
 ## Vision Content
 
-Root `VISION.md` stays at or under 500 words.
+Root `VISION.md` should normally stay at or under 750 words.
+
+For methodology, protocol, workflow, or operating-model projects, root `VISION.md` may exceed 750 words only when the owner explicitly allows the extra length and the additional content is needed to explain the project category, methodology pillars, tradeoff, refusals, or falsifiability.
+
+Generated or revised `VISION.md` MUST NOT exceed 900 words. A draft over 900 words is invalid and must be shortened before completion.
 
 Use plain language. Do not use `MUST`, `SHOULD`, or `MAY` as requirements vocabulary in generated or revised vision text.
 
@@ -109,6 +114,43 @@ Include sections, in this order, with plain-language headings:
 
 Concrete and verifiable language beats abstract claims. Scope refusals should be real enough to guide future proposal decisions.
 
+## Strategic Positioning
+
+Before drafting the initial `VISION.md` or materially repositioning an existing one, perform a strategic-positioning pass. Identify:
+
+- project category
+- primary user
+- primary pain
+- primary promise
+- core mechanism
+- alternatives
+- tradeoff
+- compatibility surfaces
+- refusals
+- falsifiability
+
+For initial visions and material repositioning, write this pass to `docs/vision/strategic-positioning.md` as supporting rationale. `VISION.md` remains canonical; the rationale explains how the vision was derived and does not independently override it. If `docs/vision/strategic-positioning.md` conflicts with `VISION.md`, update the rationale or revise `VISION.md` through a substantive vision update.
+
+For editorial updates, README-only sync, or narrow section edits, keep the strategic-positioning pass internal and do not update `docs/vision/strategic-positioning.md` unless strategic assumptions changed or a conflict is found.
+
+For substantive repositioning in a repository that uses a change-local pack, require `docs/changes/<change-id>/explain-change.md` to summarize the positioning delta and link to `docs/vision/strategic-positioning.md`.
+
+Treat repository layout, Git, CI, pull requests, runtime, package format, hosting platform, language, and template mechanics as compatibility surfaces unless the owner explicitly chooses one as the project category or the substrate is genuinely the product.
+
+When the project itself is a methodology, workflow, protocol, or operating model, use methodology-as-product framing: the methodology pillars or operating loop are part of project identity rather than implementation detail.
+
+For methodology, workflow, protocol, or operating-model projects, you may add one optional methodology-oriented section only when available inputs identify concrete methodology pillars or an operating loop. If the owner has not supplied enough detail, keep the standard sections and report an open vision-level question instead of inventing methodology structure.
+
+Use fixture-style checks when evaluating category quality:
+
+- RigorLoop-style inputs should lead with an AI-agent software engineering workflow or methodology category, treat Git and CI as compatibility surfaces, include methodology pillars as the core mechanism, and avoid making `Git-first starter kit` the category.
+- A Windows-native file manager should lead with the file-manager product category; WinUI, MSIX, and Shell APIs appear only when they materially affect the differentiator.
+- A Git extension may lead with Git because Git is the actual product category.
+
+Before reporting completion, check that the first sentence names the highest-level category, the differentiator includes a tradeoff, the core mechanism appears when essential, compatibility surfaces are not the main identity, audience non-fit is visible, commitments are checkable, refusals block tempting scope creep, falsifiability is observable, and the vision can guide proposal-fit review without chat history.
+
+For initial visions and materially repositioned visions, final output reports a concise strategic-positioning summary and rationale path. For editorial updates, README sync, or narrow section edits, keep the positioning pass internal unless it changes assumptions or reveals a conflict.
+
 ## Drafting Heuristics
 
 Use these as authoring questions or checks, not additional `VISION.md` sections:
@@ -119,6 +161,7 @@ Use these as authoring questions or checks, not additional `VISION.md` sections:
 - Falsifiability: are the failure conditions observable from behavior or artifacts?
 - Audience: does the audience statement rule out at least one plausible non-fit?
 - Refusals: are scope refusals concrete enough to block misaligned proposals?
+- Category: is a lower-level compatibility surface being mistaken for the project category?
 
 The differentiator comparison may name an alternative class or a specific tool. It does not require naming a specific competitor.
 
@@ -173,7 +216,7 @@ If external research is used, distinguish researched facts from project assumpti
 - Do not add a README synchronization helper script as part of this skill.
 - Do not make `vision` a normal lifecycle stage.
 - Do not silently redefine project vision through README edits.
-- Do not let the vision exceed 500 words.
+- Do not let generated or revised `VISION.md` exceed 900 words.
 - Do not include implementation detail or architecture content.
 - Do not rewrite legacy proposals solely to add `Vision fit` or update historical `vision.md` references.
 
@@ -183,7 +226,7 @@ Use summary and stable-ID first reasoning before broad reads or raw excerpts. Pr
 
 ## When full-file read is required
 
-Full-file reads are required when creating or replacing root `VISION.md`, when resolving legacy root `vision.md` migration or both-file conflicts, when the whole file is the review target, when the relevant section cannot be isolated safely, when surrounding context can change the conclusion, when compact inputs are missing or conflicting, when bounded searches disagree or produce incomplete evidence, when README marker placement depends on the whole README structure, or when a behavior-changing edit depends on the whole source-of-truth artifact.
+Full-file reads are required when creating or replacing root `VISION.md`, when the whole file is the review target, when the relevant section cannot be isolated safely, when surrounding context can change the conclusion, when compact inputs are missing or conflicting, when bounded searches disagree or produce incomplete evidence, when README marker placement depends on the whole README structure, or when a behavior-changing edit depends on the whole source-of-truth artifact.
 
 ## Expected output
 
@@ -195,5 +238,7 @@ Report:
 - Sections changed: required when updating vision
 - Revision classification: `substantive` or `editorial`, required when updating vision
 - `VISION.md` unchanged: required when syncing README only
+- Strategic-positioning summary: required for initial visions and materially repositioned visions
+- Positioning rationale path: required when `docs/vision/strategic-positioning.md` is created or updated
 - For substantive updates: whether the required causal link was recorded or not required
 - open questions suitable for human review before treating the vision as current

@@ -24,7 +24,6 @@ Read, if present:
 - related architecture docs or ADRs
 - related issues, incidents, or user feedback
 - root `VISION.md` when present
-- migration-recognized legacy root `vision.md` when `VISION.md` has not replaced it yet
 
 ## Output path
 
@@ -68,11 +67,11 @@ The first non-empty line of the section states exactly one of:
 - `proposes a vision revision`
 - `no vision exists yet`
 
-When neither root `VISION.md` nor migration-recognized legacy root `vision.md` exists, proposals must use the exact `Vision fit` value `no vision exists yet`.
+When root `VISION.md` does not exist, proposals must use the exact `Vision fit` value `no vision exists yet`.
 
 If root `VISION.md` exists, choose one of the current-vision outcomes and do not use `no vision exists yet`.
 
-During the `vision.md` to `VISION.md` migration, do not use `no vision exists yet` solely because `VISION.md` has not yet replaced migration-recognized legacy root `vision.md`.
+Retired root `vision.md` must not prevent `no vision exists yet` when root `VISION.md` is absent.
 
 A short explanatory paragraph may follow the status line.
 
@@ -84,7 +83,7 @@ Legacy proposals are not invalid solely because they lack `Vision fit`; add it o
 
 A substantive proposal is any proposal that chooses product direction, user-facing behavior, workflow policy, architecture direction, compatibility policy, release policy, or contributor-visible contract.
 
-`VISION.md` absence blocks the first substantive proposal unless the proposal is bootstrap work to create or migrate project vision.
+`VISION.md` absence blocks the first substantive proposal unless the proposal is bootstrap work to create project vision.
 
 `CONSTITUTION.md` absence blocks governance adoption, workflow-governance changes, and source-of-truth changes unless the proposal is bootstrap work to create or migrate the constitution.
 
