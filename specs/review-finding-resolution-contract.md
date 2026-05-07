@@ -7,6 +7,7 @@
 ## Related proposal
 
 - [Review Finding Resolution Contract](../docs/proposals/2026-04-24-review-finding-resolution-contract.md)
+- [Review Skill Material Finding Recording](../docs/proposals/2026-05-07-review-skill-material-finding-recording.md)
 
 ## Goal and context
 
@@ -15,6 +16,8 @@ This spec defines the contributor-visible contract for complete review findings,
 The goal is to make review feedback actionable and auditable without turning every clean review into artifact boilerplate. A material review finding is not complete until it says what evidence supports it, what outcome is required, and at least one safe way to resolve it or why an owner decision is needed first.
 
 This spec intentionally expands the current workflow disposition vocabulary from `accepted`, `rejected`, and `deferred` to include `partially-accepted` and `needs-decision`. `needs-decision` is an unresolved stop state, not a final closeout state.
+
+This amendment also requires new `review-resolution.md` records to be scan-first for humans while preserving validator-readable field labels for structural and closeout validation.
 
 ## Glossary
 
@@ -28,6 +31,8 @@ This spec intentionally expands the current workflow disposition vocabulary from
 - `material finding`: a finding that must be accepted, rejected, deferred, partially accepted, or resolved from a decision-needed state before downstream closeout.
 - `Finding ID`: a stable identifier for one finding within a change.
 - `review-resolution.md`: the change-local artifact that records the top-level closeout status plus each material finding disposition, rationale, owner, action, validation target, and validation evidence.
+- `scan-first review resolution`: a `review-resolution.md` structure that exposes closeout status, covered reviews, finding counts, disposition overview, shared validation evidence, and per-finding details without forcing reviewers to read repeated prose first.
+- `common resolution metadata`: owner, owning stage, validation target, or validation evidence shared by multiple finding entries and recorded once for human readability.
 - `disposition`: the recorded decision for a material finding.
 - `closeout status`: the top-level state of `review-resolution.md`, either `open` or `closed`.
 - `final disposition`: a disposition that may be relied on before `verify`, `explain-change`, or `pr`.
@@ -133,6 +138,13 @@ Then `docs/changes/<change-id>/reviews/plan-review-r1.md` is created
 And `review-log.md` indexes `plan-review-r1`
 And no empty `review-resolution.md` is required solely for that review event.
 
+### Example E14: review-resolution is scan-first and validator-readable
+
+Given `proposal-review-r1` records seven accepted findings
+When `review-resolution.md` closes those findings
+Then the file starts with closeout status, covered reviews, resolved and unresolved counts, and a resolution overview table
+And each finding detail still contains parseable `Finding ID:`, `Disposition:`, `Owner:`, `Owning stage:`, `Chosen action:`, `Rationale:`, `Validation target:`, and `Validation evidence:` labels.
+
 ## Requirements
 
 R1. A material review finding MUST include evidence supporting the finding.
@@ -194,6 +206,10 @@ R2p. A detailed review file MUST be created for a formal lifecycle review when a
 - the review findings will be cited as closeout evidence;
 - a reviewer or maintainer explicitly requests a detailed record.
 
+R2pa. Material findings MUST always be recorded.
+
+R2pb. All material findings require change-local review files.
+
 R2q. Stage-owned non-approval outcomes MUST include `revise`, `changes-requested`, `blocked`, `rethink`, `inconclusive`, and equivalent stage-specific outcomes that prevent downstream progress.
 
 R2r. A clean formal review with no material findings MUST NOT require an empty detailed review file solely because the review was required.
@@ -204,7 +220,7 @@ R2t. If a workflow-managed formal review triggers a detailed review file before 
 
 R2u. If material findings exist, the initial review-record root MUST include `docs/changes/<change-id>/change.yaml`, `docs/changes/<change-id>/review-log.md`, `docs/changes/<change-id>/review-resolution.md`, and `docs/changes/<change-id>/reviews/<stage>-r<n>.md`.
 
-R2v. If no material findings exist, but `R2p` still requires a detailed review file, the initial review-record root MUST include `docs/changes/<change-id>/change.yaml`, `docs/changes/<change-id>/review-log.md`, and `docs/changes/<change-id>/reviews/<stage>-r<n>.md`. `review-resolution.md` MUST NOT be created solely because `reviews/` exists.
+R2v. If `R2p` requires a detailed review file for a no-material trigger, the initial review-record root MUST include `docs/changes/<change-id>/change.yaml`, `docs/changes/<change-id>/review-log.md`, and `docs/changes/<change-id>/reviews/<stage>-r<n>.md`. `review-resolution.md` MUST NOT be created solely because `reviews/` exists.
 
 R2w. The initial review-record root exists to preserve the review event and make it discoverable. It MUST NOT be treated as the final non-trivial change-local pack.
 
@@ -234,7 +250,7 @@ R3k. Each review-log entry MUST contain exactly one `Resolution:` line in the ca
 
 R3l. For v1, `Resolution:` is a repository-internal symbolic resolution reference. Structural validation MUST fail when the field is missing, the target file is not exactly `review-resolution.md`, the anchor does not exactly match the entry's Review ID, or the referenced Review ID cannot be found in `review-resolution.md` when that artifact exists.
 
-R3la. The symbolic `Resolution:` ledger field MUST NOT by itself require a `review-resolution.md` file when no material findings or other approved review-resolution trigger exists.
+R3la. The symbolic `Resolution:` ledger field MUST NOT by itself require a `review-resolution.md` file when no material finding exists and no other approved review-resolution trigger exists.
 
 R3m. For v1, each parseable `review-log.md` ledger entry MUST use this line-based block format:
 
@@ -264,7 +280,7 @@ R4b. Finding ID values MUST be stable ASCII identifiers with no whitespace.
 
 R4c. Non-material positive notes, nits, or informational observations MAY omit Finding IDs when they do not require a disposition.
 
-R5. A non-trivial change with material findings MUST record review resolution in `docs/changes/<change-id>/review-resolution.md`.
+R5. A change with material findings MUST record review resolution in `docs/changes/<change-id>/review-resolution.md`.
 
 R5a. `review-resolution.md` MUST reference only Finding IDs that exist in the change's review records.
 
@@ -404,6 +420,26 @@ R14. This feature MUST update the existing workflow contract where it currently 
 
 R14a. Stage tables, review-resolution rules, governance summaries, and skills MUST NOT contradict the expanded disposition vocabulary or final-closeout rules.
 
+R15. New `review-resolution.md` records MUST be human-readable and useful, not merely structurally valid.
+
+R15a. A new `review-resolution.md` record MUST expose closeout status, covered Review IDs, count of resolved findings, count of unresolved findings, and final result near the top of the file.
+
+R15b. A new `review-resolution.md` record MUST include a resolution overview that lets a reviewer scan each material Finding ID, disposition, status, and short resolution summary without reading the full per-finding detail.
+
+R15c. When multiple findings share owner, owning stage, validation target, or validation evidence, `review-resolution.md` MAY record common resolution metadata once for human readability.
+
+R15d. Common resolution metadata MUST NOT remove validator-readable field labels from individual material finding entries.
+
+R15e. Each material finding detail in `review-resolution.md` MUST retain parseable labels for `Finding ID:`, `Disposition:`, `Owner:`, `Owning stage:`, `Chosen action:` or another approved action field, `Rationale:`, `Validation target:` or expected proof, and `Validation evidence:` when closeout is claimed.
+
+R15f. A new `review-resolution.md` record SHOULD include shared validation evidence when multiple findings are proven by the same validation run.
+
+R15g. A new `review-resolution.md` record SHOULD include a closeout checklist that makes final readiness auditable.
+
+R15h. `review-resolution.md` MUST NOT become a transcript of every review comment, suggestion, and resolution discussion.
+
+R15i. The readability invariant for `review-resolution.md` is that a reviewer can understand closeout status in 30 seconds and audit any individual finding in 2 minutes.
+
 ## Inputs and outputs
 
 Inputs:
@@ -422,6 +458,7 @@ Outputs:
 - initial review-record roots for triggered formal reviews before a change-local root exists;
 - review-log index entries for detailed review files;
 - initial and final review-resolution state with top-level closeout status plus finding-level disposition, owner, action, rationale, validation target, and evidence;
+- scan-first review-resolution summaries, overview tables, common metadata, shared validation evidence, and closeout checklists when `review-resolution.md` exists;
 - verification proof that accepted fixes worked;
 - concise explain-change and PR summaries;
 - structural validation failures for missing IDs, missing references, duplicate finding IDs, unsupported dispositions, and stale generated output.
@@ -443,6 +480,7 @@ Outputs:
 - Every material Finding ID appears in `review-resolution.md`.
 - `needs-decision` is never final.
 - A disposition value is not final closeout while `review-resolution.md` has `Closeout status: open` or required disposition-specific evidence is missing.
+- New `review-resolution.md` records remain both scan-first for humans and parseable for validators.
 - Review outcomes that require revision do not advance without same-stage re-review or explicit reviewer or owner closeout.
 - `verify`, `explain-change`, and `pr` do not proceed while material findings remain unresolved.
 - Clean reviews do not create empty resolution boilerplate.
@@ -475,6 +513,8 @@ Outputs:
 - If `needs-decision` remains before `verify`, `explain-change`, or `pr`, the workflow stops and reports the decision owner, decision needed, and owning stage.
 - If accepted-fix validation evidence is missing, `verify` blocks branch readiness.
 - If a blocking review outcome has no same-stage re-review or explicit reviewer or owner closeout, the workflow cannot advance to the next stage.
+- If scan-first formatting removes required per-finding parseable labels, structural or closeout validation fails.
+- If a review-resolution record duplicates long shared validation evidence in every finding, it remains structurally valid but fails the readability guidance and should be revised before handoff when the file is new or substantively revised.
 
 ## Compatibility and migration
 
@@ -483,6 +523,7 @@ Outputs:
 - Existing clean review settlements in proposals, specs, architecture artifacts, ADRs, or plans remain valid historical evidence when no detailed-record trigger applied.
 - Existing references that list only `accepted`, `rejected`, and `deferred` must be updated when they govern current behavior.
 - The new `partially-accepted` and `needs-decision` values are additive for authoring review-resolution records, but `needs-decision` is not a closeout value.
+- Existing historical `review-resolution.md` files do not need retroactive readability migration unless they are touched or used as current templates.
 - Rollback may revert the expanded vocabulary and structural validation while preserving the older requirement that review items have accepted, rejected, or deferred dispositions with rationale.
 - Public adapter packages must remain deterministic generated output from canonical skills.
 
@@ -492,6 +533,7 @@ Outputs:
 - `verify` output must identify unresolved `needs-decision` findings and missing accepted-fix evidence.
 - PR bodies must expose the review-resolution summary and artifact link when `review-resolution.md` exists.
 - Change-local artifacts should make review and resolution traceability inspectable without reading chat history.
+- Reviewers should be able to scan a new `review-resolution.md` top section to identify closeout status, covered reviews, resolved counts, unresolved counts, and where to audit any one finding.
 
 ## Security and privacy
 
@@ -502,6 +544,7 @@ Outputs:
 ## Accessibility and UX
 
 - Review artifact headings and required fields should be concise and repeatable.
+- New `review-resolution.md` records should prefer a summary, resolution overview table, compact finding details, shared validation evidence, and closeout checklist.
 - PR review-resolution summaries should be readable without requiring reviewers to scan every detailed review record first.
 - No UI-specific accessibility behavior is introduced by this feature.
 
@@ -537,6 +580,10 @@ Outputs:
 23. A `plan-review` with `rethink` but no material findings creates a detailed review file and `review-log.md`, but no empty `review-resolution.md`.
 24. A material `architecture-review` finding before any change-local root creates an initial review-record root with `review-resolution.md` before design fixes proceed.
 25. A final PR-ready handoff is incomplete if only the initial review-record root exists and durable Markdown reasoning was never added.
+26. A `review-resolution.md` file with seven accepted findings and the same validation run records the validation once as shared evidence while each finding keeps parseable `Validation evidence:` labels.
+27. A prettier `review-resolution.md` that replaces `Finding ID:` with only a table row is invalid for closeout because the finding entry is no longer parseable.
+28. A new `review-resolution.md` without an overview table or equivalent scan-first overview is not ready for review handoff, even if its fields are structurally parseable.
+29. An isolated material finding requires change-local review files even when it does not affect tracked work, affect closeout, or create follow-up work. Isolation stops handoff, not recording.
 
 ## Non-goals
 
@@ -545,6 +592,7 @@ Outputs:
 - Requiring a full review artifact pack for every non-trivial change.
 - Requiring empty review-resolution files for clean reviews.
 - Replacing human review, reviewer judgment, or maintainer decisions.
+- Turning `review-resolution.md` into a transcript or long review commentary archive.
 - Changing runtime product behavior outside the repository workflow contract.
 
 ## Acceptance criteria
@@ -569,6 +617,10 @@ Outputs:
 - A contributor can tell which formal lifecycle review outcomes require a detailed review file.
 - A contributor can create a no-material initial review-record root without creating an empty `review-resolution.md`.
 - A reviewer can distinguish the initial review-record root from the final non-trivial change-local pack.
+- A reviewer can understand a new `review-resolution.md` closeout state in 30 seconds.
+- A reviewer can audit any individual material finding in a new `review-resolution.md` in 2 minutes.
+- A new scan-first `review-resolution.md` remains valid under structural and closeout validation.
+- A contributor can tell that every material finding is recorded, all material findings require change-local review files, and isolation stops handoff rather than recording.
 
 ## Open questions
 
@@ -576,9 +628,11 @@ Outputs:
 
 ## Next artifacts
 
-- implement
-- code-review
-- verify
+- Implementation M1 under the active review skill material-finding recording plan.
+- `code-review` after implementation milestones complete.
+- `verify`.
+- `explain-change`.
+- `pr`.
 
 ## Follow-on artifacts
 
@@ -591,7 +645,12 @@ Outputs:
 - `docs/changes/2026-04-24-review-finding-resolution-contract/review-resolution.md`
 - `docs/plans/2026-04-25-review-finding-resolution-contract.md`
 - `specs/review-finding-resolution-contract.test.md`
+- Proposal amendment: [Review Skill Material Finding Recording](../docs/proposals/2026-05-07-review-skill-material-finding-recording.md)
+- Spec-review: approved on 2026-05-07 with no material findings.
+- Execution plan: [Review Skill Material Finding Recording plan](../docs/plans/2026-05-07-review-skill-material-finding-recording.md)
+- Plan-review: approved on 2026-05-07 with no material findings.
+- Test spec: [Review Finding Resolution Contract test spec](review-finding-resolution-contract.test.md) updated for the review skill material-finding recording amendment.
 
 ## Readiness
 
-- Approved by `spec-review-r2`. Architecture approved by `architecture-review-r2`. Plan-review approved the active plan. Test spec is active. The active plan and test spec now govern the execution lane.
+- Approved amendment for scan-first `review-resolution.md` readability and review skill material-finding recording. Matching test spec is updated; the active plan now governs M1 proof-map work.
