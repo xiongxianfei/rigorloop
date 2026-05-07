@@ -101,13 +101,13 @@ The test spec should require focused static assertions for:
 ## Current Handoff Summary
 
 - Current milestone: M3
-- Current milestone state: review-requested
-- Last reviewed milestone: M2
+- Current milestone state: closed
+- Last reviewed milestone: M3
 - Review status: clean-with-notes
-- Remaining in-scope implementation milestones: M3, M4
-- Next stage: code-review M3
+- Remaining in-scope implementation milestones: M4
+- Next stage: implement M4
 - Verify readiness: not ready
-- Reason verify is not ready: M3 is pending code-review and implementation milestone M4 remains open.
+- Reason verify is not ready: implementation milestone M4 remains open.
 
 ## Milestones
 
@@ -206,7 +206,7 @@ The test spec should require focused static assertions for:
 
 ### M3. Align Operating Docs and Stage Skills
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Update contributor guidance and authored skills so `implement`, `code-review`, `plan`, and workflow orchestration use the approved milestone loop.
 - Requirements: `R3`-`R10a`, `AC5`-`AC6`.
 - Files/components likely touched:
@@ -398,7 +398,7 @@ Final validation should include:
 - [x] M2 workflow contract alignment complete.
 - [x] M2 code-review complete.
 - [x] M3 docs and skill guidance alignment complete.
-- [ ] M3 code-review complete.
+- [x] M3 code-review complete.
 - [ ] M4 generated output and implementation evidence complete.
 - [ ] M4 code-review complete.
 - [ ] Review-resolution closed if triggered.
@@ -500,7 +500,20 @@ Final validation should include:
   - `rg -n 'clean-with-notes.*verify|code-review -> verify|implementation-complete|review-clean|review-requested|resolution-needed|lifecycle-closeout' docs/workflows.md AGENTS.md CONSTITUTION.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/plan/SKILL.md skills/workflow/SKILL.md` found only intentional milestone-aware wording and evidence-phrase mentions; no stale unconditional clean-review-to-verify shortcut remains.
   - `python scripts/build-skills.py --check` failed as expected for M3 because `.codex/skills/code-review`, `.codex/skills/implement`, `.codex/skills/plan`, and `.codex/skills/workflow` are generated outputs intentionally deferred to M4.
   - `bash scripts/ci.sh --mode explicit --path docs/workflows.md --path AGENTS.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/plan/SKILL.md --path skills/workflow/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml` failed only on `skills.drift` and `adapters.drift`, which M4 owns; all non-generated-drift selected checks passed.
+- 2026-05-07 M3 code-review closeout:
+  - Reviewed commit: `7667553 M3: align milestone-aware workflow skills`.
+  - Review status: `clean-with-notes`.
+  - Material findings: none.
+  - Detailed review record: not required because the review was clean with no material findings and no detailed-record trigger.
+  - `python scripts/test-skill-validator.py` passed with 33 tests.
+  - `python scripts/validate-skills.py` passed for 23 authored skill files.
+  - `python scripts/select-validation.py --mode explicit --path docs/workflows.md --path AGENTS.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/plan/SKILL.md --path skills/workflow/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml` passed with no unclassified paths and selected generated drift checks for M4.
+  - `python scripts/build-skills.py --check` failed as expected for M4-owned generated skill mirror drift.
+  - `python scripts/build-adapters.py --version 0.1.1 --check` failed as expected for M4-owned generated adapter drift.
+  - `rg -n 'first-pass `clean-with-notes` continues to `verify`|`clean-with-notes` hands off to `verify` when no stop condition applies|`code-review -> verify` only for first-pass `clean-with-notes`' docs/workflows.md skills/code-review/SKILL.md skills/workflow/SKILL.md` found no stale shortcut matches.
+  - `test ! -e skills/review-resolution/SKILL.md` passed.
+  - `git diff --check 2671484..7667553` passed.
 
 ## Outcome and Retrospective
 
-Active. Next stage: `code-review M3`. Verify is not ready because M3 is pending code-review and implementation milestone M4 remains open.
+Active. Next stage: `implement M4`. Verify is not ready because implementation milestone M4 remains open.
