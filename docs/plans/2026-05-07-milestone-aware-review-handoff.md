@@ -100,14 +100,14 @@ The test spec should require focused static assertions for:
 
 ## Current Handoff Summary
 
-- Current milestone: M3
-- Current milestone state: closed
+- Current milestone: M4
+- Current milestone state: review-requested
 - Last reviewed milestone: M3
 - Review status: clean-with-notes
 - Remaining in-scope implementation milestones: M4
-- Next stage: implement M4
+- Next stage: code-review M4
 - Verify readiness: not ready
-- Reason verify is not ready: implementation milestone M4 remains open.
+- Reason verify is not ready: M4 is pending code-review.
 
 ## Milestones
 
@@ -265,7 +265,7 @@ The test spec should require focused static assertions for:
 
 ### M4. Refresh Generated Output and Close Implementation Evidence
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Propagate canonical skill changes through generated outputs and prepare the implementation slice for final code review.
 - Requirements: `R11`-`R11b`, `AC6`-`AC8`, generated-output alignment for changed skills.
 - Files/components likely touched:
@@ -298,12 +298,12 @@ The test spec should require focused static assertions for:
 - Expected observable result: generated Codex and public adapter outputs match canonical skill guidance, change-local metadata captures implementation evidence, and the implementation slice is ready for milestone `code-review`.
 - Commit message: `M4: refresh milestone-aware generated guidance`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone state updated to `review-requested` before code-review handoff
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone state updated to `review-requested` before code-review handoff
+  - [x] milestone committed
 - Risks:
   - Generated output may include broader churn if generators derive related metadata from changed skill text.
   - Change metadata can drift from the actual implementation if created too early.
@@ -399,7 +399,7 @@ Final validation should include:
 - [x] M2 code-review complete.
 - [x] M3 docs and skill guidance alignment complete.
 - [x] M3 code-review complete.
-- [ ] M4 generated output and implementation evidence complete.
+- [x] M4 generated output and implementation evidence complete.
 - [ ] M4 code-review complete.
 - [ ] Review-resolution closed if triggered.
 - [ ] Verify complete.
@@ -421,12 +421,15 @@ Final validation should include:
 - 2026-05-07: Leave `specs/review-finding-resolution-contract.md` unchanged for M2. Rationale: the approved same-milestone review-resolution loop is now explicit in the two authoritative workflow specs, and the focused review-resolution record spec does not need new standalone-skill or parser behavior for this slice.
 - 2026-05-07: Convert the M3 skill-validator expected-failure checks into ordinary passing checks after authored guidance edits. Rationale: `docs/workflows.md` and the affected authored skills now carry the milestone-aware state and handoff wording.
 - 2026-05-07: Update `AGENTS.md` with one concise milestone-aware reminder and leave `CONSTITUTION.md` unchanged. Rationale: the root workflow chain was otherwise easy to misread as strictly linear, while the constitution already delegates workflow detail to approved specs and operational docs without a direct conflict.
+- 2026-05-07: Refresh generated skill mirrors and public adapter output only through repository generators for M4. Rationale: generated `.codex/skills/` and `dist/adapters/` output must stay derived from canonical authored `skills/` sources.
+- 2026-05-07: Add `docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md` during M4 as the durable Markdown reasoning surface required by the baseline change-local pack. Rationale: final explain-change will update it after verify, but the implementation evidence now has a durable reviewable home.
 
 ## Surprises and Discoveries
 
 - 2026-05-07: The old guidance still contains unconditional clean-review-to-verify shortcuts in `docs/workflows.md`, `skills/code-review/SKILL.md`, `skills/workflow/SKILL.md`, and `specs/workflow-stage-autoprogression.md`; the new pending skill-validator checks capture that red state for M2/M3.
 - 2026-05-07: `specs/rigorloop-workflow.md` also needed to distinguish implementation handoff evidence from a milestone `closed` state. The M2 wording now keeps the existing milestone commit evidence rule while making review closeout the source of the `closed` milestone state.
 - 2026-05-07: M3 guidance needed both the contributor-facing workflow summary and the orchestrator skill updated. Leaving either surface with a linear clean-review route would preserve the original workflow bug.
+- 2026-05-07: Generated adapter refresh did not change adapter manifests. The generated diff is limited to the expected skill-content propagation for `implement`, `code-review`, `plan`, and `workflow` under Codex, Claude, and opencode adapters.
 
 ## Validation Notes
 
@@ -513,7 +516,23 @@ Final validation should include:
   - `rg -n 'first-pass `clean-with-notes` continues to `verify`|`clean-with-notes` hands off to `verify` when no stop condition applies|`code-review -> verify` only for first-pass `clean-with-notes`' docs/workflows.md skills/code-review/SKILL.md skills/workflow/SKILL.md` found no stale shortcut matches.
   - `test ! -e skills/review-resolution/SKILL.md` passed.
   - `git diff --check 2671484..7667553` passed.
+- 2026-05-07 M4 validation:
+  - `python scripts/build-skills.py` passed and regenerated `.codex/skills/` from canonical `skills/`.
+  - `python scripts/build-adapters.py --version 0.1.1` passed and regenerated public adapter output under `dist/adapters/`.
+  - `python scripts/build-skills.py --check` passed.
+  - `python scripts/build-adapters.py --version 0.1.1 --check` passed.
+  - `python scripts/validate-adapters.py --version 0.1.1` passed.
+  - `python scripts/test-adapter-distribution.py` passed with 56 tests.
+  - `python scripts/validate-skills.py` passed for 23 authored skill files.
+  - `python scripts/test-skill-validator.py` passed with 33 tests.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml` passed.
+  - `python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml --path docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/plan/SKILL.md --path skills/workflow/SKILL.md --path .codex/skills/implement/SKILL.md --path .codex/skills/code-review/SKILL.md --path .codex/skills/plan/SKILL.md --path .codex/skills/workflow/SKILL.md --path dist/adapters/codex/.agents/skills/implement/SKILL.md --path dist/adapters/codex/.agents/skills/code-review/SKILL.md --path dist/adapters/codex/.agents/skills/plan/SKILL.md --path dist/adapters/codex/.agents/skills/workflow/SKILL.md --path dist/adapters/claude/.claude/skills/implement/SKILL.md --path dist/adapters/claude/.claude/skills/code-review/SKILL.md --path dist/adapters/claude/.claude/skills/plan/SKILL.md --path dist/adapters/claude/.claude/skills/workflow/SKILL.md --path dist/adapters/opencode/.opencode/skills/implement/SKILL.md --path dist/adapters/opencode/.opencode/skills/code-review/SKILL.md --path dist/adapters/opencode/.opencode/skills/plan/SKILL.md --path dist/adapters/opencode/.opencode/skills/workflow/SKILL.md --path docs/plans/2026-05-07-milestone-aware-review-handoff.md` passed with no unclassified paths.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml --path docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path skills/code-review/SKILL.md --path skills/implement/SKILL.md --path skills/plan/SKILL.md --path skills/workflow/SKILL.md` passed.
+  - `python scripts/test-change-metadata-validator.py` passed.
+  - `bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml --path docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/plan/SKILL.md --path skills/workflow/SKILL.md --path .codex/skills/implement/SKILL.md --path .codex/skills/code-review/SKILL.md --path .codex/skills/plan/SKILL.md --path .codex/skills/workflow/SKILL.md --path dist/adapters/codex/.agents/skills/implement/SKILL.md --path dist/adapters/codex/.agents/skills/code-review/SKILL.md --path dist/adapters/codex/.agents/skills/plan/SKILL.md --path dist/adapters/codex/.agents/skills/workflow/SKILL.md --path dist/adapters/claude/.claude/skills/implement/SKILL.md --path dist/adapters/claude/.claude/skills/code-review/SKILL.md --path dist/adapters/claude/.claude/skills/plan/SKILL.md --path dist/adapters/claude/.claude/skills/workflow/SKILL.md --path dist/adapters/opencode/.opencode/skills/implement/SKILL.md --path dist/adapters/opencode/.opencode/skills/code-review/SKILL.md --path dist/adapters/opencode/.opencode/skills/plan/SKILL.md --path dist/adapters/opencode/.opencode/skills/workflow/SKILL.md --path docs/plans/2026-05-07-milestone-aware-review-handoff.md` passed all selected checks.
+  - `git diff --check -- .codex/skills dist/adapters docs/changes/2026-05-07-milestone-aware-review-handoff docs/plans/2026-05-07-milestone-aware-review-handoff.md` passed.
+  - `rg -n '[[:blank:]]$|\t'` over the changed generated skill, generated adapter, change-local, and plan files found no trailing whitespace or tab characters.
 
 ## Outcome and Retrospective
 
-Active. Next stage: `implement M4`. Verify is not ready because implementation milestone M4 remains open.
+Active. Next stage: `code-review M4`. Verify is not ready because M4 is pending code-review.

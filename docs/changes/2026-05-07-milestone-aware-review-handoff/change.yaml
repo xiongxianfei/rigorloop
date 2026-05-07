@@ -7,6 +7,7 @@ artifacts:
   spec: specs/milestone-aware-review-handoff.md
   test_spec: specs/milestone-aware-review-handoff.test.md
   plan: docs/plans/2026-05-07-milestone-aware-review-handoff.md
+  explain_change: docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md
   review_resolution: docs/changes/2026-05-07-milestone-aware-review-handoff/review-resolution.md
 requirements:
   - Make workflow-managed milestone reviews route to the next in-scope implementation milestone until all implementation milestones are closed.
@@ -18,6 +19,7 @@ requirements:
   - Preserve same-milestone review-resolution, `resolution-needed`, ambiguous-plan, and lifecycle-closeout boundaries in authoritative workflow contracts.
   - Align contributor workflow guidance and authored stage skills so implement, code-review, plan, and workflow orchestration use the approved milestone-aware handoff loop.
   - Keep generated skill mirrors and public adapter output derived for the later generated-output milestone.
+  - Refresh generated Codex runtime skill mirrors and generated public adapter skill copies from canonical authored skills.
 tests:
   - Plan-review evidence that selector blocks directory path `dist/adapters` in explicit mode.
   - Selector validation for concrete generated adapter skill file paths.
@@ -26,6 +28,7 @@ tests:
   - Skill-validator static proof for approved milestone state vocabulary plus pending red-state checks for M2/M3 guidance alignment.
   - Skill-validator static proof that authoritative workflow specs remove the unconditional clean-review-to-verify shortcut and contain milestone-aware routing terms.
   - Skill-validator static proof that authored workflow guidance and stage skills remove stale clean-review-to-verify shortcuts and include milestone-aware state, handoff, current handoff summary, and lifecycle-closeout terms.
+  - Generated-output drift checks proving `.codex/skills/` and public adapter packages are synchronized with canonical `skills/`.
 validation:
   - command: python scripts/select-validation.py --mode explicit --path dist/adapters
     result: fail_expected_unclassified_directory_path_before_plan_revision
@@ -95,6 +98,30 @@ validation:
     result: fail_expected_m4_generated_codex_skill_mirror_drift
   - command: bash scripts/ci.sh --mode explicit --path docs/workflows.md --path AGENTS.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/plan/SKILL.md --path skills/workflow/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml
     result: fail_expected_only_skills_drift_and_adapters_drift_until_m4_generated_output_refresh
+  - command: python scripts/build-skills.py
+    result: pass_generated_codex_skill_mirrors_refreshed
+  - command: python scripts/build-adapters.py --version 0.1.1
+    result: pass_generated_public_adapter_output_refreshed
+  - command: python scripts/build-skills.py --check
+    result: pass_generated_codex_skill_mirrors_in_sync
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_generated_adapter_output_in_sync
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_56_tests
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml --path docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/plan/SKILL.md --path skills/workflow/SKILL.md --path .codex/skills/implement/SKILL.md --path .codex/skills/code-review/SKILL.md --path .codex/skills/plan/SKILL.md --path .codex/skills/workflow/SKILL.md --path dist/adapters/codex/.agents/skills/implement/SKILL.md --path dist/adapters/codex/.agents/skills/code-review/SKILL.md --path dist/adapters/codex/.agents/skills/plan/SKILL.md --path dist/adapters/codex/.agents/skills/workflow/SKILL.md --path dist/adapters/claude/.claude/skills/implement/SKILL.md --path dist/adapters/claude/.claude/skills/code-review/SKILL.md --path dist/adapters/claude/.claude/skills/plan/SKILL.md --path dist/adapters/claude/.claude/skills/workflow/SKILL.md --path dist/adapters/opencode/.opencode/skills/implement/SKILL.md --path dist/adapters/opencode/.opencode/skills/code-review/SKILL.md --path dist/adapters/opencode/.opencode/skills/plan/SKILL.md --path dist/adapters/opencode/.opencode/skills/workflow/SKILL.md --path docs/plans/2026-05-07-milestone-aware-review-handoff.md
+    result: pass_selected_skills_adapters_artifact_lifecycle_change_metadata_no_unclassified_paths
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml --path docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path skills/code-review/SKILL.md --path skills/implement/SKILL.md --path skills/plan/SKILL.md --path skills/workflow/SKILL.md
+    result: pass
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml --path docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/plan/SKILL.md --path skills/workflow/SKILL.md --path .codex/skills/implement/SKILL.md --path .codex/skills/code-review/SKILL.md --path .codex/skills/plan/SKILL.md --path .codex/skills/workflow/SKILL.md --path dist/adapters/codex/.agents/skills/implement/SKILL.md --path dist/adapters/codex/.agents/skills/code-review/SKILL.md --path dist/adapters/codex/.agents/skills/plan/SKILL.md --path dist/adapters/codex/.agents/skills/workflow/SKILL.md --path dist/adapters/claude/.claude/skills/implement/SKILL.md --path dist/adapters/claude/.claude/skills/code-review/SKILL.md --path dist/adapters/claude/.claude/skills/plan/SKILL.md --path dist/adapters/claude/.claude/skills/workflow/SKILL.md --path dist/adapters/opencode/.opencode/skills/implement/SKILL.md --path dist/adapters/opencode/.opencode/skills/code-review/SKILL.md --path dist/adapters/opencode/.opencode/skills/plan/SKILL.md --path dist/adapters/opencode/.opencode/skills/workflow/SKILL.md --path docs/plans/2026-05-07-milestone-aware-review-handoff.md
+    result: pass_selected_skills_adapters_artifact_lifecycle_and_change_metadata_checks
+  - command: git diff --check -- .codex/skills dist/adapters docs/changes/2026-05-07-milestone-aware-review-handoff docs/plans/2026-05-07-milestone-aware-review-handoff.md
+    result: pass
+  - command: rg -n '[[:blank:]]$|\t' .codex/skills/implement/SKILL.md .codex/skills/code-review/SKILL.md .codex/skills/plan/SKILL.md .codex/skills/workflow/SKILL.md dist/adapters/codex/.agents/skills/implement/SKILL.md dist/adapters/codex/.agents/skills/code-review/SKILL.md dist/adapters/codex/.agents/skills/plan/SKILL.md dist/adapters/codex/.agents/skills/workflow/SKILL.md dist/adapters/claude/.claude/skills/implement/SKILL.md dist/adapters/claude/.claude/skills/code-review/SKILL.md dist/adapters/claude/.claude/skills/plan/SKILL.md dist/adapters/claude/.claude/skills/workflow/SKILL.md dist/adapters/opencode/.opencode/skills/implement/SKILL.md dist/adapters/opencode/.opencode/skills/code-review/SKILL.md dist/adapters/opencode/.opencode/skills/plan/SKILL.md dist/adapters/opencode/.opencode/skills/workflow/SKILL.md docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md docs/plans/2026-05-07-milestone-aware-review-handoff.md
+    result: pass_no_matches
 changed_files:
   - docs/plan.md
   - AGENTS.md
@@ -104,6 +131,7 @@ changed_files:
   - specs/milestone-aware-review-handoff.md
   - specs/milestone-aware-review-handoff.test.md
   - docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml
+  - docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md
   - docs/changes/2026-05-07-milestone-aware-review-handoff/review-log.md
   - docs/changes/2026-05-07-milestone-aware-review-handoff/review-resolution.md
   - docs/changes/2026-05-07-milestone-aware-review-handoff/reviews/plan-review-r1.md
@@ -116,6 +144,22 @@ changed_files:
   - skills/code-review/SKILL.md
   - skills/plan/SKILL.md
   - skills/workflow/SKILL.md
+  - .codex/skills/implement/SKILL.md
+  - .codex/skills/code-review/SKILL.md
+  - .codex/skills/plan/SKILL.md
+  - .codex/skills/workflow/SKILL.md
+  - dist/adapters/codex/.agents/skills/implement/SKILL.md
+  - dist/adapters/codex/.agents/skills/code-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/plan/SKILL.md
+  - dist/adapters/codex/.agents/skills/workflow/SKILL.md
+  - dist/adapters/claude/.claude/skills/implement/SKILL.md
+  - dist/adapters/claude/.claude/skills/code-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/plan/SKILL.md
+  - dist/adapters/claude/.claude/skills/workflow/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/implement/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/code-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/plan/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/workflow/SKILL.md
 review:
   status: closed
   unresolved_items: 0
