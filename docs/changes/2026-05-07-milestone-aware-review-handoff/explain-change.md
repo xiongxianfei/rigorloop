@@ -4,7 +4,7 @@
 
 This change makes clean code review of a milestone aware of whether more in-scope implementation milestones remain. A clean non-final milestone review closes that milestone and routes to the next implementation milestone; only a clean final implementation milestone can route to `verify`.
 
-Status: implementation evidence is current through M4, final verification has passed, and this explanation closes the explain-change gate. The next workflow stage is `pr`.
+Status: implementation evidence is current through M4, final verification has passed, explain-change is recorded, and PR handoff is complete in PR #33.
 
 ## Problem
 
@@ -101,11 +101,11 @@ Existing untouched historical plans are not migrated solely because they lack th
 
 - Generated outputs must remain in sync with canonical `skills/`; M4 drift checks and final verify cover the current branch.
 - PR preparation confirmed branch base hygiene: the branch is restacked on `origin/main` at `f8162780ea535c412bb5d7cf69fd303c61af0656875c04491` with active scope `origin/main..HEAD`, so no stacked-branch caveat remains.
-- The plan remains `Active` because PR handoff is a true downstream completion event. Merge is not being used as a deferred lifecycle-closeout trigger.
+- The plan is synchronized to Done in PR #33 because PR handoff is complete. Merge is not being used as a deferred lifecycle-closeout trigger.
 
 ## PR Handoff Summary
 
 - Branch-ready for the active milestone-aware change scope: yes.
-- Next stage: `pr`.
+- Next stage: Done.
 - PR-stage caveat: none for branch base; the branch has been restacked for a standalone PR.
-- PR body should cite the approved spec, test spec, active plan, review-resolution closeout, selected CI, broad smoke, and this explanation.
+- PR #33 cites the approved spec, test spec, plan, review-resolution closeout, selected CI, broad smoke, and this explanation.

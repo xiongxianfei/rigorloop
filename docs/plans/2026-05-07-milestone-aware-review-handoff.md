@@ -2,11 +2,11 @@
 
 ## Status
 
-- active
+- done
 - Owner: maintainers
 - Start date: 2026-05-07
 - Last updated: 2026-05-08
-- Related issue or PR: none yet
+- Related issue or PR: PR #33, https://github.com/xiongxianfei/rigorloop/pull/33
 - Supersedes: none
 - selected_workflow_contract: refactored
 - broad_smoke_required: false
@@ -100,14 +100,14 @@ The test spec should require focused static assertions for:
 
 ## Current Handoff Summary
 
-- Current milestone: M4
+- Current milestone: none; implementation milestones M1 through M4 are closed
 - Current milestone state: closed
 - Last reviewed milestone: M4
 - Review status: clean-with-notes
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
+- Next stage: Done
 - Verify readiness: passed
-- Reason verify passed: all in-scope implementation milestones are closed, code-review is complete, review-resolution is closed/not triggered, selected CI passed, and broad smoke passed.
+- Reason verify passed: all in-scope implementation milestones are closed, code-review is complete, review-resolution is closed/not triggered, selected CI passed, broad smoke passed, and PR #33 is open.
 
 ## Milestones
 
@@ -404,8 +404,8 @@ Final validation should include:
 - [x] Review-resolution closed if triggered (not triggered).
 - [x] Verify complete.
 - [x] Explain-change complete.
-- [ ] PR handoff complete.
-- [ ] Plan lifecycle synchronized to Done when no true downstream event remains.
+- [x] PR handoff complete.
+- [x] Plan lifecycle synchronized to Done when no true downstream event remains.
 
 ## Decision Log
 
@@ -574,7 +574,19 @@ Final validation should include:
   - `git diff --check 07a071f..92a0896` passed.
   - `git diff --check origin/main..HEAD` passed.
   - `rg -n '[[:blank:]]$|\t'` over active changed files from `origin/main..HEAD` found no trailing whitespace or tab characters.
+- 2026-05-08 PR handoff closeout validation:
+  - Opened draft PR #33 to obtain the PR identifier, then synchronized `docs/plan.md` and this plan body to Done before opening the PR for review.
+  - `bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml --path docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md` passed.
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-07-milestone-aware-review-handoff` passed.
+  - `git diff --check -- docs/plan.md docs/plans/2026-05-07-milestone-aware-review-handoff.md docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml` passed.
+  - `rg -n '[[:blank:]]$|\t' docs/plan.md docs/plans/2026-05-07-milestone-aware-review-handoff.md docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml` found no trailing whitespace or tab characters.
 
 ## Outcome and Retrospective
 
-Active. Next stage: `pr`. Verify and explain-change are complete for the active milestone-aware change scope, and PR preparation confirmed the branch is restacked on `origin/main` with no stacked-branch caveat remaining.
+- Done. M1 through M4 are closed with validation evidence, clean milestone code reviews, closed review-resolution status, passing verify, durable explain-change, and opened PR #33. No true downstream completion event remains, so the plan index and plan body are synchronized as Done in this branch for PR review.
+
+## Readiness
+
+- Branch-ready was established by verify, restack validation, and PR-prep closeout validation.
+- Plan index and plan body are synchronized as Done for PR #33 review.
+- PR #33 is open.
