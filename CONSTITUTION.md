@@ -2,9 +2,9 @@
 
 ## Project purpose
 
-RigorLoop is a Git-first starter kit for AI-assisted software delivery. It exists to help contributors and maintainers build software with explicit proposals, specs, architecture decisions, plans, tests, review gates, verification, and explainable change history.
+RigorLoop is a rigorous software engineering workflow for AI coding agents. It exists to help contributors and maintainers turn product intent into traceable proposals, requirements, tests, architecture decisions, plans, implementation, verification evidence, and review outcomes.
 
-The repository MUST optimize for reviewability, traceability, and trustworthy automation over speed-by-default.
+The repository MUST optimize for reviewability, traceability, trustworthy automation, and design-implementation consistency over speed-by-default or code volume. Git, CI, and pull requests are compatibility surfaces for that workflow; they are not the project purpose.
 
 ## Source of truth order
 
