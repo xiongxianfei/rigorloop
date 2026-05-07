@@ -6,7 +6,7 @@
 - Owner: maintainers
 - Start date: 2026-05-06
 - Last updated: 2026-05-07
-- Related issue or PR: none yet
+- Related issue or PR: PR #31
 - Supersedes: none
 - broad_smoke_required: false
 - broad_smoke_reason: This change updates workflow-governance artifacts, skill guidance, repository validation, tests, generated skill output, adapter output, and vision rationale artifacts. It does not add runtime data flow, storage, network boundaries, deployment behavior, release packaging, schemas, or external integrations that require repository broad smoke by default.
@@ -319,7 +319,7 @@ Repository broad smoke is not planned by default. If plan-review, test-spec, sel
 - [x] code-review rerun clean after the README drift fix.
 - [x] verify passed.
 - [x] explain-change refreshed.
-- [x] PR handoff prepared with lifecycle closeout recorded in this branch.
+- [x] PR handoff prepared with lifecycle closeout recorded in this branch and PR #31 opened.
 
 ## Decision Log
 
@@ -354,7 +354,7 @@ Repository broad smoke is not planned by default. If plan-review, test-spec, sel
 
 ## Outcome and Retrospective
 
-- Done. Implementation milestones M1 through M4 are complete. First-pass code-review requested changes for `CR1-F1`, and the finding is resolved with review-resolution closed. Same-stage code-review reruns returned `clean-with-notes`, including the rerun after the verify-found README drift fix. Verify passed, explain-change is refreshed, and PR handoff closeout is recorded in this branch before review.
+- Done. Implementation milestones M1 through M4 are complete. First-pass code-review requested changes for `CR1-F1`, and the finding is resolved with review-resolution closed. Same-stage code-review reruns returned `clean-with-notes`, including the rerun after the verify-found README drift fix. Verify passed, explain-change is refreshed, PR handoff closeout is recorded in this branch before review, and PR #31 is open.
 
 ## Readiness
 
@@ -365,4 +365,4 @@ Repository broad smoke is not planned by default. If plan-review, test-spec, sel
 - Code-review reruns clean.
 - Verify passed.
 - Explain-change refreshed.
-- Plan index and plan body are synchronized as Done for PR review.
+- Plan index and plan body are synchronized as Done for PR #31 review.
