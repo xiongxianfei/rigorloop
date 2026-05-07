@@ -570,9 +570,9 @@ R12bc. For review recording decisions, a finding MUST be treated as material whe
 
 R12bd. For an isolated or review-only formal review with material findings, final review output MUST show that isolation stops handoff, not recording.
 
-R12bda. The output MUST state isolated handoff status, material Finding IDs, required durable review record path or reconstruction requirement, that `review-resolution.md` is required, and next allowed action.
+R12bda. The output MUST state no automatic downstream handoff, material Finding IDs, required review record path, whether the record must be created before fixing or reconstructed, and whether owner decision is needed.
 
-R12bdb. The next allowed action MUST be one of `create-change-local-record-before-fixing`, `reconstruct-record-because-fixes-already-began`, or `stop-for-owner-decision`.
+R12bdb. The output MUST make the next action clear without requiring enum-style action strings.
 
 R12bdc. The output MUST NOT offer review-output-only or artifact-local-only settlement for material findings.
 
@@ -771,7 +771,7 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - Workflow-governance changes with affected operating or governance surfaces that are not updated, explicitly marked unaffected with rationale, or deferred with owner and follow-up MUST be considered incomplete.
 - Review-driven fixes or downstream routing after a formal lifecycle review MUST stop when a required detailed review file or required initial review-record root is missing.
 - Review-driven tracked artifact edits after an isolated formal review material finding MUST stop until the required durable review record exists, or until a reconstructed record repairs late capture.
-- An isolated review output with material findings that omits handoff status, material Finding IDs, required record path or reconstruction requirement, `review-resolution.md` requirement, or next allowed action MUST be considered incomplete.
+- An isolated review output with material findings that omits handoff status, material Finding IDs, required record path, record-before-fixing or reconstruction status, or owner-decision status MUST be considered incomplete.
 - A copied formal review skill `## Isolation and Recording` subsection that differs from `templates/shared/review-isolation-and-recording.md`, or contains stage-specific insertions inside the shared block, MUST fail structural validation.
 - A new `review-resolution.md` that removes required per-finding parseable labels for scan-first formatting MUST be considered invalid for review closeout.
 - `verify`, final `explain-change`, and `pr` MUST stop while required `review-resolution` closeout remains open.
@@ -920,7 +920,7 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - A contributor can distinguish isolated review handoff from material-finding recording obligations.
 - A contributor can tell that every material finding is recorded and all material findings require change-local review files.
 - A contributor can identify tracked artifacts for review-recording purposes.
-- An isolated review output with material findings exposes handoff status, material Finding IDs, required record path or reconstruction requirement, `review-resolution.md` requirement, and next allowed action.
+- An isolated review output with material findings exposes handoff status, material Finding IDs, required record path, record-before-fixing or reconstruction status, and owner-decision status.
 - Isolated material-review output makes clear that material findings require change-local review files even when downstream handoff stops.
 - `CONSTITUTION.md`, `AGENTS.md`, and `docs/workflows.md` teach the broad rule that every material finding requires a detailed change-local review file.
 - Formal review skills contain a byte-identical `## Isolation and Recording` block copied from a canonical template.

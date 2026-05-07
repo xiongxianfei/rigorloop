@@ -760,40 +760,44 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         )
         normalized = " ".join(canonical.split())
         required_terms = [
-            "Isolation governs handoff. Recording follows the finding.",
-            "A direct or review-only review request remains isolated by default",
+            "Isolation governs handoff. Recording follows material findings.",
+            "A direct or review-only request remains isolated by default",
             "Isolation does not suppress recording.",
-            "A material finding requires a durable change-local review record",
-            "`docs/changes/<change-id>/reviews/`",
-            "workflow-managed or isolated",
-            "The durable record must be created before review-driven edits begin.",
-            "reconstructed",
-            "source, timing, available evidence, stable Finding IDs, and known fidelity loss",
-            "A tracked artifact is any version-controlled repository file whose",
-            "lifecycle artifacts, governance files, workflow summaries, skills",
-            "specs, schemas, scripts, generated outputs, README content, and",
-            "ephemeral chat output, local scratch files, or unversioned drafts",
-            "resolution-step gate",
-            "Materiality is governed by `CONSTITUTION.md`",
-            "Operational shortcut",
-            "changes or blocks a tracked artifact",
+            "Every material finding requires a durable change-local review record",
+            "`docs/changes/<change-id>/reviews/<stage>-r<n>.md`",
+            "The review record must be indexed in `review-log.md` and resolved in `review-resolution.md`.",
+            "Create the durable record before fixing.",
+            "A material finding must include:",
+            "evidence",
+            "required outcome",
+            "safe resolution path, or `needs-decision` rationale",
             "Clean reviews with no material findings remain lightweight",
+            "do not require detailed review files",
             "For an isolated review with material findings",
-            "isolated handoff status",
+            "the final review output must state:",
+            "no automatic downstream handoff",
             "material Finding IDs",
-            "required durable review record path or reconstruction requirement",
-            "`review-resolution.md` is required",
-            "`create-change-local-record-before-fixing`",
-            "`reconstruct-record-because-fixes-already-began`",
-            "`stop-for-owner-decision`",
+            "required review record path",
+            "whether the record must be created before fixing or reconstructed",
+            "whether owner decision is needed",
         ]
         for term in required_terms:
             with self.subTest(term=term):
                 self.assertIn(term, normalized)
-        self.assertNotIn(
-            "The durable record should be created before review-driven edits begin.",
-            normalized,
-        )
+        removed_terms = [
+            "specs/rigorloop-workflow.md",
+            "A tracked artifact is any version-controlled repository file whose",
+            "Operational shortcut",
+            "resolution-step gate",
+            "review-driven edits",
+            "`create-change-local-record-before-fixing`",
+            "`reconstruct-record-because-fixes-already-began`",
+            "`stop-for-owner-decision`",
+            "The durable record should be created",
+        ]
+        for term in removed_terms:
+            with self.subTest(removed_term=term):
+                self.assertNotIn(term, normalized)
 
     def test_governance_guidance_uses_broad_material_finding_rule(self) -> None:
         required_terms = [
