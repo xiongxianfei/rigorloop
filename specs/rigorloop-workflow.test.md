@@ -17,6 +17,9 @@
 - Completed amendment plan: [PR-Self-Contained Lifecycle Completion Plan](../docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md), done.
 - Related amendment proposal: [Review Skill Material Finding Recording](../docs/proposals/2026-05-07-review-skill-material-finding-recording.md), accepted.
 - Current amendment plan: [Review Skill Material Finding Recording Execution Plan](../docs/plans/2026-05-07-review-skill-material-finding-recording.md), active.
+- Related amendment spec: [Milestone-Aware Review Handoff](milestone-aware-review-handoff.md), approved.
+- Related amendment test spec: [Milestone-Aware Review Handoff test spec](milestone-aware-review-handoff.test.md), active.
+- Related amendment plan: [Milestone-Aware Review Handoff Execution Plan](../docs/plans/2026-05-07-milestone-aware-review-handoff.md), active.
 - Architecture: not required. The approved refactor and PR-self-contained lifecycle completion amendment change workflow governance, documentation, skills, validators, and generated output without runtime architecture or deployment boundaries.
 - Spec-review: approved with no material findings after the PR-self-contained lifecycle completion amendment was added; minor SR-1 asked the test spec to decide how merge-dependent language classification is recorded.
 - Plan-review: approved with no material findings for the PR-self-contained lifecycle completion plan. Minor non-blocking note: if README remains unchanged, final affected-surface evidence should mark it unaffected with rationale.
@@ -33,6 +36,7 @@
 - Treat formal review recording as a cross-spec alignment point here; detailed review-artifact fixture coverage lives in `specs/formal-review-recording.test.md`, while this test spec proves the workflow contract does not contradict stage-neutral recording, clean-review settlement, or conditional review-resolution behavior.
 - Treat PR-self-contained lifecycle completion as the current workflow amendment under test. A merge-dependent language warning is treated as addressed only when a contributor-visible tracked or review-visible surface classifies the wording as a true downstream completion event or stale lifecycle wording requiring correction; the first implementation slice does not need to suppress the warning automatically after classification.
 - Treat review skill material-finding recording as the current review-recording amendment under test. Detailed fixture coverage lives in `specs/formal-review-recording.test.md` and `specs/review-finding-resolution-contract.test.md`; this test spec proves the workflow-facing contract keeps isolation, broad material-finding recording, governance alignment, shared skill guidance, and scan-first resolution closeout consistent.
+- Treat milestone-aware review handoff as the current full-feature routing amendment for planned implementation milestones. Detailed state-vocabulary and handoff-summary coverage lives in `specs/milestone-aware-review-handoff.test.md`; this test spec proves the broader workflow contract does not route clean non-final milestone reviews to `verify`.
 
 ## Requirement coverage map
 
@@ -56,6 +60,7 @@
 | `R12aw`-`R12bdd` | `T33` | manual, integration | Isolation stops handoff, material findings require change-local review records, isolated output fields are complete, and review-output-only settlement is forbidden for material findings |
 | `R12be`, `R12bg` | `T34` | integration, manual | Formal review skills share one canonical `Isolation and Recording` block and governance guidance teaches the same broad rule |
 | `R12bf` | `T35` | integration, manual | New `review-resolution.md` records remain scan-first while preserving validator-readable fields |
+| Milestone-aware review handoff amendment `R1`-`R11b` | `T36` | integration, manual | Planned implementation milestone review routing, same-milestone resolution, state vocabulary, and verify-readiness boundaries |
 | `R13`, `R14`, `R14a`, `R14b` | `T15` | integration | Golden-path skill-validator example and rich-example proportionality |
 | `R15`, `R15a` | `T8`, `T9`, `T10` | integration | Canonical skill validation and intentionally simple rule set |
 | `R16` | `T9`, `T10` | integration | Required skill-validator fixture failures |
@@ -82,6 +87,7 @@
 | `E13` | `T31` | Review-resolution closeout and readiness wording stay self-contained in the PR tree |
 | `E14` | `T33` | Isolated review recording follows the finding while handoff stays stopped |
 | `E15` | `T35` | Review-resolution remains scan-first and parseable |
+| Milestone-aware amendment `E1`-`E6` | `T36` | Clean non-final/final review split, findings loop, ambiguous plan state, plan revision, and lifecycle-closeout distinction |
 
 ## Edge case coverage
 
@@ -113,6 +119,8 @@
 - Isolated material-review output missing required record path, record-before-fixing or reconstruction status, or owner-decision status is incomplete: `T33`
 - Shared formal review skill guidance drifts from the canonical source or contains stage-specific text inside the shared block: `T34`
 - New scan-first review-resolution guidance removes parseable per-finding labels: `T35`
+- A clean review of a non-final planned implementation milestone must not route to `verify`: `T36`
+- A lifecycle-closeout milestone must not be treated as an open implementation milestone for verify readiness: `T36`
 - In-flight work can finish under its starting workflow contract unless it opts in or touches refactored workflow surfaces: `T20`, `T25`
 - Draft PRs may run early CI without being review-open, but lifecycle state must synchronize before reviewer action resumes: `T29`
 - Reopened PRs and reused branches must satisfy PR-self-contained lifecycle completion before review continues: `T29`
@@ -879,6 +887,35 @@
   - `python scripts/test-review-artifact-validator.py`
   - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-07-review-skill-material-finding-recording`
   - manual M2/M4 review
+
+### T36. Milestone-aware review handoff qualifies clean-review routing
+
+- Covers: milestone-aware review handoff amendment `R1`-`R11b`, amendment `E1`-`E6`
+- Level: integration, manual
+- Fixture/setup:
+  - `specs/rigorloop-workflow.md`
+  - `specs/workflow-stage-autoprogression.md`
+  - `specs/milestone-aware-review-handoff.md`
+  - `specs/milestone-aware-review-handoff.test.md`
+  - `docs/workflows.md`
+  - `skills/implement/SKILL.md`
+  - `skills/code-review/SKILL.md`
+  - `skills/plan/SKILL.md`
+  - `skills/workflow/SKILL.md`
+  - `scripts/test-skill-validator.py`
+- Steps:
+  - Confirm workflow-managed full-feature routing distinguishes milestone-based plans from non-milestone implementation slices.
+  - Confirm `implement` records `review-requested` handoff for the current implementation milestone rather than whole-plan verify readiness.
+  - Confirm clean `code-review` closes the reviewed milestone directly when no review-resolution is required.
+  - Confirm clean non-final milestone reviews route to the next in-scope implementation milestone, while clean final milestone reviews route to `verify`.
+  - Confirm findings, accepted fixes, re-review, inconclusive review, ambiguous plans, and lifecycle-closeout milestones preserve the approved same-milestone and verify-readiness boundaries.
+- Expected result:
+  - The workflow contract prevents the old clean-review shortcut from routing `M1` directly to `verify` when later implementation milestones remain.
+- Failure proves:
+  - Planned milestone work can still skip required implementation or review-resolution gates.
+- Automation location:
+  - `python scripts/test-skill-validator.py`
+  - manual M2/M3 review
 
 ## Fixtures and data
 

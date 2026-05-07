@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- none yet
+- [2026-05-07 Milestone-aware review handoff](plans/2026-05-07-milestone-aware-review-handoff.md) - active execution plan for making workflow-managed milestone reviews route to the next in-scope implementation milestone until all implementation milestones are closed, then to verify.
 
 ## Blocked
 - none yet
