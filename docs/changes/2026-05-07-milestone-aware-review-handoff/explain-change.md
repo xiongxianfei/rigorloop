@@ -64,8 +64,8 @@ Key commands:
 - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-07-milestone-aware-review-handoff`
 - `bash scripts/ci.sh --mode explicit ...` with every active changed authored, generated, change-local, review-artifact, plan, workflow, and adapter skill path
 - `bash scripts/ci.sh --mode broad-smoke`
-- `git diff --check 7ca62c9..HEAD`
-- whitespace scan over active changed files from `7ca62c9..HEAD`
+- `git diff --check origin/main..HEAD`
+- whitespace scan over active changed files from `origin/main..HEAD`
 
 Final lifecycle `verify` passed after M4 was reviewed and closed. The active plan records selected CI, broad smoke, review-artifact closeout, generated-output drift, diff hygiene, and whitespace evidence.
 
@@ -100,12 +100,12 @@ Existing untouched historical plans are not migrated solely because they lack th
 ## Risks And Follow-Ups
 
 - Generated outputs must remain in sync with canonical `skills/`; M4 drift checks and final verify cover the current branch.
-- PR handoff must confirm branch base hygiene. The active milestone-aware change scope is `7ca62c9..HEAD`; relative to `main`, the local branch is stacked on pre-M1 review-recording follow-up commits.
+- PR preparation confirmed branch base hygiene: the branch is restacked on `origin/main` at `f8162780ea535c412bb5d7cf69fd303c61af0656875c04491` with active scope `origin/main..HEAD`, so no stacked-branch caveat remains.
 - The plan remains `Active` because PR handoff is a true downstream completion event. Merge is not being used as a deferred lifecycle-closeout trigger.
 
 ## PR Handoff Summary
 
 - Branch-ready for the active milestone-aware change scope: yes.
 - Next stage: `pr`.
-- PR-stage caveat: confirm whether the stacked branch base is intended or whether the milestone-aware commits should be restacked for a standalone PR.
+- PR-stage caveat: none for branch base; the branch has been restacked for a standalone PR.
 - PR body should cite the approved spec, test spec, active plan, review-resolution closeout, selected CI, broad smoke, and this explanation.
