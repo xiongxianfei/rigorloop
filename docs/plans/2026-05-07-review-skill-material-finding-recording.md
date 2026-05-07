@@ -6,7 +6,7 @@
 - Owner: maintainers
 - Start date: 2026-05-07
 - Last updated: 2026-05-07
-- Related issue or PR: PR handoff from this branch
+- Related issue or PR: PR #32, https://github.com/xiongxianfei/rigorloop/pull/32
 - Supersedes: none
 - selected_workflow_contract: refactored
 - broad_smoke_required: false
@@ -335,7 +335,7 @@ Use the milestone-specific validation commands above. The final validation gate 
 - [x] 2026-05-07: post-aggregate code-review-r3 rerun completed against commit `3f1fbda80ae41203be2c576cac4e6d998589f6b3` with no blocking or required-change findings.
 - [x] 2026-05-07: verify completed for `6f03c4e..HEAD`; branch-ready for explain-change with no blockers.
 - [x] 2026-05-07: explain-change recorded at `docs/changes/2026-05-07-review-skill-material-finding-recording/explain-change.md`.
-- [x] Lifecycle closeout gates: PR handoff readiness recorded and the plan moved to Done because no true downstream event remains.
+- [x] Lifecycle closeout gates: PR handoff readiness recorded, the plan moved to Done because no true downstream event remains, and PR #32 opened.
 
 ## Decision Log
 
@@ -434,10 +434,10 @@ Use the milestone-specific validation commands above. The final validation gate 
 
 ## Outcome and Retrospective
 
-- Done. M1 through M3 implementation content is closed as one explicit aggregate implementation slice with validation evidence, the planned closeout commit, clean post-aggregate code-review rerun, passing verify, durable explain-change, and PR handoff readiness. No true downstream completion event remains, so the plan index and plan body are synchronized as Done in this branch before PR review opens.
+- Done. M1 through M3 implementation content is closed as one explicit aggregate implementation slice with validation evidence, the planned closeout commit, clean post-aggregate code-review rerun, passing verify, durable explain-change, and opened PR #32. No true downstream completion event remains, so the plan index and plan body are synchronized as Done in this branch for PR review.
 
 ## Readiness
 
 - Branch-ready was established by verify and explain-change is recorded.
-- Plan index and plan body are synchronized as Done for PR handoff.
-- Ready to open the PR for review.
+- Plan index and plan body are synchronized as Done for PR #32 review.
+- PR #32 is open.
