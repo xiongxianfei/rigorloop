@@ -3,12 +3,13 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-07 Review skill material finding recording](plans/2026-05-07-review-skill-material-finding-recording.md) - active execution plan with former M1-M3 closed as one aggregate milestone commit, clean post-aggregate code-review, passing verify, and explain-change recorded; next gate is PR handoff.
+- none yet
 
 ## Blocked
 - none yet
 
 ## Done
+- [2026-05-07 Review skill material finding recording](plans/2026-05-07-review-skill-material-finding-recording.md) - completed execution plan for making material review-finding recording mandatory across formal review skills, adding canonical shared isolation/recording guidance, scan-first review-resolution templates, structural/static proof, generated skill and adapter alignment, review closeout, verification, explain-change, and PR handoff readiness.
 - [2026-05-06 Optimize vision skill strategic positioning quality](plans/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md) - completed execution plan for adding strategic-positioning behavior to the `vision` skill, retiring active lowercase `vision.md` handling, aligning proof surfaces and generated outputs, preserving durable positioning rationale, closing first-pass code-review finding `CR1-F1`, recording clean code-review reruns, passing verify, refreshing explain-change, and opening PR #31.
 - [2026-05-05 PR-self-contained lifecycle completion](plans/2026-05-05-pr-self-contained-lifecycle-completion.md) - completed execution plan for making repo-local lifecycle state self-contained inside the PR that performs the transition, including governance guidance, workflow docs, lifecycle validation, tracked merge-dependent language warnings, skill/generated-output alignment, review closeout, verification, explain-change, PR handoff, and opened PR #30.
 - [2026-05-04 Test and CI speed optimization](plans/2026-05-04-test-and-ci-speed-optimization.md) - completed execution plan for bounded parallel selected-check execution in `scripts/ci.sh`, including reviewed parallel-safe metadata, deterministic reporting, bounded scheduling, workflow guidance, review closeout, verification, explain-change, PR handoff, and merged PR #29.

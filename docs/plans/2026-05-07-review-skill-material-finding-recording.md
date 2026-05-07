@@ -2,11 +2,11 @@
 
 ## Status
 
-- active
+- done
 - Owner: maintainers
 - Start date: 2026-05-07
 - Last updated: 2026-05-07
-- Related issue or PR: none yet
+- Related issue or PR: PR handoff from this branch
 - Supersedes: none
 - selected_workflow_contract: refactored
 - broad_smoke_required: false
@@ -335,7 +335,7 @@ Use the milestone-specific validation commands above. The final validation gate 
 - [x] 2026-05-07: post-aggregate code-review-r3 rerun completed against commit `3f1fbda80ae41203be2c576cac4e6d998589f6b3` with no blocking or required-change findings.
 - [x] 2026-05-07: verify completed for `6f03c4e..HEAD`; branch-ready for explain-change with no blockers.
 - [x] 2026-05-07: explain-change recorded at `docs/changes/2026-05-07-review-skill-material-finding-recording/explain-change.md`.
-- [ ] Lifecycle closeout gates: PR handoff, then Done if no true downstream event remains.
+- [x] Lifecycle closeout gates: PR handoff readiness recorded and the plan moved to Done because no true downstream event remains.
 
 ## Decision Log
 
@@ -430,12 +430,14 @@ Use the milestone-specific validation commands above. The final validation gate 
 - 2026-05-07: during post-aggregate code-review-r3, `python scripts/test-skill-validator.py`, `python scripts/test-review-artifact-validator.py`, `python scripts/build-skills.py --check`, `python scripts/build-adapters.py --version 0.1.1 --check`, `python scripts/validate-adapters.py --version 0.1.1`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-07-review-skill-material-finding-recording`, `python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml`, and `git diff --check HEAD^ HEAD -- .` passed.
 - 2026-05-07: verify passed for `6f03c4e..HEAD`: `python scripts/test-skill-validator.py`, `python scripts/test-review-artifact-validator.py`, `python scripts/build-skills.py --check`, `python scripts/build-adapters.py --version 0.1.1 --check`, `python scripts/validate-adapters.py --version 0.1.1`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-07-review-skill-material-finding-recording`, `python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml`, selector-selected explicit CI, and `git diff --check 6f03c4e..HEAD -- .`.
 - 2026-05-07: after recording explain-change, `python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml`, lifecycle validation for plan/index/change/explanation surfaces, selected CI for explanation surfaces, `git diff --check -- .`, and whitespace scan passed.
+- 2026-05-07: PR handoff closeout validation passed: `python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-07-review-skill-material-finding-recording`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-07-review-skill-material-finding-recording.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml --path docs/changes/2026-05-07-review-skill-material-finding-recording/explain-change.md`, selected CI for the PR handoff surfaces, `git diff --check -- .`, and whitespace scan.
 
 ## Outcome and Retrospective
 
-- Active. M1 through M3 implementation content is closed as one explicit aggregate implementation slice with validation evidence, the planned closeout commit, clean post-aggregate code-review rerun, passing verify, and durable explain-change. Remaining work starts with PR handoff and Done transition.
+- Done. M1 through M3 implementation content is closed as one explicit aggregate implementation slice with validation evidence, the planned closeout commit, clean post-aggregate code-review rerun, passing verify, durable explain-change, and PR handoff readiness. No true downstream completion event remains, so the plan index and plan body are synchronized as Done in this branch before PR review opens.
 
 ## Readiness
 
-- Ready for PR handoff.
-- Not Done until PR handoff records the final PR state and both plan surfaces are moved together if no true downstream event remains.
+- Branch-ready was established by verify and explain-change is recorded.
+- Plan index and plan body are synchronized as Done for PR handoff.
+- Ready to open the PR for review.
