@@ -374,6 +374,22 @@ validation:
     result: pass_after_cr2_resolution
   - command: git ls-files -m -o --exclude-standard -z | xargs -0 -r rg -n '[[:blank:]]$|\\t'
     result: pass_no_matches_after_cr2_resolution
+  - command: python scripts/test-skill-validator.py
+    result: pass_during_post_aggregate_code_review_r3
+  - command: python scripts/test-review-artifact-validator.py
+    result: pass_during_post_aggregate_code_review_r3
+  - command: python scripts/build-skills.py --check
+    result: pass_during_post_aggregate_code_review_r3
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_during_post_aggregate_code_review_r3
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_during_post_aggregate_code_review_r3
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_during_post_aggregate_code_review_r3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_during_post_aggregate_code_review_r3
+  - command: git diff --check HEAD^ HEAD -- .
+    result: pass_during_post_aggregate_code_review_r3
 changed_files:
   - docs/proposals/2026-05-07-review-skill-material-finding-recording.md
   - CONSTITUTION.md
@@ -443,6 +459,7 @@ changed_files:
   - docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/spec-review-r3.md
   - docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/code-review-r1.md
   - docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/code-review-r2.md
+  - docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/code-review-r3.md
 review:
-  status: closed_after_aggregate_closeout
+  status: closed_after_code_review_r3
   unresolved_items: 0

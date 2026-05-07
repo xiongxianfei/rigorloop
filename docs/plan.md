@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-07 Review skill material finding recording](plans/2026-05-07-review-skill-material-finding-recording.md) - active execution plan replanned with former M1-M3 as one explicit aggregate implementation slice; next closeout is one coherent aggregate milestone commit before code-review rerun and verify.
+- [2026-05-07 Review skill material finding recording](plans/2026-05-07-review-skill-material-finding-recording.md) - active execution plan with former M1-M3 closed as one aggregate milestone commit and clean post-aggregate code-review; next gate is verify.
 
 ## Blocked
 - none yet

@@ -10,11 +10,12 @@ Review closeout: spec-review-r2
 Review closeout: spec-review-r3
 Review closeout: code-review-r1
 Review closeout: code-review-r2
+Review closeout: code-review-r3
 
-- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `code-review-r1`, `code-review-r2`
+- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `code-review-r1`, `code-review-r2`, `code-review-r3`
 - Findings resolved: 13
 - Unresolved findings: 0
-- Final result: proposal-review, spec-review, `code-review-r1`, and `code-review-r2` findings were accepted, resolved, and validated. The aggregate implementation slice is ready for post-commit code-review rerun.
+- Final result: proposal-review, spec-review, `code-review-r1`, and `code-review-r2` findings were accepted, resolved, and validated. The aggregate implementation slice passed the post-commit `code-review-r3` rerun with no blocking or required-change findings.
 
 This record resolves the material findings from `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, and `spec-review-r3` for the review skill material-finding recording proposal and spec amendments. It also resolves the `code-review-r2` aggregate closeout finding through the aggregate milestone closeout commit.
 
@@ -213,6 +214,10 @@ Rationale: The finding is correct. The active plan explicitly makes the aggregat
 Validation target: `git log --oneline -1` or equivalent shows the aggregate `M1:` commit and a later same-stage code-review rerun records no blocking aggregate-closeout finding.
 Validation evidence: Aggregate validation passed before the closeout commit: `python scripts/test-skill-validator.py`, `python scripts/test-review-artifact-validator.py`, `python scripts/validate-skills.py`, `python scripts/test-select-validation.py`, `python scripts/test-adapter-distribution.py`, `python scripts/build-skills.py --check`, `python scripts/build-adapters.py --version 0.1.1 --check`, `python scripts/validate-adapters.py --version 0.1.1`, `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-07-review-skill-material-finding-recording`, `python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml`, `python scripts/test-change-metadata-validator.py`, `bash scripts/ci.sh --mode local`, `git diff --check -- .`, and whitespace scan over changed paths.
 
+### code-review-r3
+
+No material findings. The detailed review record exists because the clean post-aggregate rerun is cited as lifecycle closeout evidence.
+
 ## Shared Validation Evidence
 
 | Validation area | Result | Notes |
@@ -252,6 +257,7 @@ Validation evidence: Aggregate validation passed before the closeout commit: `py
 | Aggregate validation before closeout commit | pass | `python scripts/test-skill-validator.py`, `python scripts/test-review-artifact-validator.py`, `python scripts/validate-skills.py`, `python scripts/test-select-validation.py`, `python scripts/test-adapter-distribution.py`, `python scripts/build-skills.py --check`, `python scripts/build-adapters.py --version 0.1.1 --check`, `python scripts/validate-adapters.py --version 0.1.1`, `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-07-review-skill-material-finding-recording`, `python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml`, `python scripts/test-change-metadata-validator.py`, `bash scripts/ci.sh --mode local`, and `git diff --check -- .` passed. |
 | Aggregate whitespace scan before closeout commit | pass | Whitespace scan over changed paths found no trailing whitespace or tab matches. |
 | Review closeout validation after CR2-F1 resolution | pass | `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-07-review-skill-material-finding-recording`, `python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml`, lifecycle validation, selected CI for closeout files, `git diff --check -- .`, and whitespace scan passed. |
+| Post-commit code-review-r3 validation | pass | `python scripts/test-skill-validator.py`, `python scripts/test-review-artifact-validator.py`, `python scripts/build-skills.py --check`, `python scripts/build-adapters.py --version 0.1.1 --check`, `python scripts/validate-adapters.py --version 0.1.1`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-07-review-skill-material-finding-recording`, `python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml`, and `git diff --check HEAD^ HEAD -- .` passed. |
 
 ## Closeout Checklist
 
@@ -267,4 +273,5 @@ Validation evidence: Aggregate validation passed before the closeout commit: `py
 - [x] Review closeout is recorded for `spec-review-r3`.
 - [x] Review closeout is recorded for `code-review-r1`.
 - [x] Review closeout is recorded for `code-review-r2`.
+- [x] Review closeout is recorded for `code-review-r3`.
 - [x] Closeout status is `closed`.
