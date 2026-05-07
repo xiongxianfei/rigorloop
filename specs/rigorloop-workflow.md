@@ -11,6 +11,7 @@
 - [Optimize Learn Skill](../docs/proposals/2026-05-03-optimize-learn-skill.md)
 - [PR-Self-Contained Lifecycle Completion](../docs/proposals/2026-05-05-pr-self-contained-lifecycle-completion.md)
 - [Review Skill Material Finding Recording](../docs/proposals/2026-05-07-review-skill-material-finding-recording.md)
+- [Milestone-Aware Review Handoff](../docs/proposals/2026-05-07-milestone-aware-review-handoff.md)
 
 ## Goal and context
 
@@ -27,6 +28,9 @@ RigorLoop is a Git-first starter kit. It does not replace pull requests, CI, or 
 - `fast lane`: the reduced path for trivial or low-risk work.
 - `full lifecycle`: the default path for non-trivial work that uses the staged workflow artifacts.
 - `planned milestone work`: work governed by a concrete plan that defines one or more explicit milestones.
+- `milestone-based plan`: a concrete execution plan with one or more in-scope implementation milestones that must be implemented, reviewed, and closed before final verification readiness.
+- `in-scope implementation milestone`: a planned milestone whose current scope still includes implementation work for the change.
+- `lifecycle-closeout milestone`: a milestone or plan step that contains only downstream lifecycle gates such as `verify`, `explain-change`, PR handoff, release, deploy, or other closeout work, and not unfinished implementation work.
 - `change artifact`: a durable Markdown document that explains proposal, spec, plan, tests, verification, or rationale for a change.
 - `change metadata`: machine-readable traceability data for a change.
 - `change.yaml`: the first-release canonical machine-readable traceability file for a non-trivial change.
@@ -70,6 +74,8 @@ RigorLoop is a Git-first starter kit. It does not replace pull requests, CI, or 
 - `periodic artifact`: an artifact or action run on cadence, incident, repeated finding, postmortem action, or explicit maintainer request rather than for every change.
 - `stage obligation`: one of `mandatory`, `conditional`, `on-demand`, or `periodic`.
 - `ci-maintenance`: the visible workflow label for creating or updating hosted CI workflow files, validation automation, or platform configuration. It does not mean running validation.
+- `review-requested`: the milestone state after implementation and targeted validation are complete and the milestone has been handed to `code-review`.
+- `resolution-needed`: the milestone state after `code-review` produces findings that require review-resolution, fixes, owner decision, or re-review before the milestone can close.
 
 ## Examples first
 
@@ -164,6 +170,27 @@ Given `proposal-review-r1` records seven accepted material findings
 When `review-resolution.md` closes those findings with the same validation evidence
 Then the file starts with closeout status, covered reviews, resolved and unresolved counts, and a resolution overview
 And each finding detail keeps validator-readable labels for Finding ID, disposition, owner, owning stage, chosen action, rationale, validation target, and validation evidence.
+
+### Example E16: milestone-aware clean review routing
+
+Given a workflow-managed full-feature change uses a milestone-based plan
+And `code-review` returns clean for a clean non-final implementation milestone
+When another in-scope implementation milestone remains open
+Then the reviewed milestone closes and the next stage is the next in-scope implementation milestone, not `verify`.
+
+### Example E17: final clean milestone reaches verify
+
+Given a workflow-managed full-feature change uses a milestone-based plan
+And `code-review` returns clean for a clean final implementation milestone
+When all in-scope implementation milestones are closed and no required review-resolution remains open
+Then the next stage is `verify`.
+
+### Example E18: lifecycle closeout is not implementation work
+
+Given all in-scope implementation milestones are closed
+And the remaining plan work is a lifecycle-closeout milestone for `verify`, `explain-change`, or PR handoff
+When no required review-resolution remains open
+Then `verify` may proceed instead of treating the closeout milestone as unfinished implementation work.
 
 ## Requirements
 
@@ -366,12 +393,39 @@ R7vb. Unresolved named edge-case proof gaps MUST block `branch-ready`.
 
 R7w. These branch-reality and traceability rules supplement the earlier `code-review` independence contract. They MUST NOT remove the first-pass review record, approved review statuses, workflow-managed `review-resolution` handoff for fixable findings, or isolated-review stop behavior defined by the governing workflow artifacts.
 
+R7x. For a milestone-based plan, each implementation milestone MUST have exactly one authoritative `Milestone state` selected from:
+- `planned`;
+- `implementing`;
+- `review-requested`;
+- `resolution-needed`;
+- `closed`.
+
+R7xa. `review-requested` means implementation and targeted validation are complete, and the milestone has been handed to `code-review`.
+
+R7xb. `resolution-needed` means `code-review` produced findings that require review-resolution, fixes, owner decision, or re-review before the milestone can close.
+
+R7xc. `implementation-complete` and `review-clean` MAY appear as evidence descriptions, but they MUST NOT be milestone state values.
+
+R7xd. In a milestone-based plan, a clean non-final implementation milestone MUST close the reviewed milestone and hand off to the next in-scope implementation milestone, not `verify`.
+
+R7xe. In a milestone-based plan, a clean final implementation milestone MUST close the reviewed milestone and may hand off to `verify` only when all in-scope implementation milestones are closed and no required review-resolution remains open.
+
+R7xf. In a milestone-based plan, review-resolution and fix loops MUST stay attached to the reviewed milestone until findings are dispositioned and required fixes, validation, owner decisions, and re-review obligations are closed.
+
+R7xg. In a milestone-based plan, `code-review` MUST move the reviewed milestone to `resolution-needed` when findings require review-resolution, fixes, owner decision, or re-review. The workflow MUST NOT advance to the next implementation milestone, `verify`, final `explain-change`, or `pr` while that required milestone closeout remains open.
+
+R7xh. In a milestone-based plan, if the reviewed milestone, remaining in-scope implementation milestones, review status, or required review-resolution state cannot be determined from the active plan and review output, the workflow MUST stop as inconclusive or require a plan update instead of handing off to `verify`.
+
+R7xi. In a milestone-based plan, milestones MUST NOT be postponed or hidden solely to make `verify` available. If a planned milestone no longer belongs in the current change, the plan MUST be revised before downstream handoff, and `verify` may proceed only after no in-scope implementation milestone remains open or unresolved.
+
+R7xj. A lifecycle-closeout milestone MUST NOT be treated as an unfinished implementation milestone for verify-readiness decisions. A mixed milestone that still contains implementation work remains an in-scope implementation milestone until that implementation work is closed or the plan is revised.
+
 R8. The starter kit MUST treat the following stages as mandatory for every contributed change:
 - implement;
 - verify;
 - pr.
 
-R8a. For planned milestone work, a milestone MUST NOT be treated as complete until all of the following are true:
+R8a. For planned milestone work, milestone implementation handoff evidence MUST NOT be treated as complete until all of the following are true:
 - the milestone deliverable is complete;
 - relevant validation for that milestone has passed;
 - when targeted tests are applicable, those tests have passed;
@@ -379,6 +433,8 @@ R8a. For planned milestone work, a milestone MUST NOT be treated as complete unt
 - the concrete plan's progress and validation notes reflect the milestone outcome;
 - any milestone-level decision changes are recorded in the plan or related artifact;
 - the milestone changes are committed to git as one coherent milestone commit with no unrelated changes included.
+
+R8aa. The implementation handoff evidence in `R8a` does not by itself make a milestone `closed` in a milestone-based plan. The milestone reaches `closed` only after clean `code-review` with no required review-resolution, or after required review-resolution and re-review or owner closeout are complete.
 
 R8b. A completed milestone commit MUST use the subject format:
 - `M<n>: <completed milestone outcome>`
@@ -753,6 +809,8 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - Fast-lane work stays limited to trivial or low-risk changes.
 - Full-lifecycle work remains traceable from proposal/spec direction through PR summary and verification evidence.
 - Completed planned milestones remain visible as coherent branch or pull-request review boundaries even when multiple milestones share one pull request.
+- In a milestone-based plan, a milestone implementation handoff and a closed milestone are distinct lifecycle facts.
+- In a milestone-based plan, `verify` is not available until all in-scope implementation milestones are closed and no required review-resolution remains open.
 - Repo-local lifecycle state in a review-open PR is true within that PR's tracked tree.
 - Merge integrates pre-validated repo-local lifecycle state; it does not perform routine lifecycle closeout.
 
@@ -761,6 +819,7 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - A change classified as fast-lane but matching any full-lifecycle exclusion in `R3` MUST be rejected from fast-lane treatment.
 - A fast-lane change missing the required spec fields in `R4` MUST be considered incomplete.
 - A planned milestone closed without the completion evidence required by `R8a` or without the standardized milestone commit subject required by `R8b` MUST be considered incomplete.
+- A milestone-based plan with an open in-scope implementation milestone, a `review-requested` milestone that has not been reviewed, a `resolution-needed` milestone, ambiguous remaining implementation scope, or stale verify-readiness wording MUST be considered incomplete for `verify`.
 - A planned initiative completed by a PR but still listed as active in `docs/plan.md` or the plan body when that PR opens for review MUST be considered incomplete.
 - A PR with broader lifecycle artifact inconsistency under `R8ki` MUST be considered incomplete for `branch-ready`.
 - Merge-dependent language in tracked files MUST produce a reviewer-attention warning unless the language is corrected or classified as a true downstream completion event.
@@ -872,6 +931,11 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 38. A new `review-resolution.md` with common validation evidence may record the shared proof once, but each material finding detail still keeps parseable closeout labels.
 39. A formal review skill with stage-specific wording inserted inside the shared `## Isolation and Recording` block fails validation even if the wording is substantively correct.
 40. An isolated material finding requires change-local review files even when it does not affect tracked work, affect closeout, or create follow-up work. Isolation stops handoff, not recording.
+41. A clean non-final implementation milestone review closes that milestone and routes to the next in-scope implementation milestone, not `verify`.
+42. A clean final implementation milestone review may route to `verify` only when all in-scope implementation milestones are closed and no required review-resolution remains open.
+43. A milestone review with findings moves the reviewed milestone to `resolution-needed` and keeps the workflow on that same milestone until findings are resolved, deferred with rationale, rejected, or otherwise closed under the governing review contract.
+44. A plan may include a lifecycle-closeout milestone for downstream gates, but that lifecycle-closeout milestone does not behave like an open implementation milestone for verify readiness.
+45. A mixed milestone that still contains implementation work remains an implementation milestone until the implementation scope is closed or the plan is revised.
 
 ## Non-goals
 
@@ -909,6 +973,8 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - A reviewer can distinguish the ordinary baseline non-trivial change-local pack from the richer `docs/changes/0001-skill-validator/` example pack.
 - A reviewer can tell that new non-trivial work defaults to `docs/changes/<change-id>/explain-change.md` while approved legacy top-level explain artifacts remain valid until retired.
 - A reviewer can distinguish milestone commit boundaries from pull-request boundaries by inspecting standardized milestone commit subjects and the associated plan updates.
+- A reviewer can tell that planned implementation milestone state uses one authoritative field and that `review-requested` and `resolution-needed` block premature verify readiness.
+- A reviewer can tell that clean non-final implementation milestone reviews route to the next implementation milestone, while only clean final implementation milestone reviews can route to `verify`.
 - A reviewer can tell when `spec-review` is reporting immediate next repository stage versus eventual `test-spec` readiness without inferring that `test-spec` skips required intermediate stages.
 - A reviewer can tell that `plan-review` preserves `test-spec` as the immediate next handoff even when later implementation readiness is also discussed.
 - A contributor can tell that `explore` and `research` are on-demand support rather than default prerequisites.

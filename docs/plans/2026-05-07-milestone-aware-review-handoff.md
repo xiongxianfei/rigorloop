@@ -101,13 +101,13 @@ The test spec should require focused static assertions for:
 ## Current Handoff Summary
 
 - Current milestone: M2
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M1
 - Review status: clean-with-notes
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: implement M2
+- Next stage: code-review M2
 - Verify readiness: not ready
-- Reason verify is not ready: implementation milestones M2, M3, and M4 remain open.
+- Reason verify is not ready: M2 is pending code-review and implementation milestones M3 and M4 remain open.
 
 ## Milestones
 
@@ -161,7 +161,7 @@ The test spec should require focused static assertions for:
 
 ### M2. Align Authoritative Workflow Contracts
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Amend the approved workflow contracts so the source of truth routes clean non-final milestone reviews to the next implementation milestone and final clean reviews to `verify`.
 - Requirements: `R1`-`R10a`, `AC1`-`AC4`.
 - Files/components likely touched:
@@ -191,12 +191,12 @@ The test spec should require focused static assertions for:
 - Expected observable result: governing workflow specs no longer imply that a clean review of `M1` makes a multi-milestone plan ready for `verify`.
 - Commit message: `M2: align milestone-aware workflow contract`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone state updated to `review-requested` before code-review handoff
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone state updated to `review-requested` before code-review handoff
+  - [x] milestone committed
 - Risks:
   - Overlap specs could retain stale `clean-with-notes -> verify` wording.
   - Wording could accidentally weaken review-resolution closeout before verify.
@@ -391,7 +391,7 @@ Final validation should include:
 - [x] Matching test spec created.
 - [x] M1 static proof surfaces complete.
 - [x] M1 code-review complete.
-- [ ] M2 workflow contract alignment complete.
+- [x] M2 workflow contract alignment complete.
 - [ ] M2 code-review complete.
 - [ ] M3 docs and skill guidance alignment complete.
 - [ ] M3 code-review complete.
@@ -413,10 +413,13 @@ Final validation should include:
 - 2026-05-07: Keep the test spec proof surface static and guidance-focused. Rationale: the approved first slice explicitly forbids executable plan-state validation and a standalone `review-resolution` skill.
 - 2026-05-07: Start M1 with proof-surface edits only. Rationale: M1 defines tests and static proof before M2/M3 amend the authoritative workflow and skill guidance.
 - 2026-05-07: Use `unittest.expectedFailure` for the two pending M2/M3 skill-validator assertions. Rationale: M1 must install red-state checks before canonical guidance edits while still leaving milestone validation green enough for code-review handoff.
+- 2026-05-07: Start M2 by splitting the pending stale-handoff assertion into spec-level passing proof and M3 docs/skills pending proof. Rationale: M2 owns authoritative specs, while `docs/workflows.md` and authored stage skills remain M3 scope.
+- 2026-05-07: Leave `specs/review-finding-resolution-contract.md` unchanged for M2. Rationale: the approved same-milestone review-resolution loop is now explicit in the two authoritative workflow specs, and the focused review-resolution record spec does not need new standalone-skill or parser behavior for this slice.
 
 ## Surprises and Discoveries
 
 - 2026-05-07: The old guidance still contains unconditional clean-review-to-verify shortcuts in `docs/workflows.md`, `skills/code-review/SKILL.md`, `skills/workflow/SKILL.md`, and `specs/workflow-stage-autoprogression.md`; the new pending skill-validator checks capture that red state for M2/M3.
+- 2026-05-07: `specs/rigorloop-workflow.md` also needed to distinguish implementation handoff evidence from a milestone `closed` state. The M2 wording now keeps the existing milestone commit evidence rule while making review closeout the source of the `closed` milestone state.
 
 ## Validation Notes
 
@@ -451,7 +454,18 @@ Final validation should include:
   - `bash scripts/ci.sh --mode explicit --path specs/milestone-aware-review-handoff.test.md --path specs/workflow-stage-autoprogression.test.md --path specs/rigorloop-workflow.test.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml` passed.
   - `test ! -e skills/review-resolution/SKILL.md` passed.
   - `git diff --check HEAD~1..HEAD` passed.
+- 2026-05-07 M2 validation:
+  - `python scripts/test-skill-validator.py` failed before contract edits with 17 expected red-state failures for missing milestone-aware terms in the workflow specs and the stale unconditional `code-review` to `verify` shortcut in `specs/workflow-stage-autoprogression.md`.
+  - `python scripts/test-skill-validator.py` passed with 33 tests and 2 expected failures. The remaining expected failures are M3 docs/skill guidance checks.
+  - `python scripts/select-validation.py --mode explicit --path specs/milestone-aware-review-handoff.md --path specs/workflow-stage-autoprogression.md --path specs/rigorloop-workflow.md --path specs/workflow-stage-autoprogression.test.md --path specs/rigorloop-workflow.test.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml` passed with no unclassified paths and selected `skills.regression`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/milestone-aware-review-handoff.md --path specs/workflow-stage-autoprogression.md --path specs/rigorloop-workflow.md --path specs/workflow-stage-autoprogression.test.md --path specs/rigorloop-workflow.test.md --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml` passed with existing lifecycle-language warnings in `specs/rigorloop-workflow.md` and `specs/rigorloop-workflow.test.md`.
+  - `python scripts/test-change-metadata-validator.py` passed.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml` passed.
+  - `bash scripts/ci.sh --mode explicit --path specs/milestone-aware-review-handoff.md --path specs/workflow-stage-autoprogression.md --path specs/rigorloop-workflow.md --path specs/workflow-stage-autoprogression.test.md --path specs/rigorloop-workflow.test.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml` passed.
+  - `test ! -e skills/review-resolution/SKILL.md` passed.
+  - `git diff --check -- specs/workflow-stage-autoprogression.md specs/rigorloop-workflow.md scripts/test-skill-validator.py docs/plans/2026-05-07-milestone-aware-review-handoff.md docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml` passed.
+  - `rg -n '[[:blank:]]$|\t' specs/workflow-stage-autoprogression.md specs/rigorloop-workflow.md scripts/test-skill-validator.py docs/plans/2026-05-07-milestone-aware-review-handoff.md docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml` found no trailing whitespace or tab characters.
 
 ## Outcome and Retrospective
 
-Active. Next stage: `implement M2`. Verify is not ready because implementation milestones M2 through M4 remain open.
+Active. Next stage: `code-review M2`. Verify is not ready because M2 is pending code-review and implementation milestones M3 and M4 remain open.
