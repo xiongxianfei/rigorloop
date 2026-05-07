@@ -101,13 +101,13 @@ The test spec should require focused static assertions for:
 ## Current Handoff Summary
 
 - Current milestone: M4
-- Current milestone state: review-requested
-- Last reviewed milestone: M3
+- Current milestone state: closed
+- Last reviewed milestone: M4
 - Review status: clean-with-notes
-- Remaining in-scope implementation milestones: M4
-- Next stage: code-review M4
-- Verify readiness: not ready
-- Reason verify is not ready: M4 is pending code-review.
+- Remaining in-scope implementation milestones: none
+- Next stage: verify
+- Verify readiness: ready
+- Reason verify is ready: all in-scope implementation milestones are closed and code-review is complete.
 
 ## Milestones
 
@@ -265,7 +265,7 @@ The test spec should require focused static assertions for:
 
 ### M4. Refresh Generated Output and Close Implementation Evidence
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Propagate canonical skill changes through generated outputs and prepare the implementation slice for final code review.
 - Requirements: `R11`-`R11b`, `AC6`-`AC8`, generated-output alignment for changed skills.
 - Files/components likely touched:
@@ -400,8 +400,8 @@ Final validation should include:
 - [x] M3 docs and skill guidance alignment complete.
 - [x] M3 code-review complete.
 - [x] M4 generated output and implementation evidence complete.
-- [ ] M4 code-review complete.
-- [ ] Review-resolution closed if triggered.
+- [x] M4 code-review complete.
+- [x] Review-resolution closed if triggered (not triggered).
 - [ ] Verify complete.
 - [ ] Explain-change complete.
 - [ ] PR handoff complete.
@@ -532,7 +532,21 @@ Final validation should include:
   - `bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml --path docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/plan/SKILL.md --path skills/workflow/SKILL.md --path .codex/skills/implement/SKILL.md --path .codex/skills/code-review/SKILL.md --path .codex/skills/plan/SKILL.md --path .codex/skills/workflow/SKILL.md --path dist/adapters/codex/.agents/skills/implement/SKILL.md --path dist/adapters/codex/.agents/skills/code-review/SKILL.md --path dist/adapters/codex/.agents/skills/plan/SKILL.md --path dist/adapters/codex/.agents/skills/workflow/SKILL.md --path dist/adapters/claude/.claude/skills/implement/SKILL.md --path dist/adapters/claude/.claude/skills/code-review/SKILL.md --path dist/adapters/claude/.claude/skills/plan/SKILL.md --path dist/adapters/claude/.claude/skills/workflow/SKILL.md --path dist/adapters/opencode/.opencode/skills/implement/SKILL.md --path dist/adapters/opencode/.opencode/skills/code-review/SKILL.md --path dist/adapters/opencode/.opencode/skills/plan/SKILL.md --path dist/adapters/opencode/.opencode/skills/workflow/SKILL.md --path docs/plans/2026-05-07-milestone-aware-review-handoff.md` passed all selected checks.
   - `git diff --check -- .codex/skills dist/adapters docs/changes/2026-05-07-milestone-aware-review-handoff docs/plans/2026-05-07-milestone-aware-review-handoff.md` passed.
   - `rg -n '[[:blank:]]$|\t'` over the changed generated skill, generated adapter, change-local, and plan files found no trailing whitespace or tab characters.
+- 2026-05-07 M4 code-review closeout:
+  - Reviewed commit: `381c858 M4: refresh milestone-aware generated guidance`.
+  - Review status: `clean-with-notes`.
+  - Material findings: none.
+  - Review-resolution required: no.
+  - Detailed review record: not required because the review was clean with no material findings and no detailed-record trigger.
+  - `python scripts/build-skills.py --check` passed.
+  - `python scripts/build-adapters.py --version 0.1.1 --check` passed.
+  - `python scripts/validate-adapters.py --version 0.1.1` passed.
+  - `python scripts/test-adapter-distribution.py` passed with 56 tests.
+  - `python scripts/test-skill-validator.py` passed with 33 tests.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml` passed.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml --path docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path skills/code-review/SKILL.md --path skills/implement/SKILL.md --path skills/plan/SKILL.md --path skills/workflow/SKILL.md` passed.
+  - `bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml --path docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/plan/SKILL.md --path skills/workflow/SKILL.md --path .codex/skills/implement/SKILL.md --path .codex/skills/code-review/SKILL.md --path .codex/skills/plan/SKILL.md --path .codex/skills/workflow/SKILL.md --path dist/adapters/codex/.agents/skills/implement/SKILL.md --path dist/adapters/codex/.agents/skills/code-review/SKILL.md --path dist/adapters/codex/.agents/skills/plan/SKILL.md --path dist/adapters/codex/.agents/skills/workflow/SKILL.md --path dist/adapters/claude/.claude/skills/implement/SKILL.md --path dist/adapters/claude/.claude/skills/code-review/SKILL.md --path dist/adapters/claude/.claude/skills/plan/SKILL.md --path dist/adapters/claude/.claude/skills/workflow/SKILL.md --path dist/adapters/opencode/.opencode/skills/implement/SKILL.md --path dist/adapters/opencode/.opencode/skills/code-review/SKILL.md --path dist/adapters/opencode/.opencode/skills/plan/SKILL.md --path dist/adapters/opencode/.opencode/skills/workflow/SKILL.md --path docs/plans/2026-05-07-milestone-aware-review-handoff.md` passed all selected checks.
 
 ## Outcome and Retrospective
 
-Active. Next stage: `code-review M4`. Verify is not ready because M4 is pending code-review.
+Active. Next stage: `verify`. Verify is ready because all in-scope implementation milestones are closed and code-review is complete.
