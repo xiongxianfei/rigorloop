@@ -334,7 +334,8 @@ Use the milestone-specific validation commands above. The final validation gate 
 - [x] 2026-05-07: `CR2-F1` resolved by the aggregate closeout commit and aggregate validation evidence.
 - [x] 2026-05-07: post-aggregate code-review-r3 rerun completed against commit `3f1fbda80ae41203be2c576cac4e6d998589f6b3` with no blocking or required-change findings.
 - [x] 2026-05-07: verify completed for `6f03c4e..HEAD`; branch-ready for explain-change with no blockers.
-- [ ] Lifecycle closeout gates: explain-change, PR handoff, then Done if no true downstream event remains.
+- [x] 2026-05-07: explain-change recorded at `docs/changes/2026-05-07-review-skill-material-finding-recording/explain-change.md`.
+- [ ] Lifecycle closeout gates: PR handoff, then Done if no true downstream event remains.
 
 ## Decision Log
 
@@ -428,12 +429,13 @@ Use the milestone-specific validation commands above. The final validation gate 
 - 2026-05-07: after resolving `CR2-F1` and recording aggregate closeout readiness, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-07-review-skill-material-finding-recording`, `python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml`, lifecycle validation, selected CI for closeout files, `git diff --check -- .`, and whitespace scan passed.
 - 2026-05-07: during post-aggregate code-review-r3, `python scripts/test-skill-validator.py`, `python scripts/test-review-artifact-validator.py`, `python scripts/build-skills.py --check`, `python scripts/build-adapters.py --version 0.1.1 --check`, `python scripts/validate-adapters.py --version 0.1.1`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-07-review-skill-material-finding-recording`, `python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml`, and `git diff --check HEAD^ HEAD -- .` passed.
 - 2026-05-07: verify passed for `6f03c4e..HEAD`: `python scripts/test-skill-validator.py`, `python scripts/test-review-artifact-validator.py`, `python scripts/build-skills.py --check`, `python scripts/build-adapters.py --version 0.1.1 --check`, `python scripts/validate-adapters.py --version 0.1.1`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-07-review-skill-material-finding-recording`, `python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml`, selector-selected explicit CI, and `git diff --check 6f03c4e..HEAD -- .`.
+- 2026-05-07: after recording explain-change, `python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml`, lifecycle validation for plan/index/change/explanation surfaces, selected CI for explanation surfaces, `git diff --check -- .`, and whitespace scan passed.
 
 ## Outcome and Retrospective
 
-- Active. M1 through M3 implementation content is closed as one explicit aggregate implementation slice with validation evidence, the planned closeout commit, clean post-aggregate code-review rerun, and passing verify. Remaining work starts with explain-change, followed by PR handoff and Done transition.
+- Active. M1 through M3 implementation content is closed as one explicit aggregate implementation slice with validation evidence, the planned closeout commit, clean post-aggregate code-review rerun, passing verify, and durable explain-change. Remaining work starts with PR handoff and Done transition.
 
 ## Readiness
 
-- Branch-ready for `explain-change`.
-- Not ready for PR handoff until `explain-change` completes.
+- Ready for PR handoff.
+- Not Done until PR handoff records the final PR state and both plan surfaces are moved together if no true downstream event remains.
