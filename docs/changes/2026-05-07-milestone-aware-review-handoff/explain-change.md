@@ -4,7 +4,7 @@
 
 This change makes clean code review of a milestone aware of whether more in-scope implementation milestones remain. A clean non-final milestone review closes that milestone and routes to the next implementation milestone; only a clean final implementation milestone can route to `verify`.
 
-Status: implementation evidence is current through M4. Final verification and PR-facing explanation still run in the lifecycle-closeout stage.
+Status: implementation evidence is current through M4 and final verification has passed. PR-facing explanation still runs in the lifecycle-closeout stage.
 
 ## Problem
 
@@ -47,11 +47,11 @@ Key M4 commands:
 - `python scripts/build-adapters.py --version 0.1.1 --check`
 - `python scripts/validate-adapters.py --version 0.1.1`
 
-Final lifecycle `verify` is still pending until M4 is reviewed and closed.
+Final lifecycle `verify` passed after M4 was reviewed and closed. The active plan records selected CI, broad smoke, review-artifact closeout, generated-output drift, diff hygiene, and whitespace evidence.
 
 ## Review Resolution Summary
 
-The plan-review finding `PLR1-F1` was recorded and resolved before implementation. M1, M2, and M3 implementation reviews were clean with no material findings.
+The plan-review finding `PLR1-F1` was recorded and resolved before implementation. M1, M2, M3, and M4 implementation reviews were clean with no material findings.
 
 ## Alternatives Rejected
 
@@ -66,4 +66,4 @@ This change does not alter fast-lane, bugfix, isolated review, direct `pr`, merg
 ## Risks And Follow-Ups
 
 - Generated outputs must remain in sync with canonical `skills/`; M4 drift checks cover that.
-- Final verify, explain-change closeout, and PR handoff remain lifecycle-closeout work after all implementation milestones are closed.
+- Explain-change closeout and PR handoff remain lifecycle-closeout work after all implementation milestones are closed and verify has passed.
