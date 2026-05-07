@@ -105,7 +105,7 @@ The test spec should require focused static assertions for:
 - Last reviewed milestone: M4
 - Review status: clean-with-notes
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: pr
 - Verify readiness: passed
 - Reason verify passed: all in-scope implementation milestones are closed, code-review is complete, review-resolution is closed/not triggered, selected CI passed, and broad smoke passed.
 
@@ -403,7 +403,7 @@ Final validation should include:
 - [x] M4 code-review complete.
 - [x] Review-resolution closed if triggered (not triggered).
 - [x] Verify complete.
-- [ ] Explain-change complete.
+- [x] Explain-change complete.
 - [ ] PR handoff complete.
 - [ ] Plan lifecycle synchronized to Done when no true downstream event remains.
 
@@ -557,7 +557,17 @@ Final validation should include:
   - `git diff --check 7ca62c9..HEAD` passed.
   - `rg -n '[[:blank:]]$|\t'` over active changed files from `7ca62c9..HEAD` found no trailing whitespace or tab characters.
   - `test ! -e skills/review-resolution/SKILL.md` passed.
+- 2026-05-08 explain-change closeout:
+  - Updated `docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md` with file-level rationale, requirement/test traceability, review-resolution counts, verification evidence, scope control, risks, and PR handoff notes.
+  - `python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml --path docs/plan.md` passed with no unclassified paths.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml --path docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md --path docs/changes/2026-05-07-milestone-aware-review-handoff/review-log.md --path docs/changes/2026-05-07-milestone-aware-review-handoff/review-resolution.md --path docs/changes/2026-05-07-milestone-aware-review-handoff/reviews/plan-review-r1.md --path docs/proposals/2026-05-07-milestone-aware-review-handoff.md --path specs/milestone-aware-review-handoff.md --path specs/milestone-aware-review-handoff.test.md` passed with the existing `docs/plan.md` lifecycle-language warning.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml` passed.
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-07-milestone-aware-review-handoff` passed.
+  - `bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml --path docs/plan.md` passed all selected checks.
+  - `git diff --check -- docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md docs/plans/2026-05-07-milestone-aware-review-handoff.md` passed.
+  - `rg -n '[[:blank:]]$|\t' docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md docs/plans/2026-05-07-milestone-aware-review-handoff.md` found no trailing whitespace or tab characters.
+  - Next stage: `pr`.
 
 ## Outcome and Retrospective
 
-Active. Next stage: `explain-change`. Verify passed for the active milestone-aware change scope; PR handoff must still confirm branch base hygiene because the current local branch is stacked on pre-M1 review-recording follow-up commits relative to `main`.
+Active. Next stage: `pr`. Verify and explain-change are complete for the active milestone-aware change scope; PR handoff must still confirm branch base hygiene because the current local branch is stacked on pre-M1 review-recording follow-up commits relative to `main`.
