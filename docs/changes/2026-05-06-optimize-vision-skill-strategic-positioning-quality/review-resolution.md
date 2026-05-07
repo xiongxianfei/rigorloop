@@ -12,6 +12,7 @@ Review closeout: spec-review-r1
 Review closeout: spec-review-r2
 Review closeout: spec-review-r3
 Review closeout: code-review-r1
+Review closeout: code-review-r2
 
 ## Resolution Entries
 
@@ -70,3 +71,9 @@ Chosen action: Update `skills/vision/SKILL.md` so explicit project-vision establ
 Rationale: The finding is correct. The approved spec makes root `VISION.md` absence the deciding condition for explicit establishment and treats retired root `vision.md` as non-canonical. The current skill wording leaves a retired lowercase file able to alter active establishment behavior.
 Validation target: Rerun `python scripts/test-skill-validator.py`, targeted `python scripts/validate-skills.py skills/vision/SKILL.md`, `python scripts/build-skills.py --check`, `python scripts/build-adapters.py --version 0.1.1 --check`, `python scripts/validate-adapters.py --version 0.1.1`, selected CI over canonical/generated vision skill paths and review artifacts, review artifact validation, change metadata validation, lifecycle validation, and whitespace checks after the fix.
 Validation evidence: `python scripts/test-skill-validator.py` failed after adding the CR1-F1 assertion and before the skill fix because `skills/vision/SKILL.md` lacked the explicit-establishment wording and still contained "neither root vision file exists"; after the fix, `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py skills/vision/SKILL.md`, `python scripts/build-skills.py --check`, `python scripts/build-adapters.py --version 0.1.1 --check`, `python scripts/validate-adapters.py --version 0.1.1`, a no-match scan for "neither root vision file exists" across canonical and generated vision skills, and selected CI over canonical/generated vision skill paths passed.
+
+### code-review-r2
+
+Review closeout: code-review-r2
+
+No material findings; no resolution entry required. The same-stage code-review rerun returned `clean-with-notes` and confirmed `CR1-F1` is closed.

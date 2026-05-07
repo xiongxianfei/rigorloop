@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-06 Optimize vision skill strategic positioning quality](plans/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md) - active execution plan with implementation milestones complete for adding strategic-positioning behavior to the `vision` skill, retiring active lowercase `vision.md` handling, aligning proof surfaces and generated outputs, preserving durable positioning rationale, and closing first-pass code-review finding `CR1-F1`; ready for code-review rerun.
+- [2026-05-06 Optimize vision skill strategic positioning quality](plans/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md) - active execution plan with implementation milestones complete for adding strategic-positioning behavior to the `vision` skill, retiring active lowercase `vision.md` handling, aligning proof surfaces and generated outputs, preserving durable positioning rationale, closing first-pass code-review finding `CR1-F1`, and recording a clean same-stage code-review rerun; ready for verify.
 
 ## Blocked
 - none yet
