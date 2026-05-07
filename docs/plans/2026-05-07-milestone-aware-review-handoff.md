@@ -105,9 +105,9 @@ The test spec should require focused static assertions for:
 - Last reviewed milestone: M4
 - Review status: clean-with-notes
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
-- Verify readiness: ready
-- Reason verify is ready: all in-scope implementation milestones are closed and code-review is complete.
+- Next stage: explain-change
+- Verify readiness: passed
+- Reason verify passed: all in-scope implementation milestones are closed, code-review is complete, review-resolution is closed/not triggered, selected CI passed, and broad smoke passed.
 
 ## Milestones
 
@@ -402,7 +402,7 @@ Final validation should include:
 - [x] M4 generated output and implementation evidence complete.
 - [x] M4 code-review complete.
 - [x] Review-resolution closed if triggered (not triggered).
-- [ ] Verify complete.
+- [x] Verify complete.
 - [ ] Explain-change complete.
 - [ ] PR handoff complete.
 - [ ] Plan lifecycle synchronized to Done when no true downstream event remains.
@@ -546,7 +546,18 @@ Final validation should include:
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml` passed.
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml --path docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path skills/code-review/SKILL.md --path skills/implement/SKILL.md --path skills/plan/SKILL.md --path skills/workflow/SKILL.md` passed.
   - `bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml --path docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/plan/SKILL.md --path skills/workflow/SKILL.md --path .codex/skills/implement/SKILL.md --path .codex/skills/code-review/SKILL.md --path .codex/skills/plan/SKILL.md --path .codex/skills/workflow/SKILL.md --path dist/adapters/codex/.agents/skills/implement/SKILL.md --path dist/adapters/codex/.agents/skills/code-review/SKILL.md --path dist/adapters/codex/.agents/skills/plan/SKILL.md --path dist/adapters/codex/.agents/skills/workflow/SKILL.md --path dist/adapters/claude/.claude/skills/implement/SKILL.md --path dist/adapters/claude/.claude/skills/code-review/SKILL.md --path dist/adapters/claude/.claude/skills/plan/SKILL.md --path dist/adapters/claude/.claude/skills/workflow/SKILL.md --path dist/adapters/opencode/.opencode/skills/implement/SKILL.md --path dist/adapters/opencode/.opencode/skills/code-review/SKILL.md --path dist/adapters/opencode/.opencode/skills/plan/SKILL.md --path dist/adapters/opencode/.opencode/skills/workflow/SKILL.md --path docs/plans/2026-05-07-milestone-aware-review-handoff.md` passed all selected checks.
+- 2026-05-07 verify closeout:
+  - Verification scope: active milestone-aware change from `7ca62c9` through `97bb67f`. The local branch also contains pre-M1 review-recording follow-up commits relative to `main`; PR handoff must confirm whether this remains a stacked branch or should be restacked for a standalone PR.
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-07-milestone-aware-review-handoff` passed.
+  - `python scripts/select-validation.py --mode explicit` with every active changed authored, generated, change-local, review-artifact, plan, workflow, and adapter skill file path passed with no unclassified paths. Selected check IDs: `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
+  - `python scripts/build-skills.py --check` passed.
+  - `python scripts/build-adapters.py --version 0.1.1 --check` passed.
+  - `bash scripts/ci.sh --mode explicit` with every active changed authored, generated, change-local, review-artifact, plan, workflow, and adapter skill file path passed all selected checks.
+  - `bash scripts/ci.sh --mode broad-smoke` passed. It ran skill validation, 33 skill-validator tests, generated skill drift, 56 adapter distribution tests, generated adapter drift, adapter validation, 4 change-metadata validator tests, 46 artifact-lifecycle validator tests, 29 review-artifact validator tests, and push-main-ci lifecycle validation. The lifecycle step reported unrelated historical proposal warnings only.
+  - `git diff --check 7ca62c9..HEAD` passed.
+  - `rg -n '[[:blank:]]$|\t'` over active changed files from `7ca62c9..HEAD` found no trailing whitespace or tab characters.
+  - `test ! -e skills/review-resolution/SKILL.md` passed.
 
 ## Outcome and Retrospective
 
-Active. Next stage: `verify`. Verify is ready because all in-scope implementation milestones are closed and code-review is complete.
+Active. Next stage: `explain-change`. Verify passed for the active milestone-aware change scope; PR handoff must still confirm branch base hygiene because the current local branch is stacked on pre-M1 review-recording follow-up commits relative to `main`.
