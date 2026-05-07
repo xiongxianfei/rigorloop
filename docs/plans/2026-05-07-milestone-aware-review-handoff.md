@@ -5,7 +5,7 @@
 - active
 - Owner: maintainers
 - Start date: 2026-05-07
-- Last updated: 2026-05-07
+- Last updated: 2026-05-08
 - Related issue or PR: none yet
 - Supersedes: none
 - selected_workflow_contract: refactored
@@ -456,7 +456,7 @@ Final validation should include:
   - `git diff --check -- specs/milestone-aware-review-handoff.test.md specs/workflow-stage-autoprogression.test.md specs/rigorloop-workflow.test.md scripts/test-skill-validator.py docs/plans/2026-05-07-milestone-aware-review-handoff.md` passed.
   - `rg -n '[[:blank:]]$|\t' specs/milestone-aware-review-handoff.test.md specs/workflow-stage-autoprogression.test.md specs/rigorloop-workflow.test.md scripts/test-skill-validator.py docs/plans/2026-05-07-milestone-aware-review-handoff.md` found no trailing whitespace or tab characters.
 - 2026-05-07 M1 code-review closeout:
-  - Reviewed commit: `018fb4f M1: add milestone-aware handoff proof`.
+  - Reviewed commit: `a31cc14 M1: add milestone-aware handoff proof`.
   - Review status: `clean-with-notes`.
   - Material findings: none.
   - Detailed review record: not required because the review was clean with no material findings and no detailed-record trigger.
@@ -476,7 +476,7 @@ Final validation should include:
   - `git diff --check -- specs/workflow-stage-autoprogression.md specs/rigorloop-workflow.md scripts/test-skill-validator.py docs/plans/2026-05-07-milestone-aware-review-handoff.md docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml` passed.
   - `rg -n '[[:blank:]]$|\t' specs/workflow-stage-autoprogression.md specs/rigorloop-workflow.md scripts/test-skill-validator.py docs/plans/2026-05-07-milestone-aware-review-handoff.md docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml` found no trailing whitespace or tab characters.
 - 2026-05-07 M2 code-review closeout:
-  - Reviewed commit: `66a3815 M2: align milestone-aware workflow contract`.
+  - Reviewed commit: `576472e M2: align milestone-aware workflow contract`.
   - Review status: `clean-with-notes`.
   - Material findings: none.
   - Detailed review record: not required because the review was clean with no material findings and no detailed-record trigger.
@@ -504,7 +504,7 @@ Final validation should include:
   - `python scripts/build-skills.py --check` failed as expected for M3 because `.codex/skills/code-review`, `.codex/skills/implement`, `.codex/skills/plan`, and `.codex/skills/workflow` are generated outputs intentionally deferred to M4.
   - `bash scripts/ci.sh --mode explicit --path docs/workflows.md --path AGENTS.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/plan/SKILL.md --path skills/workflow/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml` failed only on `skills.drift` and `adapters.drift`, which M4 owns; all non-generated-drift selected checks passed.
 - 2026-05-07 M3 code-review closeout:
-  - Reviewed commit: `7667553 M3: align milestone-aware workflow skills`.
+  - Reviewed commit: `92a0896 M3: align milestone-aware workflow skills`.
   - Review status: `clean-with-notes`.
   - Material findings: none.
   - Detailed review record: not required because the review was clean with no material findings and no detailed-record trigger.
@@ -515,7 +515,7 @@ Final validation should include:
   - `python scripts/build-adapters.py --version 0.1.1 --check` failed as expected for M4-owned generated adapter drift.
   - `rg -n 'first-pass `clean-with-notes` continues to `verify`|`clean-with-notes` hands off to `verify` when no stop condition applies|`code-review -> verify` only for first-pass `clean-with-notes`' docs/workflows.md skills/code-review/SKILL.md skills/workflow/SKILL.md` found no stale shortcut matches.
   - `test ! -e skills/review-resolution/SKILL.md` passed.
-  - `git diff --check 2671484..7667553` passed.
+  - `git diff --check 07a071f..92a0896` passed after the branch was restacked.
 - 2026-05-07 M4 validation:
   - `python scripts/build-skills.py` passed and regenerated `.codex/skills/` from canonical `skills/`.
   - `python scripts/build-adapters.py --version 0.1.1` passed and regenerated public adapter output under `dist/adapters/`.
@@ -533,7 +533,7 @@ Final validation should include:
   - `git diff --check -- .codex/skills dist/adapters docs/changes/2026-05-07-milestone-aware-review-handoff docs/plans/2026-05-07-milestone-aware-review-handoff.md` passed.
   - `rg -n '[[:blank:]]$|\t'` over the changed generated skill, generated adapter, change-local, and plan files found no trailing whitespace or tab characters.
 - 2026-05-07 M4 code-review closeout:
-  - Reviewed commit: `381c858 M4: refresh milestone-aware generated guidance`.
+  - Reviewed commit: `5334f08 M4: refresh milestone-aware generated guidance`.
   - Review status: `clean-with-notes`.
   - Material findings: none.
   - Review-resolution required: no.
@@ -547,15 +547,15 @@ Final validation should include:
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml --path docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path skills/code-review/SKILL.md --path skills/implement/SKILL.md --path skills/plan/SKILL.md --path skills/workflow/SKILL.md` passed.
   - `bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml --path docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/plan/SKILL.md --path skills/workflow/SKILL.md --path .codex/skills/implement/SKILL.md --path .codex/skills/code-review/SKILL.md --path .codex/skills/plan/SKILL.md --path .codex/skills/workflow/SKILL.md --path dist/adapters/codex/.agents/skills/implement/SKILL.md --path dist/adapters/codex/.agents/skills/code-review/SKILL.md --path dist/adapters/codex/.agents/skills/plan/SKILL.md --path dist/adapters/codex/.agents/skills/workflow/SKILL.md --path dist/adapters/claude/.claude/skills/implement/SKILL.md --path dist/adapters/claude/.claude/skills/code-review/SKILL.md --path dist/adapters/claude/.claude/skills/plan/SKILL.md --path dist/adapters/claude/.claude/skills/workflow/SKILL.md --path dist/adapters/opencode/.opencode/skills/implement/SKILL.md --path dist/adapters/opencode/.opencode/skills/code-review/SKILL.md --path dist/adapters/opencode/.opencode/skills/plan/SKILL.md --path dist/adapters/opencode/.opencode/skills/workflow/SKILL.md --path docs/plans/2026-05-07-milestone-aware-review-handoff.md` passed all selected checks.
 - 2026-05-07 verify closeout:
-  - Verification scope: active milestone-aware change from `7ca62c9` through `97bb67f`. The local branch also contains pre-M1 review-recording follow-up commits relative to `main`; PR handoff must confirm whether this remains a stacked branch or should be restacked for a standalone PR.
+  - Verification scope after PR restack: active milestone-aware branch `origin/main..HEAD`, based on `origin/main` at `f8162780ea535c412bb5d7cf69fd303c61af0656875c04491` (merged PR #32). The prior stacked-branch caveat is closed; the branch contains only milestone-aware commits relative to `origin/main`.
   - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-07-milestone-aware-review-handoff` passed.
   - `python scripts/select-validation.py --mode explicit` with every active changed authored, generated, change-local, review-artifact, plan, workflow, and adapter skill file path passed with no unclassified paths. Selected check IDs: `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
   - `python scripts/build-skills.py --check` passed.
   - `python scripts/build-adapters.py --version 0.1.1 --check` passed.
   - `bash scripts/ci.sh --mode explicit` with every active changed authored, generated, change-local, review-artifact, plan, workflow, and adapter skill file path passed all selected checks.
   - `bash scripts/ci.sh --mode broad-smoke` passed. It ran skill validation, 33 skill-validator tests, generated skill drift, 56 adapter distribution tests, generated adapter drift, adapter validation, 4 change-metadata validator tests, 46 artifact-lifecycle validator tests, 29 review-artifact validator tests, and push-main-ci lifecycle validation. The lifecycle step reported unrelated historical proposal warnings only.
-  - `git diff --check 7ca62c9..HEAD` passed.
-  - `rg -n '[[:blank:]]$|\t'` over active changed files from `7ca62c9..HEAD` found no trailing whitespace or tab characters.
+  - `git diff --check origin/main..HEAD` passed.
+  - `rg -n '[[:blank:]]$|\t'` over active changed files from `origin/main..HEAD` found no trailing whitespace or tab characters.
   - `test ! -e skills/review-resolution/SKILL.md` passed.
 - 2026-05-08 explain-change closeout:
   - Updated `docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md` with file-level rationale, requirement/test traceability, review-resolution counts, verification evidence, scope control, risks, and PR handoff notes.
@@ -567,7 +567,14 @@ Final validation should include:
   - `git diff --check -- docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md docs/plans/2026-05-07-milestone-aware-review-handoff.md` passed.
   - `rg -n '[[:blank:]]$|\t' docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md docs/plans/2026-05-07-milestone-aware-review-handoff.md` found no trailing whitespace or tab characters.
   - Next stage: `pr`.
+- 2026-05-08 PR preparation restack validation:
+  - Branch `workflow/2026-05-07-milestone-aware-review-handoff` was restacked on `origin/main` at `f8162780ea535c412bb5d7cf69fd303c61af0656875c04491`; the current branch is ahead by the milestone-aware commits only.
+  - `bash scripts/ci.sh --mode explicit` with every current changed authored, generated, change-local, review-artifact, plan, workflow, and adapter skill file path passed all selected checks after restack.
+  - `bash scripts/ci.sh --mode broad-smoke` passed after restack. It ran skill validation, 33 skill-validator tests, generated skill drift, 56 adapter distribution tests, generated adapter drift, adapter validation, 4 change-metadata validator tests, 46 artifact-lifecycle validator tests, 29 review-artifact validator tests, and push-main-ci lifecycle validation. The lifecycle step reported unrelated historical proposal warnings only.
+  - `git diff --check 07a071f..92a0896` passed.
+  - `git diff --check origin/main..HEAD` passed.
+  - `rg -n '[[:blank:]]$|\t'` over active changed files from `origin/main..HEAD` found no trailing whitespace or tab characters.
 
 ## Outcome and Retrospective
 
-Active. Next stage: `pr`. Verify and explain-change are complete for the active milestone-aware change scope; PR handoff must still confirm branch base hygiene because the current local branch is stacked on pre-M1 review-recording follow-up commits relative to `main`.
+Active. Next stage: `pr`. Verify and explain-change are complete for the active milestone-aware change scope, and PR preparation confirmed the branch is restacked on `origin/main` with no stacked-branch caveat remaining.
