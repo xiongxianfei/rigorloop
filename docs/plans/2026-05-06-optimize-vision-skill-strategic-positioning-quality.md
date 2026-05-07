@@ -318,6 +318,7 @@ Repository broad smoke is not planned by default. If plan-review, test-spec, sel
 - [x] verify found and fixed active README positioning drift from the old "Git-first starter kit" framing.
 - [x] code-review rerun clean after the README drift fix.
 - [x] verify passed.
+- [x] explain-change refreshed.
 
 ## Decision Log
 
@@ -348,10 +349,11 @@ Repository broad smoke is not planned by default. If plan-review, test-spec, sel
 - 2026-05-07: Same-stage code-review rerun recorded `code-review-r2` with `clean-with-notes` and no material findings.
 - 2026-05-07: Verify found active README body drift: two lines still framed RigorLoop as a "Git-first starter kit", which contradicted the accepted positioning that treats Git as a compatibility surface. The README body now says "rigorous workflow" and "repository-local workflow". `python scripts/validate-readme.py README.md`, `python scripts/validate-readme.py README.md --vision-markers`, no-match scan for `Git-first`/`git-first` across active vision surfaces, `git diff --check -- README.md`, and selected CI over the full branch diff passed after the fix. Same-stage code-review rerun recorded `code-review-r3` with `clean-with-notes` and no material findings.
 - 2026-05-07: Final verify validation passed with review artifact closeout validation, change metadata validation, explicit artifact lifecycle validation over the governing vision/proposal/spec/test-spec/plan/review/change-local artifacts, `git diff --check -- .`, trailing-whitespace scan over changed files, and selected CI over the full branch/worktree diff. Artifact lifecycle continued to emit the known reviewer-attention warning for older lifecycle wording in a Done entry in `docs/plan.md`.
+- 2026-05-07: `docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/explain-change.md` was refreshed from the actual branch diff, proposal/spec/test-spec decisions, review-resolution closeout, and final verify evidence. It now includes the required problem, decision trail, file-by-file rationale, tests, verification evidence, review-resolution summary, alternatives, scope control, risks, and PR handoff sections.
 
 ## Outcome and Retrospective
 
-- Active. Implementation milestones M1 through M4 are complete. First-pass code-review requested changes for `CR1-F1`, and the finding is resolved with review-resolution closed. Same-stage code-review reruns returned `clean-with-notes`, including the rerun after the verify-found README drift fix. Verify passed. The plan remains Active for explain-change refresh, PR handoff, and PR-self-contained Done closeout.
+- Active. Implementation milestones M1 through M4 are complete. First-pass code-review requested changes for `CR1-F1`, and the finding is resolved with review-resolution closed. Same-stage code-review reruns returned `clean-with-notes`, including the rerun after the verify-found README drift fix. Verify passed and explain-change is refreshed. The plan remains Active for PR handoff and PR-self-contained Done closeout.
 
 ## Readiness
 
@@ -361,4 +363,5 @@ Repository broad smoke is not planned by default. If plan-review, test-spec, sel
 - First-pass code-review finding `CR1-F1` resolved and review-resolution closed.
 - Code-review reruns clean.
 - Verify passed.
-- Next: explain-change refresh.
+- Explain-change refreshed.
+- Next: PR handoff.
