@@ -8,6 +8,9 @@
 
 - Spec: `specs/workflow-stage-autoprogression.md`
 - Related proposal: `docs/proposals/2026-04-21-workflow-stage-autoprogression.md`
+- Related amendment spec: `specs/milestone-aware-review-handoff.md`
+- Related amendment test spec: `specs/milestone-aware-review-handoff.test.md`
+- Related amendment plan: `docs/plans/2026-05-07-milestone-aware-review-handoff.md`
 - Architecture: `docs/architecture/2026-04-21-workflow-stage-autoprogression.md`
 - ADR: `docs/adr/ADR-20260419-repository-source-layout.md`
 - Plan: `docs/plans/2026-04-21-workflow-stage-autoprogression.md`
@@ -32,6 +35,7 @@
 - Use `specs/code-review-independence-under-autoprogression.test.md` as the focused proof surface for first-pass review record contents, first-pass status semantics, clean-review validity, optional positive notes, and sensitive-change coverage. This test spec retains ownership of the broader execution-chain and isolated-stage-default proof.
 - Treat PR-opening prerequisites, isolated-stage behavior, and stop conditions as contract/manual scenarios asserted through stage-skill wording and readiness guidance until a later approved change adds executable orchestration.
 - Treat compatibility and migration coverage as manual plus smoke: confirm stage order and lane definitions remain intact while the new continuation policy lands only in the approved v1 scope.
+- Treat the milestone-aware review handoff amendment as a qualification of the `code-review -> verify` shortcut: non-final planned implementation milestones route to the next in-scope implementation milestone, while final clean implementation milestones route to `verify`.
 
 ## Requirement coverage map
 
@@ -41,6 +45,7 @@
 | `R1d`, `R6`, `R6a`, `R6b`, `R6c` | `T4`, `T8` | manual, smoke | Direct-`pr` behavior, readiness blockers, and truthful hosted-CI wording |
 | `R2c`, `R2d`, `R2e`, `R2f`, `R2g`, `R7`, `R7a` | `T3` | manual | Authoring-to-review handoffs and explicit non-expansion into review-to-authoring transitions |
 | `R3`, `R3a`, `R3b`, `R3c`, `R3d`, `R3e`, `R3f`, `R7`, `R7a` | `T2`, `T8` | manual, smoke | Full-feature execution flow from `implement` through `pr`, including conditional `ci` |
+| Milestone-aware review handoff amendment `R1`-`R11b` | `T10` | manual, integration | Qualifies clean `code-review` routing for milestone-based full-feature plans |
 | `R5`, `R5a`, `R8`, `R8a`, `R8b` | `T4`, `T5` | manual | Stop conditions, pause handling, and non-expansion into stronger external actions |
 | `R8c`, `R8d`, `R9`, `R9a` | `T6` | manual | Advice-only `learn`, truthful readiness wording, and blocker/pause reporting |
 
@@ -58,6 +63,7 @@
 | `E8` | `T4` | Direct `pr` still opens when ready |
 | `E9` | `T5` | Direct `verify` stays isolated by default |
 | `E10` | `T9` | Fast-lane and bugfix execution stay outside v1 scope |
+| Milestone-aware amendment `E1`-`E6` | `T10` | Non-final/final clean review split, same-milestone findings, ambiguous plan state, plan revision, and lifecycle-closeout distinction |
 
 ## Edge case coverage
 
@@ -75,6 +81,7 @@
 - `EC12`: directly invoked `verify` without workflow-managed context stops after verify: `T5`
 - `EC13`: lifecycle-closeout or upstream-stage blockers prevent PR opening: `T4`
 - `EC14`: fast-lane and bugfix execution do not gain v1 autoprogression: `T9`
+- Milestone-aware amendment `EC1`-`EC14`: `T10`
 
 ## Test cases
 
@@ -271,6 +278,31 @@
   - The change silently broadened beyond the approved feature boundary.
 - Automation location:
   - Manual review during M1 and M3.
+
+### T10. Milestone-based clean review routing is qualified by amendment
+
+- Covers: milestone-aware review handoff amendment `R1`-`R11b`, amendment `E1`-`E6`, amendment `EC1`-`EC14`
+- Level: manual, integration
+- Fixture/setup:
+  - `specs/workflow-stage-autoprogression.md`
+  - `specs/milestone-aware-review-handoff.md`
+  - `specs/milestone-aware-review-handoff.test.md`
+  - `docs/workflows.md`
+  - `skills/code-review/SKILL.md`
+  - `skills/workflow/SKILL.md`
+  - `scripts/test-skill-validator.py`
+- Steps:
+  - Confirm the full-feature `code-review -> verify` shortcut is qualified for milestone-based plans.
+  - Confirm clean non-final implementation milestone reviews close the reviewed milestone and route to the next in-scope implementation milestone.
+  - Confirm clean final implementation milestone reviews close the reviewed milestone and route to `verify`.
+  - Confirm findings, inconclusive review, ambiguous remaining milestones, and user stop conditions do not route to `verify`.
+- Expected result:
+  - The autoprogression contract no longer implies that a clean review of one non-final milestone makes the whole plan ready for `verify`.
+- Failure proves:
+  - The original milestone-aware handoff bug remains in the autoprogression proof surface.
+- Automation location:
+  - `scripts/test-skill-validator.py`
+  - `specs/milestone-aware-review-handoff.test.md`
 
 ## Fixtures and data
 
