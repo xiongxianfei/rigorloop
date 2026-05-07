@@ -12,6 +12,8 @@
 - Architecture: `docs/architecture/2026-04-24-review-finding-resolution-contract.md`
 - Related follow-on spec: `specs/formal-review-recording.md`
 - Related follow-on test spec: `specs/formal-review-recording.test.md`
+- Amendment proposal: `docs/proposals/2026-05-07-review-skill-material-finding-recording.md`
+- Current amendment plan: `docs/plans/2026-05-07-review-skill-material-finding-recording.md`
 - Spec-review findings: resolved in `docs/changes/2026-04-24-review-finding-resolution-contract/reviews/spec-review-r2.md`
 - Architecture-review findings: resolved in `docs/changes/2026-04-24-review-finding-resolution-contract/reviews/architecture-review-r2.md`
 - Plan-review findings: approved with no required edits
@@ -26,6 +28,7 @@
 - Security and privacy checks assert that review-artifact validation uses only local repository files, does not require network access or secrets, and reports paths, line numbers, IDs, mode, and short reasons rather than large copied excerpts.
 - Non-smoke validation must run with Python standard library code and repository files only. It must not require installed Codex, Claude Code, OpenCode, network access, hosted CI, or external review tools.
 - Manual contract tests cover the formal review recording trigger policy: stage-neutral detailed records, clean artifact-local settlement, material and no-material initial review-record roots, and conditional `review-resolution.md`.
+- Static and fixture-backed contract tests cover scan-first `review-resolution.md` guidance: top summary, resolution overview, common metadata when useful, compact finding details, shared validation evidence, closeout checklist, and parseable per-finding labels.
 
 ## Requirement coverage map
 
@@ -34,7 +37,7 @@
 | `R1`-`R1d` | `T1`, `T11` | Complete finding guidance and incomplete-finding boundary in review-stage guidance. |
 | `R2`-`R2l` | `T2`, `T3`, `T13` | Detailed review metadata, exact-one Review ID, stage scope, stability, and per-change uniqueness. |
 | `R2m`, `R2m-exception`, `R2n`, `R2o` | `T2`, `T8`, `T11` | First-pass timing, reconstructed records, append-only review history, and resolution/update surfaces. |
-| `R2p`-`R2w` | `T17` | Stage-neutral detailed-record triggers, clean artifact-local settlement, material/no-material initial review-record roots, and conditional `review-resolution.md`. |
+| `R2p`-`R2w` | `T17` | Stage-neutral detailed-record triggers, broad material-finding recording, clean artifact-local settlement, material/no-material initial review-record roots, and conditional `review-resolution.md`. |
 | `R3`-`R3p` | `T3`, `T7`, `T13` | Required review-log, canonical `### Review entry` blocks, resolution links, closed open-finding state, exact-once ledger references, and prose exclusion. |
 | `R4`-`R4c` | `T4`, `T8` | Material Finding IDs, uniqueness, stable format, and non-material no-ID path. |
 | `R5`-`R5i` | `T4`, `T5`, `T7`, `T11` | Required review-resolution entries, initial entries before fixes, final action, validation target, and suggested-vs-final action split. |
@@ -47,6 +50,7 @@
 | `R12`-`R12c` | `T16` | Generated `.codex/skills/` and public adapter sync after canonical shipped skill changes. |
 | `R13`-`R13b` | `T8`, `T13` | Clean-review lightweight path and `reviews/` still requiring `review-log.md`. |
 | `R14`-`R14a` | `T11`, `T12`, `T16` | Workflow contract, stage tables, governance summaries, skills, and generated adapters align with expanded vocabulary. |
+| `R15`-`R15i` | `T18` | New `review-resolution.md` records are scan-first for humans and preserve validator-readable per-finding labels. |
 
 ## Example coverage map
 
@@ -65,6 +69,7 @@
 | `E11` | `T2` | Reconstructed review records are explicit and preserve evidence/fidelity notes. |
 | `E12` | `T3` | Review-log uses canonical line blocks and exact field labels. |
 | `E13` | `T17` | No-material non-approval review records are indexed without requiring empty `review-resolution.md`. |
+| `E14` | `T18` | Review-resolution is scan-first and validator-readable. |
 
 ## Edge case coverage
 
@@ -92,6 +97,11 @@
 - Edge case 22, no-material `plan-review` non-approval outcome: `T17`
 - Edge case 23, material upstream review before a change-local root exists: `T17`
 - Edge case 24, clean required review settled in the reviewed artifact: `T17`
+- Edge case 25, final PR-ready handoff with only the initial review-record root: `T17`
+- Edge case 26, shared validation evidence for multiple accepted findings: `T18`
+- Edge case 27, table-only finding detail without parseable labels: `T18`
+- Edge case 28, new `review-resolution.md` missing scan-first overview: `T18`
+- Edge case 29, isolated material finding requiring change-local review files regardless of handoff: `T17`
 
 ## Test cases
 
@@ -468,7 +478,7 @@
 
 ### T17. Formal review recording trigger policy stays proportional
 
-- Covers: `R2p`-`R2w`, `R3`, `R3k`, `R3l`, `R5`, `R8f`, `R8g`, `R13`, `R13a`, `R13b`, `E13`, edge cases 22, 23, 24
+- Covers: `R2p`-`R2w`, `R3`, `R3k`, `R3l`, `R5`, `R8f`, `R8g`, `R13`, `R13a`, `R13b`, `E13`, edge cases 22, 23, 24, 25, 29
 - Level: contract, manual
 - Fixture/setup:
   - `specs/formal-review-recording.md`
@@ -480,6 +490,7 @@
   - `AGENTS.md`
 - Steps:
   - Confirm detailed review files are required for material findings, stage-owned non-approval outcomes that block downstream progress or require revision, reconstructed review evidence, closeout evidence citation, and explicit reviewer or maintainer request.
+  - Confirm every material finding requires change-local review files, including isolated material findings that stop downstream handoff.
   - Confirm clean required reviews with no detailed-record trigger may settle in the reviewed artifact without empty `reviews/`, `review-log.md`, or `review-resolution.md` files.
   - Confirm a material initial review-record root includes `change.yaml`, `review-log.md`, `review-resolution.md`, and the detailed review file.
   - Confirm a no-material initial review-record root includes `change.yaml`, `review-log.md`, and the detailed review file, but does not require an empty `review-resolution.md` solely because `reviews/` exists.
@@ -492,6 +503,31 @@
 - Automation location:
   - Manual review during formal review recording M1.
   - Executable upstream-stage and no-material fixture coverage is owned by `specs/formal-review-recording.test.md` M2.
+
+### T18. New `review-resolution.md` guidance is scan-first and validator-readable
+
+- Covers: `R15`-`R15i`, `E14`, edge cases 26, 27, 28
+- Level: contract, integration
+- Fixture/setup:
+  - `templates/review-resolution.md` or another approved durable guidance surface selected by the implementation
+  - `scripts/test-review-artifact-validator.py`
+  - `scripts/review_artifact_validation.py`
+  - representative scan-first review-resolution fixture with multiple accepted findings sharing validation evidence
+- Steps:
+  - Assert the reusable guidance for new `review-resolution.md` records starts with closeout status, covered Review IDs, resolved count, unresolved count, and final result near the top.
+  - Assert the guidance includes a resolution overview with Finding ID, disposition, status, and short resolution summary columns or equivalent scan-first fields.
+  - Assert common owner, owning stage, validation target, or validation evidence may be recorded once for human readability when shared by multiple findings.
+  - Assert each material finding detail still contains parseable labels for `Finding ID:`, `Disposition:`, `Owner:`, `Owning stage:`, `Chosen action:` or an approved action field, `Rationale:`, `Validation target:` or expected proof, and `Validation evidence:` when closeout is claimed.
+  - Assert shared validation evidence is allowed and a closeout checklist is recommended for final readiness.
+  - Add negative coverage for a table-only finding detail that removes per-finding labels and for a new resolution file lacking any scan-first overview.
+- Expected result:
+  - New review-resolution records are quick to scan, keep shared evidence out of repeated prose, and remain parseable for structural and closeout validation.
+- Failure proves:
+  - Readability improvements weakened machine-readable finding closeout or left the new guidance too hard to audit.
+- Automation location:
+  - `python scripts/test-review-artifact-validator.py`
+  - `python scripts/validate-review-artifacts.py --mode closeout <change-root>`
+  - manual M2/M4 review when scan-first guidance is added or revised
 
 ## Fixtures and data
 
@@ -508,6 +544,8 @@ Fixture families:
 - review-log failures: `missing-review-log`, `log-missing-review-id`, `log-unknown-review-id`, `log-duplicate-review-id`, `log-prose-review-id-only`, `log-missing-required-field`, `log-malformed-resolution-link`
 - finding/resolution failures: `duplicate-finding-ids`, `missing-resolution-file`, `missing-resolution-entry`, `unknown-resolution-finding`, `unsupported-disposition`
 - closeout failures: `open-closeout-status`, `needs-decision-open`, `open-findings-after-closeout`, `accepted-missing-action`, `accepted-missing-evidence`, `deferred-missing-rationale`, `deferred-missing-followup`, `rejected-missing-rationale`, `partial-missing-subdecision`, `partial-missing-accepted-evidence`, `blocking-review-without-rerun`
+- scan-first resolution fixtures or temporary roots: valid shared validation evidence, missing scan-first overview, table-only finding details without parseable labels, and compact per-finding details with common metadata
+- reusable guidance surface: `templates/review-resolution.md` or another approved durable surface selected by the current amendment implementation
 
 Fixtures should use small Markdown files with the canonical labels from the spec and architecture. They should not contain secrets, private keys, host-specific paths, real credentials, or large copied review transcripts.
 
@@ -549,6 +587,7 @@ Fixtures should use small Markdown files with the canonical labels from the spec
 - No manual QA is required for parser, validator, docs, or generated-output drift behavior.
 - Manual review during `code-review` should inspect at least one real change-local review artifact created during this initiative to confirm the guidance is usable.
 - Manual review during the formal review recording implementation should inspect the material/no-material initial root wording before validator fixture work begins.
+- Manual review during the current amendment should inspect the scan-first `review-resolution.md` guidance before generated skill and adapter output is refreshed.
 - Manual maintainer decisions remain required for any future `needs-decision` finding; automation only checks the recorded structure.
 
 ## What not to test
@@ -565,7 +604,7 @@ Fixtures should use small Markdown files with the canonical labels from the spec
 
 ## Next artifacts
 
-- implement
+- implementation M1 under `docs/plans/2026-05-07-review-skill-material-finding-recording.md`
 - code-review
 - verify
 - explain-change
@@ -577,4 +616,4 @@ Fixtures should use small Markdown files with the canonical labels from the spec
 
 ## Readiness
 
-- Active proof surface for M1 execution under `docs/plans/2026-04-25-review-finding-resolution-contract.md`.
+- Active proof surface for the review skill material-finding recording amendment. Implementation may proceed under the active 2026-05-07 plan starting with M1.

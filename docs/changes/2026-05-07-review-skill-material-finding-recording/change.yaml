@@ -1,0 +1,448 @@
+change_id: 2026-05-07-review-skill-material-finding-recording
+title: Review skill material finding recording
+classification: workflow-governance-spec
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-07-review-skill-material-finding-recording.md
+  spec: specs/formal-review-recording.md
+  plan: docs/plans/2026-05-07-review-skill-material-finding-recording.md
+  test_spec: specs/formal-review-recording.test.md
+  review_resolution: docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md
+requirements:
+  - Decouple isolated review handoff from material-finding recording across formal review skills.
+  - Preserve material isolated-review findings before review-driven tracked artifact edits begin.
+  - Resolve proposal-review findings RSV1 through RSV7 before downstream spec work relies on the proposal.
+  - Preserve spec-review finding SR1 before review-driven spec edits proceed.
+  - Preserve spec-review findings SR2 and SR3 before follow-up spec or governance edits proceed.
+  - Resolve SR2 under the final simplified material-finding recording rule selected by the owner.
+  - Resolve SR3 by aligning governance and operational guidance with the final simplified material-finding recording rule.
+  - Resolve SR4 by simplifying the rule to every material finding requiring change-local review files.
+  - Create the execution plan and plan-index entry for the review skill material-finding recording implementation.
+  - Update the matching test specs after clean plan-review so implementation starts from a concrete proof map.
+  - Make future review-resolution records scan-first for humans while preserving validator-readable finding fields.
+  - Draft spec amendments for the shared formal review skill subsection and structural validation rule.
+  - Draft workflow-level alignment for isolated review output, tracked artifacts, and readable review-resolution records.
+tests:
+  - Review artifact structure validation for the proposal-review finding record.
+  - Review artifact closeout validation after accepted proposal-review finding fixes.
+  - Review artifact structure validation after recording spec-review finding SR1.
+  - Artifact lifecycle validation for the revised proposal and review artifacts.
+  - Proposal-level validation for the review-resolution readability amendment.
+  - Artifact lifecycle validation for the accepted proposal and draft spec amendments.
+  - Selector-selected CI for the proposal, spec amendments, and change-local review artifacts.
+  - Review artifact structure validation after recording spec-review findings SR2 and SR3.
+  - Review artifact closeout validation after resolving spec-review findings SR2 and SR3.
+  - Lifecycle and selected CI validation for governance, workflow, spec, and review-artifact alignment.
+  - Review artifact structure validation after recording spec-review finding SR4.
+  - Review artifact closeout validation after resolving spec-review finding SR4.
+  - Lifecycle and selected CI validation after simplifying the material-finding recording trigger.
+  - Plan and lifecycle validation after creating the active execution plan.
+  - Test-spec proof maps for shared review skill guidance, isolated material output, broad material-finding recording, scan-first review-resolution, generated-output drift, and structural-only validator scope.
+  - Skill-validator regression coverage for the canonical shared review recording block, byte-equality copies, broad material-finding rule, and governance wording.
+  - Review-artifact validator regression coverage for scan-first review-resolution closeout, parseable per-finding labels, and the reusable review-resolution template.
+  - Generated skill and adapter drift checks after canonical review skill updates.
+validation:
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_before_proposal_review_fixes
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_before_proposal_review_fixes
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_after_proposal_review_fixes
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_proposal_review_fixes
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-07-review-skill-material-finding-recording.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/proposal-review-r1.md
+    result: pass_after_proposal_review_fixes
+  - command: git diff --check -- docs/proposals/2026-05-07-review-skill-material-finding-recording.md docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_after_proposal_review_fixes
+  - command: rg -n '[[:blank:]]$|\\t' docs/proposals/2026-05-07-review-skill-material-finding-recording.md docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_no_matches_after_proposal_review_fixes
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-07-review-skill-material-finding-recording.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/proposal-review-r1.md
+    result: pass_after_proposal_review_fixes
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_after_review_resolution_readability_amendment
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_review_resolution_readability_amendment
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-07-review-skill-material-finding-recording.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/proposal-review-r1.md
+    result: pass_after_review_resolution_readability_amendment
+  - command: git diff --check -- docs/proposals/2026-05-07-review-skill-material-finding-recording.md docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_after_review_resolution_readability_amendment
+  - command: rg -n '[[:blank:]]$|\\t' docs/proposals/2026-05-07-review-skill-material-finding-recording.md docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_no_matches_after_review_resolution_readability_amendment
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-07-review-skill-material-finding-recording.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/proposal-review-r1.md
+    result: pass_after_review_resolution_readability_amendment
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_after_spec_amendments
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_spec_amendments
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-07-review-skill-material-finding-recording.md --path specs/formal-review-recording.md --path specs/review-finding-resolution-contract.md --path specs/rigorloop-workflow.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/proposal-review-r1.md
+    result: pass_with_existing_lifecycle_language_warning_after_spec_amendments
+  - command: git diff --check -- docs/proposals/2026-05-07-review-skill-material-finding-recording.md specs/formal-review-recording.md specs/review-finding-resolution-contract.md specs/rigorloop-workflow.md docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_after_spec_amendments
+  - command: rg -n '[[:blank:]]$|\\t' docs/proposals/2026-05-07-review-skill-material-finding-recording.md specs/formal-review-recording.md specs/review-finding-resolution-contract.md specs/rigorloop-workflow.md docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_no_matches_after_spec_amendments
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-07-review-skill-material-finding-recording.md --path specs/formal-review-recording.md --path specs/review-finding-resolution-contract.md --path specs/rigorloop-workflow.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/proposal-review-r1.md
+    result: pass_after_spec_amendments
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_after_spec_review_r1_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_spec_review_r1_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-07-review-skill-material-finding-recording.md --path specs/formal-review-recording.md --path specs/review-finding-resolution-contract.md --path specs/rigorloop-workflow.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/proposal-review-r1.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/spec-review-r1.md
+    result: pass_with_existing_lifecycle_language_warning_after_spec_review_r1_recording
+  - command: git diff --check -- docs/proposals/2026-05-07-review-skill-material-finding-recording.md specs/formal-review-recording.md specs/review-finding-resolution-contract.md specs/rigorloop-workflow.md docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_after_spec_review_r1_recording
+  - command: rg -n '[[:blank:]]$|\\t' docs/proposals/2026-05-07-review-skill-material-finding-recording.md specs/formal-review-recording.md specs/review-finding-resolution-contract.md specs/rigorloop-workflow.md docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_no_matches_after_spec_review_r1_recording
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-07-review-skill-material-finding-recording.md --path specs/formal-review-recording.md --path specs/review-finding-resolution-contract.md --path specs/rigorloop-workflow.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/proposal-review-r1.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/spec-review-r1.md
+    result: pass_after_spec_review_r1_recording
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_after_sr1_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_sr1_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-07-review-skill-material-finding-recording.md --path specs/formal-review-recording.md --path specs/review-finding-resolution-contract.md --path specs/rigorloop-workflow.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/proposal-review-r1.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/spec-review-r1.md
+    result: pass_with_existing_lifecycle_language_warning_after_sr1_resolution
+  - command: git diff --check -- docs/proposals/2026-05-07-review-skill-material-finding-recording.md specs/formal-review-recording.md specs/review-finding-resolution-contract.md specs/rigorloop-workflow.md docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_after_sr1_resolution
+  - command: rg -n '[[:blank:]]$|\\t' docs/proposals/2026-05-07-review-skill-material-finding-recording.md specs/formal-review-recording.md specs/review-finding-resolution-contract.md specs/rigorloop-workflow.md docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_no_matches_after_sr1_resolution
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-07-review-skill-material-finding-recording.md --path specs/formal-review-recording.md --path specs/review-finding-resolution-contract.md --path specs/rigorloop-workflow.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/proposal-review-r1.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/spec-review-r1.md
+    result: pass_after_sr1_resolution
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_after_spec_review_r2_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_spec_review_r2_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-07-review-skill-material-finding-recording.md --path specs/formal-review-recording.md --path specs/review-finding-resolution-contract.md --path specs/rigorloop-workflow.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/proposal-review-r1.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/spec-review-r1.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/spec-review-r2.md
+    result: pass_with_existing_lifecycle_language_warning_after_spec_review_r2_recording
+  - command: git diff --check -- docs/proposals/2026-05-07-review-skill-material-finding-recording.md specs/formal-review-recording.md specs/review-finding-resolution-contract.md specs/rigorloop-workflow.md docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_after_spec_review_r2_recording
+  - command: rg -n '[[:blank:]]$|\\t' docs/proposals/2026-05-07-review-skill-material-finding-recording.md specs/formal-review-recording.md specs/review-finding-resolution-contract.md specs/rigorloop-workflow.md docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_no_matches_after_spec_review_r2_recording
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-07-review-skill-material-finding-recording.md --path specs/formal-review-recording.md --path specs/review-finding-resolution-contract.md --path specs/rigorloop-workflow.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/proposal-review-r1.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/spec-review-r1.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/spec-review-r2.md
+    result: pass_after_spec_review_r2_recording
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_after_sr2_sr3_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_sr2_sr3_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path docs/proposals/2026-05-07-review-skill-material-finding-recording.md --path specs/formal-review-recording.md --path specs/review-finding-resolution-contract.md --path specs/rigorloop-workflow.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/proposal-review-r1.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/spec-review-r1.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/spec-review-r2.md
+    result: pass_with_existing_lifecycle_language_warnings_after_sr2_sr3_resolution
+  - command: git diff --check -- CONSTITUTION.md AGENTS.md docs/workflows.md docs/proposals/2026-05-07-review-skill-material-finding-recording.md specs/formal-review-recording.md specs/review-finding-resolution-contract.md specs/rigorloop-workflow.md docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_after_sr2_sr3_resolution
+  - command: rg -n '[[:blank:]]$|\\t' CONSTITUTION.md AGENTS.md docs/workflows.md docs/proposals/2026-05-07-review-skill-material-finding-recording.md specs/formal-review-recording.md specs/review-finding-resolution-contract.md specs/rigorloop-workflow.md docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_no_matches_after_sr2_sr3_resolution
+  - command: bash scripts/ci.sh --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path docs/proposals/2026-05-07-review-skill-material-finding-recording.md --path specs/formal-review-recording.md --path specs/review-finding-resolution-contract.md --path specs/rigorloop-workflow.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/proposal-review-r1.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/spec-review-r1.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/spec-review-r2.md
+    result: pass_after_sr2_sr3_resolution
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_after_spec_review_r3_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_spec_review_r3_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path docs/proposals/2026-05-07-review-skill-material-finding-recording.md --path specs/formal-review-recording.md --path specs/review-finding-resolution-contract.md --path specs/rigorloop-workflow.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/proposal-review-r1.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/spec-review-r1.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/spec-review-r2.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/spec-review-r3.md
+    result: pass_with_existing_lifecycle_language_warnings_after_spec_review_r3_recording
+  - command: git diff --check -- CONSTITUTION.md AGENTS.md docs/workflows.md docs/proposals/2026-05-07-review-skill-material-finding-recording.md specs/formal-review-recording.md specs/review-finding-resolution-contract.md specs/rigorloop-workflow.md docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_after_spec_review_r3_recording
+  - command: rg -n '[[:blank:]]$|\\t' CONSTITUTION.md AGENTS.md docs/workflows.md docs/proposals/2026-05-07-review-skill-material-finding-recording.md specs/formal-review-recording.md specs/review-finding-resolution-contract.md specs/rigorloop-workflow.md docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_no_matches_after_spec_review_r3_recording
+  - command: bash scripts/ci.sh --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path docs/proposals/2026-05-07-review-skill-material-finding-recording.md --path specs/formal-review-recording.md --path specs/review-finding-resolution-contract.md --path specs/rigorloop-workflow.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/proposal-review-r1.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/spec-review-r1.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/spec-review-r2.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/spec-review-r3.md
+    result: pass_after_spec_review_r3_recording
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_after_sr4_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_sr4_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path docs/proposals/2026-05-07-review-skill-material-finding-recording.md --path specs/formal-review-recording.md --path specs/review-finding-resolution-contract.md --path specs/rigorloop-workflow.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/proposal-review-r1.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/spec-review-r1.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/spec-review-r2.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/spec-review-r3.md
+    result: pass_with_existing_lifecycle_language_warnings_after_sr4_resolution
+  - command: git diff --check -- CONSTITUTION.md AGENTS.md docs/workflows.md docs/proposals/2026-05-07-review-skill-material-finding-recording.md specs/formal-review-recording.md specs/review-finding-resolution-contract.md specs/rigorloop-workflow.md docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_after_sr4_resolution
+  - command: rg -n '[[:blank:]]$|\\t' CONSTITUTION.md AGENTS.md docs/workflows.md docs/proposals/2026-05-07-review-skill-material-finding-recording.md specs/formal-review-recording.md specs/review-finding-resolution-contract.md specs/rigorloop-workflow.md docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_no_matches_after_sr4_resolution
+  - command: bash scripts/ci.sh --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path docs/proposals/2026-05-07-review-skill-material-finding-recording.md --path specs/formal-review-recording.md --path specs/review-finding-resolution-contract.md --path specs/rigorloop-workflow.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/proposal-review-r1.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/spec-review-r1.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/spec-review-r2.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/spec-review-r3.md
+    result: pass_after_sr4_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_plan_creation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-07-review-skill-material-finding-recording.md --path docs/proposals/2026-05-07-review-skill-material-finding-recording.md --path specs/formal-review-recording.md --path specs/review-finding-resolution-contract.md --path specs/rigorloop-workflow.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md
+    result: pass_with_existing_lifecycle_language_warnings_after_plan_creation
+  - command: git diff --check -- docs/plan.md docs/plans/2026-05-07-review-skill-material-finding-recording.md docs/proposals/2026-05-07-review-skill-material-finding-recording.md specs/formal-review-recording.md specs/review-finding-resolution-contract.md specs/rigorloop-workflow.md docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_after_plan_creation
+  - command: rg -n '[[:blank:]]$|\\t' docs/plan.md docs/plans/2026-05-07-review-skill-material-finding-recording.md docs/proposals/2026-05-07-review-skill-material-finding-recording.md specs/formal-review-recording.md specs/review-finding-resolution-contract.md specs/rigorloop-workflow.md docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_no_matches_after_plan_creation
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-07-review-skill-material-finding-recording.md --path docs/proposals/2026-05-07-review-skill-material-finding-recording.md --path specs/formal-review-recording.md --path specs/review-finding-resolution-contract.md --path specs/rigorloop-workflow.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md
+    result: pass_after_plan_creation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_test_spec_update
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-07-review-skill-material-finding-recording.md --path docs/proposals/2026-05-07-review-skill-material-finding-recording.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md
+    result: pass_with_existing_lifecycle_language_warnings_after_test_spec_update
+  - command: git diff --check -- docs/plan.md docs/plans/2026-05-07-review-skill-material-finding-recording.md docs/proposals/2026-05-07-review-skill-material-finding-recording.md specs/formal-review-recording.md specs/formal-review-recording.test.md specs/review-finding-resolution-contract.md specs/review-finding-resolution-contract.test.md specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_after_test_spec_update
+  - command: rg -n '[[:blank:]]$|\\t' docs/plan.md docs/plans/2026-05-07-review-skill-material-finding-recording.md docs/proposals/2026-05-07-review-skill-material-finding-recording.md specs/formal-review-recording.md specs/formal-review-recording.test.md specs/review-finding-resolution-contract.md specs/review-finding-resolution-contract.test.md specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_no_matches_after_test_spec_update
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-07-review-skill-material-finding-recording.md --path docs/proposals/2026-05-07-review-skill-material-finding-recording.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md
+    result: pass_after_test_spec_update
+  - command: python scripts/test-review-artifact-validator.py
+    result: fail_expected_before_scan_first_template_then_pass_after_template_update
+  - command: python scripts/test-skill-validator.py
+    result: fail_expected_before_shared_block_then_pass_after_shared_block_update
+  - command: python scripts/validate-skills.py
+    result: pass_after_authored_skill_updates
+  - command: python scripts/select-validation.py --mode explicit --path templates/shared/review-isolation-and-recording.md --path templates/review-resolution.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path skills/architecture-review/SKILL.md --path skills/plan-review/SKILL.md --path skills/code-review/SKILL.md --path skills/verify/SKILL.md --path skills/explain-change/SKILL.md --path skills/pr/SKILL.md --path scripts/test-skill-validator.py --path scripts/test-review-artifact-validator.py
+    result: selected_skills_validate_skills_regression_skills_drift_adapters_drift_review_artifacts_regression_artifact_lifecycle_validate_selector_regression
+  - command: python scripts/build-skills.py
+    result: pass_generated_codex_skills_refreshed
+  - command: python scripts/build-adapters.py --version 0.1.1
+    result: pass_generated_adapters_refreshed
+  - command: python scripts/build-skills.py --check
+    result: pass_after_generation
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_after_generation
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_after_generation
+  - command: python scripts/test-select-validation.py
+    result: pass_after_template_and_skill_updates
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_after_generation
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_after_m1_m3_implementation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_m1_m3_implementation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path docs/plan.md --path docs/plans/2026-05-07-review-skill-material-finding-recording.md --path docs/proposals/2026-05-07-review-skill-material-finding-recording.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md
+    result: pass_with_existing_lifecycle_language_warnings_after_m1_m3_implementation
+  - command: git diff --check -- CONSTITUTION.md AGENTS.md docs/workflows.md docs/plan.md docs/plans/2026-05-07-review-skill-material-finding-recording.md docs/proposals/2026-05-07-review-skill-material-finding-recording.md specs/formal-review-recording.md specs/formal-review-recording.test.md specs/review-finding-resolution-contract.md specs/review-finding-resolution-contract.test.md specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md templates/shared/review-isolation-and-recording.md templates/review-resolution.md scripts/test-skill-validator.py scripts/test-review-artifact-validator.py skills .codex/skills dist/adapters docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_after_m1_m3_implementation
+  - command: rg -n '[[:blank:]]$|\\t' CONSTITUTION.md AGENTS.md docs/workflows.md docs/plan.md docs/plans/2026-05-07-review-skill-material-finding-recording.md docs/proposals/2026-05-07-review-skill-material-finding-recording.md specs/formal-review-recording.md specs/formal-review-recording.test.md specs/review-finding-resolution-contract.md specs/review-finding-resolution-contract.test.md specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md templates/shared/review-isolation-and-recording.md templates/review-resolution.md scripts/test-skill-validator.py scripts/test-review-artifact-validator.py skills .codex/skills dist/adapters docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_no_matches_after_m1_m3_implementation
+  - command: bash scripts/ci.sh --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path docs/plan.md --path docs/plans/2026-05-07-review-skill-material-finding-recording.md --path docs/proposals/2026-05-07-review-skill-material-finding-recording.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path specs/review-finding-resolution-contract.md --path specs/review-finding-resolution-contract.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path templates/shared/review-isolation-and-recording.md --path templates/review-resolution.md --path scripts/test-skill-validator.py --path scripts/test-review-artifact-validator.py --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path skills/architecture-review/SKILL.md --path skills/plan-review/SKILL.md --path skills/code-review/SKILL.md --path skills/verify/SKILL.md --path skills/explain-change/SKILL.md --path skills/pr/SKILL.md --path .codex/skills/proposal-review/SKILL.md --path .codex/skills/spec-review/SKILL.md --path .codex/skills/architecture-review/SKILL.md --path .codex/skills/plan-review/SKILL.md --path .codex/skills/code-review/SKILL.md --path .codex/skills/verify/SKILL.md --path .codex/skills/explain-change/SKILL.md --path .codex/skills/pr/SKILL.md --path dist/adapters/codex/.agents/skills/proposal-review/SKILL.md --path dist/adapters/codex/.agents/skills/spec-review/SKILL.md --path dist/adapters/codex/.agents/skills/architecture-review/SKILL.md --path dist/adapters/codex/.agents/skills/plan-review/SKILL.md --path dist/adapters/codex/.agents/skills/code-review/SKILL.md --path dist/adapters/codex/.agents/skills/verify/SKILL.md --path dist/adapters/codex/.agents/skills/explain-change/SKILL.md --path dist/adapters/codex/.agents/skills/pr/SKILL.md --path dist/adapters/claude/.claude/skills/proposal-review/SKILL.md --path dist/adapters/claude/.claude/skills/spec-review/SKILL.md --path dist/adapters/claude/.claude/skills/architecture-review/SKILL.md --path dist/adapters/claude/.claude/skills/plan-review/SKILL.md --path dist/adapters/claude/.claude/skills/code-review/SKILL.md --path dist/adapters/claude/.claude/skills/verify/SKILL.md --path dist/adapters/claude/.claude/skills/explain-change/SKILL.md --path dist/adapters/claude/.claude/skills/pr/SKILL.md --path dist/adapters/opencode/.opencode/skills/proposal-review/SKILL.md --path dist/adapters/opencode/.opencode/skills/spec-review/SKILL.md --path dist/adapters/opencode/.opencode/skills/architecture-review/SKILL.md --path dist/adapters/opencode/.opencode/skills/plan-review/SKILL.md --path dist/adapters/opencode/.opencode/skills/code-review/SKILL.md --path dist/adapters/opencode/.opencode/skills/verify/SKILL.md --path dist/adapters/opencode/.opencode/skills/explain-change/SKILL.md --path dist/adapters/opencode/.opencode/skills/pr/SKILL.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/proposal-review-r1.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/spec-review-r1.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/spec-review-r2.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/spec-review-r3.md
+    result: pass_after_m1_m3_implementation
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_after_code_review_r1_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_code_review_r1_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/code-review-r1.md
+    result: pass_after_code_review_r1_recording
+  - command: git diff --check -- docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/code-review-r1.md
+    result: pass_after_code_review_r1_recording
+  - command: rg -n '[[:blank:]]$|\\t' docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/code-review-r1.md
+    result: pass_no_matches_after_code_review_r1_recording
+  - command: python scripts/test-skill-validator.py
+    result: pass_after_cr1_f1_fix
+  - command: python scripts/validate-skills.py
+    result: pass_after_cr1_f1_fix
+  - command: python scripts/build-skills.py
+    result: pass_after_cr1_f1_fix
+  - command: python scripts/build-adapters.py --version 0.1.1
+    result: pass_after_cr1_f1_fix
+  - command: bash scripts/ci.sh --mode explicit --path templates/shared/review-isolation-and-recording.md --path templates/review-resolution.md --path scripts/test-skill-validator.py --path scripts/test-review-artifact-validator.py --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path skills/architecture-review/SKILL.md --path skills/plan-review/SKILL.md --path skills/code-review/SKILL.md --path skills/verify/SKILL.md --path skills/explain-change/SKILL.md --path skills/pr/SKILL.md --path .codex/skills/proposal-review/SKILL.md --path .codex/skills/spec-review/SKILL.md --path .codex/skills/architecture-review/SKILL.md --path .codex/skills/plan-review/SKILL.md --path .codex/skills/code-review/SKILL.md --path .codex/skills/verify/SKILL.md --path .codex/skills/explain-change/SKILL.md --path .codex/skills/pr/SKILL.md --path dist/adapters/codex/.agents/skills/proposal-review/SKILL.md --path dist/adapters/codex/.agents/skills/spec-review/SKILL.md --path dist/adapters/codex/.agents/skills/architecture-review/SKILL.md --path dist/adapters/codex/.agents/skills/plan-review/SKILL.md --path dist/adapters/codex/.agents/skills/code-review/SKILL.md --path dist/adapters/codex/.agents/skills/verify/SKILL.md --path dist/adapters/codex/.agents/skills/explain-change/SKILL.md --path dist/adapters/codex/.agents/skills/pr/SKILL.md --path dist/adapters/claude/.claude/skills/proposal-review/SKILL.md --path dist/adapters/claude/.claude/skills/spec-review/SKILL.md --path dist/adapters/claude/.claude/skills/architecture-review/SKILL.md --path dist/adapters/claude/.claude/skills/plan-review/SKILL.md --path dist/adapters/claude/.claude/skills/code-review/SKILL.md --path dist/adapters/claude/.claude/skills/verify/SKILL.md --path dist/adapters/claude/.claude/skills/explain-change/SKILL.md --path dist/adapters/claude/.claude/skills/pr/SKILL.md --path dist/adapters/opencode/.opencode/skills/proposal-review/SKILL.md --path dist/adapters/opencode/.opencode/skills/spec-review/SKILL.md --path dist/adapters/opencode/.opencode/skills/architecture-review/SKILL.md --path dist/adapters/opencode/.opencode/skills/plan-review/SKILL.md --path dist/adapters/opencode/.opencode/skills/code-review/SKILL.md --path dist/adapters/opencode/.opencode/skills/verify/SKILL.md --path dist/adapters/opencode/.opencode/skills/explain-change/SKILL.md --path dist/adapters/opencode/.opencode/skills/pr/SKILL.md --path docs/plans/2026-05-07-review-skill-material-finding-recording.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/code-review-r1.md
+    result: pass_after_cr1_f1_fix
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_after_cr1_f1_closeout
+  - command: git diff --check -- .
+    result: pass_after_cr1_f1_fix
+  - command: rg -n '[[:blank:]]$|\\t' templates/shared/review-isolation-and-recording.md scripts/test-skill-validator.py skills .codex/skills dist/adapters docs/changes/2026-05-07-review-skill-material-finding-recording docs/plans/2026-05-07-review-skill-material-finding-recording.md
+    result: pass_no_matches_after_cr1_f1_fix
+  - command: bash scripts/ci.sh --mode local
+    result: pass_after_cr1_f1_fix
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-07-review-skill-material-finding-recording.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_clean_code_review_readiness_update_with_existing_docs_plan_warning
+  - command: python scripts/select-validation.py --mode explicit --path docs/plans/2026-05-07-review-skill-material-finding-recording.md --path docs/plan.md
+    result: selected_artifact_lifecycle_validate_after_clean_code_review_readiness_update
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-07-review-skill-material-finding-recording.md
+    result: pass_after_clean_code_review_readiness_update
+  - command: git diff --check -- docs/plans/2026-05-07-review-skill-material-finding-recording.md docs/plan.md
+    result: pass_after_clean_code_review_readiness_update
+  - command: rg -n '[[:blank:]]$|\\t' docs/plans/2026-05-07-review-skill-material-finding-recording.md docs/plan.md
+    result: pass_no_matches_after_clean_code_review_readiness_update
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_clean_code_review_readiness_update
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-07-review-skill-material-finding-recording.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_clean_code_review_metadata_update
+  - command: git diff --check -- docs/plans/2026-05-07-review-skill-material-finding-recording.md docs/plan.md docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_clean_code_review_metadata_update
+  - command: rg -n '[[:blank:]]$|\\t' docs/plans/2026-05-07-review-skill-material-finding-recording.md docs/plan.md docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_no_matches_after_clean_code_review_metadata_update
+  - command: python scripts/select-validation.py --mode explicit --path docs/learn/sessions/2026-05-07-plan-readiness-vs-completion.md
+    result: selected_no_checks_for_learn_artifact
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/learn/sessions/2026-05-07-plan-readiness-vs-completion.md
+    result: pass_validated_0_lifecycle_files_for_learn_session
+  - command: git diff --check -- docs/learn/sessions/2026-05-07-plan-readiness-vs-completion.md
+    result: pass_after_learn_session
+  - command: rg -n '[[:blank:]]$|\\t' docs/learn/sessions/2026-05-07-plan-readiness-vs-completion.md
+    result: pass_no_matches_after_learn_session
+  - command: python scripts/select-validation.py --mode explicit --path docs/learn/sessions/2026-05-07-plan-readiness-vs-completion.md --path docs/learn/topics/plan-lifecycle-closeout.md
+    result: selected_no_checks_for_learn_session_and_topic
+  - command: git diff --check -- docs/learn/sessions/2026-05-07-plan-readiness-vs-completion.md docs/learn/topics/plan-lifecycle-closeout.md
+    result: pass_after_learn_topic_update
+  - command: rg -n '[[:blank:]]$|\\t' docs/learn/sessions/2026-05-07-plan-readiness-vs-completion.md docs/learn/topics/plan-lifecycle-closeout.md
+    result: pass_no_matches_after_learn_topic_update
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_verify_handoff_lifecycle_closeout_wording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-07-review-skill-material-finding-recording.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_verify_handoff_lifecycle_closeout_wording_with_existing_docs_plan_warning
+  - command: python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-05-07-review-skill-material-finding-recording.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: selected_artifact_lifecycle_change_metadata_checks_after_verify_handoff_lifecycle_closeout_wording
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-07-review-skill-material-finding-recording.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_verify_handoff_lifecycle_closeout_wording
+  - command: git diff --check -- docs/plan.md docs/plans/2026-05-07-review-skill-material-finding-recording.md docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_verify_handoff_lifecycle_closeout_wording
+  - command: rg -n '[[:blank:]]$|\\t' docs/plan.md docs/plans/2026-05-07-review-skill-material-finding-recording.md docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_no_matches_after_verify_handoff_lifecycle_closeout_wording
+  - command: python scripts/select-validation.py --mode explicit --path docs/learn/sessions/2026-05-07-milestone-closeout-vs-progress.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: selected_change_metadata_checks_after_milestone_closeout_learn_session
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_milestone_closeout_learn_session
+  - command: bash scripts/ci.sh --mode explicit --path docs/learn/sessions/2026-05-07-milestone-closeout-vs-progress.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_milestone_closeout_learn_session
+  - command: git diff --check -- docs/learn/sessions/2026-05-07-milestone-closeout-vs-progress.md docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_milestone_closeout_learn_session
+  - command: rg -n '[[:blank:]]$|\\t' docs/learn/sessions/2026-05-07-milestone-closeout-vs-progress.md docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_no_matches_after_milestone_closeout_learn_session
+  - command: python scripts/test-skill-validator.py
+    result: pass_on_combined_worktree_during_m1_closeout_attempt
+  - command: python scripts/test-review-artifact-validator.py
+    result: pass_on_combined_worktree_during_m1_closeout_attempt
+  - command: python scripts/select-validation.py --mode explicit --path specs/formal-review-recording.test.md --path specs/review-finding-resolution-contract.test.md --path specs/rigorloop-workflow.test.md --path scripts/test-skill-validator.py --path scripts/test-review-artifact-validator.py --path docs/plan.md --path docs/plans/2026-05-07-review-skill-material-finding-recording.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: selected_m1_proof_and_lifecycle_checks_after_m1_closeout_blocker_recording
+  - command: bash scripts/ci.sh --mode explicit --path specs/formal-review-recording.test.md --path specs/review-finding-resolution-contract.test.md --path specs/rigorloop-workflow.test.md --path scripts/test-skill-validator.py --path scripts/test-review-artifact-validator.py --path docs/plan.md --path docs/plans/2026-05-07-review-skill-material-finding-recording.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_m1_closeout_blocker_recording
+  - command: git diff --check -- specs/formal-review-recording.test.md specs/review-finding-resolution-contract.test.md specs/rigorloop-workflow.test.md scripts/test-skill-validator.py scripts/test-review-artifact-validator.py docs/plan.md docs/plans/2026-05-07-review-skill-material-finding-recording.md docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_m1_closeout_blocker_recording
+  - command: rg -n '[[:blank:]]$|\\t' specs/formal-review-recording.test.md specs/review-finding-resolution-contract.test.md specs/rigorloop-workflow.test.md scripts/test-skill-validator.py scripts/test-review-artifact-validator.py docs/plan.md docs/plans/2026-05-07-review-skill-material-finding-recording.md docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_no_matches_after_m1_closeout_blocker_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-07-review-skill-material-finding-recording.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_m1_blocked_lifecycle_state_with_existing_docs_plan_warning
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-07-review-skill-material-finding-recording.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_m1_blocked_lifecycle_state
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_m1_m3_aggregate_replan
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-07-review-skill-material-finding-recording.md --path docs/learn/sessions/2026-05-07-milestone-closeout-vs-progress.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_m1_m3_aggregate_replan_with_existing_docs_plan_warning
+  - command: python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-05-07-review-skill-material-finding-recording.md --path docs/learn/sessions/2026-05-07-milestone-closeout-vs-progress.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: selected_lifecycle_and_change_metadata_checks_after_m1_m3_aggregate_replan
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-07-review-skill-material-finding-recording.md --path docs/learn/sessions/2026-05-07-milestone-closeout-vs-progress.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_m1_m3_aggregate_replan
+  - command: git diff --check -- docs/plan.md docs/plans/2026-05-07-review-skill-material-finding-recording.md docs/learn/sessions/2026-05-07-milestone-closeout-vs-progress.md docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_m1_m3_aggregate_replan
+  - command: rg -n '[[:blank:]]$|\\t' docs/plan.md docs/plans/2026-05-07-review-skill-material-finding-recording.md docs/learn/sessions/2026-05-07-milestone-closeout-vs-progress.md docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_no_matches_after_m1_m3_aggregate_replan
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_after_code_review_r2_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_code_review_r2_recording
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/code-review-r2.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: selected_review_artifact_lifecycle_change_metadata_checks_after_code_review_r2_recording
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/code-review-r2.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_code_review_r2_recording
+  - command: git diff --check -- docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/code-review-r2.md docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_code_review_r2_recording
+  - command: rg -n '[[:blank:]]$|\\t' docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/code-review-r2.md docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_no_matches_after_code_review_r2_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-07-review-skill-material-finding-recording.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_plan_code_review_r2_state_update_with_existing_docs_plan_warning
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-07-review-skill-material-finding-recording.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_plan_code_review_r2_state_update
+  - command: python scripts/test-skill-validator.py
+    result: pass_before_aggregate_closeout_commit
+  - command: python scripts/test-review-artifact-validator.py
+    result: pass_before_aggregate_closeout_commit
+  - command: python scripts/validate-skills.py
+    result: pass_before_aggregate_closeout_commit
+  - command: python scripts/test-select-validation.py
+    result: pass_before_aggregate_closeout_commit
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_before_aggregate_closeout_commit
+  - command: python scripts/build-skills.py --check
+    result: pass_before_aggregate_closeout_commit
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_before_aggregate_closeout_commit
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_before_aggregate_closeout_commit
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_before_aggregate_closeout_commit
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_before_aggregate_closeout_commit
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_before_aggregate_closeout_commit
+  - command: bash scripts/ci.sh --mode local
+    result: pass_before_aggregate_closeout_commit
+  - command: git diff --check -- .
+    result: pass_before_aggregate_closeout_commit
+  - command: git ls-files -m -o --exclude-standard -z | xargs -0 -r rg -n '[[:blank:]]$|\\t'
+    result: pass_no_matches_before_aggregate_closeout_commit
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_after_cr2_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_cr2_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-07-review-skill-material-finding-recording.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md
+    result: pass_after_cr2_resolution_with_existing_docs_plan_warning
+  - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-07-review-skill-material-finding-recording.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md
+    result: pass_after_cr2_resolution
+  - command: git diff --check -- .
+    result: pass_after_cr2_resolution
+  - command: git ls-files -m -o --exclude-standard -z | xargs -0 -r rg -n '[[:blank:]]$|\\t'
+    result: pass_no_matches_after_cr2_resolution
+changed_files:
+  - docs/proposals/2026-05-07-review-skill-material-finding-recording.md
+  - CONSTITUTION.md
+  - AGENTS.md
+  - docs/workflows.md
+  - specs/formal-review-recording.md
+  - specs/review-finding-resolution-contract.md
+  - specs/review-finding-resolution-contract.test.md
+  - specs/rigorloop-workflow.md
+  - specs/rigorloop-workflow.test.md
+  - specs/formal-review-recording.test.md
+  - templates/shared/review-isolation-and-recording.md
+  - templates/review-resolution.md
+  - scripts/test-skill-validator.py
+  - scripts/test-review-artifact-validator.py
+  - skills/proposal-review/SKILL.md
+  - skills/spec-review/SKILL.md
+  - skills/architecture-review/SKILL.md
+  - skills/plan-review/SKILL.md
+  - skills/code-review/SKILL.md
+  - skills/verify/SKILL.md
+  - skills/explain-change/SKILL.md
+  - skills/pr/SKILL.md
+  - .codex/skills/proposal-review/SKILL.md
+  - .codex/skills/spec-review/SKILL.md
+  - .codex/skills/architecture-review/SKILL.md
+  - .codex/skills/plan-review/SKILL.md
+  - .codex/skills/code-review/SKILL.md
+  - .codex/skills/verify/SKILL.md
+  - .codex/skills/explain-change/SKILL.md
+  - .codex/skills/pr/SKILL.md
+  - dist/adapters/codex/.agents/skills/proposal-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/spec-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/architecture-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/plan-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/code-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/verify/SKILL.md
+  - dist/adapters/codex/.agents/skills/explain-change/SKILL.md
+  - dist/adapters/codex/.agents/skills/pr/SKILL.md
+  - dist/adapters/claude/.claude/skills/proposal-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/spec-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/architecture-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/plan-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/code-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/verify/SKILL.md
+  - dist/adapters/claude/.claude/skills/explain-change/SKILL.md
+  - dist/adapters/claude/.claude/skills/pr/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/proposal-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/spec-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/architecture-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/plan-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/code-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/verify/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/explain-change/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/pr/SKILL.md
+  - docs/plan.md
+  - docs/plans/2026-05-07-review-skill-material-finding-recording.md
+  - docs/learn/sessions/2026-05-07-plan-readiness-vs-completion.md
+  - docs/learn/sessions/2026-05-07-milestone-closeout-vs-progress.md
+  - docs/learn/topics/plan-lifecycle-closeout.md
+  - docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+  - docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md
+  - docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md
+  - docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/proposal-review-r1.md
+  - docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/spec-review-r1.md
+  - docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/spec-review-r2.md
+  - docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/spec-review-r3.md
+  - docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/code-review-r1.md
+  - docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/code-review-r2.md
+review:
+  status: closed_after_aggregate_closeout
+  unresolved_items: 0

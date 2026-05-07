@@ -7,6 +7,7 @@
 ## Related proposal
 
 - [Formal Review Recording](../docs/proposals/2026-05-04-formal-review-recording.md)
+- [Review Skill Material Finding Recording](../docs/proposals/2026-05-07-review-skill-material-finding-recording.md)
 
 ## Goal and context
 
@@ -15,6 +16,8 @@ This spec defines when formal lifecycle reviews create durable change-local revi
 The repository already has a review artifact model under `docs/changes/<change-id>/reviews/`, `review-log.md`, and `review-resolution.md`. The gap is the trigger policy for stages before `code-review`: `proposal-review`, `spec-review`, `architecture-review`, and `plan-review`.
 
 The goal is stage-neutral recording for material review findings without forcing detailed files for every clean review.
+
+This amendment clarifies that isolated review handoff behavior and material-finding recording are independent. A direct or review-only review remains isolated by default, but every material finding still requires durable change-local review evidence.
 
 ## Glossary
 
@@ -25,6 +28,9 @@ The goal is stage-neutral recording for material review findings without forcing
 - `artifact-local settlement`: final status, decision log, readiness, follow-on, or closeout text in the reviewed proposal, spec, architecture artifact, ADR, or plan.
 - `material finding`: a review finding that changes or blocks tracked work, requires disposition, changes scope or risk, creates follow-up work, exposes process problems, or changes the review outcome.
 - `PR comment promotion`: durable capture of a material maintainer PR comment through a review record so it can receive a stable Finding ID and review-resolution disposition.
+- `isolated review request`: a direct or review-only review invocation that reports a review result without automatically continuing into downstream workflow stages.
+- `tracked artifact`: any version-controlled repository file whose change will be committed or reviewed as part of the work.
+- `shared review-skill recording subsection`: the identical `## Isolation and Recording` guidance copied into all formal review skills from `templates/shared/review-isolation-and-recording.md`.
 
 ## Examples first
 
@@ -68,6 +74,32 @@ Given `docs/changes/<change-id>/reviews/spec-review-r1.md` exists
 When structural validation reads `review-log.md`
 Then that Review ID appears exactly once in a canonical review-log entry.
 
+### Example E7: isolated material finding is recorded before edits
+
+Given a direct `proposal-review` returns material finding `PR1`
+And the contributor will revise the tracked proposal in response
+When the contributor prepares the revision
+Then the change creates `change.yaml`, `review-log.md`, `review-resolution.md`, and `reviews/proposal-review-r1.md` before the proposal edit begins.
+
+### Example E8: late isolated-review capture is reconstructed
+
+Given a direct `spec-review` returns material finding `SR1`
+And the contributor already began editing the tracked spec before creating a durable review record
+When the contributor repairs the missing evidence
+Then the detailed review file is labeled reconstructed and discloses source, timing, available evidence, stable Finding IDs, and known fidelity loss.
+
+### Example E9: isolated review output names the recording obligation
+
+Given an isolated `architecture-review` produces material findings
+When the review output is reported
+Then the output names isolated handoff status, material Finding IDs, required durable review record path or reconstruction requirement, that `review-resolution.md` is required, and the next allowed action.
+
+### Example E10: formal review skills share identical recording guidance
+
+Given the formal review skills are updated for this behavior
+When validation compares their `## Isolation and Recording` sections
+Then every copied section matches `templates/shared/review-isolation-and-recording.md` byte-for-byte, and stage-specific text appears only outside the shared block.
+
 ## Requirements
 
 R1. Formal review recording MUST be stage-neutral across `proposal-review`, `spec-review`, `architecture-review`, `plan-review`, and `code-review`.
@@ -87,6 +119,10 @@ R2a. Stage-owned non-approval outcomes MUST include `revise`, `changes-requested
 
 R2b. A clean formal review with no material findings MUST NOT require an empty detailed review file solely because the review was required.
 
+R2c. Material findings MUST always be recorded.
+
+R2d. All material findings require change-local review files.
+
 R3. A required formal review with no material findings MAY be recorded through artifact-local settlement.
 
 R3a. Artifact-local settlement MAY use the reviewed artifact's status, decision log, readiness, follow-on artifacts, or closeout section.
@@ -103,22 +139,22 @@ R4b. If material findings exist, the initial review-record root MUST include:
 - `docs/changes/<change-id>/review-resolution.md`;
 - `docs/changes/<change-id>/reviews/<stage>-r<n>.md`.
 
-R4c. `review-resolution.md` is required in the initial review-record root when material findings exist because material findings require dispositions.
+R4c. `review-resolution.md` is required in the initial review-record root when a detailed review file records material findings.
 
-R4d. If no material findings exist, but `R2` still requires a detailed review file, the initial review-record root MUST include:
+R4d. If `R2` requires a detailed review file for a no-material trigger, the initial review-record root MUST include:
 - `docs/changes/<change-id>/change.yaml`;
 - `docs/changes/<change-id>/review-log.md`;
 - `docs/changes/<change-id>/reviews/<stage>-r<n>.md`.
 
-R4e. `review-resolution.md` MUST NOT be created solely because `reviews/` exists. It is required only when material findings exist or another approved review-resolution trigger applies.
+R4e. `review-resolution.md` MUST NOT be created solely because `reviews/` exists. It is required when material findings exist or another approved review-resolution trigger applies.
 
 R4f. The initial review-record root MUST preserve the first-pass review record before fixes or downstream routing proceed.
 
 R4g. Final handoff for non-trivial work MUST still satisfy the baseline non-trivial pack, including durable Markdown reasoning such as `docs/changes/<change-id>/explain-change.md` or another approved durable reasoning surface.
 
-R5. If a review is isolated or review-only and no tracked change will proceed, a detailed review file MAY be omitted unless the reviewer or maintainer requests durable capture.
+R5. If a review is isolated or review-only and has no material findings, a detailed review file MAY be omitted unless another `R2` trigger applies.
 
-R5a. If an isolated or review-only finding later drives tracked changes, the tracked change MUST create or reconstruct durable review evidence before fixes rely on that finding.
+R5a. If an isolated or review-only review has material findings, the isolated final output MUST identify the required change-local review files even though downstream handoff remains stopped.
 
 R6. Material findings MUST be recorded before review-driven fixes proceed.
 
@@ -192,18 +228,73 @@ R15. Canonical review-stage skill guidance MUST describe the detailed review rec
 
 R15a. If canonical skills shipped through generated adapters change, generated `.codex/skills/` and public adapter output MUST be regenerated and validated through existing repository-owned generation checks.
 
-R16. Structural validation MUST continue to reject malformed detailed review records, missing `review-log.md`, duplicate or dangling Review IDs, material Finding IDs missing from `review-resolution.md`, and `review-resolution.md` Finding IDs that do not exist in review records.
+R16. Structural validation MUST continue to reject malformed detailed review records, missing `review-log.md`, duplicate or dangling Review IDs, material Finding IDs missing from required `review-resolution.md`, and `review-resolution.md` Finding IDs that do not exist in review records.
 
 R16a. New validation for upstream stages SHOULD reuse the existing review-artifact validator instead of creating a second parser model.
 
 R16b. Validation MUST NOT perform semantic review-quality judgment.
+
+R17. Isolation MUST govern handoff only; recording MUST follow the finding.
+
+R17a. A direct or review-only formal lifecycle review request MUST remain isolated by default and MUST NOT automatically continue into downstream workflow stages.
+
+R17b. Isolation MUST NOT suppress material-finding recording.
+
+R17c. A material finding MUST have a durable change-local review record under `docs/changes/<change-id>/reviews/` regardless of whether the review was workflow-managed or isolated.
+
+R17d. If review-driven edits already began before the durable record exists, the detailed review file MUST be a reconstructed record and MUST disclose source, timing, available evidence, stable Finding IDs, and known fidelity loss.
+
+R17e. A revision made in response to a material finding remains incomplete until the finding is durably recorded, even when the record was created late and reconstructed.
+
+R18. A tracked artifact MUST be any version-controlled repository file whose change will be committed or reviewed as part of the work.
+
+R18a. Tracked artifacts include lifecycle artifacts, governance files, workflow summaries, skills, specs, schemas, scripts, generated outputs, README content, and change-local artifacts.
+
+R18b. Ephemeral chat output, local scratch files, and unversioned drafts MUST NOT be treated as tracked artifact edits.
+
+R19. For review recording decisions, a finding MUST be treated as material when it changes or blocks a tracked artifact edit, changes scope, changes requirements, changes architecture, changes sequencing, changes validation, creates follow-up work, or requires disposition, unless the reviewer explicitly records a non-material rationale.
+
+R19a. `CONSTITUTION.md` remains authoritative for materiality; the operational shortcut in `R19` MUST NOT narrow or replace higher-priority materiality rules.
+
+R20. For an isolated or review-only formal review with material findings, the final review output MUST state that isolation stops downstream handoff but does not suppress recording.
+
+R20a. The output MUST state:
+- isolated handoff status;
+- material Finding IDs;
+- required durable review record path or reconstruction requirement;
+- that `review-resolution.md` is required;
+- next allowed action.
+
+R20b. The next allowed action MUST be one of `create-change-local-record-before-fixing`, `reconstruct-record-because-fixes-already-began`, or `stop-for-owner-decision`.
+
+R20c. The output MUST NOT offer review-output-only or artifact-local-only settlement for material findings.
+
+R21. Canonical formal review skills MUST include one identical `## Isolation and Recording` subsection copied from `templates/shared/review-isolation-and-recording.md`.
+
+R21a. The shared subsection MUST appear in `proposal-review`, `spec-review`, `architecture-review`, `plan-review`, and `code-review`.
+
+R21b. Stage-specific guidance MAY appear above or below the shared subsection, but MUST NOT appear inside the shared subsection.
+
+R21c. `code-review` MUST adopt the shared isolation-versus-recording rule without an additive code-review-specific layer for this concern.
+
+R21d. Static validation MUST compare each copied skill subsection against `templates/shared/review-isolation-and-recording.md` byte-for-byte from the `## Isolation and Recording` heading up to, but not including, the next `##` heading.
+
+R22. This spec's material-finding trigger MUST NOT be implemented until affected governance and operating guidance are updated or explicitly marked unaffected with rationale.
+
+R22a. The implementation MUST update or explicitly mark unaffected `CONSTITUTION.md`, `AGENTS.md`, and `docs/workflows.md`.
+
+R22b. Those surfaces MUST use the same rule: every material finding is recorded, all material findings require change-local review files, and isolation stops handoff rather than recording.
+
+R23. First-slice validation for this clarification MUST remain structural. It MUST NOT add semantic flagging for tracked artifact edits that reference unresolved review findings.
 
 ## Inputs and outputs
 
 Inputs:
 
 - formal lifecycle review output;
+- isolated formal lifecycle review output;
 - reviewed proposal, spec, architecture artifact, ADR, plan, code, tests, validation, or generated output;
+- tracked artifacts that will be committed or reviewed as part of the work;
 - existing `docs/changes/<change-id>/` root when present;
 - maintainer PR comments when they are promoted as evidence;
 - `change.yaml`, `review-log.md`, `review-resolution.md`, and detailed review files when they exist.
@@ -216,23 +307,31 @@ Outputs:
 - review-log entries indexing detailed review files;
 - review-resolution entries for material Finding IDs;
 - aggregate `change.yaml.review` status and optional pointers.
+- shared formal review skill guidance from `templates/shared/review-isolation-and-recording.md`.
 
 ## State and invariants
 
 - Formal lifecycle review recording is stage-neutral.
+- Isolation affects downstream handoff only and does not affect material-finding recording obligations.
 - Clean reviews stay lightweight unless a detailed-record trigger applies.
-- Material findings are recorded before fixes begin.
+- Material findings are recorded in change-local review files.
+- Material isolated-review findings require change-local review files even when downstream handoff remains stopped.
 - Review-log entries and detailed review files remain in one-to-one Review ID correspondence.
 - Material Finding IDs originate in review records before they are dispositioned.
 - `change.yaml.review.status` and `change.yaml.review.unresolved_items` remain present.
 - Final artifact status remains artifact-local.
 - Review files do not become proposal, spec, architecture, ADR, or plan sources of truth.
 - The final non-trivial change-local pack includes durable Markdown reasoning even when an initial review-record root was created earlier.
+- The shared review-skill recording subsection remains byte-identical across formal review skills.
 
 ## Error and boundary behavior
 
 - If a required detailed review file is missing, review-driven fixes or downstream routing must stop until the review evidence is created or reconstructed.
 - If material findings are acted on before durable review records exist, the repair path is a reconstructed detailed review record.
+- If an isolated material review finding lacks required change-local review files, review-driven edits and downstream routing must stop until the durable review record exists.
+- If an isolated review output with material findings omits the required record path or reconstruction requirement, `review-resolution.md` requirement, or next allowed action, the review output is incomplete and must be revised before review-driven fixes or downstream routing proceed.
+- If a copied `## Isolation and Recording` skill subsection differs from the canonical template, static validation fails.
+- If stage-specific text appears inside the shared subsection, static validation fails.
 - If `reviews/` exists without `review-log.md`, structural validation fails.
 - If a detailed review file has zero or multiple Review IDs, structural validation fails.
 - If a Review ID is missing from or duplicated in `review-log.md`, structural validation fails.
@@ -240,7 +339,7 @@ Outputs:
 - If a clean review is recorded only through artifact-local settlement, no `review-log.md` or `review-resolution.md` is required solely for that review.
 - If a PR comment is material but has no durable review record, it cannot be dispositioned in `review-resolution.md`.
 - If a dedicated `pr-review` file appears before the allowed stage set is extended, validation must treat it as unsupported.
-- If a non-material `R2` trigger requires a detailed review file before a change-local root exists, the initial review-record root needs `change.yaml`, `review-log.md`, and the detailed review file, but not an empty `review-resolution.md`.
+- If a no-material `R2` trigger requires a detailed review file before a change-local root exists, the initial review-record root needs `change.yaml`, `review-log.md`, and the detailed review file, but not an empty `review-resolution.md`.
 - If a non-trivial change reaches final handoff without durable Markdown reasoning, final handoff is incomplete even if the initial review-record root exists.
 
 ## Compatibility and migration
@@ -250,12 +349,14 @@ Outputs:
 - Existing validator support for `proposal-review`, `spec-review`, `architecture-review`, `plan-review`, and `code-review` remains the target stage set.
 - This spec does not require a `change.yaml` schema change because additional `review` pointer fields are optional under the current permissive object shape.
 - Rollback may remove the new trigger guidance while keeping already-authored upstream review records as valid historical artifacts.
+- Existing historical review skills and generated adapter output do not need migration until the implementation slice updates canonical skill behavior.
 
 ## Observability
 
 - Reviewers can find detailed formal review records through `review-log.md`.
 - Reviewers can tell from `change.yaml.review.unresolved_items`, `review-log.md`, and `review-resolution.md` whether material findings remain open.
 - Reviewers can distinguish artifact-local settlement from detailed review-event evidence.
+- Reviewers can tell from isolated review output whether downstream continuation stopped and what durable recording action is required before fixes.
 - Validation output should identify malformed review artifact paths and relationship failures.
 
 ## Security and privacy
@@ -270,6 +371,8 @@ No UI behavior is introduced.
 
 Review artifacts SHOULD use stable labels and concise sections so contributors can scan Review IDs, Finding IDs, status, and closeout without reading transcripts.
 
+The shared review-skill recording subsection SHOULD be short enough to remain readable inside each formal review skill without requiring a spec lookup mid-review.
+
 ## Performance expectations
 
 Review artifact validation SHOULD remain lightweight enough for targeted local validation and CI.
@@ -282,14 +385,19 @@ This spec MUST NOT require broad smoke solely because upstream review records ex
 2. A clean required `spec-review` can settle through spec readiness when no detailed-record trigger applies.
 3. A `plan-review` with `rethink` creates a detailed review file and a no-material initial review-record root because the outcome blocks downstream progress.
 4. A material `architecture-review` finding before any change-local root creates an initial review-record root with `review-resolution.md` before design fixes proceed.
-5. An isolated review-only finding does not require durable files when no tracked change proceeds and no reviewer requests durable capture.
-6. If the same isolated finding later drives tracked changes, the tracked change records or reconstructs durable evidence before fixes rely on it.
+5. An isolated review-only material finding requires change-local review files even when no tracked change proceeds.
+6. If the same isolated finding later drives tracked changes, the tracked change relies on the existing durable evidence or reconstructs it if it was created late.
 7. A material PR comment cannot be added directly to `review-resolution.md`; it needs a durable review record first.
 8. A `pr-review-r1.md` file remains unsupported unless a later spec extends the formal stage set.
 9. `change.yaml.review` may include `review_log` and `review_resolution`, but it still requires `status` and `unresolved_items`.
 10. A detailed review file with no material findings still needs `review-log.md` if it was created because a reviewer explicitly requested it.
 11. A detailed review file created only for reconstructed evidence must include reconstructed-record metadata under the review finding resolution contract.
 12. A final PR-ready handoff is incomplete if only the initial review-record root exists and durable Markdown reasoning was never added.
+13. A direct `proposal-review` material finding that will revise a tracked proposal creates durable review evidence before the proposal edit begins.
+14. A direct `spec-review` material finding that already drove spec edits before recording is repaired only through a reconstructed detailed review file.
+15. A material isolated review output that omits Finding IDs, required record path or reconstruction requirement, `review-resolution.md` requirement, or next allowed action is incomplete.
+16. A skill-specific paragraph inserted inside the shared `## Isolation and Recording` block fails static validation.
+17. A tracked generated adapter file changed because of a material review finding is a tracked artifact edit.
 
 ## Non-goals
 
@@ -300,6 +408,8 @@ This spec MUST NOT require broad smoke solely because upstream review records ex
 - Replacing artifact-local status for proposals, specs, architecture artifacts, ADRs, or plans.
 - Replacing `review-resolution.md` with `change.yaml`.
 - Automating semantic review-quality judgment.
+- Adding semantic validator detection for tracked artifact edits that mention unresolved review findings in the first slice.
+- Generating formal review skill shared subsections instead of manually copying a canonical block.
 - Migrating historical review packs that are not otherwise touched.
 
 ## Acceptance criteria
@@ -314,6 +424,12 @@ This spec MUST NOT require broad smoke solely because upstream review records ex
 - A material PR comment cannot be dispositioned without first being captured in a durable review record.
 - Existing review-artifact validation remains the structural proof path for review files.
 - Final handoff blocks when open review findings, open review-resolution closeout, or missing durable Markdown reasoning remain.
+- Isolation and recording are distinguishable: direct review requests stop downstream handoff but still record material findings.
+- Important material findings are always recorded, and all material findings require change-local review files.
+- A contributor can identify what counts as a tracked artifact for recording-trigger purposes.
+- Isolated review outputs with material findings expose Finding IDs, required durable record path or reconstruction requirement, `review-resolution.md` requirement, and next allowed action.
+- `CONSTITUTION.md`, `AGENTS.md`, and `docs/workflows.md` teach the same rule: every material finding is recorded, all material findings require change-local review files, and isolation stops handoff rather than recording.
+- Formal review skills contain a byte-identical `## Isolation and Recording` block from a canonical template.
 
 ## Open questions
 
@@ -321,15 +437,22 @@ This spec MUST NOT require broad smoke solely because upstream review records ex
 
 ## Next artifacts
 
-- `plan-review` for the execution plan.
-- Test spec for formal review recording behavior and validator coverage after the plan is accepted.
-- Implementation after `plan-review` and `test-spec`.
+- Implementation M1 under the active review skill material-finding recording plan.
+- `code-review` after implementation milestones complete.
+- `verify`.
+- `explain-change`.
+- `pr`.
 
 ## Follow-on artifacts
 
 - Plan: [Formal Review Recording plan](../docs/plans/2026-05-04-formal-review-recording.md)
 - Test spec: [Formal Review Recording test spec](formal-review-recording.test.md)
+- Proposal amendment: [Review Skill Material Finding Recording](../docs/proposals/2026-05-07-review-skill-material-finding-recording.md)
+- Spec-review: approved on 2026-05-07 with no material findings.
+- Execution plan: [Review Skill Material Finding Recording plan](../docs/plans/2026-05-07-review-skill-material-finding-recording.md)
+- Plan-review: approved on 2026-05-07 with no material findings.
+- Test spec: [Formal Review Recording test spec](formal-review-recording.test.md) updated for the review skill material-finding recording amendment.
 
 ## Readiness
 
-Approved after `spec-review` on 2026-05-04. The execution plan passed `plan-review`, and `specs/formal-review-recording.test.md` is the active proof-planning surface for implementation.
+Approved amendment for review skill material-finding recording. Matching test spec is updated; the active plan now governs M1 proof-map work.

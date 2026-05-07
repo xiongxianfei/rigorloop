@@ -10,12 +10,15 @@
 - [Workflow Refactor](../docs/proposals/2026-05-01-workflow-refactor.md)
 - [Optimize Learn Skill](../docs/proposals/2026-05-03-optimize-learn-skill.md)
 - [PR-Self-Contained Lifecycle Completion](../docs/proposals/2026-05-05-pr-self-contained-lifecycle-completion.md)
+- [Review Skill Material Finding Recording](../docs/proposals/2026-05-07-review-skill-material-finding-recording.md)
 
 ## Goal and context
 
 This spec defines the externally observable workflow contract for the first RigorLoop starter-kit release. The goal is to make AI-assisted software delivery explicit, reviewable, and auditable for individual contributors and maintainers without forcing the full artifact lifecycle onto trivial work.
 
 This amendment updates the workflow contract around explicit artifact categories, stable stage-obligation metadata, living-reference handling, workflow-handoff ownership, the final learn artifact model, and PR-self-contained lifecycle completion. It keeps `specs/rigorloop-workflow.md` as the canonical workflow definition and keeps `docs/workflows.md` as the short operational summary.
+
+This amendment also clarifies that isolated formal review requests stop downstream handoff but do not suppress durable recording. Every material finding is recorded, and all material findings require change-local review files.
 
 RigorLoop is a Git-first starter kit. It does not replace pull requests, CI, or human review. It provides a repeatable path, artifact model, and validation rules so contributors can move from idea to reviewed change with traceable evidence.
 
@@ -32,6 +35,9 @@ RigorLoop is a Git-first starter kit. It does not replace pull requests, CI, or 
 - `adapter`: tool-specific guidance or generated output layered on top of generic workflow content.
 - `workflow-managed completion flow`: a change flow that is being carried through its normal downstream stages toward completion under the active lane.
 - `isolated stage request`: a request for the output of one stage only, such as standalone review, verification, or explanation work.
+- `tracked artifact`: any version-controlled repository file whose change will be committed or reviewed as part of the work.
+- `shared review-skill recording subsection`: the identical `## Isolation and Recording` guidance copied into all formal review skills from `templates/shared/review-isolation-and-recording.md`.
+- `scan-first review resolution`: a `review-resolution.md` structure that exposes closeout status, covered reviews, finding counts, disposition overview, shared validation evidence, and per-finding details without forcing reviewers to read repeated prose first.
 - `immediate next repository stage`: the next mandatory or triggered downstream repository stage for the current lane and invocation context.
 - `downstream readiness`: an assessment of whether a later stage can be relied on after required intermediate stages complete.
 - `eventual test-spec readiness`: the downstream-readiness assessment for later `test-spec` authoring.
@@ -144,6 +150,20 @@ Then the plan remains `Active`, names the downstream completion event, and defer
 Given a PR resolves every material review finding and records the required dispositions and evidence
 When the PR opens for review after those fixes
 Then `review-resolution.md` records `Closeout status: closed` in the same PR, and `verify` treats contradictory open closeout wording as stale lifecycle state.
+
+### Example E14: isolated review recording follows the finding
+
+Given a direct `spec-review` returns material finding `SR1`
+And the contributor will revise a tracked spec in response
+When the contributor prepares the revision
+Then the direct review remains isolated for handoff, but `SR1` is recorded under `docs/changes/<change-id>/reviews/` before the spec edit begins.
+
+### Example E15: review-resolution is scan-first and parseable
+
+Given `proposal-review-r1` records seven accepted material findings
+When `review-resolution.md` closes those findings with the same validation evidence
+Then the file starts with closeout status, covered reviews, resolved and unresolved counts, and a resolution overview
+And each finding detail keeps validator-readable labels for Finding ID, disposition, owner, owning stage, chosen action, rationale, validation target, and validation evidence.
 
 ## Requirements
 
@@ -512,7 +532,11 @@ R12al. A first-pass review outcome that requires revision, changes, or blocks do
 
 R12am. `verify`, final `explain-change` closeout, and `pr` handoff MUST NOT proceed while `review-log.md` still lists open findings.
 
-R12an. A detailed review file MUST be created for a formal lifecycle review when the review produces material findings, returns a stage-owned non-approval outcome that blocks downstream progress or requires revision, is reconstructed, will be cited as closeout evidence, or is explicitly requested by a reviewer or maintainer.
+R12an. A detailed review file MUST be created for a formal lifecycle review when the review produces material findings; returns a stage-owned non-approval outcome that blocks downstream progress or requires revision; is reconstructed; will be cited as closeout evidence; or is explicitly requested by a reviewer or maintainer.
+
+R12ana. Material findings MUST always be recorded.
+
+R12anb. All material findings MUST require change-local review files.
 
 R12ao. Formal lifecycle review stages for detailed review files are `proposal-review`, `spec-review`, `architecture-review`, `plan-review`, and `code-review`. A dedicated `pr-review` detailed file MUST NOT be used unless a later approved spec extends the allowed stage set and validator.
 
@@ -522,13 +546,43 @@ R12aq. A clean formal review with no material findings MUST NOT require an empty
 
 R12ar. When a workflow-managed formal review triggers a detailed review file before a change-local root exists, the change MUST create an initial review-record root before review-driven fixes or downstream routing proceed.
 
-R12as. If material findings exist, the initial review-record root MUST include `change.yaml`, `review-log.md`, `review-resolution.md`, and `reviews/<stage>-r<n>.md`.
+R12as. If material findings exist, a detailed review file is required, and `review-resolution.md` is required, the initial review-record root MUST include `change.yaml`, `review-log.md`, `review-resolution.md`, and `reviews/<stage>-r<n>.md`.
 
-R12at. If no material findings exist, but a detailed review file is still required, the initial review-record root MUST include `change.yaml`, `review-log.md`, and `reviews/<stage>-r<n>.md`. It MUST NOT include an empty `review-resolution.md` solely because `reviews/` exists.
+R12at. If a detailed review file is required but `review-resolution.md` is not required, the initial review-record root MUST include `change.yaml`, `review-log.md`, and `reviews/<stage>-r<n>.md`. It MUST NOT include an empty `review-resolution.md` solely because `reviews/` exists.
 
 R12au. The initial review-record root MUST NOT be treated as the final non-trivial change-local pack. Final handoff for non-trivial work still needs `change.yaml` plus durable Markdown reasoning under `R14b`.
 
 R12av. Review files MUST preserve review event evidence and finding closeout. They MUST NOT replace proposal, spec, architecture artifact, ADR, or plan status.
+
+R12aw. Isolation MUST govern formal review handoff only; recording MUST follow the finding.
+
+R12ax. A direct or review-only formal lifecycle review request MUST remain isolated by default and MUST NOT automatically continue into downstream workflow stages.
+
+R12ay. Isolation MUST NOT suppress material-finding recording.
+
+R12az. A material finding MUST have a durable change-local review record under `docs/changes/<change-id>/reviews/`, regardless of whether the review was workflow-managed or isolated. When the finding drives fixes or downstream routing, the record MUST exist before review-driven edits or routing begin.
+
+R12ba. If review-driven edits already began before the durable record exists, the detailed review file MUST be reconstructed and MUST disclose source, timing, available evidence, stable Finding IDs, and known fidelity loss.
+
+R12bb. A tracked artifact MUST be any version-controlled repository file whose change will be committed or reviewed as part of the work. Tracked artifacts include lifecycle artifacts, governance files, workflow summaries, skills, specs, schemas, scripts, generated outputs, README content, and change-local artifacts. Ephemeral chat output, local scratch files, and unversioned drafts MUST NOT be treated as tracked artifact edits.
+
+R12bc. For review recording decisions, a finding MUST be treated as material when it changes or blocks a tracked artifact edit, changes scope, changes requirements, changes architecture, changes sequencing, changes validation, creates follow-up work, or requires disposition, unless the reviewer explicitly records a non-material rationale.
+
+R12bd. For an isolated or review-only formal review with material findings, final review output MUST show that isolation stops handoff, not recording.
+
+R12bda. The output MUST state isolated handoff status, material Finding IDs, required durable review record path or reconstruction requirement, that `review-resolution.md` is required, and next allowed action.
+
+R12bdb. The next allowed action MUST be one of `create-change-local-record-before-fixing`, `reconstruct-record-because-fixes-already-began`, or `stop-for-owner-decision`.
+
+R12bdc. The output MUST NOT offer review-output-only or artifact-local-only settlement for material findings.
+
+R12bdd. `review-resolution.md` is required when material findings exist.
+
+R12be. Canonical formal review skills MUST include one identical `## Isolation and Recording` subsection copied from `templates/shared/review-isolation-and-recording.md`. Static validation MUST compare each copied skill subsection against that canonical source byte-for-byte and MUST fail if stage-specific guidance appears inside the shared block.
+
+R12bf. New `review-resolution.md` records MUST remain scan-first for humans while preserving validator-readable field labels for each material finding.
+
+R12bg. The material-finding recording trigger MUST NOT be implemented until affected governance and operating guidance are updated or explicitly marked unaffected with rationale. `CONSTITUTION.md`, `AGENTS.md`, and `docs/workflows.md` MUST use the same rule: every material finding is recorded, all material findings require change-local review files, and isolation stops handoff rather than recording.
 
 R12b. Routine non-material review notes MAY remain in PR body, the explain-change artifact, or another contributor-visible review surface when they do not require material finding disposition.
 
@@ -716,6 +770,10 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - Architecture, plan, code-review, or onboarding-heavy work that would rely on `docs/project-map.md` MUST stop, refresh the map, or record a no-map rationale when the map is absent, known-stale, contradicted, or missing the relied-on area.
 - Workflow-governance changes with affected operating or governance surfaces that are not updated, explicitly marked unaffected with rationale, or deferred with owner and follow-up MUST be considered incomplete.
 - Review-driven fixes or downstream routing after a formal lifecycle review MUST stop when a required detailed review file or required initial review-record root is missing.
+- Review-driven tracked artifact edits after an isolated formal review material finding MUST stop until the required durable review record exists, or until a reconstructed record repairs late capture.
+- An isolated review output with material findings that omits handoff status, material Finding IDs, required record path or reconstruction requirement, `review-resolution.md` requirement, or next allowed action MUST be considered incomplete.
+- A copied formal review skill `## Isolation and Recording` subsection that differs from `templates/shared/review-isolation-and-recording.md`, or contains stage-specific insertions inside the shared block, MUST fail structural validation.
+- A new `review-resolution.md` that removes required per-finding parseable labels for scan-first formatting MUST be considered invalid for review closeout.
 - `verify`, final `explain-change`, and `pr` MUST stop while required `review-resolution` closeout remains open.
 - Triggered `learn` MUST NOT stop ordinary `verify`, final `explain-change`, or `pr` when no higher-priority artifact makes it blocking and either the pre-session closeout is recorded or the session record captures the outcome after Frame.
 - Invalid skill structure MUST fail local validation and CI validation.
@@ -740,6 +798,7 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - The `vision.md` to `VISION.md` migration is already complete for this repository. This workflow refactor MUST use `VISION.md` as the standing project-vision artifact and MUST NOT reintroduce lowercase `vision.md` as canonical.
 - The project-map lifecycle markers, calendar freshness thresholds, and project-map revision workflow are deferred to a focused follow-up and MUST NOT be invented in this workflow refactor.
 - The final `learn` artifact model is defined by `specs/learn-artifact-model.md`. Existing pre-adoption learning notes outside `docs/learn/` may remain unless a later approved migration plan relies on them as current guidance.
+- Existing historical review skills, generated skill mirrors, generated adapter output, and review-resolution records do not require migration until touched, generated, or relied on as current guidance.
 
 ## Observability
 
@@ -747,6 +806,8 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - PR text MUST state validation run or a no-test rationale for every change.
 - When review feedback exists, the recorded review resolution MUST be visible to reviewers in the PR, explain-change artifact, or a standalone review-resolution artifact.
 - Triggered detailed formal review records MUST be discoverable through `review-log.md` when they exist, while clean artifact-local settlements remain discoverable in the reviewed artifact.
+- Isolated review output with material findings MUST make the handoff stop and durable recording obligation visible before fixes or downstream routing proceed.
+- New `review-resolution.md` records SHOULD make closeout status, covered reviews, resolved counts, unresolved counts, and finding audit locations visible near the top of the file.
 - `change.yaml` SHOULD make artifact and validation traceability inspectable without reading every Markdown artifact.
 - For planned milestone work, contributor-visible branch or pull-request history SHOULD make milestone boundaries visible through the standardized milestone commit subjects defined in `R8b`.
 - Workflow summary and skill guidance SHOULD make category, obligation, and handoff ownership visible enough that contributors do not need chat history to know which stage blocks downstream readiness.
@@ -762,6 +823,7 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 
 - Contributor-facing templates SHOULD use concise, repeatable section headings so contributors can follow the workflow without reverse-engineering hidden rules.
 - Fast-lane instructions SHOULD fit comfortably inside common PR or issue workflows without requiring extra tooling.
+- New `review-resolution.md` records SHOULD prefer summary-first structure, an overview table, compact finding details, shared validation evidence, and a closeout checklist when those elements make the file easier to scan.
 
 ## Performance expectations
 
@@ -804,6 +866,12 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 32. A release, deploy, package publication, external migration, or unobserved hosted check may keep an otherwise implemented plan active because the completion event is downstream of the PR tree.
 33. A tracked plan sentence that says "move to Done after merge" is a warning candidate. It becomes blocking stale lifecycle state when the PR itself already contains the evidence that makes `Done` true.
 34. A top-level spec updated by a PR may remain `draft` while awaiting `spec-review`; if `spec-review` approves it and downstream artifacts rely on it, the same PR records `approved` before review-ready handoff continues.
+35. A direct `proposal-review` material finding that will revise a tracked proposal creates durable review evidence before the proposal edit begins, while downstream handoff remains isolated.
+36. A direct `spec-review` material finding that already drove tracked spec edits before recording can continue only after a reconstructed detailed review file discloses source, timing, available evidence, stable Finding IDs, and known fidelity loss.
+37. A material review finding that changes `README.md`, `CONSTITUTION.md`, a skill file, a script, a schema, generated adapter output, or a change-local artifact is still a tracked artifact edit.
+38. A new `review-resolution.md` with common validation evidence may record the shared proof once, but each material finding detail still keeps parseable closeout labels.
+39. A formal review skill with stage-specific wording inserted inside the shared `## Isolation and Recording` block fails validation even if the wording is substantively correct.
+40. An isolated material finding requires change-local review files even when it does not affect tracked work, affect closeout, or create follow-up work. Isolation stops handoff, not recording.
 
 ## Non-goals
 
@@ -820,6 +888,8 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - Inspecting hosted PR-description event metadata for merge-dependent language in the first enforcement slice.
 - Defining a merge-SHA recording exception before a real immutable-merge-metadata case exists.
 - Treating deploy, release, package publication, or external migration completion as repo-local lifecycle state that can be made true by the PR tree.
+- Adding semantic validator detection for tracked artifact edits that mention unresolved review findings in the first review-recording slice.
+- Generating formal review skill shared subsections instead of manually copying a canonical block.
 
 ## Acceptance criteria
 
@@ -847,6 +917,15 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - A contributor can tell that `review-resolution` is the closeout stage for review findings and that open required closeout blocks `verify`, final `explain-change`, and `pr`.
 - A contributor can tell which formal lifecycle review outcomes require detailed review files, when clean reviews remain artifact-local, and when no-material review records omit empty `review-resolution.md`.
 - A reviewer can distinguish an initial review-record root from the final non-trivial change-local pack.
+- A contributor can distinguish isolated review handoff from material-finding recording obligations.
+- A contributor can tell that every material finding is recorded and all material findings require change-local review files.
+- A contributor can identify tracked artifacts for review-recording purposes.
+- An isolated review output with material findings exposes handoff status, material Finding IDs, required record path or reconstruction requirement, `review-resolution.md` requirement, and next allowed action.
+- Isolated material-review output makes clear that material findings require change-local review files even when downstream handoff stops.
+- `CONSTITUTION.md`, `AGENTS.md`, and `docs/workflows.md` teach the broad rule that every material finding requires a detailed change-local review file.
+- Formal review skills contain a byte-identical `## Isolation and Recording` block copied from a canonical template.
+- A reviewer can understand a new `review-resolution.md` closeout state in 30 seconds and audit any individual material finding in 2 minutes.
+- A new scan-first `review-resolution.md` remains valid under structural and closeout validation.
 - A contributor can tell that `docs/project-map.md` is a living reference and must be refreshed or bypassed with a no-map rationale before reliance when absent, known-stale, contradicted, or missing the relied-on area.
 - A contributor can tell that `VISION.md` and `CONSTITUTION.md` are standing artifacts with different absence gates.
 - A reviewer can confirm that affected operating and governance surfaces are updated, explicitly marked unaffected with rationale, or deferred with owner and follow-up in an allowed contributor-visible tracked or review-visible surface.
@@ -858,7 +937,7 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 
 ## Open questions
 
-- None for the PR-self-contained lifecycle completion amendment. The `skills/ci/` path remains allowed while the visible stage/action label becomes `ci-maintenance`; detailed periodic `learn` cadence scheduling remains outside this workflow contract.
+- None for the review skill material-finding recording amendment. The `skills/ci/` path remains allowed while the visible stage/action label becomes `ci-maintenance`; detailed periodic `learn` cadence scheduling remains outside this workflow contract.
 
 ## Follow-on artifacts
 
@@ -877,7 +956,14 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - `verify`: completed for PR handoff after PR-mode selected validation and broad smoke.
 - `explain-change`: completed in the change-local evidence pack.
 - `pr`: PR #30 opened for human review.
+- `proposal`: [Review Skill Material Finding Recording](../docs/proposals/2026-05-07-review-skill-material-finding-recording.md)
+- `spec`: [Formal Review Recording](formal-review-recording.md) amendment for isolation-versus-recording behavior.
+- `spec`: [Review Finding Resolution Contract](review-finding-resolution-contract.md) amendment for scan-first `review-resolution.md` records.
+- `spec-review`: approved on 2026-05-07 with no material findings.
+- `plan`: [Review Skill Material Finding Recording plan](../docs/plans/2026-05-07-review-skill-material-finding-recording.md)
+- `plan-review`: approved on 2026-05-07 with no material findings.
+- `test-spec`: [RigorLoop workflow test spec](rigorloop-workflow.test.md) updated with review skill material-finding recording amendment coverage.
 
 ## Readiness
 
-Approved workflow contract with the PR-self-contained lifecycle completion amendment implemented in PR #30. The current branch records the completed plan lifecycle state, review closeout, verification evidence, explain-change, and PR handoff before review.
+Approved amendment for review skill material-finding recording and scan-first review-resolution guidance. Matching test spec is updated; the active plan now governs M1 proof-map work.

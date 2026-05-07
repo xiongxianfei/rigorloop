@@ -55,6 +55,18 @@ PR_SELF_CONTAINED_LIFECYCLE_SKILLS = [
     "explain-change",
     "pr",
 ]
+SHARED_REVIEW_BLOCK_PATH = ROOT / "templates" / "shared" / "review-isolation-and-recording.md"
+
+
+def extract_markdown_block(text: str, heading: str) -> str:
+    start_marker = f"## {heading}"
+    start = text.find(start_marker)
+    if start == -1:
+        raise AssertionError(f"missing heading: {start_marker}")
+    next_heading = text.find("\n## ", start + len(start_marker))
+    if next_heading == -1:
+        return text[start:].rstrip() + "\n"
+    return text[start:next_heading].rstrip() + "\n"
 
 
 def run_validator(target: Path) -> subprocess.CompletedProcess[str]:
@@ -711,6 +723,92 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
             for term in required_terms:
                 with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, body)
+
+    def test_formal_review_skills_share_isolation_and_recording_block(self) -> None:
+        self.assertTrue(
+            SHARED_REVIEW_BLOCK_PATH.exists(),
+            "templates/shared/review-isolation-and-recording.md must be the canonical shared block source",
+        )
+        canonical = extract_markdown_block(
+            SHARED_REVIEW_BLOCK_PATH.read_text(encoding="utf-8"),
+            "Isolation and Recording",
+        )
+
+        for skill_name in FORMAL_REVIEW_SKILLS:
+            with self.subTest(skill=skill_name):
+                body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+                copied = extract_markdown_block(body, "Isolation and Recording")
+                self.assertEqual(copied, canonical)
+
+        forbidden_inside_block = [
+            "proposal-review",
+            "spec-review",
+            "architecture-review",
+            "plan-review",
+            "code-review",
+            "code-review-specific",
+        ]
+        for term in forbidden_inside_block:
+            with self.subTest(term=term):
+                self.assertNotIn(term, canonical)
+
+    def test_shared_isolation_and_recording_block_defines_broad_material_rule(self) -> None:
+        canonical = extract_markdown_block(
+            SHARED_REVIEW_BLOCK_PATH.read_text(encoding="utf-8"),
+            "Isolation and Recording",
+        )
+        normalized = " ".join(canonical.split())
+        required_terms = [
+            "Isolation governs handoff. Recording follows the finding.",
+            "A direct or review-only review request remains isolated by default",
+            "Isolation does not suppress recording.",
+            "A material finding requires a durable change-local review record",
+            "`docs/changes/<change-id>/reviews/`",
+            "workflow-managed or isolated",
+            "The durable record must be created before review-driven edits begin.",
+            "reconstructed",
+            "source, timing, available evidence, stable Finding IDs, and known fidelity loss",
+            "A tracked artifact is any version-controlled repository file whose",
+            "lifecycle artifacts, governance files, workflow summaries, skills",
+            "specs, schemas, scripts, generated outputs, README content, and",
+            "ephemeral chat output, local scratch files, or unversioned drafts",
+            "resolution-step gate",
+            "Materiality is governed by `CONSTITUTION.md`",
+            "Operational shortcut",
+            "changes or blocks a tracked artifact",
+            "Clean reviews with no material findings remain lightweight",
+            "For an isolated review with material findings",
+            "isolated handoff status",
+            "material Finding IDs",
+            "required durable review record path or reconstruction requirement",
+            "`review-resolution.md` is required",
+            "`create-change-local-record-before-fixing`",
+            "`reconstruct-record-because-fixes-already-began`",
+            "`stop-for-owner-decision`",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, normalized)
+        self.assertNotIn(
+            "The durable record should be created before review-driven edits begin.",
+            normalized,
+        )
+
+    def test_governance_guidance_uses_broad_material_finding_rule(self) -> None:
+        required_terms = [
+            "Material review findings",
+            "always",
+            "All material findings require",
+            "change-local review",
+            "Isolation",
+            "handoff",
+            "not recording",
+        ]
+        for relative_path in ["CONSTITUTION.md", "AGENTS.md", "docs/workflows.md"]:
+            body = (ROOT / relative_path).read_text(encoding="utf-8")
+            for term in required_terms:
+                with self.subTest(path=relative_path, term=term):
                     self.assertIn(term, body)
 
     def test_downstream_skills_preserve_review_closeout_boundaries(self) -> None:

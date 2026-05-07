@@ -164,7 +164,9 @@ Fast-lane and bugfix execution remain explicit-step unless a higher-priority app
 
 When review feedback exists, each material finding MUST include evidence, a required outcome, and a safe resolution path or `needs-decision` rationale before it drives fixes.
 
-Workflow-managed formal reviews that produce material findings, stage-owned non-approval outcomes that block downstream progress or require revision, reconstructed evidence, closeout evidence citations, or explicit durable-record requests MUST preserve a detailed review record before review-driven fixes or downstream routing proceed.
+Material review findings MUST always be recorded. All material findings require detailed change-local review records. Isolation controls downstream handoff; it does not erase or downgrade material findings. Isolation stops handoff, not recording.
+
+A detailed change-local review record MUST be preserved for every material finding before review-driven fixes or downstream routing proceed. For isolated or review-only requests, the record is required even when no downstream handoff follows.
 
 When material findings exist for a non-trivial change, dispositions MUST be recorded in `review-resolution.md` using only `accepted`, `rejected`, `deferred`, `partially-accepted`, or `needs-decision`. `needs-decision` is not final and blocks `verify`, `explain-change`, and `pr` until resolved or explicitly deferred by an authorized owner.
 
