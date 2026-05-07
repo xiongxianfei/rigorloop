@@ -6,6 +6,7 @@
 ## Related proposal
 
 - [Workflow stage autoprogression](../docs/proposals/2026-04-21-workflow-stage-autoprogression.md)
+- [Milestone-aware review handoff](../docs/proposals/2026-05-07-milestone-aware-review-handoff.md)
 
 ## Goal and context
 
@@ -20,6 +21,8 @@ In v1, this autoprogression contract applies only to:
 
 Fast-lane and bugfix execution flows remain out of scope for this automation mechanism in v1.
 
+This spec is amended by the milestone-aware review handoff contract for workflow-managed full-feature changes that use a milestone-based plan. In that case, a clean review of one non-final implementation milestone is not proof that the whole implementation set is ready for `verify`.
+
 ## Glossary
 
 - `workflow-managed completion flow`: a change flow where the agent is carrying work through its normal downstream stages toward completion under the active lane.
@@ -29,6 +32,11 @@ Fast-lane and bugfix execution flows remain out of scope for this automation mec
 - `downstream stage`: the next stage or stages that follow from the current lane and the current stage outcome.
 - `stop condition`: a documented reason the agent must not continue automatically.
 - `PR-opening prerequisites`: the minimum branch, worktree, and readiness conditions required before the `pr` stage opens a pull request.
+- `milestone-based plan`: a concrete execution plan with one or more in-scope implementation milestones that must be implemented, reviewed, and closed before final verification readiness.
+- `in-scope implementation milestone`: a planned milestone whose current scope still includes implementation work for the change.
+- `lifecycle-closeout milestone`: a milestone or plan step that contains only downstream lifecycle gates such as `verify`, `explain-change`, PR handoff, release, deploy, or other closeout work, and not unfinished implementation work.
+- `review-requested`: the milestone state after implementation and targeted validation are complete and the milestone has been handed to `code-review`.
+- `resolution-needed`: the milestone state after `code-review` produces findings that require review-resolution, fixes, owner decision, or re-review before the milestone can close.
 
 ## Examples first
 
@@ -92,6 +100,33 @@ Given a change is in the fast lane or bugfix lane
 When one stage completes
 Then this v1 autoprogression contract does not itself require automatic continuation into the next stage for that lane.
 
+### Example E11: non-final milestone review continues to the next milestone
+
+Given a workflow-managed full-feature change uses a milestone-based plan
+And `code-review` returns clean for a clean non-final implementation milestone
+When another in-scope implementation milestone remains open
+Then the workflow closes the reviewed milestone and continues to the next in-scope implementation milestone instead of `verify`.
+
+### Example E12: final milestone review continues to verify
+
+Given a workflow-managed full-feature change uses a milestone-based plan
+And `code-review` returns clean for a clean final implementation milestone
+When all in-scope implementation milestones are closed and no required review-resolution remains open
+Then the workflow continues to `verify`.
+
+### Example E13: milestone findings stay on the reviewed milestone
+
+Given a workflow-managed full-feature change reaches `code-review` for milestone `M1`
+When review findings require review-resolution, fixes, owner decision, or re-review
+Then milestone `M1` moves to `resolution-needed` and the workflow does not advance to the next milestone or `verify`.
+
+### Example E14: lifecycle closeout does not block verify as implementation work
+
+Given all in-scope implementation milestones are closed
+And the remaining plan work is a lifecycle-closeout milestone
+When no required review-resolution remains open
+Then the workflow may enter `verify` instead of treating the lifecycle closeout as unfinished implementation.
+
 ## Requirements
 
 R1. The workflow MUST distinguish workflow-managed completion flows from isolated stage requests.
@@ -127,9 +162,19 @@ R2g. Review-to-next-authoring-stage transitions such as `proposal-review -> spec
 
 R3. In the full-feature lane, successful `implement` completion MUST continue into `code-review` unless a stop condition applies.
 
-R3a. In the full-feature lane, if `code-review` finds issues that can be resolved without a new user decision, the workflow MUST enter the `review-resolution` loop and rerun `code-review` before proceeding.
+R3a. In the full-feature lane, if `code-review` finds issues that can be resolved without a new user decision, the workflow MUST enter the `review-resolution` loop for the reviewed scope and rerun `code-review` before proceeding.
 
-R3b. In the full-feature lane, once `code-review` is satisfied and no accepted findings remain unresolved, the workflow MUST continue into `verify` unless a stop condition applies.
+R3b. In the full-feature lane, once `code-review` is satisfied and no accepted findings remain unresolved, the workflow MUST continue to the next required or default downstream stage for the current lane and active plan rather than always continuing directly to `verify`.
+
+R3ba. In a milestone-based plan, a clean non-final implementation milestone MUST close the reviewed milestone and continue to the next in-scope implementation milestone, not `verify`.
+
+R3bb. In a milestone-based plan, a clean final implementation milestone MUST close the reviewed milestone and continue to `verify` only when all in-scope implementation milestones are closed and no required review-resolution remains open.
+
+R3bc. In a milestone-based plan, when `code-review` produces findings that require review-resolution, fixes, owner decision, or re-review, the reviewed milestone MUST move to `resolution-needed` and the workflow MUST NOT advance to the next implementation milestone or `verify` until the required review-resolution loop is closed.
+
+R3bd. In a milestone-based plan, if the reviewed milestone, remaining in-scope implementation milestones, review status, or required review-resolution state cannot be determined from the active plan and review output, the workflow MUST stop as inconclusive or require a plan update instead of handing off to `verify`.
+
+R3be. A lifecycle-closeout milestone MUST NOT be treated as an unfinished implementation milestone for verify-readiness decisions. A mixed milestone that still contains implementation work remains an in-scope implementation milestone until that implementation work is closed or the plan is revised.
 
 R3c. After successful `verify`, the workflow MUST continue into the next required or default downstream stage for the current lane unless a stop condition applies.
 
@@ -210,6 +255,9 @@ Outputs:
 - The workflow never applies a full-feature next-stage pair to fast-lane, bugfix, or review-only work by default.
 - In v1, fast-lane and bugfix work do not gain automatic downstream continuation through this feature unless a later approved change expands the scope.
 - In v1, full-feature execution-flow autoprogression begins at `implement` and ends at `pr`.
+- In a milestone-based plan, `implement` sets the current implementation milestone to `review-requested` when implementation and targeted validation are complete and review handoff occurs.
+- In a milestone-based plan, `code-review` sets the reviewed milestone to `closed` when review is clean and no review-resolution is required, or to `resolution-needed` when findings require review-resolution, fixes, owner decision, or re-review.
+- In a milestone-based plan, `verify` is available only after all in-scope implementation milestones are closed and no required review-resolution remains open.
 - In v1, review-to-next-authoring-stage transitions remain outside the autoprogression contract.
 - Review-only and explicitly isolated stage requests remain isolated unless the user asks to continue.
 - Automatic continuation never expands into merge, release, deploy, or destructive Git behavior by default.
@@ -221,6 +269,8 @@ Outputs:
 - If validation fails after `implement`, the workflow MUST stop before downstream review stages and report the failing proof surface.
 - If workflow-managed context is absent for a directly invoked stage, the workflow MUST treat the invocation as isolated rather than inferring automatic downstream continuation. Direct `pr` still performs the `pr` stage itself when readiness passes.
 - If `code-review` findings require a design choice, scope change, or spec change rather than a straightforward fix, the workflow MUST stop and surface that decision point.
+- If a milestone-based plan does not clearly show whether more in-scope implementation milestones remain, the workflow MUST stop for plan clarification or plan update instead of routing a clean review to `verify`.
+- If a planned implementation milestone no longer belongs in the current change, the plan MUST be revised before downstream handoff. Milestones MUST NOT be postponed or hidden solely to make `verify` available.
 - If `pr` is reached with an unknown base branch, missing review branch, or unrelated tracked changes, the workflow MUST stop and report the exact blocker.
 - If network or GitHub tooling is unavailable during `pr`, the workflow MUST stop with a clear PR-creation failure instead of claiming the PR was opened.
 - If unrelated untracked drafts are present, they MAY remain in the working tree, but they MUST stay out of the PR scope.
@@ -230,6 +280,7 @@ Outputs:
 - This change is a workflow-behavior clarification, not a product-runtime compatibility change.
 - Existing stage order remains intact; the change affects default continuation behavior between stages, not which stages exist.
 - Review-only requests remain compatible because they stay isolated unless the user asks to continue.
+- Existing milestone-free plans remain compatible with the ordinary full-feature continuation sequence. Touched milestone-based plans MUST use milestone-aware handoff wording when current review or readiness state changes.
 - Existing open PRs or feature branches are unaffected until the workflow guidance and skills are updated to use this contract.
 - Rollback is straightforward: restore the prior explicit-stop-after-stage behavior in the workflow contract and affected skills.
 
@@ -282,6 +333,16 @@ EC13. A change reaches `pr` with required upstream stages incomplete or lifecycl
 
 EC14. A fast-lane or bugfix change completes a stage. This v1 autoprogression contract does not require automatic continuation for that lane.
 
+EC15. A clean non-final implementation milestone review closes the reviewed milestone and routes to the next in-scope implementation milestone, not `verify`.
+
+EC16. A clean final implementation milestone review routes to `verify` only when all in-scope implementation milestones are closed and no required review-resolution remains open.
+
+EC17. A milestone review with findings moves the reviewed milestone to `resolution-needed` and keeps the workflow on that same milestone until findings are resolved, deferred with rationale, rejected, or otherwise closed under the governing review contract.
+
+EC18. A milestone-based plan with ambiguous remaining implementation scope blocks `verify` and requires plan clarification or update.
+
+EC19. A lifecycle-closeout milestone after closed implementation milestones does not block entry into `verify`; a mixed milestone containing implementation work remains an implementation milestone.
+
 ## Non-goals
 
 - Auto-merging pull requests.
@@ -301,6 +362,7 @@ EC14. A fast-lane or bugfix change completes a stage. This v1 autoprogression co
 - The spec makes clear that advice-only stages, including `learn`, do not auto-run by default.
 - The spec preserves review, verification, and PR gates while removing redundant user-confirmation pauses.
 - The spec leaves merge, release, deploy, and destructive Git actions outside default autoprogression.
+- The spec qualifies clean `code-review` routing so non-final milestone reviews continue to the next implementation milestone and only final clean implementation milestone reviews can make `verify` the next stage.
 
 ## Open questions
 

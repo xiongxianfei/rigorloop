@@ -55,7 +55,17 @@ PR_SELF_CONTAINED_LIFECYCLE_SKILLS = [
     "explain-change",
     "pr",
 ]
+MILESTONE_AWARE_REVIEW_HANDOFF_SKILLS = [
+    "workflow",
+    "implement",
+    "code-review",
+    "plan",
+]
 SHARED_REVIEW_BLOCK_PATH = ROOT / "templates" / "shared" / "review-isolation-and-recording.md"
+MILESTONE_AWARE_REVIEW_HANDOFF_SPEC = ROOT / "specs" / "milestone-aware-review-handoff.md"
+MILESTONE_AWARE_REVIEW_HANDOFF_TEST_SPEC = (
+    ROOT / "specs" / "milestone-aware-review-handoff.test.md"
+)
 
 
 def extract_markdown_block(text: str, heading: str) -> str:
@@ -851,6 +861,139 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                     self.assertIn(term, body)
             for term in forbidden_terms:
                 with self.subTest(skill=skill_name, forbidden=term):
+                    self.assertNotIn(term, body)
+
+    def test_milestone_aware_review_handoff_test_spec_maps_static_proof(self) -> None:
+        body = MILESTONE_AWARE_REVIEW_HANDOFF_TEST_SPEC.read_text(encoding="utf-8")
+        required_terms = [
+            "T1. Scope boundary preserves existing lanes and stop conditions",
+            "T2. Clean review routing distinguishes non-final and final milestones",
+            "T3. Findings stay attached to the reviewed milestone",
+            "T4. Inconclusive or ambiguous review never hands off to verify",
+            "T5. Milestone state vocabulary is single-field and exact",
+            "T6. Implement handoff uses `review-requested` and does not claim verify readiness",
+            "T7. Handoff summaries and plan update obligations are explicit",
+            "T8. Milestones are not postponed to reach verify",
+            "T9. Lifecycle-closeout milestones are distinguishable from implementation milestones",
+            "T10. Affected workflow, skill, and generated surfaces remain aligned",
+            "T11. First implementation slice stays static-only",
+            "T12. Validation selector accepts concrete generated adapter paths",
+            "T13. Handoff summaries do not expose sensitive data",
+            "T14. Compatibility expectations remain true for existing plans",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, body)
+
+    def test_milestone_aware_review_handoff_single_state_contract(self) -> None:
+        spec = MILESTONE_AWARE_REVIEW_HANDOFF_SPEC.read_text(encoding="utf-8")
+        test_spec = MILESTONE_AWARE_REVIEW_HANDOFF_TEST_SPEC.read_text(encoding="utf-8")
+        allowed_states = [
+            "`planned`",
+            "`implementing`",
+            "`review-requested`",
+            "`resolution-needed`",
+            "`closed`",
+        ]
+        for body, label in ((spec, "spec"), (test_spec, "test spec")):
+            for state in allowed_states:
+                with self.subTest(file=label, state=state):
+                    self.assertIn(state, body)
+
+        self.assertIn(
+            "`implementation-complete` and `review-clean` are evidence descriptions, not milestone states.",
+            spec,
+        )
+        self.assertIn("`implementation-complete` and `review-clean` are not milestone state values.", test_spec)
+        self.assertNotIn("routing state", spec)
+        self.assertNotIn("implementation evidence state", spec)
+
+    def test_milestone_aware_skill_guidance_for_state_and_handoff(self) -> None:
+        """Skills describe milestone-aware state, handoff, and verify-readiness boundaries."""
+
+        required_by_skill = {
+            "implement": [
+                "`planned` to `implementing`",
+                "`review-requested`",
+                "targeted validation evidence",
+                "not set plan readiness to `Ready for verify`",
+            ],
+            "code-review": [
+                "clean non-final milestone",
+                "next in-scope implementation milestone",
+                "clean final milestone",
+                "`resolution-needed`",
+                "current handoff summary",
+            ],
+            "plan": [
+                "exactly one `Milestone state`",
+                "`review-requested`",
+                "`resolution-needed`",
+                "current handoff summary",
+                "`lifecycle-closeout`",
+            ],
+            "workflow": [
+                "milestone-based",
+                "remaining in-scope implementation milestones",
+                "`lifecycle-closeout`",
+                "verify readiness",
+            ],
+        }
+        for skill_name, required_terms in required_by_skill.items():
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            for term in required_terms:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, body)
+
+    def test_milestone_aware_workflow_specs_remove_unconditional_verify_handoff(self) -> None:
+        required_terms = [
+            "milestone-based plan",
+            "clean non-final implementation milestone",
+            "next in-scope implementation milestone",
+            "clean final implementation milestone",
+            "all in-scope implementation milestones are closed",
+            "lifecycle-closeout milestone",
+            "review-requested",
+            "resolution-needed",
+        ]
+        for relative_path in [
+            "specs/workflow-stage-autoprogression.md",
+            "specs/rigorloop-workflow.md",
+        ]:
+            body = (ROOT / relative_path).read_text(encoding="utf-8")
+            for term in required_terms:
+                with self.subTest(path=relative_path, required=term):
+                    self.assertIn(term, body)
+
+        stale_terms = [
+            "once `code-review` is satisfied and no accepted findings remain unresolved, the workflow MUST continue into `verify` unless a stop condition applies",
+        ]
+        for relative_path in [
+            "specs/workflow-stage-autoprogression.md",
+            "specs/rigorloop-workflow.md",
+        ]:
+            body = (ROOT / relative_path).read_text(encoding="utf-8")
+            for term in stale_terms:
+                with self.subTest(path=relative_path, stale=term):
+                    self.assertNotIn(term, body)
+
+    def test_milestone_aware_guidance_removes_unconditional_verify_handoff(self) -> None:
+        """Docs and skills must not retain stale unconditional clean-review-to-verify shortcuts."""
+
+        stale_terms = [
+            "first-pass `clean-with-notes` continues to `verify`",
+            "`clean-with-notes` hands off to `verify` when no stop condition applies",
+            "`code-review -> verify` only for first-pass `clean-with-notes`",
+        ]
+        paths = [
+            "docs/workflows.md",
+            "skills/code-review/SKILL.md",
+            "skills/workflow/SKILL.md",
+        ]
+        for relative_path in paths:
+            body = (ROOT / relative_path).read_text(encoding="utf-8")
+            for term in stale_terms:
+                with self.subTest(path=relative_path, term=term):
                     self.assertNotIn(term, body)
 
 

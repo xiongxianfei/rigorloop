@@ -35,6 +35,7 @@ The workflow spec owns the full category and routing contract. Use these categor
   - Use them only when ambiguity, option expansion, architecture uncertainty, or current external facts affect the decision.
 - Per-change chain:
   - `proposal -> proposal-review -> spec -> spec-review -> architecture -> architecture-review -> plan -> plan-review -> test-spec -> implement -> code-review -> review-resolution when triggered -> verify -> ci-maintenance when triggered -> explain-change -> pr`
+  - For milestone-based plans, the `implement -> code-review -> review-resolution when triggered` segment repeats for each in-scope implementation milestone. `verify` follows only after all in-scope implementation milestones are closed and required review-resolution is closed.
 - Periodic artifacts: `learn`.
   - Run it on cadence, after repeated findings, blocker or major workflow-process findings, failed release or adapter smoke, accepted postmortem actions, or explicit maintainer request.
 
@@ -89,6 +90,20 @@ Full-lifecycle routing starts from the per-change chain:
 ```text
 proposal -> proposal-review -> spec -> spec-review -> architecture -> architecture-review -> plan -> plan-review -> test-spec -> implement -> code-review -> review-resolution when triggered -> verify -> ci-maintenance when triggered -> explain-change -> pr
 ```
+
+For milestone-based plans, do not collapse the implementation segment into a single pass. Repeat this loop for each in-scope implementation milestone:
+
+```text
+implement M<n>
+-> code-review M<n>
+-> review-resolution M<n>, when triggered
+-> implement fixes for M<n>, when needed
+-> code-review M<n> rerun, when needed
+-> close M<n>
+-> implement M<n+1>, when another in-scope implementation milestone remains
+```
+
+Track the reviewed milestone, the remaining in-scope implementation milestones, the next stage, and verify readiness in the active plan or review handoff. Use `lifecycle-closeout` for milestones or sections that track downstream gates such as `verify`, `explain-change`, PR handoff, release, deploy, or final plan closeout without adding implementation scope. Lifecycle-closeout work does not count as an open implementation milestone for verify readiness.
 
 Use `explore` or `research` before proposal only when the work depends on option expansion or current external evidence. Use `docs/project-map.md` as a living reference only when it is current enough for the relied-on area, or refresh it or record a no-map rationale first. Follow with `learn` only when a periodic or explicit trigger occurs.
 
@@ -224,12 +239,14 @@ Rules:
 - In the full-feature lane, continue through this downstream chain unless a stop condition applies:
   - `implement -> code-review`
   - `code-review -> review-resolution -> code-review` only for first-pass `changes-requested` findings that are fixable within current approved scope
-  - `code-review -> verify` only for first-pass `clean-with-notes` once the review gate is satisfied
+  - clean `code-review` of a non-final implementation milestone closes that milestone and continues to the next in-scope implementation milestone
+  - clean `code-review` of the final implementation milestone continues to `verify` only after all in-scope implementation milestones are closed and no required review-resolution remains open
   - `verify -> ci-maintenance when triggered -> explain-change`; otherwise `verify -> explain-change`
   - `ci-maintenance -> explain-change`
   - `explain-change -> pr`
 - In workflow-managed full-feature runs, autoprogressed `code-review` must emit its first-pass review record before any review-driven fix begins.
 - In workflow-managed full-feature runs, first-pass `blocked` and `inconclusive` stop instead of entering `review-resolution`.
+- If a milestone-based plan does not clearly identify the reviewed milestone or remaining in-scope implementation milestones, stop for a plan update or inconclusive review instead of inferring verify readiness.
 - Direct `proposal-review`, `spec-review`, `architecture-review`, `code-review`, `verify`, and `explain-change` stay isolated by default unless the user explicitly asks for end-to-end continuation.
 - Direct `pr` remains in scope and still performs the `pr` stage itself when readiness passes. Isolation only prevents downstream continuation beyond `pr`.
 - Fast-lane and bugfix execution remain on the repository's existing explicit-step behavior in v1.

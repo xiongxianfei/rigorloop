@@ -88,10 +88,23 @@ For each milestone:
 8. Refactor only within milestone scope.
 9. Run milestone targeted validation commands before any optional broad smoke.
 10. Update the active plan body’s progress, decisions, surprises, aligned-surface audit, and validation notes.
-11. When the milestone is complete, create a milestone closeout commit using the subject format `M<n>: <completed milestone outcome>` and include milestone validation in the commit body or referenced evidence.
+11. When implementation work for the milestone is complete, create an implementation handoff commit using the subject format `M<n>: <implemented milestone outcome>` and include milestone validation in the commit body or referenced evidence.
 12. Stop before the next milestone unless the user asked to continue.
 
 Stopping before the next milestone does not cancel a required downstream workflow handoff. In a workflow-managed full-feature flow, once the requested milestone is complete and no stop condition applies, hand off to `code-review` instead of waiting for redundant user confirmation.
+
+## Milestone-aware handoff
+
+For milestone-based plans, `implement` works on one in-scope implementation milestone at a time.
+
+- When implementation work begins, transition the current milestone from `planned` to `implementing`.
+- After implementation and targeted validation complete, record targeted validation evidence, decisions, surprises, and follow-ups in the active plan.
+- When no stop condition applies, set the current milestone to `review-requested` and hand off to `code-review` for that milestone.
+- Implementation completion is handoff evidence, not milestone closeout. `implementation-complete` may appear as an evidence description, but it is not a milestone state.
+- The milestone becomes `closed` only after clean code-review and any required review-resolution are complete.
+- If accepted review findings return to implementation, keep fixes attached to the same milestone. After fixes and targeted validation evidence are complete, return that same milestone to `review-requested` before rerun review.
+
+`implement` must not set plan readiness to `Ready for verify` while any in-scope implementation milestone remains unreviewed, unresolved, or open. `Ready for verify` is valid only after all in-scope implementation milestones are closed or explicitly deferred by plan revision, final milestone code-review has completed, and required review-resolution is closed.
 
 ## TDD rules
 

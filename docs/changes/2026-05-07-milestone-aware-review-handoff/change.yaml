@@ -1,0 +1,165 @@
+change_id: 2026-05-07-milestone-aware-review-handoff
+title: Milestone-aware review handoff
+classification: workflow-governance-spec
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-07-milestone-aware-review-handoff.md
+  spec: specs/milestone-aware-review-handoff.md
+  test_spec: specs/milestone-aware-review-handoff.test.md
+  plan: docs/plans/2026-05-07-milestone-aware-review-handoff.md
+  explain_change: docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md
+  review_resolution: docs/changes/2026-05-07-milestone-aware-review-handoff/review-resolution.md
+requirements:
+  - Make workflow-managed milestone reviews route to the next in-scope implementation milestone until all implementation milestones are closed.
+  - Preserve static-only first-slice proof without executable plan-state validation.
+  - Record and resolve plan-review finding PLR1-F1 before downstream test-spec or implementation relies on the affected validation commands.
+  - Map every approved milestone-aware handoff requirement, example, edge case, security/privacy expectation, and compatibility claim to concrete static or manual proof before implementation.
+  - Add M1 static proof surfaces before canonical workflow and skill guidance edits.
+  - Align authoritative workflow specs so clean non-final milestone reviews route to the next in-scope implementation milestone, while clean final milestone reviews route to verify only after all in-scope implementation milestones are closed.
+  - Preserve same-milestone review-resolution, `resolution-needed`, ambiguous-plan, and lifecycle-closeout boundaries in authoritative workflow contracts.
+  - Align contributor workflow guidance and authored stage skills so implement, code-review, plan, and workflow orchestration use the approved milestone-aware handoff loop.
+  - Keep generated skill mirrors and public adapter output derived for the later generated-output milestone.
+  - Refresh generated Codex runtime skill mirrors and generated public adapter skill copies from canonical authored skills.
+tests:
+  - Plan-review evidence that selector blocks directory path `dist/adapters` in explicit mode.
+  - Selector validation for concrete generated adapter skill file paths.
+  - Review artifact structure validation for plan-review finding PLR1-F1.
+  - Active test spec for milestone-aware review handoff requirement, example, edge case, security/privacy, performance, and compatibility coverage.
+  - Skill-validator static proof for approved milestone state vocabulary plus pending red-state checks for M2/M3 guidance alignment.
+  - Skill-validator static proof that authoritative workflow specs remove the unconditional clean-review-to-verify shortcut and contain milestone-aware routing terms.
+  - Skill-validator static proof that authored workflow guidance and stage skills remove stale clean-review-to-verify shortcuts and include milestone-aware state, handoff, current handoff summary, and lifecycle-closeout terms.
+  - Generated-output drift checks proving `.codex/skills/` and public adapter packages are synchronized with canonical `skills/`.
+validation:
+  - command: python scripts/select-validation.py --mode explicit --path dist/adapters
+    result: fail_expected_unclassified_directory_path_before_plan_revision
+  - command: python scripts/select-validation.py --mode explicit --path dist/adapters/codex/.agents/skills/implement/SKILL.md --path dist/adapters/codex/.agents/skills/code-review/SKILL.md --path dist/adapters/codex/.agents/skills/plan/SKILL.md --path dist/adapters/codex/.agents/skills/workflow/SKILL.md --path dist/adapters/claude/.claude/skills/implement/SKILL.md --path dist/adapters/claude/.claude/skills/code-review/SKILL.md --path dist/adapters/claude/.claude/skills/plan/SKILL.md --path dist/adapters/claude/.claude/skills/workflow/SKILL.md --path dist/adapters/opencode/.opencode/skills/implement/SKILL.md --path dist/adapters/opencode/.opencode/skills/code-review/SKILL.md --path dist/adapters/opencode/.opencode/skills/plan/SKILL.md --path dist/adapters/opencode/.opencode/skills/workflow/SKILL.md
+    result: pass_no_unclassified_path_after_plan_revision
+  - command: python scripts/select-validation.py --mode explicit --path specs/milestone-aware-review-handoff.test.md --path specs/milestone-aware-review-handoff.md --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml
+    result: pass_selected_artifact_lifecycle_and_change_metadata
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/milestone-aware-review-handoff.md --path specs/milestone-aware-review-handoff.test.md --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path specs/milestone-aware-review-handoff.test.md --path specs/milestone-aware-review-handoff.md --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml
+    result: pass
+  - command: python scripts/test-skill-validator.py
+    result: pass_32_tests_2_expected_failures_for_pending_m2_m3_guidance_alignment
+  - command: python scripts/select-validation.py --mode explicit --path specs/milestone-aware-review-handoff.test.md --path specs/workflow-stage-autoprogression.test.md --path specs/rigorloop-workflow.test.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml
+    result: pass_selected_skills_regression_artifact_lifecycle_and_change_metadata
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/milestone-aware-review-handoff.test.md --path specs/workflow-stage-autoprogression.test.md --path specs/rigorloop-workflow.test.md --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml
+    result: pass_with_existing_rigorloop_workflow_test_spec_lifecycle_language_warning
+  - command: bash scripts/ci.sh --mode explicit --path specs/milestone-aware-review-handoff.test.md --path specs/workflow-stage-autoprogression.test.md --path specs/rigorloop-workflow.test.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml
+    result: pass
+  - command: test ! -e skills/review-resolution/SKILL.md
+    result: pass_no_standalone_review_resolution_skill
+  - command: python scripts/test-skill-validator.py
+    result: fail_expected_before_m2_contract_update_17_failures_for_missing_spec_terms_and_stale_unconditional_verify_handoff
+  - command: python scripts/test-skill-validator.py
+    result: pass_33_tests_2_expected_failures_for_pending_m3_docs_and_skill_guidance_alignment
+  - command: python scripts/select-validation.py --mode explicit --path specs/milestone-aware-review-handoff.md --path specs/workflow-stage-autoprogression.md --path specs/rigorloop-workflow.md --path specs/workflow-stage-autoprogression.test.md --path specs/rigorloop-workflow.test.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml
+    result: pass_selected_skills_regression_artifact_lifecycle_change_metadata_no_unclassified_paths
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/milestone-aware-review-handoff.md --path specs/workflow-stage-autoprogression.md --path specs/rigorloop-workflow.md --path specs/workflow-stage-autoprogression.test.md --path specs/rigorloop-workflow.test.md --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml
+    result: pass_with_existing_rigorloop_workflow_lifecycle_language_warnings
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path specs/milestone-aware-review-handoff.md --path specs/workflow-stage-autoprogression.md --path specs/rigorloop-workflow.md --path specs/workflow-stage-autoprogression.test.md --path specs/rigorloop-workflow.test.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml
+    result: pass_selected_skills_regression_artifact_lifecycle_change_metadata_regression_and_validation
+  - command: test ! -e skills/review-resolution/SKILL.md
+    result: pass_no_standalone_review_resolution_skill_after_m2
+  - command: git diff --check -- specs/workflow-stage-autoprogression.md specs/rigorloop-workflow.md scripts/test-skill-validator.py docs/plans/2026-05-07-milestone-aware-review-handoff.md docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml
+    result: pass
+  - command: rg -n '[[:blank:]]$|\t' specs/workflow-stage-autoprogression.md specs/rigorloop-workflow.md scripts/test-skill-validator.py docs/plans/2026-05-07-milestone-aware-review-handoff.md docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml
+    result: pass_no_matches
+  - command: python scripts/test-skill-validator.py
+    result: fail_expected_before_m3_guidance_update_21_failures_for_missing_docs_skill_terms_and_stale_unconditional_verify_handoff
+  - command: python scripts/test-skill-validator.py
+    result: pass_33_tests_no_expected_failures_after_m3_guidance_update
+  - command: python scripts/validate-skills.py
+    result: pass_23_authored_skill_files
+  - command: python scripts/select-validation.py --mode explicit --path docs/workflows.md --path AGENTS.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/plan/SKILL.md --path skills/workflow/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml
+    result: pass_selected_skills_generated_drift_artifact_lifecycle_change_metadata_selector_regression_no_unclassified_paths
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path AGENTS.md --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path docs/workflows.md --path skills/code-review/SKILL.md --path skills/implement/SKILL.md --path skills/plan/SKILL.md --path skills/workflow/SKILL.md
+    result: pass_with_existing_docs_workflows_lifecycle_language_warning
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml
+    result: pass
+  - command: python scripts/test-select-validation.py
+    result: pass_57_tests
+  - command: git diff --check -- docs/workflows.md AGENTS.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/plan/SKILL.md skills/workflow/SKILL.md scripts/test-skill-validator.py docs/plans/2026-05-07-milestone-aware-review-handoff.md docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml
+    result: pass
+  - command: rg -n '[[:blank:]]$|\t' docs/workflows.md AGENTS.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/plan/SKILL.md skills/workflow/SKILL.md scripts/test-skill-validator.py docs/plans/2026-05-07-milestone-aware-review-handoff.md docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml
+    result: pass_no_matches
+  - command: test ! -e skills/review-resolution/SKILL.md
+    result: pass_no_standalone_review_resolution_skill_after_m3
+  - command: rg -n 'clean-with-notes.*verify|code-review -> verify|implementation-complete|review-clean|review-requested|resolution-needed|lifecycle-closeout' docs/workflows.md AGENTS.md CONSTITUTION.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/plan/SKILL.md skills/workflow/SKILL.md
+    result: pass_manual_audit_only_intentional_milestone_aware_and_evidence_phrase_matches
+  - command: python scripts/build-skills.py --check
+    result: fail_expected_m4_generated_codex_skill_mirror_drift
+  - command: bash scripts/ci.sh --mode explicit --path docs/workflows.md --path AGENTS.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/plan/SKILL.md --path skills/workflow/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml
+    result: fail_expected_only_skills_drift_and_adapters_drift_until_m4_generated_output_refresh
+  - command: python scripts/build-skills.py
+    result: pass_generated_codex_skill_mirrors_refreshed
+  - command: python scripts/build-adapters.py --version 0.1.1
+    result: pass_generated_public_adapter_output_refreshed
+  - command: python scripts/build-skills.py --check
+    result: pass_generated_codex_skill_mirrors_in_sync
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_generated_adapter_output_in_sync
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_56_tests
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml --path docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/plan/SKILL.md --path skills/workflow/SKILL.md --path .codex/skills/implement/SKILL.md --path .codex/skills/code-review/SKILL.md --path .codex/skills/plan/SKILL.md --path .codex/skills/workflow/SKILL.md --path dist/adapters/codex/.agents/skills/implement/SKILL.md --path dist/adapters/codex/.agents/skills/code-review/SKILL.md --path dist/adapters/codex/.agents/skills/plan/SKILL.md --path dist/adapters/codex/.agents/skills/workflow/SKILL.md --path dist/adapters/claude/.claude/skills/implement/SKILL.md --path dist/adapters/claude/.claude/skills/code-review/SKILL.md --path dist/adapters/claude/.claude/skills/plan/SKILL.md --path dist/adapters/claude/.claude/skills/workflow/SKILL.md --path dist/adapters/opencode/.opencode/skills/implement/SKILL.md --path dist/adapters/opencode/.opencode/skills/code-review/SKILL.md --path dist/adapters/opencode/.opencode/skills/plan/SKILL.md --path dist/adapters/opencode/.opencode/skills/workflow/SKILL.md --path docs/plans/2026-05-07-milestone-aware-review-handoff.md
+    result: pass_selected_skills_adapters_artifact_lifecycle_change_metadata_no_unclassified_paths
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml --path docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path skills/code-review/SKILL.md --path skills/implement/SKILL.md --path skills/plan/SKILL.md --path skills/workflow/SKILL.md
+    result: pass
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml --path docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/plan/SKILL.md --path skills/workflow/SKILL.md --path .codex/skills/implement/SKILL.md --path .codex/skills/code-review/SKILL.md --path .codex/skills/plan/SKILL.md --path .codex/skills/workflow/SKILL.md --path dist/adapters/codex/.agents/skills/implement/SKILL.md --path dist/adapters/codex/.agents/skills/code-review/SKILL.md --path dist/adapters/codex/.agents/skills/plan/SKILL.md --path dist/adapters/codex/.agents/skills/workflow/SKILL.md --path dist/adapters/claude/.claude/skills/implement/SKILL.md --path dist/adapters/claude/.claude/skills/code-review/SKILL.md --path dist/adapters/claude/.claude/skills/plan/SKILL.md --path dist/adapters/claude/.claude/skills/workflow/SKILL.md --path dist/adapters/opencode/.opencode/skills/implement/SKILL.md --path dist/adapters/opencode/.opencode/skills/code-review/SKILL.md --path dist/adapters/opencode/.opencode/skills/plan/SKILL.md --path dist/adapters/opencode/.opencode/skills/workflow/SKILL.md --path docs/plans/2026-05-07-milestone-aware-review-handoff.md
+    result: pass_selected_skills_adapters_artifact_lifecycle_and_change_metadata_checks
+  - command: git diff --check -- .codex/skills dist/adapters docs/changes/2026-05-07-milestone-aware-review-handoff docs/plans/2026-05-07-milestone-aware-review-handoff.md
+    result: pass
+  - command: rg -n '[[:blank:]]$|\t' .codex/skills/implement/SKILL.md .codex/skills/code-review/SKILL.md .codex/skills/plan/SKILL.md .codex/skills/workflow/SKILL.md dist/adapters/codex/.agents/skills/implement/SKILL.md dist/adapters/codex/.agents/skills/code-review/SKILL.md dist/adapters/codex/.agents/skills/plan/SKILL.md dist/adapters/codex/.agents/skills/workflow/SKILL.md dist/adapters/claude/.claude/skills/implement/SKILL.md dist/adapters/claude/.claude/skills/code-review/SKILL.md dist/adapters/claude/.claude/skills/plan/SKILL.md dist/adapters/claude/.claude/skills/workflow/SKILL.md dist/adapters/opencode/.opencode/skills/implement/SKILL.md dist/adapters/opencode/.opencode/skills/code-review/SKILL.md dist/adapters/opencode/.opencode/skills/plan/SKILL.md dist/adapters/opencode/.opencode/skills/workflow/SKILL.md docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md docs/plans/2026-05-07-milestone-aware-review-handoff.md
+    result: pass_no_matches
+changed_files:
+  - docs/plan.md
+  - AGENTS.md
+  - docs/workflows.md
+  - docs/plans/2026-05-07-milestone-aware-review-handoff.md
+  - docs/proposals/2026-05-07-milestone-aware-review-handoff.md
+  - specs/milestone-aware-review-handoff.md
+  - specs/milestone-aware-review-handoff.test.md
+  - docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml
+  - docs/changes/2026-05-07-milestone-aware-review-handoff/explain-change.md
+  - docs/changes/2026-05-07-milestone-aware-review-handoff/review-log.md
+  - docs/changes/2026-05-07-milestone-aware-review-handoff/review-resolution.md
+  - docs/changes/2026-05-07-milestone-aware-review-handoff/reviews/plan-review-r1.md
+  - specs/workflow-stage-autoprogression.test.md
+  - specs/rigorloop-workflow.test.md
+  - specs/workflow-stage-autoprogression.md
+  - specs/rigorloop-workflow.md
+  - scripts/test-skill-validator.py
+  - skills/implement/SKILL.md
+  - skills/code-review/SKILL.md
+  - skills/plan/SKILL.md
+  - skills/workflow/SKILL.md
+  - .codex/skills/implement/SKILL.md
+  - .codex/skills/code-review/SKILL.md
+  - .codex/skills/plan/SKILL.md
+  - .codex/skills/workflow/SKILL.md
+  - dist/adapters/codex/.agents/skills/implement/SKILL.md
+  - dist/adapters/codex/.agents/skills/code-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/plan/SKILL.md
+  - dist/adapters/codex/.agents/skills/workflow/SKILL.md
+  - dist/adapters/claude/.claude/skills/implement/SKILL.md
+  - dist/adapters/claude/.claude/skills/code-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/plan/SKILL.md
+  - dist/adapters/claude/.claude/skills/workflow/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/implement/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/code-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/plan/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/workflow/SKILL.md
+review:
+  status: closed
+  unresolved_items: 0
