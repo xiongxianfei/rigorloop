@@ -946,21 +946,51 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                 with self.subTest(skill=skill_name, term=term):
                     self.assertIn(term, body)
 
+    def test_milestone_aware_workflow_specs_remove_unconditional_verify_handoff(self) -> None:
+        required_terms = [
+            "milestone-based plan",
+            "clean non-final implementation milestone",
+            "next in-scope implementation milestone",
+            "clean final implementation milestone",
+            "all in-scope implementation milestones are closed",
+            "lifecycle-closeout milestone",
+            "review-requested",
+            "resolution-needed",
+        ]
+        for relative_path in [
+            "specs/workflow-stage-autoprogression.md",
+            "specs/rigorloop-workflow.md",
+        ]:
+            body = (ROOT / relative_path).read_text(encoding="utf-8")
+            for term in required_terms:
+                with self.subTest(path=relative_path, required=term):
+                    self.assertIn(term, body)
+
+        stale_terms = [
+            "once `code-review` is satisfied and no accepted findings remain unresolved, the workflow MUST continue into `verify` unless a stop condition applies",
+        ]
+        for relative_path in [
+            "specs/workflow-stage-autoprogression.md",
+            "specs/rigorloop-workflow.md",
+        ]:
+            body = (ROOT / relative_path).read_text(encoding="utf-8")
+            for term in stale_terms:
+                with self.subTest(path=relative_path, stale=term):
+                    self.assertNotIn(term, body)
+
     @unittest.expectedFailure
     def test_pending_milestone_aware_guidance_removes_unconditional_verify_handoff(self) -> None:
-        """Red-state proof for M2/M3: remove expectedFailure when stale shortcuts are gone."""
+        """Red-state proof for M3: remove expectedFailure when stale docs/skills shortcuts are gone."""
 
         stale_terms = [
             "first-pass `clean-with-notes` continues to `verify`",
             "`clean-with-notes` hands off to `verify` when no stop condition applies",
             "`code-review -> verify` only for first-pass `clean-with-notes`",
-            "once `code-review` is satisfied and no accepted findings remain unresolved, the workflow MUST continue into `verify` unless a stop condition applies",
         ]
         paths = [
             "docs/workflows.md",
             "skills/code-review/SKILL.md",
             "skills/workflow/SKILL.md",
-            "specs/workflow-stage-autoprogression.md",
         ]
         for relative_path in paths:
             body = (ROOT / relative_path).read_text(encoding="utf-8")
