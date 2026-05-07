@@ -63,7 +63,7 @@ Interpret legacy words such as `create`, `revise`, or `mirror` only as natural-l
 
 If no root `VISION.md` exists:
 
-- If neither root vision file exists and the user explicitly asks to establish project vision, create root `VISION.md`, generate README front-matter, insert README vision markers when missing using deterministic placement, and report assumptions plus open vision-level questions.
+- If the user explicitly asks to establish project vision, create root `VISION.md`, generate README front-matter, insert README vision markers when missing using deterministic placement, and report assumptions plus open vision-level questions.
 - If the user did not clearly ask to establish project vision, stop and ask whether to create `VISION.md`. Do not edit README while that intent is unclear.
 
 If root `VISION.md` exists and the user asks to update vision:
