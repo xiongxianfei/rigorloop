@@ -47,7 +47,7 @@
 | `R16`-`R16b` | `T1`, `T4`, `T5`, `T13` | integration | Reuse existing structural validator and avoid semantic review-quality judgment |
 | `R17`-`R17e` | `T17`, `T20` | contract, integration | Isolation controls handoff only; material findings require durable change-local review records before fixes or reconstruction when late |
 | `R18`-`R19a` | `T18` | contract, integration | Tracked artifact definition and operational materiality shortcut stay visible without replacing Constitution authority |
-| `R20`-`R20c` | `T17` | contract, integration | Isolated material-review output names handoff status, Finding IDs, required record or reconstruction path, `review-resolution.md`, and next action |
+| `R20`-`R20c` | `T17` | contract, integration | Isolated material-review output names handoff status, Finding IDs, required review record path, record-before-fixing or reconstruction status, and owner-decision status |
 | `R21`-`R21d` | `T19` | integration | Shared `## Isolation and Recording` block is canonical, byte-equal, and placement-safe |
 | `R22`-`R22b` | `T18` | manual, integration | `CONSTITUTION.md`, `AGENTS.md`, and `docs/workflows.md` teach the same broad rule |
 | `R23` | `T20` | integration, manual | First-slice validation remains structural/static and does not add semantic edit-reference flagging |
@@ -83,7 +83,7 @@
 - Detailed review file with no material findings still needing `review-log.md`: `T5`, `T13`
 - Reconstructed detailed review evidence needing reconstructed-record metadata: `T6`
 - Final PR-ready handoff with only the initial review-record root and no durable Markdown reasoning: `T15`
-- Isolated material review output missing Finding IDs, record path or reconstruction requirement, `review-resolution.md` requirement, or next action: `T17`
+- Isolated material review output missing Finding IDs, record path, record-before-fixing or reconstruction status, or owner-decision status: `T17`
 - Skill-specific guidance inserted inside the shared `## Isolation and Recording` block: `T19`
 - Generated adapter output changed because of a material review finding as a tracked artifact edit: `T18`
 
@@ -494,8 +494,8 @@
   - `scripts/test-skill-validator.py`
   - `scripts/test-review-artifact-validator.py`
 - Steps:
-  - Add static assertions that an isolated material-review output states isolated handoff status, material Finding IDs, required durable record path or reconstruction requirement, that `review-resolution.md` is required, and next allowed action.
-  - Assert the next allowed action vocabulary is exactly `create-change-local-record-before-fixing`, `reconstruct-record-because-fixes-already-began`, or `stop-for-owner-decision`.
+  - Add static assertions that an isolated material-review output states no automatic downstream handoff, material Finding IDs, required review record path, whether the record must be created before fixing or reconstructed, and whether owner decision is needed.
+  - Assert the output makes the next action clear without requiring enum-style action strings.
   - Assert the formal review skills do not offer review-output-only or artifact-local-only settlement for material findings.
   - Add or update review-artifact fixture coverage proving a direct material review record creates `change.yaml`, `review-log.md`, `review-resolution.md`, and `reviews/<stage>-r<n>.md` before fixes, or uses reconstructed-record metadata when fixes already began.
 - Expected result:
@@ -630,7 +630,7 @@
 - [ ] Review PR comment promotion wording for stable Finding IDs and unsupported `pr-review`.
 - [ ] Review changed review-stage skills for the same trigger and closeout vocabulary as the approved spec.
 - [ ] Review changed formal review skills for byte-identical `## Isolation and Recording` guidance from the canonical template.
-- [ ] Review isolated material-review output guidance for handoff status, Finding IDs, required record or reconstruction path, `review-resolution.md` requirement, and next allowed action.
+- [ ] Review isolated material-review output guidance for handoff status, Finding IDs, required review record path, record-before-fixing or reconstruction status, and owner-decision status.
 - [ ] Review `CONSTITUTION.md`, `AGENTS.md`, and `docs/workflows.md` for the same broad material-finding rule.
 - [ ] Review generated output drift checks after canonical skill edits.
 - [ ] Review final change-local artifacts for durable reasoning and no sensitive values.

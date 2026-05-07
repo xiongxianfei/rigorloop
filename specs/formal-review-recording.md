@@ -92,7 +92,7 @@ Then the detailed review file is labeled reconstructed and discloses source, tim
 
 Given an isolated `architecture-review` produces material findings
 When the review output is reported
-Then the output names isolated handoff status, material Finding IDs, required durable review record path or reconstruction requirement, that `review-resolution.md` is required, and the next allowed action.
+Then the output names no automatic downstream handoff, material Finding IDs, required review record path, whether the record must be created before fixing or reconstructed, and whether owner decision is needed.
 
 ### Example E10: formal review skills share identical recording guidance
 
@@ -259,13 +259,13 @@ R19a. `CONSTITUTION.md` remains authoritative for materiality; the operational s
 R20. For an isolated or review-only formal review with material findings, the final review output MUST state that isolation stops downstream handoff but does not suppress recording.
 
 R20a. The output MUST state:
-- isolated handoff status;
+- no automatic downstream handoff;
 - material Finding IDs;
-- required durable review record path or reconstruction requirement;
-- that `review-resolution.md` is required;
-- next allowed action.
+- required review record path;
+- whether the record must be created before fixing or reconstructed;
+- whether owner decision is needed.
 
-R20b. The next allowed action MUST be one of `create-change-local-record-before-fixing`, `reconstruct-record-because-fixes-already-began`, or `stop-for-owner-decision`.
+R20b. The output MUST make the next action clear without requiring enum-style action strings.
 
 R20c. The output MUST NOT offer review-output-only or artifact-local-only settlement for material findings.
 
@@ -329,7 +329,7 @@ Outputs:
 - If a required detailed review file is missing, review-driven fixes or downstream routing must stop until the review evidence is created or reconstructed.
 - If material findings are acted on before durable review records exist, the repair path is a reconstructed detailed review record.
 - If an isolated material review finding lacks required change-local review files, review-driven edits and downstream routing must stop until the durable review record exists.
-- If an isolated review output with material findings omits the required record path or reconstruction requirement, `review-resolution.md` requirement, or next allowed action, the review output is incomplete and must be revised before review-driven fixes or downstream routing proceed.
+- If an isolated review output with material findings omits the required review record path, whether the record must be created before fixing or reconstructed, or whether owner decision is needed, the review output is incomplete and must be revised before fixes or downstream routing proceed.
 - If a copied `## Isolation and Recording` skill subsection differs from the canonical template, static validation fails.
 - If stage-specific text appears inside the shared subsection, static validation fails.
 - If `reviews/` exists without `review-log.md`, structural validation fails.
@@ -395,7 +395,7 @@ This spec MUST NOT require broad smoke solely because upstream review records ex
 12. A final PR-ready handoff is incomplete if only the initial review-record root exists and durable Markdown reasoning was never added.
 13. A direct `proposal-review` material finding that will revise a tracked proposal creates durable review evidence before the proposal edit begins.
 14. A direct `spec-review` material finding that already drove spec edits before recording is repaired only through a reconstructed detailed review file.
-15. A material isolated review output that omits Finding IDs, required record path or reconstruction requirement, `review-resolution.md` requirement, or next allowed action is incomplete.
+15. A material isolated review output that omits Finding IDs, required record path, record-before-fixing or reconstruction status, or owner-decision status is incomplete.
 16. A skill-specific paragraph inserted inside the shared `## Isolation and Recording` block fails static validation.
 17. A tracked generated adapter file changed because of a material review finding is a tracked artifact edit.
 
@@ -427,7 +427,7 @@ This spec MUST NOT require broad smoke solely because upstream review records ex
 - Isolation and recording are distinguishable: direct review requests stop downstream handoff but still record material findings.
 - Important material findings are always recorded, and all material findings require change-local review files.
 - A contributor can identify what counts as a tracked artifact for recording-trigger purposes.
-- Isolated review outputs with material findings expose Finding IDs, required durable record path or reconstruction requirement, `review-resolution.md` requirement, and next allowed action.
+- Isolated review outputs with material findings expose Finding IDs, required review record path, record-before-fixing or reconstruction status, and owner-decision status.
 - `CONSTITUTION.md`, `AGENTS.md`, and `docs/workflows.md` teach the same rule: every material finding is recorded, all material findings require change-local review files, and isolation stops handoff rather than recording.
 - Formal review skills contain a byte-identical `## Isolation and Recording` block from a canonical template.
 

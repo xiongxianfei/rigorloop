@@ -23,6 +23,7 @@ requirements:
   - Make future review-resolution records scan-first for humans while preserving validator-readable finding fields.
   - Draft spec amendments for the shared formal review skill subsection and structural validation rule.
   - Draft workflow-level alignment for isolated review output, tracked artifacts, and readable review-resolution records.
+  - Resolve CR4-F1 by simplifying the shared review skill recording block while preserving the material-finding recording rule.
 tests:
   - Review artifact structure validation for the proposal-review finding record.
   - Review artifact closeout validation after accepted proposal-review finding fixes.
@@ -42,6 +43,7 @@ tests:
   - Skill-validator regression coverage for the canonical shared review recording block, byte-equality copies, broad material-finding rule, and governance wording.
   - Review-artifact validator regression coverage for scan-first review-resolution closeout, parseable per-finding labels, and the reusable review-resolution template.
   - Generated skill and adapter drift checks after canonical review skill updates.
+  - Skill-validator regression coverage for the concise shared review recording block and removal of verbose skill-facing phrases.
 validation:
   - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-07-review-skill-material-finding-recording
     result: pass_before_proposal_review_fixes
@@ -441,6 +443,34 @@ validation:
     result: pass_after_pr_number_recording
   - command: rg -n '[[:blank:]]$|\\t' docs/plan.md docs/plans/2026-05-07-review-skill-material-finding-recording.md docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
     result: pass_no_matches_after_pr_number_recording
+  - command: python scripts/test-skill-validator.py
+    result: pass_after_cr4_f1_simplification
+  - command: python scripts/test-review-artifact-validator.py
+    result: pass_after_cr4_f1_simplification
+  - command: python scripts/validate-skills.py
+    result: pass_after_cr4_f1_simplification
+  - command: python scripts/build-skills.py
+    result: pass_after_cr4_f1_simplification_generated_codex_skills_refreshed
+  - command: python scripts/build-adapters.py --version 0.1.1
+    result: pass_after_cr4_f1_simplification_generated_adapters_refreshed
+  - command: python scripts/build-skills.py --check
+    result: pass_after_cr4_f1_simplification
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_after_cr4_f1_simplification
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_after_cr4_f1_simplification
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-07-review-skill-material-finding-recording
+    result: pass_after_cr4_f1_simplification
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml
+    result: pass_after_cr4_f1_simplification
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md --path docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md --path skills/architecture-review/SKILL.md --path skills/code-review/SKILL.md --path skills/plan-review/SKILL.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md
+    result: pass_after_cr4_f1_simplification_with_existing_lifecycle_language_warnings
+  - command: bash scripts/ci.sh --mode explicit $(git diff --name-only HEAD | sed 's/^/--path /')
+    result: pass_after_cr4_f1_simplification
+  - command: git diff --check -- .
+    result: pass_after_cr4_f1_simplification
+  - command: sh -c 'files=$(git diff --name-only HEAD); if [ -z "$files" ]; then exit 0; fi; rg -n "[[:blank:]]$|\\t" $files; rc=$?; if [ "$rc" -eq 1 ]; then exit 0; fi; exit "$rc"'
+    result: pass_no_matches_after_cr4_f1_simplification
 changed_files:
   - docs/proposals/2026-05-07-review-skill-material-finding-recording.md
   - CONSTITUTION.md
@@ -512,6 +542,7 @@ changed_files:
   - docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/code-review-r1.md
   - docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/code-review-r2.md
   - docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/code-review-r3.md
+  - docs/changes/2026-05-07-review-skill-material-finding-recording/reviews/code-review-r4.md
 review:
-  status: closed_after_code_review_r3
+  status: closed_after_code_review_r4
   unresolved_items: 0

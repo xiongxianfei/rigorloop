@@ -110,7 +110,7 @@
 - Bootstrap proposals without `VISION.md` or `CONSTITUTION.md` must identify the exception in `Vision fit`: `T21`
 - Open material review findings block `verify`, final `explain-change`, and `pr`: `T27`
 - Isolated material findings require change-local review files even when downstream handoff stops: `T33`
-- Isolated material-review output missing required record path or next action is incomplete: `T33`
+- Isolated material-review output missing required record path, record-before-fixing or reconstruction status, or owner-decision status is incomplete: `T33`
 - Shared formal review skill guidance drifts from the canonical source or contains stage-specific text inside the shared block: `T34`
 - New scan-first review-resolution guidance removes parseable per-finding labels: `T35`
 - In-flight work can finish under its starting workflow contract unless it opts in or touches refactored workflow surfaces: `T20`, `T25`
@@ -815,8 +815,8 @@
 - Steps:
   - Confirm workflow-facing guidance states that isolation governs handoff only and does not suppress material-finding recording.
   - Confirm every material finding requires a durable change-local review record under `docs/changes/<change-id>/reviews/`, whether workflow-managed or isolated.
-  - Confirm isolated material-review output names handoff status, material Finding IDs, required record path or reconstruction requirement, that `review-resolution.md` is required, and next allowed action.
-  - Confirm allowed next actions are `create-change-local-record-before-fixing`, `reconstruct-record-because-fixes-already-began`, and `stop-for-owner-decision`.
+  - Confirm isolated material-review output names handoff status, material Finding IDs, required record path, whether the record must be created before fixing or reconstructed, and whether owner decision is needed.
+  - Confirm the output makes the next action clear without requiring enum-style action strings.
   - Confirm isolated material-review output does not offer review-output-only or artifact-local-only settlement for material findings.
 - Expected result:
   - A contributor can stop after a direct review while still seeing exactly what durable record is required before any material finding is acted on.

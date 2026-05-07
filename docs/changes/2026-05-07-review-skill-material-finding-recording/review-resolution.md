@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: spec-review-r1
@@ -11,11 +11,12 @@ Review closeout: spec-review-r3
 Review closeout: code-review-r1
 Review closeout: code-review-r2
 Review closeout: code-review-r3
+Review closeout: code-review-r4
 
-- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `code-review-r1`, `code-review-r2`, `code-review-r3`
-- Findings resolved: 13
-- Unresolved findings: 1
-- Final result: proposal-review, spec-review, `code-review-r1`, and `code-review-r2` findings were accepted, resolved, and validated. The aggregate implementation slice passed the post-commit `code-review-r3` rerun with no blocking or required-change findings. `code-review-r4` is open pending the shared-block simplification.
+- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `code-review-r1`, `code-review-r2`, `code-review-r3`, `code-review-r4`
+- Findings resolved: 14
+- Unresolved findings: 0
+- Final result: proposal-review, spec-review, `code-review-r1`, `code-review-r2`, and `code-review-r4` findings were accepted, resolved, and validated. The aggregate implementation slice passed the post-commit `code-review-r3` rerun with no blocking or required-change findings.
 
 This record resolves the material findings from `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, and `spec-review-r3` for the review skill material-finding recording proposal and spec amendments. It also resolves the `code-review-r2` aggregate closeout finding through the aggregate milestone closeout commit.
 
@@ -36,6 +37,7 @@ This record resolves the material findings from `proposal-review-r1`, `spec-revi
 | SR4 | accepted | resolved | Simplified the rule: every material finding is recorded, all material findings require change-local review files, and isolation stops handoff rather than recording. |
 | CR1-F1 | accepted | resolved | Changed the shared review block from "should" to "must", tightened static coverage, and regenerated skill and adapter outputs. |
 | CR2-F1 | accepted | resolved | Created the aggregate M1-M3 closeout commit before treating code-review as the required post-closeout rerun. |
+| CR4-F1 | accepted | resolved | Simplified the shared skill-facing `Isolation and Recording` block, removed verbose internal/reference wording, updated the isolated material output contract, and refreshed generated outputs. |
 
 ## Common Resolution Metadata for RSV Findings
 
@@ -218,6 +220,20 @@ Validation evidence: Aggregate validation passed before the closeout commit: `py
 
 No material findings. The detailed review record exists because the clean post-aggregate rerun is cited as lifecycle closeout evidence.
 
+### code-review-r4
+
+#### CR4-F1 - Shared review recording block is too verbose for skill guidance
+
+Finding ID: CR4-F1
+Disposition: accepted
+Status: resolved
+Owner: implementer
+Owning stage: implement
+Chosen action: Simplified `templates/shared/review-isolation-and-recording.md`, recopied it into all five formal review skills, removed static assertions that pinned verbose wording, updated the isolated material-review output contract to avoid enum-style next-action strings, and regenerated `.codex/skills/` plus `dist/adapters/`.
+Rationale: The finding is correct. The skills should teach the operational rule directly without duplicating internal spec references, long tracked-artifact definitions, operational shortcuts, duplicate gate wording, or enum strings better owned by the formal contract and validators.
+Validation target: Shared block equality, skill validation, review-artifact regression, generated-output drift checks, adapter validation, lifecycle/metadata validation, whitespace, diff, and selector-selected CI.
+Validation evidence: `python scripts/test-skill-validator.py`, `python scripts/test-review-artifact-validator.py`, `python scripts/validate-skills.py`, `python scripts/build-skills.py`, `python scripts/build-adapters.py --version 0.1.1`, `python scripts/build-skills.py --check`, `python scripts/build-adapters.py --version 0.1.1 --check`, and `python scripts/validate-adapters.py --version 0.1.1` passed after the fix.
+
 ## Shared Validation Evidence
 
 | Validation area | Result | Notes |
@@ -258,6 +274,7 @@ No material findings. The detailed review record exists because the clean post-a
 | Aggregate whitespace scan before closeout commit | pass | Whitespace scan over changed paths found no trailing whitespace or tab matches. |
 | Review closeout validation after CR2-F1 resolution | pass | `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-07-review-skill-material-finding-recording`, `python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml`, lifecycle validation, selected CI for closeout files, `git diff --check -- .`, and whitespace scan passed. |
 | Post-commit code-review-r3 validation | pass | `python scripts/test-skill-validator.py`, `python scripts/test-review-artifact-validator.py`, `python scripts/build-skills.py --check`, `python scripts/build-adapters.py --version 0.1.1 --check`, `python scripts/validate-adapters.py --version 0.1.1`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-07-review-skill-material-finding-recording`, `python scripts/validate-change-metadata.py docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml`, and `git diff --check HEAD^ HEAD -- .` passed. |
+| CR4-F1 shared-block simplification validation | pass | `python scripts/test-skill-validator.py`, `python scripts/test-review-artifact-validator.py`, `python scripts/validate-skills.py`, `python scripts/build-skills.py --check`, `python scripts/build-adapters.py --version 0.1.1 --check`, and `python scripts/validate-adapters.py --version 0.1.1` passed after the fix. |
 
 ## Closeout Checklist
 
@@ -274,4 +291,5 @@ No material findings. The detailed review record exists because the clean post-a
 - [x] Review closeout is recorded for `code-review-r1`.
 - [x] Review closeout is recorded for `code-review-r2`.
 - [x] Review closeout is recorded for `code-review-r3`.
+- [x] Review closeout is recorded for `code-review-r4`.
 - [x] Closeout status is `closed`.
