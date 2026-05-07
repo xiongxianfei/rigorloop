@@ -120,7 +120,7 @@ Examples:
 - Do not omit failed or unrun validation.
 - Do not treat a missing required docs-changes baseline pack as a warning-only condition for ordinary non-trivial work; it is a readiness blocker.
 - Do not proceed to PR with `needs-decision`, `Closeout status: open`, stale `review-log.md` open findings, or missing review-resolution closeout evidence for material findings.
-- Keep PR review-resolution details to counts by disposition and a link to `review-resolution.md`; do not duplicate every detailed finding and suggestion.
+- Keep PR review-resolution details to counts by disposition from the scan-first summary or overview and a link to `review-resolution.md`; do not duplicate every detailed finding and suggestion.
 - Do not defer blocked or superseded lifecycle closeout until PR, merge, or retrospective work.
 - Do not summarize from memory when a diff is available.
 - Do not bury known risks.

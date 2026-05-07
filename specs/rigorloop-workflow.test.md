@@ -15,6 +15,8 @@
 - Related follow-on test spec: [Formal Review Recording test spec](formal-review-recording.test.md), active.
 - Related amendment proposal: [PR-Self-Contained Lifecycle Completion](../docs/proposals/2026-05-05-pr-self-contained-lifecycle-completion.md), accepted.
 - Completed amendment plan: [PR-Self-Contained Lifecycle Completion Plan](../docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md), done.
+- Related amendment proposal: [Review Skill Material Finding Recording](../docs/proposals/2026-05-07-review-skill-material-finding-recording.md), accepted.
+- Current amendment plan: [Review Skill Material Finding Recording Execution Plan](../docs/plans/2026-05-07-review-skill-material-finding-recording.md), active.
 - Architecture: not required. The approved refactor and PR-self-contained lifecycle completion amendment change workflow governance, documentation, skills, validators, and generated output without runtime architecture or deployment boundaries.
 - Spec-review: approved with no material findings after the PR-self-contained lifecycle completion amendment was added; minor SR-1 asked the test spec to decide how merge-dependent language classification is recorded.
 - Plan-review: approved with no material findings for the PR-self-contained lifecycle completion plan. Minor non-blocking note: if README remains unchanged, final affected-surface evidence should mark it unaffected with rationale.
@@ -30,6 +32,7 @@
 - Treat final learn artifact modeling as a cross-spec alignment point here; detailed session, topic, evidence, classification, and routing proof lives in `specs/learn-artifact-model.test.md`.
 - Treat formal review recording as a cross-spec alignment point here; detailed review-artifact fixture coverage lives in `specs/formal-review-recording.test.md`, while this test spec proves the workflow contract does not contradict stage-neutral recording, clean-review settlement, or conditional review-resolution behavior.
 - Treat PR-self-contained lifecycle completion as the current workflow amendment under test. A merge-dependent language warning is treated as addressed only when a contributor-visible tracked or review-visible surface classifies the wording as a true downstream completion event or stale lifecycle wording requiring correction; the first implementation slice does not need to suppress the warning automatically after classification.
+- Treat review skill material-finding recording as the current review-recording amendment under test. Detailed fixture coverage lives in `specs/formal-review-recording.test.md` and `specs/review-finding-resolution-contract.test.md`; this test spec proves the workflow-facing contract keeps isolation, broad material-finding recording, governance alignment, shared skill guidance, and scan-first resolution closeout consistent.
 
 ## Requirement coverage map
 
@@ -50,6 +53,9 @@
 | `R9`-`R9b`, `R18`, `R19` | `T13`, `T14`, `T26` | smoke, manual, integration | Routine CI, thin hosted wrapper, and `ci-maintenance` boundary |
 | `R10`-`R12f` | `T3`, `T16`, `T27` | manual, integration | Durable reasoning, PR summary, review-resolution closeout, formal review recording triggers, and verify-report conditionality |
 | `R12an`-`R12av` | `T27` | manual, integration | Stage-neutral detailed-record triggers, material/no-material initial review-record roots, and artifact-local status boundary |
+| `R12aw`-`R12bdd` | `T33` | manual, integration | Isolation stops handoff, material findings require change-local review records, isolated output fields are complete, and review-output-only settlement is forbidden for material findings |
+| `R12be`, `R12bg` | `T34` | integration, manual | Formal review skills share one canonical `Isolation and Recording` block and governance guidance teaches the same broad rule |
+| `R12bf` | `T35` | integration, manual | New `review-resolution.md` records remain scan-first while preserving validator-readable fields |
 | `R13`, `R14`, `R14a`, `R14b` | `T15` | integration | Golden-path skill-validator example and rich-example proportionality |
 | `R15`, `R15a` | `T8`, `T9`, `T10` | integration | Canonical skill validation and intentionally simple rule set |
 | `R16` | `T9`, `T10` | integration | Required skill-validator fixture failures |
@@ -74,6 +80,8 @@
 | `E11` | `T29`, `T30` | Completing PR records plan `Done` in both plan index and plan body before review opens |
 | `E12` | `T29`, `T30` | True downstream release, deploy, publication, external migration, or unobserved hosted result keeps the plan active |
 | `E13` | `T31` | Review-resolution closeout and readiness wording stay self-contained in the PR tree |
+| `E14` | `T33` | Isolated review recording follows the finding while handoff stays stopped |
+| `E15` | `T35` | Review-resolution remains scan-first and parseable |
 
 ## Edge case coverage
 
@@ -101,6 +109,10 @@
 - Missing, stale, contradicted, or incomplete `docs/project-map.md` cannot be relied on without refresh or no-map rationale: `T21`
 - Bootstrap proposals without `VISION.md` or `CONSTITUTION.md` must identify the exception in `Vision fit`: `T21`
 - Open material review findings block `verify`, final `explain-change`, and `pr`: `T27`
+- Isolated material findings require change-local review files even when downstream handoff stops: `T33`
+- Isolated material-review output missing required record path or next action is incomplete: `T33`
+- Shared formal review skill guidance drifts from the canonical source or contains stage-specific text inside the shared block: `T34`
+- New scan-first review-resolution guidance removes parseable per-finding labels: `T35`
 - In-flight work can finish under its starting workflow contract unless it opts in or touches refactored workflow surfaces: `T20`, `T25`
 - Draft PRs may run early CI without being review-open, but lifecycle state must synchronize before reviewer action resumes: `T29`
 - Reopened PRs and reused branches must satisfy PR-self-contained lifecycle completion before review continues: `T29`
@@ -789,6 +801,85 @@
 - Automation location:
   - M2 warning fixtures, M3 selector routing if needed, and M4 manual affected-surface review.
 
+### T33. Isolated formal review output stops handoff but requires material-finding recording
+
+- Covers: `R12aw`-`R12bdd`, `E14`
+- Level: manual, integration
+- Fixture/setup:
+  - `specs/formal-review-recording.md`
+  - `specs/formal-review-recording.test.md`
+  - `templates/shared/review-isolation-and-recording.md`
+  - formal review skills under `skills/`
+  - `scripts/test-skill-validator.py`
+  - `scripts/test-review-artifact-validator.py`
+- Steps:
+  - Confirm workflow-facing guidance states that isolation governs handoff only and does not suppress material-finding recording.
+  - Confirm every material finding requires a durable change-local review record under `docs/changes/<change-id>/reviews/`, whether workflow-managed or isolated.
+  - Confirm isolated material-review output names handoff status, material Finding IDs, required record path or reconstruction requirement, that `review-resolution.md` is required, and next allowed action.
+  - Confirm allowed next actions are `create-change-local-record-before-fixing`, `reconstruct-record-because-fixes-already-began`, and `stop-for-owner-decision`.
+  - Confirm isolated material-review output does not offer review-output-only or artifact-local-only settlement for material findings.
+- Expected result:
+  - A contributor can stop after a direct review while still seeing exactly what durable record is required before any material finding is acted on.
+- Failure proves:
+  - Isolation can again be misread as no recording, or the review output omits the action needed to preserve first-pass evidence.
+- Automation location:
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/test-review-artifact-validator.py`
+  - manual review during M1 and M4
+
+### T34. Formal review skills and governance share the canonical broad recording rule
+
+- Covers: `R12be`, `R12bg`
+- Level: integration, manual
+- Fixture/setup:
+  - `templates/shared/review-isolation-and-recording.md`
+  - `skills/proposal-review/SKILL.md`
+  - `skills/spec-review/SKILL.md`
+  - `skills/architecture-review/SKILL.md`
+  - `skills/plan-review/SKILL.md`
+  - `skills/code-review/SKILL.md`
+  - `CONSTITUTION.md`
+  - `AGENTS.md`
+  - `docs/workflows.md`
+  - `scripts/test-skill-validator.py`
+- Steps:
+  - Assert all five formal review skills contain one byte-identical `## Isolation and Recording` block copied from the canonical template.
+  - Assert stage-specific content appears outside the shared block.
+  - Assert `CONSTITUTION.md`, `AGENTS.md`, and `docs/workflows.md` use the same rule: every material finding is recorded, all material findings require change-local review files, and isolation stops handoff rather than recording.
+  - Assert implementation does not proceed with canonical skill changes until affected governance and operating guidance are aligned or explicitly marked unaffected with rationale.
+- Expected result:
+  - The workflow contract, formal review skills, and contributor-facing governance surfaces teach one rule without stage-specific drift.
+- Failure proves:
+  - Guidance can drift across review stages or higher-priority governance surfaces.
+- Automation location:
+  - `python scripts/test-skill-validator.py`
+  - `bash scripts/ci.sh --mode explicit ...`
+  - manual M1/M4 affected-surface review
+
+### T35. Scan-first review-resolution remains parseable at workflow handoff
+
+- Covers: `R12bf`, `E15`
+- Level: integration, manual
+- Fixture/setup:
+  - `specs/review-finding-resolution-contract.md`
+  - `specs/review-finding-resolution-contract.test.md`
+  - `templates/review-resolution.md` or another approved durable guidance surface
+  - `scripts/test-review-artifact-validator.py`
+  - `docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md` as current scan-first example evidence
+- Steps:
+  - Confirm new or revised review-resolution guidance starts with closeout status, covered reviews, resolved and unresolved counts, and final result.
+  - Confirm it includes a resolution overview and can use common metadata and shared validation evidence to avoid repeated prose.
+  - Confirm each material finding detail keeps parseable labels required by the review finding resolution contract.
+  - Confirm `verify`, `explain-change`, and `pr` guidance summarize review-resolution counts and link details instead of duplicating every finding.
+- Expected result:
+  - Workflow handoff can rely on human-readable review closeout without weakening closeout validation.
+- Failure proves:
+  - Readability guidance either became too prose-heavy to scan or lost validator-readable finding fields.
+- Automation location:
+  - `python scripts/test-review-artifact-validator.py`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-07-review-skill-material-finding-recording`
+  - manual M2/M4 review
+
 ## Fixtures and data
 
 - Canonical workflow artifacts:
@@ -840,6 +931,11 @@
   - `docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml`
   - `docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/explain-change.md`
   - optional review-resolution or verify-report artifacts when triggered
+  - `docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml`
+  - `docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md`
+  - `docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md`
+  - `templates/shared/review-isolation-and-recording.md`
+  - `templates/review-resolution.md` or another approved durable scan-first guidance surface
 
 ## Mocking and stubbing policy
 
@@ -895,6 +991,9 @@
 - [ ] `ci-maintenance` means CI infrastructure maintenance and not validation execution.
 - [ ] `review-resolution` is closeout for material review findings and blocks downstream while open.
 - [ ] Formal review recording is stage-neutral, proportionally triggered, and does not require empty `review-resolution.md` for no-material detailed records.
+- [ ] Every material finding is recorded, all material findings require change-local review files, and isolation stops handoff rather than recording.
+- [ ] Formal review skills contain byte-identical `## Isolation and Recording` guidance copied from the canonical template.
+- [ ] New review-resolution guidance is scan-first and keeps parseable per-finding labels.
 - [ ] Plan lifecycle transitions happen inside the PR that performs the transition, before the PR opens for review.
 - [ ] Merge is described as a fast-forward of pre-validated lifecycle state, not a trigger for routine closeout.
 - [ ] True downstream completion events keep plans active and name the later event or follow-up condition.
@@ -929,6 +1028,14 @@
 - Merge-dependent language warning suppression after classification is intentionally not required in the first slice; the required proof is warning visibility plus contributor-visible classification before final handoff treats the warning as addressed.
 - If implementation discovers that a stable workflow guarantee cannot be tested manually or through existing scripts, update this test spec or return to plan-review before widening implementation scope.
 
+## Next artifacts
+
+- Implementation M1 under [Review Skill Material Finding Recording plan](../docs/plans/2026-05-07-review-skill-material-finding-recording.md).
+- `code-review` after implementation milestones complete.
+- `verify`.
+- `explain-change`.
+- `pr`.
+
 ## Follow-on artifacts
 
 - `implementation`: PR-self-contained lifecycle completion M1 through M4 complete.
@@ -936,9 +1043,15 @@
 - `verify`: completed for PR handoff after PR-mode selected validation and broad smoke.
 - `explain-change`: completed in `docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/explain-change.md`.
 - `pr`: PR #30 opened for human review.
+- `proposal`: [Review Skill Material Finding Recording](../docs/proposals/2026-05-07-review-skill-material-finding-recording.md)
+- `spec`: [Formal Review Recording](formal-review-recording.md) amendment for isolation-versus-recording behavior.
+- `spec`: [Review Finding Resolution Contract](review-finding-resolution-contract.md) amendment for scan-first `review-resolution.md` records.
+- `plan`: [Review Skill Material Finding Recording plan](../docs/plans/2026-05-07-review-skill-material-finding-recording.md)
+- `plan-review`: approved on 2026-05-07 with no material findings.
+- `test-spec`: updated with review skill material-finding recording amendment coverage.
 
 ## Readiness
 
-Active proof-planning and regression surface for the workflow contract and PR-self-contained lifecycle completion amendment. The amendment implementation, review closeout, verification, explain-change, and PR handoff are complete in the current branch.
+Active proof-planning and regression surface for the workflow contract and review skill material-finding recording amendment. Implementation may proceed under the active 2026-05-07 plan starting with M1.
 
 Future milestone work must add or update assertions before paired artifact changes, and each milestone closes only after the paired changes make those assertions and validation commands pass.

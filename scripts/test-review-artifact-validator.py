@@ -195,6 +195,65 @@ def accepted_closed_resolution_text() -> str:
     """
 
 
+def scan_first_closed_resolution_text() -> str:
+    return """
+    # Review Resolution: Example Change
+
+    ## Summary
+
+    Closeout status: closed
+
+    Review closeout: code-review-r1
+
+    - Reviews covered: `code-review-r1`
+    - Findings resolved: 1
+    - Unresolved findings: 0
+    - Final result: material code-review findings were accepted, resolved, and validated.
+
+    ## Resolution Overview
+
+    | Finding ID | Disposition | Status | Resolution summary |
+    |---|---|---|---|
+    | CR1-F1 | accepted | resolved | Added direct validator coverage for the missing resolution entry case. |
+
+    ## Common Resolution Metadata
+
+    - Owner: implementer
+    - Owning stage: implement
+    - Validation target: Run focused review artifact validator tests.
+    - Validation evidence: `python scripts/test-review-artifact-validator.py` passed.
+
+    ## Finding Details
+
+    ### code-review-r1
+
+    #### CR1-F1 - Missing resolution entry
+
+    Finding ID: CR1-F1
+    Disposition: accepted
+    Status: resolved
+    Owner: implementer
+    Owning stage: implement
+    Chosen action: Add direct validator coverage for the missing resolution entry case.
+    Rationale: The review evidence identified a material Finding ID without guaranteed traceability.
+    Validation target: Covered by common resolution metadata.
+    Validation evidence: Covered by shared validation evidence.
+
+    ## Shared Validation Evidence
+
+    | Validation area | Result | Notes |
+    |---|---|---|
+    | Review artifact validator | pass | `python scripts/test-review-artifact-validator.py` passed. |
+
+    ## Closeout Checklist
+
+    - [x] Every material finding has a disposition.
+    - [x] Every accepted finding has a chosen action.
+    - [x] Every accepted finding has validation evidence.
+    - [x] No findings remain open.
+    """
+
+
 def rejected_closed_resolution_text() -> str:
     return """
     # Review Resolution
@@ -723,6 +782,64 @@ Validation target: Run tests.
             msg=f"stdout:\n{cli_result.stdout}\nstderr:\n{cli_result.stderr}",
         )
         self.assertIn("mode=closeout", cli_result.stdout)
+
+    def test_scan_first_review_resolution_passes_closeout(self) -> None:
+        root = self.fixture()
+        write_text(root / "review-resolution.md", scan_first_closed_resolution_text())
+        write_text(
+            root / "review-log.md",
+            valid_log_text(open_findings="None").replace("changes-requested", "approved"),
+        )
+        replace_field(root / "reviews" / "code-review-r1.md", "Status", "approved")
+
+        self.assertCloseoutPasses(root)
+
+    def test_table_only_review_resolution_does_not_satisfy_material_finding_traceability(self) -> None:
+        root = self.fixture()
+        write_text(
+            root / "review-resolution.md",
+            """
+            # Review Resolution
+
+            Closeout status: closed
+
+            | Finding ID | Disposition | Status |
+            |---|---|---|
+            | CR1-F1 | accepted | resolved |
+            """,
+        )
+        self.assertFails(root, "missing from review-resolution.md")
+
+    def test_scan_first_review_resolution_template_preserves_required_fields(self) -> None:
+        template_path = ROOT / "templates" / "review-resolution.md"
+        self.assertTrue(template_path.exists(), "templates/review-resolution.md must exist")
+        template = template_path.read_text(encoding="utf-8")
+
+        required_terms = [
+            "## Summary",
+            "Closeout status:",
+            "Reviews covered:",
+            "Findings resolved:",
+            "Unresolved findings:",
+            "Final result:",
+            "## Resolution Overview",
+            "| Finding ID | Disposition | Status | Resolution summary |",
+            "## Common Resolution Metadata",
+            "## Finding Details",
+            "Finding ID:",
+            "Disposition:",
+            "Owner:",
+            "Owning stage:",
+            "Chosen action:",
+            "Rationale:",
+            "Validation target:",
+            "Validation evidence:",
+            "## Shared Validation Evidence",
+            "## Closeout Checklist",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, template)
 
     def test_closeout_mode_preserves_clean_review_lightweight_path(self) -> None:
         root = Path(tempfile.mkdtemp(prefix="review-artifact-empty-closeout-"))

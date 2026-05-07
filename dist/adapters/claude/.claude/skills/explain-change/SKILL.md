@@ -95,7 +95,7 @@ File | Change | Reason | Source artifact | Test/evidence
 - A stage-owned non-approval outcome that blocks downstream progress or requires revision needs a same-stage later review round or explicit reviewer or owner closeout naming the original Review ID; `review-resolution.md` alone is not a silent substitute.
 - For no-material review events, no-material detailed records need `review-log.md` but not an empty `review-resolution.md`.
 - Do not proceed when `review-resolution.md` is missing, open, still contains `needs-decision`, or `review-log.md` still lists open findings for material findings that must close before handoff.
-- Do not duplicate transcript content from detailed reviews; keep review-resolution discussion concise and link the durable artifact.
+- Do not duplicate transcript content from detailed reviews; summarize review-resolution counts from the scan-first summary or overview and link the durable artifact.
 - Do not invent alternatives that were never considered; mark them as hindsight if added.
 - Keep explanations readable for a human reviewer.
 - For planned initiatives, do not claim PR readiness unless lifecycle state made true by this PR is recorded before the PR opens for review. If completion depends on a true downstream completion event, say why the plan remains `Active`; merge itself is not that event.
