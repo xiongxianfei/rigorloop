@@ -33,6 +33,7 @@ tests:
   - Code-review first-pass record and review-resolution structure validation for open finding `CR1-F1`.
   - Static assertion regression coverage for `CR1-F1`, including the expected pre-fix failure and post-fix canonical/generated no-match proof.
   - Code-review rerun record confirming `CR1-F1` closure and no material findings.
+  - Verify-found README positioning drift fix and same-stage clean code-review rerun.
 validation:
   - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality
     result: pass_after_spec_review_r1
@@ -218,6 +219,32 @@ validation:
     result: pass_no_matches_after_code_review_r2
   - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/change.yaml --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-log.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-resolution.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/code-review-r1.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/code-review-r2.md
     result: pass_after_code_review_r2
+  - command: bash scripts/ci.sh --mode explicit $(git diff --name-only origin/main..HEAD | sed 's/^/--path /')
+    result: pass_before_verify_readme_drift_fix
+  - command: rg -n 'Git-first starter kit|git-first starter kit|Git-first|git-first' CONSTITUTION.md README.md VISION.md docs/vision/strategic-positioning.md
+    result: found_readme_positioning_drift_during_verify
+  - command: python scripts/validate-readme.py README.md
+    result: pass_after_verify_readme_drift_fix
+  - command: python scripts/validate-readme.py README.md --vision-markers
+    result: pass_after_verify_readme_drift_fix
+  - command: rg -n 'Git-first starter kit|git-first starter kit|Git-first|git-first' README.md VISION.md CONSTITUTION.md docs/vision/strategic-positioning.md
+    result: pass_no_matches_after_verify_readme_drift_fix
+  - command: git diff --check -- README.md
+    result: pass_after_verify_readme_drift_fix
+  - command: bash scripts/ci.sh --mode explicit $(git diff --name-only origin/main..HEAD | sed 's/^/--path /')
+    result: pass_after_verify_readme_drift_fix
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality
+    result: pass_after_verify_final
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/change.yaml
+    result: pass_after_verify_final
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path CONSTITUTION.md --path README.md --path VISION.md --path docs/plan.md --path docs/plans/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md --path docs/proposals/2026-05-06-optimize-vision-skill-strategic-positioning-quality.md --path specs/vision-skill.md --path specs/vision-skill.test.md --path docs/vision/strategic-positioning.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/change.yaml --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/explain-change.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-log.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-resolution.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/code-review-r1.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/code-review-r2.md --path docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/code-review-r3.md
+    result: pass_with_lifecycle_language_warning_after_verify_final
+  - command: git diff --check -- .
+    result: pass_after_verify_final
+  - command: rg -n '[[:blank:]]$|\\t' $( (git diff --name-only origin/main..HEAD; git diff --name-only; git ls-files --others --exclude-standard) | sort -u )
+    result: pass_no_matches_after_verify_final
+  - command: bash scripts/ci.sh --mode explicit $( (git diff --name-only origin/main..HEAD; git diff --name-only; git ls-files --others --exclude-standard) | sort -u | sed 's/^/--path /' )
+    result: pass_after_verify_final
 changed_files:
   - CONSTITUTION.md
   - README.md
@@ -252,6 +279,7 @@ changed_files:
   - docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/review-resolution.md
   - docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/code-review-r1.md
   - docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/code-review-r2.md
+  - docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/code-review-r3.md
   - docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/proposal-review-r1.md
   - docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/proposal-review-r2.md
   - docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/reviews/spec-review-r1.md

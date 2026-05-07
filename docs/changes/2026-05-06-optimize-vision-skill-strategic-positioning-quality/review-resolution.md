@@ -13,6 +13,7 @@ Review closeout: spec-review-r2
 Review closeout: spec-review-r3
 Review closeout: code-review-r1
 Review closeout: code-review-r2
+Review closeout: code-review-r3
 
 ## Resolution Entries
 
@@ -77,3 +78,9 @@ Validation evidence: `python scripts/test-skill-validator.py` failed after addin
 Review closeout: code-review-r2
 
 No material findings; no resolution entry required. The same-stage code-review rerun returned `clean-with-notes` and confirmed `CR1-F1` is closed.
+
+### code-review-r3
+
+Review closeout: code-review-r3
+
+No material findings; no resolution entry required. The same-stage code-review rerun reviewed the verify-found README positioning drift fix and returned `clean-with-notes`.

@@ -315,6 +315,9 @@ Repository broad smoke is not planned by default. If plan-review, test-spec, sel
 - [x] M4 complete: lifecycle closeout and final validation evidence synchronized.
 - [x] code-review finding `CR1-F1` resolved with static assertion coverage, canonical skill fix, generated-output refresh, and review-resolution closeout evidence.
 - [x] code-review rerun clean.
+- [x] verify found and fixed active README positioning drift from the old "Git-first starter kit" framing.
+- [x] code-review rerun clean after the README drift fix.
+- [x] verify passed.
 
 ## Decision Log
 
@@ -343,10 +346,12 @@ Repository broad smoke is not planned by default. If plan-review, test-spec, sel
 - 2026-05-06: First-pass code-review recorded `CR1-F1` and returned `changes-requested`. Review artifact structure validation, change metadata validation, artifact lifecycle validation, whitespace checks, and selected CI over the code-review record and lifecycle paths passed with review-resolution open.
 - 2026-05-07: `CR1-F1` resolution proof first added a static assertion that failed against the stale skill wording, then updated `skills/vision/SKILL.md` so explicit project-vision establishment creates root `VISION.md` without a retired lowercase-file precondition. `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py skills/vision/SKILL.md`, generator refreshes, generator drift checks, adapter validation, a no-match scan for "neither root vision file exists" across canonical/generated vision skill files, and selected CI over canonical/generated vision skill paths passed after the fix.
 - 2026-05-07: Same-stage code-review rerun recorded `code-review-r2` with `clean-with-notes` and no material findings.
+- 2026-05-07: Verify found active README body drift: two lines still framed RigorLoop as a "Git-first starter kit", which contradicted the accepted positioning that treats Git as a compatibility surface. The README body now says "rigorous workflow" and "repository-local workflow". `python scripts/validate-readme.py README.md`, `python scripts/validate-readme.py README.md --vision-markers`, no-match scan for `Git-first`/`git-first` across active vision surfaces, `git diff --check -- README.md`, and selected CI over the full branch diff passed after the fix. Same-stage code-review rerun recorded `code-review-r3` with `clean-with-notes` and no material findings.
+- 2026-05-07: Final verify validation passed with review artifact closeout validation, change metadata validation, explicit artifact lifecycle validation over the governing vision/proposal/spec/test-spec/plan/review/change-local artifacts, `git diff --check -- .`, trailing-whitespace scan over changed files, and selected CI over the full branch/worktree diff. Artifact lifecycle continued to emit the known reviewer-attention warning for older lifecycle wording in a Done entry in `docs/plan.md`.
 
 ## Outcome and Retrospective
 
-- Active. Implementation milestones M1 through M4 are complete. First-pass code-review requested changes for `CR1-F1`, and the finding is resolved with review-resolution closed. Same-stage code-review rerun returned `clean-with-notes`. The plan remains Active for verify, explain-change refresh, PR handoff, and PR-self-contained Done closeout.
+- Active. Implementation milestones M1 through M4 are complete. First-pass code-review requested changes for `CR1-F1`, and the finding is resolved with review-resolution closed. Same-stage code-review reruns returned `clean-with-notes`, including the rerun after the verify-found README drift fix. Verify passed. The plan remains Active for explain-change refresh, PR handoff, and PR-self-contained Done closeout.
 
 ## Readiness
 
@@ -354,5 +359,6 @@ Repository broad smoke is not planned by default. If plan-review, test-spec, sel
 - Test spec active.
 - M1 through M4 implementation complete.
 - First-pass code-review finding `CR1-F1` resolved and review-resolution closed.
-- Code-review rerun clean.
-- Next: verify.
+- Code-review reruns clean.
+- Verify passed.
+- Next: explain-change refresh.
