@@ -1,16 +1,16 @@
 # RigorLoop
 
 <!-- vision:start -->
-RigorLoop is a Git-first starter kit for AI-assisted software delivery. It keeps the reasoning, tests, and verification behind each AI-assisted change visible enough for human review.
+RigorLoop is a rigorous software engineering workflow for AI coding agents. It turns product intent into traceable proposals, requirements, tests, architecture, plans, implementation, validation evidence, and review decisions so humans can understand agent-produced changes with confidence.
 
-What makes it different: Most AI coding tools optimize for faster output. RigorLoop trades some speed for reviewability when code arrives faster than reviewers can validate it, agent state disappears into chat, and "tests pass" claims lack a spec-level walkthrough.
+What makes it different: Most AI coding tools optimize for faster output. RigorLoop optimizes for trustworthy change delivery by keeping source of truth, rationale, tests, design intent, validation evidence, and review concerns in durable project artifacts.
 
-Who it is for: RigorLoop is for projects that value explicit requirements, small diffs, traceable rationale, and reproducible validation. It fits individual contributors, maintainers, and small teams using AI during software delivery.
+Who it is for: RigorLoop is for individual contributors, maintainers, and teams that want AI agents to participate in serious software delivery without weakening engineering discipline.
 
 See [VISION.md](VISION.md) for goals, non-goals, and falsifiability.
 <!-- vision:end -->
 
-*Git-first starter kit for AI-assisted software delivery with explicit artifacts, review gates, and durable change history.*
+*Rigorous workflow for AI-assisted software delivery with explicit artifacts, review gates, and durable change history.*
 
 RigorLoop helps individual contributors turn AI-assisted ideas into reviewable changes with proposals, specs, plans, tests, review gates, verification, and explainable change history. That gives contributors clearer review scope, explicit artifact history, and traceable change rationale from idea to PR. It also helps maintainers and small teams keep AI-assisted delivery explicit and auditable without replacing Git, pull requests, CI, or human review.
 
@@ -19,7 +19,7 @@ RigorLoop helps individual contributors turn AI-assisted ideas into reviewable c
 Use RigorLoop when:
 
 - you want AI-assisted work to stay reviewable, traceable, and grounded in explicit proposals, specs, plans, tests, and verification
-- you need a Git-first starter kit that leaves durable change history instead of burying decisions in chat
+- you need a repository-local workflow that leaves durable change history instead of burying decisions in chat
 - you want a workflow that makes the path from idea to reviewed change visible and auditable
 
 Do not use RigorLoop when:

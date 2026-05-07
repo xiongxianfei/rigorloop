@@ -224,8 +224,9 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "`VISION.md` is canonical",
             "`CONSTITUTION.md` outranks `VISION.md`",
             "`VISION.md` outranks README front-matter",
-            "legacy root `vision.md`",
-            "both root `vision.md` and root `VISION.md`",
+            "retired root `vision.md`",
+            "only supported project-vision artifact",
+            "If the user explicitly asks to establish project vision, create root `VISION.md`",
             "<!-- vision:start -->",
             "<!-- vision:end -->",
             "first H1 block",
@@ -264,6 +265,9 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "The only authorized edit paths are `create`, `revise`, and `mirror`.",
             "Automatic marker insertion is allowed only in `create` mode.",
             "In `mirror` or `revise`, missing or malformed markers stop the skill before file modification",
+            "treat `vision.md` as migration input",
+            "both root `vision.md` and root `VISION.md`",
+            "neither root vision file exists",
         ]
         for term in forbidden_terms:
             with self.subTest(term=term):
@@ -327,6 +331,43 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         self.assertNotIn("| `revise` |", body)
         self.assertNotIn("| `mirror` |", body)
 
+    def test_vision_skill_strategic_positioning_contract(self) -> None:
+        body = (ROOT / "skills" / "vision" / "SKILL.md").read_text(encoding="utf-8")
+        required_terms = [
+            "## Strategic Positioning",
+            "project category",
+            "primary user",
+            "primary pain",
+            "primary promise",
+            "core mechanism",
+            "alternatives",
+            "tradeoff",
+            "compatibility surfaces",
+            "refusals",
+            "falsifiability",
+            "docs/vision/strategic-positioning.md",
+            "`VISION.md` remains canonical",
+            "supporting rationale",
+            "methodology, workflow, protocol, or operating model",
+            "methodology-as-product",
+            "repository layout, Git, CI, pull requests, runtime, package format, hosting platform, language, and template mechanics",
+            "RigorLoop-style",
+            "Windows-native file manager",
+            "Git extension",
+            "Git-first starter kit",
+            "normally stay at or under 750 words",
+            "MUST NOT exceed 900 words",
+            "one optional methodology-oriented section",
+            "strategic-positioning summary",
+            "rationale path",
+            "first sentence names the highest-level category",
+            "differentiator includes a tradeoff",
+            "vision can guide proposal-fit review without chat history",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, body)
+
     def test_proposal_skills_define_vision_fit_contract(self) -> None:
         proposal_body = (ROOT / "skills" / "proposal" / "SKILL.md").read_text(encoding="utf-8")
         proposal_review_body = (
@@ -341,8 +382,9 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "proposes a vision revision",
             "no vision exists yet",
             "first non-empty line",
-            "When neither root `VISION.md` nor migration-recognized legacy root `vision.md` exists, proposals must use the exact `Vision fit` value `no vision exists yet`.",
+            "When root `VISION.md` does not exist, proposals must use the exact `Vision fit` value `no vision exists yet`.",
             "If root `VISION.md` exists, choose one of the current-vision outcomes",
+            "Retired root `vision.md` must not prevent `no vision exists yet`",
             "must not silently redefine project vision",
             "Legacy proposals",
         ]
@@ -354,8 +396,9 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "Check the proposal's `Vision fit` section",
             "created or substantively revised after the vision spec was adopted",
             "request revision",
-            "When neither root `VISION.md` nor migration-recognized legacy root `vision.md` exists, proposal-review must request revision if `Vision fit` is missing or replaced with a claim that fits, conflicts with, or revises a nonexistent vision.",
+            "When root `VISION.md` does not exist, proposal-review must request revision if `Vision fit` is missing or replaced with a claim that fits, conflicts with, or revises a nonexistent vision.",
             "If root `VISION.md` exists, `Vision fit` must not say `no vision exists yet`.",
+            "Retired root `vision.md` must not prevent `no vision exists yet`",
             "revise proposal",
             "revise vision",
             "record explicit exception",
@@ -371,6 +414,16 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         for term in proposal_review_terms:
             with self.subTest(skill="proposal-review", term=term):
                 self.assertIn(term, proposal_review_body)
+
+        forbidden_terms = [
+            "migration-recognized legacy root `vision.md`",
+            "During the `vision.md` to `VISION.md` migration",
+            "has not yet replaced",
+        ]
+        for body, label in ((proposal_body, "proposal"), (proposal_review_body, "proposal-review")):
+            for term in forbidden_terms:
+                with self.subTest(skill=label, forbidden=term):
+                    self.assertNotIn(term, body)
 
     def test_governance_workflow_and_readme_define_vision_source_of_truth(self) -> None:
         constitution = (ROOT / "CONSTITUTION.md").read_text(encoding="utf-8")
@@ -400,12 +453,30 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "establish project vision",
             "update vision",
             "sync README",
-            "legacy root `vision.md`",
+            "retired root `vision.md`",
             "no longer exposes `create`, `revise`, or `mirror` as user-facing modes",
+            "strategic-positioning pass",
+            "docs/vision/strategic-positioning.md",
+            "methodology-as-product",
+            "MUST NOT exceed 900 words",
         ]
         for term in required_terms:
             with self.subTest(file="spec", term=term):
                 self.assertIn(term, spec)
+
+        test_spec_terms = [
+            "`R73`-`R79`",
+            "`R80`-`R86`",
+            "`AC11`",
+            "`AC16`",
+            "negative proof",
+            "RigorLoop-style methodology",
+            "Windows-native file manager",
+            "Git extension",
+        ]
+        for term in test_spec_terms:
+            with self.subTest(file="test_spec", term=term):
+                self.assertIn(term, test_spec)
 
         forbidden_terms = [
             "MUST define exactly these operating modes",

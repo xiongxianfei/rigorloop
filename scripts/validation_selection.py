@@ -14,7 +14,7 @@ from typing import Any
 DEFAULT_ADAPTER_VERSION = "0.1.1"
 STATUSES = frozenset({"ok", "blocked", "fallback", "error"})
 EXIT_CODES = {"ok": 0, "blocked": 2, "fallback": 3, "error": 4}
-ROOT_VISION_PATHS = frozenset({"vision.md", "VISION.md"})
+ROOT_VISION_PATH = "VISION.md"
 
 
 @dataclass(frozen=True)
@@ -328,14 +328,6 @@ def select_validation(request: SelectionRequest) -> SelectionResult:
             selected,
             "readme.vision_markers",
             "README vision markers require marker-boundary validation.",
-        )
-
-    if _root_vision_conflict_present(repo_root=repo_root):
-        blocking_results.append(
-            {
-                "code": "vision-path-conflict",
-                "message": "root vision.md and VISION.md both exist; resolve the legacy/canonical conflict before validation can pass",
-            }
         )
 
     broad_smoke_sources = _broad_smoke_sources(request, changed_paths=changed_paths, repo_root=repo_root)
@@ -796,7 +788,7 @@ def _path_category(path: str) -> str | None:
     parts = path.split("/")
     if path == "README.md":
         return "readme"
-    if path in ROOT_VISION_PATHS:
+    if path == ROOT_VISION_PATH:
         return "vision"
     if path.startswith("tests/fixtures/artifact-lifecycle/"):
         return "artifact-lifecycle-fixtures"
@@ -882,6 +874,8 @@ def _is_lifecycle_path(path: str) -> bool:
     if path.startswith("docs/adr/") and path.endswith(".md"):
         return True
     if path.startswith("docs/plans/") and path.endswith(".md"):
+        return True
+    if path.startswith("docs/vision/") and path.endswith(".md"):
         return True
     if path.startswith("docs/explain/") and path.endswith(".md"):
         return True
@@ -997,25 +991,6 @@ def _broad_smoke_sources(
 def _readme_marker_validation_required(changed_paths: tuple[str, ...], *, repo_root: Path) -> bool:
     readme_changed = "README.md" in changed_paths
     return _vision_skill_in_scope(changed_paths) or (readme_changed and _readme_has_standalone_marker_block(repo_root))
-
-
-def _root_vision_conflict_present(*, repo_root: Path) -> bool:
-    return ROOT_VISION_PATHS.issubset(_root_vision_paths_present(repo_root))
-
-
-def _root_vision_paths_present(repo_root: Path) -> set[str]:
-    present: set[str] = set()
-    try:
-        for entry in repo_root.iterdir():
-            if entry.name in ROOT_VISION_PATHS and entry.is_file():
-                present.add(entry.name)
-    except OSError:
-        pass
-
-    for path in _git_lines(repo_root, "ls-files", "--", *sorted(ROOT_VISION_PATHS)):
-        if path in ROOT_VISION_PATHS:
-            present.add(path)
-    return present
 
 
 def _vision_skill_in_scope(changed_paths: tuple[str, ...]) -> bool:
