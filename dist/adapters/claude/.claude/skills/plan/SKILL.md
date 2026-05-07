@@ -62,6 +62,7 @@ Each milestone should include:
 
 ```text
 M1. Title
+- Milestone state:
 - Goal:
 - Requirements:
 - Files/components likely touched:
@@ -82,6 +83,51 @@ M1. Title
 ```
 
 Milestones should be small enough for one review loop and one coherent commit. A PR may contain one or more completed milestones when that is the clearest review boundary.
+
+## Milestone-aware plans
+
+For milestone-based plans, each implementation milestone has exactly one `Milestone state`.
+
+Allowed values:
+
+- `planned`
+- `implementing`
+- `review-requested`
+- `resolution-needed`
+- `closed`
+
+Use `review-requested` after implementation and targeted validation complete and the slice has been handed to `code-review`. Use `resolution-needed` when review findings require review-resolution, fixes, owner decision, or re-review. `implementation-complete` and `review-clean` are evidence descriptions, not milestone state values.
+
+Each implementation milestone normally follows this loop:
+
+```text
+implement M<n>
+-> code-review M<n>
+-> review-resolution M<n>, when triggered
+-> implement fixes for M<n>, when needed
+-> code-review M<n> rerun, when needed
+-> close M<n>
+-> implement M<n+1>, when another in-scope implementation milestone remains
+```
+
+Do not hand off to `verify` until all in-scope implementation milestones are `closed` or explicitly removed by plan revision and required review-resolution is closed.
+
+Milestones are not postponed to make `verify` available. If a planned implementation milestone no longer belongs in the current change, revise the plan before handoff.
+
+Use `lifecycle-closeout` for a milestone or section that tracks only downstream gates such as `verify`, `explain-change`, PR handoff, release, deploy, or final plan closeout. A mixed milestone that still contains implementation work remains an implementation milestone for verify-readiness decisions.
+
+For milestone-based plans, include and update a current handoff summary whenever implementation or review changes milestone readiness:
+
+```text
+Current milestone:
+Current milestone state:
+Last reviewed milestone:
+Review status:
+Remaining in-scope implementation milestones:
+Next stage:
+Verify readiness:
+Reason verify is or is not ready:
+```
 
 ## Planning rules
 
