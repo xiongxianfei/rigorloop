@@ -98,8 +98,9 @@ Notes:
 - PR text remains the reviewer-facing summary surface; it does not replace required durable reasoning for non-trivial work.
 - Standalone `review-resolution.md` and `verify-report.md` remain conditional and are added only when their governing workflow triggers apply.
 - Detailed formal review files under `docs/changes/<change-id>/reviews/` are stage-neutral across proposal, spec, architecture, plan, and code review.
-- Create a detailed review file when a formal review produces material findings, returns a stage-owned non-approval outcome that blocks downstream progress or requires revision, is reconstructed, will be cited as closeout evidence, or is explicitly requested.
-- If that detailed file is required before a change-local root exists, create the smallest initial review-record root first. Material findings require `change.yaml`, `review-log.md`, `review-resolution.md`, and `reviews/<stage>-r<n>.md`; no-material triggers require `change.yaml`, `review-log.md`, and `reviews/<stage>-r<n>.md` without an empty `review-resolution.md`.
+- Review recording has one material-finding rule: Material review findings are always recorded. All material findings require detailed change-local review files.
+- Direct or review-only requests remain isolated by default. Isolation stops handoff, not recording.
+- If a detailed file is required before a change-local root exists, create the smallest initial review-record root first. Material findings require `change.yaml`, `review-log.md`, `review-resolution.md`, and `reviews/<stage>-r<n>.md`; no-material triggers require `change.yaml`, `review-log.md`, and `reviews/<stage>-r<n>.md` without an empty `review-resolution.md`.
 - Clean required reviews with no material findings may settle in the reviewed artifact when no detailed-record trigger applies.
 - When material findings exist for a non-trivial change, use `docs/changes/<change-id>/review-resolution.md` and approved dispositions: `accepted`, `rejected`, `deferred`, `partially-accepted`, and `needs-decision`.
 - `needs-decision` is not final. It keeps `review-resolution.md` at `Closeout status: open` and blocks `verify`, `explain-change`, and `pr` until an authorized owner resolves or explicitly defers it.

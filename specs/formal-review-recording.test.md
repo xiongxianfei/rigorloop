@@ -7,11 +7,13 @@
 ## Related spec and plan
 
 - Spec: [Formal Review Recording](formal-review-recording.md), approved.
-- Proposal: [Formal Review Recording](../docs/proposals/2026-05-04-formal-review-recording.md), accepted.
-- Plan: [Formal Review Recording Implementation Plan](../docs/plans/2026-05-04-formal-review-recording.md), active.
+- Original proposal: [Formal Review Recording](../docs/proposals/2026-05-04-formal-review-recording.md), accepted.
+- Amendment proposal: [Review Skill Material Finding Recording](../docs/proposals/2026-05-07-review-skill-material-finding-recording.md), accepted.
+- Historical plan: [Formal Review Recording Implementation Plan](../docs/plans/2026-05-04-formal-review-recording.md), done.
+- Current amendment plan: [Review Skill Material Finding Recording Execution Plan](../docs/plans/2026-05-07-review-skill-material-finding-recording.md), active.
 - Architecture: not required. The approved spec and accepted plan reuse the existing `docs/changes/<change-id>/reviews/`, `review-log.md`, `review-resolution.md`, and review-artifact validator model without adding a new storage architecture, parser architecture, persistence layer, deployment path, or integration boundary.
 - Spec-review: approved after the initial review-record root was split into material and no-material variants.
-- Plan-review: approved after the paired `specs/review-finding-resolution-contract.test.md` and `specs/rigorloop-workflow.test.md` proof surfaces were added to M1 and M4.
+- Plan-review: current amendment plan approved on 2026-05-07 with no material findings; `test-spec` is the immediate next handoff before implementation.
 
 ## Testing strategy
 
@@ -19,6 +21,7 @@
 - Use existing change metadata validation for `change.yaml.review` aggregate fields when a change-local root is created.
 - Use manual contract review for contributor-facing workflow, governance, proposal/spec/plan source-of-truth boundaries, and no-empty-boilerplate rules that are not semantic validator behavior.
 - Use focused skill-validator assertions only for stable contractual review guidance terms when canonical review-stage skills change.
+- Use static assertions for the current amendment: canonical shared block existence, byte-equality across the five formal review skills, placement outside stage-specific guidance, isolated material-review output fields, broad material-finding trigger wording, governance alignment, and the structural-only first-slice boundary.
 - Use generated-output drift checks and adapter validation when canonical `skills/**` changes.
 - Use explicit-path lifecycle validation and explicit-path CI for top-level lifecycle artifacts, workflow specs, matched test specs, change-local artifacts, validator scripts, skills, and generated output selected by the active plan.
 - Treat broad smoke as unnecessary unless plan-review, test-spec review, code-review, review-resolution, verify, selector mode, release metadata, or a maintainer decision elevates it.
@@ -42,6 +45,12 @@
 | `R14`-`R14e` | `T3`, `T11` | manual | Final proposal/spec/architecture/ADR/plan status stays artifact-local |
 | `R15`-`R15a` | `T12` | integration, manual | Canonical skill guidance and generated output stay aligned when skills change |
 | `R16`-`R16b` | `T1`, `T4`, `T5`, `T13` | integration | Reuse existing structural validator and avoid semantic review-quality judgment |
+| `R17`-`R17e` | `T17`, `T20` | contract, integration | Isolation controls handoff only; material findings require durable change-local review records before fixes or reconstruction when late |
+| `R18`-`R19a` | `T18` | contract, integration | Tracked artifact definition and operational materiality shortcut stay visible without replacing Constitution authority |
+| `R20`-`R20c` | `T17` | contract, integration | Isolated material-review output names handoff status, Finding IDs, required review record path, record-before-fixing or reconstruction status, and owner-decision status |
+| `R21`-`R21d` | `T19` | integration | Shared `## Isolation and Recording` block is canonical, byte-equal, and placement-safe |
+| `R22`-`R22b` | `T18` | manual, integration | `CONSTITUTION.md`, `AGENTS.md`, and `docs/workflows.md` teach the same broad rule |
+| `R23` | `T20` | integration, manual | First-slice validation remains structural/static and does not add semantic edit-reference flagging |
 | Security/privacy `MUST`s | `T14` | manual, integration | Review artifacts do not preserve secrets and structural validation requires no network or secrets |
 | Performance `MUST` | `T14` | integration, manual | Upstream review records do not by themselves require broad smoke |
 
@@ -55,6 +64,10 @@
 | `E4` | `T9` | Material PR comment receives a stable Finding ID before review-resolution disposition |
 | `E5` | `T8` | `change.yaml.review` remains aggregate metadata with optional pointers |
 | `E6` | `T4`, `T13` | Detailed review files are indexed exactly once in `review-log.md` |
+| `E7` | `T17` | Direct material review findings create the material review-record root before edits |
+| `E8` | `T17` | Late isolated-review capture is reconstructed with source, timing, evidence, Finding IDs, and fidelity-loss disclosure |
+| `E9` | `T17` | Isolated material review output names the required recording obligation |
+| `E10` | `T19` | Formal review skills share byte-identical `Isolation and Recording` guidance from the canonical template |
 
 ## Edge case coverage
 
@@ -62,14 +75,17 @@
 - Clean required `spec-review` with readiness text and no detailed-record trigger: `T3`, `T11`
 - `plan-review` with `rethink` and no material findings: `T5`, `T10`
 - Material `architecture-review` before any change-local root exists: `T4`
-- Isolated review-only finding with no tracked change and no durable capture request: `T3`, `T6`
-- Isolated finding later driving tracked changes: `T6`
+- Isolated review-only material finding, even when downstream handoff stops: `T17`
+- Isolated finding later driving tracked changes: `T17`
 - Material PR comment added directly to `review-resolution.md` without durable Finding ID: `T9`, `T13`
 - Unsupported `pr-review-r1.md` before a later spec extends the stage set: `T1`
 - `change.yaml.review` optional pointers without dropping `status` or `unresolved_items`: `T8`
 - Detailed review file with no material findings still needing `review-log.md`: `T5`, `T13`
 - Reconstructed detailed review evidence needing reconstructed-record metadata: `T6`
 - Final PR-ready handoff with only the initial review-record root and no durable Markdown reasoning: `T15`
+- Isolated material review output missing Finding IDs, record path, record-before-fixing or reconstruction status, or owner-decision status: `T17`
+- Skill-specific guidance inserted inside the shared `## Isolation and Recording` block: `T19`
+- Generated adapter output changed because of a material review finding as a tracked artifact edit: `T18`
 
 ## Milestone coverage map
 
@@ -79,6 +95,10 @@
 | `M2` Review Artifact Validator Coverage | `T1`, `T3`, `T4`, `T5`, `T6`, `T9`, `T10`, `T13`, `T14` | Executable structural review artifact proof |
 | `M3` Review Skill Guidance And Generated Output | `T2`, `T7`, `T9`, `T10`, `T12`, `T14` | Review-stage operator guidance, generated mirrors, and adapters |
 | `M4` Final Validation And Lifecycle Closeout | `T13`, `T14`, `T15`, `T16` | Full touched-surface validation and lifecycle handoff evidence |
+| `2026-05-07` M1 proof map and static validator coverage | `T17`, `T18`, `T19`, `T20` | Broad material-finding rule, shared review-skill block, governance alignment, isolated output fields, and structural-only validator scope |
+| `2026-05-07` M2 authored guidance | `T17`, `T18`, `T19` | Canonical shared block and copied formal review skill guidance |
+| `2026-05-07` M3 generated output | `T12`, `T19` | Generated Codex mirrors and public adapters reflect canonical formal review skill changes |
+| `2026-05-07` M4 closeout | `T13`, `T15`, `T16`, `T20` | Review artifacts, lifecycle state, paired governing test specs, and final validation remain synchronized |
 
 ## Test cases
 
@@ -460,6 +480,104 @@
   - `bash scripts/ci.sh --mode explicit ...`
   - Manual M1 and M4 plan closeout review.
 
+### T17. Isolated material reviews require change-local records and complete final output
+
+- Covers: `R2c`, `R2d`, `R5a`, `R17`-`R17e`, `R20`-`R20c`, `E7`, `E8`, `E9`, edge cases 5, 6, 13, 14, 15
+- Level: contract, integration
+- Fixture/setup:
+  - `templates/shared/review-isolation-and-recording.md`
+  - `skills/proposal-review/SKILL.md`
+  - `skills/spec-review/SKILL.md`
+  - `skills/architecture-review/SKILL.md`
+  - `skills/plan-review/SKILL.md`
+  - `skills/code-review/SKILL.md`
+  - `scripts/test-skill-validator.py`
+  - `scripts/test-review-artifact-validator.py`
+- Steps:
+  - Add static assertions that an isolated material-review output states no automatic downstream handoff, material Finding IDs, required review record path, whether the record must be created before fixing or reconstructed, and whether owner decision is needed.
+  - Assert the output makes the next action clear without requiring enum-style action strings.
+  - Assert the formal review skills do not offer review-output-only or artifact-local-only settlement for material findings.
+  - Add or update review-artifact fixture coverage proving a direct material review record creates `change.yaml`, `review-log.md`, `review-resolution.md`, and `reviews/<stage>-r<n>.md` before fixes, or uses reconstructed-record metadata when fixes already began.
+- Expected result:
+  - Isolated review requests stop downstream handoff but still make the material-finding recording obligation explicit and enforceable.
+- Failure proves:
+  - Direct review requests can still be misread as exempt from material-finding recording.
+- Automation location:
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/test-review-artifact-validator.py`
+
+### T18. Tracked artifact and materiality guidance uses the broad repository-file rule
+
+- Covers: `R18`-`R19a`, `R22`-`R22b`, edge case 17
+- Level: contract, integration
+- Fixture/setup:
+  - `CONSTITUTION.md`
+  - `AGENTS.md`
+  - `docs/workflows.md`
+  - `templates/shared/review-isolation-and-recording.md`
+  - the five formal review skills
+- Steps:
+  - Assert contributor-facing guidance defines tracked artifact as any version-controlled repository file whose change will be committed or reviewed as part of the work.
+  - Assert examples include lifecycle artifacts, governance files, workflow summaries, skills, specs, schemas, scripts, generated outputs, README content, and change-local artifacts.
+  - Assert ephemeral chat output, local scratch files, and unversioned drafts are excluded from tracked artifact edits.
+  - Assert governance and operating guidance teach the same broad rule: every material finding is recorded, all material findings require change-local review files, and isolation stops handoff rather than recording.
+  - Assert the operational materiality shortcut is present without narrowing `CONSTITUTION.md` authority.
+- Expected result:
+  - Contributors cannot avoid recording by treating generated outputs, skills, governance files, or README content as outside tracked work.
+- Failure proves:
+  - The material-finding trigger can drift by file category or by conflicting governance guidance.
+- Automation location:
+  - `python scripts/test-skill-validator.py`
+  - manual guidance review in M1 and M4
+
+### T19. Shared `Isolation and Recording` block is canonical and placement-safe
+
+- Covers: `R21`-`R21d`, `E10`, edge case 16
+- Level: integration
+- Fixture/setup:
+  - `templates/shared/review-isolation-and-recording.md`
+  - `skills/proposal-review/SKILL.md`
+  - `skills/spec-review/SKILL.md`
+  - `skills/architecture-review/SKILL.md`
+  - `skills/plan-review/SKILL.md`
+  - `skills/code-review/SKILL.md`
+  - `scripts/test-skill-validator.py`
+- Steps:
+  - Assert the canonical template file exists and contains one `## Isolation and Recording` block.
+  - Extract the block from the `## Isolation and Recording` heading up to, but not including, the next `##` heading in the canonical source and each formal review skill.
+  - Assert each copied skill block is byte-equal to the canonical template block.
+  - Assert stage-specific review guidance appears only above or below the copied block, never inside it.
+  - Assert `code-review` does not introduce an additive code-review-specific exception for isolation-versus-recording.
+- Expected result:
+  - All five formal review skills expose the same recording rule while preserving stage-specific guidance outside the shared block.
+- Failure proves:
+  - Manual copy-paste has drifted or a stage-specific exception weakened the shared rule.
+- Automation location:
+  - `python scripts/test-skill-validator.py`
+
+### T20. First-slice validation remains structural and static
+
+- Covers: `R16a`, `R16b`, `R23`
+- Level: integration, manual
+- Fixture/setup:
+  - `scripts/test-skill-validator.py`
+  - `scripts/test-review-artifact-validator.py`
+  - `scripts/review_artifact_validation.py`
+  - current amendment plan
+- Steps:
+  - Confirm M1 adds static/shared-block assertions and structural review-artifact validation only.
+  - Confirm implementation does not add semantic automation that judges whether a finding's evidence is persuasive, a suggested resolution is best, or a final action is substantively correct.
+  - Confirm implementation does not add first-slice semantic flagging for tracked artifact edits that reference unresolved review findings.
+  - Reuse the existing review-artifact parser and tests rather than introducing a second parser model for upstream review stages.
+- Expected result:
+  - The first implementation slice catches structural drift without expanding into semantic review-quality automation.
+- Failure proves:
+  - The implementation exceeded the approved validator scope or forked review-artifact validation.
+- Automation location:
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/test-review-artifact-validator.py`
+  - manual M1/M4 review
+
 ## Fixtures and data
 
 - Prefer temporary change roots in `scripts/test-review-artifact-validator.py` for focused validator scenarios.
@@ -467,6 +585,8 @@
 - Reuse existing review-artifact fixture conventions for `Review ID`, `Stage`, `Status`, `Finding ID`, `review-log.md`, and `review-resolution.md` syntax.
 - Reuse existing change metadata fixtures under `tests/fixtures/change-metadata/**` for schema and `change.yaml` behavior.
 - Use `docs/changes/2026-05-04-formal-review-recording/change.yaml` and `docs/changes/2026-05-04-formal-review-recording/explain-change.md` as durable traceability fixtures once M1 creates the change-local pack.
+- Use `templates/shared/review-isolation-and-recording.md` as the canonical shared-block source for the 2026-05-07 amendment.
+- Use `docs/changes/2026-05-07-review-skill-material-finding-recording/**` as current change-local evidence for material review recording and closeout behavior.
 
 ## Mocking/stubbing policy
 
@@ -509,6 +629,9 @@
 - [ ] Review artifact-local status authority for proposals, specs, architecture artifacts, ADRs, and plans.
 - [ ] Review PR comment promotion wording for stable Finding IDs and unsupported `pr-review`.
 - [ ] Review changed review-stage skills for the same trigger and closeout vocabulary as the approved spec.
+- [ ] Review changed formal review skills for byte-identical `## Isolation and Recording` guidance from the canonical template.
+- [ ] Review isolated material-review output guidance for handoff status, Finding IDs, required review record path, record-before-fixing or reconstruction status, and owner-decision status.
+- [ ] Review `CONSTITUTION.md`, `AGENTS.md`, and `docs/workflows.md` for the same broad material-finding rule.
 - [ ] Review generated output drift checks after canonical skill edits.
 - [ ] Review final change-local artifacts for durable reasoning and no sensitive values.
 
@@ -527,7 +650,7 @@
 
 ## Next artifacts
 
-- M1 implementation under [Formal Review Recording Implementation Plan](../docs/plans/2026-05-04-formal-review-recording.md).
+- Implementation M1 under [Review Skill Material Finding Recording Execution Plan](../docs/plans/2026-05-07-review-skill-material-finding-recording.md).
 - Code review after implementation milestones complete.
 - Review-resolution if material findings are produced.
 - Verify.
@@ -540,4 +663,4 @@
 
 ## Readiness
 
-This test spec is the active proof-planning surface for implementation. Implementation may proceed under the active plan starting with M1.
+This test spec is an active proof-planning surface for the review skill material-finding recording amendment. Implementation may proceed under the active 2026-05-07 plan starting with M1.

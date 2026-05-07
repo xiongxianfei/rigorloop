@@ -62,6 +62,7 @@ Requirement → Test IDs → Files changed → Evidence → Status
 5. For ordinary non-trivial work, confirm the required baseline change-local pack exists: `docs/changes/<change-id>/change.yaml` plus durable Markdown reasoning, defaulting to `docs/changes/<change-id>/explain-change.md` unless an approved equivalent surface applies.
 6. Treat a missing required baseline change-local pack as a blocker, not acceptable silence.
 7. When material review findings exist, run `python scripts/validate-review-artifacts.py --mode closeout docs/changes/<change-id>` and inspect `review-resolution.md`.
+7a. New or revised `review-resolution.md` files should use the scan-first shape: summary, resolution overview table, compact finding details, shared validation evidence when applicable, and closeout checklist while preserving parseable per-finding labels.
 8. Block on `Closeout status: open`, any `needs-decision` disposition, stale `review-log.md` open findings, missing final action, missing rationale, missing follow-up record, or missing `Validation evidence` required for an accepted fix.
 8a. `Closeout status: closed` requires final dispositions for all material findings and no stale `review-log.md` open findings.
 8b. A stage-owned non-approval outcome that blocks downstream progress or requires revision needs a same-stage later review round or explicit reviewer or owner closeout naming the original Review ID; `review-resolution.md` alone is not a silent substitute.
