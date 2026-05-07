@@ -226,6 +226,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "`VISION.md` outranks README front-matter",
             "retired root `vision.md`",
             "only supported project-vision artifact",
+            "If the user explicitly asks to establish project vision, create root `VISION.md`",
             "<!-- vision:start -->",
             "<!-- vision:end -->",
             "first H1 block",
@@ -266,6 +267,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "In `mirror` or `revise`, missing or malformed markers stop the skill before file modification",
             "treat `vision.md` as migration input",
             "both root `vision.md` and root `VISION.md`",
+            "neither root vision file exists",
         ]
         for term in forbidden_terms:
             with self.subTest(term=term):
