@@ -160,6 +160,6 @@ No required follow-up is open from this stage.
 
 ## PR Handoff Summary
 
-- Branch contains accepted proposal, approved spec, active test spec, completed implementation milestones, closed review-resolution, clean code-review reruns, and passed verify.
-- The plan remains `Active` because PR handoff and PR-self-contained Done closeout have not happened yet; merge itself is not the completion trigger.
-- Ready for `pr` stage.
+- Branch contains accepted proposal, approved spec, active test spec, completed implementation milestones, closed review-resolution, clean code-review reruns, passed verify, refreshed explain-change, and synchronized Done lifecycle closeout.
+- PR handoff is the final planned lifecycle step for this branch; merge is not used as a deferred plan-closeout trigger.
+- Ready for PR review.

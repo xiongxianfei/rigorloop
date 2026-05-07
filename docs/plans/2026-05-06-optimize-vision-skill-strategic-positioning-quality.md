@@ -2,7 +2,7 @@
 
 ## Status
 
-- active
+- done
 - Owner: maintainers
 - Start date: 2026-05-06
 - Last updated: 2026-05-07
@@ -319,6 +319,7 @@ Repository broad smoke is not planned by default. If plan-review, test-spec, sel
 - [x] code-review rerun clean after the README drift fix.
 - [x] verify passed.
 - [x] explain-change refreshed.
+- [x] PR handoff prepared with lifecycle closeout recorded in this branch.
 
 ## Decision Log
 
@@ -353,7 +354,7 @@ Repository broad smoke is not planned by default. If plan-review, test-spec, sel
 
 ## Outcome and Retrospective
 
-- Active. Implementation milestones M1 through M4 are complete. First-pass code-review requested changes for `CR1-F1`, and the finding is resolved with review-resolution closed. Same-stage code-review reruns returned `clean-with-notes`, including the rerun after the verify-found README drift fix. Verify passed and explain-change is refreshed. The plan remains Active for PR handoff and PR-self-contained Done closeout.
+- Done. Implementation milestones M1 through M4 are complete. First-pass code-review requested changes for `CR1-F1`, and the finding is resolved with review-resolution closed. Same-stage code-review reruns returned `clean-with-notes`, including the rerun after the verify-found README drift fix. Verify passed, explain-change is refreshed, and PR handoff closeout is recorded in this branch before review.
 
 ## Readiness
 
@@ -364,4 +365,4 @@ Repository broad smoke is not planned by default. If plan-review, test-spec, sel
 - Code-review reruns clean.
 - Verify passed.
 - Explain-change refreshed.
-- Next: PR handoff.
+- Plan index and plan body are synchronized as Done for PR review.
