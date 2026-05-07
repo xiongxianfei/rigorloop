@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: spec-review-r1
@@ -14,8 +14,8 @@ Review closeout: code-review-r3
 
 - Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `code-review-r1`, `code-review-r2`, `code-review-r3`
 - Findings resolved: 13
-- Unresolved findings: 0
-- Final result: proposal-review, spec-review, `code-review-r1`, and `code-review-r2` findings were accepted, resolved, and validated. The aggregate implementation slice passed the post-commit `code-review-r3` rerun with no blocking or required-change findings.
+- Unresolved findings: 1
+- Final result: proposal-review, spec-review, `code-review-r1`, and `code-review-r2` findings were accepted, resolved, and validated. The aggregate implementation slice passed the post-commit `code-review-r3` rerun with no blocking or required-change findings. `code-review-r4` is open pending the shared-block simplification.
 
 This record resolves the material findings from `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, and `spec-review-r3` for the review skill material-finding recording proposal and spec amendments. It also resolves the `code-review-r2` aggregate closeout finding through the aggregate milestone closeout commit.
 
