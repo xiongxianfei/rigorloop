@@ -58,6 +58,8 @@ Once proposal, spec, and architecture are already settled, execution usually pro
 
 `plan -> plan-review -> test-spec -> implement -> code-review -> review-resolution when triggered -> verify -> ci-maintenance when triggered -> explain-change -> pr`
 
+For milestone-based plans, repeat implementation and code-review for each in-scope implementation milestone. A clean non-final milestone review routes to the next implementation milestone; `verify` follows only after all in-scope implementation milestones are closed and required review-resolution is closed.
+
 In workflow-managed completion flows, continue automatically into the next mandatory or triggered downstream stage when the approved autoprogression contract says to do so. Do not wait for redundant user confirmation to enter a known review or PR gate. Review-only or explicitly isolated stage requests stay isolated, direct `pr` still opens the PR when readiness passes, and fast-lane and bugfix execution remain explicit-step unless a higher-priority artifact broadens them.
 
 Add `plan-review` before spec work when the task is risky, cross-cutting, or hard to sequence cleanly.
