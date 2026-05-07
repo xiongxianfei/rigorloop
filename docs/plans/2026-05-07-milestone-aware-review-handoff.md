@@ -101,13 +101,13 @@ The test spec should require focused static assertions for:
 ## Current Handoff Summary
 
 - Current milestone: M3
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M2
 - Review status: clean-with-notes
 - Remaining in-scope implementation milestones: M3, M4
-- Next stage: implement M3
+- Next stage: code-review M3
 - Verify readiness: not ready
-- Reason verify is not ready: implementation milestones M3 and M4 remain open.
+- Reason verify is not ready: M3 is pending code-review and implementation milestone M4 remains open.
 
 ## Milestones
 
@@ -206,7 +206,7 @@ The test spec should require focused static assertions for:
 
 ### M3. Align Operating Docs and Stage Skills
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Update contributor guidance and authored skills so `implement`, `code-review`, `plan`, and workflow orchestration use the approved milestone loop.
 - Requirements: `R3`-`R10a`, `AC5`-`AC6`.
 - Files/components likely touched:
@@ -239,19 +239,23 @@ The test spec should require focused static assertions for:
 - Validation commands:
   - `python scripts/validate-skills.py`
   - `python scripts/test-skill-validator.py`
-  - `python scripts/select-validation.py --mode explicit --path docs/workflows.md --path AGENTS.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/plan/SKILL.md --path skills/workflow/SKILL.md --path scripts/test-skill-validator.py`
-  - `bash scripts/ci.sh --mode explicit --path docs/workflows.md --path AGENTS.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/plan/SKILL.md --path skills/workflow/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-07-milestone-aware-review-handoff.md`
+  - `python scripts/select-validation.py --mode explicit --path docs/workflows.md --path AGENTS.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/plan/SKILL.md --path skills/workflow/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path AGENTS.md --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path docs/workflows.md --path skills/code-review/SKILL.md --path skills/implement/SKILL.md --path skills/plan/SKILL.md --path skills/workflow/SKILL.md`
+  - `python scripts/test-change-metadata-validator.py`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml`
+  - `python scripts/test-select-validation.py`
   - `rg -n 'clean-with-notes.*verify|code-review -> verify|implementation-complete|review-clean|review-requested|resolution-needed|lifecycle-closeout' docs/workflows.md AGENTS.md CONSTITUTION.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/plan/SKILL.md skills/workflow/SKILL.md`
-  - `git diff --check -- docs/workflows.md AGENTS.md CONSTITUTION.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/plan/SKILL.md skills/workflow/SKILL.md scripts/test-skill-validator.py docs/plans/2026-05-07-milestone-aware-review-handoff.md`
+  - `git diff --check -- docs/workflows.md AGENTS.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/plan/SKILL.md skills/workflow/SKILL.md scripts/test-skill-validator.py docs/plans/2026-05-07-milestone-aware-review-handoff.md docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml`
+  - `bash scripts/ci.sh --mode explicit --path docs/workflows.md --path AGENTS.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/plan/SKILL.md --path skills/workflow/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml` is expected to select generated drift checks until M4 refreshes `.codex/skills/` and `dist/adapters/`.
 - Expected observable result: stage skills and operating docs consistently route milestone-based clean reviews through the next in-scope implementation milestone until the final implementation milestone is closed.
 - Commit message: `M3: align milestone-aware workflow skills`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone state updated to `review-requested` before code-review handoff
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone state updated to `review-requested` before code-review handoff
+  - [x] milestone committed
 - Risks:
   - Root guidance can become too detailed for `AGENTS.md`.
   - Skill wording can accidentally make clean review stop instead of continuing to the next valid stage.
@@ -393,7 +397,7 @@ Final validation should include:
 - [x] M1 code-review complete.
 - [x] M2 workflow contract alignment complete.
 - [x] M2 code-review complete.
-- [ ] M3 docs and skill guidance alignment complete.
+- [x] M3 docs and skill guidance alignment complete.
 - [ ] M3 code-review complete.
 - [ ] M4 generated output and implementation evidence complete.
 - [ ] M4 code-review complete.
@@ -415,11 +419,14 @@ Final validation should include:
 - 2026-05-07: Use `unittest.expectedFailure` for the two pending M2/M3 skill-validator assertions. Rationale: M1 must install red-state checks before canonical guidance edits while still leaving milestone validation green enough for code-review handoff.
 - 2026-05-07: Start M2 by splitting the pending stale-handoff assertion into spec-level passing proof and M3 docs/skills pending proof. Rationale: M2 owns authoritative specs, while `docs/workflows.md` and authored stage skills remain M3 scope.
 - 2026-05-07: Leave `specs/review-finding-resolution-contract.md` unchanged for M2. Rationale: the approved same-milestone review-resolution loop is now explicit in the two authoritative workflow specs, and the focused review-resolution record spec does not need new standalone-skill or parser behavior for this slice.
+- 2026-05-07: Convert the M3 skill-validator expected-failure checks into ordinary passing checks after authored guidance edits. Rationale: `docs/workflows.md` and the affected authored skills now carry the milestone-aware state and handoff wording.
+- 2026-05-07: Update `AGENTS.md` with one concise milestone-aware reminder and leave `CONSTITUTION.md` unchanged. Rationale: the root workflow chain was otherwise easy to misread as strictly linear, while the constitution already delegates workflow detail to approved specs and operational docs without a direct conflict.
 
 ## Surprises and Discoveries
 
 - 2026-05-07: The old guidance still contains unconditional clean-review-to-verify shortcuts in `docs/workflows.md`, `skills/code-review/SKILL.md`, `skills/workflow/SKILL.md`, and `specs/workflow-stage-autoprogression.md`; the new pending skill-validator checks capture that red state for M2/M3.
 - 2026-05-07: `specs/rigorloop-workflow.md` also needed to distinguish implementation handoff evidence from a milestone `closed` state. The M2 wording now keeps the existing milestone commit evidence rule while making review closeout the source of the `closed` milestone state.
+- 2026-05-07: M3 guidance needed both the contributor-facing workflow summary and the orchestrator skill updated. Leaving either surface with a linear clean-review route would preserve the original workflow bug.
 
 ## Validation Notes
 
@@ -478,7 +485,22 @@ Final validation should include:
   - `bash scripts/ci.sh --mode explicit --path specs/milestone-aware-review-handoff.md --path specs/workflow-stage-autoprogression.md --path specs/rigorloop-workflow.md --path specs/workflow-stage-autoprogression.test.md --path specs/rigorloop-workflow.test.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml` passed.
   - `git diff --check HEAD~1..HEAD` passed.
   - `test ! -e skills/review-resolution/SKILL.md` passed.
+- 2026-05-07 M3 validation:
+  - `python scripts/test-skill-validator.py` initially failed with 21 expected red-state failures before authored docs and skill guidance were aligned.
+  - `python scripts/test-skill-validator.py` passed with 33 tests after removing the M3 expected-failure markers and updating authored guidance.
+  - `python scripts/validate-skills.py` passed for 23 authored skill files.
+  - `python scripts/select-validation.py --mode explicit --path docs/workflows.md --path AGENTS.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/plan/SKILL.md --path skills/workflow/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml` passed with no unclassified paths. It selected generated drift checks for M4 because canonical skill sources changed.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path AGENTS.md --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path docs/workflows.md --path skills/code-review/SKILL.md --path skills/implement/SKILL.md --path skills/plan/SKILL.md --path skills/workflow/SKILL.md` passed with the existing `docs/workflows.md` lifecycle-language warning.
+  - `python scripts/test-change-metadata-validator.py` passed.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml` passed.
+  - `python scripts/test-select-validation.py` passed with 57 tests.
+  - `git diff --check -- docs/workflows.md AGENTS.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/plan/SKILL.md skills/workflow/SKILL.md scripts/test-skill-validator.py docs/plans/2026-05-07-milestone-aware-review-handoff.md docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml` passed.
+  - `rg -n '[[:blank:]]$|\t' docs/workflows.md AGENTS.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/plan/SKILL.md skills/workflow/SKILL.md scripts/test-skill-validator.py docs/plans/2026-05-07-milestone-aware-review-handoff.md docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml` found no trailing whitespace or tab characters.
+  - `test ! -e skills/review-resolution/SKILL.md` passed.
+  - `rg -n 'clean-with-notes.*verify|code-review -> verify|implementation-complete|review-clean|review-requested|resolution-needed|lifecycle-closeout' docs/workflows.md AGENTS.md CONSTITUTION.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/plan/SKILL.md skills/workflow/SKILL.md` found only intentional milestone-aware wording and evidence-phrase mentions; no stale unconditional clean-review-to-verify shortcut remains.
+  - `python scripts/build-skills.py --check` failed as expected for M3 because `.codex/skills/code-review`, `.codex/skills/implement`, `.codex/skills/plan`, and `.codex/skills/workflow` are generated outputs intentionally deferred to M4.
+  - `bash scripts/ci.sh --mode explicit --path docs/workflows.md --path AGENTS.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/plan/SKILL.md --path skills/workflow/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-07-milestone-aware-review-handoff.md --path docs/changes/2026-05-07-milestone-aware-review-handoff/change.yaml` failed only on `skills.drift` and `adapters.drift`, which M4 owns; all non-generated-drift selected checks passed.
 
 ## Outcome and Retrospective
 
-Active. Next stage: `implement M3`. Verify is not ready because implementation milestones M3 and M4 remain open.
+Active. Next stage: `code-review M3`. Verify is not ready because M3 is pending code-review and implementation milestone M4 remains open.

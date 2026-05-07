@@ -34,6 +34,7 @@ This file is the short operational summary for working in this repository. The n
   - Use them when ambiguity, option expansion, architecture uncertainty, external facts, platform behavior, standards, laws, pricing, or other current evidence affects the decision.
 - Per-change chain:
   - `proposal -> proposal-review -> spec -> spec-review -> architecture -> architecture-review -> plan -> plan-review -> test-spec -> implement -> code-review -> review-resolution when triggered -> verify -> ci-maintenance when triggered -> explain-change -> pr`
+  - For milestone-based plans, the `implement -> code-review -> review-resolution when triggered` segment repeats for each in-scope implementation milestone. `verify` follows only after all in-scope implementation milestones are closed and required review-resolution is closed.
   - `review-resolution` runs only when material review findings, non-final dispositions, or review outcomes require explicit closeout.
   - `ci-maintenance` is conditional support when hosted workflow automation or related CI infrastructure for a material risk is missing, stale, or wrong.
 - Periodic artifacts: `learn`.
@@ -118,7 +119,10 @@ Notes:
   - `architecture -> architecture-review` when that review stage is the next mandatory or triggered downstream step
   - full-feature execution from `implement -> code-review -> review-resolution when triggered -> verify -> ci-maintenance when triggered -> explain-change -> pr`
 - In workflow-managed full-feature runs, `code-review` first emits a first-pass review record grounded in the actual diff, upstream artifacts, checklist coverage, and validation evidence before any review-driven fixes begin.
-- In workflow-managed full-feature runs, first-pass `clean-with-notes` continues to `verify`, first-pass `changes-requested` continues to `review-resolution`, and first-pass `blocked` or `inconclusive` stops.
+- In workflow-managed full-feature milestone-based plans, first-pass `clean-with-notes` on a non-final implementation milestone closes the reviewed milestone and continues to the next in-scope implementation milestone.
+- In workflow-managed full-feature milestone-based plans, first-pass `clean-with-notes` on the final implementation milestone continues to `verify` only when no in-scope implementation milestone remains open or unresolved.
+- In workflow-managed full-feature runs, first-pass `changes-requested` continues to `review-resolution`, and first-pass `blocked` or `inconclusive` stops.
+- If the active plan does not clearly identify the reviewed milestone or remaining in-scope implementation milestones, stop for a plan update or inconclusive review instead of inferring verify readiness.
 - Clean reviews require checklist coverage plus no-finding rationale. Positive notes are optional and only useful when they add specific evidence-backed context.
 - Direct `pr` remains in scope and opens the PR when readiness passes.
 - Direct `proposal-review`, `spec-review`, `architecture-review`, `code-review`, `verify`, and `explain-change` stay isolated by default unless the user asks to carry the change through completion.
@@ -132,6 +136,11 @@ Notes:
 
 - Use a concrete plan under `docs/plans/` for multi-file, risky, ambiguous, migration-heavy, or milestone-based work.
 - `docs/plan.md` is the lifecycle index for planned initiatives; concrete plan bodies live under `docs/plans/`.
+- Each implementation milestone has one `Milestone state`: `planned`, `implementing`, `review-requested`, `resolution-needed`, or `closed`.
+- Use `review-requested` after implementation and targeted validation are complete and the milestone is handed to `code-review`.
+- Use `resolution-needed` when review findings require review-resolution, fixes, owner decision, or re-review.
+- Track the current milestone, current milestone state, last reviewed milestone, review status, remaining in-scope implementation milestones, next stage, verify readiness, and the reason in the active plan or review handoff.
+- Use `lifecycle-closeout` for a milestone or section that tracks only downstream gates such as `verify`, `explain-change`, PR handoff, release, deploy, or final plan closeout.
 - During execution, `implement` keeps the active plan body's progress, decisions, discoveries, and validation notes current.
 - When a planned initiative changes lifecycle state, final lifecycle closeout updates both `docs/plan.md` and the plan body.
 - If a PR completes a planned initiative, move it to `Done` in both `docs/plan.md` and the plan body before opening the PR for review.

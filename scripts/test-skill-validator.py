@@ -908,9 +908,8 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         self.assertNotIn("routing state", spec)
         self.assertNotIn("implementation evidence state", spec)
 
-    @unittest.expectedFailure
-    def test_pending_milestone_aware_skill_guidance_for_state_and_handoff(self) -> None:
-        """Red-state proof for M2/M3: remove expectedFailure when guidance is aligned."""
+    def test_milestone_aware_skill_guidance_for_state_and_handoff(self) -> None:
+        """Skills describe milestone-aware state, handoff, and verify-readiness boundaries."""
 
         required_by_skill = {
             "implement": [
@@ -978,9 +977,8 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                 with self.subTest(path=relative_path, stale=term):
                     self.assertNotIn(term, body)
 
-    @unittest.expectedFailure
-    def test_pending_milestone_aware_guidance_removes_unconditional_verify_handoff(self) -> None:
-        """Red-state proof for M3: remove expectedFailure when stale docs/skills shortcuts are gone."""
+    def test_milestone_aware_guidance_removes_unconditional_verify_handoff(self) -> None:
+        """Docs and skills must not retain stale unconditional clean-review-to-verify shortcuts."""
 
         stale_terms = [
             "first-pass `clean-with-notes` continues to `verify`",
