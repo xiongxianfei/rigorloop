@@ -314,7 +314,7 @@ Repository broad smoke is not planned by default. If plan-review, test-spec, sel
 - [x] M3 complete: generated skill and adapter output refreshed.
 - [x] M4 complete: lifecycle closeout and final validation evidence synchronized.
 - [x] code-review finding `CR1-F1` resolved with static assertion coverage, canonical skill fix, generated-output refresh, and review-resolution closeout evidence.
-- [ ] code-review rerun clean.
+- [x] code-review rerun clean.
 
 ## Decision Log
 
@@ -342,10 +342,11 @@ Repository broad smoke is not planned by default. If plan-review, test-spec, sel
 - 2026-05-06: M4 lifecycle proof passed with `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality`, `python scripts/validate-change-metadata.py docs/changes/2026-05-06-optimize-vision-skill-strategic-positioning-quality/change.yaml`, explicit artifact lifecycle validation over plan/proposal/spec/test-spec/rationale/change-local review paths, `git diff --check -- .`, targeted trailing-whitespace scan, and final selected CI over the full changed-file set. Artifact lifecycle continued to emit the known reviewer-attention warning for older lifecycle wording in a Done entry in `docs/plan.md`.
 - 2026-05-06: First-pass code-review recorded `CR1-F1` and returned `changes-requested`. Review artifact structure validation, change metadata validation, artifact lifecycle validation, whitespace checks, and selected CI over the code-review record and lifecycle paths passed with review-resolution open.
 - 2026-05-07: `CR1-F1` resolution proof first added a static assertion that failed against the stale skill wording, then updated `skills/vision/SKILL.md` so explicit project-vision establishment creates root `VISION.md` without a retired lowercase-file precondition. `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py skills/vision/SKILL.md`, generator refreshes, generator drift checks, adapter validation, a no-match scan for "neither root vision file exists" across canonical/generated vision skill files, and selected CI over canonical/generated vision skill paths passed after the fix.
+- 2026-05-07: Same-stage code-review rerun recorded `code-review-r2` with `clean-with-notes` and no material findings.
 
 ## Outcome and Retrospective
 
-- Active. Implementation milestones M1 through M4 are complete. First-pass code-review requested changes for `CR1-F1`, and the finding is resolved with review-resolution closed. The plan remains Active for code-review rerun, verify, explain-change refresh, PR handoff, and PR-self-contained Done closeout.
+- Active. Implementation milestones M1 through M4 are complete. First-pass code-review requested changes for `CR1-F1`, and the finding is resolved with review-resolution closed. Same-stage code-review rerun returned `clean-with-notes`. The plan remains Active for verify, explain-change refresh, PR handoff, and PR-self-contained Done closeout.
 
 ## Readiness
 
@@ -353,4 +354,5 @@ Repository broad smoke is not planned by default. If plan-review, test-spec, sel
 - Test spec active.
 - M1 through M4 implementation complete.
 - First-pass code-review finding `CR1-F1` resolved and review-resolution closed.
-- Next: rerun code-review.
+- Code-review rerun clean.
+- Next: verify.
