@@ -18,6 +18,8 @@ requirements:
   - Keep the first implementation slice explicit and avoid normalizing every skill in the first slice.
   - Define the normative home for the skill contract before validators enforce it.
   - Preserve generated-output boundaries by treating `.codex/skills/` and `dist/adapters/` as derived output.
+  - Add concise skill-contract summary pointers to workflow, contributor, and agent-facing guidance.
+  - Create canonical v1 shared-block sources for evidence collection efficiency and generated-output handling.
 tests:
   - Artifact lifecycle validation for the approved skill contract spec.
   - Artifact lifecycle validation for the active skill contract test spec.
@@ -26,6 +28,7 @@ tests:
   - Change metadata validation for this change-local root.
   - Review artifact closeout validation for proposal-review findings.
   - Selector-selected validation for changed proposal and review artifacts.
+  - Skill validator regression coverage for M2 skill-contract summary surfaces and shared-block source files.
 validation:
   - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-05-08-skill-contract-optimization.md
     result: pass_before_review_revision_selected_artifact_lifecycle
@@ -107,9 +110,24 @@ validation:
     result: pass_code_review_r2_closeout
   - command: rg -n '[[:blank:]]$|\\t' scripts/test-skill-validator.py docs/changes/2026-05-08-skill-contract-optimization/review-log.md docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r1.md docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r2.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml docs/plans/2026-05-08-skill-contract-optimization.md
     result: pass_no_matches_code_review_r2_closeout
+  - command: python scripts/test-skill-validator.py
+    result: fail_expected_missing_m2_summary_and_shared_block_sources_then_pass_39_tests
+  - command: python scripts/select-validation.py --mode explicit --path specs/skill-contract.md --path specs/skill-contract.test.md --path specs/rigorloop-workflow.md --path docs/workflows.md --path AGENTS.md --path templates/shared/review-isolation-and-recording.md --path templates/shared/evidence-collection-efficiency.md --path templates/shared/generated-output-handling.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-08-skill-contract-optimization.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+    result: pass_selected_m2_no_unclassified_paths
+  - command: bash scripts/ci.sh --mode explicit --path specs/skill-contract.md --path specs/skill-contract.test.md --path specs/rigorloop-workflow.md --path docs/workflows.md --path AGENTS.md --path templates/shared/review-isolation-and-recording.md --path templates/shared/evidence-collection-efficiency.md --path templates/shared/generated-output-handling.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-08-skill-contract-optimization.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+    result: pass_selected_m2_skills_lifecycle_change_metadata_selector_checks
+  - command: git diff --check -- specs/skill-contract.md specs/skill-contract.test.md specs/rigorloop-workflow.md docs/workflows.md AGENTS.md templates/shared scripts/test-skill-validator.py docs/plans/2026-05-08-skill-contract-optimization.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+    result: pass_m2
+  - command: rg -n '[[:blank:]]$|\\t' specs/skill-contract.md specs/skill-contract.test.md specs/rigorloop-workflow.md docs/workflows.md AGENTS.md templates/shared scripts/test-skill-validator.py docs/plans/2026-05-08-skill-contract-optimization.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+    result: pass_no_matches_m2
 changed_files:
   - specs/skill-contract.md
   - specs/skill-contract.test.md
+  - specs/rigorloop-workflow.md
+  - docs/workflows.md
+  - AGENTS.md
+  - templates/shared/evidence-collection-efficiency.md
+  - templates/shared/generated-output-handling.md
   - scripts/test-skill-validator.py
   - docs/plan.md
   - docs/plans/2026-05-08-skill-contract-optimization.md
