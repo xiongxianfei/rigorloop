@@ -98,13 +98,13 @@ The test spec should require focused static assertions for:
 ## Current Handoff Summary
 
 - Current milestone: M4
-- Current milestone state: review-requested
-- Last reviewed milestone: M3
-- Review status: code-review pending for M4
-- Remaining in-scope implementation milestones: M4 review-requested
-- Next stage: code-review M4
-- Verify readiness: not ready
-- Reason verify is not ready: implementation milestone M4 review and final verification remain incomplete.
+- Current milestone state: closed
+- Last reviewed milestone: M4
+- Review status: clean-with-notes
+- Remaining in-scope implementation milestones: none
+- Next stage: verify
+- Verify readiness: ready
+- Reason verify is ready: all in-scope implementation milestones are closed and code-review is complete.
 
 ## Milestones
 
@@ -266,7 +266,7 @@ The test spec should require focused static assertions for:
 
 ### M4. Refresh Generated Skill and Adapter Output
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Regenerate derived Codex skill mirrors and public adapter skill copies from canonical skills and prove no generated-output drift remains.
 - Requirements: `R2`-`R2d`, `R8f`, `R14c`, `R20`-`R20b`.
 - Files/components likely touched:
@@ -413,8 +413,8 @@ The test spec should require focused static assertions for:
 - [x] M3 implementation complete and ready for code-review.
 - [x] M3 closed.
 - [x] M4 implementation complete and ready for code-review.
-- [ ] M4 closed.
-- [ ] Code-review clean or review-resolution closed if triggered.
+- [x] M4 closed.
+- [x] Code-review clean or review-resolution closed if triggered.
 - [ ] Verify passed.
 - [ ] Explain-change complete.
 - [ ] PR handoff complete.
@@ -521,6 +521,12 @@ The test spec should require focused static assertions for:
 - 2026-05-08: `bash scripts/ci.sh --mode explicit` using the same M4 concrete generated path list passed selected checks: `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
 - 2026-05-08: `git diff --check -- .codex/skills dist/adapters docs/plans/2026-05-08-skill-contract-optimization.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml` passed for M4.
 - 2026-05-08: `rg -n '[[:blank:]]$|\t' .codex/skills dist/adapters docs/plans/2026-05-08-skill-contract-optimization.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml` found no matches for M4.
+- 2026-05-08: code-review M4 reviewed commit `e97d867` against `ede913d` and found no blocking or required-change findings. No review-resolution was required.
+- 2026-05-08: `cmp` checks confirmed the seven generated `.codex/skills/<skill>/SKILL.md` mirrors match canonical first-slice skills during code-review M4.
+- 2026-05-08: `python scripts/build-skills.py --check`, `python scripts/build-adapters.py --version 0.1.1 --check`, and `python scripts/validate-adapters.py --version 0.1.1` passed during code-review M4.
+- 2026-05-08: `bash scripts/ci.sh --mode explicit` using the M4 concrete generated path list passed selected checks during code-review M4: `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+- 2026-05-08: `git diff --check -- .codex/skills dist/adapters docs/plans/2026-05-08-skill-contract-optimization.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml` passed during code-review M4.
+- 2026-05-08: `rg -n '[[:blank:]]$|\t' .codex/skills dist/adapters docs/plans/2026-05-08-skill-contract-optimization.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml` found no matches during code-review M4.
 
 ## Outcome and Retrospective
 
@@ -530,11 +536,11 @@ Plan is active. Implementation, review, verification, explanation, and PR handof
 
 Status: Active.
 
-Progress: proposal is accepted; spec is approved; plan-review approved the execution plan; test spec is active; M1 is closed after clean code-review R2; M2 is closed after clean code-review; M3 is closed after clean code-review; M4 generated-output refresh is complete and ready for code-review.
+Progress: proposal is accepted; spec is approved; plan-review approved the execution plan; test spec is active; M1 is closed after clean code-review R2; M2 is closed after clean code-review; M3 is closed after clean code-review; M4 is closed after clean code-review.
 
-Readiness: Ready for code-review M4.
+Readiness: Ready for verify.
 
-Remaining completion gates: code-review M4, review-resolution if triggered, verify, explain-change, PR handoff, then Done if no true downstream event remains.
+Remaining completion gates: verify, explain-change, PR handoff, then Done if no true downstream event remains.
 
 ## Risks and Follow-Ups
 
