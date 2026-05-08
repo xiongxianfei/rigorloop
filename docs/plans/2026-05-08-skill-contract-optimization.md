@@ -102,9 +102,9 @@ The test spec should require focused static assertions for:
 - Last reviewed milestone: M4
 - Review status: clean-with-notes
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
-- Verify readiness: ready
-- Reason verify is ready: all in-scope implementation milestones are closed and code-review is complete.
+- Next stage: PR handoff
+- Verify readiness: passed
+- Reason next stage is PR handoff: all in-scope implementation milestones are closed, code-review is complete, review-resolution is closed, explain-change is current, and final selected verification passed.
 
 ## Milestones
 
@@ -352,9 +352,9 @@ The test spec should require focused static assertions for:
 - Milestone closeout:
   - [x] selected validation passed
   - [x] review-resolution closed if triggered
-  - [ ] verify passed
+  - [x] verify passed
   - [x] explain-change updated
-  - [ ] `docs/plan.md` and this plan body synchronized
+  - [x] `docs/plan.md` and this plan body synchronized
   - [ ] PR handoff complete
 - Risks:
   - Plan lifecycle state can drift between `docs/plan.md` and this plan body.
@@ -534,20 +534,23 @@ The test spec should require focused static assertions for:
 - 2026-05-08: `bash scripts/ci.sh --mode explicit` using all committed and worktree changed paths, including `docs/changes/2026-05-08-skill-contract-optimization/explain-change.md`, passed selected checks: `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
 - 2026-05-08: `git diff --check b8f64359a4d7642ef62ffc467c5c9c071ffcf871..HEAD` passed after explain-change creation.
 - 2026-05-08: `rg -n '[[:blank:]]$|\t' docs/changes/2026-05-08-skill-contract-optimization/explain-change.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml docs/plans/2026-05-08-skill-contract-optimization.md` found no matches after explain-change creation.
+- 2026-05-08: Final verify rerun passed `bash scripts/ci.sh --mode explicit` for all 54 branch changed paths from merge-base `b8f64359a4d7642ef62ffc467c5c9c071ffcf871`, including `docs/changes/2026-05-08-skill-contract-optimization/explain-change.md`. Selected checks: `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
+- 2026-05-08: Final verify rerun passed `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-skill-contract-optimization`, `python scripts/validate-change-metadata.py docs/changes/2026-05-08-skill-contract-optimization/change.yaml`, `git diff --check b8f64359a4d7642ef62ffc467c5c9c071ffcf871..HEAD`, and a whitespace scan over all 54 branch changed paths.
+- 2026-05-08: Broad smoke stayed untriggered because the active plan records `broad_smoke_required: false`, and selector, test spec, review-resolution, and release metadata did not require it.
 
 ## Outcome and Retrospective
 
-Plan is active. Implementation, review, verification, explanation, and PR handoff remain incomplete.
+Plan is active. Implementation, review, verification, and explanation are complete. PR handoff remains incomplete.
 
 ## Readiness
 
 Status: Active.
 
-Progress: proposal is accepted; spec is approved; plan-review approved the execution plan; test spec is active; M1 is closed after clean code-review R2; M2 is closed after clean code-review; M3 is closed after clean code-review; M4 is closed after clean code-review; explain-change is updated after the initial verify blocker.
+Progress: proposal is accepted; spec is approved; plan-review approved the execution plan; test spec is active; M1 is closed after clean code-review R2; M2 is closed after clean code-review; M3 is closed after clean code-review; M4 is closed after clean code-review; explain-change is updated; final verify rerun passed.
 
-Readiness: Ready for verify rerun.
+Readiness: Ready for PR handoff.
 
-Remaining completion gates: verify, PR handoff, then Done if no true downstream event remains.
+Remaining completion gates: PR handoff, then Done if no true downstream event remains.
 
 ## Risks and Follow-Ups
 
