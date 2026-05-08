@@ -69,6 +69,13 @@ MILESTONE_AWARE_REVIEW_HANDOFF_TEST_SPEC = (
 SKILL_CONTRACT_SPEC = ROOT / "specs" / "skill-contract.md"
 SKILL_CONTRACT_TEST_SPEC = ROOT / "specs" / "skill-contract.test.md"
 SKILL_CONTRACT_PLAN = ROOT / "docs" / "plans" / "2026-05-08-skill-contract-optimization.md"
+SKILL_CONTRACT_WORKFLOW_SPEC = ROOT / "specs" / "rigorloop-workflow.md"
+SKILL_CONTRACT_WORKFLOWS_DOC = ROOT / "docs" / "workflows.md"
+SKILL_CONTRACT_AGENTS = ROOT / "AGENTS.md"
+SKILL_CONTRACT_EVIDENCE_BLOCK = ROOT / "templates" / "shared" / "evidence-collection-efficiency.md"
+SKILL_CONTRACT_GENERATED_OUTPUT_BLOCK = (
+    ROOT / "templates" / "shared" / "generated-output-handling.md"
+)
 SKILL_CONTRACT_FIRST_SLICE_SKILLS = [
     "workflow",
     "plan",
@@ -85,6 +92,13 @@ SKILL_CONTRACT_FORBIDDEN_NEW_SKILLS = [
     "ui-design-review",
     "workflow-contract",
     "adopt-rigorloop",
+]
+SKILL_CONTRACT_DEFERRED_SHARED_BLOCKS = [
+    "vision-fit",
+    "plan-readiness-vs-completion",
+    "milestone-aware-review-handoff",
+    "first-pass-completeness",
+    "material-finding-requirements",
 ]
 
 
@@ -1124,6 +1138,89 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         for term in required_terms:
             with self.subTest(term=term):
                 self.assertIn(term, plan)
+
+    def test_skill_contract_m2_summary_surfaces_keep_source_split(self) -> None:
+        workflow_spec = SKILL_CONTRACT_WORKFLOW_SPEC.read_text(encoding="utf-8")
+        workflows_doc = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
+        agents = SKILL_CONTRACT_AGENTS.read_text(encoding="utf-8")
+
+        required_workflow_terms = [
+            "`specs/skill-contract.md` owns skill-contract behavior.",
+            "standard skill shape, claim boundaries, result output expectations, shared-block rules, generated-output boundaries, evidence-reading guidance, and minimum viable skill rules",
+            "`specs/rigorloop-workflow.md` continues to own stage order, stage obligation, handoff, and downstream-blocking semantics.",
+        ]
+        for term in required_workflow_terms:
+            with self.subTest(surface="workflow_spec", term=term):
+                self.assertIn(term, workflow_spec)
+
+        required_workflows_terms = [
+            "## Skill Contract",
+            "The normative skill-contract source is `specs/skill-contract.md`.",
+            "The workflow-routing source is `specs/rigorloop-workflow.md`.",
+            "Skills are operational guides, not substitute specs.",
+            "Shared skill policy blocks live under `templates/shared/<block-name>.md`.",
+            "Add a skill only when it owns a distinct artifact, gate, review responsibility, recurring action, or approved operational process.",
+            "Edit canonical skill source under `skills/<skill>/SKILL.md`; regenerate `.codex/skills/` and `dist/adapters/` instead of hand-editing generated output.",
+        ]
+        for term in required_workflows_terms:
+            with self.subTest(surface="workflows_doc", term=term):
+                self.assertIn(term, workflows_doc)
+
+        required_agents_terms = [
+            "Follow `specs/skill-contract.md` for normalized skill structure and claim boundaries.",
+            "Do not create a new skill for one-off behavior; update an existing skill unless the new skill owns a distinct artifact, gate, review responsibility, recurring action, or approved operational process.",
+        ]
+        for term in required_agents_terms:
+            with self.subTest(surface="agents", term=term):
+                self.assertIn(term, agents)
+
+        self.assertNotIn("## Required core sections", agents)
+        self.assertNotIn("## Shared-block source of truth", agents)
+
+    def test_skill_contract_m2_shared_block_sources_exist_and_stay_bounded(self) -> None:
+        shared_blocks = {
+            "review-isolation-and-recording": SHARED_REVIEW_BLOCK_PATH,
+            "evidence-collection-efficiency": SKILL_CONTRACT_EVIDENCE_BLOCK,
+            "generated-output-handling": SKILL_CONTRACT_GENERATED_OUTPUT_BLOCK,
+        }
+        for block_name, path in shared_blocks.items():
+            with self.subTest(block=block_name):
+                self.assertTrue(path.exists(), f"missing shared block source: {path}")
+
+        evidence_block = SKILL_CONTRACT_EVIDENCE_BLOCK.read_text(encoding="utf-8")
+        generated_block = SKILL_CONTRACT_GENERATED_OUTPUT_BLOCK.read_text(encoding="utf-8")
+        review_block = SHARED_REVIEW_BLOCK_PATH.read_text(encoding="utf-8")
+
+        evidence_terms = [
+            "## Evidence collection efficiency",
+            "Use summary and stable-ID first reasoning before broad reads or raw excerpts.",
+            "Prefer check IDs, requirement IDs, test IDs, file paths, counts, and line citations",
+            "## When full-file read is required",
+            "Read the full file when the whole file is the review target",
+            "bounded searches disagree or produce incomplete evidence",
+        ]
+        for term in evidence_terms:
+            with self.subTest(block="evidence", term=term):
+                self.assertIn(term, evidence_block)
+
+        generated_terms = [
+            "## Generated-output handling",
+            "Edit canonical skill source under `skills/<skill>/SKILL.md`.",
+            "Do not hand-edit `.codex/skills/` or `dist/adapters/`.",
+            "Regenerate generated outputs from canonical source.",
+            "Validate drift with repository-owned checks.",
+            "Use concrete generated adapter file paths in selector-driven validation; do not pass `--path dist/adapters`.",
+            "Generated outputs are proof surfaces, not independent sources of truth.",
+            "Shared blocks are copied into skills and checked for drift; they are not generated into skills in v1.",
+        ]
+        for term in generated_terms:
+            with self.subTest(block="generated", term=term):
+                self.assertIn(term, generated_block)
+
+        self.assertIn("Every material finding requires a durable change-local review record", review_block)
+        for block_name in SKILL_CONTRACT_DEFERRED_SHARED_BLOCKS:
+            with self.subTest(deferred_block=block_name):
+                self.assertFalse((ROOT / "templates" / "shared" / f"{block_name}.md").exists())
 
 
 if __name__ == "__main__":

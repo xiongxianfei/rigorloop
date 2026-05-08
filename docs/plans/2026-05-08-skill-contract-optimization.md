@@ -97,12 +97,12 @@ The test spec should require focused static assertions for:
 
 ## Current Handoff Summary
 
-- Current milestone: M1
-- Current milestone state: closed
+- Current milestone: M2
+- Current milestone state: review-requested
 - Last reviewed milestone: M1
-- Review status: clean-with-notes
-- Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: implement M2
+- Review status: code-review pending for M2
+- Remaining in-scope implementation milestones: M2 review-requested; M3, M4 planned
+- Next stage: code-review M2
 - Verify readiness: not ready
 - Reason verify is not ready: implementation milestones M2-M4, generated-output refresh, and final verification remain incomplete.
 
@@ -160,7 +160,7 @@ The test spec should require focused static assertions for:
 
 ### M2. Align Contract Summaries and Shared Blocks
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Add concise contributor-facing summaries and stable shared blocks needed by first-slice skill normalization without duplicating full workflow policy.
 - Requirements: `R1`-`R2d`, `R12`-`R16c`, `R19`-`R20b`.
 - Files/components likely touched:
@@ -194,12 +194,12 @@ The test spec should require focused static assertions for:
 - Expected observable result: authoritative and summary surfaces point to the skill contract cleanly, and approved shared blocks have canonical sources before first-slice skill copies.
 - Commit message: `M2: align skill contract summaries`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone state updated to `review-requested` before code-review handoff
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone state updated to `review-requested` before code-review handoff
+  - [x] milestone committed
 - Risks:
   - `AGENTS.md` or `docs/workflows.md` could duplicate too much spec detail.
   - New shared blocks could drift from the skill copies before generated output refresh.
@@ -408,6 +408,7 @@ The test spec should require focused static assertions for:
 - [x] M1 code-review completed with changes requested.
 - [x] M1 CR1-F1 fix implemented and ready for code-review rerun.
 - [x] M1 closed.
+- [x] M2 implementation complete and ready for code-review.
 - [ ] M2 closed.
 - [ ] M3 closed.
 - [ ] M4 closed.
@@ -424,11 +425,13 @@ The test spec should require focused static assertions for:
 - 2026-05-08: Treat `ci` as the skill entrypoint for `ci-maintenance`. Rationale: existing workflow spec allows the naming split and no `skills/ci-maintenance/` path is approved.
 - 2026-05-08: Use an active static/contract test spec rather than runtime workflow simulation. Rationale: approved first slice changes skill guidance, shared blocks, validation, and generated output without adding an executable workflow router.
 - 2026-05-08: Limit M1 validator assertions to approved spec/test-spec/plan and path-boundary proof that can pass before canonical skill normalization. Rationale: first-slice skill section and overclaim checks depend on M2/M3 changes and should not be committed red as M1 closeout evidence.
+- 2026-05-08: Create shared-block source files for evidence collection and generated-output handling in M2 before copying them into first-slice skills. Rationale: M2 establishes canonical shared sources and M3 owns consuming skill normalization.
 
 ## Surprises and Discoveries
 
 - 2026-05-08: The first M1 validator assertion used a paraphrased `ci`/`ci-maintenance` phrase and failed. The check was narrowed to the exact approved spec wording before closeout.
 - 2026-05-08: code-review R1 found that the first-slice test-spec assertion in `scripts/test-skill-validator.py` checks bare skill-name substrings, allowing short names such as `pr` to pass from unrelated words.
+- 2026-05-08: M2 test-first validation failed as expected before summary pointers and the new shared-block source files existed, then passed after adding them.
 
 ## Validation Notes
 
@@ -472,6 +475,12 @@ The test spec should require focused static assertions for:
 - 2026-05-08: `bash scripts/ci.sh --mode explicit --path scripts/test-skill-validator.py --path docs/changes/2026-05-08-skill-contract-optimization/review-log.md --path docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r1.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r2.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml --path docs/plans/2026-05-08-skill-contract-optimization.md` passed selected checks after code-review R2.
 - 2026-05-08: `git diff --check -- scripts/test-skill-validator.py docs/changes/2026-05-08-skill-contract-optimization/review-log.md docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r1.md docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r2.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml docs/plans/2026-05-08-skill-contract-optimization.md` passed after code-review R2.
 - 2026-05-08: `rg -n '[[:blank:]]$|\t' scripts/test-skill-validator.py docs/changes/2026-05-08-skill-contract-optimization/review-log.md docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r1.md docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r2.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml docs/plans/2026-05-08-skill-contract-optimization.md` found no matches after code-review R2.
+- 2026-05-08: `python scripts/test-skill-validator.py` failed as expected after adding M2 static checks because `templates/shared/evidence-collection-efficiency.md`, `templates/shared/generated-output-handling.md`, and summary-surface wording were not yet present.
+- 2026-05-08: `python scripts/test-skill-validator.py` passed 39 tests after adding M2 summary pointers, shared-block sources, and static checks.
+- 2026-05-08: `python scripts/select-validation.py --mode explicit --path specs/skill-contract.md --path specs/skill-contract.test.md --path specs/rigorloop-workflow.md --path docs/workflows.md --path AGENTS.md --path templates/shared/review-isolation-and-recording.md --path templates/shared/evidence-collection-efficiency.md --path templates/shared/generated-output-handling.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-08-skill-contract-optimization.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml` passed with no unclassified paths for M2.
+- 2026-05-08: `bash scripts/ci.sh --mode explicit --path specs/skill-contract.md --path specs/skill-contract.test.md --path specs/rigorloop-workflow.md --path docs/workflows.md --path AGENTS.md --path templates/shared/review-isolation-and-recording.md --path templates/shared/evidence-collection-efficiency.md --path templates/shared/generated-output-handling.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-08-skill-contract-optimization.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml` passed selected M2 checks: `skills.regression`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
+- 2026-05-08: `git diff --check -- specs/skill-contract.md specs/skill-contract.test.md specs/rigorloop-workflow.md docs/workflows.md AGENTS.md templates/shared scripts/test-skill-validator.py docs/plans/2026-05-08-skill-contract-optimization.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml` passed for M2.
+- 2026-05-08: `rg -n '[[:blank:]]$|\t' specs/skill-contract.md specs/skill-contract.test.md specs/rigorloop-workflow.md docs/workflows.md AGENTS.md templates/shared scripts/test-skill-validator.py docs/plans/2026-05-08-skill-contract-optimization.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml` found no matches for M2.
 
 ## Outcome and Retrospective
 
@@ -481,13 +490,13 @@ Plan is active. Implementation, review, verification, explanation, and PR handof
 
 Status: Active.
 
-Progress: proposal is accepted; spec is approved; plan-review approved the execution plan; test spec is active; M1 is closed after clean code-review R2.
+Progress: proposal is accepted; spec is approved; plan-review approved the execution plan; test spec is active; M1 is closed after clean code-review R2; M2 implementation is complete and ready for code-review.
 
-Readiness: Ready for implement M2.
+Readiness: Ready for code-review M2.
 
-Remaining completion gates: implementation milestones M2-M4, code-review for each remaining implementation milestone, review-resolution if triggered, verify, explain-change, PR handoff, then Done if no true downstream event remains.
+Remaining completion gates: code-review M2, implementation milestones M3-M4, code-review for each remaining implementation milestone, review-resolution if triggered, verify, explain-change, PR handoff, then Done if no true downstream event remains.
 
 ## Risks and Follow-Ups
 
-- Follow up in code-review M1 on whether the passable validator scaffolding is sufficiently narrow and useful before M2/M3 skill normalization.
+- Follow up in code-review M2 on whether `AGENTS.md` and `docs/workflows.md` stayed concise enough while still carrying the required skill-contract reminders.
 - Keep broad smoke untriggered unless selector, test spec, review-resolution, release metadata, or explicit reviewer requirement changes that.
