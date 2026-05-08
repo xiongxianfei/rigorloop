@@ -97,14 +97,14 @@ The test spec should require focused static assertions for:
 
 ## Current Handoff Summary
 
-- Current milestone: M3
-- Current milestone state: review-requested
-- Last reviewed milestone: M2
-- Review status: code-review pending for M3
-- Remaining in-scope implementation milestones: M3 review-requested; M4 planned
-- Next stage: code-review M3
+- Current milestone: M4
+- Current milestone state: planned
+- Last reviewed milestone: M3
+- Review status: clean-with-notes
+- Remaining in-scope implementation milestones: M4
+- Next stage: implement M4
 - Verify readiness: not ready
-- Reason verify is not ready: implementation milestones M3-M4, generated-output refresh, and final verification remain incomplete.
+- Reason verify is not ready: implementation milestone M4, generated-output refresh, and final verification remain incomplete.
 
 ## Milestones
 
@@ -209,7 +209,7 @@ The test spec should require focused static assertions for:
 
 ### M3. Normalize First-Slice Canonical Skills
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Normalize only the seven first-slice canonical skills to satisfy the required core sections, claim boundaries, summary-first result output, local handoff, evidence-reading, shared-block, and progress/readiness guidance.
 - Requirements: `R3`-`R18d`, `R20`-`R20b`.
 - Files/components likely touched:
@@ -411,7 +411,7 @@ The test spec should require focused static assertions for:
 - [x] M2 implementation complete and ready for code-review.
 - [x] M2 closed.
 - [x] M3 implementation complete and ready for code-review.
-- [ ] M3 closed.
+- [x] M3 closed.
 - [ ] M4 closed.
 - [ ] Code-review clean or review-resolution closed if triggered.
 - [ ] Verify passed.
@@ -498,6 +498,15 @@ The test spec should require focused static assertions for:
 - 2026-05-08: `python scripts/validate-change-metadata.py docs/changes/2026-05-08-skill-contract-optimization/change.yaml` passed for M3.
 - 2026-05-08: `git diff --check -- skills/workflow/SKILL.md skills/plan/SKILL.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/verify/SKILL.md skills/pr/SKILL.md skills/learn/SKILL.md scripts/test-skill-validator.py docs/plans/2026-05-08-skill-contract-optimization.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml` passed for M3.
 - 2026-05-08: `rg -n '[[:blank:]]$|\t' skills/workflow/SKILL.md skills/plan/SKILL.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/verify/SKILL.md skills/pr/SKILL.md skills/learn/SKILL.md scripts/test-skill-validator.py docs/plans/2026-05-08-skill-contract-optimization.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml` found no matches for M3.
+- 2026-05-08: code-review M3 reviewed commit `ebb91e9` against `5686144` and found no blocking or required-change findings.
+- 2026-05-08: `python scripts/validate-skills.py` passed during code-review M3, validating 23 skill files.
+- 2026-05-08: `python scripts/test-skill-validator.py` passed 42 tests during code-review M3.
+- 2026-05-08: `python scripts/select-validation.py --mode explicit --path skills/workflow/SKILL.md --path skills/plan/SKILL.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/verify/SKILL.md --path skills/pr/SKILL.md --path skills/learn/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-08-skill-contract-optimization.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml` passed with no unclassified paths during code-review M3 and selected generated-output drift checks for M4.
+- 2026-05-08: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml --path docs/plans/2026-05-08-skill-contract-optimization.md --path skills/code-review/SKILL.md --path skills/implement/SKILL.md --path skills/learn/SKILL.md --path skills/plan/SKILL.md --path skills/pr/SKILL.md --path skills/verify/SKILL.md --path skills/workflow/SKILL.md` passed during code-review M3.
+- 2026-05-08: `python scripts/test-change-metadata-validator.py` passed during code-review M3.
+- 2026-05-08: `python scripts/validate-change-metadata.py docs/changes/2026-05-08-skill-contract-optimization/change.yaml` passed during code-review M3.
+- 2026-05-08: `git diff --check -- skills/workflow/SKILL.md skills/plan/SKILL.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/verify/SKILL.md skills/pr/SKILL.md skills/learn/SKILL.md scripts/test-skill-validator.py docs/plans/2026-05-08-skill-contract-optimization.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml` passed during code-review M3.
+- 2026-05-08: `rg -n '[[:blank:]]$|\t' skills/workflow/SKILL.md skills/plan/SKILL.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/verify/SKILL.md skills/pr/SKILL.md skills/learn/SKILL.md scripts/test-skill-validator.py docs/plans/2026-05-08-skill-contract-optimization.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml` found no matches during code-review M3.
 
 ## Outcome and Retrospective
 
@@ -507,11 +516,11 @@ Plan is active. Implementation, review, verification, explanation, and PR handof
 
 Status: Active.
 
-Progress: proposal is accepted; spec is approved; plan-review approved the execution plan; test spec is active; M1 is closed after clean code-review R2; M2 is closed after clean code-review; M3 implementation is complete and ready for code-review.
+Progress: proposal is accepted; spec is approved; plan-review approved the execution plan; test spec is active; M1 is closed after clean code-review R2; M2 is closed after clean code-review; M3 is closed after clean code-review.
 
-Readiness: Ready for code-review M3.
+Readiness: Ready for implement M4.
 
-Remaining completion gates: code-review M3, implementation milestone M4, code-review M4, generated-output refresh, review-resolution if triggered, verify, explain-change, PR handoff, then Done if no true downstream event remains.
+Remaining completion gates: implementation milestone M4, code-review M4, generated-output refresh, review-resolution if triggered, verify, explain-change, PR handoff, then Done if no true downstream event remains.
 
 ## Risks and Follow-Ups
 
