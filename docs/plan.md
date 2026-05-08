@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-08 Single workflow lane, explain-change before verify, and public skill surface boundary](plans/2026-05-08-single-workflow-lane-explain-before-verify.md) - active execution plan for implementing one recommended standard workflow, isolated manual skill invocation, final `ci-maintenance` when triggered before `explain-change -> verify -> pr`, and project-portable published skill surfaces. M1 is closed after clean code-review R2 and M2 is closed after clean code-review R3; both were corrected with a scoped M1/M2 catch-up milestone commit before M3 continues. M3 is in review-resolution after code-review R4 findings CR2 and CR3. The initiative remains gated by M3 review-resolution and rerun review, M4-M5 implementation and review, review-resolution when triggered, final explain-change, verify, and PR handoff.
+- [2026-05-08 Single workflow lane, explain-change before verify, and public skill surface boundary](plans/2026-05-08-single-workflow-lane-explain-before-verify.md) - active execution plan for implementing one recommended standard workflow, isolated manual skill invocation, final `ci-maintenance` when triggered before `explain-change -> verify -> pr`, and project-portable published skill surfaces. M1 is closed after clean code-review R2 and M2 is closed after clean code-review R3; both were corrected with a scoped M1/M2 catch-up milestone commit before M3 continues. M3 review-resolution closed CR2 and CR3; M3 now needs rerun code-review before it can close. The initiative remains gated by M3 rerun review, final generated-output confirmation, M5 review evidence, review-resolution when triggered, final explain-change, verify, and PR handoff.
 
 ## Blocked
 - none yet

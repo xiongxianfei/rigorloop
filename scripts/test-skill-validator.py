@@ -172,6 +172,28 @@ PUBLISHED_SKILL_FORBIDDEN_INTERNAL_PATTERNS = {
     ),
     "RigorLoop-local examples": re.compile(r"\bRigorLoop-local examples\b", re.IGNORECASE),
 }
+CODE_REVIEW_FORBIDDEN_FINAL_CLOSEOUT_PATTERNS = {
+    "verify only after final milestone": re.compile(
+        r"`?verify`?\s+only\s+after\s+the\s+final\s+in[- ]scope\s+implementation\s+milestone",
+        re.IGNORECASE,
+    ),
+    "final milestone cleanly reviewed to verify": re.compile(
+        r"final\s+in[- ]scope\s+implementation\s+milestone\s+is\s+cleanly\s+reviewed.{0,80}\bverify\b",
+        re.IGNORECASE | re.DOTALL,
+    ),
+    "clean final implementation milestone to verify": re.compile(
+        r"clean\s+final\s+implementation\s+milestone.{0,80}\bverify\b",
+        re.IGNORECASE | re.DOTALL,
+    ),
+}
+VERIFY_FORBIDDEN_EXPLAIN_ORDER_PATTERNS = {
+    "before explanation or PR": re.compile(r"\bbefore explanation or PR\b", re.IGNORECASE),
+    "toward explanation and PR": re.compile(r"\btoward explanation and PR\b", re.IGNORECASE),
+    "verify ascii arrow explain-change": re.compile(
+        r"\bverify\b\s*(?:->|→)\s*`?explain-change`?",
+        re.IGNORECASE,
+    ),
+}
 SKILL_CONTRACT_CLAIM_BOUNDARY_TERMS = {
     "implement": [
         "review passed",
@@ -250,6 +272,14 @@ def iter_published_skill_text_surfaces() -> list[Path]:
                 files.append(candidate)
 
     return files
+
+
+def iter_published_skill_surfaces_for(skill_name: str) -> list[Path]:
+    return [
+        path
+        for path in iter_published_skill_text_surfaces()
+        if path.parent.name == skill_name
+    ]
 
 
 def run_validator(target: Path) -> subprocess.CompletedProcess[str]:
@@ -1214,6 +1244,39 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             for label, pattern in PUBLISHED_SKILL_FORBIDDEN_INTERNAL_PATTERNS.items():
                 with self.subTest(path=str(relative_path), pattern=label):
                     self.assertIsNone(pattern.search(body))
+
+    def test_code_review_and_verify_public_skills_use_final_closeout_order(self) -> None:
+        """Shipped review and verify skills must not restore direct-verify closeout."""
+
+        code_review_paths = iter_published_skill_surfaces_for("code-review")
+        self.assertTrue(code_review_paths, "expected published code-review skill surfaces")
+        for path in code_review_paths:
+            body = path.read_text(encoding="utf-8")
+            relative_path = path.relative_to(ROOT)
+            for label, pattern in CODE_REVIEW_FORBIDDEN_FINAL_CLOSEOUT_PATTERNS.items():
+                with self.subTest(path=str(relative_path), forbidden=label):
+                    self.assertIsNone(pattern.search(body))
+            for term in ["final closeout", "explain-change", "verify", "pr"]:
+                with self.subTest(path=str(relative_path), required=term):
+                    self.assertIn(term, body)
+
+        verify_paths = iter_published_skill_surfaces_for("verify")
+        self.assertTrue(verify_paths, "expected published verify skill surfaces")
+        for path in verify_paths:
+            body = path.read_text(encoding="utf-8")
+            relative_path = path.relative_to(ROOT)
+            for label, pattern in VERIFY_FORBIDDEN_EXPLAIN_ORDER_PATTERNS.items():
+                with self.subTest(path=str(relative_path), forbidden=label):
+                    self.assertIsNone(pattern.search(body))
+            for term in [
+                "after durable change rationale",
+                "after `explain-change`",
+                "before PR",
+                "validates the final change pack",
+                "hands off to `pr`",
+            ]:
+                with self.subTest(path=str(relative_path), required=term):
+                    self.assertIn(term, body)
 
     def test_skill_contract_test_spec_maps_static_proof(self) -> None:
         body = SKILL_CONTRACT_TEST_SPEC.read_text(encoding="utf-8")

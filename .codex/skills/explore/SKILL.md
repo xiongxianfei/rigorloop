@@ -53,7 +53,7 @@ If the repo prefers one proposal file, place exploration as a section in the lat
    - `O1`: minimal safe change;
    - `O2`: incremental product improvement;
    - `O3`: architectural or platform-oriented option;
-   - `O4`: high-risk/high-upside option.
+   - `O4`: high-upside or hardest-to-reverse option.
 5. For each option, describe:
    - core idea;
    - user value;

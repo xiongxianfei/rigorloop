@@ -49,7 +49,11 @@ Produce a first-pass review record with status, inputs, diff summary, findings o
 ## Handoff
 
 - Normal next stage: follow the active plan and milestone state after the first-pass review.
-- Conditional next stages: `review-resolution` for material or required-change findings; `implement <next milestone>` after a clean non-final milestone; `verify` only after the final in-scope implementation milestone is cleanly reviewed; stop on `blocked` or `inconclusive`.
+- Conditional next stages: `review-resolution` for material or required-change findings; `implement <next milestone>` after a clean non-final milestone; final closeout after a clean final milestone; stop on `blocked` or `inconclusive`.
+- A clean review of a non-final implementation milestone closes that milestone and hands off to `implement <next milestone>`.
+- A clean review of the final in-scope implementation milestone reaches final closeout, not direct `verify`.
+- Final closeout runs `ci-maintenance` when triggered, otherwise `explain-change`, then `verify`, then `pr`.
+- Do not hand off to final closeout while implementation milestones remain open or required review-resolution remains unresolved.
 - For full stage order and downstream-blocking semantics, route through the `workflow` skill.
 
 ## Claims this skill must not make
@@ -95,7 +99,7 @@ Do not claim:
 - Code-shape inference alone is insufficient direct proof for a named edge case.
 - When a named edge-case proof gap is actionable within approved scope, report it as a finding instead of a clean result.
 - When the reviewer cannot inspect enough evidence to assess a named edge case credibly, use `inconclusive` rather than a clean result.
-- For validation-routing changes, targeted proof should name selector selected checks from `python scripts/select-validation.py` or `bash scripts/ci.sh --mode explicit`; broad smoke evidence is separate and required only when an authoritative trigger applies.
+- For validation-routing changes, targeted proof should name checks selected or executed by the project's validation tooling; broad smoke evidence is separate and required only when an authoritative trigger applies.
 
 ## First-pass checklist coverage
 
@@ -212,11 +216,11 @@ Do not add a dedicated `pr-review` stage. It is an unsupported review stage unle
 
 ## Workflow handoff behavior
 
-- In a workflow-managed full-feature flow, emit the first-pass review record before any review-driven fix begins.
-- In a workflow-managed full-feature flow, `clean-with-notes` hands off according to the active plan and milestone state when no stop condition applies.
-- In a workflow-managed full-feature flow, `changes-requested` enters the `review-resolution` loop, addresses the findings, and reruns `code-review` when no stop condition applies.
-- In a workflow-managed full-feature flow, `blocked` stops and reports the blocker.
-- In a workflow-managed full-feature flow, `inconclusive` stops and reports the missing evidence. It does not enter `review-resolution`.
+- In a workflow-managed standard workflow, emit the first-pass review record before any review-driven fix begins.
+- In a workflow-managed standard workflow, `clean-with-notes` hands off according to the active plan and milestone state when no stop condition applies.
+- In a workflow-managed standard workflow, `changes-requested` enters the `review-resolution` loop, addresses the findings, and reruns `code-review` when no stop condition applies.
+- In a workflow-managed standard workflow, `blocked` stops and reports the blocker.
+- In a workflow-managed standard workflow, `inconclusive` stops and reports the missing evidence. It does not enter `review-resolution`.
 - Stop instead of auto-entering `review-resolution` when the request is review-only, the request is isolated `code-review`, a finding requires a product/spec/architecture/ADR/scope decision, a higher-priority repository policy requires human review, the actual diff/tests/upstream artifacts are unavailable, or the user explicitly asked to stop after review.
 - Direct `code-review` requests remain isolated by default unless the user explicitly asks to continue beyond the review result.
 
@@ -235,12 +239,12 @@ Stop instead of clean handoff when:
 For a milestone-based plan, identify the reviewed milestone and inspect the active plan before choosing the next stage.
 
 - A clean non-final milestone closes the reviewed milestone and hands off to the next in-scope implementation milestone.
-- A clean final milestone closes the reviewed milestone and hands off to `verify` only when no in-scope implementation milestone remains open or unresolved and no required review-resolution remains open.
+- A clean final milestone closes the reviewed milestone and hands off to `ci-maintenance` when triggered; otherwise it hands off to `explain-change`, only when no in-scope implementation milestone remains open or unresolved and no required review-resolution remains open.
 - Findings that require review-resolution, fixes, owner decision, or re-review move the reviewed milestone to `resolution-needed` and keep the workflow on that same milestone.
 - Accepted fixes remain attached to the same milestone. When re-review is required, the milestone returns to `review-requested` before rerun `code-review`.
-- If the reviewed milestone or remaining in-scope implementation milestones cannot be determined from the active plan and review output, return `inconclusive` or require a plan update instead of handing off to `verify`.
+- If the reviewed milestone or remaining in-scope implementation milestones cannot be determined from the active plan and review output, return `inconclusive` or require a plan update instead of handing off to final closeout.
 
-A clean review of one non-final implementation milestone is not proof that the whole plan is ready for `verify`.
+A clean review of one non-final implementation milestone is not proof that the whole plan is ready for final closeout.
 
 ## Plan closeout check
 
@@ -252,7 +256,7 @@ For milestone-based plans, the review output must include or require a current h
 - required review-resolution, if any;
 - remaining in-scope implementation milestones;
 - next stage;
-- verify readiness and the reason.
+- final closeout readiness and the reason.
 
 When review is `clean-with-notes` and no review-resolution is required, update or require update of the reviewed milestone from `review-requested` to `closed`. When findings require review-resolution, update or require update of the reviewed milestone to `resolution-needed`.
 
@@ -334,8 +338,13 @@ Start with:
 - Artifacts changed:
 - Open blockers:
 - Next stage:
+- Reviewed milestone:
 - Review status:
+- Milestone closeout:
+- Remaining implementation milestones:
+- Required review-resolution:
 - Finding IDs:
+- Verify readiness:
 ```
 
 Then include:

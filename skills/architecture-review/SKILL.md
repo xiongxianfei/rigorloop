@@ -1,7 +1,7 @@
 ---
 name: architecture-review
 description: >
-  Review a proposed architecture/design before execution planning. Use for cross-component, high-risk, data, security, performance, migration, or long-lived design decisions.
+  Review a proposed architecture/design before execution planning. Use for cross-component, hard-to-reverse, data, security, performance, migration, or long-lived design decisions.
 argument-hint: [architecture doc path, ADR path, or feature name]
 ---
 

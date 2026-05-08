@@ -1,7 +1,7 @@
 ---
 name: explain-change
 description: >
-  Explain why the agent made each meaningful change by linking the actual diff to the problem, proposal, requirements, architecture decisions, plan milestones, tests, and verification evidence. Use after implementation and verification, before PR, or whenever the user asks why code changed.
+  Explain why the agent made each meaningful change by linking the actual diff to the problem, proposal, requirements, architecture decisions, plan milestones, tests, review outcomes, and available validation evidence. Use after implementation and review-resolution, before final verify and PR, or whenever the user asks why code changed.
 ---
 
 # Change rationale explanation
@@ -20,7 +20,7 @@ Read:
 - test spec;
 - architecture doc and ADRs;
 - concrete plan and validation notes;
-- code-review and verify findings;
+- code-review findings and prior verification evidence when it exists;
 - `review-resolution.md` when material review findings exist;
 - test and CI output;
 - `AGENTS.md` and `CONSTITUTION.md` if relevant.
@@ -43,7 +43,7 @@ docs/explain/YYYY-MM-DD-slug.md
 
 only when the governing workflow contract explicitly allows that top-level explain artifact class for the change.
 
-For small fast-lane or otherwise exempt changes, inline explanation in the final response or PR body is enough.
+For isolated manual skill invocations that are not used to claim complete workflow delivery, inline explanation in the final response or PR body may be enough when the governing workflow contract allows it.
 
 ## Required sections
 
@@ -63,7 +63,7 @@ For small fast-lane or otherwise exempt changes, inline explanation in the final
    - test IDs;
    - what each test proves;
    - why the test level is appropriate.
-6. **Verification evidence**:
+6. **Validation evidence available before final verify**:
    - commands run;
    - CI status if known;
    - manual checks.
@@ -91,6 +91,7 @@ File | Change | Reason | Source artifact | Test/evidence
 - Do not justify unrelated changes; flag them.
 - Do not claim a requirement drove a change unless the link is real.
 - Do not hide validation gaps.
+- Do not claim final `verify`, `branch-ready`, `pr-body-ready`, `pr-open-ready`, or hosted CI-final status before the owning stage has produced that evidence.
 - Material finding closeout must not proceed at `Closeout status: open`; `Closeout status: closed` requires final dispositions, no `needs-decision`, and no stale `review-log.md` open findings.
 - A stage-owned non-approval outcome that blocks downstream progress or requires revision needs a same-stage later review round or explicit reviewer or owner closeout naming the original Review ID; `review-resolution.md` alone is not a silent substitute.
 - For no-material review events, no-material detailed records need `review-log.md` but not an empty `review-resolution.md`.
@@ -102,9 +103,9 @@ File | Change | Reason | Source artifact | Test/evidence
 
 ## Workflow handoff behavior
 
-- In a workflow-managed full-feature flow, successful `explain-change` completion hands off to `pr` unless a stop condition applies.
+- In a workflow-managed standard workflow, successful `explain-change` completion hands off to `verify` unless a stop condition applies.
 - Direct `explain-change` requests remain isolated by default unless the user explicitly asks to continue beyond the explanation.
-- If explanation work surfaces a validation gap, stale artifact, or other blocker, stop and report it instead of implying the change is ready for `pr`.
+- If explanation work surfaces a validation gap, stale artifact, or other blocker, stop and report it instead of implying the change is ready for `verify` or `pr`.
 
 ## Evidence collection efficiency
 
@@ -119,7 +120,7 @@ Read the full file when the whole file is the review target, the relevant sectio
 - explanation artifact path or inline explanation;
 - trace from problem to diff;
 - file-by-file rationale;
-- tests and verification evidence;
+- tests and available validation evidence;
 - alternatives rejected;
 - remaining risks;
-- PR handoff summary bullets plus a readiness statement for `pr` or blocker state.
+- readiness statement for `verify` or blocker state.

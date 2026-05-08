@@ -2180,7 +2180,7 @@ raise SystemExit(3)
             "skills/implement/SKILL.md": [
                 "targeted proof",
                 "broad smoke",
-                "scripts/select-validation.py",
+                "project's validation selector",
                 "selected checks",
                 "skills.validate",
             ],
@@ -2196,7 +2196,7 @@ raise SystemExit(3)
                 "manual proof",
                 "release metadata",
                 "not-run",
-                "bash scripts/ci.sh --mode broad-smoke",
+                "project's broad validation command",
                 "broad_smoke_required",
             ],
             "skills/workflow/SKILL.md": [

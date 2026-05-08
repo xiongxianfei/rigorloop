@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -17,11 +17,12 @@ Review closeout: plan-review-r2
 Review closeout: code-review-r1
 Review closeout: code-review-r2
 Review closeout: code-review-r3
+Review closeout: code-review-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `plan-review-r1`, `architecture-review-r1`, `plan-review-r2`, `code-review-r1`, `code-review-r2`, `code-review-r3`, `code-review-r4`
-- Findings resolved: 21
-- Unresolved findings: 2
-- Final result: proposal-review R1 identified five major findings and three concerns. Those findings are closed by proposal revisions. Proposal-review R2 approved the revised proposal with no material findings. Spec-review R1 findings are closed by removing the proportional-evidence/tiny-change contract, routing final milestone closeout through `ci-maintenance` when triggered, then `explain-change`, `verify`, and `pr`, and refreshing current next-artifact sections. Spec-review R2 findings are closed by removing remaining retired route vocabulary, replacing direct-verify closeout wording with final-closeout readiness, aligning autoprogression vocabulary with mandatory or triggered downstream stages, and updating matching test specs. Spec-review R3 finding is closed by replacing remaining stale direct-`verify` milestone-aware closeout wording in examples, tests, code-review guidance, and plan guidance. Spec-review R4 finding is closed by replacing the remaining retired wording, regenerating derived skill and adapter output, and adding case-insensitive hyphen/space-aware static checks for public workflow and shipped skill surfaces. Spec-review R5 approved the amended workflow spec and related proof surfaces with no material findings. Architecture-review R1 approved the latest canonical architecture package update with no material findings. Plan-review R1 findings are closed by normalizing architecture status/readiness, updating plan handoff, moving proof-map confirmation into implementation readiness, and marking M6 as `Milestone type: lifecycle-closeout`. Plan-review R2 approved the execution plan with no material findings. Code-review R1 finding CR1 is closed by the review bookkeeping that made the M1 plan-state surfaces consistent. Code-review R2 found no material findings and closes M1. Code-review R3 found no material findings and closes M2. Code-review R4 found CR2 and CR3 in M3 and keeps M3 in review-resolution.
+- Findings resolved: 23
+- Unresolved findings: 0
+- Final result: proposal-review R1 identified five major findings and three concerns. Those findings are closed by proposal revisions. Proposal-review R2 approved the revised proposal with no material findings. Spec-review R1 findings are closed by removing the proportional-evidence/tiny-change contract, routing final milestone closeout through `ci-maintenance` when triggered, then `explain-change`, `verify`, and `pr`, and refreshing current next-artifact sections. Spec-review R2 findings are closed by removing remaining retired route vocabulary, replacing direct-verify closeout wording with final-closeout readiness, aligning autoprogression vocabulary with mandatory or triggered downstream stages, and updating matching test specs. Spec-review R3 finding is closed by replacing remaining stale direct-`verify` milestone-aware closeout wording in examples, tests, code-review guidance, and plan guidance. Spec-review R4 finding is closed by replacing the remaining retired wording, regenerating derived skill and adapter output, and adding case-insensitive hyphen/space-aware static checks for public workflow and shipped skill surfaces. Spec-review R5 approved the amended workflow spec and related proof surfaces with no material findings. Architecture-review R1 approved the latest canonical architecture package update with no material findings. Plan-review R1 findings are closed by normalizing architecture status/readiness, updating plan handoff, moving proof-map confirmation into implementation readiness, and marking M6 as `Milestone type: lifecycle-closeout`. Plan-review R2 approved the execution plan with no material findings. Code-review R1 finding CR1 is closed by the review bookkeeping that made the M1 plan-state surfaces consistent. Code-review R2 found no material findings and closes M1. Code-review R3 found no material findings and closes M2. Code-review R4 findings CR2 and CR3 are closed by canonical skill fixes, generated skill and adapter refresh, and static wording checks that reject the stale direct-final-verify and verify-before-explanation phrases. M3 remains ready for code-review rerun before it can be considered clean.
 
 ## Resolution Overview
 
@@ -48,8 +49,8 @@ Review closeout: code-review-r3
 | PLR2 | accepted | resolved | Reworded `test-spec` readiness as readiness to author test-spec and moved proof-map confirmation into implementation readiness. |
 | PLR3 | accepted | resolved | Marked M6 as `Milestone type: lifecycle-closeout` rather than a planned implementation milestone state. |
 | CR1 | accepted | resolved | M1 plan state surfaces were made internally consistent and M1 is ready for code-review rerun. |
-| CR2 | accepted | open | Stale direct final-milestone-to-`verify` wording remains in the public `code-review` skill Handoff section and generated copies. |
-| CR3 | accepted | open | Stale verify-before-explanation wording remains in the public `verify` skill description/purpose and generated copies. |
+| CR2 | accepted | resolved | Updated `code-review` so a clean final implementation milestone reaches final closeout, not direct `verify`, and added static checks that reject the stale handoff phrase across shipped skill surfaces. |
+| CR3 | accepted | resolved | Updated `verify` so workflow-managed final verification runs after durable rationale and before PR while preserving isolated direct `verify`, and added static checks that reject verify-before-explanation wording across shipped skill surfaces. |
 
 ## Resolution Entries
 
@@ -352,22 +353,22 @@ No material findings.
 
 Finding ID: CR2
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implementation owner
 Owning stage: review-resolution
-Stop state: M3 is `resolution-needed` until canonical and shipped `code-review` skill text no longer preserves direct final-milestone-to-`verify` routing.
+Chosen action: Updated `skills/code-review/SKILL.md` so a clean final implementation milestone reaches final closeout, not direct `verify`. Final closeout runs `ci-maintenance` when triggered, otherwise `explain-change`, then `verify`, then `pr`.
 Rationale: The approved workflow routes final implementation closeout through `ci-maintenance` when triggered, otherwise `explain-change`, before `verify` and `pr`. A top-level public Handoff line that says final clean review can route to `verify` preserves the retired ordering.
 Validation target: `skills/code-review/SKILL.md`, generated code-review skill copies, and `scripts/test-skill-validator.py` reject the stale direct-verify final-handoff phrase.
-Expected proof: Selected M3 validation passes after the canonical skill fix, generated-output refresh or drift proof, and an updated static assertion that catches the stale phrase.
+Validation evidence: `python scripts/test-skill-validator.py` passed 47 tests, including `test_code_review_and_verify_public_skills_use_final_closeout_order`; `python scripts/build-skills.py --check` passed; `python scripts/build-adapters.py --version 0.1.1 --check` passed; the stale-phrase scan over `skills`, `.codex/skills`, and `dist/adapters` returned no matches.
 
 #### CR3 - Verify skill still describes verification before explanation
 
 Finding ID: CR3
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implementation owner
 Owning stage: review-resolution
-Stop state: M3 is `resolution-needed` until canonical and shipped `verify` skill text describes final verify as after durable rationale and before PR.
+Chosen action: Updated `skills/verify/SKILL.md` so workflow-managed final `verify` runs after durable change rationale exists and before PR, while preserving isolated direct `verify` behavior.
 Rationale: The approved workflow moved `explain-change` before final `verify`. Public `verify` text that says verification happens before explanation can cause future agents to recreate the ordering bug.
 Validation target: `skills/verify/SKILL.md`, generated verify skill copies, and `scripts/test-skill-validator.py` reject stale verify-before-explanation wording.
-Expected proof: Selected M3 validation passes after the canonical skill fix, generated-output refresh or drift proof, and an updated static assertion that catches the stale phrases.
+Validation evidence: `python scripts/test-skill-validator.py` passed 47 tests, including `test_code_review_and_verify_public_skills_use_final_closeout_order`; `python scripts/build-skills.py --check` passed; `python scripts/build-adapters.py --version 0.1.1 --check` passed; the stale-phrase scan over `skills`, `.codex/skills`, and `dist/adapters` returned no matches.

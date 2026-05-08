@@ -43,6 +43,7 @@ requirements:
   - Record clean code-review R3 and close M2 before M3 implementation begins.
   - Correct the M1/M2 closeout commit gap before continuing M3.
   - Implement M3 canonical skill and public skill portability alignment before code-review M3.
+  - Resolve code-review R4 findings CR2 and CR3 before rerun code-review M3.
 tests:
   - Artifact lifecycle validation for the proposal.
   - Artifact lifecycle validation for the draft spec amendments.
@@ -77,6 +78,7 @@ tests:
   - M1/M2 catch-up milestone commit correction before M3 continues.
   - M3 skill validation, skill-validator regression, selector regression, retired-route scan, public skill internal-detail scan, selected CI, diff, and whitespace validation before code-review M3.
   - Code-review R4 review-recording validation after CR2 and CR3 are recorded.
+  - CR2/CR3 review-resolution validation with stale final-closeout phrase checks, generated-output drift checks, adapter distribution tests, review artifact closeout validation, selected CI, diff, and whitespace checks before rerun code-review M3.
 validation:
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md
     result: pass_after_proposal_revision
@@ -508,6 +510,36 @@ validation:
     result: pass_no_whitespace_matches_after_code_review_r4_recording
   - command: git commit
     result: pass_m1_m2_catch_up_milestone_commit_before_m3_continues
+  - command: python scripts/validate-skills.py
+    result: pass_23_canonical_skill_files_after_cr2_cr3_resolution
+  - command: python scripts/test-skill-validator.py
+    result: pass_47_tests_after_cr2_cr3_static_final_closeout_checks
+  - command: python scripts/test-select-validation.py
+    result: pass_57_tests_after_cr2_cr3_resolution
+  - command: python scripts/build-skills.py
+    result: pass_refreshed_generated_codex_skill_mirror_after_cr2_cr3_resolution
+  - command: python scripts/build-adapters.py --version 0.1.1
+    result: pass_refreshed_public_adapter_packages_after_cr2_cr3_resolution
+  - command: python scripts/build-skills.py --check
+    result: pass_generated_skills_in_sync_after_cr2_cr3_resolution
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_generated_adapter_output_in_sync_after_cr2_cr3_resolution
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_56_tests_after_cr2_cr3_resolution
+  - command: rg -n -i '(`?verify`?[[:space:]]+only[[:space:]]+after[[:space:]]+the[[:space:]]+final[[:space:]-]+in[[:space:]-]+scope[[:space:]]+implementation[[:space:]]+milestone|before explanation or PR|toward explanation and PR|verify[[:space:]]*(->|→)[[:space:]]*`?explain-change`?)' skills .codex/skills dist/adapters
+    result: pass_no_matches_after_cr2_cr3_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-single-workflow-lane-explain-before-verify
+    result: pass_cr2_cr3_closeout_reviews_14_findings_23_log_entries_14_resolution_entries_23
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_valid_change_metadata_after_cr2_cr3_resolution
+  - command: bash scripts/ci.sh --mode explicit over full dirty path set
+    result: pass_selected_skills_adapters_review_artifacts_lifecycle_change_metadata_selector_checks_after_cr2_cr3_resolution
+  - command: git diff --check -- $(git diff --name-only)
+    result: pass_after_cr2_cr3_resolution
+  - command: bash -c 'if git diff --name-only | xargs -r rg -n "[[:blank:]]$|\t"; then exit 1; else exit 0; fi'
+    result: pass_no_whitespace_matches_after_cr2_cr3_resolution
+  - command: git commit
+    result: pass_m3_review_resolution_handoff_commit_before_rerun_code_review
 changed_files:
   - AGENTS.md
   - CONSTITUTION.md
@@ -555,5 +587,5 @@ changed_files:
   - docs/learn/sessions/2026-05-08-milestone-commit-policy-mismatch.md
   - docs/learn/sessions/2026-05-08-spec-review-rounds-and-readiness.md
 review:
-  status: m3-review-resolution-needed
-  unresolved_items: 2
+  status: m3-review-requested-after-cr2-cr3-resolution
+  unresolved_items: 0
