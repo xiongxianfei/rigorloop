@@ -350,10 +350,10 @@ The test spec should require focused static assertions for:
 - Expected observable result: final artifacts are synchronized, verification evidence is durable, and PR handoff is ready without relying on lifecycle changes after the PR merges.
 - Commit message: `M5: close skill contract optimization plan`
 - Milestone closeout:
-  - [ ] selected validation passed
-  - [ ] review-resolution closed if triggered
+  - [x] selected validation passed
+  - [x] review-resolution closed if triggered
   - [ ] verify passed
-  - [ ] explain-change updated
+  - [x] explain-change updated
   - [ ] `docs/plan.md` and this plan body synchronized
   - [ ] PR handoff complete
 - Risks:
@@ -527,6 +527,13 @@ The test spec should require focused static assertions for:
 - 2026-05-08: `bash scripts/ci.sh --mode explicit` using the M4 concrete generated path list passed selected checks during code-review M4: `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
 - 2026-05-08: `git diff --check -- .codex/skills dist/adapters docs/plans/2026-05-08-skill-contract-optimization.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml` passed during code-review M4.
 - 2026-05-08: `rg -n '[[:blank:]]$|\t' .codex/skills dist/adapters docs/plans/2026-05-08-skill-contract-optimization.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml` found no matches during code-review M4.
+- 2026-05-08: `verify` selected CI, review artifact closeout, change metadata validation, and diff hygiene passed, then blocked because the required durable change-local reasoning artifact `docs/changes/2026-05-08-skill-contract-optimization/explain-change.md` was missing.
+- 2026-05-08: Created `docs/changes/2026-05-08-skill-contract-optimization/explain-change.md` and indexed it in `change.yaml`. Final `verify` must be rerun because this artifact was added after the prior verification pass.
+- 2026-05-08: `python scripts/validate-change-metadata.py docs/changes/2026-05-08-skill-contract-optimization/change.yaml` passed after explain-change creation.
+- 2026-05-08: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-skill-contract-optimization` passed after explain-change creation.
+- 2026-05-08: `bash scripts/ci.sh --mode explicit` using all committed and worktree changed paths, including `docs/changes/2026-05-08-skill-contract-optimization/explain-change.md`, passed selected checks: `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
+- 2026-05-08: `git diff --check b8f64359a4d7642ef62ffc467c5c9c071ffcf871..HEAD` passed after explain-change creation.
+- 2026-05-08: `rg -n '[[:blank:]]$|\t' docs/changes/2026-05-08-skill-contract-optimization/explain-change.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml docs/plans/2026-05-08-skill-contract-optimization.md` found no matches after explain-change creation.
 
 ## Outcome and Retrospective
 
@@ -536,11 +543,11 @@ Plan is active. Implementation, review, verification, explanation, and PR handof
 
 Status: Active.
 
-Progress: proposal is accepted; spec is approved; plan-review approved the execution plan; test spec is active; M1 is closed after clean code-review R2; M2 is closed after clean code-review; M3 is closed after clean code-review; M4 is closed after clean code-review.
+Progress: proposal is accepted; spec is approved; plan-review approved the execution plan; test spec is active; M1 is closed after clean code-review R2; M2 is closed after clean code-review; M3 is closed after clean code-review; M4 is closed after clean code-review; explain-change is updated after the initial verify blocker.
 
-Readiness: Ready for verify.
+Readiness: Ready for verify rerun.
 
-Remaining completion gates: verify, explain-change, PR handoff, then Done if no true downstream event remains.
+Remaining completion gates: verify, PR handoff, then Done if no true downstream event remains.
 
 ## Risks and Follow-Ups
 

@@ -7,6 +7,7 @@ artifacts:
   spec: specs/skill-contract.md
   test_spec: specs/skill-contract.test.md
   plan: docs/plans/2026-05-08-skill-contract-optimization.md
+  explain_change: docs/changes/2026-05-08-skill-contract-optimization/explain-change.md
   review_resolution: docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md
 requirements:
   - Define a reviewable proposal direction for making RigorLoop skills smaller, claim-safe, summary-first, and handoff-explicit.
@@ -160,6 +161,16 @@ validation:
     result: pass_m4
   - command: rg -n '[[:blank:]]$|\\t' .codex/skills dist/adapters docs/plans/2026-05-08-skill-contract-optimization.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml
     result: pass_no_matches_m4
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+    result: pass_valid_change_metadata_after_explain_change
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-skill-contract-optimization
+    result: pass_closeout_after_explain_change
+  - command: bash scripts/ci.sh --mode explicit with all committed and worktree changed paths, including explain-change.md
+    result: pass_selected_full_branch_plus_explain_change_checks
+  - command: git diff --check b8f64359a4d7642ef62ffc467c5c9c071ffcf871..HEAD
+    result: pass_after_explain_change
+  - command: rg -n '[[:blank:]]$|\\t' docs/changes/2026-05-08-skill-contract-optimization/explain-change.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml docs/plans/2026-05-08-skill-contract-optimization.md
+    result: pass_no_matches_after_explain_change
 changed_files:
   - specs/skill-contract.md
   - specs/skill-contract.test.md
@@ -208,6 +219,7 @@ changed_files:
   - docs/plans/2026-05-08-skill-contract-optimization.md
   - docs/proposals/2026-05-08-skill-contract-optimization.md
   - docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+  - docs/changes/2026-05-08-skill-contract-optimization/explain-change.md
   - docs/changes/2026-05-08-skill-contract-optimization/review-log.md
   - docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md
   - docs/changes/2026-05-08-skill-contract-optimization/reviews/proposal-review-r1.md
