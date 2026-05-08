@@ -181,6 +181,8 @@ validation:
     result: pass_final_verify_diff_check
   - command: rg -n '[[:blank:]]$|\\t' across all 54 branch changed paths
     result: pass_final_verify_no_matches
+  - command: bash scripts/ci.sh --mode explicit --path docs/learn/sessions/2026-05-08-verify-explain-change-order.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+    result: pass_learn_session_selected_artifact_lifecycle_change_metadata_checks
 changed_files:
   - specs/skill-contract.md
   - specs/skill-contract.test.md
@@ -236,6 +238,7 @@ changed_files:
   - docs/changes/2026-05-08-skill-contract-optimization/reviews/proposal-review-r2.md
   - docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r1.md
   - docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r2.md
+  - docs/learn/sessions/2026-05-08-verify-explain-change-order.md
 review:
   status: closed
   unresolved_items: 0

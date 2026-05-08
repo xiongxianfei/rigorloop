@@ -537,6 +537,7 @@ The test spec should require focused static assertions for:
 - 2026-05-08: Final verify rerun passed `bash scripts/ci.sh --mode explicit` for all 54 branch changed paths from merge-base `b8f64359a4d7642ef62ffc467c5c9c071ffcf871`, including `docs/changes/2026-05-08-skill-contract-optimization/explain-change.md`. Selected checks: `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
 - 2026-05-08: Final verify rerun passed `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-skill-contract-optimization`, `python scripts/validate-change-metadata.py docs/changes/2026-05-08-skill-contract-optimization/change.yaml`, `git diff --check b8f64359a4d7642ef62ffc467c5c9c071ffcf871..HEAD`, and a whitespace scan over all 54 branch changed paths.
 - 2026-05-08: Broad smoke stayed untriggered because the active plan records `broad_smoke_required: false`, and selector, test spec, review-resolution, and release metadata did not require it.
+- 2026-05-08: Explicit `learn` session recorded the verify/explain-change ordering issue in `docs/learn/sessions/2026-05-08-verify-explain-change-order.md`. `bash scripts/ci.sh --mode explicit --path docs/learn/sessions/2026-05-08-verify-explain-change-order.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml` passed selected artifact lifecycle and change metadata checks.
 
 ## Outcome and Retrospective
 
@@ -556,3 +557,4 @@ Remaining completion gates: PR handoff, then Done if no true downstream event re
 
 - code-review M2 confirmed `AGENTS.md` and `docs/workflows.md` stayed concise enough while carrying the required skill-contract reminders.
 - Keep broad smoke untriggered unless selector, test spec, review-resolution, release metadata, or explicit reviewer requirement changes that.
+- Follow up with a proposal/spec decision on verify/explain-change ordering if maintainers want to remove the circular dependency recorded in `docs/learn/sessions/2026-05-08-verify-explain-change-order.md`.
