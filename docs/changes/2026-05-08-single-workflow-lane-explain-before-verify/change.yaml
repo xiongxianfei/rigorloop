@@ -45,6 +45,7 @@ requirements:
   - Implement M3 canonical skill and public skill portability alignment before code-review M3.
   - Resolve code-review R4 findings CR2 and CR3 before rerun code-review M3.
   - Record clean code-review R5 and close M3 before M4 generated-output confirmation begins.
+  - Implement M4 generated-output confirmation before code-review M4.
 tests:
   - Artifact lifecycle validation for the proposal.
   - Artifact lifecycle validation for the draft spec amendments.
@@ -81,6 +82,7 @@ tests:
   - Code-review R4 review-recording validation after CR2 and CR3 are recorded.
   - CR2/CR3 review-resolution validation with stale final-closeout phrase checks, generated-output drift checks, adapter distribution tests, review artifact closeout validation, selected CI, diff, and whitespace checks before rerun code-review M3.
   - Code-review R5 review recording, M3 closeout, review artifact closeout validation, change metadata validation, selected CI, diff, and whitespace validation.
+  - M4 generated-output confirmation with generator execution, generated-output drift checks, adapter validation, public skill portability validation, concrete-path selected CI, change metadata validation, diff, and whitespace checks.
 validation:
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md
     result: pass_after_proposal_revision
@@ -570,6 +572,34 @@ validation:
     result: pass_no_whitespace_matches_after_code_review_r5_recording
   - command: git commit
     result: pass_m3_clean_code_review_closeout_commit_before_m4
+  - command: python scripts/build-skills.py
+    result: pass_m4_generated_skills_refreshed_no_tracked_diff
+  - command: python scripts/build-adapters.py --version 0.1.1
+    result: pass_m4_generated_adapters_refreshed_no_tracked_diff
+  - command: python scripts/build-skills.py --check
+    result: pass_m4_generated_skills_in_sync
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_m4_generated_adapter_output_in_sync
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_m4_generated_adapters_valid
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_m4_adapter_distribution_56_tests
+  - command: python scripts/test-skill-validator.py
+    result: pass_m4_skill_validator_47_tests
+  - command: bash scripts/ci.sh --mode explicit --path .codex/skills --path dist/adapters --path scripts/adapter_templates
+    result: fail_m4_directory_paths_blocked_by_selector_then_replaced_with_concrete_paths
+  - command: bash -c 'args=(); while IFS= read -r path; do args+=(--path "$path"); done < <(git diff --name-only b742d0e..426d4bc -- .codex/skills dist/adapters scripts/adapter_templates); bash scripts/ci.sh --mode explicit "${args[@]}"'
+    result: pass_m4_concrete_generated_paths_selected_skills_drift_adapters_regression_adapters_drift_adapters_validate
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_valid_change_metadata_after_m4_handoff
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_m4_handoff_lifecycle_change_metadata_checks
+  - command: git diff --check -- docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_after_m4_handoff
+  - command: bash -c 'if rg -n "[[:blank:]]$|\t" docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml; then exit 1; else exit 0; fi'
+    result: pass_no_whitespace_matches_after_m4_handoff
+  - command: git commit
+    result: pass_m4_generated_output_confirmation_handoff_commit_before_code_review
 changed_files:
   - AGENTS.md
   - CONSTITUTION.md
@@ -618,5 +648,5 @@ changed_files:
   - docs/learn/sessions/2026-05-08-milestone-commit-policy-mismatch.md
   - docs/learn/sessions/2026-05-08-spec-review-rounds-and-readiness.md
 review:
-  status: m3-closed-m4-ready
+  status: m4-review-requested
   unresolved_items: 0
