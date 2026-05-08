@@ -2,14 +2,14 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `code-review-r1`
 - Findings resolved: 7
-- Unresolved findings: 0
-- Final result: proposal-review identified five major findings and two concerns in R1. The proposal now settles the first implementation slice, normative spec home, section variants, shared-block source boundary, review-resolution row wording, type-adapted result block, examples boundary, later-phase rollout, shared-block readiness and delivery, forbidden-overclaim validation, and minimum viable skill guidance. R2 approved the proposal with no material findings after those decisions were added.
+- Unresolved findings: 1
+- Final result: proposal-review identified five major findings and two concerns in R1. The proposal findings are closed. `code-review-r1` found one M1 validator-scaffolding issue, `CR1-F1`; its fix is applied and review-resolution remains open until code-review rerun closes the finding.
 
 ## Resolution Overview
 
@@ -22,6 +22,7 @@ Review closeout: proposal-review-r1
 | SCO6 | accepted | resolved | Renamed the claim-ownership row to `review-resolution artifact/guidance`. |
 | SCO7 | accepted | resolved | Changed the result block to a minimal common core plus optional type-specific fields. |
 | SCO8 | accepted | resolved | Made examples optional, bounded, and routed long examples outside skill files. |
+| CR1-F1 | accepted | fixed-pending-rereview | Tightened the first-slice test-spec assertion so short skill names cannot pass from unrelated words. |
 
 ## Resolution Entries
 
@@ -114,3 +115,17 @@ Validation evidence: `python scripts/validate-review-artifacts.py --mode closeou
 ### proposal-review-r2
 
 No material findings.
+
+### code-review-r1
+
+#### CR1-F1 - First-slice test-spec coverage check is too weak for short skill names
+
+Finding ID: CR1-F1
+Disposition: accepted
+Status: fixed-pending-rereview
+Owner: implement
+Owning stage: implement
+Chosen action: Tightened the `scripts/test-skill-validator.py` first-slice test-spec assertion so it checks exact bounded evidence from the T3 first-slice list instead of bare skill-name substrings. Also tightened the plan assertion to use canonical `skills/<skill>/SKILL.md` paths instead of bare skill-name substrings.
+Rationale: M1's static proof should not allow `pr` or other short skill names to pass from unrelated words in the test spec.
+Validation target: `python scripts/test-skill-validator.py` and the M1 selector/CI commands pass after the assertion is tightened.
+Validation evidence: `python scripts/test-skill-validator.py` passed after the bounded assertion change; `bash scripts/ci.sh --mode explicit --path scripts/test-skill-validator.py --path docs/changes/2026-05-08-skill-contract-optimization/review-log.md --path docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r1.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml --path docs/plans/2026-05-08-skill-contract-optimization.md` passed selected checks after the fix.
