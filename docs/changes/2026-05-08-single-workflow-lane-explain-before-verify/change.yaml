@@ -44,6 +44,7 @@ requirements:
   - Correct the M1/M2 closeout commit gap before continuing M3.
   - Implement M3 canonical skill and public skill portability alignment before code-review M3.
   - Resolve code-review R4 findings CR2 and CR3 before rerun code-review M3.
+  - Record clean code-review R5 and close M3 before M4 generated-output confirmation begins.
 tests:
   - Artifact lifecycle validation for the proposal.
   - Artifact lifecycle validation for the draft spec amendments.
@@ -79,6 +80,7 @@ tests:
   - M3 skill validation, skill-validator regression, selector regression, retired-route scan, public skill internal-detail scan, selected CI, diff, and whitespace validation before code-review M3.
   - Code-review R4 review-recording validation after CR2 and CR3 are recorded.
   - CR2/CR3 review-resolution validation with stale final-closeout phrase checks, generated-output drift checks, adapter distribution tests, review artifact closeout validation, selected CI, diff, and whitespace checks before rerun code-review M3.
+  - Code-review R5 review recording, M3 closeout, review artifact closeout validation, change metadata validation, selected CI, diff, and whitespace validation.
 validation:
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md
     result: pass_after_proposal_revision
@@ -540,6 +542,34 @@ validation:
     result: pass_no_whitespace_matches_after_cr2_cr3_resolution
   - command: git commit
     result: pass_m3_review_resolution_handoff_commit_before_rerun_code_review
+  - command: python scripts/validate-skills.py
+    result: pass_23_canonical_skill_files_during_code_review_r5
+  - command: python scripts/test-skill-validator.py
+    result: pass_47_tests_during_code_review_r5
+  - command: python scripts/test-select-validation.py
+    result: pass_57_tests_during_code_review_r5
+  - command: python scripts/build-skills.py --check
+    result: pass_generated_skills_in_sync_during_code_review_r5
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_generated_adapter_output_in_sync_during_code_review_r5
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_56_tests_during_code_review_r5
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_generated_adapters_valid_during_code_review_r5
+  - command: rg -n -i '(`?verify`?[[:space:]]+only[[:space:]]+after[[:space:]]+the[[:space:]]+final[[:space:]-]+in[[:space:]-]+scope[[:space:]]+implementation[[:space:]]+milestone|before explanation or PR|toward explanation and PR|verify[[:space:]]*(->|→)[[:space:]]*`?explain-change`?)' skills .codex/skills dist/adapters
+    result: pass_no_matches_during_code_review_r5
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-single-workflow-lane-explain-before-verify
+    result: pass_code_review_r5_closeout_reviews_15_findings_23_log_entries_15_resolution_entries_23
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_valid_change_metadata_after_code_review_r5
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r5.md
+    result: pass_code_review_r5_recording_review_artifacts_lifecycle_change_metadata_checks
+  - command: git diff --check -- docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r5.md
+    result: pass_after_code_review_r5_recording
+  - command: bash -c 'if rg -n "[[:blank:]]$|\t" docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r5.md; then exit 1; else exit 0; fi'
+    result: pass_no_whitespace_matches_after_code_review_r5_recording
+  - command: git commit
+    result: pass_m3_clean_code_review_closeout_commit_before_m4
 changed_files:
   - AGENTS.md
   - CONSTITUTION.md
@@ -582,10 +612,11 @@ changed_files:
   - docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r2.md
   - docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r3.md
   - docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r4.md
+  - docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r5.md
   - docs/learn/sessions/2026-05-08-architecture-update-workflow-overhead.md
   - docs/learn/sessions/2026-05-08-code-review-timing-evidence.md
   - docs/learn/sessions/2026-05-08-milestone-commit-policy-mismatch.md
   - docs/learn/sessions/2026-05-08-spec-review-rounds-and-readiness.md
 review:
-  status: m3-review-requested-after-cr2-cr3-resolution
+  status: m3-closed-m4-ready
   unresolved_items: 0
