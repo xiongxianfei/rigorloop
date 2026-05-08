@@ -71,7 +71,7 @@ Produce a PR readiness check, title, body, reviewer notes, risks, follow-ups, an
 ## Handoff
 
 - Normal next stage: open the PR when `branch-ready`, `pr-body-ready`, and `pr-open-ready` pass.
-- Conditional next stages: return to `verify`, `explain-change`, review-resolution, implementation, or artifact updates when readiness blockers remain; stop when tooling or permissions prevent opening.
+- Conditional next stages: return to `explain-change`, `verify`, review-resolution, implementation, or artifact updates when readiness blockers remain; stop when tooling or permissions prevent opening.
 - For full stage order and downstream-blocking semantics, route through the `workflow` skill.
 
 ## Claims this skill must not make

@@ -78,7 +78,7 @@ T1. Title
 
 ## Rules
 
-- Do not generate tests from an unreviewed or unstable spec unless using the fast lane and documenting the risk.
+- Do not generate tests from an unreviewed or unstable spec unless the user explicitly requests isolated test-planning output and the limitation is recorded.
 - Do not generate tests from a spec-review outcome that explicitly marked eventual `test-spec` readiness as `not-ready` or `not-assessed`.
 - Do not invent behavior not specified.
 - Do not mark a requirement covered by a test that does not assert it.

@@ -1,16 +1,16 @@
 # RigorLoop opencode Adapter
 
-This file is generated adapter output for RigorLoop {version}. Do not edit this package to change RigorLoop behavior; edit canonical repository sources under `skills/` and `scripts/adapter_templates/`, then rerun `python scripts/build-adapters.py --version {version}`.
+This file is generated adapter output for RigorLoop {version}. This package is not the canonical source of RigorLoop behavior. Do not edit installed adapter package files directly; update from a fresh RigorLoop adapter package instead.
 
-This package is independently installable by copying the contents of `{package_root}/` into a project root.
+This package is independently installable by copying this adapter package into a project root.
 
-Reusable workflow skills are installed under `{skill_root}/`.
+Reusable workflow skills are installed under `.opencode/skills/`.
 
 ## Using RigorLoop skills
 
 OpenCode has two project surfaces in this adapter:
 
-- `{skill_root}/` remains the reusable skill surface for all included portable RigorLoop skills.
+- `.opencode/skills/` remains the reusable skill surface for all included portable RigorLoop skills.
 - `.opencode/commands/` contains thin command aliases only for the curated lifecycle command set.
 
 TUI examples:
@@ -21,7 +21,7 @@ TUI examples:
 - `/code-review Review the current diff against the approved artifacts.`
 - `/pr Prepare the verified change for pull request review.`
 
-The generated aliases are limited to `proposal`, `proposal-review`, `spec`, `spec-review`, `plan`, `plan-review`, `test-spec`, `implement`, `code-review`, and `pr`. Other portable skills remain available from `{skill_root}/` but do not receive command aliases.
+The generated aliases are limited to `proposal`, `proposal-review`, `spec`, `spec-review`, `plan`, `plan-review`, `test-spec`, `implement`, `code-review`, and `pr`. Other portable skills remain available from `.opencode/skills/` but do not receive command aliases.
 
 One-shot example:
 

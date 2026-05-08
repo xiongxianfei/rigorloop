@@ -66,7 +66,7 @@ Do not claim:
 
 - code is implemented, review passed, verification passed, branch-ready, or PR-ready;
 - the plan is Done merely because it is ready for the next stage;
-- ready for PR or ready for verify without explicit remaining gates and the owning review/verification evidence;
+- ready for PR or ready for final closeout without explicit remaining gates and the owning review/verification evidence;
 - derived artifacts are current unless validation evidence proves it.
 
 Use `Readiness is not Done` as the default interpretation for handoff lines. Keep `Remaining completion gates` visible whenever readiness could be confused with completion.
@@ -151,11 +151,11 @@ implement M<n>
 -> implement M<n+1>, when another in-scope implementation milestone remains
 ```
 
-Do not hand off to `verify` until all in-scope implementation milestones are `closed` or explicitly removed by plan revision and required review-resolution is closed.
+Do not hand off to final closeout until all in-scope implementation milestones are `closed` or explicitly removed by plan revision and required review-resolution is closed.
 
-Milestones are not postponed to make `verify` available. If a planned implementation milestone no longer belongs in the current change, revise the plan before handoff.
+Milestones are not postponed to make final closeout available. If a planned implementation milestone no longer belongs in the current change, revise the plan before handoff.
 
-Use `lifecycle-closeout` for a milestone or section that tracks only downstream gates such as `verify`, `explain-change`, PR handoff, release, deploy, or final plan closeout. A mixed milestone that still contains implementation work remains an implementation milestone for verify-readiness decisions.
+Use `lifecycle-closeout` for a milestone or section that tracks only downstream gates such as `ci-maintenance`, `explain-change`, `verify`, PR handoff, release, deploy, or final plan closeout. A mixed milestone that still contains implementation work remains an implementation milestone for final-closeout readiness decisions.
 
 For milestone-based plans, include and update a current handoff summary whenever implementation or review changes milestone readiness:
 
@@ -166,8 +166,8 @@ Last reviewed milestone:
 Review status:
 Remaining in-scope implementation milestones:
 Next stage:
-Verify readiness:
-Reason verify is or is not ready:
+Final closeout readiness:
+Reason final closeout is or is not ready:
 ```
 
 ## Planning rules
@@ -181,18 +181,18 @@ Reason verify is or is not ready:
 - When a plan lifecycle transition is performed by a PR, plan the synchronized `docs/plan.md` and plan-body update before the PR opens for review.
 - If completion depends on a true downstream completion event, keep the plan `Active` and name that event; merge itself is not that event.
 - Do not create a plan that only the current chat context can understand.
-- Do not proceed to implementation until `plan-review` and `test-spec` are ready unless using the fast lane.
+- Do not proceed to implementation until `plan-review` and `test-spec` are ready unless the user explicitly requests an isolated manual skill invocation and the limitation is recorded.
 - If planning reveals spec or architecture gaps, update those artifacts first.
 
 ## Stop conditions
 
 Stop before handoff when:
 
-- required source artifacts are missing, contradictory, or not approved enough for the lane;
+- required source artifacts are missing, contradictory, or not approved enough for the workflow state;
 - architecture, migration, security, or release boundaries are too unclear to sequence safely;
 - validation commands cannot be identified;
 - a milestone would rely on chat-only context;
-- the plan would hide open implementation work behind `Ready for verify`, Done, or PR readiness wording.
+- the plan would hide open implementation work behind `Ready for final closeout`, Done, or PR readiness wording.
 
 ## Evidence collection efficiency
 

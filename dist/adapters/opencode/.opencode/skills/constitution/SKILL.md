@@ -64,7 +64,7 @@ Include these sections unless the repo already has equivalent guidance:
 9. **Review rules**: when to run proposal/spec/architecture/plan/code review.
 10. **Documentation rules**: which changes update specs, architecture docs, workflows, or learnings.
 11. **Agent behavior rules**: no silent assumptions, no unrelated refactors, no fake CI claims.
-12. **Fast-lane exceptions**: what small changes can skip the full lifecycle and what they still require.
+12. **Standard workflow and manual skill use**: one recommended standard workflow, isolated individual skill invocation, and evidence required before workflow completion claims.
 
 ## Normative language
 

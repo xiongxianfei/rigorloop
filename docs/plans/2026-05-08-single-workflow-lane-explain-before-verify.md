@@ -79,14 +79,14 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
 ## Current Handoff Summary
 
 - Current milestone: M3. Canonical Skill and Public Skill Portability Alignment
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M2
-- Review status: code-review R4 returned `changes-requested` with CR2 and CR3. M3 requires review-resolution and a rerun code-review.
-- Commit status: M1 and M2 closeout was corrected with a scoped catch-up milestone commit before continuing M3. Future milestone closeout must not mark a milestone closed until the milestone commit exists.
-- Remaining in-scope implementation milestones: M3 resolution/review pending; M4 and M5 planned.
-- Next stage: `review-resolution M3`
+- Review status: code-review R4 returned `changes-requested` with CR2 and CR3. Review-resolution fixed both findings; M3 requires rerun code-review before it can close.
+- Commit status: M1 and M2 closeout was corrected with a scoped catch-up milestone commit before continuing M3. M3 review-resolution changes are included in the `M3: align public skill workflow surfaces` handoff commit before rerun code-review. Future milestone closeout must not mark a milestone closed until the milestone commit exists.
+- Remaining in-scope implementation milestones: M3 rerun review pending; final generated-output confirmation and M5 review evidence remain planned.
+- Next stage: `code-review M3`
 - Final closeout readiness: not ready
-- Reason final closeout is not ready: M3 review-resolution and rerun code-review, M4-M5 implementation and review, required review-resolution if triggered, `ci-maintenance` if triggered, `explain-change`, final `verify`, and `pr` remain.
+- Reason final closeout is not ready: M3 rerun code-review, final generated-output confirmation, M5 review evidence, required review-resolution if triggered, `ci-maintenance` if triggered, `explain-change`, final `verify`, and `pr` remain.
 
 ## Milestones
 
@@ -198,7 +198,7 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
 
 ### M3. Canonical Skill and Public Skill Portability Alignment
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Update canonical skill guidance and static checks so shipped skills remain project-portable and claim-safe.
 - Requirements: Skill contract `R3d`-`R3l`, `R12b`, `R20`-`R20b`; workflow `R1`-`R7q`.
 - Files/components likely touched:
@@ -241,7 +241,8 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
   - Targeted validation passed before handoff.
 - Review status:
   - code-review R4 returned `changes-requested` with CR2 and CR3.
-  - M3 remains on the same milestone for review-resolution and rerun code-review.
+  - Review-resolution fixed CR2 and CR3 on the same milestone.
+  - M3 remains on the same milestone for rerun code-review.
 - Commit message: `M3: align public skill workflow surfaces`
 - Milestone closeout:
   - validation passed
@@ -258,7 +259,8 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
 ### M4. Generated Output and Adapter Refresh
 
 - Milestone state: planned
-- Goal: Regenerate derived Codex skill mirrors and public adapter packages from canonical skill and adapter-template sources.
+- Milestone type: generated-output-confirmation
+- Goal: Confirm derived Codex skill mirrors and public adapter packages remain current after M3 rerun review, regenerating again only if the rerun requires additional canonical changes.
 - Requirements: Workflow `R6d`-`R6da`; skill contract `R2`, `R3i`-`R3j`, `R20`-`R20b`.
 - Files/components likely touched:
   - `.codex/skills/`
@@ -266,13 +268,14 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
   - `scripts/adapter_templates/`
   - `docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml`
 - Dependencies:
-  - M3 canonical skill wording and validator changes.
+  - M3 canonical skill wording, validator changes, and code-review rerun.
 - Tests to add/update:
   - Generated-output drift checks.
   - Adapter distribution checks if adapter package metadata or template output changes.
 - Implementation steps:
-  - Run the skill generator rather than hand-editing `.codex/skills/`.
-  - Run the adapter generator rather than hand-editing `dist/adapters/`.
+  - Treat the CR2/CR3 generated-output refresh as already performed during M3 review-resolution.
+  - Run generated-output drift checks after M3 rerun review.
+  - Regenerate with the skill and adapter generators only if M3 rerun review causes further canonical source changes.
   - Confirm generated public skill copies inherit the public portability cleanup.
   - Confirm adapter instructions do not expose maintainer-only repository mechanics.
 - Validation commands:
@@ -282,7 +285,7 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
   - `python scripts/build-adapters.py --version 0.1.1 --check`
   - `python scripts/test-adapter-distribution.py`
   - `bash scripts/ci.sh --mode explicit --path .codex/skills --path dist/adapters --path scripts/adapter_templates`
-- Expected observable result: Generated mirrors and adapter packages are in sync with canonical sources and remain project-portable.
+- Expected observable result: Generated mirrors and adapter packages are in sync with canonical sources and remain project-portable after M3 rerun review.
 - Commit message: `M4: refresh generated workflow guidance`
 - Milestone closeout:
   - validation passed
@@ -424,8 +427,8 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
 - [x] Test-spec confirmation for the final implementation proof map.
 - [x] M1 source artifact lifecycle normalization closed after clean code-review R2 and corrected with the scoped M1/M2 catch-up milestone commit.
 - [x] M2 workflow contract and contributor guidance alignment closed after clean code-review R3 and corrected with the scoped M1/M2 catch-up milestone commit.
-- [ ] M3 canonical skill and public skill portability alignment. Code-review R4 changes-requested; review-resolution required for CR2 and CR3.
-- [ ] M4 generated output and adapter refresh.
+- [ ] M3 canonical skill and public skill portability alignment. CR2/CR3 review-resolution complete; code-review rerun required before closeout.
+- [ ] M4 generated output and adapter confirmation. CR2/CR3 required refresh already ran during M3 review-resolution; final drift confirmation remains.
 - [ ] M5 code-review and review-resolution when triggered.
 - [ ] M6 lifecycle closeout.
 
@@ -445,6 +448,7 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
 - 2026-05-08: M1/M2 closeout was corrected with a scoped catch-up milestone commit before continuing M3. Rationale: M1 and M2 were marked closed after clean reviews, but no initiative commit existed; the mixed M3 worktree made exact historical per-milestone snapshots unsafe to reconstruct, so the correction commit records the closed M1/M2 source, guidance, review, and lifecycle surfaces while leaving unresolved M3 implementation work unclosed.
 - 2026-05-08: M3 keeps the public skill portability check scoped to published skill text surfaces rather than every repository doc or adapter manifest. Rationale: shipped skill text must be project-portable, while maintainer docs, specs, tests, generator scripts, contributor guidance, and package manifests can still name repository mechanics.
 - 2026-05-08: Code-review R4 moves M3 to review-resolution. Rationale: the public `code-review` and `verify` skill text still contains stale final-closeout ordering language that current static checks missed.
+- 2026-05-08: CR2/CR3 review-resolution refreshed generated skill mirrors and adapter packages inside M3. Rationale: the accepted findings named generated public copies as affected surfaces, so generated-output correction had to happen before M3 rerun review rather than wait for a later standalone refresh.
 
 ## Surprises and Discoveries
 
@@ -458,6 +462,7 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
 - M1 and M2 were mistakenly marked closed before an initiative commit existed. The closeout fix is a scoped catch-up commit covering the completed M1/M2 surfaces; future milestones must not be marked closed until their commit exists.
 - M3's new published-skill portability check also scans generated skill copies under `.codex/skills/` and public adapter skill copies under `dist/adapters/`, but it does not prove generated-output drift. M4 still owns generator execution and drift checks.
 - Code-review R4 found that generated skill copies can be drift-clean while still faithfully reproducing a canonical skill wording bug. The static checks need phrase coverage for the stale final-closeout claims, not only drift checks.
+- CR2/CR3 turned part of M4 into M3 review-resolution scope because shipped generated copies carried the same canonical wording bug. M4 remains as a final generated-output confirmation after M3 rerun review.
 
 ## Validation Notes
 
@@ -553,24 +558,39 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
   - `bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r4.md` passed selected review-artifact, lifecycle, change-metadata regression, and change-metadata validation checks.
   - `git diff --check -- docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r4.md` passed.
   - Whitespace scan for the same code-review R4 recording paths passed.
+- 2026-05-08 CR2/CR3 review-resolution validation:
+  - `python scripts/validate-skills.py` passed for 23 canonical skill files.
+  - `python scripts/test-skill-validator.py` passed 47 tests, including stale final-closeout wording checks for public `code-review` and `verify` skill copies.
+  - `python scripts/test-select-validation.py` passed 57 tests.
+  - `python scripts/build-skills.py` refreshed `.codex/skills` from canonical skills.
+  - `python scripts/build-adapters.py --version 0.1.1` refreshed public adapter packages.
+  - `python scripts/build-skills.py --check` passed.
+  - `python scripts/build-adapters.py --version 0.1.1 --check` passed.
+  - `python scripts/test-adapter-distribution.py` passed 56 tests.
+  - Stale final-closeout wording scan over `skills`, `.codex/skills`, and `dist/adapters` returned no matches.
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-single-workflow-lane-explain-before-verify` passed with 14 reviews, 23 findings, 14 log entries, and 23 resolution entries.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml` passed.
+  - `bash scripts/ci.sh --mode explicit` over the full dirty path set passed selected skills, adapter, review artifact, lifecycle, change metadata, and selector checks.
+  - `git diff --check -- $(git diff --name-only)` passed.
+  - Whitespace scan over the full dirty path set passed.
 
 ## Outcome and Retrospective
 
 - Initiative remains active.
 - M1 implementation is closed after clean code-review R2 and covered by the scoped M1/M2 catch-up milestone commit.
 - M2 implementation is closed after clean code-review R3 and covered by the scoped M1/M2 catch-up milestone commit.
-- M3 code-review R4 found CR2 and CR3; review-resolution is required.
+- M3 code-review R4 found CR2 and CR3; review-resolution is complete and rerun code-review is required.
 - Final closeout is not ready.
 
 ## Readiness
 
-- Next stage: `review-resolution M3`.
+- Next stage: `code-review M3`.
 - Plan-review readiness: complete; plan-review R2 approved this plan.
 - Test-spec readiness: complete; matching test specs confirm the proof map against the approved plan.
-- Implementation readiness: M3 is not closed; it is in review-resolution for CR2 and CR3. Later milestones remain gated by the milestone-specific validation, code-review, and review-resolution rules in this plan.
+- Implementation readiness: M3 is not closed; CR2 and CR3 are resolved and M3 needs rerun code-review. Later milestones remain gated by the milestone-specific validation, code-review, and review-resolution rules in this plan.
 - Final closeout readiness: not ready until all in-scope implementation milestones are closed, required review-resolution is closed, `ci-maintenance` runs when triggered, `explain-change.md` exists and is current, `verify` passes, and PR handoff is prepared.
 
 ## Risks and Follow-Ups
 
-- Follow-up: review-resolution M3 for CR2 and CR3, then rerun code-review M3.
+- Follow-up: rerun code-review M3.
 - Follow-up: when the initiative reaches final closeout, update both `docs/plan.md` and this plan body in the same PR state transition.

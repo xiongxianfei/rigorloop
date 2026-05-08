@@ -72,7 +72,7 @@ Evaluate:
 
 ## Workflow handoff behavior
 
-- When ci-maintenance is part of a workflow-managed full-feature flow and the governing workflow contract elevated it after `verify`, successful ci-maintenance hands off to `explain-change` unless a stop condition applies.
+- When ci-maintenance is part of a workflow-managed standard workflow, successful ci-maintenance hands off to `explain-change` unless a stop condition applies.
 - When `ci` is run for a narrower or explicitly isolated purpose, report the CI infrastructure result without implying downstream continuation that was not requested.
 - If the needed CI automation cannot be created or updated safely, stop and report the blocker instead of claiming the workflow is ready to continue.
 
@@ -93,4 +93,4 @@ Read the full file when the whole file is the review target, the relevant sectio
 - concurrency and caching notes;
 - coverage against feature risk;
 - gaps or manual checks that CI does not cover;
-- readiness statement for `explain-change` or blocker state when `ci` is part of a workflow-managed full-feature flow.
+- readiness statement for `explain-change` or blocker state when `ci` is part of a workflow-managed standard workflow.

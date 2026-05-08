@@ -1,8 +1,8 @@
 # RigorLoop opencode Adapter
 
-This file is generated adapter output for RigorLoop 0.1.1. Do not edit this package to change RigorLoop behavior; edit canonical repository sources under `skills/` and `scripts/adapter_templates/`, then rerun `python scripts/build-adapters.py --version 0.1.1`.
+This file is generated adapter output for RigorLoop 0.1.1. This package is not the canonical source of RigorLoop behavior. Do not edit installed adapter package files directly; update from a fresh RigorLoop adapter package instead.
 
-This package is independently installable by copying the contents of `dist/adapters/opencode/` into a project root.
+This package is independently installable by copying this adapter package into a project root.
 
 Reusable workflow skills are installed under `.opencode/skills/`.
 
