@@ -97,14 +97,14 @@ The test spec should require focused static assertions for:
 
 ## Current Handoff Summary
 
-- Current milestone: M4
+- Current milestone: public-surface addendum
 - Current milestone state: closed
 - Last reviewed milestone: M4
 - Review status: clean-with-notes
 - Remaining in-scope implementation milestones: none
 - Next stage: Done
 - Verify readiness: passed
-- Reason plan is done: all in-scope implementation milestones are closed, code-review is complete, review-resolution is closed, explain-change is current, final selected verification passed, learn-session follow-up was recorded, and PR #34 is opened.
+- Reason plan is done: all in-scope implementation milestones are closed, code-review is complete, review-resolution is closed, explain-change is current, public skill surface cleanup is implemented, final selected verification passed, learn-session follow-ups are recorded, and PR #34 is opened.
 
 ## Milestones
 
@@ -317,6 +317,41 @@ The test spec should require focused static assertions for:
   - Re-run generators from canonical skills.
   - Replace unclassified selector paths with concrete generated adapter file paths.
 
+### Addendum. Public Skill Surface Boundary
+
+- Milestone state: closed
+- Goal: Keep published first-slice skill text free of repository-maintainer authoring, generation, adapter, selector-path, drift-check, and shared-block implementation details.
+- Requirements: `R3d`, `R3e`, `R8h`, `R12b`, `R15c`.
+- Files/components touched:
+  - `specs/skill-contract.md`
+  - `specs/skill-contract.test.md`
+  - `docs/workflows.md`
+  - `AGENTS.md`
+  - `templates/shared/evidence-collection-efficiency.md`
+  - `templates/shared/generated-output-handling.md`
+  - seven first-slice canonical skills
+  - generated `.codex/skills/` mirrors
+  - generated public adapter skill copies
+  - `scripts/test-skill-validator.py`
+- Implementation result:
+  - Public skills now route full workflow questions through the `workflow` skill instead of this repository's internal workflow spec path.
+  - The generated-output handling block is contributor-maintenance guidance only and is no longer copied into published skills.
+  - Static regression checks now reject the listed maintainer-only terms from first-slice public skill text.
+  - Generated mirrors and adapter copies were regenerated from canonical skills.
+- Validation commands:
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/validate-skills.py`
+  - `python scripts/build-skills.py`
+  - `python scripts/build-adapters.py --version 0.1.1`
+- Expected observable result: first-slice canonical skills, local Codex mirrors, and public adapter skill copies no longer expose repository-maintainer internals.
+- Commit message: `fix: keep maintainer internals out of public skills`
+- Milestone closeout:
+  - [x] targeted validation passed
+  - [x] public-surface static check added
+  - [x] canonical skills updated
+  - [x] generated outputs refreshed
+  - [x] plan and change metadata updated
+
 ## Lifecycle Closeout
 
 - Lifecycle label: lifecycle-closeout
@@ -414,10 +449,11 @@ The test spec should require focused static assertions for:
 - [x] M3 closed.
 - [x] M4 implementation complete and ready for code-review.
 - [x] M4 closed.
+- [x] Public skill surface boundary addendum implemented and generated output refreshed.
 - [x] Code-review clean or review-resolution closed if triggered.
-- [ ] Verify passed.
-- [ ] Explain-change complete.
-- [ ] PR handoff complete.
+- [x] Verify passed.
+- [x] Explain-change complete.
+- [x] PR handoff complete.
 
 ## Decision Log
 
@@ -429,6 +465,7 @@ The test spec should require focused static assertions for:
 - 2026-05-08: Limit M1 validator assertions to approved spec/test-spec/plan and path-boundary proof that can pass before canonical skill normalization. Rationale: first-slice skill section and overclaim checks depend on M2/M3 changes and should not be committed red as M1 closeout evidence.
 - 2026-05-08: Create shared-block source files for evidence collection and generated-output handling in M2 before copying them into first-slice skills. Rationale: M2 establishes canonical shared sources and M3 owns consuming skill normalization.
 - 2026-05-08: Copy both evidence collection and generated-output handling shared blocks into all seven first-slice canonical skills in M3. Rationale: the normalized first-slice skills all need the same source boundary and targeted-reading reminders, while generated output refresh remains the M4 milestone.
+- 2026-05-08: Treat shipped skill text as a public user-facing interface. Rationale: repository-maintainer source paths, generated mirrors, adapter paths, selector path constraints, drift-check mechanics, and shared-block implementation details belong in contributor/governance surfaces, not in published skills.
 
 ## Surprises and Discoveries
 
@@ -438,6 +475,7 @@ The test spec should require focused static assertions for:
 - 2026-05-08: M3 test-first validation failed as expected before first-slice skills had required core sections, compact result blocks, and copied generated-output shared blocks; it passed after normalizing the seven canonical skills.
 - 2026-05-08: Selector validation for M3 selected `skills.drift` and `adapters.drift` because canonical skills changed. This is expected and remains the M4 generated-output refresh gate.
 - 2026-05-08: M4 generated-output drift checks failed before regeneration for the seven `.codex/skills` mirrors and 21 public adapter skill copies, then passed after running the repository generators.
+- 2026-05-08: The public-surface follow-up showed that the earlier generated-output shared block was useful to maintainers but inappropriate inside shipped skills. It was kept as contributor-maintenance guidance and removed from published skill text.
 
 ## Validation Notes
 
@@ -540,17 +578,22 @@ The test spec should require focused static assertions for:
 - 2026-05-08: Explicit `learn` session recorded the verify/explain-change ordering issue in `docs/learn/sessions/2026-05-08-verify-explain-change-order.md`. `bash scripts/ci.sh --mode explicit --path docs/learn/sessions/2026-05-08-verify-explain-change-order.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml` passed selected artifact lifecycle and change metadata checks.
 - 2026-05-08: Post-learn selected CI over all 55 branch changed paths passed selected checks: `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
 - 2026-05-08: Draft PR #34 was opened to obtain the PR identifier, then `docs/plan.md` and this plan body were synchronized to Done before marking the PR ready for review.
+- 2026-05-08: `python scripts/test-skill-validator.py` passed 43 tests after adding public-surface checks for first-slice skills.
+- 2026-05-08: `python scripts/validate-skills.py` passed after public-surface skill edits, validating 23 skill files.
+- 2026-05-08: `python scripts/build-skills.py` and `python scripts/build-adapters.py --version 0.1.1` passed after public-surface skill edits and regenerated derived outputs.
+- 2026-05-08: `python scripts/build-skills.py --check`, `python scripts/build-adapters.py --version 0.1.1 --check`, `python scripts/validate-adapters.py --version 0.1.1`, and `python scripts/test-adapter-distribution.py` passed after the public-surface generated refresh.
+- 2026-05-08: `bash scripts/ci.sh --mode explicit` over all 56 branch changed paths passed selected public-surface checks: `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
 
 ## Outcome and Retrospective
 
-Plan is done. Implementation, review, verification, explanation, learn-session capture, and PR handoff are complete in this branch.
+Plan is done. Implementation, public-surface cleanup, review, verification, explanation, learn-session capture, and PR handoff are complete in this branch.
 
 ## Readiness
 
 - Branch-ready was established by final verify and post-learn selected validation.
 - M1 through M4 are closed after code-review, and review-resolution is closed.
 - Explain-change is recorded and current.
-- The verify/explain-change ordering learn session is recorded as a follow-up direction.
+- The verify/explain-change ordering and public skill surface boundary learn sessions are recorded as follow-up directions.
 - Plan index and plan body are synchronized as Done for PR #34 review.
 - PR #34 is open.
 
@@ -559,3 +602,4 @@ Plan is done. Implementation, review, verification, explanation, learn-session c
 - code-review M2 confirmed `AGENTS.md` and `docs/workflows.md` stayed concise enough while carrying the required skill-contract reminders.
 - Keep broad smoke untriggered unless selector, test spec, review-resolution, release metadata, or explicit reviewer requirement changes that.
 - Follow up with a proposal/spec decision on verify/explain-change ordering if maintainers want to remove the circular dependency recorded in `docs/learn/sessions/2026-05-08-verify-explain-change-order.md`.
+- The public skill surface boundary follow-up was implemented in this branch. Keep future public skills free of repository-maintainer source, generation, adapter, selector-path, drift-check, and shared-block implementation details.

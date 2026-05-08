@@ -24,7 +24,7 @@
 ## Testing strategy
 
 - Use contract and static wording checks because the approved first implementation slice is skill guidance and validator behavior, not a runtime workflow router.
-- Use `scripts/test-skill-validator.py` for machine-checkable invariants in canonical skills, shared blocks, workflow summaries, and narrow forbidden-overclaim checks.
+- Use `scripts/test-skill-validator.py` for machine-checkable invariants in canonical skills, shared blocks, workflow summaries, public skill surface boundaries, and narrow forbidden-overclaim checks.
 - Use `scripts/validate-skills.py` for authored skill structure after canonical skills are edited.
 - Use selector-selected validation to prove changed spec, plan, skill, template, generated, adapter, and change-local paths are classified without unclassified paths.
 - Use generated-output drift checks after canonical skill edits to prove `.codex/skills/` and public adapter packages remain derived output.
@@ -37,19 +37,19 @@
 | --- | --- | --- | --- |
 | `R1`, `R1a`, `R1b`, `R1c`, `R1d`, `R20`, `R20a`, `R20b` | `T1`, `T11`, `T13` | contract, manual | Normative source split and source-of-truth order |
 | `R2`, `R2a`, `R2b`, `R2c`, `R2d` | `T9`, `T13` | integration, smoke | Canonical skills, generated mirrors, adapter output, and drift checks |
-| `R3`, `R3a`, `R3b`, `R3c` | `T2`, `T13` | integration, manual | Required core sections, conditional sections, and preservation of useful local guidance |
+| `R3`, `R3a`, `R3b`, `R3c`, `R3d`, `R3e` | `T2`, `T14`, `T13` | integration, manual | Required core sections, conditional sections, public skill surface boundary, and preservation of useful local guidance |
 | `R4`, `R4a` | `T2`, `T5` | manual, integration | Authoring skill output ownership and quality checklist expectations, within first-slice applicability |
 | `R5`, `R5a`, `R5b` | `T4`, `T5`, `T7` | integration, manual | Review skill status/finding/recording contract and shared review recording preservation |
 | `R6`, `R6a`, `R6b`, `R6c` | `T3`, `T4`, `T12` | integration, manual | Execution skill proof boundaries and `ci`/`ci-maintenance` naming split |
 | `R7`, `R7a` | `T4`, `T11` | manual | `learn` and later support skills keep trigger/output/handoff boundaries |
-| `R8`, `R8a`, `R8b`, `R8c`, `R8d`, `R8e`, `R8f`, `R8g` | `T2`, `T3`, `T4`, `T5`, `T6`, `T8`, `T9` | integration, manual | First-slice scope, core sections, claims, result output, readiness wording, targeted reading, and generated drift |
+| `R8`, `R8a`, `R8b`, `R8c`, `R8d`, `R8e`, `R8f`, `R8g`, `R8h` | `T2`, `T3`, `T4`, `T5`, `T6`, `T8`, `T9`, `T14` | integration, manual | First-slice scope, core sections, claims, result output, readiness wording, targeted reading, generated drift, and public surface cleanup |
 | `R9`, `R9a`, `R9b`, `R9c`, `R9d` | `T3`, `T12` | manual, integration | Later-phase normalization order and optional skills remain out of scope |
 | `R10`, `R10a`, `R10b`, `R10c`, `R10d`, `R10e`, `R10f` | `T4`, `T10`, `T13` | integration, manual | Claims this skill must not make and narrow overclaim checks |
 | `R11`, `R11a`, `R11b`, `R11c` | `T5`, `T13` | integration, manual | Summary-first result output and common/optional fields |
-| `R12`, `R12a`, `R12b`, `R12c` | `T5`, `T13` | integration, manual | Local handoff, workflow spec pointer, and isolated invocation boundary |
+| `R12`, `R12a`, `R12b`, `R12c` | `T5`, `T14`, `T13` | integration, manual | Local handoff, public workflow routing pointer, and isolated invocation boundary |
 | `R13`, `R13a`, `R13b`, `R13c`, `R13d`, `R13e`, `R13f` | `T6`, `T13` | integration, manual | Progress, readiness, closeout, Done, and Ready for verify wording |
 | `R14`, `R14a`, `R14b`, `R14c`, `R14d`, `R14e` | `T7`, `T13` | integration, manual | Shared-block source, copy-and-check, authority boundary, and no generation v1 |
-| `R15`, `R15a`, `R15b` | `T7`, `T13` | integration, manual | First shared-block set and deferred shared blocks |
+| `R15`, `R15a`, `R15b`, `R15c` | `T7`, `T14`, `T13` | integration, manual | First published shared-block set, contributor-only generated-output block, and deferred shared blocks |
 | `R16`, `R16a`, `R16b`, `R16c` | `T8`, `T13` | integration, manual | Evidence-reading guidance and full-file read escalation |
 | `R17`, `R17a`, `R17b` | `T8`, `T13` | manual | Optional bounded examples and long-example exclusion |
 | `R18`, `R18a`, `R18b`, `R18c`, `R18d` | `T10`, `T13` | integration, manual | Positive-first, narrow, incident-based validator strategy |
@@ -62,7 +62,7 @@
 | `E1` | `T4`, `T6` | `implement` may report implementation/validation and `code-review` handoff, but not review, branch, PR, or verify ownership |
 | `E2` | `T3` | Non-first-slice skills remain valid until later phases |
 | `E3` | `T7` | Shared block is copied verbatim and checked for drift |
-| `E4` | `T9` | Generated skill mirrors and adapter outputs stay derived |
+| `E4` | `T9`, `T14` | Generated skill mirrors and adapter outputs stay derived, while public skills omit maintainer mechanics |
 | `E5` | `T10` | Overclaim validation is narrow and positive-first |
 | `E6` | `T11` | One-off behavior does not create a new skill |
 | `E7` | `T3`, `T12` | `ci-maintenance` maps to existing `ci` skill entrypoint |
@@ -83,7 +83,7 @@
 | Acceptance criterion | Covered by |
 | --- | --- |
 | Skill contract source is identifiable | `T1`, `T13` |
-| Skill-contract behavior is distinct from workflow-routing behavior | `T1`, `T5` |
+| Skill-contract behavior is distinct from workflow-routing behavior | `T1`, `T5`, `T14` |
 | Required core sections are identifiable | `T2` |
 | First implementation slice is identifiable | `T3` |
 | Later normalization phases are identifiable | `T3` |
@@ -92,6 +92,7 @@
 | Skill outputs are summary-first | `T5` |
 | Shared blocks are copied and drift-checked | `T7` |
 | Generated output is regenerated, not hand-edited | `T9` |
+| Published skills omit repository-maintainer internals | `T14` |
 | Validator checks are positive-first, narrow, and not broad semantic scoring | `T10` |
 | New skill justification is clear | `T11` |
 
@@ -209,10 +210,11 @@
   - Assert normalized skills require a compact `## Result` block or reviewed equivalent summary format.
   - Assert the common fields `Skill`, `Status`, `Artifacts changed`, `Open blockers`, and `Next stage` are present where the result block is specified.
   - Assert optional fields are used only where relevant, such as `Validation`, `Review status`, `Finding IDs`, `Milestone state`, `Readiness`, `Follow-ups`, `Session path`, or `Lessons captured`.
-  - Assert handoff sections name local normal and conditional next stages and point to `specs/rigorloop-workflow.md` for full routing.
+  - Assert handoff sections name local normal and conditional next stages and route full workflow questions through the `workflow` skill or another user-facing workflow instruction surface.
+  - Assert handoff sections do not point published skill users to this repository's internal workflow spec path.
   - Manually confirm no skill implies automatic downstream continuation for isolated invocations.
 - Expected result:
-  - Later agents can read a compact result first, while workflow routing remains owned by the workflow spec.
+  - Later agents can read a compact result first, while workflow routing remains owned by the user-facing workflow guidance.
 - Failure proves:
   - Skills remain long, stateful, or overbroad in downstream routing claims.
 - Automation location:
@@ -244,24 +246,24 @@
   - `scripts/test-skill-validator.py`
   - manual plan and skill review during M3 and verify
 
-### T7. Shared blocks are canonical copied text with drift checks
+### T7. Public shared blocks are canonical copied text with drift checks
 
 - Covers: `R5b`, `R14`, `R14a`, `R14b`, `R14c`, `R14d`, `R14e`, `R15`, `R15a`, `R15b`, E3, EC3, EC4
 - Level: integration, manual
 - Fixture/setup:
   - `templates/shared/review-isolation-and-recording.md`
   - `templates/shared/evidence-collection-efficiency.md`
-  - `templates/shared/generated-output-handling.md`
   - consuming first-slice skills
   - `scripts/test-skill-validator.py`
 - Steps:
-  - Assert the v1 shared block source files exist for adopted stable rules.
+  - Assert the v1 public shared block source files exist for adopted stable rules.
   - Assert copied consuming skill subsections match the shared source verbatim when a block is adopted.
   - Assert shared blocks do not replace or outrank `specs/skill-contract.md` or `specs/rigorloop-workflow.md`.
   - Assert no build step generates shared blocks into skills in the first implementation slice.
   - Assert deferred shared blocks are not accidentally enforced.
+  - Assert `templates/shared/generated-output-handling.md` remains contributor-maintenance guidance and is not copied into published skills.
 - Expected result:
-  - Shared policy stays consistent where exact wording matters without introducing a new policy authority or generator.
+  - Public shared policy stays consistent where exact wording matters without introducing a new policy authority or generator, and maintainer-only generated-output guidance stays out of published skills.
 - Failure proves:
   - Copied policy can drift or shared-block governance is ambiguous.
 - Automation location:
@@ -409,6 +411,28 @@
   - active plan commands
   - `scripts/ci.sh`
 
+### T14. Published skills exclude repository-maintainer details
+
+- Covers: `R3d`, `R3e`, `R8h`, `R12b`, `R15c`, E4
+- Level: integration, manual
+- Fixture/setup:
+  - first-slice canonical skills
+  - generated Codex skill mirrors
+  - public adapter skill copies
+  - `scripts/test-skill-validator.py`
+- Steps:
+  - Assert first-slice canonical skills do not include this repository's internal workflow spec path.
+  - Assert first-slice canonical skills do not include canonical skill source paths, generated mirror paths, adapter package paths, selector path constraints, generated-output drift-check mechanics, or shared-block implementation details.
+  - Assert generated mirrors and public adapter skill copies inherit the same public-surface cleanup from canonical skills.
+  - Assert contributor-maintenance details remain available in contributor or governance surfaces instead of public skill text.
+- Expected result:
+  - Shipped skills explain how to operate the skill without exposing how this repository authors, validates, generates, or packages those skills.
+- Failure proves:
+  - Skill text remains a leaky repository-maintainer interface rather than a user-facing skill package surface.
+- Automation location:
+  - `scripts/test-skill-validator.py`
+  - generated-output drift checks
+
 ## Fixtures and data
 
 - No new external fixtures or runtime data are required.
@@ -460,7 +484,8 @@
 - Confirm every required core section has actionable content and no hollow filler.
 - Confirm no useful domain-specific section is removed from a skill without an equivalent local instruction.
 - Confirm the result block shape is adapted to skill type without losing the common handoff fields.
-- Confirm handoff guidance stays local and points to `specs/rigorloop-workflow.md` for full routing.
+- Confirm handoff guidance stays local and routes full workflow questions through user-facing workflow guidance, not this repository's internal workflow spec path.
+- Confirm published skills do not expose repository-maintainer source paths, generated mirror paths, adapter paths, selector path constraints, drift-check mechanics, or shared-block implementation details.
 - Confirm generated-output selector validation uses concrete generated files, not `--path dist/adapters`.
 
 ## What not to test and why

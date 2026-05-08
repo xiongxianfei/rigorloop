@@ -771,7 +771,6 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "`docs/roadmap.md`",
             "pre-session trigger closeout",
             "Frame phase",
-            "repository-owned generators",
         ]
         for term in required_skill_terms:
             with self.subTest(file="learn skill", term=term):
@@ -1102,13 +1101,14 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "T4. Claim boundaries and do-not-overclaim guidance",
             "T5. Result blocks and handoff sections are summary-first and local",
             "T6. Progress, readiness, closeout, and Done stay distinct",
-            "T7. Shared blocks are canonical copied text with drift checks",
+            "T7. Public shared blocks are canonical copied text with drift checks",
             "T8. Evidence-reading and example guidance stay bounded",
             "T9. Generated output is refreshed from concrete canonical changes",
             "T10. Forbidden-overclaim validation is narrow and positive-first",
             "T11. Minimum viable skill rule and guidance placement",
             "T12. Compatibility, security, and non-goal boundaries",
             "T13. Full milestone and final validation closeout",
+            "T14. Published skills exclude repository-maintainer details",
             "Do not test runtime workflow routing",
             "Do not test broad semantic quality of skill prose with natural-language scoring",
         ]
@@ -1130,10 +1130,12 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         required_spec_terms = [
             "This spec owns skill-contract behavior.",
             "`specs/rigorloop-workflow.md` continues to own stage order, stage obligation, handoff, and downstream-blocking semantics.",
+            "Skills are also a published user-facing interface.",
             "Generated skill mirrors under `.codex/skills/` MUST be treated as derived output.",
             "Adapter output under `dist/adapters/` MUST be treated as derived output.",
             "Contributors MUST NOT hand-edit `.codex/skills/` or `dist/adapters/` to satisfy this spec.",
-            "Shared blocks are copied and checked in v1, not generated into skills.",
+            "Public shared blocks are copied and checked in v1, not generated into skills.",
+            "Published skill text does not expose repository-local source paths, generated mirror paths, adapter package paths, selector path constraints, drift-check mechanics, or shared-block implementation details.",
             "The first validation slice MUST NOT add broad natural-language quality scoring.",
             "The `ci` skill remains the entrypoint for the `ci-maintenance` stage label.",
         ]
@@ -1221,7 +1223,9 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "The normative skill-contract source is `specs/skill-contract.md`.",
             "The workflow-routing source is `specs/rigorloop-workflow.md`.",
             "Skills are operational guides, not substitute specs.",
+            "Shipped skill text is the user-facing interface.",
             "Shared skill policy blocks live under `templates/shared/<block-name>.md`.",
+            "Public shared blocks are copied into consuming skills and checked for drift; maintainer-only blocks such as generated-output handling are not copied into published skills.",
             "Add a skill only when it owns a distinct artifact, gate, review responsibility, recurring action, or approved operational process.",
             "Edit canonical skill source under `skills/<skill>/SKILL.md`; regenerate `.codex/skills/` and `dist/adapters/` instead of hand-editing generated output.",
         ]
@@ -1231,6 +1235,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
 
         required_agents_terms = [
             "Follow `specs/skill-contract.md` for normalized skill structure and claim boundaries.",
+            "Treat shipped skill text as user-facing.",
             "Do not create a new skill for one-off behavior; update an existing skill unless the new skill owns a distinct artifact, gate, review responsibility, recurring action, or approved operational process.",
         ]
         for term in required_agents_terms:
@@ -1258,6 +1263,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "## Evidence collection efficiency",
             "Use summary and stable-ID first reasoning before broad reads or raw excerpts.",
             "Prefer check IDs, requirement IDs, test IDs, file paths, counts, and line citations",
+            "derived artifacts, or validation output",
             "## When full-file read is required",
             "Read the full file when the whole file is the review target",
             "bounded searches disagree or produce incomplete evidence",
@@ -1268,6 +1274,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
 
         generated_terms = [
             "## Generated-output handling",
+            "Contributor-maintenance guidance only. Do not copy this block into published skills.",
             "Edit canonical skill source under `skills/<skill>/SKILL.md`.",
             "Do not hand-edit `.codex/skills/` or `dist/adapters/`.",
             "Regenerate generated outputs from canonical source.",
@@ -1306,7 +1313,8 @@ class SkillValidatorFixtureTests(unittest.TestCase):
 
             handoff = extract_markdown_block(body, "Handoff")
             with self.subTest(skill=skill_name, surface="handoff"):
-                self.assertIn("specs/rigorloop-workflow.md", handoff)
+                self.assertIn("workflow", handoff)
+                self.assertNotIn("specs/rigorloop-workflow.md", handoff)
                 self.assertIn("Normal next stage", handoff)
                 self.assertIn("Conditional next stages", handoff)
 
@@ -1345,8 +1353,29 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
             with self.subTest(skill=skill_name, block="evidence"):
                 self.assertEqual(extract_markdown_block(body, "Evidence collection efficiency"), evidence)
+
             with self.subTest(skill=skill_name, block="generated"):
-                self.assertEqual(extract_markdown_block(body, "Generated-output handling"), generated)
+                self.assertNotIn(generated, body)
+
+    def test_skill_contract_m3_public_skills_exclude_maintainer_details(self) -> None:
+        forbidden_terms = [
+            "specs/rigorloop-workflow.md",
+            "skills/<skill>/SKILL.md",
+            ".codex/skills",
+            "dist/adapters",
+            "selector-driven validation",
+            "do not pass `--path dist/adapters`",
+            "Generated-output handling",
+            "Regenerate generated outputs",
+            "Validate drift with repository-owned checks",
+            "Shared blocks are copied into skills",
+            "shared-block implementation details",
+        ]
+        for skill_name in SKILL_CONTRACT_FIRST_SLICE_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            for term in forbidden_terms:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertNotIn(term, body)
 
 
 if __name__ == "__main__":

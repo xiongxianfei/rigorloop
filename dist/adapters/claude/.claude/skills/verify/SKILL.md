@@ -14,7 +14,7 @@ Verification is broader than running CI. It checks completeness, correctness, co
 
 ## Purpose
 
-Prove that implementation, tests, generated output, lifecycle artifacts, validation evidence, and risk closeout agree before the workflow moves toward explanation and PR.
+Prove that implementation, tests, derived artifact, lifecycle artifacts, validation evidence, and risk closeout agree before the workflow moves toward explanation and PR.
 
 ## When to use
 
@@ -51,7 +51,7 @@ Produce a verification verdict, traceability and drift assessment, validation ev
 
 - Normal next stage: `explain-change` when branch readiness passes and no conditional CI maintenance is triggered.
 - Conditional next stages: `ci` when hosted workflow automation or related CI infrastructure for a material risk is missing, stale, or wrong; stop when blockers remain.
-- For full routing rules, follow `specs/rigorloop-workflow.md`.
+- For full stage order and downstream-blocking semantics, route through the `workflow` skill.
 
 ## Claims this skill must not make
 
@@ -60,7 +60,7 @@ Do not claim:
 - PR-ready, PR body ready, `pr-body-ready`, or `pr-open-ready`;
 - review passed unless code-review evidence is cited;
 - CI passed unless hosted CI was actually observed or the statement is explicitly local validation only;
-- generated output is synced unless repository-owned generation or drift checks prove it.
+- derived artifacts are current unless validation evidence proves it.
 
 ## Progress, readiness, closeout, and Done
 
@@ -96,7 +96,7 @@ Requirement → Test IDs → Files changed → Evidence → Status
 
 2. Check the actual diff for unplanned behavior.
 3. Compare tests against the test spec.
-4. Build the related artifact set from changed files, `docs/changes/<change-id>/change.yaml`, explain-change artifacts, the active plan, generated outputs, governing specs, governing architecture docs or ADRs, governing test specs, and draft PR text only when that draft PR body already exists.
+4. Build the related artifact set from changed files, `docs/changes/<change-id>/change.yaml`, explain-change artifacts, the active plan, derived artifacts, governing specs, governing architecture docs or ADRs, governing test specs, and draft PR text only when that draft PR body already exists.
 4a. When `branch-ready` depends on cited governing artifacts, confirm those authoritative artifacts are present in tracked governing branch state rather than only in the local worktree.
 5. For ordinary non-trivial work, confirm the required baseline change-local pack exists: `docs/changes/<change-id>/change.yaml` plus durable Markdown reasoning, defaulting to `docs/changes/<change-id>/explain-change.md` unless an approved equivalent surface applies.
 6. Treat a missing required baseline change-local pack as a blocker, not acceptable silence.
@@ -165,7 +165,7 @@ For release smoke, inspect release metadata under `docs/releases/<version>/` rat
 Stop before downstream handoff when:
 
 - implementation milestones, code-review, or review-resolution remain open;
-- required validation, generated-output drift checks, or selector-selected proof are missing or failing;
+- required validation, derived-artifact currency checks, or selector-selected proof are missing or failing;
 - lifecycle state is stale between the plan index and plan body;
 - touched or authoritative artifacts advertise stale status or readiness;
 - branch-ready cannot be supported by tracked governing branch state.
@@ -173,22 +173,12 @@ Stop before downstream handoff when:
 ## Evidence collection efficiency
 
 Use summary and stable-ID first reasoning before broad reads or raw excerpts.
-Prefer check IDs, requirement IDs, test IDs, file paths, counts, and line citations when inspecting large files, repeated scans, generated output, or validation output.
+Prefer check IDs, requirement IDs, test IDs, file paths, counts, and line citations when inspecting large files, repeated scans, derived artifacts, or validation output.
 Read exact ranges after locating relevant lines, then expand only when the narrower evidence is insufficient.
 
 ## When full-file read is required
 
 Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
-
-## Generated-output handling
-
-Edit canonical skill source under `skills/<skill>/SKILL.md`.
-Do not hand-edit `.codex/skills/` or `dist/adapters/`.
-Regenerate generated outputs from canonical source.
-Validate drift with repository-owned checks.
-Use concrete generated adapter file paths in selector-driven validation; do not pass `--path dist/adapters`.
-Generated outputs are proof surfaces, not independent sources of truth.
-Shared blocks are copied into skills and checked for drift; they are not generated into skills in v1.
 
 ## Expected output
 

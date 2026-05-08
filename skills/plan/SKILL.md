@@ -59,7 +59,7 @@ Produce or update the concrete plan body and, when starting or replanning an ini
 
 - Normal next stage: `plan-review`.
 - Conditional next stages: return to `spec` or `architecture` when planning exposes a blocking gap; proceed to `test-spec` only after plan-review when the workflow allows it.
-- For full routing rules, follow `specs/rigorloop-workflow.md`.
+- For full stage order and downstream-blocking semantics, route through the `workflow` skill.
 
 ## Claims this skill must not make
 
@@ -68,7 +68,7 @@ Do not claim:
 - code is implemented, review passed, verification passed, branch-ready, or PR-ready;
 - the plan is Done merely because it is ready for the next stage;
 - ready for PR or ready for verify without explicit remaining gates and the owning review/verification evidence;
-- generated output is synced unless repository-owned generation or drift checks prove it.
+- derived artifacts are current unless validation evidence proves it.
 
 Use `Readiness is not Done` as the default interpretation for handoff lines. Keep `Remaining completion gates` visible whenever readiness could be confused with completion.
 
@@ -198,22 +198,12 @@ Stop before handoff when:
 ## Evidence collection efficiency
 
 Use summary and stable-ID first reasoning before broad reads or raw excerpts.
-Prefer check IDs, requirement IDs, test IDs, file paths, counts, and line citations when inspecting large files, repeated scans, generated output, or validation output.
+Prefer check IDs, requirement IDs, test IDs, file paths, counts, and line citations when inspecting large files, repeated scans, derived artifacts, or validation output.
 Read exact ranges after locating relevant lines, then expand only when the narrower evidence is insufficient.
 
 ## When full-file read is required
 
 Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
-
-## Generated-output handling
-
-Edit canonical skill source under `skills/<skill>/SKILL.md`.
-Do not hand-edit `.codex/skills/` or `dist/adapters/`.
-Regenerate generated outputs from canonical source.
-Validate drift with repository-owned checks.
-Use concrete generated adapter file paths in selector-driven validation; do not pass `--path dist/adapters`.
-Generated outputs are proof surfaces, not independent sources of truth.
-Shared blocks are copied into skills and checked for drift; they are not generated into skills in v1.
 
 ## Expected output
 

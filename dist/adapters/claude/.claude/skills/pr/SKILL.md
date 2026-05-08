@@ -72,7 +72,7 @@ Produce a PR readiness check, title, body, reviewer notes, risks, follow-ups, an
 
 - Normal next stage: open the PR when `branch-ready`, `pr-body-ready`, and `pr-open-ready` pass.
 - Conditional next stages: return to `verify`, `explain-change`, review-resolution, implementation, or artifact updates when readiness blockers remain; stop when tooling or permissions prevent opening.
-- For full routing rules, follow `specs/rigorloop-workflow.md`.
+- For full stage order and downstream-blocking semantics, route through the `workflow` skill.
 
 ## Claims this skill must not make
 
@@ -81,7 +81,7 @@ Do not claim:
 - implementation passed, review passed, verification passed, or tests passed unless the statement links to owning evidence;
 - CI passed unless the hosted or local CI evidence was actually observed and named;
 - branch-ready without citing `verify` evidence;
-- generated output is synced unless repository-owned generation or drift checks prove it.
+- derived artifacts are current unless validation evidence proves it.
 
 Use owning evidence when summarizing implementation passed, review passed, verification passed, or tests passed.
 
@@ -173,7 +173,7 @@ Examples:
 Stop before opening or claiming a PR when:
 
 - `verify` has not established branch readiness;
-- required review-resolution, lifecycle closeout, generated-output refresh, validation, CI, or docs-change evidence is missing or failing;
+- required review-resolution, lifecycle closeout, derived-artifact refresh, validation, CI, or docs-change evidence is missing or failing;
 - the working tree or commits include unrelated or unreviewed changes;
 - the PR body would need to cite evidence that does not exist;
 - tooling, permissions, remote state, or explicit user instructions prevent opening.
@@ -181,22 +181,12 @@ Stop before opening or claiming a PR when:
 ## Evidence collection efficiency
 
 Use summary and stable-ID first reasoning before broad reads or raw excerpts.
-Prefer check IDs, requirement IDs, test IDs, file paths, counts, and line citations when inspecting large files, repeated scans, generated output, or validation output.
+Prefer check IDs, requirement IDs, test IDs, file paths, counts, and line citations when inspecting large files, repeated scans, derived artifacts, or validation output.
 Read exact ranges after locating relevant lines, then expand only when the narrower evidence is insufficient.
 
 ## When full-file read is required
 
 Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
-
-## Generated-output handling
-
-Edit canonical skill source under `skills/<skill>/SKILL.md`.
-Do not hand-edit `.codex/skills/` or `dist/adapters/`.
-Regenerate generated outputs from canonical source.
-Validate drift with repository-owned checks.
-Use concrete generated adapter file paths in selector-driven validation; do not pass `--path dist/adapters`.
-Generated outputs are proof surfaces, not independent sources of truth.
-Shared blocks are copied into skills and checked for drift; they are not generated into skills in v1.
 
 ## Expected output
 

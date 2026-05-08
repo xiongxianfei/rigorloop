@@ -1,5 +1,7 @@
 ## Generated-output handling
 
+Contributor-maintenance guidance only. Do not copy this block into published skills.
+
 Edit canonical skill source under `skills/<skill>/SKILL.md`.
 Do not hand-edit `.codex/skills/` or `dist/adapters/`.
 Regenerate generated outputs from canonical source.
