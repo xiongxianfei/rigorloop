@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-08 Skill contract optimization](plans/2026-05-08-skill-contract-optimization.md) - active execution plan for defining and implementing the normative skill contract, including first-slice normalization of `workflow`, `plan`, `implement`, `code-review`, `verify`, `pr`, and `learn`; shared-block and generated-output handling; validator/static proof; and lifecycle closeout through plan-review, test-spec, implementation, code-review, verify, explain-change, and PR handoff.
+- [2026-05-08 Skill contract optimization](plans/2026-05-08-skill-contract-optimization.md) - active execution plan for defining and implementing the normative skill contract, including first-slice normalization of `workflow`, `plan`, `implement`, `code-review`, `verify`, `pr`, and `learn`; shared-block and generated-output handling; validator/static proof; implementation, code-review, verify, and explain-change are complete; PR handoff remains.
 
 ## Blocked
 - none yet
