@@ -20,6 +20,7 @@ requirements:
   - Preserve generated-output boundaries by treating `.codex/skills/` and `dist/adapters/` as derived output.
   - Add concise skill-contract summary pointers to workflow, contributor, and agent-facing guidance.
   - Create canonical v1 shared-block sources for evidence collection efficiency and generated-output handling.
+  - Normalize the first-slice canonical skills with required core sections, claim boundaries, compact result output, local handoff guidance, and copied shared blocks.
 tests:
   - Artifact lifecycle validation for the approved skill contract spec.
   - Artifact lifecycle validation for the active skill contract test spec.
@@ -29,6 +30,7 @@ tests:
   - Review artifact closeout validation for proposal-review findings.
   - Selector-selected validation for changed proposal and review artifacts.
   - Skill validator regression coverage for M2 skill-contract summary surfaces and shared-block source files.
+  - Skill validator regression coverage for M3 first-slice core sections, result blocks, claim boundaries, readiness wording, and copied shared blocks.
 validation:
   - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-05-08-skill-contract-optimization.md
     result: pass_before_review_revision_selected_artifact_lifecycle
@@ -120,6 +122,22 @@ validation:
     result: pass_m2
   - command: rg -n '[[:blank:]]$|\\t' specs/skill-contract.md specs/skill-contract.test.md specs/rigorloop-workflow.md docs/workflows.md AGENTS.md templates/shared scripts/test-skill-validator.py docs/plans/2026-05-08-skill-contract-optimization.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml
     result: pass_no_matches_m2
+  - command: python scripts/test-skill-validator.py
+    result: fail_expected_missing_m3_first_slice_normalization_then_pass_42_tests
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_m3
+  - command: python scripts/select-validation.py --mode explicit --path skills/workflow/SKILL.md --path skills/plan/SKILL.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/verify/SKILL.md --path skills/pr/SKILL.md --path skills/learn/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-08-skill-contract-optimization.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+    result: pass_selected_m3_no_unclassified_paths_generated_drift_checks_selected_for_m4
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml --path docs/plans/2026-05-08-skill-contract-optimization.md --path skills/code-review/SKILL.md --path skills/implement/SKILL.md --path skills/learn/SKILL.md --path skills/plan/SKILL.md --path skills/pr/SKILL.md --path skills/verify/SKILL.md --path skills/workflow/SKILL.md
+    result: pass_m3_artifact_lifecycle
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_m3_change_metadata_regression
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+    result: pass_valid_change_metadata_m3
+  - command: git diff --check -- skills/workflow/SKILL.md skills/plan/SKILL.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/verify/SKILL.md skills/pr/SKILL.md skills/learn/SKILL.md scripts/test-skill-validator.py docs/plans/2026-05-08-skill-contract-optimization.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+    result: pass_m3
+  - command: rg -n '[[:blank:]]$|\\t' skills/workflow/SKILL.md skills/plan/SKILL.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/verify/SKILL.md skills/pr/SKILL.md skills/learn/SKILL.md scripts/test-skill-validator.py docs/plans/2026-05-08-skill-contract-optimization.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+    result: pass_no_matches_m3
 changed_files:
   - specs/skill-contract.md
   - specs/skill-contract.test.md
@@ -128,6 +146,13 @@ changed_files:
   - AGENTS.md
   - templates/shared/evidence-collection-efficiency.md
   - templates/shared/generated-output-handling.md
+  - skills/workflow/SKILL.md
+  - skills/plan/SKILL.md
+  - skills/implement/SKILL.md
+  - skills/code-review/SKILL.md
+  - skills/verify/SKILL.md
+  - skills/pr/SKILL.md
+  - skills/learn/SKILL.md
   - scripts/test-skill-validator.py
   - docs/plan.md
   - docs/plans/2026-05-08-skill-contract-optimization.md
