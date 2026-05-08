@@ -183,6 +183,12 @@ validation:
     result: pass_final_verify_no_matches
   - command: bash scripts/ci.sh --mode explicit --path docs/learn/sessions/2026-05-08-verify-explain-change-order.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml
     result: pass_learn_session_selected_artifact_lifecycle_change_metadata_checks
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-08-skill-contract-optimization.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml --path docs/changes/2026-05-08-skill-contract-optimization/explain-change.md
+    result: pass_pr_handoff_lifecycle_change_metadata_checks
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+    result: pass_pr_handoff_change_metadata
+  - command: git diff --check
+    result: pass_pr_handoff_diff_check
 changed_files:
   - specs/skill-contract.md
   - specs/skill-contract.test.md

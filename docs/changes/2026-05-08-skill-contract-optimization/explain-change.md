@@ -6,7 +6,7 @@ This change defines and implements the first slice of the RigorLoop skill contra
 
 The implementation normalizes only the approved first-slice skills: `workflow`, `plan`, `implement`, `code-review`, `verify`, `pr`, and `learn`. It also adds focused static proof, two shared policy blocks, contributor-facing summaries, and regenerated Codex and public adapter skill output.
 
-Final branch verification must be rerun after this explanation artifact is added. The prior `verify` pass confirmed selected validation and review closeout were clean, then correctly blocked because this durable reasoning artifact was missing.
+Final branch verification was rerun after this explanation artifact was added. The prior `verify` pass confirmed selected validation and review closeout were clean, then correctly blocked because this durable reasoning artifact was missing.
 
 ## Problem
 
@@ -24,7 +24,7 @@ That confusion had already appeared in recent workflow lessons. `Ready for verif
 | Test spec | `specs/skill-contract.test.md` maps the approved contract to static proof, selected CI, generated-output drift checks, adapter validation, review closeout, and manual contract review. |
 | Plan | M1 added static proof, M2 aligned source-of-truth summaries and shared blocks, M3 normalized the first-slice canonical skills, and M4 refreshed generated outputs. |
 | Architecture | Not required because the slice changes repository guidance, static validation, generated mirrors, and adapter output, not runtime components or deployment boundaries. |
-| Verification | Selected CI, review artifact closeout, change metadata validation, lifecycle validation, and diff hygiene passed before this artifact existed; `verify` stopped only because the baseline change-local durable reasoning artifact was missing. |
+| Verification | Selected CI, review artifact closeout, change metadata validation, lifecycle validation, and diff hygiene passed before this artifact existed; `verify` stopped only because the baseline change-local durable reasoning artifact was missing. Final verify later passed after this artifact was committed. |
 
 ## Diff Rationale By Area
 
@@ -102,7 +102,7 @@ The change preserves these non-goals:
 
 ## Risks and Follow-ups
 
-- The branch is not yet PR-ready from this explanation alone. Because this artifact was added after the previous `verify` pass, `verify` must be rerun before PR handoff.
+- PR #34 is opened for this change. Hosted CI status was not observed locally before handoff.
 - Later phases still need separate proposals or plans to normalize `proposal`, `proposal-review`, `spec`, `spec-review`, `architecture`, `architecture-review`, `plan-review`, `test-spec`, `explain-change`, `ci`, and the later on-demand skills.
 - Shared-block scope should stay conservative. More shared blocks should be added only after their wording stabilizes enough to justify drift checks.
 
@@ -110,5 +110,5 @@ The change preserves these non-goals:
 
 - Source artifacts are present: accepted proposal, approved spec, active test spec, active plan, closed review-resolution, and this explanation.
 - Implementation milestones M1-M4 are closed after code-review.
-- Current blocker: final `verify` must be rerun now that this explanation artifact exists in the change-local pack.
-- PR readiness: not ready until the rerun `verify` passes and PR handoff is prepared from the verified branch state.
+- Final verify rerun passed after this explanation artifact existed in the change-local pack.
+- PR readiness: PR #34 is opened from the verified branch state; hosted CI remains the external reviewer-visible check.
