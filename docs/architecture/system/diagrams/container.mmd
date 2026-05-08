@@ -6,7 +6,7 @@ flowchart TB
 
   subgraph repo["RigorLoop repository<br/>[Git repository]"]
     governance["Governance and workflow guidance<br/>[Markdown]"]:::container
-    lifecycle["Lifecycle artifacts<br/>[Markdown and YAML]"]:::container
+    lifecycle["Lifecycle artifacts and ADRs<br/>[Markdown and YAML]"]:::container
     architecture["Canonical architecture package<br/>[Markdown and Mermaid]"]:::container
     changes["Change-local evidence<br/>[Markdown and YAML]"]:::container
     templates["Templates and diagram styles<br/>[Markdown and Mermaid]"]:::container
@@ -17,16 +17,19 @@ flowchart TB
     legacy["Legacy architecture archive<br/>[Archived Markdown]"]:::container
   end
 
-  contributor -->|authors and updates| lifecycle
+  contributor -->|records workflow intent, manual-skill isolation, and no-impact rationale in| lifecycle
+  contributor -->|updates clear current architecture truth directly in| architecture
+  contributor -->|uses only for reviewable working design in| changes
   contributor -->|uses scaffolds from| templates
   contributor -->|edits canonical sources in| skills
-  reviewer -->|reviews C4, arc42, ADRs, and evidence in| architecture
-  reviewer -->|reviews lifecycle state and closeout in| changes
-  governance -->|defines routing and source-of-truth rules for| lifecycle
+  reviewer -->|reviews selected architecture surface and ADR need in| architecture
+  reviewer -->|reviews change-local reasoning and closeout when present in| changes
+  governance -->|defines one standard workflow, manual-skill isolation, and source-of-truth rules for| lifecycle
+  governance -->|defines lowest-sufficient architecture-surface rules for| architecture
   governance -->|declares authored/generated boundaries for| skills
-  lifecycle -->|requires current architecture truth from| architecture
-  changes -->|merge durable architecture content back into| architecture
-  changes -->|record durable decisions as ADRs in| lifecycle
+  lifecycle -->|routes architecture work to no-impact rationale, direct update, delta, or ADR| architecture
+  changes -->|contribute accepted current architecture truth to| architecture
+  changes -->|record reviews, explanations, validation gaps, and final closeout evidence for| lifecycle
   templates -->|scaffold architecture and ADR records in| lifecycle
   skills -->|are transformed by| scripts
   scripts -->|refresh| generated
@@ -34,7 +37,7 @@ flowchart TB
   scripts -->|run in| execution
   release -->|describes publication of| generated
   generated -->|is consumed by| adapter_user
-  legacy -->|preserves historical evidence after merge-back to| architecture
+  legacy -->|preserves historical evidence after accepted current content reaches| architecture
   architecture -->|summarizes and links ADRs in| lifecycle
 
   classDef person fill:#08427b,stroke:#073b6f,color:#fff

@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import re
 import subprocess
 import sys
 import unittest
@@ -122,13 +123,62 @@ SKILL_CONTRACT_PROGRESS_SKILLS = [
     "verify",
     "pr",
 ]
+PUBLIC_WORKFLOW_AND_SKILL_SURFACES = [
+    "README.md",
+    "AGENTS.md",
+    "CONSTITUTION.md",
+    "docs/workflows.md",
+    "skills",
+    ".codex/skills",
+    "dist/adapters",
+]
+TEXT_SURFACE_SUFFIXES = {".md", ".txt", ".yaml", ".yml"}
+RETIRED_PUBLIC_ROUTE_PATTERNS = {
+    "fast lane": re.compile(r"\bfast[- ]lane\b", re.IGNORECASE),
+    "full lane": re.compile(r"\bfull[- ]lane\b", re.IGNORECASE),
+    "full-feature lane": re.compile(r"\bfull[- ]feature(?:[- ]lane)?\b", re.IGNORECASE),
+    "low-risk route": re.compile(r"\blow[- ]risk\b", re.IGNORECASE),
+    "high-risk route": re.compile(r"\bhigh[- ]risk\b", re.IGNORECASE),
+    "tiny low-risk route": re.compile(r"\btiny\s+low[- ]risk\b", re.IGNORECASE),
+    "small-change route": re.compile(r"\bsmall[- ]change(?:[- ]lane)?\b", re.IGNORECASE),
+    "mini-spec": re.compile(r"\bmini[- ]spec\b", re.IGNORECASE),
+    "proportional evidence": re.compile(r"\bproportional[- ]evidence\b", re.IGNORECASE),
+}
+WORKFLOW_SPEC_ALLOWED_RETIRED_ROUTE_CONTEXTS = [
+    "MUST NOT classify work as",
+    "Static validation MUST fail",
+    "not separate",
+]
+PUBLISHED_SKILL_FORBIDDEN_INTERNAL_PATTERNS = {
+    "workflow spec path": re.compile(r"\bspecs/rigorloop-workflow\.md\b"),
+    "skill contract spec path": re.compile(r"\bspecs/skill-contract\.md\b"),
+    "codex generated mirror path": re.compile(r"\.codex/skills"),
+    "adapter package path": re.compile(r"\bdist/adapters\b"),
+    "selector command": re.compile(r"\bscripts/select-validation\.py\b"),
+    "adapter build command": re.compile(r"\bscripts/build-adapters\.py\b"),
+    "shared template path": re.compile(r"\btemplates/shared\b"),
+    "canonical skill source placeholder": re.compile(r"\bskills/<skill>/SKILL\.md\b"),
+    "selector path constraints": re.compile(r"\bselector[- ]path constraints\b", re.IGNORECASE),
+    "selector-driven validation": re.compile(r"\bselector[- ]driven validation\b", re.IGNORECASE),
+    "dist path selector warning": re.compile(r"do not pass `--path dist/adapters`", re.IGNORECASE),
+    "drift-check mechanics": re.compile(r"\bdrift[- ]check mechanics\b", re.IGNORECASE),
+    "generated-output handling": re.compile(r"\bGenerated-output handling\b"),
+    "regenerate generated outputs": re.compile(r"\bRegenerate generated outputs\b"),
+    "repository-owned drift checks": re.compile(r"\bValidate drift with repository-owned checks\b"),
+    "shared blocks copied into skills": re.compile(r"\bShared blocks are copied into skills\b"),
+    "shared-block implementation mechanics": re.compile(
+        r"\bshared[- ]block implementation (?:details|mechanics)\b",
+        re.IGNORECASE,
+    ),
+    "RigorLoop-local examples": re.compile(r"\bRigorLoop-local examples\b", re.IGNORECASE),
+}
 SKILL_CONTRACT_CLAIM_BOUNDARY_TERMS = {
     "implement": [
         "review passed",
         "clean review",
         "branch-ready",
         "PR-ready",
-        "ready-for-verify",
+        "ready-for-final-closeout",
     ],
     "code-review": [
         "branch-ready",
@@ -152,7 +202,7 @@ SKILL_CONTRACT_CLAIM_BOUNDARY_TERMS = {
         "Readiness is not Done",
         "Remaining completion gates",
         "ready for PR",
-        "ready for verify",
+        "ready for final closeout",
     ],
     "learn": [
         "new workflow policy",
@@ -171,6 +221,35 @@ def extract_markdown_block(text: str, heading: str) -> str:
     if next_heading == -1:
         return text[start:].rstrip() + "\n"
     return text[start:next_heading].rstrip() + "\n"
+
+
+def iter_public_workflow_and_skill_surfaces() -> list[Path]:
+    files: list[Path] = []
+    for relative_path in PUBLIC_WORKFLOW_AND_SKILL_SURFACES:
+        path = ROOT / relative_path
+        if path.is_file():
+            files.append(path)
+            continue
+        if path.is_dir():
+            for candidate in sorted(path.rglob("*")):
+                if candidate.is_file() and candidate.suffix.lower() in TEXT_SURFACE_SUFFIXES:
+                    files.append(candidate)
+    return files
+
+
+def iter_published_skill_text_surfaces() -> list[Path]:
+    files: list[Path] = []
+    for root in [ROOT / "skills", ROOT / ".codex" / "skills"]:
+        if root.exists():
+            files.extend(sorted(root.glob("*/SKILL.md")))
+
+    adapter_root = ROOT / "dist" / "adapters"
+    if adapter_root.exists():
+        for candidate in sorted(adapter_root.rglob("SKILL.md")):
+            if "skills" in candidate.parts:
+                files.append(candidate)
+
+    return files
 
 
 def run_validator(target: Path) -> subprocess.CompletedProcess[str]:
@@ -703,9 +782,9 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         self.assertNotIn("advice-only", learn)
 
         verify_terms = [
-            "next mandatory or triggered downstream stage",
+            "hands off to `pr`",
             "ci-maintenance",
-            "hosted workflow automation or related CI infrastructure",
+            "hosted workflow automation, validation automation, or related platform configuration",
         ]
         for term in verify_terms:
             with self.subTest(skill="verify", term=term):
@@ -962,11 +1041,11 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "T1. Scope boundary preserves existing lanes and stop conditions",
             "T2. Clean review routing distinguishes non-final and final milestones",
             "T3. Findings stay attached to the reviewed milestone",
-            "T4. Inconclusive or ambiguous review never hands off to verify",
+            "T4. Inconclusive or ambiguous review never starts final closeout",
             "T5. Milestone state vocabulary is single-field and exact",
-            "T6. Implement handoff uses `review-requested` and does not claim verify readiness",
+            "T6. Implement handoff uses `review-requested` and does not claim final closeout readiness",
             "T7. Handoff summaries and plan update obligations are explicit",
-            "T8. Milestones are not postponed to reach verify",
+            "T8. Milestones are not postponed to reach final closeout",
             "T9. Lifecycle-closeout milestones are distinguishable from implementation milestones",
             "T10. Affected workflow, skill, and generated surfaces remain aligned",
             "T11. First implementation slice stays static-only",
@@ -1002,14 +1081,14 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         self.assertNotIn("implementation evidence state", spec)
 
     def test_milestone_aware_skill_guidance_for_state_and_handoff(self) -> None:
-        """Skills describe milestone-aware state, handoff, and verify-readiness boundaries."""
+        """Skills describe milestone-aware state, handoff, and final-closeout readiness boundaries."""
 
         required_by_skill = {
             "implement": [
                 "`planned` to `implementing`",
                 "`review-requested`",
                 "targeted validation evidence",
-                "not set plan readiness to `Ready for verify`",
+                "not set plan readiness to `Ready for final closeout`",
             ],
             "code-review": [
                 "clean non-final milestone",
@@ -1029,7 +1108,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                 "milestone-based",
                 "remaining in-scope implementation milestones",
                 "`lifecycle-closeout`",
-                "verify readiness",
+                "final-closeout readiness",
             ],
         }
         for skill_name, required_terms in required_by_skill.items():
@@ -1060,10 +1139,22 @@ class SkillValidatorFixtureTests(unittest.TestCase):
 
         stale_terms = [
             "once `code-review` is satisfied and no accepted findings remain unresolved, the workflow MUST continue into `verify` unless a stop condition applies",
+            "routing a clean review to `verify`",
+            "route to `verify`",
+            "routes to `verify`",
+            "hand off to `verify`",
+            "make `verify` available",
+            "`verify` may proceed",
+            "ready for `verify`",
+            "whole plan ready for `verify`",
         ]
         for relative_path in [
             "specs/workflow-stage-autoprogression.md",
             "specs/rigorloop-workflow.md",
+            "specs/milestone-aware-review-handoff.md",
+            "specs/workflow-stage-autoprogression.test.md",
+            "specs/rigorloop-workflow.test.md",
+            "specs/milestone-aware-review-handoff.test.md",
         ]:
             body = (ROOT / relative_path).read_text(encoding="utf-8")
             for term in stale_terms:
@@ -1077,6 +1168,9 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "first-pass `clean-with-notes` continues to `verify`",
             "`clean-with-notes` hands off to `verify` when no stop condition applies",
             "`code-review -> verify` only for first-pass `clean-with-notes`",
+            "hands off to `verify` only when no in-scope implementation milestone remains open or unresolved",
+            "Milestones are not postponed to make `verify` available",
+            "Do not hand off to `verify` until all in-scope implementation milestones are `closed`",
         ]
         paths = [
             "docs/workflows.md",
@@ -1088,6 +1182,38 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             for term in stale_terms:
                 with self.subTest(path=relative_path, term=term):
                     self.assertNotIn(term, body)
+
+    def test_public_workflow_and_skill_surfaces_block_retired_route_vocabulary(self) -> None:
+        """Public workflow and shipped skill surfaces must not restore retired lane wording."""
+
+        for path in iter_public_workflow_and_skill_surfaces():
+            body = path.read_text(encoding="utf-8")
+            relative_path = path.relative_to(ROOT)
+            for label, pattern in RETIRED_PUBLIC_ROUTE_PATTERNS.items():
+                with self.subTest(path=str(relative_path), pattern=label):
+                    self.assertIsNone(pattern.search(body))
+
+    def test_workflow_spec_retired_route_terms_are_only_forbidden_context(self) -> None:
+        spec = SKILL_CONTRACT_WORKFLOW_SPEC.read_text(encoding="utf-8")
+        for line_number, line in enumerate(spec.splitlines(), start=1):
+            for label, pattern in RETIRED_PUBLIC_ROUTE_PATTERNS.items():
+                if pattern.search(line) and not any(
+                    context in line for context in WORKFLOW_SPEC_ALLOWED_RETIRED_ROUTE_CONTEXTS
+                ):
+                    self.fail(
+                        f"retired route term '{label}' appears outside forbidden/static-validation "
+                        f"context at {SKILL_CONTRACT_WORKFLOW_SPEC.relative_to(ROOT)}:{line_number}"
+                    )
+
+    def test_published_skill_surfaces_block_internal_repository_details(self) -> None:
+        """Published skill text must stay portable across projects."""
+
+        for path in iter_published_skill_text_surfaces():
+            body = path.read_text(encoding="utf-8")
+            relative_path = path.relative_to(ROOT)
+            for label, pattern in PUBLISHED_SKILL_FORBIDDEN_INTERNAL_PATTERNS.items():
+                with self.subTest(path=str(relative_path), pattern=label):
+                    self.assertIsNone(pattern.search(body))
 
     def test_skill_contract_test_spec_maps_static_proof(self) -> None:
         body = SKILL_CONTRACT_TEST_SPEC.read_text(encoding="utf-8")
@@ -1132,7 +1258,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "Adapter output under `dist/adapters/` MUST be treated as derived output.",
             "Contributors MUST NOT hand-edit `.codex/skills/` or `dist/adapters/` to satisfy this spec.",
             "Public shared blocks are copied and checked in v1, not generated into skills.",
-            "Published skill text does not expose repository-local source paths, generated mirror paths, adapter package paths, selector path constraints, drift-check mechanics, or shared-block implementation details.",
+            "Published skill text does not expose repository-local source paths, generated mirror paths, adapter package paths, selector path constraints, drift-check mechanics, shared-block implementation details, or RigorLoop-local examples.",
             "The first validation slice MUST NOT add broad natural-language quality scoring.",
             "The `ci` skill remains the entrypoint for the `ci-maintenance` stage label.",
         ]

@@ -8,7 +8,8 @@
 
 - Spec: [Milestone-Aware Review Handoff](milestone-aware-review-handoff.md), approved.
 - Proposal: [Milestone-Aware Review Handoff](../docs/proposals/2026-05-07-milestone-aware-review-handoff.md), accepted.
-- Plan: [Milestone-Aware Review Handoff Execution Plan](../docs/plans/2026-05-07-milestone-aware-review-handoff.md), active after clean plan-review rerun.
+- Plan: [Milestone-Aware Review Handoff Execution Plan](../docs/plans/2026-05-07-milestone-aware-review-handoff.md), done.
+- Current consuming plan: [Single Workflow Lane, Explain-Change Before Verify Execution Plan](../docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md), active after plan-review R2.
 - Architecture: not required. The approved first slice is guidance and static wording checks only, with no executable routing, storage, API, deployment, parser, or runtime validation boundary.
 - Project map: `docs/project-map.md` is absent. This test spec does not rely on project-map claims; proof uses the approved spec, active plan, workflow specs, stage skills, workflow docs, generator scripts, and existing static validator patterns.
 - Related workflow proof surfaces:
@@ -38,12 +39,12 @@
 | --- | --- | --- | --- |
 | `R1`, `R1a`, `R1b`, `R10`, `R10a` | `T1`, `T3`, `T10` | manual, integration | Scope boundary, unchanged lanes, and preserved downstream gates |
 | `R2`, `R2a`, `R2b`, `R2c` | `T5` | integration, manual | Single milestone state vocabulary and evidence-only terms |
-| `R3`, `R3a`, `R3b` | `T6` | integration, manual | `implement` transitions and no implement-owned verify readiness |
+| `R3`, `R3a`, `R3b` | `T6` | integration, manual | `implement` transitions and no implement-owned final closeout readiness |
 | `R4`, `R4a`, `R4b`, `R4c`, `R4d` | `T2`, `T4`, `T7` | integration, manual | Reviewed milestone identification, final/non-final routing, and plan update requirements |
 | `R5`, `R5a`, `R5b`, `R5c`, `R5d`, `R5e` | `T3`, `T7` | integration, manual | Same-milestone findings, fix loop, re-review, and owner-decision stops |
 | `R6`, `R6a`, `R6b` | `T4` | integration, manual | Inconclusive review behavior and missing-evidence output |
 | `R7`, `R7a`, `R7b` | `T8` | manual | Plan revision before removing milestones from scope |
-| `R8`, `R8a`, `R8b`, `R8c`, `R8d` | `T2`, `T3`, `T7` | integration, manual | Current handoff summary fields and verify-readiness reasons |
+| `R8`, `R8a`, `R8b`, `R8c`, `R8d` | `T2`, `T3`, `T7` | integration, manual | Current handoff summary fields and final-closeout readiness reasons |
 | `R9`, `R9a`, `R9b` | `T9` | manual, integration | Lifecycle-closeout distinction and mixed milestone handling |
 | `R11`, `R11a`, `R11b` | `T11` | integration, manual | Static-only first slice and no standalone review-resolution skill |
 
@@ -65,11 +66,11 @@
 | Example | Covered by | Notes |
 | --- | --- | --- |
 | `E1` | `T2`, `T7` | Clean non-final milestone closes and routes to `implement <next milestone>` |
-| `E2` | `T2`, `T7` | Clean final milestone closes and routes to `verify` |
+| `E2` | `T2`, `T7` | Clean final milestone closes and routes to final closeout |
 | `E3` | `T3`, `T7` | Findings keep the workflow on the same milestone |
-| `E4` | `T4` | Ambiguous remaining milestones block verify |
+| `E4` | `T4` | Ambiguous remaining milestones block final closeout |
 | `E5` | `T8` | Removed milestone requires plan revision before handoff |
-| `E6` | `T9` | Lifecycle-closeout milestone does not block verify |
+| `E6` | `T9` | Lifecycle-closeout milestone does not block final closeout |
 
 ## Edge case coverage
 
@@ -103,11 +104,11 @@
   - `skills/code-review/SKILL.md`
 - Steps:
   - Review normative and operating workflow surfaces after implementation.
-  - Confirm milestone-aware routing applies only to workflow-managed full-feature execution with a milestone-based active plan.
-  - Confirm isolated `code-review`, isolated `verify`, review-only, fast-lane, bugfix, direct `pr`, merge, release, deploy, and destructive actions keep their existing behavior.
+  - Confirm milestone-aware routing applies only to workflow-managed standard workflow execution with a milestone-based active plan.
+  - Confirm isolated `code-review`, isolated `verify`, review-only, manual skill invocation, bugfix, direct `pr`, merge, release, deploy, and destructive actions keep their existing behavior.
   - Confirm explicit user pauses report the correct next stage and stop before entering it.
 - Expected result:
-  - The milestone-aware rule narrows full-feature milestone routing without widening default autoprogression.
+  - The milestone-aware rule narrows standard workflow milestone routing without widening default autoprogression.
 - Failure proves:
   - The change broadened the lifecycle contract beyond the approved spec or weakened existing stop conditions.
 - Automation location:
@@ -126,8 +127,8 @@
   - `scripts/test-skill-validator.py`
 - Steps:
   - Add static assertions that a clean non-final milestone review closes the reviewed milestone and routes to `implement <next in-scope implementation milestone>`.
-  - Add static assertions that a clean final milestone review closes the reviewed milestone and routes to `verify`.
-  - Search affected guidance for unconditional `clean-with-notes -> verify` or equivalent wording and either remove it or qualify it as final-milestone-only.
+  - Add static assertions that a clean final milestone review closes the reviewed milestone and routes to final closeout.
+  - Search affected guidance for unconditional `clean-with-notes -> final closeout` or equivalent wording and either remove it or qualify it as final-milestone-only.
   - Manually confirm the handoff examples preserve the non-final and final split.
 - Expected result:
   - No changed authoritative surface implies that a clean review of `M1` in a multi-milestone plan is enough for `verify`.
@@ -163,7 +164,7 @@
   - `scripts/test-skill-validator.py`
   - manual contract review during M2 and M3.
 
-### T4. Inconclusive or ambiguous review never hands off to verify
+### T4. Inconclusive or ambiguous review never starts final closeout
 
 - Covers: `R4d`, `R6`, `R6a`, `R6b`, `E4`, `EC6`, `EC7`
 - Level: integration, manual
@@ -177,9 +178,9 @@
   - Assert code-review guidance requires the reviewed milestone to be identifiable.
   - Assert ambiguous remaining implementation milestones require a plan update or `inconclusive` result.
   - Assert inconclusive review leaves the milestone at `review-requested` unless a stronger stop condition applies.
-  - Confirm the output names missing evidence or required plan updates instead of routing to `verify`.
+  - Confirm the output names missing evidence or required plan updates instead of routing to final closeout.
 - Expected result:
-  - Missing review evidence or ambiguous plan state blocks verify readiness.
+  - Missing review evidence or ambiguous plan state blocks final closeout readiness.
 - Failure proves:
   - The workflow can infer finality from insufficient evidence.
 - Automation location:
@@ -212,7 +213,7 @@
   - `scripts/test-skill-validator.py`
   - manual review during M2 and M3.
 
-### T6. Implement handoff uses `review-requested` and does not claim verify readiness
+### T6. Implement handoff uses `review-requested` and does not claim final closeout readiness
 
 - Covers: `R3`, `R3a`, `R3b`, `AC5`
 - Level: integration, manual
@@ -226,11 +227,11 @@
   - Assert `implement` transitions a started milestone from `planned` to `implementing`.
   - Assert post-implementation handoff transitions the milestone to `review-requested` after targeted validation passes.
   - Assert `implement` records targeted validation evidence and hands off to `code-review` for that milestone.
-  - Assert `implement` does not set the whole plan to `Ready for verify` while any implementation milestone remains unreviewed, unresolved, or open.
+  - Assert `implement` does not set the whole plan to `Ready for final closeout` while any implementation milestone remains unreviewed, unresolved, or open.
 - Expected result:
-  - Implementation completion creates review handoff evidence, not milestone closeout or whole-plan verify readiness.
+  - Implementation completion creates review handoff evidence, not milestone closeout or whole-plan final closeout readiness.
 - Failure proves:
-  - The implementation stage can prematurely route a multi-milestone plan to verify.
+  - The implementation stage can prematurely route a multi-milestone plan to final closeout.
 - Automation location:
   - `scripts/test-skill-validator.py`
   - manual review during M3.
@@ -246,20 +247,20 @@
   - active plan examples in `docs/plans/`
   - `scripts/test-skill-validator.py`
 - Steps:
-  - Assert plan and review output guidance require current milestone, current milestone state, last reviewed milestone, review status, remaining in-scope implementation milestones, next stage, verify readiness, and reason.
-  - Assert a clean non-final handoff names remaining milestones and says verify is not ready.
-  - Assert a clean final handoff says verify is ready because all in-scope implementation milestones are closed and code-review is complete.
-  - Assert a findings handoff says verify is not ready because review findings remain unresolved or require owner decision.
+  - Assert plan and review output guidance require current milestone, current milestone state, last reviewed milestone, review status, remaining in-scope implementation milestones, next stage, final closeout readiness, and reason.
+  - Assert a clean non-final handoff names remaining milestones and says final closeout is not ready.
+  - Assert a clean final handoff says final closeout can start with `ci-maintenance` when triggered; otherwise `explain-change`, because all in-scope implementation milestones are closed and code-review is complete.
+  - Assert a findings handoff says final closeout is not ready because review findings remain unresolved or require owner decision.
   - Assert a stage that cannot edit the plan explicitly requires the plan update before downstream routing relies on the state.
 - Expected result:
-  - The active plan or stage output always exposes why the next stage is next and whether verify is available.
+  - The active plan or stage output always exposes why the next stage is next and whether final closeout can begin.
 - Failure proves:
   - Downstream stages can rely on stale or unstated milestone status.
 - Automation location:
   - `scripts/test-skill-validator.py`
   - manual plan review during M3 and M4.
 
-### T8. Milestones are not postponed to reach verify
+### T8. Milestones are not postponed to reach final closeout
 
 - Covers: `R7`, `R7a`, `R7b`, `E5`, `EC8`
 - Level: manual
@@ -271,9 +272,9 @@
   - `skills/code-review/SKILL.md`
 - Steps:
   - Review workflow and planning guidance after implementation.
-  - Confirm a listed implementation milestone cannot be skipped solely to make `verify` available.
+  - Confirm a listed implementation milestone cannot be skipped solely to make final closeout available.
   - Confirm a milestone removed from scope requires plan revision before next-stage routing relies on that removal.
-  - Confirm verify may proceed after revision only when no in-scope implementation milestone remains open or unresolved.
+  - Confirm final closeout may proceed after revision only when no in-scope implementation milestone remains open or unresolved.
 - Expected result:
   - Scope changes are explicit plan changes, not hidden routing decisions.
 - Failure proves:
@@ -292,13 +293,13 @@
   - `specs/rigorloop-workflow.md`
   - `scripts/test-skill-validator.py`
 - Steps:
-  - Assert guidance names `lifecycle-closeout` for downstream gates such as `verify`, `explain-change`, and PR handoff.
-  - Confirm lifecycle-closeout work does not block entry into `verify` after all implementation milestones are closed.
-  - Confirm a mixed milestone that still contains implementation work remains an implementation milestone for verify-readiness decisions.
+  - Assert guidance names `lifecycle-closeout` for downstream gates such as `ci-maintenance`, `explain-change`, `verify`, and PR handoff.
+  - Confirm lifecycle-closeout work does not block entry into final closeout after all implementation milestones are closed.
+  - Confirm a mixed milestone that still contains implementation work remains an implementation milestone for final-closeout readiness decisions.
 - Expected result:
-  - Verify readiness is based on open implementation work, not on the existence of downstream lifecycle gates.
+  - Final closeout readiness is based on open implementation work, not on the existence of downstream lifecycle gates.
 - Failure proves:
-  - Plans can either block verify incorrectly or hide real implementation work in closeout language.
+  - Plans can either block final closeout incorrectly or hide real implementation work in closeout language.
 - Automation location:
   - `scripts/test-skill-validator.py`
   - manual review during M2 and M3.
@@ -426,13 +427,13 @@
 ## Migration or compatibility tests
 
 - `T1` proves unchanged lanes and stop conditions.
-- `T8` proves planned milestones cannot be silently postponed to reach verify.
+- `T8` proves planned milestones cannot be silently postponed to reach final closeout.
 - `T9` proves lifecycle-closeout milestones do not behave like implementation milestones.
 - `T14` proves existing untouched plans are not made invalid solely by lacking the new summary fields.
 
 ## Observability verification
 
-- `T7` verifies that milestone handoff summaries expose the current milestone, current milestone state, last reviewed milestone, review status, remaining implementation milestones, next stage, verify readiness, and reason.
+- `T7` verifies that milestone handoff summaries expose the current milestone, current milestone state, last reviewed milestone, review status, remaining implementation milestones, next stage, final closeout readiness, and reason.
 - `T6` verifies implement output and plan updates expose targeted validation evidence and `review-requested` handoff.
 - `T2` and `T3` verify code-review output exposes clean-review closeout or findings-driven `resolution-needed` routing.
 
@@ -448,10 +449,10 @@
 
 ## Manual QA checklist
 
-- Confirm non-final clean milestone review routes to `implement <next milestone>`, not `verify`.
-- Confirm final clean milestone review routes to `verify`.
-- Confirm findings route to same-milestone review-resolution and block next milestone/verify until resolved or explicitly deferred under the governing review contract.
-- Confirm inconclusive or ambiguous review state blocks verify and names missing evidence or required plan update.
+- Confirm non-final clean milestone review routes to `implement <next milestone>`, not final closeout.
+- Confirm final clean milestone review routes to final closeout.
+- Confirm findings route to same-milestone review-resolution and block next milestone/final closeout until resolved or explicitly deferred under the governing review contract.
+- Confirm inconclusive or ambiguous review state blocks final closeout and names missing evidence or required plan update.
 - Confirm allowed `Milestone state` values are exactly `planned`, `implementing`, `review-requested`, `resolution-needed`, and `closed`.
 - Confirm `implementation-complete` and `review-clean` are not milestone state values.
 - Confirm no standalone `review-resolution` skill or executable plan-state validator was added.
@@ -472,9 +473,8 @@ None. If implementation discovers that guidance-only static proof cannot satisfy
 
 ## Next artifacts
 
-- `implement M1`: add or update static proof surfaces before canonical workflow guidance changes.
-- `code-review M1` after M1 implementation handoff.
-- Continue the milestone loop defined in the active plan until all in-scope implementation milestones are closed.
+- `code-review M2` after M2 implementation handoff.
+- Continue the milestone loop defined in the active plan with M3 through M5 until all in-scope implementation milestones are closed.
 
 ## Follow-on artifacts
 
@@ -486,6 +486,6 @@ Status: Active.
 
 Progress: proposal is accepted, spec is approved, plan-review is approved, and this matching test spec is active.
 
-Readiness: Active proof surface for `implement M1`.
+Readiness: Active proof surface for `code-review M2` handoff after M2 implementation completes.
 
-Remaining completion gates: implement M1, code-review M1, review-resolution if triggered, implement and review M2-M4, final verify after all in-scope implementation milestones are closed, explain-change, PR handoff, and Done if no true downstream event remains.
+Remaining completion gates: code-review M2, review-resolution if triggered, continue the active plan's milestone loop through M5, ci-maintenance if triggered, explain-change, final verify after explain-change, PR handoff, and Done if no true downstream event remains.

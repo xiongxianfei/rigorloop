@@ -42,18 +42,11 @@ Proposals created or substantively revised after this spec is adopted include `V
 
 Changes that affect externally observable behavior MUST have an approved spec before implementation.
 
-The full lifecycle MUST be used for changes that affect any of the following:
+RigorLoop recommends one standard workflow for complete AI-assisted delivery. Public workflow guidance MUST NOT classify work into separate routes by speed, completeness, size, or risk labels.
 
-- public behavior
-- workflow order or stage policy
-- architecture boundaries
-- CI behavior
-- schemas
-- generated-output logic
-- security-sensitive behavior
-- release packaging
+Users MAY manually invoke an individual skill for focused output. A manual skill invocation is isolated by default and does not imply that the full workflow has been completed.
 
-Fast-lane work MAY skip the full lifecycle only when it stays inside the approved trivial-change categories and still records the required fast-lane spec evidence.
+Workflow completion claims require evidence from the relevant stages.
 
 Specs MUST express normative requirements in reviewable form. When the repository uses requirement IDs, downstream tests, verification notes, and change artifacts MUST cite those IDs rather than relying on vague prose references.
 
@@ -110,7 +103,7 @@ Secrets, credentials, tokens, and private keys MUST NOT be committed.
 
 Machine-local paths, usernames, host-specific command workarounds, and debug-only artifacts MUST NOT be committed unless they are intentionally part of a reviewed example and clearly justified.
 
-Changes that affect security-sensitive behavior, review gates, or release boundaries MUST use the full lifecycle and MUST NOT be treated as fast-lane work.
+Changes that affect security-sensitive behavior, review gates, or release boundaries MUST follow the standard workflow before completion is claimed.
 
 New dependencies SHOULD be avoided when existing repository scripts or the standard runtime can solve the problem. When a new dependency is necessary, the spec or architecture doc MUST justify it.
 
@@ -152,15 +145,15 @@ Until repository-specific release checks replace the current conservative templa
 
 `spec-review` MUST happen before implementation for behavior, workflow, schema, or compatibility changes.
 
-`architecture-review` SHOULD happen for cross-component, high-risk, or boundary-changing design work.
+`architecture-review` SHOULD happen for cross-component, broad-impact, hard-to-reverse, or boundary-changing design work.
 
 `plan-review` MUST happen for multi-milestone or sequencing-sensitive work.
 
-`code-review` and `verify` MUST happen before non-trivial changes are considered ready for PR.
+`code-review`, `explain-change`, and `verify` MUST happen before non-trivial changes are considered ready for PR.
 
 In workflow-managed completion flows, agents MUST continue into the next mandatory or triggered downstream stage when an approved autoprogression spec says continuation applies. Review-only or otherwise isolated stage requests MUST remain isolated by default, except that direct `pr` still performs PR opening when readiness passes.
 
-Fast-lane and bugfix execution remain explicit-step unless a higher-priority approved artifact broadens their automation scope. On-demand or periodic actions such as `explore`, `research`, and `learn` MUST NOT auto-run by default unless a higher-priority approved artifact elevates them.
+Manual skill invocations and bugfix skill invocations remain isolated or explicit-step unless a higher-priority approved artifact broadens their automation scope. On-demand or periodic actions such as `explore`, `research`, and `learn` MUST NOT auto-run by default unless a higher-priority approved artifact elevates them.
 
 When review feedback exists, each material finding MUST include evidence, a required outcome, and a safe resolution path or `needs-decision` rationale before it drives fixes.
 
@@ -168,7 +161,7 @@ Material review findings MUST always be recorded. All material findings require 
 
 A detailed change-local review record MUST be preserved for every material finding before review-driven fixes or downstream routing proceed. For isolated or review-only requests, the record is required even when no downstream handoff follows.
 
-When material findings exist for a non-trivial change, dispositions MUST be recorded in `review-resolution.md` using only `accepted`, `rejected`, `deferred`, `partially-accepted`, or `needs-decision`. `needs-decision` is not final and blocks `verify`, `explain-change`, and `pr` until resolved or explicitly deferred by an authorized owner.
+When material findings exist for a non-trivial change, dispositions MUST be recorded in `review-resolution.md` using only `accepted`, `rejected`, `deferred`, `partially-accepted`, or `needs-decision`. `needs-decision` is not final and blocks `explain-change`, `verify`, and `pr` until resolved or explicitly deferred by an authorized owner.
 
 Clean required formal reviews with no material findings MAY settle in the reviewed artifact when no detailed-record trigger applies. A no-material detailed review record requires `review-log.md` but MUST NOT create an empty `review-resolution.md` solely because `reviews/` exists.
 
@@ -200,25 +193,10 @@ Agents MUST remove or challenge stale instructions when they are demonstrably wr
 
 Agents MUST keep chat-only reasoning subordinate to tracked repository artifacts once the project has written guidance for a topic.
 
-## Fast-lane exceptions
+## Manual skill invocation
 
-The fast lane MAY be used only for:
+Users may manually invoke individual skills such as `verify`, `code-review`, `explain-change`, or `pr` for focused tasks.
 
-- typos
-- formatting-only changes
-- small documentation clarifications
-- comment-only changes
-- small test-fixture corrections
-- small non-behavioral renames
-- minor generated-artifact refreshes that do not change generator behavior
+A manual skill invocation may produce useful output, but it is isolated by default and does not claim that omitted upstream or downstream workflow stages have completed.
 
-Fast-lane work MUST still record:
-
-- intent
-- expected change
-- out of scope
-- validation
-
-That fast-lane spec MUST be visible in at least one tracked or review-visible location such as the PR body, commit message, issue comment, or linked change note.
-
-The fast lane MUST NOT be used for behavior changes, workflow-order changes, CI behavior changes, schema changes, architecture changes, generated-output logic changes, release packaging changes, or changes that are hard to roll back safely.
+If the user asks for full workflow completion, or if an agent claims workflow completion, the claim must be backed by evidence from the relevant standard workflow stages.
