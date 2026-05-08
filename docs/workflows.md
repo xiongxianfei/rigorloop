@@ -2,6 +2,20 @@
 
 This file is the short operational summary for working in this repository. The normative workflow contract lives in `specs/rigorloop-workflow.md`.
 
+## Skill Contract
+
+- The normative skill-contract source is `specs/skill-contract.md`.
+- The workflow-routing source is `specs/rigorloop-workflow.md`.
+- Skills are operational guides, not substitute specs.
+- Shipped skill text is the user-facing interface. Keep repository-maintainer details such as canonical source paths, generated mirrors, adapter paths, selector path constraints, drift-check mechanics, and shared-block implementation details in contributor surfaces rather than in published skills.
+- Skill-contract summaries in this file and `AGENTS.md` do not override approved specs.
+- Shared skill policy blocks live under `templates/shared/<block-name>.md`.
+- Public shared blocks are copied into consuming skills and checked for drift; maintainer-only blocks such as generated-output handling are not copied into published skills.
+- Edit canonical skill source under `skills/<skill>/SKILL.md`; regenerate `.codex/skills/` and `dist/adapters/` instead of hand-editing generated output.
+- Evidence reading starts from summaries, stable IDs, headings, targeted sections, check IDs, file paths, counts, and line citations before broad reads.
+- Add a skill only when it owns a distinct artifact, gate, review responsibility, recurring action, or approved operational process.
+- Do not create a new skill for one-off helper behavior, tiny formatting rules, or checklists that belong inside an existing skill.
+
 ## Choose A Lane
 
 - Use the fast lane for trivial or low-risk work only.

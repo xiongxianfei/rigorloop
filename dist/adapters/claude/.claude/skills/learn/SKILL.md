@@ -14,6 +14,36 @@ Do not fabricate lessons. The trigger decides whether a session may run; evidenc
 
 Maintainer-driven rule adoption without accumulated evidence is not durable learn capture. If a maintainer proposes or requests a new rule, but the learn session lacks accumulated evidence such as repeated review findings, repeated incidents, failed smoke patterns, recurring validation gaps, or prior session evidence, classify the observation as `direction`, not `durable-lesson`, and route it to proposal work. The proposal may later produce an ADR, workflow spec update, skill change, or other authoritative artifact if accepted. Do not add the rule directly to `docs/learn/topics/<topic>.md` as durable guidance unless there is accumulated evidence or an accepted authoritative artifact to cite.
 
+## Purpose
+
+Capture evidence-bound observations and contributor-confirmed durable lessons without turning learn records into workflow policy, lifecycle closeout, or PR readiness proof.
+
+## When to use
+
+Use this skill only when learning is periodic or explicitly triggered by cadence, incident response, contributor observation, repeated findings, failed smoke, accepted postmortem action, maintainer request, or another stated trigger.
+
+## When not to use
+
+Do not use this skill as the default final stage for every change, to invent a lesson from weak evidence, to create new workflow policy by itself, or to bypass proposal, spec, ADR, workflow, or skill updates when behavior should change.
+
+## Outputs
+
+Produce a learn session record after Frame, topic updates only for contributor-confirmed durable lessons, and links to action-owning artifact updates or follow-ups when routing produces them.
+
+## Handoff
+
+- Normal next stage: none by default; record the session outcome or no-learn rationale and stop.
+- Conditional next stages: route confirmed `artifact-update`, `decision`, `direction`, or `process-follow-up` to the owning proposal, ADR, spec, workflow, skill, active plan, issue, or other authoritative artifact.
+- For full stage order and downstream-blocking semantics, route through the `workflow` skill.
+
+## Claims this skill must not make
+
+Do not claim:
+
+- new workflow policy is authoritative unless the lesson is routed to and accepted in an authoritative artifact;
+- plan closeout, review-resolution closeout, verification readiness, branch readiness, PR readiness, CI status, or derived-artifact currency;
+- a single observation is a durable lesson without reusable pattern, systemic gap evidence, contributor confirmation, or accepted authoritative artifact support.
+
 ## Output Surfaces
 
 When a learn invocation reaches the Frame phase, create or update a tracked session record at `docs/learn/sessions/YYYY-MM-DD-<slug>.md`. This applies even when the session is empty or produces `no-durable-lesson`.
@@ -26,16 +56,16 @@ The boundary is simple: topic files are curated guidance, not policy. They must 
 
 Pre-session trigger closeout is different from a learn session; pre-session trigger closeout may record a scheduled follow-up, deferral, or explicit no-learn rationale only when `learn` does not actually run as a session. Use a contributor-visible tracked or review-visible surface.
 
-## Inputs To Read
+## Inputs to read
 
 Start from bounded evidence:
 
 1. trigger statement and named artifacts;
 2. relevant `docs/learn/README.md`, prior session records, and topic files when present and relevant;
-3. compact summaries, headings, stable IDs, and exact sections first for governance, workflow, spec, plan, ADR, review, verify, incident, commit, generated-output, or validation evidence;
+3. compact summaries, headings, stable IDs, and exact sections first for governance, workflow, spec, plan, ADR, review, verify, incident, commit, derived-artifact, or validation evidence;
 4. full-file reads only when narrower evidence is insufficient for classification or routing.
 
-For periodic learn sessions, inspect changes in the selected time window when relevant, including proposals, plans, change packs, ADRs, recent commits to canonical surfaces, and generated-output or validation records.
+For periodic learn sessions, inspect changes in the selected time window when relevant, including proposals, plans, change packs, ADRs, recent commits to canonical surfaces, and derived-artifact or validation records.
 
 For incident sessions, inspect the incident report, related artifacts, affected specs or plans, review or verify findings, and relevant postmortem action records when present. Summarize sensitive evidence; do not commit secrets, credentials, tokens, private keys, private incident data, or unnecessary machine-local details.
 
@@ -100,9 +130,25 @@ Topic entries may be added, revised, superseded, removed, or absorbed into an au
 
 Topic files exist for discovery. Keep them concise and curated; do not let them become policy, workflow contracts, architecture decisions, validation contracts, or skill contracts.
 
-## Generated Output Boundary
+## Stop conditions
 
-If this canonical skill changes, generated `.codex/skills/` output and public adapter output under `dist/adapters/`, including `.agents/skills`, `.claude/skills`, and `.opencode/skills`, must be refreshed through repository-owned generators. Do not hand-edit generated skill or adapter output.
+Stop before routing or topic updates when:
+
+- the trigger is absent or cannot be stated;
+- evidence does not support a durable lesson;
+- contributor confirmation is unavailable for final classification;
+- the observation requires policy, workflow, architecture, spec, ADR, or skill behavior changes that need an owning artifact;
+- sensitive incident details, secrets, credentials, or private data cannot be summarized safely.
+
+## Evidence collection efficiency
+
+Use summary and stable-ID first reasoning before broad reads or raw excerpts.
+Prefer check IDs, requirement IDs, test IDs, file paths, counts, and line citations when inspecting large files, repeated scans, derived artifacts, or validation output.
+Read exact ranges after locating relevant lines, then expand only when the narrower evidence is insufficient.
+
+## When full-file read is required
+
+Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
 
 ## Rules
 
@@ -117,6 +163,23 @@ If this canonical skill changes, generated `.codex/skills/` output and public ad
 
 ## Expected output
 
+Start with:
+
+```md
+## Result
+
+- Skill: learn
+- Status:
+- Artifacts changed:
+- Open blockers:
+- Next stage:
+- Session path:
+- Lessons captured:
+- Follow-ups:
+```
+
+Then include:
+
 - session record path and status;
 - trigger, scope, evidence reviewed, and exclusions;
 - observations found, or explicit no-observation result;
@@ -124,4 +187,4 @@ If this canonical skill changes, generated `.codex/skills/` output and public ad
 - routing results and derivative artifact links;
 - no-learn rationale when no durable lesson was captured;
 - follow-ups created, scheduled, or explicitly not needed;
-- validation or generated-output commands run when this skill changed.
+- validation commands run when this skill changed.
