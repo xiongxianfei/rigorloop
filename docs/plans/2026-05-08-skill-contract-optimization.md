@@ -2,11 +2,11 @@
 
 ## Status
 
-- active
+- done
 - Owner: maintainers
 - Start date: 2026-05-08
 - Last updated: 2026-05-08
-- Related issue or PR: none yet
+- Related issue or PR: PR #34, https://github.com/xiongxianfei/rigorloop/pull/34
 - Supersedes: none
 - selected_workflow_contract: refactored
 - broad_smoke_required: false
@@ -102,9 +102,9 @@ The test spec should require focused static assertions for:
 - Last reviewed milestone: M4
 - Review status: clean-with-notes
 - Remaining in-scope implementation milestones: none
-- Next stage: PR handoff
+- Next stage: Done
 - Verify readiness: passed
-- Reason next stage is PR handoff: all in-scope implementation milestones are closed, code-review is complete, review-resolution is closed, explain-change is current, and final selected verification passed.
+- Reason plan is done: all in-scope implementation milestones are closed, code-review is complete, review-resolution is closed, explain-change is current, final selected verification passed, learn-session follow-up was recorded, and PR #34 is opened.
 
 ## Milestones
 
@@ -355,7 +355,7 @@ The test spec should require focused static assertions for:
   - [x] verify passed
   - [x] explain-change updated
   - [x] `docs/plan.md` and this plan body synchronized
-  - [ ] PR handoff complete
+  - [x] PR handoff complete
 - Risks:
   - Plan lifecycle state can drift between `docs/plan.md` and this plan body.
   - Final PR text can introduce authoritative references after verification.
@@ -538,20 +538,21 @@ The test spec should require focused static assertions for:
 - 2026-05-08: Final verify rerun passed `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-skill-contract-optimization`, `python scripts/validate-change-metadata.py docs/changes/2026-05-08-skill-contract-optimization/change.yaml`, `git diff --check b8f64359a4d7642ef62ffc467c5c9c071ffcf871..HEAD`, and a whitespace scan over all 54 branch changed paths.
 - 2026-05-08: Broad smoke stayed untriggered because the active plan records `broad_smoke_required: false`, and selector, test spec, review-resolution, and release metadata did not require it.
 - 2026-05-08: Explicit `learn` session recorded the verify/explain-change ordering issue in `docs/learn/sessions/2026-05-08-verify-explain-change-order.md`. `bash scripts/ci.sh --mode explicit --path docs/learn/sessions/2026-05-08-verify-explain-change-order.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml` passed selected artifact lifecycle and change metadata checks.
+- 2026-05-08: Post-learn selected CI over all 55 branch changed paths passed selected checks: `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
+- 2026-05-08: Draft PR #34 was opened to obtain the PR identifier, then `docs/plan.md` and this plan body were synchronized to Done before marking the PR ready for review.
 
 ## Outcome and Retrospective
 
-Plan is active. Implementation, review, verification, and explanation are complete. PR handoff remains incomplete.
+Plan is done. Implementation, review, verification, explanation, learn-session capture, and PR handoff are complete in this branch.
 
 ## Readiness
 
-Status: Active.
-
-Progress: proposal is accepted; spec is approved; plan-review approved the execution plan; test spec is active; M1 is closed after clean code-review R2; M2 is closed after clean code-review; M3 is closed after clean code-review; M4 is closed after clean code-review; explain-change is updated; final verify rerun passed.
-
-Readiness: Ready for PR handoff.
-
-Remaining completion gates: PR handoff, then Done if no true downstream event remains.
+- Branch-ready was established by final verify and post-learn selected validation.
+- M1 through M4 are closed after code-review, and review-resolution is closed.
+- Explain-change is recorded and current.
+- The verify/explain-change ordering learn session is recorded as a follow-up direction.
+- Plan index and plan body are synchronized as Done for PR #34 review.
+- PR #34 is open.
 
 ## Risks and Follow-Ups
 
