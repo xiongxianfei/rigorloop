@@ -98,19 +98,19 @@ The test spec should require focused static assertions for:
 ## Current Handoff Summary
 
 - Current milestone: M1
-- Current milestone state: review-requested
+- Current milestone state: closed
 - Last reviewed milestone: M1
-- Review status: CR1-F1 fix applied; code-review rerun pending
-- Remaining in-scope implementation milestones: M1 review-requested; M2, M3, M4 planned
-- Next stage: code-review M1 rerun
+- Review status: clean-with-notes
+- Remaining in-scope implementation milestones: M2, M3, M4
+- Next stage: implement M2
 - Verify readiness: not ready
-- Reason verify is not ready: M1 code-review rerun, implementation milestones M2-M4, generated-output refresh, review-resolution closeout, and final verification remain incomplete.
+- Reason verify is not ready: implementation milestones M2-M4, generated-output refresh, and final verification remain incomplete.
 
 ## Milestones
 
 ### M1. Define Skill-Contract Static Proof
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Add the matching test spec and focused static proof design before changing canonical skill guidance.
 - Requirements: `R1`-`R3c`, `R8`-`R20b`.
 - Files/components likely touched:
@@ -407,7 +407,7 @@ The test spec should require focused static assertions for:
 - [x] M1 implementation complete and ready for code-review.
 - [x] M1 code-review completed with changes requested.
 - [x] M1 CR1-F1 fix implemented and ready for code-review rerun.
-- [ ] M1 closed.
+- [x] M1 closed.
 - [ ] M2 closed.
 - [ ] M3 closed.
 - [ ] M4 closed.
@@ -465,6 +465,13 @@ The test spec should require focused static assertions for:
 - 2026-05-08: `bash scripts/ci.sh --mode explicit --path scripts/test-skill-validator.py --path docs/changes/2026-05-08-skill-contract-optimization/review-log.md --path docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r1.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml --path docs/plans/2026-05-08-skill-contract-optimization.md` passed selected checks after CR1-F1 fix.
 - 2026-05-08: `git diff --check -- scripts/test-skill-validator.py docs/changes/2026-05-08-skill-contract-optimization/review-log.md docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r1.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml docs/plans/2026-05-08-skill-contract-optimization.md` passed after CR1-F1 fix.
 - 2026-05-08: `rg -n '[[:blank:]]$|\t' scripts/test-skill-validator.py docs/changes/2026-05-08-skill-contract-optimization/review-log.md docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r1.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml docs/plans/2026-05-08-skill-contract-optimization.md` found no matches after CR1-F1 fix.
+- 2026-05-08: `python scripts/test-skill-validator.py` passed 37 tests during code-review R2.
+- 2026-05-08: `bash scripts/ci.sh --mode explicit --path scripts/test-skill-validator.py --path docs/changes/2026-05-08-skill-contract-optimization/review-log.md --path docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r1.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml --path docs/plans/2026-05-08-skill-contract-optimization.md` passed selected checks during code-review R2.
+- 2026-05-08: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-skill-contract-optimization` passed after code-review R2 closed CR1-F1.
+- 2026-05-08: `python scripts/select-validation.py --mode explicit --path scripts/test-skill-validator.py --path docs/changes/2026-05-08-skill-contract-optimization/review-log.md --path docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r1.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r2.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml --path docs/plans/2026-05-08-skill-contract-optimization.md` passed with no unclassified paths after code-review R2.
+- 2026-05-08: `bash scripts/ci.sh --mode explicit --path scripts/test-skill-validator.py --path docs/changes/2026-05-08-skill-contract-optimization/review-log.md --path docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r1.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r2.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml --path docs/plans/2026-05-08-skill-contract-optimization.md` passed selected checks after code-review R2.
+- 2026-05-08: `git diff --check -- scripts/test-skill-validator.py docs/changes/2026-05-08-skill-contract-optimization/review-log.md docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r1.md docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r2.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml docs/plans/2026-05-08-skill-contract-optimization.md` passed after code-review R2.
+- 2026-05-08: `rg -n '[[:blank:]]$|\t' scripts/test-skill-validator.py docs/changes/2026-05-08-skill-contract-optimization/review-log.md docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r1.md docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r2.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml docs/plans/2026-05-08-skill-contract-optimization.md` found no matches after code-review R2.
 
 ## Outcome and Retrospective
 
@@ -474,11 +481,11 @@ Plan is active. Implementation, review, verification, explanation, and PR handof
 
 Status: Active.
 
-Progress: proposal is accepted; spec is approved; plan-review approved the execution plan; test spec is active; M1 implementation is complete; code-review R1 requested changes for CR1-F1; the CR1-F1 fix is implemented.
+Progress: proposal is accepted; spec is approved; plan-review approved the execution plan; test spec is active; M1 is closed after clean code-review R2.
 
-Readiness: Ready for code-review M1 rerun.
+Readiness: Ready for implement M2.
 
-Remaining completion gates: code-review M1 rerun, review-resolution closeout, implementation milestones M2-M4, code-review for each remaining implementation milestone, review-resolution if triggered, verify, explain-change, PR handoff, then Done if no true downstream event remains.
+Remaining completion gates: implementation milestones M2-M4, code-review for each remaining implementation milestone, review-resolution if triggered, verify, explain-change, PR handoff, then Done if no true downstream event remains.
 
 ## Risks and Follow-Ups
 
