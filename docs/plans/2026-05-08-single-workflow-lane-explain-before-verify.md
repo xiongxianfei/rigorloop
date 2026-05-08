@@ -79,14 +79,14 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
 ## Current Handoff Summary
 
 - Current milestone: M5. Review Evidence and Selected Validation
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M4
-- Review status: code-review R6 returned `clean-with-notes` with no material findings. M4 is closed.
-- Commit status: M1 and M2 closeout was corrected with a scoped catch-up milestone commit before continuing M3. M3 review-resolution changes are included in the `M3: align public skill workflow surfaces` handoff commit before M3 closeout. M4 generated-output confirmation has a handoff commit before M4 closeout. Future milestone closeout must not mark a milestone closed until the milestone commit exists.
-- Remaining in-scope implementation milestones: M5 review evidence remains planned.
-- Next stage: `implement M5`
+- Review status: code-review R6 returned `clean-with-notes` with no material findings. M4 is closed; M5 review evidence and selected validation are ready for code-review.
+- Commit status: M1 and M2 closeout was corrected with a scoped catch-up milestone commit before continuing M3. M3 review-resolution changes are included in the `M3: align public skill workflow surfaces` handoff commit before M3 closeout. M4 generated-output confirmation has a handoff commit before M4 closeout. M5 review-evidence work has a handoff commit before review. Future milestone closeout must not mark a milestone closed until the milestone commit exists.
+- Remaining in-scope implementation milestones: M5 code-review pending.
+- Next stage: `code-review M5`
 - Final closeout readiness: not ready
-- Reason final closeout is not ready: M5 review evidence, required review-resolution if triggered, `ci-maintenance` if triggered, `explain-change`, final `verify`, and `pr` remain.
+- Reason final closeout is not ready: code-review M5, required review-resolution if triggered, `ci-maintenance` if triggered, `explain-change`, final `verify`, and `pr` remain.
 
 ## Milestones
 
@@ -312,7 +312,7 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
 
 ### M5. Review Evidence and Selected Validation
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Complete implementation evidence, selected validation, code-review handoff, and review-resolution if findings are raised.
 - Requirements: Workflow `R7x`-`R8j`, `R10`-`R10h`, `R12ao`; review-resolution contract.
 - Files/components likely touched:
@@ -336,8 +336,15 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
   - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-08-single-workflow-lane-explain-before-verify`
   - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-single-workflow-lane-explain-before-verify`
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml`
-  - `bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md`
+  - `bash scripts/ci.sh --mode explicit` over concrete changed paths from the initiative range and current plan updates; do not pass `docs/changes/<change-id>/` as a directory selector path.
 - Expected observable result: Code-review is complete or required review-resolution is explicitly open with current plan state; no final closeout claim is made while findings remain open.
+- Implementation handoff:
+  - Review artifact structure and closeout validation passed for all current review records.
+  - Change metadata validation passed.
+  - The original directory-form selected CI command was blocked by the selector; M5 replaced it with concrete changed paths from the initiative range and current plan update.
+  - Concrete-path selected CI passed selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `readme.validate`, `readme.vision_markers`, and `selector.regression` checks.
+- Review status:
+  - M5 is ready for code-review.
 - Commit message: `M5: record workflow governance review evidence`
 - Milestone closeout:
   - validation passed
@@ -440,7 +447,7 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
 - [x] M2 workflow contract and contributor guidance alignment closed after clean code-review R3 and corrected with the scoped M1/M2 catch-up milestone commit.
 - [x] M3 canonical skill and public skill portability alignment closed after clean code-review R5.
 - [x] M4 generated output and adapter confirmation closed after clean code-review R6.
-- [ ] M5 code-review and review-resolution when triggered.
+- [ ] M5 review evidence and selected validation implementation complete; code-review required before closeout.
 - [ ] M6 lifecycle closeout.
 
 ## Decision Log
@@ -463,6 +470,7 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
 - 2026-05-08: Code-review R5 closed M3 with no material findings. Rationale: CR2 and CR3 are fixed in canonical `code-review` and `verify` skill text, generated public copies are in sync, and static wording checks now reject the stale final-closeout phrases.
 - 2026-05-08: M4 replaced the approved directory-form selected CI command with concrete generated-output path selection. Rationale: the selector intentionally blocks `.codex/skills`, `dist/adapters`, and `scripts/adapter_templates` directory paths; concrete generated files select the same stable drift and adapter checks without hiding unclassified paths.
 - 2026-05-08: Code-review R6 closed M4 with no material findings. Rationale: generated Codex skill mirrors and public adapter packages are in sync, adapter validation passes, public skill portability checks pass, and the stale directory-form selected CI command has a concrete-path replacement.
+- 2026-05-08: M5 replaced the planned `docs/changes/<change-id>/` directory selected CI command with concrete changed paths from the initiative range. Rationale: the selector intentionally blocks the change-local directory path in explicit mode; concrete files select the intended review-artifact, lifecycle, metadata, skill, adapter, README, and selector checks.
 
 ## Surprises and Discoveries
 
@@ -480,6 +488,7 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
 - Code-review R5 confirmed that M3 is clean after CR2/CR3 review-resolution. M4 remains useful as a final generated-output confirmation milestone because generated copies changed during M3 review-resolution.
 - M4 generator execution after M3 closeout produced no tracked generated-output diff. The confirmation still found one stale plan command that used generated-output directories as selector paths; concrete generated files select the intended drift and adapter checks.
 - Code-review R6 confirmed M4 is clean. The remaining implementation work is M5 review evidence and selected validation.
+- M5 found the same directory-selector pattern for the change-local root. Concrete changed paths from the initiative range selected the intended final proof set without unclassified paths.
 
 ## Validation Notes
 
@@ -615,6 +624,12 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
   - `bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r6.md` passed selected review-artifact, lifecycle, change-metadata regression, and change-metadata validation checks.
   - `git diff --check -- docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r6.md` passed.
   - Whitespace scan for the same code-review R6 recording paths passed.
+- 2026-05-08 M5 review evidence and selected validation:
+  - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-08-single-workflow-lane-explain-before-verify` passed with 16 reviews, 23 findings, 16 log entries, and 23 resolution entries.
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-single-workflow-lane-explain-before-verify` passed with 16 reviews, 23 findings, 16 log entries, and 23 resolution entries.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml` passed.
+  - `bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md` failed because the selector blocks the change-local directory path in explicit mode.
+  - `bash -c 'args=(); while IFS= read -r path; do args+=(--path "$path"); done < <({ git diff --name-only 7915f4c..HEAD; git diff --name-only; } | sort -u); bash scripts/ci.sh --mode explicit "${args[@]}"'` passed selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `readme.validate`, `readme.vision_markers`, and `selector.regression` checks.
 
 ## Outcome and Retrospective
 
@@ -623,17 +638,18 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
 - M2 implementation is closed after clean code-review R3 and covered by the scoped M1/M2 catch-up milestone commit.
 - M3 implementation is closed after CR2/CR3 review-resolution and clean code-review R5.
 - M4 implementation is closed after generated-output confirmation and clean code-review R6.
+- M5 implementation is ready for code-review after review evidence and selected validation.
 - Final closeout is not ready.
 
 ## Readiness
 
-- Next stage: `implement M5`.
+- Next stage: `code-review M5`.
 - Plan-review readiness: complete; plan-review R2 approved this plan.
 - Test-spec readiness: complete; matching test specs confirm the proof map against the approved plan.
-- Implementation readiness: M5 is ready to record review evidence and selected validation. Later milestones remain gated by the milestone-specific validation, code-review, and review-resolution rules in this plan.
+- Implementation readiness: M5 implementation is complete and ready for code-review. Later milestones remain gated by the milestone-specific validation, code-review, and review-resolution rules in this plan.
 - Final closeout readiness: not ready until all in-scope implementation milestones are closed, required review-resolution is closed, `ci-maintenance` runs when triggered, `explain-change.md` exists and is current, `verify` passes, and PR handoff is prepared.
 
 ## Risks and Follow-Ups
 
-- Follow-up: implement M5.
+- Follow-up: code-review M5.
 - Follow-up: when the initiative reaches final closeout, update both `docs/plan.md` and this plan body in the same PR state transition.
