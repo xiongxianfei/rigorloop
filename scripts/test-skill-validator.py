@@ -1079,14 +1079,23 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         spec = SKILL_CONTRACT_SPEC.read_text(encoding="utf-8")
         test_spec = SKILL_CONTRACT_TEST_SPEC.read_text(encoding="utf-8")
         plan = SKILL_CONTRACT_PLAN.read_text(encoding="utf-8")
+        first_slice_test_spec_list = ", ".join(
+            f"`{skill_name}`" for skill_name in SKILL_CONTRACT_FIRST_SLICE_SKILLS[:-1]
+        )
+        first_slice_test_spec_list = (
+            f"{first_slice_test_spec_list}, and `{SKILL_CONTRACT_FIRST_SLICE_SKILLS[-1]}`"
+        )
+
+        self.assertIn(
+            f"first implementation slice names only {first_slice_test_spec_list}",
+            test_spec,
+        )
 
         for skill_name in SKILL_CONTRACT_FIRST_SLICE_SKILLS:
             with self.subTest(surface="spec", skill=skill_name):
                 self.assertIn(f"`skills/{skill_name}/SKILL.md`", spec)
-            with self.subTest(surface="test_spec", skill=skill_name):
-                self.assertIn(skill_name, test_spec)
             with self.subTest(surface="plan", skill=skill_name):
-                self.assertIn(skill_name, plan)
+                self.assertIn(f"skills/{skill_name}/SKILL.md", plan)
 
         self.assertIn(
             "The `ci` skill MUST be treated as the skill entrypoint for the visible `ci-maintenance` workflow stage label",
