@@ -100,6 +100,69 @@ SKILL_CONTRACT_DEFERRED_SHARED_BLOCKS = [
     "first-pass-completeness",
     "material-finding-requirements",
 ]
+SKILL_CONTRACT_REQUIRED_CORE_SECTIONS = [
+    "Purpose",
+    "When to use",
+    "When not to use",
+    "Inputs to read",
+    "Outputs",
+    "Handoff",
+    "Stop conditions",
+    "Claims this skill must not make",
+]
+SKILL_CONTRACT_RESULT_FIELDS = [
+    "Skill",
+    "Status",
+    "Artifacts changed",
+    "Open blockers",
+    "Next stage",
+]
+SKILL_CONTRACT_PROGRESS_SKILLS = [
+    "workflow",
+    "plan",
+    "implement",
+    "code-review",
+    "verify",
+    "pr",
+]
+SKILL_CONTRACT_CLAIM_BOUNDARY_TERMS = {
+    "implement": [
+        "review passed",
+        "clean review",
+        "branch-ready",
+        "PR-ready",
+        "ready-for-verify",
+    ],
+    "code-review": [
+        "branch-ready",
+        "PR-ready",
+        "CI passed",
+        "verification passed",
+    ],
+    "verify": [
+        "PR-ready",
+        "PR body ready",
+        "review passed",
+    ],
+    "pr": [
+        "implementation passed",
+        "review passed",
+        "verification passed",
+        "tests passed",
+        "owning evidence",
+    ],
+    "plan": [
+        "Readiness is not Done",
+        "Remaining completion gates",
+        "ready for PR",
+        "ready for verify",
+    ],
+    "learn": [
+        "new workflow policy",
+        "authoritative artifact",
+        "PR readiness",
+    ],
+}
 
 
 def extract_markdown_block(text: str, heading: str) -> str:
@@ -1221,6 +1284,69 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         for block_name in SKILL_CONTRACT_DEFERRED_SHARED_BLOCKS:
             with self.subTest(deferred_block=block_name):
                 self.assertFalse((ROOT / "templates" / "shared" / f"{block_name}.md").exists())
+
+    def test_skill_contract_m3_first_slice_core_sections_and_result_blocks(self) -> None:
+        for skill_name in SKILL_CONTRACT_FIRST_SLICE_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            with self.subTest(skill=skill_name, surface="core_sections"):
+                for section in SKILL_CONTRACT_REQUIRED_CORE_SECTIONS:
+                    self.assertIn(f"## {section}", body)
+
+            expected_output_start = body.find("## Expected output")
+            self.assertNotEqual(
+                expected_output_start,
+                -1,
+                msg=f"{skill_name} must preserve the validator-required Expected output section",
+            )
+            expected_output = body[expected_output_start:]
+            with self.subTest(skill=skill_name, surface="result_block"):
+                self.assertIn("## Result", expected_output)
+                for field in SKILL_CONTRACT_RESULT_FIELDS:
+                    self.assertIn(f"- {field}:", expected_output)
+
+            handoff = extract_markdown_block(body, "Handoff")
+            with self.subTest(skill=skill_name, surface="handoff"):
+                self.assertIn("specs/rigorloop-workflow.md", handoff)
+                self.assertIn("Normal next stage", handoff)
+                self.assertIn("Conditional next stages", handoff)
+
+    def test_skill_contract_m3_claim_boundaries_and_readiness_terms(self) -> None:
+        for skill_name, required_terms in SKILL_CONTRACT_CLAIM_BOUNDARY_TERMS.items():
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            claims = extract_markdown_block(body, "Claims this skill must not make")
+            for term in required_terms:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, claims)
+
+        progress_terms = [
+            "Progress means work that has happened so far.",
+            "Readiness means the next stage that can happen.",
+            "Closeout means the current artifact or stage satisfied its checklist.",
+            "Done means final lifecycle state after required gates are complete.",
+            "Readiness is not Done.",
+        ]
+        for skill_name in SKILL_CONTRACT_PROGRESS_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            for term in progress_terms:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, body)
+
+    def test_skill_contract_m3_first_slice_copies_shared_blocks(self) -> None:
+        evidence = extract_markdown_block(
+            SKILL_CONTRACT_EVIDENCE_BLOCK.read_text(encoding="utf-8"),
+            "Evidence collection efficiency",
+        )
+        generated = extract_markdown_block(
+            SKILL_CONTRACT_GENERATED_OUTPUT_BLOCK.read_text(encoding="utf-8"),
+            "Generated-output handling",
+        )
+
+        for skill_name in SKILL_CONTRACT_FIRST_SLICE_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            with self.subTest(skill=skill_name, block="evidence"):
+                self.assertEqual(extract_markdown_block(body, "Evidence collection efficiency"), evidence)
+            with self.subTest(skill=skill_name, block="generated"):
+                self.assertEqual(extract_markdown_block(body, "Generated-output handling"), generated)
 
 
 if __name__ == "__main__":

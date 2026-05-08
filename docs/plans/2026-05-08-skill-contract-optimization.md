@@ -98,11 +98,11 @@ The test spec should require focused static assertions for:
 ## Current Handoff Summary
 
 - Current milestone: M3
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M2
-- Review status: clean-with-notes
-- Remaining in-scope implementation milestones: M3, M4
-- Next stage: implement M3
+- Review status: code-review pending for M3
+- Remaining in-scope implementation milestones: M3 review-requested; M4 planned
+- Next stage: code-review M3
 - Verify readiness: not ready
 - Reason verify is not ready: implementation milestones M3-M4, generated-output refresh, and final verification remain incomplete.
 
@@ -209,7 +209,7 @@ The test spec should require focused static assertions for:
 
 ### M3. Normalize First-Slice Canonical Skills
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Normalize only the seven first-slice canonical skills to satisfy the required core sections, claim boundaries, summary-first result output, local handoff, evidence-reading, shared-block, and progress/readiness guidance.
 - Requirements: `R3`-`R18d`, `R20`-`R20b`.
 - Files/components likely touched:
@@ -246,16 +246,16 @@ The test spec should require focused static assertions for:
   - `python scripts/test-skill-validator.py`
   - `python scripts/select-validation.py --mode explicit --path skills/workflow/SKILL.md --path skills/plan/SKILL.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/verify/SKILL.md --path skills/pr/SKILL.md --path skills/learn/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-08-skill-contract-optimization.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml`
   - `git diff --check -- skills/workflow/SKILL.md skills/plan/SKILL.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/verify/SKILL.md skills/pr/SKILL.md skills/learn/SKILL.md scripts/test-skill-validator.py docs/plans/2026-05-08-skill-contract-optimization.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml`
-- Generated-output checks are M4 closeout gates. If selector output reports generated drift after M3 canonical skill edits, record that as the expected M4 handoff reason rather than claiming verify readiness.
+- Generated-output checks are M4 closeout gates. If selector output reports generated drift after M3 canonical skill edits, record that as the expected M4 handoff reason rather than claiming verify readiness. M3 selector output selected generated skill and adapter drift checks as expected.
 - Expected observable result: seven canonical first-slice skills satisfy the approved skill contract while later-phase skills remain out of scope and generated refresh remains explicitly pending M4.
 - Commit message: `M3: normalize first-slice skills`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone state updated to `review-requested` before code-review handoff
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone state updated to `review-requested` before code-review handoff
+  - [x] milestone committed
 - Risks:
   - Normalization could bloat skill files instead of sharpening them.
   - Shared block copies could make skills repetitive.
@@ -410,6 +410,7 @@ The test spec should require focused static assertions for:
 - [x] M1 closed.
 - [x] M2 implementation complete and ready for code-review.
 - [x] M2 closed.
+- [x] M3 implementation complete and ready for code-review.
 - [ ] M3 closed.
 - [ ] M4 closed.
 - [ ] Code-review clean or review-resolution closed if triggered.
@@ -426,12 +427,15 @@ The test spec should require focused static assertions for:
 - 2026-05-08: Use an active static/contract test spec rather than runtime workflow simulation. Rationale: approved first slice changes skill guidance, shared blocks, validation, and generated output without adding an executable workflow router.
 - 2026-05-08: Limit M1 validator assertions to approved spec/test-spec/plan and path-boundary proof that can pass before canonical skill normalization. Rationale: first-slice skill section and overclaim checks depend on M2/M3 changes and should not be committed red as M1 closeout evidence.
 - 2026-05-08: Create shared-block source files for evidence collection and generated-output handling in M2 before copying them into first-slice skills. Rationale: M2 establishes canonical shared sources and M3 owns consuming skill normalization.
+- 2026-05-08: Copy both evidence collection and generated-output handling shared blocks into all seven first-slice canonical skills in M3. Rationale: the normalized first-slice skills all need the same source boundary and targeted-reading reminders, while generated output refresh remains the M4 milestone.
 
 ## Surprises and Discoveries
 
 - 2026-05-08: The first M1 validator assertion used a paraphrased `ci`/`ci-maintenance` phrase and failed. The check was narrowed to the exact approved spec wording before closeout.
 - 2026-05-08: code-review R1 found that the first-slice test-spec assertion in `scripts/test-skill-validator.py` checks bare skill-name substrings, allowing short names such as `pr` to pass from unrelated words.
 - 2026-05-08: M2 test-first validation failed as expected before summary pointers and the new shared-block source files existed, then passed after adding them.
+- 2026-05-08: M3 test-first validation failed as expected before first-slice skills had required core sections, compact result blocks, and copied generated-output shared blocks; it passed after normalizing the seven canonical skills.
+- 2026-05-08: Selector validation for M3 selected `skills.drift` and `adapters.drift` because canonical skills changed. This is expected and remains the M4 generated-output refresh gate.
 
 ## Validation Notes
 
@@ -485,6 +489,15 @@ The test spec should require focused static assertions for:
 - 2026-05-08: `python scripts/test-skill-validator.py` passed 39 tests during code-review M2.
 - 2026-05-08: `python scripts/select-validation.py --mode explicit --path specs/skill-contract.md --path specs/skill-contract.test.md --path specs/rigorloop-workflow.md --path docs/workflows.md --path AGENTS.md --path templates/shared/review-isolation-and-recording.md --path templates/shared/evidence-collection-efficiency.md --path templates/shared/generated-output-handling.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-08-skill-contract-optimization.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml` passed with no unclassified paths during code-review M2.
 - 2026-05-08: `bash scripts/ci.sh --mode explicit --path specs/skill-contract.md --path specs/skill-contract.test.md --path specs/rigorloop-workflow.md --path docs/workflows.md --path AGENTS.md --path templates/shared/review-isolation-and-recording.md --path templates/shared/evidence-collection-efficiency.md --path templates/shared/generated-output-handling.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-08-skill-contract-optimization.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml` passed selected M2 checks during code-review M2.
+- 2026-05-08: `python scripts/test-skill-validator.py` failed as expected after adding M3 static checks because the seven first-slice skills did not yet have the normalized core sections, result blocks, or copied shared blocks.
+- 2026-05-08: `python scripts/validate-skills.py` passed after M3 normalization, validating 23 skill files.
+- 2026-05-08: `python scripts/test-skill-validator.py` passed 42 tests after normalizing the first-slice canonical skills.
+- 2026-05-08: `python scripts/select-validation.py --mode explicit --path skills/workflow/SKILL.md --path skills/plan/SKILL.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/verify/SKILL.md --path skills/pr/SKILL.md --path skills/learn/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-08-skill-contract-optimization.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml` passed with no unclassified paths for M3 and selected generated-output drift checks for M4.
+- 2026-05-08: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml --path docs/plans/2026-05-08-skill-contract-optimization.md --path skills/code-review/SKILL.md --path skills/implement/SKILL.md --path skills/learn/SKILL.md --path skills/plan/SKILL.md --path skills/pr/SKILL.md --path skills/verify/SKILL.md --path skills/workflow/SKILL.md` passed for M3.
+- 2026-05-08: `python scripts/test-change-metadata-validator.py` passed for M3.
+- 2026-05-08: `python scripts/validate-change-metadata.py docs/changes/2026-05-08-skill-contract-optimization/change.yaml` passed for M3.
+- 2026-05-08: `git diff --check -- skills/workflow/SKILL.md skills/plan/SKILL.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/verify/SKILL.md skills/pr/SKILL.md skills/learn/SKILL.md scripts/test-skill-validator.py docs/plans/2026-05-08-skill-contract-optimization.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml` passed for M3.
+- 2026-05-08: `rg -n '[[:blank:]]$|\t' skills/workflow/SKILL.md skills/plan/SKILL.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/verify/SKILL.md skills/pr/SKILL.md skills/learn/SKILL.md scripts/test-skill-validator.py docs/plans/2026-05-08-skill-contract-optimization.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml` found no matches for M3.
 
 ## Outcome and Retrospective
 
@@ -494,11 +507,11 @@ Plan is active. Implementation, review, verification, explanation, and PR handof
 
 Status: Active.
 
-Progress: proposal is accepted; spec is approved; plan-review approved the execution plan; test spec is active; M1 is closed after clean code-review R2; M2 is closed after clean code-review.
+Progress: proposal is accepted; spec is approved; plan-review approved the execution plan; test spec is active; M1 is closed after clean code-review R2; M2 is closed after clean code-review; M3 implementation is complete and ready for code-review.
 
-Readiness: Ready for implement M3.
+Readiness: Ready for code-review M3.
 
-Remaining completion gates: implementation milestones M3-M4, code-review for each remaining implementation milestone, review-resolution if triggered, verify, explain-change, PR handoff, then Done if no true downstream event remains.
+Remaining completion gates: code-review M3, implementation milestone M4, code-review M4, generated-output refresh, review-resolution if triggered, verify, explain-change, PR handoff, then Done if no true downstream event remains.
 
 ## Risks and Follow-Ups
 
