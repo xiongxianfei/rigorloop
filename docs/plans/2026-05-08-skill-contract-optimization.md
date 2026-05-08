@@ -97,14 +97,14 @@ The test spec should require focused static assertions for:
 
 ## Current Handoff Summary
 
-- Current milestone: M2
-- Current milestone state: review-requested
-- Last reviewed milestone: M1
-- Review status: code-review pending for M2
-- Remaining in-scope implementation milestones: M2 review-requested; M3, M4 planned
-- Next stage: code-review M2
+- Current milestone: M3
+- Current milestone state: planned
+- Last reviewed milestone: M2
+- Review status: clean-with-notes
+- Remaining in-scope implementation milestones: M3, M4
+- Next stage: implement M3
 - Verify readiness: not ready
-- Reason verify is not ready: implementation milestones M2-M4, generated-output refresh, and final verification remain incomplete.
+- Reason verify is not ready: implementation milestones M3-M4, generated-output refresh, and final verification remain incomplete.
 
 ## Milestones
 
@@ -160,7 +160,7 @@ The test spec should require focused static assertions for:
 
 ### M2. Align Contract Summaries and Shared Blocks
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Add concise contributor-facing summaries and stable shared blocks needed by first-slice skill normalization without duplicating full workflow policy.
 - Requirements: `R1`-`R2d`, `R12`-`R16c`, `R19`-`R20b`.
 - Files/components likely touched:
@@ -409,7 +409,7 @@ The test spec should require focused static assertions for:
 - [x] M1 CR1-F1 fix implemented and ready for code-review rerun.
 - [x] M1 closed.
 - [x] M2 implementation complete and ready for code-review.
-- [ ] M2 closed.
+- [x] M2 closed.
 - [ ] M3 closed.
 - [ ] M4 closed.
 - [ ] Code-review clean or review-resolution closed if triggered.
@@ -481,6 +481,10 @@ The test spec should require focused static assertions for:
 - 2026-05-08: `bash scripts/ci.sh --mode explicit --path specs/skill-contract.md --path specs/skill-contract.test.md --path specs/rigorloop-workflow.md --path docs/workflows.md --path AGENTS.md --path templates/shared/review-isolation-and-recording.md --path templates/shared/evidence-collection-efficiency.md --path templates/shared/generated-output-handling.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-08-skill-contract-optimization.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml` passed selected M2 checks: `skills.regression`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
 - 2026-05-08: `git diff --check -- specs/skill-contract.md specs/skill-contract.test.md specs/rigorloop-workflow.md docs/workflows.md AGENTS.md templates/shared scripts/test-skill-validator.py docs/plans/2026-05-08-skill-contract-optimization.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml` passed for M2.
 - 2026-05-08: `rg -n '[[:blank:]]$|\t' specs/skill-contract.md specs/skill-contract.test.md specs/rigorloop-workflow.md docs/workflows.md AGENTS.md templates/shared scripts/test-skill-validator.py docs/plans/2026-05-08-skill-contract-optimization.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml` found no matches for M2.
+- 2026-05-08: code-review M2 reviewed commit `31c0832` against `8717f4b` and found no blocking or required-change findings.
+- 2026-05-08: `python scripts/test-skill-validator.py` passed 39 tests during code-review M2.
+- 2026-05-08: `python scripts/select-validation.py --mode explicit --path specs/skill-contract.md --path specs/skill-contract.test.md --path specs/rigorloop-workflow.md --path docs/workflows.md --path AGENTS.md --path templates/shared/review-isolation-and-recording.md --path templates/shared/evidence-collection-efficiency.md --path templates/shared/generated-output-handling.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-08-skill-contract-optimization.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml` passed with no unclassified paths during code-review M2.
+- 2026-05-08: `bash scripts/ci.sh --mode explicit --path specs/skill-contract.md --path specs/skill-contract.test.md --path specs/rigorloop-workflow.md --path docs/workflows.md --path AGENTS.md --path templates/shared/review-isolation-and-recording.md --path templates/shared/evidence-collection-efficiency.md --path templates/shared/generated-output-handling.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-08-skill-contract-optimization.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml` passed selected M2 checks during code-review M2.
 
 ## Outcome and Retrospective
 
@@ -490,13 +494,13 @@ Plan is active. Implementation, review, verification, explanation, and PR handof
 
 Status: Active.
 
-Progress: proposal is accepted; spec is approved; plan-review approved the execution plan; test spec is active; M1 is closed after clean code-review R2; M2 implementation is complete and ready for code-review.
+Progress: proposal is accepted; spec is approved; plan-review approved the execution plan; test spec is active; M1 is closed after clean code-review R2; M2 is closed after clean code-review.
 
-Readiness: Ready for code-review M2.
+Readiness: Ready for implement M3.
 
-Remaining completion gates: code-review M2, implementation milestones M3-M4, code-review for each remaining implementation milestone, review-resolution if triggered, verify, explain-change, PR handoff, then Done if no true downstream event remains.
+Remaining completion gates: implementation milestones M3-M4, code-review for each remaining implementation milestone, review-resolution if triggered, verify, explain-change, PR handoff, then Done if no true downstream event remains.
 
 ## Risks and Follow-Ups
 
-- Follow up in code-review M2 on whether `AGENTS.md` and `docs/workflows.md` stayed concise enough while still carrying the required skill-contract reminders.
+- code-review M2 confirmed `AGENTS.md` and `docs/workflows.md` stayed concise enough while carrying the required skill-contract reminders.
 - Keep broad smoke untriggered unless selector, test spec, review-resolution, release metadata, or explicit reviewer requirement changes that.
