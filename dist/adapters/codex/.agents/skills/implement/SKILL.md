@@ -13,6 +13,18 @@ Do not expand scope. Do not silently alter the spec. Do not declare success with
 
 For planned initiatives, `implement` owns keeping the active plan body current during execution. Update the plan body's progress, decisions, discoveries, and validation notes as work advances instead of leaving those details to later stages.
 
+## Purpose
+
+Implement one approved milestone as the smallest scope-complete, test-driven slice and prepare it for `code-review` without claiming downstream review or verification outcomes.
+
+## When to use
+
+Use this skill after the relevant spec, architecture, plan, plan-review, and test-spec are ready, or in the fast lane when explicit spec and test evidence exist for the approved slice.
+
+## When not to use
+
+Do not use this skill to invent requirements, bypass missing specs, resolve review findings without a recorded finding loop, claim review or branch readiness, or continue into the next milestone before the current milestone is handed to review.
+
 ## Inputs to read
 
 Read before editing:
@@ -26,6 +38,33 @@ Read before editing:
 - code and tests listed in the milestone
 - existing patterns in neighboring files
 - CI or validation commands relevant to the milestone
+
+## Outputs
+
+Produce tests or proof surfaces first where feasible, implementation changes, updated plan progress and validation notes, and a milestone handoff commit that sets the milestone to `review-requested`.
+
+## Handoff
+
+- Normal next stage: `code-review` for the implemented milestone.
+- Conditional next stages: stop for a spec, architecture, owner-decision, or validation blocker; return to the same milestone when accepted review findings require fixes; continue to the next milestone only after clean review closes the current milestone.
+- For full routing rules, follow `specs/rigorloop-workflow.md`.
+
+## Claims this skill must not make
+
+Do not claim:
+
+- review passed, clean review, review-clean status, or no review fixes required;
+- branch-ready, PR-ready, `pr-body-ready`, or `pr-open-ready`;
+- ready-for-verify or `Ready for verify` while any in-scope implementation milestone is open, unreviewed, unresolved, or not closed;
+- generated output is synced unless repository-owned generation or drift checks prove it.
+
+## Progress, readiness, closeout, and Done
+
+- Progress means work that has happened so far.
+- Readiness means the next stage that can happen.
+- Closeout means the current artifact or stage satisfied its checklist.
+- Done means final lifecycle state after required gates are complete.
+- Readiness is not Done. Implementation readiness for `code-review` is not review closeout, branch readiness, or PR readiness.
 
 ## Docs-changes baseline pack
 
@@ -152,15 +191,53 @@ Update the concrete plan with:
 - if lifecycle state changes during implementation, update both `docs/plan.md` and the plan body before the PR opens for review;
 - if completion depends on a true downstream completion event, keep the plan `Active`, name that event, and do not treat merge itself as the event.
 
+## Stop conditions
+
+Stop before handoff when:
+
+- required source artifacts are missing, contradictory, or not approved enough for the lane;
+- tests or targeted validation fail and the failure is not fixed;
+- a spec, architecture, owner-decision, security, permission, or scope blocker appears;
+- the slice cannot meet the first-pass acceptable result;
+- the current milestone cannot be updated to `review-requested` with validation evidence and a milestone commit.
+
 ## Evidence collection efficiency
 
-Use summary and stable-ID first reasoning before broad reads or raw excerpts. Prefer check IDs, requirement IDs, test IDs, file paths, counts, and line citations when inspecting large files, repeated scans, generated output, or validation output. Read exact ranges after locating relevant lines, then expand only when the narrower evidence is insufficient.
+Use summary and stable-ID first reasoning before broad reads or raw excerpts.
+Prefer check IDs, requirement IDs, test IDs, file paths, counts, and line citations when inspecting large files, repeated scans, generated output, or validation output.
+Read exact ranges after locating relevant lines, then expand only when the narrower evidence is insufficient.
 
 ## When full-file read is required
 
 Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
 
+## Generated-output handling
+
+Edit canonical skill source under `skills/<skill>/SKILL.md`.
+Do not hand-edit `.codex/skills/` or `dist/adapters/`.
+Regenerate generated outputs from canonical source.
+Validate drift with repository-owned checks.
+Use concrete generated adapter file paths in selector-driven validation; do not pass `--path dist/adapters`.
+Generated outputs are proof surfaces, not independent sources of truth.
+Shared blocks are copied into skills and checked for drift; they are not generated into skills in v1.
+
 ## Expected output
+
+Start with:
+
+```md
+## Result
+
+- Skill: implement
+- Status:
+- Artifacts changed:
+- Open blockers:
+- Next stage:
+- Validation:
+- Milestone state:
+```
+
+Then include:
 
 - milestone implemented;
 - tests added or updated first;

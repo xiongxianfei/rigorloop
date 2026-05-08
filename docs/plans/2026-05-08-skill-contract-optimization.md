@@ -98,13 +98,13 @@ The test spec should require focused static assertions for:
 ## Current Handoff Summary
 
 - Current milestone: M4
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M3
-- Review status: clean-with-notes
-- Remaining in-scope implementation milestones: M4
-- Next stage: implement M4
+- Review status: code-review pending for M4
+- Remaining in-scope implementation milestones: M4 review-requested
+- Next stage: code-review M4
 - Verify readiness: not ready
-- Reason verify is not ready: implementation milestone M4, generated-output refresh, and final verification remain incomplete.
+- Reason verify is not ready: implementation milestone M4 review and final verification remain incomplete.
 
 ## Milestones
 
@@ -266,7 +266,7 @@ The test spec should require focused static assertions for:
 
 ### M4. Refresh Generated Skill and Adapter Output
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Regenerate derived Codex skill mirrors and public adapter skill copies from canonical skills and prove no generated-output drift remains.
 - Requirements: `R2`-`R2d`, `R8f`, `R14c`, `R20`-`R20b`.
 - Files/components likely touched:
@@ -304,12 +304,12 @@ The test spec should require focused static assertions for:
 - Expected observable result: generated local Codex and public adapter skill copies match canonical first-slice skill source, and selector validation uses concrete generated file paths.
 - Commit message: `M4: refresh skill contract generated guidance`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone state updated to `review-requested` before code-review handoff
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone state updated to `review-requested` before code-review handoff
+  - [x] milestone committed
 - Risks:
   - Adapter selector validation can fail if directory paths are passed instead of concrete files.
   - Generated output can drift after canonical skill edits.
@@ -412,6 +412,7 @@ The test spec should require focused static assertions for:
 - [x] M2 closed.
 - [x] M3 implementation complete and ready for code-review.
 - [x] M3 closed.
+- [x] M4 implementation complete and ready for code-review.
 - [ ] M4 closed.
 - [ ] Code-review clean or review-resolution closed if triggered.
 - [ ] Verify passed.
@@ -436,6 +437,7 @@ The test spec should require focused static assertions for:
 - 2026-05-08: M2 test-first validation failed as expected before summary pointers and the new shared-block source files existed, then passed after adding them.
 - 2026-05-08: M3 test-first validation failed as expected before first-slice skills had required core sections, compact result blocks, and copied generated-output shared blocks; it passed after normalizing the seven canonical skills.
 - 2026-05-08: Selector validation for M3 selected `skills.drift` and `adapters.drift` because canonical skills changed. This is expected and remains the M4 generated-output refresh gate.
+- 2026-05-08: M4 generated-output drift checks failed before regeneration for the seven `.codex/skills` mirrors and 21 public adapter skill copies, then passed after running the repository generators.
 
 ## Validation Notes
 
@@ -507,6 +509,18 @@ The test spec should require focused static assertions for:
 - 2026-05-08: `python scripts/validate-change-metadata.py docs/changes/2026-05-08-skill-contract-optimization/change.yaml` passed during code-review M3.
 - 2026-05-08: `git diff --check -- skills/workflow/SKILL.md skills/plan/SKILL.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/verify/SKILL.md skills/pr/SKILL.md skills/learn/SKILL.md scripts/test-skill-validator.py docs/plans/2026-05-08-skill-contract-optimization.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml` passed during code-review M3.
 - 2026-05-08: `rg -n '[[:blank:]]$|\t' skills/workflow/SKILL.md skills/plan/SKILL.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/verify/SKILL.md skills/pr/SKILL.md skills/learn/SKILL.md scripts/test-skill-validator.py docs/plans/2026-05-08-skill-contract-optimization.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml` found no matches during code-review M3.
+- 2026-05-08: `python scripts/build-skills.py --check` failed as expected before M4 regeneration because seven generated `.codex/skills` mirrors were stale.
+- 2026-05-08: `python scripts/build-adapters.py --version 0.1.1 --check` failed as expected before M4 regeneration because 21 public adapter skill copies were stale.
+- 2026-05-08: `python scripts/build-skills.py` passed for M4 and refreshed generated `.codex/skills` mirrors from canonical skills.
+- 2026-05-08: `python scripts/build-adapters.py --version 0.1.1` passed for M4 and refreshed generated public adapter output.
+- 2026-05-08: `python scripts/build-skills.py --check` passed for M4 after regeneration.
+- 2026-05-08: `python scripts/build-adapters.py --version 0.1.1 --check` passed for M4 after regeneration.
+- 2026-05-08: `python scripts/validate-adapters.py --version 0.1.1` passed for M4.
+- 2026-05-08: `python scripts/test-adapter-distribution.py` passed for M4 with 56 tests.
+- 2026-05-08: The M4 explicit selector command using seven `.codex/skills/.../SKILL.md` paths, 21 concrete `dist/adapters/.../<skill>/SKILL.md` paths, the plan, and `change.yaml` passed with no unclassified paths. Selected checks: `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+- 2026-05-08: `bash scripts/ci.sh --mode explicit` using the same M4 concrete generated path list passed selected checks: `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+- 2026-05-08: `git diff --check -- .codex/skills dist/adapters docs/plans/2026-05-08-skill-contract-optimization.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml` passed for M4.
+- 2026-05-08: `rg -n '[[:blank:]]$|\t' .codex/skills dist/adapters docs/plans/2026-05-08-skill-contract-optimization.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml` found no matches for M4.
 
 ## Outcome and Retrospective
 
@@ -516,11 +530,11 @@ Plan is active. Implementation, review, verification, explanation, and PR handof
 
 Status: Active.
 
-Progress: proposal is accepted; spec is approved; plan-review approved the execution plan; test spec is active; M1 is closed after clean code-review R2; M2 is closed after clean code-review; M3 is closed after clean code-review.
+Progress: proposal is accepted; spec is approved; plan-review approved the execution plan; test spec is active; M1 is closed after clean code-review R2; M2 is closed after clean code-review; M3 is closed after clean code-review; M4 generated-output refresh is complete and ready for code-review.
 
-Readiness: Ready for implement M4.
+Readiness: Ready for code-review M4.
 
-Remaining completion gates: implementation milestone M4, code-review M4, generated-output refresh, review-resolution if triggered, verify, explain-change, PR handoff, then Done if no true downstream event remains.
+Remaining completion gates: code-review M4, review-resolution if triggered, verify, explain-change, PR handoff, then Done if no true downstream event remains.
 
 ## Risks and Follow-Ups
 

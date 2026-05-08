@@ -11,6 +11,18 @@ You are reviewing in independent-review mode with fresh eyes.
 
 Your job is to determine whether the implementation satisfies the approved contract safely, not whether it merely looks plausible.
 
+## Purpose
+
+Review the actual implementation slice against approved artifacts, tests, diff, and validation evidence, then produce a first-pass review status and milestone-aware handoff.
+
+## When to use
+
+Use this skill after `implement` hands off a milestone, before PR readiness decisions, or when a user explicitly asks for an implementation review against the governing artifacts.
+
+## When not to use
+
+Do not use this skill to fix findings before recording them, claim branch or PR readiness, substitute passing tests for review, or review from memory without inspecting the actual review surface.
+
 ## Inputs to read
 
 Read:
@@ -29,6 +41,33 @@ Read:
 - related code paths and tests when needed.
 
 Prefer a fresh session, separate reviewer, or separate agent when available. If not, intentionally reset assumptions before reading the diff.
+
+## Outputs
+
+Produce a first-pass review record with status, inputs, diff summary, findings or no-finding rationale, checklist coverage, and a milestone-aware next-stage decision.
+
+## Handoff
+
+- Normal next stage: follow the active plan and milestone state after the first-pass review.
+- Conditional next stages: `review-resolution` for material or required-change findings; `implement <next milestone>` after a clean non-final milestone; `verify` only after the final in-scope implementation milestone is cleanly reviewed; stop on `blocked` or `inconclusive`.
+- For full routing rules, follow `specs/rigorloop-workflow.md`.
+
+## Claims this skill must not make
+
+Do not claim:
+
+- branch-ready, PR-ready, `pr-body-ready`, or `pr-open-ready`;
+- CI passed, verification passed, or tests passed unless cited as evidence from the owning validation surface;
+- implementation fixes were made unless this review also owns a recorded resolution flow;
+- generated output is synced unless repository-owned generation or drift checks prove it.
+
+## Progress, readiness, closeout, and Done
+
+- Progress means work that has happened so far.
+- Readiness means the next stage that can happen.
+- Closeout means the current artifact or stage satisfied its checklist.
+- Done means final lifecycle state after required gates are complete.
+- Readiness is not Done. A clean non-final milestone review closes that milestone, not the whole plan.
 
 ## Independent-review mode
 
@@ -181,6 +220,16 @@ Do not add a dedicated `pr-review` stage. It is an unsupported review stage unle
 - Stop instead of auto-entering `review-resolution` when the request is review-only, the request is isolated `code-review`, a finding requires a product/spec/architecture/ADR/scope decision, a higher-priority repository policy requires human review, the actual diff/tests/upstream artifacts are unavailable, or the user explicitly asked to stop after review.
 - Direct `code-review` requests remain isolated by default unless the user explicitly asks to continue beyond the review result.
 
+## Stop conditions
+
+Stop instead of clean handoff when:
+
+- the actual diff, relevant tests, or authoritative upstream artifacts cannot be inspected;
+- required tracked governing authority is missing for a clean branch-scoped conclusion;
+- findings require a product, spec, architecture, ADR, ownership, or scope decision;
+- review-only or isolated invocation forbids downstream continuation;
+- the reviewed milestone or remaining in-scope implementation milestones cannot be determined.
+
 ## Milestone-aware review handoff
 
 For a milestone-based plan, identify the reviewed milestone and inspect the active plan before choosing the next stage.
@@ -265,13 +314,41 @@ No blocking findings were found because:
 
 ## Evidence collection efficiency
 
-Use summary and stable-ID first reasoning before broad reads or raw excerpts. Prefer check IDs, requirement IDs, test IDs, file paths, counts, and line citations when inspecting large files, repeated scans, generated output, or validation output. Read exact ranges after locating relevant lines, then expand only when the narrower evidence is insufficient.
+Use summary and stable-ID first reasoning before broad reads or raw excerpts.
+Prefer check IDs, requirement IDs, test IDs, file paths, counts, and line citations when inspecting large files, repeated scans, generated output, or validation output.
+Read exact ranges after locating relevant lines, then expand only when the narrower evidence is insufficient.
 
 ## When full-file read is required
 
 Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
 
+## Generated-output handling
+
+Edit canonical skill source under `skills/<skill>/SKILL.md`.
+Do not hand-edit `.codex/skills/` or `dist/adapters/`.
+Regenerate generated outputs from canonical source.
+Validate drift with repository-owned checks.
+Use concrete generated adapter file paths in selector-driven validation; do not pass `--path dist/adapters`.
+Generated outputs are proof surfaces, not independent sources of truth.
+Shared blocks are copied into skills and checked for drift; they are not generated into skills in v1.
+
 ## Expected output
+
+Start with:
+
+```md
+## Result
+
+- Skill: code-review
+- Status:
+- Artifacts changed:
+- Open blockers:
+- Next stage:
+- Review status:
+- Finding IDs:
+```
+
+Then include:
 
 - first-pass review record with:
   - review status using `clean-with-notes`, `changes-requested`, `blocked`, or `inconclusive`;
