@@ -272,16 +272,14 @@ R15. The first published-skill shared-block set MUST include only stable rules a
 - `review-isolation-and-recording`
 - `evidence-collection-efficiency`
 
-R15a. These shared blocks MAY be introduced incrementally as consuming skills are normalized.
-
-R15c. `generated-output-handling` is contributor-maintenance guidance, not published skill text. It MAY remain under `templates/shared/` for repository-maintainer reuse, but MUST NOT be copied into published skills.
-
 R15b. The following shared blocks MUST remain deferred until a later approved change stabilizes them:
 - `vision-fit`
 - `plan-readiness-vs-completion`
 - `milestone-aware-review-handoff`
 - `first-pass-completeness`
 - `material-finding-requirements`, if still under active simplification
+
+R15c. `generated-output-handling` is contributor-maintenance guidance, not a v1 shared block. Do not keep an unused `templates/shared/generated-output-handling.md` source unless a later approved change adopts it for an actual contributor-facing consumer.
 
 R16. Evidence-reading guidance in normalized skills MUST prefer targeted evidence before broad reads.
 

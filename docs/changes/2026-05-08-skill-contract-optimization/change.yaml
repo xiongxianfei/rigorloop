@@ -20,7 +20,7 @@ requirements:
   - Define the normative home for the skill contract before validators enforce it.
   - Preserve generated-output boundaries by treating `.codex/skills/` and `dist/adapters/` as derived output.
   - Add concise skill-contract summary pointers to workflow, contributor, and agent-facing guidance.
-  - Create canonical v1 shared-block sources for evidence collection efficiency and generated-output handling.
+  - Create the canonical v1 shared-block source for evidence collection efficiency and keep generated-output handling in contributor guidance rather than an unused shared file.
   - Normalize the first-slice canonical skills with required core sections, claim boundaries, compact result output, local handoff guidance, and copied shared blocks.
   - Keep published first-slice skill text free of repository-maintainer source, generation, adapter, selector-path, drift-check, and shared-block implementation details.
   - Regenerate local Codex skill mirrors and public adapter skill copies from canonical first-slice skills.
@@ -212,7 +212,6 @@ changed_files:
   - docs/workflows.md
   - AGENTS.md
   - templates/shared/evidence-collection-efficiency.md
-  - templates/shared/generated-output-handling.md
   - skills/workflow/SKILL.md
   - skills/plan/SKILL.md
   - skills/implement/SKILL.md
