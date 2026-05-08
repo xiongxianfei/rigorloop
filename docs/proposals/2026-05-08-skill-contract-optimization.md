@@ -205,8 +205,6 @@ Conditional sections should be used when relevant:
 ## Review finding format
 
 ## Milestone state rules
-
-## Generated-output handling
 ```
 
 Skill-type variants should preserve useful domain-specific guidance:
@@ -320,8 +318,9 @@ Repeated policy should move into canonical shared blocks when exact consistency 
 Ready for shared-block treatment in this proposal:
 
 - `review-isolation-and-recording`;
-- `evidence-collection-efficiency`;
-- `generated-output-handling`.
+- `evidence-collection-efficiency`.
+
+Generated-output handling remains contributor-maintenance guidance. Do not keep it as a shared block unless a later proposal identifies an actual consumer.
 
 Deferred until stable:
 
@@ -509,7 +508,7 @@ Proposal-review decisions settled later-phase normalization order, shared-block 
 | 2026-05-08 | Keep authoritative workflow policy in specs, with skills carrying local handoff and stop-condition guidance. | Preserves the existing source-of-truth order and avoids turning skills into substitute specs. | Put all workflow policy directly into each skill; move everything into `docs/workflows.md`. |
 | 2026-05-08 | Treat generated outputs as secondary proof surfaces. | Matches repository generated-output policy and reduces duplicate review work. | Hand-edit generated mirrors or treat adapter copies as independent source. |
 | 2026-05-08 | Normalize later-phase skills in three waves: core lifecycle authoring/review, on-demand and standing/living-reference skills, then optional skills when approved. | Gives spec and plan authors a settled rollout order without forcing every skill into the first slice. | Leave later phases open; normalize every skill immediately. |
-| 2026-05-08 | Use shared blocks now for review isolation and recording, evidence collection efficiency, and generated-output handling. | These rules are stable enough and benefit from exact consistency. | Share all repeated rules now; defer all shared blocks. |
+| 2026-05-08 | Use shared blocks now for review isolation and recording, and evidence collection efficiency. | These public skill rules are stable enough and benefit from exact consistency; generated-output handling has no shared-block consumer after the public-surface cleanup. | Share all repeated rules now; defer all shared blocks. |
 | 2026-05-08 | Copy shared blocks into skills with drift checks for v1. | Keeps the first implementation slice simple and debuggable. | Add a shared-block generation build step now. |
 | 2026-05-08 | Keep forbidden-overclaim validation narrow, positive-first, and incident-based. | Avoids brittle semantic scoring while still catching recurring dangerous claims. | Broad natural-language quality scoring; no overclaim validation. |
 | 2026-05-08 | Put minimum viable skill guidance normatively in `specs/skill-contract.md`, with summaries in `docs/workflows.md` and `AGENTS.md` and details in skill-creator guidance. | Keeps skill-creation policy in the focused skill contract while preserving concise contributor reminders. | Put the full rule only in `AGENTS.md`; put all details in `specs/rigorloop-workflow.md`. |

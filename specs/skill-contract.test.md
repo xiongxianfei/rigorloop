@@ -49,7 +49,7 @@
 | `R12`, `R12a`, `R12b`, `R12c` | `T5`, `T14`, `T13` | integration, manual | Local handoff, public workflow routing pointer, and isolated invocation boundary |
 | `R13`, `R13a`, `R13b`, `R13c`, `R13d`, `R13e`, `R13f` | `T6`, `T13` | integration, manual | Progress, readiness, closeout, Done, and Ready for verify wording |
 | `R14`, `R14a`, `R14b`, `R14c`, `R14d`, `R14e` | `T7`, `T13` | integration, manual | Shared-block source, copy-and-check, authority boundary, and no generation v1 |
-| `R15`, `R15a`, `R15b`, `R15c` | `T7`, `T14`, `T13` | integration, manual | First published shared-block set, contributor-only generated-output block, and deferred shared blocks |
+| `R15`, `R15a`, `R15b`, `R15c` | `T7`, `T14`, `T13` | integration, manual | First published shared-block set, contributor-only generated-output rule, and deferred shared blocks |
 | `R16`, `R16a`, `R16b`, `R16c` | `T8`, `T13` | integration, manual | Evidence-reading guidance and full-file read escalation |
 | `R17`, `R17a`, `R17b` | `T8`, `T13` | manual | Optional bounded examples and long-example exclusion |
 | `R18`, `R18a`, `R18b`, `R18c`, `R18d` | `T10`, `T13` | integration, manual | Positive-first, narrow, incident-based validator strategy |
@@ -261,7 +261,7 @@
   - Assert shared blocks do not replace or outrank `specs/skill-contract.md` or `specs/rigorloop-workflow.md`.
   - Assert no build step generates shared blocks into skills in the first implementation slice.
   - Assert deferred shared blocks are not accidentally enforced.
-  - Assert `templates/shared/generated-output-handling.md` remains contributor-maintenance guidance and is not copied into published skills.
+  - Assert no unused `templates/shared/generated-output-handling.md` source remains.
 - Expected result:
   - Public shared policy stays consistent where exact wording matters without introducing a new policy authority or generator, and maintainer-only generated-output guidance stays out of published skills.
 - Failure proves:

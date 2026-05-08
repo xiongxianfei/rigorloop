@@ -40,7 +40,7 @@ The work defines static proof, aligns source-of-truth and contributor summaries,
 - `docs/workflows.md` is the short contributor-facing workflow summary and needs only concise skill-contract guidance where affected.
 - `AGENTS.md` should stay concise and only carry root reminders that future agents need, such as not creating one-off skills and not treating generated output as source.
 - Canonical authored skills live under `skills/`. Generated Codex runtime mirrors under `.codex/skills/` and public adapter package output under `dist/adapters/` must be refreshed through generators, not hand-edited.
-- Existing shared review recording guidance lives at `templates/shared/review-isolation-and-recording.md`. This plan may add stable shared blocks for evidence collection and generated-output handling if the test spec confirms the copy-and-check shape.
+- Existing shared review recording guidance lives at `templates/shared/review-isolation-and-recording.md`. This plan may add stable shared blocks for evidence collection when the test spec confirms the copy-and-check shape; generated-output handling stays in contributor guidance unless an actual shared-block consumer is approved.
 - The visible workflow stage label is `ci-maintenance`, but the current skill entrypoint remains `skills/ci/SKILL.md`. This first implementation slice does not create `skills/ci-maintenance/SKILL.md`.
 - The first implementation slice must not normalize every skill, add broad semantic quality scoring, generate shared blocks into skills, or create a standalone `review-resolution` skill.
 
@@ -62,7 +62,7 @@ The work defines static proof, aligns source-of-truth and contributor summaries,
 | Requirement IDs | Planned implementation surface |
 | --- | --- |
 | `R1`-`R1d`, `R20`-`R20b` | `specs/skill-contract.md`, `specs/rigorloop-workflow.md`, `docs/workflows.md`, `AGENTS.md`, and static checks for source-of-truth split |
-| `R2`-`R2d` | canonical/generated source boundary guidance, generated-output shared block, `scripts/build-skills.py --check`, `scripts/build-adapters.py --version 0.1.1 --check`, and generated output refresh |
+| `R2`-`R2d` | canonical/generated source boundary guidance, `scripts/build-skills.py --check`, `scripts/build-adapters.py --version 0.1.1 --check`, and generated output refresh |
 | `R3`-`R3c` | first-slice skill section normalization and skill-validator checks for required core sections |
 | `R4`-`R7a` | type-specific guidance in first-slice skills where relevant and deferred-phase notes for later skills |
 | `R8`-`R8g` | first-slice scope in the test spec, validator assertions, and this plan's milestones |
@@ -89,7 +89,7 @@ The test spec should require focused static assertions for:
 - local handoff sections that point to `specs/rigorloop-workflow.md` instead of duplicating the full lifecycle;
 - progress/readiness/closeout/Done wording where relevant;
 - `ci` as the current skill entrypoint for `ci-maintenance`;
-- copied shared blocks for review isolation/recording, evidence collection efficiency, and generated-output handling when adopted;
+- copied shared blocks for review isolation/recording and evidence collection efficiency when adopted;
 - generated `.codex/skills/` and adapter output staying derived from canonical skills;
 - no broad semantic quality scoring;
 - no standalone `review-resolution` skill;
@@ -169,7 +169,6 @@ The test spec should require focused static assertions for:
   - `AGENTS.md`
   - `templates/shared/review-isolation-and-recording.md`
   - `templates/shared/evidence-collection-efficiency.md`
-  - `templates/shared/generated-output-handling.md`
   - `templates/skill.md` or skill-creator guidance only if the approved test spec requires minimum viable skill examples in this slice
   - `scripts/test-skill-validator.py`
   - `docs/plans/2026-05-08-skill-contract-optimization.md`
@@ -188,8 +187,8 @@ The test spec should require focused static assertions for:
   - Keep deferred blocks out of scope unless the test spec identifies a direct contradiction.
 - Validation commands:
   - `python scripts/test-skill-validator.py`
-  - `python scripts/select-validation.py --mode explicit --path specs/skill-contract.md --path specs/skill-contract.test.md --path specs/rigorloop-workflow.md --path docs/workflows.md --path AGENTS.md --path templates/shared/review-isolation-and-recording.md --path templates/shared/evidence-collection-efficiency.md --path templates/shared/generated-output-handling.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-08-skill-contract-optimization.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml`
-  - `bash scripts/ci.sh --mode explicit --path specs/skill-contract.md --path specs/skill-contract.test.md --path specs/rigorloop-workflow.md --path docs/workflows.md --path AGENTS.md --path templates/shared/review-isolation-and-recording.md --path templates/shared/evidence-collection-efficiency.md --path templates/shared/generated-output-handling.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-08-skill-contract-optimization.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml`
+  - `python scripts/select-validation.py --mode explicit --path specs/skill-contract.md --path specs/skill-contract.test.md --path specs/rigorloop-workflow.md --path docs/workflows.md --path AGENTS.md --path templates/shared/review-isolation-and-recording.md --path templates/shared/evidence-collection-efficiency.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-08-skill-contract-optimization.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml`
+  - `bash scripts/ci.sh --mode explicit --path specs/skill-contract.md --path specs/skill-contract.test.md --path specs/rigorloop-workflow.md --path docs/workflows.md --path AGENTS.md --path templates/shared/review-isolation-and-recording.md --path templates/shared/evidence-collection-efficiency.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-08-skill-contract-optimization.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml`
   - `git diff --check -- specs/skill-contract.md specs/skill-contract.test.md specs/rigorloop-workflow.md docs/workflows.md AGENTS.md templates/shared scripts/test-skill-validator.py docs/plans/2026-05-08-skill-contract-optimization.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml`
 - Expected observable result: authoritative and summary surfaces point to the skill contract cleanly, and approved shared blocks have canonical sources before first-slice skill copies.
 - Commit message: `M2: align skill contract summaries`
@@ -328,14 +327,13 @@ The test spec should require focused static assertions for:
   - `docs/workflows.md`
   - `AGENTS.md`
   - `templates/shared/evidence-collection-efficiency.md`
-  - `templates/shared/generated-output-handling.md`
   - seven first-slice canonical skills
   - generated `.codex/skills/` mirrors
   - generated public adapter skill copies
   - `scripts/test-skill-validator.py`
 - Implementation result:
   - Public skills now route full workflow questions through the `workflow` skill instead of this repository's internal workflow spec path.
-  - The generated-output handling block is contributor-maintenance guidance only and is no longer copied into published skills.
+  - The generated-output handling block is removed because it has no consumer after the public skill surface cleanup.
   - Static regression checks now reject the listed maintainer-only terms from first-slice public skill text.
   - Generated mirrors and adapter copies were regenerated from canonical skills.
 - Validation commands:
@@ -463,8 +461,8 @@ The test spec should require focused static assertions for:
 - 2026-05-08: Treat `ci` as the skill entrypoint for `ci-maintenance`. Rationale: existing workflow spec allows the naming split and no `skills/ci-maintenance/` path is approved.
 - 2026-05-08: Use an active static/contract test spec rather than runtime workflow simulation. Rationale: approved first slice changes skill guidance, shared blocks, validation, and generated output without adding an executable workflow router.
 - 2026-05-08: Limit M1 validator assertions to approved spec/test-spec/plan and path-boundary proof that can pass before canonical skill normalization. Rationale: first-slice skill section and overclaim checks depend on M2/M3 changes and should not be committed red as M1 closeout evidence.
-- 2026-05-08: Create shared-block source files for evidence collection and generated-output handling in M2 before copying them into first-slice skills. Rationale: M2 establishes canonical shared sources and M3 owns consuming skill normalization.
-- 2026-05-08: Copy both evidence collection and generated-output handling shared blocks into all seven first-slice canonical skills in M3. Rationale: the normalized first-slice skills all need the same source boundary and targeted-reading reminders, while generated output refresh remains the M4 milestone.
+- 2026-05-08: Create a shared-block source file for evidence collection in M2 before copying it into first-slice skills. Rationale: M2 establishes canonical shared sources and M3 owns consuming skill normalization.
+- 2026-05-08: Copy evidence collection guidance into all seven first-slice canonical skills in M3. Rationale: the normalized first-slice skills all need the same targeted-reading reminders, while generated output refresh remains the M4 milestone.
 - 2026-05-08: Treat shipped skill text as a public user-facing interface. Rationale: repository-maintainer source paths, generated mirrors, adapter paths, selector path constraints, drift-check mechanics, and shared-block implementation details belong in contributor/governance surfaces, not in published skills.
 
 ## Surprises and Discoveries
@@ -475,7 +473,7 @@ The test spec should require focused static assertions for:
 - 2026-05-08: M3 test-first validation failed as expected before first-slice skills had required core sections, compact result blocks, and copied generated-output shared blocks; it passed after normalizing the seven canonical skills.
 - 2026-05-08: Selector validation for M3 selected `skills.drift` and `adapters.drift` because canonical skills changed. This is expected and remains the M4 generated-output refresh gate.
 - 2026-05-08: M4 generated-output drift checks failed before regeneration for the seven `.codex/skills` mirrors and 21 public adapter skill copies, then passed after running the repository generators.
-- 2026-05-08: The public-surface follow-up showed that the earlier generated-output shared block was useful to maintainers but inappropriate inside shipped skills. It was kept as contributor-maintenance guidance and removed from published skill text.
+- 2026-05-08: The public-surface follow-up showed that the earlier generated-output shared block was useful to maintainers but inappropriate inside shipped skills. After it had no consumer, it was removed instead of kept as an unused shared source.
 
 ## Validation Notes
 
