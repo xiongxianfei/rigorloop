@@ -66,6 +66,100 @@ MILESTONE_AWARE_REVIEW_HANDOFF_SPEC = ROOT / "specs" / "milestone-aware-review-h
 MILESTONE_AWARE_REVIEW_HANDOFF_TEST_SPEC = (
     ROOT / "specs" / "milestone-aware-review-handoff.test.md"
 )
+SKILL_CONTRACT_SPEC = ROOT / "specs" / "skill-contract.md"
+SKILL_CONTRACT_TEST_SPEC = ROOT / "specs" / "skill-contract.test.md"
+SKILL_CONTRACT_PLAN = ROOT / "docs" / "plans" / "2026-05-08-skill-contract-optimization.md"
+SKILL_CONTRACT_WORKFLOW_SPEC = ROOT / "specs" / "rigorloop-workflow.md"
+SKILL_CONTRACT_WORKFLOWS_DOC = ROOT / "docs" / "workflows.md"
+SKILL_CONTRACT_AGENTS = ROOT / "AGENTS.md"
+SKILL_CONTRACT_EVIDENCE_BLOCK = ROOT / "templates" / "shared" / "evidence-collection-efficiency.md"
+SKILL_CONTRACT_FIRST_SLICE_SKILLS = [
+    "workflow",
+    "plan",
+    "implement",
+    "code-review",
+    "verify",
+    "pr",
+    "learn",
+]
+SKILL_CONTRACT_FORBIDDEN_NEW_SKILLS = [
+    "ci-maintenance",
+    "review-resolution",
+    "ui-design",
+    "ui-design-review",
+    "workflow-contract",
+    "adopt-rigorloop",
+]
+SKILL_CONTRACT_DEFERRED_SHARED_BLOCKS = [
+    "vision-fit",
+    "plan-readiness-vs-completion",
+    "milestone-aware-review-handoff",
+    "first-pass-completeness",
+    "material-finding-requirements",
+]
+SKILL_CONTRACT_REQUIRED_CORE_SECTIONS = [
+    "Purpose",
+    "When to use",
+    "When not to use",
+    "Inputs to read",
+    "Outputs",
+    "Handoff",
+    "Stop conditions",
+    "Claims this skill must not make",
+]
+SKILL_CONTRACT_RESULT_FIELDS = [
+    "Skill",
+    "Status",
+    "Artifacts changed",
+    "Open blockers",
+    "Next stage",
+]
+SKILL_CONTRACT_PROGRESS_SKILLS = [
+    "workflow",
+    "plan",
+    "implement",
+    "code-review",
+    "verify",
+    "pr",
+]
+SKILL_CONTRACT_CLAIM_BOUNDARY_TERMS = {
+    "implement": [
+        "review passed",
+        "clean review",
+        "branch-ready",
+        "PR-ready",
+        "ready-for-verify",
+    ],
+    "code-review": [
+        "branch-ready",
+        "PR-ready",
+        "CI passed",
+        "verification passed",
+    ],
+    "verify": [
+        "PR-ready",
+        "PR body ready",
+        "review passed",
+    ],
+    "pr": [
+        "implementation passed",
+        "review passed",
+        "verification passed",
+        "tests passed",
+        "owning evidence",
+    ],
+    "plan": [
+        "Readiness is not Done",
+        "Remaining completion gates",
+        "ready for PR",
+        "ready for verify",
+    ],
+    "learn": [
+        "new workflow policy",
+        "authoritative artifact",
+        "PR readiness",
+    ],
+}
 
 
 def extract_markdown_block(text: str, heading: str) -> str:
@@ -674,7 +768,6 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "`docs/roadmap.md`",
             "pre-session trigger closeout",
             "Frame phase",
-            "repository-owned generators",
         ]
         for term in required_skill_terms:
             with self.subTest(file="learn skill", term=term):
@@ -994,6 +1087,274 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             body = (ROOT / relative_path).read_text(encoding="utf-8")
             for term in stale_terms:
                 with self.subTest(path=relative_path, term=term):
+                    self.assertNotIn(term, body)
+
+    def test_skill_contract_test_spec_maps_static_proof(self) -> None:
+        body = SKILL_CONTRACT_TEST_SPEC.read_text(encoding="utf-8")
+        required_terms = [
+            "T1. Normative skill-contract source and workflow-routing split",
+            "T2. Required and conditional sections are present without hollow normalization",
+            "T3. First-slice and later-phase scope stay exact",
+            "T4. Claim boundaries and do-not-overclaim guidance",
+            "T5. Result blocks and handoff sections are summary-first and local",
+            "T6. Progress, readiness, closeout, and Done stay distinct",
+            "T7. Public shared blocks are canonical copied text with drift checks",
+            "T8. Evidence-reading and example guidance stay bounded",
+            "T9. Generated output is refreshed from concrete canonical changes",
+            "T10. Forbidden-overclaim validation is narrow and positive-first",
+            "T11. Minimum viable skill rule and guidance placement",
+            "T12. Compatibility, security, and non-goal boundaries",
+            "T13. Full milestone and final validation closeout",
+            "T14. Published skills exclude repository-maintainer details",
+            "Do not test runtime workflow routing",
+            "Do not test broad semantic quality of skill prose with natural-language scoring",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, body)
+
+        for requirement_number in range(1, 21):
+            with self.subTest(requirement=requirement_number):
+                self.assertIn(f"`R{requirement_number}", body)
+
+        for example_number in range(1, 8):
+            with self.subTest(example=example_number):
+                self.assertIn(f"`E{example_number}`", body)
+
+    def test_skill_contract_source_and_generated_boundaries_are_defined(self) -> None:
+        spec = SKILL_CONTRACT_SPEC.read_text(encoding="utf-8")
+        test_spec = SKILL_CONTRACT_TEST_SPEC.read_text(encoding="utf-8")
+        required_spec_terms = [
+            "This spec owns skill-contract behavior.",
+            "`specs/rigorloop-workflow.md` continues to own stage order, stage obligation, handoff, and downstream-blocking semantics.",
+            "Skills are also a published user-facing interface.",
+            "Generated skill mirrors under `.codex/skills/` MUST be treated as derived output.",
+            "Adapter output under `dist/adapters/` MUST be treated as derived output.",
+            "Contributors MUST NOT hand-edit `.codex/skills/` or `dist/adapters/` to satisfy this spec.",
+            "Public shared blocks are copied and checked in v1, not generated into skills.",
+            "Published skill text does not expose repository-local source paths, generated mirror paths, adapter package paths, selector path constraints, drift-check mechanics, or shared-block implementation details.",
+            "The first validation slice MUST NOT add broad natural-language quality scoring.",
+            "The `ci` skill remains the entrypoint for the `ci-maintenance` stage label.",
+        ]
+        for term in required_spec_terms:
+            with self.subTest(file="spec", term=term):
+                self.assertIn(term, spec)
+
+        required_test_terms = [
+            "Do not add runtime workflow simulation",
+            "Do not add runtime workflow simulation, natural-language scoring, broad prose linting",
+            "generated-output drift checks",
+            "selector validation with concrete generated skill and adapter file paths",
+            "do not pass `--path dist/adapters`",
+        ]
+        for term in required_test_terms:
+            with self.subTest(file="test_spec", term=term):
+                self.assertIn(term, test_spec)
+
+    def test_skill_contract_first_slice_scope_stays_limited(self) -> None:
+        spec = SKILL_CONTRACT_SPEC.read_text(encoding="utf-8")
+        test_spec = SKILL_CONTRACT_TEST_SPEC.read_text(encoding="utf-8")
+        plan = SKILL_CONTRACT_PLAN.read_text(encoding="utf-8")
+        first_slice_test_spec_list = ", ".join(
+            f"`{skill_name}`" for skill_name in SKILL_CONTRACT_FIRST_SLICE_SKILLS[:-1]
+        )
+        first_slice_test_spec_list = (
+            f"{first_slice_test_spec_list}, and `{SKILL_CONTRACT_FIRST_SLICE_SKILLS[-1]}`"
+        )
+
+        self.assertIn(
+            f"first implementation slice names only {first_slice_test_spec_list}",
+            test_spec,
+        )
+
+        for skill_name in SKILL_CONTRACT_FIRST_SLICE_SKILLS:
+            with self.subTest(surface="spec", skill=skill_name):
+                self.assertIn(f"`skills/{skill_name}/SKILL.md`", spec)
+            with self.subTest(surface="plan", skill=skill_name):
+                self.assertIn(f"skills/{skill_name}/SKILL.md", plan)
+
+        self.assertIn(
+            "The `ci` skill MUST be treated as the skill entrypoint for the visible `ci-maintenance` workflow stage label",
+            spec,
+        )
+        self.assertIn("The first implementation slice MUST NOT normalize every skill.", spec)
+        self.assertIn("Do not implement Phase 2, Phase 3, or Phase 4 skill normalization", plan)
+        self.assertTrue((ROOT / "skills" / "ci" / "SKILL.md").exists())
+
+        for skill_name in SKILL_CONTRACT_FORBIDDEN_NEW_SKILLS:
+            with self.subTest(forbidden_skill=skill_name):
+                self.assertFalse((ROOT / "skills" / skill_name / "SKILL.md").exists())
+
+    def test_skill_contract_plan_keeps_m1_scaffolding_passable_before_skill_edits(self) -> None:
+        plan = SKILL_CONTRACT_PLAN.read_text(encoding="utf-8")
+        required_terms = [
+            "Validator assertions may be added in M1 only when they can pass without the later canonical skill edits",
+            "Do not leave failing validator assertions committed as M1 closeout evidence.",
+            "Generated-output checks are M4 closeout gates.",
+            "If selector output reports generated drift after M3 canonical skill edits",
+            "Use concrete generated adapter file paths in selector-driven commands; do not pass `--path dist/adapters`.",
+            "dist/adapters/codex/.agents/skills/workflow/SKILL.md",
+            "dist/adapters/claude/.claude/skills/workflow/SKILL.md",
+            "dist/adapters/opencode/.opencode/skills/workflow/SKILL.md",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, plan)
+
+    def test_skill_contract_m2_summary_surfaces_keep_source_split(self) -> None:
+        workflow_spec = SKILL_CONTRACT_WORKFLOW_SPEC.read_text(encoding="utf-8")
+        workflows_doc = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
+        agents = SKILL_CONTRACT_AGENTS.read_text(encoding="utf-8")
+
+        required_workflow_terms = [
+            "`specs/skill-contract.md` owns skill-contract behavior.",
+            "standard skill shape, claim boundaries, result output expectations, shared-block rules, generated-output boundaries, evidence-reading guidance, and minimum viable skill rules",
+            "`specs/rigorloop-workflow.md` continues to own stage order, stage obligation, handoff, and downstream-blocking semantics.",
+        ]
+        for term in required_workflow_terms:
+            with self.subTest(surface="workflow_spec", term=term):
+                self.assertIn(term, workflow_spec)
+
+        required_workflows_terms = [
+            "## Skill Contract",
+            "The normative skill-contract source is `specs/skill-contract.md`.",
+            "The workflow-routing source is `specs/rigorloop-workflow.md`.",
+            "Skills are operational guides, not substitute specs.",
+            "Shipped skill text is the user-facing interface.",
+            "Shared skill policy blocks live under `templates/shared/<block-name>.md`.",
+            "Public shared blocks are copied into consuming skills and checked for drift; maintainer-only blocks such as generated-output handling are not copied into published skills.",
+            "Add a skill only when it owns a distinct artifact, gate, review responsibility, recurring action, or approved operational process.",
+            "Edit canonical skill source under `skills/<skill>/SKILL.md`; regenerate `.codex/skills/` and `dist/adapters/` instead of hand-editing generated output.",
+        ]
+        for term in required_workflows_terms:
+            with self.subTest(surface="workflows_doc", term=term):
+                self.assertIn(term, workflows_doc)
+
+        required_agents_terms = [
+            "Follow `specs/skill-contract.md` for normalized skill structure and claim boundaries.",
+            "Treat shipped skill text as user-facing.",
+            "Do not create a new skill for one-off behavior; update an existing skill unless the new skill owns a distinct artifact, gate, review responsibility, recurring action, or approved operational process.",
+        ]
+        for term in required_agents_terms:
+            with self.subTest(surface="agents", term=term):
+                self.assertIn(term, agents)
+
+        self.assertNotIn("## Required core sections", agents)
+        self.assertNotIn("## Shared-block source of truth", agents)
+
+    def test_skill_contract_m2_shared_block_sources_exist_and_stay_bounded(self) -> None:
+        shared_blocks = {
+            "review-isolation-and-recording": SHARED_REVIEW_BLOCK_PATH,
+            "evidence-collection-efficiency": SKILL_CONTRACT_EVIDENCE_BLOCK,
+        }
+        for block_name, path in shared_blocks.items():
+            with self.subTest(block=block_name):
+                self.assertTrue(path.exists(), f"missing shared block source: {path}")
+
+        evidence_block = SKILL_CONTRACT_EVIDENCE_BLOCK.read_text(encoding="utf-8")
+        review_block = SHARED_REVIEW_BLOCK_PATH.read_text(encoding="utf-8")
+
+        evidence_terms = [
+            "## Evidence collection efficiency",
+            "Use summary and stable-ID first reasoning before broad reads or raw excerpts.",
+            "Prefer check IDs, requirement IDs, test IDs, file paths, counts, and line citations",
+            "derived artifacts, or validation output",
+            "## When full-file read is required",
+            "Read the full file when the whole file is the review target",
+            "bounded searches disagree or produce incomplete evidence",
+        ]
+        for term in evidence_terms:
+            with self.subTest(block="evidence", term=term):
+                self.assertIn(term, evidence_block)
+
+        self.assertFalse(
+            (ROOT / "templates" / "shared" / "generated-output-handling.md").exists(),
+            "generated-output handling is contributor-maintenance guidance, not an adopted shared block",
+        )
+
+        self.assertIn("Every material finding requires a durable change-local review record", review_block)
+        for block_name in SKILL_CONTRACT_DEFERRED_SHARED_BLOCKS:
+            with self.subTest(deferred_block=block_name):
+                self.assertFalse((ROOT / "templates" / "shared" / f"{block_name}.md").exists())
+
+    def test_skill_contract_m3_first_slice_core_sections_and_result_blocks(self) -> None:
+        for skill_name in SKILL_CONTRACT_FIRST_SLICE_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            with self.subTest(skill=skill_name, surface="core_sections"):
+                for section in SKILL_CONTRACT_REQUIRED_CORE_SECTIONS:
+                    self.assertIn(f"## {section}", body)
+
+            expected_output_start = body.find("## Expected output")
+            self.assertNotEqual(
+                expected_output_start,
+                -1,
+                msg=f"{skill_name} must preserve the validator-required Expected output section",
+            )
+            expected_output = body[expected_output_start:]
+            with self.subTest(skill=skill_name, surface="result_block"):
+                self.assertIn("## Result", expected_output)
+                for field in SKILL_CONTRACT_RESULT_FIELDS:
+                    self.assertIn(f"- {field}:", expected_output)
+
+            handoff = extract_markdown_block(body, "Handoff")
+            with self.subTest(skill=skill_name, surface="handoff"):
+                self.assertIn("workflow", handoff)
+                self.assertNotIn("specs/rigorloop-workflow.md", handoff)
+                self.assertIn("Normal next stage", handoff)
+                self.assertIn("Conditional next stages", handoff)
+
+    def test_skill_contract_m3_claim_boundaries_and_readiness_terms(self) -> None:
+        for skill_name, required_terms in SKILL_CONTRACT_CLAIM_BOUNDARY_TERMS.items():
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            claims = extract_markdown_block(body, "Claims this skill must not make")
+            for term in required_terms:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, claims)
+
+        progress_terms = [
+            "Progress means work that has happened so far.",
+            "Readiness means the next stage that can happen.",
+            "Closeout means the current artifact or stage satisfied its checklist.",
+            "Done means final lifecycle state after required gates are complete.",
+            "Readiness is not Done.",
+        ]
+        for skill_name in SKILL_CONTRACT_PROGRESS_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            for term in progress_terms:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, body)
+
+    def test_skill_contract_m3_first_slice_copies_shared_blocks(self) -> None:
+        evidence = extract_markdown_block(
+            SKILL_CONTRACT_EVIDENCE_BLOCK.read_text(encoding="utf-8"),
+            "Evidence collection efficiency",
+        )
+        for skill_name in SKILL_CONTRACT_FIRST_SLICE_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            with self.subTest(skill=skill_name, block="evidence"):
+                self.assertEqual(extract_markdown_block(body, "Evidence collection efficiency"), evidence)
+
+            with self.subTest(skill=skill_name, block="generated"):
+                self.assertNotIn("## Generated-output handling", body)
+
+    def test_skill_contract_m3_public_skills_exclude_maintainer_details(self) -> None:
+        forbidden_terms = [
+            "specs/rigorloop-workflow.md",
+            "skills/<skill>/SKILL.md",
+            ".codex/skills",
+            "dist/adapters",
+            "selector-driven validation",
+            "do not pass `--path dist/adapters`",
+            "Generated-output handling",
+            "Regenerate generated outputs",
+            "Validate drift with repository-owned checks",
+            "Shared blocks are copied into skills",
+            "shared-block implementation details",
+        ]
+        for skill_name in SKILL_CONTRACT_FIRST_SLICE_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            for term in forbidden_terms:
+                with self.subTest(skill=skill_name, term=term):
                     self.assertNotIn(term, body)
 
 

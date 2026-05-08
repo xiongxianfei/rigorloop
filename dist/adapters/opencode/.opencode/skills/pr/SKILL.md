@@ -12,6 +12,18 @@ The PR body should be grounded in the actual diff and verification evidence, not
 
 In this repository, `pr` is a submit/open stage when readiness passes. Do not treat it as draft-only preparation unless a blocker, tool limitation, or explicit user instruction prevents opening the PR.
 
+## Purpose
+
+Prepare and, when readiness passes, open a pull request grounded in the actual diff, verification evidence, lifecycle artifacts, risks, and reviewer needs.
+
+## When to use
+
+Use this skill after `verify` has established branch readiness, or when the user directly invokes `pr` and the branch is ready or nearly ready for review.
+
+## When not to use
+
+Do not use this skill to claim implementation, review, verification, tests, or CI passed without owning evidence; do not use it to bypass unresolved blockers or create PR text from memory.
+
 ## Inputs to read
 
 Read:
@@ -51,6 +63,35 @@ Before drafting or opening a PR, check:
 Apply the same readiness checks for workflow-managed and direct-`pr` invocation. Direct `pr` remains isolated only in the sense that no downstream stage follows `pr`; it still opens the PR when readiness passes.
 
 `verify` owns `branch-ready`. This stage owns `pr-body-ready` and `pr-open-ready`.
+
+## Outputs
+
+Produce a PR readiness check, title, body, reviewer notes, risks, follow-ups, and the opened PR URL when the repository/tooling permits opening the PR.
+
+## Handoff
+
+- Normal next stage: open the PR when `branch-ready`, `pr-body-ready`, and `pr-open-ready` pass.
+- Conditional next stages: return to `verify`, `explain-change`, review-resolution, implementation, or artifact updates when readiness blockers remain; stop when tooling or permissions prevent opening.
+- For full stage order and downstream-blocking semantics, route through the `workflow` skill.
+
+## Claims this skill must not make
+
+Do not claim:
+
+- implementation passed, review passed, verification passed, or tests passed unless the statement links to owning evidence;
+- CI passed unless the hosted or local CI evidence was actually observed and named;
+- branch-ready without citing `verify` evidence;
+- derived artifacts are current unless validation evidence proves it.
+
+Use owning evidence when summarizing implementation passed, review passed, verification passed, or tests passed.
+
+## Progress, readiness, closeout, and Done
+
+- Progress means work that has happened so far.
+- Readiness means the next stage that can happen.
+- Closeout means the current artifact or stage satisfied its checklist.
+- Done means final lifecycle state after required gates are complete.
+- Readiness is not Done. PR body/open readiness is not proof that earlier stages passed unless linked to evidence.
 
 ## PR body structure
 
@@ -127,15 +168,42 @@ Examples:
 - Do not include massive internal detail that obscures review.
 - Do not stop at a chat-only readiness summary when the user asked for `pr`; if `branch-ready`, `pr-body-ready`, and `pr-open-ready` checks pass, open it unless a blocker or tool limitation prevents that action.
 
+## Stop conditions
+
+Stop before opening or claiming a PR when:
+
+- `verify` has not established branch readiness;
+- required review-resolution, lifecycle closeout, derived-artifact refresh, validation, CI, or docs-change evidence is missing or failing;
+- the working tree or commits include unrelated or unreviewed changes;
+- the PR body would need to cite evidence that does not exist;
+- tooling, permissions, remote state, or explicit user instructions prevent opening.
+
 ## Evidence collection efficiency
 
-Use summary and stable-ID first reasoning before broad reads or raw excerpts. Prefer check IDs, requirement IDs, test IDs, file paths, counts, and line citations when inspecting large files, repeated scans, generated output, or validation output. Read exact ranges after locating relevant lines, then expand only when the narrower evidence is insufficient.
+Use summary and stable-ID first reasoning before broad reads or raw excerpts.
+Prefer check IDs, requirement IDs, test IDs, file paths, counts, and line citations when inspecting large files, repeated scans, derived artifacts, or validation output.
+Read exact ranges after locating relevant lines, then expand only when the narrower evidence is insufficient.
 
 ## When full-file read is required
 
 Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
 
 ## Expected output
+
+Start with:
+
+```md
+## Result
+
+- Skill: pr
+- Status:
+- Artifacts changed:
+- Open blockers:
+- Next stage:
+- Readiness:
+```
+
+Then include:
 
 - readiness check results;
 - PR title;

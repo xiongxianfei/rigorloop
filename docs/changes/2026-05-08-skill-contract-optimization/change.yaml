@@ -1,0 +1,266 @@
+change_id: 2026-05-08-skill-contract-optimization
+title: Skill contract optimization
+classification: workflow-governance-proposal
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-08-skill-contract-optimization.md
+  spec: specs/skill-contract.md
+  test_spec: specs/skill-contract.test.md
+  plan: docs/plans/2026-05-08-skill-contract-optimization.md
+  explain_change: docs/changes/2026-05-08-skill-contract-optimization/explain-change.md
+  review_resolution: docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md
+requirements:
+  - Define a reviewable proposal direction for making RigorLoop skills smaller, claim-safe, summary-first, and handoff-explicit.
+  - Create the contract-level feature spec for `specs/skill-contract.md`.
+  - Create an execution plan and lifecycle index entry for implementing the approved skill contract in reviewable milestones.
+  - Create an active test spec mapping the approved skill contract requirements, examples, edge cases, and acceptance criteria to concrete static proof.
+  - Resolve proposal-review findings SCO1, SCO2, SCO3, SCO4, SCO6, SCO7, and SCO8 before downstream proposal reliance.
+  - Record proposal-review R2 approval after the remaining proposal decisions are added.
+  - Keep the first implementation slice explicit and avoid normalizing every skill in the first slice.
+  - Define the normative home for the skill contract before validators enforce it.
+  - Preserve generated-output boundaries by treating `.codex/skills/` and `dist/adapters/` as derived output.
+  - Add concise skill-contract summary pointers to workflow, contributor, and agent-facing guidance.
+  - Create the canonical v1 shared-block source for evidence collection efficiency and keep generated-output handling in contributor guidance rather than an unused shared file.
+  - Normalize the first-slice canonical skills with required core sections, claim boundaries, compact result output, local handoff guidance, and copied shared blocks.
+  - Keep published first-slice skill text free of repository-maintainer source, generation, adapter, selector-path, drift-check, and shared-block implementation details.
+  - Regenerate local Codex skill mirrors and public adapter skill copies from canonical first-slice skills.
+tests:
+  - Artifact lifecycle validation for the approved skill contract spec.
+  - Artifact lifecycle validation for the active skill contract test spec.
+  - Artifact lifecycle validation for the active skill contract optimization execution plan and plan index entry.
+  - Artifact lifecycle validation for the proposal and change-local artifacts.
+  - Change metadata validation for this change-local root.
+  - Review artifact closeout validation for proposal-review findings.
+  - Selector-selected validation for changed proposal and review artifacts.
+  - Skill validator regression coverage for M2 skill-contract summary surfaces and shared-block source files.
+  - Skill validator regression coverage for M3 first-slice core sections, result blocks, claim boundaries, readiness wording, and copied shared blocks.
+  - Skill validator regression coverage for public skill surface boundaries in first-slice skill text.
+  - Generated-output drift checks and adapter validation for M4 generated skill and adapter copies.
+validation:
+  - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-05-08-skill-contract-optimization.md
+    result: pass_before_review_revision_selected_artifact_lifecycle
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-skill-contract-optimization
+    result: pass_reviews_2_findings_7_log_entries_2_resolution_entries_7
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+    result: pass_valid_change_metadata
+  - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-05-08-skill-contract-optimization.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml --path docs/changes/2026-05-08-skill-contract-optimization/review-log.md --path docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/proposal-review-r1.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/proposal-review-r2.md
+    result: pass_selected_review_artifact_lifecycle_change_metadata_no_unclassified_paths
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-08-skill-contract-optimization.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml --path docs/changes/2026-05-08-skill-contract-optimization/review-log.md --path docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/proposal-review-r1.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/proposal-review-r2.md
+    result: pass_selected_review_artifact_lifecycle_and_change_metadata_checks
+  - command: python scripts/select-validation.py --mode explicit --path specs/skill-contract.md --path docs/proposals/2026-05-08-skill-contract-optimization.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml --path docs/changes/2026-05-08-skill-contract-optimization/review-log.md --path docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/proposal-review-r1.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/proposal-review-r2.md
+    result: pass_selected_review_artifact_lifecycle_change_metadata_no_unclassified_paths
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+    result: pass_valid_change_metadata_after_spec_added
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-skill-contract-optimization
+    result: pass_reviews_2_findings_7_log_entries_2_resolution_entries_7_after_spec_added
+  - command: bash scripts/ci.sh --mode explicit --path specs/skill-contract.md --path docs/proposals/2026-05-08-skill-contract-optimization.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml --path docs/changes/2026-05-08-skill-contract-optimization/review-log.md --path docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/proposal-review-r1.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/proposal-review-r2.md
+    result: pass_selected_review_artifact_lifecycle_and_change_metadata_checks_after_spec_added
+  - command: python scripts/select-validation.py --mode explicit --path specs/skill-contract.md --path docs/plan.md --path docs/plans/2026-05-08-skill-contract-optimization.md --path docs/proposals/2026-05-08-skill-contract-optimization.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml --path docs/changes/2026-05-08-skill-contract-optimization/review-log.md --path docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/proposal-review-r1.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/proposal-review-r2.md
+    result: pass_selected_review_artifact_lifecycle_plan_index_change_metadata_no_unclassified_paths_after_plan_created
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+    result: pass_valid_change_metadata_after_plan_created
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-skill-contract-optimization
+    result: pass_reviews_2_findings_7_log_entries_2_resolution_entries_7_after_plan_created
+  - command: bash scripts/ci.sh --mode explicit --path specs/skill-contract.md --path docs/plan.md --path docs/plans/2026-05-08-skill-contract-optimization.md --path docs/proposals/2026-05-08-skill-contract-optimization.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml --path docs/changes/2026-05-08-skill-contract-optimization/review-log.md --path docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/proposal-review-r1.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/proposal-review-r2.md
+    result: pass_selected_review_artifact_lifecycle_plan_index_change_metadata_checks_after_plan_created
+  - command: python scripts/select-validation.py --mode explicit --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/plan.md --path docs/plans/2026-05-08-skill-contract-optimization.md --path docs/proposals/2026-05-08-skill-contract-optimization.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml --path docs/changes/2026-05-08-skill-contract-optimization/review-log.md --path docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/proposal-review-r1.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/proposal-review-r2.md
+    result: pass_selected_review_artifact_lifecycle_plan_index_test_spec_change_metadata_no_unclassified_paths_after_test_spec_created
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/plan.md --path docs/plans/2026-05-08-skill-contract-optimization.md --path docs/proposals/2026-05-08-skill-contract-optimization.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml --path docs/changes/2026-05-08-skill-contract-optimization/review-log.md --path docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/proposal-review-r1.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/proposal-review-r2.md
+    result: pass_with_nonblocking_existing_docs_plan_merge_dependent_warning_after_test_spec_created
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+    result: pass_valid_change_metadata_after_test_spec_created
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-skill-contract-optimization
+    result: pass_reviews_2_findings_7_log_entries_2_resolution_entries_7_after_test_spec_created
+  - command: bash scripts/ci.sh --mode explicit --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/plan.md --path docs/plans/2026-05-08-skill-contract-optimization.md --path docs/proposals/2026-05-08-skill-contract-optimization.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml --path docs/changes/2026-05-08-skill-contract-optimization/review-log.md --path docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/proposal-review-r1.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/proposal-review-r2.md
+    result: pass_selected_review_artifact_lifecycle_plan_index_test_spec_change_metadata_checks_after_test_spec_created
+  - command: python scripts/test-skill-validator.py
+    result: fail_once_ci_maintenance_assertion_paraphrased_spec_wording_then_pass_37_tests_after_assertion_narrowed
+  - command: python scripts/select-validation.py --mode explicit --path specs/skill-contract.md --path specs/skill-contract.test.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-08-skill-contract-optimization.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+    result: pass_selected_skills_regression_artifact_lifecycle_change_metadata_no_unclassified_paths_m1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/skill-contract.md --path specs/skill-contract.test.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-08-skill-contract-optimization.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+    result: pass_m1_artifact_lifecycle
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+    result: pass_valid_change_metadata_m1
+  - command: bash scripts/ci.sh --mode explicit --path specs/skill-contract.md --path specs/skill-contract.test.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-08-skill-contract-optimization.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+    result: pass_selected_skills_regression_artifact_lifecycle_change_metadata_checks_m1
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-08-skill-contract-optimization
+    result: pass_code_review_r1_open_finding_structure
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+    result: pass_valid_change_metadata_after_code_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml --path docs/changes/2026-05-08-skill-contract-optimization/review-log.md --path docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r1.md --path docs/plans/2026-05-08-skill-contract-optimization.md
+    result: pass_code_review_r1_artifact_lifecycle
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-08-skill-contract-optimization/review-log.md --path docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r1.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml --path docs/plans/2026-05-08-skill-contract-optimization.md
+    result: pass_selected_review_artifacts_lifecycle_change_metadata_checks_code_review_r1
+  - command: python scripts/test-skill-validator.py
+    result: pass_37_tests_after_cr1_f1_bounded_assertion_fix
+  - command: python scripts/select-validation.py --mode explicit --path scripts/test-skill-validator.py --path docs/changes/2026-05-08-skill-contract-optimization/review-log.md --path docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r1.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml --path docs/plans/2026-05-08-skill-contract-optimization.md
+    result: pass_selected_skills_review_artifacts_lifecycle_change_metadata_no_unclassified_paths_after_cr1_f1_fix
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml --path docs/changes/2026-05-08-skill-contract-optimization/review-log.md --path docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r1.md --path docs/plans/2026-05-08-skill-contract-optimization.md
+    result: pass_artifact_lifecycle_after_cr1_f1_fix
+  - command: bash scripts/ci.sh --mode explicit --path scripts/test-skill-validator.py --path docs/changes/2026-05-08-skill-contract-optimization/review-log.md --path docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r1.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml --path docs/plans/2026-05-08-skill-contract-optimization.md
+    result: pass_selected_skills_review_artifacts_lifecycle_change_metadata_checks_after_cr1_f1_fix
+  - command: git diff --check -- scripts/test-skill-validator.py docs/changes/2026-05-08-skill-contract-optimization/review-log.md docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r1.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml docs/plans/2026-05-08-skill-contract-optimization.md
+    result: pass_after_cr1_f1_fix
+  - command: rg -n '[[:blank:]]$|\\t' scripts/test-skill-validator.py docs/changes/2026-05-08-skill-contract-optimization/review-log.md docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r1.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml docs/plans/2026-05-08-skill-contract-optimization.md
+    result: pass_no_matches_after_cr1_f1_fix
+  - command: python scripts/test-skill-validator.py
+    result: pass_37_tests_code_review_r2
+  - command: bash scripts/ci.sh --mode explicit --path scripts/test-skill-validator.py --path docs/changes/2026-05-08-skill-contract-optimization/review-log.md --path docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r1.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml --path docs/plans/2026-05-08-skill-contract-optimization.md
+    result: pass_selected_skills_review_artifacts_lifecycle_change_metadata_checks_code_review_r2
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-skill-contract-optimization
+    result: pass_closeout_after_code_review_r2
+  - command: python scripts/select-validation.py --mode explicit --path scripts/test-skill-validator.py --path docs/changes/2026-05-08-skill-contract-optimization/review-log.md --path docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r1.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r2.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml --path docs/plans/2026-05-08-skill-contract-optimization.md
+    result: pass_selected_skills_review_artifacts_lifecycle_change_metadata_no_unclassified_paths_code_review_r2
+  - command: bash scripts/ci.sh --mode explicit --path scripts/test-skill-validator.py --path docs/changes/2026-05-08-skill-contract-optimization/review-log.md --path docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r1.md --path docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r2.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml --path docs/plans/2026-05-08-skill-contract-optimization.md
+    result: pass_selected_skills_review_artifacts_lifecycle_change_metadata_checks_code_review_r2_with_clean_record
+  - command: git diff --check -- scripts/test-skill-validator.py docs/changes/2026-05-08-skill-contract-optimization/review-log.md docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r1.md docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r2.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml docs/plans/2026-05-08-skill-contract-optimization.md
+    result: pass_code_review_r2_closeout
+  - command: rg -n '[[:blank:]]$|\\t' scripts/test-skill-validator.py docs/changes/2026-05-08-skill-contract-optimization/review-log.md docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r1.md docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r2.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml docs/plans/2026-05-08-skill-contract-optimization.md
+    result: pass_no_matches_code_review_r2_closeout
+  - command: python scripts/test-skill-validator.py
+    result: fail_expected_missing_m2_summary_and_shared_block_sources_then_pass_39_tests
+  - command: python scripts/select-validation.py --mode explicit --path specs/skill-contract.md --path specs/skill-contract.test.md --path specs/rigorloop-workflow.md --path docs/workflows.md --path AGENTS.md --path templates/shared/review-isolation-and-recording.md --path templates/shared/evidence-collection-efficiency.md --path templates/shared/generated-output-handling.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-08-skill-contract-optimization.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+    result: pass_selected_m2_no_unclassified_paths
+  - command: bash scripts/ci.sh --mode explicit --path specs/skill-contract.md --path specs/skill-contract.test.md --path specs/rigorloop-workflow.md --path docs/workflows.md --path AGENTS.md --path templates/shared/review-isolation-and-recording.md --path templates/shared/evidence-collection-efficiency.md --path templates/shared/generated-output-handling.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-08-skill-contract-optimization.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+    result: pass_selected_m2_skills_lifecycle_change_metadata_selector_checks
+  - command: git diff --check -- specs/skill-contract.md specs/skill-contract.test.md specs/rigorloop-workflow.md docs/workflows.md AGENTS.md templates/shared scripts/test-skill-validator.py docs/plans/2026-05-08-skill-contract-optimization.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+    result: pass_m2
+  - command: rg -n '[[:blank:]]$|\\t' specs/skill-contract.md specs/skill-contract.test.md specs/rigorloop-workflow.md docs/workflows.md AGENTS.md templates/shared scripts/test-skill-validator.py docs/plans/2026-05-08-skill-contract-optimization.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+    result: pass_no_matches_m2
+  - command: python scripts/test-skill-validator.py
+    result: fail_expected_missing_m3_first_slice_normalization_then_pass_42_tests
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_m3
+  - command: python scripts/select-validation.py --mode explicit --path skills/workflow/SKILL.md --path skills/plan/SKILL.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/verify/SKILL.md --path skills/pr/SKILL.md --path skills/learn/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-08-skill-contract-optimization.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+    result: pass_selected_m3_no_unclassified_paths_generated_drift_checks_selected_for_m4
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml --path docs/plans/2026-05-08-skill-contract-optimization.md --path skills/code-review/SKILL.md --path skills/implement/SKILL.md --path skills/learn/SKILL.md --path skills/plan/SKILL.md --path skills/pr/SKILL.md --path skills/verify/SKILL.md --path skills/workflow/SKILL.md
+    result: pass_m3_artifact_lifecycle
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_m3_change_metadata_regression
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+    result: pass_valid_change_metadata_m3
+  - command: git diff --check -- skills/workflow/SKILL.md skills/plan/SKILL.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/verify/SKILL.md skills/pr/SKILL.md skills/learn/SKILL.md scripts/test-skill-validator.py docs/plans/2026-05-08-skill-contract-optimization.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+    result: pass_m3
+  - command: rg -n '[[:blank:]]$|\\t' skills/workflow/SKILL.md skills/plan/SKILL.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/verify/SKILL.md skills/pr/SKILL.md skills/learn/SKILL.md scripts/test-skill-validator.py docs/plans/2026-05-08-skill-contract-optimization.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+    result: pass_no_matches_m3
+  - command: python scripts/build-skills.py --check
+    result: fail_expected_seven_stale_codex_skill_mirrors_then_pass_after_m4_regeneration
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: fail_expected_21_stale_adapter_skill_copies_then_pass_after_m4_regeneration
+  - command: python scripts/build-skills.py
+    result: pass_refreshed_generated_codex_skill_mirrors_m4
+  - command: python scripts/build-adapters.py --version 0.1.1
+    result: pass_refreshed_generated_adapter_output_m4
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_m4_generated_adapters_valid
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_56_tests_m4_adapter_distribution
+  - command: python scripts/select-validation.py --mode explicit with seven .codex skill paths, 21 concrete adapter skill paths, plan, and change metadata
+    result: pass_m4_no_unclassified_paths_selected_generated_adapter_lifecycle_change_metadata_checks
+  - command: bash scripts/ci.sh --mode explicit with seven .codex skill paths, 21 concrete adapter skill paths, plan, and change metadata
+    result: pass_m4_selected_generated_adapter_lifecycle_change_metadata_checks
+  - command: git diff --check -- .codex/skills dist/adapters docs/plans/2026-05-08-skill-contract-optimization.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+    result: pass_m4
+  - command: rg -n '[[:blank:]]$|\\t' .codex/skills dist/adapters docs/plans/2026-05-08-skill-contract-optimization.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+    result: pass_no_matches_m4
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+    result: pass_valid_change_metadata_after_explain_change
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-skill-contract-optimization
+    result: pass_closeout_after_explain_change
+  - command: bash scripts/ci.sh --mode explicit with all committed and worktree changed paths, including explain-change.md
+    result: pass_selected_full_branch_plus_explain_change_checks
+  - command: git diff --check b8f64359a4d7642ef62ffc467c5c9c071ffcf871..HEAD
+    result: pass_after_explain_change
+  - command: rg -n '[[:blank:]]$|\\t' docs/changes/2026-05-08-skill-contract-optimization/explain-change.md docs/changes/2026-05-08-skill-contract-optimization/change.yaml docs/plans/2026-05-08-skill-contract-optimization.md
+    result: pass_no_matches_after_explain_change
+  - command: bash scripts/ci.sh --mode explicit with all 54 branch changed paths from merge-base b8f64359a4d7642ef62ffc467c5c9c071ffcf871
+    result: pass_final_verify_selected_checks_no_unclassified_paths
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-skill-contract-optimization
+    result: pass_final_verify_review_closeout
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+    result: pass_final_verify_change_metadata
+  - command: git diff --check b8f64359a4d7642ef62ffc467c5c9c071ffcf871..HEAD
+    result: pass_final_verify_diff_check
+  - command: rg -n '[[:blank:]]$|\\t' across all 54 branch changed paths
+    result: pass_final_verify_no_matches
+  - command: bash scripts/ci.sh --mode explicit --path docs/learn/sessions/2026-05-08-verify-explain-change-order.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+    result: pass_learn_session_selected_artifact_lifecycle_change_metadata_checks
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-08-skill-contract-optimization.md --path docs/changes/2026-05-08-skill-contract-optimization/change.yaml --path docs/changes/2026-05-08-skill-contract-optimization/explain-change.md
+    result: pass_pr_handoff_lifecycle_change_metadata_checks
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+    result: pass_pr_handoff_change_metadata
+  - command: git diff --check
+    result: pass_pr_handoff_diff_check
+  - command: python scripts/test-skill-validator.py
+    result: pass_43_tests_public_skill_surface_boundary
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_public_surface_boundary
+  - command: python scripts/build-skills.py --check
+    result: pass_public_surface_generated_codex_skill_mirrors_in_sync
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_public_surface_adapter_output_in_sync
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_public_surface_generated_adapters_valid
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_56_tests_public_surface_adapter_distribution
+  - command: bash scripts/ci.sh --mode explicit with all 56 branch changed paths from merge-base b8f64359a4d7642ef62ffc467c5c9c071ffcf871
+    result: pass_public_surface_full_branch_selected_checks
+changed_files:
+  - specs/skill-contract.md
+  - specs/skill-contract.test.md
+  - specs/rigorloop-workflow.md
+  - docs/workflows.md
+  - AGENTS.md
+  - templates/shared/evidence-collection-efficiency.md
+  - skills/workflow/SKILL.md
+  - skills/plan/SKILL.md
+  - skills/implement/SKILL.md
+  - skills/code-review/SKILL.md
+  - skills/verify/SKILL.md
+  - skills/pr/SKILL.md
+  - skills/learn/SKILL.md
+  - .codex/skills/workflow/SKILL.md
+  - .codex/skills/plan/SKILL.md
+  - .codex/skills/implement/SKILL.md
+  - .codex/skills/code-review/SKILL.md
+  - .codex/skills/verify/SKILL.md
+  - .codex/skills/pr/SKILL.md
+  - .codex/skills/learn/SKILL.md
+  - dist/adapters/codex/.agents/skills/workflow/SKILL.md
+  - dist/adapters/codex/.agents/skills/plan/SKILL.md
+  - dist/adapters/codex/.agents/skills/implement/SKILL.md
+  - dist/adapters/codex/.agents/skills/code-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/verify/SKILL.md
+  - dist/adapters/codex/.agents/skills/pr/SKILL.md
+  - dist/adapters/codex/.agents/skills/learn/SKILL.md
+  - dist/adapters/claude/.claude/skills/workflow/SKILL.md
+  - dist/adapters/claude/.claude/skills/plan/SKILL.md
+  - dist/adapters/claude/.claude/skills/implement/SKILL.md
+  - dist/adapters/claude/.claude/skills/code-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/verify/SKILL.md
+  - dist/adapters/claude/.claude/skills/pr/SKILL.md
+  - dist/adapters/claude/.claude/skills/learn/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/workflow/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/plan/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/implement/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/code-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/verify/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/pr/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/learn/SKILL.md
+  - scripts/test-skill-validator.py
+  - docs/plan.md
+  - docs/plans/2026-05-08-skill-contract-optimization.md
+  - docs/proposals/2026-05-08-skill-contract-optimization.md
+  - docs/changes/2026-05-08-skill-contract-optimization/change.yaml
+  - docs/changes/2026-05-08-skill-contract-optimization/explain-change.md
+  - docs/changes/2026-05-08-skill-contract-optimization/review-log.md
+  - docs/changes/2026-05-08-skill-contract-optimization/review-resolution.md
+  - docs/changes/2026-05-08-skill-contract-optimization/reviews/proposal-review-r1.md
+  - docs/changes/2026-05-08-skill-contract-optimization/reviews/proposal-review-r2.md
+  - docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r1.md
+  - docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r2.md
+  - docs/learn/sessions/2026-05-08-verify-explain-change-order.md
+  - docs/learn/sessions/2026-05-08-public-skill-surface-boundary.md
+review:
+  status: closed
+  unresolved_items: 0

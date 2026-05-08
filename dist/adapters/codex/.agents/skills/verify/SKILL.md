@@ -13,6 +13,18 @@ Verification is broader than running CI. It checks completeness, correctness, co
 
 `verify` owns `branch-ready`. The `pr` stage owns `pr-body-ready` and `pr-open-ready`.
 
+## Purpose
+
+Prove that implementation, tests, derived artifact, lifecycle artifacts, validation evidence, and risk closeout agree before the workflow moves toward explanation and PR.
+
+## When to use
+
+Use this skill after all in-scope implementation milestones are closed and code-review/review-resolution obligations are complete, or when a user explicitly asks for a verification gate.
+
+## When not to use
+
+Do not use this skill to replace code-review, prepare PR body readiness, open a PR, close unresolved review findings, or claim hosted CI status that was not observed.
+
 ## Inputs to read
 
 Read:
@@ -31,6 +43,33 @@ Read:
 - release metadata when release smoke or release manual proof is in scope;
 - `AGENTS.md` and `CONSTITUTION.md`;
 - CI workflow definitions relevant to the change.
+
+## Outputs
+
+Produce a verification verdict, traceability and drift assessment, validation evidence summary, blocker list if any, and the next valid handoff toward `ci`, `explain-change`, or stop.
+
+## Handoff
+
+- Normal next stage: `explain-change` when branch readiness passes and no conditional CI maintenance is triggered.
+- Conditional next stages: `ci` when hosted workflow automation or related CI infrastructure for a material risk is missing, stale, or wrong; stop when blockers remain.
+- For full stage order and downstream-blocking semantics, route through the `workflow` skill.
+
+## Claims this skill must not make
+
+Do not claim:
+
+- PR-ready, PR body ready, `pr-body-ready`, or `pr-open-ready`;
+- review passed unless code-review evidence is cited;
+- CI passed unless hosted CI was actually observed or the statement is explicitly local validation only;
+- derived artifacts are current unless validation evidence proves it.
+
+## Progress, readiness, closeout, and Done
+
+- Progress means work that has happened so far.
+- Readiness means the next stage that can happen.
+- Closeout means the current artifact or stage satisfied its checklist.
+- Done means final lifecycle state after required gates are complete.
+- Readiness is not Done. `branch-ready` is not PR body readiness or final lifecycle Done.
 
 ## Verification dimensions
 
@@ -58,7 +97,7 @@ Requirement → Test IDs → Files changed → Evidence → Status
 
 2. Check the actual diff for unplanned behavior.
 3. Compare tests against the test spec.
-4. Build the related artifact set from changed files, `docs/changes/<change-id>/change.yaml`, explain-change artifacts, the active plan, generated outputs, governing specs, governing architecture docs or ADRs, governing test specs, and draft PR text only when that draft PR body already exists.
+4. Build the related artifact set from changed files, `docs/changes/<change-id>/change.yaml`, explain-change artifacts, the active plan, derived artifacts, governing specs, governing architecture docs or ADRs, governing test specs, and draft PR text only when that draft PR body already exists.
 4a. When `branch-ready` depends on cited governing artifacts, confirm those authoritative artifacts are present in tracked governing branch state rather than only in the local worktree.
 5. For ordinary non-trivial work, confirm the required baseline change-local pack exists: `docs/changes/<change-id>/change.yaml` plus durable Markdown reasoning, defaulting to `docs/changes/<change-id>/explain-change.md` unless an approved equivalent surface applies.
 6. Treat a missing required baseline change-local pack as a blocker, not acceptable silence.
@@ -111,7 +150,7 @@ For release smoke, inspect release metadata under `docs/releases/<version>/` rat
 - Do not treat a planned initiative as `branch-ready` when lifecycle state is stale.
 - Do not treat material review findings as closed unless `review-resolution.md` is at `Closeout status: closed`, `review-log.md` lists no open findings, and closeout validation passes.
 - Do not continue past `needs-decision`; it is not a final disposition.
-- Do not accept deferring a known `Done` transition until after merge. A plan may remain `Active` only for a named true downstream completion event, and merge itself is not that event.
+- Do not accept deferring a known `Done` transition to a later merge boundary. A plan may remain `Active` only for a named true downstream completion event, and merge itself is not that event.
 - Do not move to PR if blockers remain.
 - Do not update artifacts silently; call out drift.
 
@@ -122,15 +161,43 @@ For release smoke, inspect release metadata under `docs/releases/<version>/` rat
 - Direct `verify` requests remain isolated by default unless the user explicitly asks to continue through completion.
 - When `verify` stops because of blockers or pause conditions, name the blocked next stage and the reason continuation stopped.
 
+## Stop conditions
+
+Stop before downstream handoff when:
+
+- implementation milestones, code-review, or review-resolution remain open;
+- required validation, derived-artifact currency checks, or selector-selected proof are missing or failing;
+- lifecycle state is stale between the plan index and plan body;
+- touched or authoritative artifacts advertise stale status or readiness;
+- branch-ready cannot be supported by tracked governing branch state.
+
 ## Evidence collection efficiency
 
-Use summary and stable-ID first reasoning before broad reads or raw excerpts. Prefer check IDs, requirement IDs, test IDs, file paths, counts, and line citations when inspecting large files, repeated scans, generated output, or validation output. Read exact ranges after locating relevant lines, then expand only when the narrower evidence is insufficient.
+Use summary and stable-ID first reasoning before broad reads or raw excerpts.
+Prefer check IDs, requirement IDs, test IDs, file paths, counts, and line citations when inspecting large files, repeated scans, derived artifacts, or validation output.
+Read exact ranges after locating relevant lines, then expand only when the narrower evidence is insufficient.
 
 ## When full-file read is required
 
 Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
 
 ## Expected output
+
+Start with:
+
+```md
+## Result
+
+- Skill: verify
+- Status:
+- Artifacts changed:
+- Open blockers:
+- Next stage:
+- Validation:
+- Readiness:
+```
+
+Then include:
 
 - verification verdict: ready, concerns, or blocked;
 - traceability table;
