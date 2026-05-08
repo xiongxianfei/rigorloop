@@ -48,6 +48,7 @@ requirements:
   - Implement M4 generated-output confirmation before code-review M4.
   - Record clean code-review R6 and close M4 before M5 begins.
   - Implement M5 review evidence and selected validation before code-review M5.
+  - Record clean code-review R7 and close M5 before final closeout begins.
 tests:
   - Artifact lifecycle validation for the proposal.
   - Artifact lifecycle validation for the draft spec amendments.
@@ -87,6 +88,7 @@ tests:
   - M4 generated-output confirmation with generator execution, generated-output drift checks, adapter validation, public skill portability validation, concrete-path selected CI, change metadata validation, diff, and whitespace checks.
   - Code-review R6 review recording, M4 closeout, review artifact closeout validation, change metadata validation, selected CI, diff, and whitespace validation.
   - M5 review artifact structure and closeout validation, change metadata validation, concrete-path selected CI over the initiative changed surface, diff, and whitespace validation before code-review M5.
+  - Code-review R7 review recording, M5 closeout, review artifact closeout validation, change metadata validation, selected CI, diff, and whitespace validation.
 validation:
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md
     result: pass_after_proposal_revision
@@ -636,6 +638,18 @@ validation:
     result: pass_no_whitespace_matches_after_m5_handoff
   - command: git commit
     result: pass_m5_review_evidence_handoff_commit_before_code_review
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-single-workflow-lane-explain-before-verify
+    result: pass_code_review_r7_closeout_reviews_17_findings_23_log_entries_17_resolution_entries_23
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_valid_change_metadata_after_code_review_r7
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r7.md
+    result: pass_code_review_r7_recording_review_artifacts_lifecycle_change_metadata_checks
+  - command: git diff --check -- docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r7.md
+    result: pass_after_code_review_r7_recording
+  - command: bash -c 'if rg -n "[[:blank:]]$|\t" docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r7.md; then exit 1; else exit 0; fi'
+    result: pass_no_whitespace_matches_after_code_review_r7_recording
+  - command: git commit
+    result: pass_m5_clean_code_review_closeout_commit_before_final_closeout
 changed_files:
   - AGENTS.md
   - CONSTITUTION.md
@@ -680,10 +694,11 @@ changed_files:
   - docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r4.md
   - docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r5.md
   - docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r6.md
+  - docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r7.md
   - docs/learn/sessions/2026-05-08-architecture-update-workflow-overhead.md
   - docs/learn/sessions/2026-05-08-code-review-timing-evidence.md
   - docs/learn/sessions/2026-05-08-milestone-commit-policy-mismatch.md
   - docs/learn/sessions/2026-05-08-spec-review-rounds-and-readiness.md
 review:
-  status: m5-review-requested
+  status: m5-closed-final-closeout-ready
   unresolved_items: 0
