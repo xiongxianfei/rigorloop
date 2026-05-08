@@ -46,7 +46,7 @@ Produce tests or proof surfaces first where feasible, implementation changes, up
 
 - Normal next stage: `code-review` for the implemented milestone.
 - Conditional next stages: stop for a spec, architecture, owner-decision, or validation blocker; return to the same milestone when accepted review findings require fixes; continue to the next milestone only after clean review closes the current milestone.
-- For full routing rules, follow `specs/rigorloop-workflow.md`.
+- For full stage order and downstream-blocking semantics, route through the `workflow` skill.
 
 ## Claims this skill must not make
 
@@ -55,7 +55,7 @@ Do not claim:
 - review passed, clean review, review-clean status, or no review fixes required;
 - branch-ready, PR-ready, `pr-body-ready`, or `pr-open-ready`;
 - ready-for-verify or `Ready for verify` while any in-scope implementation milestone is open, unreviewed, unresolved, or not closed;
-- generated output is synced unless repository-owned generation or drift checks prove it.
+- derived artifacts are current unless validation evidence proves it.
 
 ## Progress, readiness, closeout, and Done
 
@@ -203,22 +203,12 @@ Stop before handoff when:
 ## Evidence collection efficiency
 
 Use summary and stable-ID first reasoning before broad reads or raw excerpts.
-Prefer check IDs, requirement IDs, test IDs, file paths, counts, and line citations when inspecting large files, repeated scans, generated output, or validation output.
+Prefer check IDs, requirement IDs, test IDs, file paths, counts, and line citations when inspecting large files, repeated scans, derived artifacts, or validation output.
 Read exact ranges after locating relevant lines, then expand only when the narrower evidence is insufficient.
 
 ## When full-file read is required
 
 Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
-
-## Generated-output handling
-
-Edit canonical skill source under `skills/<skill>/SKILL.md`.
-Do not hand-edit `.codex/skills/` or `dist/adapters/`.
-Regenerate generated outputs from canonical source.
-Validate drift with repository-owned checks.
-Use concrete generated adapter file paths in selector-driven validation; do not pass `--path dist/adapters`.
-Generated outputs are proof surfaces, not independent sources of truth.
-Shared blocks are copied into skills and checked for drift; they are not generated into skills in v1.
 
 ## Expected output
 

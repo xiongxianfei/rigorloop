@@ -12,13 +12,17 @@
 
 This spec defines the contributor-visible contract for RigorLoop skill guidance. A skill is an operational guide for one agent capability or workflow stage. It should be small enough to scan, explicit about local ownership, and clear about what it can and cannot claim.
 
-The problem this spec addresses is recurring state and handoff confusion. Skills can accidentally blur progress, readiness, closeout, final Done state, review outcome, validation proof, branch readiness, and PR readiness. The skill contract prevents those overclaims by standardizing core sections, result output, claim boundaries, shared-policy blocks, evidence-reading rules, generated-output handling, and minimum viable skill creation rules.
+The problem this spec addresses is recurring state and handoff confusion. Skills can accidentally blur progress, readiness, closeout, final Done state, review outcome, validation proof, branch readiness, and PR readiness. The skill contract prevents those overclaims by standardizing core sections, result output, claim boundaries, shared-policy blocks, evidence-reading rules, public skill surface boundaries, generated-output handling, and minimum viable skill creation rules.
+
+Skills are also a published user-facing interface. Repository-maintainer guidance for authoring, generating, validating, or packaging this repository's skills belongs in contributor and governance surfaces, not inside shipped skill text.
 
 This spec owns skill-contract behavior. `specs/rigorloop-workflow.md` continues to own stage order, stage obligation, handoff, and downstream-blocking semantics.
 
 ## Glossary
 
 - `skill`: a `SKILL.md` operational guide that tells an agent when and how to perform a repository capability.
+- `published skill text`: skill instructions shipped to users through local skill mirrors or public adapter packages.
+- `contributor-maintenance guidance`: instructions for contributors maintaining this repository's canonical skill source, generated mirrors, adapter output, validators, and release packaging.
 - `canonical skill source`: an authored skill file under `skills/<skill>/SKILL.md`.
 - `generated skill mirror`: derived local Codex runtime output under `.codex/skills/`.
 - `adapter output`: derived public adapter package output under `dist/adapters/`.
@@ -62,7 +66,8 @@ And validator checks compare the copied subsection to the shared source.
 Given `skills/code-review/SKILL.md` changes
 When generated Codex and adapter skill outputs are refreshed
 Then `.codex/skills/code-review/SKILL.md` and affected `dist/adapters/**/code-review/SKILL.md` are derived outputs
-And contributors do not hand-edit those generated copies.
+And contributors do not hand-edit those generated copies
+But the published `code-review` skill text does not expose repository-local generation paths, selector path constraints, or shared-block implementation details.
 
 ### Example E5: validator uses narrow overclaim checks
 
@@ -89,7 +94,7 @@ And the spec does not require a `skills/ci-maintenance/SKILL.md` path.
 
 R1. The normative skill contract MUST live in `specs/skill-contract.md`.
 
-R1a. `specs/skill-contract.md` MUST own standard skill shape, claim boundaries, result output expectations, shared-block rules, generated-output boundaries, evidence-reading guidance, and minimum viable skill rules.
+R1a. `specs/skill-contract.md` MUST own standard skill shape, claim boundaries, result output expectations, shared-block rules, public skill surface boundaries, generated-output boundaries, evidence-reading guidance, and minimum viable skill rules.
 
 R1b. `specs/rigorloop-workflow.md` MUST continue to own stage order, stage obligation, handoff, and downstream-blocking semantics.
 
@@ -126,11 +131,14 @@ R3a. A normalized skill MAY keep or add conditional sections when relevant, incl
 - `Required artifact sections`
 - `Review finding format`
 - `Milestone state rules`
-- `Generated-output handling`
 
 R3b. Normalization MUST preserve skill-specific guidance that changes behavior, artifact shape, review format, validation, or stop conditions.
 
 R3c. Normalization MUST NOT flatten useful domain-specific sections into generic prose when those sections make the skill safer or easier to review.
+
+R3d. Published skill text MUST NOT include repository-maintainer-only source, generation, packaging, selector-path, or shared-block implementation instructions.
+
+R3e. Published skill text MUST NOT direct end users to this repository's internal spec path for full routing rules. It MUST route full workflow questions through the `workflow` skill or another user-facing workflow instruction surface.
 
 R4. Normalized authoring skills MUST define the artifact they produce or update and the required artifact sections or quality checklist that make the output reviewable.
 
@@ -176,6 +184,8 @@ R8e. The first implementation slice MUST add or align targeted evidence-reading 
 R8f. The first implementation slice MUST include generated-output drift checks when canonical skill changes produce generated output changes.
 
 R8g. The first implementation slice MUST NOT normalize every skill.
+
+R8h. The first implementation slice MUST keep repository-maintainer generated-output handling out of published skill text.
 
 R9. Later-phase normalization MUST proceed in the order approved by the proposal unless a later approved proposal changes the order.
 
@@ -228,7 +238,7 @@ R12. Skill handoff sections MUST stay local.
 
 R12a. A normalized skill's `Handoff` section MUST name the normal next stage, conditional next stages, and stop conditions that are local to the skill.
 
-R12b. A normalized skill MUST link or point to `specs/rigorloop-workflow.md` for full routing rules instead of restating the entire lifecycle.
+R12b. A normalized published skill MUST route full workflow questions through the `workflow` skill or another user-facing workflow instruction surface instead of pointing to this repository's internal workflow spec path.
 
 R12c. A skill MUST NOT imply automatic downstream continuation when the governing workflow treats the invocation as isolated.
 
@@ -258,12 +268,13 @@ R14d. Shared blocks MUST NOT replace or outrank the workflow spec or this skill-
 
 R14e. Shared-block generation into skills MUST NOT be added in the first implementation slice.
 
-R15. The first shared-block set MUST include only stable rules approved for v1:
+R15. The first published-skill shared-block set MUST include only stable rules approved for v1:
 - `review-isolation-and-recording`
 - `evidence-collection-efficiency`
-- `generated-output-handling`
 
 R15a. These shared blocks MAY be introduced incrementally as consuming skills are normalized.
+
+R15c. `generated-output-handling` is contributor-maintenance guidance, not published skill text. It MAY remain under `templates/shared/` for repository-maintainer reuse, but MUST NOT be copied into published skills.
 
 R15b. The following shared blocks MUST remain deferred until a later approved change stabilizes them:
 - `vision-fit`
@@ -341,7 +352,8 @@ Outputs:
 - `.codex/skills/` and `dist/adapters/` are generated outputs.
 - A normalized skill owns only its local claims.
 - A skill's readiness statement is not proof that downstream gates have passed.
-- Shared blocks are copied and checked in v1, not generated into skills.
+- Public shared blocks are copied and checked in v1, not generated into skills.
+- Published skill text does not expose repository-local source paths, generated mirror paths, adapter package paths, selector path constraints, drift-check mechanics, or shared-block implementation details.
 - The first implementation slice is limited to seven canonical skills.
 - The `ci` skill remains the entrypoint for the `ci-maintenance` stage label.
 
@@ -359,7 +371,7 @@ Outputs:
 
 - Existing unnormalized skills remain valid until their approved normalization phase.
 - The first implementation slice does not require all skills to adopt the required core sections at once.
-- Existing generated-output policy remains unchanged: edit canonical skill source, regenerate generated output, and validate drift.
+- Existing contributor generated-output policy remains unchanged: edit canonical skill source, regenerate generated output, and validate drift. That policy is contributor-maintenance guidance and is not copied into published skill text.
 - Existing `skills/ci/` path remains valid for `ci-maintenance`.
 - Existing formal review recording rules remain authoritative for review records; this spec only defines how shared review guidance is copied and checked in skills.
 - Rollback for wording-only skill changes may revert the affected canonical skills, shared blocks, validator checks, and generated output together.
@@ -409,6 +421,7 @@ This change has no user-interface surface. The relevant user experience is contr
 - Do not add broad semantic quality scoring for skill prose.
 - Do not generate shared blocks into skills in v1.
 - Do not hand-edit generated `.codex/skills/` or `dist/adapters/` output.
+- Do not expose repository-maintainer source, generation, adapter, selector-path, or shared-block implementation details in published skill text.
 - Do not replace proposal, spec, architecture, plan, review, verification, explain-change, or PR artifacts with skill prose.
 
 ## Acceptance criteria
@@ -423,6 +436,7 @@ This change has no user-interface surface. The relevant user experience is contr
 - A reviewer can confirm that skill outputs are summary-first and include the common result fields or an approved equivalent.
 - A reviewer can confirm that shared blocks adopted in v1 are copied from `templates/shared/` and checked for drift.
 - A reviewer can confirm that generated `.codex/skills/` and `dist/adapters/` output are regenerated rather than hand-edited.
+- A reviewer can confirm that published first-slice skills do not expose repository-maintainer generated-output handling, internal workflow spec paths, adapter package paths, selector path constraints, or shared-block implementation details.
 - A reviewer can confirm that validator checks are positive-first, narrow, and not broad semantic scoring.
 - A contributor can determine when a new skill is justified and when an existing skill or template should be updated instead.
 

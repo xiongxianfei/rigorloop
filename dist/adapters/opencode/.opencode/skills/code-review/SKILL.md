@@ -49,7 +49,7 @@ Produce a first-pass review record with status, inputs, diff summary, findings o
 
 - Normal next stage: follow the active plan and milestone state after the first-pass review.
 - Conditional next stages: `review-resolution` for material or required-change findings; `implement <next milestone>` after a clean non-final milestone; `verify` only after the final in-scope implementation milestone is cleanly reviewed; stop on `blocked` or `inconclusive`.
-- For full routing rules, follow `specs/rigorloop-workflow.md`.
+- For full stage order and downstream-blocking semantics, route through the `workflow` skill.
 
 ## Claims this skill must not make
 
@@ -58,7 +58,7 @@ Do not claim:
 - branch-ready, PR-ready, `pr-body-ready`, or `pr-open-ready`;
 - CI passed, verification passed, or tests passed unless cited as evidence from the owning validation surface;
 - implementation fixes were made unless this review also owns a recorded resolution flow;
-- generated output is synced unless repository-owned generation or drift checks prove it.
+- derived artifacts are current unless validation evidence proves it.
 
 ## Progress, readiness, closeout, and Done
 
@@ -107,7 +107,7 @@ Evaluate each check with `pass`, `concern`, or `block`, and cite concrete eviden
 5. **Architecture boundaries**: the diff respects approved design boundaries and ADR decisions.
 6. **Compatibility**: existing workflow expectations, contributor contracts, and migrations remain valid.
 7. **Security/privacy**: no secret leakage, unsafe logging, auth bypass, or policy regression.
-8. **Generated output drift**: canonical/generated outputs remain synchronized when generation is involved.
+8. **Derived artifact currency**: canonical/derived artifacts remain synchronized when generation is involved.
 9. **Unrelated changes**: the reviewed diff does not quietly include unrelated edits.
 10. **Validation evidence**: named commands and results are present, relevant, and credible.
 
@@ -294,7 +294,7 @@ No blocking or required-change findings.
 | Architecture boundaries | pass | <evidence> |
 | Compatibility | pass | <evidence> |
 | Security/privacy | pass | <evidence> |
-| Generated output drift | pass | <evidence> |
+| Derived artifact currency | pass | <evidence> |
 | Unrelated changes | pass | <evidence> |
 
 ## No-finding rationale
@@ -314,22 +314,12 @@ No blocking findings were found because:
 ## Evidence collection efficiency
 
 Use summary and stable-ID first reasoning before broad reads or raw excerpts.
-Prefer check IDs, requirement IDs, test IDs, file paths, counts, and line citations when inspecting large files, repeated scans, generated output, or validation output.
+Prefer check IDs, requirement IDs, test IDs, file paths, counts, and line citations when inspecting large files, repeated scans, derived artifacts, or validation output.
 Read exact ranges after locating relevant lines, then expand only when the narrower evidence is insufficient.
 
 ## When full-file read is required
 
 Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
-
-## Generated-output handling
-
-Edit canonical skill source under `skills/<skill>/SKILL.md`.
-Do not hand-edit `.codex/skills/` or `dist/adapters/`.
-Regenerate generated outputs from canonical source.
-Validate drift with repository-owned checks.
-Use concrete generated adapter file paths in selector-driven validation; do not pass `--path dist/adapters`.
-Generated outputs are proof surfaces, not independent sources of truth.
-Shared blocks are copied into skills and checked for drift; they are not generated into skills in v1.
 
 ## Expected output
 

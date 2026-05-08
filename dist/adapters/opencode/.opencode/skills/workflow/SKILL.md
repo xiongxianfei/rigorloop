@@ -27,11 +27,9 @@ Do not use this skill as a substitute for the stage skill that owns the current 
 Read:
 
 - the user request and invocation context;
-- `AGENTS.md` and `CONSTITUTION.md`;
-- `specs/rigorloop-workflow.md`;
-- `docs/workflows.md`;
+- available repository governance and workflow instructions when present;
 - the relevant proposal, spec, architecture, plan, test spec, review, verify, explain-change, PR, or learn artifacts when they exist;
-- `docs/project-map.md` only when it is present and current enough for the relied-on area;
+- the project map only when it is present and current enough for the relied-on area;
 - current git status, changed files, validation output, or CI evidence when routing depends on them.
 
 ## Outputs
@@ -42,7 +40,7 @@ Produce a routing decision, current stage assessment, blockers or assumptions, a
 
 - Normal next stage: the next valid skill or stop condition for the selected lane.
 - Conditional next stages: `explore`, `research`, `architecture`, `ci`, or `learn` only when their trigger is active; `code-review`, `verify`, `explain-change`, or `pr` only when the current lane and readiness allow them.
-- For full stage order, obligations, and downstream-blocking semantics, follow `specs/rigorloop-workflow.md`.
+- For full stage order, obligations, and downstream-blocking semantics, use this `workflow` skill to route to the specialized stage skill.
 
 ## Claims this skill must not make
 
@@ -52,7 +50,7 @@ Do not claim:
 - review passed, clean review, or no required fixes unless the relevant review stage owns that result;
 - validation passed, CI passed, branch-ready, PR-ready, `pr-body-ready`, or `pr-open-ready` unless the owning stage or evidence is cited;
 - the plan is Done when remaining completion gates exist;
-- generated output is synced unless repository-owned generation or drift checks prove it.
+- derived artifacts are current unless validation evidence proves it.
 
 ## Progress, readiness, closeout, and Done
 
@@ -74,14 +72,14 @@ Do not claim:
 
 ## Workflow Categories
 
-The workflow spec owns the full category and routing contract. Use these categories when routing work:
+The adopted workflow contract owns the full category and routing behavior. Use these categories when routing work:
 
 - Standing artifacts: `VISION.md` and `CONSTITUTION.md`.
   - `VISION.md` absence blocks the first substantive proposal unless the proposal bootstraps project vision.
   - `CONSTITUTION.md` absence blocks governance adoption, workflow-governance changes, and source-of-truth changes unless the proposal bootstraps the constitution.
 - Living references: `docs/project-map.md`.
   - Do not rely on the map when it is absent, known-stale, contradicted, or missing the relied-on area. Refresh it or record a no-map rationale before reliance.
-- Workflow infrastructure: `specs/rigorloop-workflow.md`, `docs/workflows.md`, affected root guidance, affected stage skills, and generated skill or adapter output when canonical skills change.
+- Workflow infrastructure: adopted workflow guidance, affected root guidance, affected stage skills, and derived package output only when the task explicitly changes the skill pack itself.
 - On-demand support: `explore` and `research`.
   - Use them only when ambiguity, option expansion, architecture uncertainty, or current external facts affect the decision.
 - Per-change chain:
@@ -235,7 +233,7 @@ Rules:
 - Approved fast-lane work may still omit `docs/changes/<change-id>/` when the governing workflow contract allows it.
 - Still write tests first when feasible.
 - Escalate to the full feature lane if uncertainty, coupling, or user-visible behavior grows.
-- Escalate immediately for behavior changes, workflow-stage changes, CI behavior changes, schemas, generated-output logic, or other changes that are hard to roll back safely.
+- Escalate immediately for behavior changes, workflow-stage changes, CI behavior changes, schemas, derived-artifact logic, or other changes that are hard to roll back safely.
 
 ### Bugfix lane
 
@@ -413,22 +411,12 @@ When stopped, provide the smallest concrete next artifact or decision needed to 
 ## Evidence collection efficiency
 
 Use summary and stable-ID first reasoning before broad reads or raw excerpts.
-Prefer check IDs, requirement IDs, test IDs, file paths, counts, and line citations when inspecting large files, repeated scans, generated output, or validation output.
+Prefer check IDs, requirement IDs, test IDs, file paths, counts, and line citations when inspecting large files, repeated scans, derived artifacts, or validation output.
 Read exact ranges after locating relevant lines, then expand only when the narrower evidence is insufficient.
 
 ## When full-file read is required
 
 Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
-
-## Generated-output handling
-
-Edit canonical skill source under `skills/<skill>/SKILL.md`.
-Do not hand-edit `.codex/skills/` or `dist/adapters/`.
-Regenerate generated outputs from canonical source.
-Validate drift with repository-owned checks.
-Use concrete generated adapter file paths in selector-driven validation; do not pass `--path dist/adapters`.
-Generated outputs are proof surfaces, not independent sources of truth.
-Shared blocks are copied into skills and checked for drift; they are not generated into skills in v1.
 
 ## Expected output
 

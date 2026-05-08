@@ -22,6 +22,7 @@ requirements:
   - Add concise skill-contract summary pointers to workflow, contributor, and agent-facing guidance.
   - Create canonical v1 shared-block sources for evidence collection efficiency and generated-output handling.
   - Normalize the first-slice canonical skills with required core sections, claim boundaries, compact result output, local handoff guidance, and copied shared blocks.
+  - Keep published first-slice skill text free of repository-maintainer source, generation, adapter, selector-path, drift-check, and shared-block implementation details.
   - Regenerate local Codex skill mirrors and public adapter skill copies from canonical first-slice skills.
 tests:
   - Artifact lifecycle validation for the approved skill contract spec.
@@ -33,6 +34,7 @@ tests:
   - Selector-selected validation for changed proposal and review artifacts.
   - Skill validator regression coverage for M2 skill-contract summary surfaces and shared-block source files.
   - Skill validator regression coverage for M3 first-slice core sections, result blocks, claim boundaries, readiness wording, and copied shared blocks.
+  - Skill validator regression coverage for public skill surface boundaries in first-slice skill text.
   - Generated-output drift checks and adapter validation for M4 generated skill and adapter copies.
 validation:
   - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-05-08-skill-contract-optimization.md
@@ -189,6 +191,20 @@ validation:
     result: pass_pr_handoff_change_metadata
   - command: git diff --check
     result: pass_pr_handoff_diff_check
+  - command: python scripts/test-skill-validator.py
+    result: pass_43_tests_public_skill_surface_boundary
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_public_surface_boundary
+  - command: python scripts/build-skills.py --check
+    result: pass_public_surface_generated_codex_skill_mirrors_in_sync
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_public_surface_adapter_output_in_sync
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_public_surface_generated_adapters_valid
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_56_tests_public_surface_adapter_distribution
+  - command: bash scripts/ci.sh --mode explicit with all 56 branch changed paths from merge-base b8f64359a4d7642ef62ffc467c5c9c071ffcf871
+    result: pass_public_surface_full_branch_selected_checks
 changed_files:
   - specs/skill-contract.md
   - specs/skill-contract.test.md
@@ -245,6 +261,7 @@ changed_files:
   - docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r1.md
   - docs/changes/2026-05-08-skill-contract-optimization/reviews/code-review-r2.md
   - docs/learn/sessions/2026-05-08-verify-explain-change-order.md
+  - docs/learn/sessions/2026-05-08-public-skill-surface-boundary.md
 review:
   status: closed
   unresolved_items: 0
