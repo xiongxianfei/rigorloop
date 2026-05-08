@@ -16,10 +16,14 @@
 - Related amendment proposal: [PR-Self-Contained Lifecycle Completion](../docs/proposals/2026-05-05-pr-self-contained-lifecycle-completion.md), accepted.
 - Completed amendment plan: [PR-Self-Contained Lifecycle Completion Plan](../docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md), done.
 - Related amendment proposal: [Review Skill Material Finding Recording](../docs/proposals/2026-05-07-review-skill-material-finding-recording.md), accepted.
-- Current amendment plan: [Review Skill Material Finding Recording Execution Plan](../docs/plans/2026-05-07-review-skill-material-finding-recording.md), active.
+- Completed amendment plan: [Review Skill Material Finding Recording Execution Plan](../docs/plans/2026-05-07-review-skill-material-finding-recording.md), done.
 - Related amendment spec: [Milestone-Aware Review Handoff](milestone-aware-review-handoff.md), approved.
 - Related amendment test spec: [Milestone-Aware Review Handoff test spec](milestone-aware-review-handoff.test.md), active.
-- Related amendment plan: [Milestone-Aware Review Handoff Execution Plan](../docs/plans/2026-05-07-milestone-aware-review-handoff.md), active.
+- Completed amendment plan: [Milestone-Aware Review Handoff Execution Plan](../docs/plans/2026-05-07-milestone-aware-review-handoff.md), done.
+- Current amendment proposal: [Single Workflow Lane, Explain-Change Before Verify, and Public Skill Surface Boundary](../docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md), accepted.
+- Current amendment architecture: [Canonical System Architecture](../docs/architecture/system/architecture.md), approved after architecture-review R1.
+- Current amendment plan: [Single Workflow Lane, Explain-Change Before Verify Execution Plan](../docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md), active after plan-review R2.
+- Current amendment change metadata: `docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml`.
 - Architecture: not required. The approved refactor and PR-self-contained lifecycle completion amendment change workflow governance, documentation, skills, validators, and generated output without runtime architecture or deployment boundaries.
 - Spec-review: approved with no material findings after the PR-self-contained lifecycle completion amendment was added; minor SR-1 asked the test spec to decide how merge-dependent language classification is recorded.
 - Plan-review: approved with no material findings for the PR-self-contained lifecycle completion plan. Minor non-blocking note: if README remains unchanged, final affected-surface evidence should mark it unaffected with rationale.
@@ -34,15 +38,16 @@
 - Keep deferred project-map lifecycle mechanics out of this test spec except for explicit non-goal checks.
 - Treat final learn artifact modeling as a cross-spec alignment point here; detailed session, topic, evidence, classification, and routing proof lives in `specs/learn-artifact-model.test.md`.
 - Treat formal review recording as a cross-spec alignment point here; detailed review-artifact fixture coverage lives in `specs/formal-review-recording.test.md`, while this test spec proves the workflow contract does not contradict stage-neutral recording, clean-review settlement, or conditional review-resolution behavior.
-- Treat PR-self-contained lifecycle completion as the current workflow amendment under test. A merge-dependent language warning is treated as addressed only when a contributor-visible tracked or review-visible surface classifies the wording as a true downstream completion event or stale lifecycle wording requiring correction; the first implementation slice does not need to suppress the warning automatically after classification.
-- Treat review skill material-finding recording as the current review-recording amendment under test. Detailed fixture coverage lives in `specs/formal-review-recording.test.md` and `specs/review-finding-resolution-contract.test.md`; this test spec proves the workflow-facing contract keeps isolation, broad material-finding recording, governance alignment, shared skill guidance, and scan-first resolution closeout consistent.
-- Treat milestone-aware review handoff as the current full-feature routing amendment for planned implementation milestones. Detailed state-vocabulary and handoff-summary coverage lives in `specs/milestone-aware-review-handoff.test.md`; this test spec proves the broader workflow contract does not route clean non-final milestone reviews to `verify`.
+- Treat PR-self-contained lifecycle completion as a completed workflow amendment with continuing regression coverage. A merge-dependent language warning is treated as addressed only when a contributor-visible tracked or review-visible surface classifies the wording as a true downstream completion event or stale lifecycle wording requiring correction; the first implementation slice does not need to suppress the warning automatically after classification.
+- Treat review skill material-finding recording as a completed review-recording amendment with continuing regression coverage. Detailed fixture coverage lives in `specs/formal-review-recording.test.md` and `specs/review-finding-resolution-contract.test.md`; this test spec proves the workflow-facing contract keeps isolation, broad material-finding recording, governance alignment, shared skill guidance, and scan-first resolution closeout consistent.
+- Treat milestone-aware review handoff as a completed standard-workflow routing amendment with continuing regression coverage. Detailed state-vocabulary and handoff-summary coverage lives in `specs/milestone-aware-review-handoff.test.md`; this test spec proves the broader workflow contract does not route clean non-final milestone reviews to final closeout.
+- Treat the single-workflow-lane amendment as the current workflow-governance amendment under test. This test spec owns broad standard-workflow, manual-skill isolation, final closeout, and active change-metadata coverage; `specs/workflow-stage-autoprogression.test.md` owns workflow-managed continuation coverage, `specs/milestone-aware-review-handoff.test.md` owns milestone closeout coverage, and `specs/skill-contract.test.md` owns public skill portability coverage.
 
 ## Requirement coverage map
 
 | Requirement IDs | Covered by | Level | Notes |
 | --- | --- | --- | --- |
-| `R1`-`R5`, `R25h` | `T1` | manual | Fast lane and two-lane contributor guidance |
+| `R1`-`R5`, `R25h` | `T1` | manual | One standard workflow and isolated manual skill invocation guidance |
 | `R6`-`R6dc`, `R20`-`R24a`, `R26`, `R27` | `T4`, `T20`, `T29` | manual, integration | Category model, affected-surface alignment, source-of-truth and generated-output boundaries |
 | `R6a`-`R6i` | `T20`, `T21` | manual, integration | Standing artifact gates, bootstrap exceptions, project-map no-reliance, architecture-package routing |
 | `R7`-`R7b` | `T20`, `T22` | manual, integration | Stable obligation values, trigger behavior, and `Runs for every change` semantics |
@@ -60,8 +65,8 @@
 | `R12aw`-`R12bdd` | `T33` | manual, integration | Isolation stops handoff, material findings require change-local review records, isolated output fields are complete, and review-output-only settlement is forbidden for material findings |
 | `R12be`, `R12bg` | `T34` | integration, manual | Formal review skills share one canonical `Isolation and Recording` block and governance guidance teaches the same broad rule |
 | `R12bf` | `T35` | integration, manual | New `review-resolution.md` records remain scan-first while preserving validator-readable fields |
-| Milestone-aware review handoff amendment `R1`-`R11b` | `T36` | integration, manual | Planned implementation milestone review routing, same-milestone resolution, state vocabulary, and verify-readiness boundaries |
-| `R13`, `R14`, `R14a`, `R14b` | `T15` | integration | Golden-path skill-validator example and rich-example proportionality |
+| Milestone-aware review handoff amendment `R1`-`R11b` | `T36` | integration, manual | Planned implementation milestone review routing, same-milestone resolution, state vocabulary, and final closeout readiness boundaries |
+| `R13`, `R14`, `R14a`, `R14b` | `T15` | integration | Golden-path skill-validator example and rich-example scope boundary |
 | `R15`, `R15a` | `T8`, `T9`, `T10` | integration | Canonical skill validation and intentionally simple rule set |
 | `R16` | `T9`, `T10` | integration | Required skill-validator fixture failures |
 | `R17`, `R23`, `R24` | `T11`, `T12` | integration | Generated-output determinism and drift failure |
@@ -73,8 +78,8 @@
 | Example | Covered by | Notes |
 | --- | --- | --- |
 | `E1` | `T13`, `T15` | Golden path example plus structural checks |
-| `E2` | `T1` | Fast-lane docs-only flow remains documented |
-| `E3` | `T1` | Fast-lane rejection for workflow or CI changes remains explicit |
+| `E2` | `T1` | Manual skill invocation stays isolated |
+| `E3` | `T1` | Manual skill output is not workflow completion |
 | `E4` | `T2` | Multiple milestone commits may share one PR |
 | `E5` | `T2` | Non-milestone work does not require milestone commit subjects |
 | `E6` | `T20`, `T22` | Category routing and stage obligations are visible |
@@ -91,15 +96,14 @@
 
 ## Edge case coverage
 
-- Generated-artifact refresh with no generator logic change can remain fast-lane only with spec and targeted validation: `T1`, `T25`
-- Documentation-only workflow policy changes are not fast-lane eligible: `T1`
-- CI automation changes require full lifecycle even without product behavior change: `T1`, `T26`
+- A user may invoke one individual skill manually, but that output remains isolated and incomplete as full workflow delivery: `T1`
+- Workflow-governance, generated-output, and CI automation changes use the standard workflow when complete delivery is claimed: `T1`, `T25`, `T26`
 - Generic workflow content and generated adapter output remain separate: `T4`, `T11`, `T12`
 - PRs without automated tests require a no-test rationale: `T3`, `T17`, `T28`
 - Routine review feedback can remain in PR or explain-change when it does not create material durable memory: `T16`, `T27`
 - Optional `change.yaml` artifact keys may be omitted, but required top-level fields may not: `T5`, `T6`, `T7`, `T28`
 - Planned milestones require milestone evidence and commit boundaries even when they share one PR: `T2`
-- Fast-lane and unplanned single-slice work may use normal commit subjects: `T2`
+- Manual skill invocations and unplanned single-slice work may use normal commit subjects: `T2`
 - Accepted or approved lifecycle artifacts can remain current guidance when readiness text is truthful: `T18`, `T25`
 - Final PR text cannot add new authoritative references without renewed verification: `T3`, `T25`, `T28`
 - Ordinary non-trivial changes may use `change.yaml` plus `explain-change.md` while review-resolution and verify-report remain conditional: `T16`, `T27`, `T28`
@@ -119,8 +123,8 @@
 - Isolated material-review output missing required record path, record-before-fixing or reconstruction status, or owner-decision status is incomplete: `T33`
 - Shared formal review skill guidance drifts from the canonical source or contains stage-specific text inside the shared block: `T34`
 - New scan-first review-resolution guidance removes parseable per-finding labels: `T35`
-- A clean review of a non-final planned implementation milestone must not route to `verify`: `T36`
-- A lifecycle-closeout milestone must not be treated as an open implementation milestone for verify readiness: `T36`
+- A clean review of a non-final planned implementation milestone must not route to final closeout: `T36`
+- A lifecycle-closeout milestone must not be treated as an open implementation milestone for final closeout readiness: `T36`
 - In-flight work can finish under its starting workflow contract unless it opts in or touches refactored workflow surfaces: `T20`, `T25`
 - Draft PRs may run early CI without being review-open, but lifecycle state must synchronize before reviewer action resumes: `T29`
 - Reopened PRs and reused branches must satisfy PR-self-contained lifecycle completion before review continues: `T29`
@@ -130,7 +134,7 @@
 
 ## Test cases
 
-### T1. Workflow documentation exposes the two-lane contract
+### T1. Workflow documentation exposes one standard workflow and isolated manual skill use
 
 - Covers: `R1`, `R2`, `R3`, `R4`, `R5`, `R25h`, `E2`, `E3`
 - Level: manual
@@ -140,11 +144,11 @@
   - `AGENTS.md`
   - `.github/pull_request_template.md`
 - Steps:
-  - Review contributor-facing docs and confirm they describe fast lane and full lifecycle.
-  - Confirm the fast-lane allowlist, disallow list, required spec fields, and allowed spec locations are visible.
-  - Confirm workflow, CI behavior, schema, generated-output logic, release packaging, and hard-to-rollback changes are excluded from fast lane.
+  - Review contributor-facing docs and confirm they describe one recommended standard workflow.
+  - Confirm manual individual skill invocation is described as isolated by default.
+  - Confirm manual skill output does not claim omitted upstream or downstream workflow stages are complete.
 - Expected result:
-  - A contributor can determine when fast lane is allowed, when it is rejected, and what evidence is required without reading chat history.
+  - A contributor can distinguish complete workflow delivery from focused manual skill output without reading chat history.
 - Failure proves:
   - The starter kit workflow contract remains implicit or internally inconsistent.
 - Automation location:
@@ -163,7 +167,7 @@
   - `skills/implement/SKILL.md`
 - Steps:
   - Confirm milestone closeout evidence, milestone commit format, and multi-milestone PR behavior are described consistently.
-  - Confirm fast-lane or unplanned single-slice work is explicitly exempt from milestone-formatted commits.
+  - Confirm manual skill invocations or unplanned single-slice work are explicitly exempt from milestone-formatted commits.
   - Confirm the active plan and plan index remain coherent during milestone progress updates.
 - Expected result:
   - Planned milestone work has one clear closeout rule and one clear commit-boundary rule across the repo.
@@ -550,9 +554,9 @@
   - `scripts/test-skill-validator.py` if focused assertions are added
 - Steps:
   - Confirm obligation values are exactly `mandatory`, `conditional`, `on-demand`, and `periodic`.
-  - Confirm the full-lifecycle table includes stage/action, role, obligation, trigger, `Runs for every change`, and downstream blocking.
+  - Confirm the stage-obligation table includes stage/action, role, obligation, trigger, `Runs for every change`, and downstream blocking.
   - Confirm `explore` and `research` are on-demand and not default prerequisites.
-  - Confirm the `Runs for every change` column applies only after the row trigger makes a stage applicable and does not override fast-lane eligibility.
+  - Confirm the `Runs for every change` column applies only after the row trigger makes a stage applicable and does not override stage triggers.
   - Confirm downstream blocking for conditional, on-demand, and periodic rows follows trigger/dependency/higher-priority-artifact rules.
 - Expected result:
   - Readers can tell which actions run for every change and which block only after the relevant trigger or dependency.
@@ -697,13 +701,13 @@
 - Covers: `R25`, `R25a`-`R25h`, `R10`-`R12f`
 - Level: integration, manual
 - Fixture/setup:
-  - `docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml` when created
-  - `docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/explain-change.md` when created
-  - `docs/changes/2026-05-03-workflow-refactor/change.yaml` as historical reference only when relied on
+  - `docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml`
+  - `docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/explain-change.md` when created
+  - historical workflow change metadata only when relied on as background evidence
   - optional review-resolution or verify-report artifacts if triggered
 - Steps:
-  - Create the baseline non-trivial change-local pack before final verification.
-  - Run `python scripts/validate-change-metadata.py docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml`.
+  - Create the baseline non-trivial change-local pack before final `verify`.
+  - Run `python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml`.
   - Confirm `change.yaml` links the proposal, spec, active test spec, active plan, touched artifacts, validation records, and review state.
   - Confirm Markdown artifacts carry narrative rationale and PR text remains the reviewer-facing summary.
 - Expected result:
@@ -878,7 +882,7 @@
   - Confirm new or revised review-resolution guidance starts with closeout status, covered reviews, resolved and unresolved counts, and final result.
   - Confirm it includes a resolution overview and can use common metadata and shared validation evidence to avoid repeated prose.
   - Confirm each material finding detail keeps parseable labels required by the review finding resolution contract.
-  - Confirm `verify`, `explain-change`, and `pr` guidance summarize review-resolution counts and link details instead of duplicating every finding.
+  - Confirm `explain-change`, `verify`, and `pr` guidance summarize review-resolution counts and link details instead of duplicating every finding.
 - Expected result:
   - Workflow handoff can rely on human-readable review closeout without weakening closeout validation.
 - Failure proves:
@@ -904,13 +908,13 @@
   - `skills/workflow/SKILL.md`
   - `scripts/test-skill-validator.py`
 - Steps:
-  - Confirm workflow-managed full-feature routing distinguishes milestone-based plans from non-milestone implementation slices.
-  - Confirm `implement` records `review-requested` handoff for the current implementation milestone rather than whole-plan verify readiness.
+  - Confirm workflow-managed standard routing distinguishes milestone-based plans from non-milestone implementation slices.
+  - Confirm `implement` records `review-requested` handoff for the current implementation milestone rather than whole-plan final closeout readiness.
   - Confirm clean `code-review` closes the reviewed milestone directly when no review-resolution is required.
-  - Confirm clean non-final milestone reviews route to the next in-scope implementation milestone, while clean final milestone reviews route to `verify`.
-  - Confirm findings, accepted fixes, re-review, inconclusive review, ambiguous plans, and lifecycle-closeout milestones preserve the approved same-milestone and verify-readiness boundaries.
+  - Confirm clean non-final milestone reviews route to the next in-scope implementation milestone, while clean final milestone reviews route to `ci-maintenance` when triggered; otherwise `explain-change`.
+  - Confirm findings, accepted fixes, re-review, inconclusive review, ambiguous plans, and lifecycle-closeout milestones preserve the approved same-milestone and final closeout readiness boundaries.
 - Expected result:
-  - The workflow contract prevents the old clean-review shortcut from routing `M1` directly to `verify` when later implementation milestones remain.
+  - The workflow contract prevents clean-review routing from reaching final closeout when later implementation milestones remain.
 - Failure proves:
   - Planned milestone work can still skip required implementation or review-resolution gates.
 - Automation location:
@@ -965,12 +969,9 @@
   - `tests/fixtures/review-artifacts/` when review-resolution fixtures are added
   - `docs/changes/0001-skill-validator/`
 - New active change-local artifacts when created:
-  - `docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/change.yaml`
-  - `docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/explain-change.md`
+  - `docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml`
+  - `docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/explain-change.md`
   - optional review-resolution or verify-report artifacts when triggered
-  - `docs/changes/2026-05-07-review-skill-material-finding-recording/change.yaml`
-  - `docs/changes/2026-05-07-review-skill-material-finding-recording/review-log.md`
-  - `docs/changes/2026-05-07-review-skill-material-finding-recording/review-resolution.md`
   - `templates/shared/review-isolation-and-recording.md`
   - `templates/review-resolution.md` or another approved durable scan-first guidance surface
 
@@ -1027,7 +1028,7 @@
 - [ ] `learn` is periodic or explicitly invoked, uses final `docs/learn/sessions/**` session records after Frame, and permits no-record closeout only before a session runs.
 - [ ] `ci-maintenance` means CI infrastructure maintenance and not validation execution.
 - [ ] `review-resolution` is closeout for material review findings and blocks downstream while open.
-- [ ] Formal review recording is stage-neutral, proportionally triggered, and does not require empty `review-resolution.md` for no-material detailed records.
+- [ ] Formal review recording is stage-neutral, triggered by durable review-recording rules, and does not require empty `review-resolution.md` for no-material detailed records.
 - [ ] Every material finding is recorded, all material findings require change-local review files, and isolation stops handoff rather than recording.
 - [ ] Formal review skills contain byte-identical `## Isolation and Recording` guidance copied from the canonical template.
 - [ ] New review-resolution guidance is scan-first and keeps parseable per-finding labels.
@@ -1067,28 +1068,16 @@
 
 ## Next artifacts
 
-- Implementation M1 under [Review Skill Material Finding Recording plan](../docs/plans/2026-05-07-review-skill-material-finding-recording.md).
-- `code-review` after implementation milestones complete.
-- `verify`.
-- `explain-change`.
-- `pr`.
+- `code-review M2` under [Single Workflow Lane, Explain-Change Before Verify Execution Plan](../docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md) after M2 implementation handoff.
+- Continue the approved milestone loop with M3 through M5 until all in-scope implementation milestones are closed.
 
 ## Follow-on artifacts
 
-- `implementation`: PR-self-contained lifecycle completion M1 through M4 complete.
-- `review-resolution`: material M2 code-review finding accepted, fixed, and closed.
-- `verify`: completed for PR handoff after PR-mode selected validation and broad smoke.
-- `explain-change`: completed in `docs/changes/2026-05-05-pr-self-contained-lifecycle-completion/explain-change.md`.
-- `pr`: PR #30 opened for human review.
-- `proposal`: [Review Skill Material Finding Recording](../docs/proposals/2026-05-07-review-skill-material-finding-recording.md)
-- `spec`: [Formal Review Recording](formal-review-recording.md) amendment for isolation-versus-recording behavior.
-- `spec`: [Review Finding Resolution Contract](review-finding-resolution-contract.md) amendment for scan-first `review-resolution.md` records.
-- `plan`: [Review Skill Material Finding Recording plan](../docs/plans/2026-05-07-review-skill-material-finding-recording.md)
-- `plan-review`: approved on 2026-05-07 with no material findings.
-- `test-spec`: updated with review skill material-finding recording amendment coverage.
+- Historical PR-self-contained lifecycle completion and review-recording follow-ons remain recorded in their own plans and change-local artifacts.
+- Current amendment follow-on artifacts: none yet.
 
 ## Readiness
 
-Active proof-planning and regression surface for the workflow contract and review skill material-finding recording amendment. Implementation may proceed under the active 2026-05-07 plan starting with M1.
+Active proof-planning and regression surface for the workflow contract and the 2026-05-08 single-workflow-lane amendment.
 
-Future milestone work must add or update assertions before paired artifact changes, and each milestone closes only after the paired changes make those assertions and validation commands pass.
+Test-spec proof map is confirmed against the approved active plan. M2 implementation can hand off to `code-review M2` only after the M2 guidance and contract surfaces make the relevant assertions and validation commands pass. Each milestone closes only after clean review and any required review-resolution.

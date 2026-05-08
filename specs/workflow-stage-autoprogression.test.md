@@ -10,7 +10,9 @@
 - Related proposal: `docs/proposals/2026-04-21-workflow-stage-autoprogression.md`
 - Related amendment spec: `specs/milestone-aware-review-handoff.md`
 - Related amendment test spec: `specs/milestone-aware-review-handoff.test.md`
-- Related amendment plan: `docs/plans/2026-05-07-milestone-aware-review-handoff.md`
+- Completed amendment plan: `docs/plans/2026-05-07-milestone-aware-review-handoff.md`
+- Current workflow-governance amendment proposal: `docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md`
+- Current workflow-governance amendment plan: `docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md`
 - Architecture: `docs/architecture/2026-04-21-workflow-stage-autoprogression.md`
 - ADR: `docs/adr/ADR-20260419-repository-source-layout.md`
 - Plan: `docs/plans/2026-04-21-workflow-stage-autoprogression.md`
@@ -34,18 +36,19 @@
 - Use real repository artifacts rather than synthetic mocks for workflow and skill coverage. The main risk is contract drift across authored surfaces, not algorithmic logic in a new runtime subsystem.
 - Use `specs/code-review-independence-under-autoprogression.test.md` as the focused proof surface for first-pass review record contents, first-pass status semantics, clean-review validity, optional positive notes, and sensitive-change coverage. This test spec retains ownership of the broader execution-chain and isolated-stage-default proof.
 - Treat PR-opening prerequisites, isolated-stage behavior, and stop conditions as contract/manual scenarios asserted through stage-skill wording and readiness guidance until a later approved change adds executable orchestration.
-- Treat compatibility and migration coverage as manual plus smoke: confirm stage order and lane definitions remain intact while the new continuation policy lands only in the approved v1 scope.
-- Treat the milestone-aware review handoff amendment as a qualification of the `code-review -> verify` shortcut: non-final planned implementation milestones route to the next in-scope implementation milestone, while final clean implementation milestones route to `verify`.
+- Treat compatibility and migration coverage as manual plus smoke: confirm stage order, one standard workflow, and isolated manual skill invocation remain intact while the continuation policy lands only in the approved v1 scope.
+- Treat the milestone-aware review handoff amendment as a qualification of final closeout routing: non-final planned implementation milestones route to the next in-scope implementation milestone, while final clean implementation milestones route to final closeout.
+- Treat the single-workflow-lane amendment as the current consumer of this proof surface: manual skill invocation remains isolated, while workflow-managed final closeout proceeds through `ci-maintenance` when triggered, `explain-change`, `verify`, and `pr`.
 
 ## Requirement coverage map
 
 | Requirement IDs | Covered by | Level | Notes |
 | --- | --- | --- | --- |
-| `R1`, `R1a`, `R1b`, `R1c`, `R2`, `R2a`, `R2b`, `R2ba`, `R10`, `R10a` | `T1`, `T5`, `T9` | manual | Core scope boundary, isolated-stage behavior, and preservation of existing lane/stage structure |
+| `R1`, `R1a`, `R1b`, `R1c`, `R2`, `R2a`, `R2b`, `R2ba`, `R10`, `R10a` | `T1`, `T5`, `T9` | manual | Core scope boundary, isolated-stage behavior, and preservation of standard workflow structure |
 | `R1d`, `R6`, `R6a`, `R6b`, `R6c` | `T4`, `T8` | manual, smoke | Direct-`pr` behavior, readiness blockers, and truthful hosted-CI wording |
 | `R2c`, `R2d`, `R2e`, `R2f`, `R2g`, `R7`, `R7a` | `T3` | manual | Authoring-to-review handoffs and explicit non-expansion into review-to-authoring transitions |
-| `R3`, `R3a`, `R3b`, `R3c`, `R3d`, `R3e`, `R3f`, `R7`, `R7a` | `T2`, `T8` | manual, smoke | Full-feature execution flow from `implement` through `pr`, including conditional `ci` |
-| Milestone-aware review handoff amendment `R1`-`R11b` | `T10` | manual, integration | Qualifies clean `code-review` routing for milestone-based full-feature plans |
+| `R3`, `R3a`, `R3b`, `R3c`, `R3d`, `R3e`, `R3f`, `R7`, `R7a` | `T2`, `T8` | manual, smoke | Standard workflow execution flow from `implement` through `pr`, including conditional `ci-maintenance` |
+| Milestone-aware review handoff amendment `R1`-`R11b` | `T10` | manual, integration | Qualifies clean `code-review` routing for milestone-based standard workflow plans |
 | `R5`, `R5a`, `R8`, `R8a`, `R8b` | `T4`, `T5` | manual | Stop conditions, pause handling, and non-expansion into stronger external actions |
 | `R8c`, `R8d`, `R9`, `R9a` | `T6` | manual | Advice-only `learn`, truthful readiness wording, and blocker/pause reporting |
 
@@ -53,7 +56,7 @@
 
 | Example | Covered by | Notes |
 | --- | --- | --- |
-| `E1` | `T2` | Full-feature `implement -> code-review` handoff |
+| `E1` | `T2` | Standard workflow `implement -> code-review` handoff |
 | `E2` | `T3` | `spec -> spec-review` in workflow-managed context |
 | `E3` | `T5` | Review-only request stops after the requested stage |
 | `E4` | `T2` | `code-review <-> review-resolution` loop |
@@ -62,25 +65,25 @@
 | `E7` | `T5` | Explicit pause overrides continuation |
 | `E8` | `T4` | Direct `pr` still opens when ready |
 | `E9` | `T5` | Direct `verify` stays isolated by default |
-| `E10` | `T9` | Fast-lane and bugfix execution stay outside v1 scope |
+| `E10` | `T9` | Manual skill and bugfix execution stay outside v1 autoprogression scope |
 | Milestone-aware amendment `E1`-`E6` | `T10` | Non-final/final clean review split, same-milestone findings, ambiguous plan state, plan revision, and lifecycle-closeout distinction |
 
 ## Edge case coverage
 
 - `EC1`: direct `verify` request stays isolated: `T5`
 - `EC2`: workflow-managed `spec -> spec-review`: `T3`
-- `EC3`: full-feature `implement -> code-review`: `T2`
+- `EC3`: standard workflow `implement -> code-review`: `T2`
 - `EC4`: fixable `code-review` findings loop through review-resolution: `T2`
 - `EC5`: design-choice review findings stop instead of auto-looping: `T5`
 - `EC6`: unrelated tracked changes block `pr`: `T4`
 - `EC7`: unrelated untracked drafts may remain local but stay out of PR scope: `T4`
 - `EC8`: hosted CI may be pending when the PR opens, without false success claims: `T4`
 - `EC9`: explicit `stop after code-review` pause is honored: `T5`
-- `EC10`: `verify -> ci/explain-change -> pr` in full-feature flow: `T2`
+- `EC10`: `ci-maintenance` when triggered, then `explain-change`, `verify`, and `pr` in standard workflow flow: `T2`
 - `EC11`: direct `pr` opens when ready and then stops: `T4`
 - `EC12`: directly invoked `verify` without workflow-managed context stops after verify: `T5`
 - `EC13`: lifecycle-closeout or upstream-stage blockers prevent PR opening: `T4`
-- `EC14`: fast-lane and bugfix execution do not gain v1 autoprogression: `T9`
+- `EC14`: manual skill and bugfix execution do not gain v1 autoprogression: `T9`
 - Milestone-aware amendment `EC1`-`EC14`: `T10`
 
 ## Test cases
@@ -97,9 +100,9 @@
   - `CONSTITUTION.md`
 - Steps:
   - Review the approved spec and the updated workflow/governance surfaces.
-  - Confirm v1 applies only to full-feature execution from `implement` through `pr` plus `proposal/spec/architecture -> matching review`.
-  - Confirm stage order, enforcement model, and lane definitions are preserved.
-  - Confirm fast-lane and bugfix execution are explicitly excluded from v1 autoprogression.
+  - Confirm v1 applies only to standard workflow execution from `implement` through `pr` plus `proposal/spec/architecture -> matching review`.
+  - Confirm stage order, enforcement model, one standard workflow, and isolated manual skill invocation are preserved.
+  - Confirm manual skill and bugfix execution are explicitly excluded from v1 autoprogression unless the user asks to continue through the standard workflow.
 - Expected result:
   - The normative and summary workflow surfaces agree on the same bounded v1 scope.
 - Failure proves:
@@ -107,7 +110,7 @@
 - Automation location:
   - Manual review during M1.
 
-### T2. Full-feature execution skills express the required downstream chain
+### T2. Standard workflow execution skills express the required downstream chain
 
 - Covers: `R3`, `R3a`, `R3b`, `R3c`, `R3d`, `R3e`, `R3f`, `R7`, `R7a`, `E1`, `E4`, `EC3`, `EC4`, `EC10`
 - Level: manual
@@ -121,13 +124,13 @@
   - `skills/pr/SKILL.md`
 - Steps:
   - Review the canonical execution-stage skills and shared workflow skill.
-  - Confirm the full-feature path is expressed as `implement -> code-review -> verify -> ci when triggered / explain-change otherwise -> pr`.
+  - Confirm the standard workflow path is expressed as `implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr`.
   - Confirm accepted review findings enter `review-resolution` and rerun `code-review`.
   - Confirm execution stages no longer imply redundant user confirmation between already-known downstream gates.
 - Expected result:
-  - Full-feature execution skills reflect the exact downstream chain defined by the approved spec.
+  - Standard workflow execution skills reflect the exact downstream chain defined by the approved spec.
 - Failure proves:
-  - The repository would still pause incorrectly or skip required handoffs in the full-feature lane.
+  - The repository would still pause incorrectly or skip required handoffs in the standard workflow.
 - Automation location:
   - Manual review during M2.
 
@@ -145,7 +148,7 @@
   - `skills/workflow/SKILL.md`
 - Steps:
   - Review authoring and paired review skills.
-  - Confirm successful `proposal`, `spec`, and `architecture` hand off into the matching review stage when that review is the next required or default downstream stage.
+  - Confirm successful `proposal`, `spec`, and `architecture` hand off into the matching review stage when that review is the next mandatory or triggered downstream stage.
   - Confirm review-to-next-authoring transitions such as `proposal-review -> spec` remain explicitly out of scope.
 - Expected result:
   - Upstream handoffs are automatic only where the approved spec allows them.
@@ -259,7 +262,7 @@
 - Automation location:
   - `bash scripts/ci.sh`
 
-### T9. Fast-lane and bugfix execution remain unchanged in v1
+### T9. Manual skill and bugfix execution remain isolated in v1
 
 - Covers: `R2b`, `R10`, `R10a`, `E10`, `EC14`
 - Level: manual
@@ -269,11 +272,11 @@
   - `skills/workflow/SKILL.md`
   - `skills/bugfix/SKILL.md`
 - Steps:
-  - Review fast-lane and bugfix guidance after implementation.
-  - Confirm neither lane inherits the full-feature autoprogression chain by implication.
+  - Review manual skill invocation and bugfix guidance after implementation.
+  - Confirm neither invocation model inherits the standard workflow autoprogression chain by implication.
   - Confirm bugfix keeps its existing explicit-step blast-radius flow.
 - Expected result:
-  - Out-of-scope lanes remain behaviorally unchanged in v1.
+  - Out-of-scope invocation models remain behaviorally unchanged in v1.
 - Failure proves:
   - The change silently broadened beyond the approved feature boundary.
 - Automation location:
@@ -292,12 +295,12 @@
   - `skills/workflow/SKILL.md`
   - `scripts/test-skill-validator.py`
 - Steps:
-  - Confirm the full-feature `code-review -> verify` shortcut is qualified for milestone-based plans.
+  - Confirm final closeout routing is qualified for milestone-based plans.
   - Confirm clean non-final implementation milestone reviews close the reviewed milestone and route to the next in-scope implementation milestone.
-  - Confirm clean final implementation milestone reviews close the reviewed milestone and route to `verify`.
-  - Confirm findings, inconclusive review, ambiguous remaining milestones, and user stop conditions do not route to `verify`.
+  - Confirm clean final implementation milestone reviews close the reviewed milestone and route to `ci-maintenance` when triggered; otherwise `explain-change`.
+  - Confirm findings, inconclusive review, ambiguous remaining milestones, and user stop conditions do not route to final closeout.
 - Expected result:
-  - The autoprogression contract no longer implies that a clean review of one non-final milestone makes the whole plan ready for `verify`.
+  - The autoprogression contract no longer implies that a clean review of one non-final milestone makes the whole plan ready for final closeout.
 - Failure proves:
   - The original milestone-aware handoff bug remains in the autoprogression proof surface.
 - Automation location:
@@ -324,8 +327,8 @@
 
 ## Migration or compatibility tests
 
-- Confirm the change preserves stage order and lane definitions while changing only default continuation behavior: `T1`, `T9`.
-- Confirm fast-lane and bugfix execution remain unchanged in v1: `T9`.
+- Confirm the change preserves stage order, one standard workflow, and isolated manual skill invocation while changing only default continuation behavior: `T1`, `T9`.
+- Confirm manual skill and bugfix execution remain unchanged in v1: `T9`.
 - Confirm direct `pr` reuses existing readiness rules instead of introducing a second readiness registry: `T4`.
 - Confirm generated output remains reproducible from canonical skills: `T7`.
 
@@ -352,11 +355,11 @@
 
 ## Manual QA checklist
 
-- Review the full-feature execution chain in canonical skills and confirm every downstream handoff is present and lane-aware.
+- Review the standard workflow execution chain in canonical skills and confirm every downstream handoff is present and trigger-aware.
 - Review direct `pr` wording and confirm it opens when ready instead of drafting-only.
 - Review isolated direct `verify`, `code-review`, and `explain-change` requests and confirm they stop after the requested stage unless continuation is explicitly requested.
 - Review pause and blocker wording and confirm product/design decision points stop the workflow.
-- Review fast-lane and bugfix guidance and confirm no new automatic continuation was introduced.
+- Review manual skill and bugfix guidance and confirm no new automatic continuation was introduced.
 - Run the generated-skill drift checks and `bash scripts/ci.sh`.
 
 ## What not to test
@@ -373,9 +376,9 @@
 
 ## Next artifacts
 
-- `implement`
-- `code-review`
-- `verify`
+- `code-review M2` under the active single-workflow-lane execution plan after M2 implementation handoff.
+- Continue the approved milestone loop with M3 through M5 until all in-scope implementation milestones are closed.
+- Final closeout after all in-scope implementation milestones are closed and required review-resolution is closed.
 
 ## Follow-on artifacts
 
@@ -384,5 +387,5 @@
 ## Readiness
 
 - This test spec is active.
-- The tracked-source prerequisite is satisfied for the accepted proposal, approved spec, approved architecture, active plan, and this test spec.
-- It remains the current proof-planning surface for this initiative until lifecycle closeout moves it to a terminal state.
+- The tracked-source prerequisite is satisfied for the accepted current proposal, approved workflow architecture, approved active plan, and this test spec.
+- It remains the autoprogression proof surface for the active single-workflow-lane amendment until lifecycle closeout moves the initiative to a terminal state.

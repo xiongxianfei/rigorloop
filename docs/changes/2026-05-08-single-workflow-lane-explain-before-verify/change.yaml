@@ -1,0 +1,559 @@
+change_id: 2026-05-08-single-workflow-lane-explain-before-verify
+title: Single workflow lane, explain-change before verify, and public skill surface boundary
+classification: workflow-governance-proposal
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md
+  spec: specs/rigorloop-workflow.md
+  architecture: docs/architecture/system/architecture.md
+  plan: docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md
+  review_resolution: docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md
+requirements:
+  - Define a reviewable proposal direction for one recommended standard workflow.
+  - Move durable explain-change before final verify in the recommended workflow direction.
+  - Define the public skill surface boundary for project-portable shipped skills.
+  - Resolve proposal-review findings SWF1 through SWF8 before downstream spec authoring relies on the proposal.
+  - Record proposal-review R2 approval before downstream spec authoring relies on the proposal.
+  - Draft workflow spec amendments for one standard workflow, isolated manual skill invocation, and `explain-change -> verify -> pr`.
+  - Draft autoprogression spec amendments for standard-workflow final closeout routing.
+  - Draft skill-contract spec amendments for exact published-skill portability allow and block policy.
+  - Resolve spec-review findings SR1 through SR3 by removing proportional-evidence wording, routing final milestone closeout before verify, and refreshing next-artifact sections.
+  - Align public workflow guidance, canonical skills, generated skills, and adapter packages to the approved standard-workflow/manual-invocation policy.
+  - Record spec-review R2 findings SR4 through SR7 before downstream fixes rely on the amended contract.
+  - Resolve spec-review findings SR4 through SR7 by removing stale route vocabulary, replacing direct-verify closeout wording with final-closeout readiness, aligning autoprogression vocabulary, and updating matching test specs.
+  - Record spec-review R3 finding SR8 before downstream fixes rely on the amended milestone-aware closeout contract.
+  - Resolve spec-review finding SR8 by replacing remaining direct-verify closeout wording with final closeout routing and static regression checks.
+  - Record spec-review R4 finding SR9 before downstream fixes rely on the amended public workflow-surface contract.
+  - Resolve spec-review finding SR9 by removing remaining retired route vocabulary, regenerating derived output, and adding case-insensitive hyphen/space-aware static checks.
+  - Record spec-review R5 approval before downstream artifacts rely on the amended workflow spec.
+  - Update the canonical architecture package directly with the lowest-sufficient architecture surface rule for no-impact rationale, direct canonical update, change-local delta, and ADR choices.
+  - Create an active execution plan that records current blockers, milestone sequence, validation strategy, and final closeout gates for the workflow-governance implementation.
+  - Record plan-review R1 findings before downstream plan fixes rely on the review outcome.
+  - Record architecture-review R1 approval before downstream plan fixes rely on the canonical architecture package update.
+  - Resolve plan-review finding PLR3 by marking lifecycle closeout as a lifecycle-closeout milestone type instead of an implementation milestone state.
+  - Resolve plan-review findings PLR1 and PLR2 by normalizing approved architecture status/readiness and separating test-spec authoring readiness from implementation proof-map readiness.
+  - Record plan-review R2 approval before downstream test-spec authoring relies on this execution plan.
+  - Confirm matching test-spec proof surfaces for the approved plan before implementation M1 begins.
+  - Normalize approved source artifact lifecycle status, next artifacts, follow-on artifacts, and readiness for M1.
+  - Record code-review R1 finding CR1 before M1 review-resolution relies on the finding.
+  - Record learn-session observation for code-review R1 timing-dependent evidence without routing a durable lesson.
+  - Resolve code-review R1 finding CR1 as already fixed by review bookkeeping.
+  - Record clean code-review R2 and close M1 before M2 implementation begins.
+  - Implement M2 workflow contract and contributor guidance alignment before code-review M2.
+  - Record clean code-review R3 and close M2 before M3 implementation begins.
+  - Correct the M1/M2 closeout commit gap before continuing M3.
+  - Implement M3 canonical skill and public skill portability alignment before code-review M3.
+tests:
+  - Artifact lifecycle validation for the proposal.
+  - Artifact lifecycle validation for the draft spec amendments.
+  - Change metadata validation for this change-local root.
+  - Review artifact closeout validation for proposal-review findings.
+  - Review artifact closeout validation for spec-review findings.
+  - Selector-selected validation for changed proposal, spec, and review artifacts.
+  - Skill and adapter generation drift validation after canonical skill and adapter-template updates.
+  - Static phrase scan for retired workflow-lane terms and internal-path leakage in public skill surfaces.
+  - Review artifact structure validation after spec-review R2 recording.
+  - Focused stale-term scans and selected CI after spec-review R2 resolution.
+  - Review artifact structure validation after spec-review R3 recording.
+  - Focused stale direct-verify closeout scan and selected validation after spec-review R3 resolution.
+  - Review artifact structure validation after spec-review R4 recording.
+  - Focused public retired-route wording scan and generated-output drift checks after spec-review R4 resolution.
+  - Review artifact closeout validation after spec-review R5 approval.
+  - Canonical architecture package and C4 diagram lifecycle, change metadata, selector-selected CI, whitespace, and diff checks.
+  - Plan index and plan-body lifecycle validation, change metadata validation, selector-selected CI, whitespace, and diff checks.
+  - Review artifact structure validation after plan-review R1 recording.
+  - Review artifact structure validation after architecture-review R1 recording.
+  - Plan and review artifact validation after PLR3 resolution.
+  - Review artifact closeout, lifecycle, and selected CI validation after PLR1 and PLR2 resolution.
+  - Review artifact closeout, lifecycle, change metadata, and selected CI validation after plan-review R2 approval.
+  - Test-spec proof-map updates for workflow, autoprogression, milestone-aware handoff, and skill-contract public-surface coverage.
+  - M1 lifecycle validation for approved workflow, autoprogression, and skill-contract source artifacts.
+  - Review artifact structure validation after code-review R1 recording.
+  - Learn-session artifact validation after code-review timing observation.
+  - Review artifact closeout validation after CR1 resolution.
+  - Review artifact closeout, lifecycle, change metadata, selected CI, diff, and whitespace validation after code-review R2 and M1 closeout.
+  - M2 static skill-validator, selector-regression, selected-validation, lifecycle, change metadata, diff, and whitespace validation before code-review M2.
+  - Review artifact closeout, lifecycle, change metadata, selected CI, diff, and whitespace validation after code-review R3 and M2 closeout.
+  - M1/M2 catch-up milestone commit correction before M3 continues.
+  - M3 skill validation, skill-validator regression, selector regression, retired-route scan, public skill internal-detail scan, selected CI, diff, and whitespace validation before code-review M3.
+  - Code-review R4 review-recording validation after CR2 and CR3 are recorded.
+validation:
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md
+    result: pass_after_proposal_revision
+  - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md
+    result: pass_selected_artifact_lifecycle_no_broad_smoke_after_proposal_revision
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-single-workflow-lane-explain-before-verify
+    result: pass_reviews_1_findings_8_log_entries_1_resolution_entries_8
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_valid_change_metadata
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_4_tests
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/proposal-review-r1.md
+    result: pass_explicit_paths
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/proposal-review-r1.md
+    result: pass_selected_review_artifacts_lifecycle_change_metadata_checks
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-single-workflow-lane-explain-before-verify
+    result: pass_reviews_2_findings_8_log_entries_2_resolution_entries_8_after_proposal_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_valid_change_metadata_after_proposal_review_r2
+  - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/proposal-review-r1.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/proposal-review-r2.md
+    result: pass_selected_review_artifacts_lifecycle_change_metadata_no_unclassified_paths_after_proposal_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/proposal-review-r1.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/proposal-review-r2.md
+    result: pass_explicit_paths_after_proposal_review_r2
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/proposal-review-r1.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/proposal-review-r2.md
+    result: pass_selected_review_artifacts_lifecycle_change_metadata_checks_after_proposal_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: fail_invalid_noncanonical_spec_artifact_keys_then_fixed
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_valid_change_metadata_after_spec_amendments
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/
+    result: pass_structure_reviews_2_findings_8_log_entries_2_resolution_entries_8_after_spec_amendments
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-single-workflow-lane-explain-before-verify
+    result: pass_closeout_reviews_2_findings_8_log_entries_2_resolution_entries_8_after_spec_amendments
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_4_tests_after_spec_amendments
+  - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md --path specs/rigorloop-workflow.md --path specs/workflow-stage-autoprogression.md --path specs/skill-contract.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/proposal-review-r1.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/proposal-review-r2.md
+    result: pass_selected_lifecycle_review_artifacts_change_metadata_no_unclassified_paths_after_spec_amendments
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/proposal-review-r1.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/proposal-review-r2.md --path docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md --path specs/rigorloop-workflow.md --path specs/skill-contract.md --path specs/workflow-stage-autoprogression.md
+    result: pass_with_nonblocking_existing_merge_dependent_language_warning_after_spec_amendments
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md --path specs/rigorloop-workflow.md --path specs/workflow-stage-autoprogression.md --path specs/skill-contract.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/proposal-review-r1.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/proposal-review-r2.md
+    result: pass_selected_lifecycle_review_artifacts_change_metadata_checks_after_spec_amendments
+  - command: git diff --check -- docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md specs/rigorloop-workflow.md specs/workflow-stage-autoprogression.md specs/skill-contract.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_after_spec_amendments
+  - command: if rg -n '[[:blank:]]$|\\t' docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md specs/rigorloop-workflow.md specs/workflow-stage-autoprogression.md specs/skill-contract.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml; then exit 1; else exit 0; fi
+    result: pass_no_matches_after_spec_amendments
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-single-workflow-lane-explain-before-verify
+    result: fail_expected_open_spec_review_findings_closeout_not_ready
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-08-single-workflow-lane-explain-before-verify
+    result: pass_structure_reviews_3_findings_11_log_entries_3_resolution_entries_11_after_spec_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_valid_change_metadata_after_spec_review_r1
+  - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md --path specs/rigorloop-workflow.md --path specs/workflow-stage-autoprogression.md --path specs/skill-contract.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/proposal-review-r1.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/proposal-review-r2.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/spec-review-r1.md
+    result: pass_selected_lifecycle_review_artifacts_change_metadata_no_unclassified_paths_after_spec_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/proposal-review-r1.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/proposal-review-r2.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/spec-review-r1.md --path docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md --path specs/rigorloop-workflow.md --path specs/skill-contract.md --path specs/workflow-stage-autoprogression.md
+    result: pass_with_nonblocking_existing_merge_dependent_language_warning_after_spec_review_r1
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md --path specs/rigorloop-workflow.md --path specs/workflow-stage-autoprogression.md --path specs/skill-contract.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/proposal-review-r1.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/proposal-review-r2.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/spec-review-r1.md
+    result: pass_selected_lifecycle_review_artifacts_change_metadata_checks_after_spec_review_r1
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_4_tests_after_spec_review_r1
+  - command: git diff --check -- docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md specs/rigorloop-workflow.md specs/workflow-stage-autoprogression.md specs/skill-contract.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/spec-review-r1.md
+    result: pass_after_spec_review_r1
+  - command: if rg -n '[[:blank:]]$|\\t' docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md specs/rigorloop-workflow.md specs/workflow-stage-autoprogression.md specs/skill-contract.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/spec-review-r1.md; then exit 1; else exit 0; fi
+    result: pass_no_matches_after_spec_review_r1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-single-workflow-lane-explain-before-verify
+    result: pass_closeout_reviews_3_findings_11_log_entries_3_resolution_entries_11_after_spec_review_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_valid_change_metadata_after_spec_review_resolution
+  - command: python scripts/select-validation.py --mode explicit --path README.md --path AGENTS.md --path CONSTITUTION.md --path docs/workflows.md --path docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md --path specs/rigorloop-workflow.md --path specs/workflow-stage-autoprogression.md --path specs/skill-contract.md --path specs/milestone-aware-review-handoff.md --path specs/milestone-aware-review-handoff.test.md --path skills/workflow/SKILL.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/plan/SKILL.md --path skills/verify/SKILL.md --path .codex/skills/workflow/SKILL.md --path scripts/adapter_templates/codex/AGENTS.md --path scripts/test-skill-validator.py --path scripts/test-select-validation.py --path scripts/test-adapter-distribution.py --path dist/adapters/codex/AGENTS.md --path dist/adapters/codex/.agents/skills/workflow/SKILL.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/spec-review-r1.md
+    result: pass_selected_skills_adapters_lifecycle_review_artifacts_readme_selector_change_metadata_no_unclassified_paths
+  - command: bash scripts/ci.sh --mode explicit --path README.md --path AGENTS.md --path CONSTITUTION.md --path docs/workflows.md --path docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md --path specs/rigorloop-workflow.md --path specs/workflow-stage-autoprogression.md --path specs/skill-contract.md --path specs/milestone-aware-review-handoff.md --path specs/milestone-aware-review-handoff.test.md --path skills/workflow/SKILL.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/plan/SKILL.md --path skills/verify/SKILL.md --path .codex/skills/workflow/SKILL.md --path scripts/adapter_templates/codex/AGENTS.md --path scripts/test-skill-validator.py --path scripts/test-select-validation.py --path scripts/test-adapter-distribution.py --path dist/adapters/codex/AGENTS.md --path dist/adapters/codex/.agents/skills/workflow/SKILL.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/spec-review-r1.md
+    result: pass_selected_skills_adapters_lifecycle_review_artifacts_readme_selector_change_metadata_checks
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files
+  - command: python scripts/test-skill-validator.py
+    result: pass_43_tests
+  - command: python scripts/build-skills.py --check
+    result: pass_generated_skills_in_sync
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_56_tests
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_generated_adapter_output_in_sync
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_validated_generated_adapters
+  - command: python scripts/validate-readme.py README.md
+    result: pass_readme_validation
+  - command: python scripts/validate-readme.py README.md --vision-markers
+    result: pass_vision_marker_validation
+  - command: python scripts/test-select-validation.py
+    result: pass_57_tests
+  - command: rg -n "fast lane|fast-lane|full lane|full-feature lane|full-feature|tiny low-risk|low-risk|high-risk|proportional evidence|small-change|mini-spec|verify -> explain-change|code-review -> verify|selected lane|current lane|execution lane|chosen lane|Work lanes|verify readiness|Ready for verify|ready for verify" README.md skills .codex/skills dist/adapters docs/workflows.md CONSTITUTION.md AGENTS.md
+    result: pass_no_public_surface_matches
+  - command: rg -n "specs/rigorloop-workflow\\.md|specs/skill-contract\\.md|\\.codex/skills/|dist/adapters/|scripts/|templates/shared/|0001-skill-validator|drift-check|selector path|shared-block|generated mirror|canonical source paths|adapter paths" skills .codex/skills dist/adapters
+    result: pass_public_skill_text_no_matches_manifest_metadata_has_adapter_manifest_paths_only
+  - command: git diff --check -- README.md AGENTS.md CONSTITUTION.md docs/workflows.md docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md specs/rigorloop-workflow.md specs/workflow-stage-autoprogression.md specs/skill-contract.md specs/milestone-aware-review-handoff.md specs/milestone-aware-review-handoff.test.md skills scripts .codex/skills dist/adapters docs/changes/2026-05-08-single-workflow-lane-explain-before-verify
+    result: pass_after_spec_review_resolution
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-08-single-workflow-lane-explain-before-verify
+    result: pass_structure_reviews_4_findings_15_log_entries_4_resolution_entries_15_after_spec_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_valid_change_metadata_after_spec_review_r2
+  - command: git diff --check -- docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/spec-review-r2.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_after_spec_review_r2
+  - command: python scripts/test-skill-validator.py
+    result: pass_43_tests_after_spec_review_r2_resolution
+  - command: python scripts/build-skills.py --check
+    result: pass_generated_skills_in_sync_after_spec_review_r2_resolution
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_generated_adapter_output_in_sync_after_spec_review_r2_resolution
+  - command: bash scripts/ci.sh --mode explicit --path CONSTITUTION.md --path docs/workflows.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path specs/workflow-stage-autoprogression.md --path specs/workflow-stage-autoprogression.test.md --path specs/milestone-aware-review-handoff.md --path specs/milestone-aware-review-handoff.test.md --path skills/workflow/SKILL.md --path skills/spec/SKILL.md --path skills/architecture/SKILL.md --path skills/pr/SKILL.md --path .codex/skills/workflow/SKILL.md --path .codex/skills/spec/SKILL.md --path .codex/skills/architecture/SKILL.md --path .codex/skills/pr/SKILL.md --path dist/adapters --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/spec-review-r2.md
+    result: fail_unclassified_directory_path_then_reran_with_specific_adapter_files
+  - command: bash scripts/ci.sh --mode explicit --path CONSTITUTION.md --path docs/workflows.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path specs/workflow-stage-autoprogression.md --path specs/workflow-stage-autoprogression.test.md --path specs/milestone-aware-review-handoff.md --path specs/milestone-aware-review-handoff.test.md --path skills/workflow/SKILL.md --path skills/spec/SKILL.md --path skills/architecture/SKILL.md --path skills/pr/SKILL.md --path .codex/skills/workflow/SKILL.md --path .codex/skills/spec/SKILL.md --path .codex/skills/architecture/SKILL.md --path .codex/skills/pr/SKILL.md --path dist/adapters/codex/AGENTS.md --path dist/adapters/codex/.agents/skills/workflow/SKILL.md --path dist/adapters/codex/.agents/skills/spec/SKILL.md --path dist/adapters/codex/.agents/skills/architecture/SKILL.md --path dist/adapters/codex/.agents/skills/pr/SKILL.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/spec-review-r2.md
+    result: pass_selected_skills_adapters_review_artifacts_lifecycle_change_metadata_selector_checks_after_spec_review_r2_resolution
+  - command: rg -n "fast lane|fast-lane|full lane|full-feature lane|full-feature|tiny low-risk|low-risk|high-risk|proportional evidence|small-change|mini-spec|verify -> explain-change|code-review -> verify|selected lane|current lane|execution lane|chosen lane|Work lanes|verify readiness|Ready for verify|ready for verify|required or default downstream stage|required or default downstream step" README.md skills .codex/skills dist/adapters docs/workflows.md CONSTITUTION.md AGENTS.md
+    result: pass_no_public_surface_matches_after_spec_review_r2_resolution
+  - command: rg -n -P "(?<!non-)trivial work|High-risk|verify-readiness|verify readiness|required or default downstream stage|required or default downstream step|full-feature|verify -> ci|fast-lane only|fast-lane eligible|Fast-lane and|fast lane and full|lifecycle-closeout milestone for `verify`|enter `verify`|directly to `verify`" specs/rigorloop-workflow.md specs/workflow-stage-autoprogression.md specs/milestone-aware-review-handoff.md specs/rigorloop-workflow.test.md specs/workflow-stage-autoprogression.test.md specs/milestone-aware-review-handoff.test.md docs/workflows.md CONSTITUTION.md skills/spec/SKILL.md skills/architecture/SKILL.md
+    result: pass_no_targeted_stale_terms_after_spec_review_r2_resolution
+  - command: git diff --check -- CONSTITUTION.md docs/workflows.md specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md specs/workflow-stage-autoprogression.md specs/workflow-stage-autoprogression.test.md specs/milestone-aware-review-handoff.md specs/milestone-aware-review-handoff.test.md skills .codex/skills dist/adapters docs/changes/2026-05-08-single-workflow-lane-explain-before-verify
+    result: pass_after_spec_review_r2_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-single-workflow-lane-explain-before-verify
+    result: pass_closeout_reviews_4_findings_15_log_entries_4_resolution_entries_15_after_spec_review_r2_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_valid_change_metadata_after_spec_review_r2_resolution
+  - command: git diff --check -- CONSTITUTION.md docs/workflows.md specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md specs/workflow-stage-autoprogression.md specs/workflow-stage-autoprogression.test.md specs/milestone-aware-review-handoff.md specs/milestone-aware-review-handoff.test.md skills .codex/skills dist/adapters docs/changes/2026-05-08-single-workflow-lane-explain-before-verify
+    result: pass_final_after_spec_review_r2_resolution
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-08-single-workflow-lane-explain-before-verify
+    result: pass_structure_reviews_5_findings_16_log_entries_5_resolution_entries_16_after_spec_review_r3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_valid_change_metadata_after_spec_review_r3
+  - command: git diff --check -- docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/spec-review-r3.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_after_spec_review_r3
+  - command: rg -n 'routing a clean review to `verify`|route to `verify`|routes to `verify`|hand off to `verify`|hands off to `verify`|make `verify` available|`verify` may proceed|verify may proceed|ready for `verify`|ready for verify|plan ready for `verify`|whole plan ready for `verify`' specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md specs/workflow-stage-autoprogression.md specs/workflow-stage-autoprogression.test.md specs/milestone-aware-review-handoff.md specs/milestone-aware-review-handoff.test.md skills/code-review/SKILL.md skills/plan/SKILL.md docs/workflows.md CONSTITUTION.md AGENTS.md
+    result: pass_no_stale_direct_verify_closeout_matches_after_spec_review_r3_resolution
+  - command: python scripts/test-skill-validator.py
+    result: pass_43_tests_after_spec_review_r3_resolution
+  - command: python scripts/build-skills.py --check
+    result: pass_generated_skills_in_sync_after_spec_review_r3_resolution
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_generated_adapter_output_in_sync_after_spec_review_r3_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-single-workflow-lane-explain-before-verify
+    result: pass_closeout_reviews_5_findings_16_log_entries_5_resolution_entries_16_after_spec_review_r3_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_valid_change_metadata_after_spec_review_r3_resolution
+  - command: rg -n 'routing a clean review to `verify`|route to `verify`|routes to `verify`|hand off to `verify`|hands off to `verify`|make `verify` available|`verify` may proceed|verify may proceed|ready for `verify`|ready for verify|plan ready for `verify`|whole plan ready for `verify`' specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md specs/workflow-stage-autoprogression.md specs/workflow-stage-autoprogression.test.md specs/milestone-aware-review-handoff.md specs/milestone-aware-review-handoff.test.md skills/code-review/SKILL.md skills/plan/SKILL.md docs/workflows.md CONSTITUTION.md AGENTS.md
+    result: pass_no_stale_direct_verify_closeout_matches_after_spec_review_r3_resolution_rerun
+  - command: bash scripts/ci.sh --mode explicit --path specs/milestone-aware-review-handoff.md --path specs/milestone-aware-review-handoff.test.md --path specs/workflow-stage-autoprogression.md --path specs/workflow-stage-autoprogression.test.md --path specs/rigorloop-workflow.test.md --path skills/code-review/SKILL.md --path skills/plan/SKILL.md --path scripts/test-skill-validator.py --path .codex/skills/code-review/SKILL.md --path .codex/skills/plan/SKILL.md --path dist/adapters/codex/.agents/skills/code-review/SKILL.md --path dist/adapters/codex/.agents/skills/plan/SKILL.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/spec-review-r3.md
+    result: pass_selected_skills_adapters_review_artifacts_lifecycle_change_metadata_checks_after_spec_review_r3_resolution
+  - command: git diff --check -- specs/milestone-aware-review-handoff.md specs/milestone-aware-review-handoff.test.md specs/workflow-stage-autoprogression.md specs/workflow-stage-autoprogression.test.md specs/rigorloop-workflow.test.md skills/code-review/SKILL.md skills/plan/SKILL.md scripts/test-skill-validator.py .codex/skills dist/adapters docs/changes/2026-05-08-single-workflow-lane-explain-before-verify
+    result: pass_after_spec_review_r3_resolution
+  - command: rg -n -i 'proportional[- ]evidence|fast[- ]lane exceptions|fast[- ]lane|full[- ]lane|tiny low-risk|small-change|mini-spec' specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md specs/workflow-stage-autoprogression.md specs/workflow-stage-autoprogression.test.md specs/milestone-aware-review-handoff.md specs/milestone-aware-review-handoff.test.md docs/workflows.md README.md CONSTITUTION.md AGENTS.md skills .codex/skills dist/adapters
+    result: fail_found_sr9_stale_terms_before_spec_review_r4_recording
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-08-single-workflow-lane-explain-before-verify
+    result: pass_structure_reviews_6_findings_17_log_entries_6_resolution_entries_17_after_spec_review_r4
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_valid_change_metadata_after_spec_review_r4
+  - command: git diff --check -- docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/spec-review-r4.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_after_spec_review_r4
+  - command: if rg -n '[[:blank:]]$|\\t' docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/spec-review-r4.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml; then exit 1; else exit 0; fi
+    result: pass_no_whitespace_matches_after_spec_review_r4
+  - command: python -m unittest scripts.test-skill-validator.SkillValidatorFixtureTests.test_public_workflow_and_skill_surfaces_block_retired_route_vocabulary
+    result: fail_detected_stale_generated_constitution_skill_before_regeneration_then_pass_after_regeneration
+  - command: python scripts/build-skills.py
+    result: pass_regenerated_codex_skill_mirror_after_constitution_skill_update
+  - command: python scripts/build-adapters.py --version 0.1.1
+    result: pass_regenerated_public_adapter_output_after_constitution_skill_update
+  - command: rg -n -i 'fast[- ]lane|full[- ]lane|full[- ]feature|low[- ]risk|high[- ]risk|tiny[[:space:]]+low[- ]risk|small[- ]change|mini[- ]spec|proportional[- ]evidence' README.md AGENTS.md CONSTITUTION.md docs/workflows.md skills .codex/skills dist/adapters
+    result: pass_no_public_surface_matches_after_spec_review_r4_resolution
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_spec_review_r4_resolution
+  - command: python scripts/test-skill-validator.py
+    result: pass_45_tests_after_spec_review_r4_resolution_with_workflow_spec_forbidden_context_check
+  - command: python scripts/build-skills.py --check
+    result: pass_generated_skills_in_sync_after_spec_review_r4_resolution
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_generated_adapter_output_in_sync_after_spec_review_r4_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-single-workflow-lane-explain-before-verify
+    result: pass_closeout_reviews_6_findings_17_log_entries_6_resolution_entries_17_after_spec_review_r4_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_valid_change_metadata_after_spec_review_r4_resolution
+  - command: git diff --check -- specs/rigorloop-workflow.md skills/constitution/SKILL.md scripts/test-skill-validator.py .codex/skills/constitution/SKILL.md dist/adapters/codex/.agents/skills/constitution/SKILL.md dist/adapters/claude/.claude/skills/constitution/SKILL.md dist/adapters/opencode/.opencode/skills/constitution/SKILL.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify
+    result: pass_after_spec_review_r4_resolution
+  - command: if rg -n '[[:blank:]]$|\\t' specs/rigorloop-workflow.md skills/constitution/SKILL.md scripts/test-skill-validator.py .codex/skills/constitution/SKILL.md dist/adapters/codex/.agents/skills/constitution/SKILL.md dist/adapters/claude/.claude/skills/constitution/SKILL.md dist/adapters/opencode/.opencode/skills/constitution/SKILL.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify; then exit 1; else exit 0; fi
+    result: pass_no_whitespace_matches_after_spec_review_r4_resolution
+  - command: bash scripts/ci.sh --mode explicit --path specs/rigorloop-workflow.md --path skills/constitution/SKILL.md --path scripts/test-skill-validator.py --path .codex/skills/constitution/SKILL.md --path dist/adapters/codex/.agents/skills/constitution/SKILL.md --path dist/adapters/claude/.claude/skills/constitution/SKILL.md --path dist/adapters/opencode/.opencode/skills/constitution/SKILL.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/spec-review-r4.md
+    result: pass_selected_skills_adapters_review_artifacts_lifecycle_change_metadata_checks_after_spec_review_r4_resolution_and_workflow_spec_static_check
+  - command: python scripts/test-skill-validator.py
+    result: pass_45_tests_before_spec_review_r5
+  - command: python scripts/build-skills.py --check
+    result: pass_generated_skills_in_sync_before_spec_review_r5
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_generated_adapter_output_in_sync_before_spec_review_r5
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-single-workflow-lane-explain-before-verify
+    result: pass_closeout_reviews_6_findings_17_log_entries_6_resolution_entries_17_before_spec_review_r5
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_valid_change_metadata_before_spec_review_r5
+  - command: rg -n -i 'fast[- ]lane|full[- ]lane|full[- ]feature|low[- ]risk|high[- ]risk|tiny[[:space:]]+low[- ]risk|small[- ]change|mini[- ]spec|proportional[- ]evidence' README.md AGENTS.md CONSTITUTION.md docs/workflows.md skills .codex/skills dist/adapters
+    result: pass_no_public_surface_matches_before_spec_review_r5
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-single-workflow-lane-explain-before-verify
+    result: pass_closeout_reviews_7_findings_17_log_entries_7_resolution_entries_17_after_spec_review_r5
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_valid_change_metadata_after_spec_review_r5
+  - command: git diff --check -- docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/spec-review-r5.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_after_spec_review_r5
+  - command: if rg -n '[[:blank:]]$|\\t' docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/spec-review-r5.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml; then exit 1; else exit 0; fi
+    result: pass_no_whitespace_matches_after_spec_review_r5
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/spec-review-r5.md
+    result: pass_selected_review_artifacts_lifecycle_change_metadata_checks_after_spec_review_r5
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_valid_change_metadata_after_direct_architecture_update
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/architecture/system/architecture.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_validated_3_artifact_files_with_existing_workflow_spec_lifecycle_language_warning_after_direct_architecture_update
+  - command: bash scripts/ci.sh --mode explicit --path docs/architecture/system/architecture.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_selected_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_direct_architecture_update
+  - command: git diff --check -- docs/architecture/system/architecture.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/architecture.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/diagrams/context.mmd docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/diagrams/container.mmd
+    result: pass_after_direct_architecture_update
+  - command: if rg -n '[[:blank:]]$|\\t' docs/architecture/system/architecture.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml; then exit 1; else exit 0; fi
+    result: pass_no_whitespace_matches_after_direct_architecture_update
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_valid_change_metadata_after_c4_diagram_update
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/context.mmd --path docs/architecture/system/diagrams/container.mmd --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_validated_3_artifact_files_with_existing_workflow_spec_lifecycle_language_warning_after_c4_diagram_update
+  - command: python scripts/select-validation.py --mode explicit --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/context.mmd --path docs/architecture/system/diagrams/container.mmd --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_selected_lifecycle_architecture_diagram_change_metadata_no_unclassified_paths_after_c4_diagram_update
+  - command: bash scripts/ci.sh --mode explicit --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/context.mmd --path docs/architecture/system/diagrams/container.mmd --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_selected_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_c4_diagram_update
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_4_tests_after_c4_diagram_update
+  - command: git diff --check -- docs/architecture/system/architecture.md docs/architecture/system/diagrams/context.mmd docs/architecture/system/diagrams/container.mmd docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_after_c4_diagram_update
+  - command: if rg -n '[[:blank:]]$|\\t' docs/architecture/system/architecture.md docs/architecture/system/diagrams/context.mmd docs/architecture/system/diagrams/container.mmd docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml; then exit 1; else exit 0; fi
+    result: pass_no_whitespace_matches_after_c4_diagram_update
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_valid_change_metadata_after_plan_creation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/architecture/system/architecture.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_validated_3_artifact_files_with_existing_plan_and_workflow_spec_lifecycle_language_warnings_after_plan_creation
+  - command: python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/context.mmd --path docs/architecture/system/diagrams/container.mmd --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_selected_plan_index_lifecycle_architecture_diagram_change_metadata_no_unclassified_paths_after_plan_creation
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/context.mmd --path docs/architecture/system/diagrams/container.mmd --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_selected_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_plan_creation
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_4_tests_after_plan_creation
+  - command: git diff --check -- docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/architecture/system/architecture.md docs/architecture/system/diagrams/context.mmd docs/architecture/system/diagrams/container.mmd docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_after_plan_creation
+  - command: if rg -n '[[:blank:]]$|\\t' docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/architecture/system/architecture.md docs/architecture/system/diagrams/context.mmd docs/architecture/system/diagrams/container.mmd docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml; then exit 1; else exit 0; fi
+    result: pass_no_whitespace_matches_after_plan_creation
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-08-single-workflow-lane-explain-before-verify
+    result: pass_structure_reviews_8_findings_20_log_entries_8_resolution_entries_20_after_plan_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_valid_change_metadata_after_plan_review_r1
+  - command: git diff --check -- docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/plan-review-r1.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_after_plan_review_r1
+  - command: if rg -n '[[:blank:]]$|\\t' docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/plan-review-r1.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml; then exit 1; else exit 0; fi
+    result: pass_no_whitespace_matches_after_plan_review_r1
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/plan-review-r1.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_selected_review_artifacts_lifecycle_change_metadata_no_unclassified_paths_after_plan_review_r1
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/plan-review-r1.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_selected_review_artifacts_lifecycle_change_metadata_checks_after_plan_review_r1
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-08-single-workflow-lane-explain-before-verify
+    result: pass_structure_reviews_9_findings_20_log_entries_9_resolution_entries_20_after_architecture_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_valid_change_metadata_after_architecture_review_r1
+  - command: git diff --check -- docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/architecture-review-r1.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_after_architecture_review_r1
+  - command: if rg -n '[[:blank:]]$|\\t' docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/architecture-review-r1.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml; then exit 1; else exit 0; fi
+    result: pass_no_whitespace_matches_after_architecture_review_r1
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/architecture-review-r1.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_selected_review_artifacts_lifecycle_change_metadata_no_unclassified_paths_after_architecture_review_r1
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/architecture-review-r1.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_selected_review_artifacts_lifecycle_change_metadata_checks_after_architecture_review_r1
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-08-single-workflow-lane-explain-before-verify
+    result: pass_after_plr3_lifecycle_closeout_plan_fix
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_after_plr3_lifecycle_closeout_plan_fix
+  - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_after_plr3_lifecycle_closeout_plan_fix
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-single-workflow-lane-explain-before-verify
+    result: pass_after_plr1_plr2_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_after_plr1_plr2_resolution
+  - command: bash scripts/ci.sh --mode explicit --path docs/architecture/system/architecture.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_after_plr1_plr2_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-single-workflow-lane-explain-before-verify
+    result: pass_after_plan_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_after_plan_review_r2
+  - command: bash scripts/ci.sh --mode explicit --path docs/architecture/system/architecture.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/plan-review-r2.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_after_plan_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_after_test_spec_proof_map_update
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/rigorloop-workflow.test.md --path specs/workflow-stage-autoprogression.test.md --path specs/milestone-aware-review-handoff.test.md --path specs/skill-contract.test.md --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_with_existing_lifecycle_language_warnings_after_test_spec_proof_map_update
+  - command: python scripts/select-validation.py --mode explicit --path specs/rigorloop-workflow.test.md --path specs/workflow-stage-autoprogression.test.md --path specs/milestone-aware-review-handoff.test.md --path specs/skill-contract.test.md --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_selected_lifecycle_plan_index_change_metadata_no_unclassified_paths_after_test_spec_proof_map_update
+  - command: bash scripts/ci.sh --mode explicit --path specs/rigorloop-workflow.test.md --path specs/workflow-stage-autoprogression.test.md --path specs/milestone-aware-review-handoff.test.md --path specs/skill-contract.test.md --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_selected_lifecycle_plan_index_change_metadata_checks_after_test_spec_proof_map_update
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_4_tests_after_test_spec_proof_map_update
+  - command: git diff --check -- specs/rigorloop-workflow.test.md specs/workflow-stage-autoprogression.test.md specs/milestone-aware-review-handoff.test.md specs/skill-contract.test.md docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_after_test_spec_proof_map_update
+  - command: rg -n 'verify readiness|verify-readiness|Ready for verify|ready for verify|verify is ready|verify is not ready|route to verify|routes to verify|routing to verify|then to verify|full-feature|fast-lane|fast lane|proportional evidence|proportionally triggered' specs/rigorloop-workflow.test.md specs/workflow-stage-autoprogression.test.md specs/milestone-aware-review-handoff.test.md specs/skill-contract.test.md docs/plan.md
+    result: pass_no_matches_after_test_spec_proof_map_update
+  - command: bash -c 'if rg -n "[[:blank:]]$|\t" specs/rigorloop-workflow.test.md specs/workflow-stage-autoprogression.test.md specs/milestone-aware-review-handoff.test.md specs/skill-contract.test.md docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml; then exit 1; else exit 0; fi'
+    result: pass_no_whitespace_matches_after_test_spec_proof_map_update
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/architecture/system/architecture.md --path specs/rigorloop-workflow.md --path specs/workflow-stage-autoprogression.md --path specs/skill-contract.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: fail_stale_approved_spec_readiness_wording_then_fixed
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/architecture/system/architecture.md --path specs/rigorloop-workflow.md --path specs/workflow-stage-autoprogression.md --path specs/skill-contract.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_with_existing_lifecycle_language_warnings_after_m1_lifecycle_normalization
+  - command: python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/architecture/system/architecture.md --path specs/rigorloop-workflow.md --path specs/workflow-stage-autoprogression.md --path specs/skill-contract.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_selected_lifecycle_plan_index_change_metadata_no_unclassified_paths_after_m1_lifecycle_normalization
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/architecture/system/architecture.md --path specs/rigorloop-workflow.md --path specs/workflow-stage-autoprogression.md --path specs/skill-contract.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_selected_lifecycle_plan_index_change_metadata_checks_after_m1_lifecycle_normalization
+  - command: git diff --check -- docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md specs/rigorloop-workflow.md specs/workflow-stage-autoprogression.md specs/skill-contract.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_after_m1_lifecycle_normalization
+  - command: bash -c 'if rg -n "[[:blank:]]$|\t" docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md specs/rigorloop-workflow.md specs/workflow-stage-autoprogression.md specs/skill-contract.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml; then exit 1; else exit 0; fi'
+    result: pass_no_whitespace_matches_after_m1_lifecycle_normalization
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-08-single-workflow-lane-explain-before-verify
+    result: pass_structure_reviews_11_findings_21_log_entries_11_resolution_entries_21_after_code_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_valid_change_metadata_after_code_review_r1
+  - command: python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r1.md
+    result: pass_selected_review_artifacts_lifecycle_change_metadata_no_unclassified_paths_after_code_review_r1
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r1.md
+    result: pass_selected_review_artifacts_lifecycle_change_metadata_checks_after_code_review_r1
+  - command: git diff --check -- docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/plan.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r1.md
+    result: pass_after_code_review_r1
+  - command: bash -c 'if rg -n "[[:blank:]]$|\t" docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/plan.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r1.md; then exit 1; else exit 0; fi'
+    result: pass_no_whitespace_matches_after_code_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_valid_change_metadata_after_code_review_timing_learn_session
+  - command: python scripts/select-validation.py --mode explicit --path docs/learn/sessions/2026-05-08-code-review-timing-evidence.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_selected_learn_artifact_change_metadata_no_unclassified_paths_after_code_review_timing_learn_session
+  - command: bash scripts/ci.sh --mode explicit --path docs/learn/sessions/2026-05-08-code-review-timing-evidence.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_selected_lifecycle_change_metadata_checks_after_code_review_timing_learn_session
+  - command: git diff --check -- docs/learn/sessions/2026-05-08-code-review-timing-evidence.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_after_code_review_timing_learn_session
+  - command: bash -c 'if rg -n "[[:blank:]]$|\t" docs/learn/sessions/2026-05-08-code-review-timing-evidence.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml; then exit 1; else exit 0; fi'
+    result: pass_no_whitespace_matches_after_code_review_timing_learn_session
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-single-workflow-lane-explain-before-verify
+    result: pass_closeout_reviews_11_findings_21_log_entries_11_resolution_entries_21_after_cr1_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_valid_change_metadata_after_cr1_resolution
+  - command: python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md
+    result: pass_selected_review_artifacts_lifecycle_change_metadata_no_unclassified_paths_after_cr1_resolution
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md
+    result: pass_selected_review_artifacts_lifecycle_change_metadata_checks_after_cr1_resolution
+  - command: git diff --check -- docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md
+    result: pass_after_cr1_resolution
+  - command: bash -c 'if rg -n "[[:blank:]]$|\t" docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md; then exit 1; else exit 0; fi'
+    result: pass_no_whitespace_matches_after_cr1_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-single-workflow-lane-explain-before-verify
+    result: pass_closeout_reviews_12_findings_21_log_entries_12_resolution_entries_21_after_code_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_valid_change_metadata_after_code_review_r2
+  - command: python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/architecture/system/architecture.md --path specs/rigorloop-workflow.md --path specs/workflow-stage-autoprogression.md --path specs/skill-contract.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r2.md
+    result: pass_selected_review_artifacts_lifecycle_change_metadata_no_unclassified_paths_after_code_review_r2
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/architecture/system/architecture.md --path specs/rigorloop-workflow.md --path specs/workflow-stage-autoprogression.md --path specs/skill-contract.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r2.md
+    result: pass_selected_review_artifacts_lifecycle_change_metadata_checks_after_code_review_r2
+  - command: git diff --check -- docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r2.md
+    result: pass_after_code_review_r2
+  - command: bash -c 'if rg -n "[[:blank:]]$|\t" docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r2.md; then exit 1; else exit 0; fi'
+    result: pass_no_whitespace_matches_after_code_review_r2
+  - command: python scripts/test-skill-validator.py
+    result: fail_stale_direct_verify_test_title_then_pass_after_final_closeout_assertion_update_for_m2
+  - command: python scripts/test-select-validation.py
+    result: pass_57_tests_for_m2
+  - command: python scripts/select-validation.py --mode explicit --path CONSTITUTION.md --path AGENTS.md --path README.md --path docs/workflows.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path specs/workflow-stage-autoprogression.md --path specs/workflow-stage-autoprogression.test.md --path specs/milestone-aware-review-handoff.md --path specs/milestone-aware-review-handoff.test.md
+    result: pass_m2_no_unclassified_paths
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_valid_change_metadata_during_m2
+  - command: python scripts/select-validation.py --mode explicit --path CONSTITUTION.md --path AGENTS.md --path README.md --path docs/workflows.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path specs/workflow-stage-autoprogression.md --path specs/workflow-stage-autoprogression.test.md --path specs/milestone-aware-review-handoff.md --path specs/milestone-aware-review-handoff.test.md --path specs/skill-contract.md --path specs/skill-contract.test.md --path scripts/test-skill-validator.py --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_m2_full_handoff_no_unclassified_paths
+  - command: bash scripts/ci.sh --mode explicit --path CONSTITUTION.md --path AGENTS.md --path README.md --path docs/workflows.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path specs/workflow-stage-autoprogression.md --path specs/workflow-stage-autoprogression.test.md --path specs/milestone-aware-review-handoff.md --path specs/milestone-aware-review-handoff.test.md --path specs/skill-contract.md --path specs/skill-contract.test.md --path scripts/test-skill-validator.py --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_m2_selected_skills_lifecycle_change_metadata_readme_selector_checks
+  - command: git diff --check -- CONSTITUTION.md AGENTS.md README.md docs/workflows.md specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md specs/workflow-stage-autoprogression.md specs/workflow-stage-autoprogression.test.md specs/milestone-aware-review-handoff.md specs/milestone-aware-review-handoff.test.md specs/skill-contract.md specs/skill-contract.test.md scripts/test-skill-validator.py docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_after_m2_handoff
+  - command: bash -c 'if rg -n "[[:blank:]]$|\t" CONSTITUTION.md AGENTS.md README.md docs/workflows.md specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md specs/workflow-stage-autoprogression.md specs/workflow-stage-autoprogression.test.md specs/milestone-aware-review-handoff.md specs/milestone-aware-review-handoff.test.md specs/skill-contract.md specs/skill-contract.test.md scripts/test-skill-validator.py docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml; then exit 1; else exit 0; fi'
+    result: pass_no_whitespace_matches_after_m2_handoff
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_final_m2_bookkeeping_lifecycle_change_metadata_checks
+  - command: python scripts/test-skill-validator.py
+    result: pass_45_tests_during_code_review_r3_evidence_refresh
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-single-workflow-lane-explain-before-verify
+    result: pass_closeout_reviews_13_findings_21_log_entries_13_resolution_entries_21_after_code_review_r3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_valid_change_metadata_after_code_review_r3
+  - command: python scripts/select-validation.py --mode explicit --path CONSTITUTION.md --path AGENTS.md --path README.md --path docs/workflows.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path specs/workflow-stage-autoprogression.md --path specs/workflow-stage-autoprogression.test.md --path specs/milestone-aware-review-handoff.md --path specs/milestone-aware-review-handoff.test.md --path specs/skill-contract.md --path specs/skill-contract.test.md --path scripts/test-skill-validator.py --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r3.md
+    result: pass_code_review_r3_selected_paths_no_unclassified_paths
+  - command: bash scripts/ci.sh --mode explicit --path CONSTITUTION.md --path AGENTS.md --path README.md --path docs/workflows.md --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path specs/workflow-stage-autoprogression.md --path specs/workflow-stage-autoprogression.test.md --path specs/milestone-aware-review-handoff.md --path specs/milestone-aware-review-handoff.test.md --path specs/skill-contract.md --path specs/skill-contract.test.md --path scripts/test-skill-validator.py --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r3.md
+    result: pass_selected_skills_review_artifacts_lifecycle_change_metadata_readme_selector_checks_after_code_review_r3
+  - command: git diff --check -- CONSTITUTION.md AGENTS.md README.md docs/workflows.md specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md specs/workflow-stage-autoprogression.md specs/workflow-stage-autoprogression.test.md specs/milestone-aware-review-handoff.md specs/milestone-aware-review-handoff.test.md specs/skill-contract.md specs/skill-contract.test.md scripts/test-skill-validator.py docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r3.md
+    result: pass_after_code_review_r3
+  - command: bash -c 'if rg -n "[[:blank:]]$|\t" CONSTITUTION.md AGENTS.md README.md docs/workflows.md specs/rigorloop-workflow.md specs/rigorloop-workflow.test.md specs/workflow-stage-autoprogression.md specs/workflow-stage-autoprogression.test.md specs/milestone-aware-review-handoff.md specs/milestone-aware-review-handoff.test.md specs/skill-contract.md specs/skill-contract.test.md scripts/test-skill-validator.py docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r3.md; then exit 1; else exit 0; fi'
+    result: pass_no_whitespace_matches_after_code_review_r3
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r3.md
+    result: pass_final_code_review_r3_bookkeeping_review_artifacts_lifecycle_change_metadata_checks
+  - command: python scripts/validate-skills.py
+    result: pass_23_canonical_skill_files_for_m3
+  - command: python scripts/test-skill-validator.py
+    result: pass_46_tests_for_m3_public_skill_portability_checks
+  - command: python scripts/test-select-validation.py
+    result: pass_57_tests_for_m3
+  - command: rg -n -i 'fast[- ]lane|full[- ]lane|full[- ]feature|low[- ]risk|high[- ]risk|tiny[[:space:]]+low[- ]risk|small[- ]change|mini[- ]spec|proportional[- ]evidence' README.md AGENTS.md CONSTITUTION.md docs/workflows.md skills .codex/skills dist/adapters
+    result: pass_no_matches_for_m3_retired_route_scan
+  - command: python scripts/select-validation.py --mode explicit --path skills/workflow/SKILL.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/explain-change/SKILL.md --path skills/verify/SKILL.md --path skills/pr/SKILL.md --path skills/plan/SKILL.md --path skills/spec/SKILL.md --path skills/architecture/SKILL.md --path skills/architecture-review/SKILL.md --path skills/constitution/SKILL.md --path skills/ci/SKILL.md --path skills/explore/SKILL.md --path skills/project-map/SKILL.md --path skills/test-spec/SKILL.md --path scripts/test-skill-validator.py --path scripts/test-select-validation.py --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_m3_no_unclassified_paths
+  - command: bash scripts/ci.sh --mode explicit --path skills/workflow/SKILL.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/explain-change/SKILL.md --path skills/verify/SKILL.md --path skills/pr/SKILL.md --path skills/plan/SKILL.md --path skills/spec/SKILL.md --path skills/architecture/SKILL.md --path skills/architecture-review/SKILL.md --path skills/constitution/SKILL.md --path skills/ci/SKILL.md --path skills/explore/SKILL.md --path skills/project-map/SKILL.md --path skills/test-spec/SKILL.md --path scripts/test-skill-validator.py --path scripts/test-select-validation.py --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_m3_selected_skills_drift_adapters_drift_lifecycle_change_metadata_selector_checks
+  - command: git diff --check -- skills/workflow/SKILL.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/explain-change/SKILL.md skills/verify/SKILL.md skills/pr/SKILL.md skills/plan/SKILL.md skills/spec/SKILL.md skills/architecture/SKILL.md skills/architecture-review/SKILL.md skills/constitution/SKILL.md skills/ci/SKILL.md skills/explore/SKILL.md skills/project-map/SKILL.md skills/test-spec/SKILL.md scripts/test-skill-validator.py scripts/test-select-validation.py docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_after_m3_handoff
+  - command: bash -c 'if rg -n "[[:blank:]]$|\t" skills/workflow/SKILL.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/explain-change/SKILL.md skills/verify/SKILL.md skills/pr/SKILL.md skills/plan/SKILL.md skills/spec/SKILL.md skills/architecture/SKILL.md skills/architecture-review/SKILL.md skills/constitution/SKILL.md skills/ci/SKILL.md skills/explore/SKILL.md skills/project-map/SKILL.md skills/test-spec/SKILL.md scripts/test-skill-validator.py scripts/test-select-validation.py docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml; then exit 1; else exit 0; fi'
+    result: pass_no_whitespace_matches_after_m3_handoff
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_valid_change_metadata_after_m3_handoff_bookkeeping
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_m3_handoff_bookkeeping_lifecycle_change_metadata_checks
+  - command: git diff --check -- docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_after_m3_handoff_bookkeeping
+  - command: bash -c 'if rg -n "[[:blank:]]$|\t" docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml; then exit 1; else exit 0; fi'
+    result: pass_no_whitespace_matches_after_m3_handoff_bookkeeping
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-08-single-workflow-lane-explain-before-verify
+    result: pass_code_review_r4_structure_14_reviews_23_findings_14_log_entries_23_resolution_entries
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_valid_change_metadata_after_code_review_r4
+  - command: python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r4.md
+    result: pass_code_review_r4_no_unclassified_paths
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r4.md
+    result: pass_code_review_r4_recording_review_artifacts_lifecycle_change_metadata_checks
+  - command: git diff --check -- docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r4.md
+    result: pass_after_code_review_r4_recording
+  - command: bash -c 'if rg -n "[[:blank:]]$|\t" docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r4.md; then exit 1; else exit 0; fi'
+    result: pass_no_whitespace_matches_after_code_review_r4_recording
+  - command: git commit
+    result: pass_m1_m2_catch_up_milestone_commit_before_m3_continues
+changed_files:
+  - AGENTS.md
+  - CONSTITUTION.md
+  - README.md
+  - docs/workflows.md
+  - docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md
+  - specs/rigorloop-workflow.md
+  - specs/rigorloop-workflow.test.md
+  - specs/workflow-stage-autoprogression.md
+  - specs/workflow-stage-autoprogression.test.md
+  - specs/skill-contract.md
+  - specs/skill-contract.test.md
+  - specs/milestone-aware-review-handoff.md
+  - specs/milestone-aware-review-handoff.test.md
+  - skills/
+  - .codex/skills/
+  - scripts/adapter_templates/
+  - scripts/test-skill-validator.py
+  - scripts/test-select-validation.py
+  - dist/adapters/
+  - docs/plan.md
+  - docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md
+  - docs/architecture/system/architecture.md
+  - docs/architecture/system/diagrams/context.mmd
+  - docs/architecture/system/diagrams/container.mmd
+  - docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+  - docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md
+  - docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md
+  - docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/proposal-review-r1.md
+  - docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/proposal-review-r2.md
+  - docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/spec-review-r1.md
+  - docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/spec-review-r2.md
+  - docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/spec-review-r3.md
+  - docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/spec-review-r4.md
+  - docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/spec-review-r5.md
+  - docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/plan-review-r1.md
+  - docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/architecture-review-r1.md
+  - docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/plan-review-r2.md
+  - docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r1.md
+  - docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r2.md
+  - docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r3.md
+  - docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r4.md
+  - docs/learn/sessions/2026-05-08-architecture-update-workflow-overhead.md
+  - docs/learn/sessions/2026-05-08-code-review-timing-evidence.md
+  - docs/learn/sessions/2026-05-08-milestone-commit-policy-mismatch.md
+  - docs/learn/sessions/2026-05-08-spec-review-rounds-and-readiness.md
+review:
+  status: m3-review-resolution-needed
+  unresolved_items: 2
