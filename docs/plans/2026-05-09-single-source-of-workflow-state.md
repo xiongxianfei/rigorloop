@@ -72,13 +72,13 @@ The implementation makes the active plan `Current Handoff Summary` the live stat
 ## Current Handoff Summary
 
 - Current milestone: M5. Lifecycle Closeout
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M4. Generated Output and Adapter Validation
-- Review status: M4 code-review completed with no material findings. M3 code-review completed with no material findings. M2 code-review completed with no material findings. M1 code-review completed after `SSWS-CR1-F1` and `SSWS-CR2-F1` were resolved; no material findings remain open.
+- Review status: M5 lifecycle closeout evidence implemented and targeted validation passed; waiting for M5 code-review. M4 code-review completed with no material findings. M3 code-review completed with no material findings. M2 code-review completed with no material findings. M1 code-review completed after `SSWS-CR1-F1` and `SSWS-CR2-F1` were resolved; no material findings remain open.
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change / M5 lifecycle closeout
-- Final closeout readiness: ready
-- Reason final closeout is or is not ready: M1-M4 are closed, required review-resolution is closed, and no implementation milestone remains open; final explain-change, verify, PR handoff, and plan/index synchronization remain to complete M5.
+- Next stage: code-review M5
+- Final closeout readiness: not ready
+- Reason final closeout is or is not ready: M5 is awaiting code-review; final verify, PR handoff, and plan/index Done synchronization remain downstream lifecycle gates.
 
 ## Milestones
 
@@ -293,7 +293,7 @@ The implementation makes the active plan `Current Handoff Summary` the live stat
 
 ### M5. Lifecycle Closeout
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Complete downstream gates after implementation milestones are closed.
 - Requirements: repository workflow closeout, review, rationale, verification, and PR-readiness rules.
 - Files/components likely touched:
@@ -391,6 +391,7 @@ Use targeted validation first, then the final explicit CI scope in M5. Do not cl
 - [x] 2026-05-09: M4 implementation started; scope limited to generated local skills, public adapters, and generated-output validation evidence.
 - [x] 2026-05-09: M4 generated local skills and public adapters refreshed from canonical skill sources; targeted validation passed and M4 handed off to code-review.
 - [x] 2026-05-09: M4 code-review completed with no material findings; M4 closed and handoff moved to M5 lifecycle closeout.
+- [x] 2026-05-09: M5 lifecycle closeout evidence implemented; explain-change updated, final validation scope passed, and M5 handed off to code-review.
 - [x] M1. Test Spec and Validator Coverage
 - [x] M2. Workflow and Governance Guidance
 - [x] M3. Canonical Skill Contract Updates
@@ -413,6 +414,7 @@ Use targeted validation first, then the final explicit CI scope in M5. Do not cl
 ## Surprises and Discoveries
 
 - 2026-05-09: Lifecycle validation correctly rejects generated-output directories as authored source-of-truth paths. M4 lifecycle validation is scoped to authored plan/change artifacts, while `.codex/skills/` and `dist/adapters/` are covered by generated skill drift, adapter drift, adapter validation, and adapter distribution tests.
+- 2026-05-09: M5 keeps final `verify`, PR handoff, and plan-index Done synchronization as downstream lifecycle gates. This implementation slice updates the durable rationale and validation evidence, then hands the closeout milestone to code-review.
 
 ## Validation Notes
 
@@ -516,11 +518,27 @@ Use targeted validation first, then the final explicit CI scope in M5. Do not cl
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-09-single-source-of-workflow-state/change.yaml --path docs/plans/2026-05-09-single-source-of-workflow-state.md`
   - `git diff --check -- .codex/skills dist/adapters docs/plans/2026-05-09-single-source-of-workflow-state.md docs/changes/2026-05-09-single-source-of-workflow-state`
 - Lifecycle validation emitted expected merge-language warnings in `specs/single-source-of-workflow-state.md` line 52 and `specs/single-source-of-workflow-state.test.md` line 208.
+- 2026-05-09 M5 implementation handoff validation passed:
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-09-single-source-of-workflow-state`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-09-single-source-of-workflow-state/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-09-single-source-of-workflow-state.md --path specs/single-source-of-workflow-state.md --path specs/single-source-of-workflow-state.test.md --path docs/changes/2026-05-09-single-source-of-workflow-state/change.yaml --path docs/changes/2026-05-09-single-source-of-workflow-state/explain-change.md --path docs/plans/2026-05-09-single-source-of-workflow-state.md --path docs/plan.md`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/build-adapters.py --version 0.1.1 --check`
+  - `python scripts/validate-adapters.py --version 0.1.1`
+  - `python scripts/test-adapter-distribution.py`
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/test-artifact-lifecycle-validator.py`
+  - `python scripts/test-change-metadata-validator.py`
+  - `bash scripts/ci.sh --mode explicit --path specs/single-source-of-workflow-state.md --path specs/single-source-of-workflow-state.test.md --path docs/workflows.md --path AGENTS.md --path CONSTITUTION.md --path skills/workflow/SKILL.md --path skills/plan/SKILL.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/verify/SKILL.md --path scripts/test-skill-validator.py --path scripts/test-artifact-lifecycle-validator.py --path docs/plans/2026-05-09-single-source-of-workflow-state.md --path docs/plan.md --path docs/changes/2026-05-09-single-source-of-workflow-state/change.yaml`
+  - `python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-09-single-source-of-workflow-state/explain-change.md --path docs/changes/2026-05-09-single-source-of-workflow-state/change.yaml --path docs/plans/2026-05-09-single-source-of-workflow-state.md --path docs/plan.md`
+  - `git diff --check -- .`
+- Lifecycle validation emitted expected merge-language warnings in `docs/plan.md` line 18, `specs/single-source-of-workflow-state.md` line 52, and `specs/single-source-of-workflow-state.test.md` line 208.
 
 ## Outcome and Retrospective
 
-- Plan is active for M5 lifecycle closeout. M1 is closed after code-review and accepted review-resolution for `SSWS-CR1-F1` and `SSWS-CR2-F1`; M2 is closed after code-review with no material findings; M3 is closed after code-review with no material findings; M4 is closed after code-review with no material findings.
-- Done is not available until M1-M4 are closed, required review-resolution is closed, explain-change is complete, verify passes, PR handoff is prepared, and `docs/plan.md` plus this plan are synchronized.
+- Plan is active for M5 lifecycle closeout. M1 is closed after code-review and accepted review-resolution for `SSWS-CR1-F1` and `SSWS-CR2-F1`; M2 is closed after code-review with no material findings; M3 is closed after code-review with no material findings; M4 is closed after code-review with no material findings; M5 is awaiting code-review.
+- Done is not available until M5 code-review is complete, verify passes, PR handoff is prepared, and `docs/plan.md` plus this plan are synchronized.
 
 ## Readiness
 
