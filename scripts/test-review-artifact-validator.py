@@ -1021,8 +1021,10 @@ Validation target: Run tests.
                     self.assertIn(term, review_skill)
 
         verify = read_repo_file("skills/verify/SKILL.md")
+        self.assertNotIn("validate-review-artifacts.py --mode closeout", verify)
         for term in [
-            "validate-review-artifacts.py --mode closeout",
+            "project's review-artifact closeout validation",
+            "closeout validation passes",
             "Closeout status: open",
             "needs-decision",
             "Validation evidence",
