@@ -63,6 +63,8 @@ tests:
   - Review artifact validation after code-review R7 closes M2 with no material findings.
   - Architecture-review skill validator coverage for M3 review-surface classification.
   - Review artifact validation after code-review R8 closes M3 with no material findings.
+  - Generated skill and adapter drift checks after M4 refresh.
+  - Adapter validation and adapter distribution tests after M4 refresh.
 validation:
   - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/proposal-review-r1.md
     result: pass_selected_review_artifacts_lifecycle_change_metadata_no_unclassified_paths
@@ -466,6 +468,38 @@ validation:
     result: pass_no_matches_after_code_review_r8
   - command: python -c "import yaml; data=yaml.safe_load(open('docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml')); assert data['review']['status'] == 'clean_after_code_review_r8' and data['review']['unresolved_items'] == 0"
     result: pass_review_state_after_code_review_r8
+  - command: python scripts/build-skills.py --check
+    result: fail_expected_stale_generated_architecture_skills_before_m4_generation
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: fail_expected_six_stale_generated_adapter_skill_copies_before_m4_generation
+  - command: python scripts/build-skills.py
+    result: pass_synced_generated_skills_after_m4
+  - command: python scripts/build-adapters.py --version 0.1.1
+    result: pass_synced_generated_adapter_output_after_m4
+  - command: python scripts/build-skills.py --check
+    result: pass_generated_skills_in_sync_after_m4
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_adapters_drift_ok_after_m4
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_validated_generated_adapters_after_m4
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_56_tests_after_m4
+  - command: python scripts/validate-skills.py
+    result: pass_23_skill_files_after_m4
+  - command: python scripts/test-skill-validator.py
+    result: pass_47_tests_after_m4
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml
+    result: pass_valid_change_metadata_after_m4
+  - command: python scripts/select-validation.py --mode explicit --path skills/architecture/SKILL.md --path skills/architecture-review/SKILL.md --path .codex/skills/architecture/SKILL.md --path .codex/skills/architecture-review/SKILL.md --path dist/adapters/claude/.claude/skills/architecture/SKILL.md --path dist/adapters/claude/.claude/skills/architecture-review/SKILL.md --path dist/adapters/codex/.agents/skills/architecture/SKILL.md --path dist/adapters/codex/.agents/skills/architecture-review/SKILL.md --path dist/adapters/opencode/.opencode/skills/architecture/SKILL.md --path dist/adapters/opencode/.opencode/skills/architecture-review/SKILL.md --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md --path docs/plan.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml
+    result: pass_selected_skills_generated_skills_adapters_lifecycle_change_metadata_no_unclassified_paths_after_m4
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md --path docs/plan.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml
+    result: pass_with_existing_lifecycle_warning_docs_plan_line_17_after_m4
+  - command: bash scripts/ci.sh --mode explicit --path skills/architecture/SKILL.md --path skills/architecture-review/SKILL.md --path scripts/test-skill-validator.py --path scripts/test-review-artifact-validator.py --path scripts/test-adapter-distribution.py --path specs/architecture-package-method.test.md --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md --path docs/plan.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml
+    result: pass_selected_ci_checks_after_m4
+  - command: git diff --check -- skills/architecture/SKILL.md skills/architecture-review/SKILL.md .codex/skills/architecture/SKILL.md .codex/skills/architecture-review/SKILL.md dist/adapters specs/architecture-package-method.test.md docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/plan.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces
+    result: pass_after_m4
+  - command: rg -n '[[:blank:]]$|\t' .codex/skills/architecture/SKILL.md .codex/skills/architecture-review/SKILL.md dist/adapters/claude/.claude/skills/architecture/SKILL.md dist/adapters/claude/.claude/skills/architecture-review/SKILL.md dist/adapters/codex/.agents/skills/architecture/SKILL.md dist/adapters/codex/.agents/skills/architecture-review/SKILL.md dist/adapters/opencode/.opencode/skills/architecture/SKILL.md dist/adapters/opencode/.opencode/skills/architecture-review/SKILL.md docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml
+    result: pass_no_matches_after_m4
 changed_files:
   - docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md
   - specs/architecture-package-method.md
@@ -494,7 +528,15 @@ changed_files:
   - docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/code-review-r8.md
   - skills/architecture/SKILL.md
   - skills/architecture-review/SKILL.md
+  - .codex/skills/architecture/SKILL.md
+  - .codex/skills/architecture-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/architecture/SKILL.md
+  - dist/adapters/claude/.claude/skills/architecture-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/architecture/SKILL.md
+  - dist/adapters/codex/.agents/skills/architecture-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/architecture/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/architecture-review/SKILL.md
   - scripts/test-skill-validator.py
 review:
-  status: clean_after_code_review_r8
+  status: review_requested_after_m4_implementation
   unresolved_items: 0

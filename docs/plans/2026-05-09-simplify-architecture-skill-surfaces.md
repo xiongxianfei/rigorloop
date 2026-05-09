@@ -75,13 +75,13 @@ The implementation removes change-local architecture deltas from the normal arch
 ## Current Handoff Summary
 
 - Current milestone: M4. Generated Output, Adapter Validation, and Lifecycle Closeout Preparation
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M3
-- Review status: code-review R8 completed cleanly; M3 is closed.
+- Review status: M4 implementation handoff is ready for code-review; M3 is closed.
 - Remaining in-scope implementation milestones: M4
-- Next stage: implement M4
+- Next stage: code-review M4
 - Final closeout readiness: not ready
-- Reason final closeout is not ready: M4 implementation, code-review for M4, review-resolution when triggered, explain-change, verify, and PR handoff remain.
+- Reason final closeout is not ready: M4 code-review, review-resolution when triggered, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -262,7 +262,7 @@ The implementation removes change-local architecture deltas from the normal arch
 
 ### M4. Generated Output, Adapter Validation, and Lifecycle Closeout Preparation
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Refresh generated local skills and public adapters, prove drift is closed, and prepare the change for downstream code-review and final lifecycle gates.
 - Requirements: `R58`, `AC20`, plus the proposal's adapter drift check and adapter validation requirement.
 - Files/components likely touched:
@@ -304,6 +304,11 @@ python scripts/validate-adapters.py --version 0.1.1
   - `bash scripts/ci.sh --mode explicit --path skills/architecture/SKILL.md --path skills/architecture-review/SKILL.md --path scripts/test-skill-validator.py --path scripts/test-review-artifact-validator.py --path scripts/test-adapter-distribution.py --path specs/architecture-package-method.test.md --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md --path docs/plan.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml`
   - `git diff --check -- skills/architecture/SKILL.md skills/architecture-review/SKILL.md .codex/skills/architecture/SKILL.md .codex/skills/architecture-review/SKILL.md dist/adapters specs/architecture-package-method.test.md docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/plan.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces`
 - Expected observable result: Generated local skill mirrors and public adapter packages match canonical skill sources, adapter validation passes, and the implementation is ready for code-review.
+- Implementation result:
+  - `.codex/skills/architecture/SKILL.md` and `.codex/skills/architecture-review/SKILL.md` were refreshed from canonical skill sources with `python scripts/build-skills.py`.
+  - Public adapter skill copies for Claude, Codex, and opencode were refreshed with `python scripts/build-adapters.py --version 0.1.1`.
+  - Pre-generation drift checks failed for the expected stale generated architecture and architecture-review skill copies.
+  - Post-generation generated skill drift, adapter drift, adapter validation, adapter distribution tests, selected validation, and explicit CI checks passed.
 - Implementation handoff:
   - targeted validation passed
   - hand off to code-review for M4
@@ -422,6 +427,7 @@ python scripts/validate-adapters.py --version 0.1.1
 - [x] M2 closed after clean code-review.
 - [x] M3 implementation complete and handed to code-review.
 - [x] M3 closed after clean code-review.
+- [x] M4 implementation complete and handed to code-review.
 - [ ] M4 closed.
 - [ ] M5 closed.
 
@@ -521,6 +527,23 @@ python scripts/validate-adapters.py --version 0.1.1
   - `git diff --check -- docs/changes/2026-05-09-simplify-architecture-skill-surfaces docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md skills/architecture-review/SKILL.md scripts/test-skill-validator.py scripts/test-review-artifact-validator.py`
   - `rg -n '[[:blank:]]$|\t' docs/changes/2026-05-09-simplify-architecture-skill-surfaces docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md skills/architecture-review/SKILL.md scripts/test-skill-validator.py scripts/test-review-artifact-validator.py` returned no matches.
   - `python -c "import yaml; data=yaml.safe_load(open('docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml')); assert data['review']['status'] == 'clean_after_code_review_r8' and data['review']['unresolved_items'] == 0"`
+- M4 generated-output implementation validation passed on 2026-05-09:
+  - `python scripts/build-skills.py --check` failed before generation with stale `.codex/skills/architecture/SKILL.md` and `.codex/skills/architecture-review/SKILL.md`.
+  - `python scripts/build-adapters.py --version 0.1.1 --check` failed before generation with six stale generated adapter skill copies.
+  - `python scripts/build-skills.py`
+  - `python scripts/build-adapters.py --version 0.1.1`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/build-adapters.py --version 0.1.1 --check`
+  - `python scripts/validate-adapters.py --version 0.1.1`
+  - `python scripts/test-adapter-distribution.py`
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml`
+  - `python scripts/select-validation.py --mode explicit --path skills/architecture/SKILL.md --path skills/architecture-review/SKILL.md --path .codex/skills/architecture/SKILL.md --path .codex/skills/architecture-review/SKILL.md --path dist/adapters/claude/.claude/skills/architecture/SKILL.md --path dist/adapters/claude/.claude/skills/architecture-review/SKILL.md --path dist/adapters/codex/.agents/skills/architecture/SKILL.md --path dist/adapters/codex/.agents/skills/architecture-review/SKILL.md --path dist/adapters/opencode/.opencode/skills/architecture/SKILL.md --path dist/adapters/opencode/.opencode/skills/architecture-review/SKILL.md --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md --path docs/plan.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md --path docs/plan.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml` passed with the existing unrelated lifecycle warning in `docs/plan.md` line 17.
+  - `bash scripts/ci.sh --mode explicit --path skills/architecture/SKILL.md --path skills/architecture-review/SKILL.md --path scripts/test-skill-validator.py --path scripts/test-review-artifact-validator.py --path scripts/test-adapter-distribution.py --path specs/architecture-package-method.test.md --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md --path docs/plan.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml`
+  - `git diff --check -- skills/architecture/SKILL.md skills/architecture-review/SKILL.md .codex/skills/architecture/SKILL.md .codex/skills/architecture-review/SKILL.md dist/adapters specs/architecture-package-method.test.md docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/plan.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces`
+  - `rg -n '[[:blank:]]$|\t' .codex/skills/architecture/SKILL.md .codex/skills/architecture-review/SKILL.md dist/adapters/claude/.claude/skills/architecture/SKILL.md dist/adapters/claude/.claude/skills/architecture-review/SKILL.md dist/adapters/codex/.agents/skills/architecture/SKILL.md dist/adapters/codex/.agents/skills/architecture-review/SKILL.md dist/adapters/opencode/.opencode/skills/architecture/SKILL.md dist/adapters/opencode/.opencode/skills/architecture-review/SKILL.md docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml` returned no matches.
 
 ## Outcome and Retrospective
 
@@ -534,12 +557,13 @@ M2 implementation updated the canonical architecture skill contract and matching
 Code-review R7 completed cleanly, so M2 is closed and the next stage is M3 implementation.
 M3 implementation updated architecture-review surface classification and matching validator coverage; M3 is now in `review-requested`.
 Code-review R8 completed cleanly, so M3 is closed and the next stage is M4 implementation.
+M4 implementation refreshed generated Codex skill mirrors and public adapter packages; M4 is now in `review-requested`.
 
 ## Readiness
 
-- Next stage: implement M4
+- Next stage: code-review M4
 - Test-spec readiness: complete for the 2026-05-09 simplification.
-- Implementation readiness: M3 is closed after clean code-review. M4 is ready to start.
+- Implementation readiness: M4 targeted validation passed and the milestone is ready for code-review. M5 must not start until M4 completes its milestone review loop.
 - Final closeout readiness: not ready until all in-scope implementation milestones are closed and downstream review, rationale, verify, and PR gates are complete.
 
 ## Risks and Follow-Ups
