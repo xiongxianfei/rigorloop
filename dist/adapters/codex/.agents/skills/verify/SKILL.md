@@ -22,6 +22,8 @@ Run final verification after durable change rationale exists and before PR hando
 
 `verify` owns validation evidence and branch-ready proof. It does not create the durable explanation and does not prepare the PR body.
 
+Final verification is scoped evidence and must not own the active plan's current next stage. Use the active plan `Current Handoff Summary` to assess current planned-initiative state.
+
 ## When to use
 
 Use this skill after all in-scope implementation milestones are closed, code-review/review-resolution obligations are complete, `ci-maintenance` is complete when triggered, and `explain-change` exists and is current. Use it directly only when a user explicitly asks for an isolated verification gate.
