@@ -484,7 +484,7 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
 - 2026-05-09: CI-maintenance made no hosted workflow edit. Rationale: `.github/workflows/ci.yml` already runs on pull requests and `main` pushes without path filters, delegates to `scripts/ci.sh`, and branch-range selector inspection selected deterministic checks for the changed skill, adapter, lifecycle, review artifact, change metadata, README, and selector surfaces with no unclassified paths.
 - 2026-05-09: Explain-change uses a change-local artifact instead of PR text alone. Rationale: this is ordinary non-trivial workflow-governance work, so the durable rationale belongs in `docs/changes/<change-id>/explain-change.md` before final `verify`.
 - 2026-05-09: Final verify records evidence in the plan and `change.yaml` without a standalone `verify-report.md`. Rationale: no required manual proof exists, and the selected automated proof, review closeout, lifecycle checks, drift checks, and CI-scope review are sufficient durable branch-ready evidence before PR handoff.
-- 2026-05-09: Draft PR #35 was opened to obtain the PR identifier, then `docs/plan.md` and this plan body were synchronized to Done before review handoff. Rationale: no true downstream completion event remains after PR handoff, and the PR should carry self-contained lifecycle closeout state.
+- 2026-05-09: PR #35 was opened to obtain the PR identifier, then `docs/plan.md` and this plan body were synchronized to Done before review handoff. Rationale: no true downstream completion event remains after PR handoff, and the PR should carry self-contained lifecycle closeout state.
 
 ## Surprises and Discoveries
 
