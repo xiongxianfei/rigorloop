@@ -21,6 +21,7 @@ requirements:
   - Implement M2 workflow and governance guidance alignment before M2 code-review.
   - Close M2 code-review before starting M3.
   - Implement M3 canonical skill contract updates before M3 code-review.
+  - Close M3 code-review before starting M4.
 tests:
   - Proposal-review artifact record for material findings.
   - Review artifact structure validation while proposal-review findings remain open.
@@ -34,6 +35,7 @@ tests:
   - M2 focused governance/static proof for single-source workflow-state contract.
   - Code-review M2 clean closeout and state-sync.
   - M3 focused canonical skill/static proof for single-source workflow-state contract.
+  - Code-review M3 clean closeout and state-sync.
 validation:
   - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-09-single-source-of-workflow-state
     result: pass_structure_reviews_1_findings_1_log_entries_1_resolution_entries_1
@@ -135,6 +137,20 @@ validation:
     result: pass_valid_change_metadata_after_m3
   - command: git diff --check -- skills/workflow/SKILL.md skills/plan/SKILL.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/verify/SKILL.md skills/explain-change/SKILL.md skills/pr/SKILL.md scripts/test-skill-validator.py docs/plans/2026-05-09-single-source-of-workflow-state.md docs/changes/2026-05-09-single-source-of-workflow-state
     result: pass_after_m3
+  - command: python scripts/validate-skills.py
+    result: pass_after_m3_code_review
+  - command: python scripts/test-skill-validator.py
+    result: pass_51_tests_after_m3_code_review
+  - command: python scripts/select-validation.py --mode explicit --path skills/workflow/SKILL.md --path skills/plan/SKILL.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/verify/SKILL.md --path skills/explain-change/SKILL.md --path skills/pr/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-09-single-source-of-workflow-state.md --path docs/changes/2026-05-09-single-source-of-workflow-state/change.yaml
+    result: pass_selected_skills_lifecycle_change_metadata_after_m3_code_review
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-09-single-source-of-workflow-state/change.yaml --path docs/plans/2026-05-09-single-source-of-workflow-state.md --path skills/code-review/SKILL.md --path skills/explain-change/SKILL.md --path skills/implement/SKILL.md --path skills/plan/SKILL.md --path skills/pr/SKILL.md --path skills/verify/SKILL.md --path skills/workflow/SKILL.md
+    result: pass_lifecycle_after_m3_code_review_with_expected_merge_language_warnings
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_4_tests_after_m3_code_review
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-09-single-source-of-workflow-state/change.yaml
+    result: pass_valid_change_metadata_after_m3_code_review
+  - command: git diff --check -- skills/workflow/SKILL.md skills/plan/SKILL.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/verify/SKILL.md skills/explain-change/SKILL.md skills/pr/SKILL.md scripts/test-skill-validator.py docs/plans/2026-05-09-single-source-of-workflow-state.md docs/changes/2026-05-09-single-source-of-workflow-state
+    result: pass_after_m3_code_review_state_sync
 changed_files:
   - AGENTS.md
   - CONSTITUTION.md
@@ -161,5 +177,5 @@ changed_files:
   - skills/explain-change/SKILL.md
   - skills/pr/SKILL.md
 review:
-  status: m3_review_requested
+  status: m3_closed
   unresolved_items: 0
