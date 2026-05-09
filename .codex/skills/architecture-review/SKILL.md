@@ -16,10 +16,10 @@ Your job is to catch unsafe boundaries, missing tradeoffs, hidden coupling, miss
 Read:
 
 - `AGENTS.md` and `CONSTITUTION.md` if present;
-- `specs/architecture-package-method.md` when C4, arc42, canonical package, change-local delta, or ADR method compliance is in scope;
-- canonical architecture package under `docs/architecture/system/`;
-- change-local architecture delta and diagrams under `docs/changes/<change-id>/`;
+- `specs/architecture-package-method.md` when C4, arc42, canonical package, review-surface, or ADR method compliance is in scope;
+- the project's canonical architecture package;
 - ADRs under review and related existing ADRs;
+- no-architecture-impact rationale when that is the review surface;
 - feature spec and spec-review findings;
 - accepted proposal;
 - research artifacts;
@@ -29,12 +29,48 @@ Read:
 
 Use summary and stable-ID first reasoning before broad reads or raw excerpts. Prefer check IDs, requirement IDs, arc42 section numbers, ADR IDs, diagram paths, file paths, and line citations. Expand from targeted sections only when the narrower evidence is insufficient.
 
+## Review Surface
+
+Classify the review surface before reviewing:
+
+- `canonical-architecture-update`
+- `ADR`
+- `no-architecture-impact-rationale`
+- `proposal-or-spec-gap`
+
+### canonical-architecture-update
+
+Review the changed canonical architecture sections, diagrams, and ADR links directly.
+
+Do not require a change-local architecture delta for a canonical architecture update.
+
+Check the changed package content against arc42 structure, relevant C4 views, ADR links, quality concerns, risks, and compatibility with the approved spec.
+
+### ADR
+
+Review the ADR for context, decision, alternatives, consequences, and compatibility with the canonical architecture.
+
+Confirm the ADR records a durable decision rather than duplicating current architecture structure that belongs in the canonical package.
+
+### no-architecture-impact-rationale
+
+Check whether the no-architecture-impact rationale is credible.
+
+Reject the rationale when the change affects architecture boundaries, data flow, generated-output flow, deployment, packaging, adapters, quality targets, cross-cutting rules, security boundaries, or durable decisions.
+
+### proposal-or-spec-gap
+
+If the design direction is unresolved, return a finding that routes back to `proposal` or proposal revision.
+
+If behavior is unsettled, route to `spec` or spec revision.
+
+Do not use architecture-review to settle product direction.
+
 ## C4, arc42, and ADR Review Checklist
 
 Check the approved package model before broader design critique:
 
-- Canonical source: current architecture truth belongs in `docs/architecture/system/architecture.md` and default diagrams under `docs/architecture/system/diagrams/`.
-- Change-local delta: `docs/changes/<change-id>/architecture.md` is working evidence only and must not compete with the canonical package after merge-back.
+- Canonical source: current architecture truth belongs in the project's canonical architecture package.
 - arc42 completeness: lifecycle metadata appears before all 12 official arc42 sections, and the section names remain in order.
 - Core sections: Introduction and Goals, Architecture Constraints, Context and Scope, Solution Strategy, and Building Block View contain current-system content for real architecture work.
 - Runtime View: updated when behavior, orchestration, failure paths, command flow, generated-output flow, or operational flow changes.
@@ -44,7 +80,6 @@ Check the approved package model before broader design critique:
 - Quality Requirements, Risks and Technical Debt, and Glossary are present and explicit enough for review.
 - C4 sufficiency: context and container diagrams exist as reviewable source text; component or deployment diagrams are required only when the change needs that level of explanation.
 - ADR completeness: durable decisions have ADRs with status, context, decision, alternatives considered, consequences, and follow-up.
-- Merge-back: accepted durable content from a change-local delta is represented in the canonical package before completion.
 - Legacy status: older `docs/architecture/` documents are not implied to be normalized unless the legacy normalization artifact classifies them.
 
 ## Package Quality Checks
@@ -84,7 +119,7 @@ This simple architecture-review format does not replace the repository-wide mate
 Evaluate each with `pass`, `concern`, or `block`:
 
 1. **Spec alignment**: design satisfies all relevant requirements and does not add hidden behavior.
-2. **Package shape**: canonical or change-local artifact usage matches the approved C4, arc42, and ADR method.
+2. **Package shape**: the classified review surface matches the approved C4, arc42, and ADR method.
 3. **Boundary clarity**: C4 views and Building Block View make component responsibilities clear.
 4. **Data ownership**: data model, migrations, schemas, and ownership are explicit when relevant.
 5. **Interface safety**: public contracts, compatibility, and versioning are addressed.
@@ -193,12 +228,26 @@ Do not add a dedicated `pr-review` stage. It is an unsupported review stage unle
 
 ## When full-file read is required
 
-Read the full file when the whole file is the review target, when checking all 12 arc42 headings or lifecycle metadata, when merge-back from a change-local delta may affect multiple sections, when ADR supersession or legacy lifecycle status affects the verdict, when the relevant section cannot be isolated safely, when surrounding context can change the conclusion, when bounded searches disagree, or when a behavior-changing edit depends on the whole source-of-truth artifact.
+Read the full file when the whole file is the review target, when checking all 12 arc42 headings or lifecycle metadata, when an ADR supersession or legacy lifecycle status affects the verdict, when the relevant section cannot be isolated safely, when surrounding context can change the conclusion, when bounded searches disagree, or when a behavior-changing edit depends on the whole source-of-truth artifact.
 
 ## Expected output
 
-- verdict: approve, revise, or block;
+Start with:
+
+```md
+## Result
+
+- Review surface: canonical-architecture-update | ADR | no-architecture-impact-rationale | proposal-or-spec-gap
+- Status: approved | changes-requested | blocked | inconclusive
+- Findings:
+- Required canonical updates:
+- Required ADR updates:
+- Next stage:
+```
+
+Then include:
+
 - findings by review dimension with evidence, required outcome, and safe resolution;
-- missing C4 views, arc42 sections, merge-back, legacy status, ADRs, or design decisions;
+- missing C4 views, arc42 sections, legacy status, ADRs, or design decisions;
 - exact suggested changes;
 - readiness statement for `plan`, isolated stop, or blocker state.
