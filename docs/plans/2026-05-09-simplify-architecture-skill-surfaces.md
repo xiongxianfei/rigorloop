@@ -76,12 +76,12 @@ The implementation removes change-local architecture deltas from the normal arch
 
 - Current milestone: M1. Test Spec and Source Lifecycle Alignment
 - Current milestone state: review-requested
-- Last reviewed milestone: none
-- Review status: proposal-review R2, spec-review R1, architecture-review R1, and plan-review R2 are approved. M1 implementation is complete and ready for code-review.
+- Last reviewed milestone: M1
+- Review status: CR1-F1 and CR2-F1 are resolved and M1 is returned for code-review rerun.
 - Remaining in-scope implementation milestones: M1, M2, M3, M4
-- Next stage: code-review M1
+- Next stage: code-review M1 rerun
 - Final closeout readiness: not ready
-- Reason final closeout is not ready: M1-M4 implementation, code-review for each implementation milestone, review-resolution when triggered, explain-change, verify, and PR handoff remain.
+- Reason final closeout is not ready: M1 is awaiting code-review rerun after review-resolution; M2-M4 implementation, code-review for each implementation milestone, review-resolution when triggered, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -330,14 +330,14 @@ python scripts/validate-adapters.py --version 0.1.1
   - `docs/plan.md`
 - Dependencies:
   - M1 through M4 are closed.
-  - M1 through M4 have each completed code-review.
+  - M1 through M4 have each completed their milestone code-review loop.
   - Material findings from M1 through M4 code-review are resolved or explicitly dispositioned.
-  - Code-review has no unresolved material findings.
+  - Review closeout for M1 through M4 is recorded before M5 starts.
 - Tests to add/update:
   - No new implementation tests expected; this milestone validates final artifact coherence.
 - Implementation steps:
-  - Run code-review on the completed implementation.
-  - Resolve material findings if any and rerun targeted review.
+  - Confirm M1-M4 are closed and each milestone review loop has passed.
+  - Confirm required review-resolution is closed and no material finding remains open.
   - Create or update durable explain-change evidence.
   - Run final verify after explain-change exists.
   - Prepare PR handoff only after verify passes.
@@ -404,7 +404,8 @@ python scripts/validate-adapters.py --version 0.1.1
 - [x] Plan-review complete.
 - [x] Test-spec revised.
 - [x] M1 implementation complete and handed to code-review.
-- [ ] M1 closed after code-review.
+- [x] M1 CR1-F1 and CR2-F1 resolved and returned to code-review.
+- [ ] M1 closed after clean code-review.
 - [ ] M2 closed.
 - [ ] M3 closed.
 - [ ] M4 closed.
@@ -433,16 +434,25 @@ python scripts/validate-adapters.py --version 0.1.1
   - `python scripts/test-change-metadata-validator.py`
   - `git diff --check -- specs/architecture-package-method.test.md docs/architecture/system/architecture.md docs/adr/ADR-20260509-architecture-skill-surface-simplification.md docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/plan.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces`
   - `rg -n '[[:blank:]]$|\t' specs/architecture-package-method.test.md docs/architecture/system/architecture.md docs/adr/ADR-20260509-architecture-skill-surface-simplification.md docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml` returned no matches.
+- M1 review-resolution closeout validation passed on 2026-05-09:
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml`
+  - `python scripts/validate-review-artifacts.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces`
+  - `python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md`
+  - `python scripts/test-change-metadata-validator.py`
+  - `git diff --check -- docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md`
+  - `rg -n '[[:blank:]]$|\t' docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md` returned no matches.
 
 ## Outcome and Retrospective
 
-This plan is active. It is ready for plan-review, not implementation completion or PR readiness.
+This plan is active. M1 is in review-resolution after code-review R1 and R2, not implementation completion, final closeout, or PR readiness.
+CR1-F1 and CR2-F1 are resolved for re-review, and M1 is back in `review-requested`.
 
 ## Readiness
 
-- Next stage: code-review M1
+- Next stage: code-review M1 rerun
 - Test-spec readiness: complete for the 2026-05-09 simplification.
-- Implementation readiness: M1 is implemented and ready for code-review. M2-M4 remain gated by the per-milestone implementation and code-review loop.
+- Implementation readiness: M1 review-resolution fixes are complete, targeted validation passed, and the milestone state is `review-requested`.
 - Final closeout readiness: not ready until all in-scope implementation milestones are closed and downstream review, rationale, verify, and PR gates are complete.
 
 ## Risks and Follow-Ups
