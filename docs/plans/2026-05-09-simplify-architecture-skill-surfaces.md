@@ -75,13 +75,13 @@ The implementation removes change-local architecture deltas from the normal arch
 ## Current Handoff Summary
 
 - Current milestone: M5. Lifecycle Closeout
-- Current milestone state: implementing
+- Current milestone state: verified
 - Last reviewed milestone: M4
 - Review status: code-review R9 completed cleanly; M4 is closed.
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
-- Final closeout readiness: ready to start
-- Reason final closeout is not complete: verify and PR handoff remain.
+- Next stage: pr
+- Final closeout readiness: branch-ready for PR handoff
+- Reason final closeout is not complete: PR handoff remains.
 
 ## Milestones
 
@@ -333,7 +333,7 @@ python scripts/validate-adapters.py --version 0.1.1
 
 ### M5. Lifecycle Closeout
 
-- Milestone state: implementing
+- Milestone state: verified
 - Goal: Complete downstream gates after implementation milestones are closed.
 - Requirements: repository workflow closeout, review, rationale, verification, and PR-readiness rules.
 - Files/components likely touched:
@@ -361,7 +361,7 @@ python scripts/validate-adapters.py --version 0.1.1
   - Commands selected by `code-review`, `explain-change`, and `verify` based on the final diff.
   - At minimum, rerun the M4 generated-output, adapter, lifecycle, selected-validation, and diff checks after all fixes.
 - Expected observable result: Final lifecycle closeout starts only after M1-M4 have each passed their milestone review loop; the change has current rationale and verification evidence, plan/index lifecycle state is synchronized, and PR handoff can truthfully describe readiness.
-- Commit message: `M5: close architecture surface simplification`
+- Commit message: `M5: verify architecture surface simplification`
 - Milestone closeout:
   - targeted validation passed
   - progress updated
@@ -430,6 +430,7 @@ python scripts/validate-adapters.py --version 0.1.1
 - [x] M4 implementation complete and handed to code-review.
 - [x] M4 closed after clean code-review.
 - [x] M5 explain-change evidence created.
+- [x] M5 verify passed.
 - [ ] M5 closed.
 
 ## Decision Log
@@ -574,6 +575,20 @@ python scripts/validate-adapters.py --version 0.1.1
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/explain-change.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md`
   - `git diff --check -- docs/changes/2026-05-09-simplify-architecture-skill-surfaces/explain-change.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md`
   - `rg -n '[[:blank:]]$|\t' docs/changes/2026-05-09-simplify-architecture-skill-surfaces/explain-change.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md` returned no matches.
+- M5 final verify passed on 2026-05-09:
+  - `python scripts/build-skills.py --check`
+  - `python scripts/build-adapters.py --version 0.1.1 --check`
+  - `python scripts/validate-adapters.py --version 0.1.1`
+  - `python scripts/test-adapter-distribution.py`
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/test-review-artifact-validator.py`
+  - `python scripts/validate-review-artifacts.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml`
+  - `python scripts/test-change-metadata-validator.py`
+  - `python scripts/select-validation.py --mode explicit` for the touched proposal, spec, test spec, architecture package, ADRs, skills, generated outputs, change artifacts, active plan, and plan index.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths` for the touched lifecycle artifacts passed with the existing unrelated lifecycle warning in `docs/plan.md` line 17.
+  - `bash scripts/ci.sh --mode explicit` for the touched skill, validator, test-spec, plan, plan-index, and change-metadata paths.
 
 ## Outcome and Retrospective
 
@@ -590,15 +605,16 @@ Code-review R8 completed cleanly, so M3 is closed and the next stage is M4 imple
 M4 implementation refreshed generated Codex skill mirrors and public adapter packages; M4 is now in `review-requested`.
 Code-review R9 completed cleanly, so M4 is closed and the next stage is explain-change.
 M5 durable explain-change evidence has been created; the next stage is verify.
+M5 final verification passed; the branch is ready for PR handoff.
 
 ## Readiness
 
-- Next stage: verify
+- Next stage: pr
 - Test-spec readiness: complete for the 2026-05-09 simplification.
 - Implementation readiness: complete for M1-M4; no in-scope implementation milestone remains open.
-- Final closeout readiness: explain-change evidence exists; verify is ready to run. PR handoff is not ready until verify passes.
+- Final closeout readiness: M1-M4 are reviewed and closed, explain-change evidence exists, and verify passed. PR handoff is ready to start.
 
 ## Risks and Follow-Ups
 
-- Follow-up: run `verify` now that `docs/changes/2026-05-09-simplify-architecture-skill-surfaces/explain-change.md` exists.
+- Follow-up: run `pr` handoff from the verified branch state.
 - Follow-up: update `docs/plan.md` and this plan body together when the initiative changes lifecycle state.
