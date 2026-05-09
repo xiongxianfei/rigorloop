@@ -17,11 +17,12 @@ Review closeout: code-review-r4
 Review closeout: code-review-r5
 Review closeout: code-review-r6
 Review closeout: code-review-r7
+Review closeout: code-review-r8
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `architecture-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-r1`, `code-review-r2`, `code-review-r3`, `code-review-r4`, `code-review-r5`, `code-review-r6`, `code-review-r7`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `architecture-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-r1`, `code-review-r2`, `code-review-r3`, `code-review-r4`, `code-review-r5`, `code-review-r6`, `code-review-r7`, `code-review-r8`
 - Findings resolved: 6
 - Unresolved findings: 0
-- Final result: proposal-review R1 requested revision for one material finding. The proposal wording was revised to require a new ADR amending or narrowing the existing architecture-package-method ADR, so the finding is closed. Proposal-review R2 approved the revised proposal with no material findings. Spec-review R1 approved the draft architecture-package-method amendment with no material findings. Architecture-review R1 approved the canonical architecture update and new ADR with no material findings. Plan-review R1 requested changes for PR-F1; the plan now requires per-milestone code-review handoff and review closeout for M1-M4 before final lifecycle closeout. Plan-review R2 approved the revised plan with no material findings. Code-review R1 requested changes for CR1-F1 and code-review R2 requested changes for CR2-F1. Both findings are resolved. Code-review R3 found no new material findings for the CR1/CR2 open-state alignment. Code-review R4 requested changes for CR4-F1, which is resolved. Code-review R5 requested changes for CR5-F1; the owner rejected that lifecycle review finding for this plan implementation review, so it is closed without the requested wording fix. Code-review R6 found no material findings and closed M1. Code-review R7 found no material findings and closed M2.
+- Final result: proposal-review R1 requested revision for one material finding. The proposal wording was revised to require a new ADR amending or narrowing the existing architecture-package-method ADR, so the finding is closed. Proposal-review R2 approved the revised proposal with no material findings. Spec-review R1 approved the draft architecture-package-method amendment with no material findings. Architecture-review R1 approved the canonical architecture update and new ADR with no material findings. Plan-review R1 requested changes for PR-F1; the plan now requires per-milestone code-review handoff and review closeout for M1-M4 before final lifecycle closeout. Plan-review R2 approved the revised plan with no material findings. Code-review R1 requested changes for CR1-F1 and code-review R2 requested changes for CR2-F1. Both findings are resolved. Code-review R3 found no new material findings for the CR1/CR2 open-state alignment. Code-review R4 requested changes for CR4-F1, which is resolved. Code-review R5 requested changes for CR5-F1; the owner rejected that lifecycle review finding for this plan implementation review, so it is closed without the requested wording fix. Code-review R6 found no material findings and closed M1. Code-review R7 found no material findings and closed M2. Code-review R8 found no material findings and closed M3.
 
 ## Resolution Overview
 
@@ -151,5 +152,9 @@ Validation evidence: CR5-F1 rejection validation passed: `python scripts/validat
 No material findings.
 
 ### code-review-r7
+
+No material findings.
+
+### code-review-r8
 
 No material findings.
