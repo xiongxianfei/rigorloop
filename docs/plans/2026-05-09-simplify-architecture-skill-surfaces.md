@@ -2,11 +2,11 @@
 
 ## Status
 
-- active
+- done
 - Owner: maintainers
 - Start date: 2026-05-09
 - Last updated: 2026-05-09
-- Related issue or PR: none yet
+- Related issue or PR: local PR handoff complete; PR URL to be recorded after opening.
 - Supersedes: none
 - selected_workflow_contract: standard
 - broad_smoke_required: false
@@ -75,13 +75,13 @@ The implementation removes change-local architecture deltas from the normal arch
 ## Current Handoff Summary
 
 - Current milestone: M5. Lifecycle Closeout
-- Current milestone state: verified
+- Current milestone state: closed
 - Last reviewed milestone: M4
 - Review status: code-review R9 completed cleanly; M4 is closed.
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: branch-ready for PR handoff
-- Reason final closeout is not complete: PR handoff remains.
+- Next stage: Done
+- Final closeout status: complete
+- Remaining lifecycle work: none.
 
 ## Milestones
 
@@ -431,7 +431,7 @@ python scripts/validate-adapters.py --version 0.1.1
 - [x] M4 closed after clean code-review.
 - [x] M5 explain-change evidence created.
 - [x] M5 verify passed.
-- [ ] M5 closed.
+- [x] M5 closed.
 
 ## Decision Log
 
@@ -586,13 +586,13 @@ python scripts/validate-adapters.py --version 0.1.1
   - `python scripts/validate-review-artifacts.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces`
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml`
   - `python scripts/test-change-metadata-validator.py`
-  - `python scripts/select-validation.py --mode explicit` for the touched proposal, spec, test spec, architecture package, ADRs, skills, generated outputs, change artifacts, active plan, and plan index.
+  - `python scripts/select-validation.py --mode explicit` for the touched proposal, spec, test spec, architecture package, ADRs, skills, generated outputs, change artifacts, completed plan, and plan index.
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths` for the touched lifecycle artifacts passed with the existing unrelated lifecycle warning in `docs/plan.md` line 17.
   - `bash scripts/ci.sh --mode explicit` for the touched skill, validator, test-spec, plan, plan-index, and change-metadata paths.
 
 ## Outcome and Retrospective
 
-This plan is active. M1 is in review-resolution after code-review R1 and R2, not implementation completion, final closeout, or PR readiness.
+This plan is done. M1 entered review-resolution after code-review R1 and R2, not implementation completion, final closeout, or PR readiness.
 CR1-F1 and CR2-F1 are resolved for re-review, and M1 is back in `review-requested`.
 Code-review R4 requested CR4-F1, so M1 is back in review-resolution.
 CR4-F1 is resolved for re-review, and M1 is back in `review-requested`.
@@ -605,16 +605,16 @@ Code-review R8 completed cleanly, so M3 is closed and the next stage is M4 imple
 M4 implementation refreshed generated Codex skill mirrors and public adapter packages; M4 is now in `review-requested`.
 Code-review R9 completed cleanly, so M4 is closed and the next stage is explain-change.
 M5 durable explain-change evidence has been created; the next stage is verify.
-M5 final verification passed; the branch is ready for PR handoff.
+M5 final verification passed; the branch was confirmed for PR handoff.
+PR handoff closeout is complete; no true downstream lifecycle event remains in this plan.
 
 ## Readiness
 
-- Next stage: pr
+- Next stage: Done
 - Test-spec readiness: complete for the 2026-05-09 simplification.
 - Implementation readiness: complete for M1-M4; no in-scope implementation milestone remains open.
-- Final closeout readiness: M1-M4 are reviewed and closed, explain-change evidence exists, and verify passed. PR handoff is ready to start.
+- Final closeout: complete. Plan index and plan body are synchronized as Done for PR review.
 
 ## Risks and Follow-Ups
 
-- Follow-up: run `pr` handoff from the verified branch state.
-- Follow-up: update `docs/plan.md` and this plan body together when the initiative changes lifecycle state.
+- Follow-up: confirm hosted GitHub Actions status for the PR before merge.

@@ -622,5 +622,5 @@ changed_files:
   - dist/adapters/opencode/.opencode/skills/architecture-review/SKILL.md
   - scripts/test-skill-validator.py
 review:
-  status: branch_ready_after_verify
+  status: pr_handoff_ready
   unresolved_items: 0
