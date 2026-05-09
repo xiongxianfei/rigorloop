@@ -6,17 +6,19 @@ Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
+Review closeout: code-review-m1-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`
-- Findings resolved: 1
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `code-review-m1-r1`
+- Findings resolved: 2
 - Unresolved findings: 0
-- Current result: proposal-review R1 requested revision for one material finding. The proposal validation strategy now uses repository-runnable versioned adapter commands, so the finding is closed. Proposal-review R2 approved the revised proposal with no material findings.
+- Current result: proposal-review R1 requested revision for one material finding. The proposal validation strategy now uses repository-runnable versioned adapter commands, so the finding is closed. Proposal-review R2 approved the revised proposal with no material findings. Code-review M1 R1 requested one state-sync fix; the active plan current handoff reason now matches the M1 review-requested state.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 |---|---|---|---|
 | SSWS-PR1-F1 | accepted | resolved | Proposal validation strategy now uses runnable versioned adapter validation for this repository. |
+| SSWS-CR1-F1 | accepted | resolved | Active plan final-closeout reason now reflects M1 review-requested and M2-M4 not started. |
 
 ## Resolution Entries
 
@@ -38,3 +40,18 @@ Validation evidence: `python scripts/validate-review-artifacts.py --mode closeou
 ### proposal-review-r2
 
 No material findings.
+
+### code-review-m1-r1
+
+#### SSWS-CR1-F1 - Current handoff reason contradicts M1 milestone state
+
+Finding ID: SSWS-CR1-F1
+Disposition: accepted
+Status: resolved
+Owner: implementation author
+Owning stage: implement M1
+Decision owner: implementation author
+Chosen action: Updated the active plan `Current Handoff Summary` final-closeout reason so it no longer says implementation milestones are not started after M1 reached `review-requested`.
+Rationale: The accepted single-source workflow-state contract requires the current handoff block to avoid stale live-state wording. Since M1 is `review-requested`, the reason must state that M1 is not reviewed or closed and M2-M4 are not started.
+Validation target: Active plan current handoff reason, M1 targeted validation, review artifact closeout, and change metadata.
+Validation evidence: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-09-single-source-of-workflow-state`, `python scripts/validate-change-metadata.py docs/changes/2026-05-09-single-source-of-workflow-state/change.yaml`, M1 lifecycle validation, M1 validator tests, and M1 diff check pass after the fix.

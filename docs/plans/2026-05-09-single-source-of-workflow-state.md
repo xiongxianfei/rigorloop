@@ -78,7 +78,7 @@ The implementation makes the active plan `Current Handoff Summary` the live stat
 - Remaining in-scope implementation milestones: M1, M2, M3, M4
 - Next stage: code-review M1
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation milestones are not started, generated output is not refreshed, code-review has not run, explain-change is missing, verify has not run, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M1 is `review-requested` but not reviewed or closed, M2-M4 are not started, generated output is not refreshed, final explain-change is not complete, verify has not run, and PR handoff is not prepared.
 
 ## Milestones
 
@@ -380,6 +380,7 @@ Use targeted validation first, then the final explicit CI scope in M5. Do not cl
 - [x] 2026-05-09: Test spec authored and activated.
 - [x] 2026-05-09: M1 implementation started; scope limited to test spec plus focused validator/static proof.
 - [x] 2026-05-09: M1 focused validator/static proof implemented and targeted validation passed.
+- [x] 2026-05-09: Code-review M1 R1 found stale final-closeout reason wording; finding `SSWS-CR1-F1` was accepted and fixed before returning M1 to review-requested.
 - [ ] M1. Test Spec and Validator Coverage
 - [ ] M2. Workflow and Governance Guidance
 - [ ] M3. Canonical Skill Contract Updates
@@ -393,6 +394,7 @@ Use targeted validation first, then the final explicit CI scope in M5. Do not cl
 - 2026-05-09: Keep broad semantic plan-state validation out of the first implementation slice; use focused static proof and review instead.
 - 2026-05-09: Test-spec proof uses static, contract, generated-output, adapter, lifecycle, and manual review checks rather than runtime workflow simulation.
 - 2026-05-09: M1 static proof pins the new test-spec/plan contract and readiness handoff behavior without adding broad semantic plan-state validation.
+- 2026-05-09: Treat stale wording inside `Current Handoff Summary` as a material state-sync issue even when the milestone state field itself is correct.
 
 ## Surprises and Discoveries
 
@@ -424,6 +426,13 @@ Use targeted validation first, then the final explicit CI scope in M5. Do not cl
   - `python scripts/test-artifact-lifecycle-validator.py`
   - `git diff --check -- specs/single-source-of-workflow-state.md specs/single-source-of-workflow-state.test.md scripts/test-skill-validator.py scripts/test-artifact-lifecycle-validator.py docs/plans/2026-05-09-single-source-of-workflow-state.md docs/plan.md docs/changes/2026-05-09-single-source-of-workflow-state`
 - Lifecycle validation emitted expected merge-language warnings in `docs/plan.md` line 18, `specs/single-source-of-workflow-state.md` line 52, and `specs/single-source-of-workflow-state.test.md` line 208.
+- 2026-05-09 M1 code-review R1 resolution validation passed:
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-09-single-source-of-workflow-state`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-09-single-source-of-workflow-state/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-09-single-source-of-workflow-state/change.yaml --path docs/changes/2026-05-09-single-source-of-workflow-state/explain-change.md --path docs/plan.md --path docs/plans/2026-05-09-single-source-of-workflow-state.md --path specs/single-source-of-workflow-state.md --path specs/single-source-of-workflow-state.test.md`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/test-artifact-lifecycle-validator.py`
+  - `git diff --check -- docs/changes/2026-05-09-single-source-of-workflow-state docs/plans/2026-05-09-single-source-of-workflow-state.md scripts/test-skill-validator.py scripts/test-artifact-lifecycle-validator.py specs/single-source-of-workflow-state.test.md docs/plan.md`
 
 ## Outcome and Retrospective
 
