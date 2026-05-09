@@ -86,9 +86,10 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
 - Remaining in-scope implementation milestones: none; M6 is lifecycle-closeout.
 - CI-maintenance status: complete; no hosted workflow or CI wrapper edit required.
 - Explain-change status: complete; durable rationale exists at `docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/explain-change.md`.
-- Next stage: final `verify`
-- Final closeout readiness: in progress; ready to enter final `verify`, but PR handoff is not ready until verify passes.
-- Reason final closeout is not complete: final `verify` and `pr` remain.
+- Verify status: complete; branch-ready evidence is recorded by final verify on 2026-05-09.
+- Next stage: `pr`
+- Final closeout readiness: in progress; branch-ready, but PR body/open readiness still belongs to `pr`.
+- Reason final closeout is not complete: PR handoff remains.
 
 ## Milestones
 
@@ -453,6 +454,7 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
 - [x] M5 review evidence and selected validation closed after clean code-review R7.
 - [x] M6 ci-maintenance reviewed hosted CI and selector coverage with no workflow edit required.
 - [x] M6 explain-change created durable rationale before final verify.
+- [x] M6 final verify passed selector-backed branch validation and confirmed branch-ready before PR handoff.
 - [ ] M6 lifecycle closeout.
 
 ## Decision Log
@@ -479,6 +481,7 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
 - 2026-05-08: Code-review R7 closed M5 with no material findings. Rationale: review artifacts and change metadata validate, concrete-path selected CI covers the initiative changed surface, and M6 is lifecycle-closeout rather than an implementation milestone.
 - 2026-05-09: CI-maintenance made no hosted workflow edit. Rationale: `.github/workflows/ci.yml` already runs on pull requests and `main` pushes without path filters, delegates to `scripts/ci.sh`, and branch-range selector inspection selected deterministic checks for the changed skill, adapter, lifecycle, review artifact, change metadata, README, and selector surfaces with no unclassified paths.
 - 2026-05-09: Explain-change uses a change-local artifact instead of PR text alone. Rationale: this is ordinary non-trivial workflow-governance work, so the durable rationale belongs in `docs/changes/<change-id>/explain-change.md` before final `verify`.
+- 2026-05-09: Final verify records evidence in the plan and `change.yaml` without a standalone `verify-report.md`. Rationale: no required manual proof exists, and the selected automated proof, review closeout, lifecycle checks, drift checks, and CI-scope review are sufficient durable branch-ready evidence before PR handoff.
 
 ## Surprises and Discoveries
 
@@ -500,6 +503,7 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
 - Code-review R7 confirmed M5 is clean. All in-scope implementation milestones are closed; the remaining work is lifecycle closeout.
 - CI-maintenance confirmed that the hosted CI workflow already covers this change through the repo-owned selector-backed wrapper, so changing GitHub Actions would add maintenance surface without improving coverage.
 - Explain-change had to summarize a broad branch diff by area rather than repeat every generated file individually. The artifact still indexes generated skill mirrors and adapter package copies as derived output, not canonical source.
+- Final verify found nonblocking lifecycle-language warnings in tracked governance guidance, but those warnings describe the repository's reviewer-attention rule for merge-dependent language rather than stale lifecycle state for this initiative.
 
 ## Validation Notes
 
@@ -667,6 +671,15 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
   - `bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/explain-change.md` passed selected artifact-lifecycle, change-metadata regression, and change-metadata validation checks.
   - `git diff --check -- docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/explain-change.md` passed.
   - Whitespace scan for the same explain-change recording paths passed.
+- 2026-05-09 final verify validation:
+  - `python scripts/select-validation.py --mode pr --base origin/proposal/2026-05-08-skill-optimization --head HEAD` passed with no unclassified paths, no blocking selector results, and `broad_smoke_required: false`.
+  - `bash scripts/ci.sh --mode pr --base origin/proposal/2026-05-08-skill-optimization --head HEAD` passed selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `readme.validate`, `readme.vision_markers`, and `selector.regression` checks.
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-single-workflow-lane-explain-before-verify` passed with 17 reviews, 23 findings, 17 log entries, and 23 resolution entries.
+  - `git diff --check origin/proposal/2026-05-08-skill-optimization...HEAD` passed.
+  - Retired public workflow and shipped skill wording scans passed with no matches.
+  - `python scripts/build-skills.py --check` passed; generated skills are in sync.
+  - `python scripts/build-adapters.py --version 0.1.1 --check` passed; generated adapter output is in sync.
+  - Final verify recording validation for `docs/plan.md`, this plan, and `change.yaml` passed after recording this state.
 
 ## Outcome and Retrospective
 
@@ -678,17 +691,18 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
 - M5 implementation is closed after review evidence, selected validation, and clean code-review R7.
 - CI-maintenance is complete with no hosted workflow edit required.
 - Explain-change is complete at `docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/explain-change.md`.
+- Final verify is complete and branch-ready is confirmed by local selector-backed validation.
 - Final closeout is in progress and not complete.
 
 ## Readiness
 
-- Next stage: final `verify`.
+- Next stage: `pr`.
 - Plan-review readiness: complete; plan-review R2 approved this plan.
 - Test-spec readiness: complete; matching test specs confirm the proof map against the approved plan.
 - Implementation readiness: complete; all in-scope implementation milestones are closed.
-- Final closeout readiness: in progress. Final `verify` may run now that `ci-maintenance` is complete and `explain-change.md` exists, but PR handoff is not ready until verify passes.
+- Final closeout readiness: in progress. Branch-ready is confirmed, but PR handoff remains before lifecycle closeout is complete.
 
 ## Risks and Follow-Ups
 
-- Follow-up: run final `verify`.
+- Follow-up: run `pr`.
 - Follow-up: when the initiative reaches final closeout, update both `docs/plan.md` and this plan body in the same PR state transition.
