@@ -104,4 +104,4 @@ Status: changes-requested
 Detailed record: reviews/code-review-r4.md
 Resolution: review-resolution.md#code-review-r4
 Material findings: CR4-F1
-Open findings: CR4-F1
+Open findings: None
