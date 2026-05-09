@@ -71,14 +71,14 @@ The implementation makes the active plan `Current Handoff Summary` the live stat
 
 ## Current Handoff Summary
 
-- Current milestone: M4. Generated Output and Adapter Validation
-- Current milestone state: review-requested
-- Last reviewed milestone: M3. Canonical Skill Contract Updates
-- Review status: M4 implementation handoff validation passed; waiting for M4 code-review. M3 code-review completed with no material findings. M2 code-review completed with no material findings. M1 code-review completed after `SSWS-CR1-F1` and `SSWS-CR2-F1` were resolved; no material findings remain open.
-- Remaining in-scope implementation milestones: M4
-- Next stage: code-review M4
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M4 is awaiting code-review, final explain-change is not complete, verify has not run, and PR handoff is not prepared.
+- Current milestone: M5. Lifecycle Closeout
+- Current milestone state: planned
+- Last reviewed milestone: M4. Generated Output and Adapter Validation
+- Review status: M4 code-review completed with no material findings. M3 code-review completed with no material findings. M2 code-review completed with no material findings. M1 code-review completed after `SSWS-CR1-F1` and `SSWS-CR2-F1` were resolved; no material findings remain open.
+- Remaining in-scope implementation milestones: none
+- Next stage: explain-change / M5 lifecycle closeout
+- Final closeout readiness: ready
+- Reason final closeout is or is not ready: M1-M4 are closed, required review-resolution is closed, and no implementation milestone remains open; final explain-change, verify, PR handoff, and plan/index synchronization remain to complete M5.
 
 ## Milestones
 
@@ -242,7 +242,7 @@ The implementation makes the active plan `Current Handoff Summary` the live stat
 
 ### M4. Generated Output and Adapter Validation
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Refresh generated local skills and public adapters after canonical skill changes, and prove generated output is current.
 - Requirements: `R32`-`R36`, `EC6`.
 - Files/components likely touched:
@@ -390,10 +390,11 @@ Use targeted validation first, then the final explicit CI scope in M5. Do not cl
 - [x] 2026-05-09: M3 code-review completed with no material findings; M3 closed and handoff moved to M4.
 - [x] 2026-05-09: M4 implementation started; scope limited to generated local skills, public adapters, and generated-output validation evidence.
 - [x] 2026-05-09: M4 generated local skills and public adapters refreshed from canonical skill sources; targeted validation passed and M4 handed off to code-review.
+- [x] 2026-05-09: M4 code-review completed with no material findings; M4 closed and handoff moved to M5 lifecycle closeout.
 - [x] M1. Test Spec and Validator Coverage
 - [x] M2. Workflow and Governance Guidance
 - [x] M3. Canonical Skill Contract Updates
-- [ ] M4. Generated Output and Adapter Validation
+- [x] M4. Generated Output and Adapter Validation
 - [ ] M5. Lifecycle Closeout
 
 ## Decision Log
@@ -498,6 +499,19 @@ Use targeted validation first, then the final explicit CI scope in M5. Do not cl
   - `python scripts/validate-skills.py`
   - `python scripts/test-skill-validator.py`
   - `python scripts/select-validation.py --mode explicit --path .codex/skills/workflow/SKILL.md --path dist/adapters/codex/.agents/skills/workflow/SKILL.md --path dist/adapters/claude/.claude/skills/workflow/SKILL.md --path dist/adapters/opencode/.opencode/skills/workflow/SKILL.md --path docs/plans/2026-05-09-single-source-of-workflow-state.md --path docs/changes/2026-05-09-single-source-of-workflow-state/change.yaml`
+  - `python scripts/test-change-metadata-validator.py`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-09-single-source-of-workflow-state/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-09-single-source-of-workflow-state/change.yaml --path docs/plans/2026-05-09-single-source-of-workflow-state.md`
+  - `git diff --check -- .codex/skills dist/adapters docs/plans/2026-05-09-single-source-of-workflow-state.md docs/changes/2026-05-09-single-source-of-workflow-state`
+- Lifecycle validation emitted expected merge-language warnings in `specs/single-source-of-workflow-state.md` line 52 and `specs/single-source-of-workflow-state.test.md` line 208.
+- 2026-05-09 M4 code-review validation passed:
+  - `python scripts/build-skills.py --check`
+  - `python scripts/build-adapters.py --version 0.1.1 --check`
+  - `python scripts/validate-adapters.py --version 0.1.1`
+  - `python scripts/test-adapter-distribution.py`
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/select-validation.py --mode explicit --path .codex/skills/workflow/SKILL.md --path dist/adapters/codex/.agents/skills/workflow/SKILL.md --path dist/adapters/claude/.claude/skills/workflow/SKILL.md --path dist/adapters/opencode/.opencode/skills/workflow/SKILL.md --path docs/plans/2026-05-09-single-source-of-workflow-state.md --path docs/changes/2026-05-09-single-source-of-workflow-state/change.yaml`
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-09-single-source-of-workflow-state/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-09-single-source-of-workflow-state/change.yaml --path docs/plans/2026-05-09-single-source-of-workflow-state.md`
   - `git diff --check -- .codex/skills dist/adapters docs/plans/2026-05-09-single-source-of-workflow-state.md docs/changes/2026-05-09-single-source-of-workflow-state`
@@ -505,7 +519,7 @@ Use targeted validation first, then the final explicit CI scope in M5. Do not cl
 
 ## Outcome and Retrospective
 
-- Plan is active for M4. M1 is closed after code-review and accepted review-resolution for `SSWS-CR1-F1` and `SSWS-CR2-F1`; M2 is closed after code-review with no material findings; M3 is closed after code-review with no material findings; M4 is awaiting code-review.
+- Plan is active for M5 lifecycle closeout. M1 is closed after code-review and accepted review-resolution for `SSWS-CR1-F1` and `SSWS-CR2-F1`; M2 is closed after code-review with no material findings; M3 is closed after code-review with no material findings; M4 is closed after code-review with no material findings.
 - Done is not available until M1-M4 are closed, required review-resolution is closed, explain-change is complete, verify passes, PR handoff is prepared, and `docs/plan.md` plus this plan are synchronized.
 
 ## Readiness
