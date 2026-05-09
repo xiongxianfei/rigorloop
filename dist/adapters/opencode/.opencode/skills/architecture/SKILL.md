@@ -146,7 +146,7 @@ Use summary and stable-ID first reasoning before broad reads or raw excerpts. Pr
 
 ## Workflow handoff behavior
 
-- In a workflow-managed flow, successful `architecture` completion hands off to `architecture-review` when that review is the next required or default downstream stage.
+- In a workflow-managed flow, successful `architecture` completion hands off to `architecture-review` when that review is the next mandatory or triggered downstream stage.
 - If the design still has open questions that block safe review, stop and report the blocker instead of implying `architecture-review` can proceed.
 - This v1 contract does not imply `architecture-review -> plan`; review-to-next-authoring transitions remain outside the autoprogression boundary unless a later approved change adds them.
 

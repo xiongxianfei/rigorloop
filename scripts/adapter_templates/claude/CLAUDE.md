@@ -1,10 +1,10 @@
 # RigorLoop Claude Code Adapter
 
-This file is generated adapter output for RigorLoop {version}. Do not edit this package to change RigorLoop behavior; edit canonical repository sources under `skills/` and `scripts/adapter_templates/`, then rerun `python scripts/build-adapters.py --version {version}`.
+This file is generated adapter output for RigorLoop {version}. This package is not the canonical source of RigorLoop behavior. Do not edit installed adapter package files directly; update from a fresh RigorLoop adapter package instead.
 
-This package is independently installable by copying the contents of `{package_root}/` into a project root.
+This package is independently installable by copying this adapter package into a project root.
 
-Reusable workflow skills are installed under `{skill_root}/`.
+Reusable workflow skills are installed under `.claude/skills/`.
 
 ## Using RigorLoop skills
 
@@ -18,7 +18,7 @@ TUI examples:
 - `/code-review Review the current diff against the approved artifacts.`
 - `/pr Prepare the verified change for pull request review.`
 
-Other installed skills are available from `{skill_root}/` by their skill names.
+Other installed skills are available from `.claude/skills/` by their skill names.
 
 Do not use Codex `$skill` syntax in Claude Code. This adapter does not document Claude Code one-shot CLI examples because no Claude one-shot form has been smoke-tested for this release.
 

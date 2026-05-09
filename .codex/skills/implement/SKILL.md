@@ -1,7 +1,7 @@
 ---
 name: implement
 description: >
-  Implement a reviewed milestone using strict test-driven development. Use after spec, architecture, plan, and test-spec are ready, or in the fast lane after an explicit spec and test checklist exist.
+  Implement a reviewed milestone using strict test-driven development. Use after spec, architecture, plan, and test-spec are ready, or when the user explicitly requests an isolated implementation task with clear scope and validation evidence.
 argument-hint: [plan path, milestone ID, feature name, or implementation request]
 ---
 
@@ -19,7 +19,7 @@ Implement one approved milestone as the smallest scope-complete, test-driven sli
 
 ## When to use
 
-Use this skill after the relevant spec, architecture, plan, plan-review, and test-spec are ready, or in the fast lane when explicit spec and test evidence exist for the approved slice.
+Use this skill after the relevant spec, architecture, plan, plan-review, and test-spec are ready, or when the user explicitly requests isolated implementation output with clear scope and validation evidence.
 
 ## When not to use
 
@@ -55,7 +55,7 @@ Do not claim:
 
 - review passed, clean review, review-clean status, or no review fixes required;
 - branch-ready, PR-ready, `pr-body-ready`, or `pr-open-ready`;
-- ready-for-verify or `Ready for verify` while any in-scope implementation milestone is open, unreviewed, unresolved, or not closed;
+- ready-for-final-closeout or `Ready for final closeout` while any in-scope implementation milestone is open, unreviewed, unresolved, or not closed;
 - derived artifacts are current unless validation evidence proves it.
 
 ## Progress, readiness, closeout, and Done
@@ -77,17 +77,17 @@ Rules:
 
 - Treat creating or updating that baseline pack as part of the milestone, not as optional follow-up.
 - Do not treat PR text alone as the durable reasoning surface for ordinary non-trivial work.
-- Do not broaden the docs-changes requirement into approved fast-lane work.
+- Do not broaden the docs-changes requirement into isolated manual skill invocations that are not claiming complete workflow delivery.
 - Keep standalone `review-resolution.md` and `verify-report.md` conditional; add them only when their governing workflow triggers apply.
 
 ## Validation layering
 
 Use selector-selected targeted proof before optional broad smoke when the changed paths are known.
 
-- Inspect selected checks with `python scripts/select-validation.py --mode explicit --path <path>...`.
-- Execute selected checks with `bash scripts/ci.sh --mode explicit --path <path>...`.
+- Inspect selected checks with the project's validation selector when one exists.
+- Execute selected checks with the project's validation command.
 - Record stable selected check IDs, such as `skills.validate`, `review_artifacts.validate`, or `selector.regression`, in the active plan or change metadata when they explain the proof scope.
-- Run `bash scripts/ci.sh --mode broad-smoke` only when an authoritative trigger requires broad smoke, such as `broad_smoke_required: true`, main/release mode, review-resolution, test-spec, or release metadata.
+- Run the project's broad validation command only when an authoritative trigger requires broad smoke, such as `broad_smoke_required: true`, main/release mode, review-resolution, test-spec, or release metadata.
 
 ## First-pass completeness
 
@@ -131,7 +131,7 @@ For each milestone:
 11. When implementation work for the milestone is complete, create an implementation handoff commit using the subject format `M<n>: <implemented milestone outcome>` and include milestone validation in the commit body or referenced evidence.
 12. Stop before the next milestone unless the user asked to continue.
 
-Stopping before the next milestone does not cancel a required downstream workflow handoff. In a workflow-managed full-feature flow, once the requested milestone is complete and no stop condition applies, hand off to `code-review` instead of waiting for redundant user confirmation.
+Stopping before the next milestone does not cancel a required downstream workflow handoff. In a workflow-managed standard workflow, once the requested milestone is complete and no stop condition applies, hand off to `code-review` instead of waiting for redundant user confirmation.
 
 ## Milestone-aware handoff
 
@@ -144,7 +144,7 @@ For milestone-based plans, `implement` works on one in-scope implementation mile
 - The milestone becomes `closed` only after clean code-review and any required review-resolution are complete.
 - If accepted review findings return to implementation, keep fixes attached to the same milestone. After fixes and targeted validation evidence are complete, return that same milestone to `review-requested` before rerun review.
 
-`implement` must not set plan readiness to `Ready for verify` while any in-scope implementation milestone remains unreviewed, unresolved, or open. `Ready for verify` is valid only after all in-scope implementation milestones are closed or explicitly deferred by plan revision, final milestone code-review has completed, and required review-resolution is closed.
+`implement` must not set plan readiness to `Ready for final closeout` while any in-scope implementation milestone remains unreviewed, unresolved, or open. `Ready for final closeout` is valid only after all in-scope implementation milestones are closed or explicitly deferred by plan revision, final milestone code-review has completed, and required review-resolution is closed.
 
 ## TDD rules
 
@@ -170,12 +170,12 @@ For milestone-based plans, `implement` works on one in-scope implementation mile
 ## Workflow handoff
 
 - Do not hand off to `code-review` until the slice meets the `first-pass acceptable result` bar.
-- In the full-feature lane, successful `implement` completion hands off to `code-review` unless a stop condition applies.
+- In a workflow-managed standard workflow, successful `implement` completion hands off to `code-review` unless a stop condition applies.
 - Implementation-stage closeout may report milestone completion, validation, blockers, readiness for `code-review`, or the next milestone.
 - Do not use `implement` to claim review findings, review-clean status, or `branch-ready`. If review has not happened yet, say the change is ready for `code-review`, not that no required fixes were found.
 - If milestone validation fails or the implementation reveals a blocker that needs a real user decision, stop before `code-review` and report the blocker explicitly.
 - Ordinary later review comments may still happen. A `preventable first-pass miss` is only a finding that should have been caught by the same-slice completeness set, required edge cases, or targeted validation before handoff.
-- This v1 autoprogression rule does not expand fast-lane or bugfix execution behavior through the `implement` skill.
+- This v1 autoprogression rule does not expand manual skill invocation or bugfix execution behavior through the `implement` skill.
 
 ## Plan update requirements
 
@@ -195,7 +195,7 @@ Update the concrete plan with:
 
 Stop before handoff when:
 
-- required source artifacts are missing, contradictory, or not approved enough for the lane;
+- required source artifacts are missing, contradictory, or not approved enough for the workflow state;
 - tests or targeted validation fail and the failure is not fixed;
 - a spec, architecture, owner-decision, security, permission, or scope blocker appears;
 - the slice cannot meet the first-pass acceptable result;

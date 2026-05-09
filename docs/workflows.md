@@ -16,15 +16,13 @@ This file is the short operational summary for working in this repository. The n
 - Add a skill only when it owns a distinct artifact, gate, review responsibility, recurring action, or approved operational process.
 - Do not create a new skill for one-off helper behavior, tiny formatting rules, or checklists that belong inside an existing skill.
 
-## Choose A Lane
+## Standard Workflow
 
-- Use the fast lane for trivial or low-risk work only.
-  - Reference path: `spec -> implement -> verify -> pr`
-  - Allowed categories: typos, formatting-only changes, small documentation clarifications, comment-only changes, small test-fixture corrections, small non-behavioral renames, and minor generated-artifact refreshes that do not change generator behavior.
-  - Do not use fast lane for: behavior changes, workflow-stage changes, skill-triggering changes, architecture changes, security-sensitive behavior, CI behavior changes, release packaging, schemas, generated-output logic, or changes that are hard to roll back safely.
-  - Fast-lane evidence: record a spec with intent, expected change, out of scope, and validation in the PR body, issue comment, commit message, or a linked change note.
-- Use the full lifecycle for non-trivial work.
-  - Required for behavior changes, workflow-stage changes, CI behavior changes, schema changes, architecture changes, and generated-output logic.
+RigorLoop recommends one standard workflow for complete AI-assisted delivery.
+
+Users may manually invoke an individual skill for focused output. Manual skill invocation is isolated by default and does not mean the full workflow is complete.
+
+Workflow completion claims require evidence from the relevant standard workflow stages.
 
 ## Project Vision
 
@@ -47,8 +45,8 @@ This file is the short operational summary for working in this repository. The n
 - On-demand support: `explore` and `research`.
   - Use them when ambiguity, option expansion, architecture uncertainty, external facts, platform behavior, standards, laws, pricing, or other current evidence affects the decision.
 - Per-change chain:
-  - `proposal -> proposal-review -> spec -> spec-review -> architecture -> architecture-review -> plan -> plan-review -> test-spec -> implement -> code-review -> review-resolution when triggered -> verify -> ci-maintenance when triggered -> explain-change -> pr`
-  - For milestone-based plans, the `implement -> code-review -> review-resolution when triggered` segment repeats for each in-scope implementation milestone. `verify` follows only after all in-scope implementation milestones are closed and required review-resolution is closed.
+  - `proposal -> proposal-review -> spec -> spec-review -> architecture -> architecture-review -> plan -> plan-review -> test-spec -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr`
+  - For milestone-based plans, the `implement -> code-review -> review-resolution when triggered` segment repeats for each in-scope implementation milestone. Final closeout follows only after all in-scope implementation milestones are closed and required review-resolution is closed.
   - `review-resolution` runs only when material review findings, non-final dispositions, or review outcomes require explicit closeout.
   - `ci-maintenance` is conditional support when hosted workflow automation or related CI infrastructure for a material risk is missing, stale, or wrong.
 - Periodic artifacts: `learn`.
@@ -74,7 +72,7 @@ Notes:
 - `ci-maintenance` means creating or updating hosted CI workflow files, validation automation, or platform configuration. It does not mean running validation, designing tests, specifying validation commands, or waiting for existing CI checks.
 - After `spec-review`, the immediate next stage is still `architecture` when needed, otherwise `plan`. Any mention of eventual `test-spec` readiness is downstream readiness, not a stage skip.
 - `plan-review` remains the normal immediate handoff into `test-spec`. If implementation readiness is mentioned there, it is downstream readiness rather than the handoff itself.
-- In the execution lane, stage-owned language stays split: `implement` reports implementation completion or readiness for `code-review`; `code-review` owns review findings; `verify` owns `branch-ready`; `pr` owns `pr-body-ready` and `pr-open-ready`.
+- In standard workflow execution, stage-owned language stays split: `implement` reports implementation completion or readiness for `code-review`; `code-review` owns review findings; `verify` owns `branch-ready`; `pr` owns `pr-body-ready` and `pr-open-ready`.
 - Before `implement` hands off to `code-review`, the slice should satisfy a first-pass acceptable result: address in-scope requirements, required authored and aligned surfaces, required edge cases, and targeted validation for the smallest scope-complete change.
 - If a required surface stays unchanged, record `unaffected with rationale` in an authoritative surface such as the active plan or required change-local artifacts. If missing or contradictory inputs prevent that standard, stop with a blocker instead of handing off an incomplete slice.
 - Later review comments may still happen. A preventable first-pass miss is a finding that should have been caught by the slice's completeness set, required edge cases, or targeted validation before `code-review`.
@@ -107,7 +105,7 @@ Notes:
 
 ## Change-Local Artifacts
 
-- Fast-lane work may omit `docs/changes/<change-id>/` only when the approved fast-lane policy allows omission.
+- Manual skill invocations may omit `docs/changes/<change-id>/` when they are not used to claim complete workflow delivery.
 - For non-trivial work, the baseline change-local pack is `docs/changes/<change-id>/change.yaml` plus durable Markdown reasoning.
 - For new non-trivial work, the default durable reasoning artifact is `docs/changes/<change-id>/explain-change.md`.
 - PR text remains the reviewer-facing summary surface; it does not replace required durable reasoning for non-trivial work.
@@ -118,7 +116,7 @@ Notes:
 - If a detailed file is required before a change-local root exists, create the smallest initial review-record root first. Material findings require `change.yaml`, `review-log.md`, `review-resolution.md`, and `reviews/<stage>-r<n>.md`; no-material triggers require `change.yaml`, `review-log.md`, and `reviews/<stage>-r<n>.md` without an empty `review-resolution.md`.
 - Clean required reviews with no material findings may settle in the reviewed artifact when no detailed-record trigger applies.
 - When material findings exist for a non-trivial change, use `docs/changes/<change-id>/review-resolution.md` and approved dispositions: `accepted`, `rejected`, `deferred`, `partially-accepted`, and `needs-decision`.
-- `needs-decision` is not final. It keeps `review-resolution.md` at `Closeout status: open` and blocks `verify`, `explain-change`, and `pr` until an authorized owner resolves or explicitly defers it.
+- `needs-decision` is not final. It keeps `review-resolution.md` at `Closeout status: open` and blocks `explain-change`, `verify`, and `pr` until an authorized owner resolves or explicitly defers it.
 - `Closeout status: closed` means every material finding has a final disposition, `review-log.md` lists no open findings, and the required action, rationale, follow-up, and validation evidence records for that disposition exist.
 - Keep PR and explain-change review summaries concise: summarize counts by disposition and link `review-resolution.md` instead of duplicating detailed review records.
 - Approved legacy top-level artifacts under `docs/explain/` remain valid durable reasoning surfaces until they are migrated or retired.
@@ -131,16 +129,16 @@ Notes:
   - `proposal -> proposal-review`
   - `spec -> spec-review`
   - `architecture -> architecture-review` when that review stage is the next mandatory or triggered downstream step
-  - full-feature execution from `implement -> code-review -> review-resolution when triggered -> verify -> ci-maintenance when triggered -> explain-change -> pr`
-- In workflow-managed full-feature runs, `code-review` first emits a first-pass review record grounded in the actual diff, upstream artifacts, checklist coverage, and validation evidence before any review-driven fixes begin.
-- In workflow-managed full-feature milestone-based plans, first-pass `clean-with-notes` on a non-final implementation milestone closes the reviewed milestone and continues to the next in-scope implementation milestone.
-- In workflow-managed full-feature milestone-based plans, first-pass `clean-with-notes` on the final implementation milestone continues to `verify` only when no in-scope implementation milestone remains open or unresolved.
-- In workflow-managed full-feature runs, first-pass `changes-requested` continues to `review-resolution`, and first-pass `blocked` or `inconclusive` stops.
-- If the active plan does not clearly identify the reviewed milestone or remaining in-scope implementation milestones, stop for a plan update or inconclusive review instead of inferring verify readiness.
+  - standard workflow execution from `implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr`
+- In workflow-managed standard workflow runs, `code-review` first emits a first-pass review record grounded in the actual diff, upstream artifacts, checklist coverage, and validation evidence before any review-driven fixes begin.
+- In workflow-managed standard workflow milestone-based plans, first-pass `clean-with-notes` on a non-final implementation milestone closes the reviewed milestone and continues to the next in-scope implementation milestone.
+- In workflow-managed standard workflow milestone-based plans, first-pass `clean-with-notes` on the final implementation milestone reaches final closeout only when no in-scope implementation milestone remains open or unresolved.
+- In workflow-managed standard workflow runs, first-pass `changes-requested` continues to `review-resolution`, and first-pass `blocked` or `inconclusive` stops.
+- If the active plan does not clearly identify the reviewed milestone or remaining in-scope implementation milestones, stop for a plan update or inconclusive review instead of inferring final-closeout readiness.
 - Clean reviews require checklist coverage plus no-finding rationale. Positive notes are optional and only useful when they add specific evidence-backed context.
 - Direct `pr` remains in scope and opens the PR when readiness passes.
 - Direct `proposal-review`, `spec-review`, `architecture-review`, `code-review`, `verify`, and `explain-change` stay isolated by default unless the user asks to carry the change through completion.
-- Fast-lane and bugfix execution stay on the repository's existing explicit-step behavior in v1.
+- Manual skill invocations and bugfix skill invocations stay isolated or explicit-step in v1.
 - On-demand and periodic actions such as `explore`, `research`, and `learn` do not auto-run by default.
 - Stop automatic continuation when the user explicitly pauses, validation fails, a review or design issue needs a real decision, permissions or tooling block the next step, or the next action would be stronger than PR creation such as merge, release, deploy, or destructive Git operations.
 - Autoprogression does not replace lifecycle bookkeeping. After `code-review`, `verify`, or other review gates change the real initiative state, update the active plan, any affected active test spec, and `docs/plan.md` before claiming downstream readiness.
@@ -153,8 +151,8 @@ Notes:
 - Each implementation milestone has one `Milestone state`: `planned`, `implementing`, `review-requested`, `resolution-needed`, or `closed`.
 - Use `review-requested` after implementation and targeted validation are complete and the milestone is handed to `code-review`.
 - Use `resolution-needed` when review findings require review-resolution, fixes, owner decision, or re-review.
-- Track the current milestone, current milestone state, last reviewed milestone, review status, remaining in-scope implementation milestones, next stage, verify readiness, and the reason in the active plan or review handoff.
-- Use `lifecycle-closeout` for a milestone or section that tracks only downstream gates such as `verify`, `explain-change`, PR handoff, release, deploy, or final plan closeout.
+- Track the current milestone, current milestone state, last reviewed milestone, review status, remaining in-scope implementation milestones, next stage, final closeout readiness, and the reason in the active plan or review handoff.
+- Use `lifecycle-closeout` for a milestone or section that tracks only downstream gates such as `ci-maintenance`, `explain-change`, `verify`, PR handoff, release, deploy, or final plan closeout.
 - During execution, `implement` keeps the active plan body's progress, decisions, discoveries, and validation notes current.
 - When a planned initiative changes lifecycle state, final lifecycle closeout updates both `docs/plan.md` and the plan body.
 - If a PR completes a planned initiative, move it to `Done` in both `docs/plan.md` and the plan body before opening the PR for review.

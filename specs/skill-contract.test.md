@@ -9,6 +9,8 @@
 - Spec: [Skill Contract](skill-contract.md), approved after clean spec-review on 2026-05-08.
 - Proposal: [Skill Contract Optimization](../docs/proposals/2026-05-08-skill-contract-optimization.md), accepted.
 - Plan: [Skill Contract Optimization Execution Plan](../docs/plans/2026-05-08-skill-contract-optimization.md), active after clean plan-review.
+- Current consuming proposal: [Single Workflow Lane, Explain-Change Before Verify, and Public Skill Surface Boundary](../docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md), accepted.
+- Current consuming plan: [Single Workflow Lane, Explain-Change Before Verify Execution Plan](../docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md), active after plan-review R2.
 - Architecture: not required. The approved slice changes workflow-governance Markdown, canonical skill guidance, shared text blocks, static validation, generated skill mirrors, and public adapter skill copies. It does not add runtime components, storage, API boundaries, deployment boundaries, or a new validation architecture.
 - Project map: `docs/project-map.md` is absent. This test spec does not rely on project-map claims; proof uses the approved spec, active plan, workflow specs, stage skills, shared templates, generator scripts, and existing validator patterns.
 - Related proof surfaces:
@@ -47,7 +49,7 @@
 | `R10`, `R10a`, `R10b`, `R10c`, `R10d`, `R10e`, `R10f` | `T4`, `T10`, `T13` | integration, manual | Claims this skill must not make and narrow overclaim checks |
 | `R11`, `R11a`, `R11b`, `R11c` | `T5`, `T13` | integration, manual | Summary-first result output and common/optional fields |
 | `R12`, `R12a`, `R12b`, `R12c` | `T5`, `T14`, `T13` | integration, manual | Local handoff, public workflow routing pointer, and isolated invocation boundary |
-| `R13`, `R13a`, `R13b`, `R13c`, `R13d`, `R13e`, `R13f` | `T6`, `T13` | integration, manual | Progress, readiness, closeout, Done, and Ready for verify wording |
+| `R13`, `R13a`, `R13b`, `R13c`, `R13d`, `R13e`, `R13f` | `T6`, `T13` | integration, manual | Progress, readiness, closeout, Done, and final closeout readiness wording |
 | `R14`, `R14a`, `R14b`, `R14c`, `R14d`, `R14e` | `T7`, `T13` | integration, manual | Shared-block source, copy-and-check, authority boundary, and no generation v1 |
 | `R15`, `R15a`, `R15b`, `R15c` | `T7`, `T14`, `T13` | integration, manual | First published shared-block set, contributor-only generated-output rule, and deferred shared blocks |
 | `R16`, `R16a`, `R16b`, `R16c` | `T8`, `T13` | integration, manual | Evidence-reading guidance and full-file read escalation |
@@ -75,7 +77,7 @@
 - EC4, shared block adopted by only one skill initially: `T7`
 - EC5, normalized skill needs a short example: `T8`
 - EC6, generated adapter path changes or selector path is concrete: `T9`
-- EC7, `ready for verify` appears in negative guidance: `T10`
+- EC7, final closeout readiness appears in negative guidance: `T10`
 - EC8, optional Phase 4 skill is named but not approved: `T3`, `T12`
 
 ## Acceptance criteria coverage map
@@ -183,11 +185,11 @@
   - `skills/learn/SKILL.md`
   - `scripts/test-skill-validator.py`
 - Steps:
-  - Assert `implement` does not claim review passed, clean review, branch-ready, PR-ready, or ready-for-verify.
+  - Assert `implement` does not claim review passed, clean review, branch-ready, PR-ready, or final closeout readiness.
   - Assert `code-review` does not claim branch-ready, PR-ready, CI passed, or verification passed.
   - Assert `verify` does not claim PR-ready, PR body ready, or review passed.
   - Assert `pr` links implementation, review, verification, and test claims to owning evidence rather than proving them itself.
-  - Assert `plan` distinguishes Done, complete, ready for PR, and ready for verify from remaining gates.
+  - Assert `plan` distinguishes Done, complete, ready for PR, and final closeout readiness from remaining gates.
   - Assert `learn` routes new policy to authoritative artifacts instead of creating policy in the lesson alone.
   - Manually confirm review skills preserve formal review recording rules when findings exist.
 - Expected result:
@@ -235,8 +237,8 @@
   - active plan examples under `docs/plans/`
 - Steps:
   - Assert planning and execution guidance defines or preserves distinct meanings for `Progress`, `Readiness`, `Closeout`, and `Done`.
-  - Assert `Ready for verify` is not described as Done, PR-ready, branch-ready, or full lifecycle completion.
-  - Assert plans that mention `Ready for verify` pair it with remaining completion gates when ambiguity is possible.
+  - Assert final closeout readiness is not described as Done, PR-ready, branch-ready, or full lifecycle completion.
+  - Assert plans that mention final closeout readiness pair it with remaining completion gates when ambiguity is possible.
   - Confirm milestone closeout depends on the reviewed milestone state and generated-output refresh when applicable.
 - Expected result:
   - A next-stage readiness line cannot be mistaken for final lifecycle completion.
@@ -333,7 +335,7 @@
 - Steps:
   - Assert validator coverage prefers positive required wording and required sections before forbidden phrases.
   - Assert any forbidden phrase checks are limited to historically dangerous skill-specific claims.
-  - Assert checks do not block explicit negative guidance, including "Do not set Ready for verify from implement."
+  - Assert checks do not block explicit negative guidance, including "Do not set final closeout readiness from implement."
   - Assert no broad natural-language quality scoring or semantic prose scoring is added.
 - Expected result:
   - Static validation catches known dangerous overclaims without becoming a brittle language judge.
@@ -503,7 +505,8 @@
 
 ## Next artifacts
 
-- `implement` M1: define skill-contract static proof.
+- `code-review M2` after M2 implementation handoff under the active single-workflow-lane plan.
+- `implement M3` consumes `T14` for canonical and generated public skill portability proof.
 
 ## Follow-on artifacts
 
@@ -511,4 +514,4 @@
 
 ## Readiness
 
-Active proof-planning surface. The active plan owns the current execution handoff.
+Active proof-planning surface for public skill portability and claim-boundary checks. The active single-workflow-lane plan owns the current execution handoff.

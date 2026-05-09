@@ -7,6 +7,7 @@
 ## Related proposal
 
 - [Skill Contract Optimization](../docs/proposals/2026-05-08-skill-contract-optimization.md)
+- [Single Workflow Lane, Explain-Change Before Verify, and Public Skill Surface Boundary](../docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md)
 
 ## Goal and context
 
@@ -17,6 +18,8 @@ The problem this spec addresses is recurring state and handoff confusion. Skills
 Skills are also a published user-facing interface. Repository-maintainer guidance for authoring, generating, validating, or packaging this repository's skills belongs in contributor and governance surfaces, not inside shipped skill text.
 
 This spec owns skill-contract behavior. `specs/rigorloop-workflow.md` continues to own stage order, stage obligation, handoff, and downstream-blocking semantics.
+
+This amendment tightens the published skill portability contract with exact allowed project-portable surfaces, blocked RigorLoop repository-internal surfaces, and static-check scope.
 
 ## Glossary
 
@@ -45,7 +48,7 @@ Given `skills/implement/SKILL.md` is normalized in the first implementation slic
 When the skill reports successful implementation for a milestone
 Then its output may state implementation work and targeted validation are complete
 And it may state the next stage is `code-review`
-But it must not claim review passed, branch-ready, PR-ready, or ready-for-verify.
+But it must not claim review passed, branch-ready, PR-ready, or ready-for-final-closeout.
 
 ### Example E2: non-first-slice skill is not blocked immediately
 
@@ -140,6 +143,38 @@ R3d. Published skill text MUST NOT include repository-maintainer-only source, ge
 
 R3e. Published skill text MUST NOT direct end users to this repository's internal spec path for full routing rules. It MUST route full workflow questions through the `workflow` skill or another user-facing workflow instruction surface.
 
+R3f. Published skill text MAY reference portable project surfaces such as:
+- `AGENTS.md`;
+- `docs/workflows.md`;
+- `VISION.md`;
+- `docs/changes/<change-id>/`;
+- `docs/plans/<plan>.md`;
+- local workflow contract, if the adopting project has one;
+- project validation command, when supplied by the adopting project.
+
+R3g. Published skill text MUST NOT reference RigorLoop repository-internal surfaces such as:
+- `specs/rigorloop-workflow.md`;
+- `specs/skill-contract.md`;
+- `.codex/skills/`;
+- `dist/adapters/`;
+- `scripts/select-validation.py`;
+- `scripts/build-adapters.py`;
+- `templates/shared/`;
+- RigorLoop-local examples;
+- selector path constraints;
+- drift-check mechanics;
+- shared-block implementation mechanics.
+
+R3h. Published skill text MUST use project-portable wording such as project workflow guide, local workflow contract, project validation command, generated skill output, and adapter output when this project uses adapters.
+
+R3i. Published skill portability checks MUST apply to canonical skill files shipped to users, generated public skill copies, and public adapter skill copies.
+
+R3j. Published skill portability checks MUST NOT apply to internal specs, plans, tests, generator scripts, maintainer docs, or repository-only contributor docs.
+
+R3k. Internal RigorLoop repository details MAY remain in specs, tests, plans, maintainer docs, generator code, and repository-only contributor docs.
+
+R3l. Static validation for published skill portability MUST be narrow and phrase- or path-based. It MUST fail on unqualified references to RigorLoop repository-internal paths or commands in published skill text, while allowing the project-portable surfaces listed in `R3f`.
+
 R4. Normalized authoring skills MUST define the artifact they produce or update and the required artifact sections or quality checklist that make the output reviewable.
 
 R4a. Authoring skills include `proposal`, `spec`, `architecture`, `plan`, `test-spec`, `explain-change`, and other skills that create or revise durable authoring artifacts.
@@ -199,7 +234,7 @@ R9d. Phase 4 candidate names include `ui-design`, `ui-design-review`, `workflow-
 
 R10. A normalized skill MUST include `Claims this skill must not make`.
 
-R10a. `implement` MUST NOT claim review passed, clean review, branch-ready, PR-ready, or ready-for-verify.
+R10a. `implement` MUST NOT claim review passed, clean review, branch-ready, PR-ready, or ready-for-final-closeout.
 
 R10b. `code-review` MUST NOT claim branch-ready, PR-ready, CI passed, or verification passed.
 
@@ -207,7 +242,7 @@ R10c. `verify` MUST NOT claim PR-ready, PR body ready, or review passed.
 
 R10d. `pr` MUST NOT claim implementation, review, verification, or tests passed unless the claim is linked to owning evidence.
 
-R10e. `plan` MUST distinguish Done, complete, ready for PR, and ready for verify from remaining-gates wording.
+R10e. `plan` MUST distinguish Done, complete, ready for PR, and ready for final closeout from remaining-gates wording.
 
 R10f. `learn` MUST NOT create new workflow policy unless the lesson is routed to an authoritative artifact.
 
@@ -252,9 +287,9 @@ R13c. `Closeout` MUST mean the current artifact or stage satisfied its checklist
 
 R13d. `Done` MUST mean final lifecycle state after required gates are complete.
 
-R13e. `Ready for verify` MUST NOT be represented as Done, PR-ready, or branch-ready.
+R13e. `Ready for final closeout` MUST NOT be represented as Done, PR-ready, or branch-ready.
 
-R13f. Plans that mention `Ready for verify` SHOULD pair it with remaining completion gates when ambiguity is possible.
+R13f. Plans that mention `Ready for final closeout` SHOULD pair it with remaining completion gates when ambiguity is possible.
 
 R14. Shared skill policy blocks MUST live under `templates/shared/<block-name>.md`.
 
@@ -303,7 +338,7 @@ R18b. Validators MAY check a small list of historically dangerous phrases for `i
 
 R18c. Validators MUST NOT perform broad semantic quality scoring in the first validation slice.
 
-R18d. Forbidden phrase checks MUST avoid blocking explicit negative guidance such as "Do not set Ready for verify from implement."
+R18d. Forbidden phrase checks MUST avoid blocking explicit negative guidance such as "Do not set Ready for final closeout from implement."
 
 R19. A new skill SHOULD be added only when it owns a distinct artifact, gate, review responsibility, recurring action, or approved operational process.
 
@@ -351,7 +386,8 @@ Outputs:
 - A normalized skill owns only its local claims.
 - A skill's readiness statement is not proof that downstream gates have passed.
 - Public shared blocks are copied and checked in v1, not generated into skills.
-- Published skill text does not expose repository-local source paths, generated mirror paths, adapter package paths, selector path constraints, drift-check mechanics, or shared-block implementation details.
+- Published skill text does not expose repository-local source paths, generated mirror paths, adapter package paths, selector path constraints, drift-check mechanics, shared-block implementation details, or RigorLoop-local examples.
+- Published skill portability checks apply only to shipped skill text and generated public skill copies, not internal maintainer surfaces.
 - The first implementation slice is limited to seven canonical skills.
 - The `ci` skill remains the entrypoint for the `ci-maintenance` stage label.
 
@@ -406,7 +442,7 @@ This change has no user-interface surface. The relevant user experience is contr
 4. If a shared block is adopted by only one skill initially, the block may still live under `templates/shared/` when the approved plan expects later consumers.
 5. If a normalized skill needs an example to prevent a recurring error, the example must remain short enough not to turn the skill into a tutorial.
 6. If a generated adapter path changes because adapter packaging changes, the active plan or validation command must list the concrete changed generated paths instead of relying on an unclassified directory path.
-7. If `ready for verify` appears inside a negative instruction, validators must not treat that occurrence as an implementation overclaim.
+7. If `ready for final closeout` appears inside a negative instruction, validators must not treat that occurrence as an implementation overclaim.
 8. If a contributor proposes a new optional skill named in Phase 4, that proposal still must prove artifact or gate ownership before the skill is added.
 
 ## Non-goals
@@ -419,7 +455,7 @@ This change has no user-interface surface. The relevant user experience is contr
 - Do not add broad semantic quality scoring for skill prose.
 - Do not generate shared blocks into skills in v1.
 - Do not hand-edit generated `.codex/skills/` or `dist/adapters/` output.
-- Do not expose repository-maintainer source, generation, adapter, selector-path, or shared-block implementation details in published skill text.
+- Do not expose repository-maintainer source, generation, adapter, selector-path, shared-block implementation details, or RigorLoop-local examples in published skill text.
 - Do not replace proposal, spec, architecture, plan, review, verification, explain-change, or PR artifacts with skill prose.
 
 ## Acceptance criteria
@@ -435,6 +471,8 @@ This change has no user-interface surface. The relevant user experience is contr
 - A reviewer can confirm that shared blocks adopted in v1 are copied from `templates/shared/` and checked for drift.
 - A reviewer can confirm that generated `.codex/skills/` and `dist/adapters/` output are regenerated rather than hand-edited.
 - A reviewer can confirm that published first-slice skills do not expose repository-maintainer generated-output handling, internal workflow spec paths, adapter package paths, selector path constraints, or shared-block implementation details.
+- A reviewer can identify the exact published-skill allowlist and blocklist for project-portable wording.
+- A reviewer can confirm that public skill portability checks apply to shipped skill text and generated public copies, not internal specs, plans, tests, generator scripts, maintainer docs, or repository-only contributor docs.
 - A reviewer can confirm that validator checks are positive-first, narrow, and not broad semantic scoring.
 - A contributor can determine when a new skill is justified and when an existing skill or template should be updated instead.
 
@@ -444,15 +482,20 @@ This change has no user-interface surface. The relevant user experience is contr
 
 ## Next artifacts
 
-- Plan-review for the execution plan.
-- Matching test spec after plan-review.
+- `code-review M2` under [Single Workflow Lane, Explain-Change Before Verify Execution Plan](../docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md) after M2 implementation handoff.
+- `implement M3` consumes the public skill portability proof.
+- `code-review M3` after M3 implementation handoff.
 
 ## Follow-on artifacts
 
 - Spec-review: approved on 2026-05-08 with no material findings; clean review settled artifact-locally.
 - Execution plan: [Skill Contract Optimization Execution Plan](../docs/plans/2026-05-08-skill-contract-optimization.md).
 - Test spec: [Skill Contract Test Spec](skill-contract.test.md).
+- Proposal: [Single Workflow Lane, Explain-Change Before Verify, and Public Skill Surface Boundary](../docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md).
+- Spec-review: approved in [spec-review-r5](../docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/spec-review-r5.md).
+- Plan: [Single Workflow Lane, Explain-Change Before Verify Execution Plan](../docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md).
+- Current amendment: public skill surface boundary allow/block policy approved in this spec.
 
 ## Readiness
 
-Approved after spec-review. Follow-on execution plan and matching test spec are recorded; the active plan owns the current execution handoff.
+Approved public skill surface boundary tightening. The active execution plan may rely on this approved spec; M3 owns the canonical and generated public skill portability implementation proof.
