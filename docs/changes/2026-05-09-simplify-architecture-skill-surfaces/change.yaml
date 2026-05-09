@@ -59,6 +59,7 @@ tests:
   - Review artifact validation after code-review R5 records CR5-F1.
   - Review-resolution closeout validation after CR5-F1 is rejected by owner decision and M1 returns to code-review.
   - Review artifact validation after code-review R6 closes M1 with no material findings.
+  - Architecture skill validator coverage for the M2 smallest-valid-surface contract.
 validation:
   - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/proposal-review-r1.md
     result: pass_selected_review_artifacts_lifecycle_change_metadata_no_unclassified_paths
@@ -350,6 +351,28 @@ validation:
     result: pass_no_matches_after_code_review_r6
   - command: python -c "import yaml; data=yaml.safe_load(open('docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml')); assert data['review']['status'] == 'clean_after_code_review_r6' and data['review']['unresolved_items'] == 0"
     result: pass_review_state_after_code_review_r6
+  - command: python -m unittest scripts.test-skill-validator.SkillValidatorFixtureTests.test_architecture_skill_defines_concise_c4_arc42_adr_output_shape
+    result: fail_expected_before_architecture_skill_m2_rewrite
+  - command: python -m unittest scripts.test-skill-validator.SkillValidatorFixtureTests.test_architecture_skill_defines_concise_c4_arc42_adr_output_shape
+    result: pass_after_architecture_skill_m2_rewrite
+  - command: python scripts/validate-skills.py
+    result: pass_23_skill_files_after_architecture_skill_m2_rewrite
+  - command: rg -n 'change-local architecture delta|merge-back|working architecture lives|docs/changes/<change-id>/architecture.md' skills/architecture/SKILL.md
+    result: pass_no_matches_after_architecture_skill_m2_rewrite
+  - command: python scripts/test-skill-validator.py
+    result: pass_47_tests_after_architecture_skill_m2_rewrite
+  - command: python scripts/select-validation.py --mode explicit --path skills/architecture/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml
+    result: pass_selected_skills_lifecycle_change_metadata_no_unclassified_paths_after_m2
+  - command: git diff --check -- skills/architecture/SKILL.md scripts/test-skill-validator.py docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces
+    result: pass_after_m2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml
+    result: pass_valid_change_metadata_after_m2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md --path skills/architecture/SKILL.md
+    result: pass_after_m2
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_4_tests_after_m2
+  - command: rg -n '[[:blank:]]$|\t' skills/architecture/SKILL.md scripts/test-skill-validator.py docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml
+    result: pass_no_matches_after_m2
 changed_files:
   - docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md
   - specs/architecture-package-method.md
@@ -374,6 +397,8 @@ changed_files:
   - docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/code-review-r4.md
   - docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/code-review-r5.md
   - docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/code-review-r6.md
+  - skills/architecture/SKILL.md
+  - scripts/test-skill-validator.py
 review:
-  status: clean_after_code_review_r6
+  status: review_requested_after_m2_implementation
   unresolved_items: 0

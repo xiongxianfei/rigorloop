@@ -384,24 +384,40 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         body = (ROOT / "skills" / "architecture" / "SKILL.md").read_text(encoding="utf-8")
         required_terms = [
             "## When to Use / When Not to Use",
-            "## Output Shape",
-            "Produce or update:",
-            "`docs/changes/<change-id>/architecture.md`",
-            "canonical architecture package",
+            "## Architecture Surface Decision",
+            "Choose the smallest valid architecture action.",
+            "No architecture impact",
+            "Direction unclear",
+            "Spec unclear",
+            "Clear architecture update",
+            "Durable decision",
+            "Do not create temporary architecture documents to resolve direction uncertainty.",
+            "Use the project's canonical architecture package.",
+            "Common default paths are:",
+            "`docs/architecture/system/architecture.md`",
+            "`docs/architecture/system/diagrams/`",
+            "`docs/adr/`",
+            "If the project uses different architecture paths, follow the project's configured paths.",
             "C4 system context diagram",
             "C4 container diagram",
-            "ADRs when durable decisions are introduced",
             "Use `templates/architecture.md` for the full 12-section arc42 structure.",
             "```mermaid\nC4Context",
             "```mermaid\nC4Container",
             "## ADR Triggers",
             "skills/architecture/references/architecture-example.md",
+            "- Architecture surface: no-impact-rationale | canonical-update | ADR | blocked",
+            "- Direction/spec blockers:",
         ]
         for term in required_terms:
             with self.subTest(term=term):
                 self.assertIn(term, body)
 
         forbidden_terms = [
+            "`docs/changes/<change-id>/architecture.md`",
+            "Change-local working architecture lives",
+            "Use a change-local architecture delta",
+            "Merge accepted durable content from change-local deltas",
+            "merge-back",
             "## Full Worked Example",
             "### Full Worked Example",
             "## Worked Example",
