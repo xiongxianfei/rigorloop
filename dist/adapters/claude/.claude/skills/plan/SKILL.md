@@ -170,6 +170,8 @@ Final closeout readiness:
 Reason final closeout is or is not ready:
 ```
 
+The active plan `Readiness` section points to `Current Handoff Summary` for current live state. Do not duplicate the current next stage outside `Current Handoff Summary` unless the statement is explicitly historical.
+
 ## Planning rules
 
 - Derive work from spec requirements and architecture decisions.

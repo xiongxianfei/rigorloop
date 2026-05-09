@@ -65,6 +65,8 @@ Apply the same readiness checks for workflow-managed and direct-`pr` invocation.
 
 `verify` owns `branch-ready`. This stage owns `pr-body-ready` and `pr-open-ready`.
 
+PR handoff is scoped evidence and must not own the active plan's current next stage. Summarize planned-initiative state from the active plan `Current Handoff Summary`.
+
 ## Outputs
 
 Produce a PR readiness check, title, body, reviewer notes, risks, follow-ups, and the opened PR URL when the repository/tooling permits opening the PR.

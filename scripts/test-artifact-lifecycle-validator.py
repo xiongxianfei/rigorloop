@@ -33,6 +33,52 @@ def run_cli(*args: str) -> subprocess.CompletedProcess[str]:
     )
 
 
+def write_minimal_test_spec(root: Path, readiness: str) -> Path:
+    target = root / "specs" / "workflow-state.test.md"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(
+        f"""# Workflow State Test Spec
+
+## Status
+
+- active
+
+## Related spec and plan
+
+- Spec: `specs/workflow-state.md`
+- Plan: `docs/plans/2026-05-09-workflow-state.md`
+
+## Testing strategy
+
+- Validate readiness wording.
+
+## Requirement coverage map
+
+| Requirement IDs | Covered by | Level | Notes |
+| --- | --- | --- | --- |
+| `R1` | `T1` | integration | readiness wording |
+
+## Test cases
+
+### T1. Readiness wording
+
+- Covers: `R1`
+- Level: integration
+- Fixture/setup:
+- Steps:
+- Expected result:
+- Failure proves:
+- Automation location:
+
+## Readiness
+
+{readiness}
+""",
+        encoding="utf-8",
+    )
+    return target
+
+
 def init_git_fixture(path: Path) -> str:
     subprocess.run(["git", "init"], cwd=path, check=True, capture_output=True, text=True)
     subprocess.run(
@@ -186,6 +232,40 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
 
     def test_valid_test_spec_passes(self) -> None:
         self.assertFixturePasses("valid-test-spec", "specs/valid-feature.test.md")
+
+    def test_active_test_spec_may_delegate_live_state_to_current_handoff_summary(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="artifact-lifecycle-readiness-"))
+        self.addCleanupTree(fixture_root)
+        target = write_minimal_test_spec(
+            fixture_root,
+            "Active proof surface for implementation. The active plan `Current Handoff Summary` owns the next workflow action.",
+        )
+
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=[target.relative_to(fixture_root).as_posix()],
+        )
+
+        self.assertFalse(result.blocking_findings)
+
+    def test_active_test_spec_stale_implementation_readiness_fails(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="artifact-lifecycle-readiness-"))
+        self.addCleanupTree(fixture_root)
+        target = write_minimal_test_spec(
+            fixture_root,
+            "Ready for `implement M1`.",
+        )
+
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=[target.relative_to(fixture_root).as_posix()],
+        )
+
+        combined_messages = "\n".join(f.message for f in result.blocking_findings)
+        self.assertTrue(result.blocking_findings)
+        self.assertIn("status and readiness disagree", combined_messages)
 
     def test_valid_architecture_passes(self) -> None:
         self.assertFixturePasses(

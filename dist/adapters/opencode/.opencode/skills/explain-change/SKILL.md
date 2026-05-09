@@ -92,6 +92,8 @@ File | Change | Reason | Source artifact | Test/evidence
 - Do not claim a requirement drove a change unless the link is real.
 - Do not hide validation gaps.
 - Do not claim final `verify`, `branch-ready`, `pr-body-ready`, `pr-open-ready`, or hosted CI-final status before the owning stage has produced that evidence.
+- Explain-change is scoped evidence and must not own the active plan's current next stage.
+- Use the active plan `Current Handoff Summary` when summarizing current planned-initiative state.
 - Material finding closeout must not proceed at `Closeout status: open`; `Closeout status: closed` requires final dispositions, no `needs-decision`, and no stale `review-log.md` open findings.
 - A stage-owned non-approval outcome that blocks downstream progress or requires revision needs a same-stage later review round or explicit reviewer or owner closeout naming the original Review ID; `review-resolution.md` alone is not a silent substitute.
 - For no-material review events, no-material detailed records need `review-log.md` but not an empty `review-resolution.md`.
