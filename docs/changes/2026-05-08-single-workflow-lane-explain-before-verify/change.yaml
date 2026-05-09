@@ -691,6 +691,10 @@ validation:
     result: pass_final_verify_selector_no_unclassified_paths_no_blocking_results_broad_smoke_not_required
   - command: bash scripts/ci.sh --mode pr --base origin/proposal/2026-05-08-skill-optimization --head HEAD
     result: pass_final_verify_selected_checks_skills_adapters_review_artifacts_lifecycle_change_metadata_readme_selector
+  - command: python scripts/select-validation.py --mode pr --base origin/main --head HEAD
+    result: pass_final_verify_actual_pr_base_selector_no_unclassified_paths_no_blocking_results_broad_smoke_not_required
+  - command: bash scripts/ci.sh --mode pr --base origin/main --head HEAD
+    result: pass_final_verify_actual_pr_base_selected_checks_skills_adapters_review_artifacts_lifecycle_change_metadata_readme_selector
   - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-single-workflow-lane-explain-before-verify
     result: pass_final_verify_closeout_reviews_17_findings_23_log_entries_17_resolution_entries_23
   - command: git diff --check origin/proposal/2026-05-08-skill-optimization...HEAD
