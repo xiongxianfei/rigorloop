@@ -73,12 +73,12 @@ The implementation tightens the skill contract, test coverage, shared evidence g
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Shared Evidence Guidance and Canonical Skills
-- Current milestone state: review-requested
-- Last reviewed milestone: M1. Skill Contract and Static Proof
-- Review status: M2 implementation complete; targeted validation passed; ready for code-review.
-- Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: code-review M2
+- Current milestone: M3. Generated Skill and Adapter Output
+- Current milestone state: planned
+- Last reviewed milestone: M2. Shared Evidence Guidance and Canonical Skills
+- Review status: code-review M2 completed cleanly with no material findings; M2 is closed.
+- Remaining in-scope implementation milestones: M3, M4
+- Next stage: implement M3
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: M1-M4 implementation review loops, lifecycle closeout, final verify, and PR handoff remain open.
 
@@ -154,7 +154,7 @@ These gates are not in-scope implementation milestones and do not count toward M
 
 ### M2. Shared Evidence Guidance and Canonical Skills
 
-- Milestone state: planned
+- Milestone state: closed
 - Goal: Update shared evidence guidance and selected canonical skills so high-volume stages use bounded evidence before broad reads.
 - Requirements: `R2`-`R7`, `R10`, acceptance criteria.
 - Files/components likely touched:
@@ -217,7 +217,7 @@ These gates are not in-scope implementation milestones and do not count toward M
 
 ### M3. Generated Skill and Adapter Output
 
-- Milestone state: review-requested
+- Milestone state: planned
 - Goal: Refresh derived outputs after canonical skill changes and prove public adapter packages remain valid.
 - Requirements: `R7`, `R9`, acceptance criteria.
 - Files/components likely touched:
@@ -388,6 +388,7 @@ These gates are not in-scope implementation milestones and do not count toward M
 - 2026-05-09: M1 implemented the token-cost discipline amendment in `specs/skill-contract.md`, updated `specs/skill-contract.test.md`, and added focused static proof in `scripts/test-skill-validator.py`.
 - 2026-05-09: code-review M1 completed cleanly with no material findings; M1 closed and handoff moved to M2.
 - 2026-05-09: M2 tightened the shared evidence guidance, copied it into the selected high-volume skills, and aligned the existing `workflow` shared-block consumer to avoid drift.
+- 2026-05-09: code-review M2 completed cleanly with no material findings; M2 closed and handoff moved to M3.
 
 ## Decision Log
 
@@ -440,8 +441,8 @@ These gates are not in-scope implementation milestones and do not count toward M
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `code-review M2`.
-- Implementation readiness: M2 is in `review-requested`. Do not start M3 until M2 code-review completes and any material findings are resolved or explicitly dispositioned.
+- Ready for `implement M3`.
+- Implementation readiness: M3 is planned. Start M3 only after using the active test spec and M3 validation targets; hand off to code-review for M3 after M3 targeted validation passes.
 
 ## Risks and Follow-Ups
 
