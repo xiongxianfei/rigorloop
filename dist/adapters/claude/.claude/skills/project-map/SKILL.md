@@ -19,7 +19,7 @@ Use when:
 - the repo is brownfield and the agent lacks context;
 - tests or CI are hard to locate;
 - ownership, boundaries, or runtime flow are ambiguous;
-- before `architecture` for a high-risk change.
+- before `architecture` for a broad-impact or hard-to-reverse change.
 
 ## Inputs to read
 

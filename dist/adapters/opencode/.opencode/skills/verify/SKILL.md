@@ -1,7 +1,8 @@
 ---
 name: verify
 description: >
-  Run or reason through the final quality gate after implementation. Use to verify artifact-code-test coherence, requirement coverage, validation commands, CI readiness, drift, and release safety before explanation or PR.
+  Run final verification after durable change rationale exists and before PR handoff. Use to verify artifact-code-test coherence,
+  requirement coverage, validation commands, CI readiness, drift, release safety, and scoped direct validation checks.
 ---
 
 # Verification gate
@@ -14,11 +15,15 @@ Verification is broader than running CI. It checks completeness, correctness, co
 
 ## Purpose
 
-Prove that implementation, tests, derived artifact, lifecycle artifacts, validation evidence, and risk closeout agree before the workflow moves toward explanation and PR.
+Run final verification after durable change rationale exists and before PR handoff.
+
+`verify` validates the final change pack: implementation, tests, derived artifacts, lifecycle artifacts, validation evidence, risk closeout, and any required `explain-change` artifact all agree and are current.
+
+`verify` owns validation evidence and branch-ready proof. It does not create the durable explanation and does not prepare the PR body.
 
 ## When to use
 
-Use this skill after all in-scope implementation milestones are closed and code-review/review-resolution obligations are complete, or when a user explicitly asks for a verification gate.
+Use this skill after all in-scope implementation milestones are closed, code-review/review-resolution obligations are complete, `ci-maintenance` is complete when triggered, and `explain-change` exists and is current. Use it directly only when a user explicitly asks for an isolated verification gate.
 
 ## When not to use
 
@@ -45,13 +50,30 @@ Read:
 
 ## Outputs
 
-Produce a verification verdict, traceability and drift assessment, validation evidence summary, blocker list if any, and the next valid handoff toward `ci`, `explain-change`, or stop.
+Produce a verification verdict, traceability and drift assessment, validation evidence summary, blocker list if any, and the next valid handoff toward `pr` or stop.
 
 ## Handoff
 
-- Normal next stage: `explain-change` when branch readiness passes and no conditional CI maintenance is triggered.
-- Conditional next stages: `ci` when hosted workflow automation or related CI infrastructure for a material risk is missing, stale, or wrong; stop when blockers remain.
+- Normal next stage: `pr` when branch readiness passes.
+- Conditional next stages: route back to `ci-maintenance` or `explain-change` when a required pre-verify automation or rationale artifact is missing or stale; stop when blockers remain.
 - For full stage order and downstream-blocking semantics, route through the `workflow` skill.
+
+## Direct verify
+
+A user may invoke `verify` directly for an isolated validation check.
+
+A direct `verify` result is isolated by default. It may report validation evidence for the requested scope, but it does not imply that the full workflow has completed, that `explain-change` exists, or that PR handoff is ready unless those artifacts are present and explicitly verified.
+
+## Workflow-managed final verify
+
+In workflow-managed final closeout, `verify` runs after:
+
+- implementation milestones are closed;
+- required review-resolution is closed;
+- `ci-maintenance` is complete when triggered;
+- durable rationale exists after `explain-change` and is current.
+
+Then `verify` hands off to `pr` when branch-ready evidence is complete.
 
 ## Claims this skill must not make
 
@@ -100,7 +122,7 @@ Requirement → Test IDs → Files changed → Evidence → Status
 4a. When `branch-ready` depends on cited governing artifacts, confirm those authoritative artifacts are present in tracked governing branch state rather than only in the local worktree.
 5. For ordinary non-trivial work, confirm the required baseline change-local pack exists: `docs/changes/<change-id>/change.yaml` plus durable Markdown reasoning, defaulting to `docs/changes/<change-id>/explain-change.md` unless an approved equivalent surface applies.
 6. Treat a missing required baseline change-local pack as a blocker, not acceptable silence.
-7. When material review findings exist, run `python scripts/validate-review-artifacts.py --mode closeout docs/changes/<change-id>` and inspect `review-resolution.md`.
+7. When material review findings exist, run the project's review-artifact closeout validation when one exists and inspect `review-resolution.md`.
 7a. New or revised `review-resolution.md` files should use the scan-first shape: summary, resolution overview table, compact finding details, shared validation evidence when applicable, and closeout checklist while preserving parseable per-finding labels.
 8. Block on `Closeout status: open`, any `needs-decision` disposition, stale `review-log.md` open findings, missing final action, missing rationale, missing follow-up record, or missing `Validation evidence` required for an accepted fix.
 8a. `Closeout status: closed` requires final dispositions for all material findings and no stale `review-log.md` open findings.
@@ -109,8 +131,8 @@ Requirement → Test IDs → Files changed → Evidence → Status
 9. For lifecycle-managed artifacts, treat stale or inconsistent touched, referenced, generated, or authoritative artifacts as blockers. Report unrelated stale baseline artifacts as warnings instead of blocking the change.
 10. For planned initiatives, compare `docs/plan.md` against the plan body and treat stale lifecycle state as a blocker. At minimum, block on completed, blocked, or superseded work still listed under `## Active`; conflicting index-versus-body state; or a plan body marked done, blocked, or superseded while still presenting itself as active or in progress.
 10a. Confirm lifecycle transitions performed by this PR are recorded in both surfaces before the PR opens for review. If the plan remains `Active`, it must name a true downstream completion event; merge itself is not that event.
-11. Confirm targeted proof ran for the changed surfaces, preferably through `python scripts/select-validation.py` or `bash scripts/ci.sh --mode explicit --path <path>...`, and record stable selected check IDs where useful.
-12. For planned initiatives or other authoritative triggers, confirm broad smoke evidence exists. Common direct proof is `bash scripts/ci.sh --mode broad-smoke`; selector-triggered proof may appear as selected check `broad_smoke.repo`.
+11. Confirm targeted proof ran for the changed surfaces, preferably through the project's validation selector or project validation command, and record stable selected check IDs where useful.
+12. For planned initiatives or other authoritative triggers, confirm broad smoke evidence exists through the project's broad validation command or selected broad-smoke check.
 13. If the active plan, test spec, review-resolution, or release metadata records `broad_smoke_required: true`, do not mark `branch-ready` without broad smoke evidence or an explicit blocker.
 14. Inspect CI workflow scope if CI is expected.
 15. Identify artifact drift and propose fixes.
@@ -155,8 +177,8 @@ For release smoke, inspect release metadata under `docs/releases/<version>/` rat
 
 ## Workflow handoff behavior
 
-- In a workflow-managed full-feature flow, successful `verify` hands off to the next mandatory or triggered downstream stage for the lane.
-- In that full-feature lane, the downstream stage is ci-maintenance when hosted workflow automation or related CI infrastructure for a material risk is missing, stale, or wrong; otherwise it is `explain-change`.
+- In a workflow-managed standard workflow, successful `verify` hands off to `pr` unless a stop condition applies.
+- Before final `verify`, `ci-maintenance` runs when hosted workflow automation, validation automation, or related platform configuration must be created or changed, then `explain-change` creates the durable rationale.
 - Direct `verify` requests remain isolated by default unless the user explicitly asks to continue through completion.
 - When `verify` stops because of blockers or pause conditions, name the blocked next stage and the reason continuation stopped.
 
@@ -204,4 +226,4 @@ Then include:
 - CI status or CI gap;
 - artifact drift findings;
 - remaining risks;
-- readiness statement for `branch-ready`, `ci`, `explain-change`, isolated stop, or blocker state.
+- readiness statement for `branch-ready`, `pr`, isolated stop, or blocker state.

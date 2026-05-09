@@ -97,7 +97,7 @@ Then ...
 
 ## Workflow handoff behavior
 
-- In a workflow-managed flow, successful `spec` completion hands off to `spec-review` when that review is the next required or default downstream stage.
+- In a workflow-managed flow, successful `spec` completion hands off to `spec-review` when that review is the next mandatory or triggered downstream stage.
 - If the spec still has blockers that prevent review-quality contract writing, stop and report the blocker instead of implying `spec-review` can proceed.
 - This v1 contract does not imply `spec-review -> architecture` or `spec-review -> test-spec`; review-to-next-authoring transitions remain outside the autoprogression boundary unless a later approved change adds them.
 
