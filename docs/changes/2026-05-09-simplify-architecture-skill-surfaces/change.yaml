@@ -33,6 +33,7 @@ requirements:
   - Record code-review R2 material finding before review-resolution fixes.
   - Record code-review R3 no-new-finding review of the CR1/CR2 open-state alignment.
   - Record code-review R4 material finding before review-resolution fixes.
+  - Record code-review R5 material finding before review-resolution fixes.
 tests:
   - Proposal-review artifact record for material findings.
   - Review artifact closeout validation after PASS-F1 resolution.
@@ -55,6 +56,7 @@ tests:
   - Review-resolution closeout validation after CR1-F1 and CR2-F1 are resolved and M1 returns to code-review.
   - Review artifact validation after code-review R4 records CR4-F1.
   - Review-resolution closeout validation after CR4-F1 is resolved and M1 returns to code-review.
+  - Review artifact validation after code-review R5 records CR5-F1.
 validation:
   - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/proposal-review-r1.md
     result: pass_selected_review_artifacts_lifecycle_change_metadata_no_unclassified_paths
@@ -312,6 +314,10 @@ validation:
     result: pass_no_matches_after_cr4_resolution
   - command: 'rg -n "not yet revised for the 2026-05-09 simplification|Open findings: CR4-F1|Status: open|Current milestone state: resolution-needed|Next stage: review-resolution / implement M1 fix|Pending rerun after CR4-F1 resolution update" docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md'
     result: pass_no_matches_after_cr4_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml
+    result: pass_valid_change_metadata_after_code_review_r5
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces
+    result: pass_structure_reviews_11_findings_6_log_entries_11_resolution_entries_6_after_code_review_r5
 changed_files:
   - docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md
   - specs/architecture-package-method.md
@@ -334,6 +340,7 @@ changed_files:
   - docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/code-review-r2.md
   - docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/code-review-r3.md
   - docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/code-review-r4.md
+  - docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/code-review-r5.md
 review:
-  status: review_requested_after_cr4_resolution
-  unresolved_items: 0
+  status: changes_requested_after_code_review_r5
+  unresolved_items: 1
