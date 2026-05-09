@@ -19,9 +19,9 @@ Read, if present:
 - `CONSTITUTION.md`
 - accepted proposal
 - approved feature spec and spec-review findings
-- `specs/architecture-package-method.md` when architecture package shape is in scope
+- the project's architecture method guidance when package shape is in scope
 - the project's canonical architecture package
-- related ADRs under `docs/adr/`
+- related project ADRs
 - research artifacts and `docs/project-map.md`
 - existing source interfaces, schemas, APIs, modules, CI, deployment config
 

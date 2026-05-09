@@ -418,6 +418,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "Use a change-local architecture delta",
             "Merge accepted durable content from change-local deltas",
             "merge-back",
+            "`specs/architecture-package-method.md`",
             "## Full Worked Example",
             "### Full Worked Example",
             "## Worked Example",
@@ -470,6 +471,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "Change-local delta:",
             "Merge-back:",
             "docs/changes/<change-id>/architecture.md",
+            "`specs/architecture-package-method.md`",
             "must not compete with the canonical package",
             "when merge-back from a change-local delta may affect multiple sections",
         ]
