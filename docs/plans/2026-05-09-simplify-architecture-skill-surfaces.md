@@ -74,14 +74,14 @@ The implementation removes change-local architecture deltas from the normal arch
 
 ## Current Handoff Summary
 
-- Current milestone: M4. Generated Output, Adapter Validation, and Lifecycle Closeout Preparation
-- Current milestone state: review-requested
-- Last reviewed milestone: M3
-- Review status: M4 implementation handoff is ready for code-review; M3 is closed.
-- Remaining in-scope implementation milestones: M4
-- Next stage: code-review M4
-- Final closeout readiness: not ready
-- Reason final closeout is not ready: M4 code-review, review-resolution when triggered, explain-change, verify, and PR handoff remain.
+- Current milestone: M5. Lifecycle Closeout
+- Current milestone state: planned
+- Last reviewed milestone: M4
+- Review status: code-review R9 completed cleanly; M4 is closed.
+- Remaining in-scope implementation milestones: none
+- Next stage: explain-change
+- Final closeout readiness: ready to start
+- Reason final closeout is not complete: explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -262,7 +262,7 @@ The implementation removes change-local architecture deltas from the normal arch
 
 ### M4. Generated Output, Adapter Validation, and Lifecycle Closeout Preparation
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Refresh generated local skills and public adapters, prove drift is closed, and prepare the change for downstream code-review and final lifecycle gates.
 - Requirements: `R58`, `AC20`, plus the proposal's adapter drift check and adapter validation requirement.
 - Files/components likely touched:
@@ -428,7 +428,7 @@ python scripts/validate-adapters.py --version 0.1.1
 - [x] M3 implementation complete and handed to code-review.
 - [x] M3 closed after clean code-review.
 - [x] M4 implementation complete and handed to code-review.
-- [ ] M4 closed.
+- [x] M4 closed after clean code-review.
 - [ ] M5 closed.
 
 ## Decision Log
@@ -544,6 +544,29 @@ python scripts/validate-adapters.py --version 0.1.1
   - `bash scripts/ci.sh --mode explicit --path skills/architecture/SKILL.md --path skills/architecture-review/SKILL.md --path scripts/test-skill-validator.py --path scripts/test-review-artifact-validator.py --path scripts/test-adapter-distribution.py --path specs/architecture-package-method.test.md --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md --path docs/plan.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml`
   - `git diff --check -- skills/architecture/SKILL.md skills/architecture-review/SKILL.md .codex/skills/architecture/SKILL.md .codex/skills/architecture-review/SKILL.md dist/adapters specs/architecture-package-method.test.md docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/plan.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces`
   - `rg -n '[[:blank:]]$|\t' .codex/skills/architecture/SKILL.md .codex/skills/architecture-review/SKILL.md dist/adapters/claude/.claude/skills/architecture/SKILL.md dist/adapters/claude/.claude/skills/architecture-review/SKILL.md dist/adapters/codex/.agents/skills/architecture/SKILL.md dist/adapters/codex/.agents/skills/architecture-review/SKILL.md dist/adapters/opencode/.opencode/skills/architecture/SKILL.md dist/adapters/opencode/.opencode/skills/architecture-review/SKILL.md docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml` returned no matches.
+- M4 code-review R9 validation passed on 2026-05-09:
+  - `python scripts/build-skills.py --check`
+  - `python scripts/build-adapters.py --version 0.1.1 --check`
+  - `python scripts/validate-adapters.py --version 0.1.1`
+  - `sha256sum skills/architecture/SKILL.md .codex/skills/architecture/SKILL.md skills/architecture-review/SKILL.md .codex/skills/architecture-review/SKILL.md` confirmed canonical and generated Codex skill hashes match.
+  - `python scripts/select-validation.py --mode explicit --path skills/architecture/SKILL.md --path skills/architecture-review/SKILL.md --path .codex/skills/architecture/SKILL.md --path .codex/skills/architecture-review/SKILL.md --path dist/adapters/claude/.claude/skills/architecture/SKILL.md --path dist/adapters/claude/.claude/skills/architecture-review/SKILL.md --path dist/adapters/codex/.agents/skills/architecture/SKILL.md --path dist/adapters/codex/.agents/skills/architecture-review/SKILL.md --path dist/adapters/opencode/.opencode/skills/architecture/SKILL.md --path dist/adapters/opencode/.opencode/skills/architecture-review/SKILL.md --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md --path docs/plan.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml`
+  - `python scripts/test-adapter-distribution.py`
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md --path docs/plan.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml` passed with the existing unrelated lifecycle warning in `docs/plan.md` line 17.
+  - `git diff --check -- .codex/skills/architecture/SKILL.md .codex/skills/architecture-review/SKILL.md dist/adapters docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml`
+  - `rg -n '[[:blank:]]$|\t' .codex/skills/architecture/SKILL.md .codex/skills/architecture-review/SKILL.md dist/adapters/claude/.claude/skills/architecture/SKILL.md dist/adapters/claude/.claude/skills/architecture-review/SKILL.md dist/adapters/codex/.agents/skills/architecture/SKILL.md dist/adapters/codex/.agents/skills/architecture-review/SKILL.md dist/adapters/opencode/.opencode/skills/architecture/SKILL.md dist/adapters/opencode/.opencode/skills/architecture-review/SKILL.md docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml` returned no matches.
+- M4 code-review R9 closeout artifact validation passed on 2026-05-09:
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml`
+  - `python scripts/validate-review-artifacts.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces`
+  - `python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/code-review-r9.md --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md --path .codex/skills/architecture/SKILL.md --path .codex/skills/architecture-review/SKILL.md --path dist/adapters/claude/.claude/skills/architecture/SKILL.md --path dist/adapters/claude/.claude/skills/architecture-review/SKILL.md --path dist/adapters/codex/.agents/skills/architecture/SKILL.md --path dist/adapters/codex/.agents/skills/architecture-review/SKILL.md --path dist/adapters/opencode/.opencode/skills/architecture/SKILL.md --path dist/adapters/opencode/.opencode/skills/architecture-review/SKILL.md`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/code-review-r9.md --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md`
+  - `python scripts/test-change-metadata-validator.py`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/build-adapters.py --version 0.1.1 --check`
+  - `git diff --check -- docs/changes/2026-05-09-simplify-architecture-skill-surfaces docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md .codex/skills/architecture/SKILL.md .codex/skills/architecture-review/SKILL.md dist/adapters`
+  - `rg -n '[[:blank:]]$|\t' docs/changes/2026-05-09-simplify-architecture-skill-surfaces docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md .codex/skills/architecture/SKILL.md .codex/skills/architecture-review/SKILL.md dist/adapters/claude/.claude/skills/architecture/SKILL.md dist/adapters/claude/.claude/skills/architecture-review/SKILL.md dist/adapters/codex/.agents/skills/architecture/SKILL.md dist/adapters/codex/.agents/skills/architecture-review/SKILL.md dist/adapters/opencode/.opencode/skills/architecture/SKILL.md dist/adapters/opencode/.opencode/skills/architecture-review/SKILL.md` returned no matches.
 
 ## Outcome and Retrospective
 
@@ -558,13 +581,14 @@ Code-review R7 completed cleanly, so M2 is closed and the next stage is M3 imple
 M3 implementation updated architecture-review surface classification and matching validator coverage; M3 is now in `review-requested`.
 Code-review R8 completed cleanly, so M3 is closed and the next stage is M4 implementation.
 M4 implementation refreshed generated Codex skill mirrors and public adapter packages; M4 is now in `review-requested`.
+Code-review R9 completed cleanly, so M4 is closed and the next stage is explain-change.
 
 ## Readiness
 
-- Next stage: code-review M4
+- Next stage: explain-change
 - Test-spec readiness: complete for the 2026-05-09 simplification.
-- Implementation readiness: M4 targeted validation passed and the milestone is ready for code-review. M5 must not start until M4 completes its milestone review loop.
-- Final closeout readiness: not ready until all in-scope implementation milestones are closed and downstream review, rationale, verify, and PR gates are complete.
+- Implementation readiness: complete for M1-M4; no in-scope implementation milestone remains open.
+- Final closeout readiness: ready to start with explain-change. Verify is not ready until durable explain-change evidence exists.
 
 ## Risks and Follow-Ups
 
