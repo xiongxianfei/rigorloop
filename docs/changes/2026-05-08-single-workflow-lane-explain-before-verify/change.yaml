@@ -52,6 +52,7 @@ requirements:
   - Record clean code-review R7 and close M5 before final closeout begins.
   - Complete ci-maintenance before explain-change because validation automation changed.
   - Create durable explain-change rationale before final verify.
+  - Run final verify after explain-change and before PR handoff.
 tests:
   - Artifact lifecycle validation for the proposal.
   - Artifact lifecycle validation for the draft spec amendments.
@@ -94,6 +95,7 @@ tests:
   - Code-review R7 review recording, M5 closeout, review artifact closeout validation, change metadata validation, selected CI, diff, and whitespace validation.
   - CI-maintenance review of hosted workflow wiring, selector coverage, path-filter behavior, and downstream explain-change readiness.
   - Explain-change artifact validation, change metadata validation, lifecycle validation, selected CI, diff, and whitespace validation before final verify.
+  - Final verify branch-level selector validation, selected CI, review closeout validation, generated-output drift checks, retired wording scans, committed diff hygiene, plan/index synchronization, and post-recording validation before PR handoff.
 validation:
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md
     result: pass_after_proposal_revision
@@ -685,6 +687,32 @@ validation:
     result: pass_after_explain_change_recording
   - command: bash -c 'if rg -n "[[:blank:]]$|\t" docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/explain-change.md; then exit 1; else exit 0; fi'
     result: pass_no_whitespace_matches_after_explain_change_recording
+  - command: python scripts/select-validation.py --mode pr --base origin/proposal/2026-05-08-skill-optimization --head HEAD
+    result: pass_final_verify_selector_no_unclassified_paths_no_blocking_results_broad_smoke_not_required
+  - command: bash scripts/ci.sh --mode pr --base origin/proposal/2026-05-08-skill-optimization --head HEAD
+    result: pass_final_verify_selected_checks_skills_adapters_review_artifacts_lifecycle_change_metadata_readme_selector
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-08-single-workflow-lane-explain-before-verify
+    result: pass_final_verify_closeout_reviews_17_findings_23_log_entries_17_resolution_entries_23
+  - command: git diff --check origin/proposal/2026-05-08-skill-optimization...HEAD
+    result: pass_final_verify_committed_diff_check
+  - command: rg -n -i '(fast[ -]?lane|full[ -]?lane|full[ -]?feature[ -]?lane|mini[ -]?spec|small[ -]?change[ -]?lane|tiny[ -]?low[ -]?risk|low[ -]?risk[ -]?lane|high[ -]?risk[ -]?lane|proportional[ -]?evidence|verify[[:space:]]*(->|→)[[:space:]]*explain-change|code-review[[:space:]]*(->|→)[[:space:]]*verify|verify[[:space:]]*(->|→)[[:space:]]*ci)' README.md docs/workflows.md CONSTITUTION.md AGENTS.md skills .codex/skills dist/adapters
+    result: pass_final_verify_no_retired_public_route_wording_matches
+  - command: rg -n -i '(before explanation or PR|toward explanation and PR|`?verify`?[[:space:]]+only[[:space:]]+after[[:space:]]+the[[:space:]]+final[[:space:]-]+in[[:space:]-]+scope[[:space:]]+implementation[[:space:]]+milestone|clean final implementation milestone.*verify)' skills .codex/skills dist/adapters
+    result: pass_final_verify_no_stale_verify_closeout_wording_matches
+  - command: python scripts/build-skills.py --check
+    result: pass_final_verify_generated_skills_in_sync
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_final_verify_generated_adapters_in_sync
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_final_verify_recording_valid_change_metadata
+  - command: python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_final_verify_recording_selector_artifact_lifecycle_change_metadata_checks_no_unclassified_paths
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_final_verify_recording_artifact_lifecycle_change_metadata_checks
+  - command: git diff --check -- docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_final_verify_recording_diff_check
+  - command: bash -c 'if rg -n "[[:blank:]]$|\t" docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml; then exit 1; else exit 0; fi'
+    result: pass_final_verify_recording_no_whitespace_matches
 changed_files:
   - AGENTS.md
   - CONSTITUTION.md
@@ -736,5 +764,5 @@ changed_files:
   - docs/learn/sessions/2026-05-08-milestone-commit-policy-mismatch.md
   - docs/learn/sessions/2026-05-08-spec-review-rounds-and-readiness.md
 review:
-  status: explain-change-complete-final-verify-ready
+  status: verify-complete-branch-ready-pr-next
   unresolved_items: 0
