@@ -258,6 +258,8 @@ For milestone-based plans, the review output must include or require a current h
 - next stage;
 - final closeout readiness and the reason.
 
+Update or require update of the active plan `Current Handoff Summary` before downstream handoff.
+
 When review is `clean-with-notes` and no review-resolution is required, update or require update of the reviewed milestone from `review-requested` to `closed`. When findings require review-resolution, update or require update of the reviewed milestone to `resolution-needed`.
 
 ## Recommended clean review template

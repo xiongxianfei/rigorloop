@@ -1389,6 +1389,63 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                 self.assertNotIn(term, workflows)
                 self.assertNotIn(term, example_plan)
 
+    def test_single_source_workflow_state_m3_skill_guidance(self) -> None:
+        """Canonical skills write live state once and keep final artifacts scoped."""
+
+        skill_bodies = {
+            skill_name: (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            for skill_name in [
+                "workflow",
+                "plan",
+                "implement",
+                "code-review",
+                "verify",
+                "explain-change",
+                "pr",
+            ]
+        }
+
+        required_by_skill = {
+            "workflow": [
+                "For planned initiatives, the active plan `Current Handoff Summary` owns live state.",
+                "State-sync checks update affected owners before downstream readiness is claimed.",
+            ],
+            "plan": [
+                "The active plan `Readiness` section points to `Current Handoff Summary` for current live state.",
+                "Do not duplicate the current next stage outside `Current Handoff Summary` unless the statement is explicitly historical.",
+            ],
+            "implement": [
+                "Perform a state-sync check before claiming readiness for `code-review`.",
+                "Update the active plan `Current Handoff Summary` when the milestone moves to `review-requested`.",
+            ],
+            "code-review": [
+                "Update or require update of the active plan `Current Handoff Summary` before downstream handoff.",
+                "When findings require review-resolution, update or require update of the reviewed milestone to `resolution-needed`.",
+            ],
+            "verify": [
+                "Final verification is scoped evidence and must not own the active plan's current next stage.",
+                "Use the active plan `Current Handoff Summary` to assess current planned-initiative state.",
+            ],
+            "explain-change": [
+                "Explain-change is scoped evidence and must not own the active plan's current next stage.",
+                "Use the active plan `Current Handoff Summary` when summarizing current planned-initiative state.",
+            ],
+            "pr": [
+                "PR handoff is scoped evidence and must not own the active plan's current next stage.",
+                "Summarize planned-initiative state from the active plan `Current Handoff Summary`.",
+            ],
+        }
+        for skill_name, terms in required_by_skill.items():
+            body = skill_bodies[skill_name]
+            for term in terms:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, body)
+
+        for skill_name in ["workflow", "plan", "implement", "code-review"]:
+            body = skill_bodies[skill_name]
+            with self.subTest(skill=skill_name, stale="in the active plan or review handoff"):
+                self.assertNotIn("in the active plan or review handoff", body)
+
     def test_milestone_aware_guidance_removes_unconditional_verify_handoff(self) -> None:
         """Docs and skills must not retain stale unconditional clean-review-to-verify shortcuts."""
 
