@@ -73,12 +73,12 @@ The implementation tightens the skill contract, test coverage, shared evidence g
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Skill Contract and Static Proof
-- Current milestone state: review-requested
-- Last reviewed milestone: pre-implementation gates
-- Review status: M1 implementation complete; targeted validation passed; ready for code-review.
-- Remaining in-scope implementation milestones: M1, M2, M3, M4
-- Next stage: code-review M1
+- Current milestone: M2. Shared Evidence Guidance and Canonical Skills
+- Current milestone state: planned
+- Last reviewed milestone: M1. Skill Contract and Static Proof
+- Review status: code-review M1 completed cleanly with no material findings; M1 is closed.
+- Remaining in-scope implementation milestones: M2, M3, M4
+- Next stage: implement M2
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: M1-M4 implementation review loops, lifecycle closeout, final verify, and PR handoff remain open.
 
@@ -100,7 +100,7 @@ These gates are not in-scope implementation milestones and do not count toward M
 
 ### M1. Skill Contract and Static Proof
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Amend the normative skill contract and add focused validator coverage for token-cost behavior.
 - Requirements: `R1`-`R6`, `R8`, `R10`, acceptance criteria.
 - Files/components likely touched:
@@ -385,6 +385,7 @@ These gates are not in-scope implementation milestones and do not count toward M
 - 2026-05-09: Architecture-review approved the no-impact rationale with no material findings.
 - 2026-05-09: Test spec created and activated.
 - 2026-05-09: M1 implemented the token-cost discipline amendment in `specs/skill-contract.md`, updated `specs/skill-contract.test.md`, and added focused static proof in `scripts/test-skill-validator.py`.
+- 2026-05-09: code-review M1 completed cleanly with no material findings; M1 closed and handoff moved to M2.
 
 ## Decision Log
 
@@ -429,8 +430,8 @@ These gates are not in-scope implementation milestones and do not count toward M
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `code-review M1`.
-- Implementation readiness: M1 is in `review-requested`. Do not start M2 until M1 code-review completes and any material findings are resolved or explicitly dispositioned.
+- Ready for `implement M2`.
+- Implementation readiness: M2 is planned. Start M2 only after using the active test spec and M2 validation targets; hand off to code-review for M2 after M2 targeted validation passes.
 
 ## Risks and Follow-Ups
 
