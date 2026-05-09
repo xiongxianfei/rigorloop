@@ -15,7 +15,7 @@ Your job is to catch unsafe boundaries, missing tradeoffs, hidden coupling, miss
 Read:
 
 - `AGENTS.md` and `CONSTITUTION.md` if present;
-- `specs/architecture-package-method.md` when C4, arc42, canonical package, review-surface, or ADR method compliance is in scope;
+- the project's architecture method guidance when C4, arc42, canonical package, review-surface, or ADR method compliance is in scope;
 - the project's canonical architecture package;
 - ADRs under review and related existing ADRs;
 - no-architecture-impact rationale when that is the review surface;
