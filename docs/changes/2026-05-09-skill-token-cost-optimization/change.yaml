@@ -81,6 +81,16 @@ validation:
     result: pass_with_existing_lifecycle_warning_docs_plan_line_19_after_m1
   - command: git diff --check -- specs/skill-token-cost-optimization.md specs/skill-contract.md specs/skill-contract.test.md scripts/test-skill-validator.py docs/plans/2026-05-09-skill-token-cost-optimization.md docs/plan.md docs/changes/2026-05-09-skill-token-cost-optimization
     result: pass_after_m1
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m2
+  - command: python scripts/test-skill-validator.py
+    result: pass_53_tests_after_m2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-09-skill-token-cost-optimization/change.yaml
+    result: pass_valid_change_metadata_after_m2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/workflows.md --path templates/shared/evidence-collection-efficiency.md --path skills/workflow/SKILL.md --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path skills/spec/SKILL.md --path skills/spec-review/SKILL.md --path skills/plan/SKILL.md --path skills/plan-review/SKILL.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/verify/SKILL.md --path skills/pr/SKILL.md --path skills/learn/SKILL.md --path docs/plans/2026-05-09-skill-token-cost-optimization.md --path docs/changes/2026-05-09-skill-token-cost-optimization/change.yaml
+    result: pass_with_existing_lifecycle_warning_docs_workflows_line_195_after_m2
+  - command: git diff --check -- docs/workflows.md templates/shared/evidence-collection-efficiency.md skills/workflow/SKILL.md skills/proposal/SKILL.md skills/proposal-review/SKILL.md skills/spec/SKILL.md skills/spec-review/SKILL.md skills/plan/SKILL.md skills/plan-review/SKILL.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/verify/SKILL.md skills/pr/SKILL.md skills/learn/SKILL.md scripts/test-skill-validator.py docs/plans/2026-05-09-skill-token-cost-optimization.md docs/changes/2026-05-09-skill-token-cost-optimization
+    result: pass_after_m2
 changed_files:
   - docs/changes/2026-05-09-skill-token-cost-optimization/change.yaml
   - docs/changes/2026-05-09-skill-token-cost-optimization/review-log.md
@@ -94,8 +104,21 @@ changed_files:
   - specs/skill-contract.md
   - specs/skill-contract.test.md
   - scripts/test-skill-validator.py
+  - templates/shared/evidence-collection-efficiency.md
+  - skills/workflow/SKILL.md
+  - skills/proposal/SKILL.md
+  - skills/proposal-review/SKILL.md
+  - skills/spec/SKILL.md
+  - skills/spec-review/SKILL.md
+  - skills/plan/SKILL.md
+  - skills/plan-review/SKILL.md
+  - skills/implement/SKILL.md
+  - skills/code-review/SKILL.md
+  - skills/verify/SKILL.md
+  - skills/pr/SKILL.md
+  - skills/learn/SKILL.md
 review:
-  status: m1_closed_clean_review
+  status: m2_review_requested
   open_findings: 0
   unresolved_items: 0
-  last_review: code-review M1 completed cleanly with no material findings; M1 closed and plan ready for implement M2
+  last_review: M2 implementation completed targeted validation and is ready for code-review M2

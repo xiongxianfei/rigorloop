@@ -74,11 +74,11 @@ The implementation tightens the skill contract, test coverage, shared evidence g
 ## Current Handoff Summary
 
 - Current milestone: M2. Shared Evidence Guidance and Canonical Skills
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M1. Skill Contract and Static Proof
-- Review status: code-review M1 completed cleanly with no material findings; M1 is closed.
+- Review status: M2 implementation complete; targeted validation passed; ready for code-review.
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: implement M2
+- Next stage: code-review M2
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: M1-M4 implementation review loops, lifecycle closeout, final verify, and PR handoff remain open.
 
@@ -170,6 +170,7 @@ These gates are not in-scope implementation milestones and do not count toward M
   - `skills/verify/SKILL.md`
   - `skills/pr/SKILL.md`
   - `skills/learn/SKILL.md`
+  - `skills/workflow/SKILL.md`, as an existing shared-block consumer kept aligned to avoid drift
   - `docs/workflows.md`, only if the test spec or review determines the current summary needs tightening
   - `scripts/test-skill-validator.py`
   - `docs/changes/2026-05-09-skill-token-cost-optimization/change.yaml`
@@ -190,8 +191,8 @@ These gates are not in-scope implementation milestones and do not count toward M
   - `python scripts/validate-skills.py`
   - `python scripts/test-skill-validator.py`
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-09-skill-token-cost-optimization/change.yaml`
-  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/workflows.md --path templates/shared/evidence-collection-efficiency.md --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path skills/spec/SKILL.md --path skills/spec-review/SKILL.md --path skills/plan/SKILL.md --path skills/plan-review/SKILL.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/verify/SKILL.md --path skills/pr/SKILL.md --path skills/learn/SKILL.md --path docs/plans/2026-05-09-skill-token-cost-optimization.md --path docs/changes/2026-05-09-skill-token-cost-optimization/change.yaml`
-  - `git diff --check -- docs/workflows.md templates/shared/evidence-collection-efficiency.md skills/proposal/SKILL.md skills/proposal-review/SKILL.md skills/spec/SKILL.md skills/spec-review/SKILL.md skills/plan/SKILL.md skills/plan-review/SKILL.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/verify/SKILL.md skills/pr/SKILL.md skills/learn/SKILL.md scripts/test-skill-validator.py docs/plans/2026-05-09-skill-token-cost-optimization.md docs/changes/2026-05-09-skill-token-cost-optimization`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/workflows.md --path templates/shared/evidence-collection-efficiency.md --path skills/workflow/SKILL.md --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path skills/spec/SKILL.md --path skills/spec-review/SKILL.md --path skills/plan/SKILL.md --path skills/plan-review/SKILL.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/verify/SKILL.md --path skills/pr/SKILL.md --path skills/learn/SKILL.md --path docs/plans/2026-05-09-skill-token-cost-optimization.md --path docs/changes/2026-05-09-skill-token-cost-optimization/change.yaml`
+  - `git diff --check -- docs/workflows.md templates/shared/evidence-collection-efficiency.md skills/workflow/SKILL.md skills/proposal/SKILL.md skills/proposal-review/SKILL.md skills/spec/SKILL.md skills/spec-review/SKILL.md skills/plan/SKILL.md skills/plan-review/SKILL.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/verify/SKILL.md skills/pr/SKILL.md skills/learn/SKILL.md scripts/test-skill-validator.py docs/plans/2026-05-09-skill-token-cost-optimization.md docs/changes/2026-05-09-skill-token-cost-optimization`
 - Expected observable result: In-scope skills guide agents to collect bounded evidence first, preserve correctness escape conditions, and avoid treating output caps as query design.
 - Implementation handoff:
   - targeted validation passed
@@ -216,7 +217,7 @@ These gates are not in-scope implementation milestones and do not count toward M
 
 ### M3. Generated Skill and Adapter Output
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Refresh derived outputs after canonical skill changes and prove public adapter packages remain valid.
 - Requirements: `R7`, `R9`, acceptance criteria.
 - Files/components likely touched:
@@ -386,6 +387,7 @@ These gates are not in-scope implementation milestones and do not count toward M
 - 2026-05-09: Test spec created and activated.
 - 2026-05-09: M1 implemented the token-cost discipline amendment in `specs/skill-contract.md`, updated `specs/skill-contract.test.md`, and added focused static proof in `scripts/test-skill-validator.py`.
 - 2026-05-09: code-review M1 completed cleanly with no material findings; M1 closed and handoff moved to M2.
+- 2026-05-09: M2 tightened the shared evidence guidance, copied it into the selected high-volume skills, and aligned the existing `workflow` shared-block consumer to avoid drift.
 
 ## Decision Log
 
@@ -395,6 +397,7 @@ These gates are not in-scope implementation milestones and do not count toward M
 - 2026-05-09: Removed M0 and made pre-implementation review/test-spec work a gate section. Rationale: plan-review cannot be an implementation step inside a milestone it approves, and test-spec authoring is not lifecycle closeout.
 - 2026-05-09: Use the active test spec as the proof surface for M1-M5. Rationale: every `MUST` maps to static validation, generated-output or adapter validation, or manual review before implementation starts.
 - 2026-05-09: Keep M1 proof limited to the skill contract, skill-contract test spec, validator checks, and no `token-budget` skill path. Rationale: canonical skill wording belongs to M2, while generated output and adapter proof belong to M3.
+- 2026-05-09: Include `skills/workflow/SKILL.md` in M2 only as a shared-block drift alignment. Rationale: it already consumed `templates/shared/evidence-collection-efficiency.md`, so leaving it stale would violate the existing shared-block drift contract without expanding token-cost behavior scope.
 
 ## Surprises and Discoveries
 
@@ -421,6 +424,13 @@ These gates are not in-scope implementation milestones and do not count toward M
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/skill-token-cost-optimization.md --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/plans/2026-05-09-skill-token-cost-optimization.md --path docs/plan.md --path docs/changes/2026-05-09-skill-token-cost-optimization/change.yaml`
   - `git diff --check -- specs/skill-token-cost-optimization.md specs/skill-contract.md specs/skill-contract.test.md scripts/test-skill-validator.py docs/plans/2026-05-09-skill-token-cost-optimization.md docs/plan.md docs/changes/2026-05-09-skill-token-cost-optimization`
 - 2026-05-09: Artifact lifecycle validation during M1 emitted the existing `docs/plan.md` lifecycle-language warning at line 19.
+- 2026-05-09: M2 targeted validation passed:
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-09-skill-token-cost-optimization/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/workflows.md --path templates/shared/evidence-collection-efficiency.md --path skills/workflow/SKILL.md --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path skills/spec/SKILL.md --path skills/spec-review/SKILL.md --path skills/plan/SKILL.md --path skills/plan-review/SKILL.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/verify/SKILL.md --path skills/pr/SKILL.md --path skills/learn/SKILL.md --path docs/plans/2026-05-09-skill-token-cost-optimization.md --path docs/changes/2026-05-09-skill-token-cost-optimization/change.yaml`
+  - `git diff --check -- docs/workflows.md templates/shared/evidence-collection-efficiency.md skills/workflow/SKILL.md skills/proposal/SKILL.md skills/proposal-review/SKILL.md skills/spec/SKILL.md skills/spec-review/SKILL.md skills/plan/SKILL.md skills/plan-review/SKILL.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/verify/SKILL.md skills/pr/SKILL.md skills/learn/SKILL.md scripts/test-skill-validator.py docs/plans/2026-05-09-skill-token-cost-optimization.md docs/changes/2026-05-09-skill-token-cost-optimization`
+- 2026-05-09: Artifact lifecycle validation during M2 emitted the existing `docs/workflows.md` lifecycle-language warning at line 195.
 
 ## Outcome and Retrospective
 
@@ -430,8 +440,8 @@ These gates are not in-scope implementation milestones and do not count toward M
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `implement M2`.
-- Implementation readiness: M2 is planned. Start M2 only after using the active test spec and M2 validation targets; hand off to code-review for M2 after M2 targeted validation passes.
+- Ready for `code-review M2`.
+- Implementation readiness: M2 is in `review-requested`. Do not start M3 until M2 code-review completes and any material findings are resolved or explicitly dispositioned.
 
 ## Risks and Follow-Ups
 
