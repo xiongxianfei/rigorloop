@@ -74,11 +74,11 @@ The implementation tightens the skill contract, test coverage, shared evidence g
 ## Current Handoff Summary
 
 - Current milestone: M3. Generated Skill and Adapter Output
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M2. Shared Evidence Guidance and Canonical Skills
-- Review status: code-review M2 completed cleanly with no material findings; M2 is closed.
+- Review status: M3 implementation completed targeted validation and is ready for code-review M3.
 - Remaining in-scope implementation milestones: M3, M4
-- Next stage: implement M3
+- Next stage: code-review M3
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: M1-M4 implementation review loops, lifecycle closeout, final verify, and PR handoff remain open.
 
@@ -217,7 +217,7 @@ These gates are not in-scope implementation milestones and do not count toward M
 
 ### M3. Generated Skill and Adapter Output
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Refresh derived outputs after canonical skill changes and prove public adapter packages remain valid.
 - Requirements: `R7`, `R9`, acceptance criteria.
 - Files/components likely touched:
@@ -389,6 +389,7 @@ These gates are not in-scope implementation milestones and do not count toward M
 - 2026-05-09: code-review M1 completed cleanly with no material findings; M1 closed and handoff moved to M2.
 - 2026-05-09: M2 tightened the shared evidence guidance, copied it into the selected high-volume skills, and aligned the existing `workflow` shared-block consumer to avoid drift.
 - 2026-05-09: code-review M2 completed cleanly with no material findings; M2 closed and handoff moved to M3.
+- 2026-05-09: M3 refreshed generated local skill mirrors and public adapter packages from canonical skill updates.
 
 ## Decision Log
 
@@ -432,6 +433,15 @@ These gates are not in-scope implementation milestones and do not count toward M
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/workflows.md --path templates/shared/evidence-collection-efficiency.md --path skills/workflow/SKILL.md --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path skills/spec/SKILL.md --path skills/spec-review/SKILL.md --path skills/plan/SKILL.md --path skills/plan-review/SKILL.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/verify/SKILL.md --path skills/pr/SKILL.md --path skills/learn/SKILL.md --path docs/plans/2026-05-09-skill-token-cost-optimization.md --path docs/changes/2026-05-09-skill-token-cost-optimization/change.yaml`
   - `git diff --check -- docs/workflows.md templates/shared/evidence-collection-efficiency.md skills/workflow/SKILL.md skills/proposal/SKILL.md skills/proposal-review/SKILL.md skills/spec/SKILL.md skills/spec-review/SKILL.md skills/plan/SKILL.md skills/plan-review/SKILL.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/verify/SKILL.md skills/pr/SKILL.md skills/learn/SKILL.md scripts/test-skill-validator.py docs/plans/2026-05-09-skill-token-cost-optimization.md docs/changes/2026-05-09-skill-token-cost-optimization`
 - 2026-05-09: Artifact lifecycle validation during M2 emitted the existing `docs/workflows.md` lifecycle-language warning at line 195.
+- 2026-05-09: M3 targeted validation passed:
+  - `python scripts/build-skills.py --check`
+  - `python scripts/build-adapters.py --version 0.1.1 --check`
+  - `python scripts/validate-adapters.py --version 0.1.1`
+  - `python scripts/test-adapter-distribution.py`
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-09-skill-token-cost-optimization/change.yaml`
+  - `git diff --check -- .codex/skills dist/adapters docs/plans/2026-05-09-skill-token-cost-optimization.md docs/changes/2026-05-09-skill-token-cost-optimization`
 
 ## Outcome and Retrospective
 
@@ -441,8 +451,8 @@ These gates are not in-scope implementation milestones and do not count toward M
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `implement M3`.
-- Implementation readiness: M3 is planned. Start M3 only after using the active test spec and M3 validation targets; hand off to code-review for M3 after M3 targeted validation passes.
+- Ready for `code-review M3`.
+- Implementation readiness: M3 is in `review-requested`. Do not start M4 until M3 code-review completes and material findings are resolved or explicitly dispositioned.
 
 ## Risks and Follow-Ups
 

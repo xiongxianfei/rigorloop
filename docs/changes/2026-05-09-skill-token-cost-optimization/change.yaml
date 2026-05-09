@@ -91,7 +91,71 @@ validation:
     result: pass_with_existing_lifecycle_warning_docs_workflows_line_195_after_m2
   - command: git diff --check -- docs/workflows.md templates/shared/evidence-collection-efficiency.md skills/workflow/SKILL.md skills/proposal/SKILL.md skills/proposal-review/SKILL.md skills/spec/SKILL.md skills/spec-review/SKILL.md skills/plan/SKILL.md skills/plan-review/SKILL.md skills/implement/SKILL.md skills/code-review/SKILL.md skills/verify/SKILL.md skills/pr/SKILL.md skills/learn/SKILL.md scripts/test-skill-validator.py docs/plans/2026-05-09-skill-token-cost-optimization.md docs/changes/2026-05-09-skill-token-cost-optimization
     result: pass_after_m2
+  - command: python scripts/build-skills.py --check
+    result: pass_generated_skills_in_sync_after_m3
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_adapter_drift_check_after_m3
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_adapter_validation_after_m3
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_56_tests_after_m3
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m3
+  - command: python scripts/test-skill-validator.py
+    result: pass_53_tests_after_m3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-09-skill-token-cost-optimization/change.yaml
+    result: pass_valid_change_metadata_after_m3
+  - command: git diff --check -- .codex/skills dist/adapters docs/plans/2026-05-09-skill-token-cost-optimization.md docs/changes/2026-05-09-skill-token-cost-optimization
+    result: pass_after_m3
 changed_files:
+  - .codex/skills/code-review/SKILL.md
+  - .codex/skills/implement/SKILL.md
+  - .codex/skills/learn/SKILL.md
+  - .codex/skills/plan-review/SKILL.md
+  - .codex/skills/plan/SKILL.md
+  - .codex/skills/pr/SKILL.md
+  - .codex/skills/proposal-review/SKILL.md
+  - .codex/skills/proposal/SKILL.md
+  - .codex/skills/spec-review/SKILL.md
+  - .codex/skills/spec/SKILL.md
+  - .codex/skills/verify/SKILL.md
+  - .codex/skills/workflow/SKILL.md
+  - dist/adapters/claude/.claude/skills/code-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/implement/SKILL.md
+  - dist/adapters/claude/.claude/skills/learn/SKILL.md
+  - dist/adapters/claude/.claude/skills/plan-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/plan/SKILL.md
+  - dist/adapters/claude/.claude/skills/pr/SKILL.md
+  - dist/adapters/claude/.claude/skills/proposal-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/proposal/SKILL.md
+  - dist/adapters/claude/.claude/skills/spec-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/spec/SKILL.md
+  - dist/adapters/claude/.claude/skills/verify/SKILL.md
+  - dist/adapters/claude/.claude/skills/workflow/SKILL.md
+  - dist/adapters/codex/.agents/skills/code-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/implement/SKILL.md
+  - dist/adapters/codex/.agents/skills/learn/SKILL.md
+  - dist/adapters/codex/.agents/skills/plan-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/plan/SKILL.md
+  - dist/adapters/codex/.agents/skills/pr/SKILL.md
+  - dist/adapters/codex/.agents/skills/proposal-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/proposal/SKILL.md
+  - dist/adapters/codex/.agents/skills/spec-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/spec/SKILL.md
+  - dist/adapters/codex/.agents/skills/verify/SKILL.md
+  - dist/adapters/codex/.agents/skills/workflow/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/code-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/implement/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/learn/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/plan-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/plan/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/pr/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/proposal-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/proposal/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/spec-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/spec/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/verify/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/workflow/SKILL.md
   - docs/changes/2026-05-09-skill-token-cost-optimization/change.yaml
   - docs/changes/2026-05-09-skill-token-cost-optimization/review-log.md
   - docs/changes/2026-05-09-skill-token-cost-optimization/review-resolution.md
@@ -118,7 +182,7 @@ changed_files:
   - skills/pr/SKILL.md
   - skills/learn/SKILL.md
 review:
-  status: m2_closed_clean_review
+  status: m3_review_requested
   open_findings: 0
   unresolved_items: 0
-  last_review: code-review M2 completed cleanly with no material findings; M2 closed and plan ready for implement M3
+  last_review: M3 implementation completed targeted validation and is ready for code-review M3
