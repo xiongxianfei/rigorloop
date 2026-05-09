@@ -1721,6 +1721,36 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             with self.subTest(deferred_block=block_name):
                 self.assertFalse((ROOT / "templates" / "shared" / f"{block_name}.md").exists())
 
+    def test_skill_contract_token_cost_amendment_is_defined(self) -> None:
+        spec = SKILL_CONTRACT_SPEC.read_text(encoding="utf-8")
+        test_spec = SKILL_CONTRACT_TEST_SPEC.read_text(encoding="utf-8")
+
+        required_spec_terms = [
+            "Token-cost discipline is part of normalized skill behavior.",
+            "Token-cost discipline MUST NOT reduce required validation coverage, review obligations, artifact obligations, or workflow stage gates.",
+            "Normalized skills that collect evidence from high-volume surfaces MUST prefer bounded evidence before broad reads.",
+            "Output caps MUST be treated as safety rails, not evidence-selection strategy.",
+            "Summary-first and failure-focused output MUST preserve validation semantics.",
+            "Static validation for token-cost discipline MUST be narrow and reviewable.",
+            "Reviewers MAY report broad, noisy evidence collection as a process defect",
+            "Do not add a standalone `token-budget` skill.",
+        ]
+        for term in required_spec_terms:
+            with self.subTest(file="spec", term=term):
+                self.assertIn(term, spec)
+
+        required_test_terms = [
+            "T15. Token-cost amendment and static proof stay narrow",
+            "bounded evidence before broad reads",
+            "output caps are safety rails, not evidence-selection strategy",
+            "no `skills/token-budget/SKILL.md` path exists",
+        ]
+        for term in required_test_terms:
+            with self.subTest(file="test_spec", term=term):
+                self.assertIn(term, test_spec)
+
+        self.assertFalse((ROOT / "skills" / "token-budget" / "SKILL.md").exists())
+
     def test_skill_contract_m3_first_slice_core_sections_and_result_blocks(self) -> None:
         for skill_name in SKILL_CONTRACT_FIRST_SLICE_SKILLS:
             body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")

@@ -56,6 +56,7 @@
 | `R17`, `R17a`, `R17b` | `T8`, `T13` | manual | Optional bounded examples and long-example exclusion |
 | `R18`, `R18a`, `R18b`, `R18c`, `R18d` | `T10`, `T13` | integration, manual | Positive-first, narrow, incident-based validator strategy |
 | `R19`, `R19a`, `R19b`, `R19c` | `T11`, `T13` | manual, integration | Minimum viable skill rule and guidance placement |
+| `R21`-`R26` | `T15`, `T13` | integration, manual | Token-cost discipline amendment, bounded evidence, output caps, validation semantics, narrow static proof, and noisy-evidence process defects |
 
 ## Example coverage map
 
@@ -434,6 +435,32 @@
 - Automation location:
   - `scripts/test-skill-validator.py`
   - generated-output drift checks
+
+### T15. Token-cost amendment and static proof stay narrow
+
+- Covers: `R21`, `R21a`, `R21b`, `R22`, `R22a`, `R22b`, `R22c`, `R23`, `R23a`, `R23b`, `R24`, `R24a`, `R24b`, `R24c`, `R25`, `R25a`, `R25b`, `R25c`, `R25d`, `R26`, `R26a`, `R26b`
+- Level: integration, manual
+- Fixture/setup:
+  - `specs/skill-contract.md`
+  - `specs/skill-token-cost-optimization.md`
+  - `scripts/test-skill-validator.py`
+  - repository `skills/` tree
+- Steps:
+  - Assert the skill contract defines token-cost discipline as normalized skill behavior and an amendment to the existing skill contract.
+  - Assert normalized skills that collect high-volume evidence prefer bounded evidence before broad reads.
+  - Assert full-file-read and correctness obligations are preserved by existing evidence-reading requirements.
+  - Assert output caps are safety rails, not evidence-selection strategy.
+  - Assert summary-first and failure-focused output preserve validation semantics.
+  - Assert static proof remains narrow and does not use broad natural-language quality scoring.
+  - Assert no `skills/token-budget/SKILL.md` path exists or is required.
+  - Manually confirm process-defect findings for noisy evidence cite the broad evidence surface and safer bounded strategy without reducing correctness checks.
+- Expected result:
+  - The token-cost contract is reviewable before canonical skill and generated-output updates begin.
+- Failure proves:
+  - Token-cost optimization is not anchored in the normative skill contract or the proof is too broad to review safely.
+- Automation location:
+  - `scripts/test-skill-validator.py`
+  - manual review during M1 and code-review
 
 ## Fixtures and data
 
