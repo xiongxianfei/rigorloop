@@ -3,12 +3,13 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-09 Single source of workflow state](plans/2026-05-09-single-source-of-workflow-state.md) - active execution plan for making active plans the single live workflow-state owner, updating workflow and skill guidance, adding focused static/test coverage, refreshing generated skills and adapters, and closing lifecycle evidence through review, explain-change, verify, and PR handoff.
+- none yet
 
 ## Blocked
 - none yet
 
 ## Done
+- [2026-05-09 Single source of workflow state](plans/2026-05-09-single-source-of-workflow-state.md) - completed execution plan for making active plans the single live workflow-state owner, updating workflow and skill guidance, adding focused static/test coverage, refreshing generated skills and adapters, closing milestone review loops, recording explain-change evidence, passing verification, and preparing PR handoff.
 - [2026-05-09 Simplify architecture skill surfaces](plans/2026-05-09-simplify-architecture-skill-surfaces.md) - completed execution plan for removing change-local architecture deltas from the normal architecture skill contract, adding architecture-review surface classification, updating test-spec and canonical skills, refreshing generated skill and adapter output, closing milestone review loops, recording explain-change evidence, passing verification, and opened PR #37.
 - [2026-05-08 Single workflow lane, explain-change before verify, and public skill surface boundary](plans/2026-05-08-single-workflow-lane-explain-before-verify.md) - completed execution plan for implementing one recommended standard workflow, isolated manual skill invocation for focused use, final `ci-maintenance` when triggered before `explain-change -> verify -> pr`, and project-portable published skill surfaces, including spec/test-spec alignment, canonical and generated skill updates, adapter package refresh, architecture package updates, review closeout, ci-maintenance, explain-change, verification, and opened PR #35.
 - [2026-05-08 Skill contract optimization](plans/2026-05-08-skill-contract-optimization.md) - completed execution plan for defining and implementing the normative skill contract, including first-slice normalization of `workflow`, `plan`, `implement`, `code-review`, `verify`, `pr`, and `learn`, public skill surface cleanup, shared-block and generated-output handling, validator/static proof, review closeout, verification, explain-change, learn-session follow-up capture, and opened PR #34.
