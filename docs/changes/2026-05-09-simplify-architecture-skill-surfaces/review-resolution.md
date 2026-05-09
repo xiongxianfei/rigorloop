@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -13,11 +13,12 @@ Review closeout: plan-review-r2
 Review closeout: code-review-r1
 Review closeout: code-review-r2
 Review closeout: code-review-r3
+Review closeout: code-review-r4
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `architecture-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-r1`, `code-review-r2`, `code-review-r3`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `architecture-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-r1`, `code-review-r2`, `code-review-r3`, `code-review-r4`
 - Findings resolved: 4
-- Unresolved findings: 0
-- Final result: proposal-review R1 requested revision for one material finding. The proposal wording was revised to require a new ADR amending or narrowing the existing architecture-package-method ADR, so the finding is closed. Proposal-review R2 approved the revised proposal with no material findings. Spec-review R1 approved the draft architecture-package-method amendment with no material findings. Architecture-review R1 approved the canonical architecture update and new ADR with no material findings. Plan-review R1 requested changes for PR-F1; the plan now requires per-milestone code-review handoff and review closeout for M1-M4 before final lifecycle closeout. Plan-review R2 approved the revised plan with no material findings. Code-review R1 requested changes for CR1-F1 and code-review R2 requested changes for CR2-F1. Both findings are resolved and M1 is returned to `review-requested` for code-review rerun. Code-review R3 found no new material findings for the CR1/CR2 open-state alignment.
+- Unresolved findings: 1
+- Final result: proposal-review R1 requested revision for one material finding. The proposal wording was revised to require a new ADR amending or narrowing the existing architecture-package-method ADR, so the finding is closed. Proposal-review R2 approved the revised proposal with no material findings. Spec-review R1 approved the draft architecture-package-method amendment with no material findings. Architecture-review R1 approved the canonical architecture update and new ADR with no material findings. Plan-review R1 requested changes for PR-F1; the plan now requires per-milestone code-review handoff and review closeout for M1-M4 before final lifecycle closeout. Plan-review R2 approved the revised plan with no material findings. Code-review R1 requested changes for CR1-F1 and code-review R2 requested changes for CR2-F1. Both findings are resolved. Code-review R3 found no new material findings for the CR1/CR2 open-state alignment. Code-review R4 requested changes for CR4-F1, which remains open.
 
 ## Resolution Overview
 
@@ -27,6 +28,7 @@ Review closeout: code-review-r3
 | PR-F1 | accepted | resolved | Plan now adds per-implementation-milestone code-review handoff and review closeout before M1-M4 can close or final lifecycle closeout can begin. |
 | CR1-F1 | accepted | resolved | M1 plan Outcome and Readiness now route to code-review rerun after CR1/CR2 review-resolution validation. |
 | CR2-F1 | accepted | resolved | M1 review-resolution state is aligned across the plan, review-resolution, review-log, and change metadata before re-review. |
+| CR4-F1 | accepted | open | Active plan Source Artifacts still says the test spec is not revised even though M1 revised it and downstream readiness depends on it. |
 
 ## Resolution Entries
 
@@ -109,3 +111,18 @@ Validation evidence: Review-resolution closeout validation passed: `python scrip
 ### code-review-r3
 
 No material findings.
+
+### code-review-r4
+
+#### CR4-F1 - Plan Source Artifacts still says the test spec is not revised
+
+Finding ID: CR4-F1
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: code-review
+Decision owner: implementation author
+Chosen action: Update the active plan Source Artifacts test-spec wording so it matches M1 progress, implementation result, and readiness.
+Rationale: The active plan must not contain contradictory source-artifact readiness statements before M2 relies on the revised test spec.
+Validation target: Active plan Source Artifacts, Progress, Outcome, Readiness, review-resolution, review-log, and `change.yaml.review` consistently state that CR4-F1 remains open until the stale test-spec source-artifact sentence is fixed, targeted validation passes, and M1 returns to `review-requested`.
+Validation evidence: Pending review-resolution fix.
