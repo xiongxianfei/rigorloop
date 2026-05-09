@@ -12,9 +12,11 @@
 - Test spec: `specs/architecture-package-method.test.md`
 - Legacy normalization plan: `docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md`
 - Method ADR: `docs/adr/ADR-20260428-architecture-package-method.md`
+- Method amendment ADR: `docs/adr/ADR-20260509-architecture-skill-surface-simplification.md`
 - Change-local architecture delta: `docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/architecture.md`
 - Package-quality architecture delta: `docs/changes/2026-04-29-c4-arc42-package-quality/architecture.md`
 - Legacy normalization delta: `docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md`
+- Architecture skill surface simplification proposal: `docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md`
 - Workflow governance update: `docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md`
 - Workflow governance change metadata: `docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml`
 - C4 system context diagram: `diagrams/context.mmd`
@@ -30,7 +32,7 @@ The goals are:
 
 - make current repository structure visible through reviewable C4 source diagrams;
 - keep architecture reasoning complete without requiring heavy prose;
-- separate canonical architecture from change-local working deltas;
+- separate canonical architecture from historical or exceptional change-local evidence;
 - keep architecture updates on the lowest sufficient architecture surface;
 - preserve durable decisions in ADRs;
 - preserve review, verification, and closeout evidence in repository artifacts;
@@ -40,12 +42,12 @@ The goals are:
 ## Architecture Constraints
 
 - `CONSTITUTION.md` is the highest-priority repository governance artifact below external runtime instructions.
-- `specs/architecture-package-method.md` owns the C4, arc42, ADR, template, canonical-package, and change-local-delta contract.
+- `specs/architecture-package-method.md` owns the C4, arc42, ADR, template, canonical-package, architecture-surface, and historical change-local evidence contract.
 - `specs/rigorloop-workflow.md` owns only workflow stage routing and handoff language for this method.
 - The canonical package path is `docs/architecture/system/architecture.md` with default diagrams under `docs/architecture/system/diagrams/`.
 - Architecture and ADR scaffolds live under `templates/`; live architecture and ADR records live under `docs/architecture/` and `docs/adr/`.
-- Architecture work uses the lowest sufficient architecture surface: no-impact rationale for changes with no architecture impact, direct canonical package update for clear current-architecture changes, change-local delta only when working design reasoning must be reviewed before the canonical update is accepted, and ADR when a durable decision is introduced or revised.
-- Change-local architecture deltas live under `docs/changes/<change-id>/` when needed and become historical evidence after durable current architecture content is merged back.
+- Architecture work uses the lowest sufficient architecture surface: no-impact rationale for changes with no architecture impact, direct canonical package update for clear current-architecture changes, ADR when a durable decision is introduced or revised, and proposal/spec routing when direction or behavior is not ready.
+- Change-local architecture deltas are not part of the normal architecture authoring path. Existing deltas remain historical evidence, and new deltas are limited to legacy closeout or explicit exceptional evidence.
 - `.codex/skills/` and `dist/adapters/` are generated output and must not be hand-edited.
 - `docs/releases/<version>/release.yaml` and `docs/releases/<version>/release-notes.md` are authored release evidence, not generated release-note substitutes.
 - First implementation remains review-based for architecture package completeness; required package-shape, C4-file, and ADR-presence enforcement automation is deferred.
@@ -72,11 +74,11 @@ See [`diagrams/context.mmd`](diagrams/context.mmd) for the C4 system context vie
 
 ## Solution Strategy
 
-Use one canonical architecture package as the current baseline and choose the lowest sufficient architecture surface for each change. Leaf or no-impact work records a no-architecture-impact rationale. Clear current-architecture changes update the canonical package directly. Change-local deltas are temporary working artifacts only when architecture-significant work needs reviewable design reasoning before accepted content can be represented in the canonical package. ADRs preserve durable decisions.
+Use one canonical architecture package as the current baseline and choose the lowest sufficient architecture surface for each change. Leaf or no-impact work records a no-architecture-impact rationale. Clear current-architecture changes update the canonical package directly. ADRs preserve durable decisions. Unsettled direction routes back to proposal or proposal revision, and unsettled behavior routes back to spec or spec revision.
 
-Accepted durable content from a change-local delta is merged into this package only when it changes current architecture truth. A delta that records only change-local reasoning remains historical evidence and does not require merge-back.
+Historical or exceptional change-local architecture evidence never competes with this package. When such evidence contains durable current architecture truth, that truth must be represented directly in the canonical package before completion.
 
-The repository keeps structural documentation in C4 Mermaid source diagrams, written architecture in the official arc42 section model, and durable decision rationale in ADRs. Existing validation remains path-scoped and review-based for architecture sufficiency, with narrow lifecycle compatibility for canonical architecture packages, diagrams, change-local architecture deltas, review artifacts, change metadata, and generated-output drift.
+The repository keeps structural documentation in C4 Mermaid source diagrams, written architecture in the official arc42 section model, and durable decision rationale in ADRs. Existing validation remains path-scoped and review-based for architecture sufficiency, with narrow lifecycle compatibility for canonical architecture packages, diagrams, historical or exceptional change-local architecture evidence, review artifacts, change metadata, and generated-output drift.
 
 This strategy keeps the method practical for normal contributors while making architecture review compare structure, runtime flow, deployment boundaries, cross-cutting concerns, quality requirements, risks, and decision history consistently.
 
@@ -93,7 +95,7 @@ The repository system is composed of authored guidance, lifecycle artifacts, val
 | Governance and workflow guidance | Defines source-of-truth order, repository defaults, workflow routing, and contributor expectations | Markdown in `CONSTITUTION.md`, `AGENTS.md`, `docs/workflows.md` |
 | Lifecycle artifacts and ADRs | Carry proposal, spec, architecture, ADR, plan, test-spec, and change metadata states | Markdown/YAML in `docs/proposals/`, `specs/`, `docs/architecture/`, `docs/adr/`, `docs/plans/`, `docs/changes/` |
 | Canonical architecture package | Long-lived current architecture source of truth, including arc42 prose and C4 diagram source | Markdown and Mermaid in `docs/architecture/system/` |
-| Change-local evidence | Temporary working architecture, change metadata, explanation, review resolution, and verification evidence | Markdown/YAML in `docs/changes/<change-id>/` |
+| Change-local evidence | Historical architecture evidence, explicit exceptional architecture evidence, change metadata, explanation, review resolution, and verification evidence | Markdown/YAML in `docs/changes/<change-id>/` |
 | Templates and diagram styles | Canonical scaffolding for architecture, ADRs, and shared Mermaid C4 role styling | Markdown/Mermaid under `templates/` |
 | Canonical skills and adapter templates | Source instructions for workflow stages and thin adapter entrypoints | Markdown in `skills/`, templates in `scripts/adapter_templates/` |
 | Validation and generation scripts | Select checks, validate artifacts, refresh generated output, and prove drift status | Python and shell under `scripts/` |
@@ -120,9 +122,10 @@ This decomposition is prose-only for now. A component diagram should be added wh
 2. The architecture stage chooses the lowest sufficient architecture surface.
 3. If the change has no architecture impact, the contributor records a short rationale in plan, test-spec, change metadata, or PR evidence.
 4. If current architecture truth changes clearly, the contributor updates the smallest affected canonical arc42 section or C4 diagram directly.
-5. If working design reasoning must be reviewed before current truth is clear, the contributor creates a change-local architecture delta under `docs/changes/<change-id>/`.
-6. Durable decisions are captured or superseded in ADRs under `docs/adr/`.
-7. Durable delta content is merged into the canonical package only when it changes current architecture truth; otherwise the delta remains change-local evidence.
+5. If direction is unsettled, the contributor stops architecture authoring and routes the issue to proposal or proposal revision.
+6. If behavior is unsettled, the contributor stops architecture authoring and routes the issue to spec or spec revision.
+7. Durable decisions are captured, amended, superseded, or deprecated in ADRs under `docs/adr/`.
+8. If historical or exceptional change-local architecture evidence contains durable current architecture truth, the contributor represents that truth directly in the canonical package before completion.
 
 ### Workflow and review flow
 
@@ -142,7 +145,7 @@ This decomposition is prose-only for now. A component diagram should be added wh
 4. Lifecycle-managed artifacts are checked with `scripts/validate-artifact-lifecycle.py`.
 5. Change metadata is checked with `scripts/validate-change-metadata.py`.
 6. Review artifact closeout is checked with `scripts/validate-review-artifacts.py` when review files are in scope.
-7. Architecture diagram source files and change-local architecture deltas route only to existing non-enforcement lifecycle checks; C4 sufficiency, arc42 completeness, ADR need, and package shape remain architecture-review or code-review evidence.
+7. Architecture diagram source files and historical or exceptional change-local architecture evidence route only to existing non-enforcement lifecycle checks; C4 sufficiency, arc42 completeness, ADR need, and package shape remain architecture-review or code-review evidence.
 8. Unclassified paths do not fail open; they require explicit manual routing or a later selector contract update.
 9. Final broad smoke runs only when an authoritative trigger requires it.
 
@@ -174,7 +177,7 @@ Rollback reverts the authored method artifacts, canonical package changes, templ
 
 ### Source of truth
 
-The focused architecture package method spec owns the normative package contract. This canonical package owns current architecture shape for direct updates and for completed required delta incorporation. ADRs own durable decisions. Change-local deltas do not compete with the canonical package once durable content is incorporated, and they do not require merge-back when they contain no durable current architecture truth.
+The focused architecture package method spec owns the normative package contract. This canonical package owns current architecture shape for direct updates and for durable current truth represented from exceptional evidence. ADRs own durable decisions. Change-local deltas are not a normal architecture authoring path and never compete with the canonical package.
 
 ### Lowest sufficient architecture surface
 
@@ -182,8 +185,8 @@ Architecture work should choose the smallest durable surface that makes the desi
 
 - no-impact rationale when architecture boundaries, generated-output flow, deployment, packaging, quality targets, cross-cutting rules, and durable decisions are unchanged;
 - direct canonical package update when the current architecture change is clear enough to review directly;
-- change-local architecture delta when design reasoning needs review before canonical truth is clear;
 - ADR when a durable architecture decision is introduced, superseded, or deprecated.
+- proposal/spec routing when direction or behavior is not ready for architecture.
 
 ### Lifecycle status
 
@@ -220,6 +223,7 @@ The legacy normalization follow-on inventoried every current `docs/architecture/
 ## Architecture Decisions
 
 - `docs/adr/ADR-20260428-architecture-package-method.md`: default C4 plus official arc42 plus ADR architecture package method.
+- `docs/adr/ADR-20260509-architecture-skill-surface-simplification.md`: removes change-local deltas from the normal architecture authoring path and requires architecture-review surface classification.
 - `docs/adr/ADR-20260419-repository-source-layout.md`: repository source layout and canonical-source/generated-output separation.
 - `docs/adr/ADR-20260424-generated-adapter-packages.md`: generated public adapter package boundary.
 
@@ -230,8 +234,8 @@ No additional ADR is required for the 2026-04-29 package-quality refinement beca
 | Quality | Scenario | Measure |
 | --- | --- | --- |
 | Reviewability | A reviewer opens a PR that changes the canonical architecture package. | The affected arc42 sections, diagram source files, and ADR links are visible as repository text in the PR diff; no external binary diagram is required to review the change. |
-| Traceability | A contributor changes architecture guidance for diagrams, skills, templates, or generated output. | The change links the accepted proposal, approved spec, architecture delta or canonical package update, ADR decision if required, plan, test spec, and validation evidence. |
-| Proportionality | A change needs architecture handling. | No-impact work records a rationale, clear current-architecture changes update this package directly, and change-local deltas are used only when working design reasoning is needed before canonical update. |
+| Traceability | A contributor changes architecture guidance for diagrams, skills, templates, or generated output. | The change links the accepted proposal, approved spec, canonical package update or explicit no-impact rationale, ADR decision if required, plan, test spec, and validation evidence. |
+| Proportionality | A change needs architecture handling. | No-impact work records a rationale, clear current-architecture changes update this package directly, durable decisions create or update ADRs, and unsettled direction or behavior routes back to proposal or spec. |
 | Determinism | Canonical skill guidance changes and generated guidance must be refreshed. | `.codex/skills/` and `dist/adapters/` are produced through existing generators and drift checks prove they match canonical sources. |
 | Review closeout | Architecture-review records a material finding. | The finding includes evidence, required outcome, and a safe resolution path or `needs-decision` rationale before it drives fixes. |
 | Security | Architecture work touches trust boundaries, permissions, data exposure, or secret handling. | The relevant architecture prose or diagram states the boundary, and no artifact includes secrets, credentials, private keys, or machine-local debug-only data. |
@@ -243,8 +247,8 @@ No additional ADR is required for the 2026-04-29 package-quality refinement beca
 | Archived legacy architecture documents can be mistaken for current architecture truth | Each archived record points to this canonical package, and final closeout validation covers every changed legacy document. |
 | First implementation relies on review rather than structural package enforcement | Approved spec intentionally defers enforcement automation until a real package proves the shape. |
 | C4 context and container views may be too coarse for future module-level changes | Add component diagrams only when container-level structure no longer explains affected responsibilities. |
-| Architecture work can overproduce change-local deltas | Use the lowest sufficient architecture surface and update this package directly when current architecture truth is clear. |
-| Change-local deltas could become competing sources if merge-back is skipped | Architecture-review, code-review, and verify must treat unmerged durable architecture truth as incomplete, while no-current-truth deltas can remain change-local evidence. |
+| Architecture work can overproduce change-local deltas | Deltas are no longer a normal architecture authoring path; use no-impact rationale, direct canonical update, ADR, or proposal/spec routing instead. |
+| Historical or exceptional change-local evidence could be mistaken for current truth | Architecture-review, code-review, and verify must treat durable current architecture truth outside the canonical package as incomplete. |
 | Architecture-review finding format could be mistaken for a replacement of material-finding closeout | The focused spec and this package keep the simple finding fields separate from the repository-wide material-finding contract. |
 
 ## Glossary
@@ -253,17 +257,16 @@ No additional ADR is required for the 2026-04-29 package-quality refinement beca
 - arc42: the 12-section architecture documentation model used by `architecture.md`.
 - C4: context, container, component, and code-level structural diagram model.
 - canonical architecture package: the long-lived current architecture source under `docs/architecture/system/`.
-- change-local architecture delta: temporary working architecture under `docs/changes/<change-id>/`, used only when design reasoning needs review before canonical truth is clear.
+- change-local architecture delta: historical or explicitly exceptional evidence under `docs/changes/<change-id>/`; not part of the normal architecture authoring path.
 - generated output: derived files under `.codex/skills/` and `dist/adapters/`.
-- lowest sufficient architecture surface: the smallest architecture evidence surface that truthfully handles a change: no-impact rationale, direct canonical update, change-local delta, or ADR.
+- lowest sufficient architecture surface: the smallest architecture evidence surface that truthfully handles a change: no-impact rationale, direct canonical update, ADR, or proposal/spec routing.
 - material finding: review finding that must include evidence, required outcome, and safe resolution path or `needs-decision` rationale before it drives fixes.
-- merge-back: incorporating accepted durable content from a change-local delta into the canonical architecture package.
 - non-enforcement lifecycle routing: selector-selected validation that checks artifact lifecycle compatibility without proving C4 sufficiency, arc42 completeness, ADR need, or architecture package shape.
 - review artifact: authored change-local review evidence such as `reviews/*.md`, `review-log.md`, or `review-resolution.md`.
 
 ## Next artifacts
 
-- Test-spec confirmation for the active 2026-05-08 workflow-governance execution plan.
+- Implementation of the active simplification plan milestones.
 
 ## Follow-on artifacts
 
@@ -273,9 +276,12 @@ No additional ADR is required for the 2026-04-29 package-quality refinement beca
 - Plan-review for the 2026-04-29 package-quality refinement: approved on 2026-04-29 after PR-F1 corrected M5 sequencing.
 - Plan-review for the 2026-05-08 workflow-governance execution plan: approved in `docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/plan-review-r2.md` with no material findings.
 - Test spec update: `specs/architecture-package-method.test.md` active on 2026-04-29 for R76-R118 and AC14-AC20.
+- Architecture skill surface simplification: proposal accepted and spec amendment approved on 2026-05-09; canonical architecture and ADR update approved in this package revision.
+- Architecture-review for the 2026-05-09 architecture skill surface simplification: approved in `docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/architecture-review-r1.md` with no material findings.
+- Plan-review for the 2026-05-09 architecture skill surface simplification: approved in `docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/plan-review-r2.md` after PR-F1 corrected milestone review sequencing.
 
 ## Readiness
 
-This direct canonical package update is approved by `architecture-review-r1` and ready for downstream plan-review reliance.
+This direct canonical package update is approved and ready for downstream simplification implementation.
 
-No change-local merge-back is required for this update because the canonical package carries the intended durable guidance directly.
+No change-local architecture delta is produced for this update because the canonical package carries the intended durable guidance directly.

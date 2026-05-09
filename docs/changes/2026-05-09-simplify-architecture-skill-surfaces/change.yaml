@@ -1,0 +1,220 @@
+change_id: 2026-05-09-simplify-architecture-skill-surfaces
+title: Simplify architecture skill surfaces
+classification: workflow-governance-proposal
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md
+  spec: specs/architecture-package-method.md
+  architecture: docs/architecture/system/architecture.md
+  adr: docs/adr/ADR-20260509-architecture-skill-surface-simplification.md
+  plan: docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md
+  review_resolution: docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md
+requirements:
+  - Define a proposal direction for simplifying architecture and architecture-review skill surfaces.
+  - Remove existing change-local delta requirements from the normal architecture skill contract.
+  - Preserve the C4 plus arc42 plus ADR method while routing unsettled direction to proposal and unsettled behavior to spec.
+  - Record material proposal-review findings before proposal revision.
+  - Resolve PASS-F1 by requiring a new ADR that amends or narrows the existing architecture-package-method ADR without rewriting accepted decision history.
+  - Record proposal-review R2 approval before downstream spec authoring relies on the proposal.
+  - Draft the architecture-package-method spec amendment that removes change-local deltas from the normal architecture authoring path.
+  - Draft review-surface classification requirements for architecture-review.
+  - Record spec-review R1 approval before downstream architecture, test-spec, or implementation relies on the spec amendment.
+  - Normalize the approved spec amendment before architecture artifacts rely on it.
+  - Update the canonical architecture package directly for the simplified architecture surfaces.
+  - Create a new ADR that amends or narrows the 2026-04-28 architecture package method decision.
+  - Record architecture-review R1 approval before downstream planning or implementation relies on the canonical architecture update and ADR.
+  - Create an active execution plan that sequences test-spec alignment, canonical skill updates, generated output refresh, adapter drift check, adapter validation, and lifecycle closeout.
+  - Record plan-review R1 material finding before revising the execution plan.
+  - Resolve PR-F1 by adding per-milestone code-review handoff and review closeout before final lifecycle closeout.
+  - Record plan-review R2 approval before downstream test-spec revision relies on the plan.
+  - Revise the architecture-package-method test spec for the 2026-05-09 simplification before implementation.
+  - Complete M1 source lifecycle alignment and hand off to code-review.
+tests:
+  - Proposal-review artifact record for material findings.
+  - Review artifact closeout validation after PASS-F1 resolution.
+  - Review artifact closeout validation after proposal-review R2 approval.
+  - Artifact lifecycle validation for the accepted proposal and draft spec amendment.
+  - Stale phrase scan for retired normal change-local delta contract wording.
+  - Review artifact closeout validation after spec-review R1 approval.
+  - Artifact lifecycle validation for the canonical architecture package and new ADR.
+  - Review artifact closeout validation after architecture-review R1 approval.
+  - Artifact lifecycle and selected-validation checks for the active plan and plan index.
+  - Review artifact validation after plan-review R1 records PR-F1.
+  - Review artifact closeout validation after PR-F1 resolution.
+  - Review artifact closeout validation after plan-review R2 approval.
+  - Artifact lifecycle, selected-validation, stale-wording, and diff checks after test-spec revision.
+  - M1 targeted validation before code-review handoff.
+validation:
+  - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/proposal-review-r1.md
+    result: pass_selected_review_artifacts_lifecycle_change_metadata_no_unclassified_paths
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml
+    result: pass_valid_change_metadata_after_pass_f1_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-09-simplify-architecture-skill-surfaces
+    result: pass_closeout_reviews_1_findings_1_log_entries_1_resolution_entries_1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/proposal-review-r1.md
+    result: pass_explicit_paths_after_pass_f1_resolution
+  - command: git diff --check -- docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces
+    result: pass_after_pass_f1_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml
+    result: pass_valid_change_metadata_after_proposal_review_r2
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-09-simplify-architecture-skill-surfaces
+    result: pass_closeout_reviews_2_findings_1_log_entries_2_resolution_entries_1_after_proposal_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/proposal-review-r1.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/proposal-review-r2.md
+    result: pass_explicit_paths_after_proposal_review_r2
+  - command: git diff --check -- docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces
+    result: pass_after_proposal_review_r2
+  - command: rg -n 'default change-local architecture delta path|merge-back behavior|working architecture artifact|feature-specific architecture delta MUST|change-local delta merge-back|produce or update a change-local|architecture-significant change-local delta|change-local architecture deltas under|change-local architecture delta path|preserve enough change-local evidence|when design reasoning happens before merge-back' specs/architecture-package-method.md docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md
+    result: pass_no_retired_normal_delta_contract_phrases
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md --path specs/architecture-package-method.md
+    result: pass_proposal_and_draft_spec_lifecycle
+  - command: git diff --check -- docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md specs/architecture-package-method.md
+    result: pass_proposal_and_spec_diff_check
+  - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md --path specs/architecture-package-method.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/proposal-review-r1.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/proposal-review-r2.md
+    result: pass_selected_review_artifacts_lifecycle_change_metadata_no_unclassified_paths_after_spec_draft
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md --path specs/architecture-package-method.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/proposal-review-r1.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/proposal-review-r2.md
+    result: pass_explicit_paths_after_spec_draft
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-09-simplify-architecture-skill-surfaces
+    result: pass_closeout_reviews_2_findings_1_log_entries_2_resolution_entries_1_after_spec_draft
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_4_tests_after_spec_draft
+  - command: git diff --check -- docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md specs/architecture-package-method.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces
+    result: pass_after_spec_draft
+  - command: rg -n '[[:blank:]]$|\t' docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md specs/architecture-package-method.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces
+    result: pass_no_matches_after_spec_draft
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml
+    result: pass_valid_change_metadata_after_spec_review_r1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-09-simplify-architecture-skill-surfaces
+    result: pass_closeout_reviews_3_findings_1_log_entries_3_resolution_entries_1_after_spec_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md --path specs/architecture-package-method.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/proposal-review-r1.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/proposal-review-r2.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/spec-review-r1.md
+    result: pass_explicit_paths_after_spec_review_r1
+  - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md --path specs/architecture-package-method.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/proposal-review-r1.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/proposal-review-r2.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/spec-review-r1.md
+    result: pass_selected_review_artifacts_lifecycle_change_metadata_no_unclassified_paths_after_spec_review_r1
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_4_tests_after_spec_review_r1
+  - command: git diff --check -- docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md specs/architecture-package-method.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces
+    result: pass_after_spec_review_r1
+  - command: rg -n '[[:blank:]]$|\t' docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md specs/architecture-package-method.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces
+    result: pass_no_matches_after_spec_review_r1
+  - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md --path specs/architecture-package-method.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/container.mmd --path docs/adr/ADR-20260509-architecture-skill-surface-simplification.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/proposal-review-r1.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/proposal-review-r2.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/spec-review-r1.md
+    result: pass_selected_review_artifacts_lifecycle_change_metadata_no_unclassified_paths_after_architecture
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md --path specs/architecture-package-method.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260509-architecture-skill-surface-simplification.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/proposal-review-r1.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/proposal-review-r2.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/spec-review-r1.md
+    result: pass_explicit_paths_after_architecture
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml
+    result: pass_valid_change_metadata_after_architecture
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-09-simplify-architecture-skill-surfaces
+    result: pass_closeout_reviews_3_findings_1_log_entries_3_resolution_entries_1_after_architecture
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_4_tests_after_architecture
+  - command: git diff --check -- specs/architecture-package-method.md docs/architecture/system/architecture.md docs/architecture/system/diagrams/container.mmd docs/adr/ADR-20260509-architecture-skill-surface-simplification.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md
+    result: pass_after_architecture
+  - command: rg -n '[[:blank:]]$|\t' specs/architecture-package-method.md docs/architecture/system/architecture.md docs/architecture/system/diagrams/container.mmd docs/adr/ADR-20260509-architecture-skill-surface-simplification.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md
+    result: pass_no_matches_after_architecture
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml
+    result: pass_valid_change_metadata_after_architecture_review_r1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-09-simplify-architecture-skill-surfaces
+    result: pass_closeout_reviews_4_findings_1_log_entries_4_resolution_entries_1_after_architecture_review_r1
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_4_tests_after_architecture_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md --path specs/architecture-package-method.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260509-architecture-skill-surface-simplification.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/proposal-review-r1.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/proposal-review-r2.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/spec-review-r1.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/architecture-review-r1.md
+    result: pass_explicit_paths_after_architecture_review_r1
+  - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md --path specs/architecture-package-method.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/container.mmd --path docs/adr/ADR-20260509-architecture-skill-surface-simplification.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/proposal-review-r1.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/proposal-review-r2.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/spec-review-r1.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/architecture-review-r1.md
+    result: pass_selected_review_artifacts_lifecycle_change_metadata_no_unclassified_paths_after_architecture_review_r1
+  - command: git diff --check -- specs/architecture-package-method.md docs/architecture/system/architecture.md docs/architecture/system/diagrams/container.mmd docs/adr/ADR-20260509-architecture-skill-surface-simplification.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md
+    result: pass_after_architecture_review_r1
+  - command: rg -n '[[:blank:]]$|\t' specs/architecture-package-method.md docs/architecture/system/architecture.md docs/architecture/system/diagrams/container.mmd docs/adr/ADR-20260509-architecture-skill-surface-simplification.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md
+    result: pass_no_matches_after_architecture_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml
+    result: pass_valid_change_metadata_after_plan_creation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md --path docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md --path specs/architecture-package-method.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260509-architecture-skill-surface-simplification.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml
+    result: pass_with_existing_lifecycle_warning_docs_plan_line_17_after_plan_creation
+  - command: python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md --path docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md --path specs/architecture-package-method.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/container.mmd --path docs/adr/ADR-20260509-architecture-skill-surface-simplification.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml
+    result: pass_selected_plan_lifecycle_change_metadata_no_unclassified_paths_after_plan_creation
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_4_tests_after_plan_creation
+  - command: git diff --check -- docs/plan.md docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml
+    result: pass_after_plan_creation
+  - command: rg -n '[[:blank:]]$|\t' docs/plan.md docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml
+    result: pass_no_matches_after_plan_creation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml
+    result: pass_valid_change_metadata_after_plan_review_r1
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces
+    result: pass_structure_reviews_5_findings_2_log_entries_5_resolution_entries_2_after_plan_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/plan-review-r1.md --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md --path docs/plan.md
+    result: pass_with_existing_lifecycle_warning_docs_plan_line_17_after_plan_review_r1
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/plan-review-r1.md --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md --path docs/plan.md
+    result: pass_selected_review_artifacts_lifecycle_change_metadata_no_unclassified_paths_after_plan_review_r1
+  - command: git diff --check -- docs/changes/2026-05-09-simplify-architecture-skill-surfaces docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/plan.md
+    result: pass_after_plan_review_r1
+  - command: rg -n '[[:blank:]]$|\t' docs/changes/2026-05-09-simplify-architecture-skill-surfaces docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/plan.md
+    result: pass_no_matches_after_plan_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml
+    result: pass_valid_change_metadata_after_pr_f1_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-09-simplify-architecture-skill-surfaces
+    result: pass_closeout_reviews_5_findings_2_log_entries_5_resolution_entries_2_after_pr_f1_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md --path docs/plan.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/plan-review-r1.md
+    result: pass_with_existing_lifecycle_warning_docs_plan_line_17_after_pr_f1_resolution
+  - command: git diff --check -- docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces docs/plan.md
+    result: pass_after_pr_f1_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml
+    result: pass_valid_change_metadata_after_plan_review_r2
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-09-simplify-architecture-skill-surfaces
+    result: pass_closeout_reviews_6_findings_2_log_entries_6_resolution_entries_2_after_plan_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/plan-review-r2.md --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md --path docs/plan.md
+    result: pass_with_existing_lifecycle_warning_docs_plan_line_17_after_plan_review_r2
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/plan-review-r2.md --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md --path docs/plan.md
+    result: pass_selected_review_artifacts_lifecycle_change_metadata_no_unclassified_paths_after_plan_review_r2
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_4_tests_after_plan_review_r2
+  - command: git diff --check -- docs/changes/2026-05-09-simplify-architecture-skill-surfaces docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/plan.md
+    result: pass_after_plan_review_r2
+  - command: rg -n '[[:blank:]]$|\t' docs/changes/2026-05-09-simplify-architecture-skill-surfaces docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/plan.md
+    result: pass_no_matches_after_plan_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml
+    result: pass_valid_change_metadata_after_test_spec_revision
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/architecture-package-method.md --path specs/architecture-package-method.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260509-architecture-skill-surface-simplification.md --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md --path docs/plan.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml
+    result: pass_with_existing_lifecycle_warning_docs_plan_line_17_after_test_spec_revision
+  - command: python scripts/select-validation.py --mode explicit --path specs/architecture-package-method.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260509-architecture-skill-surface-simplification.md --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md --path docs/plan.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml
+    result: pass_selected_lifecycle_change_metadata_no_unclassified_paths_after_test_spec_revision
+  - command: rg -n 'normal .*change-local architecture delta|directing authors to a change-local delta|change-local merge-back|merge-back behavior is explicit|produces a delta' specs/architecture-package-method.test.md docs/architecture/system/architecture.md
+    result: pass_no_retired_normal_delta_test_spec_phrases_after_test_spec_revision
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_4_tests_after_test_spec_revision
+  - command: git diff --check -- specs/architecture-package-method.test.md docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml
+    result: pass_after_test_spec_revision
+  - command: rg -n '[[:blank:]]$|\t' specs/architecture-package-method.test.md docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml
+    result: pass_no_matches_after_test_spec_revision
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml
+    result: pass_valid_change_metadata_after_m1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/architecture-package-method.md --path specs/architecture-package-method.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260509-architecture-skill-surface-simplification.md --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md --path docs/plan.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml
+    result: pass_with_existing_lifecycle_warning_docs_plan_line_17_after_m1
+  - command: python scripts/select-validation.py --mode explicit --path specs/architecture-package-method.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260509-architecture-skill-surface-simplification.md --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md --path docs/plan.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml
+    result: pass_selected_lifecycle_change_metadata_no_unclassified_paths_after_m1
+  - command: rg -n 'normal .*change-local architecture delta|directing authors to a change-local delta|change-local merge-back|merge-back behavior is explicit|produces a delta' specs/architecture-package-method.test.md docs/architecture/system/architecture.md
+    result: pass_no_retired_normal_delta_phrases_after_m1
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_4_tests_after_m1
+  - command: git diff --check -- specs/architecture-package-method.test.md docs/architecture/system/architecture.md docs/adr/ADR-20260509-architecture-skill-surface-simplification.md docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/plan.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces
+    result: pass_after_m1
+  - command: rg -n '[[:blank:]]$|\t' specs/architecture-package-method.test.md docs/architecture/system/architecture.md docs/adr/ADR-20260509-architecture-skill-surface-simplification.md docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml
+    result: pass_no_matches_after_m1
+changed_files:
+  - docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md
+  - specs/architecture-package-method.md
+  - specs/architecture-package-method.test.md
+  - docs/architecture/system/architecture.md
+  - docs/architecture/system/diagrams/container.mmd
+  - docs/adr/ADR-20260509-architecture-skill-surface-simplification.md
+  - docs/plan.md
+  - docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md
+  - docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml
+  - docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md
+  - docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md
+  - docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/proposal-review-r1.md
+  - docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/proposal-review-r2.md
+  - docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/spec-review-r1.md
+  - docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/architecture-review-r1.md
+  - docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/plan-review-r1.md
+  - docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/plan-review-r2.md
+review:
+  status: approved
+  unresolved_items: 0

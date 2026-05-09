@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- none yet
+- [2026-05-09 Simplify architecture skill surfaces](plans/2026-05-09-simplify-architecture-skill-surfaces.md) - active execution plan for removing change-local architecture deltas from the normal architecture skill contract, adding architecture-review surface classification, updating test-spec and canonical skills, refreshing generated skill and adapter output, and completing downstream review, rationale, verification, and PR gates.
 
 ## Blocked
 - none yet
