@@ -2,11 +2,11 @@
 
 ## Status
 
-- active
+- done
 - Owner: maintainers
 - Start date: 2026-05-09
 - Last updated: 2026-05-09
-- Related issue or PR: none yet
+- Related issue or PR: PR handoff prepared
 - Supersedes: none
 - selected_workflow_contract: standard
 - broad_smoke_required: false
@@ -71,14 +71,14 @@ The implementation makes the active plan `Current Handoff Summary` the live stat
 
 ## Current Handoff Summary
 
-- Current milestone: M5. Lifecycle Closeout
+- Current milestone: PR handoff
 - Current milestone state: closed
 - Last reviewed milestone: M5. Lifecycle Closeout
 - Review status: M5 code-review completed with no material findings. M4 code-review completed with no material findings. M3 code-review completed with no material findings. M2 code-review completed with no material findings. M1 code-review completed after `SSWS-CR1-F1` and `SSWS-CR2-F1` were resolved; no material findings remain open.
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: Final verify passed; PR handoff and plan/index Done synchronization remain downstream lifecycle gates.
+- Next stage: Done
+- Final closeout readiness: complete
+- Reason final closeout is or is not ready: PR handoff is prepared, plan/index Done synchronization is complete, and no true downstream lifecycle event remains.
 
 ## Milestones
 
@@ -394,6 +394,7 @@ Use targeted validation first, then the final explicit CI scope in M5. Do not cl
 - [x] 2026-05-09: M5 lifecycle closeout evidence implemented; explain-change updated, final validation scope passed, and M5 handed off to code-review.
 - [x] 2026-05-09: M5 code-review completed with no material findings; M5 closed and handoff moved to verify.
 - [x] 2026-05-09: Final verify passed after correcting stale `Last reviewed milestone` state; handoff moved to PR preparation.
+- [x] 2026-05-09: PR handoff prepared; plan body and plan index synchronized as Done.
 - [x] M1. Test Spec and Validator Coverage
 - [x] M2. Workflow and Governance Guidance
 - [x] M3. Canonical Skill Contract Updates
@@ -418,6 +419,7 @@ Use targeted validation first, then the final explicit CI scope in M5. Do not cl
 - 2026-05-09: Lifecycle validation correctly rejects generated-output directories as authored source-of-truth paths. M4 lifecycle validation is scoped to authored plan/change artifacts, while `.codex/skills/` and `dist/adapters/` are covered by generated skill drift, adapter drift, adapter validation, and adapter distribution tests.
 - 2026-05-09: M5 keeps final `verify`, PR handoff, and plan-index Done synchronization as downstream lifecycle gates. This implementation slice updates the durable rationale and validation evidence, then hands the closeout milestone to code-review.
 - 2026-05-09: Final verify caught stale `Last reviewed milestone` wording after M5 code-review. The handoff summary now records M5 as the last reviewed milestone before PR preparation.
+- 2026-05-09: PR handoff completes the repo-local lifecycle for this plan. No release, deploy, publication, migration, or hosted-result gate keeps the plan Active.
 
 ## Validation Notes
 
@@ -560,14 +562,23 @@ Use targeted validation first, then the final explicit CI scope in M5. Do not cl
   - `python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-09-single-source-of-workflow-state/explain-change.md --path docs/changes/2026-05-09-single-source-of-workflow-state/change.yaml --path docs/plans/2026-05-09-single-source-of-workflow-state.md --path docs/plan.md`
   - `git diff --check -- .`
 - Lifecycle validation emitted expected merge-language warnings in `docs/plan.md` line 18, `specs/single-source-of-workflow-state.md` line 52, and `specs/single-source-of-workflow-state.test.md` line 208.
+- 2026-05-09 PR handoff lifecycle validation passed:
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-09-single-source-of-workflow-state`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-09-single-source-of-workflow-state/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-09-single-source-of-workflow-state/change.yaml --path docs/changes/2026-05-09-single-source-of-workflow-state/explain-change.md --path docs/plans/2026-05-09-single-source-of-workflow-state.md --path docs/plan.md`
+  - `python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-09-single-source-of-workflow-state/explain-change.md --path docs/changes/2026-05-09-single-source-of-workflow-state/change.yaml --path docs/plans/2026-05-09-single-source-of-workflow-state.md --path docs/plan.md`
+  - `python scripts/test-change-metadata-validator.py`
+  - `git diff --check -- docs/changes/2026-05-09-single-source-of-workflow-state/change.yaml docs/plans/2026-05-09-single-source-of-workflow-state.md docs/plan.md docs/changes/2026-05-09-single-source-of-workflow-state/explain-change.md`
+- Lifecycle validation emitted expected merge-language warnings in `docs/plan.md` line 19, `specs/single-source-of-workflow-state.md` line 52, and `specs/single-source-of-workflow-state.test.md` line 208.
 
 ## Outcome and Retrospective
 
-- Plan is active for PR handoff. M1 is closed after code-review and accepted review-resolution for `SSWS-CR1-F1` and `SSWS-CR2-F1`; M2 is closed after code-review with no material findings; M3 is closed after code-review with no material findings; M4 is closed after code-review with no material findings; M5 is closed after code-review with no material findings; final verify passed.
-- Done is not available until PR handoff is prepared and `docs/plan.md` plus this plan are synchronized.
+This plan is done. M1 is closed after code-review and accepted review-resolution for `SSWS-CR1-F1` and `SSWS-CR2-F1`; M2 is closed after code-review with no material findings; M3 is closed after code-review with no material findings; M4 is closed after code-review with no material findings; M5 is closed after code-review with no material findings; final verify passed; PR handoff is prepared.
+No true downstream lifecycle event remains for this plan.
 
 ## Readiness
 
-See `Current Handoff Summary`.
-
-This plan is not Done until final closeout is complete.
+- Next stage: Done
+- Test-spec readiness: complete for the single-source workflow-state contract.
+- Implementation readiness: complete for M1-M5; no in-scope implementation milestone remains open.
+- Final closeout: complete. Plan index and plan body are synchronized as Done for PR review.
