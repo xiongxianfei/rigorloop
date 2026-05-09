@@ -9,18 +9,24 @@
 - Spec: `specs/architecture-package-method.md`
 - Original rollout plan: `docs/plans/2026-04-28-architecture-skills-c4-arc42-adr.md`
 - Current refinement plan: `docs/plans/2026-04-29-c4-arc42-package-quality.md`
+- Current simplification plan: `docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md`
 - Proposal: `docs/proposals/2026-04-28-architecture-skills-c4-arc42-adr.md`
 - Proposal refinement: `docs/proposals/2026-04-29-c4-arc42-package-quality.md`
+- Simplification proposal: `docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md`
 - Architecture delta: `docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/architecture.md`
 - Package-quality architecture delta: `docs/changes/2026-04-29-c4-arc42-package-quality/architecture.md`
 - Canonical architecture package: `docs/architecture/system/architecture.md`
 - ADR: `docs/adr/ADR-20260428-architecture-package-method.md`
+- Simplification ADR: `docs/adr/ADR-20260509-architecture-skill-surface-simplification.md`
 - Spec-review findings: approved on 2026-04-28 after lifecycle, workflow-pointer, and first-slice compatibility corrections.
 - Spec-review findings for package-quality refinement: approved on 2026-04-29 after diagram source wording and architecture-review material-finding contract wording were corrected.
 - Architecture-review findings: approved on 2026-04-28 after lifecycle/status consistency corrections.
 - Architecture-review findings for package-quality refinement: approved on 2026-04-29 with no findings.
 - Plan-review findings: approved after M5 was revised to create and populate a legacy architecture lifecycle normalization artifact that inventories every current `docs/architecture/` document.
 - Plan-review findings for package-quality refinement: approved on 2026-04-29 after PR-F1 corrected M5 sequencing so `code-review` and `verify` remain downstream gates.
+- Spec-review findings for simplification: approved on 2026-05-09 with no material findings.
+- Architecture-review findings for simplification: approved on 2026-05-09 with no material findings.
+- Plan-review findings for simplification: approved on 2026-05-09 after PR-F1 corrected per-milestone code-review sequencing.
 
 ## Testing strategy
 
@@ -31,6 +37,8 @@
 - Final validation combines targeted pass gates, manual inventory proof, change metadata validation, artifact lifecycle validation, generated-output drift checks, and broad-smoke execution from the active plan.
 - The 2026-04-29 package-quality refinement adds contract and manual review checks for one-source diagram policy, relative links, C4 semantic styling, component-diagram discipline, hierarchical Building Block View content, link-focused ADR summaries, quality scenarios, concise skills, and architecture-review finding shape.
 - The current refinement remains review-based for C4 sufficiency and architecture package shape; existing validators prove lifecycle, selector routing, skill shape, generated-output drift, adapter validity, and broad-smoke health.
+- The 2026-05-09 simplification keeps C4, arc42, and ADRs while changing the normal architecture authoring and review surfaces. Contract and static checks prove architecture authoring chooses no-impact rationale, canonical update, ADR, or proposal/spec blocker instead of normal change-local deltas.
+- Architecture-review simplification proof starts with review-surface classification and then applies surface-specific checks for canonical architecture updates, ADRs, no-impact rationale, and proposal/spec gaps.
 
 ## Requirement coverage map
 
@@ -40,19 +48,20 @@
 | `R4`-`R6` | `T5`, `T9`, `T15` | Canonical package source of truth, default path, and migration/supersession expectations. |
 | `R7`-`R20` | `T2`, `T5`, `T6`, `T14`, `T15` | All 12 arc42 headings, lifecycle metadata, concise `Not applicable` rationale, section update conditions, ADR summary section, quality/risk/glossary coverage. |
 | `R21`-`R29` | `T3`, `T5`, `T11`, `T15` | Default context/container diagrams, conditional diagrams, source-text requirement, Mermaid first implementation, and no binary-only source of truth. |
-| `R30`-`R43` | `T4`, `T6`, `T9`, `T15` | Feature update scope, lowest-level C4 propagation, change-local delta paths, merge-back, same-PR review, runtime timing, and leaf-change exclusion. |
+| `R30`-`R43` | `T4`, `T5`, `T6`, `T9`, `T15`, `T23` | Feature update scope, lowest-level C4 propagation, non-normal change-local delta status, canonical current truth, same-PR review, runtime timing, and leaf-change exclusion. |
 | `R44`-`R48` | `T7`, `T14`, `T15` | ADR trigger, required fields, status vocabulary, and append-only decision history. |
 | `R49`-`R55` | `T2`, `T7`, `T8`, `T11`, `T15` | Template paths, live-artifact separation, `templates/` canonical-source boundary, governance updates, and workflow summary pointer. |
-| `R56`-`R58` | `T10`, `T11`, `T15` | Architecture skill updates and generated output refresh through existing generators only. |
-| `R59`-`R66` | `T6`, `T9`, `T15` | Architecture-method change as first real example, prospective adoption, legacy artifact handling, and populated legacy normalization follow-on. |
+| `R56`-`R58` | `T10`, `T11`, `T15`, `T21`, `T25` | Architecture skill updates, architecture-review surface classification, and generated output refresh through existing generators only. |
+| `R59`-`R66` | `T6`, `T9`, `T15`, `T23` | Architecture-method change as first real example, prospective adoption, legacy artifact handling, populated legacy normalization follow-on, and no reliance on normal change-local delta authoring. |
 | `R67`-`R72` | `T12`, `T13`, `T15` | Review-based first implementation, deferred enforcement automation, no new dependencies, narrow lifecycle-validator compatibility, and CI-safe non-enforcement selector routing. |
 | `R73`-`R75` | `T2`, `T3`, `T7`, `T8`, `T10`, `T14`, `T15` | No secrets, security/privacy guidance when relevant, and contributor-facing readability. |
 | `R76`-`R86` | `T16`, `T22` | Separate authored diagram source files, relative links, default `.mmd` diagrams, generated image boundary, inherited diagram lifecycle, and change-local diagram lifecycle. |
 | `R87`-`R95` | `T17`, `T22` | C4 semantics for native Mermaid C4 or flowchart/graph diagrams, shared role styling, technology labels, intent-labeled relationships, context/container level discipline, and component-diagram threshold. |
 | `R96`-`R104` | `T18`, `T22` | Hierarchical Building Block View, concise ADR links, no duplicated ADR rationale, quality scenarios, `Not applicable` rationale, and Deployment View packaging/execution boundary content. |
 | `R105`-`R107` | `T16`, `T18`, `T22` | Shared diagram style template and architecture template guidance for diagram links, separate sources, hierarchy, deployment, and ADR summaries. |
-| `R108`-`R111` | `T19`, `T21`, `T22` | Concise architecture skill content, required output shape, minimal C4 snippets, ADR triggers, and external location for full worked examples. |
-| `R112`-`R118` | `T20`, `T21`, `T22` | Architecture-review finding fields, severity vocabulary, location requirement, no mandatory C4-level taxonomy, material-finding contract preservation, and optional future category field boundary. |
+| `R108`-`R111` | `T19`, `T21`, `T22`, `T23`, `T25` | Concise architecture skill content, smallest-valid-surface output shape, minimal C4 snippets, ADR triggers, and external location for full worked examples. |
+| `R112`-`R118` | `T20`, `T21`, `T22`, `T24`, `T25` | Architecture-review finding fields, severity vocabulary, location requirement, no mandatory C4-level taxonomy, material-finding contract preservation, and optional future category field boundary. |
+| `R119`-`R124` | `T20`, `T21`, `T24`, `T25` | Architecture-review surface classification, no delta requirement for canonical architecture updates, ADR review, no-impact rationale credibility, and proposal/spec gap routing. |
 
 ## Example coverage map
 
@@ -60,7 +69,7 @@
 | --- | --- | --- |
 | `E1` | `T5`, `T10`, `T15` | Generated adapter and packaging boundaries are represented in canonical architecture, skills, and final review evidence when affected. |
 | `E2` | `T4`, `T13` | Leaf changes are not forced through architecture artifacts or enforcement automation. |
-| `E3` | `T4`, `T6`, `T15` | Change-local delta remains working evidence and durable content is merged into the canonical package. |
+| `E3` | `T4`, `T6`, `T15`, `T23` | Existing change-local delta remains historical evidence, new deltas are legacy-closeout or explicit exceptional evidence only, and durable current truth lives in the canonical package. |
 | `E4` | `T5`, `T7` | Section 9 links ADRs and ADRs record context, decision, alternatives, consequences, and follow-up. |
 | `E5` | `T2`, `T5` | All arc42 sections remain present while concise `Not applicable` rationale keeps the package lightweight. |
 | `E6` | `T9`, `T15` | Legacy architecture documents are inventoried and classified before any normalized-all claim. |
@@ -68,6 +77,7 @@
 | `E8` | `T17` | Mermaid flowchart diagrams carry C4 role classes, technology labels, and intent-labeled relationships. |
 | `E9` | `T17`, `T18` | Component diagrams remain conditional and are added only when refined container and Building Block prose are insufficient. |
 | `E10` | `T20` | Architecture-review findings use finding, location, severity, and recommendation, while material findings also keep repository-wide evidence and resolution fields. |
+| `E11` | `T23`, `T24` | Architecture records accepted design in canonical surfaces or ADRs while proposal/spec own unresolved direction or behavior. |
 
 ## Edge case coverage
 
@@ -76,16 +86,18 @@
 - EC3, generated output or adapter packaging behavior: `T5`, `T10`, `T15`
 - EC4, no durable decision after review: `T5`, `T7`
 - EC5, independent durable decisions: `T7`
-- EC6, rejected or abandoned delta content: `T4`, `T9`
+- EC6, rejected or abandoned delta content: `T4`, `T9`, `T23`
 - EC7, legacy architecture documents with older structure: `T9`, `T12`
 - EC8, non-Mermaid diagram format needed later: `T3`, `T5`
-- EC9, architecture-method change produces a delta: `T4`, `T6`
+- EC9, architecture-method change uses direct canonical update and ADR instead of normal delta authoring: `T4`, `T6`, `T23`
 - EC10, future validator added for this method: `T12`, `T13`
 - EC11, architecture document links to a diagram outside its package: `T16`
 - EC12, Mermaid native C4 syntax is impractical in the review surface: `T17`
 - EC13, component diagram requested before the container view is clear: `T17`, `T18`
 - EC14, quality requirement cannot be made measurable: `T18`
 - EC15, review finding spans multiple C4 levels or contradicts another arc42 section: `T20`
+- EC16, architecture work has no architecture impact: `T23`, `T24`
+- EC17, architecture work exposes unsettled direction or behavior: `T23`, `T24`
 
 ## Acceptance criteria coverage map
 
@@ -111,6 +123,8 @@
 | `AC18` | `T19`, `T21`, `T22` | Concise architecture-skill content and full worked examples outside the skill body. |
 | `AC19` | `T20`, `T22` | Simple architecture-review finding shape, material-finding contract preservation, and no mandatory C4-level classification. |
 | `AC20` | `T21`, `T22` | Generated `.codex/skills/` and `dist/adapters/` output refreshed through existing generators when canonical skill guidance changes. |
+| `AC21` | `T4`, `T19`, `T23`, `T25` | Change-local architecture deltas are removed from the normal authoring path while preserving historical, legacy-closeout, and explicit exceptional evidence. |
+| `AC22` | `T20`, `T24`, `T25` | Architecture-review classifies the review surface first and does not require a change-local delta for canonical architecture updates. |
 
 ## Test cases
 
@@ -175,23 +189,26 @@
   - `python scripts/select-validation.py --mode explicit --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/context.mmd --path docs/architecture/system/diagrams/container.mmd`
   - manual architecture/code-review inspection
 
-### T4. Change-local architecture delta remains working evidence only
+### T4. Change-local architecture deltas are historical or exceptional evidence only
 
-- Covers: `R30`-`R43`, `R59`-`R61`, `E2`, `E3`, EC9, `AC6`, `AC9`
+- Covers: `R30`-`R43`, `R59`-`R61`, `E2`, `E3`, EC6, EC9, `AC6`, `AC9`, `AC21`
 - Level: manual, contract
 - Fixture/setup:
   - `docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/architecture.md`
   - `docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/diagrams/`
   - `docs/architecture/system/architecture.md`
+  - `docs/adr/ADR-20260509-architecture-skill-surface-simplification.md`
 - Steps:
-  - Confirm the change-local delta identifies itself as change-local working architecture, not canonical architecture.
-  - Confirm durable accepted content is represented in `docs/architecture/system/architecture.md` before final completion.
-  - Confirm the delta remains historical evidence after merge-back and does not instruct downstream work to treat it as the current architecture source.
+  - Confirm existing change-local architecture deltas are treated as historical evidence, not the normal authoring path for new architecture work.
+  - Confirm new architecture work in the simplification change uses direct canonical architecture updates and an ADR instead of a normal change-local delta.
+  - Confirm durable accepted content is represented in `docs/architecture/system/architecture.md` when current system shape changes.
+  - Confirm the historical delta does not instruct downstream work to treat it as the current architecture source.
   - Confirm abandoned or rejected delta content is not merged unless a later accepted change adopts it.
+  - Confirm any new delta language allows only legacy closeout or explicit exceptional evidence.
 - Expected result:
-  - The change-local artifact supports review without competing with the canonical package.
+  - Existing change-local artifacts remain valid history without competing with the canonical package or remaining a default recommendation.
 - Failure proves:
-  - Downstream work could rely on stale or change-local architecture truth.
+  - Downstream work could rely on stale or change-local architecture truth, or contributors could keep treating deltas as a normal architecture skill output.
 - Automation location:
   - manual architecture-review, code-review, and verify inspection
 
@@ -221,23 +238,23 @@
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260428-architecture-package-method.md --path specs/architecture-package-method.md`
   - manual architecture/code-review inspection
 
-### T6. Architecture-method change is the first positive example and is merged back
+### T6. Architecture-method change is the first positive example using canonical surfaces
 
 - Covers: `R30`-`R43`, `R59`-`R61`, `E3`, EC9, `AC6`, `AC9`
 - Level: manual, contract
 - Fixture/setup:
-  - change-local architecture delta and diagrams
   - canonical architecture package and diagrams
+  - `docs/adr/ADR-20260509-architecture-skill-surface-simplification.md`
   - active plan M3 closeout evidence
 - Steps:
   - Confirm the implementation uses the architecture-method change itself as the first positive example.
   - Confirm no synthetic example is the only positive example.
-  - Confirm M3 records merge-back of durable content from the delta into the canonical package.
-  - Confirm final readiness does not treat the change-local delta as canonical downstream guidance.
+  - Confirm simplification durable architecture content is represented directly in the canonical package and ADR.
+  - Confirm final readiness does not treat a change-local architecture delta as canonical downstream guidance.
 - Expected result:
-  - The method is dogfooded on this real change before enforcement automation is considered.
+  - The method is dogfooded on this real change using canonical architecture and ADR surfaces before enforcement automation is considered.
 - Failure proves:
-  - The rollout is based on an artificial or unmerged example.
+  - The rollout is based on an artificial example or continues to rely on normal change-local delta authoring.
 - Automation location:
   - manual M3 closeout review and verify inspection
 
@@ -320,8 +337,8 @@
   - generated `.codex/skills/`
   - generated `dist/adapters/`
 - Steps:
-  - Inspect `skills/architecture/SKILL.md` for canonical package, change-local delta, all 12 arc42 sections, C4 context/container diagrams, ADR triggers, merge-back, leaf-change exclusion, and full-file-read guidance.
-  - Inspect `skills/architecture-review/SKILL.md` for C4 sufficiency, all 12 arc42 sections, Runtime View and Deployment View conditions, change-local merge-back, legacy status, ADR completeness, and full-file-read guidance.
+  - Inspect `skills/architecture/SKILL.md` for canonical package guidance, historical or exceptional delta boundaries, all 12 arc42 sections, C4 context/container diagrams, ADR triggers, leaf-change exclusion, and full-file-read guidance.
+  - Inspect `skills/architecture-review/SKILL.md` for C4 sufficiency, all 12 arc42 sections, Runtime View and Deployment View conditions, surface classification, legacy status, ADR completeness, and full-file-read guidance.
   - Run skill validation and skill regression tests.
   - Refresh generated `.codex/skills/` with `python scripts/build-skills.py` and public adapters with `python scripts/build-adapters.py --version 0.1.1`.
   - Run generated-output drift and adapter validation checks.
@@ -522,7 +539,7 @@
 
 ### T19. Architecture skill stays concise and process-focused
 
-- Covers: `R108`-`R111`, `AC18`
+- Covers: `R108`-`R111`, `R32`-`R39`, `AC18`, `AC21`
 - Level: contract, integration
 - Fixture/setup:
   - `skills/architecture/SKILL.md`
@@ -531,7 +548,9 @@
   - generated adapter skill output after M4
 - Steps:
   - Inspect `skills/architecture/SKILL.md` after M2.
-  - Confirm it includes one short output shape directing authors to a change-local delta or canonical package, C4 context/container diagrams, and ADRs when durable decisions are introduced.
+  - Confirm it includes one short output shape that directs authors to choose the smallest valid architecture surface: no-impact rationale, canonical architecture package update, ADR creation or update, or blocked routing to proposal/spec readiness.
+  - Confirm it does not direct authors to create change-local architecture deltas as a normal authoring path.
+  - Confirm it preserves portable canonical architecture wording instead of imposing RigorLoop-only architecture paths on downstream projects.
   - Confirm it includes one minimal C4 context snippet, one minimal C4 container snippet, one ADR trigger list, and one when-to-use/when-not-to-use section.
   - Confirm it does not include a full worked architecture example in the skill body.
   - Confirm any full worked example, if added, lives under a reference path such as `skills/architecture/references/architecture-example.md`.
@@ -548,7 +567,7 @@
 
 ### T20. Architecture-review finding format preserves material-finding safeguards
 
-- Covers: `R112`-`R118`, `E10`, EC15, `AC19`
+- Covers: `R112`-`R124`, `E10`, E11, EC15, EC16, EC17, `AC19`, `AC22`
 - Level: contract, integration
 - Fixture/setup:
   - `skills/architecture-review/SKILL.md`
@@ -556,6 +575,12 @@
   - `scripts/test-review-artifact-validator.py`
 - Steps:
   - Inspect `skills/architecture-review/SKILL.md` after M3.
+  - Confirm architecture-review first classifies the review surface as `canonical-architecture-update`, `ADR`, `no-architecture-impact-rationale`, or `proposal-or-spec-gap`.
+  - Confirm it does not require a change-local architecture delta for a canonical architecture update.
+  - Confirm canonical architecture updates are reviewed against changed canonical sections, diagrams, and ADR links directly.
+  - Confirm ADR surfaces are reviewed for context, decision, alternatives, consequences, and compatibility with canonical architecture.
+  - Confirm no-impact rationale is checked for credibility.
+  - Confirm unsettled direction routes to proposal or proposal revision and unsettled behavior routes to spec or spec revision.
   - Confirm architecture-review findings record finding, location, severity, and recommendation.
   - Confirm severity values are `blocker`, `material`, and `minor`.
   - Confirm finding location can be a file path and section or line, or a diagram name.
@@ -575,7 +600,7 @@
 
 ### T21. Generated architecture skill outputs are refreshed through generators
 
-- Covers: `R58`, `R108`-`R118`, `AC20`
+- Covers: `R58`, `R108`-`R124`, `AC20`, `AC21`, `AC22`
 - Level: integration, generated-output proof
 - Fixture/setup:
   - `skills/architecture/SKILL.md`
@@ -588,6 +613,7 @@
   - Run `python scripts/build-skills.py`.
   - Run `python scripts/build-adapters.py --version 0.1.1`.
   - Run generated skill and adapter drift checks.
+  - Run adapter drift check and adapter validation, normally `python scripts/build-adapters.py --check` and `python scripts/validate-adapters.py --version 0.1.1`.
   - Run adapter distribution and validation checks.
   - Confirm generated `.codex/skills/` and `dist/adapters/` changes match generator output and are not hand-edited.
 - Expected result:
@@ -599,7 +625,7 @@
 
 ### T22. Package-quality refinement final validation covers every changed surface
 
-- Covers: `R76`-`R118`, `AC14`-`AC20`
+- Covers: `R76`-`R124`, `AC14`-`AC22`
 - Level: smoke, lifecycle, selector, manual
 - Fixture/setup:
   - completed M1 through M5 in `docs/plans/2026-04-29-c4-arc42-package-quality.md`
@@ -613,12 +639,93 @@
   - Run final selector and CI wrapper commands over all touched source, lifecycle, template, skill, generated-output, diagram, plan, and change metadata paths named in M5.
   - Confirm no required architecture-package enforcement automation, C4-file enforcement, ADR-presence enforcement, or new external dependency was introduced.
   - Confirm plan validation notes and change metadata name the commands actually run.
+  - Confirm simplification validation includes adapter drift check plus adapter validation after canonical skill changes.
 - Expected result:
   - The package-quality refinement is ready for `code-review`; `verify`, `explain-change`, and PR readiness remain later gates.
 - Failure proves:
   - The refinement has unresolved lifecycle, generated-output, skill, template, or review-based architecture evidence drift.
 - Automation location:
   - commands named in M5 of `docs/plans/2026-04-29-c4-arc42-package-quality.md`
+
+### T23. Architecture authoring chooses the smallest valid surface
+
+- Covers: `R32`-`R39`, `R43`, `R56`, `R59`-`R61`, `R108`-`R110`, E2, E3, E11, EC6, EC9, EC16, EC17, `AC21`
+- Level: contract, integration, manual
+- Fixture/setup:
+  - `skills/architecture/SKILL.md`
+  - `docs/architecture/system/architecture.md`
+  - `docs/adr/ADR-20260509-architecture-skill-surface-simplification.md`
+  - `docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md`
+- Steps:
+  - Inspect `skills/architecture/SKILL.md` after M2.
+  - Confirm the skill tells authors to choose the smallest valid architecture action.
+  - Confirm no-impact work records a rationale in plan, spec, change metadata, or PR evidence instead of requiring architecture package edits.
+  - Confirm unclear direction or design routes to proposal or proposal revision.
+  - Confirm unclear behavior routes to spec or spec revision.
+  - Confirm clear architecture impact updates the canonical architecture package directly.
+  - Confirm durable architecture decisions create or update ADRs.
+  - Confirm routine authoring does not create architecture deltas and does not use architecture to own unresolved option selection.
+  - Run stale wording scan for normal delta output in `skills/architecture/SKILL.md`.
+- Expected result:
+  - Architecture authoring records accepted design and durable decisions without introducing unaccepted design truth or normal temporary architecture deltas.
+- Failure proves:
+  - The architecture skill can still own speculative design exploration or require change-local deltas as a normal surface.
+- Automation location:
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-skill-validator.py`
+  - `rg -n 'change-local architecture delta|merge-back|working architecture lives|docs/changes/<change-id>/architecture.md' skills/architecture/SKILL.md`
+  - manual code-review inspection during M2
+
+### T24. Architecture-review classifies the review surface before applying checks
+
+- Covers: `R57`, `R119`-`R124`, E11, EC15, EC16, EC17, `AC22`
+- Level: contract, integration, manual
+- Fixture/setup:
+  - `skills/architecture-review/SKILL.md`
+  - `docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/architecture-review-r1.md`
+  - `scripts/test-skill-validator.py`
+  - `scripts/test-review-artifact-validator.py`
+- Steps:
+  - Inspect `skills/architecture-review/SKILL.md` after M3.
+  - Confirm review begins by classifying the surface as `canonical-architecture-update`, `ADR`, `no-architecture-impact-rationale`, or `proposal-or-spec-gap`.
+  - Confirm canonical architecture update review does not require a change-local architecture delta.
+  - Confirm canonical update review checks changed canonical sections, diagrams, and ADR links directly.
+  - Confirm ADR review checks context, decision, alternatives, consequences, and compatibility with canonical architecture.
+  - Confirm no-impact rationale review checks credibility.
+  - Confirm proposal/spec gaps route unresolved direction to proposal and unresolved behavior to spec.
+  - Confirm C4, arc42, ADR completeness, and material-finding safeguards remain present where relevant.
+- Expected result:
+  - Architecture-review reviews the actual surface under consideration and blocks unresolved direction or behavior back to the owning upstream stage.
+- Failure proves:
+  - Architecture-review can keep applying the old delta/merge-back checklist or can settle product direction outside proposal/spec.
+- Automation location:
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/test-review-artifact-validator.py`
+  - manual code-review inspection during M3
+
+### T25. Simplification final validation covers source, generated, adapter, and review surfaces
+
+- Covers: `R32`-`R39`, `R56`-`R58`, `R61`, `R85`-`R86`, `R108`-`R124`, `AC20`-`AC22`
+- Level: smoke, lifecycle, selector, contract
+- Fixture/setup:
+  - completed M1 through M4 in `docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md`
+  - this active test spec
+  - `docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml`
+  - touched canonical skill sources, generated `.codex/skills/`, generated `dist/adapters/`, architecture package, ADR, and review artifacts
+- Steps:
+  - Run every milestone pass-gate command named in `docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md`.
+  - Run final lifecycle validation for the accepted proposal, approved spec, this test spec, canonical architecture package, ADR, active plan, plan index, and change metadata.
+  - Run final skill validation, generated skill drift check, adapter drift check, adapter validation, adapter distribution tests, selected validation, and diff checks.
+  - Confirm generated `.codex/skills/` and `dist/adapters/` changes came from `python scripts/build-skills.py` and `python scripts/build-adapters.py`.
+  - Confirm `python scripts/build-adapters.py --check` and `python scripts/validate-adapters.py --version 0.1.1` pass after canonical skill changes.
+  - Confirm review-resolution is closed and material findings are resolved or explicitly dispositioned.
+- Expected result:
+  - The simplification implementation is ready for milestone code-review and final lifecycle gates according to the active plan.
+- Failure proves:
+  - The simplification has unresolved source, generated-output, adapter, lifecycle, review, or validation drift.
+- Automation location:
+  - commands named in M4 and M5 of `docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md`
 
 ## Fixtures and data
 
@@ -630,6 +737,8 @@
 - The architecture-method change-local delta and diagrams under `docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/`.
 - The package-quality change-local delta under `docs/changes/2026-04-29-c4-arc42-package-quality/architecture.md`.
 - The current package-quality plan under `docs/plans/2026-04-29-c4-arc42-package-quality.md`.
+- The current simplification plan under `docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md`.
+- The simplification ADR under `docs/adr/ADR-20260509-architecture-skill-surface-simplification.md`.
 - Shared C4 style scaffolding under `templates/diagram-styles.mmd`.
 - Generated skill and adapter outputs refreshed from canonical skill sources through existing repository commands.
 
@@ -637,14 +746,15 @@
 
 - Prefer real repository fixtures, temporary filesystem fixtures, and existing CLI commands over mocks for lifecycle validation, selector routing, skill validation, adapter generation, and change metadata validation.
 - Do not mock final selector output, lifecycle validation, generated-output drift checks, or adapter validation in final milestone proof.
-- Manual review is the intended first-slice proof for C4 diagram sufficiency, package completeness beyond lifecycle compatibility, change-local merge-back, no-sensitive-data review, and legacy inventory comparison.
+- Manual review is the intended first-slice proof for C4 diagram sufficiency, package completeness beyond lifecycle compatibility, historical or exceptional change-local evidence classification, no-sensitive-data review, and legacy inventory comparison.
 - Unit tests may construct small Markdown fixture trees when that is clearer than mutating the live repository tree.
 
 ## Migration or compatibility tests
 
 - Legacy architecture documents under `docs/architecture/*.md` continue to validate against the older lifecycle contract until normalized: `T9`, `T12`.
 - The new canonical path `docs/architecture/system/architecture.md` validates with the official arc42 section model after M1: `T5`, `T12`.
-- `.codex/skills/` and `dist/adapters/` remain generated output and are refreshed only through existing generators: `T10`, `T11`.
+- `.codex/skills/` and `dist/adapters/` remain generated output and are refreshed only through existing generators: `T10`, `T11`, `T21`, `T25`.
+- Existing change-local architecture deltas remain historical evidence while new deltas are legacy-closeout or explicit exceptional evidence only: `T4`, `T23`.
 - The 2026-04-29 refinement keeps Mermaid `.mmd` as the default diagram source format while allowing native Mermaid C4 syntax or equivalent flowchart/graph C4 role styling: `T16`, `T17`.
 - The 2026-04-29 refinement adds no required package-shape, C4-file, ADR-presence, or C4-visual-sufficiency enforcement automation: `T17`, `T20`, `T22`.
 - First implementation does not change runtime behavior, public APIs, release artifacts, or command behavior outside the narrow lifecycle compatibility and CI-safe non-enforcement selector routing allowed by `R71` and `R72`: `T12`, `T13`, `T15`.
@@ -653,7 +763,7 @@
 ## Observability verification
 
 - No runtime logs, metrics, traces, or audit events are required.
-- Observable proof is repository artifact state, lifecycle status, selector output, generated-output drift checks, adapter validation, plan validation notes, change metadata, architecture/code-review inspection of C4 sufficiency, and final validation commands.
+- Observable proof is repository artifact state, lifecycle status, selector output, generated-output drift checks, adapter drift checks, adapter validation, plan validation notes, change metadata, architecture/code-review inspection of C4 sufficiency, and final validation commands.
 - Review evidence should use stable requirement IDs, test IDs, file paths, and command names rather than large raw excerpts.
 
 ## Security/privacy verification
@@ -672,7 +782,9 @@
 - Confirm `templates/architecture.md` and `docs/architecture/system/architecture.md` use all 12 official arc42 headings in order.
 - Confirm section 9 of the canonical package links `docs/adr/ADR-20260428-architecture-package-method.md`.
 - Confirm the context and container diagrams are Mermaid source text.
-- Confirm the change-local delta is historical after merge-back and not the canonical source for downstream work.
+- Confirm existing change-local deltas are historical evidence and not the canonical source for downstream work.
+- Confirm normal architecture authoring now uses no-impact rationale, direct canonical architecture update, ADR, or proposal/spec blocker.
+- Confirm architecture-review classifies the review surface before applying checks and does not require a change-local delta for canonical architecture updates.
 - Confirm `docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md` inventories every path from `find docs/architecture -type f | sort`.
 - Confirm `.codex/skills/` and `dist/adapters/` changes came from generator commands.
 - Confirm the implementation did not add required architecture package enforcement automation or new external dependencies.
@@ -681,6 +793,7 @@
 - Confirm `templates/architecture.md` includes the section 10 quality-scenario scaffold as a comment.
 - Confirm `skills/architecture/SKILL.md` includes only the required concise examples and no full worked architecture example.
 - Confirm `skills/architecture-review/SKILL.md` uses the simple finding shape while preserving material-finding evidence, outcome, and safe-resolution requirements.
+- Confirm `python scripts/build-adapters.py --check` and `python scripts/validate-adapters.py --version 0.1.1` pass after published skill text changes.
 - Confirm plan validation notes and change metadata name the commands actually run.
 
 ## What not to test
@@ -693,6 +806,7 @@
 - Do not require native Mermaid C4 syntax when shared flowchart or graph styling expresses C4 roles clearly.
 - Do not require a full worked architecture example inside `skills/architecture/SKILL.md`.
 - Do not require architecture-review findings to classify every issue by C4 level.
+- Do not test change-local architecture deltas as a normal architecture authoring output for new work.
 
 ## Uncovered gaps
 
@@ -700,10 +814,9 @@
 
 ## Next artifacts
 
-- `implement` for M1 through M5 in `docs/plans/2026-04-29-c4-arc42-package-quality.md`.
-- `code-review` after implementation completes and plan validation notes are current.
-- `verify` after code-review is clean or findings are resolved.
-- `explain-change` and `pr` after verify reports branch readiness.
+- `implement` for M1 in `docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md`.
+- `code-review` after each M1 through M4 implementation milestone completes targeted validation.
+- `explain-change`, `verify`, and `pr` after all in-scope implementation milestone review loops are closed.
 
 ## Follow-on artifacts
 
@@ -711,6 +824,6 @@
 
 ## Readiness
 
-This test spec is active as the proof map for the architecture package method rollout and the 2026-04-29 package-quality refinement.
+This test spec is active as the proof map for the architecture package method rollout, the 2026-04-29 package-quality refinement, and the 2026-05-09 architecture skill surface simplification.
 
 Immediate next repository stage: `implement`.

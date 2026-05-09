@@ -384,24 +384,41 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         body = (ROOT / "skills" / "architecture" / "SKILL.md").read_text(encoding="utf-8")
         required_terms = [
             "## When to Use / When Not to Use",
-            "## Output Shape",
-            "Produce or update:",
-            "`docs/changes/<change-id>/architecture.md`",
-            "canonical architecture package",
+            "## Architecture Surface Decision",
+            "Choose the smallest valid architecture action.",
+            "No architecture impact",
+            "Direction unclear",
+            "Spec unclear",
+            "Clear architecture update",
+            "Durable decision",
+            "Do not create temporary architecture documents to resolve direction uncertainty.",
+            "Use the project's canonical architecture package.",
+            "Common default paths are:",
+            "`docs/architecture/system/architecture.md`",
+            "`docs/architecture/system/diagrams/`",
+            "`docs/adr/`",
+            "If the project uses different architecture paths, follow the project's configured paths.",
             "C4 system context diagram",
             "C4 container diagram",
-            "ADRs when durable decisions are introduced",
             "Use `templates/architecture.md` for the full 12-section arc42 structure.",
             "```mermaid\nC4Context",
             "```mermaid\nC4Container",
             "## ADR Triggers",
             "skills/architecture/references/architecture-example.md",
+            "- Architecture surface: no-impact-rationale | canonical-update | ADR | blocked",
+            "- Direction/spec blockers:",
         ]
         for term in required_terms:
             with self.subTest(term=term):
                 self.assertIn(term, body)
 
         forbidden_terms = [
+            "`docs/changes/<change-id>/architecture.md`",
+            "Change-local working architecture lives",
+            "Use a change-local architecture delta",
+            "Merge accepted durable content from change-local deltas",
+            "merge-back",
+            "`specs/architecture-package-method.md`",
             "## Full Worked Example",
             "### Full Worked Example",
             "## Worked Example",
@@ -414,6 +431,19 @@ class SkillValidatorFixtureTests(unittest.TestCase):
     def test_architecture_review_skill_preserves_simple_finding_and_material_contract(self) -> None:
         body = (ROOT / "skills" / "architecture-review" / "SKILL.md").read_text(encoding="utf-8")
         required_terms = [
+            "## Review Surface",
+            "Classify the review surface before reviewing:",
+            "`canonical-architecture-update`",
+            "`ADR`",
+            "`no-architecture-impact-rationale`",
+            "`proposal-or-spec-gap`",
+            "Review the changed canonical architecture sections, diagrams, and ADR links directly.",
+            "Do not require a change-local architecture delta for a canonical architecture update.",
+            "Review the ADR for context, decision, alternatives, consequences, and compatibility with the canonical architecture.",
+            "Check whether the no-architecture-impact rationale is credible.",
+            "If the design direction is unresolved, return a finding that routes back to `proposal` or proposal revision.",
+            "If behavior is unsettled, route to `spec` or spec revision.",
+            "Do not use architecture-review to settle product direction.",
             "embedded or duplicated diagram source",
             "generic non-C4 flowchart",
             "wrong C4 level",
@@ -436,6 +466,18 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         for term in required_terms:
             with self.subTest(term=term):
                 self.assertIn(term, body)
+
+        forbidden_terms = [
+            "Change-local delta:",
+            "Merge-back:",
+            "docs/changes/<change-id>/architecture.md",
+            "`specs/architecture-package-method.md`",
+            "must not compete with the canonical package",
+            "when merge-back from a change-local delta may affect multiple sections",
+        ]
+        for term in forbidden_terms:
+            with self.subTest(term=term):
+                self.assertNotIn(term, body)
 
     def test_vision_skill_defines_state_based_boundaries_and_readme_marker_contract(self) -> None:
         body = (ROOT / "skills" / "vision" / "SKILL.md").read_text(encoding="utf-8")

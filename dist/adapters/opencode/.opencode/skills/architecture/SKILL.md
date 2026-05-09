@@ -18,22 +18,47 @@ Read, if present:
 - `CONSTITUTION.md`
 - accepted proposal
 - approved feature spec and spec-review findings
-- `specs/architecture-package-method.md` when architecture package shape is in scope
-- canonical architecture package under `docs/architecture/system/`
-- change-local architecture delta under `docs/changes/<change-id>/architecture.md`
-- related ADRs under `docs/adr/`
+- the project's architecture method guidance when package shape is in scope
+- the project's canonical architecture package
+- related project ADRs
 - research artifacts and `docs/project-map.md`
 - existing source interfaces, schemas, APIs, modules, CI, deployment config
 
-## Output Shape
+## Architecture Surface Decision
 
-Produce or update:
+Choose the smallest valid architecture action.
 
-- `docs/changes/<change-id>/architecture.md` for change-local deltas, or
-- the canonical architecture package when maintaining the baseline;
-- C4 system context diagram;
-- C4 container diagram;
-- ADRs when durable decisions are introduced.
+1. **No architecture impact**
+
+   Record a short no-architecture-impact rationale in the plan, spec, change metadata, or PR evidence.
+
+2. **Direction unclear**
+
+   Stop and route to `proposal` or proposal revision.
+
+   Do not create temporary architecture documents to resolve direction uncertainty.
+
+3. **Spec unclear**
+
+   Stop and route to `spec` or spec revision.
+
+4. **Clear architecture update**
+
+   Update the project's canonical architecture package directly.
+
+5. **Durable decision**
+
+   Create or update an ADR when the change introduces or revises a long-lived architecture decision.
+
+Use the project's canonical architecture package.
+
+Common default paths are:
+
+- `docs/architecture/system/architecture.md`
+- `docs/architecture/system/diagrams/`
+- `docs/adr/`
+
+If the project uses different architecture paths, follow the project's configured paths.
 
 Use `templates/architecture.md` for the full 12-section arc42 structure. Use `templates/diagram-styles.mmd` for Mermaid flowchart or graph C4 role styles. Use `templates/adr.md` for ADR structure.
 
@@ -47,22 +72,9 @@ Use architecture work when the change affects multiple components, data flow, ge
 
 Do not create or update architecture artifacts for leaf changes that do not affect architecture boundaries, data flow, generated-output flow, deployment, packaging, adapters, quality targets, cross-cutting rules, or durable decisions. Record a no-architecture-impact rationale in the plan, test spec, change metadata, or PR evidence instead.
 
-Canonical current architecture lives at:
+Do not put unaccepted design truth into architecture. If product direction or design choice is unresolved, route it through proposal. If behavior is unclear, route it through spec. Architecture can mention tradeoffs, but it does not own unresolved option selection.
 
-```text
-docs/architecture/system/architecture.md
-docs/architecture/system/diagrams/context.mmd
-docs/architecture/system/diagrams/container.mmd
-```
-
-Change-local working architecture lives at:
-
-```text
-docs/changes/<change-id>/architecture.md
-docs/changes/<change-id>/diagrams/
-```
-
-Use a change-local architecture delta only when the change is architecture-significant enough to need reviewable working design reasoning before accepted content is merged into the canonical package. A change-local delta is not a competing canonical source. After acceptance, merge durable content back into the canonical package and leave the delta as historical evidence only.
+Existing change-local architecture evidence can remain valid history. New change-local architecture evidence is exceptional or legacy closeout evidence, not the normal architecture authoring surface and not a competing canonical source.
 
 ## arc42 Sections
 
@@ -76,8 +88,8 @@ Update section 6 when behavior, orchestration, failure paths, command flow, gene
 
 Default required C4 diagrams for the canonical package:
 
-- system context diagram: `docs/architecture/system/diagrams/context.mmd`
-- container diagram: `docs/architecture/system/diagrams/container.mmd`
+- C4 system context diagram
+- C4 container diagram
 
 Use separate Mermaid `.mmd` source files for default diagrams and link them from `architecture.md` with relative Markdown links. Do not embed package diagrams in Markdown. For Mermaid flowchart or graph diagrams, use `templates/diagram-styles.mmd` or an explicitly equivalent copied block so people, systems, external systems, and containers are distinguishable.
 
@@ -90,7 +102,7 @@ Minimal context snippet:
 ```mermaid
 C4Context
   Person(contributor, "Contributor or agent")
-  System(repo, "RigorLoop repository")
+  System(repo, "Project repository")
   Rel(contributor, repo, "Authors and reviews architecture artifacts")
 ```
 
@@ -99,7 +111,7 @@ Minimal container snippet:
 ```mermaid
 C4Container
   Person(contributor, "Contributor or agent")
-  System_Boundary(repo, "RigorLoop repository") {
+  System_Boundary(repo, "Project repository") {
     Container(skills, "Canonical skills", "Markdown", "Authoring source")
     Container(templates, "Architecture templates", "Markdown/Mermaid", "Scaffolds architecture packages")
   }
@@ -128,7 +140,7 @@ Accepted or active ADRs are decision history. Later changes should supersede or 
 ## Authoring Rules
 
 - Update only the arc42 sections and C4 views the change actually affects.
-- Merge accepted durable content from change-local deltas into the canonical package before an architecture-significant change is complete.
+- Put accepted durable architecture truth in the canonical package before an architecture-significant change is complete.
 - Keep legacy `docs/architecture/` documents as legacy or historical context until the legacy normalization artifact classifies them.
 - Do not write an execution milestone list here; use `plan` after design review.
 - Do not hide tradeoffs.
@@ -152,14 +164,27 @@ Use summary and stable-ID first reasoning before broad reads or raw excerpts. Pr
 
 ## When full-file read is required
 
-Read the full file when creating or replacing the canonical architecture package, when the whole file is the review target, when checking all 12 arc42 headings or lifecycle metadata, when merge-back may affect multiple sections, when superseding or deprecating an ADR, when legacy status affects the conclusion, when the relevant section cannot be isolated safely, when bounded searches disagree, or when a behavior-changing edit depends on the whole source-of-truth artifact.
+Read the full file when creating or replacing the canonical architecture package, when the whole file is the review target, when checking all 12 arc42 headings or lifecycle metadata, when a canonical update may affect multiple sections, when superseding or deprecating an ADR, when legacy status affects the conclusion, when the relevant section cannot be isolated safely, when bounded searches disagree, or when a behavior-changing edit depends on the whole source-of-truth artifact.
 
 ## Expected output
 
-- canonical architecture package path or change-local delta path;
+Start with:
+
+```md
+## Result
+
+- Architecture surface: no-impact-rationale | canonical-update | ADR | blocked
+- Canonical architecture changed:
+- Diagrams changed:
+- ADRs created or updated:
+- Direction/spec blockers:
+- Next stage:
+```
+
+Then include:
+
 - changed arc42 sections and C4 diagram paths;
 - requirement-to-architecture mapping;
 - ADR paths for durable decisions, or a clear no-ADR-required rationale;
-- merge-back status for change-local deltas;
 - alternatives, consequences, risks, quality concerns, deployment impact, and security/privacy notes where relevant;
 - readiness statement for `architecture-review` or blocker state.
