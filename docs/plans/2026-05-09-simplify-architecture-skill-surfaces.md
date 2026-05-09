@@ -75,13 +75,13 @@ The implementation removes change-local architecture deltas from the normal arch
 ## Current Handoff Summary
 
 - Current milestone: M5. Lifecycle Closeout
-- Current milestone state: planned
+- Current milestone state: implementing
 - Last reviewed milestone: M4
 - Review status: code-review R9 completed cleanly; M4 is closed.
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: ready to start
-- Reason final closeout is not complete: explain-change, verify, and PR handoff remain.
+- Reason final closeout is not complete: verify and PR handoff remain.
 
 ## Milestones
 
@@ -333,7 +333,7 @@ python scripts/validate-adapters.py --version 0.1.1
 
 ### M5. Lifecycle Closeout
 
-- Milestone state: planned
+- Milestone state: implementing
 - Goal: Complete downstream gates after implementation milestones are closed.
 - Requirements: repository workflow closeout, review, rationale, verification, and PR-readiness rules.
 - Files/components likely touched:
@@ -429,6 +429,7 @@ python scripts/validate-adapters.py --version 0.1.1
 - [x] M3 closed after clean code-review.
 - [x] M4 implementation complete and handed to code-review.
 - [x] M4 closed after clean code-review.
+- [x] M5 explain-change evidence created.
 - [ ] M5 closed.
 
 ## Decision Log
@@ -567,6 +568,12 @@ python scripts/validate-adapters.py --version 0.1.1
   - `python scripts/build-adapters.py --version 0.1.1 --check`
   - `git diff --check -- docs/changes/2026-05-09-simplify-architecture-skill-surfaces docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md .codex/skills/architecture/SKILL.md .codex/skills/architecture-review/SKILL.md dist/adapters`
   - `rg -n '[[:blank:]]$|\t' docs/changes/2026-05-09-simplify-architecture-skill-surfaces docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md .codex/skills/architecture/SKILL.md .codex/skills/architecture-review/SKILL.md dist/adapters/claude/.claude/skills/architecture/SKILL.md dist/adapters/claude/.claude/skills/architecture-review/SKILL.md dist/adapters/codex/.agents/skills/architecture/SKILL.md dist/adapters/codex/.agents/skills/architecture-review/SKILL.md dist/adapters/opencode/.opencode/skills/architecture/SKILL.md dist/adapters/opencode/.opencode/skills/architecture-review/SKILL.md` returned no matches.
+- M5 explain-change evidence validation passed on 2026-05-09:
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml`
+  - `python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/explain-change.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/explain-change.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md`
+  - `git diff --check -- docs/changes/2026-05-09-simplify-architecture-skill-surfaces/explain-change.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md`
+  - `rg -n '[[:blank:]]$|\t' docs/changes/2026-05-09-simplify-architecture-skill-surfaces/explain-change.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md` returned no matches.
 
 ## Outcome and Retrospective
 
@@ -582,15 +589,16 @@ M3 implementation updated architecture-review surface classification and matchin
 Code-review R8 completed cleanly, so M3 is closed and the next stage is M4 implementation.
 M4 implementation refreshed generated Codex skill mirrors and public adapter packages; M4 is now in `review-requested`.
 Code-review R9 completed cleanly, so M4 is closed and the next stage is explain-change.
+M5 durable explain-change evidence has been created; the next stage is verify.
 
 ## Readiness
 
-- Next stage: explain-change
+- Next stage: verify
 - Test-spec readiness: complete for the 2026-05-09 simplification.
 - Implementation readiness: complete for M1-M4; no in-scope implementation milestone remains open.
-- Final closeout readiness: ready to start with explain-change. Verify is not ready until durable explain-change evidence exists.
+- Final closeout readiness: explain-change evidence exists; verify is ready to run. PR handoff is not ready until verify passes.
 
 ## Risks and Follow-Ups
 
-- Follow-up: create or update `docs/changes/2026-05-09-simplify-architecture-skill-surfaces/explain-change.md` after implementation and before final verify.
+- Follow-up: run `verify` now that `docs/changes/2026-05-09-simplify-architecture-skill-surfaces/explain-change.md` exists.
 - Follow-up: update `docs/plan.md` and this plan body together when the initiative changes lifecycle state.
