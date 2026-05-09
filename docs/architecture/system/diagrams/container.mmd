@@ -19,7 +19,7 @@ flowchart TB
 
   contributor -->|records workflow intent, manual-skill isolation, and no-impact rationale in| lifecycle
   contributor -->|updates clear current architecture truth directly in| architecture
-  contributor -->|uses only for reviewable working design in| changes
+  contributor -->|uses for historical, review, validation, and exceptional evidence in| changes
   contributor -->|uses scaffolds from| templates
   contributor -->|edits canonical sources in| skills
   reviewer -->|reviews selected architecture surface and ADR need in| architecture
@@ -27,8 +27,8 @@ flowchart TB
   governance -->|defines one standard workflow, manual-skill isolation, and source-of-truth rules for| lifecycle
   governance -->|defines lowest-sufficient architecture-surface rules for| architecture
   governance -->|declares authored/generated boundaries for| skills
-  lifecycle -->|routes architecture work to no-impact rationale, direct update, delta, or ADR| architecture
-  changes -->|contribute accepted current architecture truth to| architecture
+  lifecycle -->|routes architecture work to no-impact rationale, direct update, ADR, or proposal/spec gap| architecture
+  changes -->|may expose durable truth that must be represented in| architecture
   changes -->|record reviews, explanations, validation gaps, and final closeout evidence for| lifecycle
   templates -->|scaffold architecture and ADR records in| lifecycle
   skills -->|are transformed by| scripts
