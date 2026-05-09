@@ -114,4 +114,4 @@ Status: changes-requested
 Detailed record: reviews/code-review-r5.md
 Resolution: review-resolution.md#code-review-r5
 Material findings: CR5-F1
-Open findings: CR5-F1
+Open findings: None

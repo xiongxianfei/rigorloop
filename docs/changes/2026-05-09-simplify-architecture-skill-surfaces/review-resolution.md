@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -17,9 +17,9 @@ Review closeout: code-review-r4
 Review closeout: code-review-r5
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `architecture-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-r1`, `code-review-r2`, `code-review-r3`, `code-review-r4`, `code-review-r5`
-- Findings resolved: 5
-- Unresolved findings: 1
-- Final result: proposal-review R1 requested revision for one material finding. The proposal wording was revised to require a new ADR amending or narrowing the existing architecture-package-method ADR, so the finding is closed. Proposal-review R2 approved the revised proposal with no material findings. Spec-review R1 approved the draft architecture-package-method amendment with no material findings. Architecture-review R1 approved the canonical architecture update and new ADR with no material findings. Plan-review R1 requested changes for PR-F1; the plan now requires per-milestone code-review handoff and review closeout for M1-M4 before final lifecycle closeout. Plan-review R2 approved the revised plan with no material findings. Code-review R1 requested changes for CR1-F1 and code-review R2 requested changes for CR2-F1. Both findings are resolved. Code-review R3 found no new material findings for the CR1/CR2 open-state alignment. Code-review R4 requested changes for CR4-F1, which is resolved. Code-review R5 requested changes for CR5-F1, which remains open.
+- Findings resolved: 6
+- Unresolved findings: 0
+- Final result: proposal-review R1 requested revision for one material finding. The proposal wording was revised to require a new ADR amending or narrowing the existing architecture-package-method ADR, so the finding is closed. Proposal-review R2 approved the revised proposal with no material findings. Spec-review R1 approved the draft architecture-package-method amendment with no material findings. Architecture-review R1 approved the canonical architecture update and new ADR with no material findings. Plan-review R1 requested changes for PR-F1; the plan now requires per-milestone code-review handoff and review closeout for M1-M4 before final lifecycle closeout. Plan-review R2 approved the revised plan with no material findings. Code-review R1 requested changes for CR1-F1 and code-review R2 requested changes for CR2-F1. Both findings are resolved. Code-review R3 found no new material findings for the CR1/CR2 open-state alignment. Code-review R4 requested changes for CR4-F1, which is resolved. Code-review R5 requested changes for CR5-F1; the owner rejected that lifecycle review finding for this plan implementation review, so it is closed without the requested wording fix.
 
 ## Resolution Overview
 
@@ -30,7 +30,7 @@ Review closeout: code-review-r5
 | CR1-F1 | accepted | resolved | M1 plan Outcome and Readiness now route to code-review rerun after CR1/CR2 review-resolution validation. |
 | CR2-F1 | accepted | resolved | M1 review-resolution state is aligned across the plan, review-resolution, review-log, and change metadata before re-review. |
 | CR4-F1 | accepted | resolved | Active plan Source Artifacts now says the test spec was revised for the 2026-05-09 simplification in M1. |
-| CR5-F1 | accepted | open | Active plan Outcome still says M1 is in review-resolution even though M1 had returned to review-requested. |
+| CR5-F1 | rejected | resolved | Owner rejected the lifecycle review finding for this plan implementation review; no Outcome wording fix is required. |
 
 ## Resolution Entries
 
@@ -134,12 +134,12 @@ Validation evidence: CR4-F1 resolution validation passed: `python scripts/valida
 #### CR5-F1 - Plan outcome still says M1 is in review-resolution
 
 Finding ID: CR5-F1
-Disposition: accepted
-Status: open
+Disposition: rejected
+Status: resolved
 Owner: implementation author
 Owning stage: code-review
-Decision owner: implementation author
-Chosen action: Update the active plan Outcome section so it reports one current M1 state instead of stale review-resolution history.
-Rationale: Milestone handoff depends on a single current state before M2 can safely start.
-Validation target: Active plan Current Handoff Summary, Outcome, Readiness, review-resolution, review-log, and `change.yaml.review` consistently state that CR5-F1 remains open until the stale Outcome text is fixed, targeted validation passes, and M1 returns to `review-requested`.
-Validation evidence: Pending review-resolution fix.
+Decision owner: maintainer
+Chosen action: Reject the lifecycle review finding for this plan implementation review and return M1 to `review-requested`.
+Rationale: Owner decision: "We don't accept the lifecycle review in this plan implent." The finding is therefore not accepted as a required implementation fix for M1.
+Validation target: Active plan Current Handoff Summary, Readiness, review-resolution, review-log, and `change.yaml.review` consistently state that CR5-F1 is rejected, no material findings remain open, targeted validation passed, and M1 returns to `review-requested`.
+Validation evidence: CR5-F1 rejection validation passed: `python scripts/validate-change-metadata.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml`; `python scripts/validate-review-artifacts.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces`; `python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md`; `python scripts/test-change-metadata-validator.py`; `git diff --check` passed; whitespace scan returned no matches; parsed `change.yaml.review` has `status: review_requested_after_cr5_rejection` and `unresolved_items: 0`.
