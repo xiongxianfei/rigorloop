@@ -87,6 +87,8 @@ For planned initiatives, `docs/plan.md` MUST remain the lifecycle index and conc
 
 During execution, `implement` MUST keep the active plan body's progress, decisions, discoveries, and validation notes current enough that later stages can review the real initiative state.
 
+For planned initiatives, the active plan `Current Handoff Summary` MUST own current live state. Change metadata, review-resolution records, review logs, explain-change records, verify evidence, and PR handoff text are scoped evidence surfaces and must not own the active plan's current next stage. State-changing handoffs MUST perform a state-sync check across affected owners before downstream readiness is claimed.
+
 Lifecycle-managed top-level artifacts under `docs/proposals/`, top-level `specs/`, `specs/*.test.md`, `docs/architecture/`, and `docs/adr/` MUST keep status inside the artifact as tracked source of truth. For proposals, top-level specs, test specs, and architecture documents, `reviewed` is transitional review output rather than a durable relied-on state. Durable current states are `accepted`, `approved`, and `active`; terminal or historical states include `deprecated`, `rejected`, `abandoned`, `superseded`, and `archived`.
 
 For lifecycle-managed artifacts, `Next artifacts` preserves planned next steps while the artifact is active. `Follow-on artifacts` or `Closeout` records actual downstream artifacts or final disposition instead of rewriting planning history. `superseded` artifacts MUST identify their replacement through `superseded_by` or equivalent labeled text.

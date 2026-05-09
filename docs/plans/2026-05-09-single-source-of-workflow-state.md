@@ -72,13 +72,13 @@ The implementation makes the active plan `Current Handoff Summary` the live stat
 ## Current Handoff Summary
 
 - Current milestone: M2. Workflow and Governance Guidance
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M1. Test Spec and Validator Coverage
-- Review status: M1 code-review completed after `SSWS-CR1-F1` was resolved; no material findings remain open.
+- Review status: M2 implementation handoff validation passed; waiting for M2 code-review. M1 code-review completed after `SSWS-CR1-F1` and `SSWS-CR2-F1` were resolved; no material findings remain open.
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: implement M2
+- Next stage: code-review M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2-M4 are not started, generated output is not refreshed, final explain-change is not complete, verify has not run, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M2 is awaiting code-review, M3-M4 are not started, generated output is not refreshed, final explain-change is not complete, verify has not run, and PR handoff is not prepared.
 
 ## Milestones
 
@@ -137,7 +137,7 @@ The implementation makes the active plan `Current Handoff Summary` the live stat
 
 ### M2. Workflow and Governance Guidance
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Align contributor-facing workflow and governance wording with the single-source state contract.
 - Requirements: `R1`-`R31`, `EB1`-`EB6`, `EC1`-`EC5`.
 - Files/components likely touched:
@@ -382,6 +382,8 @@ Use targeted validation first, then the final explicit CI scope in M5. Do not cl
 - [x] 2026-05-09: M1 focused validator/static proof implemented and targeted validation passed.
 - [x] 2026-05-09: Code-review M1 R1 found stale final-closeout reason wording; finding `SSWS-CR1-F1` was accepted and fixed before returning M1 to review-requested.
 - [x] 2026-05-09: M1 code-review completed after `SSWS-CR1-F1` resolution; M1 closed and handoff moved to M2.
+- [x] 2026-05-09: M2 implementation started; scope limited to workflow/governance guidance and the example plan.
+- [x] 2026-05-09: M2 governance guidance alignment implemented and targeted validation passed; M2 handed off to code-review.
 - [x] M1. Test Spec and Validator Coverage
 - [ ] M2. Workflow and Governance Guidance
 - [ ] M3. Canonical Skill Contract Updates
@@ -396,6 +398,7 @@ Use targeted validation first, then the final explicit CI scope in M5. Do not cl
 - 2026-05-09: Test-spec proof uses static, contract, generated-output, adapter, lifecycle, and manual review checks rather than runtime workflow simulation.
 - 2026-05-09: M1 static proof pins the new test-spec/plan contract and readiness handoff behavior without adding broad semantic plan-state validation.
 - 2026-05-09: Treat stale wording inside `Current Handoff Summary` as a material state-sync issue even when the milestone state field itself is correct.
+- 2026-05-09: M2 records state-sync and scoped-evidence guidance in contributor/governance surfaces, while canonical skill behavior remains in M3.
 
 ## Surprises and Discoveries
 
@@ -434,6 +437,16 @@ Use targeted validation first, then the final explicit CI scope in M5. Do not cl
   - `python scripts/test-skill-validator.py`
   - `python scripts/test-artifact-lifecycle-validator.py`
   - `git diff --check -- docs/changes/2026-05-09-single-source-of-workflow-state docs/plans/2026-05-09-single-source-of-workflow-state.md scripts/test-skill-validator.py scripts/test-artifact-lifecycle-validator.py specs/single-source-of-workflow-state.test.md docs/plan.md`
+- 2026-05-09 M2 implementation handoff validation passed:
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/test-artifact-lifecycle-validator.py`
+  - `python scripts/test-change-metadata-validator.py`
+  - `python scripts/select-validation.py --mode explicit --path docs/workflows.md --path AGENTS.md --path CONSTITUTION.md --path docs/plans/0000-00-00-example-plan.md --path docs/plans/2026-05-09-single-source-of-workflow-state.md --path docs/plan.md --path docs/changes/2026-05-09-single-source-of-workflow-state/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path AGENTS.md --path CONSTITUTION.md --path docs/changes/2026-05-09-single-source-of-workflow-state/change.yaml --path docs/plan.md --path docs/plans/0000-00-00-example-plan.md --path docs/plans/2026-05-09-single-source-of-workflow-state.md --path docs/workflows.md`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-09-single-source-of-workflow-state/change.yaml`
+  - `python scripts/test-select-validation.py`
+  - `git diff --check -- docs/workflows.md AGENTS.md CONSTITUTION.md docs/plans/0000-00-00-example-plan.md docs/plans/2026-05-09-single-source-of-workflow-state.md docs/plan.md docs/changes/2026-05-09-single-source-of-workflow-state`
+- Lifecycle validation emitted expected merge-language warnings in `docs/plan.md` line 18, `docs/workflows.md` line 195, `specs/single-source-of-workflow-state.md` line 52, and `specs/single-source-of-workflow-state.test.md` line 208.
 
 ## Outcome and Retrospective
 
