@@ -70,6 +70,11 @@ MILESTONE_AWARE_REVIEW_HANDOFF_TEST_SPEC = (
 SKILL_CONTRACT_SPEC = ROOT / "specs" / "skill-contract.md"
 SKILL_CONTRACT_TEST_SPEC = ROOT / "specs" / "skill-contract.test.md"
 SKILL_CONTRACT_PLAN = ROOT / "docs" / "plans" / "2026-05-08-skill-contract-optimization.md"
+SINGLE_SOURCE_WORKFLOW_STATE_SPEC = ROOT / "specs" / "single-source-of-workflow-state.md"
+SINGLE_SOURCE_WORKFLOW_STATE_TEST_SPEC = ROOT / "specs" / "single-source-of-workflow-state.test.md"
+SINGLE_SOURCE_WORKFLOW_STATE_PLAN = (
+    ROOT / "docs" / "plans" / "2026-05-09-single-source-of-workflow-state.md"
+)
 SKILL_CONTRACT_WORKFLOW_SPEC = ROOT / "specs" / "rigorloop-workflow.md"
 SKILL_CONTRACT_WORKFLOWS_DOC = ROOT / "docs" / "workflows.md"
 SKILL_CONTRACT_AGENTS = ROOT / "AGENTS.md"
@@ -289,6 +294,30 @@ def run_validator(target: Path) -> subprocess.CompletedProcess[str]:
         text=True,
         cwd=ROOT,
     )
+
+
+def assert_requirement_id_covered(test_case: unittest.TestCase, body: str, requirement_number: int) -> None:
+    if f"`R{requirement_number}`" in body:
+        return
+    range_pattern = re.compile(r"`R(?P<start>\d+)`-`R(?P<end>\d+)`")
+    for match in range_pattern.finditer(body):
+        start = int(match.group("start"))
+        end = int(match.group("end"))
+        if start <= requirement_number <= end:
+            return
+    test_case.fail(f"R{requirement_number} is not covered explicitly or by range")
+
+
+def assert_boundary_id_covered(test_case: unittest.TestCase, body: str, boundary_number: int) -> None:
+    if f"`EB{boundary_number}`" in body:
+        return
+    range_pattern = re.compile(r"`EB(?P<start>\d+)`-`EB(?P<end>\d+)`")
+    for match in range_pattern.finditer(body):
+        start = int(match.group("start"))
+        end = int(match.group("end"))
+        if start <= boundary_number <= end:
+            return
+    test_case.fail(f"EB{boundary_number} is not covered explicitly or by range")
 
 
 class SkillValidatorFixtureTests(unittest.TestCase):
@@ -1232,6 +1261,77 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             for term in stale_terms:
                 with self.subTest(path=relative_path, stale=term):
                     self.assertNotIn(term, body)
+
+    def test_single_source_workflow_state_test_spec_maps_static_proof(self) -> None:
+        body = SINGLE_SOURCE_WORKFLOW_STATE_TEST_SPEC.read_text(encoding="utf-8")
+        required_test_cases = [
+            "T1. Active plan exposes one live current handoff owner",
+            "T2. Non-owner plan sections do not duplicate live next-stage claims",
+            "T3. Change-local evidence surfaces keep scoped ownership",
+            "T4. Milestone state vocabulary and transitions are enforced",
+            "T5. State-sync checklist updates affected owners",
+            "T6. Plan lifecycle closeout and merge boundary remain explicit",
+            "T7. Verify, explain-change, and PR claim boundaries stay separated",
+            "T8. Milestone review loop blocks premature final closeout",
+            "T9. Public skill portability and generated output stay aligned",
+            "T10. First implementation slice avoids broad semantic validation",
+            "T11. Full milestone and final validation closeout",
+        ]
+        for term in required_test_cases:
+            with self.subTest(term=term):
+                self.assertIn(term, body)
+
+        for requirement_number in range(1, 37):
+            with self.subTest(requirement=requirement_number):
+                assert_requirement_id_covered(self, body, requirement_number)
+
+        for example_number in range(1, 5):
+            with self.subTest(example=example_number):
+                self.assertIn(f"`E{example_number}`", body)
+
+        for boundary_number in range(1, 8):
+            with self.subTest(boundary=boundary_number):
+                assert_boundary_id_covered(self, body, boundary_number)
+
+        required_validation_terms = [
+            "Active proof surface for M1 implementation. The active plan `Current Handoff Summary` owns the next workflow action.",
+            "Do not add broad semantic natural-language scoring for plan state.",
+            "python scripts/build-adapters.py --version 0.1.1 --check",
+            "python scripts/validate-adapters.py --version 0.1.1",
+        ]
+        for term in required_validation_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, body)
+
+    def test_single_source_workflow_state_plan_keeps_m1_scaffolding_reviewable(self) -> None:
+        spec = SINGLE_SOURCE_WORKFLOW_STATE_SPEC.read_text(encoding="utf-8")
+        plan = SINGLE_SOURCE_WORKFLOW_STATE_PLAN.read_text(encoding="utf-8")
+
+        required_spec_terms = [
+            "Write current state once; link to it everywhere else.",
+            "the active plan's `Current Handoff Summary` MUST be the authoritative live state block",
+            "The active plan `Readiness` section MUST point to `Current Handoff Summary`",
+            "A state-sync check MUST update the active plan `Current Handoff Summary`",
+            "Published skill wording MUST NOT expose RigorLoop repository-internal source paths",
+            "python scripts/build-adapters.py --version 0.1.1 --check",
+            "python scripts/validate-adapters.py --version 0.1.1",
+        ]
+        for term in required_spec_terms:
+            with self.subTest(surface="spec", term=term):
+                self.assertIn(term, spec)
+
+        required_plan_terms = [
+            "M1. Test Spec and Validator Coverage",
+            "Keep semantic plan-state validation out of scope",
+            "python scripts/test-skill-validator.py",
+            "python scripts/test-artifact-lifecycle-validator.py",
+            "M1-M4 must each pass their implementation handoff and code-review loop before M5 final lifecycle closeout.",
+            "python scripts/build-adapters.py --version 0.1.1 --check",
+            "python scripts/validate-adapters.py --version 0.1.1",
+        ]
+        for term in required_plan_terms:
+            with self.subTest(surface="plan", term=term):
+                self.assertIn(term, plan)
 
     def test_milestone_aware_guidance_removes_unconditional_verify_handoff(self) -> None:
         """Docs and skills must not retain stale unconditional clean-review-to-verify shortcuts."""
