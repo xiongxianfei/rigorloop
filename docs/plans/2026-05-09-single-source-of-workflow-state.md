@@ -71,14 +71,14 @@ The implementation makes the active plan `Current Handoff Summary` the live stat
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Workflow and Governance Guidance
-- Current milestone state: review-requested
-- Last reviewed milestone: M1. Test Spec and Validator Coverage
-- Review status: M2 implementation handoff validation passed; waiting for M2 code-review. M1 code-review completed after `SSWS-CR1-F1` and `SSWS-CR2-F1` were resolved; no material findings remain open.
-- Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: code-review M2
+- Current milestone: M3. Canonical Skill Contract Updates
+- Current milestone state: planned
+- Last reviewed milestone: M2. Workflow and Governance Guidance
+- Review status: M2 code-review completed with no material findings. M1 code-review completed after `SSWS-CR1-F1` and `SSWS-CR2-F1` were resolved; no material findings remain open.
+- Remaining in-scope implementation milestones: M3, M4
+- Next stage: implement M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2 is awaiting code-review, M3-M4 are not started, generated output is not refreshed, final explain-change is not complete, verify has not run, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M3-M4 are not started, generated output is not refreshed, final explain-change is not complete, verify has not run, and PR handoff is not prepared.
 
 ## Milestones
 
@@ -137,7 +137,7 @@ The implementation makes the active plan `Current Handoff Summary` the live stat
 
 ### M2. Workflow and Governance Guidance
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Align contributor-facing workflow and governance wording with the single-source state contract.
 - Requirements: `R1`-`R31`, `EB1`-`EB6`, `EC1`-`EC5`.
 - Files/components likely touched:
@@ -384,8 +384,9 @@ Use targeted validation first, then the final explicit CI scope in M5. Do not cl
 - [x] 2026-05-09: M1 code-review completed after `SSWS-CR1-F1` resolution; M1 closed and handoff moved to M2.
 - [x] 2026-05-09: M2 implementation started; scope limited to workflow/governance guidance and the example plan.
 - [x] 2026-05-09: M2 governance guidance alignment implemented and targeted validation passed; M2 handed off to code-review.
+- [x] 2026-05-09: M2 code-review completed with no material findings; M2 closed and handoff moved to M3.
 - [x] M1. Test Spec and Validator Coverage
-- [ ] M2. Workflow and Governance Guidance
+- [x] M2. Workflow and Governance Guidance
 - [ ] M3. Canonical Skill Contract Updates
 - [ ] M4. Generated Output and Adapter Validation
 - [ ] M5. Lifecycle Closeout
@@ -447,10 +448,19 @@ Use targeted validation first, then the final explicit CI scope in M5. Do not cl
   - `python scripts/test-select-validation.py`
   - `git diff --check -- docs/workflows.md AGENTS.md CONSTITUTION.md docs/plans/0000-00-00-example-plan.md docs/plans/2026-05-09-single-source-of-workflow-state.md docs/plan.md docs/changes/2026-05-09-single-source-of-workflow-state`
 - Lifecycle validation emitted expected merge-language warnings in `docs/plan.md` line 18, `docs/workflows.md` line 195, `specs/single-source-of-workflow-state.md` line 52, and `specs/single-source-of-workflow-state.test.md` line 208.
+- 2026-05-09 M2 code-review validation passed:
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/test-artifact-lifecycle-validator.py`
+  - `python scripts/test-change-metadata-validator.py`
+  - `python scripts/select-validation.py --mode explicit --path docs/workflows.md --path AGENTS.md --path CONSTITUTION.md --path docs/plans/0000-00-00-example-plan.md --path docs/plans/2026-05-09-single-source-of-workflow-state.md --path docs/plan.md --path docs/changes/2026-05-09-single-source-of-workflow-state/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path AGENTS.md --path CONSTITUTION.md --path docs/changes/2026-05-09-single-source-of-workflow-state/change.yaml --path docs/plan.md --path docs/plans/0000-00-00-example-plan.md --path docs/plans/2026-05-09-single-source-of-workflow-state.md --path docs/workflows.md`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-09-single-source-of-workflow-state/change.yaml`
+  - `python scripts/test-select-validation.py`
+  - `git diff --check -- docs/workflows.md AGENTS.md CONSTITUTION.md docs/plans/0000-00-00-example-plan.md docs/plans/2026-05-09-single-source-of-workflow-state.md docs/plan.md docs/changes/2026-05-09-single-source-of-workflow-state`
 
 ## Outcome and Retrospective
 
-- Plan is active for M2. M1 is closed after code-review and accepted review-resolution for `SSWS-CR1-F1` and `SSWS-CR2-F1`.
+- Plan is active for M3. M1 is closed after code-review and accepted review-resolution for `SSWS-CR1-F1` and `SSWS-CR2-F1`; M2 is closed after code-review with no material findings.
 - Done is not available until M1-M4 are closed, required review-resolution is closed, explain-change is complete, verify passes, PR handoff is prepared, and `docs/plan.md` plus this plan are synchronized.
 
 ## Readiness
