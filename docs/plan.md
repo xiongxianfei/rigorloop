@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- none yet
+- [2026-05-09 Single source of workflow state](plans/2026-05-09-single-source-of-workflow-state.md) - active execution plan for making active plans the single live workflow-state owner, updating workflow and skill guidance, adding focused static/test coverage, refreshing generated skills and adapters, and closing lifecycle evidence through review, explain-change, verify, and PR handoff.
 
 ## Blocked
 - none yet
