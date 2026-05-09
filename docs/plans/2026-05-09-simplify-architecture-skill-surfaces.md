@@ -75,13 +75,13 @@ The implementation removes change-local architecture deltas from the normal arch
 ## Current Handoff Summary
 
 - Current milestone: M3. Architecture-Review Surface Classification and Guidance Alignment
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M2
-- Review status: code-review R7 clean-with-notes; M2 is closed.
+- Review status: M3 implementation handoff is ready for code-review; M2 is closed.
 - Remaining in-scope implementation milestones: M3, M4
-- Next stage: implement M3
+- Next stage: code-review M3
 - Final closeout readiness: not ready
-- Reason final closeout is not ready: M3-M4 implementation, code-review for each implementation milestone, review-resolution when triggered, explain-change, verify, and PR handoff remain.
+- Reason final closeout is not ready: M3 code-review, M4 implementation, code-review for each implementation milestone, review-resolution when triggered, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -202,7 +202,7 @@ The implementation removes change-local architecture deltas from the normal arch
 
 ### M3. Architecture-Review Surface Classification and Guidance Alignment
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Update architecture-review and affected contributor guidance so review starts with surface classification and does not require a change-local delta for canonical updates.
 - Requirements: `R57`, `R119`-`R124`, `AC22`.
 - Files/components likely touched:
@@ -230,9 +230,14 @@ The implementation removes change-local architecture deltas from the normal arch
   - `python scripts/test-skill-validator.py`
   - `python scripts/test-review-artifact-validator.py`
   - `python scripts/select-validation.py --mode explicit --path skills/architecture-review/SKILL.md --path docs/workflows.md --path AGENTS.md --path CONSTITUTION.md --path scripts/test-skill-validator.py --path scripts/test-review-artifact-validator.py --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml`
-  - `rg -n 'change-local architecture delta|merge-back|docs/changes/<change-id>/architecture.md|must not compete with the canonical package' skills/architecture-review/SKILL.md docs/workflows.md AGENTS.md CONSTITUTION.md`
+  - `rg -n 'merge-back|docs/changes/<change-id>/architecture.md|must not compete with the canonical package' skills/architecture-review/SKILL.md docs/workflows.md AGENTS.md CONSTITUTION.md`
   - `git diff --check -- skills/architecture-review/SKILL.md docs/workflows.md AGENTS.md CONSTITUTION.md scripts/test-skill-validator.py scripts/test-review-artifact-validator.py docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces`
 - Expected observable result: Architecture-review applies checks to the classified review surface and routes unresolved direction or behavior back to proposal or spec.
+- Implementation result:
+  - `skills/architecture-review/SKILL.md` now classifies review surfaces before applying checks.
+  - Canonical architecture updates, ADRs, no-impact rationales, and proposal/spec gaps have surface-specific review guidance.
+  - The skill keeps C4, arc42, ADR completeness, quality, and material-finding safeguards.
+  - `docs/workflows.md`, `AGENTS.md`, and `CONSTITUTION.md` are unaffected with rationale: they do not contain the stale normal-delta or merge-back checklist wording targeted by M3, and their architecture-review references remain stage-level guidance.
 - Implementation handoff:
   - targeted validation passed
   - hand off to code-review for M3
@@ -415,6 +420,7 @@ python scripts/validate-adapters.py --version 0.1.1
 - [x] M1 closed after clean code-review.
 - [x] M2 implementation complete and handed to code-review.
 - [x] M2 closed after clean code-review.
+- [x] M3 implementation complete and handed to code-review.
 - [ ] M3 closed.
 - [ ] M4 closed.
 - [ ] M5 closed.
@@ -482,6 +488,19 @@ python scripts/validate-adapters.py --version 0.1.1
   - `python scripts/test-change-metadata-validator.py`
   - `git diff --check -- docs/changes/2026-05-09-simplify-architecture-skill-surfaces docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md skills/architecture/SKILL.md scripts/test-skill-validator.py`
   - `rg -n '[[:blank:]]$|\t' docs/changes/2026-05-09-simplify-architecture-skill-surfaces docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md skills/architecture/SKILL.md scripts/test-skill-validator.py` returned no matches.
+- M3 targeted validation passed on 2026-05-09:
+  - `python -m unittest scripts.test-skill-validator.SkillValidatorFixtureTests.test_architecture_review_skill_preserves_simple_finding_and_material_contract` failed before the architecture-review rewrite and passed after it.
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/test-review-artifact-validator.py`
+  - `python scripts/select-validation.py --mode explicit --path skills/architecture-review/SKILL.md --path docs/workflows.md --path AGENTS.md --path CONSTITUTION.md --path scripts/test-skill-validator.py --path scripts/test-review-artifact-validator.py --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml`
+  - `rg -n 'merge-back|docs/changes/<change-id>/architecture.md|must not compete with the canonical package' skills/architecture-review/SKILL.md docs/workflows.md AGENTS.md CONSTITUTION.md` returned no matches.
+  - `git diff --check -- skills/architecture-review/SKILL.md docs/workflows.md AGENTS.md CONSTITUTION.md scripts/test-skill-validator.py scripts/test-review-artifact-validator.py docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path AGENTS.md --path CONSTITUTION.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md --path docs/workflows.md --path skills/architecture-review/SKILL.md` passed with the existing unrelated lifecycle warning in `docs/workflows.md` line 189.
+  - `python scripts/test-change-metadata-validator.py`
+  - `python scripts/test-select-validation.py`
+  - `rg -n '[[:blank:]]$|\t' skills/architecture-review/SKILL.md scripts/test-skill-validator.py docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml` returned no matches.
 
 ## Outcome and Retrospective
 
@@ -493,12 +512,13 @@ CR5-F1 is rejected by owner decision because the lifecycle review finding is not
 Code-review R6 completed cleanly, so M1 is closed and the next stage is M2 implementation.
 M2 implementation updated the canonical architecture skill contract and matching validator coverage; M2 is now in `review-requested`.
 Code-review R7 completed cleanly, so M2 is closed and the next stage is M3 implementation.
+M3 implementation updated architecture-review surface classification and matching validator coverage; M3 is now in `review-requested`.
 
 ## Readiness
 
-- Next stage: implement M3
+- Next stage: code-review M3
 - Test-spec readiness: complete for the 2026-05-09 simplification.
-- Implementation readiness: M2 is closed after clean code-review; M3 is ready to start.
+- Implementation readiness: M3 targeted validation passed and the milestone is ready for code-review. M4 must not start until M3 completes its milestone review loop.
 - Final closeout readiness: not ready until all in-scope implementation milestones are closed and downstream review, rationale, verify, and PR gates are complete.
 
 ## Risks and Follow-Ups
