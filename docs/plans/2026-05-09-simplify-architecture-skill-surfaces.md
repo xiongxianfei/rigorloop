@@ -74,20 +74,20 @@ The implementation removes change-local architecture deltas from the normal arch
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Test Spec and Source Lifecycle Alignment
-- Current milestone state: review-requested
+- Current milestone: M2. Canonical Architecture Skill Contract
+- Current milestone state: planned
 - Last reviewed milestone: M1
-- Review status: CR5-F1 was rejected by owner decision; M1 is returned for code-review rerun.
-- Remaining in-scope implementation milestones: M1, M2, M3, M4
-- Next stage: code-review M1 rerun
+- Review status: code-review R6 clean-with-notes; M1 is closed.
+- Remaining in-scope implementation milestones: M2, M3, M4
+- Next stage: implement M2
 - Final closeout readiness: not ready
-- Reason final closeout is not ready: M1 is awaiting code-review rerun after CR5-F1 disposition; M2-M4 implementation, code-review for each implementation milestone, review-resolution when triggered, explain-change, verify, and PR handoff remain.
+- Reason final closeout is not ready: M2-M4 implementation, code-review for each implementation milestone, review-resolution when triggered, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
 ### M1. Test Spec and Source Lifecycle Alignment
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Revise the architecture package method test spec for the simplification and normalize reviewed source artifacts before implementation relies on them.
 - Requirements: `R32`-`R39`, `R56`-`R58`, `R61`, `R85`-`R86`, `R110`, `R119`-`R124`, `AC21`, `AC22`.
 - Files/components likely touched:
@@ -407,7 +407,7 @@ python scripts/validate-adapters.py --version 0.1.1
 - [x] M1 CR1-F1 and CR2-F1 resolved and returned to code-review.
 - [x] M1 CR4-F1 resolved and returned to code-review.
 - [x] M1 CR5-F1 dispositioned and returned to code-review.
-- [ ] M1 closed after clean code-review.
+- [x] M1 closed after clean code-review.
 - [ ] M2 closed.
 - [ ] M3 closed.
 - [ ] M4 closed.
@@ -460,12 +460,13 @@ CR1-F1 and CR2-F1 are resolved for re-review, and M1 is back in `review-requeste
 Code-review R4 requested CR4-F1, so M1 is back in review-resolution.
 CR4-F1 is resolved for re-review, and M1 is back in `review-requested`.
 CR5-F1 is rejected by owner decision because the lifecycle review finding is not accepted for this plan implementation review; M1 is back in `review-requested`.
+Code-review R6 completed cleanly, so M1 is closed and the next stage is M2 implementation.
 
 ## Readiness
 
-- Next stage: code-review M1 rerun
+- Next stage: implement M2
 - Test-spec readiness: complete for the 2026-05-09 simplification.
-- Implementation readiness: M1 CR5-F1 is dispositioned, targeted validation passed, and the milestone state is `review-requested`.
+- Implementation readiness: M1 is closed after clean code-review; M2 is ready to start.
 - Final closeout readiness: not ready until all in-scope implementation milestones are closed and downstream review, rationale, verify, and PR gates are complete.
 
 ## Risks and Follow-Ups
