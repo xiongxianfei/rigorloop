@@ -1333,6 +1333,62 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             with self.subTest(surface="plan", term=term):
                 self.assertIn(term, plan)
 
+    def test_single_source_workflow_state_m2_governance_guidance(self) -> None:
+        """Contributor-facing guidance names one live state owner and scoped evidence surfaces."""
+
+        workflows = (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8")
+        agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+        constitution = (ROOT / "CONSTITUTION.md").read_text(encoding="utf-8")
+        example_plan = (ROOT / "docs" / "plans" / "0000-00-00-example-plan.md").read_text(
+            encoding="utf-8"
+        )
+
+        workflow_terms = [
+            "For planned initiatives, the active plan `Current Handoff Summary` is the live state owner.",
+            "`Readiness` points to `Current Handoff Summary` for current live state instead of duplicating the current next stage.",
+            "State-sync checks update affected state owners before downstream readiness is claimed.",
+            "Change metadata, review-resolution, review-log, explain-change, verify output, and PR handoff own scoped evidence; they do not own the active plan's current next stage.",
+        ]
+        for term in workflow_terms:
+            with self.subTest(surface="docs/workflows.md", term=term):
+                self.assertIn(term, workflows)
+
+        governance_terms = [
+            "Current Handoff Summary",
+            "state-sync check",
+            "scoped evidence",
+            "must not own the active plan's current next stage",
+        ]
+        for body, surface in ((agents, "AGENTS.md"), (constitution, "CONSTITUTION.md")):
+            for term in governance_terms:
+                with self.subTest(surface=surface, term=term):
+                    self.assertIn(term, body)
+
+        example_terms = [
+            "## Current Handoff Summary",
+            "- Current milestone:",
+            "- Current milestone state:",
+            "- Last reviewed milestone:",
+            "- Review status:",
+            "- Remaining in-scope implementation milestones:",
+            "- Next stage:",
+            "- Final closeout readiness:",
+            "- Reason final closeout is or is not ready:",
+            "See `Current Handoff Summary`.",
+        ]
+        for term in example_terms:
+            with self.subTest(surface="example plan", term=term):
+                self.assertIn(term, example_plan)
+
+        stale_workflow_terms = [
+            "in the active plan or review handoff",
+            "If the plan is still active, name the next expected milestone or workflow stage.",
+        ]
+        for term in stale_workflow_terms:
+            with self.subTest(term=term):
+                self.assertNotIn(term, workflows)
+                self.assertNotIn(term, example_plan)
+
     def test_milestone_aware_guidance_removes_unconditional_verify_handoff(self) -> None:
         """Docs and skills must not retain stale unconditional clean-review-to-verify shortcuts."""
 
