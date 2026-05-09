@@ -6,7 +6,7 @@
 - Owner: maintainers
 - Start date: 2026-05-09
 - Last updated: 2026-05-09
-- Related issue or PR: PR handoff prepared
+- Related issue or PR: PR #38, https://github.com/xiongxianfei/rigorloop/pull/38
 - Supersedes: none
 - selected_workflow_contract: standard
 - broad_smoke_required: false
@@ -394,7 +394,7 @@ Use targeted validation first, then the final explicit CI scope in M5. Do not cl
 - [x] 2026-05-09: M5 lifecycle closeout evidence implemented; explain-change updated, final validation scope passed, and M5 handed off to code-review.
 - [x] 2026-05-09: M5 code-review completed with no material findings; M5 closed and handoff moved to verify.
 - [x] 2026-05-09: Final verify passed after correcting stale `Last reviewed milestone` state; handoff moved to PR preparation.
-- [x] 2026-05-09: PR handoff prepared; plan body and plan index synchronized as Done.
+- [x] 2026-05-09: PR handoff prepared; plan body and plan index synchronized as Done; opened PR #38.
 - [x] M1. Test Spec and Validator Coverage
 - [x] M2. Workflow and Governance Guidance
 - [x] M3. Canonical Skill Contract Updates
@@ -563,6 +563,7 @@ Use targeted validation first, then the final explicit CI scope in M5. Do not cl
   - `git diff --check -- .`
 - Lifecycle validation emitted expected merge-language warnings in `docs/plan.md` line 18, `specs/single-source-of-workflow-state.md` line 52, and `specs/single-source-of-workflow-state.test.md` line 208.
 - 2026-05-09 PR handoff lifecycle validation passed:
+  - Opened PR #38: `https://github.com/xiongxianfei/rigorloop/pull/38`.
   - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-09-single-source-of-workflow-state`
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-09-single-source-of-workflow-state/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-09-single-source-of-workflow-state/change.yaml --path docs/changes/2026-05-09-single-source-of-workflow-state/explain-change.md --path docs/plans/2026-05-09-single-source-of-workflow-state.md --path docs/plan.md`
