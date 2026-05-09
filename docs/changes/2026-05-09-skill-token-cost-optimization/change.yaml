@@ -95,7 +95,7 @@ changed_files:
   - specs/skill-contract.test.md
   - scripts/test-skill-validator.py
 review:
-  status: m1_review_requested
+  status: m1_closed_clean_review
   open_findings: 0
   unresolved_items: 0
-  last_review: M1 implementation completed targeted validation and is ready for code-review M1
+  last_review: code-review M1 completed cleanly with no material findings; M1 closed and plan ready for implement M2
