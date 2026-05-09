@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- none yet
+- [2026-05-09 Skill token cost optimization](plans/2026-05-09-skill-token-cost-optimization.md) - active execution plan for tightening skill token-cost behavior, bounded evidence collection, full-file-read escape conditions, output-cap guidance, static proof, canonical skill updates, generated skill and adapter refresh, explain-change evidence, final verification, and PR handoff.
 
 ## Blocked
 - none yet
