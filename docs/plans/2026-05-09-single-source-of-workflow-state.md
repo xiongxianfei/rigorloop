@@ -71,20 +71,20 @@ The implementation makes the active plan `Current Handoff Summary` the live stat
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Test Spec and Validator Coverage
-- Current milestone state: review-requested
-- Last reviewed milestone: none
-- Review status: M1 implementation handoff ready; code-review has not run.
-- Remaining in-scope implementation milestones: M1, M2, M3, M4
-- Next stage: code-review M1
+- Current milestone: M2. Workflow and Governance Guidance
+- Current milestone state: planned
+- Last reviewed milestone: M1. Test Spec and Validator Coverage
+- Review status: M1 code-review completed after `SSWS-CR1-F1` was resolved; no material findings remain open.
+- Remaining in-scope implementation milestones: M2, M3, M4
+- Next stage: implement M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 is `review-requested` but not reviewed or closed, M2-M4 are not started, generated output is not refreshed, final explain-change is not complete, verify has not run, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M2-M4 are not started, generated output is not refreshed, final explain-change is not complete, verify has not run, and PR handoff is not prepared.
 
 ## Milestones
 
 ### M1. Test Spec and Validator Coverage
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Create the test spec and focused static proof for the single-source workflow-state contract.
 - Requirements: `R1`-`R36`, `EB1`-`EB7`, acceptance criteria.
 - Files/components likely touched:
@@ -381,7 +381,8 @@ Use targeted validation first, then the final explicit CI scope in M5. Do not cl
 - [x] 2026-05-09: M1 implementation started; scope limited to test spec plus focused validator/static proof.
 - [x] 2026-05-09: M1 focused validator/static proof implemented and targeted validation passed.
 - [x] 2026-05-09: Code-review M1 R1 found stale final-closeout reason wording; finding `SSWS-CR1-F1` was accepted and fixed before returning M1 to review-requested.
-- [ ] M1. Test Spec and Validator Coverage
+- [x] 2026-05-09: M1 code-review completed after `SSWS-CR1-F1` resolution; M1 closed and handoff moved to M2.
+- [x] M1. Test Spec and Validator Coverage
 - [ ] M2. Workflow and Governance Guidance
 - [ ] M3. Canonical Skill Contract Updates
 - [ ] M4. Generated Output and Adapter Validation
