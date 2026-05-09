@@ -5,7 +5,7 @@
 - active
 - Owner: maintainers
 - Start date: 2026-05-08
-- Last updated: 2026-05-08
+- Last updated: 2026-05-09
 - Related issue or PR: none yet
 - Supersedes: none
 - selected_workflow_contract: refactored
@@ -28,7 +28,7 @@ This plan also catches the repository up to the work already drafted through pro
 - Architecture: [Canonical System Architecture](../architecture/system/architecture.md), approved after direct canonical update, C4 diagram alignment, and architecture-review R1.
 - Test specs: [RigorLoop workflow test spec](../../specs/rigorloop-workflow.test.md), [Workflow stage autoprogression test spec](../../specs/workflow-stage-autoprogression.test.md), [Milestone-aware review handoff test spec](../../specs/milestone-aware-review-handoff.test.md), and [Skill contract test spec](../../specs/skill-contract.test.md).
 - Project map: `docs/project-map.md` is absent. No-map rationale: this plan does not rely on repository-map claims for runtime ownership, data flow, deployment, or module boundaries. Orientation comes from `CONSTITUTION.md`, `AGENTS.md`, the accepted proposal, amended specs, canonical architecture package, current skill files, generator scripts, and existing validator patterns.
-- Review records: `docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md` and `review-resolution.md` record proposal-review R1/R2, spec-review R1-R5, architecture-review R1, plan-review R1/R2, and code-review R1-R5. CR1, CR2, and CR3 are resolved; M1, M2, and M3 code-review reruns are clean.
+- Review records: `docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md` and `review-resolution.md` record proposal-review R1/R2, spec-review R1-R5, architecture-review R1, plan-review R1/R2, and code-review R1-R7. CR1, CR2, and CR3 are resolved; M1 through M5 code-review reruns are clean.
 
 ## Context and Orientation
 
@@ -84,9 +84,10 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
 - Review status: code-review R7 returned `clean-with-notes` with no material findings. M5 is closed.
 - Commit status: M1 and M2 closeout was corrected with a scoped catch-up milestone commit before continuing M3. M3 through M5 have handoff commits before closeout. Future milestone closeout must not mark a milestone closed until the milestone commit exists.
 - Remaining in-scope implementation milestones: none; M6 is lifecycle-closeout.
-- Next stage: `ci-maintenance`
-- Final closeout readiness: ready to start final closeout
-- Reason final closeout is not complete: `ci-maintenance` is triggered by validation automation changes, then `explain-change`, final `verify`, and `pr` remain.
+- CI-maintenance status: complete; no hosted workflow or CI wrapper edit required.
+- Next stage: `explain-change`
+- Final closeout readiness: in progress; final verify is not ready yet.
+- Reason final closeout is not complete: `explain-change`, final `verify`, and `pr` remain.
 
 ## Milestones
 
@@ -449,6 +450,7 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
 - [x] M3 canonical skill and public skill portability alignment closed after clean code-review R5.
 - [x] M4 generated output and adapter confirmation closed after clean code-review R6.
 - [x] M5 review evidence and selected validation closed after clean code-review R7.
+- [x] M6 ci-maintenance reviewed hosted CI and selector coverage with no workflow edit required.
 - [ ] M6 lifecycle closeout.
 
 ## Decision Log
@@ -473,6 +475,7 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
 - 2026-05-08: Code-review R6 closed M4 with no material findings. Rationale: generated Codex skill mirrors and public adapter packages are in sync, adapter validation passes, public skill portability checks pass, and the stale directory-form selected CI command has a concrete-path replacement.
 - 2026-05-08: M5 replaced the planned `docs/changes/<change-id>/` directory selected CI command with concrete changed paths from the initiative range. Rationale: the selector intentionally blocks the change-local directory path in explicit mode; concrete files select the intended review-artifact, lifecycle, metadata, skill, adapter, README, and selector checks.
 - 2026-05-08: Code-review R7 closed M5 with no material findings. Rationale: review artifacts and change metadata validate, concrete-path selected CI covers the initiative changed surface, and M6 is lifecycle-closeout rather than an implementation milestone.
+- 2026-05-09: CI-maintenance made no hosted workflow edit. Rationale: `.github/workflows/ci.yml` already runs on pull requests and `main` pushes without path filters, delegates to `scripts/ci.sh`, and branch-range selector inspection selected deterministic checks for the changed skill, adapter, lifecycle, review artifact, change metadata, README, and selector surfaces with no unclassified paths.
 
 ## Surprises and Discoveries
 
@@ -492,6 +495,7 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
 - Code-review R6 confirmed M4 is clean. The remaining implementation work is M5 review evidence and selected validation.
 - M5 found the same directory-selector pattern for the change-local root. Concrete changed paths from the initiative range selected the intended final proof set without unclassified paths.
 - Code-review R7 confirmed M5 is clean. All in-scope implementation milestones are closed; the remaining work is lifecycle closeout.
+- CI-maintenance confirmed that the hosted CI workflow already covers this change through the repo-owned selector-backed wrapper, so changing GitHub Actions would add maintenance surface without improving coverage.
 
 ## Validation Notes
 
@@ -639,6 +643,18 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
   - `bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r7.md` passed selected review-artifact, lifecycle, change-metadata regression, and change-metadata validation checks.
   - `git diff --check -- docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-log.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/review-resolution.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/code-review-r7.md` passed.
   - Whitespace scan for the same code-review R7 recording paths passed.
+- 2026-05-09 ci-maintenance review:
+  - Inspected `.github/workflows/ci.yml`, `.github/workflows/release.yml`, `scripts/ci.sh`, and `scripts/validation_selection.py`.
+  - `.github/workflows/ci.yml` runs on `pull_request` and `push` to `main`, has no path filters, uses read-only contents permissions, has a concurrency group with `cancel-in-progress`, sets up Python 3.11, and delegates PR/main ranges to `bash scripts/ci.sh --mode pr/main`.
+  - `scripts/ci.sh` delegates path selection to `scripts/select-validation.py`; branch-range selector inspection selected skill validation/regression/drift, adapter regression/drift/validation, review artifact validation, artifact lifecycle validation, change metadata regression/validation, README validation, README vision-marker validation, and selector regression with no unclassified paths and no broad smoke requirement.
+  - `python scripts/select-validation.py --mode pr --base origin/proposal/2026-05-08-skill-optimization --head HEAD` passed with no unclassified paths and no broad smoke requirement.
+  - No hosted workflow, path-filter, cache, or platform-configuration edit is required before `explain-change`.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml` passed.
+  - `python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml` passed with no unclassified paths.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml` passed with existing nonblocking lifecycle-language warnings for `docs/plan.md` and `specs/rigorloop-workflow.md`.
+  - `bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml` passed selected artifact-lifecycle, change-metadata regression, and change-metadata validation checks.
+  - `git diff --check -- docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml` passed.
+  - Whitespace scan for the same ci-maintenance recording paths passed.
 
 ## Outcome and Retrospective
 
@@ -648,17 +664,18 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
 - M3 implementation is closed after CR2/CR3 review-resolution and clean code-review R5.
 - M4 implementation is closed after generated-output confirmation and clean code-review R6.
 - M5 implementation is closed after review evidence, selected validation, and clean code-review R7.
-- Final closeout is ready to start but not complete.
+- CI-maintenance is complete with no hosted workflow edit required.
+- Final closeout is in progress and not complete.
 
 ## Readiness
 
-- Next stage: `ci-maintenance`.
+- Next stage: `explain-change`.
 - Plan-review readiness: complete; plan-review R2 approved this plan.
 - Test-spec readiness: complete; matching test specs confirm the proof map against the approved plan.
 - Implementation readiness: complete; all in-scope implementation milestones are closed.
-- Final closeout readiness: ready to start final closeout. Final `verify` is not ready until `ci-maintenance` when triggered and `explain-change.md` are complete.
+- Final closeout readiness: in progress. Final `verify` is not ready until `explain-change.md` exists and is current.
 
 ## Risks and Follow-Ups
 
-- Follow-up: run `ci-maintenance` because validation automation changed.
+- Follow-up: run `explain-change` before final `verify`.
 - Follow-up: when the initiative reaches final closeout, update both `docs/plan.md` and this plan body in the same PR state transition.
