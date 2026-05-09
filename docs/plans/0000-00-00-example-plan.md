@@ -27,11 +27,30 @@ Explain why this work matters.
 
 - constraint
 
+## Current Handoff Summary
+
+- Current milestone: M1. First milestone
+- Current milestone state: planned
+- Last reviewed milestone: none
+- Review status: not started
+- Remaining in-scope implementation milestones: M1
+- Next stage: implement M1
+- Final closeout readiness: not ready
+- Reason final closeout is or is not ready: M1 is not implemented or reviewed, final validation has not run, and PR handoff is not prepared.
+
 ## Milestones
 
 1. M1. First milestone
+   - milestone state: planned
    - deliverable
    - verification
+   - implementation handoff:
+     - [ ] targeted validation passed
+     - [ ] hand off to code-review for M1
+   - review closeout:
+     - [ ] code-review completed
+     - [ ] material findings resolved or explicitly dispositioned
+     - [ ] milestone state updated before starting the next implementation milestone
    - milestone commit message: `M1: <completed milestone outcome>`
    - milestone closeout checklist:
      - [ ] targeted validation passed
@@ -59,12 +78,12 @@ Explain why this work matters.
 
 ## Outcome and retrospective
 
-- While the plan is still active, say so plainly instead of implying `Done`, `Blocked`, or `Superseded`.
+- Keep this section final-only or explicitly historical while the plan is active; do not duplicate the current next stage here.
 - When the real lifecycle decision is known, update both this plan body and the single `docs/plan.md` entry in the same change.
 
 ## Readiness
 
-- If the plan is still active, name the next expected milestone or workflow stage.
+- See `Current Handoff Summary`.
 - If the initiative is done, blocked, or superseded, say that here without leaving stale wording such as `ready for code-review` or `ready for PR`.
 
 ## Risks and follow-ups

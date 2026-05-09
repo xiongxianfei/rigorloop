@@ -139,6 +139,8 @@ For milestone-based plans, `implement` works on one in-scope implementation mile
 - When implementation work begins, transition the current milestone from `planned` to `implementing`.
 - After implementation and targeted validation complete, record targeted validation evidence, decisions, surprises, and follow-ups in the active plan.
 - When no stop condition applies, set the current milestone to `review-requested` and hand off to `code-review` for that milestone.
+- Perform a state-sync check before claiming readiness for `code-review`.
+- Update the active plan `Current Handoff Summary` when the milestone moves to `review-requested`.
 - Implementation completion is handoff evidence, not milestone closeout. `implementation-complete` may appear as an evidence description, but it is not a milestone state.
 - The milestone becomes `closed` only after clean code-review and any required review-resolution are complete.
 - If accepted review findings return to implementation, keep fixes attached to the same milestone. After fixes and targeted validation evidence are complete, return that same milestone to `review-requested` before rerun review.

@@ -167,7 +167,9 @@ ci-maintenance, when triggered
 -> pr
 ```
 
-Track the reviewed milestone, the remaining in-scope implementation milestones, the next stage, and final-closeout readiness in the active plan or review handoff. Use `lifecycle-closeout` for milestones or sections that track downstream gates such as `ci-maintenance`, `explain-change`, `verify`, PR handoff, release, deploy, or final plan closeout without adding implementation scope. Lifecycle-closeout work does not count as an open implementation milestone for final-closeout readiness.
+For planned initiatives, the active plan `Current Handoff Summary` owns live state. Track the reviewed milestone, the remaining in-scope implementation milestones, the next stage, and final-closeout readiness there. State-sync checks update affected owners before downstream readiness is claimed.
+
+Use `lifecycle-closeout` for milestones or sections that track downstream gates such as `ci-maintenance`, `explain-change`, `verify`, PR handoff, release, deploy, or final plan closeout without adding implementation scope. Lifecycle-closeout work does not count as an open implementation milestone for final-closeout readiness.
 
 Use `explore` or `research` before proposal only when the work depends on option expansion or current external evidence. Use `docs/project-map.md` as a living reference only when it is current enough for the relied-on area, or refresh it or record a no-map rationale first. Follow with `learn` only when a periodic or explicit trigger occurs.
 

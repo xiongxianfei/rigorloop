@@ -63,6 +63,8 @@ Once proposal, spec, and architecture are already settled, execution usually pro
 
 For milestone-based plans, repeat implementation and code-review for each in-scope implementation milestone. A clean non-final milestone review routes to the next implementation milestone; final closeout follows only after all in-scope implementation milestones are closed and required review-resolution is closed.
 
+For planned initiatives, the active plan `Current Handoff Summary` owns the current milestone, milestone state, review status, remaining in-scope implementation milestones, next stage, and final closeout readiness. Other artifacts provide scoped evidence and must not own the active plan's current next stage. Every state-changing handoff performs a state-sync check across affected surfaces before downstream readiness is claimed.
+
 In workflow-managed completion flows, continue automatically into the next mandatory or triggered downstream stage when the approved autoprogression contract says to do so. Do not wait for redundant user confirmation to enter a known review or PR gate. Review-only and manual individual-skill invocations stay isolated by default, direct `pr` still opens the PR when readiness passes, and bugfix skill invocations remain explicit-step unless a higher-priority artifact broadens them.
 
 Add `plan-review` before spec work when the task is risky, cross-cutting, or hard to sequence cleanly.

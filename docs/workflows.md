@@ -148,10 +148,16 @@ Notes:
 
 - Use a concrete plan under `docs/plans/` for multi-file, risky, ambiguous, migration-heavy, or milestone-based work.
 - `docs/plan.md` is the lifecycle index for planned initiatives; concrete plan bodies live under `docs/plans/`.
+- For planned initiatives, the active plan `Current Handoff Summary` is the live state owner.
+- `Readiness` points to `Current Handoff Summary` for current live state instead of duplicating the current next stage.
 - Each implementation milestone has one `Milestone state`: `planned`, `implementing`, `review-requested`, `resolution-needed`, or `closed`.
 - Use `review-requested` after implementation and targeted validation are complete and the milestone is handed to `code-review`.
 - Use `resolution-needed` when review findings require review-resolution, fixes, owner decision, or re-review.
-- Track the current milestone, current milestone state, last reviewed milestone, review status, remaining in-scope implementation milestones, next stage, final closeout readiness, and the reason in the active plan or review handoff.
+- Track the current milestone, current milestone state, last reviewed milestone, review status, remaining in-scope implementation milestones, next stage, final closeout readiness, and the reason in `Current Handoff Summary`.
+- State-sync checks update affected state owners before downstream readiness is claimed.
+- State-sync checks update `Current Handoff Summary`, milestone state, review-resolution closeout status when findings change, review-log open findings when formal review records change, `change.yaml` compact review/status when metadata changes, and `docs/plan.md` when plan lifecycle state changes.
+- Change metadata, review-resolution, review-log, explain-change, verify output, and PR handoff own scoped evidence; they do not own the active plan's current next stage.
+- Remove or correct stale live next-stage wording in touched artifacts before claiming downstream readiness.
 - Use `lifecycle-closeout` for a milestone or section that tracks only downstream gates such as `ci-maintenance`, `explain-change`, `verify`, PR handoff, release, deploy, or final plan closeout.
 - During execution, `implement` keeps the active plan body's progress, decisions, discoveries, and validation notes current.
 - When a planned initiative changes lifecycle state, final lifecycle closeout updates both `docs/plan.md` and the plan body.
