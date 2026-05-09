@@ -10,11 +10,14 @@ Review closeout: spec-review-r1
 Review closeout: architecture-review-r1
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
+Review closeout: code-review-r1
+Review closeout: code-review-r2
+Review closeout: code-review-r3
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `architecture-review-r1`, `plan-review-r1`, `plan-review-r2`
-- Findings resolved: 2
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `architecture-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-r1`, `code-review-r2`, `code-review-r3`
+- Findings resolved: 4
 - Unresolved findings: 0
-- Final result: proposal-review R1 requested revision for one material finding. The proposal wording was revised to require a new ADR amending or narrowing the existing architecture-package-method ADR, so the finding is closed. Proposal-review R2 approved the revised proposal with no material findings. Spec-review R1 approved the draft architecture-package-method amendment with no material findings. Architecture-review R1 approved the canonical architecture update and new ADR with no material findings. Plan-review R1 requested changes for PR-F1; the plan now requires per-milestone code-review handoff and review closeout for M1-M4 before final lifecycle closeout. Plan-review R2 approved the revised plan with no material findings.
+- Final result: proposal-review R1 requested revision for one material finding. The proposal wording was revised to require a new ADR amending or narrowing the existing architecture-package-method ADR, so the finding is closed. Proposal-review R2 approved the revised proposal with no material findings. Spec-review R1 approved the draft architecture-package-method amendment with no material findings. Architecture-review R1 approved the canonical architecture update and new ADR with no material findings. Plan-review R1 requested changes for PR-F1; the plan now requires per-milestone code-review handoff and review closeout for M1-M4 before final lifecycle closeout. Plan-review R2 approved the revised plan with no material findings. Code-review R1 requested changes for CR1-F1 and code-review R2 requested changes for CR2-F1. Both findings are resolved and M1 is returned to `review-requested` for code-review rerun. Code-review R3 found no new material findings for the CR1/CR2 open-state alignment.
 
 ## Resolution Overview
 
@@ -22,6 +25,8 @@ Review closeout: plan-review-r2
 |---|---|---|---|
 | PASS-F1 | accepted | resolved | Proposal now requires a new ADR amending or narrowing `ADR-20260428-architecture-package-method` and preserves the existing accepted ADR as decision history. |
 | PR-F1 | accepted | resolved | Plan now adds per-implementation-milestone code-review handoff and review closeout before M1-M4 can close or final lifecycle closeout can begin. |
+| CR1-F1 | accepted | resolved | M1 plan Outcome and Readiness now route to code-review rerun after CR1/CR2 review-resolution validation. |
+| CR2-F1 | accepted | resolved | M1 review-resolution state is aligned across the plan, review-resolution, review-log, and change metadata before re-review. |
 
 ## Resolution Entries
 
@@ -68,5 +73,39 @@ Validation target: Revised plan requires code-review handoff and review closeout
 Validation evidence: `python scripts/validate-change-metadata.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml` passed; `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-09-simplify-architecture-skill-surfaces` passed; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md --path docs/plan.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/plan-review-r1.md` passed with existing warning in `docs/plan.md` line 17; `git diff --check -- docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces docs/plan.md` passed.
 
 ### plan-review-r2
+
+No material findings.
+
+### code-review-r1
+
+#### CR1-F1 - Plan outcome still routes to plan-review after M1 handoff
+
+Finding ID: CR1-F1
+Disposition: accepted
+Status: resolved
+Owner: implementation author
+Owning stage: code-review
+Decision owner: implementation author
+Chosen action: Aligned the active plan's Outcome and Readiness sections with the completed M1 review-resolution state and returned M1 to `review-requested`.
+Rationale: The active plan body must stay current during implementation and review-resolution. Stale plan-review or code-review readiness wording can misroute the next implementer or reviewer while accepted findings remain open.
+Validation target: Plan Current Handoff Summary, Outcome, Readiness, review-resolution, review-log, and `change.yaml.review` consistently state that CR1-F1 and CR2-F1 are resolved, no material findings remain open, targeted validation passed, and M1 is deliberately returned to `review-requested`.
+Validation evidence: Review-resolution closeout validation passed: `python scripts/validate-change-metadata.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml`; `python scripts/validate-review-artifacts.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces`; `python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md`; `python scripts/test-change-metadata-validator.py`; `git diff --check` passed; whitespace scan returned no matches; parsed `change.yaml.review` has `status: review_requested_after_cr1_cr2_resolution` and `unresolved_items: 0`.
+
+### code-review-r2
+
+#### CR2-F1 - M1 review-resolution state remains inconsistent across plan and change metadata
+
+Finding ID: CR2-F1
+Disposition: accepted
+Status: resolved
+Owner: implementation author
+Owning stage: code-review
+Decision owner: implementation author
+Chosen action: Aligned the plan Readiness section, review-resolution, review-log, and `change.yaml.review` with the completed M1 review-resolution state.
+Rationale: The active plan's Current Handoff Summary, Readiness section, and change metadata must expose the same current state so downstream work cannot mistake an open review-resolution loop for code-review readiness or approval.
+Validation target: Active plan Readiness, Current Handoff Summary, review-resolution, review-log, and `change.yaml.review` consistently state that CR1-F1 and CR2-F1 are resolved, no material findings remain open, targeted validation passed, and M1 is returned to `review-requested`.
+Validation evidence: Review-resolution closeout validation passed: `python scripts/validate-change-metadata.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml`; `python scripts/validate-review-artifacts.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces`; `python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md`; `python scripts/test-change-metadata-validator.py`; `git diff --check` passed; whitespace scan returned no matches; parsed `change.yaml.review` has `status: review_requested_after_cr1_cr2_resolution` and `unresolved_items: 0`.
+
+### code-review-r3
 
 No material findings.
