@@ -6,7 +6,7 @@
 - Owner: maintainers
 - Start date: 2026-05-09
 - Last updated: 2026-05-09
-- Related issue or PR: local PR handoff complete; PR URL to be recorded after opening.
+- Related issue or PR: PR #37, https://github.com/xiongxianfei/rigorloop/pull/37
 - Supersedes: none
 - selected_workflow_contract: standard
 - broad_smoke_required: false
@@ -589,6 +589,9 @@ python scripts/validate-adapters.py --version 0.1.1
   - `python scripts/select-validation.py --mode explicit` for the touched proposal, spec, test spec, architecture package, ADRs, skills, generated outputs, change artifacts, completed plan, and plan index.
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths` for the touched lifecycle artifacts passed with the existing unrelated lifecycle warning in `docs/plan.md` line 17.
   - `bash scripts/ci.sh --mode explicit` for the touched skill, validator, test-spec, plan, plan-index, and change-metadata paths.
+- 2026-05-09 PR handoff validation:
+  - Opened PR #37: `https://github.com/xiongxianfei/rigorloop/pull/37`.
+  - Final PR lifecycle recording validation for `docs/plan.md`, this plan, and `change.yaml` passed after recording PR handoff and Done state.
 
 ## Outcome and Retrospective
 
@@ -607,14 +610,15 @@ Code-review R9 completed cleanly, so M4 is closed and the next stage is explain-
 M5 durable explain-change evidence has been created; the next stage is verify.
 M5 final verification passed; the branch was confirmed for PR handoff.
 PR handoff closeout is complete; no true downstream lifecycle event remains in this plan.
+Opened PR #37.
 
 ## Readiness
 
 - Next stage: Done
 - Test-spec readiness: complete for the 2026-05-09 simplification.
 - Implementation readiness: complete for M1-M4; no in-scope implementation milestone remains open.
-- Final closeout: complete. Plan index and plan body are synchronized as Done for PR review.
+- Final closeout: complete. Plan index and plan body are synchronized as Done for PR #37 review.
 
 ## Risks and Follow-Ups
 
-- Follow-up: confirm hosted GitHub Actions status for the PR before merge.
+- Follow-up: confirm hosted GitHub Actions status for PR #37 before merge.
