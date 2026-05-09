@@ -2,11 +2,11 @@
 
 ## Status
 
-- active
+- done
 - Owner: maintainers
 - Start date: 2026-05-08
 - Last updated: 2026-05-09
-- Related issue or PR: none yet
+- Related issue or PR: PR #35, https://github.com/xiongxianfei/rigorloop/pull/35
 - Supersedes: none
 - selected_workflow_contract: refactored
 - broad_smoke_required: false
@@ -87,9 +87,10 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
 - CI-maintenance status: complete; no hosted workflow or CI wrapper edit required.
 - Explain-change status: complete; durable rationale exists at `docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/explain-change.md`.
 - Verify status: complete; branch-ready evidence is recorded by final verify on 2026-05-09.
-- Next stage: `pr`
-- Final closeout readiness: in progress; branch-ready, but PR body/open readiness still belongs to `pr`.
-- Reason final closeout is not complete: PR handoff remains.
+- PR status: opened PR #35.
+- Next stage: Done
+- Final closeout readiness: complete; no true downstream completion event remains.
+- Reason final closeout is complete: implementation milestones, review-resolution, ci-maintenance, explain-change, final verify, and PR handoff are complete.
 
 ## Milestones
 
@@ -455,7 +456,8 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
 - [x] M6 ci-maintenance reviewed hosted CI and selector coverage with no workflow edit required.
 - [x] M6 explain-change created durable rationale before final verify.
 - [x] M6 final verify passed selector-backed branch validation and confirmed branch-ready before PR handoff.
-- [ ] M6 lifecycle closeout.
+- [x] M6 PR handoff opened PR #35.
+- [x] M6 lifecycle closeout.
 
 ## Decision Log
 
@@ -482,6 +484,7 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
 - 2026-05-09: CI-maintenance made no hosted workflow edit. Rationale: `.github/workflows/ci.yml` already runs on pull requests and `main` pushes without path filters, delegates to `scripts/ci.sh`, and branch-range selector inspection selected deterministic checks for the changed skill, adapter, lifecycle, review artifact, change metadata, README, and selector surfaces with no unclassified paths.
 - 2026-05-09: Explain-change uses a change-local artifact instead of PR text alone. Rationale: this is ordinary non-trivial workflow-governance work, so the durable rationale belongs in `docs/changes/<change-id>/explain-change.md` before final `verify`.
 - 2026-05-09: Final verify records evidence in the plan and `change.yaml` without a standalone `verify-report.md`. Rationale: no required manual proof exists, and the selected automated proof, review closeout, lifecycle checks, drift checks, and CI-scope review are sufficient durable branch-ready evidence before PR handoff.
+- 2026-05-09: Draft PR #35 was opened to obtain the PR identifier, then `docs/plan.md` and this plan body were synchronized to Done before review handoff. Rationale: no true downstream completion event remains after PR handoff, and the PR should carry self-contained lifecycle closeout state.
 
 ## Surprises and Discoveries
 
@@ -682,10 +685,13 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
   - `python scripts/build-skills.py --check` passed; generated skills are in sync.
   - `python scripts/build-adapters.py --version 0.1.1 --check` passed; generated adapter output is in sync.
   - Final verify recording validation for `docs/plan.md`, this plan, and `change.yaml` passed after recording this state.
+- 2026-05-09 PR handoff validation:
+  - Opened PR #35: `https://github.com/xiongxianfei/rigorloop/pull/35`.
+  - Final PR lifecycle recording validation for `docs/plan.md`, this plan, and `change.yaml` passed after recording PR handoff and Done state.
 
 ## Outcome and Retrospective
 
-- Initiative remains active.
+- Plan is done.
 - M1 implementation is closed after clean code-review R2 and covered by the scoped M1/M2 catch-up milestone commit.
 - M2 implementation is closed after clean code-review R3 and covered by the scoped M1/M2 catch-up milestone commit.
 - M3 implementation is closed after CR2/CR3 review-resolution and clean code-review R5.
@@ -694,17 +700,17 @@ Prior verification evidence recorded before `explain-change` is preliminary. Fin
 - CI-maintenance is complete with no hosted workflow edit required.
 - Explain-change is complete at `docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/explain-change.md`.
 - Final verify is complete and branch-ready is confirmed by local selector-backed validation.
-- Final closeout is in progress and not complete.
+- PR handoff is complete with opened PR #35.
+- Final closeout is complete; no true downstream completion event remains.
 
 ## Readiness
 
-- Next stage: `pr`.
+- Next stage: Done.
 - Plan-review readiness: complete; plan-review R2 approved this plan.
 - Test-spec readiness: complete; matching test specs confirm the proof map against the approved plan.
 - Implementation readiness: complete; all in-scope implementation milestones are closed.
-- Final closeout readiness: in progress. Branch-ready is confirmed, but PR handoff remains before lifecycle closeout is complete.
+- Final closeout readiness: complete. Plan index and plan body are synchronized as Done for PR #35 review.
 
 ## Risks and Follow-Ups
 
-- Follow-up: run `pr`.
-- Follow-up: when the initiative reaches final closeout, update both `docs/plan.md` and this plan body in the same PR state transition.
+- Follow-up: confirm hosted GitHub Actions status for PR #35 before merge.

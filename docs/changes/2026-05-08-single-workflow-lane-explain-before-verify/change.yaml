@@ -53,6 +53,7 @@ requirements:
   - Complete ci-maintenance before explain-change because validation automation changed.
   - Create durable explain-change rationale before final verify.
   - Run final verify after explain-change and before PR handoff.
+  - Open PR handoff and synchronize plan lifecycle state to Done.
 tests:
   - Artifact lifecycle validation for the proposal.
   - Artifact lifecycle validation for the draft spec amendments.
@@ -96,6 +97,7 @@ tests:
   - CI-maintenance review of hosted workflow wiring, selector coverage, path-filter behavior, and downstream explain-change readiness.
   - Explain-change artifact validation, change metadata validation, lifecycle validation, selected CI, diff, and whitespace validation before final verify.
   - Final verify branch-level selector validation, selected CI, review closeout validation, generated-output drift checks, retired wording scans, committed diff hygiene, plan/index synchronization, and post-recording validation before PR handoff.
+  - PR handoff lifecycle recording, change metadata validation, selected CI, diff, and whitespace validation after PR #35 opens.
 validation:
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md
     result: pass_after_proposal_revision
@@ -717,6 +719,18 @@ validation:
     result: pass_final_verify_recording_diff_check
   - command: bash -c 'if rg -n "[[:blank:]]$|\t" docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml; then exit 1; else exit 0; fi'
     result: pass_final_verify_recording_no_whitespace_matches
+  - command: gh pr create --base main --head proposal/2026-05-08-skill-optimization --title "docs: standardize workflow closeout guidance" --body-file "$body_file"
+    result: pass_opened_pr_35
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_pr_handoff_recording_valid_change_metadata
+  - command: python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_pr_handoff_recording_selector_artifact_lifecycle_change_metadata_checks_no_unclassified_paths
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md --path docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_pr_handoff_recording_artifact_lifecycle_change_metadata_checks
+  - command: git diff --check -- docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml
+    result: pass_pr_handoff_recording_diff_check
+  - command: bash -c 'if rg -n "[[:blank:]]$|\t" docs/plan.md docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml; then exit 1; else exit 0; fi'
+    result: pass_pr_handoff_recording_no_whitespace_matches
 changed_files:
   - AGENTS.md
   - CONSTITUTION.md
@@ -768,5 +782,5 @@ changed_files:
   - docs/learn/sessions/2026-05-08-milestone-commit-policy-mismatch.md
   - docs/learn/sessions/2026-05-08-spec-review-rounds-and-readiness.md
 review:
-  status: verify-complete-branch-ready-pr-next
+  status: pr-opened-35-lifecycle-done
   unresolved_items: 0
