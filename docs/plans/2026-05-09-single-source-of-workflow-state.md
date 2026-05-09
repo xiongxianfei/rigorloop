@@ -437,7 +437,7 @@ Use targeted validation first, then the final explicit CI scope in M5. Do not cl
 
 ## Outcome and Retrospective
 
-- Plan is active. M1 implementation is ready for code-review; M1 is not closed until code-review and any required review-resolution are complete.
+- Plan is active for M2. M1 is closed after code-review and accepted review-resolution for `SSWS-CR1-F1` and `SSWS-CR2-F1`.
 - Done is not available until M1-M4 are closed, required review-resolution is closed, explain-change is complete, verify passes, PR handoff is prepared, and `docs/plan.md` plus this plan are synchronized.
 
 ## Readiness

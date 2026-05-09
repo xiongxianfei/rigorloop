@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -10,9 +10,9 @@ Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`
-- Findings resolved: 2
-- Unresolved findings: 1
-- Current result: proposal-review R1 requested revision for one material finding. The proposal validation strategy now uses repository-runnable versioned adapter commands, so the finding is closed. Proposal-review R2 approved the revised proposal with no material findings. Code-review M1 R1 requested one state-sync fix; the active plan current handoff reason now matches the M1 review-requested state. Code-review M1 R2 found stale outcome wording that must be fixed before M1 can remain closed and M2 can start.
+- Findings resolved: 3
+- Unresolved findings: 0
+- Current result: proposal-review R1 requested revision for one material finding. The proposal validation strategy now uses repository-runnable versioned adapter commands, so the finding is closed. Proposal-review R2 approved the revised proposal with no material findings. Code-review M1 R1 requested one state-sync fix; the active plan current handoff reason now matches the M1 review-requested state. Code-review M1 R2 found stale outcome wording; the active plan outcome now says M1 is closed after code-review resolution and the plan is active for M2.
 
 ## Resolution Overview
 
@@ -20,7 +20,7 @@ Review closeout: code-review-m1-r2
 |---|---|---|---|
 | SSWS-PR1-F1 | accepted | resolved | Proposal validation strategy now uses runnable versioned adapter validation for this repository. |
 | SSWS-CR1-F1 | accepted | resolved | Active plan final-closeout reason now reflects M1 review-requested and M2-M4 not started. |
-| SSWS-CR2-F1 | accepted | unresolved | Active plan outcome section still says M1 is ready for code-review after M1 was closed. |
+| SSWS-CR2-F1 | accepted | resolved | Active plan outcome section now says M1 is closed after code-review resolution and the plan is active for M2. |
 
 ## Resolution Entries
 
@@ -64,11 +64,11 @@ Validation evidence: `python scripts/validate-review-artifacts.py --mode closeou
 
 Finding ID: SSWS-CR2-F1
 Disposition: accepted
-Status: unresolved
+Status: resolved
 Owner: implementation author
 Owning stage: implement M1 review-resolution
 Decision owner: implementation author
-Chosen action: Pending.
+Chosen action: Updated the active plan `Outcome and Retrospective` section so it says M1 is closed after code-review resolution and the plan is active for M2.
 Rationale: The active plan `Outcome and Retrospective` section conflicts with the current handoff and M1 closed state.
 Validation target: Update the active plan outcome section, review artifacts, change metadata, lifecycle validation, and diff cleanliness.
-Validation evidence: Pending.
+Validation evidence: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-09-single-source-of-workflow-state`, `python scripts/validate-change-metadata.py docs/changes/2026-05-09-single-source-of-workflow-state/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-09-single-source-of-workflow-state/change.yaml --path docs/changes/2026-05-09-single-source-of-workflow-state/explain-change.md --path docs/plan.md --path docs/plans/2026-05-09-single-source-of-workflow-state.md --path specs/single-source-of-workflow-state.md --path specs/single-source-of-workflow-state.test.md`, and `git diff --check -- docs/changes/2026-05-09-single-source-of-workflow-state docs/plans/2026-05-09-single-source-of-workflow-state.md docs/plan.md` passed.

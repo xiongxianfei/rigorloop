@@ -107,5 +107,5 @@ changed_files:
   - docs/changes/2026-05-09-single-source-of-workflow-state/reviews/proposal-review-r1.md
   - docs/changes/2026-05-09-single-source-of-workflow-state/reviews/proposal-review-r2.md
 review:
-  status: m1_review_changes_requested
-  unresolved_items: 1
+  status: m1_closed
+  unresolved_items: 0
