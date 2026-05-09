@@ -33,7 +33,7 @@ The implementation removes change-local architecture deltas from the normal arch
 - Architecture: [Canonical System Architecture](../architecture/system/architecture.md), reviewed by architecture-review R1.
 - ADR: [ADR-20260509 Architecture Skill Surface Simplification](../adr/ADR-20260509-architecture-skill-surface-simplification.md), reviewed by architecture-review R1.
 - Existing method ADR: [ADR-20260428 Architecture Package Method](../adr/ADR-20260428-architecture-package-method.md), remains accepted decision history.
-- Test spec: [Architecture Package Method Test Spec](../../specs/architecture-package-method.test.md), not yet revised for the 2026-05-09 simplification.
+- Test spec: [Architecture Package Method Test Spec](../../specs/architecture-package-method.test.md), revised for the 2026-05-09 simplification in M1.
 - Change metadata: `docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml`.
 - Review records: `docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md` and `review-resolution.md` cover proposal-review R1/R2, spec-review R1, and architecture-review R1.
 - Project map: `docs/project-map.md` is absent. No-map rationale: this plan does not rely on project-map claims for runtime ownership, storage, service boundaries, or module topology. Orientation comes from `CONSTITUTION.md`, `AGENTS.md`, the accepted proposal, approved spec, reviewed architecture and ADR, current skill files, generator scripts, and existing validator patterns.
@@ -75,19 +75,19 @@ The implementation removes change-local architecture deltas from the normal arch
 ## Current Handoff Summary
 
 - Current milestone: M1. Test Spec and Source Lifecycle Alignment
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M1
-- Review status: code-review R4 requested CR4-F1 after CR1-F1 and CR2-F1 were resolved.
+- Review status: CR4-F1 is resolved and M1 is returned for code-review rerun.
 - Remaining in-scope implementation milestones: M1, M2, M3, M4
-- Next stage: review-resolution / implement M1 fix
+- Next stage: code-review M1 rerun
 - Final closeout readiness: not ready
-- Reason final closeout is not ready: M1 has a required-change finding; M2-M4 implementation, code-review for each implementation milestone, review-resolution when triggered, explain-change, verify, and PR handoff remain.
+- Reason final closeout is not ready: M1 is awaiting code-review rerun after CR4-F1 resolution; M2-M4 implementation, code-review for each implementation milestone, review-resolution when triggered, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
 ### M1. Test Spec and Source Lifecycle Alignment
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Revise the architecture package method test spec for the simplification and normalize reviewed source artifacts before implementation relies on them.
 - Requirements: `R32`-`R39`, `R56`-`R58`, `R61`, `R85`-`R86`, `R110`, `R119`-`R124`, `AC21`, `AC22`.
 - Files/components likely touched:
@@ -405,7 +405,7 @@ python scripts/validate-adapters.py --version 0.1.1
 - [x] Test-spec revised.
 - [x] M1 implementation complete and handed to code-review.
 - [x] M1 CR1-F1 and CR2-F1 resolved and returned to code-review.
-- [ ] M1 CR4-F1 resolved and returned to code-review.
+- [x] M1 CR4-F1 resolved and returned to code-review.
 - [ ] M1 closed after clean code-review.
 - [ ] M2 closed.
 - [ ] M3 closed.
@@ -443,18 +443,27 @@ python scripts/validate-adapters.py --version 0.1.1
   - `python scripts/test-change-metadata-validator.py`
   - `git diff --check -- docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md`
   - `rg -n '[[:blank:]]$|\t' docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md` returned no matches.
+- M1 CR4-F1 review-resolution validation passed on 2026-05-09:
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml`
+  - `python scripts/validate-review-artifacts.py docs/changes/2026-05-09-simplify-architecture-skill-surfaces`
+  - `python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md --path docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md --path docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md`
+  - `python scripts/test-change-metadata-validator.py`
+  - `git diff --check -- docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md`
+  - `rg -n '[[:blank:]]$|\t' docs/plans/2026-05-09-simplify-architecture-skill-surfaces.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces/change.yaml docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-log.md docs/changes/2026-05-09-simplify-architecture-skill-surfaces/review-resolution.md` returned no matches.
 
 ## Outcome and Retrospective
 
 This plan is active. M1 is in review-resolution after code-review R1 and R2, not implementation completion, final closeout, or PR readiness.
 CR1-F1 and CR2-F1 are resolved for re-review, and M1 is back in `review-requested`.
 Code-review R4 requested CR4-F1, so M1 is back in review-resolution.
+CR4-F1 is resolved for re-review, and M1 is back in `review-requested`.
 
 ## Readiness
 
-- Next stage: review-resolution / implement M1 fix
+- Next stage: code-review M1 rerun
 - Test-spec readiness: complete for the 2026-05-09 simplification.
-- Implementation readiness: M1 is in review-resolution for CR4-F1. Return M1 to code-review only after the accepted finding is fixed, targeted validation passes, and the milestone state is updated to `review-requested`.
+- Implementation readiness: M1 CR4-F1 review-resolution fix is complete, targeted validation passed, and the milestone state is `review-requested`.
 - Final closeout readiness: not ready until all in-scope implementation milestones are closed and downstream review, rationale, verify, and PR gates are complete.
 
 ## Risks and Follow-Ups
