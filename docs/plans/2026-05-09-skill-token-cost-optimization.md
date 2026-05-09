@@ -73,14 +73,14 @@ The implementation tightens the skill contract, test coverage, shared evidence g
 
 ## Current Handoff Summary
 
-- Current milestone: M3. Generated Skill and Adapter Output
-- Current milestone state: review-requested
-- Last reviewed milestone: M2. Shared Evidence Guidance and Canonical Skills
-- Review status: M3 implementation completed targeted validation and is ready for code-review M3.
-- Remaining in-scope implementation milestones: M3, M4
-- Next stage: code-review M3
+- Current milestone: M4. Change Evidence and Lifecycle Closeout Preparation
+- Current milestone state: planned
+- Last reviewed milestone: M3. Generated Skill and Adapter Output
+- Review status: code-review M3 completed cleanly with no material findings; M3 is closed.
+- Remaining in-scope implementation milestones: M4
+- Next stage: implement M4
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1-M4 implementation review loops, lifecycle closeout, final verify, and PR handoff remain open.
+- Reason final closeout is or is not ready: M4 implementation review loop, lifecycle closeout, final verify, and PR handoff remain open.
 
 ## Pre-Implementation Gates
 
@@ -217,7 +217,7 @@ These gates are not in-scope implementation milestones and do not count toward M
 
 ### M3. Generated Skill and Adapter Output
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Refresh derived outputs after canonical skill changes and prove public adapter packages remain valid.
 - Requirements: `R7`, `R9`, acceptance criteria.
 - Files/components likely touched:
@@ -390,6 +390,7 @@ These gates are not in-scope implementation milestones and do not count toward M
 - 2026-05-09: M2 tightened the shared evidence guidance, copied it into the selected high-volume skills, and aligned the existing `workflow` shared-block consumer to avoid drift.
 - 2026-05-09: code-review M2 completed cleanly with no material findings; M2 closed and handoff moved to M3.
 - 2026-05-09: M3 refreshed generated local skill mirrors and public adapter packages from canonical skill updates.
+- 2026-05-09: code-review M3 completed cleanly with no material findings; M3 closed and handoff moved to M4.
 
 ## Decision Log
 
@@ -451,8 +452,8 @@ These gates are not in-scope implementation milestones and do not count toward M
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `code-review M3`.
-- Implementation readiness: M3 is in `review-requested`. Do not start M4 until M3 code-review completes and material findings are resolved or explicitly dispositioned.
+- Ready for `implement M4`.
+- Implementation readiness: M4 is planned. Start M4 only after using the active test spec and M4 validation targets; hand off to code-review for M4 after M4 targeted validation passes.
 
 ## Risks and Follow-Ups
 

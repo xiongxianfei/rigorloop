@@ -182,7 +182,7 @@ changed_files:
   - skills/pr/SKILL.md
   - skills/learn/SKILL.md
 review:
-  status: m3_review_requested
+  status: m3_closed_clean_review
   open_findings: 0
   unresolved_items: 0
-  last_review: M3 implementation completed targeted validation and is ready for code-review M3
+  last_review: code-review M3 completed cleanly with no material findings; M3 closed and plan ready for implement M4
