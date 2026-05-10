@@ -93,11 +93,11 @@ Constraints:
 ## Current Handoff Summary
 
 - Current milestone: M3. Proposal scope preservation skill and validator updates
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M2. Durable baseline report and change evidence
-- Review status: M2 code-review clean-with-notes; no material findings; M2 closed
+- Review status: M3 implementation-complete; targeted validation passed; code-review requested
 - Remaining in-scope implementation milestones: M3, M4
-- Next stage: implement M3
+- Next stage: code-review M3
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: M1-M4 are not implemented or reviewed, final lifecycle closeout has not run, and PR handoff is not prepared.
 
@@ -202,7 +202,7 @@ Constraints:
 
 ### M3. Proposal Scope Preservation Skill and Validator Updates
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Update proposal/proposal-review behavior and static validation for initial intent preservation.
 - Requirements: R6, R6a-R6e, R7, R7a-R7e, R8, R8a-R8f, R9, R9a-R9b, R10, R10a-R10e, AC4, AC5, AC6
 - Files/components likely touched:
@@ -234,18 +234,18 @@ Constraints:
 - Expected observable result: Proposal authoring preserves initial goals, proposal-review rejects silent narrowing, and validator tests protect the behavior.
 - Commit message: `M3: preserve initial proposal intent`
 - Implementation handoff:
-  - [ ] targeted validation passed
-  - [ ] hand off to code-review for M3
+  - [x] targeted validation passed
+  - [x] hand off to code-review for M3
 - Review closeout:
   - [ ] code-review completed
   - [ ] material findings resolved or explicitly dispositioned
   - [ ] milestone state updated before starting the next implementation milestone
 - Milestone closeout:
-  - [ ] validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - Skill text could become too heavy.
   - Validator checks could become brittle prose scoring.
@@ -414,6 +414,8 @@ bash scripts/ci.sh --mode explicit --path <changed-path>...
 - 2026-05-10: M2 implementation started for durable baseline report and change-local links.
 - 2026-05-10: M2 added the first durable token-cost baseline report, change-local report links, and a lightweight report-shape regression test. M2 is ready for code-review.
 - 2026-05-10: M2 code-review completed clean-with-notes with no material findings; M2 is closed and the plan is active for M3.
+- 2026-05-10: M3 implementation started for proposal/proposal-review scope preservation guidance and validator coverage.
+- 2026-05-10: M3 added proposal/proposal-review scope preservation guidance and narrow static validator coverage. M3 is ready for code-review.
 
 ## Decision Log
 
@@ -422,6 +424,8 @@ bash scripts/ci.sh --mode explicit --path <changed-path>...
 - 2026-05-10: keep M5 as lifecycle-closeout only -> final closeout must wait until M1-M4 are closed through their milestone review loops.
 - 2026-05-10: manually route M1 script and fixture validation because `scripts/select-validation.py` currently classifies the new token-cost scripts as `script-unsupported` and the token-cost fixture path as unclassified; direct script tests and commands are the authoritative M1 proof.
 - 2026-05-10: manually route M2 report validation because `scripts/select-validation.py` currently leaves `docs/reports/token-cost/2026-05-10-baseline.md` unclassified and the updated script test as `script-unsupported`; direct report-shape tests, lifecycle validation, and change metadata validation are the authoritative M2 proof.
+- 2026-05-10: keep M3 validator coverage as exact section and phrase checks -> satisfies R10 without broad semantic scoring.
+- 2026-05-10: leave generated Codex skill mirror and public adapter refresh to M4 -> M3 changes canonical skill text only, while M4 owns `.codex/skills/` and `dist/adapters/` updates after M3 code-review.
 
 ## Surprises and Discoveries
 
@@ -466,6 +470,17 @@ bash scripts/ci.sh --mode explicit --path <changed-path>...
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/reports/token-cost/2026-05-10-baseline.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md`
   - `git diff --check -- HEAD~1..HEAD`
+- M3 implementation validation passed:
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/validate-skills.py`
+  - `python scripts/select-validation.py --mode explicit --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path scripts/test-skill-validator.py --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md`
+  - Selector result: selected `skills.validate`, `skills.regression`, `skills.drift`, `adapters.drift`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`; no blocking results.
+  - `python scripts/test-change-metadata-validator.py`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path skills/proposal-review/SKILL.md --path skills/proposal/SKILL.md`
+  - `python scripts/build-skills.py --check` failed with stale generated proposal/proposal-review skill mirrors; this is expected until M4 generated output refresh.
+  - `python scripts/build-adapters.py --version 0.1.1 --check` failed with stale generated proposal/proposal-review adapter files; this is expected until M4 generated output refresh.
+  - `git diff --check -- skills/proposal/SKILL.md skills/proposal-review/SKILL.md scripts/test-skill-validator.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md`
 - M1 code-review validation rerun passed:
   - `python scripts/test-token-cost-measurement.py`
   - `python scripts/measure-skill-tokens.py`
@@ -481,7 +496,7 @@ bash scripts/ci.sh --mode explicit --path <changed-path>...
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for implement M3.
+- This plan is ready for code-review M3.
 
 ## Remaining Completion Gates
 
