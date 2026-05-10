@@ -88,6 +88,19 @@ SKILL_CONTRACT_FIRST_SLICE_SKILLS = [
     "pr",
     "learn",
 ]
+TOKEN_COST_SELECTED_SKILLS = [
+    "proposal",
+    "proposal-review",
+    "spec",
+    "spec-review",
+    "plan",
+    "plan-review",
+    "implement",
+    "code-review",
+    "verify",
+    "pr",
+    "learn",
+]
 SKILL_CONTRACT_FORBIDDEN_NEW_SKILLS = [
     "ci-maintenance",
     "review-resolution",
@@ -1700,9 +1713,12 @@ class SkillValidatorFixtureTests(unittest.TestCase):
 
         evidence_terms = [
             "## Evidence collection efficiency",
+            "Use bounded evidence before broad reads or raw excerpts.",
             "Use summary and stable-ID first reasoning before broad reads or raw excerpts.",
-            "Prefer check IDs, requirement IDs, test IDs, file paths, counts, and line citations",
-            "derived artifacts, or validation output",
+            "Prefer check IDs, requirement IDs, test IDs, file paths, counts, line citations",
+            "generated output, validation logs, or repeated scans",
+            "Output caps are safety rails, not evidence-selection strategy.",
+            "Validation summaries must not change selected check coverage, command exit behavior, failure detection, or required validation evidence.",
             "## When full-file read is required",
             "Read the full file when the whole file is the review target",
             "bounded searches disagree or produce incomplete evidence",
@@ -1720,6 +1736,52 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         for block_name in SKILL_CONTRACT_DEFERRED_SHARED_BLOCKS:
             with self.subTest(deferred_block=block_name):
                 self.assertFalse((ROOT / "templates" / "shared" / f"{block_name}.md").exists())
+
+    def test_skill_contract_token_cost_amendment_is_defined(self) -> None:
+        spec = SKILL_CONTRACT_SPEC.read_text(encoding="utf-8")
+        test_spec = SKILL_CONTRACT_TEST_SPEC.read_text(encoding="utf-8")
+
+        required_spec_terms = [
+            "Token-cost discipline is part of normalized skill behavior.",
+            "Token-cost discipline MUST NOT reduce required validation coverage, review obligations, artifact obligations, or workflow stage gates.",
+            "Normalized skills that collect evidence from high-volume surfaces MUST prefer bounded evidence before broad reads.",
+            "Output caps MUST be treated as safety rails, not evidence-selection strategy.",
+            "Summary-first and failure-focused output MUST preserve validation semantics.",
+            "Static validation for token-cost discipline MUST be narrow and reviewable.",
+            "Reviewers MAY report broad, noisy evidence collection as a process defect",
+            "Do not add a standalone `token-budget` skill.",
+        ]
+        for term in required_spec_terms:
+            with self.subTest(file="spec", term=term):
+                self.assertIn(term, spec)
+
+        required_test_terms = [
+            "T15. Token-cost amendment and static proof stay narrow",
+            "bounded evidence before broad reads",
+            "output caps are safety rails, not evidence-selection strategy",
+            "no `skills/token-budget/SKILL.md` path exists",
+        ]
+        for term in required_test_terms:
+            with self.subTest(file="test_spec", term=term):
+                self.assertIn(term, test_spec)
+
+        self.assertFalse((ROOT / "skills" / "token-budget" / "SKILL.md").exists())
+
+    def test_token_cost_selected_skills_copy_tightened_evidence_block(self) -> None:
+        evidence = extract_markdown_block(
+            SKILL_CONTRACT_EVIDENCE_BLOCK.read_text(encoding="utf-8"),
+            "Evidence collection efficiency",
+        )
+        for skill_name in TOKEN_COST_SELECTED_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            with self.subTest(skill=skill_name, block="evidence"):
+                self.assertEqual(extract_markdown_block(body, "Evidence collection efficiency"), evidence)
+
+            with self.subTest(skill=skill_name, term="output_caps"):
+                self.assertIn("Output caps are safety rails, not evidence-selection strategy.", body)
+
+            with self.subTest(skill=skill_name, term="validation_semantics"):
+                self.assertIn("Validation summaries must not change selected check coverage", body)
 
     def test_skill_contract_m3_first_slice_core_sections_and_result_blocks(self) -> None:
         for skill_name in SKILL_CONTRACT_FIRST_SLICE_SKILLS:
