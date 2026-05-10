@@ -73,14 +73,14 @@ The implementation tightens the skill contract, test coverage, shared evidence g
 
 ## Current Handoff Summary
 
-- Current milestone: M5. Final Verification and PR Handoff
-- Current milestone state: lifecycle-closeout
+- Current milestone: PR handoff
+- Current milestone state: final-verified
 - Last reviewed milestone: M4. Change Evidence and Lifecycle Closeout Preparation
-- Review status: code-review M4 completed cleanly with no material findings; M4 is closed.
+- Review status: code-review M4 completed cleanly with no material findings; M4 is closed. M5 final verification passed.
 - Remaining in-scope implementation milestones: none
-- Next stage: M5 final lifecycle closeout
+- Next stage: pr
 - Final closeout readiness: ready
-- Reason final closeout is or is not ready: M1-M4 implementation review loops passed and required review-resolution is closed; final verify and PR handoff remain open.
+- Reason final closeout is or is not ready: M1-M4 implementation review loops passed, required review-resolution is closed, and final verify passed; PR handoff remains open.
 
 ## Pre-Implementation Gates
 
@@ -394,6 +394,7 @@ These gates are not in-scope implementation milestones and do not count toward M
 - 2026-05-10: M4 recorded durable explain-change evidence and refreshed change metadata for code-review handoff.
 - 2026-05-10: `docs/plan.md` remains unchanged in M4 because the initiative is still active; the lifecycle index transition belongs to M5 after M4 code-review closes.
 - 2026-05-10: code-review M4 completed cleanly with no material findings; M4 closed and handoff moved to M5 final lifecycle closeout.
+- 2026-05-10: M5 final verification passed and plan/index lifecycle state was synchronized for PR handoff.
 
 ## Decision Log
 
@@ -452,6 +453,19 @@ These gates are not in-scope implementation milestones and do not count toward M
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-09-skill-token-cost-optimization.md --path specs/skill-token-cost-optimization.md --path specs/skill-token-cost-optimization.test.md --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/changes/2026-05-09-skill-token-cost-optimization/change.yaml --path docs/changes/2026-05-09-skill-token-cost-optimization/explain-change.md --path docs/plans/2026-05-09-skill-token-cost-optimization.md --path docs/plan.md`
   - `git diff --check -- docs/changes/2026-05-09-skill-token-cost-optimization docs/plans/2026-05-09-skill-token-cost-optimization.md docs/plan.md`
 - 2026-05-10: Artifact lifecycle validation during M4 emitted the existing `docs/plan.md` lifecycle-language warning at line 19.
+- 2026-05-10: M5 final validation passed:
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-09-skill-token-cost-optimization`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-09-skill-token-cost-optimization/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-09-skill-token-cost-optimization.md --path specs/skill-token-cost-optimization.md --path specs/skill-token-cost-optimization.test.md --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/workflows.md --path templates/shared/evidence-collection-efficiency.md --path docs/changes/2026-05-09-skill-token-cost-optimization/change.yaml --path docs/changes/2026-05-09-skill-token-cost-optimization/explain-change.md --path docs/plans/2026-05-09-skill-token-cost-optimization.md --path docs/plan.md`
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/build-adapters.py --version 0.1.1 --check`
+  - `python scripts/validate-adapters.py --version 0.1.1`
+  - `python scripts/test-adapter-distribution.py`
+  - `bash scripts/ci.sh --mode explicit --path specs/skill-token-cost-optimization.md --path specs/skill-token-cost-optimization.test.md --path specs/skill-contract.md --path specs/skill-contract.test.md --path templates/shared/evidence-collection-efficiency.md --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path skills/spec/SKILL.md --path skills/spec-review/SKILL.md --path skills/plan/SKILL.md --path skills/plan-review/SKILL.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/verify/SKILL.md --path skills/pr/SKILL.md --path skills/learn/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-09-skill-token-cost-optimization.md --path docs/plan.md --path docs/changes/2026-05-09-skill-token-cost-optimization/change.yaml`
+  - `git diff --check -- .`
+- 2026-05-10: Artifact lifecycle validation during M5 emitted the existing `docs/plan.md` lifecycle-language warning at line 19 and `docs/workflows.md` lifecycle-language warning at line 195.
 
 ## Outcome and Retrospective
 
@@ -461,8 +475,8 @@ These gates are not in-scope implementation milestones and do not count toward M
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `M5 final lifecycle closeout`.
-- Implementation readiness: M1-M4 are closed. M5 can run final lifecycle closeout, including final verify before PR handoff.
+- Ready for `pr`.
+- Implementation readiness: M1-M4 are closed and M5 final validation passed. The remaining lifecycle action is PR handoff.
 
 ## Risks and Follow-Ups
 
