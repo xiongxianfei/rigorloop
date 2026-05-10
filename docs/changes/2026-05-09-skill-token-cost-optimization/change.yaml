@@ -116,6 +116,28 @@ validation:
     result: pass_with_existing_lifecycle_warning_docs_plan_line_19_after_m4
   - command: git diff --check -- docs/changes/2026-05-09-skill-token-cost-optimization docs/plans/2026-05-09-skill-token-cost-optimization.md docs/plan.md
     result: pass_after_m4
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-09-skill-token-cost-optimization
+    result: pass_closeout_reviews_1_findings_1_log_entries_1_resolution_entries_1_after_m5
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-09-skill-token-cost-optimization/change.yaml
+    result: pass_valid_change_metadata_after_m5
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-09-skill-token-cost-optimization.md --path specs/skill-token-cost-optimization.md --path specs/skill-token-cost-optimization.test.md --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/workflows.md --path templates/shared/evidence-collection-efficiency.md --path docs/changes/2026-05-09-skill-token-cost-optimization/change.yaml --path docs/changes/2026-05-09-skill-token-cost-optimization/explain-change.md --path docs/plans/2026-05-09-skill-token-cost-optimization.md --path docs/plan.md
+    result: pass_with_existing_lifecycle_warnings_docs_plan_line_19_docs_workflows_line_195_after_m5
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m5
+  - command: python scripts/test-skill-validator.py
+    result: pass_53_tests_after_m5
+  - command: python scripts/build-skills.py --check
+    result: pass_generated_skills_in_sync_after_m5
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_adapter_drift_check_after_m5
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_adapter_validation_after_m5
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_56_tests_after_m5
+  - command: bash scripts/ci.sh --mode explicit --path specs/skill-token-cost-optimization.md --path specs/skill-token-cost-optimization.test.md --path specs/skill-contract.md --path specs/skill-contract.test.md --path templates/shared/evidence-collection-efficiency.md --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path skills/spec/SKILL.md --path skills/spec-review/SKILL.md --path skills/plan/SKILL.md --path skills/plan-review/SKILL.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path skills/verify/SKILL.md --path skills/pr/SKILL.md --path skills/learn/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-09-skill-token-cost-optimization.md --path docs/plan.md --path docs/changes/2026-05-09-skill-token-cost-optimization/change.yaml
+    result: pass_selected_ci_after_m5
+  - command: git diff --check -- .
+    result: pass_after_m5
 changed_files:
   - .codex/skills/code-review/SKILL.md
   - .codex/skills/implement/SKILL.md
@@ -192,7 +214,7 @@ changed_files:
   - skills/pr/SKILL.md
   - skills/learn/SKILL.md
 review:
-  status: m4_closed_clean_review
+  status: m5_final_validation_passed
   open_findings: 0
   unresolved_items: 0
-  last_review: code-review M4 completed cleanly with no material findings; M4 closed and plan ready for M5 final lifecycle closeout
+  last_review: M5 final validation passed after M1-M4 review loops closed; plan ready for PR handoff
