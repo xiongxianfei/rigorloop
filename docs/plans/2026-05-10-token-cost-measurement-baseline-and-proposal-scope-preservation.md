@@ -97,9 +97,9 @@ Constraints:
 - Last reviewed milestone: M4. Generated skill and adapter refresh
 - Review status: M5 code-review completed clean-with-notes with no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
-- Final closeout readiness: ready for verify
-- Reason final closeout is or is not ready: M1-M5 milestone review loops are closed, review-resolution is closed, and final validation evidence is recorded; verify and PR handoff have not completed.
+- Next stage: PR handoff
+- Final closeout readiness: branch-ready after local final verify
+- Reason final closeout is or is not ready: M1-M5 milestone review loops are closed, review-resolution is closed, and local final verify passed; PR handoff has not completed.
 
 ## Milestones
 
@@ -424,6 +424,7 @@ bash scripts/ci.sh --mode explicit --path <changed-path>...
 - 2026-05-10: M4 code-review completed clean-with-notes with no material findings. M4 is closed and the plan is active for M5 final lifecycle closeout.
 - 2026-05-10: M5 final lifecycle closeout updated final explanation, synchronized the plan index with the active final-closeout state, and recorded final validation evidence. M5 is ready for code-review.
 - 2026-05-10: M5 code-review completed clean-with-notes with no material findings. M5 is closed and the plan is ready for verify.
+- 2026-05-10: Final local verify passed for the change pack. The plan remains active for PR handoff.
 
 ## Decision Log
 
@@ -582,14 +583,13 @@ bash scripts/ci.sh --mode explicit --path <changed-path>...
 
 ## Outcome and Retrospective
 
-- Pending. This plan remains active until all implementation milestones, review loops, final validation, and PR handoff gates are complete.
+- Local final verify passed. This plan remains active until PR handoff completes.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for verify.
+- This plan is branch-ready after local final verify.
 
 ## Remaining Completion Gates
 
-- verify
 - PR handoff

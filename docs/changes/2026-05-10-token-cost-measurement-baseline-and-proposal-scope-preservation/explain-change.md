@@ -2,7 +2,7 @@
 
 ## Status
 
-final closeout review requested
+verified locally; ready for PR handoff
 
 ## Scope
 
@@ -58,11 +58,11 @@ M5 records final lifecycle evidence after M1-M4 each passed their milestone revi
 
 - M1-M4 implementation milestones are closed.
 - Review-resolution is closed with no unresolved findings.
-- `docs/plan.md` remains active because verify and PR handoff have not completed, but it now reflects that implementation milestones are closed and M5 final lifecycle closeout is in review.
+- `docs/plan.md` remains active until PR handoff, and it now reflects that M1-M5 are closed and local final verify passed.
 - Final validation evidence is recorded in the active plan and `change.yaml`.
 
-This closeout does not claim PR readiness. A final M5 code-review, verify, and PR handoff still need to run.
+This closeout does not claim `pr-body-ready` or `pr-open-ready`. Those remain owned by the PR stage.
 
 ## Validation
 
-Milestone validation is recorded in the active plan and `change.yaml`.
+Milestone validation and final local verify evidence are recorded in the active plan and `change.yaml`.

@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-10 Token cost measurement baseline and proposal scope preservation](plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md) - active execution plan with M1-M4 implementation milestones closed; M5 final lifecycle closeout is in review before verify and PR handoff.
+- [2026-05-10 Token cost measurement baseline and proposal scope preservation](plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md) - active execution plan with M1-M5 closed and local final verify passed; next stage is PR handoff.
 
 ## Blocked
 - none yet
