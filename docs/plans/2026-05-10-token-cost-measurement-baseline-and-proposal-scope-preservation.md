@@ -93,13 +93,13 @@ Constraints:
 ## Current Handoff Summary
 
 - Current milestone: M5. Final lifecycle closeout
-- Current milestone state: review-requested
+- Current milestone state: closed
 - Last reviewed milestone: M4. Generated skill and adapter refresh
-- Review status: M5 final lifecycle closeout evidence updated; final validation passed; code-review requested
+- Review status: M5 code-review completed clean-with-notes with no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: code-review M5
-- Final closeout readiness: in review
-- Reason final closeout is or is not ready: M1-M4 implementation milestones are closed and M5 evidence is prepared, but M5 code-review, verify, and PR handoff have not completed.
+- Next stage: verify
+- Final closeout readiness: ready for verify
+- Reason final closeout is or is not ready: M1-M5 milestone review loops are closed, review-resolution is closed, and final validation evidence is recorded; verify and PR handoff have not completed.
 
 ## Milestones
 
@@ -311,7 +311,7 @@ Constraints:
 
 ### M5. Final Lifecycle Closeout
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Milestone type: lifecycle-closeout
 - Goal: Complete final evidence, verification, plan/index state synchronization, and PR handoff only after M1-M4 each pass their milestone review loop.
 - Requirements: all requirements, with emphasis on change evidence, lifecycle state, final validation, and PR readiness.
@@ -344,9 +344,9 @@ Constraints:
   - [x] final validation passed
   - [x] hand off to code-review for M5 if final evidence changes require review
 - Review closeout:
-  - [ ] code-review completed if triggered
-  - [ ] material findings resolved or explicitly dispositioned
-  - [ ] lifecycle state updated before verify/PR
+  - [x] code-review completed if triggered
+  - [x] material findings resolved or explicitly dispositioned
+  - [x] lifecycle state updated before verify/PR
 - Milestone closeout:
   - [x] final validation passed
   - [x] progress updated
@@ -423,6 +423,7 @@ bash scripts/ci.sh --mode explicit --path <changed-path>...
 - 2026-05-10: M4 regenerated local Codex skill mirrors and public adapter packages for proposal/proposal-review scope-preservation guidance. M4 is ready for code-review.
 - 2026-05-10: M4 code-review completed clean-with-notes with no material findings. M4 is closed and the plan is active for M5 final lifecycle closeout.
 - 2026-05-10: M5 final lifecycle closeout updated final explanation, synchronized the plan index with the active final-closeout state, and recorded final validation evidence. M5 is ready for code-review.
+- 2026-05-10: M5 code-review completed clean-with-notes with no material findings. M5 is closed and the plan is ready for verify.
 
 ## Decision Log
 
@@ -562,6 +563,15 @@ bash scripts/ci.sh --mode explicit --path <changed-path>...
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path docs/proposals/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path specs/token-cost-measurement-baseline-and-proposal-scope-preservation.md --path specs/token-cost-measurement-baseline-and-proposal-scope-preservation.test.md --path docs/architecture/system/architecture.md --path docs/reports/token-cost/2026-05-10-baseline.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml`
   - `bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml`
   - `git diff --check -- .`
+- M5 code-review validation rerun passed:
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path docs/proposals/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path specs/token-cost-measurement-baseline-and-proposal-scope-preservation.md --path specs/token-cost-measurement-baseline-and-proposal-scope-preservation.test.md --path docs/architecture/system/architecture.md --path docs/reports/token-cost/2026-05-10-baseline.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml`
+  - `bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml`
+  - `python scripts/test-token-cost-measurement.py`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/build-adapters.py --version 0.1.1 --check`
+  - `git diff --check -- HEAD~1..HEAD`
 - M1 code-review validation rerun passed:
   - `python scripts/test-token-cost-measurement.py`
   - `python scripts/measure-skill-tokens.py`
@@ -577,10 +587,9 @@ bash scripts/ci.sh --mode explicit --path <changed-path>...
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for code-review M5.
+- This plan is ready for verify.
 
 ## Remaining Completion Gates
 
-- M5 code-review closeout
 - verify
 - PR handoff
