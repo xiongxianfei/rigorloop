@@ -82,6 +82,28 @@ When reviewing, request revision if the bootstrap exception is missing, if the p
 
 This standing artifact gate check is required before proposal-review accepts bootstrap or governance-related direction.
 
+## Scope preservation review
+
+Compare the user's initial request with the proposal.
+
+Every initial goal must be visibly classified as:
+
+- `in scope`
+- `out of scope`
+- `deferred follow-up`
+- `rejected option`
+- `open question`
+
+Return `changes-requested` if any initial user goal disappears.
+
+Return `changes-requested` if a deferred goal has no follow-up.
+
+Return `changes-requested` if a rejected goal has no rationale.
+
+Return `changes-requested` if the proposal narrows scope but does not say why.
+
+Do not rewrite the proposal as part of proposal-review unless the user explicitly asks.
+
 ## Adversarial questions
 
 Ask these when useful:

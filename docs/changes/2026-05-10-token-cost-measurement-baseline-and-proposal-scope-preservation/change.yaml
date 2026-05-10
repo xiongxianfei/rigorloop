@@ -35,6 +35,9 @@ requirements:
   - Close M1 only after code-review completes cleanly or material findings are resolved or explicitly dispositioned.
   - Produce the first durable token-cost baseline report under docs/reports/token-cost/.
   - Link the baseline report from change-local evidence instead of duplicating the report body.
+  - Update proposal skill guidance so broad or multi-part requests preserve every initial user goal with a visible treatment.
+  - Update proposal-review guidance so silent narrowing returns changes-requested without making proposal-review rewrite the proposal.
+  - Add narrow static validation coverage for proposal scope preservation and silent-narrowing review checks.
 tests:
   - Proposal-review artifact record for material findings.
   - Review artifact structure validation while proposal-review findings remain open.
@@ -54,6 +57,8 @@ tests:
   - M1 code-review validation rerun and clean no-material review closeout.
   - M2 baseline report shape and change-local link test.
   - M2 report lifecycle and change metadata validation.
+  - M3 proposal/proposal-review scope preservation static validation.
+  - M3 skill structure validation.
 validation:
   - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation
     result: pass_structure_reviews_1_findings_1_log_entries_1_resolution_entries_1
@@ -193,6 +198,24 @@ validation:
     result: pass_report_change_plan_lifecycle_during_m2_code_review
   - command: git diff --check -- HEAD~1..HEAD
     result: pass_m2_commit_diff_check_during_code_review
+  - command: python scripts/test-skill-validator.py
+    result: pass_54_tests_after_m3_implementation
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m3_implementation
+  - command: python scripts/select-validation.py --mode explicit --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path scripts/test-skill-validator.py --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md
+    result: pass_selected_skills_validate_skills_regression_skills_drift_adapters_drift_artifact_lifecycle_change_metadata_regression_change_metadata_validate_no_blocking_results
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_4_tests_after_m3_implementation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_valid_change_metadata_after_m3_implementation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path skills/proposal-review/SKILL.md --path skills/proposal/SKILL.md
+    result: pass_selected_artifact_lifecycle_after_m3_implementation
+  - command: python scripts/build-skills.py --check
+    result: expected_fail_stale_generated_proposal_and_proposal_review_skill_mirrors_m4_scope
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: expected_fail_stale_generated_proposal_and_proposal_review_adapter_files_m4_scope
+  - command: git diff --check -- skills/proposal/SKILL.md skills/proposal-review/SKILL.md scripts/test-skill-validator.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md
+    result: pass_after_m3_implementation
 changed_files:
   - docs/proposals/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md
   - docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
@@ -214,6 +237,8 @@ changed_files:
   - tests/fixtures/token-cost/sample-codex-session.jsonl
   - docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md
   - docs/reports/token-cost/2026-05-10-baseline.md
+  - skills/proposal/SKILL.md
+  - skills/proposal-review/SKILL.md
 architecture:
   surface: canonical-update
   canonical_architecture_changed:
@@ -224,8 +249,8 @@ architecture:
   direction_spec_blockers: []
   next_stage: architecture-review
 review:
-  status: m2_closed_ready_for_m3
+  status: m3_review_requested
   open_findings: 0
   unresolved_items: 0
-  last_review: M2 code-review completed clean-with-notes with no material findings; immediate next repository stage is implement M3
-status: m2-closed-ready-for-implement-m3
+  last_review: M3 implementation targeted validation passed; immediate next repository stage is code-review M3
+status: m3-review-requested

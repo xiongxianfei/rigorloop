@@ -29,6 +29,18 @@ M2 adds the first durable token-cost baseline report:
 
 The report links from change-local evidence rather than duplicating the report body in this change explanation. The benchmark source is the checked-in non-private JSONL fixture from M1; the report states that later baselines should use representative exported sessions when privacy review permits.
 
+## M3. Proposal scope preservation skill and validator updates
+
+M3 updates the canonical proposal and proposal-review skills so broad user requests cannot silently lose goals during proposal narrowing:
+
+- `skills/proposal/SKILL.md` now requires proposal authors to extract initial goals, concerns, constraints, and requested outcomes before drafting or materially revising a proposal.
+- `skills/proposal/SKILL.md` now requires every initial user goal to be visibly treated as in scope, out of scope, deferred follow-up, rejected option, or open question.
+- `skills/proposal/SKILL.md` now includes an `Initial intent preservation` table shape for broad or multi-part requests.
+- `skills/proposal-review/SKILL.md` now requires scope preservation review and `changes-requested` outcomes when goals disappear, deferred goals have no follow-up, rejected goals lack rationale, or narrowed scope has no explanation.
+- `scripts/test-skill-validator.py` now contains narrow phrase checks for the new proposal and proposal-review guidance.
+
+The canonical skill text keeps repository-maintainer validation and generated-output mechanics out of the published guidance.
+
 ## Validation
 
 Milestone validation is recorded in the active plan and `change.yaml`.
