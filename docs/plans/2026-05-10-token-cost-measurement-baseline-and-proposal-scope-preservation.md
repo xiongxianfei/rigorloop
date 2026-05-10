@@ -93,11 +93,11 @@ Constraints:
 ## Current Handoff Summary
 
 - Current milestone: M2. Durable baseline report and change evidence
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M1. Measurement scripts and parser tests
-- Review status: M1 code-review clean-with-notes; no material findings; M1 closed
+- Review status: M2 implementation-complete; targeted validation passed; code-review requested
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: implement M2
+- Next stage: code-review M2
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: M1-M4 are not implemented or reviewed, final lifecycle closeout has not run, and PR handoff is not prepared.
 
@@ -154,7 +154,7 @@ Constraints:
 
 ### M2. Durable Baseline Report and Change Evidence
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Produce the first token-cost baseline report and link it from change-local evidence.
 - Requirements: R4, R4a-R4d, R12, R12a-R12b, AC3
 - Files/components likely touched:
@@ -181,18 +181,18 @@ Constraints:
 - Expected observable result: A durable first baseline exists under `docs/reports/token-cost/` and change-local artifacts link to it.
 - Commit message: `M2: record token cost baseline report`
 - Implementation handoff:
-  - [ ] targeted validation passed
-  - [ ] hand off to code-review for M2
+  - [x] targeted validation passed
+  - [x] hand off to code-review for M2
 - Review closeout:
   - [ ] code-review completed
   - [ ] material findings resolved or explicitly dispositioned
   - [ ] milestone state updated before starting the next implementation milestone
 - Milestone closeout:
-  - [ ] validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - The first report may be based on a fixture rather than a full real session export.
   - Raw transcript content could be over-quoted.
@@ -411,6 +411,8 @@ bash scripts/ci.sh --mode explicit --path <changed-path>...
 - 2026-05-10: M1 implementation started for static skill measurement and Codex JSONL session analysis.
 - 2026-05-10: M1 added static skill measurement, Codex JSONL session analysis, focused parser tests, a small JSONL fixture, and change-local explanation evidence. M1 is ready for code-review.
 - 2026-05-10: M1 code-review completed clean-with-notes with no material findings; M1 is closed and the plan is active for M2.
+- 2026-05-10: M2 implementation started for durable baseline report and change-local links.
+- 2026-05-10: M2 added the first durable token-cost baseline report, change-local report links, and a lightweight report-shape regression test. M2 is ready for code-review.
 
 ## Decision Log
 
@@ -418,6 +420,7 @@ bash scripts/ci.sh --mode explicit --path <changed-path>...
 - 2026-05-10: use adapter version `0.1.1` for adapter drift and validation -> `validate-adapters.py` currently requires `--version`, and `build-adapters.py` defaults to `0.1.1`.
 - 2026-05-10: keep M5 as lifecycle-closeout only -> final closeout must wait until M1-M4 are closed through their milestone review loops.
 - 2026-05-10: manually route M1 script and fixture validation because `scripts/select-validation.py` currently classifies the new token-cost scripts as `script-unsupported` and the token-cost fixture path as unclassified; direct script tests and commands are the authoritative M1 proof.
+- 2026-05-10: manually route M2 report validation because `scripts/select-validation.py` currently leaves `docs/reports/token-cost/2026-05-10-baseline.md` unclassified and the updated script test as `script-unsupported`; direct report-shape tests, lifecycle validation, and change metadata validation are the authoritative M2 proof.
 
 ## Surprises and Discoveries
 
@@ -443,6 +446,18 @@ bash scripts/ci.sh --mode explicit --path <changed-path>...
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path docs/proposals/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path specs/token-cost-measurement-baseline-and-proposal-scope-preservation.md --path specs/token-cost-measurement-baseline-and-proposal-scope-preservation.test.md --path docs/architecture/system/architecture.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-log.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-resolution.md`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md`
   - `git diff --check -- scripts tests/fixtures/token-cost docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md specs/token-cost-measurement-baseline-and-proposal-scope-preservation.test.md specs/token-cost-measurement-baseline-and-proposal-scope-preservation.md`
+- M2 implementation validation passed:
+  - `python scripts/test-token-cost-measurement.py`
+  - `python scripts/measure-skill-tokens.py`
+  - `python scripts/analyze-codex-jsonl.py tests/fixtures/token-cost/sample-codex-session.jsonl`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/reports/token-cost/2026-05-10-baseline.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml`
+  - `python scripts/select-validation.py --mode explicit --path docs/reports/token-cost/2026-05-10-baseline.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md --path scripts/test-token-cost-measurement.py --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md`
+  - Selector result: blocked only for manual routing of the unclassified token-cost report and `script-unsupported` test path; selected checks were artifact lifecycle, change metadata regression, and change metadata validation.
+  - `python scripts/test-change-metadata-validator.py`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation`
+  - `git diff --check -- docs/reports/token-cost docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation scripts/test-token-cost-measurement.py docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md`
 - M1 code-review validation rerun passed:
   - `python scripts/test-token-cost-measurement.py`
   - `python scripts/measure-skill-tokens.py`
@@ -458,7 +473,7 @@ bash scripts/ci.sh --mode explicit --path <changed-path>...
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for implement M2.
+- This plan is ready for code-review M2.
 
 ## Remaining Completion Gates
 

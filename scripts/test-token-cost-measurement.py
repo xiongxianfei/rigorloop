@@ -14,6 +14,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 MEASURE = ROOT / "scripts" / "measure-skill-tokens.py"
 ANALYZE = ROOT / "scripts" / "analyze-codex-jsonl.py"
+BASELINE_REPORT = ROOT / "docs" / "reports" / "token-cost" / "2026-05-10-baseline.md"
+CHANGE_METADATA = (
+    ROOT
+    / "docs"
+    / "changes"
+    / "2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation"
+    / "change.yaml"
+)
 
 
 def run_command(*args: str) -> subprocess.CompletedProcess[str]:
@@ -182,6 +190,31 @@ class CodexJsonlAnalyzerTests(unittest.TestCase):
 
         self.assertNotEqual(malformed.returncode, 0)
         self.assertIn("malformed jsonl at line 2", malformed.stderr.lower())
+
+
+class BaselineReportTests(unittest.TestCase):
+    def test_baseline_report_shape_and_change_link(self) -> None:
+        self.assertTrue(BASELINE_REPORT.exists(), "baseline report must exist")
+        report = BASELINE_REPORT.read_text(encoding="utf-8")
+        for heading in [
+            "# Token Cost Baseline: 2026-05-10",
+            "## Summary",
+            "## Static Skill Cost",
+            "## Codex Session Cost",
+            "## Tool-Output Amplification",
+            "## Top Cost Drivers",
+            "## Comparison To Previous Report",
+            "## Conclusions",
+            "## Next Actions",
+        ]:
+            self.assertIn(heading, report)
+        self.assertIn("No previous baseline exists.", report)
+
+        metadata = CHANGE_METADATA.read_text(encoding="utf-8")
+        self.assertIn(
+            "docs/reports/token-cost/2026-05-10-baseline.md",
+            metadata,
+        )
 
 
 if __name__ == "__main__":
