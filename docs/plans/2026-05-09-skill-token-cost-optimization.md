@@ -73,14 +73,14 @@ The implementation tightens the skill contract, test coverage, shared evidence g
 
 ## Current Handoff Summary
 
-- Current milestone: M4. Change Evidence and Lifecycle Closeout Preparation
-- Current milestone state: review-requested
-- Last reviewed milestone: M3. Generated Skill and Adapter Output
-- Review status: M4 implementation completed targeted validation and is ready for code-review M4.
-- Remaining in-scope implementation milestones: M4
-- Next stage: code-review M4
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M4 code-review, lifecycle closeout, final verify, and PR handoff remain open.
+- Current milestone: M5. Final Verification and PR Handoff
+- Current milestone state: lifecycle-closeout
+- Last reviewed milestone: M4. Change Evidence and Lifecycle Closeout Preparation
+- Review status: code-review M4 completed cleanly with no material findings; M4 is closed.
+- Remaining in-scope implementation milestones: none
+- Next stage: M5 final lifecycle closeout
+- Final closeout readiness: ready
+- Reason final closeout is or is not ready: M1-M4 implementation review loops passed and required review-resolution is closed; final verify and PR handoff remain open.
 
 ## Pre-Implementation Gates
 
@@ -267,7 +267,7 @@ These gates are not in-scope implementation milestones and do not count toward M
 
 ### M4. Change Evidence and Lifecycle Closeout Preparation
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Prepare durable explanation and lifecycle evidence after all implementation milestones are reviewed.
 - Requirements: all requirements and acceptance criteria.
 - Files/components likely touched:
@@ -393,6 +393,7 @@ These gates are not in-scope implementation milestones and do not count toward M
 - 2026-05-09: code-review M3 completed cleanly with no material findings; M3 closed and handoff moved to M4.
 - 2026-05-10: M4 recorded durable explain-change evidence and refreshed change metadata for code-review handoff.
 - 2026-05-10: `docs/plan.md` remains unchanged in M4 because the initiative is still active; the lifecycle index transition belongs to M5 after M4 code-review closes.
+- 2026-05-10: code-review M4 completed cleanly with no material findings; M4 closed and handoff moved to M5 final lifecycle closeout.
 
 ## Decision Log
 
@@ -460,8 +461,8 @@ These gates are not in-scope implementation milestones and do not count toward M
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `code-review M4`.
-- Implementation readiness: M4 is in `review-requested`. Do not run final verify or M5 lifecycle closeout until M4 code-review completes and material findings are resolved or explicitly dispositioned.
+- Ready for `M5 final lifecycle closeout`.
+- Implementation readiness: M1-M4 are closed. M5 can run final lifecycle closeout, including final verify before PR handoff.
 
 ## Risks and Follow-Ups
 
