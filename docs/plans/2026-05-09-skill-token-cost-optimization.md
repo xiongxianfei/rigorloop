@@ -75,8 +75,8 @@ The implementation tightens the skill contract, test coverage, shared evidence g
 
 - Current milestone: PR handoff
 - Current milestone state: final-verified
-- Last reviewed milestone: M4. Change Evidence and Lifecycle Closeout Preparation
-- Review status: code-review M4 completed cleanly with no material findings; M4 is closed. M5 final verification passed.
+- Last reviewed milestone: M5. Final Verification and PR Handoff
+- Review status: code-review M5 completed cleanly with no material findings. Final verification passed.
 - Remaining in-scope implementation milestones: none
 - Next stage: pr
 - Final closeout readiness: ready
@@ -395,6 +395,7 @@ These gates are not in-scope implementation milestones and do not count toward M
 - 2026-05-10: `docs/plan.md` remains unchanged in M4 because the initiative is still active; the lifecycle index transition belongs to M5 after M4 code-review closes.
 - 2026-05-10: code-review M4 completed cleanly with no material findings; M4 closed and handoff moved to M5 final lifecycle closeout.
 - 2026-05-10: M5 final verification passed and plan/index lifecycle state was synchronized for PR handoff.
+- 2026-05-10: code-review M5 completed cleanly with no material findings; PR handoff remains the next lifecycle action.
 
 ## Decision Log
 
