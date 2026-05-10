@@ -5,7 +5,7 @@
 - active
 - Owner: maintainers
 - Start date: 2026-05-09
-- Last updated: 2026-05-09
+- Last updated: 2026-05-10
 - Related issue or PR: none yet
 - Supersedes: none
 - selected_workflow_contract: standard
@@ -74,13 +74,13 @@ The implementation tightens the skill contract, test coverage, shared evidence g
 ## Current Handoff Summary
 
 - Current milestone: M4. Change Evidence and Lifecycle Closeout Preparation
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M3. Generated Skill and Adapter Output
-- Review status: code-review M3 completed cleanly with no material findings; M3 is closed.
+- Review status: M4 implementation completed targeted validation and is ready for code-review M4.
 - Remaining in-scope implementation milestones: M4
-- Next stage: implement M4
+- Next stage: code-review M4
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M4 implementation review loop, lifecycle closeout, final verify, and PR handoff remain open.
+- Reason final closeout is or is not ready: M4 code-review, lifecycle closeout, final verify, and PR handoff remain open.
 
 ## Pre-Implementation Gates
 
@@ -267,7 +267,7 @@ These gates are not in-scope implementation milestones and do not count toward M
 
 ### M4. Change Evidence and Lifecycle Closeout Preparation
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Prepare durable explanation and lifecycle evidence after all implementation milestones are reviewed.
 - Requirements: all requirements and acceptance criteria.
 - Files/components likely touched:
@@ -391,6 +391,8 @@ These gates are not in-scope implementation milestones and do not count toward M
 - 2026-05-09: code-review M2 completed cleanly with no material findings; M2 closed and handoff moved to M3.
 - 2026-05-09: M3 refreshed generated local skill mirrors and public adapter packages from canonical skill updates.
 - 2026-05-09: code-review M3 completed cleanly with no material findings; M3 closed and handoff moved to M4.
+- 2026-05-10: M4 recorded durable explain-change evidence and refreshed change metadata for code-review handoff.
+- 2026-05-10: `docs/plan.md` remains unchanged in M4 because the initiative is still active; the lifecycle index transition belongs to M5 after M4 code-review closes.
 
 ## Decision Log
 
@@ -443,6 +445,12 @@ These gates are not in-scope implementation milestones and do not count toward M
   - `python scripts/test-skill-validator.py`
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-09-skill-token-cost-optimization/change.yaml`
   - `git diff --check -- .codex/skills dist/adapters docs/plans/2026-05-09-skill-token-cost-optimization.md docs/changes/2026-05-09-skill-token-cost-optimization`
+- 2026-05-10: M4 targeted validation passed:
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-09-skill-token-cost-optimization`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-09-skill-token-cost-optimization/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-09-skill-token-cost-optimization.md --path specs/skill-token-cost-optimization.md --path specs/skill-token-cost-optimization.test.md --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/changes/2026-05-09-skill-token-cost-optimization/change.yaml --path docs/changes/2026-05-09-skill-token-cost-optimization/explain-change.md --path docs/plans/2026-05-09-skill-token-cost-optimization.md --path docs/plan.md`
+  - `git diff --check -- docs/changes/2026-05-09-skill-token-cost-optimization docs/plans/2026-05-09-skill-token-cost-optimization.md docs/plan.md`
+- 2026-05-10: Artifact lifecycle validation during M4 emitted the existing `docs/plan.md` lifecycle-language warning at line 19.
 
 ## Outcome and Retrospective
 
@@ -452,8 +460,8 @@ These gates are not in-scope implementation milestones and do not count toward M
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `implement M4`.
-- Implementation readiness: M4 is planned. Start M4 only after using the active test spec and M4 validation targets; hand off to code-review for M4 after M4 targeted validation passes.
+- Ready for `code-review M4`.
+- Implementation readiness: M4 is in `review-requested`. Do not run final verify or M5 lifecycle closeout until M4 code-review completes and material findings are resolved or explicitly dispositioned.
 
 ## Risks and Follow-Ups
 
