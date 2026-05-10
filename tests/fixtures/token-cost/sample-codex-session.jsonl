@@ -1,0 +1,3 @@
+{"usage":{"input_tokens":100,"cached_input_tokens":40,"output_tokens":20,"reasoning_output_tokens":5}}
+{"tool":"functions.exec_command","args":{"cmd":"rg -n TODO .","max_output_tokens":50000},"output":"a\nb\nc\n"}
+{"tool":"functions.exec_command","args":{"cmd":"sed -n '1,260p' docs/workflows.md"},"result":{"output":"x\nx\nx\n"}}
