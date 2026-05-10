@@ -21,6 +21,8 @@ This spec owns skill-contract behavior. `specs/rigorloop-workflow.md` continues 
 
 This amendment tightens the published skill portability contract with exact allowed project-portable surfaces, blocked RigorLoop repository-internal surfaces, and static-check scope.
 
+This amendment also tightens token-cost discipline for normalized skills. Token-cost discipline is part of normalized skill behavior. It teaches agents to select the smallest evidence surface that can answer the current question while preserving correctness, validation coverage, review obligations, artifact obligations, and workflow gates.
+
 ## Glossary
 
 - `skill`: a `SKILL.md` operational guide that tells an agent when and how to perform a repository capability.
@@ -39,6 +41,10 @@ This amendment tightens the published skill portability contract with exact allo
 - `shared skill policy block`: canonical wording under `templates/shared/<block-name>.md` that is copied verbatim into consuming skills and checked for drift.
 - `minimum viable skill`: the smallest justified new skill that owns a distinct artifact, gate, review responsibility, recurring action, or approved operational process.
 - `ci-maintenance`: the visible workflow stage label for CI infrastructure maintenance. The existing `ci` skill remains the skill entrypoint for that stage label unless a later approved spec changes it.
+- `token-cost discipline`: selecting the smallest evidence surface that can answer the current question before broadening.
+- `bounded evidence`: a small evidence surface such as a changed-path list, inventory, heading list, stable ID, count, matching line number, or targeted excerpt.
+- `high-volume surface`: a file set, artifact, log, generated output tree, or historical record set likely to produce large output.
+- `output cap`: a tool or command setting that truncates returned text. Output caps are safety rails, not evidence-selection strategy.
 
 ## Examples first
 
@@ -354,6 +360,50 @@ R20a. If a skill, generated output, adapter output, contributor summary, or shar
 
 R20b. If this spec conflicts with `specs/rigorloop-workflow.md` on stage order, stage obligation, handoff, or downstream blocking, `specs/rigorloop-workflow.md` wins for those workflow-routing semantics.
 
+R21. Token-cost discipline MUST be part of normalized skill behavior.
+
+R21a. Token-cost discipline MUST be implemented as an amendment to this skill contract, not as a new workflow stage.
+
+R21b. Token-cost discipline MUST NOT reduce required validation coverage, review obligations, artifact obligations, or workflow stage gates.
+
+R22. Normalized skills that collect evidence from high-volume surfaces MUST prefer bounded evidence before broad reads.
+
+R22a. Bounded evidence includes inventories, changed paths, headings, stable IDs, requirement IDs, test IDs, check IDs, path lists, counts, matching line numbers, diffs, and targeted excerpts.
+
+R22b. Skills MUST guide agents to broaden from bounded evidence to neighboring context or full-file reads only when bounded evidence is insufficient for the current decision.
+
+R22c. Skills MUST NOT present a broad recursive search, generated-output dump, validation-log dump, or full-file read as the default first step for high-volume surfaces.
+
+R23. Output caps MUST be treated as safety rails, not evidence-selection strategy.
+
+R23a. Skill guidance MUST NOT imply that setting an output cap makes a broad query acceptable as the normal first pass.
+
+R23b. Skill guidance SHOULD name low-volume query strategies such as filename-first searches, count-first searches, precise globs, stable IDs, and targeted range reads when those examples fit the skill.
+
+R24. Summary-first and failure-focused output MUST preserve validation semantics.
+
+R24a. Normal output budgets MAY reduce routine output volume.
+
+R24b. Normal output budgets MUST NOT change selected check coverage, command exit behavior, failure detection, or required validation evidence.
+
+R24c. When a command or skill output omits detail for readability, it MUST say how to request or obtain the omitted detail when the omission affects reviewability.
+
+R25. Static validation for token-cost discipline MUST be narrow and reviewable.
+
+R25a. Static validation MUST check token-cost guidance through stable sections, phrases, examples, or requirement coverage.
+
+R25b. Static validation MUST preserve full-file-read escape conditions.
+
+R25c. Static validation MUST check the output-cap distinction where the implementation adds that wording to skill-contract surfaces.
+
+R25d. Static validation MUST NOT perform broad natural-language quality scoring.
+
+R26. Reviewers MAY report broad, noisy evidence collection as a process defect when it materially affects a workflow artifact, review, implementation, or verification result.
+
+R26a. A process-defect finding MUST identify the noisy evidence surface and the safer bounded evidence strategy.
+
+R26b. A process-defect finding MUST NOT require reducing correctness checks, skipping required artifacts, or ignoring full-file-read escape conditions.
+
 ## Inputs and outputs
 
 Inputs:
@@ -433,6 +483,7 @@ This change has no user-interface surface. The relevant user experience is contr
 - The first validation slice MUST NOT add broad natural-language quality scoring.
 - Evidence-reading guidance SHOULD reduce unnecessary broad reads by preferring targeted summaries, IDs, headings, line citations, and path lists first.
 - Generated-output checks SHOULD use existing build and adapter validation paths unless the approved plan names a narrower or broader proof scope.
+- Token-cost static validation MUST stay narrow, phrase-based, and reviewable rather than scoring prose quality.
 
 ## Edge cases
 
@@ -451,6 +502,7 @@ This change has no user-interface surface. The relevant user experience is contr
 - Do not replace `specs/rigorloop-workflow.md`.
 - Do not normalize every skill in the first implementation slice.
 - Do not add a standalone `review-resolution` skill.
+- Do not add a standalone `token-budget` skill.
 - Do not add a `skills/ci-maintenance/SKILL.md` path in this slice.
 - Do not add broad semantic quality scoring for skill prose.
 - Do not generate shared blocks into skills in v1.
