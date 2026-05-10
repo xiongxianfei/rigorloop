@@ -92,14 +92,14 @@ Constraints:
 
 ## Current Handoff Summary
 
-- Current milestone: M4. Generated skill and adapter refresh
-- Current milestone state: review-requested
-- Last reviewed milestone: M3. Proposal scope preservation skill and validator updates
-- Review status: M4 implementation-complete; targeted validation passed; code-review requested
-- Remaining in-scope implementation milestones: M4
-- Next stage: code-review M4
+- Current milestone: M5. Final lifecycle closeout
+- Current milestone state: planned
+- Last reviewed milestone: M4. Generated skill and adapter refresh
+- Review status: M4 code-review completed clean-with-notes with no material findings
+- Remaining in-scope implementation milestones: none
+- Next stage: implement M5 final lifecycle closeout
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M4 has not started, final lifecycle closeout has not run, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M1-M4 implementation milestones are closed, but M5 final lifecycle closeout has not run and PR handoff is not prepared.
 
 ## Milestones
 
@@ -255,7 +255,7 @@ Constraints:
 
 ### M4. Generated Skill and Adapter Refresh
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Regenerate derived Codex skill mirrors and public adapter output after canonical skill changes.
 - Requirements: R11, R11a-R11d, AC7
 - Files/components likely touched:
@@ -293,9 +293,9 @@ Constraints:
   - [x] targeted validation passed
   - [x] hand off to code-review for M4
 - Review closeout:
-  - [ ] code-review completed
-  - [ ] material findings resolved or explicitly dispositioned
-  - [ ] milestone state updated before starting final lifecycle closeout
+  - [x] code-review completed
+  - [x] material findings resolved or explicitly dispositioned
+  - [x] milestone state updated before starting final lifecycle closeout
 - Milestone closeout:
   - [x] validation passed
   - [x] progress updated
@@ -421,6 +421,7 @@ bash scripts/ci.sh --mode explicit --path <changed-path>...
 - 2026-05-10: M3 review-resolution updated proposal-review expected output to use unified review status vocabulary, added explicit scope-preservation `changes-requested` output guidance, and extended static validator coverage. M3 is ready for code-review rerun.
 - 2026-05-10: M3 code-review rerun completed clean-with-notes with no material findings. M3 is closed and the plan is active for M4.
 - 2026-05-10: M4 regenerated local Codex skill mirrors and public adapter packages for proposal/proposal-review scope-preservation guidance. M4 is ready for code-review.
+- 2026-05-10: M4 code-review completed clean-with-notes with no material findings. M4 is closed and the plan is active for M5 final lifecycle closeout.
 
 ## Decision Log
 
@@ -534,6 +535,16 @@ bash scripts/ci.sh --mode explicit --path <changed-path>...
   - `git diff --check -- .codex/skills dist/adapters docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation`
   - Public portability scan: generated proposal/proposal-review skills contain the new scope-preservation guidance and no maintainer-only generated-output path or drift mechanics terms.
   - Artifact lifecycle validation intentionally targets authored evidence artifacts only; generated paths are covered by generator and adapter drift/validation commands.
+- M4 code-review validation rerun passed:
+  - `python scripts/build-skills.py --check`
+  - `python scripts/build-adapters.py --version 0.1.1 --check`
+  - `python scripts/validate-adapters.py --version 0.1.1`
+  - `python scripts/test-adapter-distribution.py`
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md`
+  - `git diff --check -- HEAD~1..HEAD`
 - M1 code-review validation rerun passed:
   - `python scripts/test-token-cost-measurement.py`
   - `python scripts/measure-skill-tokens.py`
@@ -549,11 +560,10 @@ bash scripts/ci.sh --mode explicit --path <changed-path>...
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for code-review M4.
+- This plan is ready for M5 final lifecycle closeout.
 
 ## Remaining Completion Gates
 
-- M4 implementation and code-review closeout
 - M5 lifecycle closeout
 - explain-change
 - verify

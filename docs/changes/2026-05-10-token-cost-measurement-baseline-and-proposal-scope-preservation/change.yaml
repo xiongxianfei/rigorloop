@@ -307,6 +307,24 @@ validation:
     result: pass_generated_outputs_contain_scope_preservation_terms_after_m4
   - command: rg -n 'dist/adapters|\\.codex/skills|selector-driven validation|shared-block implementation|Regenerate generated outputs|Validate drift with repository-owned checks' .codex/skills/proposal/SKILL.md .codex/skills/proposal-review/SKILL.md dist/adapters/claude/.claude/skills/proposal/SKILL.md dist/adapters/claude/.claude/skills/proposal-review/SKILL.md dist/adapters/codex/.agents/skills/proposal/SKILL.md dist/adapters/codex/.agents/skills/proposal-review/SKILL.md dist/adapters/opencode/.opencode/skills/proposal/SKILL.md dist/adapters/opencode/.opencode/skills/proposal-review/SKILL.md
     result: pass_no_generated_public_skill_maintainer_path_leakage_after_m4
+  - command: python scripts/build-skills.py --check
+    result: pass_generated_skills_in_sync_during_m4_code_review
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_adapters_drift_ok_version_0_1_1_during_m4_code_review
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_validated_generated_adapters_version_0_1_1_during_m4_code_review
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_56_tests_during_m4_code_review
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_during_m4_code_review
+  - command: python scripts/test-skill-validator.py
+    result: pass_54_tests_during_m4_code_review
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_valid_change_metadata_during_m4_code_review_before_state_update
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md
+    result: pass_authored_evidence_lifecycle_during_m4_code_review
+  - command: git diff --check -- HEAD~1..HEAD
+    result: pass_m4_commit_diff_check_during_code_review
 changed_files:
   - docs/proposals/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md
   - docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
@@ -349,8 +367,8 @@ architecture:
   direction_spec_blockers: []
   next_stage: architecture-review
 review:
-  status: m4_review_requested
+  status: m4_closed_ready_for_m5
   open_findings: 0
   unresolved_items: 0
-  last_review: M4 implementation targeted validation passed; immediate next repository stage is code-review M4
-status: m4-review-requested
+  last_review: M4 code-review completed clean-with-notes with no material findings; immediate next repository stage is implement M5 final lifecycle closeout
+status: m4-closed-ready-for-m5
