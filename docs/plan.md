@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- none yet
+- [2026-05-10 Token cost measurement baseline and proposal scope preservation](plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md) - active execution plan for adding local token-cost measurement scripts, producing a durable token-cost baseline report, updating proposal/proposal-review scope-preservation skill guidance, refreshing generated skills and adapters, and completing review/verification/PR lifecycle gates.
 
 ## Blocked
 - none yet
