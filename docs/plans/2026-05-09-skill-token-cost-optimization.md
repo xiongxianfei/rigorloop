@@ -2,11 +2,11 @@
 
 ## Status
 
-- active
+- done
 - Owner: maintainers
 - Start date: 2026-05-09
 - Last updated: 2026-05-10
-- Related issue or PR: none yet
+- Related issue or PR: pending PR handoff URL
 - Supersedes: none
 - selected_workflow_contract: standard
 - broad_smoke_required: false
@@ -74,13 +74,13 @@ The implementation tightens the skill contract, test coverage, shared evidence g
 ## Current Handoff Summary
 
 - Current milestone: PR handoff
-- Current milestone state: final-verified
+- Current milestone state: closed
 - Last reviewed milestone: M5. Final Verification and PR Handoff
 - Review status: code-review M5 completed cleanly with no material findings. Final verification passed.
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: ready
-- Reason final closeout is or is not ready: M1-M4 implementation review loops passed, required review-resolution is closed, and final verify passed; PR handoff remains open.
+- Next stage: Done
+- Final closeout readiness: complete
+- Reason final closeout is or is not ready: M1-M4 implementation review loops passed, required review-resolution is closed, final verify passed, and PR handoff is prepared.
 
 ## Pre-Implementation Gates
 
@@ -396,6 +396,7 @@ These gates are not in-scope implementation milestones and do not count toward M
 - 2026-05-10: code-review M4 completed cleanly with no material findings; M4 closed and handoff moved to M5 final lifecycle closeout.
 - 2026-05-10: M5 final verification passed and plan/index lifecycle state was synchronized for PR handoff.
 - 2026-05-10: code-review M5 completed cleanly with no material findings; PR handoff remains the next lifecycle action.
+- 2026-05-10: PR handoff prepared; plan body and plan index synchronized as Done.
 
 ## Decision Log
 
@@ -470,15 +471,16 @@ These gates are not in-scope implementation milestones and do not count toward M
 
 ## Outcome and Retrospective
 
-- Pending final lifecycle closeout.
-- Keep this section final-only or explicitly historical while the plan is active; do not duplicate the current next stage here.
+This plan is done. M1-M4 are closed after their code-review loops, M5 final verification passed, required review-resolution is closed, and PR handoff is prepared.
+No true downstream lifecycle event remains for this plan.
 
 ## Readiness
 
-- See `Current Handoff Summary`.
-- Ready for `pr`.
-- Implementation readiness: M1-M4 are closed and M5 final validation passed. The remaining lifecycle action is PR handoff.
+- Next stage: Done
+- Test-spec readiness: complete for the skill token-cost optimization contract.
+- Implementation readiness: complete for M1-M4; no in-scope implementation milestone remains open.
+- Final closeout: complete. Plan index and plan body are synchronized as Done for PR review.
 
 ## Risks and Follow-Ups
 
-- none yet
+- Follow-up: confirm hosted GitHub Actions status for the PR before merge.

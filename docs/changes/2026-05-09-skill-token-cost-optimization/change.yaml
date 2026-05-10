@@ -214,7 +214,7 @@ changed_files:
   - skills/pr/SKILL.md
   - skills/learn/SKILL.md
 review:
-  status: m5_closed_clean_review
+  status: pr_handoff_prepared
   open_findings: 0
   unresolved_items: 0
-  last_review: code-review M5 completed cleanly with no material findings; final validation passed and plan ready for PR handoff
+  last_review: code-review M5 completed cleanly with no material findings; final validation passed and PR handoff prepared
