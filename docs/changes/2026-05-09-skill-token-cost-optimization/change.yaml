@@ -138,6 +138,8 @@ validation:
     result: pass_selected_ci_after_m5
   - command: git diff --check -- .
     result: pass_after_m5
+  - command: gh pr create --base main --head feature/2026-05-09-skill-token-cost-optimization --title "docs: tighten skill evidence collection guidance"
+    result: opened_pr_39_https_github_com_xiongxianfei_rigorloop_pull_39
 changed_files:
   - .codex/skills/code-review/SKILL.md
   - .codex/skills/implement/SKILL.md
@@ -214,7 +216,7 @@ changed_files:
   - skills/pr/SKILL.md
   - skills/learn/SKILL.md
 review:
-  status: pr_handoff_prepared
+  status: pr_opened
   open_findings: 0
   unresolved_items: 0
-  last_review: code-review M5 completed cleanly with no material findings; final validation passed and PR handoff prepared
+  last_review: code-review M5 completed cleanly with no material findings; final validation passed and PR #39 opened
