@@ -61,7 +61,7 @@ RigorLoop operates inside a repository boundary. Contributors and agents author 
 
 The canonical scope includes:
 
-- authored governance, workflow, specification, architecture, ADR, plan, test, and change-local artifacts;
+- authored governance, workflow, specification, architecture, ADR, plan, test, report, and change-local artifacts;
 - canonical skills, adapter entrypoint templates, architecture templates, and ADR templates;
 - repository-owned validation and generation scripts;
 - generated Codex runtime skills, public adapter packages, adapter manifests, and command aliases;
@@ -94,6 +94,7 @@ The repository system is composed of authored guidance, lifecycle artifacts, val
 | --- | --- | --- |
 | Governance and workflow guidance | Defines source-of-truth order, repository defaults, workflow routing, and contributor expectations | Markdown in `CONSTITUTION.md`, `AGENTS.md`, `docs/workflows.md` |
 | Lifecycle artifacts and ADRs | Carry proposal, spec, architecture, ADR, plan, test-spec, and change metadata states | Markdown/YAML in `docs/proposals/`, `specs/`, `docs/architecture/`, `docs/adr/`, `docs/plans/`, `docs/changes/` |
+| Reports and measurement baselines | Carry longitudinal evidence that is compared across changes or releases instead of duplicated in change-local artifacts | Markdown under `docs/reports/`, including token-cost baselines under `docs/reports/token-cost/` |
 | Canonical architecture package | Long-lived current architecture source of truth, including arc42 prose and C4 diagram source | Markdown and Mermaid in `docs/architecture/system/` |
 | Change-local evidence | Historical architecture evidence, explicit exceptional architecture evidence, change metadata, explanation, review resolution, and verification evidence | Markdown/YAML in `docs/changes/<change-id>/` |
 | Templates and diagram styles | Canonical scaffolding for architecture, ADRs, and shared Mermaid C4 role styling | Markdown/Mermaid under `templates/` |
@@ -111,6 +112,7 @@ The validation and generation container has four important internal responsibili
 - lifecycle and change validators: `scripts/validate-artifact-lifecycle.py`, `scripts/validate-change-metadata.py`, and `scripts/validate-review-artifacts.py` validate artifact status, change metadata, and material review closeout structure;
 - skill and adapter generation: `scripts/build-skills.py`, `scripts/build-adapters.py`, and adapter distribution helpers refresh `.codex/skills/` and `dist/adapters/` from canonical sources;
 - release and adapter validation: `scripts/validate-adapters.py`, `scripts/validate-release.py`, and `scripts/release-verify.sh` check generated packages, manifests, release metadata, tracked release notes, and smoke evidence.
+- measurement and reporting scripts: repository-local commands measure skill size, analyze Codex JSONL session exports, summarize tool-output amplification, and produce reviewable evidence for reports without requiring hosted telemetry.
 
 This decomposition is prose-only for now. A component diagram should be added when future validation work changes these internal responsibilities enough that prose no longer explains the selector, validator, generator, and CI-wrapper relationships.
 
@@ -149,6 +151,15 @@ This decomposition is prose-only for now. A component diagram should be added wh
 8. Unclassified paths do not fail open; they require explicit manual routing or a later selector contract update.
 9. Final broad smoke runs only when an authoritative trigger requires it.
 
+### Token-cost measurement flow
+
+1. Static skill measurement reads canonical skill files and reports byte size, line count, estimated token count, and largest sections where Markdown headings are available.
+2. Codex JSONL session analysis reads a contributor-supplied exported session, reports token usage when present, and summarizes tool calls, command-output size, broad reads, high output caps, repeated reads, and top measured cost drivers.
+3. Command-output amplification starts inside the JSONL analyzer because recorded sessions are the first evidence source for this workflow; live command wrapping remains a later optional surface.
+4. The first baseline report is authored under `docs/reports/token-cost/`.
+5. Change-local artifacts link to the durable baseline report when the report is produced by a change.
+6. Token-cost thresholds are warning-only in the first slice and do not replace required validation, review, or workflow gates.
+
 ### Generated guidance flow
 
 1. Canonical skill sources under `skills/` are edited.
@@ -169,6 +180,7 @@ The main execution and publication boundaries are:
 - GitHub Actions: runs the same repository-owned scripts in hosted CI when configured;
 - generated local Codex mirror: `.codex/skills/`, derived from canonical `skills/`;
 - public adapter packages: `dist/adapters/`, derived from canonical skills and adapter templates;
+- durable reports: `docs/reports/`, authored from local measurement evidence and linked from change-local artifacts when produced by a change;
 - release evidence: tracked `docs/releases/<version>/release.yaml`, release notes, and maintainer smoke evidence used by release verification.
 
 Rollback reverts the authored method artifacts, canonical package changes, templates, skill changes, generated refresh, and narrow lifecycle compatibility. No runtime data migration is required.
@@ -208,6 +220,10 @@ Canonical skills and adapter templates are authored sources. `.codex/skills/`, `
 
 Release verification uses tracked `docs/releases/<version>/release.yaml` and `release-notes.md` plus maintainer smoke evidence. Generated release notes are not authoritative for adapter compatibility claims.
 
+### Measurement reports
+
+Reports under `docs/reports/` are durable authored evidence for longitudinal comparison. Token-cost baseline reports live under `docs/reports/token-cost/` and summarize measured static skill cost, Codex session cost, tool-output amplification, top cost drivers, conclusions, and next actions. Change-local artifacts should link to these reports rather than duplicating their body.
+
 ### Review artifact closeout
 
 Review records are authored change-local evidence. The review artifact validator checks structure, references, allowed dispositions, and closeout completeness; it does not decide whether a finding is substantively correct.
@@ -237,6 +253,7 @@ No additional ADR is required for the 2026-04-29 package-quality refinement beca
 | Traceability | A contributor changes architecture guidance for diagrams, skills, templates, or generated output. | The change links the accepted proposal, approved spec, canonical package update or explicit no-impact rationale, ADR decision if required, plan, test spec, and validation evidence. |
 | Proportionality | A change needs architecture handling. | No-impact work records a rationale, clear current-architecture changes update this package directly, durable decisions create or update ADRs, and unsettled direction or behavior routes back to proposal or spec. |
 | Determinism | Canonical skill guidance changes and generated guidance must be refreshed. | `.codex/skills/` and `dist/adapters/` are produced through existing generators and drift checks prove they match canonical sources. |
+| Measurement usefulness | A contributor optimizes skill token cost. | Static skill measurement, JSONL analysis, and baseline reports identify measured cost drivers before hard token-budget gates are introduced. |
 | Review closeout | Architecture-review records a material finding. | The finding includes evidence, required outcome, and a safe resolution path or `needs-decision` rationale before it drives fixes. |
 | Security | Architecture work touches trust boundaries, permissions, data exposure, or secret handling. | The relevant architecture prose or diagram states the boundary, and no artifact includes secrets, credentials, private keys, or machine-local debug-only data. |
 
@@ -250,6 +267,8 @@ No additional ADR is required for the 2026-04-29 package-quality refinement beca
 | Architecture work can overproduce change-local deltas | Deltas are no longer a normal architecture authoring path; use no-impact rationale, direct canonical update, ADR, or proposal/spec routing instead. |
 | Historical or exceptional change-local evidence could be mistaken for current truth | Architecture-review, code-review, and verify must treat durable current architecture truth outside the canonical package as incomplete. |
 | Architecture-review finding format could be mistaken for a replacement of material-finding closeout | The focused spec and this package keep the simple finding fields separate from the repository-wide material-finding contract. |
+| Token-cost reports could expose excessive transcript or command-output content | Measurement reports summarize cost drivers and avoid embedding unnecessary raw transcript content. |
+| Warning-only token budgets could be mistaken for CI gates | The first measurement slice treats budget thresholds as report warnings; hard gates require a later accepted proposal and spec. |
 
 ## Glossary
 
@@ -262,6 +281,7 @@ No additional ADR is required for the 2026-04-29 package-quality refinement beca
 - lowest sufficient architecture surface: the smallest architecture evidence surface that truthfully handles a change: no-impact rationale, direct canonical update, ADR, or proposal/spec routing.
 - material finding: review finding that must include evidence, required outcome, and safe resolution path or `needs-decision` rationale before it drives fixes.
 - non-enforcement lifecycle routing: selector-selected validation that checks artifact lifecycle compatibility without proving C4 sufficiency, arc42 completeness, ADR need, or architecture package shape.
+- report: durable authored evidence under `docs/reports/` used for longitudinal comparison, such as token-cost baselines.
 - review artifact: authored change-local review evidence such as `reviews/*.md`, `review-log.md`, or `review-resolution.md`.
 
 ## Next artifacts
@@ -279,9 +299,10 @@ No additional ADR is required for the 2026-04-29 package-quality refinement beca
 - Architecture skill surface simplification: proposal accepted and spec amendment approved on 2026-05-09; canonical architecture and ADR update approved in this package revision.
 - Architecture-review for the 2026-05-09 architecture skill surface simplification: approved in `docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/architecture-review-r1.md` with no material findings.
 - Plan-review for the 2026-05-09 architecture skill surface simplification: approved in `docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/plan-review-r2.md` after PR-F1 corrected milestone review sequencing.
+- Token-cost measurement baseline and proposal scope preservation: accepted proposal and approved spec add repository-local measurement scripts, token-cost baseline reports under `docs/reports/token-cost/`, and proposal/proposal-review scope-preservation guidance.
 
 ## Readiness
 
-This direct canonical package update is approved and ready for downstream simplification implementation.
+This canonical package revision records the current repository architecture for token-cost measurement baselines and proposal scope preservation.
 
-No change-local architecture delta is produced for this update because the canonical package carries the intended durable guidance directly.
+No ADR is required for this update because it does not revise system boundaries, generated-output architecture, adapter packaging, deployment boundaries, or the architecture method. No change-local architecture delta is produced because the canonical package carries the intended durable guidance directly.

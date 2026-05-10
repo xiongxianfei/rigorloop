@@ -1783,6 +1783,47 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             with self.subTest(skill=skill_name, term="validation_semantics"):
                 self.assertIn("Validation summaries must not change selected check coverage", body)
 
+    def test_proposal_scope_preservation_guidance_is_static_validated(self) -> None:
+        proposal = (ROOT / "skills" / "proposal" / "SKILL.md").read_text(encoding="utf-8")
+        proposal_review = (
+            ROOT / "skills" / "proposal-review" / "SKILL.md"
+        ).read_text(encoding="utf-8")
+
+        proposal_terms = [
+            "## Scope preservation",
+            "Before drafting or materially revising a proposal, extract the user's initial goals, concerns, constraints, and requested outcomes.",
+            "Every initial user goal must be visible in the proposal as one of:",
+            "`in scope`",
+            "`out of scope`",
+            "`deferred follow-up`",
+            "`rejected option`",
+            "`open question`",
+            "## Initial intent preservation",
+            "| Initial user goal | Proposal treatment | Where recorded |",
+            "Do not silently drop a user goal when narrowing a proposal.",
+            "If a proposal intentionally narrows the user's request, record the narrowing",
+        ]
+        for term in proposal_terms:
+            with self.subTest(skill="proposal", term=term):
+                self.assertIn(term, proposal)
+
+        proposal_review_terms = [
+            "## Scope preservation review",
+            "Compare the user's initial request with the proposal.",
+            "Every initial goal must be visibly classified as:",
+            "Return `changes-requested` if any initial user goal disappears.",
+            "Return `changes-requested` if a deferred goal has no follow-up.",
+            "Return `changes-requested` if a rejected goal has no rationale.",
+            "Return `changes-requested` if the proposal narrows scope but does not say why.",
+            "Scope-preservation failures must return `changes-requested`.",
+            "review status: `approved`, `changes-requested`, `blocked`, or `inconclusive`",
+            "scope-preservation result",
+            "Do not rewrite the proposal as part of proposal-review unless the user explicitly asks.",
+        ]
+        for term in proposal_review_terms:
+            with self.subTest(skill="proposal-review", term=term):
+                self.assertIn(term, proposal_review)
+
     def test_skill_contract_m3_first_slice_core_sections_and_result_blocks(self) -> None:
         for skill_name in SKILL_CONTRACT_FIRST_SLICE_SKILLS:
             body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")

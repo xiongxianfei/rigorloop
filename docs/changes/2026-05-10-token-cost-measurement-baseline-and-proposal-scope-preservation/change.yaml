@@ -1,0 +1,458 @@
+change_id: 2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation
+title: Token cost measurement baseline and proposal scope preservation
+classification: workflow-governance-proposal
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md
+  spec: specs/token-cost-measurement-baseline-and-proposal-scope-preservation.md
+  test_spec: specs/token-cost-measurement-baseline-and-proposal-scope-preservation.test.md
+  architecture: docs/architecture/system/architecture.md
+  plan: docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md
+  explain_change: docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md
+  review_resolution: docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-resolution.md
+reports:
+  token_cost_baseline: docs/reports/token-cost/2026-05-10-baseline.md
+requirements:
+  - Define a proposal direction for token-cost measurement baseline and proposal scope preservation.
+  - Record material proposal-review findings before proposal revision.
+  - Resolve proposal-review findings before downstream spec authoring relies on the proposal.
+  - Record proposal-review R2 approval before downstream spec authoring relies on the proposal.
+  - Normalize the accepted proposal before drafting the spec.
+  - Draft the token cost measurement baseline and proposal scope preservation spec before planning or implementation.
+  - Record spec-review R1 approval before architecture, planning, test-spec, or implementation relies on the spec.
+  - Normalize the approved spec before architecture relies on it.
+  - Update the canonical architecture package for durable report and measurement-script surfaces.
+  - Record no-ADR-required rationale for the architecture update.
+  - Record architecture-review R1 approval before planning relies on the canonical architecture update.
+  - Create an active execution plan before test-spec or implementation.
+  - Add the active plan to docs/plan.md.
+  - Record plan-review R1 approval before test-spec relies on the plan.
+  - Create an active test spec before implementation.
+  - Update the active plan handoff state for implement M1 after test-spec creation.
+  - Implement M1 static skill measurement and Codex JSONL analyzer commands before baseline report generation.
+  - Keep M1 token-cost thresholds warning-only and avoid hosted telemetry, hard CI gates, or live command wrapping.
+  - Hand off M1 to code-review only after targeted validation passes and the plan state is updated to review-requested.
+  - Close M1 only after code-review completes cleanly or material findings are resolved or explicitly dispositioned.
+  - Produce the first durable token-cost baseline report under docs/reports/token-cost/.
+  - Link the baseline report from change-local evidence instead of duplicating the report body.
+  - Update proposal skill guidance so broad or multi-part requests preserve every initial user goal with a visible treatment.
+  - Update proposal-review guidance so silent narrowing returns changes-requested without making proposal-review rewrite the proposal.
+  - Add narrow static validation coverage for proposal scope preservation and silent-narrowing review checks.
+  - Resolve M3 code-review finding TCSP-CR-M3-F1 before M3 closes or M4 starts.
+  - Regenerate local Codex skill mirrors and public adapter packages after canonical proposal/proposal-review skill changes.
+  - Validate adapter drift and adapter package structure with version 0.1.1 for M4.
+tests:
+  - Proposal-review artifact record for material findings.
+  - Review artifact structure validation while proposal-review findings remain open.
+  - Review artifact closeout validation after proposal-review R2 approval.
+  - Artifact lifecycle validation after spec draft.
+  - Spec-review R1 approval record and review artifact closeout validation.
+  - Canonical architecture package lifecycle validation after architecture update.
+  - Architecture-review R1 approval record and review artifact closeout validation.
+  - Artifact lifecycle validation after plan creation.
+  - Plan-review R1 approval record and review artifact closeout validation.
+  - Test-spec requirement, example, edge-case, and milestone coverage before implementation.
+  - Artifact lifecycle and change metadata validation after test-spec creation.
+  - M1 focused token-cost measurement script tests.
+  - M1 direct static skill measurement command.
+  - M1 direct Codex JSONL analyzer command against a small fixture.
+  - Selector check recorded as manual routing for new script paths, plus selected lifecycle/change metadata checks.
+  - M1 code-review validation rerun and clean no-material review closeout.
+  - M2 baseline report shape and change-local link test.
+  - M2 report lifecycle and change metadata validation.
+  - M3 proposal/proposal-review scope preservation static validation.
+  - M3 skill structure validation.
+  - M3 code-review R1 finding record and open review-resolution state.
+  - M4 generated skill and adapter refresh validation.
+validation:
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation
+    result: pass_structure_reviews_1_findings_1_log_entries_1_resolution_entries_1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_valid_change_metadata_after_proposal_review_r1
+  - command: git diff --check -- docs/proposals/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation
+    result: pass_after_proposal_review_r1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation
+    result: pass_closeout_reviews_1_findings_1_log_entries_1_resolution_entries_1_after_tcsp_pr1_f1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_valid_change_metadata_after_tcsp_pr1_f1
+  - command: git diff --check -- docs/proposals/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation
+    result: pass_after_tcsp_pr1_f1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation
+    result: pass_closeout_reviews_2_findings_1_log_entries_2_resolution_entries_1_after_proposal_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_valid_change_metadata_after_proposal_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-log.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-resolution.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/reviews/proposal-review-r1.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/reviews/proposal-review-r2.md
+    result: pass_proposal_review_lifecycle_after_proposal_review_r2
+  - command: git diff --check -- docs/proposals/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation
+    result: pass_after_proposal_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path specs/token-cost-measurement-baseline-and-proposal-scope-preservation.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-log.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-resolution.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/reviews/proposal-review-r1.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/reviews/proposal-review-r2.md
+    result: pass_proposal_and_spec_lifecycle_after_spec_draft
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation
+    result: pass_closeout_reviews_2_findings_1_log_entries_2_resolution_entries_1_after_spec_draft
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_valid_change_metadata_after_spec_draft
+  - command: git diff --check -- docs/proposals/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md specs/token-cost-measurement-baseline-and-proposal-scope-preservation.md docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation
+    result: pass_after_spec_draft
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation
+    result: pass_closeout_reviews_3_findings_1_log_entries_3_resolution_entries_1_after_spec_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_valid_change_metadata_after_spec_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path specs/token-cost-measurement-baseline-and-proposal-scope-preservation.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-log.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-resolution.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/reviews/proposal-review-r1.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/reviews/proposal-review-r2.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/reviews/spec-review-r1.md
+    result: pass_proposal_and_spec_lifecycle_after_spec_review_r1
+  - command: git diff --check -- specs/token-cost-measurement-baseline-and-proposal-scope-preservation.md docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation
+    result: pass_after_spec_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path specs/token-cost-measurement-baseline-and-proposal-scope-preservation.md --path docs/architecture/system/architecture.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-log.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-resolution.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/reviews/proposal-review-r1.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/reviews/proposal-review-r2.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/reviews/spec-review-r1.md
+    result: pass_proposal_spec_architecture_lifecycle_after_architecture_update
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation
+    result: pass_closeout_reviews_3_findings_1_log_entries_3_resolution_entries_1_after_architecture_update
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_valid_change_metadata_after_architecture_update
+  - command: git diff --check -- docs/architecture/system/architecture.md specs/token-cost-measurement-baseline-and-proposal-scope-preservation.md docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation
+    result: pass_after_architecture_update
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation
+    result: pass_closeout_reviews_4_findings_1_log_entries_4_resolution_entries_1_after_architecture_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_valid_change_metadata_after_architecture_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path specs/token-cost-measurement-baseline-and-proposal-scope-preservation.md --path docs/architecture/system/architecture.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-log.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-resolution.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/reviews/proposal-review-r1.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/reviews/proposal-review-r2.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/reviews/spec-review-r1.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/reviews/architecture-review-r1.md
+    result: pass_proposal_spec_architecture_lifecycle_after_architecture_review_r1
+  - command: git diff --check -- docs/architecture/system/architecture.md docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation
+    result: pass_after_architecture_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path docs/proposals/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path specs/token-cost-measurement-baseline-and-proposal-scope-preservation.md --path docs/architecture/system/architecture.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-log.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-resolution.md
+    result: pass_with_existing_lifecycle_warning_docs_plan_line_20_after_plan_creation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_valid_change_metadata_after_plan_creation
+  - command: git diff --check -- docs/plan.md docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation
+    result: pass_after_plan_creation
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation
+    result: pass_closeout_reviews_5_findings_1_log_entries_5_resolution_entries_1_after_plan_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_valid_change_metadata_after_plan_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path docs/proposals/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path specs/token-cost-measurement-baseline-and-proposal-scope-preservation.md --path docs/architecture/system/architecture.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-log.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-resolution.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/reviews/plan-review-r1.md
+    result: pass_with_existing_lifecycle_warning_docs_plan_line_20_after_plan_review_r1
+  - command: git diff --check -- docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation
+    result: pass_after_plan_review_r1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation
+    result: pass_closeout_reviews_5_findings_1_log_entries_5_resolution_entries_1_after_test_spec_creation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_valid_change_metadata_after_test_spec_creation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path docs/proposals/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path specs/token-cost-measurement-baseline-and-proposal-scope-preservation.md --path specs/token-cost-measurement-baseline-and-proposal-scope-preservation.test.md --path docs/architecture/system/architecture.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-log.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-resolution.md
+    result: pass_with_existing_lifecycle_warning_docs_plan_line_20_after_test_spec_creation
+  - command: git diff --check -- specs/token-cost-measurement-baseline-and-proposal-scope-preservation.test.md specs/token-cost-measurement-baseline-and-proposal-scope-preservation.md docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation
+    result: pass_after_test_spec_creation
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_7_tests_after_m1_implementation
+  - command: python scripts/measure-skill-tokens.py
+    result: pass_measured_23_canonical_skills_53874_estimated_tokens
+  - command: python scripts/analyze-codex-jsonl.py tests/fixtures/token-cost/sample-codex-session.jsonl
+    result: pass_reported_usage_2_tool_calls_6_output_lines_6_estimated_output_tokens
+  - command: python scripts/select-validation.py --mode explicit --path scripts/measure-skill-tokens.py --path scripts/analyze-codex-jsonl.py --path scripts/test-token-cost-measurement.py --path tests/fixtures/token-cost/sample-codex-session.jsonl --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md
+    result: blocked_manual_routing_required_for_script_unsupported_paths_and_unclassified_token_cost_fixture_selected_artifact_lifecycle_change_metadata_regression_change_metadata_validate
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_4_tests_after_m1_implementation
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation
+    result: pass_closeout_reviews_5_findings_1_log_entries_5_resolution_entries_1_after_m1_implementation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_valid_change_metadata_after_m1_implementation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path docs/proposals/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path specs/token-cost-measurement-baseline-and-proposal-scope-preservation.md --path specs/token-cost-measurement-baseline-and-proposal-scope-preservation.test.md --path docs/architecture/system/architecture.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-log.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-resolution.md
+    result: pass_with_existing_lifecycle_warning_docs_plan_line_20_after_m1_implementation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md
+    result: pass_selected_artifact_lifecycle_after_m1_implementation
+  - command: git diff --check -- scripts tests/fixtures/token-cost docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md specs/token-cost-measurement-baseline-and-proposal-scope-preservation.test.md specs/token-cost-measurement-baseline-and-proposal-scope-preservation.md
+    result: pass_after_m1_implementation
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_7_tests_during_m1_code_review
+  - command: python scripts/measure-skill-tokens.py
+    result: pass_measured_23_canonical_skills_during_m1_code_review
+  - command: python scripts/analyze-codex-jsonl.py tests/fixtures/token-cost/sample-codex-session.jsonl
+    result: pass_reported_usage_and_tool_output_during_m1_code_review
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_valid_change_metadata_during_m1_code_review
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md
+    result: pass_selected_artifact_lifecycle_during_m1_code_review
+  - command: git diff --check -- HEAD~1..HEAD
+    result: pass_m1_commit_diff_check_during_code_review
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_8_tests_after_m2_implementation
+  - command: python scripts/measure-skill-tokens.py
+    result: pass_measured_23_canonical_skills_53874_estimated_tokens_after_m2
+  - command: python scripts/analyze-codex-jsonl.py tests/fixtures/token-cost/sample-codex-session.jsonl
+    result: pass_reported_usage_2_tool_calls_6_output_lines_6_estimated_output_tokens_after_m2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_valid_change_metadata_after_m2_implementation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/reports/token-cost/2026-05-10-baseline.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_report_and_change_metadata_lifecycle_after_m2
+  - command: python scripts/select-validation.py --mode explicit --path docs/reports/token-cost/2026-05-10-baseline.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md --path scripts/test-token-cost-measurement.py --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md
+    result: blocked_manual_routing_required_for_unclassified_token_cost_report_and_script_unsupported_test_selected_artifact_lifecycle_change_metadata_regression_change_metadata_validate
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_4_tests_after_m2_implementation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md
+    result: pass_selected_artifact_lifecycle_after_m2_implementation
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation
+    result: pass_closeout_reviews_5_findings_1_log_entries_5_resolution_entries_1_after_m2_implementation
+  - command: git diff --check -- docs/reports/token-cost docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation scripts/test-token-cost-measurement.py docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md
+    result: pass_after_m2_implementation
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_8_tests_during_m2_code_review
+  - command: python scripts/measure-skill-tokens.py
+    result: pass_measured_23_canonical_skills_during_m2_code_review
+  - command: python scripts/analyze-codex-jsonl.py tests/fixtures/token-cost/sample-codex-session.jsonl
+    result: pass_reported_usage_and_tool_output_during_m2_code_review
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_valid_change_metadata_during_m2_code_review
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/reports/token-cost/2026-05-10-baseline.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md
+    result: pass_report_change_plan_lifecycle_during_m2_code_review
+  - command: git diff --check -- HEAD~1..HEAD
+    result: pass_m2_commit_diff_check_during_code_review
+  - command: python scripts/test-skill-validator.py
+    result: pass_54_tests_after_m3_implementation
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m3_implementation
+  - command: python scripts/select-validation.py --mode explicit --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path scripts/test-skill-validator.py --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md
+    result: pass_selected_skills_validate_skills_regression_skills_drift_adapters_drift_artifact_lifecycle_change_metadata_regression_change_metadata_validate_no_blocking_results
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_4_tests_after_m3_implementation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_valid_change_metadata_after_m3_implementation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path skills/proposal-review/SKILL.md --path skills/proposal/SKILL.md
+    result: pass_selected_artifact_lifecycle_after_m3_implementation
+  - command: python scripts/build-skills.py --check
+    result: expected_fail_stale_generated_proposal_and_proposal_review_skill_mirrors_m4_scope
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: expected_fail_stale_generated_proposal_and_proposal_review_adapter_files_m4_scope
+  - command: git diff --check -- skills/proposal/SKILL.md skills/proposal-review/SKILL.md scripts/test-skill-validator.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md
+    result: pass_after_m3_implementation
+  - command: python scripts/test-skill-validator.py
+    result: pass_54_tests_during_m3_code_review_r1
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_during_m3_code_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_valid_change_metadata_during_m3_code_review_r1_before_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path skills/proposal-review/SKILL.md --path skills/proposal/SKILL.md
+    result: pass_selected_artifact_lifecycle_during_m3_code_review_r1_before_recording
+  - command: git diff --check -- HEAD~1..HEAD
+    result: pass_m3_commit_diff_check_during_code_review_r1
+  - command: python scripts/build-skills.py --check
+    result: expected_fail_stale_generated_proposal_and_proposal_review_skill_mirrors_m4_scope_during_m3_code_review_r1
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: expected_fail_stale_generated_proposal_and_proposal_review_adapter_files_m4_scope_during_m3_code_review_r1
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation
+    result: pass_structure_reviews_6_findings_2_log_entries_6_resolution_entries_2_after_m3_code_review_r1_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_valid_change_metadata_after_m3_code_review_r1_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-log.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-resolution.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/reviews/code-review-m3-r1.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md
+    result: pass_review_record_lifecycle_after_m3_code_review_r1_recording
+  - command: git diff --check -- docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md
+    result: pass_after_m3_code_review_r1_recording
+  - command: python scripts/test-skill-validator.py -k proposal_scope_preservation
+    result: pass_scope_preservation_regression_after_m3_review_resolution
+  - command: python scripts/test-skill-validator.py
+    result: pass_54_tests_after_m3_review_resolution
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m3_review_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_valid_change_metadata_after_m3_review_resolution_before_state_update
+  - command: git diff --check -- skills/proposal-review/SKILL.md scripts/test-skill-validator.py
+    result: pass_after_m3_review_resolution_skill_fix
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation
+    result: pass_closeout_reviews_6_findings_2_log_entries_6_resolution_entries_2_after_m3_review_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_valid_change_metadata_after_m3_review_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-log.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-resolution.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path skills/proposal-review/SKILL.md
+    result: pass_m3_review_resolution_lifecycle
+  - command: git diff --check -- skills/proposal-review/SKILL.md scripts/test-skill-validator.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md
+    result: pass_after_m3_review_resolution
+  - command: python scripts/build-skills.py --check
+    result: expected_fail_stale_generated_proposal_and_proposal_review_skill_mirrors_m4_scope_after_m3_review_resolution
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: expected_fail_stale_generated_proposal_and_proposal_review_adapter_files_m4_scope_after_m3_review_resolution
+  - command: python scripts/test-skill-validator.py
+    result: pass_54_tests_during_m3_code_review_rerun
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_during_m3_code_review_rerun
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation
+    result: pass_closeout_reviews_6_findings_2_log_entries_6_resolution_entries_2_during_m3_code_review_rerun
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_valid_change_metadata_during_m3_code_review_rerun_before_state_update
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-log.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-resolution.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path skills/proposal-review/SKILL.md
+    result: pass_m3_code_review_rerun_lifecycle
+  - command: git diff --check -- HEAD~1..HEAD
+    result: pass_m3_review_resolution_commit_diff_check_during_code_review_rerun
+  - command: python scripts/build-skills.py --check
+    result: expected_fail_stale_generated_proposal_and_proposal_review_skill_mirrors_m4_scope_during_m3_code_review_rerun
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: expected_fail_stale_generated_proposal_and_proposal_review_adapter_files_m4_scope_during_m3_code_review_rerun
+  - command: python scripts/build-skills.py
+    result: pass_synced_generated_skills_after_m4_implementation
+  - command: python scripts/build-adapters.py --version 0.1.1
+    result: pass_synced_generated_adapter_output_after_m4_implementation
+  - command: python scripts/build-skills.py --check
+    result: pass_generated_skills_in_sync_after_m4_implementation
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_adapters_drift_ok_version_0_1_1_after_m4_implementation
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_validated_generated_adapters_version_0_1_1_after_m4_implementation
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_56_tests_after_m4_implementation
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m4_implementation
+  - command: python scripts/test-skill-validator.py
+    result: pass_54_tests_after_m4_implementation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_valid_change_metadata_after_m4_implementation_before_state_update
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md
+    result: pass_authored_evidence_lifecycle_after_m4_implementation
+  - command: git diff --check -- .codex/skills dist/adapters docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation
+    result: pass_after_m4_generated_refresh
+  - command: rg -n 'Scope-preservation failures|Initial intent preservation|review status:' .codex/skills/proposal/SKILL.md .codex/skills/proposal-review/SKILL.md dist/adapters/claude/.claude/skills/proposal/SKILL.md dist/adapters/claude/.claude/skills/proposal-review/SKILL.md dist/adapters/codex/.agents/skills/proposal/SKILL.md dist/adapters/codex/.agents/skills/proposal-review/SKILL.md dist/adapters/opencode/.opencode/skills/proposal/SKILL.md dist/adapters/opencode/.opencode/skills/proposal-review/SKILL.md
+    result: pass_generated_outputs_contain_scope_preservation_terms_after_m4
+  - command: rg -n 'dist/adapters|\\.codex/skills|selector-driven validation|shared-block implementation|Regenerate generated outputs|Validate drift with repository-owned checks' .codex/skills/proposal/SKILL.md .codex/skills/proposal-review/SKILL.md dist/adapters/claude/.claude/skills/proposal/SKILL.md dist/adapters/claude/.claude/skills/proposal-review/SKILL.md dist/adapters/codex/.agents/skills/proposal/SKILL.md dist/adapters/codex/.agents/skills/proposal-review/SKILL.md dist/adapters/opencode/.opencode/skills/proposal/SKILL.md dist/adapters/opencode/.opencode/skills/proposal-review/SKILL.md
+    result: pass_no_generated_public_skill_maintainer_path_leakage_after_m4
+  - command: python scripts/build-skills.py --check
+    result: pass_generated_skills_in_sync_during_m4_code_review
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_adapters_drift_ok_version_0_1_1_during_m4_code_review
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_validated_generated_adapters_version_0_1_1_during_m4_code_review
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_56_tests_during_m4_code_review
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_during_m4_code_review
+  - command: python scripts/test-skill-validator.py
+    result: pass_54_tests_during_m4_code_review
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_valid_change_metadata_during_m4_code_review_before_state_update
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md
+    result: pass_authored_evidence_lifecycle_during_m4_code_review
+  - command: git diff --check -- HEAD~1..HEAD
+    result: pass_m4_commit_diff_check_during_code_review
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_8_tests_after_m5_final_closeout
+  - command: python scripts/measure-skill-tokens.py
+    result: pass_measured_23_canonical_skills_54294_estimated_tokens_after_m5
+  - command: python scripts/analyze-codex-jsonl.py tests/fixtures/token-cost/sample-codex-session.jsonl
+    result: pass_reported_usage_and_tool_output_after_m5
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m5
+  - command: python scripts/test-skill-validator.py
+    result: pass_54_tests_after_m5
+  - command: python scripts/build-skills.py --check
+    result: pass_generated_skills_in_sync_after_m5
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_56_tests_after_m5
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_adapters_drift_ok_version_0_1_1_after_m5
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_validated_generated_adapters_version_0_1_1_after_m5
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation
+    result: pass_closeout_reviews_6_findings_2_log_entries_6_resolution_entries_2_after_m5
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_valid_change_metadata_after_m5_before_state_update
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path docs/proposals/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path specs/token-cost-measurement-baseline-and-proposal-scope-preservation.md --path specs/token-cost-measurement-baseline-and-proposal-scope-preservation.test.md --path docs/architecture/system/architecture.md --path docs/reports/token-cost/2026-05-10-baseline.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_with_existing_lifecycle_warning_docs_plan_merge_dependent_done_entry_after_m5
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_selected_artifact_lifecycle_change_metadata_regression_change_metadata_validate_after_m5
+  - command: git diff --check -- .
+    result: pass_after_m5_final_closeout
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation
+    result: pass_closeout_reviews_6_findings_2_log_entries_6_resolution_entries_2_during_m5_code_review
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_valid_change_metadata_during_m5_code_review_before_state_update
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path docs/proposals/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path specs/token-cost-measurement-baseline-and-proposal-scope-preservation.md --path specs/token-cost-measurement-baseline-and-proposal-scope-preservation.test.md --path docs/architecture/system/architecture.md --path docs/reports/token-cost/2026-05-10-baseline.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_with_existing_lifecycle_warning_docs_plan_merge_dependent_done_entry_during_m5_code_review
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_selected_artifact_lifecycle_change_metadata_regression_change_metadata_validate_during_m5_code_review
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_8_tests_during_m5_code_review
+  - command: python scripts/build-skills.py --check
+    result: pass_generated_skills_in_sync_during_m5_code_review
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_adapters_drift_ok_version_0_1_1_during_m5_code_review
+  - command: git diff --check -- HEAD~1..HEAD
+    result: pass_m5_commit_diff_check_during_code_review
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_8_tests_during_final_verify
+  - command: python scripts/measure-skill-tokens.py
+    result: pass_measured_23_canonical_skills_54294_estimated_tokens_during_final_verify
+  - command: python scripts/analyze-codex-jsonl.py tests/fixtures/token-cost/sample-codex-session.jsonl
+    result: pass_reported_usage_and_tool_output_during_final_verify
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_during_final_verify
+  - command: python scripts/test-skill-validator.py
+    result: pass_54_tests_during_final_verify
+  - command: python scripts/build-skills.py --check
+    result: pass_generated_skills_in_sync_during_final_verify
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_56_tests_during_final_verify
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_adapters_drift_ok_version_0_1_1_during_final_verify
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_validated_generated_adapters_version_0_1_1_during_final_verify
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation
+    result: pass_closeout_reviews_6_findings_2_log_entries_6_resolution_entries_2_during_final_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_valid_change_metadata_during_final_verify_before_state_update
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path docs/proposals/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path specs/token-cost-measurement-baseline-and-proposal-scope-preservation.md --path specs/token-cost-measurement-baseline-and-proposal-scope-preservation.test.md --path docs/architecture/system/architecture.md --path docs/reports/token-cost/2026-05-10-baseline.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_with_existing_lifecycle_warning_docs_plan_merge_dependent_done_entry_during_final_verify
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_selected_artifact_lifecycle_change_metadata_regression_change_metadata_validate_during_final_verify
+  - command: git diff --check -- .
+    result: pass_during_final_verify
+  - command: python scripts/test-select-validation.py
+    result: pass_57_tests_after_pr_ci_selector_fix
+  - command: python scripts/select-validation.py --mode pr --base origin/main --head HEAD
+    result: pass_status_ok_with_token_cost_regression_selected_after_pr_ci_selector_fix
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_8_tests_after_pr_ci_selector_fix
+  - command: git diff --check -- scripts/validation_selection.py scripts/test-select-validation.py
+    result: pass_after_pr_ci_selector_fix
+  - command: bash scripts/ci.sh --mode pr --base origin/main --head HEAD
+    result: pass_selected_pr_mode_ci_after_pr_ci_selector_fix
+changed_files:
+  - docs/proposals/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md
+  - docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+  - docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-log.md
+  - docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-resolution.md
+  - docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/reviews/proposal-review-r1.md
+  - docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/reviews/proposal-review-r2.md
+  - docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/reviews/spec-review-r1.md
+  - docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/reviews/architecture-review-r1.md
+  - docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/reviews/plan-review-r1.md
+  - docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/reviews/code-review-m3-r1.md
+  - docs/architecture/system/architecture.md
+  - docs/plan.md
+  - docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md
+  - specs/token-cost-measurement-baseline-and-proposal-scope-preservation.md
+  - specs/token-cost-measurement-baseline-and-proposal-scope-preservation.test.md
+  - scripts/measure-skill-tokens.py
+  - scripts/analyze-codex-jsonl.py
+  - scripts/test-token-cost-measurement.py
+  - scripts/validation_selection.py
+  - scripts/test-select-validation.py
+  - tests/fixtures/token-cost/sample-codex-session.jsonl
+  - docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md
+  - docs/reports/token-cost/2026-05-10-baseline.md
+  - skills/proposal/SKILL.md
+  - skills/proposal-review/SKILL.md
+  - .codex/skills/proposal/SKILL.md
+  - .codex/skills/proposal-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/proposal/SKILL.md
+  - dist/adapters/claude/.claude/skills/proposal-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/proposal/SKILL.md
+  - dist/adapters/codex/.agents/skills/proposal-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/proposal/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/proposal-review/SKILL.md
+architecture:
+  surface: canonical-update
+  canonical_architecture_changed:
+    - docs/architecture/system/architecture.md
+  diagrams_changed: []
+  adrs_created_or_updated: []
+  no_adr_required_rationale: This update adds repository-local measurement scripts and durable token-cost report storage to existing repository artifact and validation-script surfaces. It does not revise system boundaries, generated-output architecture, adapter packaging, deployment boundaries, or the architecture method.
+  direction_spec_blockers: []
+  next_stage: architecture-review
+review:
+  status: pr_open_ci_fix_ready_for_hosted_rerun
+  open_findings: 0
+  unresolved_items: 0
+  last_review: M5 code-review completed clean-with-notes with no material findings; PR #40 opened; local PR-mode CI selector fix passed and hosted CI rerun is pending
+status: pr-open-ci-fix-ready-for-hosted-rerun
