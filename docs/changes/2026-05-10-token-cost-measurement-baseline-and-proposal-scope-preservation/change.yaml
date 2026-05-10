@@ -397,6 +397,16 @@ validation:
     result: pass_selected_artifact_lifecycle_change_metadata_regression_change_metadata_validate_during_final_verify
   - command: git diff --check -- .
     result: pass_during_final_verify
+  - command: python scripts/test-select-validation.py
+    result: pass_57_tests_after_pr_ci_selector_fix
+  - command: python scripts/select-validation.py --mode pr --base origin/main --head HEAD
+    result: pass_status_ok_with_token_cost_regression_selected_after_pr_ci_selector_fix
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_8_tests_after_pr_ci_selector_fix
+  - command: git diff --check -- scripts/validation_selection.py scripts/test-select-validation.py
+    result: pass_after_pr_ci_selector_fix
+  - command: bash scripts/ci.sh --mode pr --base origin/main --head HEAD
+    result: pass_selected_pr_mode_ci_after_pr_ci_selector_fix
 changed_files:
   - docs/proposals/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md
   - docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
@@ -416,6 +426,8 @@ changed_files:
   - scripts/measure-skill-tokens.py
   - scripts/analyze-codex-jsonl.py
   - scripts/test-token-cost-measurement.py
+  - scripts/validation_selection.py
+  - scripts/test-select-validation.py
   - tests/fixtures/token-cost/sample-codex-session.jsonl
   - docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md
   - docs/reports/token-cost/2026-05-10-baseline.md
@@ -439,8 +451,8 @@ architecture:
   direction_spec_blockers: []
   next_stage: architecture-review
 review:
-  status: verified_ready_for_pr_handoff
+  status: pr_open_ci_fix_ready_for_hosted_rerun
   open_findings: 0
   unresolved_items: 0
-  last_review: M5 code-review completed clean-with-notes with no material findings; local final verify passed and immediate next repository stage is PR handoff
-status: verified-ready-for-pr-handoff
+  last_review: M5 code-review completed clean-with-notes with no material findings; PR #40 opened; local PR-mode CI selector fix passed and hosted CI rerun is pending
+status: pr-open-ci-fix-ready-for-hosted-rerun

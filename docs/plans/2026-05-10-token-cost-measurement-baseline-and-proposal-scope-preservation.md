@@ -97,9 +97,9 @@ Constraints:
 - Last reviewed milestone: M4. Generated skill and adapter refresh
 - Review status: M5 code-review completed clean-with-notes with no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: PR handoff
-- Final closeout readiness: branch-ready after local final verify
-- Reason final closeout is or is not ready: M1-M5 milestone review loops are closed, review-resolution is closed, and local final verify passed; PR handoff has not completed.
+- Next stage: hosted CI rerun for PR #40, then human PR review
+- Final closeout readiness: PR opened; local PR-mode CI selector fix passed
+- Reason final closeout is or is not ready: M1-M5 milestone review loops are closed, review-resolution is closed, local final verify passed, and PR #40 is open; hosted CI rerun has not completed after the selector fix.
 
 ## Milestones
 
@@ -425,6 +425,7 @@ bash scripts/ci.sh --mode explicit --path <changed-path>...
 - 2026-05-10: M5 final lifecycle closeout updated final explanation, synchronized the plan index with the active final-closeout state, and recorded final validation evidence. M5 is ready for code-review.
 - 2026-05-10: M5 code-review completed clean-with-notes with no material findings. M5 is closed and the plan is ready for verify.
 - 2026-05-10: Final local verify passed for the change pack. The plan remains active for PR handoff.
+- 2026-05-10: PR #40 opened, then hosted PR CI failed because the validation selector did not classify the new token-cost scripts, fixture, and report path. Added deterministic token-cost selector routing and local PR-mode CI now passes; hosted CI rerun is pending after push.
 
 ## Decision Log
 
@@ -583,13 +584,14 @@ bash scripts/ci.sh --mode explicit --path <changed-path>...
 
 ## Outcome and Retrospective
 
-- Local final verify passed. This plan remains active until PR handoff completes.
+- PR #40 is open. Local PR-mode CI passes after the selector fix; this plan remains active until hosted CI and human PR review complete.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is branch-ready after local final verify.
+- This plan is ready for hosted CI rerun and human PR review on PR #40.
 
 ## Remaining Completion Gates
 
-- PR handoff
+- Hosted CI rerun
+- Human PR review

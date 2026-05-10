@@ -66,3 +66,15 @@ This closeout does not claim `pr-body-ready` or `pr-open-ready`. Those remain ow
 ## Validation
 
 Milestone validation and final local verify evidence are recorded in the active plan and `change.yaml`.
+
+## PR CI selector follow-up
+
+After PR #40 opened, hosted PR CI failed before running tests because the validation selector treated the new token-cost scripts, JSONL fixture, and durable report as unclassified or manually routed paths.
+
+The follow-up adds deterministic selector routing for token-cost measurement surfaces:
+
+- `scripts/validation_selection.py` now classifies the token-cost measurement scripts, token-cost test script, token-cost fixtures, and `docs/reports/token-cost/*.md` as `token-cost`.
+- `scripts/validation_selection.py` now selects `token_cost.regression`, which runs `python scripts/test-token-cost-measurement.py`.
+- `scripts/test-select-validation.py` now covers those token-cost classifications and the new selector catalog entry.
+
+Local `bash scripts/ci.sh --mode pr --base origin/main --head HEAD` passes after the selector fix.
