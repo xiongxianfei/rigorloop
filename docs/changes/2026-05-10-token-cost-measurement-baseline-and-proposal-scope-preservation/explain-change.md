@@ -37,7 +37,9 @@ M3 updates the canonical proposal and proposal-review skills so broad user reque
 - `skills/proposal/SKILL.md` now requires every initial user goal to be visibly treated as in scope, out of scope, deferred follow-up, rejected option, or open question.
 - `skills/proposal/SKILL.md` now includes an `Initial intent preservation` table shape for broad or multi-part requests.
 - `skills/proposal-review/SKILL.md` now requires scope preservation review and `changes-requested` outcomes when goals disappear, deferred goals have no follow-up, rejected goals lack rationale, or narrowed scope has no explanation.
+- `skills/proposal-review/SKILL.md` now uses unified review status vocabulary in its expected output: `approved`, `changes-requested`, `blocked`, or `inconclusive`.
 - `scripts/test-skill-validator.py` now contains narrow phrase checks for the new proposal and proposal-review guidance.
+- `scripts/test-skill-validator.py` now checks that proposal-review expected output includes `changes-requested` and a scope-preservation result so the output contract cannot drift from the scope-preservation rule again.
 
 The canonical skill text keeps repository-maintainer validation and generated-output mechanics out of the published guidance.
 

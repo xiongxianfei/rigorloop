@@ -64,4 +64,4 @@ Status: changes-requested
 Detailed record: reviews/code-review-m3-r1.md
 Resolution: review-resolution.md#code-review-m3-r1
 Material findings: TCSP-CR-M3-F1
-Open findings: TCSP-CR-M3-F1
+Open findings: None

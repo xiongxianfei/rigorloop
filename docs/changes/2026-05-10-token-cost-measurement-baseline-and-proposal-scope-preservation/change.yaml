@@ -240,6 +240,28 @@ validation:
     result: pass_review_record_lifecycle_after_m3_code_review_r1_recording
   - command: git diff --check -- docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md
     result: pass_after_m3_code_review_r1_recording
+  - command: python scripts/test-skill-validator.py -k proposal_scope_preservation
+    result: pass_scope_preservation_regression_after_m3_review_resolution
+  - command: python scripts/test-skill-validator.py
+    result: pass_54_tests_after_m3_review_resolution
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m3_review_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_valid_change_metadata_after_m3_review_resolution_before_state_update
+  - command: git diff --check -- skills/proposal-review/SKILL.md scripts/test-skill-validator.py
+    result: pass_after_m3_review_resolution_skill_fix
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation
+    result: pass_closeout_reviews_6_findings_2_log_entries_6_resolution_entries_2_after_m3_review_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_valid_change_metadata_after_m3_review_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-log.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-resolution.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path skills/proposal-review/SKILL.md
+    result: pass_m3_review_resolution_lifecycle
+  - command: git diff --check -- skills/proposal-review/SKILL.md scripts/test-skill-validator.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md
+    result: pass_after_m3_review_resolution
+  - command: python scripts/build-skills.py --check
+    result: expected_fail_stale_generated_proposal_and_proposal_review_skill_mirrors_m4_scope_after_m3_review_resolution
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: expected_fail_stale_generated_proposal_and_proposal_review_adapter_files_m4_scope_after_m3_review_resolution
 changed_files:
   - docs/proposals/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md
   - docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
@@ -274,8 +296,8 @@ architecture:
   direction_spec_blockers: []
   next_stage: architecture-review
 review:
-  status: m3_changes_requested
-  open_findings: 1
-  unresolved_items: 1
-  last_review: M3 code-review R1 requested changes for TCSP-CR-M3-F1; immediate next repository stage is review-resolution / implement M3 fix
-status: m3-review-resolution
+  status: m3_review_requested
+  open_findings: 0
+  unresolved_items: 0
+  last_review: M3 review-resolution resolved TCSP-CR-M3-F1; immediate next repository stage is code-review M3 rerun
+status: m3-review-requested

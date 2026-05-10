@@ -102,6 +102,8 @@ Return `changes-requested` if a rejected goal has no rationale.
 
 Return `changes-requested` if the proposal narrows scope but does not say why.
 
+Scope-preservation failures must return `changes-requested`.
+
 Do not rewrite the proposal as part of proposal-review unless the user explicitly asks.
 
 ## Adversarial questions
@@ -206,8 +208,9 @@ Read the full file when the whole file is the review target, the relevant sectio
 
 ## Expected output
 
-- verdict: approve, revise, or rethink;
+- review status: `approved`, `changes-requested`, `blocked`, or `inconclusive`;
 - findings by review dimension;
+- scope-preservation result;
 - blocking questions;
 - exact suggested proposal edits;
 - readiness statement for `spec`, isolated stop, or blocker state.

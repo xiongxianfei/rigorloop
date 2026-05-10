@@ -1815,6 +1815,9 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "Return `changes-requested` if a deferred goal has no follow-up.",
             "Return `changes-requested` if a rejected goal has no rationale.",
             "Return `changes-requested` if the proposal narrows scope but does not say why.",
+            "Scope-preservation failures must return `changes-requested`.",
+            "review status: `approved`, `changes-requested`, `blocked`, or `inconclusive`",
+            "scope-preservation result",
             "Do not rewrite the proposal as part of proposal-review unless the user explicitly asks.",
         ]
         for term in proposal_review_terms:
