@@ -92,12 +92,12 @@ Constraints:
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Measurement scripts and parser tests
-- Current milestone state: review-requested
-- Last reviewed milestone: none
-- Review status: M1 implementation-complete; targeted validation passed; code-review requested
-- Remaining in-scope implementation milestones: M1, M2, M3, M4
-- Next stage: code-review M1
+- Current milestone: M2. Durable baseline report and change evidence
+- Current milestone state: planned
+- Last reviewed milestone: M1. Measurement scripts and parser tests
+- Review status: M1 code-review clean-with-notes; no material findings; M1 closed
+- Remaining in-scope implementation milestones: M2, M3, M4
+- Next stage: implement M2
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: M1-M4 are not implemented or reviewed, final lifecycle closeout has not run, and PR handoff is not prepared.
 
@@ -105,7 +105,7 @@ Constraints:
 
 ### M1. Measurement Scripts and Parser Tests
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Add local measurement commands for static skill cost and Codex JSONL session/tool-output amplification.
 - Requirements: R1, R1a-R1e, R2, R2a-R2f, R3, R3a-R3b, R5, R5a-R5b, AC1, AC2, AC8
 - Files/components likely touched:
@@ -136,9 +136,9 @@ Constraints:
   - [x] targeted validation passed
   - [x] hand off to code-review for M1
 - Review closeout:
-  - [ ] code-review completed
-  - [ ] material findings resolved or explicitly dispositioned
-  - [ ] milestone state updated before starting the next implementation milestone
+  - [x] code-review completed
+  - [x] material findings resolved or explicitly dispositioned
+  - [x] milestone state updated before starting the next implementation milestone
 - Milestone closeout:
   - [x] validation passed
   - [x] progress updated
@@ -410,6 +410,7 @@ bash scripts/ci.sh --mode explicit --path <changed-path>...
 - 2026-05-10: test spec created and activated after plan-review R1 approval; M1 is ready to start implementation.
 - 2026-05-10: M1 implementation started for static skill measurement and Codex JSONL session analysis.
 - 2026-05-10: M1 added static skill measurement, Codex JSONL session analysis, focused parser tests, a small JSONL fixture, and change-local explanation evidence. M1 is ready for code-review.
+- 2026-05-10: M1 code-review completed clean-with-notes with no material findings; M1 is closed and the plan is active for M2.
 
 ## Decision Log
 
@@ -442,6 +443,13 @@ bash scripts/ci.sh --mode explicit --path <changed-path>...
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path docs/proposals/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path specs/token-cost-measurement-baseline-and-proposal-scope-preservation.md --path specs/token-cost-measurement-baseline-and-proposal-scope-preservation.test.md --path docs/architecture/system/architecture.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-log.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-resolution.md`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md`
   - `git diff --check -- scripts tests/fixtures/token-cost docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md specs/token-cost-measurement-baseline-and-proposal-scope-preservation.test.md specs/token-cost-measurement-baseline-and-proposal-scope-preservation.md`
+- M1 code-review validation rerun passed:
+  - `python scripts/test-token-cost-measurement.py`
+  - `python scripts/measure-skill-tokens.py`
+  - `python scripts/analyze-codex-jsonl.py tests/fixtures/token-cost/sample-codex-session.jsonl`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md`
+  - `git diff --check -- HEAD~1..HEAD`
 
 ## Outcome and Retrospective
 
@@ -450,11 +458,10 @@ bash scripts/ci.sh --mode explicit --path <changed-path>...
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for code-review M1.
+- This plan is ready for implement M2.
 
 ## Remaining Completion Gates
 
-- M1 implementation and code-review closeout
 - M2 implementation and code-review closeout
 - M3 implementation and code-review closeout
 - M4 implementation and code-review closeout
