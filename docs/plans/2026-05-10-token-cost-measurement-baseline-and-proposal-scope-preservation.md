@@ -92,14 +92,14 @@ Constraints:
 
 ## Current Handoff Summary
 
-- Current milestone: M3. Proposal scope preservation skill and validator updates
-- Current milestone state: review-requested
-- Last reviewed milestone: M2. Durable baseline report and change evidence
-- Review status: M3 review-resolution completed for TCSP-CR-M3-F1; targeted validation passed; code-review rerun requested
-- Remaining in-scope implementation milestones: M3, M4
-- Next stage: code-review M3 rerun
+- Current milestone: M4. Generated skill and adapter refresh
+- Current milestone state: planned
+- Last reviewed milestone: M3. Proposal scope preservation skill and validator updates
+- Review status: M3 code-review rerun completed clean-with-notes with no material findings
+- Remaining in-scope implementation milestones: M4
+- Next stage: implement M4
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 is awaiting code-review rerun, M4 has not started, final lifecycle closeout has not run, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M4 has not started, final lifecycle closeout has not run, and PR handoff is not prepared.
 
 ## Milestones
 
@@ -202,7 +202,7 @@ Constraints:
 
 ### M3. Proposal Scope Preservation Skill and Validator Updates
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Update proposal/proposal-review behavior and static validation for initial intent preservation.
 - Requirements: R6, R6a-R6e, R7, R7a-R7e, R8, R8a-R8f, R9, R9a-R9b, R10, R10a-R10e, AC4, AC5, AC6
 - Files/components likely touched:
@@ -419,6 +419,7 @@ bash scripts/ci.sh --mode explicit --path <changed-path>...
 - 2026-05-10: M3 added proposal/proposal-review scope preservation guidance and narrow static validator coverage. M3 is ready for code-review.
 - 2026-05-10: M3 code-review R1 requested changes for TCSP-CR-M3-F1. M3 is in review-resolution; do not start M4 until the finding is resolved, targeted validation passes, and M3 returns to code-review.
 - 2026-05-10: M3 review-resolution updated proposal-review expected output to use unified review status vocabulary, added explicit scope-preservation `changes-requested` output guidance, and extended static validator coverage. M3 is ready for code-review rerun.
+- 2026-05-10: M3 code-review rerun completed clean-with-notes with no material findings. M3 is closed and the plan is active for M4.
 
 ## Decision Log
 
@@ -508,6 +509,15 @@ bash scripts/ci.sh --mode explicit --path <changed-path>...
   - `git diff --check -- skills/proposal-review/SKILL.md scripts/test-skill-validator.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md`
   - `python scripts/build-skills.py --check` failed with stale generated proposal/proposal-review skill mirrors; this remains expected M4 scope.
   - `python scripts/build-adapters.py --version 0.1.1 --check` failed with stale generated proposal/proposal-review adapter files; this remains expected M4 scope.
+- M3 code-review rerun validation passed:
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/validate-skills.py`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-log.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-resolution.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path skills/proposal-review/SKILL.md`
+  - `git diff --check -- HEAD~1..HEAD`
+  - `python scripts/build-skills.py --check` failed with stale generated proposal/proposal-review skill mirrors; this remains expected M4 scope.
+  - `python scripts/build-adapters.py --version 0.1.1 --check` failed with stale generated proposal/proposal-review adapter files; this remains expected M4 scope.
 - M1 code-review validation rerun passed:
   - `python scripts/test-token-cost-measurement.py`
   - `python scripts/measure-skill-tokens.py`
@@ -523,11 +533,10 @@ bash scripts/ci.sh --mode explicit --path <changed-path>...
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for code-review M3 rerun.
+- This plan is ready for implement M4.
 
 ## Remaining Completion Gates
 
-- M3 code-review closeout
 - M4 implementation and code-review closeout
 - M5 lifecycle closeout
 - explain-change
