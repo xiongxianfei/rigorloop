@@ -45,6 +45,7 @@ EXPECTED_CATALOG = {
     "readme.validate": "python scripts/validate-readme.py README.md",
     "readme.vision_markers": "python scripts/validate-readme.py README.md --vision-markers",
     "selector.regression": "python scripts/test-select-validation.py",
+    "token_cost.regression": "python scripts/test-token-cost-measurement.py",
     "broad_smoke.repo": "bash scripts/ci.sh --mode broad-smoke",
 }
 
@@ -305,6 +306,7 @@ raise SystemExit({exit_code})
             "review_artifacts.regression",
             "selector.regression",
             "skills.regression",
+            "token_cost.regression",
         }
 
         self.assertEqual(
@@ -537,6 +539,36 @@ raise SystemExit({exit_code})
                 "category": "artifact-lifecycle-fixtures",
                 "status": "ok",
                 "checks": {"artifact_lifecycle.regression"},
+            },
+            {
+                "path": "scripts/measure-skill-tokens.py",
+                "category": "token-cost",
+                "status": "ok",
+                "checks": {"token_cost.regression"},
+            },
+            {
+                "path": "scripts/analyze-codex-jsonl.py",
+                "category": "token-cost",
+                "status": "ok",
+                "checks": {"token_cost.regression"},
+            },
+            {
+                "path": "scripts/test-token-cost-measurement.py",
+                "category": "token-cost",
+                "status": "ok",
+                "checks": {"token_cost.regression"},
+            },
+            {
+                "path": "docs/reports/token-cost/2026-05-10-baseline.md",
+                "category": "token-cost",
+                "status": "ok",
+                "checks": {"token_cost.regression"},
+            },
+            {
+                "path": "tests/fixtures/token-cost/sample-codex-session.jsonl",
+                "category": "token-cost",
+                "status": "ok",
+                "checks": {"token_cost.regression"},
             },
         ]
 

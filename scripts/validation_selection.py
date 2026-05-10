@@ -112,6 +112,12 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "selector",
         parallel_safe=True,
     ),
+    "token_cost.regression": CheckCatalogEntry(
+        "token_cost.regression",
+        "python scripts/test-token-cost-measurement.py",
+        "token-cost",
+        parallel_safe=True,
+    ),
     "broad_smoke.repo": CheckCatalogEntry(
         "broad_smoke.repo",
         "bash scripts/ci.sh --mode broad-smoke",
@@ -603,6 +609,14 @@ def _apply_path_selection(
         _add_check(selected, "selector.regression", reason)
         return
 
+    if category == "token-cost":
+        _add_check(
+            selected,
+            "token_cost.regression",
+            "Changed token-cost measurement surface requires token-cost measurement regression fixtures.",
+        )
+        return
+
     if category == "validator-review-artifacts":
         _add_check(
             selected,
@@ -829,6 +843,16 @@ def _path_category(path: str) -> str | None:
         return "validator-change-metadata"
     if path in {"scripts/validate-skills.py", "scripts/skill_validation.py", "scripts/test-skill-validator.py"}:
         return "validator-skills"
+    if path in {
+        "scripts/analyze-codex-jsonl.py",
+        "scripts/measure-skill-tokens.py",
+        "scripts/test-token-cost-measurement.py",
+    }:
+        return "token-cost"
+    if path.startswith("docs/reports/token-cost/") and path.endswith(".md"):
+        return "token-cost"
+    if path.startswith("tests/fixtures/token-cost/"):
+        return "token-cost"
     if path.startswith("docs/changes/") and len(parts) >= 4:
         if parts[3] == "change.yaml":
             return "change-metadata"
