@@ -43,6 +43,15 @@ M3 updates the canonical proposal and proposal-review skills so broad user reque
 
 The canonical skill text keeps repository-maintainer validation and generated-output mechanics out of the published guidance.
 
+## M4. Generated skill and adapter refresh
+
+M4 refreshes generated output from the canonical M3 skill changes:
+
+- `.codex/skills/proposal/SKILL.md` and `.codex/skills/proposal-review/SKILL.md` now match the canonical proposal and proposal-review skills.
+- Public adapter packages for Claude, Codex, and opencode now include the proposal scope-preservation guidance and proposal-review unified review status output.
+
+The generated files were produced with repository generators, not hand edits. Public adapter validation uses version `0.1.1`, matching the active version requirement in the plan.
+
 ## Validation
 
 Milestone validation is recorded in the active plan and `change.yaml`.

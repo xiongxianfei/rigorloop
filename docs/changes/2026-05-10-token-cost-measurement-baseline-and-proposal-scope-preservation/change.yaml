@@ -39,6 +39,8 @@ requirements:
   - Update proposal-review guidance so silent narrowing returns changes-requested without making proposal-review rewrite the proposal.
   - Add narrow static validation coverage for proposal scope preservation and silent-narrowing review checks.
   - Resolve M3 code-review finding TCSP-CR-M3-F1 before M3 closes or M4 starts.
+  - Regenerate local Codex skill mirrors and public adapter packages after canonical proposal/proposal-review skill changes.
+  - Validate adapter drift and adapter package structure with version 0.1.1 for M4.
 tests:
   - Proposal-review artifact record for material findings.
   - Review artifact structure validation while proposal-review findings remain open.
@@ -61,6 +63,7 @@ tests:
   - M3 proposal/proposal-review scope preservation static validation.
   - M3 skill structure validation.
   - M3 code-review R1 finding record and open review-resolution state.
+  - M4 generated skill and adapter refresh validation.
 validation:
   - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation
     result: pass_structure_reviews_1_findings_1_log_entries_1_resolution_entries_1
@@ -278,6 +281,32 @@ validation:
     result: expected_fail_stale_generated_proposal_and_proposal_review_skill_mirrors_m4_scope_during_m3_code_review_rerun
   - command: python scripts/build-adapters.py --version 0.1.1 --check
     result: expected_fail_stale_generated_proposal_and_proposal_review_adapter_files_m4_scope_during_m3_code_review_rerun
+  - command: python scripts/build-skills.py
+    result: pass_synced_generated_skills_after_m4_implementation
+  - command: python scripts/build-adapters.py --version 0.1.1
+    result: pass_synced_generated_adapter_output_after_m4_implementation
+  - command: python scripts/build-skills.py --check
+    result: pass_generated_skills_in_sync_after_m4_implementation
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_adapters_drift_ok_version_0_1_1_after_m4_implementation
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_validated_generated_adapters_version_0_1_1_after_m4_implementation
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_56_tests_after_m4_implementation
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m4_implementation
+  - command: python scripts/test-skill-validator.py
+    result: pass_54_tests_after_m4_implementation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_valid_change_metadata_after_m4_implementation_before_state_update
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md
+    result: pass_authored_evidence_lifecycle_after_m4_implementation
+  - command: git diff --check -- .codex/skills dist/adapters docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation
+    result: pass_after_m4_generated_refresh
+  - command: rg -n 'Scope-preservation failures|Initial intent preservation|review status:' .codex/skills/proposal/SKILL.md .codex/skills/proposal-review/SKILL.md dist/adapters/claude/.claude/skills/proposal/SKILL.md dist/adapters/claude/.claude/skills/proposal-review/SKILL.md dist/adapters/codex/.agents/skills/proposal/SKILL.md dist/adapters/codex/.agents/skills/proposal-review/SKILL.md dist/adapters/opencode/.opencode/skills/proposal/SKILL.md dist/adapters/opencode/.opencode/skills/proposal-review/SKILL.md
+    result: pass_generated_outputs_contain_scope_preservation_terms_after_m4
+  - command: rg -n 'dist/adapters|\\.codex/skills|selector-driven validation|shared-block implementation|Regenerate generated outputs|Validate drift with repository-owned checks' .codex/skills/proposal/SKILL.md .codex/skills/proposal-review/SKILL.md dist/adapters/claude/.claude/skills/proposal/SKILL.md dist/adapters/claude/.claude/skills/proposal-review/SKILL.md dist/adapters/codex/.agents/skills/proposal/SKILL.md dist/adapters/codex/.agents/skills/proposal-review/SKILL.md dist/adapters/opencode/.opencode/skills/proposal/SKILL.md dist/adapters/opencode/.opencode/skills/proposal-review/SKILL.md
+    result: pass_no_generated_public_skill_maintainer_path_leakage_after_m4
 changed_files:
   - docs/proposals/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md
   - docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
@@ -302,6 +331,14 @@ changed_files:
   - docs/reports/token-cost/2026-05-10-baseline.md
   - skills/proposal/SKILL.md
   - skills/proposal-review/SKILL.md
+  - .codex/skills/proposal/SKILL.md
+  - .codex/skills/proposal-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/proposal/SKILL.md
+  - dist/adapters/claude/.claude/skills/proposal-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/proposal/SKILL.md
+  - dist/adapters/codex/.agents/skills/proposal-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/proposal/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/proposal-review/SKILL.md
 architecture:
   surface: canonical-update
   canonical_architecture_changed:
@@ -312,8 +349,8 @@ architecture:
   direction_spec_blockers: []
   next_stage: architecture-review
 review:
-  status: m3_closed_ready_for_m4
+  status: m4_review_requested
   open_findings: 0
   unresolved_items: 0
-  last_review: M3 code-review rerun completed clean-with-notes with no material findings; immediate next repository stage is implement M4
-status: m3-closed-ready-for-implement-m4
+  last_review: M4 implementation targeted validation passed; immediate next repository stage is code-review M4
+status: m4-review-requested
