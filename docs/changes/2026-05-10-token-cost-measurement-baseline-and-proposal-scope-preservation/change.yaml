@@ -262,6 +262,22 @@ validation:
     result: expected_fail_stale_generated_proposal_and_proposal_review_skill_mirrors_m4_scope_after_m3_review_resolution
   - command: python scripts/build-adapters.py --version 0.1.1 --check
     result: expected_fail_stale_generated_proposal_and_proposal_review_adapter_files_m4_scope_after_m3_review_resolution
+  - command: python scripts/test-skill-validator.py
+    result: pass_54_tests_during_m3_code_review_rerun
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_during_m3_code_review_rerun
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation
+    result: pass_closeout_reviews_6_findings_2_log_entries_6_resolution_entries_2_during_m3_code_review_rerun
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
+    result: pass_valid_change_metadata_during_m3_code_review_rerun_before_state_update
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-log.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/review-resolution.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path skills/proposal-review/SKILL.md
+    result: pass_m3_code_review_rerun_lifecycle
+  - command: git diff --check -- HEAD~1..HEAD
+    result: pass_m3_review_resolution_commit_diff_check_during_code_review_rerun
+  - command: python scripts/build-skills.py --check
+    result: expected_fail_stale_generated_proposal_and_proposal_review_skill_mirrors_m4_scope_during_m3_code_review_rerun
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: expected_fail_stale_generated_proposal_and_proposal_review_adapter_files_m4_scope_during_m3_code_review_rerun
 changed_files:
   - docs/proposals/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md
   - docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml
@@ -296,8 +312,8 @@ architecture:
   direction_spec_blockers: []
   next_stage: architecture-review
 review:
-  status: m3_review_requested
+  status: m3_closed_ready_for_m4
   open_findings: 0
   unresolved_items: 0
-  last_review: M3 review-resolution resolved TCSP-CR-M3-F1; immediate next repository stage is code-review M3 rerun
-status: m3-review-requested
+  last_review: M3 code-review rerun completed clean-with-notes with no material findings; immediate next repository stage is implement M4
+status: m3-closed-ready-for-implement-m4
