@@ -6,7 +6,7 @@
 - Owner: maintainers
 - Start date: 2026-05-09
 - Last updated: 2026-05-10
-- Related issue or PR: pending PR handoff URL
+- Related issue or PR: PR #39, https://github.com/xiongxianfei/rigorloop/pull/39
 - Supersedes: none
 - selected_workflow_contract: standard
 - broad_smoke_required: false
@@ -397,6 +397,7 @@ These gates are not in-scope implementation milestones and do not count toward M
 - 2026-05-10: M5 final verification passed and plan/index lifecycle state was synchronized for PR handoff.
 - 2026-05-10: code-review M5 completed cleanly with no material findings; PR handoff remains the next lifecycle action.
 - 2026-05-10: PR handoff prepared; plan body and plan index synchronized as Done.
+- 2026-05-10: Opened PR #39: `https://github.com/xiongxianfei/rigorloop/pull/39`.
 
 ## Decision Log
 
@@ -473,13 +474,14 @@ These gates are not in-scope implementation milestones and do not count toward M
 
 This plan is done. M1-M4 are closed after their code-review loops, M5 final verification passed, required review-resolution is closed, and PR handoff is prepared.
 No true downstream lifecycle event remains for this plan.
+Opened PR #39.
 
 ## Readiness
 
 - Next stage: Done
 - Test-spec readiness: complete for the skill token-cost optimization contract.
 - Implementation readiness: complete for M1-M4; no in-scope implementation milestone remains open.
-- Final closeout: complete. Plan index and plan body are synchronized as Done for PR review.
+- Final closeout: complete. Plan index and plan body are synchronized as Done for PR #39 review.
 
 ## Risks and Follow-Ups
 
