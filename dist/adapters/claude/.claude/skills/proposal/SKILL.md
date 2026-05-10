@@ -88,6 +88,30 @@ A substantive proposal is any proposal that chooses product direction, user-faci
 
 Bootstrap proposals must identify the bootstrap exception in `Vision fit`. If the proposal is not bootstrap work and the required standing artifact is missing, stop before drafting a substantive proposal.
 
+## Scope preservation
+
+Before drafting or materially revising a proposal, extract the user's initial goals, concerns, constraints, and requested outcomes.
+
+Every initial user goal must be visible in the proposal as one of:
+
+- `in scope`
+- `out of scope`
+- `deferred follow-up`
+- `rejected option`
+- `open question`
+
+Do not silently drop a user goal when narrowing a proposal.
+
+If a proposal intentionally narrows the user's request, record the narrowing in `Non-goals`, `Options considered`, `Decision log`, `Next artifacts`, `Follow-on artifacts`, or `Open questions`.
+
+For broad or multi-part requests, include this section or an equivalent table:
+
+## Initial intent preservation
+
+| Initial user goal | Proposal treatment | Where recorded |
+|---|---|---|
+| <goal> | in scope / out of scope / deferred follow-up / rejected option / open question | <section> |
+
 ## Decision quality checklist
 
 Before marking accepted or ready for review, verify:
@@ -95,6 +119,7 @@ Before marking accepted or ready for review, verify:
 - the problem is not just a solution in disguise;
 - the recommended option is compared against alternatives;
 - non-goals protect the scope;
+- each initial user goal is classified and traceable when the request is broad or multi-part;
 - user value is explicit;
 - `Vision fit` is present and consistent with root `VISION.md` when required;
 - architecture impact is acknowledged;

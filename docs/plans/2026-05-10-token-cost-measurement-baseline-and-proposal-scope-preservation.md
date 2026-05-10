@@ -93,11 +93,11 @@ Constraints:
 ## Current Handoff Summary
 
 - Current milestone: M4. Generated skill and adapter refresh
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M3. Proposal scope preservation skill and validator updates
-- Review status: M3 code-review rerun completed clean-with-notes with no material findings
+- Review status: M4 implementation-complete; targeted validation passed; code-review requested
 - Remaining in-scope implementation milestones: M4
-- Next stage: implement M4
+- Next stage: code-review M4
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: M4 has not started, final lifecycle closeout has not run, and PR handoff is not prepared.
 
@@ -255,7 +255,7 @@ Constraints:
 
 ### M4. Generated Skill and Adapter Refresh
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Regenerate derived Codex skill mirrors and public adapter output after canonical skill changes.
 - Requirements: R11, R11a-R11d, AC7
 - Files/components likely touched:
@@ -290,18 +290,18 @@ Constraints:
 - Expected observable result: Derived skill mirrors and public adapters match canonical proposal/proposal-review skill behavior and validate for adapter version `0.1.1`.
 - Commit message: `M4: refresh generated scope preservation skills`
 - Implementation handoff:
-  - [ ] targeted validation passed
-  - [ ] hand off to code-review for M4
+  - [x] targeted validation passed
+  - [x] hand off to code-review for M4
 - Review closeout:
   - [ ] code-review completed
   - [ ] material findings resolved or explicitly dispositioned
   - [ ] milestone state updated before starting final lifecycle closeout
 - Milestone closeout:
-  - [ ] validation passed
-  - [ ] progress updated
+  - [x] validation passed
+  - [x] progress updated
   - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - Generated output may be stale if generation is skipped.
   - Adapter validation may fail if version source changes before implementation.
@@ -420,6 +420,7 @@ bash scripts/ci.sh --mode explicit --path <changed-path>...
 - 2026-05-10: M3 code-review R1 requested changes for TCSP-CR-M3-F1. M3 is in review-resolution; do not start M4 until the finding is resolved, targeted validation passes, and M3 returns to code-review.
 - 2026-05-10: M3 review-resolution updated proposal-review expected output to use unified review status vocabulary, added explicit scope-preservation `changes-requested` output guidance, and extended static validator coverage. M3 is ready for code-review rerun.
 - 2026-05-10: M3 code-review rerun completed clean-with-notes with no material findings. M3 is closed and the plan is active for M4.
+- 2026-05-10: M4 regenerated local Codex skill mirrors and public adapter packages for proposal/proposal-review scope-preservation guidance. M4 is ready for code-review.
 
 ## Decision Log
 
@@ -430,6 +431,7 @@ bash scripts/ci.sh --mode explicit --path <changed-path>...
 - 2026-05-10: manually route M2 report validation because `scripts/select-validation.py` currently leaves `docs/reports/token-cost/2026-05-10-baseline.md` unclassified and the updated script test as `script-unsupported`; direct report-shape tests, lifecycle validation, and change metadata validation are the authoritative M2 proof.
 - 2026-05-10: keep M3 validator coverage as exact section and phrase checks -> satisfies R10 without broad semantic scoring.
 - 2026-05-10: leave generated Codex skill mirror and public adapter refresh to M4 -> M3 changes canonical skill text only, while M4 owns `.codex/skills/` and `dist/adapters/` updates after M3 code-review.
+- 2026-05-10: use repository generators for M4 generated output -> generated local mirrors and adapter packages must come from `scripts/build-skills.py` and `scripts/build-adapters.py --version 0.1.1`, not hand edits.
 
 ## Surprises and Discoveries
 
@@ -518,6 +520,20 @@ bash scripts/ci.sh --mode explicit --path <changed-path>...
   - `git diff --check -- HEAD~1..HEAD`
   - `python scripts/build-skills.py --check` failed with stale generated proposal/proposal-review skill mirrors; this remains expected M4 scope.
   - `python scripts/build-adapters.py --version 0.1.1 --check` failed with stale generated proposal/proposal-review adapter files; this remains expected M4 scope.
+- M4 implementation validation passed:
+  - `python scripts/build-skills.py`
+  - `python scripts/build-adapters.py --version 0.1.1`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/build-adapters.py --version 0.1.1 --check`
+  - `python scripts/validate-adapters.py --version 0.1.1`
+  - `python scripts/test-adapter-distribution.py`
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md`
+  - `git diff --check -- .codex/skills dist/adapters docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation`
+  - Public portability scan: generated proposal/proposal-review skills contain the new scope-preservation guidance and no maintainer-only generated-output path or drift mechanics terms.
+  - Artifact lifecycle validation intentionally targets authored evidence artifacts only; generated paths are covered by generator and adapter drift/validation commands.
 - M1 code-review validation rerun passed:
   - `python scripts/test-token-cost-measurement.py`
   - `python scripts/measure-skill-tokens.py`
@@ -533,7 +549,7 @@ bash scripts/ci.sh --mode explicit --path <changed-path>...
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for implement M4.
+- This plan is ready for code-review M4.
 
 ## Remaining Completion Gates
 
