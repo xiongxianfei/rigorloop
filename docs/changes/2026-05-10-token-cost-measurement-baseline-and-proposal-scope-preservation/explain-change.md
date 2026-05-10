@@ -2,7 +2,7 @@
 
 ## Status
 
-in progress
+final closeout review requested
 
 ## Scope
 
@@ -51,6 +51,17 @@ M4 refreshes generated output from the canonical M3 skill changes:
 - Public adapter packages for Claude, Codex, and opencode now include the proposal scope-preservation guidance and proposal-review unified review status output.
 
 The generated files were produced with repository generators, not hand edits. Public adapter validation uses version `0.1.1`, matching the active version requirement in the plan.
+
+## M5. Final lifecycle closeout
+
+M5 records final lifecycle evidence after M1-M4 each passed their milestone review loop:
+
+- M1-M4 implementation milestones are closed.
+- Review-resolution is closed with no unresolved findings.
+- `docs/plan.md` remains active because verify and PR handoff have not completed, but it now reflects that implementation milestones are closed and M5 final lifecycle closeout is in review.
+- Final validation evidence is recorded in the active plan and `change.yaml`.
+
+This closeout does not claim PR readiness. A final M5 code-review, verify, and PR handoff still need to run.
 
 ## Validation
 

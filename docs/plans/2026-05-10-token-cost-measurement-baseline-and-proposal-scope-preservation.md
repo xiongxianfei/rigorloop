@@ -93,13 +93,13 @@ Constraints:
 ## Current Handoff Summary
 
 - Current milestone: M5. Final lifecycle closeout
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M4. Generated skill and adapter refresh
-- Review status: M4 code-review completed clean-with-notes with no material findings
+- Review status: M5 final lifecycle closeout evidence updated; final validation passed; code-review requested
 - Remaining in-scope implementation milestones: none
-- Next stage: implement M5 final lifecycle closeout
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1-M4 implementation milestones are closed, but M5 final lifecycle closeout has not run and PR handoff is not prepared.
+- Next stage: code-review M5
+- Final closeout readiness: in review
+- Reason final closeout is or is not ready: M1-M4 implementation milestones are closed and M5 evidence is prepared, but M5 code-review, verify, and PR handoff have not completed.
 
 ## Milestones
 
@@ -311,7 +311,7 @@ Constraints:
 
 ### M5. Final Lifecycle Closeout
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Milestone type: lifecycle-closeout
 - Goal: Complete final evidence, verification, plan/index state synchronization, and PR handoff only after M1-M4 each pass their milestone review loop.
 - Requirements: all requirements, with emphasis on change evidence, lifecycle state, final validation, and PR readiness.
@@ -335,24 +335,24 @@ Constraints:
 - Validation commands:
   - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation`
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml`
-  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path docs/proposals/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path specs/token-cost-measurement-baseline-and-proposal-scope-preservation.md --path specs/token-cost-measurement-baseline-and-proposal-scope-preservation.test.md --path docs/architecture/system/architecture.md --path docs/reports/token-cost/2026-05-10-baseline.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path docs/proposals/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path specs/token-cost-measurement-baseline-and-proposal-scope-preservation.md --path specs/token-cost-measurement-baseline-and-proposal-scope-preservation.test.md --path docs/architecture/system/architecture.md --path docs/reports/token-cost/2026-05-10-baseline.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml` passed with the existing unrelated `docs/plan.md` lifecycle-language warning on older Done-entry wording.
   - `bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml`
   - `git diff --check -- .`
 - Expected observable result: All implementation milestones are closed, final validation evidence is recorded, lifecycle state is synchronized, and the branch is ready for PR preparation.
 - Commit message: `M5: close token cost baseline lifecycle`
 - Implementation handoff:
-  - [ ] final validation passed
-  - [ ] hand off to code-review for M5 if final evidence changes require review
+  - [x] final validation passed
+  - [x] hand off to code-review for M5 if final evidence changes require review
 - Review closeout:
   - [ ] code-review completed if triggered
   - [ ] material findings resolved or explicitly dispositioned
   - [ ] lifecycle state updated before verify/PR
 - Milestone closeout:
-  - [ ] final validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] final validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - Final lifecycle state could drift between `docs/plan.md`, this plan, and change metadata.
   - PR handoff could cite stale validation.
@@ -422,6 +422,7 @@ bash scripts/ci.sh --mode explicit --path <changed-path>...
 - 2026-05-10: M3 code-review rerun completed clean-with-notes with no material findings. M3 is closed and the plan is active for M4.
 - 2026-05-10: M4 regenerated local Codex skill mirrors and public adapter packages for proposal/proposal-review scope-preservation guidance. M4 is ready for code-review.
 - 2026-05-10: M4 code-review completed clean-with-notes with no material findings. M4 is closed and the plan is active for M5 final lifecycle closeout.
+- 2026-05-10: M5 final lifecycle closeout updated final explanation, synchronized the plan index with the active final-closeout state, and recorded final validation evidence. M5 is ready for code-review.
 
 ## Decision Log
 
@@ -433,6 +434,7 @@ bash scripts/ci.sh --mode explicit --path <changed-path>...
 - 2026-05-10: keep M3 validator coverage as exact section and phrase checks -> satisfies R10 without broad semantic scoring.
 - 2026-05-10: leave generated Codex skill mirror and public adapter refresh to M4 -> M3 changes canonical skill text only, while M4 owns `.codex/skills/` and `dist/adapters/` updates after M3 code-review.
 - 2026-05-10: use repository generators for M4 generated output -> generated local mirrors and adapter packages must come from `scripts/build-skills.py` and `scripts/build-adapters.py --version 0.1.1`, not hand edits.
+- 2026-05-10: keep this plan in `active` through M5 code-review, verify, and PR handoff -> implementation milestones are closed, but final repository lifecycle is not done until verify and PR handoff complete.
 
 ## Surprises and Discoveries
 
@@ -545,6 +547,21 @@ bash scripts/ci.sh --mode explicit --path <changed-path>...
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/explain-change.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md`
   - `git diff --check -- HEAD~1..HEAD`
+- M5 final lifecycle closeout validation passed:
+  - `python scripts/test-token-cost-measurement.py`
+  - `python scripts/measure-skill-tokens.py`
+  - `python scripts/analyze-codex-jsonl.py tests/fixtures/token-cost/sample-codex-session.jsonl`
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/test-adapter-distribution.py`
+  - `python scripts/build-adapters.py --version 0.1.1 --check`
+  - `python scripts/validate-adapters.py --version 0.1.1`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path docs/proposals/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path specs/token-cost-measurement-baseline-and-proposal-scope-preservation.md --path specs/token-cost-measurement-baseline-and-proposal-scope-preservation.test.md --path docs/architecture/system/architecture.md --path docs/reports/token-cost/2026-05-10-baseline.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml`
+  - `bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md --path docs/changes/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation/change.yaml`
+  - `git diff --check -- .`
 - M1 code-review validation rerun passed:
   - `python scripts/test-token-cost-measurement.py`
   - `python scripts/measure-skill-tokens.py`
@@ -560,11 +577,10 @@ bash scripts/ci.sh --mode explicit --path <changed-path>...
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for M5 final lifecycle closeout.
+- This plan is ready for code-review M5.
 
 ## Remaining Completion Gates
 
-- M5 lifecycle closeout
-- explain-change
+- M5 code-review closeout
 - verify
 - PR handoff
