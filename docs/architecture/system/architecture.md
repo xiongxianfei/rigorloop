@@ -19,6 +19,9 @@
 - Architecture skill surface simplification proposal: `docs/proposals/2026-05-09-simplify-architecture-skill-surfaces.md`
 - Workflow governance update: `docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md`
 - Workflow governance change metadata: `docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml`
+- Release Token-Friendliness benchmark proposal: `docs/proposals/2026-05-10-release-token-friendliness-benchmark-for-skills.md`
+- Release Token-Friendliness benchmark spec: `specs/release-token-friendliness-benchmark-for-skills.md`
+- Release Token-Friendliness benchmark change metadata: `docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml`
 - C4 system context diagram: `diagrams/context.mmd`
 - C4 container diagram: `diagrams/container.mmd`
 
@@ -37,6 +40,7 @@ The goals are:
 - preserve durable decisions in ADRs;
 - preserve review, verification, and closeout evidence in repository artifacts;
 - keep generated output reproducible from canonical sources;
+- make public release skill token-friendliness measurable through release reports, structured metadata, and fixture-backed runtime benchmarks;
 - keep first adoption and package-quality refinement review-based until real package usage proves which checks are worth automating.
 
 ## Architecture Constraints
@@ -66,6 +70,7 @@ The canonical scope includes:
 - repository-owned validation and generation scripts;
 - generated Codex runtime skills, public adapter packages, adapter manifests, and command aliases;
 - authored release metadata, tracked release notes, and maintainer smoke evidence;
+- token-cost benchmark prompts, clean fixtures, runner-produced run evidence, analyzer summaries, and release token-friendliness reports;
 - archived legacy architecture documents that remain historical evidence after lifecycle normalization.
 
 The canonical scope excludes runtime application infrastructure, databases, service APIs, and production telemetry because this repository is a workflow and adapter starter kit rather than a deployed service.
@@ -94,7 +99,7 @@ The repository system is composed of authored guidance, lifecycle artifacts, val
 | --- | --- | --- |
 | Governance and workflow guidance | Defines source-of-truth order, repository defaults, workflow routing, and contributor expectations | Markdown in `CONSTITUTION.md`, `AGENTS.md`, `docs/workflows.md` |
 | Lifecycle artifacts and ADRs | Carry proposal, spec, architecture, ADR, plan, test-spec, and change metadata states | Markdown/YAML in `docs/proposals/`, `specs/`, `docs/architecture/`, `docs/adr/`, `docs/plans/`, `docs/changes/` |
-| Reports and measurement baselines | Carry longitudinal evidence that is compared across changes or releases instead of duplicated in change-local artifacts | Markdown under `docs/reports/`, including token-cost baselines under `docs/reports/token-cost/` |
+| Token-cost benchmark fixtures and reports | Carry executable benchmark prompts, clean downstream fixtures, raw or sanitized run evidence, analyzer summaries, and longitudinal token-friendliness reports | Markdown/YAML/JSONL under `benchmarks/token-cost/` and `docs/reports/token-cost/` |
 | Canonical architecture package | Long-lived current architecture source of truth, including arc42 prose and C4 diagram source | Markdown and Mermaid in `docs/architecture/system/` |
 | Change-local evidence | Historical architecture evidence, explicit exceptional architecture evidence, change metadata, explanation, review resolution, and verification evidence | Markdown/YAML in `docs/changes/<change-id>/` |
 | Templates and diagram styles | Canonical scaffolding for architecture, ADRs, and shared Mermaid C4 role styling | Markdown/Mermaid under `templates/` |
@@ -112,7 +117,7 @@ The validation and generation container has four important internal responsibili
 - lifecycle and change validators: `scripts/validate-artifact-lifecycle.py`, `scripts/validate-change-metadata.py`, and `scripts/validate-review-artifacts.py` validate artifact status, change metadata, and material review closeout structure;
 - skill and adapter generation: `scripts/build-skills.py`, `scripts/build-adapters.py`, and adapter distribution helpers refresh `.codex/skills/` and `dist/adapters/` from canonical sources;
 - release and adapter validation: `scripts/validate-adapters.py`, `scripts/validate-release.py`, and `scripts/release-verify.sh` check generated packages, manifests, release metadata, tracked release notes, and smoke evidence.
-- measurement and reporting scripts: repository-local commands measure skill size, analyze Codex JSONL session exports, summarize tool-output amplification, and produce reviewable evidence for reports without requiring hosted telemetry.
+- measurement, benchmark, and reporting scripts: repository-local commands measure skill size, run token-cost benchmark prompts in disposable fixtures, analyze Codex JSONL session exports, summarize tool-output amplification, validate token-cost release metadata, and produce reviewable evidence for reports without requiring hosted telemetry.
 
 This decomposition is prose-only for now. A component diagram should be added when future validation work changes these internal responsibilities enough that prose no longer explains the selector, validator, generator, and CI-wrapper relationships.
 
@@ -160,6 +165,17 @@ This decomposition is prose-only for now. A component diagram should be added wh
 5. Change-local artifacts link to the durable baseline report when the report is produced by a change.
 6. Token-cost thresholds are warning-only in the first slice and do not replace required validation, review, or workflow gates.
 
+### Release Token-Friendliness benchmark flow
+
+1. A maintainer preparing a public release runs static skill measurement and the tracked benchmark suite under `benchmarks/token-cost/`.
+2. The benchmark runner copies the clean minimal downstream fixture into an isolated temporary directory outside the repository.
+3. For Codex benchmarks, the runner installs current public Codex adapter skills from `dist/adapters/codex/.agents/skills/` into the temp fixture at `.agents/skills/`. The runner does not use repository-local `.codex/skills/` as the public benchmark source.
+4. The runner executes prompt fixtures with `codex exec --json --ephemeral`, writes raw JSONL under `docs/reports/token-cost/runs/<release-version>/` when raw JSONL is tracked, and invokes the JSONL analyzer automatically.
+5. Analyzer summaries are written beside run evidence and carry structured usage, tool-output, signal, verdict, and raw-or-sanitized evidence identity fields.
+6. Maintainers write a human-readable Markdown report and structured YAML metadata under `docs/reports/token-cost/releases/<release-version>.md` and `.yaml`.
+7. `scripts/validate-token-cost-report.py` validates the token-cost metadata schema, waiver fields, run references, runner metadata, portability status, raw-or-sanitized evidence, and comparison shape.
+8. Release validation delegates token-cost report validation before public release readiness is claimed.
+
 ### Generated guidance flow
 
 1. Canonical skill sources under `skills/` are edited.
@@ -181,6 +197,9 @@ The main execution and publication boundaries are:
 - generated local Codex mirror: `.codex/skills/`, derived from canonical `skills/`;
 - public adapter packages: `dist/adapters/`, derived from canonical skills and adapter templates;
 - durable reports: `docs/reports/`, authored from local measurement evidence and linked from change-local artifacts when produced by a change;
+- token-cost benchmark fixtures: `benchmarks/token-cost/`, authored prompt and fixture inputs used to exercise public skills in a downstream-style project;
+- token-cost temporary runs: isolated directories under system temp or `$RUNNER_TEMP`, disposable and not durable release evidence;
+- token-cost release evidence: `docs/reports/token-cost/releases/<version>.md`, `docs/reports/token-cost/releases/<version>.yaml`, and tracked raw or sanitized run summaries under `docs/reports/token-cost/runs/<version>/`;
 - release evidence: tracked `docs/releases/<version>/release.yaml`, release notes, and maintainer smoke evidence used by release verification.
 
 Rollback reverts the authored method artifacts, canonical package changes, templates, skill changes, generated refresh, and narrow lifecycle compatibility. No runtime data migration is required.
@@ -220,9 +239,15 @@ Canonical skills and adapter templates are authored sources. `.codex/skills/`, `
 
 Release verification uses tracked `docs/releases/<version>/release.yaml` and `release-notes.md` plus maintainer smoke evidence. Generated release notes are not authoritative for adapter compatibility claims.
 
+### Release token-friendliness evidence
+
+Public releases add a token-friendliness evidence layer beside adapter release evidence. Markdown reports are for reviewers; YAML metadata is for release gates. The first required runtime benchmark is Codex; Claude Code and opencode dynamic benchmarks remain optional until stable runners and comparable reports exist. Final public releases require `dynamic_runtime.status: pass` or a valid approved waiver. RC and draft reports may record `blocked` or `not-run` dynamic status only with structured incomplete-state metadata.
+
+Raw Codex JSONL may be omitted when it is too large or sensitive, but durable evidence must remain structured through analyzer summaries or sanitized summaries. Release validation checks for raw JSONL or a valid sanitized substitute, not raw JSONL unconditionally.
+
 ### Measurement reports
 
-Reports under `docs/reports/` are durable authored evidence for longitudinal comparison. Token-cost baseline reports live under `docs/reports/token-cost/` and summarize measured static skill cost, Codex session cost, tool-output amplification, top cost drivers, conclusions, and next actions. Change-local artifacts should link to these reports rather than duplicating their body.
+Reports under `docs/reports/` are durable authored evidence for longitudinal comparison. Token-cost reports live under `docs/reports/token-cost/` and summarize measured static skill cost, Codex session cost, tool-output amplification, top cost drivers, conclusions, and next actions. Release token-friendliness reports live under `docs/reports/token-cost/releases/` and compare against the previous public release report when one exists or declare the first report as the baseline. Change-local artifacts should link to these reports rather than duplicating their body.
 
 ### Review artifact closeout
 
@@ -254,6 +279,7 @@ No additional ADR is required for the 2026-04-29 package-quality refinement beca
 | Proportionality | A change needs architecture handling. | No-impact work records a rationale, clear current-architecture changes update this package directly, durable decisions create or update ADRs, and unsettled direction or behavior routes back to proposal or spec. |
 | Determinism | Canonical skill guidance changes and generated guidance must be refreshed. | `.codex/skills/` and `dist/adapters/` are produced through existing generators and drift checks prove they match canonical sources. |
 | Measurement usefulness | A contributor optimizes skill token cost. | Static skill measurement, JSONL analysis, and baseline reports identify measured cost drivers before hard token-budget gates are introduced. |
+| Release token-friendliness | A maintainer prepares a public release. | Markdown and YAML token-friendliness reports exist under `docs/reports/token-cost/releases/`, Codex benchmark evidence or a valid waiver is recorded, portability passes, and release validation delegates to the token-cost report validator. |
 | Review closeout | Architecture-review records a material finding. | The finding includes evidence, required outcome, and a safe resolution path or `needs-decision` rationale before it drives fixes. |
 | Security | Architecture work touches trust boundaries, permissions, data exposure, or secret handling. | The relevant architecture prose or diagram states the boundary, and no artifact includes secrets, credentials, private keys, or machine-local debug-only data. |
 
@@ -268,6 +294,9 @@ No additional ADR is required for the 2026-04-29 package-quality refinement beca
 | Historical or exceptional change-local evidence could be mistaken for current truth | Architecture-review, code-review, and verify must treat durable current architecture truth outside the canonical package as incomplete. |
 | Architecture-review finding format could be mistaken for a replacement of material-finding closeout | The focused spec and this package keep the simple finding fields separate from the repository-wide material-finding contract. |
 | Token-cost reports could expose excessive transcript or command-output content | Measurement reports summarize cost drivers and avoid embedding unnecessary raw transcript content. |
+| Raw Codex JSONL could expose sensitive local paths or output | Release metadata supports sanitized summaries, and analyzer summaries do not require private raw JSONL paths when raw evidence is intentionally omitted. |
+| Benchmark runners could accidentally measure the repository-local Codex mirror instead of public adapter output | The release benchmark installs public Codex skills from `dist/adapters/codex/.agents/skills/` into a temp fixture and rejects `.codex/skills/` as the public benchmark source. |
+| Release metadata can become prose-only or unreproducible | Structured YAML records runner invocation, fixture source, public skill source, run evidence, waiver state, and comparison data; release validation reads YAML rather than Markdown prose. |
 | Warning-only token budgets could be mistaken for CI gates | The first measurement slice treats budget thresholds as report warnings; hard gates require a later accepted proposal and spec. |
 
 ## Glossary
@@ -278,6 +307,9 @@ No additional ADR is required for the 2026-04-29 package-quality refinement beca
 - canonical architecture package: the long-lived current architecture source under `docs/architecture/system/`.
 - change-local architecture delta: historical or explicitly exceptional evidence under `docs/changes/<change-id>/`; not part of the normal architecture authoring path.
 - generated output: derived files under `.codex/skills/` and `dist/adapters/`.
+- release token-friendliness metadata: structured YAML under `docs/reports/token-cost/releases/` that gates public release token-cost evidence.
+- token-cost benchmark fixture: prompt and minimal downstream-project inputs under `benchmarks/token-cost/` used by the benchmark runner.
+- token-cost benchmark runner: repository-owned script that installs public adapter skills into a temporary fixture, runs prompt fixtures, and invokes the JSONL analyzer.
 - lowest sufficient architecture surface: the smallest architecture evidence surface that truthfully handles a change: no-impact rationale, direct canonical update, ADR, or proposal/spec routing.
 - material finding: review finding that must include evidence, required outcome, and safe resolution path or `needs-decision` rationale before it drives fixes.
 - non-enforcement lifecycle routing: selector-selected validation that checks artifact lifecycle compatibility without proving C4 sufficiency, arc42 completeness, ADR need, or architecture package shape.
@@ -300,9 +332,10 @@ No additional ADR is required for the 2026-04-29 package-quality refinement beca
 - Architecture-review for the 2026-05-09 architecture skill surface simplification: approved in `docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/architecture-review-r1.md` with no material findings.
 - Plan-review for the 2026-05-09 architecture skill surface simplification: approved in `docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/plan-review-r2.md` after PR-F1 corrected milestone review sequencing.
 - Token-cost measurement baseline and proposal scope preservation: accepted proposal and approved spec add repository-local measurement scripts, token-cost baseline reports under `docs/reports/token-cost/`, and proposal/proposal-review scope-preservation guidance.
+- Release Token-Friendliness benchmark for skills: accepted proposal and approved spec add fixture-backed release token-cost benchmarking, structured release metadata, public-skill-source benchmark installation, analyzer summaries, raw-or-sanitized run evidence, waiver handling, and token-cost release validation delegation.
 
 ## Readiness
 
-This canonical package revision records the current repository architecture for token-cost measurement baselines and proposal scope preservation.
+This canonical package revision records the current repository architecture for release Token-Friendliness benchmark evidence.
 
-No ADR is required for this update because it does not revise system boundaries, generated-output architecture, adapter packaging, deployment boundaries, or the architecture method. No change-local architecture delta is produced because the canonical package carries the intended durable guidance directly.
+No ADR is required for this update because it applies the existing generated-output, release-validation, and measurement-report architecture to a new token-cost release evidence flow without revising system boundaries, adapter packaging, deployment boundaries, or the architecture method. No change-local architecture delta is produced because the canonical package carries the intended durable guidance directly.

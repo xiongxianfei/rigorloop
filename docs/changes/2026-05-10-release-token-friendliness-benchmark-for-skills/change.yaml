@@ -1,0 +1,576 @@
+change_id: 2026-05-10-release-token-friendliness-benchmark-for-skills
+title: Release token-friendliness benchmark for skills
+classification: release-process-proposal
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-10-release-token-friendliness-benchmark-for-skills.md
+  spec: specs/release-token-friendliness-benchmark-for-skills.md
+  test_spec: specs/release-token-friendliness-benchmark-for-skills.test.md
+  architecture: docs/architecture/system/architecture.md
+  plan: docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md
+  review_resolution: docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md
+requirements:
+  - Resolve proposal-review findings RTF1 through RTF6 before downstream spec authoring relies on the proposal.
+  - Record proposal-review R2 approval after RTF1 through RTF6 are resolved.
+  - Keep the release benchmark policy explicit about waiver semantics, raw or sanitized run evidence, analyzer summary shape, RC reuse, implementation milestones, and warning severity labels.
+  - Normalize the reviewed proposal to accepted before relying on it for a downstream feature spec.
+  - Draft the release Token-Friendliness benchmark feature spec with examples, stable requirement IDs, boundary behavior, and acceptance criteria.
+  - Normalize the approved spec before architecture relies on it.
+  - Record release Token-Friendliness benchmark architecture in the canonical architecture package.
+  - Create the execution plan and index it in docs/plan.md before implementation.
+  - Resolve plan-review R1 finding RTF-PLR1 before test-spec or implementation relies on the execution plan.
+  - Record plan-review R2 approval before creating the matching test spec.
+  - Create the release Token-Friendliness benchmark test spec before implementation.
+  - Implement M1 as a standalone token-cost report validator without release-level delegation.
+  - Resolve code-review R1 findings RTF-CR1 and RTF-CR2 before M1 can close.
+  - Return M1 to code-review after accepted code-review R1 findings are fixed.
+  - Resolve code-review R2 finding RTF-CR3 before M1 can close.
+  - Return M1 to code-review after accepted code-review R2 findings are fixed.
+  - Record clean code-review R3 before closing M1 and handing off to M2.
+  - Implement M2 benchmark fixture and prompt suite before M2 code-review.
+  - Record clean code-review R4 before closing M2 and handing off to M3.
+  - Implement M3 runner and analyzer-summary integration before M3 code-review.
+  - Resolve code-review R5 findings RTF-CR4, RTF-CR5, and RTF-CR6 before M3 can close.
+  - Return M3 to code-review after accepted code-review R5 findings are fixed.
+  - Record clean code-review R6 before closing M3 and handing off to M4.
+  - Implement M4 first baseline report and release report template before M4 code-review.
+  - Resolve code-review R7 finding RTF-CR7 before M4 can close.
+  - Return M4 to code-review after accepted code-review R7 finding is fixed.
+  - Record clean code-review R8 before closing M4 and handing off to M5.
+  - Implement M5 release validation integration and documentation before M5 code-review.
+tests:
+  - Artifact lifecycle validation for the proposal and change-local review artifacts.
+  - Artifact lifecycle validation for the new feature spec.
+  - Review artifact validation for proposal-review finding closeout.
+  - Review artifact structure validation after spec-review material findings are recorded.
+  - Artifact lifecycle validation for the approved spec and canonical architecture update.
+  - Artifact lifecycle validation for the execution plan and plan index.
+  - Review artifact structure validation after plan-review material findings are recorded.
+  - Review artifact closeout validation after plan-review R2 approval.
+  - Artifact lifecycle validation for the active test spec and implementation handoff.
+  - Focused M1 validator tests for schema, dynamic status, waiver, raw/sanitized evidence, comparison, portability, and runner metadata.
+  - Review artifact structure validation after code-review R1 material findings are recorded.
+  - Focused M1 validator tests for RC reuse metadata and Markdown/YAML pairing after code-review R1 resolution.
+  - Review artifact structure validation after code-review R2 material finding is recorded.
+  - Focused M1 validator tests for complete RC reuse checked-surface coverage after code-review R2 resolution.
+  - Review artifact closeout validation after clean code-review R3 closes M1.
+  - Focused M2 fixture tests for benchmark manifest, prompt files, clean fixture contents, no installed skill copies, and no generated-surface references.
+  - Review artifact closeout validation after clean code-review R4 closes M2.
+  - Focused M3 runner/analyzer tests for schema version 1 summaries, raw JSONL omission, temp fixture setup, public skill installation, source rejection, cleanup behavior, analyzer invocation, and no Markdown generation.
+  - Review artifact structure validation after code-review R5 material findings are recorded.
+  - Focused M3 runner/analyzer tests for repo-relative summary paths, repeated capped reads, justified whole-file reads, justified generated-output reads, and mixed justified/unjustified reads.
+  - Review artifact closeout validation after clean code-review R6 closes M3.
+  - Focused M4 report validation for baseline YAML, Markdown/YAML pairing, sanitized run summaries, release notes link, and runner command reproducibility.
+  - Review artifact structure validation after code-review R7 material finding is recorded.
+  - Focused analyzer test for current Codex `item.completed` `command_execution` events with `aggregated_output`.
+  - Corrected M4 report validation after regenerated analyzer summaries include command-output amplification.
+  - Review artifact closeout validation after clean code-review R8 closes M4.
+  - Focused release validation tests for governed `v0.1.1` token-cost evidence and historical release scope.
+  - Release verifier proof that `v0.1.1` invokes token-cost report validation.
+  - Code-review R9 review artifact recording for M5.
+  - Focused release validation integration test proving invalid governed token-cost metadata blocks through validator delegation.
+  - T16 test-spec clarification for delegated validator failure propagation.
+  - Review artifact closeout validation after clean code-review R10 closes M5.
+  - Durable explain-change rationale for the release Token-Friendliness benchmark implementation.
+validation:
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_structure_reviews_1_findings_6_log_entries_1_resolution_entries_6
+  - command: git diff --check -- docs/proposals/2026-05-10-release-token-friendliness-benchmark-for-skills.md docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_after_rtf_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_closeout_reviews_1_findings_6_log_entries_1_resolution_entries_6
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_closeout_reviews_2_findings_6_log_entries_2_resolution_entries_6_after_proposal_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_proposal_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-10-release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/proposal-review-r1.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/proposal-review-r2.md
+    result: pass_validated_2_artifact_files_after_spec_draft
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_spec_draft
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_closeout_reviews_2_findings_6_log_entries_2_resolution_entries_6_after_spec_draft
+  - command: git diff --check -- docs/proposals/2026-05-10-release-token-friendliness-benchmark-for-skills.md specs/release-token-friendliness-benchmark-for-skills.md docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_after_spec_draft
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_structure_reviews_3_findings_9_log_entries_3_resolution_entries_9_after_spec_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_spec_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/spec-review-r1.md
+    result: pass_validated_2_artifact_files_after_spec_review_r1
+  - command: git diff --check -- specs/release-token-friendliness-benchmark-for-skills.md docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_after_spec_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/spec-review-r1.md
+    result: pass_validated_2_artifact_files_after_spec_review_r1_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_closeout_reviews_3_findings_9_log_entries_3_resolution_entries_9_after_spec_review_r1_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_spec_review_r1_resolution
+  - command: git diff --check -- specs/release-token-friendliness-benchmark-for-skills.md docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_after_spec_review_r1_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path docs/architecture/system/architecture.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md
+    result: pass_validated_3_artifact_files_after_architecture_update
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_architecture_update
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_closeout_reviews_3_findings_9_log_entries_3_resolution_entries_9_after_architecture_update
+  - command: git diff --check -- specs/release-token-friendliness-benchmark-for-skills.md docs/architecture/system/architecture.md docs/architecture/system/diagrams/container.mmd docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_after_architecture_update
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path specs/release-token-friendliness-benchmark-for-skills.md --path docs/architecture/system/architecture.md
+    result: pass_validated_3_artifact_files_after_plan_with_existing_plan_index_merge_dependent_warning
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_plan
+  - command: git diff --check -- docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_after_plan
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_structure_reviews_4_findings_10_log_entries_4_resolution_entries_10_after_plan_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_plan_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/plan-review-r1.md
+    result: pass_validated_1_artifact_file_after_plan_review_r1_with_existing_plan_index_merge_dependent_warning
+  - command: git diff --check -- docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_after_plan_review_r1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_closeout_reviews_4_findings_10_log_entries_4_resolution_entries_10_after_rtf_plr1_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_rtf_plr1_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/plan-review-r1.md
+    result: pass_validated_1_artifact_file_after_rtf_plr1_resolution_with_existing_plan_index_merge_dependent_warning
+  - command: git diff --check -- docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_after_rtf_plr1_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_closeout_reviews_5_findings_10_log_entries_5_resolution_entries_10_after_plan_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_plan_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/plan-review-r2.md
+    result: pass_validated_1_artifact_file_after_plan_review_r2_with_existing_plan_index_merge_dependent_warning
+  - command: git diff --check -- docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_after_plan_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md
+    result: pass_validated_4_artifact_files_after_test_spec_with_existing_plan_index_merge_dependent_warning
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_test_spec
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_closeout_reviews_5_findings_10_log_entries_5_resolution_entries_10_after_test_spec
+  - command: git diff --check -- specs/release-token-friendliness-benchmark-for-skills.test.md docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_after_test_spec
+  - command: python scripts/test-token-cost-report-validation.py
+    result: pass_6_tests_after_m1_validator
+  - command: python scripts/validate-token-cost-report.py tests/fixtures/token-cost/reports/valid-final-pass/v0.1.1.yaml
+    result: pass_valid_token_cost_report_metadata
+  - command: python -m py_compile scripts/validate-token-cost-report.py
+    result: pass
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_8_tests_existing_token_cost_measurement_regression
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md
+    result: pass_validated_4_artifact_files_after_m1_with_existing_plan_index_merge_dependent_warning
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_m1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_closeout_reviews_5_findings_10_log_entries_5_resolution_entries_10_after_m1
+  - command: git diff --check -- scripts/validate-token-cost-report.py scripts/test-token-cost-report-validation.py tests/fixtures/token-cost docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_after_m1
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_structure_reviews_6_findings_12_log_entries_6_resolution_entries_12_after_code_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_code_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r1.md
+    result: pass_validated_4_artifact_files_after_code_review_r1_with_existing_plan_index_merge_dependent_warning
+  - command: git diff --check -- docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md
+    result: pass_after_code_review_r1
+  - command: python scripts/test-token-cost-report-validation.py
+    result: pass_9_tests_after_code_review_r1_resolution
+  - command: python scripts/validate-token-cost-report.py tests/fixtures/token-cost/reports/valid-final-pass/v0.1.1.yaml
+    result: pass_valid_token_cost_report_metadata_after_code_review_r1_resolution
+  - command: python -m py_compile scripts/validate-token-cost-report.py
+    result: pass_after_code_review_r1_resolution
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_8_tests_existing_token_cost_measurement_regression_after_code_review_r1_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r1.md
+    result: pass_validated_4_artifact_files_after_code_review_r1_resolution_with_existing_plan_index_merge_dependent_warning
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_code_review_r1_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_closeout_reviews_6_findings_12_log_entries_6_resolution_entries_12_after_code_review_r1_resolution
+  - command: git diff --check -- scripts/validate-token-cost-report.py scripts/test-token-cost-report-validation.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md
+    result: pass_after_code_review_r1_resolution
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_structure_reviews_7_findings_13_log_entries_7_resolution_entries_13_after_code_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_code_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r2.md
+    result: pass_validated_4_artifact_files_after_code_review_r2_with_existing_plan_index_merge_dependent_warning
+  - command: git diff --check -- docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md
+    result: pass_after_code_review_r2
+  - command: python scripts/test-token-cost-report-validation.py
+    result: pass_10_tests_after_code_review_r2_resolution
+  - command: python scripts/validate-token-cost-report.py tests/fixtures/token-cost/reports/valid-final-pass/v0.1.1.yaml
+    result: pass_valid_token_cost_report_metadata_after_code_review_r2_resolution
+  - command: python -m py_compile scripts/validate-token-cost-report.py
+    result: pass_after_code_review_r2_resolution
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_8_tests_existing_token_cost_measurement_regression_after_code_review_r2_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r2.md
+    result: pass_validated_4_artifact_files_after_code_review_r2_resolution_with_existing_plan_index_merge_dependent_warning
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_code_review_r2_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_closeout_reviews_7_findings_13_log_entries_7_resolution_entries_13_after_code_review_r2_resolution
+  - command: git diff --check -- scripts/validate-token-cost-report.py scripts/test-token-cost-report-validation.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md
+    result: pass_after_code_review_r2_resolution
+  - command: python scripts/test-token-cost-report-validation.py
+    result: pass_10_tests_after_code_review_r3
+  - command: python scripts/validate-token-cost-report.py tests/fixtures/token-cost/reports/valid-final-pass/v0.1.1.yaml
+    result: pass_valid_token_cost_report_metadata_after_code_review_r3
+  - command: python -m py_compile scripts/validate-token-cost-report.py
+    result: pass_after_code_review_r3
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_8_tests_existing_token_cost_measurement_regression_after_code_review_r3
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r3.md
+    result: pass_validated_4_artifact_files_after_code_review_r3_with_existing_plan_index_merge_dependent_warning
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_code_review_r3
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_closeout_reviews_8_findings_13_log_entries_8_resolution_entries_13_after_code_review_r3
+  - command: git diff --check -- scripts/validate-token-cost-report.py scripts/test-token-cost-report-validation.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md
+    result: pass_after_code_review_r3
+  - command: python scripts/test-token-cost-measurement.py
+    result: fail_expected_before_m2_fixture_creation_missing_manifest_and_fixture_agents
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_10_tests_after_m2_fixtures
+  - command: test -f benchmarks/token-cost/manifest.yaml
+    result: pass_after_m2_fixtures
+  - command: find benchmarks/token-cost -maxdepth 4 -type f | sort
+    result: pass_listed_manifest_prompts_and_top_level_fixture_files_after_m2_fixtures
+  - command: rg -n "dist/adapters|\\.codex/skills|\\.agents/skills" benchmarks/token-cost
+    result: pass_no_matches_after_m2_fixtures
+  - command: git diff --check -- benchmarks/token-cost scripts/test-token-cost-measurement.py docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_after_m2_fixtures
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_m2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md
+    result: pass_validated_4_artifact_files_after_m2_with_existing_plan_index_merge_dependent_warning
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_10_tests_after_code_review_r4
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_code_review_r4
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_closeout_reviews_9_findings_13_log_entries_9_resolution_entries_13_after_code_review_r4
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r4.md
+    result: pass_validated_4_artifact_files_after_code_review_r4_with_existing_plan_index_merge_dependent_warning
+  - command: git diff --check -- benchmarks/token-cost scripts/test-token-cost-measurement.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md
+    result: pass_after_code_review_r4
+  - command: python scripts/test-token-cost-measurement.py
+    result: fail_expected_before_m3_runner_and_summary_support
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_17_tests_after_m3_runner_and_analyzer_summary
+  - command: python -m py_compile scripts/run-token-cost-benchmarks.py scripts/analyze-codex-jsonl.py
+    result: pass_after_m3
+  - command: python scripts/analyze-codex-jsonl.py tests/fixtures/token-cost/sample-codex-session.jsonl
+    result: pass_after_m3
+  - command: python scripts/test-token-cost-report-validation.py
+    result: pass_10_tests_after_m3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_m3
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_closeout_reviews_9_findings_13_log_entries_9_resolution_entries_13_after_m3
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md
+    result: pass_validated_4_artifact_files_after_m3_with_existing_plan_index_merge_dependent_warning
+  - command: git diff --check -- scripts/run-token-cost-benchmarks.py scripts/analyze-codex-jsonl.py scripts/test-token-cost-measurement.py tests/fixtures/token-cost
+    result: pass_after_m3
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_structure_reviews_10_findings_16_log_entries_10_resolution_entries_16_after_code_review_r5
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_code_review_r5
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r5.md
+    result: pass_validated_4_artifact_files_after_code_review_r5_with_existing_plan_index_merge_dependent_warning
+  - command: git diff --check -- docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md
+    result: pass_after_code_review_r5
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_22_tests_after_code_review_r5_resolution
+  - command: python -m py_compile scripts/run-token-cost-benchmarks.py scripts/analyze-codex-jsonl.py
+    result: pass_after_code_review_r5_resolution
+  - command: python scripts/analyze-codex-jsonl.py tests/fixtures/token-cost/sample-codex-session.jsonl
+    result: pass_after_code_review_r5_resolution
+  - command: python scripts/test-token-cost-report-validation.py
+    result: pass_10_tests_after_code_review_r5_resolution
+  - command: git diff --check -- scripts/run-token-cost-benchmarks.py scripts/analyze-codex-jsonl.py scripts/test-token-cost-measurement.py tests/fixtures/token-cost docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md
+    result: pass_after_code_review_r5_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_closeout_reviews_10_findings_16_log_entries_10_resolution_entries_16_after_code_review_r5_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_code_review_r5_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r5.md
+    result: pass_validated_4_artifact_files_after_code_review_r5_resolution_with_existing_plan_index_merge_dependent_warning
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_22_tests_after_code_review_r6
+  - command: python -m py_compile scripts/run-token-cost-benchmarks.py scripts/analyze-codex-jsonl.py
+    result: pass_after_code_review_r6
+  - command: python scripts/analyze-codex-jsonl.py tests/fixtures/token-cost/sample-codex-session.jsonl
+    result: pass_after_code_review_r6
+  - command: python scripts/test-token-cost-report-validation.py
+    result: pass_10_tests_after_code_review_r6
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_code_review_r6
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_closeout_reviews_10_findings_16_log_entries_10_resolution_entries_16_before_code_review_r6_recording
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_closeout_reviews_11_findings_16_log_entries_11_resolution_entries_16_after_code_review_r6
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_code_review_r6_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r6.md
+    result: pass_validated_4_artifact_files_after_code_review_r6_with_existing_plan_index_merge_dependent_warning
+  - command: git diff --check -- docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md
+    result: pass_after_code_review_r6
+  - command: python scripts/test-token-cost-measurement.py
+    result: fail_expected_before_m4_runner_skip_git_repo_check_command_update
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_22_tests_after_m4_runner_command_update
+  - command: python scripts/measure-skill-tokens.py
+    result: pass_23_skills_54294_estimated_tokens_after_m4
+  - command: python scripts/run-token-cost-benchmarks.py --suite benchmarks/token-cost/manifest.yaml --release v0.1.1 --tool codex
+    result: pass_live_codex_benchmark_wrote_7_sanitized_analyzer_summaries_after_m4_runner_fix
+  - command: python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml
+    result: pass_valid_token_cost_report_metadata_after_m4
+  - command: python -m py_compile scripts/run-token-cost-benchmarks.py scripts/analyze-codex-jsonl.py
+    result: pass_after_m4
+  - command: python scripts/test-token-cost-report-validation.py
+    result: pass_10_tests_after_m4
+  - command: rg -n "Token-Friendliness|v0.1.1.yaml|docs/reports/token-cost/releases/v0.1.1.md" docs/reports/token-cost/releases/v0.1.1.md docs/releases/v0.1.1/release-notes.md
+    result: pass_markdown_names_yaml_and_release_notes_link_report_after_m4
+  - command: git diff --check -- docs/reports/token-cost docs/releases/v0.1.1/release-notes.md scripts/run-token-cost-benchmarks.py scripts/test-token-cost-measurement.py
+    result: pass_after_m4
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_closeout_reviews_11_findings_16_log_entries_11_resolution_entries_16_after_m4
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/reports/token-cost/releases/v0.1.1.md --path docs/reports/token-cost/releases/v0.1.1.yaml --path docs/releases/v0.1.1/release-notes.md
+    result: pass_validated_4_artifact_files_after_m4_with_existing_plan_index_merge_dependent_warning
+  - command: printf current-codex-command-execution-event | python scripts/analyze-codex-jsonl.py /dev/stdin
+    result: fail_review_proof_current_aggregated_output_event_reported_tool_calls_0_and_unknown_records_1_before_rtf_cr7_fix
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_23_tests_after_rtf_cr7_current_codex_aggregated_output_fix
+  - command: python scripts/run-token-cost-benchmarks.py --suite benchmarks/token-cost/manifest.yaml --release v0.1.1 --tool codex
+    result: pass_live_codex_benchmark_regenerated_7_corrected_sanitized_analyzer_summaries_after_rtf_cr7_fix
+  - command: python scripts/measure-skill-tokens.py
+    result: pass_23_skills_54294_estimated_tokens_after_rtf_cr7_fix
+  - command: python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml
+    result: pass_valid_token_cost_report_metadata_after_rtf_cr7_fix
+  - command: python -m py_compile scripts/run-token-cost-benchmarks.py scripts/analyze-codex-jsonl.py
+    result: pass_after_rtf_cr7_fix
+  - command: python scripts/test-token-cost-report-validation.py
+    result: pass_10_tests_after_rtf_cr7_fix
+  - command: python scripts/analyze-codex-jsonl.py tests/fixtures/token-cost/sample-codex-session.jsonl
+    result: pass_after_rtf_cr7_fix
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_rtf_cr7_fix
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_closeout_reviews_12_findings_17_log_entries_12_resolution_entries_17_after_rtf_cr7_fix
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r7.md --path docs/reports/token-cost/releases/v0.1.1.md --path docs/reports/token-cost/releases/v0.1.1.yaml --path docs/releases/v0.1.1/release-notes.md
+    result: pass_validated_4_artifact_files_after_rtf_cr7_fix_with_existing_plan_index_merge_dependent_warning
+  - command: git diff --check -- scripts/analyze-codex-jsonl.py scripts/test-token-cost-measurement.py docs/reports/token-cost docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md
+    result: pass_after_rtf_cr7_fix
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_23_tests_after_code_review_r8
+  - command: python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml
+    result: pass_valid_token_cost_report_metadata_after_code_review_r8
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_code_review_r8
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_closeout_reviews_13_findings_17_log_entries_13_resolution_entries_17_after_code_review_r8
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r8.md --path docs/reports/token-cost/releases/v0.1.1.md --path docs/reports/token-cost/releases/v0.1.1.yaml --path docs/releases/v0.1.1/release-notes.md
+    result: pass_validated_4_artifact_files_after_code_review_r8_with_existing_plan_index_merge_dependent_warning
+  - command: git diff --check -- docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md
+    result: pass_after_code_review_r8
+  - command: python scripts/test-adapter-distribution.py
+    result: fail_expected_before_m5_release_token_cost_validation_integration
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_58_tests_after_m5
+  - command: bash scripts/release-verify.sh v0.1.1
+    result: pass_after_m5
+  - command: python scripts/validate-release.py --version v0.1.1
+    result: pass_after_m5
+  - command: RELEASE_VERIFY_DRY_RUN=1 bash scripts/release-verify.sh v0.1.0
+    result: pass_historical_release_scope_dry_run_after_m5
+  - command: python scripts/validate-release.py --version v0.1.0
+    result: fail_expected_current_dist_adapters_are_0_1_1_not_0_1_0_after_m5
+  - command: python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml
+    result: pass_after_m5
+  - command: python -m py_compile scripts/validate-release.py scripts/validate-token-cost-report.py scripts/adapter_distribution.py
+    result: pass_after_m5
+  - command: python scripts/test-token-cost-report-validation.py
+    result: pass_10_tests_after_m5
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_m5
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_closeout_reviews_13_findings_17_log_entries_13_resolution_entries_17_after_m5
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/releases/v0.1.1/release.yaml --path docs/reports/token-cost/releases/v0.1.1.yaml --path docs/workflows.md
+    result: pass_validated_4_artifact_files_after_m5_with_existing_plan_and_workflow_lifecycle_language_warnings
+  - command: git diff --check --
+    result: pass_after_m5
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_58_tests_during_code_review_r9
+  - command: python scripts/validate-release.py --version v0.1.1
+    result: pass_during_code_review_r9
+  - command: RELEASE_VERIFY_DRY_RUN=1 bash scripts/release-verify.sh v0.1.1
+    result: pass_during_code_review_r9
+  - command: python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml
+    result: pass_during_code_review_r9
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_v0_1_1_release_validation_blocks_invalid_token_cost_report
+    result: pass_after_rtf_cr8_resolution
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_59_tests_after_rtf_cr8_resolution
+  - command: python scripts/test-token-cost-report-validation.py
+    result: pass_10_tests_after_rtf_cr8_resolution
+  - command: python scripts/validate-release.py --version v0.1.1
+    result: pass_after_rtf_cr8_resolution
+  - command: python -m py_compile scripts/validate-release.py scripts/validate-token-cost-report.py scripts/adapter_distribution.py
+    result: pass_after_rtf_cr8_resolution
+  - command: bash scripts/release-verify.sh v0.1.1
+    result: pass_after_rtf_cr8_resolution
+  - command: python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml
+    result: pass_after_rtf_cr8_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_rtf_cr8_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_closeout_reviews_14_findings_18_log_entries_14_resolution_entries_18_after_rtf_cr8_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r9.md --path docs/releases/v0.1.1/release.yaml --path docs/reports/token-cost/releases/v0.1.1.yaml --path docs/workflows.md
+    result: pass_validated_4_artifact_files_after_rtf_cr8_resolution_with_existing_plan_and_workflow_lifecycle_language_warnings
+  - command: git diff --check --
+    result: pass_after_rtf_cr8_resolution
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_v0_1_1_release_validation_blocks_invalid_token_cost_report
+    result: pass_during_code_review_r10
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_closeout_reviews_14_findings_18_log_entries_14_resolution_entries_18_during_code_review_r10
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_during_code_review_r10
+  - command: git diff --check --
+    result: pass_during_code_review_r10
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_explain_change
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_closeout_reviews_15_findings_18_log_entries_15_resolution_entries_18_after_explain_change
+  - command: git diff --check --
+    result: pass_after_explain_change
+  - command: python scripts/test-token-cost-report-validation.py
+    result: pass_10_tests_final_verify
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_23_tests_final_verify
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_59_tests_final_verify
+  - command: python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml
+    result: pass_final_verify
+  - command: python scripts/validate-release.py --version v0.1.1
+    result: pass_final_verify
+  - command: python scripts/measure-skill-tokens.py
+    result: pass_final_verify_23_skills_54294_estimated_tokens
+  - command: bash scripts/release-verify.sh v0.1.1
+    result: pass_final_verify
+  - command: python -m py_compile scripts/measure-skill-tokens.py scripts/analyze-codex-jsonl.py scripts/run-token-cost-benchmarks.py scripts/validate-token-cost-report.py scripts/validate-release.py scripts/adapter_distribution.py
+    result: pass_final_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_final_verify
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_closeout_reviews_15_findings_18_log_entries_15_resolution_entries_18_final_verify
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/explain-change.md --path docs/releases/v0.1.1/release.yaml --path docs/reports/token-cost/releases/v0.1.1.yaml --path docs/workflows.md
+    result: pass_final_verify_with_existing_plan_and_workflow_lifecycle_language_warnings
+  - command: git diff --check --
+    result: pass_final_verify
+  - command: git diff --check -- docs/learn/sessions/2026-05-11-dynamic-token-cost-root-cause.md docs/learn/topics/token-cost-measurement.md docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_after_learn_session
+  - command: gh run view 25668284406 --log-failed
+    result: fail_hosted_ci_selector_blocked_new_token_cost_paths_before_validation
+  - command: python scripts/test-select-validation.py
+    result: pass_57_tests_after_ci_selector_fix
+  - command: python -m py_compile scripts/validation_selection.py scripts/test-select-validation.py
+    result: pass_after_ci_selector_fix
+  - command: python scripts/select-validation.py --mode pr --base origin/main --head HEAD
+    result: pass_after_ci_selector_fix_no_unclassified_paths_no_blocking_results
+  - command: bash scripts/ci.sh --mode pr --base origin/main --head HEAD
+    result: pass_after_ci_selector_fix_selected_checks_and_broad_smoke
+  - command: git diff --check -- scripts/validation_selection.py scripts/test-select-validation.py
+    result: pass_after_ci_selector_fix
+changed_files:
+  - benchmarks/token-cost/manifest.yaml
+  - benchmarks/token-cost/prompts/workflow-route.md
+  - benchmarks/token-cost/prompts/proposal-short.md
+  - benchmarks/token-cost/prompts/implement-handoff.md
+  - benchmarks/token-cost/prompts/code-review-small.md
+  - benchmarks/token-cost/prompts/verify-final-pack.md
+  - benchmarks/token-cost/prompts/architecture-no-impact.md
+  - benchmarks/token-cost/prompts/learn-no-durable-lesson.md
+  - benchmarks/token-cost/fixtures/minimal-public-project/AGENTS.md
+  - benchmarks/token-cost/fixtures/minimal-public-project/VISION.md
+  - benchmarks/token-cost/fixtures/minimal-public-project/README.md
+  - benchmarks/token-cost/fixtures/minimal-public-project/docs/workflows.md
+  - benchmarks/token-cost/fixtures/minimal-public-project/docs/changes/.gitkeep
+  - benchmarks/token-cost/fixtures/minimal-public-project/src/example.txt
+  - scripts/test-token-cost-measurement.py
+  - scripts/validation_selection.py
+  - scripts/test-select-validation.py
+  - scripts/run-token-cost-benchmarks.py
+  - scripts/analyze-codex-jsonl.py
+  - scripts/adapter_distribution.py
+  - scripts/release-verify.sh
+  - scripts/test-adapter-distribution.py
+  - docs/proposals/2026-05-10-release-token-friendliness-benchmark-for-skills.md
+  - specs/release-token-friendliness-benchmark-for-skills.md
+  - docs/architecture/system/architecture.md
+  - docs/architecture/system/diagrams/container.mmd
+  - specs/release-token-friendliness-benchmark-for-skills.test.md
+  - scripts/validate-token-cost-report.py
+  - scripts/test-token-cost-report-validation.py
+  - tests/fixtures/token-cost/reports/valid-final-pass/v0.1.1.yaml
+  - tests/fixtures/token-cost/reports/valid-final-pass/v0.1.1.md
+  - tests/fixtures/token-cost/reports/valid-final-pass/manifest.yaml
+  - tests/fixtures/token-cost/reports/valid-final-pass/prompts/proposal-short.md
+  - tests/fixtures/token-cost/reports/valid-final-pass/minimal-public-project/AGENTS.md
+  - tests/fixtures/token-cost/reports/valid-final-pass/minimal-public-project/VISION.md
+  - tests/fixtures/token-cost/reports/valid-final-pass/minimal-public-project/README.md
+  - tests/fixtures/token-cost/reports/valid-final-pass/minimal-public-project/docs/workflows.md
+  - tests/fixtures/token-cost/reports/valid-final-pass/minimal-public-project/docs/changes/.gitkeep
+  - tests/fixtures/token-cost/reports/valid-final-pass/minimal-public-project/src/example.txt
+  - tests/fixtures/token-cost/reports/valid-final-pass/runs/v0.1.1/proposal-short-run1.jsonl
+  - tests/fixtures/token-cost/reports/valid-final-pass/runs/v0.1.1/proposal-short-run1.analysis.yaml
+  - tests/fixtures/token-cost/reports/valid-raw-omitted/v0.1.1.md
+  - tests/fixtures/token-cost/reports/valid-raw-omitted/proposal-short-run1.analysis.yaml
+  - tests/fixtures/token-cost/reports/valid-raw-omitted/sanitized-summary.yaml
+  - docs/plan.md
+  - docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md
+  - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+  - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md
+  - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md
+  - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/explain-change.md
+  - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/proposal-review-r1.md
+  - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/proposal-review-r2.md
+  - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/spec-review-r1.md
+  - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/plan-review-r1.md
+  - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/plan-review-r2.md
+  - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r1.md
+  - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r2.md
+  - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r3.md
+  - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r4.md
+  - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r5.md
+  - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r6.md
+  - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r7.md
+  - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r8.md
+  - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r9.md
+  - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r10.md
+  - docs/reports/token-cost/releases/v0.1.1.md
+  - docs/reports/token-cost/releases/v0.1.1.yaml
+  - docs/reports/token-cost/runs/v0.1.1/workflow-route-run1.analysis.yaml
+  - docs/reports/token-cost/runs/v0.1.1/proposal-short-run1.analysis.yaml
+  - docs/reports/token-cost/runs/v0.1.1/implement-handoff-run1.analysis.yaml
+  - docs/reports/token-cost/runs/v0.1.1/code-review-small-run1.analysis.yaml
+  - docs/reports/token-cost/runs/v0.1.1/verify-final-pack-run1.analysis.yaml
+  - docs/reports/token-cost/runs/v0.1.1/architecture-no-impact-run1.analysis.yaml
+  - docs/reports/token-cost/runs/v0.1.1/learn-no-durable-lesson-run1.analysis.yaml
+  - docs/releases/v0.1.1/release-notes.md
+  - docs/releases/v0.1.1/release.yaml
+  - docs/workflows.md
+  - docs/learn/sessions/2026-05-11-dynamic-token-cost-root-cause.md
+  - docs/learn/topics/token-cost-measurement.md
+review:
+  status: verify_passed_branch_ready_for_pr_handoff
+  unresolved_items: 0
+  review_log: docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md
+  review_resolution: docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md

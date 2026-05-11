@@ -1,0 +1,49 @@
+schema_version: 1
+
+run:
+  id: workflow-route
+  raw_jsonl_tracked: false
+  jsonl: ""
+  sanitized_source: codex-jsonl-local-run
+  sanitized_summary: docs/reports/token-cost/runs/v0.1.1/workflow-route-run1.analysis.yaml
+  raw_omission_reason: "raw JSONL contains disposable local temp fixture paths and full command output; analyzer summary is tracked as sanitized release evidence"
+
+usage:
+  cached_input_tokens: 27392
+  input_tokens: 34593
+  output_tokens: 234
+  reasoning_output_tokens: 13
+
+tool_output:
+  total_estimated_tokens: 4071
+  largest_event:
+    kind: command_execution
+    command: "/bin/bash -lc \"sed -n '1,220p' /tmp/rigorloop-token-bench-v0.1.1-1778496244-bff770cd/.agents/skills/workflow/SKILL.md\""
+    path: /tmp/rigorloop-token-bench-v0.1.1-1778496244-bff770cd/.agents/skills/workflow/SKILL.md
+    lines: 220
+    estimated_tokens: 4071
+
+signals:
+  full_file_read_count: 1
+  broad_search_count: 0
+  generated_output_read_count: 0
+  repeated_file_read_count: 0
+
+full_file_read:
+  result: confirmed
+  justification: ""
+  signals:
+    - full_file_read_command
+  justified_reads: []
+  confirmed_reads:
+    - path: /tmp/rigorloop-token-bench-v0.1.1-1778496244-bff770cd/.agents/skills/workflow/SKILL.md
+      lines: 220
+      estimated_tokens: 4071
+  suspected_reads: []
+  repeated_file_reads: []
+
+verdict:
+  result: warning
+  warnings:
+    - "full-file-style read observed"
+  blockers: []

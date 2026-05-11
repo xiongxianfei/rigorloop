@@ -14,6 +14,9 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "tests" / "fixtures" / "adapters"
+TOKEN_COST_VALID_FIXTURE = (
+    ROOT / "tests" / "fixtures" / "token-cost" / "reports" / "valid-final-pass" / "v0.1.1.yaml"
+)
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import adapter_distribution as adapter_distribution_module  # noqa: E402
@@ -84,6 +87,8 @@ class AdapterDistributionTests(unittest.TestCase):
             "placeholder_release_check": "pass",
             "security": "pass",
         }
+        if version == "v0.1.1":
+            validation["token_cost_report"] = "pass"
         validation.update(validation_overrides or {})
 
         lines = [
@@ -168,6 +173,23 @@ class AdapterDistributionTests(unittest.TestCase):
                 '```',
             ]
         )
+
+    def v0_1_1_smoke_overrides(self) -> dict[str, dict[str, str]]:
+        smoke = {
+            tool: {
+                "result": "pass",
+                "tool_version": f'"{tool} 1.0.0"',
+                "evidence": '"manual smoke passed"',
+                "reason": '""',
+                "owner": "maintainer",
+            }
+            for tool in SUPPORTED_ADAPTERS
+        }
+        smoke["opencode"]["evidence"] = (
+            '"opencode run --command proposal loaded the proposal skill and '
+            'repeated ARGUMENT_MARKER_M3_SMOKE."'
+        )
+        return smoke
 
     def test_adapter_model_matches_required_paths(self) -> None:
         self.assertEqual(SUPPORTED_ADAPTERS, ("codex", "claude", "opencode"))
@@ -1432,6 +1454,98 @@ class AdapterDistributionTests(unittest.TestCase):
 
             self.assertEqual(validate_release_output("v0.1.1", release_root=release_root), [])
 
+    def test_v0_1_1_release_validation_requires_token_cost_report(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            release_root = root / "docs" / "releases"
+            self.write_release_artifacts(
+                root,
+                version="v0.1.1",
+                release_type="final",
+                manifest_version="0.1.1",
+                smoke_overrides=self.v0_1_1_smoke_overrides(),
+                notes_extra=self.v0_1_1_notes_extra(),
+            )
+
+            errors = validate_release_output(
+                "v0.1.1",
+                release_root=release_root,
+                token_cost_report_root=root / "docs" / "reports" / "token-cost" / "releases",
+            )
+
+            self.assertTrue(
+                any("missing token-cost report metadata" in error for error in errors),
+                errors,
+            )
+
+    def test_v0_1_1_release_validation_blocks_invalid_token_cost_report(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            release_root = root / "docs" / "releases"
+            token_cost_root = root / "docs" / "reports" / "token-cost" / "releases"
+            token_cost_root.mkdir(parents=True)
+            invalid_metadata = TOKEN_COST_VALID_FIXTURE.read_text(encoding="utf-8").replace(
+                "  report_markdown: tests/fixtures/token-cost/reports/valid-final-pass/v0.1.1.md\n",
+                "",
+                1,
+            )
+            (token_cost_root / "v0.1.1.yaml").write_text(invalid_metadata, encoding="utf-8")
+            self.write_release_artifacts(
+                root,
+                version="v0.1.1",
+                release_type="final",
+                manifest_version="0.1.1",
+                smoke_overrides=self.v0_1_1_smoke_overrides(),
+                notes_extra=self.v0_1_1_notes_extra(),
+            )
+
+            errors = validate_release_output(
+                "v0.1.1",
+                release_root=release_root,
+                token_cost_report_root=token_cost_root,
+            )
+
+            self.assertTrue(
+                any("token-cost report validation failed" in error for error in errors),
+                errors,
+            )
+            self.assertTrue(
+                any("report.report_markdown" in error for error in errors),
+                errors,
+            )
+
+    def test_historical_release_validation_does_not_require_token_cost_report(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root, output_root = self.generate_fixture_adapters(root, version="0.1.0")
+            release_root = root / "docs" / "releases"
+            self.write_release_artifacts(
+                root,
+                version="v0.1.0",
+                release_type="final",
+                manifest_version="0.1.0",
+                smoke_overrides={
+                    tool: {
+                        "result": "pass",
+                        "tool_version": f"{tool} 1.0.0",
+                        "evidence": '"manual smoke passed"',
+                        "reason": '""',
+                        "owner": "maintainer",
+                    }
+                    for tool in SUPPORTED_ADAPTERS
+                },
+            )
+
+            errors = validate_release_output(
+                "v0.1.0",
+                skills_root=skills_root,
+                output_root=output_root,
+                release_root=release_root,
+                token_cost_report_root=root / "missing-token-cost-reports",
+            )
+
+            self.assertEqual(errors, [])
+
     def test_release_metadata_validation_rejects_release_security_violations(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -1553,6 +1667,10 @@ class AdapterDistributionTests(unittest.TestCase):
         self.assertIn("python scripts/build-adapters.py --version 0.1.1 --check", result.stdout)
         self.assertIn("python scripts/validate-adapters.py --version 0.1.1", result.stdout)
         self.assertIn("python scripts/validate-release.py --version v0.1.1", result.stdout)
+        self.assertIn(
+            "python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml",
+            result.stdout,
+        )
 
     def test_release_verify_script_accepts_github_ref_name(self) -> None:
         result = subprocess.run(

@@ -54,6 +54,8 @@ Codex and Claude Code smoke checks copied only the target adapter package into a
 
 The repository-owned release gate is `bash scripts/release-verify.sh v0.1.1`. It checks canonical skills, generated `.codex/skills/`, generated adapter drift, adapter validation, release metadata, release notes, and security scans without requiring ordinary contributors to install all supported tools.
 
+Token-Friendliness baseline evidence is recorded in `docs/reports/token-cost/releases/v0.1.1.md`.
+
 ## Known Limitations
 
 - No hosted runtime, registry publication, or package-manager installer is included in this release.

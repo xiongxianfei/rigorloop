@@ -1,0 +1,30 @@
+schema_version: 1
+run:
+  id: proposal-short
+  raw_jsonl_tracked: false
+  jsonl: ""
+  sanitized_source: codex-jsonl-local-run
+  sanitized_summary: tests/fixtures/token-cost/reports/valid-raw-omitted/sanitized-summary.yaml
+  raw_omission_reason: raw JSONL contained local machine paths
+usage:
+  input_tokens: 100
+  cached_input_tokens: 50
+  output_tokens: 10
+  reasoning_output_tokens: 5
+tool_output:
+  total_estimated_tokens: 20
+  largest_event:
+    kind: shell-output
+    command: date
+    path: ""
+    lines: 1
+    estimated_tokens: 20
+signals:
+  full_file_read_count: 0
+  broad_search_count: 0
+  generated_output_read_count: 0
+  repeated_file_read_count: 0
+verdict:
+  result: pass
+  warnings: []
+  blockers: []
