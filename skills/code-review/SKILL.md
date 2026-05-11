@@ -252,6 +252,24 @@ When recording is required and no active change root is obvious, choose the chan
 
 If the change ID remains ambiguous, use `Recording status: blocked`.
 
+## Status sync output
+
+`Status sync` is not the review verdict, is separate from `Recording status`, and is not downstream workflow continuation. It reports whether a clean or approving review result updated the reviewed artifact's owned lifecycle/status/readiness/closeout surface.
+
+Use exactly one:
+
+- `not-required`: the review outcome is not approving or clean, or no lifecycle status change is expected for that review result.
+- `updated`: the reviewed artifact's owned lifecycle/status/readiness/closeout surface was updated to the next artifact-specific state.
+- `blocked`: an approving or clean review result expected an artifact-status update, but the update could not be made.
+
+For `code-review`, a `clean` or `clean-with-notes` result targets active plan milestone state according to the milestone contract. It must not edit source files solely to record review status unless the reviewed artifact explicitly owns that state.
+
+If `Status sync: updated`, include `Status artifact` with the status artifact path and exact status field or section changed.
+
+If `Status sync: blocked`, include `Status sync blocker` with the intended next status, the blocker, and the smallest manual action needed.
+
+Explicit user instructions that forbid file edits block status sync even when the review result is approving or clean. If the target is ambiguous, do not guess; use `Status sync: blocked`.
+
 ## Rules
 
 - Produce a first-pass review record before any review-driven fix is applied or any `review-resolution` work begins.
@@ -374,6 +392,9 @@ Start with:
 - Material findings:
 - Recording status:
 - Recording blocker:
+- Status sync:
+- Status artifact:
+- Status sync blocker:
 - Review record:
 - Review log:
 - Review resolution:
