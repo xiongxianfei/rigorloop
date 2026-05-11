@@ -234,6 +234,7 @@ Run these structural checks before PR:
 - `python scripts/test-adapter-distribution.py`
 - `python scripts/build-adapters.py --version 0.1.1 --check`
 - `python scripts/validate-adapters.py --version 0.1.1`
+- `python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml`
 - `python scripts/validate-release.py --version v0.1.1`
 - `python scripts/test-artifact-lifecycle-validator.py`
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path <repo-path> [...]`
@@ -252,7 +253,7 @@ When a change updates canonical `skills/`, keep generated `.codex/skills/` outpu
 
 - `.github/workflows/ci.yml` should remain a thin wrapper around repo-owned validation commands. It may set up required tooling and pass explicit diff inputs, but validation logic belongs in `scripts/ci.sh`.
 - The hosted CI workflow stays matrix-free in this first bounded-parallelism slice. Future hosted fan-out, if approved later, should consume stable check IDs from repository-owned scripts instead of duplicating selector path classification or hardcoded selected-check lists in workflow YAML.
-- `scripts/release-verify.sh` is the repository-owned release gate for `v0.1.0-rc.1`, `v0.1.0`, and `v0.1.1`. It accepts a tag argument or `GITHUB_REF_NAME`, checks generated adapters and release metadata, and consumes tracked release notes from `docs/releases/<tag>/release-notes.md`.
+- `scripts/release-verify.sh` is the repository-owned release gate for `v0.1.0-rc.1`, `v0.1.0`, and `v0.1.1`. It accepts a tag argument or `GITHUB_REF_NAME`, checks generated adapters and release metadata, consumes tracked release notes from `docs/releases/<tag>/release-notes.md`, and validates the `v0.1.1` Token-Friendliness report metadata.
 - RC releases may be published before full manual smoke only when non-smoke gates pass and no smoke row records `fail`. Stable releases require passing Codex, Claude Code, and opencode smoke rows.
 
 ## Documentation Ownership

@@ -1,0 +1,73 @@
+suite: skill-token-runtime-v1
+fixture: fixtures/minimal-public-project
+prompts:
+  - id: workflow-route
+    path: prompts/workflow-route.md
+    tool: codex
+    fixture: fixtures/minimal-public-project
+    expected_skill: workflow
+    expected_result: pass
+    tags:
+      - workflow
+      - routing
+      - short-output
+  - id: proposal-short
+    path: prompts/proposal-short.md
+    tool: codex
+    fixture: fixtures/minimal-public-project
+    expected_skill: proposal
+    expected_result: pass
+    tags:
+      - proposal
+      - public-skill
+      - short-output
+  - id: implement-handoff
+    path: prompts/implement-handoff.md
+    tool: codex
+    fixture: fixtures/minimal-public-project
+    expected_skill: implement
+    expected_result: pass
+    tags:
+      - implement
+      - handoff
+      - no-edit
+  - id: code-review-small
+    path: prompts/code-review-small.md
+    tool: codex
+    fixture: fixtures/minimal-public-project
+    expected_skill: code-review
+    expected_result: pass
+    tags:
+      - code-review
+      - small-change
+      - no-edit
+  - id: verify-final-pack
+    path: prompts/verify-final-pack.md
+    tool: codex
+    fixture: fixtures/minimal-public-project
+    expected_skill: verify
+    expected_result: pass
+    tags:
+      - verify
+      - evidence
+      - no-edit
+  - id: architecture-no-impact
+    path: prompts/architecture-no-impact.md
+    tool: codex
+    fixture: fixtures/minimal-public-project
+    expected_skill: architecture
+    expected_result: pass
+    tags:
+      - architecture
+      - no-impact
+      - docs-only
+  - id: learn-no-durable-lesson
+    path: prompts/learn-no-durable-lesson.md
+    tool: codex
+    fixture: fixtures/minimal-public-project
+    expected_skill: learn
+    expected_result: pass
+    tags:
+      - learn
+      - trigger-discipline
+      - no-edit

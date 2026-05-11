@@ -42,6 +42,11 @@ REQUIRED_CHECK_COMMANDS=(
   "python scripts/validate-adapters.py --version ${adapter_version}"
   "python scripts/validate-release.py --version ${release_version}"
 )
+if [[ "$release_version" == "v0.1.1" ]]; then
+  REQUIRED_CHECK_COMMANDS+=(
+    "python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/${release_version}.yaml"
+  )
+fi
 
 verify_release_script_contract() {
   local marker=""
@@ -125,6 +130,11 @@ run_check "Check generated adapter drift" \
 
 run_check "Validate generated adapters and security" \
   python scripts/validate-adapters.py --version "$adapter_version"
+
+if [[ "$release_version" == "v0.1.1" ]]; then
+  run_check "Validate token-friendliness report evidence" \
+    python scripts/validate-token-cost-report.py "docs/reports/token-cost/releases/${release_version}.yaml"
+fi
 
 run_check "Validate release metadata, smoke rules, notes, and security" \
   python scripts/validate-release.py --version "$release_version"
