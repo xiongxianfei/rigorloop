@@ -511,6 +511,28 @@ def validate_result_quality(
     return status
 
 
+def collect_run_result_quality_statuses(data: dict[str, Any]) -> dict[str, str]:
+    dynamic = data.get("dynamic_runtime")
+    if not isinstance(dynamic, dict):
+        return {}
+    runs = dynamic.get("runs")
+    if not isinstance(runs, list):
+        return {}
+
+    statuses: dict[str, str] = {}
+    for run in runs:
+        if not isinstance(run, dict):
+            continue
+        run_id = run.get("id")
+        result_quality = run.get("result_quality")
+        if not isinstance(run_id, str) or not isinstance(result_quality, dict):
+            continue
+        status = result_quality.get("status")
+        if isinstance(status, str):
+            statuses[run_id] = status
+    return statuses
+
+
 def validate_analyzer_summary(path: str, expected_raw_tracked: bool, errors: list[str]) -> None:
     if not path:
         return
@@ -870,6 +892,7 @@ def validate_benchmark_coverage(
 def validate_optional_warning_coverage(
     gate: dict[str, Any],
     optional_statuses: dict[str, str],
+    actual_statuses: dict[str, str],
     required_ids: set[str],
     errors: list[str],
 ) -> None:
@@ -891,7 +914,21 @@ def validate_optional_warning_coverage(
         if code in OPTIONAL_BENCHMARK_WARNING_CODES.values():
             require_non_empty_string(warning.get("message"), "release_gate.warnings.message", errors)
             require_non_empty_string(warning.get("follow_up"), "release_gate.warnings.follow_up", errors)
-    for benchmark, status in optional_statuses.items():
+    for benchmark, coverage_status in optional_statuses.items():
+        actual_status = actual_statuses.get(benchmark)
+        if actual_status is None:
+            errors.append(
+                f"benchmark_coverage.optional_run[{benchmark}] has no matching dynamic_runtime.runs entry"
+            )
+            continue
+        if coverage_status != actual_status:
+            errors.append(
+                f"benchmark_coverage.optional_run[{benchmark}].result_quality_status "
+                f"must match dynamic_runtime.runs[{benchmark}].result_quality.status "
+                f"({coverage_status!r} != {actual_status!r})"
+            )
+            continue
+        status = actual_status
         if benchmark in required_ids or status not in OPTIONAL_BENCHMARK_WARNING_CODES:
             continue
         expected_code = OPTIONAL_BENCHMARK_WARNING_CODES[status]
@@ -1057,6 +1094,9 @@ def validate_token_cost_report(
         require_result_quality=v2_report,
         required_benchmark_ids=required_benchmark_ids,
     )
+    actual_result_quality_statuses = (
+        collect_run_result_quality_statuses(root) if v2_report else {}
+    )
     dynamic = require_mapping(root.get("dynamic_runtime"), "dynamic_runtime", errors)
     dynamic_status = dynamic.get("status") if isinstance(dynamic.get("status"), str) else ""
     validate_waiver(root, dynamic_status, errors)
@@ -1065,7 +1105,13 @@ def validate_token_cost_report(
     validate_portability_and_gate(root, errors)
     if v2_report:
         gate = require_mapping(root.get("release_gate"), "release_gate", errors)
-        validate_optional_warning_coverage(gate, optional_statuses, required_benchmark_ids, errors)
+        validate_optional_warning_coverage(
+            gate,
+            optional_statuses,
+            actual_result_quality_statuses,
+            required_benchmark_ids,
+            errors,
+        )
     return errors
 
 

@@ -86,17 +86,17 @@ The v2 change is release-process and evidence-shape work. It must not hand-edit 
 
 - Current stage: implement
 - Current milestone: M3. Token-cost validator v2 metadata and context support
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M2. Architecture-review optional scenario fixture
-- Review status: code-review M3 R1 changes-requested; material finding EDTF-CR1 open
+- Review status: code-review M3 R1 changes-requested; EDTF-CR1 accepted and fixed, ready for rerun
 - Next stage after plan-review: test-spec
 - Test-spec artifact: `specs/expand-dynamic-token-friendliness-benchmarks-for-core-skills.test.md`
 - Test-spec status: active
 - Implementation may start after: test-spec is authored and accepted for use; complete
-- Remaining in-scope implementation milestones: M3 resolution, M4, M5
-- Next stage: review-resolution for EDTF-CR1, then implement accepted M3 fix
+- Remaining in-scope implementation milestones: M3 review rerun, M4, M5
+- Next stage: code-review M3 rerun
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 has an open code-review finding, M4-M5 remain open, and final explain-change, verify, and PR handoff are not complete.
+- Reason final closeout is or is not ready: M3 awaits code-review rerun, M4-M5 remain open, and final explain-change, verify, and PR handoff are not complete.
 
 ## Requirements covered
 
@@ -230,7 +230,7 @@ Suggested validation for the test-spec stage:
 
 ### M3. Token-cost validator v2 metadata and context support
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Teach standalone token-cost validation to enforce v2 coverage metadata, result quality, waiver roles, claimed optional gates, and required benchmark context.
 - Requirements: `R7`-`R9`, `R12`-`R16`, `R17`.
 - Files/components likely touched:
@@ -405,6 +405,7 @@ Implementation-stage validation is listed per milestone. Prefer the smallest rel
 - 2026-05-11: Code-review M2 R1 found no material findings and closed M2; next stage is M3 implementation.
 - 2026-05-11: M3 implementation added standalone validator support for v2 benchmark coverage metadata, per-run manual `result_quality`, required benchmark context via in-process API and `--required-benchmark-context`, role-scoped result-quality waivers, claimed optional gates, changed-skill-required benchmark enforcement, and unclaimed optional warning behavior.
 - 2026-05-11: Code-review M3 R1 found EDTF-CR1, a major validator gap where optional dynamic run `result_quality.status` can be hidden by mismatched `benchmark_coverage.optional_run[*].result_quality_status`; M3 is in `resolution-needed`.
+- 2026-05-11: EDTF-CR1 was accepted and fixed by reconciling optional coverage result-quality status with actual dynamic run result-quality status and adding focused mismatch tests; M3 is ready for code-review rerun.
 
 ## Decision log
 
@@ -457,6 +458,14 @@ Implementation-stage validation is listed per milestone. Prefer the smallest rel
 - 2026-05-11: `python scripts/validate-change-metadata.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml` passed after M3 handoff artifact updates.
 - 2026-05-11: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path docs/plan.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/explain-change.md` passed after M3 with the existing unrelated `docs/plan.md` lifecycle-language warning.
 - 2026-05-11: `git diff --check -- scripts/validate-token-cost-report.py scripts/test-token-cost-report-validation.py tests docs/reports/token-cost/releases docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md docs/plan.md` passed after M3 handoff artifact updates.
+- 2026-05-11: `python scripts/test-token-cost-report-validation.py TokenCostReportValidatorTests.test_v2_optional_coverage_result_quality_must_match_dynamic_run` failed before the EDTF-CR1 fix because mismatched optional coverage/run status passed; it passed after the validator reconciliation fix.
+- 2026-05-11: `python scripts/test-token-cost-report-validation.py` passed with 16 tests after the EDTF-CR1 fix.
+- 2026-05-11: `python -m py_compile scripts/validate-token-cost-report.py scripts/test-token-cost-report-validation.py` passed after the EDTF-CR1 fix.
+- 2026-05-11: `python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml` passed after the EDTF-CR1 fix.
+- 2026-05-11: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills` passed after EDTF-CR1 resolution with `reviews=10`, `findings=7`, `log_entries=10`, and `resolution_entries=7`.
+- 2026-05-11: `python scripts/validate-change-metadata.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml` passed after EDTF-CR1 resolution.
+- 2026-05-11: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-resolution.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-log.md --path docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path docs/plan.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml` passed after EDTF-CR1 resolution with the existing unrelated `docs/plan.md` lifecycle-language warning.
+- 2026-05-11: `git diff --check -- scripts/validate-token-cost-report.py scripts/test-token-cost-report-validation.py tests docs/reports/token-cost/releases docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md docs/plan.md` passed after EDTF-CR1 resolution.
 
 ## Outcome and retrospective
 
