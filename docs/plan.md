@@ -4,12 +4,12 @@ This file tracks active, blocked, done, and superseded plans.
 
 ## Active
 - [2026-05-10 Token cost measurement baseline and proposal scope preservation](plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md) - active execution plan with M1-M5 closed, PR #40 open, and local PR-mode CI selector fix passed; hosted CI rerun is pending.
-- [2026-05-11 Release token-friendliness benchmark for skills](plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md) - active execution plan with M1-M5 closed, explain-change and verify complete, and PR handoff next.
 
 ## Blocked
 - none yet
 
 ## Done
+- [2026-05-11 Release token-friendliness benchmark for skills](plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md) - completed execution plan for adding release Token-Friendliness benchmark fixtures, runner/analyzer summaries, structured report validation, first v0.1.1 baseline report, release validation integration, learn capture, final verification, CI selector routing, and merged PR #41.
 - [2026-05-09 Skill token cost optimization](plans/2026-05-09-skill-token-cost-optimization.md) - completed execution plan for tightening skill token-cost behavior, bounded evidence collection, full-file-read escape conditions, output-cap guidance, static proof, canonical skill updates, generated skill and adapter refresh, explain-change evidence, final verification, and opened PR #39.
 - [2026-05-09 Single source of workflow state](plans/2026-05-09-single-source-of-workflow-state.md) - completed execution plan for making active plans the single live workflow-state owner, updating workflow and skill guidance, adding focused static/test coverage, refreshing generated skills and adapters, closing milestone review loops, recording explain-change evidence, passing verification, and opened PR #38.
 - [2026-05-09 Simplify architecture skill surfaces](plans/2026-05-09-simplify-architecture-skill-surfaces.md) - completed execution plan for removing change-local architecture deltas from the normal architecture skill contract, adding architecture-review surface classification, updating test-spec and canonical skills, refreshing generated skill and adapter output, closing milestone review loops, recording explain-change evidence, passing verification, and opened PR #37.
