@@ -139,6 +139,12 @@ validation:
     result: pass_closeout_reviews_3_findings_12_log_entries_3_resolution_entries_12_after_final_m3_evidence_update
   - command: git diff --check --
     result: pass_after_final_m3_evidence_update
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml
+    result: pass_valid_change_metadata_after_final_explain_change_refresh
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-review-skill-recording-output-guardrail
+    result: pass_closeout_reviews_3_findings_12_log_entries_3_resolution_entries_12_after_final_explain_change_refresh
+  - command: git diff --check -- docs/changes/2026-05-12-review-skill-recording-output-guardrail/explain-change.md
+    result: pass_after_final_explain_change_refresh
 changed_files:
   - docs/proposals/2026-05-12-review-skill-recording-output-guardrail.md
   - docs/plan.md
