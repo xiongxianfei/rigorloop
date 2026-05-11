@@ -86,17 +86,17 @@ The v2 change is release-process and evidence-shape work. It must not hand-edit 
 
 - Current stage: code-review
 - Current milestone: M4. Release validation required benchmark context integration
-- Current milestone state: implemented and committed; awaiting code-review
+- Current milestone state: resolution-needed
 - Last reviewed milestone: M3. Token-cost validator v2 metadata and context support
-- Review status: M4 implementation complete; code-review M4 not yet run
+- Review status: code-review M4 R1 changes-requested; material finding EDTF-CR2 open
 - Next stage after plan-review: test-spec
 - Test-spec artifact: `specs/expand-dynamic-token-friendliness-benchmarks-for-core-skills.test.md`
 - Test-spec status: active
 - Implementation may start after: test-spec is authored and accepted for use; complete
-- Remaining in-scope implementation milestones: M4 review, M5
-- Next stage: code-review M4
+- Remaining in-scope implementation milestones: M4 resolution, M5
+- Next stage: review-resolution for EDTF-CR2, then implement accepted M4 fix
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M4 still needs code-review, M5 remains open, and final explain-change, verify, and PR handoff are not complete.
+- Reason final closeout is or is not ready: M4 has an open material code-review finding, M5 remains open, and final explain-change, verify, and PR handoff are not complete.
 
 ## Requirements covered
 
@@ -275,7 +275,7 @@ Suggested validation for the test-spec stage:
 
 ### M4. Release validation required benchmark context integration
 
-- Milestone state: implemented and committed; awaiting code-review
+- Milestone state: resolution-needed
 - Goal: Generate release-specific required benchmark context from changed surfaces and pass it to token-cost validation.
 - Requirements: `R10`-`R13`, `R15`.
 - Files/components likely touched:
@@ -408,6 +408,7 @@ Implementation-stage validation is listed per milestone. Prefer the smallest rel
 - 2026-05-11: EDTF-CR1 was accepted and fixed by reconciling optional coverage result-quality status with actual dynamic run result-quality status and adding focused mismatch tests; M3 is ready for code-review rerun.
 - 2026-05-11: Code-review M3 R2 found no material findings and closed M3; next stage is M4 implementation.
 - 2026-05-11: M4 implementation added release-side required benchmark context generation, generated adapter path tracing, changed-skill missing-benchmark warning metadata, and in-process token-cost validator delegation for v2 reports; next stage is code-review M4.
+- 2026-05-11: Code-review M4 R1 found EDTF-CR2, a major release-validation integration gap where the real `validate-release.py --version ...` command path does not supply or derive changed surfaces for v2 required benchmark context generation; M4 is in `resolution-needed`.
 
 ## Decision log
 
@@ -484,6 +485,10 @@ Implementation-stage validation is listed per milestone. Prefer the smallest rel
 - 2026-05-11: `python scripts/validate-change-metadata.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml` passed after M4 artifact updates.
 - 2026-05-11: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path docs/plan.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/explain-change.md` passed after M4 artifact updates with the existing unrelated `docs/plan.md` lifecycle-language warning.
 - 2026-05-11: `git diff --check -- scripts/validate-release.py scripts/adapter_distribution.py scripts/test-adapter-distribution.py scripts/test-token-cost-report-validation.py tests docs/plan.md docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills` passed after M4 artifact updates.
+- 2026-05-11: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills` passed after code-review M4 R1 with `reviews=12`, `findings=8`, `log_entries=12`, and `resolution_entries=8`; closeout remains open because EDTF-CR2 is unresolved.
+- 2026-05-11: `python scripts/validate-change-metadata.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml` passed after code-review M4 R1 artifact updates.
+- 2026-05-11: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/code-review-m4-r1.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-log.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-resolution.md --path docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path docs/plan.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml` passed after code-review M4 R1 with the existing unrelated `docs/plan.md` lifecycle-language warning.
+- 2026-05-11: `git diff --check -- docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md docs/plan.md` passed after code-review M4 R1 artifact updates.
 
 ## Outcome and retrospective
 
