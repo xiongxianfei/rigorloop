@@ -116,7 +116,7 @@ This preserves strict review-only isolation, but it keeps the observed drift: ch
 
 This is now included in the recommended direction. It keeps review skills from silently claiming lifecycle progress while the tracked artifact still says otherwise. The status update is narrow: it changes only the reviewed artifact's lifecycle/status/readiness/closeout surface, uses artifact-specific vocabulary, and blocks rather than guessing when the status owner is ambiguous.
 
-## Recommended Direction
+## Recommended direction
 
 Choose Option 3 plus Option 6.
 
