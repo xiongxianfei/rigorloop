@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -18,9 +18,9 @@ Review closeout: code-review-m3-r2
 Review closeout: code-review-m4-r1
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-m1-r1`, `code-review-m2-r1`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m4-r1`
-- Findings resolved: 7
-- Unresolved findings: 1
-- Final result: Proposal-review R1 requested revisions for release-report identity and result-quality gate semantics. The proposal author accepted both findings, revised the proposal, and recorded owner closeout evidence. Proposal-review R2 approved the revised proposal with no material findings. Spec-review R1 requested revisions for waiver authority consistency and claimed optional benchmark gate semantics. The spec author accepted both findings and revised the spec. Spec-review R2 approved the revised spec with no material findings. Architecture-review R1 approved the canonical architecture update with no material findings. Plan-review R1 requested revisions for test-spec sequencing and M5 release-validation scope. The plan author accepted both findings and revised the plan. Plan-review R2 approved the revised plan with no material findings. Code-review M1 R1 approved M1 with no material findings. Code-review M2 R1 approved M2 with no material findings. Code-review M3 R1 requested a validator/test fix for mismatched optional benchmark coverage metadata and dynamic run result-quality status. EDTF-CR1 was accepted and resolved in the M3 validator and tests. Code-review M3 R2 approved M3 with no material findings. Code-review M4 R1 requested a fix because the real release-validation command path does not yet supply or derive changed surfaces for required benchmark context generation.
+- Findings resolved: 8
+- Unresolved findings: 0
+- Final result: Proposal-review R1 requested revisions for release-report identity and result-quality gate semantics. The proposal author accepted both findings, revised the proposal, and recorded owner closeout evidence. Proposal-review R2 approved the revised proposal with no material findings. Spec-review R1 requested revisions for waiver authority consistency and claimed optional benchmark gate semantics. The spec author accepted both findings and revised the spec. Spec-review R2 approved the revised spec with no material findings. Architecture-review R1 approved the canonical architecture update with no material findings. Plan-review R1 requested revisions for test-spec sequencing and M5 release-validation scope. The plan author accepted both findings and revised the plan. Plan-review R2 approved the revised plan with no material findings. Code-review M1 R1 approved M1 with no material findings. Code-review M2 R1 approved M2 with no material findings. Code-review M3 R1 requested a validator/test fix for mismatched optional benchmark coverage metadata and dynamic run result-quality status. EDTF-CR1 was accepted and resolved in the M3 validator and tests. Code-review M3 R2 approved M3 with no material findings. Code-review M4 R1 requested a fix because the real release-validation command path did not supply or derive changed surfaces for required benchmark context generation. EDTF-CR2 was accepted and resolved by adding release CLI changed-surface input and v2 final no-input blocking.
 
 ## Resolution Overview
 
@@ -33,7 +33,7 @@ Review closeout: code-review-m4-r1
 | EDTF-PL1 | accepted | resolved | Plan now separates the pre-implementation `test-spec` gate from implementation milestones. |
 | EDTF-PL2 | accepted | resolved | Plan now uses fixture-focused integration proof in release validation integration and keeps real `validate-release.py --version v0.1.1` in the report-evidence milestone. |
 | EDTF-CR1 | accepted | resolved | Validator now reconciles optional coverage `result_quality_status` against matching dynamic run `result_quality.status` and derives optional warnings from actual run status. |
-| EDTF-CR2 | needs-decision | open | Code-review M4 R1 found that the real release-validation command path does not analyze changed surfaces or require a changed-surface source before building v2 required benchmark context. |
+| EDTF-CR2 | accepted | resolved | `validate-release.py` now accepts `--changed-path` and `--changed-paths-file`, passes the normalized changed path set into release validation, and final v2 validation blocks when changed-surface input is missing. |
 
 ## Finding Details
 
@@ -176,15 +176,13 @@ No material findings.
 #### EDTF-CR2 - Real release-validation command does not analyze changed surfaces
 
 Finding ID: EDTF-CR2
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: implementation owner
 Owning stage: code-review
-Chosen action: pending
-Decision owner: implementation owner
-Decision needed: Accept EDTF-CR2 and add a release changed-surface source to the real release-validation path, or reject with evidence that another approved release-validation path supplies changed surfaces before v2 token-cost validation.
+Chosen action: Added maintainer-facing changed-surface input to `scripts/validate-release.py` using repeated `--changed-path` and line-based `--changed-paths-file`, then passed the normalized deduplicated paths into `validate_release_output(..., changed_paths=...)`. Final `skill-token-runtime-v2` release validation now blocks when changed-surface input is missing.
 Required outcome: The release-validation path used by maintainers and CI must provide release changed-surface data to required benchmark context generation before token-cost validation runs.
 Safe resolution: Add an explicit release changed-surface source to the release validation path. Acceptable first-slice options are adding a CLI/debug flag such as `--changed-paths-file` or `--changed-path` and requiring it for v2 final validation when changed-skill decisions are needed, or implementing a small release change-surface helper that derives changed paths from the approved release diff range and passes them into `validate_release_output(...)`. Add focused proof that the real release-validation entry point constructs required benchmark context from changed canonical and generated skill paths and propagates the missing required benchmark failure.
 Rationale: R10b, R10c, R11a, and R12 require release validation to detect changed canonical/generated public skill surfaces and pass the resulting required benchmark context to token-cost validation. The implementation only enforces those rules when a caller manually passes `changed_paths`; `scripts/validate-release.py` does not.
 Validation target: `scripts/validate-release.py`, `scripts/adapter_distribution.py`, and `scripts/test-adapter-distribution.py`.
-Validation evidence: pending
+Validation evidence: `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_validate_release_cli_passes_changed_surface_inputs AdapterDistributionTests.test_v2_final_release_validation_requires_changed_surface_input AdapterDistributionTests.test_generated_only_adapter_change_traces_to_required_dynamic_benchmark AdapterDistributionTests.test_generated_adapter_changed_path_requires_missing_benchmark_through_release_validation AdapterDistributionTests.test_release_validation_passes_required_context_to_token_cost_validation AdapterDistributionTests.test_changed_skill_with_complete_v2_metadata_passes_release_validation` passed after the fix; `python scripts/test-adapter-distribution.py` passed with 68 tests; `python scripts/test-token-cost-report-validation.py` passed with 16 tests; `python -m py_compile scripts/validate-release.py scripts/validate-token-cost-report.py scripts/adapter_distribution.py scripts/test-adapter-distribution.py` passed.

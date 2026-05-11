@@ -38,6 +38,7 @@ tests:
   - M3 code-review rerun clean review record and milestone closeout state.
   - M4 release validation tests for required benchmark context generation, generated adapter tracebacks, generated-only drift handling, missing benchmark follow-up metadata, and token-cost validator delegation.
   - M4 code-review R1 changes-requested finding EDTF-CR2.
+  - M4 EDTF-CR2 fix for maintainer-facing changed-surface input on `validate-release.py`.
 validation:
   - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills
     result: pass_closeout_reviews_4_findings_4_log_entries_4_resolution_entries_4
@@ -147,7 +148,7 @@ validation:
     result: pass_closeout_reviews_10_findings_7_log_entries_10_resolution_entries_7_code_review_m3_r2_rerun
   - command: python scripts/validate-change-metadata.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml
     result: pass_valid_change_metadata_code_review_m3_r2_rerun
-  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_required_benchmark_context_requires_changed_skill_benchmark AdapterDistributionTests.test_required_benchmark_context_traces_generated_adapter_paths AdapterDistributionTests.test_generated_only_adapter_change_does_not_require_dynamic_benchmark AdapterDistributionTests.test_changed_public_skill_without_benchmark_records_warning_follow_up
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_required_benchmark_context_requires_changed_skill_benchmark AdapterDistributionTests.test_required_benchmark_context_traces_generated_adapter_paths AdapterDistributionTests.test_generated_only_adapter_change_traces_to_required_dynamic_benchmark AdapterDistributionTests.test_changed_public_skill_without_benchmark_records_warning_follow_up
     result: fail_before_m4_implementation_then_pass_after_release_context_builder_added
   - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_release_validation_passes_required_context_to_token_cost_validation
     result: pass_after_m4_release_validation_delegation
@@ -177,6 +178,28 @@ validation:
     result: pass_validated_6_artifact_files_with_existing_docs_plan_warning_after_code_review_m4_r1
   - command: git diff --check -- docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md docs/plan.md
     result: pass_after_code_review_m4_r1
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_validate_release_cli_passes_changed_surface_inputs AdapterDistributionTests.test_v2_final_release_validation_requires_changed_surface_input AdapterDistributionTests.test_generated_only_adapter_change_traces_to_required_dynamic_benchmark AdapterDistributionTests.test_generated_adapter_changed_path_requires_missing_benchmark_through_release_validation AdapterDistributionTests.test_release_validation_passes_required_context_to_token_cost_validation AdapterDistributionTests.test_changed_skill_with_complete_v2_metadata_passes_release_validation
+    result: fail_before_fix_then_pass_after_edtf_cr2_resolution
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_68_tests_after_edtf_cr2_resolution
+  - command: python scripts/test-token-cost-report-validation.py
+    result: pass_16_tests_after_edtf_cr2_resolution
+  - command: python -m py_compile scripts/validate-release.py scripts/validate-token-cost-report.py scripts/adapter_distribution.py scripts/test-adapter-distribution.py
+    result: pass_after_edtf_cr2_resolution
+  - command: python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml
+    result: pass_after_edtf_cr2_resolution
+  - command: python scripts/validate-release.py --version v0.1.1
+    result: pass_after_edtf_cr2_resolution_pretransition_v1_report_still_validates
+  - command: git diff --check -- scripts/validate-release.py scripts/adapter_distribution.py scripts/test-adapter-distribution.py scripts/test-token-cost-report-validation.py tests docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md docs/plan.md
+    result: pass_after_edtf_cr2_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills
+    result: pass_closeout_reviews_12_findings_8_log_entries_12_resolution_entries_8_after_edtf_cr2_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml
+    result: pass_valid_change_metadata_after_edtf_cr2_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-resolution.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-log.md --path docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path docs/plan.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/explain-change.md
+    result: pass_validated_6_artifact_files_with_existing_docs_plan_warning_after_edtf_cr2_resolution
+  - command: git diff --check -- scripts/validate-release.py scripts/adapter_distribution.py scripts/test-adapter-distribution.py scripts/test-token-cost-report-validation.py tests docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md docs/plan.md
+    result: pass_after_edtf_cr2_resolution_artifact_updates
 changed_files:
   - benchmarks/token-cost/manifest.yaml
   - benchmarks/token-cost/prompts/workflow-route.md
@@ -199,6 +222,7 @@ changed_files:
   - scripts/test-token-cost-measurement.py
   - scripts/adapter_distribution.py
   - scripts/test-adapter-distribution.py
+  - scripts/validate-release.py
   - scripts/validate-token-cost-report.py
   - scripts/test-token-cost-report-validation.py
   - docs/proposals/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md
@@ -224,10 +248,10 @@ changed_files:
   - docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/code-review-m3-r2.md
   - docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/code-review-m4-r1.md
 review:
-  status: changes-requested
-  open_findings: 1
-  unresolved_items: 1
-  last_review: code-review-m4-r1 requested changes for EDTF-CR2
+  status: m4-ready-for-code-review-rerun
+  open_findings: 0
+  unresolved_items: 0
+  last_review: code-review-m4-r1 requested changes for EDTF-CR2; accepted fix implemented
 status:
-  lifecycle: review-resolution
-  review: m4-resolution-needed
+  lifecycle: code-review
+  review: m4-rerun-requested

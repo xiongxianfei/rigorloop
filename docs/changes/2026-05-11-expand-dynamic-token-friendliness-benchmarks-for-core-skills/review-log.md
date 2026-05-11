@@ -124,4 +124,4 @@ Status: changes-requested
 Detailed record: reviews/code-review-m4-r1.md
 Resolution: review-resolution.md#code-review-m4-r1
 Material findings: EDTF-CR2
-Open findings: EDTF-CR2
+Open findings: None
