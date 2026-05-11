@@ -76,9 +76,9 @@ The goal is to reduce unnecessary whole-skill reads and `implement-handoff` comm
 - Last reviewed milestone: M4. Benchmark Evidence and Lifecycle Closeout
 - Review status: code-review M4 clean-with-notes; no review-resolution required
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: all implementation milestones are closed, but final explain-change review, final verification, and PR handoff evidence do not exist yet.
+- Reason final closeout is or is not ready: all implementation milestones are closed and final explain-change is recorded, but final verification and PR handoff evidence do not exist yet.
 
 ## Pre-Implementation Gates
 
@@ -349,6 +349,7 @@ Final pre-PR validation is expected to include:
 - 2026-05-11: M4 full required dynamic benchmark suite completed against regenerated public Codex adapter skills. The optimization comparison report now records before/after static and dynamic evidence, including remaining full-skill-read and broad-search warnings.
 - 2026-05-11: M4 added the change-local `explain-change.md` reasoning surface because lifecycle validation found the path already declared in `change.yaml` but missing on disk.
 - 2026-05-11: Code-review M4 completed clean-with-notes; no material findings and no review-resolution required. All implementation milestones are closed; next stage is explain-change.
+- 2026-05-11: Final explain-change completed in the change-local pack; next stage is verify.
 
 ## Decision Log
 
@@ -427,6 +428,10 @@ Final pre-PR validation is expected to include:
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-11-progressive-loading-for-high-cost-public-skills.md --path specs/progressive-loading-high-cost-public-skills.md --path specs/progressive-loading-high-cost-public-skills.test.md --path docs/reports/token-cost/optimizations/2026-05-11-progressive-loading-high-cost-skills.md --path docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml --path docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/explain-change.md --path docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md --path docs/plan.md` passed with the existing `docs/plan.md` lifecycle-language warning.
   - `git diff --check HEAD~1..HEAD -- docs/reports/token-cost docs/changes/2026-05-11-progressive-loading-high-cost-public-skills docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md docs/plan.md` passed.
   - Reviewer inspection of `/tmp/rigorloop-token-progressive-loading-m4/*-run1.analysis.yaml` matched the targeted after metrics recorded in the optimization report for input tokens, largest command output, full-skill reads, and broad-search counts.
+- Explain-change validation passed:
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml` passed.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-11-progressive-loading-for-high-cost-public-skills.md --path specs/progressive-loading-high-cost-public-skills.md --path specs/progressive-loading-high-cost-public-skills.test.md --path docs/reports/token-cost/optimizations/2026-05-11-progressive-loading-high-cost-skills.md --path docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml --path docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/explain-change.md --path docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md --path docs/plan.md` passed with the existing `docs/plan.md` lifecycle-language warning.
+  - `git diff --check -- docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/explain-change.md docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md` passed.
 
 ## Outcome and Retrospective
 
