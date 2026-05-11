@@ -1,0 +1,122 @@
+change_id: 2026-05-12-review-skill-recording-output-guardrail
+title: Review skill recording and status output guardrail
+classification: workflow-governance-proposal
+risk: medium
+architecture:
+  status: no-impact
+  rationale: The approved amendment changes the formal review output contract, canonical review skill wording, and validation expectations, but it does not introduce a new runtime component, data flow, generated-output flow, adapter packaging rule, deployment boundary, trust boundary, or durable architecture decision. Existing architecture already covers canonical skill sources, generated mirrors/adapters, review artifacts, and repository-owned validation.
+artifacts:
+  proposal: docs/proposals/2026-05-12-review-skill-recording-output-guardrail.md
+  spec: specs/formal-review-recording.md
+  review_resolution: docs/changes/2026-05-12-review-skill-recording-output-guardrail/review-resolution.md
+requirements:
+  - Preserve stage-neutral review recording across proposal-review, spec-review, architecture-review, plan-review, and code-review.
+  - Make review recording status explicit in formal review skill output.
+  - Make artifact-status sync explicit for approving and clean formal review results.
+  - Define formal review output recording/status-sync behavior in the governing spec before skill implementation.
+  - Preserve clean no-material review lightweight behavior.
+  - Record material proposal-review findings before review-driven proposal fixes.
+tests:
+  - Proposal-review material finding record and resolution evidence.
+  - Change metadata validation.
+  - Review artifact structural validation.
+  - Markdown whitespace validation.
+  - Proposal-review rerun for the status-sync scope expansion.
+  - Spec-review for the formal review recording/status-sync amendment.
+  - No-architecture-impact rationale.
+validation:
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-12-review-skill-recording-output-guardrail
+    result: pass_structure_reviews_1_findings_6_log_entries_1_resolution_entries_6_before_proposal_revision
+  - command: git diff --check -- docs/changes/2026-05-12-review-skill-recording-output-guardrail
+    result: pass_before_proposal_revision
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml
+    result: pass_valid_change_metadata_after_proposal_revision
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-12-review-skill-recording-output-guardrail
+    result: pass_structure_reviews_1_findings_6_log_entries_1_resolution_entries_6_after_proposal_revision
+  - command: git diff --check -- docs/proposals/2026-05-12-review-skill-recording-output-guardrail.md docs/changes/2026-05-12-review-skill-recording-output-guardrail
+    result: pass_after_proposal_revision
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml
+    result: pass_valid_change_metadata_after_status_sync_proposal_revision
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-12-review-skill-recording-output-guardrail
+    result: pass_structure_reviews_2_findings_11_log_entries_2_resolution_entries_11_after_status_sync_proposal_revision
+  - command: git diff --check -- docs/proposals/2026-05-12-review-skill-recording-output-guardrail.md docs/changes/2026-05-12-review-skill-recording-output-guardrail docs/learn/sessions/2026-05-12-review-approval-status-sync.md
+    result: pass_after_status_sync_proposal_revision
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml
+    result: pass_valid_change_metadata_after_spec_amendment
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-12-review-skill-recording-output-guardrail
+    result: pass_structure_reviews_2_findings_11_log_entries_2_resolution_entries_11_after_spec_amendment
+  - command: git diff --check -- specs/formal-review-recording.md docs/proposals/2026-05-12-review-skill-recording-output-guardrail.md docs/changes/2026-05-12-review-skill-recording-output-guardrail docs/learn/sessions/2026-05-12-review-approval-status-sync.md
+    result: pass_after_spec_amendment
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-12-review-skill-recording-output-guardrail
+    result: pass_structure_reviews_3_findings_12_log_entries_3_resolution_entries_12_after_spec_review_r1_record
+  - command: git diff --check -- docs/changes/2026-05-12-review-skill-recording-output-guardrail
+    result: pass_after_spec_review_r1_record
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml
+    result: pass_valid_change_metadata_after_sr1_resolution
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-12-review-skill-recording-output-guardrail
+    result: pass_structure_reviews_3_findings_12_log_entries_3_resolution_entries_12_after_sr1_resolution
+  - command: git diff --check -- specs/formal-review-recording.md docs/changes/2026-05-12-review-skill-recording-output-guardrail
+    result: pass_after_sr1_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml
+    result: pass_valid_change_metadata_after_spec_approval
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-12-review-skill-recording-output-guardrail
+    result: pass_structure_reviews_3_findings_12_log_entries_3_resolution_entries_12_after_spec_approval
+  - command: git diff --check -- specs/formal-review-recording.md docs/changes/2026-05-12-review-skill-recording-output-guardrail
+    result: pass_after_spec_approval
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml
+    result: pass_valid_change_metadata_after_no_architecture_impact_rationale
+  - command: git diff --check -- docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml
+    result: pass_after_no_architecture_impact_rationale
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml
+    result: pass_valid_change_metadata_after_plan_creation
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-12-review-skill-recording-output-guardrail
+    result: pass_structure_reviews_3_findings_12_log_entries_3_resolution_entries_12_after_plan_creation
+  - command: git diff --check -- docs/plan.md docs/plans/2026-05-12-review-skill-recording-output-guardrail.md docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml
+    result: pass_after_plan_creation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml
+    result: pass_valid_change_metadata_after_plan_review_status_sync
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-12-review-skill-recording-output-guardrail
+    result: pass_structure_reviews_3_findings_12_log_entries_3_resolution_entries_12_after_plan_review_status_sync
+  - command: git diff --check -- docs/plan.md docs/plans/2026-05-12-review-skill-recording-output-guardrail.md docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml
+    result: pass_after_plan_review_status_sync
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml
+    result: pass_valid_change_metadata_after_test_spec_update
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-12-review-skill-recording-output-guardrail
+    result: pass_structure_reviews_3_findings_12_log_entries_3_resolution_entries_12_after_test_spec_update
+  - command: git diff --check -- specs/formal-review-recording.test.md docs/plan.md docs/plans/2026-05-12-review-skill-recording-output-guardrail.md docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml
+    result: pass_after_test_spec_update
+  - command: rg -n 'Current amendment plan|2026-05-07 plan starting|Implementation M1 under \[Review Skill Material Finding|needs update for `R24`|test-spec next' specs/formal-review-recording.test.md docs/plans/2026-05-12-review-skill-recording-output-guardrail.md docs/plan.md
+    result: pass_no_stale_test_spec_or_handoff_text_after_test_spec_update
+  - command: python scripts/test-skill-validator.py
+    result: pass_63_tests_after_m1_recording_status_guardrail
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m1_recording_status_guardrail
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml
+    result: pass_valid_change_metadata_after_m1_recording_status_guardrail
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-12-review-skill-recording-output-guardrail
+    result: pass_structure_reviews_3_findings_12_log_entries_3_resolution_entries_12_after_m1_recording_status_guardrail
+  - command: git diff --check -- specs/formal-review-recording.test.md skills/proposal-review/SKILL.md skills/spec-review/SKILL.md skills/architecture-review/SKILL.md skills/plan-review/SKILL.md skills/code-review/SKILL.md scripts/test-skill-validator.py scripts/validate-skills.py docs/changes/2026-05-12-review-skill-recording-output-guardrail docs/plans/2026-05-12-review-skill-recording-output-guardrail.md docs/plan.md
+    result: pass_after_m1_recording_status_guardrail
+changed_files:
+  - docs/proposals/2026-05-12-review-skill-recording-output-guardrail.md
+  - docs/plan.md
+  - docs/plans/2026-05-12-review-skill-recording-output-guardrail.md
+  - specs/formal-review-recording.md
+  - specs/formal-review-recording.test.md
+  - scripts/test-skill-validator.py
+  - skills/proposal-review/SKILL.md
+  - skills/spec-review/SKILL.md
+  - skills/architecture-review/SKILL.md
+  - skills/plan-review/SKILL.md
+  - skills/code-review/SKILL.md
+  - docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml
+  - docs/changes/2026-05-12-review-skill-recording-output-guardrail/review-log.md
+  - docs/changes/2026-05-12-review-skill-recording-output-guardrail/review-resolution.md
+  - docs/changes/2026-05-12-review-skill-recording-output-guardrail/reviews/proposal-review-r1.md
+  - docs/changes/2026-05-12-review-skill-recording-output-guardrail/reviews/spec-review-r1.md
+  - docs/learn/sessions/2026-05-12-review-approval-status-sync.md
+review:
+  status: closed
+  unresolved_items: 0
+  review_log: docs/changes/2026-05-12-review-skill-recording-output-guardrail/review-log.md
+  review_resolution: docs/changes/2026-05-12-review-skill-recording-output-guardrail/review-resolution.md
