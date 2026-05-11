@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 import re
+import subprocess
+import sys
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 from typing import Any, Iterable
@@ -35,6 +37,8 @@ ROOT = Path(__file__).resolve().parents[1]
 ADAPTER_OUTPUT_ROOT = ROOT / "dist" / "adapters"
 ADAPTER_TEMPLATE_ROOT = ROOT / "scripts" / "adapter_templates"
 RELEASE_ROOT = ROOT / "docs" / "releases"
+TOKEN_COST_REPORT_ROOT = ROOT / "docs" / "reports" / "token-cost" / "releases"
+TOKEN_COST_VALIDATOR = ROOT / "scripts" / "validate-token-cost-report.py"
 ADAPTER_OUTPUT_CONTRACT_ROOT = PurePosixPath("dist/adapters")
 OPENCODE_COMMAND_ROOT = PurePosixPath(".opencode/commands")
 COMMON_FRONTMATTER = frozenset({"name", "description"})
@@ -207,6 +211,7 @@ REQUIRED_RELEASE_VALIDATION_KEYS = (
     "placeholder_release_check",
     "security",
 )
+TOKEN_COST_REPORT_REQUIRED_RELEASES = frozenset({"v0.1.1"})
 PLACEHOLDER_RELEASE_PATTERNS = (
     "Replace this script with repository-specific release checks",
     "TODO: release checks",
@@ -1898,6 +1903,33 @@ def _validate_opencode_command_alias_smoke(version: str, metadata: ReleaseMetada
     return [f"smoke.opencode.evidence: {version} requires command alias behavior evidence"]
 
 
+def _validate_token_cost_report(
+    version: str,
+    *,
+    token_cost_report_root: Path = TOKEN_COST_REPORT_ROOT,
+    token_cost_validator: Path = TOKEN_COST_VALIDATOR,
+) -> list[str]:
+    metadata_path = token_cost_report_root / f"{version}.yaml"
+    if not metadata_path.is_file():
+        return [f"missing token-cost report metadata: {metadata_path}"]
+    if not token_cost_validator.is_file():
+        return [f"missing token-cost validator: {token_cost_validator}"]
+
+    result = subprocess.run(
+        [sys.executable, str(token_cost_validator), str(metadata_path)],
+        capture_output=True,
+        text=True,
+        cwd=ROOT,
+    )
+    if result.returncode == 0:
+        return []
+
+    output = "\n".join(part for part in (result.stdout.strip(), result.stderr.strip()) if part)
+    if not output:
+        output = f"validator exited with status {result.returncode}"
+    return [f"token-cost report validation failed: {metadata_path}: {output}"]
+
+
 def validate_release_output(
     version: str,
     *,
@@ -1905,6 +1937,8 @@ def validate_release_output(
     template_root: Path = ADAPTER_TEMPLATE_ROOT,
     output_root: Path = ADAPTER_OUTPUT_ROOT,
     release_root: Path = RELEASE_ROOT,
+    token_cost_report_root: Path = TOKEN_COST_REPORT_ROOT,
+    token_cost_validator: Path = TOKEN_COST_VALIDATOR,
 ) -> list[str]:
     """Validate one target-version release metadata and notes surface."""
 
@@ -1958,7 +1992,12 @@ def validate_release_output(
             errors.extend(_validate_smoke_row(version, expected_release_type, tool, row))
     errors.extend(_validate_opencode_command_alias_smoke(version, metadata))
 
-    for key in REQUIRED_RELEASE_VALIDATION_KEYS:
+    token_cost_required = version in TOKEN_COST_REPORT_REQUIRED_RELEASES
+    required_validation_keys = list(REQUIRED_RELEASE_VALIDATION_KEYS)
+    if token_cost_required:
+        required_validation_keys.append("token_cost_report")
+
+    for key in required_validation_keys:
         if key not in metadata.validation:
             errors.append(f"{release_path}: validation.{key}: missing required field")
         elif metadata.validation[key] not in {"pass", "fail"}:
@@ -2009,12 +2048,25 @@ def validate_release_output(
     security_errors = scan_security_paths((release_path, notes_path))
     errors.extend(security_errors)
 
+    token_cost_errors = (
+        _validate_token_cost_report(
+            version,
+            token_cost_report_root=token_cost_report_root,
+            token_cost_validator=token_cost_validator,
+        )
+        if token_cost_required
+        else []
+    )
+    errors.extend(token_cost_errors)
+
     actual_validation = {
         "generated_sync": "fail" if generated_sync_errors or adapter_validation_errors else "pass",
         "release_notes_consistency": "fail" if release_notes_errors else "pass",
         "placeholder_release_check": _placeholder_release_check_status(),
         "security": "fail" if security_errors else "pass",
     }
+    if token_cost_required:
+        actual_validation["token_cost_report"] = "fail" if token_cost_errors else "pass"
     for key, actual in actual_validation.items():
         recorded = metadata.validation.get(key)
         if recorded in {"pass", "fail"} and recorded != actual:
