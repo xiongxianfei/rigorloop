@@ -181,6 +181,12 @@ validation:
     result: pass_validated_generated_adapters_after_workflow_disposition_fix
   - command: bash scripts/ci.sh --mode broad-smoke
     result: pass_after_workflow_disposition_fix
+  - command: gh pr create --base main --head review-skill-recording-output-guardrail --title "feat: add formal review output guardrail" --body-file /tmp/rigorloop-pr-body.md
+    result: pass_opened_pr_44
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-review-skill-recording-output-guardrail.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path docs/plans/2026-05-12-review-skill-recording-output-guardrail.md --path docs/plan.md --path docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml
+    result: pass_after_pr_handoff_lifecycle_sync_with_unrelated_docs_plan_merge_dependent_warning
+  - command: git diff --check -- docs/plan.md docs/plans/2026-05-12-review-skill-recording-output-guardrail.md
+    result: pass_after_pr_handoff_lifecycle_sync
 changed_files:
   - docs/proposals/2026-05-12-review-skill-recording-output-guardrail.md
   - docs/plan.md

@@ -1,10 +1,10 @@
 # Review skill recording and status output guardrail
 
-- Status: active
+- Status: done
 - Owner: maintainer
 - Start date: 2026-05-12
 - Last updated: 2026-05-12
-- Related issue or PR: none yet
+- Related issue or PR: PR #44
 - Supersedes: none
 
 ## Purpose / big picture
@@ -138,13 +138,13 @@ Likely implementation surfaces:
 ## Current Handoff Summary
 
 - Current milestone: final closeout
-- Current milestone state: branch-ready
+- Current milestone state: done
 - Last reviewed milestone: M3. Generated output, closeout evidence, and PR readiness
 - Review status: code-review M3 clean-with-notes with no material findings on 2026-05-12
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
+- Next stage: none
 - Final closeout readiness: ready
-- Reason final closeout is or is not ready: all in-scope implementation milestones are closed, review-resolution is closed, final explain-change and verify are complete, and PR handoff remains pending.
+- Reason final closeout is or is not ready: all in-scope implementation milestones are closed, review-resolution is closed, final explain-change and verify are complete, and PR #44 is open.
 
 ## Milestones
 
@@ -287,7 +287,7 @@ Likely implementation surfaces:
      - [x] milestone committed
      - [x] final explain-change completed
      - [x] verify completed
-     - [ ] PR handoff prepared
+     - [x] PR handoff prepared
    - Risks:
      - Generated adapter drift check exposes unrelated stale output.
      - Review-resolution may be required if code-review finds material issues.
@@ -309,6 +309,7 @@ Likely implementation surfaces:
 - 2026-05-12: code-review M3 returned clean-with-notes with no material findings; M3 closed and next stage is `explain-change`.
 - 2026-05-12: final explain-change refreshed `docs/changes/2026-05-12-review-skill-recording-output-guardrail/explain-change.md` with actual diff rationale, review-resolution summary, validation evidence, and remaining risks; next stage is `verify`.
 - 2026-05-12: final verify passed selected CI, broad smoke, generated-output drift checks, adapter validation, change metadata validation, review-artifact closeout validation, and lifecycle validation; branch-ready and next stage is `pr`.
+- 2026-05-12: PR #44 opened for final review at https://github.com/xiongxianfei/rigorloop/pull/44.
 
 ## Decision log
 
@@ -369,7 +370,7 @@ Likely implementation surfaces:
 
 ## Outcome and retrospective
 
-- Pending. Do not claim implementation, verification, branch readiness, or PR readiness until all in-scope implementation milestones and downstream gates are complete.
+- Done. M1 through M3 are closed with validation evidence, clean milestone code reviews, closed review-resolution status, passing final verify, durable explain-change, and opened PR #44. No true downstream completion event remains in this plan, so the plan index and plan body are synchronized as Done in this branch for PR review.
 
 ## Readiness
 
