@@ -3,13 +3,13 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-12 Review skill recording and status output guardrail](plans/2026-05-12-review-skill-recording-output-guardrail.md) - active execution plan with proposal accepted, spec approved, no-architecture-impact rationale approved, plan-review approved, test spec active, M1-M3 closed, final explain-change and verify complete, branch-ready, and PR handoff next.
 - [2026-05-10 Token cost measurement baseline and proposal scope preservation](plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md) - active execution plan with M1-M5 closed, PR #40 open, and local PR-mode CI selector fix passed; hosted CI rerun is pending.
 
 ## Blocked
 - none yet
 
 ## Done
+- [2026-05-12 Review skill recording and status output guardrail](plans/2026-05-12-review-skill-recording-output-guardrail.md) - completed execution plan for adding explicit review verdict, recording status, and artifact-status sync output guardrails to formal review skills, defining the governing spec/test contract, refreshing generated skills and adapters, closing material review findings, passing final verification, and opening PR #44.
 - [2026-05-11 Progressive loading for high-cost public skills](plans/2026-05-11-progressive-loading-high-cost-public-skills.md) - completed execution plan for adding quick operating guides to `workflow`, `implement`, and `code-review`, tightening `implement` handoff-state inspection, accounting for moved workflow detail, preserving protected code-review contracts, refreshing generated output, recording before/after token-cost benchmark evidence, passing final verification, and opening PR #43.
 - [2026-05-11 Expand dynamic token-friendliness benchmarks for core skills](plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md) - completed execution plan for expanding release token-cost benchmark coverage to `skill-token-runtime-v2`, adding core workflow prompts and optional architecture-review fixture, implementing coverage/result-quality and required-benchmark context validation, preserving v1 transition evidence, generating the v2 `v0.1.1` report, passing final verification, and opening PR #42.
 - [2026-05-11 Release token-friendliness benchmark for skills](plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md) - completed execution plan for adding release Token-Friendliness benchmark fixtures, runner/analyzer summaries, structured report validation, first v0.1.1 baseline report, release validation integration, learn capture, final verification, CI selector routing, and merged PR #41.
