@@ -30,6 +30,7 @@ requirements:
   - Implement M2 benchmark fixture and prompt suite before M2 code-review.
   - Record clean code-review R4 before closing M2 and handing off to M3.
   - Implement M3 runner and analyzer-summary integration before M3 code-review.
+  - Resolve code-review R5 findings RTF-CR4, RTF-CR5, and RTF-CR6 before M3 can close.
 tests:
   - Artifact lifecycle validation for the proposal and change-local review artifacts.
   - Artifact lifecycle validation for the new feature spec.
@@ -49,6 +50,7 @@ tests:
   - Focused M2 fixture tests for benchmark manifest, prompt files, clean fixture contents, no installed skill copies, and no generated-surface references.
   - Review artifact closeout validation after clean code-review R4 closes M2.
   - Focused M3 runner/analyzer tests for schema version 1 summaries, raw JSONL omission, temp fixture setup, public skill installation, source rejection, cleanup behavior, analyzer invocation, and no Markdown generation.
+  - Review artifact structure validation after code-review R5 material findings are recorded.
 validation:
   - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
     result: pass_structure_reviews_1_findings_6_log_entries_1_resolution_entries_6
@@ -256,6 +258,14 @@ validation:
     result: pass_validated_4_artifact_files_after_m3_with_existing_plan_index_merge_dependent_warning
   - command: git diff --check -- scripts/run-token-cost-benchmarks.py scripts/analyze-codex-jsonl.py scripts/test-token-cost-measurement.py tests/fixtures/token-cost
     result: pass_after_m3
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_structure_reviews_10_findings_16_log_entries_10_resolution_entries_16_after_code_review_r5
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_code_review_r5
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r5.md
+    result: pass_validated_4_artifact_files_after_code_review_r5_with_existing_plan_index_merge_dependent_warning
+  - command: git diff --check -- docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md
+    result: pass_after_code_review_r5
 changed_files:
   - benchmarks/token-cost/manifest.yaml
   - benchmarks/token-cost/prompts/workflow-route.md
@@ -310,8 +320,9 @@ changed_files:
   - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r2.md
   - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r3.md
   - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r4.md
+  - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r5.md
 review:
-  status: m3_review_requested
-  unresolved_items: 0
+  status: m3_resolution_needed_after_code_review_r5
+  unresolved_items: 3
   review_log: docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md
   review_resolution: docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md
