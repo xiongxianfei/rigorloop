@@ -72,13 +72,13 @@ The goal is to reduce unnecessary whole-skill reads and `implement-handoff` comm
 ## Current Handoff Summary
 
 - Current milestone: M3. Generated Output and Adapter Validation
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M2. Canonical Skill and Workflow Guidance
 - Review status: code-review M2 clean-with-notes; no review-resolution required
 - Remaining in-scope implementation milestones: M3, M4
-- Next stage: implement M3
+- Next stage: code-review M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3-M4 are not started, generated output has not been refreshed or validated, final verification/PR handoff evidence does not exist, and dynamic benchmark evidence has not been recorded.
+- Reason final closeout is or is not ready: M3 is awaiting code-review, M4 is not started, final verification/PR handoff evidence does not exist, and dynamic benchmark evidence has not been recorded.
 
 ## Pre-Implementation Gates
 
@@ -196,7 +196,7 @@ Implementation must not start until plan-review passes and the test spec is auth
 
 ### M3. Generated Output and Adapter Validation
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Regenerate or check generated local skills and public adapters so dynamic benchmarks measure current public skill output.
 - Requirements: `R7`, `R7a`, `R7b`, `R11`, `R12`.
 - Files/components likely touched:
@@ -224,11 +224,11 @@ Implementation must not start until plan-review passes and the test spec is auth
 - Expected observable result: Generated local skill output and public adapter output are current, deterministic, and valid before dynamic benchmarking begins.
 - Commit message: `M3: refresh progressive loading generated output`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - Generated output drift may be larger than expected.
   - Adapter validation may surface unrelated stale release-package issues.
@@ -342,6 +342,8 @@ Final pre-PR validation is expected to include:
 - 2026-05-11: M2 implementation started; scope is canonical `workflow`, `implement`, `code-review`, workflow docs, static measurement, and migration evidence.
 - 2026-05-11: M2 canonical skill edits completed. `workflow`, `implement`, and `code-review` now have quick operating guides; `implement` starts handoff inspection from the active plan `Current Handoff Summary`; `docs/workflows.md` and the optimization report own the workflow detail migration evidence.
 - 2026-05-11: Code-review M2 completed clean-with-notes; no material findings and no review-resolution required. M2 closed; next stage is implement M3.
+- 2026-05-11: M3 implementation started; scope is generated local skill output, public adapter output, adapter validation, and current generated-output evidence before dynamic benchmarks.
+- 2026-05-11: M3 generated local skill mirror and public adapters regenerated from canonical skills. Public Codex adapter output now includes the quick operating guides and `implement` handoff inspection budget needed before dynamic benchmarks.
 
 ## Decision Log
 
@@ -352,10 +354,12 @@ Final pre-PR validation is expected to include:
 - 2026-05-11: M1 uses reusable fixture-style static proof helpers instead of enforcing the new quick-guide contract against canonical skills before M2. Rationale: M1 proves the checks can detect missing or unsafe patterns; M2 owns canonical skill wording.
 - 2026-05-11: Keep `workflow` above the 4,000 target range for now, at 4,857 estimated tokens. Rationale: static validators require safety-critical milestone, review-resolution, lifecycle, autoprogression, claim-boundary, and stop-condition anchors in the public router; the high-warning level was still reduced below 5,000.
 - 2026-05-11: Keep `code-review` protected contracts in the public skill, at 4,671 estimated tokens. Rationale: independent-review, mixed-evidence, material-finding, detailed-record, milestone-handoff, stop-condition, and result-format guidance remains safety-critical; compression focused on repeated input/template prose.
+- 2026-05-11: Regenerate `.codex/skills/` and `dist/adapters/` rather than editing generated files. Rationale: M3 check mode showed derived output drift from canonical M2 skill changes; generated output must remain deterministic and current before benchmarks.
 
 ## Surprises and Discoveries
 
 - Existing validator fixtures still require several exact workflow safety anchor phrases in the public `workflow` skill. M2 restored those anchors in shorter form instead of moving them entirely to contributor docs.
+- M3 check-mode validation initially reported stale generated output for `workflow`, `implement`, and `code-review` across the local Codex mirror and public adapters. Regeneration from canonical sources resolved the drift.
 
 ## Validation Notes
 
@@ -382,6 +386,15 @@ Final pre-PR validation is expected to include:
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml` passed.
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path skills/workflow/SKILL.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path docs/workflows.md --path specs/progressive-loading-high-cost-public-skills.md --path specs/progressive-loading-high-cost-public-skills.test.md --path docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md --path docs/plan.md` passed with existing lifecycle-language warnings in `docs/plan.md` and `docs/workflows.md`.
   - `git diff --check c889850..182dc1f -- skills/workflow/SKILL.md skills/implement/SKILL.md skills/code-review/SKILL.md docs/workflows.md docs/reports/token-cost/optimizations docs/changes/2026-05-11-progressive-loading-high-cost-public-skills docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md docs/plan.md` passed.
+- M3 targeted validation passed:
+  - `python scripts/build-skills.py --check` initially failed with stale generated local skill files for `code-review`, `implement`, and `workflow`; after `python scripts/build-skills.py`, it passed.
+  - `python scripts/build-adapters.py --version 0.1.1 --check` initially failed with nine stale public adapter skill files; after `python scripts/build-adapters.py --version 0.1.1`, it passed with `adapters.drift: ok`.
+  - `python scripts/validate-adapters.py --version 0.1.1` passed.
+  - `python scripts/test-adapter-distribution.py` passed, 68 tests.
+  - `python scripts/validate-skills.py` passed, validating 23 skill files.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml` passed.
+  - `git diff --check -- .codex/skills dist/adapters docs/changes/2026-05-11-progressive-loading-high-cost-public-skills docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md docs/plan.md` passed.
+  - `rg -n "## Quick operating guide|Handoff inspection budget" .codex/skills/code-review/SKILL.md .codex/skills/implement/SKILL.md .codex/skills/workflow/SKILL.md dist/adapters/codex/.agents/skills/code-review/SKILL.md dist/adapters/codex/.agents/skills/implement/SKILL.md dist/adapters/codex/.agents/skills/workflow/SKILL.md` confirmed regenerated local and public Codex skill surfaces include the M2 progressive-loading sections.
 
 ## Outcome and Retrospective
 

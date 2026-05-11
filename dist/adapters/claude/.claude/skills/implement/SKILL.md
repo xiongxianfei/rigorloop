@@ -12,6 +12,33 @@ Do not expand scope. Do not silently alter the spec. Do not declare success with
 
 For planned initiatives, `implement` owns keeping the active plan body current during execution. Update the plan body's progress, decisions, discoveries, and validation notes as work advances instead of leaving those details to later stages.
 
+## Quick operating guide
+
+Use this skill to: implement one approved milestone with tests or proof first, then hand it to review.
+
+Read first:
+
+- the active plan `Current Handoff Summary`;
+- the current milestone section and its validation notes;
+- the governing spec, test spec, plan tasks, and relevant code/tests;
+- the specific needed section first; use broader-section or full-file reading only when bounded evidence is insufficient.
+
+Produce:
+
+- test/proof updates, implementation changes, validation evidence, plan updates, and a review-requested milestone handoff.
+
+Stop when:
+
+- milestone state, requirements, scope, or validation evidence is missing, contradictory, or failing.
+
+Do not claim:
+
+- review passed, branch-ready, PR-ready, final-closeout readiness, or derived artifact currency without owning evidence.
+
+Next stage:
+
+- `code-review` for the implemented milestone, unless a stop condition applies.
+
 ## Purpose
 
 Implement one approved milestone as the smallest scope-complete, test-driven slice and prepare it for `code-review` without claiming downstream review or verification outcomes.
@@ -131,6 +158,24 @@ For each milestone:
 12. Stop before the next milestone unless the user asked to continue.
 
 Stopping before the next milestone does not cancel a required downstream workflow handoff. In a workflow-managed standard workflow, once the requested milestone is complete and no stop condition applies, hand off to `code-review` instead of waiting for redundant user confirmation.
+
+## Handoff inspection budget
+
+When checking milestone readiness or handoff state, start with the active plan's `Current Handoff Summary`.
+
+Use this order:
+
+1. active plan `Current Handoff Summary`
+2. current milestone section
+3. validation notes for that milestone
+4. review-resolution evidence only when findings exist
+5. compact change metadata only for status or artifact pointers
+
+For milestone readiness, do not run broad repository searches to infer milestone state.
+
+Avoid searching all documentation, specifications, skills, derived output, historical reviews, or broad `rg` output before checking active plan state.
+
+If the active plan does not identify the current milestone or next stage, stop and report the missing state instead of searching broadly.
 
 ## Milestone-aware handoff
 
