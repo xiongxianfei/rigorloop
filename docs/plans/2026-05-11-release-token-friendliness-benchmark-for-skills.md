@@ -67,14 +67,14 @@ No `benchmarks/` directory exists yet. This plan creates the first `benchmarks/t
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Benchmark fixture and prompt suite
-- Current milestone state: review-requested
-- Last reviewed milestone: M1 code-review R3 clean-with-notes
-- Review status: M2 implementation complete; ready for code-review
-- Remaining in-scope implementation milestones: M2, M3, M4, M5
-- Next stage: code-review M2
+- Current milestone: M3. Runner and analyzer-summary integration
+- Current milestone state: planned
+- Last reviewed milestone: M2 code-review R4 clean-with-notes
+- Review status: M2 closed; no review-resolution required
+- Remaining in-scope implementation milestones: M3, M4, M5
+- Next stage: implement M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2-M5, explain-change, verify, and PR handoff are not complete.
+- Reason final closeout is or is not ready: M3-M5, explain-change, verify, and PR handoff are not complete.
 
 ## Milestones
 
@@ -131,7 +131,7 @@ No `benchmarks/` directory exists yet. This plan creates the first `benchmarks/t
 
 ### M2. Benchmark fixture and prompt suite
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Add the first executable benchmark suite and clean downstream project fixture.
 - Requirements: `R8`-`R10`, `R31`
 - Files/components likely touched:
@@ -159,8 +159,8 @@ No `benchmarks/` directory exists yet. This plan creates the first `benchmarks/t
 - Milestone closeout:
   - [x] targeted validation passed
   - [x] hand off to code-review for M2
-  - [ ] code-review completed
-  - [ ] material findings resolved or explicitly dispositioned
+  - [x] code-review completed
+  - [x] material findings resolved or explicitly dispositioned
   - [x] progress updated
   - [ ] decision log updated if needed
   - [x] validation notes updated
@@ -396,6 +396,7 @@ bash scripts/release-verify.sh <release-version>
 - 2026-05-11: Started M2 implementation for benchmark manifest, prompt fixtures, clean minimal fixture, and focused fixture validation.
 - 2026-05-11: Added fixture-first tests for benchmark manifest, seven prompt fixtures, clean minimal fixture contents, absence of installed skills, and absence of generated-surface references.
 - 2026-05-11: Added `benchmarks/token-cost/manifest.yaml`, seven no-edit prompt fixtures, and the clean minimal public project fixture; M2 is ready for code-review.
+- 2026-05-11: Code-review R4 found no material findings for M2; M2 is closed and the plan is ready for implement M3.
 
 ## Decision Log
 
@@ -414,6 +415,7 @@ bash scripts/release-verify.sh <release-version>
 - Code-review R3 closed M1 without new material findings and handed the plan to M2.
 - M2 fixture validation deliberately checks the clean source fixture only. Public skill installation remains M3 runner scope.
 - The plan's `find benchmarks/token-cost -maxdepth 4 -type f | sort` command does not list the deeper `docs/changes/.gitkeep` fixture file, but the focused test checks it directly.
+- Code-review R4 closed M2 without new material findings and confirmed public skill installation remains M3 runner scope.
 
 ## Validation Notes
 
@@ -431,6 +433,8 @@ bash scripts/release-verify.sh <release-version>
 - M2 test-first proof: `python scripts/test-token-cost-measurement.py` failed before fixture creation with missing `benchmarks/token-cost/manifest.yaml` and missing fixture `AGENTS.md`.
 - M2 validation: `python scripts/test-token-cost-measurement.py` passed 10 tests; `test -f benchmarks/token-cost/manifest.yaml` passed; `find benchmarks/token-cost -maxdepth 4 -type f | sort` listed the manifest, seven prompt files, and top-level fixture files; `git diff --check -- benchmarks/token-cost scripts/test-token-cost-measurement.py docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml` passed; `rg -n "dist/adapters|\\.codex/skills|\\.agents/skills" benchmarks/token-cost` returned no matches.
 - `python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml` passed.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md` passed with the existing `docs/plan.md` lifecycle-language warning.
+- Code-review R4 validation rerun: `python scripts/test-token-cost-measurement.py` passed 10 tests; `python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills`, and `git diff --check -- benchmarks/token-cost scripts/test-token-cost-measurement.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md` passed.
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md` passed with the existing `docs/plan.md` lifecycle-language warning.
 
 ## Outcome and Retrospective
