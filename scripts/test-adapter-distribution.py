@@ -14,6 +14,9 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "tests" / "fixtures" / "adapters"
+TOKEN_COST_VALID_FIXTURE = (
+    ROOT / "tests" / "fixtures" / "token-cost" / "reports" / "valid-final-pass" / "v0.1.1.yaml"
+)
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import adapter_distribution as adapter_distribution_module  # noqa: E402
@@ -1472,6 +1475,42 @@ class AdapterDistributionTests(unittest.TestCase):
 
             self.assertTrue(
                 any("missing token-cost report metadata" in error for error in errors),
+                errors,
+            )
+
+    def test_v0_1_1_release_validation_blocks_invalid_token_cost_report(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            release_root = root / "docs" / "releases"
+            token_cost_root = root / "docs" / "reports" / "token-cost" / "releases"
+            token_cost_root.mkdir(parents=True)
+            invalid_metadata = TOKEN_COST_VALID_FIXTURE.read_text(encoding="utf-8").replace(
+                "  report_markdown: tests/fixtures/token-cost/reports/valid-final-pass/v0.1.1.md\n",
+                "",
+                1,
+            )
+            (token_cost_root / "v0.1.1.yaml").write_text(invalid_metadata, encoding="utf-8")
+            self.write_release_artifacts(
+                root,
+                version="v0.1.1",
+                release_type="final",
+                manifest_version="0.1.1",
+                smoke_overrides=self.v0_1_1_smoke_overrides(),
+                notes_extra=self.v0_1_1_notes_extra(),
+            )
+
+            errors = validate_release_output(
+                "v0.1.1",
+                release_root=release_root,
+                token_cost_report_root=token_cost_root,
+            )
+
+            self.assertTrue(
+                any("token-cost report validation failed" in error for error in errors),
+                errors,
+            )
+            self.assertTrue(
+                any("report.report_markdown" in error for error in errors),
                 errors,
             )
 
