@@ -28,6 +28,7 @@ requirements:
   - Return M1 to code-review after accepted code-review R2 findings are fixed.
   - Record clean code-review R3 before closing M1 and handing off to M2.
   - Implement M2 benchmark fixture and prompt suite before M2 code-review.
+  - Record clean code-review R4 before closing M2 and handing off to M3.
 tests:
   - Artifact lifecycle validation for the proposal and change-local review artifacts.
   - Artifact lifecycle validation for the new feature spec.
@@ -45,6 +46,7 @@ tests:
   - Focused M1 validator tests for complete RC reuse checked-surface coverage after code-review R2 resolution.
   - Review artifact closeout validation after clean code-review R3 closes M1.
   - Focused M2 fixture tests for benchmark manifest, prompt files, clean fixture contents, no installed skill copies, and no generated-surface references.
+  - Review artifact closeout validation after clean code-review R4 closes M2.
 validation:
   - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
     result: pass_structure_reviews_1_findings_6_log_entries_1_resolution_entries_6
@@ -224,6 +226,16 @@ validation:
     result: pass_valid_change_metadata_after_m2
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md
     result: pass_validated_4_artifact_files_after_m2_with_existing_plan_index_merge_dependent_warning
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_10_tests_after_code_review_r4
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_code_review_r4
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_closeout_reviews_9_findings_13_log_entries_9_resolution_entries_13_after_code_review_r4
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r4.md
+    result: pass_validated_4_artifact_files_after_code_review_r4_with_existing_plan_index_merge_dependent_warning
+  - command: git diff --check -- benchmarks/token-cost scripts/test-token-cost-measurement.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md
+    result: pass_after_code_review_r4
 changed_files:
   - benchmarks/token-cost/manifest.yaml
   - benchmarks/token-cost/prompts/workflow-route.md
@@ -275,8 +287,9 @@ changed_files:
   - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r1.md
   - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r2.md
   - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r3.md
+  - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r4.md
 review:
-  status: m2_review_requested
+  status: m2_closed_after_clean_code_review_r4
   unresolved_items: 0
   review_log: docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md
   review_resolution: docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md

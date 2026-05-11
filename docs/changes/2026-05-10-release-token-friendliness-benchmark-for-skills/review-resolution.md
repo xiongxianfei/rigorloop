@@ -12,11 +12,12 @@ Review closeout: plan-review-r2
 Review closeout: code-review-r1
 Review closeout: code-review-r2
 Review closeout: code-review-r3
+Review closeout: code-review-r4
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-r1`, `code-review-r2`, `code-review-r3`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-r1`, `code-review-r2`, `code-review-r3`, `code-review-r4`
 - Findings resolved: 13
 - Unresolved findings: 0
-- Final result: Proposal-review R1 requested changes for release-gate semantics, run evidence, analyzer summaries, RC reuse, milestone slicing, and warning severity wording; all accepted proposal-review findings were resolved in the proposal. Proposal-review R2 approved the revised proposal with no material findings. Spec-review R1 requested changes for analyzer summary raw-omission compatibility, incomplete non-final dynamic metadata, and first-baseline comparison metadata; all accepted spec-review findings were resolved in the spec. Plan-review R1 requested a milestone-boundary revision; M1 now owns standalone token-cost metadata validation and M5 owns release validation integration. Plan-review R2 approved the revised plan with no material findings. Code-review R1 requested M1 fixes for RC reuse metadata validation and Markdown report metadata-link validation; both findings were resolved in the standalone validator and tests. Code-review R2 requested an M1 fix for partial RC reuse checked-surface validation; RTF-CR3 was resolved in the standalone validator and tests. Code-review R3 found no material findings and closed M1.
+- Final result: Proposal-review R1 requested changes for release-gate semantics, run evidence, analyzer summaries, RC reuse, milestone slicing, and warning severity wording; all accepted proposal-review findings were resolved in the proposal. Proposal-review R2 approved the revised proposal with no material findings. Spec-review R1 requested changes for analyzer summary raw-omission compatibility, incomplete non-final dynamic metadata, and first-baseline comparison metadata; all accepted spec-review findings were resolved in the spec. Plan-review R1 requested a milestone-boundary revision; M1 now owns standalone token-cost metadata validation and M5 owns release validation integration. Plan-review R2 approved the revised plan with no material findings. Code-review R1 requested M1 fixes for RC reuse metadata validation and Markdown report metadata-link validation; both findings were resolved in the standalone validator and tests. Code-review R2 requested an M1 fix for partial RC reuse checked-surface validation; RTF-CR3 was resolved in the standalone validator and tests. Code-review R3 found no material findings and closed M1. Code-review R4 found no material findings and closed M2.
 
 ## Resolution Overview
 
@@ -194,6 +195,10 @@ Validation target: Validator rejects RC-based final waiver metadata without requ
 Validation evidence: `python scripts/test-token-cost-report-validation.py`; `python scripts/validate-token-cost-report.py tests/fixtures/token-cost/reports/valid-final-pass/v0.1.1.yaml`; `python -m py_compile scripts/validate-token-cost-report.py`; `python scripts/test-token-cost-measurement.py`; `git diff --check -- scripts/validate-token-cost-report.py scripts/test-token-cost-report-validation.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md`
 
 ### code-review-r3
+
+No material findings.
+
+### code-review-r4
 
 No material findings.
 
