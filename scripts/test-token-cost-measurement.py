@@ -575,7 +575,10 @@ class BenchmarkRunnerTests(unittest.TestCase):
                 self.assertEqual(result.returncode, 0, result.stderr)
                 self.assertIn("dry_run: true", result.stdout)
                 self.assertIn("skill_source: dist/adapters/codex/.agents/skills/", result.stdout)
-                self.assertIn("codex_command: codex exec --json --ephemeral", result.stdout)
+                self.assertIn(
+                    "codex_command: codex exec --json --ephemeral --skip-git-repo-check",
+                    result.stdout,
+                )
                 self.assertIn("analyzer_command:", result.stdout)
                 self.assertEqual(
                     sorted(path.name for path in output_dir.glob("*.jsonl")),

@@ -172,13 +172,15 @@ def run_benchmark(
     jsonl = output_dir / f"{benchmark.id}-run1.jsonl"
     analysis = output_dir / f"{benchmark.id}-run1.analysis.yaml"
     output_dir.mkdir(parents=True, exist_ok=True)
+    codex_command = ["codex", "exec", "--json", "--ephemeral", "--skip-git-repo-check"]
+    command_display = " ".join(codex_command)
     if dry_run:
         write_dry_run_jsonl(jsonl, benchmark.id)
     else:
-        print(f"codex_command: codex exec --json --ephemeral <{display_path(benchmark.prompt)}>")
+        print(f"codex_command: {command_display} <{display_path(benchmark.prompt)}>")
         with jsonl.open("w", encoding="utf-8") as handle:
             result = subprocess.run(
-                ["codex", "exec", "--json", "--ephemeral", prompt_text],
+                [*codex_command, prompt_text],
                 cwd=temp_fixture,
                 text=True,
                 stdout=handle,
@@ -188,7 +190,7 @@ def run_benchmark(
         if result.returncode != 0:
             raise RuntimeError(f"{benchmark.id}: codex exec failed: {result.stderr.strip()}")
     if dry_run:
-        print(f"codex_command: codex exec --json --ephemeral <{display_path(benchmark.prompt)}>")
+        print(f"codex_command: {command_display} <{display_path(benchmark.prompt)}>")
 
     analyzer_result = run_analyzer(jsonl, analysis, benchmark.id)
     if analyzer_result.returncode != 0:

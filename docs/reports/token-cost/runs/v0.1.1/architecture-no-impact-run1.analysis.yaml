@@ -1,0 +1,44 @@
+schema_version: 1
+
+run:
+  id: architecture-no-impact
+  raw_jsonl_tracked: false
+  jsonl: ""
+  sanitized_source: codex-jsonl-local-run
+  sanitized_summary: docs/reports/token-cost/runs/v0.1.1/architecture-no-impact-run1.analysis.yaml
+  raw_omission_reason: "raw JSONL contains disposable local temp fixture paths and full command output; analyzer summary is tracked as sanitized release evidence"
+
+usage:
+  cached_input_tokens: 24320
+  input_tokens: 33242
+  output_tokens: 236
+  reasoning_output_tokens: 53
+
+tool_output:
+  total_estimated_tokens: 0
+  largest_event:
+    kind: none
+    command: ""
+    path: ""
+    lines: 0
+    estimated_tokens: 0
+
+signals:
+  full_file_read_count: 0
+  broad_search_count: 0
+  generated_output_read_count: 0
+  repeated_file_read_count: 0
+
+full_file_read:
+  result: none
+  justification: ""
+  signals: []
+  justified_reads: []
+  confirmed_reads: []
+  suspected_reads: []
+  repeated_file_reads: []
+
+verdict:
+  result: pass
+  warnings: []
+  blockers: []
