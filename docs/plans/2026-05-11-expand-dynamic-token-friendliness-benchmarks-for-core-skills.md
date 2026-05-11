@@ -84,19 +84,19 @@ The v2 change is release-process and evidence-shape work. It must not hand-edit 
 
 ## Current Handoff Summary
 
-- Current stage: code-review
-- Current milestone: M5. V2 transition report evidence and lifecycle closeout
-- Current milestone state: review-requested
-- Last reviewed milestone: M4. Release validation required benchmark context integration
-- Review status: M5 implementation complete; code-review needed
+- Current stage: explain-change
+- Current milestone: all implementation milestones complete
+- Current milestone state: M5 closed
+- Last reviewed milestone: M5. V2 transition report evidence and lifecycle closeout
+- Review status: code-review M5 R1 clean-with-notes; M5 closed with no open findings
 - Next stage after plan-review: test-spec
 - Test-spec artifact: `specs/expand-dynamic-token-friendliness-benchmarks-for-core-skills.test.md`
 - Test-spec status: active
 - Implementation may start after: test-spec is authored and accepted for use; complete
-- Remaining in-scope implementation milestones: M5 review
-- Next stage: code-review M5
+- Remaining in-scope implementation milestones: none
+- Next stage: explain-change
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M5 requires code-review, and final explain-change, verify, and PR handoff are not complete.
+- Reason final closeout is or is not ready: all implementation milestones are closed, but final explain-change, verify, and PR handoff are not complete.
 
 ## Requirements covered
 
@@ -318,7 +318,7 @@ Suggested validation for the test-spec stage:
 
 ### M5. V2 transition report evidence and lifecycle closeout
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Preserve pre-transition v1 evidence, add v2 transition report metadata/report evidence, and prepare the initiative for final review gates.
 - Requirements: `R1`, `R3`, `R7`-`R9`, `R14`-`R17`.
 - Files/components likely touched:
@@ -358,6 +358,7 @@ Suggested validation for the test-spec stage:
   - [x] decision log updated if needed
   - [x] validation notes updated
   - [x] milestone committed
+  - [x] code-review passed
 - Risks:
   - Live Codex availability or token variability can affect dynamic evidence.
   - Existing `v0.1.1` report identity can be mishandled if preservation is not done atomically.
@@ -413,6 +414,7 @@ Implementation-stage validation is listed per milestone. Prefer the smallest rel
 - 2026-05-11: EDTF-CR2 was accepted and fixed by adding `--changed-path` and `--changed-paths-file` to `validate-release.py`, passing changed paths into release validation, requiring changed-surface input for final v2 reports, and adding focused CLI/API tests; M4 is ready for code-review rerun.
 - 2026-05-11: Code-review M4 R2 closed M4 with no material findings. The release CLI now accepts changed-surface input, final v2 validation blocks when it is omitted, and focused CLI/API tests prove changed-skill benchmark enforcement.
 - 2026-05-11: M5 preserved the existing `v0.1.1` v1 report as `v0.1.1-skill-token-runtime-v1-pretransition`, ran the live required v2 transition suite with Codex, regenerated sanitized analyzer summaries for all ten required core and transition carryover prompts, and replaced the canonical `v0.1.1` YAML/Markdown with the first `skill-token-runtime-v2` transition report.
+- 2026-05-11: Code-review M5 R1 found no material findings and closed M5. All in-scope implementation milestones are now closed; next stage is final explain-change.
 
 ## Decision log
 
@@ -520,6 +522,11 @@ Implementation-stage validation is listed per milestone. Prefer the smallest rel
 - 2026-05-11: `python scripts/validate-release.py --version v0.1.1 --changed-paths-file /tmp/rigorloop-empty-changed-paths.txt` passed during M5, using an explicit empty changed-surface input for the v2 final report.
 - 2026-05-11: `bash scripts/ci.sh --mode explicit --path benchmarks/token-cost --path scripts/validate-token-cost-report.py --path scripts/validate-release.py --path docs/reports/token-cost/releases/v0.1.1.yaml --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml` was blocked by selector classification for directory path `benchmarks/token-cost`.
 - 2026-05-11: `bash scripts/ci.sh --mode explicit --path docs/reports/token-cost/releases/v0.1.1.yaml --path docs/reports/token-cost/releases/v0.1.1.md --path docs/reports/token-cost/releases/v0.1.1-skill-token-runtime-v1-pretransition.yaml --path docs/reports/token-cost/releases/v0.1.1-skill-token-runtime-v1-pretransition.md --path docs/reports/token-cost/runs/v0.1.1/workflow-route-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/proposal-short-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/plan-handoff-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/implement-handoff-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/code-review-small-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/explain-change-summary-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/verify-final-pack-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/pr-handoff-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/architecture-no-impact-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/learn-no-durable-lesson-run1.analysis.yaml --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml` passed selected checks: `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `token_cost.regression`, and `token_cost.report_validate`.
+- 2026-05-11: Code-review M5 R1 reviewer reran `python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1-skill-token-runtime-v1-pretransition.yaml docs/reports/token-cost/releases/v0.1.1.yaml`; passed.
+- 2026-05-11: Code-review M5 R1 reviewer reran `python scripts/validate-release.py --version v0.1.1 --changed-paths-file /tmp/rigorloop-empty-changed-paths.txt`; passed.
+- 2026-05-11: Code-review M5 R1 reviewer reran `python scripts/test-token-cost-report-validation.py`; passed with 16 tests.
+- 2026-05-11: Code-review M5 R1 reviewer reran `python scripts/test-token-cost-measurement.py`; passed with 24 tests.
+- 2026-05-11: Code-review M5 R1 reviewer reran `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills`; passed with `reviews=13`, `findings=8`, `log_entries=13`, and `resolution_entries=8`.
 
 ## Outcome and retrospective
 
