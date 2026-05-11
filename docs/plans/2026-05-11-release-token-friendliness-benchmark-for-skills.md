@@ -68,19 +68,19 @@ No `benchmarks/` directory exists yet. This plan creates the first `benchmarks/t
 ## Current Handoff Summary
 
 - Current milestone: M1. Metadata schema and validator
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: plan-review R2 approved execution plan
-- Review status: code-review R2 changes-requested; RTF-CR3 open
+- Review status: code-review R2 finding resolved; ready for code-review rerun
 - Remaining in-scope implementation milestones: M1, M2, M3, M4, M5
-- Next stage: review-resolution M1
+- Next stage: code-review M1 rerun
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 has unresolved code-review R2 finding RTF-CR3; remaining implementation milestones, explain-change, verify, and PR handoff are not complete.
+- Reason final closeout is or is not ready: M1 code-review rerun, remaining implementation milestones, explain-change, verify, and PR handoff are not complete.
 
 ## Milestones
 
 ### M1. Metadata schema and validator
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Add the structured token-cost release metadata contract and standalone validator.
 - Requirements: `R1`-`R7`, `R14`-`R16`, `R19`-`R28`, `R29`, `R30`
 - Files/components likely touched:
@@ -116,7 +116,7 @@ No `benchmarks/` directory exists yet. This plan creates the first `benchmarks/t
   - [x] targeted validation passed
   - [x] hand off to code-review for M1
   - [x] code-review completed
-  - [ ] material findings resolved or explicitly dispositioned
+  - [x] material findings resolved or explicitly dispositioned
   - [x] progress updated
   - [ ] decision log updated if needed
   - [x] validation notes updated
@@ -391,6 +391,7 @@ bash scripts/release-verify.sh <release-version>
 - 2026-05-11: Code-review R1 requested M1 fixes for RC reuse metadata validation and Markdown report metadata-link validation.
 - 2026-05-11: Resolved code-review R1 findings with RC reuse validation, Markdown/YAML pairing validation, and focused tests; M1 is ready for code-review rerun.
 - 2026-05-11: Code-review R2 requested an M1 fix for partial RC reuse checked-surface validation; RTF-CR3 is open.
+- 2026-05-11: Resolved RTF-CR3 by requiring all RC reuse checked-surface categories and adding per-category negative tests; M1 is ready for code-review rerun.
 
 ## Decision Log
 
@@ -405,6 +406,7 @@ bash scripts/release-verify.sh <release-version>
 - M1 can validate runner metadata shape before the runner exists by using test fixture paths and checking the required public skill source string.
 - Code-review R1 found that RC reuse and Markdown/YAML pairing were part of the M1 validator contract, not later release integration. Both are now covered by standalone tests.
 - Code-review R2 found that RC reuse checked-surface validation must reject partial surface coverage, not only no-surface coverage.
+- RTF-CR3 resolution keeps model/tool version mandatory as an addressed category, including unknown/unchanged wording through accepted synonyms, so final-release RC reuse decisions have a consistent review surface.
 
 ## Validation Notes
 
@@ -415,6 +417,8 @@ bash scripts/release-verify.sh <release-version>
 - `git diff --check -- scripts/validate-token-cost-report.py scripts/test-token-cost-report-validation.py tests/fixtures/token-cost` passed.
 - Code-review R1 resolution: `python scripts/test-token-cost-report-validation.py` passed 9 tests; `python scripts/validate-token-cost-report.py tests/fixtures/token-cost/reports/valid-final-pass/v0.1.1.yaml`, `python -m py_compile scripts/validate-token-cost-report.py`, `python scripts/test-token-cost-measurement.py`, `python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills`, and `git diff --check -- scripts/validate-token-cost-report.py scripts/test-token-cost-report-validation.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md` passed.
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r1.md` passed with the existing `docs/plan.md` lifecycle-language warning.
+- Code-review R2 resolution: `python scripts/test-token-cost-report-validation.py` passed 10 tests; `python scripts/validate-token-cost-report.py tests/fixtures/token-cost/reports/valid-final-pass/v0.1.1.yaml`, `python -m py_compile scripts/validate-token-cost-report.py`, `python scripts/test-token-cost-measurement.py`, `python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills`, and `git diff --check -- scripts/validate-token-cost-report.py scripts/test-token-cost-report-validation.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md` passed.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r2.md` passed with the existing `docs/plan.md` lifecycle-language warning.
 
 ## Outcome and Retrospective
 

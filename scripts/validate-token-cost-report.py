@@ -23,17 +23,21 @@ VALID_WAIVER_REASON_MARKERS = (
     "benchmark tooling failure",
 )
 RC_REFERENCE_MARKERS = ("rc", "no benchmark-relevant changes")
-BENCHMARK_RELEVANT_SURFACE_MARKERS = (
-    "public skill",
-    "adapter output",
-    "workflow guide",
-    "benchmark prompt",
-    "analyzer",
-    "fixture",
-    "model",
-    "tool version",
-    "release packaging",
-)
+REQUIRED_RC_REUSE_SURFACES = {
+    "public_skills": ("public skill", "public skills", "skill text", "published skills"),
+    "adapter_output": ("adapter output", "adapters", "dist/adapters"),
+    "workflow_guide": ("workflow guide", "docs/workflows.md", "workflow guidance"),
+    "benchmark_prompts": ("benchmark prompt", "benchmark prompts", "prompts"),
+    "analyzer": ("analyzer", "analyzer script", "analyze-codex-jsonl"),
+    "fixture": ("fixture", "benchmark fixture", "fixtures"),
+    "model_or_tool_version": (
+        "model",
+        "tool version",
+        "codex version",
+        "model/tool version",
+    ),
+    "release_packaging": ("release packaging", "packaging", "release package"),
+}
 
 
 class MetadataValidationError(Exception):
@@ -516,10 +520,19 @@ def validate_rc_reuse(
     rationale = require_non_empty_string(rc_reuse.get("rationale"), "rc_reuse.rationale", errors)
     checked_surface = rc_reuse.get("checked_surface")
     checked_text = f"{checked_surface or ''} {rationale}".lower()
-    if relevant is False and not any(
-        marker in checked_text for marker in BENCHMARK_RELEVANT_SURFACE_MARKERS
-    ):
-        errors.append("rc_reuse.rationale: must name benchmark-relevant checked surfaces")
+    if relevant is False:
+        missing = [
+            category
+            for category, markers in REQUIRED_RC_REUSE_SURFACES.items()
+            if not any(marker in checked_text for marker in markers)
+        ]
+        if missing:
+            errors.append(
+                "rc_reuse checked_surface/rationale must cover all required "
+                "benchmark-relevant surface categories when "
+                "benchmark_relevant_changes_since_rc is false; missing: "
+                + ", ".join(missing)
+            )
     if relevant is True and dynamic_status != "waived":
         runs = data.get("dynamic_runtime", {}).get("runs") if isinstance(data.get("dynamic_runtime"), dict) else None
         if not runs:
