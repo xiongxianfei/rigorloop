@@ -2042,6 +2042,30 @@ def build_required_benchmark_context(
                     "follow_up": f"add token-cost benchmark fixture for {skill}",
                 }
             )
+    for skill in sorted(generated_by_skill):
+        if skill in canonical_by_skill:
+            continue
+        benchmark = skill_to_benchmark.get(skill)
+        if benchmark and benchmark not in base_required:
+            required_due_to_changes.append(
+                {
+                    "benchmark": benchmark,
+                    "skill": skill,
+                    "reason": "generated-public-skill-changed",
+                    "changed_surfaces": {
+                        "canonical": [],
+                        "generated": list(generated_by_skill[skill]),
+                    },
+                }
+            )
+        elif not benchmark:
+            missing_benchmarks.append(
+                {
+                    "skill": skill,
+                    "reason": "generated-public-skill-changed",
+                    "follow_up": f"add token-cost benchmark fixture for {skill}",
+                }
+            )
 
     generated_trace: list[dict[str, Any]] = []
     for skill in sorted(generated_by_skill):
@@ -2111,7 +2135,7 @@ def _validate_token_cost_report(
     token_cost_report_root: Path = TOKEN_COST_REPORT_ROOT,
     token_cost_validator: Path = TOKEN_COST_VALIDATOR,
     required_benchmark_context: Any | None = None,
-    changed_paths: Iterable[str | Path] = (),
+    changed_paths: Iterable[str | Path] | None = None,
 ) -> list[str]:
     metadata_path = token_cost_report_root / f"{version}.yaml"
     if not metadata_path.is_file():
@@ -2123,12 +2147,20 @@ def _validate_token_cost_report(
         module = _load_token_cost_validator_module(token_cost_validator)
         metadata = module.load_yaml(metadata_path)
         context = required_benchmark_context
-        if context is None and _token_cost_report_suite_id(metadata_path, token_cost_validator) == TOKEN_COST_RUNTIME_V2:
+        suite_id = _token_cost_report_suite_id(metadata_path, token_cost_validator)
+        final_release = "-" not in version
+        if context is None and suite_id == TOKEN_COST_RUNTIME_V2 and final_release and changed_paths is None:
+            return [
+                "release validation requires changed-surface input for "
+                "skill-token-runtime-v2 final releases; pass --changed-path or "
+                "--changed-paths-file"
+            ]
+        if context is None and suite_id == TOKEN_COST_RUNTIME_V2:
             context = build_required_benchmark_context(
                 version,
-                release_stage="final" if "-" not in version else "rc",
+                release_stage="final" if final_release else "rc",
                 commit=_current_git_commit(),
-                changed_paths=changed_paths,
+                changed_paths=changed_paths or (),
                 token_cost_validator=token_cost_validator,
             )
         errors = module.validate_token_cost_report(
@@ -2154,7 +2186,7 @@ def validate_release_output(
     release_root: Path = RELEASE_ROOT,
     token_cost_report_root: Path = TOKEN_COST_REPORT_ROOT,
     token_cost_validator: Path = TOKEN_COST_VALIDATOR,
-    changed_paths: Iterable[str | Path] = (),
+    changed_paths: Iterable[str | Path] | None = None,
 ) -> list[str]:
     """Validate one target-version release metadata and notes surface."""
 
