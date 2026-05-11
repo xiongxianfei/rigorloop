@@ -67,6 +67,9 @@ tests:
   - Review artifact closeout validation after clean code-review R8 closes M4.
   - Focused release validation tests for governed `v0.1.1` token-cost evidence and historical release scope.
   - Release verifier proof that `v0.1.1` invokes token-cost report validation.
+  - Code-review R9 review artifact recording for M5.
+  - Focused release validation integration test proving invalid governed token-cost metadata blocks through validator delegation.
+  - T16 test-spec clarification for delegated validator failure propagation.
 validation:
   - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
     result: pass_structure_reviews_1_findings_6_log_entries_1_resolution_entries_6
@@ -402,6 +405,36 @@ validation:
     result: pass_validated_4_artifact_files_after_m5_with_existing_plan_and_workflow_lifecycle_language_warnings
   - command: git diff --check --
     result: pass_after_m5
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_58_tests_during_code_review_r9
+  - command: python scripts/validate-release.py --version v0.1.1
+    result: pass_during_code_review_r9
+  - command: RELEASE_VERIFY_DRY_RUN=1 bash scripts/release-verify.sh v0.1.1
+    result: pass_during_code_review_r9
+  - command: python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml
+    result: pass_during_code_review_r9
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_v0_1_1_release_validation_blocks_invalid_token_cost_report
+    result: pass_after_rtf_cr8_resolution
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_59_tests_after_rtf_cr8_resolution
+  - command: python scripts/test-token-cost-report-validation.py
+    result: pass_10_tests_after_rtf_cr8_resolution
+  - command: python scripts/validate-release.py --version v0.1.1
+    result: pass_after_rtf_cr8_resolution
+  - command: python -m py_compile scripts/validate-release.py scripts/validate-token-cost-report.py scripts/adapter_distribution.py
+    result: pass_after_rtf_cr8_resolution
+  - command: bash scripts/release-verify.sh v0.1.1
+    result: pass_after_rtf_cr8_resolution
+  - command: python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml
+    result: pass_after_rtf_cr8_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_rtf_cr8_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_closeout_reviews_14_findings_18_log_entries_14_resolution_entries_18_after_rtf_cr8_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r9.md --path docs/releases/v0.1.1/release.yaml --path docs/reports/token-cost/releases/v0.1.1.yaml --path docs/workflows.md
+    result: pass_validated_4_artifact_files_after_rtf_cr8_resolution_with_existing_plan_and_workflow_lifecycle_language_warnings
+  - command: git diff --check --
+    result: pass_after_rtf_cr8_resolution
 changed_files:
   - benchmarks/token-cost/manifest.yaml
   - benchmarks/token-cost/prompts/workflow-route.md
@@ -463,6 +496,7 @@ changed_files:
   - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r6.md
   - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r7.md
   - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r8.md
+  - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r9.md
   - docs/reports/token-cost/releases/v0.1.1.md
   - docs/reports/token-cost/releases/v0.1.1.yaml
   - docs/reports/token-cost/runs/v0.1.1/workflow-route-run1.analysis.yaml
@@ -476,7 +510,7 @@ changed_files:
   - docs/releases/v0.1.1/release.yaml
   - docs/workflows.md
 review:
-  status: m5_review_requested
+  status: m5_review_requested_after_rtf_cr8_resolution
   unresolved_items: 0
   review_log: docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md
   review_resolution: docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md

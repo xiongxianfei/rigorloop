@@ -394,6 +394,7 @@
   - Run `python scripts/validate-release.py --version <governed-version>`.
   - Assert it delegates to `scripts/validate-token-cost-report.py`.
   - Assert governed missing/invalid token-cost evidence blocks.
+  - Assert governed token-cost metadata that exists but fails standalone token-cost report validation also fails release validation through delegated validator failure propagation.
   - Assert historical releases are not accidentally broken unless policy scope requires it.
   - Assert optional Claude Code/opencode `not-run` sections do not block v1.
 - Expected result:
