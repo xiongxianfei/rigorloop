@@ -89,6 +89,26 @@ validation:
     result: pass_confirmed_local_and_public_codex_generated_skill_surfaces_include_progressive_loading_sections
   - command: code-review M3
     result: clean_with_notes_no_material_findings_commit_f4013f2
+  - command: python scripts/measure-skill-tokens.py
+    result: pass_total_52843_workflow_4857_implement_3963_code_review_4671_after_m4_static_refresh
+  - command: python scripts/run-token-cost-benchmarks.py --suite benchmarks/token-cost/manifest.yaml --release v0.1.1 --tool codex --output-dir /tmp/rigorloop-token-progressive-loading-m4
+    result: pass_full_required_suite_against_dist_adapters_codex_public_skills_no_targeted_filter_available
+  - command: manual M4 result-quality comparison for workflow-route implement-handoff code-review-small verify-final-pack
+    result: pass_no_targeted_result_quality_regression_from_pass_to_fail
+  - command: python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml
+    result: pass_baseline_release_report_validated_as_comparison_input
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_24_tests_after_m4_dynamic_evidence
+  - command: python scripts/test-token-cost-report-validation.py
+    result: pass_16_tests_after_m4_dynamic_evidence
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml
+    result: pass_valid_change_metadata_after_m4_dynamic_evidence_before_final_metadata_sync
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-11-progressive-loading-for-high-cost-public-skills.md --path specs/progressive-loading-high-cost-public-skills.md --path specs/progressive-loading-high-cost-public-skills.test.md --path docs/reports/token-cost/optimizations/2026-05-11-progressive-loading-high-cost-skills.md --path docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml --path docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/explain-change.md --path docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md --path docs/plan.md
+    result: failed_missing_declared_explain_change_surface_before_m4_added_it_then_pass_with_existing_docs_plan_lifecycle_language_warning
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml
+    result: pass_valid_change_metadata_after_m4_metadata_sync
+  - command: git diff --check -- docs/reports/token-cost docs/changes/2026-05-11-progressive-loading-high-cost-public-skills docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md docs/plan.md
+    result: pass_after_m4_dynamic_evidence
 changed_files:
   - .codex/skills/code-review/SKILL.md
   - .codex/skills/implement/SKILL.md
@@ -103,6 +123,7 @@ changed_files:
   - dist/adapters/opencode/.opencode/skills/implement/SKILL.md
   - dist/adapters/opencode/.opencode/skills/workflow/SKILL.md
   - docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml
+  - docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/explain-change.md
   - docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/review-log.md
   - docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/review-resolution.md
   - docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/reviews/plan-review-r1.md
@@ -116,5 +137,5 @@ changed_files:
   - skills/workflow/SKILL.md
   - specs/progressive-loading-high-cost-public-skills.test.md
 review:
-  status: m3_clean_with_notes
+  status: m4_review_requested
   unresolved_items: 0

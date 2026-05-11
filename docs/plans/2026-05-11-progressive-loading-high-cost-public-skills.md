@@ -72,13 +72,13 @@ The goal is to reduce unnecessary whole-skill reads and `implement-handoff` comm
 ## Current Handoff Summary
 
 - Current milestone: M4. Benchmark Evidence and Lifecycle Closeout
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M3. Generated Output and Adapter Validation
 - Review status: code-review M3 clean-with-notes; no review-resolution required
 - Remaining in-scope implementation milestones: M4
-- Next stage: implement M4
+- Next stage: code-review M4
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M4 is not started, final verification/PR handoff evidence does not exist, and dynamic benchmark evidence has not been recorded.
+- Reason final closeout is or is not ready: M4 is awaiting code-review, final verification/PR handoff evidence does not exist, and downstream final closeout has not run.
 
 ## Pre-Implementation Gates
 
@@ -237,7 +237,7 @@ Implementation must not start until plan-review passes and the test spec is auth
 
 ### M4. Benchmark Evidence and Lifecycle Closeout
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Rerun targeted dynamic benchmarks against regenerated public skills, record the optimization comparison report, and prepare final lifecycle evidence.
 - Requirements: `R8`, `R9`, `R10`, `R12`, acceptance criteria.
 - Files/components likely touched:
@@ -273,11 +273,11 @@ Implementation must not start until plan-review passes and the test spec is auth
 - Expected observable result: The optimization comparison report gives durable before/after evidence and no targeted benchmark result-quality status regresses from `pass` to `fail`.
 - Commit message: `M4: record progressive loading benchmark evidence`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - Codex dynamic benchmark tooling may be unavailable or expensive.
   - Benchmarks may not improve even with better skill text because runtime behavior is tool- or prompt-driven.
@@ -345,6 +345,9 @@ Final pre-PR validation is expected to include:
 - 2026-05-11: M3 implementation started; scope is generated local skill output, public adapter output, adapter validation, and current generated-output evidence before dynamic benchmarks.
 - 2026-05-11: M3 generated local skill mirror and public adapters regenerated from canonical skills. Public Codex adapter output now includes the quick operating guides and `implement` handoff inspection budget needed before dynamic benchmarks.
 - 2026-05-11: Code-review M3 completed clean-with-notes; no material findings and no review-resolution required. M3 closed; next stage is implement M4.
+- 2026-05-11: M4 implementation started; scope is static measurement refresh, dynamic benchmark evidence, optimization comparison report, change metadata, and lifecycle handoff.
+- 2026-05-11: M4 full required dynamic benchmark suite completed against regenerated public Codex adapter skills. The optimization comparison report now records before/after static and dynamic evidence, including remaining full-skill-read and broad-search warnings.
+- 2026-05-11: M4 added the change-local `explain-change.md` reasoning surface because lifecycle validation found the path already declared in `change.yaml` but missing on disk.
 
 ## Decision Log
 
@@ -356,11 +359,13 @@ Final pre-PR validation is expected to include:
 - 2026-05-11: Keep `workflow` above the 4,000 target range for now, at 4,857 estimated tokens. Rationale: static validators require safety-critical milestone, review-resolution, lifecycle, autoprogression, claim-boundary, and stop-condition anchors in the public router; the high-warning level was still reduced below 5,000.
 - 2026-05-11: Keep `code-review` protected contracts in the public skill, at 4,671 estimated tokens. Rationale: independent-review, mixed-evidence, material-finding, detailed-record, milestone-handoff, stop-condition, and result-format guidance remains safety-critical; compression focused on repeated input/template prose.
 - 2026-05-11: Regenerate `.codex/skills/` and `dist/adapters/` rather than editing generated files. Rationale: M3 check mode showed derived output drift from canonical M2 skill changes; generated output must remain deterministic and current before benchmarks.
+- 2026-05-11: Run the full required token-cost suite for M4. Rationale: the benchmark runner does not expose a targeted prompt filter, and the plan allows the full required suite when needed for comparable evidence.
 
 ## Surprises and Discoveries
 
 - Existing validator fixtures still require several exact workflow safety anchor phrases in the public `workflow` skill. M2 restored those anchors in shorter form instead of moving them entirely to contributor docs.
 - M3 check-mode validation initially reported stale generated output for `workflow`, `implement`, and `code-review` across the local Codex mirror and public adapters. Regeneration from canonical sources resolved the drift.
+- M4 dynamic evidence was mixed: `implement-handoff` largest command output improved from 20,738 to 3,098 estimated tokens, but full-skill-style reads persisted across all required runs and targeted broad-search count increased from 2 to 8.
 
 ## Validation Notes
 
@@ -404,6 +409,17 @@ Final pre-PR validation is expected to include:
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml` passed.
   - `git diff --check d0cb7eb..f4013f2 -- .codex/skills dist/adapters docs/changes/2026-05-11-progressive-loading-high-cost-public-skills docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md docs/plan.md` passed.
   - `rg -n "## Quick operating guide|Handoff inspection budget" .codex/skills/code-review/SKILL.md .codex/skills/implement/SKILL.md .codex/skills/workflow/SKILL.md dist/adapters/codex/.agents/skills/code-review/SKILL.md dist/adapters/codex/.agents/skills/implement/SKILL.md dist/adapters/codex/.agents/skills/workflow/SKILL.md` confirmed generated local and public Codex progressive-loading sections.
+- M4 targeted validation passed:
+  - `python scripts/measure-skill-tokens.py` passed: total 52,843 estimated tokens; `workflow` 4,857, `implement` 3,963, `code-review` 4,671.
+  - `python scripts/run-token-cost-benchmarks.py --suite benchmarks/token-cost/manifest.yaml --release v0.1.1 --tool codex --output-dir /tmp/rigorloop-token-progressive-loading-m4` passed for the full required suite.
+  - Manual M4 result-quality review found no targeted benchmark regression from `pass` to `fail` for `workflow-route`, `implement-handoff`, `code-review-small`, or `verify-final-pack`.
+  - `python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml` passed.
+  - `python scripts/test-token-cost-measurement.py` passed, 24 tests.
+  - `python scripts/test-token-cost-report-validation.py` passed, 16 tests.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml` passed.
+  - Initial M4 artifact lifecycle validation failed because `docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/explain-change.md` did not exist. M4 added the declared durable reasoning surface, then `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-11-progressive-loading-for-high-cost-public-skills.md --path specs/progressive-loading-high-cost-public-skills.md --path specs/progressive-loading-high-cost-public-skills.test.md --path docs/reports/token-cost/optimizations/2026-05-11-progressive-loading-high-cost-skills.md --path docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml --path docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/explain-change.md --path docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md --path docs/plan.md` passed with the existing `docs/plan.md` lifecycle-language warning.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml` passed after final M4 metadata sync.
+  - `git diff --check -- docs/reports/token-cost docs/changes/2026-05-11-progressive-loading-high-cost-public-skills docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md docs/plan.md` passed.
 
 ## Outcome and Retrospective
 
