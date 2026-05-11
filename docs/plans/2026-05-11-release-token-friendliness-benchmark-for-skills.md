@@ -68,19 +68,19 @@ No `benchmarks/` directory exists yet. This plan creates the first `benchmarks/t
 ## Current Handoff Summary
 
 - Current milestone: M1. Metadata schema and validator
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Last reviewed milestone: plan-review R2 approved execution plan
-- Review status: code-review R1 findings resolved; ready for code-review rerun
+- Review status: code-review R2 changes-requested; RTF-CR3 open
 - Remaining in-scope implementation milestones: M1, M2, M3, M4, M5
-- Next stage: code-review M1 rerun
+- Next stage: review-resolution M1
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 code-review rerun, remaining implementation milestones, explain-change, verify, and PR handoff are not complete.
+- Reason final closeout is or is not ready: M1 has unresolved code-review R2 finding RTF-CR3; remaining implementation milestones, explain-change, verify, and PR handoff are not complete.
 
 ## Milestones
 
 ### M1. Metadata schema and validator
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Add the structured token-cost release metadata contract and standalone validator.
 - Requirements: `R1`-`R7`, `R14`-`R16`, `R19`-`R28`, `R29`, `R30`
 - Files/components likely touched:
@@ -116,7 +116,7 @@ No `benchmarks/` directory exists yet. This plan creates the first `benchmarks/t
   - [x] targeted validation passed
   - [x] hand off to code-review for M1
   - [x] code-review completed
-  - [x] material findings resolved or explicitly dispositioned
+  - [ ] material findings resolved or explicitly dispositioned
   - [x] progress updated
   - [ ] decision log updated if needed
   - [x] validation notes updated
@@ -390,6 +390,7 @@ bash scripts/release-verify.sh <release-version>
 - 2026-05-11: Implemented M1 standalone token-cost report metadata validator, fixture-backed tests, and valid report evidence cases; M1 is ready for code-review.
 - 2026-05-11: Code-review R1 requested M1 fixes for RC reuse metadata validation and Markdown report metadata-link validation.
 - 2026-05-11: Resolved code-review R1 findings with RC reuse validation, Markdown/YAML pairing validation, and focused tests; M1 is ready for code-review rerun.
+- 2026-05-11: Code-review R2 requested an M1 fix for partial RC reuse checked-surface validation; RTF-CR3 is open.
 
 ## Decision Log
 
@@ -403,6 +404,7 @@ bash scripts/release-verify.sh <release-version>
 - No `benchmarks/` directory exists yet; M2 creates the benchmark fixture root.
 - M1 can validate runner metadata shape before the runner exists by using test fixture paths and checking the required public skill source string.
 - Code-review R1 found that RC reuse and Markdown/YAML pairing were part of the M1 validator contract, not later release integration. Both are now covered by standalone tests.
+- Code-review R2 found that RC reuse checked-surface validation must reject partial surface coverage, not only no-surface coverage.
 
 ## Validation Notes
 
