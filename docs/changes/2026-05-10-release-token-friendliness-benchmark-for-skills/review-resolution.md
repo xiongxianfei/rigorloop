@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -13,9 +13,9 @@ Review closeout: code-review-r1
 Review closeout: code-review-r2
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-r1`, `code-review-r2`
-- Findings resolved: 12
-- Unresolved findings: 1
-- Final result: Proposal-review R1 requested changes for release-gate semantics, run evidence, analyzer summaries, RC reuse, milestone slicing, and warning severity wording; all accepted proposal-review findings were resolved in the proposal. Proposal-review R2 approved the revised proposal with no material findings. Spec-review R1 requested changes for analyzer summary raw-omission compatibility, incomplete non-final dynamic metadata, and first-baseline comparison metadata; all accepted spec-review findings were resolved in the spec. Plan-review R1 requested a milestone-boundary revision; M1 now owns standalone token-cost metadata validation and M5 owns release validation integration. Plan-review R2 approved the revised plan with no material findings. Code-review R1 requested M1 fixes for RC reuse metadata validation and Markdown report metadata-link validation; both findings were resolved in the standalone validator and tests. Code-review R2 requested an M1 fix for partial RC reuse checked-surface validation; RTF-CR3 remains open.
+- Findings resolved: 13
+- Unresolved findings: 0
+- Final result: Proposal-review R1 requested changes for release-gate semantics, run evidence, analyzer summaries, RC reuse, milestone slicing, and warning severity wording; all accepted proposal-review findings were resolved in the proposal. Proposal-review R2 approved the revised proposal with no material findings. Spec-review R1 requested changes for analyzer summary raw-omission compatibility, incomplete non-final dynamic metadata, and first-baseline comparison metadata; all accepted spec-review findings were resolved in the spec. Plan-review R1 requested a milestone-boundary revision; M1 now owns standalone token-cost metadata validation and M5 owns release validation integration. Plan-review R2 approved the revised plan with no material findings. Code-review R1 requested M1 fixes for RC reuse metadata validation and Markdown report metadata-link validation; both findings were resolved in the standalone validator and tests. Code-review R2 requested an M1 fix for partial RC reuse checked-surface validation; RTF-CR3 was resolved in the standalone validator and tests.
 
 ## Resolution Overview
 
@@ -33,7 +33,7 @@ Review closeout: code-review-r2
 | RTF-PLR1 | accepted | resolved | Separated standalone token-cost validator work from release validation integration. |
 | RTF-CR1 | accepted | resolved | Added RC reuse metadata validation and fixtures to the standalone token-cost validator. |
 | RTF-CR2 | accepted | resolved | Validated that the Markdown report names or links the YAML metadata file. |
-| RTF-CR3 | needs-decision | open | Validator accepts an incomplete RC reuse checked-surface rationale. |
+| RTF-CR3 | accepted | resolved | Validator now requires all RC reuse checked-surface categories. |
 
 ## Common Resolution Metadata
 
@@ -209,16 +209,14 @@ Validation evidence: Shared code-review R1 resolution validation evidence.
 #### RTF-CR3 - RC reuse surface coverage accepts an incomplete checked-surface rationale
 
 Finding ID: RTF-CR3
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: implementer
 Owning stage: implement M1
-Decision owner: implementation owner
-Decision needed: Choose whether to accept RTF-CR3 and tighten RC reuse checked-surface validation, reject it with spec-based rationale, or revise the governing spec if partial surface coverage is intentional.
-Chosen action: Pending review-resolution disposition.
-Rationale: Code-review R2 found that `validate_rc_reuse` accepts a false RC reuse rationale when any required surface marker is present, while R22c requires the rationale to state the checked surfaces.
+Chosen action: Update `scripts/validate-token-cost-report.py` so `benchmark_relevant_changes_since_rc: false` requires all R22c benchmark-relevant surface categories to be addressed across `rc_reuse.checked_surface` and `rc_reuse.rationale`.
+Rationale: A final-release RC reuse decision must be reviewable. Mentioning only one surface does not prove the release owner checked public skills, adapter output, workflow guide, benchmark prompts, analyzer, fixture, model/tool version, and release packaging.
 Validation target: Validator should reject partial RC reuse checked-surface rationale and accept rationale covering all R22c surface categories.
-Validation evidence: Pending.
+Validation evidence: `python scripts/test-token-cost-report-validation.py`; `python scripts/validate-token-cost-report.py tests/fixtures/token-cost/reports/valid-final-pass/v0.1.1.yaml`; `python -m py_compile scripts/validate-token-cost-report.py`; `python scripts/test-token-cost-measurement.py`; `git diff --check -- scripts/validate-token-cost-report.py scripts/test-token-cost-report-validation.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md`
 
 ## Shared Validation Evidence
 
@@ -234,8 +232,8 @@ Validation evidence: Pending.
 - [x] Every accepted finding has a chosen action or stop state.
 - [x] Every rejected finding has rationale.
 - [x] Every deferred finding has follow-up or explicit no-follow-up rationale.
-- [ ] Every `needs-decision` finding is resolved or blocks closeout.
+- [x] Every `needs-decision` finding is resolved or blocks closeout.
 - [x] Validation evidence is recorded for spec-review findings.
 - [x] Validation evidence is recorded for plan-review findings.
-- [ ] Validation evidence is recorded for code-review findings.
+- [x] Validation evidence is recorded for code-review findings.
 - [x] Closeout status is correct.

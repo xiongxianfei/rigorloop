@@ -19,6 +19,20 @@ OMITTED_ANALYSIS = (
     "tests/fixtures/token-cost/reports/valid-raw-omitted/proposal-short-run1.analysis.yaml"
 )
 OMITTED_SUMMARY = "tests/fixtures/token-cost/reports/valid-raw-omitted/sanitized-summary.yaml"
+RC_REUSE_SURFACE_TEXT = (
+    "No public skills, adapter output, workflow guide, benchmark prompts, "
+    "analyzer scripts, fixtures, model/tool version, or release packaging changes since RC."
+)
+RC_REUSE_SURFACE_REMOVALS = {
+    "public_skills": "public skills, ",
+    "adapter_output": "adapter output, ",
+    "workflow_guide": "workflow guide, ",
+    "benchmark_prompts": "benchmark prompts, ",
+    "analyzer": "analyzer scripts, ",
+    "fixture": "fixtures, ",
+    "model_or_tool_version": "model/tool version, ",
+    "release_packaging": "or release packaging ",
+}
 
 
 def run_validator(path: Path) -> subprocess.CompletedProcess[str]:
@@ -47,7 +61,7 @@ class TokenCostReportValidatorTests(unittest.TestCase):
                 f"  benchmark_relevant_changes_since_rc: {'true' if relevant_changes else 'false'}",
                 "  checked_by: release-owner",
                 "  checked_surface: release checklist",
-                "  rationale: No public skills, adapter output, workflow guide, benchmark prompts, analyzer scripts, fixtures, model/tool version, or release packaging changes since RC.",
+                f"  rationale: {RC_REUSE_SURFACE_TEXT}",
                 "",
             ]
         )
@@ -226,12 +240,31 @@ class TokenCostReportValidatorTests(unittest.TestCase):
         )
         self.assertFails(
             valid.replace(
-                "No public skills, adapter output, workflow guide, benchmark prompts, analyzer scripts, fixtures, model/tool version, or release packaging changes since RC.",
+                RC_REUSE_SURFACE_TEXT,
                 "No relevant changes.",
             ),
-            "rc_reuse.rationale: must name benchmark-relevant checked surfaces",
+            "rc_reuse checked_surface/rationale must cover all required benchmark-relevant surface categories",
         )
         self.assertPasses(self.with_valid_rc_reuse(waived, relevant_changes=True))
+
+    def test_rc_reuse_false_requires_every_checked_surface_category(self) -> None:
+        waived = (
+            self.valid_text.replace("dynamic_runtime:\n  status: pass", "dynamic_runtime:\n  status: waived")
+            .replace("  required: false", "  required: true")
+            .replace("  status: none", "  status: approved")
+            .replace('  reason: ""', "  reason: Codex unavailable; no benchmark-relevant changes since passing RC run.")
+            .replace('  approved_by: ""', "  approved_by: release-owner")
+            .replace('  approval_surface: ""', "  approval_surface: release checklist")
+            .replace('  evidence: ""', "  evidence: tests/fixtures/token-cost/reports/valid-final-pass/v0.1.1.yaml")
+        )
+        self.assertPasses(self.with_valid_rc_reuse(waived))
+
+        for category, text in RC_REUSE_SURFACE_REMOVALS.items():
+            with self.subTest(category=category):
+                self.assertFails(
+                    self.with_valid_rc_reuse(waived).replace(text, ""),
+                    f"missing: {category}",
+                )
 
     def test_raw_jsonl_and_sanitized_evidence_contracts_are_enforced(self) -> None:
         omitted = (

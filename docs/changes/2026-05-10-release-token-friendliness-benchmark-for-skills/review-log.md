@@ -74,4 +74,4 @@ Status: changes-requested
 Detailed record: reviews/code-review-r2.md
 Resolution: review-resolution.md#code-review-r2
 Material findings: RTF-CR3
-Open findings: RTF-CR3
+Open findings: None
