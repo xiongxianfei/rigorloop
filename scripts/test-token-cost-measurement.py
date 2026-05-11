@@ -15,6 +15,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 MEASURE = ROOT / "scripts" / "measure-skill-tokens.py"
 ANALYZE = ROOT / "scripts" / "analyze-codex-jsonl.py"
+RUNNER = ROOT / "scripts" / "run-token-cost-benchmarks.py"
 BASELINE_REPORT = ROOT / "docs" / "reports" / "token-cost" / "2026-05-10-baseline.md"
 CHANGE_METADATA = (
     ROOT
@@ -204,6 +205,91 @@ class CodexJsonlAnalyzerTests(unittest.TestCase):
         self.assertNotEqual(malformed.returncode, 0)
         self.assertIn("malformed jsonl at line 2", malformed.stderr.lower())
 
+    def test_writes_schema_version_1_summary_for_tracked_raw_jsonl(self) -> None:
+        path = self.write_jsonl(
+            {
+                "usage": {
+                    "input_tokens": 100,
+                    "cached_input_tokens": 40,
+                    "output_tokens": 20,
+                    "reasoning_output_tokens": 5,
+                }
+            },
+            {
+                "tool": "functions.exec_command",
+                "args": {"cmd": "sed -n '1,260p' docs/workflows.md"},
+                "output": "x\n" * 300,
+            },
+        )
+        summary = Path(tempfile.NamedTemporaryFile(suffix=".analysis.yaml", delete=True).name)
+        try:
+            result = run_command(
+                str(ANALYZE),
+                str(path),
+                "--summary-output",
+                str(summary),
+                "--run-id",
+                "proposal-short",
+            )
+            summary_text = summary.read_text(encoding="utf-8")
+        finally:
+            path.unlink()
+            if summary.exists():
+                summary.unlink()
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("schema_version: 1", summary_text)
+        self.assertIn("id: proposal-short", summary_text)
+        self.assertIn("raw_jsonl_tracked: true", summary_text)
+        self.assertIn(f"jsonl: {path}", summary_text)
+        self.assertIn("input_tokens: 100", summary_text)
+        self.assertIn("total_estimated_tokens:", summary_text)
+        self.assertIn("largest_event:", summary_text)
+        self.assertIn("full_file_read_count: 1", summary_text)
+        self.assertIn("result: warning", summary_text)
+
+    def test_writes_schema_version_1_summary_for_omitted_raw_jsonl(self) -> None:
+        path = self.write_jsonl(
+            {
+                "usage": {
+                    "input_tokens": 100,
+                    "cached_input_tokens": 40,
+                    "output_tokens": 20,
+                    "reasoning_output_tokens": 5,
+                }
+            }
+        )
+        summary = Path(tempfile.NamedTemporaryFile(suffix=".analysis.yaml", delete=True).name)
+        sanitized_summary = "docs/reports/token-cost/runs/v0.1.1/proposal-short-run1.summary.yaml"
+        try:
+            result = run_command(
+                str(ANALYZE),
+                str(path),
+                "--summary-output",
+                str(summary),
+                "--run-id",
+                "proposal-short",
+                "--raw-jsonl-omitted",
+                "--sanitized-source",
+                "codex-jsonl-local-run",
+                "--sanitized-summary",
+                sanitized_summary,
+                "--raw-omission-reason",
+                "raw JSONL contained local machine paths",
+            )
+            summary_text = summary.read_text(encoding="utf-8")
+        finally:
+            path.unlink()
+            if summary.exists():
+                summary.unlink()
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("raw_jsonl_tracked: false", summary_text)
+        self.assertIn('jsonl: ""', summary_text)
+        self.assertIn("sanitized_source: codex-jsonl-local-run", summary_text)
+        self.assertIn(f"sanitized_summary: {sanitized_summary}", summary_text)
+        self.assertIn('raw_omission_reason: "raw JSONL contained local machine paths"', summary_text)
+
 
 class BaselineReportTests(unittest.TestCase):
     def test_baseline_report_shape_and_change_link(self) -> None:
@@ -280,6 +366,130 @@ class BenchmarkFixtureTests(unittest.TestCase):
         fixture_text = "\n".join(path.read_text(encoding="utf-8") for path in fixture_files)
         self.assertNotIn("dist/adapters", fixture_text)
         self.assertNotIn(".codex/skills", fixture_text)
+
+
+class BenchmarkRunnerTests(unittest.TestCase):
+    def test_runner_dry_run_installs_public_skills_and_writes_analyzer_summaries(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            temp_root = Path(tmp) / "temp"
+            output_dir = Path(tmp) / "runs"
+            result = run_command(
+                str(RUNNER),
+                "--release",
+                "v0.1.1",
+                "--suite",
+                str(BENCHMARK_MANIFEST),
+                "--tool",
+                "codex",
+                "--temp-root",
+                str(temp_root),
+                "--output-dir",
+                str(output_dir),
+                "--keep-temp",
+                "--dry-run",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn("dry_run: true", result.stdout)
+            self.assertIn("skill_source: dist/adapters/codex/.agents/skills/", result.stdout)
+            self.assertIn("codex_command: codex exec --json --ephemeral", result.stdout)
+            self.assertIn("analyzer_command:", result.stdout)
+            self.assertEqual(
+                sorted(path.name for path in output_dir.glob("*.jsonl")),
+                [f"{benchmark_id}-run1.jsonl" for benchmark_id in sorted(EXPECTED_BENCHMARKS)],
+            )
+            for benchmark_id in EXPECTED_BENCHMARKS:
+                summary = output_dir / f"{benchmark_id}-run1.analysis.yaml"
+                self.assertTrue(summary.exists(), f"missing analyzer summary for {benchmark_id}")
+                self.assertIn("schema_version: 1", summary.read_text(encoding="utf-8"))
+
+            temp_runs = list(temp_root.glob("rigorloop-token-bench-v0.1.1-*"))
+            self.assertEqual(len(temp_runs), 1)
+            self.assertTrue((temp_runs[0] / ".agents" / "skills" / "proposal" / "SKILL.md").exists())
+            self.assertFalse((BENCHMARK_FIXTURE / ".agents" / "skills").exists())
+
+    def test_runner_rejects_repository_local_codex_skill_source(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            result = run_command(
+                str(RUNNER),
+                "--release",
+                "v0.1.1",
+                "--suite",
+                str(BENCHMARK_MANIFEST),
+                "--tool",
+                "codex",
+                "--skill-source",
+                ".codex/skills/",
+                "--temp-root",
+                tmp,
+                "--dry-run",
+            )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn(
+            "skill source must be dist/adapters/codex/.agents/skills/",
+            result.stderr,
+        )
+
+    def test_runner_rejects_temp_root_inside_repository(self) -> None:
+        result = run_command(
+            str(RUNNER),
+            "--release",
+            "v0.1.1",
+            "--suite",
+            str(BENCHMARK_MANIFEST),
+            "--tool",
+            "codex",
+            "--temp-root",
+            str(ROOT / ".tmp-token-bench"),
+            "--dry-run",
+        )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("temporary root must be outside the repository", result.stderr)
+
+    def test_runner_deletes_temp_directory_after_success_by_default(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            temp_root = Path(tmp) / "temp"
+            output_dir = Path(tmp) / "runs"
+            result = run_command(
+                str(RUNNER),
+                "--release",
+                "v0.1.1",
+                "--suite",
+                str(BENCHMARK_MANIFEST),
+                "--tool",
+                "codex",
+                "--temp-root",
+                str(temp_root),
+                "--output-dir",
+                str(output_dir),
+                "--dry-run",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertFalse(list(temp_root.glob("rigorloop-token-bench-v0.1.1-*")))
+
+    def test_runner_does_not_generate_markdown_report(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "runs"
+            result = run_command(
+                str(RUNNER),
+                "--release",
+                "v0.1.1",
+                "--suite",
+                str(BENCHMARK_MANIFEST),
+                "--tool",
+                "codex",
+                "--temp-root",
+                tmp,
+                "--output-dir",
+                str(output_dir),
+                "--dry-run",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertFalse(list(output_dir.glob("*.md")))
 
 
 if __name__ == "__main__":
