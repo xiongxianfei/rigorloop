@@ -39,6 +39,7 @@ The v1 suite was also too narrow: it covered some important skills, but not the 
 | Preserved v1 evidence | `docs/reports/token-cost/releases/v0.1.1-skill-token-runtime-v1-pretransition.{md,yaml}` | Preserved the existing v1 report under an explicit historical path. | Satisfies the report identity requirement and avoids silently overwriting historical measurement evidence. |
 | Analyzer summaries | `docs/reports/token-cost/runs/v0.1.1/*-run1.analysis.yaml` | Regenerated sanitized analyzer summaries for all ten required v2 transition runs. | Provides durable dynamic evidence without committing raw JSONL containing local temp paths and full command output. |
 | Workflow/change artifacts | `docs/plans/...`, `docs/plan.md`, `docs/changes/.../change.yaml`, review records, this file | Kept milestone state, validation notes, review closeout, and rationale current. | Maintains the repository's traceability contract for non-trivial planned work. |
+| Final verify test drift | `scripts/test-adapter-distribution.py` | Updated two v2 final-release tests to pass explicit empty changed-surface input when validating repository `v0.1.1` artifacts. | Final verify found these tests still used the old v1-style command path after `skill-token-runtime-v2` made changed-surface input mandatory for final releases. |
 
 ## Tests Added Or Changed
 
@@ -50,7 +51,7 @@ The v1 suite was also too narrow: it covered some important skills, but not the 
 
 The tests are at the right level because the change is mostly release-process contract behavior: schema validation belongs in the token-cost validator tests, changed-surface ownership belongs in release-validation integration tests, and fixture/prompt shape belongs in measurement tests.
 
-## Validation Evidence Available Before Final Verify
+## Validation Evidence
 
 Representative validation evidence recorded in the active plan and change metadata:
 
@@ -63,6 +64,8 @@ Representative validation evidence recorded in the active plan and change metada
 - Sanitized analyzer summaries were regenerated from those raw JSONL files and tracked under `docs/reports/token-cost/runs/v0.1.1/`.
 - Selected CI passed with concrete report/analyzer paths, selecting `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `token_cost.regression`, and `token_cost.report_validate`.
 - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills` passed after code-review M5 R1.
+- Final verify reran `python scripts/test-adapter-distribution.py`; it first exposed the stale v2 final-release test command path, then passed with 68 tests after the test fix.
+- Final verify selected CI passed with `adapters.regression`, `adapters.drift`, `adapters.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `token_cost.regression`, and `token_cost.report_validate`.
 
 Known validation note: the original selected CI command that used directory path `benchmarks/token-cost` was blocked by the v1 selector as an unclassified directory path. The plan records the replacement concrete-path selected CI command and its passing checks.
 
@@ -106,4 +109,4 @@ The change intentionally does not:
 - Full-file skill reads still appear across required dynamic runs. Later reports should determine whether shorter activation paths or bounded excerpts are warranted.
 - Automatic release diff-range detection remains a future release-validation enhancement.
 - The selected CI directory path issue is recorded; future selector work could classify benchmark directories directly.
-- Final `verify` and PR handoff have not run yet. Current active plan state points to `verify` next.
+- Final `verify` passed locally. Current active plan state points to `pr` next; PR handoff has not run yet.

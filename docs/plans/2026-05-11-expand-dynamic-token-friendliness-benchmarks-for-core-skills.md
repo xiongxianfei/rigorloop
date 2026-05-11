@@ -84,7 +84,7 @@ The v2 change is release-process and evidence-shape work. It must not hand-edit 
 
 ## Current Handoff Summary
 
-- Current stage: verify
+- Current stage: pr
 - Current milestone: all implementation milestones complete
 - Current milestone state: M5 closed
 - Last reviewed milestone: M5. V2 transition report evidence and lifecycle closeout
@@ -94,9 +94,9 @@ The v2 change is release-process and evidence-shape work. It must not hand-edit 
 - Test-spec status: active
 - Implementation may start after: test-spec is authored and accepted for use; complete
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: all implementation milestones are closed and final explain-change is current, but verify and PR handoff are not complete.
+- Next stage: pr
+- Final closeout readiness: branch-ready for PR handoff; final lifecycle closeout is not complete until PR handoff is complete.
+- Reason final closeout is or is not ready: all implementation milestones are closed, final explain-change is current, final verify passed locally, and PR handoff remains.
 
 ## Requirements covered
 
@@ -415,7 +415,9 @@ Implementation-stage validation is listed per milestone. Prefer the smallest rel
 - 2026-05-11: Code-review M4 R2 closed M4 with no material findings. The release CLI now accepts changed-surface input, final v2 validation blocks when it is omitted, and focused CLI/API tests prove changed-skill benchmark enforcement.
 - 2026-05-11: M5 preserved the existing `v0.1.1` v1 report as `v0.1.1-skill-token-runtime-v1-pretransition`, ran the live required v2 transition suite with Codex, regenerated sanitized analyzer summaries for all ten required core and transition carryover prompts, and replaced the canonical `v0.1.1` YAML/Markdown with the first `skill-token-runtime-v2` transition report.
 - 2026-05-11: Code-review M5 R1 found no material findings and closed M5. All in-scope implementation milestones are now closed; next stage is final explain-change.
-- 2026-05-11: Final explain-change updated `docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/explain-change.md` with problem, decision trail, file rationale, tests, validation evidence, review-resolution summary, alternatives, scope control, and risks; next stage is verify.
+- 2026-05-11: Final verify found and fixed release-validation test drift where two v2 final-release tests still called validation without explicit changed-surface input.
+- 2026-05-11: Final verify passed local validation; next stage is PR handoff.
+- 2026-05-11: Final explain-change updated `docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/explain-change.md` with problem, decision trail, file rationale, tests, validation evidence, review-resolution summary, alternatives, scope control, and risks; the initiative then proceeded to verify.
 
 ## Decision log
 
@@ -528,14 +530,24 @@ Implementation-stage validation is listed per milestone. Prefer the smallest rel
 - 2026-05-11: Code-review M5 R1 reviewer reran `python scripts/test-token-cost-report-validation.py`; passed with 16 tests.
 - 2026-05-11: Code-review M5 R1 reviewer reran `python scripts/test-token-cost-measurement.py`; passed with 24 tests.
 - 2026-05-11: Code-review M5 R1 reviewer reran `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills`; passed with `reviews=13`, `findings=8`, `log_entries=13`, and `resolution_entries=8`.
+- 2026-05-11: Final verify reran `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills`; passed with `reviews=14`, `findings=8`, `log_entries=14`, and `resolution_entries=8`.
+- 2026-05-11: Final verify reran `python scripts/validate-change-metadata.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml`; passed.
+- 2026-05-11: Final verify reran `python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1-skill-token-runtime-v1-pretransition.yaml docs/reports/token-cost/releases/v0.1.1.yaml`; passed.
+- 2026-05-11: Final verify reran `python scripts/test-token-cost-measurement.py`; passed with 24 tests.
+- 2026-05-11: Final verify reran `python scripts/test-token-cost-report-validation.py`; passed with 16 tests.
+- 2026-05-11: Final verify reran `python scripts/validate-release.py --version v0.1.1 --changed-paths-file /tmp/rigorloop-empty-changed-paths.txt`; passed.
+- 2026-05-11: Final verify reran `python scripts/test-adapter-distribution.py`; initially failed because two repository v2 final-release tests did not pass explicit changed-surface input, then passed with 68 tests after the test drift fix.
+- 2026-05-11: Final verify reran `python -m py_compile scripts/run-token-cost-benchmarks.py scripts/analyze-codex-jsonl.py scripts/validate-token-cost-report.py scripts/validate-release.py scripts/adapter_distribution.py` and `python -m py_compile scripts/test-adapter-distribution.py`; both passed.
+- 2026-05-11: Final verify reran lifecycle validation across proposal, spec, test spec, architecture, plan, change, review, explain-change, and report surfaces; passed with the existing unrelated `docs/plan.md` lifecycle-language warning.
+- 2026-05-11: Final verify reran selected CI with concrete v2 report, analyzer-summary, change metadata, and release-test paths; selected checks `adapters.regression`, `adapters.drift`, `adapters.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `token_cost.regression`, and `token_cost.report_validate` passed.
 
 ## Outcome and retrospective
 
-- Pending. This initiative is not done until all in-scope implementation milestones are closed and downstream review, explain-change, verify, and PR handoff are complete.
+- Branch-ready for PR handoff. This initiative is not done until PR handoff is complete.
 
 ## Readiness
 
-- See `Current Handoff Summary`.
+- Branch-ready; next stage is `pr`.
 
 ## Risks and follow-ups
 

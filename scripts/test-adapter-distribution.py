@@ -1600,7 +1600,11 @@ release_gate:
                 notes_extra=self.v0_1_1_notes_extra(),
             )
 
-            errors = validate_release_output("v0.1.1", release_root=release_root)
+            errors = validate_release_output(
+                "v0.1.1",
+                release_root=release_root,
+                changed_paths=(),
+            )
 
             self.assertTrue(
                 any("smoke.opencode.evidence: v0.1.1 requires command alias behavior evidence" in error for error in errors),
@@ -1620,7 +1624,14 @@ release_gate:
                 notes_extra=self.v0_1_1_notes_extra(),
             )
 
-            self.assertEqual(validate_release_output("v0.1.1", release_root=release_root), [])
+            self.assertEqual(
+                validate_release_output(
+                    "v0.1.1",
+                    release_root=release_root,
+                    changed_paths=(),
+                ),
+                [],
+            )
 
     def test_v0_1_1_release_validation_requires_token_cost_report(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -2063,17 +2074,21 @@ release_gate:
             self.assertEqual(errors, [])
 
     def test_validate_release_cli_accepts_repository_v0_1_1_artifacts(self) -> None:
-        result = subprocess.run(
-            [
-                sys.executable,
-                str(ROOT / "scripts" / "validate-release.py"),
-                "--version",
-                "v0.1.1",
-            ],
-            capture_output=True,
-            text=True,
-            cwd=ROOT,
-        )
+        with tempfile.NamedTemporaryFile("w", encoding="utf-8") as changed_paths:
+            changed_paths.flush()
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "scripts" / "validate-release.py"),
+                    "--version",
+                    "v0.1.1",
+                    "--changed-paths-file",
+                    changed_paths.name,
+                ],
+                capture_output=True,
+                text=True,
+                cwd=ROOT,
+            )
 
         self.assertEqual(
             result.returncode,
