@@ -1,10 +1,10 @@
 # Expand Dynamic Token-Friendliness Benchmarks for Core Skills
 
-- Status: active
+- Status: done
 - Owner: maintainer
 - Start date: 2026-05-11
 - Last updated: 2026-05-11
-- Related issue or PR: none yet
+- Related issue or PR: PR #42
 - Supersedes: none
 
 ## Goal
@@ -84,7 +84,7 @@ The v2 change is release-process and evidence-shape work. It must not hand-edit 
 
 ## Current Handoff Summary
 
-- Current stage: pr
+- Current stage: done
 - Current milestone: all implementation milestones complete
 - Current milestone state: M5 closed
 - Last reviewed milestone: M5. V2 transition report evidence and lifecycle closeout
@@ -94,9 +94,9 @@ The v2 change is release-process and evidence-shape work. It must not hand-edit 
 - Test-spec status: active
 - Implementation may start after: test-spec is authored and accepted for use; complete
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: branch-ready for PR handoff; final lifecycle closeout is not complete until PR handoff is complete.
-- Reason final closeout is or is not ready: all implementation milestones are closed, final explain-change is current, final verify passed locally, and PR handoff remains.
+- Next stage: none
+- Final closeout readiness: complete
+- Reason final closeout is or is not ready: all implementation milestones are closed, final explain-change is current, final verify passed locally, and PR #42 is open.
 
 ## Requirements covered
 
@@ -418,6 +418,7 @@ Implementation-stage validation is listed per milestone. Prefer the smallest rel
 - 2026-05-11: Final verify found and fixed release-validation test drift where two v2 final-release tests still called validation without explicit changed-surface input.
 - 2026-05-11: Final verify passed local validation; next stage is PR handoff.
 - 2026-05-11: Final explain-change updated `docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/explain-change.md` with problem, decision trail, file rationale, tests, validation evidence, review-resolution summary, alternatives, scope control, and risks; the initiative then proceeded to verify.
+- 2026-05-11: PR #42 opened for final review.
 
 ## Decision log
 
@@ -543,11 +544,11 @@ Implementation-stage validation is listed per milestone. Prefer the smallest rel
 
 ## Outcome and retrospective
 
-- Branch-ready for PR handoff. This initiative is not done until PR handoff is complete.
+- Completed. PR #42 is open for review.
 
 ## Readiness
 
-- Branch-ready; next stage is `pr`.
+- Done; PR #42 is open.
 
 ## Risks and follow-ups
 

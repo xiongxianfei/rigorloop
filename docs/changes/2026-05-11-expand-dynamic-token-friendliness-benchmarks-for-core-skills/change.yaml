@@ -44,6 +44,7 @@ tests:
   - M5 code-review clean review record and milestone closeout state.
   - Final explain-change rationale before verify.
   - Final verify test-drift fix for v2 release-validation command tests.
+  - PR #42 opened after final verify.
 validation:
   - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills
     result: pass_closeout_reviews_4_findings_4_log_entries_4_resolution_entries_4
@@ -325,10 +326,10 @@ changed_files:
   - docs/reports/token-cost/runs/v0.1.1/architecture-no-impact-run1.analysis.yaml
   - docs/reports/token-cost/runs/v0.1.1/learn-no-durable-lesson-run1.analysis.yaml
 review:
-  status: verify-passed-pr-handoff-ready
+  status: pr-open
   open_findings: 0
   unresolved_items: 0
-  last_review: code-review-m5-r1 clean-with-notes; final verify passed locally
+  last_review: code-review-m5-r1 clean-with-notes; final verify passed locally; PR #42 opened
 status:
-  lifecycle: pr
+  lifecycle: done
   review: code-review-m5-r1-clean

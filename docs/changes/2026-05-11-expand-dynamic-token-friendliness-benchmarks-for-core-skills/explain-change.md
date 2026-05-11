@@ -109,4 +109,4 @@ The change intentionally does not:
 - Full-file skill reads still appear across required dynamic runs. Later reports should determine whether shorter activation paths or bounded excerpts are warranted.
 - Automatic release diff-range detection remains a future release-validation enhancement.
 - The selected CI directory path issue is recorded; future selector work could classify benchmark directories directly.
-- Final `verify` passed locally. Current active plan state points to `pr` next; PR handoff has not run yet.
+- Final `verify` passed locally. PR #42 is open for review.
