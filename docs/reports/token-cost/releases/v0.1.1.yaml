@@ -1,0 +1,303 @@
+schema_version: 1
+
+report:
+  release: v0.1.1
+  report_date: 2026-05-11
+  repository: xiongxianfei/rigorloop
+  commit: d9b5024cb01f1b5bae97e34248a3c10fe576d2cc
+  report_markdown: docs/reports/token-cost/releases/v0.1.1.md
+
+benchmark_suite:
+  id: skill-token-runtime-v1
+  manifest: benchmarks/token-cost/manifest.yaml
+  prompt_count: 7
+  fixture: benchmarks/token-cost/fixtures/minimal-public-project
+  runs_per_prompt: 1
+
+environment:
+  primary_tool: codex
+  codex_available: true
+  codex_version: codex-cli 0.129.0
+  model: unknown
+  os: Linux 6.6.87.2-microsoft-standard-WSL2 x86_64
+  runner: maintainer-local
+
+runner:
+  command: python scripts/run-token-cost-benchmarks.py --suite benchmarks/token-cost/manifest.yaml --release v0.1.1 --tool codex
+  tool: codex
+  suite: benchmarks/token-cost/manifest.yaml
+  fixture: benchmarks/token-cost/fixtures/minimal-public-project
+  skill_source: dist/adapters/codex/.agents/skills/
+  output_dir: docs/reports/token-cost/runs/v0.1.1
+  temp_policy: system-temp
+  install_public_skills: true
+
+static_skill_size:
+  status: warning
+  command: python scripts/measure-skill-tokens.py
+  skills_measured: 23
+  total_estimated_tokens: 54294
+  max_skill:
+    path: skills/workflow/SKILL.md
+    estimated_tokens: 6674
+  warnings:
+    - severity: high-warning
+      skill: skills/workflow/SKILL.md
+      code: static-public-skill-over-5000
+      message: workflow skill is above the initial 5000 estimated-token high-warning threshold
+    - severity: warning
+      skill: skills/code-review/SKILL.md
+      code: static-public-skill-over-4000
+      message: code-review skill is above the initial 4000 estimated-token warning threshold
+
+dynamic_runtime:
+  status: pass
+  tool: codex
+  command_pattern: codex exec --json --ephemeral --skip-git-repo-check ...
+  incomplete: null
+  runs:
+    - id: workflow-route
+      prompt: benchmarks/token-cost/prompts/workflow-route.md
+      fixture: benchmarks/token-cost/fixtures/minimal-public-project
+      result: pass
+      evidence:
+        raw_jsonl_tracked: false
+        jsonl: ""
+        analysis: docs/reports/token-cost/runs/v0.1.1/workflow-route-run1.analysis.yaml
+        sanitized_summary: docs/reports/token-cost/runs/v0.1.1/workflow-route-run1.analysis.yaml
+        raw_omission_reason: raw JSONL contains disposable local temp fixture paths and full command output; analyzer summary is tracked as sanitized release evidence
+      usage:
+        input_tokens: 34601
+        cached_input_tokens: 27392
+        output_tokens: 228
+        reasoning_output_tokens: 20
+      tool_output:
+        total_estimated_tokens: 0
+        largest_event:
+          kind: none
+          command: ""
+          path: ""
+          lines: 0
+          estimated_tokens: 0
+      signals:
+        full_file_read_count: 0
+        broad_search_count: 0
+        generated_output_read_count: 0
+        repeated_file_read_count: 0
+    - id: proposal-short
+      prompt: benchmarks/token-cost/prompts/proposal-short.md
+      fixture: benchmarks/token-cost/fixtures/minimal-public-project
+      result: pass
+      evidence:
+        raw_jsonl_tracked: false
+        jsonl: ""
+        analysis: docs/reports/token-cost/runs/v0.1.1/proposal-short-run1.analysis.yaml
+        sanitized_summary: docs/reports/token-cost/runs/v0.1.1/proposal-short-run1.analysis.yaml
+        raw_omission_reason: raw JSONL contains disposable local temp fixture paths and full command output; analyzer summary is tracked as sanitized release evidence
+      usage:
+        input_tokens: 50901
+        cached_input_tokens: 44672
+        output_tokens: 641
+        reasoning_output_tokens: 72
+      tool_output:
+        total_estimated_tokens: 0
+        largest_event:
+          kind: none
+          command: ""
+          path: ""
+          lines: 0
+          estimated_tokens: 0
+      signals:
+        full_file_read_count: 0
+        broad_search_count: 0
+        generated_output_read_count: 0
+        repeated_file_read_count: 0
+    - id: implement-handoff
+      prompt: benchmarks/token-cost/prompts/implement-handoff.md
+      fixture: benchmarks/token-cost/fixtures/minimal-public-project
+      result: pass
+      evidence:
+        raw_jsonl_tracked: false
+        jsonl: ""
+        analysis: docs/reports/token-cost/runs/v0.1.1/implement-handoff-run1.analysis.yaml
+        sanitized_summary: docs/reports/token-cost/runs/v0.1.1/implement-handoff-run1.analysis.yaml
+        raw_omission_reason: raw JSONL contains disposable local temp fixture paths and full command output; analyzer summary is tracked as sanitized release evidence
+      usage:
+        input_tokens: 91704
+        cached_input_tokens: 79744
+        output_tokens: 965
+        reasoning_output_tokens: 126
+      tool_output:
+        total_estimated_tokens: 0
+        largest_event:
+          kind: none
+          command: ""
+          path: ""
+          lines: 0
+          estimated_tokens: 0
+      signals:
+        full_file_read_count: 0
+        broad_search_count: 0
+        generated_output_read_count: 0
+        repeated_file_read_count: 0
+    - id: code-review-small
+      prompt: benchmarks/token-cost/prompts/code-review-small.md
+      fixture: benchmarks/token-cost/fixtures/minimal-public-project
+      result: pass
+      evidence:
+        raw_jsonl_tracked: false
+        jsonl: ""
+        analysis: docs/reports/token-cost/runs/v0.1.1/code-review-small-run1.analysis.yaml
+        sanitized_summary: docs/reports/token-cost/runs/v0.1.1/code-review-small-run1.analysis.yaml
+        raw_omission_reason: raw JSONL contains disposable local temp fixture paths and full command output; analyzer summary is tracked as sanitized release evidence
+      usage:
+        input_tokens: 72342
+        cached_input_tokens: 58368
+        output_tokens: 1134
+        reasoning_output_tokens: 208
+      tool_output:
+        total_estimated_tokens: 0
+        largest_event:
+          kind: none
+          command: ""
+          path: ""
+          lines: 0
+          estimated_tokens: 0
+      signals:
+        full_file_read_count: 0
+        broad_search_count: 0
+        generated_output_read_count: 0
+        repeated_file_read_count: 0
+    - id: verify-final-pack
+      prompt: benchmarks/token-cost/prompts/verify-final-pack.md
+      fixture: benchmarks/token-cost/fixtures/minimal-public-project
+      result: pass
+      evidence:
+        raw_jsonl_tracked: false
+        jsonl: ""
+        analysis: docs/reports/token-cost/runs/v0.1.1/verify-final-pack-run1.analysis.yaml
+        sanitized_summary: docs/reports/token-cost/runs/v0.1.1/verify-final-pack-run1.analysis.yaml
+        raw_omission_reason: raw JSONL contains disposable local temp fixture paths and full command output; analyzer summary is tracked as sanitized release evidence
+      usage:
+        input_tokens: 72754
+        cached_input_tokens: 57856
+        output_tokens: 933
+        reasoning_output_tokens: 153
+      tool_output:
+        total_estimated_tokens: 0
+        largest_event:
+          kind: none
+          command: ""
+          path: ""
+          lines: 0
+          estimated_tokens: 0
+      signals:
+        full_file_read_count: 0
+        broad_search_count: 0
+        generated_output_read_count: 0
+        repeated_file_read_count: 0
+    - id: architecture-no-impact
+      prompt: benchmarks/token-cost/prompts/architecture-no-impact.md
+      fixture: benchmarks/token-cost/fixtures/minimal-public-project
+      result: pass
+      evidence:
+        raw_jsonl_tracked: false
+        jsonl: ""
+        analysis: docs/reports/token-cost/runs/v0.1.1/architecture-no-impact-run1.analysis.yaml
+        sanitized_summary: docs/reports/token-cost/runs/v0.1.1/architecture-no-impact-run1.analysis.yaml
+        raw_omission_reason: raw JSONL contains disposable local temp fixture paths and full command output; analyzer summary is tracked as sanitized release evidence
+      usage:
+        input_tokens: 33242
+        cached_input_tokens: 24320
+        output_tokens: 236
+        reasoning_output_tokens: 53
+      tool_output:
+        total_estimated_tokens: 0
+        largest_event:
+          kind: none
+          command: ""
+          path: ""
+          lines: 0
+          estimated_tokens: 0
+      signals:
+        full_file_read_count: 0
+        broad_search_count: 0
+        generated_output_read_count: 0
+        repeated_file_read_count: 0
+    - id: learn-no-durable-lesson
+      prompt: benchmarks/token-cost/prompts/learn-no-durable-lesson.md
+      fixture: benchmarks/token-cost/fixtures/minimal-public-project
+      result: pass
+      evidence:
+        raw_jsonl_tracked: false
+        jsonl: ""
+        analysis: docs/reports/token-cost/runs/v0.1.1/learn-no-durable-lesson-run1.analysis.yaml
+        sanitized_summary: docs/reports/token-cost/runs/v0.1.1/learn-no-durable-lesson-run1.analysis.yaml
+        raw_omission_reason: raw JSONL contains disposable local temp fixture paths and full command output; analyzer summary is tracked as sanitized release evidence
+      usage:
+        input_tokens: 33700
+        cached_input_tokens: 27392
+        output_tokens: 431
+        reasoning_output_tokens: 211
+      tool_output:
+        total_estimated_tokens: 0
+        largest_event:
+          kind: none
+          command: ""
+          path: ""
+          lines: 0
+          estimated_tokens: 0
+      signals:
+        full_file_read_count: 0
+        broad_search_count: 0
+        generated_output_read_count: 0
+        repeated_file_read_count: 0
+
+summary:
+  median_input_tokens: 50901
+  median_cached_input_tokens: 44672
+  median_output_tokens: 641
+  median_reasoning_output_tokens: 126
+  max_single_tool_output_estimated_tokens: 0
+  full_file_read_count: 0
+  broad_search_count: 0
+  generated_output_read_count: 0
+
+portability:
+  status: pass
+  public_skill_internal_path_leaks: 0
+  generated_output_internals_in_public_skills: 0
+  local_examples_in_public_skills: 0
+  notes: []
+
+comparison:
+  baseline: true
+  previous_release: null
+  previous_report: null
+  comparable: false
+  deltas: null
+  rationale: First release token-friendliness report; no prior comparable release report exists.
+
+waiver:
+  required: false
+  status: none
+  reason: ""
+  approved_by: ""
+  approval_surface: ""
+  evidence: ""
+
+release_gate:
+  result: warning
+  blockers: []
+  warnings:
+    - severity: high-warning
+      code: static-public-skill-over-5000
+      message: workflow skill exceeds the initial static high-warning threshold
+    - severity: warning
+      code: static-public-skill-over-4000
+      message: code-review skill exceeds the initial static warning threshold
+    - severity: warning
+      code: dynamic-input-over-75000
+      message: implement-handoff exceeded the initial short-benchmark input-token warning threshold
+  notes:
+    - Token thresholds are warning-only for this baseline release report unless portability or report structure fails.

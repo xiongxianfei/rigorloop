@@ -4,7 +4,7 @@ This file tracks active, blocked, done, and superseded plans.
 
 ## Active
 - [2026-05-10 Token cost measurement baseline and proposal scope preservation](plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md) - active execution plan with M1-M5 closed, PR #40 open, and local PR-mode CI selector fix passed; hosted CI rerun is pending.
-- [2026-05-11 Release token-friendliness benchmark for skills](plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md) - active execution plan with M3 closed after clean code-review R6; next stage is implement M4, and remaining milestones M4-M5 have not started.
+- [2026-05-11 Release token-friendliness benchmark for skills](plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md) - active execution plan with M4 implemented and ready for code-review; remaining milestone M5 has not started.
 
 ## Blocked
 - none yet
