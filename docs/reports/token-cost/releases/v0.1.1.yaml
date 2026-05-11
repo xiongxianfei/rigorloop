@@ -4,7 +4,7 @@ report:
   release: v0.1.1
   report_date: 2026-05-11
   repository: xiongxianfei/rigorloop
-  commit: d9b5024cb01f1b5bae97e34248a3c10fe576d2cc
+  commit: 7a1a45578c163bc174157034256467dfd88fd50e
   report_markdown: docs/reports/token-cost/releases/v0.1.1.md
 
 benchmark_suite:
@@ -67,20 +67,20 @@ dynamic_runtime:
         sanitized_summary: docs/reports/token-cost/runs/v0.1.1/workflow-route-run1.analysis.yaml
         raw_omission_reason: raw JSONL contains disposable local temp fixture paths and full command output; analyzer summary is tracked as sanitized release evidence
       usage:
-        input_tokens: 34601
+        input_tokens: 34593
         cached_input_tokens: 27392
-        output_tokens: 228
-        reasoning_output_tokens: 20
+        output_tokens: 234
+        reasoning_output_tokens: 13
       tool_output:
-        total_estimated_tokens: 0
+        total_estimated_tokens: 4071
         largest_event:
-          kind: none
-          command: ""
-          path: ""
-          lines: 0
-          estimated_tokens: 0
+          kind: command_execution
+          command: "/bin/bash -lc \"sed -n '1,220p' /tmp/rigorloop-token-bench-v0.1.1-1778496244-bff770cd/.agents/skills/workflow/SKILL.md\""
+          path: /tmp/rigorloop-token-bench-v0.1.1-1778496244-bff770cd/.agents/skills/workflow/SKILL.md
+          lines: 220
+          estimated_tokens: 4071
       signals:
-        full_file_read_count: 0
+        full_file_read_count: 1
         broad_search_count: 0
         generated_output_read_count: 0
         repeated_file_read_count: 0
@@ -95,21 +95,21 @@ dynamic_runtime:
         sanitized_summary: docs/reports/token-cost/runs/v0.1.1/proposal-short-run1.analysis.yaml
         raw_omission_reason: raw JSONL contains disposable local temp fixture paths and full command output; analyzer summary is tracked as sanitized release evidence
       usage:
-        input_tokens: 50901
-        cached_input_tokens: 44672
-        output_tokens: 641
-        reasoning_output_tokens: 72
+        input_tokens: 69072
+        cached_input_tokens: 61952
+        output_tokens: 935
+        reasoning_output_tokens: 159
       tool_output:
-        total_estimated_tokens: 0
+        total_estimated_tokens: 2190
         largest_event:
-          kind: none
-          command: ""
-          path: ""
-          lines: 0
-          estimated_tokens: 0
+          kind: command_execution
+          command: "/bin/bash -lc \"sed -n '1,220p' /tmp/rigorloop-token-bench-v0.1.1-1778496244-bff770cd/.agents/skills/proposal/SKILL.md\""
+          path: /tmp/rigorloop-token-bench-v0.1.1-1778496244-bff770cd/.agents/skills/proposal/SKILL.md
+          lines: 168
+          estimated_tokens: 2018
       signals:
-        full_file_read_count: 0
-        broad_search_count: 0
+        full_file_read_count: 1
+        broad_search_count: 1
         generated_output_read_count: 0
         repeated_file_read_count: 0
     - id: implement-handoff
@@ -123,21 +123,21 @@ dynamic_runtime:
         sanitized_summary: docs/reports/token-cost/runs/v0.1.1/implement-handoff-run1.analysis.yaml
         raw_omission_reason: raw JSONL contains disposable local temp fixture paths and full command output; analyzer summary is tracked as sanitized release evidence
       usage:
-        input_tokens: 91704
-        cached_input_tokens: 79744
-        output_tokens: 965
-        reasoning_output_tokens: 126
+        input_tokens: 72924
+        cached_input_tokens: 64512
+        output_tokens: 869
+        reasoning_output_tokens: 94
       tool_output:
-        total_estimated_tokens: 0
+        total_estimated_tokens: 3903
         largest_event:
-          kind: none
-          command: ""
-          path: ""
-          lines: 0
-          estimated_tokens: 0
+          kind: command_execution
+          command: "/bin/bash -lc \"sed -n '1,220p' /tmp/rigorloop-token-bench-v0.1.1-1778496244-bff770cd/.agents/skills/implement/SKILL.md && pwd && rg --files -g '\"'!*node_modules*'\"' -g '\"'!*.git*'\"' | sed -n '1,200p'\""
+          path: /tmp/rigorloop-token-bench-v0.1.1-1778496244-bff770cd/.agents/skills/implement/SKILL.md
+          lines: 226
+          estimated_tokens: 3458
       signals:
-        full_file_read_count: 0
-        broad_search_count: 0
+        full_file_read_count: 1
+        broad_search_count: 1
         generated_output_read_count: 0
         repeated_file_read_count: 0
     - id: code-review-small
@@ -151,20 +151,20 @@ dynamic_runtime:
         sanitized_summary: docs/reports/token-cost/runs/v0.1.1/code-review-small-run1.analysis.yaml
         raw_omission_reason: raw JSONL contains disposable local temp fixture paths and full command output; analyzer summary is tracked as sanitized release evidence
       usage:
-        input_tokens: 72342
-        cached_input_tokens: 58368
-        output_tokens: 1134
-        reasoning_output_tokens: 208
+        input_tokens: 72233
+        cached_input_tokens: 64000
+        output_tokens: 1008
+        reasoning_output_tokens: 139
       tool_output:
-        total_estimated_tokens: 0
+        total_estimated_tokens: 3450
         largest_event:
-          kind: none
-          command: ""
-          path: ""
-          lines: 0
-          estimated_tokens: 0
+          kind: command_execution
+          command: "/bin/bash -lc \"sed -n '1,220p' /tmp/rigorloop-token-bench-v0.1.1-1778496244-bff770cd/.agents/skills/code-review/SKILL.md && git status --short && git diff --stat && git diff --\""
+          path: /tmp/rigorloop-token-bench-v0.1.1-1778496244-bff770cd/.agents/skills/code-review/SKILL.md
+          lines: 221
+          estimated_tokens: 3177
       signals:
-        full_file_read_count: 0
+        full_file_read_count: 1
         broad_search_count: 0
         generated_output_read_count: 0
         repeated_file_read_count: 0
@@ -179,21 +179,21 @@ dynamic_runtime:
         sanitized_summary: docs/reports/token-cost/runs/v0.1.1/verify-final-pack-run1.analysis.yaml
         raw_omission_reason: raw JSONL contains disposable local temp fixture paths and full command output; analyzer summary is tracked as sanitized release evidence
       usage:
-        input_tokens: 72754
-        cached_input_tokens: 57856
-        output_tokens: 933
-        reasoning_output_tokens: 153
+        input_tokens: 77019
+        cached_input_tokens: 66560
+        output_tokens: 1111
+        reasoning_output_tokens: 163
       tool_output:
-        total_estimated_tokens: 0
+        total_estimated_tokens: 5893
         largest_event:
-          kind: none
-          command: ""
-          path: ""
-          lines: 0
-          estimated_tokens: 0
+          kind: command_execution
+          command: "/bin/bash -lc \"sed -n '1,220p' /tmp/rigorloop-token-bench-v0.1.1-1778496244-bff770cd/.agents/skills/verify/SKILL.md\""
+          path: /tmp/rigorloop-token-bench-v0.1.1-1778496244-bff770cd/.agents/skills/verify/SKILL.md
+          lines: 220
+          estimated_tokens: 3515
       signals:
-        full_file_read_count: 0
-        broad_search_count: 0
+        full_file_read_count: 1
+        broad_search_count: 2
         generated_output_read_count: 0
         repeated_file_read_count: 0
     - id: architecture-no-impact
@@ -207,20 +207,20 @@ dynamic_runtime:
         sanitized_summary: docs/reports/token-cost/runs/v0.1.1/architecture-no-impact-run1.analysis.yaml
         raw_omission_reason: raw JSONL contains disposable local temp fixture paths and full command output; analyzer summary is tracked as sanitized release evidence
       usage:
-        input_tokens: 33242
-        cached_input_tokens: 24320
-        output_tokens: 236
-        reasoning_output_tokens: 53
+        input_tokens: 33261
+        cached_input_tokens: 27392
+        output_tokens: 276
+        reasoning_output_tokens: 70
       tool_output:
-        total_estimated_tokens: 0
+        total_estimated_tokens: 2557
         largest_event:
-          kind: none
-          command: ""
-          path: ""
-          lines: 0
-          estimated_tokens: 0
+          kind: command_execution
+          command: "/bin/bash -lc \"sed -n '1,220p' /tmp/rigorloop-token-bench-v0.1.1-1778496244-bff770cd/.agents/skills/architecture/SKILL.md\""
+          path: /tmp/rigorloop-token-bench-v0.1.1-1778496244-bff770cd/.agents/skills/architecture/SKILL.md
+          lines: 191
+          estimated_tokens: 2557
       signals:
-        full_file_read_count: 0
+        full_file_read_count: 1
         broad_search_count: 0
         generated_output_read_count: 0
         repeated_file_read_count: 0
@@ -235,32 +235,32 @@ dynamic_runtime:
         sanitized_summary: docs/reports/token-cost/runs/v0.1.1/learn-no-durable-lesson-run1.analysis.yaml
         raw_omission_reason: raw JSONL contains disposable local temp fixture paths and full command output; analyzer summary is tracked as sanitized release evidence
       usage:
-        input_tokens: 33700
-        cached_input_tokens: 27392
-        output_tokens: 431
-        reasoning_output_tokens: 211
+        input_tokens: 33695
+        cached_input_tokens: 27904
+        output_tokens: 446
+        reasoning_output_tokens: 232
       tool_output:
-        total_estimated_tokens: 0
+        total_estimated_tokens: 3097
         largest_event:
-          kind: none
-          command: ""
-          path: ""
-          lines: 0
-          estimated_tokens: 0
+          kind: command_execution
+          command: "/bin/bash -lc \"sed -n '1,220p' /tmp/rigorloop-token-bench-v0.1.1-1778496244-bff770cd/.agents/skills/learn/SKILL.md\""
+          path: /tmp/rigorloop-token-bench-v0.1.1-1778496244-bff770cd/.agents/skills/learn/SKILL.md
+          lines: 194
+          estimated_tokens: 3097
       signals:
-        full_file_read_count: 0
+        full_file_read_count: 1
         broad_search_count: 0
         generated_output_read_count: 0
         repeated_file_read_count: 0
 
 summary:
-  median_input_tokens: 50901
-  median_cached_input_tokens: 44672
-  median_output_tokens: 641
-  median_reasoning_output_tokens: 126
-  max_single_tool_output_estimated_tokens: 0
-  full_file_read_count: 0
-  broad_search_count: 0
+  median_input_tokens: 69072
+  median_cached_input_tokens: 61952
+  median_output_tokens: 869
+  median_reasoning_output_tokens: 139
+  max_single_tool_output_estimated_tokens: 4071
+  full_file_read_count: 7
+  broad_search_count: 4
   generated_output_read_count: 0
 
 portability:
@@ -298,6 +298,9 @@ release_gate:
       message: code-review skill exceeds the initial static warning threshold
     - severity: warning
       code: dynamic-input-over-75000
-      message: implement-handoff exceeded the initial short-benchmark input-token warning threshold
+      message: verify-final-pack exceeded the initial short-benchmark input-token warning threshold
+    - severity: warning
+      code: confirmed-full-file-read
+      message: corrected analyzer summaries found confirmed skill-file reads in all seven benchmark runs
   notes:
     - Token thresholds are warning-only for this baseline release report unless portability or report structure fails.

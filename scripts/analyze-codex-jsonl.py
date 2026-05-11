@@ -31,6 +31,7 @@ class ToolEvent:
     output: str
     max_output_tokens: int | None
     line_number: int
+    kind: str = ""
 
     @property
     def output_lines(self) -> int:
@@ -90,7 +91,23 @@ def looks_like_tool_record(record: dict[str, Any]) -> bool:
     return any(key in record for key in {"cmd", "command", "args", "arguments", "output", "result"})
 
 
+def current_codex_command_execution(record: dict[str, Any]) -> dict[str, Any] | None:
+    item = record.get("item")
+    if (
+        record.get("type") == "item.completed"
+        and isinstance(item, dict)
+        and item.get("type") == "command_execution"
+    ):
+        return item
+    return None
+
+
 def find_command(record: dict[str, Any]) -> str:
+    command_event = current_codex_command_execution(record)
+    if command_event is not None:
+        value = command_event.get("command")
+        if isinstance(value, str) and value.strip():
+            return value.strip()
     command_keys = {"cmd", "command", "query", "q"}
     for item in iter_dicts(record):
         for key in command_keys:
@@ -104,7 +121,13 @@ def find_command(record: dict[str, Any]) -> str:
 
 
 def find_output(record: dict[str, Any]) -> str:
-    output_keys = {"output", "stdout", "stderr", "content", "text"}
+    command_event = current_codex_command_execution(record)
+    if command_event is not None:
+        for key in ["aggregated_output", "output", "stdout", "stderr"]:
+            value = command_event.get(key)
+            if isinstance(value, str) and value:
+                return value
+    output_keys = {"aggregated_output", "output", "stdout", "stderr", "content", "text"}
     outputs: list[str] = []
     for item in iter_dicts(record):
         for key in output_keys:
@@ -151,13 +174,15 @@ def read_events(path: Path) -> tuple[dict[str, int], list[ToolEvent], int]:
                 for key, value in usage.items():
                     usage_totals[key] = usage_totals.get(key, 0) + value
 
-            if looks_like_tool_record(record):
+            command_event = current_codex_command_execution(record)
+            if command_event is not None or looks_like_tool_record(record):
                 events.append(
                     ToolEvent(
                         command=find_command(record),
                         output=find_output(record),
                         max_output_tokens=find_max_output_tokens(record),
                         line_number=line_number,
+                        kind="command_execution" if command_event is not None else "",
                     )
                 )
             elif not usage:
@@ -200,6 +225,8 @@ def is_file_read_like_command(command: str) -> bool:
 
 
 def event_kind(event: ToolEvent) -> str:
+    if event.kind:
+        return event.kind
     if command_path(event.command):
         return "file-read"
     if event.command != "unknown":
