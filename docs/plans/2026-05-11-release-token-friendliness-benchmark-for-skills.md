@@ -67,14 +67,14 @@ No `benchmarks/` directory exists yet. This plan creates the first `benchmarks/t
 
 ## Current Handoff Summary
 
-- Current milestone: M4. First baseline report and release report template
-- Current milestone state: review-requested
-- Last reviewed milestone: M3 code-review R6 clean-with-notes
-- Review status: code-review R7 finding RTF-CR7 resolved; M4 is ready for code-review rerun
-- Remaining in-scope implementation milestones: M4, M5
-- Next stage: code-review M4 rerun
+- Current milestone: M5. Release validation integration and documentation
+- Current milestone state: planned
+- Last reviewed milestone: M4 code-review R8 clean-with-notes
+- Review status: M4 closed with no material findings after RTF-CR7 resolution
+- Remaining in-scope implementation milestones: M5
+- Next stage: implement M5
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M4-M5, explain-change, verify, and PR handoff are not complete.
+- Reason final closeout is or is not ready: M5, explain-change, verify, and PR handoff are not complete.
 
 ## Milestones
 
@@ -227,7 +227,7 @@ No `benchmarks/` directory exists yet. This plan creates the first `benchmarks/t
 
 ### M4. First baseline report and release report template
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Add the first release Token-Friendliness report format and baseline metadata without adding a full report generator.
 - Requirements: `R1`-`R7`, `R14`-`R23`, `R27`-`R30`, `R32`
 - Files/components likely touched:
@@ -259,12 +259,12 @@ No `benchmarks/` directory exists yet. This plan creates the first `benchmarks/t
 - Milestone closeout:
   - [x] targeted validation passed
   - [x] hand off to code-review for M4
-  - [ ] code-review completed
+  - [x] code-review completed
   - [x] material findings resolved or explicitly dispositioned
   - [x] progress updated
   - [ ] decision log updated if needed
   - [x] validation notes updated
-  - [ ] milestone committed
+  - [x] milestone committed
 - Risks:
   - raw JSONL may contain local data and require sanitized summaries;
   - Codex may be unavailable for the release runner;
@@ -408,6 +408,7 @@ bash scripts/release-verify.sh <release-version>
 - 2026-05-11: Added the `v0.1.1` Token-Friendliness Markdown report, YAML metadata, sanitized per-run analyzer summaries, and release-notes link; M4 is ready for code-review.
 - 2026-05-11: Code-review R7 requested an M4 fix for analyzer parsing of current Codex `command_execution` `aggregated_output` events; RTF-CR7 is open.
 - 2026-05-11: Resolved RTF-CR7 by parsing current Codex `command_execution` `aggregated_output` events, adding focused analyzer coverage, rerunning the v0.1.1 benchmark, regenerating sanitized summaries, and correcting the Markdown/YAML baseline report; M4 is ready for code-review rerun.
+- 2026-05-11: Code-review R8 found no material findings for M4 after RTF-CR7 resolution; M4 is closed and the plan is ready for implement M5.
 
 ## Decision Log
 
