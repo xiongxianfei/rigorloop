@@ -34,6 +34,7 @@ tests:
   - M2 code-review clean review record and milestone closeout state.
   - M3 token-cost report validator tests for v2 coverage metadata, result quality, required benchmark context, waiver roles, claimed optional gates, and unclaimed optional warnings.
   - M3 code-review changes-requested review record and open finding EDTF-CR1.
+  - M3 EDTF-CR1 fix for reconciling optional coverage status with actual dynamic run result-quality status.
 validation:
   - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills
     result: pass_closeout_reviews_4_findings_4_log_entries_4_resolution_entries_4
@@ -119,6 +120,22 @@ validation:
     result: pass_after_m3_handoff_artifact_updates
   - command: python reviewer_probe_optional_status_mismatch
     result: fail_review_probe_validator_accepted_optional_run_fail_when_coverage_result_quality_status_was_pass
+  - command: python scripts/test-token-cost-report-validation.py TokenCostReportValidatorTests.test_v2_optional_coverage_result_quality_must_match_dynamic_run
+    result: fail_before_fix_then_pass_after_edtf_cr1_resolution
+  - command: python scripts/test-token-cost-report-validation.py
+    result: pass_16_tests_after_edtf_cr1_resolution
+  - command: python -m py_compile scripts/validate-token-cost-report.py scripts/test-token-cost-report-validation.py
+    result: pass_after_edtf_cr1_resolution
+  - command: python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml
+    result: pass_after_edtf_cr1_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills
+    result: pass_closeout_reviews_10_findings_7_log_entries_10_resolution_entries_7
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml
+    result: pass_valid_change_metadata_after_edtf_cr1_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-resolution.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-log.md --path docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path docs/plan.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml
+    result: pass_validated_6_artifact_files_with_existing_docs_plan_warning_after_edtf_cr1_resolution
+  - command: git diff --check -- scripts/validate-token-cost-report.py scripts/test-token-cost-report-validation.py tests docs/reports/token-cost/releases docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md docs/plan.md
+    result: pass_after_edtf_cr1_resolution
 changed_files:
   - benchmarks/token-cost/manifest.yaml
   - benchmarks/token-cost/prompts/workflow-route.md
@@ -162,10 +179,10 @@ changed_files:
   - docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/code-review-m2-r1.md
   - docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/code-review-m3-r1.md
 review:
-  status: changes-requested
-  open_findings: 1
+  status: ready-for-code-review-rerun
+  open_findings: 0
   unresolved_items: 0
-  last_review: code-review-m3-r1 requested changes for EDTF-CR1
+  last_review: code-review-m3-r1 requested changes for EDTF-CR1; EDTF-CR1 accepted and fixed
 status:
   lifecycle: implement
-  review: m3-resolution-needed
+  review: m3-review-requested-after-edtf-cr1-fix

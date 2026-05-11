@@ -148,10 +148,16 @@ class TokenCostReportValidatorTests(unittest.TestCase):
         optional_quality_status: str = "pass",
         optional_claimed: bool = False,
         optional_required: bool = False,
+        optional_coverage_quality_status: str | None = None,
         optional_warning: str = "",
         include_optional_run: bool = True,
     ) -> str:
         md = "tests/fixtures/token-cost/reports/valid-final-pass/v0.1.1.md"
+        optional_coverage_quality_status = (
+            optional_coverage_quality_status
+            if optional_coverage_quality_status is not None
+            else optional_quality_status
+        )
         proposal_run = ""
         if include_proposal_run:
             proposal_run = f"""
@@ -242,7 +248,7 @@ benchmark_coverage:
       skill: architecture-review
       claimed_as_release_coverage: {'true' if optional_claimed else 'false'}
       required_for_release: {'true' if optional_required else 'false'}
-      result_quality_status: {optional_quality_status}
+      result_quality_status: {optional_coverage_quality_status}
   missing_required: []
   missing_optional: []
 
@@ -546,6 +552,60 @@ release_gate:
             ),
             context,
             "release_gate.warnings: required benchmark architecture-review must not use optional warning code optional-benchmark-failed",
+        )
+
+    def test_v2_optional_coverage_result_quality_must_match_dynamic_run(self) -> None:
+        context = self.v2_context_text(core=["proposal-short"])
+        failed_warning = """    - severity: warning
+      code: optional-benchmark-failed
+      benchmark: architecture-review
+      skill: architecture-review
+      message: Optional benchmark failed, but it is not required for this release.
+      follow_up: Review before claiming coverage."""
+        inconclusive_warning = """    - severity: warning
+      code: optional-benchmark-inconclusive
+      benchmark: architecture-review
+      skill: architecture-review
+      message: Optional benchmark result quality was inconclusive.
+      follow_up: Rerun or improve expected-output criteria before relying on this benchmark."""
+        self.assertFailsWithContext(
+            self.v2_report_text(
+                optional_quality_status="fail",
+                optional_coverage_quality_status="pass",
+                optional_warning=failed_warning,
+            ),
+            context,
+            "benchmark_coverage.optional_run[architecture-review].result_quality_status must match dynamic_runtime.runs[architecture-review].result_quality.status",
+        )
+        self.assertFailsWithContext(
+            self.v2_report_text(
+                optional_quality_status="inconclusive",
+                optional_coverage_quality_status="pass",
+                optional_warning=inconclusive_warning,
+            ),
+            context,
+            "benchmark_coverage.optional_run[architecture-review].result_quality_status must match dynamic_runtime.runs[architecture-review].result_quality.status",
+        )
+        self.assertPassesWithContext(
+            self.v2_report_text(
+                optional_quality_status="fail",
+                optional_coverage_quality_status="fail",
+                optional_warning=failed_warning,
+            ),
+            context,
+        )
+        self.assertPassesWithContext(
+            self.v2_report_text(
+                optional_quality_status="inconclusive",
+                optional_coverage_quality_status="inconclusive",
+                optional_warning=inconclusive_warning,
+            ),
+            context,
+        )
+        self.assertFailsWithContext(
+            self.v2_report_text(include_optional_run=False),
+            context,
+            "benchmark_coverage.optional_run[architecture-review] has no matching dynamic_runtime.runs entry",
         )
 
     def test_v2_changed_skill_required_context_requires_optional_benchmark(self) -> None:
