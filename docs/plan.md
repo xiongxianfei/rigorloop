@@ -3,6 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
+- [2026-05-11 Progressive loading for high-cost public skills](plans/2026-05-11-progressive-loading-high-cost-public-skills.md) - active execution plan for adding quick operating guides to `workflow`, `implement`, and `code-review`, tightening `implement` handoff-state inspection, accounting for moved workflow detail, preserving protected code-review contracts, refreshing generated output, and recording before/after token-cost benchmark evidence.
 - [2026-05-10 Token cost measurement baseline and proposal scope preservation](plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md) - active execution plan with M1-M5 closed, PR #40 open, and local PR-mode CI selector fix passed; hosted CI rerun is pending.
 
 ## Blocked
