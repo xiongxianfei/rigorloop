@@ -68,11 +68,11 @@ No `benchmarks/` directory exists yet. This plan creates the first `benchmarks/t
 ## Current Handoff Summary
 
 - Current milestone: M2. Benchmark fixture and prompt suite
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M1 code-review R3 clean-with-notes
-- Review status: M1 closed; no review-resolution required
+- Review status: M2 implementation complete; ready for code-review
 - Remaining in-scope implementation milestones: M2, M3, M4, M5
-- Next stage: implement M2
+- Next stage: code-review M2
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: M2-M5, explain-change, verify, and PR handoff are not complete.
 
@@ -131,7 +131,7 @@ No `benchmarks/` directory exists yet. This plan creates the first `benchmarks/t
 
 ### M2. Benchmark fixture and prompt suite
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Add the first executable benchmark suite and clean downstream project fixture.
 - Requirements: `R8`-`R10`, `R31`
 - Files/components likely touched:
@@ -157,14 +157,14 @@ No `benchmarks/` directory exists yet. This plan creates the first `benchmarks/t
 - Expected observable result: The benchmark suite can be reviewed as tracked fixtures before any runtime runner exists.
 - Commit message: `M2: add token-cost benchmark fixtures`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] hand off to code-review for M2
+  - [x] targeted validation passed
+  - [x] hand off to code-review for M2
   - [ ] code-review completed
   - [ ] material findings resolved or explicitly dispositioned
-  - [ ] progress updated
+  - [x] progress updated
   - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - fixture may become too repository-specific;
   - prompts may accidentally ask for edits.
@@ -393,6 +393,9 @@ bash scripts/release-verify.sh <release-version>
 - 2026-05-11: Code-review R2 requested an M1 fix for partial RC reuse checked-surface validation; RTF-CR3 is open.
 - 2026-05-11: Resolved RTF-CR3 by requiring all RC reuse checked-surface categories and adding per-category negative tests; M1 is ready for code-review rerun.
 - 2026-05-11: Code-review R3 found no material findings for M1; M1 is closed and the plan is ready for implement M2.
+- 2026-05-11: Started M2 implementation for benchmark manifest, prompt fixtures, clean minimal fixture, and focused fixture validation.
+- 2026-05-11: Added fixture-first tests for benchmark manifest, seven prompt fixtures, clean minimal fixture contents, absence of installed skills, and absence of generated-surface references.
+- 2026-05-11: Added `benchmarks/token-cost/manifest.yaml`, seven no-edit prompt fixtures, and the clean minimal public project fixture; M2 is ready for code-review.
 
 ## Decision Log
 
@@ -408,7 +411,9 @@ bash scripts/release-verify.sh <release-version>
 - Code-review R1 found that RC reuse and Markdown/YAML pairing were part of the M1 validator contract, not later release integration. Both are now covered by standalone tests.
 - Code-review R2 found that RC reuse checked-surface validation must reject partial surface coverage, not only no-surface coverage.
 - RTF-CR3 resolution keeps model/tool version mandatory as an addressed category, including unknown/unchanged wording through accepted synonyms, so final-release RC reuse decisions have a consistent review surface.
-- Code-review R3 closed M1 without new material findings. M2 remains planned and no M2 implementation work has started.
+- Code-review R3 closed M1 without new material findings and handed the plan to M2.
+- M2 fixture validation deliberately checks the clean source fixture only. Public skill installation remains M3 runner scope.
+- The plan's `find benchmarks/token-cost -maxdepth 4 -type f | sort` command does not list the deeper `docs/changes/.gitkeep` fixture file, but the focused test checks it directly.
 
 ## Validation Notes
 
@@ -423,6 +428,10 @@ bash scripts/release-verify.sh <release-version>
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r2.md` passed with the existing `docs/plan.md` lifecycle-language warning.
 - Code-review R3 validation rerun: `python scripts/test-token-cost-report-validation.py` passed 10 tests; `python scripts/validate-token-cost-report.py tests/fixtures/token-cost/reports/valid-final-pass/v0.1.1.yaml`, `python -m py_compile scripts/validate-token-cost-report.py`, `python scripts/test-token-cost-measurement.py`, `python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills`, and `git diff --check -- scripts/validate-token-cost-report.py scripts/test-token-cost-report-validation.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md` passed.
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r2.md` passed with the existing `docs/plan.md` lifecycle-language warning.
+- M2 test-first proof: `python scripts/test-token-cost-measurement.py` failed before fixture creation with missing `benchmarks/token-cost/manifest.yaml` and missing fixture `AGENTS.md`.
+- M2 validation: `python scripts/test-token-cost-measurement.py` passed 10 tests; `test -f benchmarks/token-cost/manifest.yaml` passed; `find benchmarks/token-cost -maxdepth 4 -type f | sort` listed the manifest, seven prompt files, and top-level fixture files; `git diff --check -- benchmarks/token-cost scripts/test-token-cost-measurement.py docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml` passed; `rg -n "dist/adapters|\\.codex/skills|\\.agents/skills" benchmarks/token-cost` returned no matches.
+- `python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml` passed.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md` passed with the existing `docs/plan.md` lifecycle-language warning.
 
 ## Outcome and Retrospective
 
