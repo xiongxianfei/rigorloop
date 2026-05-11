@@ -71,14 +71,14 @@ The goal is to reduce unnecessary whole-skill reads and `implement-handoff` comm
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Static Proof and Test Coverage
+- Current milestone: M2. Canonical Skill and Workflow Guidance
 - Current milestone state: review-requested
-- Last reviewed milestone: planning gate
-- Review status: M1 implementation complete; code-review pending
-- Remaining in-scope implementation milestones: M1, M2, M3, M4
-- Next stage: code-review M1
+- Last reviewed milestone: M1. Static Proof and Test Coverage
+- Review status: M2 implementation complete; code-review M2 pending
+- Remaining in-scope implementation milestones: M2, M3, M4
+- Next stage: code-review M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 is awaiting code-review, M2-M4 are not started, final verification/PR handoff evidence does not exist, and dynamic benchmark evidence has not been recorded.
+- Reason final closeout is or is not ready: M2 is awaiting code-review, M3-M4 are not started, final verification/PR handoff evidence does not exist, and dynamic benchmark evidence has not been recorded.
 
 ## Pre-Implementation Gates
 
@@ -105,7 +105,7 @@ Implementation must not start until plan-review passes and the test spec is auth
 
 ### M1. Static Proof and Test Coverage
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Add focused proof that quick guides, handoff inspection guidance, workflow migration accounting, and protected `code-review` contracts can be validated.
 - Requirements: `R2`, `R3`, `R4b`, `R4c`, `R5a`, `R6`, `R8`, `R11`, `R12`.
 - Files/components likely touched:
@@ -149,7 +149,7 @@ Implementation must not start until plan-review passes and the test spec is auth
 
 ### M2. Canonical Skill and Workflow Guidance
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Add progressive-loading guidance to `workflow`, `implement`, and `code-review`, compress duplicate prose, and account for moved workflow detail.
 - Requirements: `R1`-`R6`, `R8b`-`R8d`, `R11`, `R12`.
 - Files/components likely touched:
@@ -183,11 +183,11 @@ Implementation must not start until plan-review passes and the test spec is auth
 - Expected observable result: The three optimized skills have top-of-skill quick guides, `implement` has bounded handoff inspection guidance, `workflow` has no unaccounted safety-topic deletion, and `code-review` retains protected review contracts.
 - Commit message: `M2: add progressive loading skill guidance`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - Compression could weaken review or workflow safety guidance.
   - Moving workflow detail could create stale or duplicate owner surfaces.
@@ -338,6 +338,9 @@ Final pre-PR validation is expected to include:
 - 2026-05-11: Plan-review R2 approved the revised plan; test spec created and activated; next stage is implement M1.
 - 2026-05-11: M1 implementation started; scope is static proof/test coverage before canonical skill edits.
 - 2026-05-11: M1 implementation completed; static proof helper coverage added and targeted validation passed; ready for code-review M1.
+- 2026-05-11: Code-review M1 completed clean-with-notes; no review-resolution required; next stage is implement M2.
+- 2026-05-11: M2 implementation started; scope is canonical `workflow`, `implement`, `code-review`, workflow docs, static measurement, and migration evidence.
+- 2026-05-11: M2 canonical skill edits completed. `workflow`, `implement`, and `code-review` now have quick operating guides; `implement` starts handoff inspection from the active plan `Current Handoff Summary`; `docs/workflows.md` and the optimization report own the workflow detail migration evidence.
 
 ## Decision Log
 
@@ -346,10 +349,12 @@ Final pre-PR validation is expected to include:
 - 2026-05-11: Gate implementation on test-spec. Rationale: every `MUST` needs explicit proof mapping before skill text changes proceed.
 - 2026-05-11: Require the change-local artifact pack for this initiative. Rationale: the change is non-trivial and review/closeout evidence needs a durable owner surface outside public skill text.
 - 2026-05-11: M1 uses reusable fixture-style static proof helpers instead of enforcing the new quick-guide contract against canonical skills before M2. Rationale: M1 proves the checks can detect missing or unsafe patterns; M2 owns canonical skill wording.
+- 2026-05-11: Keep `workflow` above the 4,000 target range for now, at 4,857 estimated tokens. Rationale: static validators require safety-critical milestone, review-resolution, lifecycle, autoprogression, claim-boundary, and stop-condition anchors in the public router; the high-warning level was still reduced below 5,000.
+- 2026-05-11: Keep `code-review` protected contracts in the public skill, at 4,671 estimated tokens. Rationale: independent-review, mixed-evidence, material-finding, detailed-record, milestone-handoff, stop-condition, and result-format guidance remains safety-critical; compression focused on repeated input/template prose.
 
 ## Surprises and Discoveries
 
-- None yet.
+- Existing validator fixtures still require several exact workflow safety anchor phrases in the public `workflow` skill. M2 restored those anchors in shorter form instead of moving them entirely to contributor docs.
 
 ## Validation Notes
 
@@ -361,6 +366,14 @@ Final pre-PR validation is expected to include:
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml` passed.
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/progressive-loading-high-cost-public-skills.md --path specs/progressive-loading-high-cost-public-skills.test.md --path docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md --path docs/plan.md --path docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml` passed with the existing unrelated `docs/plan.md` lifecycle-language warning.
   - `git diff --check -- specs/progressive-loading-high-cost-public-skills.test.md scripts/test-skill-validator.py scripts/validate-skills.py docs/changes/2026-05-11-progressive-loading-high-cost-public-skills docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md docs/plan.md` passed.
+- Code-review M1 reviewed commit `c889850`; no material findings. Review noted that helper-level tests intentionally do not enforce M2 canonical skill wording before M2.
+- M2 targeted validation passed:
+  - `python scripts/test-skill-validator.py` passed, 62 tests.
+  - `python scripts/validate-skills.py` passed, validating 23 skill files.
+  - `python scripts/measure-skill-tokens.py` passed: total 52,843 estimated tokens; `workflow` 4,857, `implement` 3,963, `code-review` 4,671.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml` passed.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path skills/workflow/SKILL.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path docs/workflows.md --path specs/progressive-loading-high-cost-public-skills.md --path specs/progressive-loading-high-cost-public-skills.test.md --path docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md --path docs/plan.md` passed with existing lifecycle-language warnings in `docs/plan.md` and `docs/workflows.md`.
+  - `git diff --check -- skills/workflow/SKILL.md skills/implement/SKILL.md skills/code-review/SKILL.md docs/workflows.md docs/reports/token-cost/optimizations docs/changes/2026-05-11-progressive-loading-high-cost-public-skills docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md docs/plan.md` passed.
 
 ## Outcome and Retrospective
 

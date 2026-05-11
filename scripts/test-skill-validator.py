@@ -1992,6 +1992,53 @@ and result format.
             with self.subTest(file="plan", term=term):
                 self.assertIn(term, plan)
 
+    def test_progressive_loading_canonical_skills_satisfy_quick_guide_contract(self) -> None:
+        for skill_name in PROGRESSIVE_LOADING_OPTIMIZED_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            with self.subTest(skill=skill_name):
+                assert_progressive_loading_quick_guide_contract(self, body)
+
+    def test_progressive_loading_canonical_implement_handoff_contract(self) -> None:
+        body = (ROOT / "skills" / "implement" / "SKILL.md").read_text(encoding="utf-8")
+        assert_progressive_loading_implement_handoff_contract(self, body)
+
+    def test_progressive_loading_canonical_code_review_preserves_protected_contracts(self) -> None:
+        body = (ROOT / "skills" / "code-review" / "SKILL.md").read_text(encoding="utf-8")
+        assert_progressive_loading_code_review_protected_contracts(self, body)
+
+    def test_progressive_loading_workflow_migration_and_report_surfaces_exist(self) -> None:
+        workflows = (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8")
+        report = (
+            ROOT
+            / "docs"
+            / "reports"
+            / "token-cost"
+            / "optimizations"
+            / "2026-05-11-progressive-loading-high-cost-skills.md"
+        ).read_text(encoding="utf-8")
+
+        for term in [
+            "## Workflow Detail Ownership",
+            "review-resolution detail",
+            "lifecycle-managed artifact tables",
+            "validation-layering detail",
+            "default artifact path lists",
+        ]:
+            with self.subTest(file="workflows", term=term):
+                self.assertIn(term, workflows)
+
+        report_terms = [
+            "## Workflow Detail Migration Table",
+            "| Removed or summarized topic | New owner surface | Rationale |",
+            "Review-resolution details",
+            "Lifecycle-managed artifact table",
+            "Detailed validation layering",
+            "## Static Skill Size",
+        ]
+        for term in report_terms:
+            with self.subTest(file="optimization_report", term=term):
+                self.assertIn(term, report)
+
     def test_proposal_scope_preservation_guidance_is_static_validated(self) -> None:
         proposal = (ROOT / "skills" / "proposal" / "SKILL.md").read_text(encoding="utf-8")
         proposal_review = (
