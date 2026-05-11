@@ -84,19 +84,19 @@ The v2 change is release-process and evidence-shape work. It must not hand-edit 
 
 ## Current Handoff Summary
 
-- Current stage: implement
+- Current stage: code-review
 - Current milestone: M5. V2 transition report evidence and lifecycle closeout
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M4. Release validation required benchmark context integration
-- Review status: code-review M4 R2 clean-with-notes; M4 closed with no open findings
+- Review status: M5 implementation complete; code-review needed
 - Next stage after plan-review: test-spec
 - Test-spec artifact: `specs/expand-dynamic-token-friendliness-benchmarks-for-core-skills.test.md`
 - Test-spec status: active
 - Implementation may start after: test-spec is authored and accepted for use; complete
-- Remaining in-scope implementation milestones: M5
-- Next stage: implement M5
+- Remaining in-scope implementation milestones: M5 review
+- Next stage: code-review M5
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M5 remains open, and final explain-change, verify, and PR handoff are not complete.
+- Reason final closeout is or is not ready: M5 requires code-review, and final explain-change, verify, and PR handoff are not complete.
 
 ## Requirements covered
 
@@ -318,7 +318,7 @@ Suggested validation for the test-spec stage:
 
 ### M5. V2 transition report evidence and lifecycle closeout
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Preserve pre-transition v1 evidence, add v2 transition report metadata/report evidence, and prepare the initiative for final review gates.
 - Requirements: `R1`, `R3`, `R7`-`R9`, `R14`-`R17`.
 - Files/components likely touched:
@@ -353,11 +353,11 @@ Suggested validation for the test-spec stage:
 - Expected observable result: v2 transition evidence validates, pre-transition v1 evidence remains preserved, and the plan is ready for final implementation review sequence.
 - Commit message: `M5: add v2 token benchmark transition report evidence`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - Live Codex availability or token variability can affect dynamic evidence.
   - Existing `v0.1.1` report identity can be mishandled if preservation is not done atomically.
@@ -412,6 +412,7 @@ Implementation-stage validation is listed per milestone. Prefer the smallest rel
 - 2026-05-11: Code-review M4 R1 found EDTF-CR2, a major release-validation integration gap where the real `validate-release.py --version ...` command path does not supply or derive changed surfaces for v2 required benchmark context generation; M4 is in `resolution-needed`.
 - 2026-05-11: EDTF-CR2 was accepted and fixed by adding `--changed-path` and `--changed-paths-file` to `validate-release.py`, passing changed paths into release validation, requiring changed-surface input for final v2 reports, and adding focused CLI/API tests; M4 is ready for code-review rerun.
 - 2026-05-11: Code-review M4 R2 closed M4 with no material findings. The release CLI now accepts changed-surface input, final v2 validation blocks when it is omitted, and focused CLI/API tests prove changed-skill benchmark enforcement.
+- 2026-05-11: M5 preserved the existing `v0.1.1` v1 report as `v0.1.1-skill-token-runtime-v1-pretransition`, ran the live required v2 transition suite with Codex, regenerated sanitized analyzer summaries for all ten required core and transition carryover prompts, and replaced the canonical `v0.1.1` YAML/Markdown with the first `skill-token-runtime-v2` transition report.
 
 ## Decision log
 
@@ -425,10 +426,13 @@ Implementation-stage validation is listed per milestone. Prefer the smallest rel
 - 2026-05-11: Keep required benchmark context validation in the token-cost validator but leave changed-surface detection for M4 release validation -> M3 proves the context contract without moving release diff analysis into the standalone validator.
 - 2026-05-11: Keep the tracked `v0.1.1` v1 report on the existing release validation path until M5 creates v2 evidence -> M4 only passes required benchmark context when the governed token-cost report declares `skill-token-runtime-v2`, preserving pre-transition validation.
 - 2026-05-11: Use explicit line-based changed-surface input for the first release CLI integration slice -> this avoids guessing a release diff range while making the maintainer-facing command pass changed surfaces into required benchmark context generation.
+- 2026-05-11: Use an explicit empty changed-paths file for final v2 release validation when no public skill source changed -> EDTF-CR2 requires changed-surface input for final v2 validation, and an empty file is the reviewable assertion that no changed public skill benchmark is required.
+- 2026-05-11: Run M5 dry-run validation with a temp `--output-dir` -> the plan's original directory-form dry-run command would overwrite tracked live analyzer summaries under `docs/reports/token-cost/runs/v0.1.1/`; temp output proves runner enumeration without corrupting release evidence.
 
 ## Surprises and discoveries
 
-- none yet
+- M5 live runtime evidence found a high-cost `implement-handoff` command-output amplification case: one broad search output was estimated at 20,738 tokens. Per R17, token thresholds remain warning-only in this expansion, so the v2 report records it as a `high-warning` optimization signal rather than a release blocker.
+- The selected CI command listed in the plan with `--path benchmarks/token-cost` was blocked by the v1 selector because directory-form benchmark paths are unclassified. Re-running selected CI with concrete changed report and analyzer-summary paths selected and passed the intended token-cost and change metadata checks.
 
 ## Validation notes
 
@@ -505,6 +509,17 @@ Implementation-stage validation is listed per milestone. Prefer the smallest rel
 - 2026-05-11: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-resolution.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-log.md --path docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path docs/plan.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/explain-change.md` passed after EDTF-CR2 resolution with the existing unrelated `docs/plan.md` lifecycle-language warning.
 - 2026-05-11: `git diff --check -- scripts/validate-release.py scripts/adapter_distribution.py scripts/test-adapter-distribution.py scripts/test-token-cost-report-validation.py tests docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md docs/plan.md` passed after EDTF-CR2 resolution artifact updates.
 - 2026-05-11: `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_validate_release_cli_passes_changed_surface_inputs AdapterDistributionTests.test_v2_final_release_validation_requires_changed_surface_input AdapterDistributionTests.test_generated_adapter_changed_path_requires_missing_benchmark_through_release_validation AdapterDistributionTests.test_changed_skill_with_complete_v2_metadata_passes_release_validation` passed during code-review M4 R2.
+- 2026-05-11: `python scripts/run-token-cost-benchmarks.py --suite benchmarks/token-cost/manifest.yaml --release v0.1.1 --tool codex --output-dir /tmp/rigorloop-token-v2-runs-v0.1.1` passed during M5 and produced live raw JSONL outside the repository for the ten required core and transition carryover prompts.
+- 2026-05-11: Re-ran `python scripts/analyze-codex-jsonl.py ... --raw-jsonl-omitted ...` for each M5 raw JSONL file, writing sanitized analyzer summaries under `docs/reports/token-cost/runs/v0.1.1/`.
+- 2026-05-11: `python scripts/measure-skill-tokens.py` passed during M5 and reported `skills_measured=23`, `total_estimated_tokens=54294`, max skill `workflow` at `6674` estimated tokens, and `code-review` at `4726` estimated tokens.
+- 2026-05-11: `python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml` passed after the v2 transition report was generated.
+- 2026-05-11: `python scripts/run-token-cost-benchmarks.py --dry-run --suite benchmarks/token-cost/manifest.yaml --release v0.1.1 --tool codex --output-dir /tmp/rigorloop-token-v2-dry-run-v0.1.1` passed during M5; temp output was used to avoid overwriting tracked live analyzer summaries.
+- 2026-05-11: `python scripts/test-token-cost-measurement.py` passed with 24 tests during M5.
+- 2026-05-11: `python scripts/test-token-cost-report-validation.py` passed with 16 tests during M5.
+- 2026-05-11: `python -m py_compile scripts/run-token-cost-benchmarks.py scripts/analyze-codex-jsonl.py scripts/validate-token-cost-report.py scripts/validate-release.py scripts/adapter_distribution.py` passed during M5.
+- 2026-05-11: `python scripts/validate-release.py --version v0.1.1 --changed-paths-file /tmp/rigorloop-empty-changed-paths.txt` passed during M5, using an explicit empty changed-surface input for the v2 final report.
+- 2026-05-11: `bash scripts/ci.sh --mode explicit --path benchmarks/token-cost --path scripts/validate-token-cost-report.py --path scripts/validate-release.py --path docs/reports/token-cost/releases/v0.1.1.yaml --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml` was blocked by selector classification for directory path `benchmarks/token-cost`.
+- 2026-05-11: `bash scripts/ci.sh --mode explicit --path docs/reports/token-cost/releases/v0.1.1.yaml --path docs/reports/token-cost/releases/v0.1.1.md --path docs/reports/token-cost/releases/v0.1.1-skill-token-runtime-v1-pretransition.yaml --path docs/reports/token-cost/releases/v0.1.1-skill-token-runtime-v1-pretransition.md --path docs/reports/token-cost/runs/v0.1.1/workflow-route-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/proposal-short-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/plan-handoff-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/implement-handoff-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/code-review-small-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/explain-change-summary-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/verify-final-pack-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/pr-handoff-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/architecture-no-impact-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/learn-no-durable-lesson-run1.analysis.yaml --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml` passed selected checks: `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `token_cost.regression`, and `token_cost.report_validate`.
 
 ## Outcome and retrospective
 
