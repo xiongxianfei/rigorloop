@@ -38,6 +38,20 @@ class TokenCostReportValidatorTests(unittest.TestCase):
     def setUp(self) -> None:
         self.valid_text = VALID_FIXTURE.read_text(encoding="utf-8")
 
+    def with_valid_rc_reuse(self, text: str, relevant_changes: bool = False) -> str:
+        return text + "\n".join(
+            [
+                "",
+                "rc_reuse:",
+                "  reused_from: v0.1.1-rc.1",
+                f"  benchmark_relevant_changes_since_rc: {'true' if relevant_changes else 'false'}",
+                "  checked_by: release-owner",
+                "  checked_surface: release checklist",
+                "  rationale: No public skills, adapter output, workflow guide, benchmark prompts, analyzer scripts, fixtures, model/tool version, or release packaging changes since RC.",
+                "",
+            ]
+        )
+
     def write_case(self, text: str) -> Path:
         handle = tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".yaml", delete=False)
         with handle:
@@ -62,6 +76,47 @@ class TokenCostReportValidatorTests(unittest.TestCase):
         combined = f"{result.stdout}\n{result.stderr}"
         self.assertNotEqual(result.returncode, 0, "expected validator to fail")
         self.assertIn(expected_text, combined)
+
+    def test_markdown_report_must_name_yaml_metadata(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            md = root / "v0.1.1.md"
+            yaml_path = root / "v0.1.1.yaml"
+            md.write_text("# Token-Friendliness Report\n\nNo metadata link.\n", encoding="utf-8")
+            metadata = self.valid_text.replace(
+                "report_markdown: tests/fixtures/token-cost/reports/valid-final-pass/v0.1.1.md",
+                f"report_markdown: {md}",
+            )
+            yaml_path.write_text(metadata, encoding="utf-8")
+
+            result = run_validator(yaml_path)
+
+        combined = f"{result.stdout}\n{result.stderr}"
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn(
+            "report.report_markdown must name or link the YAML metadata file",
+            combined,
+        )
+
+    def test_markdown_report_may_name_yaml_metadata_path(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            md = root / "v0.1.1.md"
+            yaml_path = root / "v0.1.1.yaml"
+            md.write_text(
+                f"# Token-Friendliness Report\n\nStructured metadata: `{yaml_path}`\n",
+                encoding="utf-8",
+            )
+            metadata = self.valid_text.replace(
+                "report_markdown: tests/fixtures/token-cost/reports/valid-final-pass/v0.1.1.md",
+                f"report_markdown: {md}",
+            )
+            yaml_path.write_text(metadata, encoding="utf-8")
+
+            result = run_validator(yaml_path)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("valid token-cost report metadata", result.stdout)
 
     def test_valid_final_pass_metadata_passes(self) -> None:
         result = run_validator(VALID_FIXTURE)
@@ -122,18 +177,61 @@ class TokenCostReportValidatorTests(unittest.TestCase):
             .replace('  approval_surface: ""', "  approval_surface: release checklist")
             .replace('  evidence: ""', "  evidence: tests/fixtures/token-cost/reports/valid-final-pass/v0.1.1.yaml")
         )
-        self.assertPasses(waived)
+        self.assertFails(waived, "rc_reuse: required when final waiver references RC benchmark evidence")
+        self.assertPasses(self.with_valid_rc_reuse(waived))
         self.assertFails(
-            waived.replace("  status: approved", "  status: requested"),
+            self.with_valid_rc_reuse(waived).replace("  status: approved", "  status: requested"),
             "waiver.status: waived dynamic runtime requires approved waiver",
         )
         self.assertFails(
-            waived.replace(
+            self.with_valid_rc_reuse(waived).replace(
                 "Codex unavailable; no benchmark-relevant changes since passing RC run.",
                 "forgot to run it",
             ),
             "waiver.reason: invalid waiver reason",
         )
+
+    def test_rc_reuse_metadata_is_required_and_validated(self) -> None:
+        waived = (
+            self.valid_text.replace("dynamic_runtime:\n  status: pass", "dynamic_runtime:\n  status: waived")
+            .replace("  required: false", "  required: true")
+            .replace("  status: none", "  status: approved")
+            .replace('  reason: ""', "  reason: Codex unavailable; no benchmark-relevant changes since passing RC run.")
+            .replace('  approved_by: ""', "  approved_by: release-owner")
+            .replace('  approval_surface: ""', "  approval_surface: release checklist")
+            .replace('  evidence: ""', "  evidence: tests/fixtures/token-cost/reports/valid-final-pass/v0.1.1.yaml")
+        )
+        self.assertFails(waived, "rc_reuse: required when final waiver references RC benchmark evidence")
+
+        valid = self.with_valid_rc_reuse(waived)
+        self.assertPasses(valid)
+        self.assertFails(
+            valid.replace("  reused_from: v0.1.1-rc.1\n", ""),
+            "rc_reuse.reused_from: expected non-empty string",
+        )
+        self.assertFails(
+            valid.replace("  checked_by: release-owner\n", ""),
+            "rc_reuse.checked_by: expected non-empty string",
+        )
+        self.assertFails(
+            valid.replace("  checked_surface: release checklist\n", ""),
+            "rc_reuse.checked_surface: expected non-empty string",
+        )
+        self.assertFails(
+            valid.replace(
+                "  rationale: No public skills, adapter output, workflow guide, benchmark prompts, analyzer scripts, fixtures, model/tool version, or release packaging changes since RC.\n",
+                "",
+            ),
+            "rc_reuse.rationale: expected non-empty string",
+        )
+        self.assertFails(
+            valid.replace(
+                "No public skills, adapter output, workflow guide, benchmark prompts, analyzer scripts, fixtures, model/tool version, or release packaging changes since RC.",
+                "No relevant changes.",
+            ),
+            "rc_reuse.rationale: must name benchmark-relevant checked surfaces",
+        )
+        self.assertPasses(self.with_valid_rc_reuse(waived, relevant_changes=True))
 
     def test_raw_jsonl_and_sanitized_evidence_contracts_are_enforced(self) -> None:
         omitted = (

@@ -9,11 +9,12 @@ Review closeout: proposal-review-r2
 Review closeout: spec-review-r1
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
+Review closeout: code-review-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `plan-review-r1`, `plan-review-r2`
-- Findings resolved: 10
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-r1`
+- Findings resolved: 12
 - Unresolved findings: 0
-- Final result: Proposal-review R1 requested changes for release-gate semantics, run evidence, analyzer summaries, RC reuse, milestone slicing, and warning severity wording; all accepted proposal-review findings were resolved in the proposal. Proposal-review R2 approved the revised proposal with no material findings. Spec-review R1 requested changes for analyzer summary raw-omission compatibility, incomplete non-final dynamic metadata, and first-baseline comparison metadata; all accepted spec-review findings were resolved in the spec. Plan-review R1 requested a milestone-boundary revision; M1 now owns standalone token-cost metadata validation and M5 owns release validation integration. Plan-review R2 approved the revised plan with no material findings.
+- Final result: Proposal-review R1 requested changes for release-gate semantics, run evidence, analyzer summaries, RC reuse, milestone slicing, and warning severity wording; all accepted proposal-review findings were resolved in the proposal. Proposal-review R2 approved the revised proposal with no material findings. Spec-review R1 requested changes for analyzer summary raw-omission compatibility, incomplete non-final dynamic metadata, and first-baseline comparison metadata; all accepted spec-review findings were resolved in the spec. Plan-review R1 requested a milestone-boundary revision; M1 now owns standalone token-cost metadata validation and M5 owns release validation integration. Plan-review R2 approved the revised plan with no material findings. Code-review R1 requested M1 fixes for RC reuse metadata validation and Markdown report metadata-link validation; both findings were resolved in the standalone validator and tests.
 
 ## Resolution Overview
 
@@ -29,6 +30,8 @@ Review closeout: plan-review-r2
 | RTF-SR2 | accepted | resolved | Defined exact metadata fields for non-final blocked/not-run dynamic benchmark states. |
 | RTF-SR3 | accepted | resolved | Defined first-baseline comparison metadata when no previous release report exists. |
 | RTF-PLR1 | accepted | resolved | Separated standalone token-cost validator work from release validation integration. |
+| RTF-CR1 | accepted | resolved | Added RC reuse metadata validation and fixtures to the standalone token-cost validator. |
+| RTF-CR2 | accepted | resolved | Validated that the Markdown report names or links the YAML metadata file. |
 
 ## Common Resolution Metadata
 
@@ -173,6 +176,32 @@ Validation evidence: `python scripts/validate-review-artifacts.py --mode closeou
 
 No material findings.
 
+### code-review-r1
+
+#### RTF-CR1 - RC reuse metadata is not validated
+
+Finding ID: RTF-CR1
+Disposition: accepted
+Status: resolved
+Owner: implementer
+Owning stage: implement M1
+Chosen action: Added standalone validator coverage for `rc_reuse` metadata when final metadata waives based on RC benchmark evidence. Added passing and failing tests for missing `rc_reuse`, required fields, checked-surface rationale, and benchmark-relevant-change true/false cases.
+Rationale: The approved spec and test spec require RC reuse metadata to make benchmark-relevant-change decisions attributable and testable.
+Validation target: Validator rejects RC-based final waiver metadata without required `rc_reuse` fields and accepts valid true/false RC reuse fixtures.
+Validation evidence: `python scripts/test-token-cost-report-validation.py`; `python scripts/validate-token-cost-report.py tests/fixtures/token-cost/reports/valid-final-pass/v0.1.1.yaml`; `python -m py_compile scripts/validate-token-cost-report.py`; `python scripts/test-token-cost-measurement.py`; `git diff --check -- scripts/validate-token-cost-report.py scripts/test-token-cost-report-validation.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md`
+
+#### RTF-CR2 - Markdown report link/name requirement is not validated
+
+Finding ID: RTF-CR2
+Disposition: accepted
+Status: resolved
+Owner: implementer
+Owning stage: implement M1
+Chosen action: Updated the validator to read `report.report_markdown` and require the Markdown report to name or link the expected YAML metadata file. Added a negative test where Markdown exists but omits the YAML metadata reference.
+Rationale: The approved spec requires Markdown human evidence and YAML gate metadata to be visibly paired.
+Validation target: Validator rejects metadata whose `report.report_markdown` points to Markdown that does not name or link the YAML metadata file.
+Validation evidence: Shared code-review R1 resolution validation evidence.
+
 ## Shared Validation Evidence
 
 | Validation area | Result | Notes |
@@ -190,4 +219,5 @@ No material findings.
 - [x] Every `needs-decision` finding is resolved or blocks closeout.
 - [x] Validation evidence is recorded for spec-review findings.
 - [x] Validation evidence is recorded for plan-review findings.
+- [x] Validation evidence is recorded for code-review findings.
 - [x] Closeout status is correct.

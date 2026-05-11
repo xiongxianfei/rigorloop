@@ -22,6 +22,18 @@ VALID_WAIVER_REASON_MARKERS = (
     "critical fix",
     "benchmark tooling failure",
 )
+RC_REFERENCE_MARKERS = ("rc", "no benchmark-relevant changes")
+BENCHMARK_RELEVANT_SURFACE_MARKERS = (
+    "public skill",
+    "adapter output",
+    "workflow guide",
+    "benchmark prompt",
+    "analyzer",
+    "fixture",
+    "model",
+    "tool version",
+    "release packaging",
+)
 
 
 class MetadataValidationError(Exception):
@@ -293,6 +305,13 @@ def require_existing_repo_path(value: Any, path: str, errors: list[str], *, allo
     return raw
 
 
+def resolve_repo_path(value: str) -> Path:
+    raw_path = Path(value)
+    if raw_path.is_absolute():
+        return raw_path
+    return ROOT / raw_path
+
+
 def is_final_release(release: str) -> bool:
     return "-" not in release
 
@@ -460,6 +479,55 @@ def validate_waiver(data: dict[str, Any], dynamic_status: str, errors: list[str]
         require_existing_repo_path(waiver.get("evidence"), "waiver.evidence", errors)
 
 
+def waiver_references_rc(data: dict[str, Any], dynamic_status: str, release: str) -> bool:
+    if dynamic_status != "waived" or not is_final_release(release):
+        return False
+    waiver = data.get("waiver")
+    if not isinstance(waiver, dict):
+        return False
+    haystack = " ".join(
+        str(waiver.get(key, "")) for key in ["reason", "approval_surface", "evidence"]
+    ).lower()
+    return any(marker in haystack for marker in RC_REFERENCE_MARKERS)
+
+
+def validate_rc_reuse(
+    data: dict[str, Any], dynamic_status: str, release: str, errors: list[str]
+) -> None:
+    required = waiver_references_rc(data, dynamic_status, release)
+    present = "rc_reuse" in data
+    if required and not present:
+        errors.append("rc_reuse: required when final waiver references RC benchmark evidence")
+        return
+    if not present:
+        return
+
+    rc_reuse = require_mapping(data.get("rc_reuse"), "rc_reuse", errors)
+    require_non_empty_string(rc_reuse.get("reused_from"), "rc_reuse.reused_from", errors)
+    relevant = require_bool(
+        rc_reuse.get("benchmark_relevant_changes_since_rc"),
+        "rc_reuse.benchmark_relevant_changes_since_rc",
+        errors,
+    )
+    require_non_empty_string(rc_reuse.get("checked_by"), "rc_reuse.checked_by", errors)
+    require_non_empty_string(
+        rc_reuse.get("checked_surface"), "rc_reuse.checked_surface", errors
+    )
+    rationale = require_non_empty_string(rc_reuse.get("rationale"), "rc_reuse.rationale", errors)
+    checked_surface = rc_reuse.get("checked_surface")
+    checked_text = f"{checked_surface or ''} {rationale}".lower()
+    if relevant is False and not any(
+        marker in checked_text for marker in BENCHMARK_RELEVANT_SURFACE_MARKERS
+    ):
+        errors.append("rc_reuse.rationale: must name benchmark-relevant checked surfaces")
+    if relevant is True and dynamic_status != "waived":
+        runs = data.get("dynamic_runtime", {}).get("runs") if isinstance(data.get("dynamic_runtime"), dict) else None
+        if not runs:
+            errors.append(
+                "rc_reuse.benchmark_relevant_changes_since_rc: true requires rerun evidence or valid waiver"
+            )
+
+
 def validate_comparison(data: dict[str, Any], errors: list[str]) -> None:
     comparison = require_mapping(data.get("comparison"), "comparison", errors)
     baseline = require_bool(comparison.get("baseline"), "comparison.baseline", errors)
@@ -611,7 +679,19 @@ def validate_report(path: Path) -> list[str]:
     for key in ["release", "report_date", "commit", "report_markdown"]:
         require_non_empty_string(report.get(key), f"report.{key}", errors)
     release = str(report.get("release") or "")
-    require_existing_repo_path(report.get("report_markdown"), "report.report_markdown", errors)
+    markdown = require_existing_repo_path(
+        report.get("report_markdown"), "report.report_markdown", errors
+    )
+    if markdown:
+        markdown_path = resolve_repo_path(markdown)
+        if markdown_path.exists():
+            markdown_text = markdown_path.read_text(encoding="utf-8")
+            expected_path = str(Path(markdown).with_suffix(".yaml"))
+            expected_name = Path(expected_path).name
+            if expected_name not in markdown_text and expected_path not in markdown_text:
+                errors.append(
+                    "report.report_markdown must name or link the YAML metadata file"
+                )
 
     validate_runner_and_suite(root, errors)
     validate_static_and_summary(root, errors)
@@ -619,6 +699,7 @@ def validate_report(path: Path) -> list[str]:
     dynamic = require_mapping(root.get("dynamic_runtime"), "dynamic_runtime", errors)
     dynamic_status = dynamic.get("status") if isinstance(dynamic.get("status"), str) else ""
     validate_waiver(root, dynamic_status, errors)
+    validate_rc_reuse(root, dynamic_status, release, errors)
     validate_comparison(root, errors)
     validate_portability_and_gate(root, errors)
     return errors
