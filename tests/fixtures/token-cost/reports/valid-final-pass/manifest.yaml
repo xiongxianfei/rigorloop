@@ -1,0 +1,11 @@
+suite: skill-token-runtime-v1
+prompts:
+  - id: proposal-short
+    path: prompts/proposal-short.md
+    tool: codex
+    fixture: tests/fixtures/token-cost/reports/valid-final-pass/minimal-public-project
+    expected_skill: proposal
+    expected_result: pass
+    tags:
+      - proposal
+      - public-skill
