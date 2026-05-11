@@ -72,9 +72,9 @@ No `benchmarks/` directory exists yet. This plan creates the first `benchmarks/t
 - Last reviewed milestone: M5 code-review R10 clean-with-notes
 - Review status: M5 closed with no material findings after RTF-CR8 resolution.
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
-- Final closeout readiness: in progress
-- Reason final closeout is or is not ready: Explain-change is complete; verify and PR handoff remain.
+- Next stage: pr
+- Final closeout readiness: branch-ready for PR handoff
+- Reason final closeout is or is not ready: Explain-change and final verification are complete; PR handoff remains.
 
 ## Milestones
 
@@ -415,6 +415,7 @@ bash scripts/release-verify.sh <release-version>
 - 2026-05-11: Resolved RTF-CR8 by adding a release-level integration test that points governed `v0.1.1` release validation at invalid token-cost metadata, asserting the token-cost validator failure is propagated, and clarifying T16 test-spec language; M5 is ready for code-review rerun.
 - 2026-05-11: Code-review R10 found no material findings after RTF-CR8 resolution; M5 is closed and the plan is ready for final closeout via explain-change.
 - 2026-05-11: Added durable explain-change rationale for the release Token-Friendliness benchmark implementation; the plan is ready for verify.
+- 2026-05-11: Final verification passed for the release Token-Friendliness benchmark implementation; the branch is ready for PR handoff.
 
 ## Decision Log
 
@@ -489,10 +490,12 @@ bash scripts/release-verify.sh <release-version>
 - RTF-CR8 resolution validation: `python scripts/test-adapter-distribution.py` passed 59 tests; `python scripts/test-token-cost-report-validation.py`, `python scripts/validate-release.py --version v0.1.1`, `python -m py_compile scripts/validate-release.py scripts/validate-token-cost-report.py scripts/adapter_distribution.py`, `bash scripts/release-verify.sh v0.1.1`, `python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml`, `python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills`, and `git diff --check --` passed. Artifact lifecycle validation passed with the existing `docs/plan.md` and `docs/workflows.md` lifecycle-language warnings.
 - Code-review R10 validation rerun: `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_v0_1_1_release_validation_blocks_invalid_token_cost_report`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills`, `python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml`, and `git diff --check --` passed.
 - Explain-change validation: `python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills`, and `git diff --check --` passed.
+- Final verification: `python scripts/test-token-cost-report-validation.py` passed 10 tests; `python scripts/test-token-cost-measurement.py` passed 23 tests; `python scripts/test-adapter-distribution.py` passed 59 tests; `python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml`, `python scripts/validate-release.py --version v0.1.1`, `python scripts/measure-skill-tokens.py`, `bash scripts/release-verify.sh v0.1.1`, `python -m py_compile scripts/measure-skill-tokens.py scripts/analyze-codex-jsonl.py scripts/run-token-cost-benchmarks.py scripts/validate-token-cost-report.py scripts/validate-release.py scripts/adapter_distribution.py`, `python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills`, and `git diff --check --` passed.
+- Final artifact lifecycle validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/explain-change.md --path docs/releases/v0.1.1/release.yaml --path docs/reports/token-cost/releases/v0.1.1.yaml --path docs/workflows.md` passed with the existing `docs/plan.md` and `docs/workflows.md` lifecycle-language warnings.
 
 ## Outcome and Retrospective
 
-- To be completed after implementation, review, explain-change, verify, and PR handoff.
+- Implementation, review-resolution, explain-change, and verify are complete. PR handoff remains.
 
 ## Readiness
 
