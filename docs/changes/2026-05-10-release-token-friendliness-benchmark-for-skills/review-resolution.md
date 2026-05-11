@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -15,11 +15,12 @@ Review closeout: code-review-r3
 Review closeout: code-review-r4
 Review closeout: code-review-r5
 Review closeout: code-review-r6
+Review closeout: code-review-r7
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-r1`, `code-review-r2`, `code-review-r3`, `code-review-r4`, `code-review-r5`, `code-review-r6`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-r1`, `code-review-r2`, `code-review-r3`, `code-review-r4`, `code-review-r5`, `code-review-r6`, `code-review-r7`
 - Findings resolved: 16
-- Unresolved findings: 0
-- Final result: Proposal-review R1 requested changes for release-gate semantics, run evidence, analyzer summaries, RC reuse, milestone slicing, and warning severity wording; all accepted proposal-review findings were resolved in the proposal. Proposal-review R2 approved the revised proposal with no material findings. Spec-review R1 requested changes for analyzer summary raw-omission compatibility, incomplete non-final dynamic metadata, and first-baseline comparison metadata; all accepted spec-review findings were resolved in the spec. Plan-review R1 requested a milestone-boundary revision; M1 now owns standalone token-cost metadata validation and M5 owns release validation integration. Plan-review R2 approved the revised plan with no material findings. Code-review R1 requested M1 fixes for RC reuse metadata validation and Markdown report metadata-link validation; both findings were resolved in the standalone validator and tests. Code-review R2 requested an M1 fix for partial RC reuse checked-surface validation; RTF-CR3 was resolved in the standalone validator and tests. Code-review R3 found no material findings and closed M1. Code-review R4 found no material findings and closed M2. Code-review R5 requested M3 fixes for analyzer summary path stability, repeated same-file read signals, and justified full-file-read classification; all three findings were resolved in M3 runner/analyzer tests and implementation. Code-review R6 found no material findings and closed M3.
+- Unresolved findings: 1
+- Final result: Proposal-review R1 requested changes for release-gate semantics, run evidence, analyzer summaries, RC reuse, milestone slicing, and warning severity wording; all accepted proposal-review findings were resolved in the proposal. Proposal-review R2 approved the revised proposal with no material findings. Spec-review R1 requested changes for analyzer summary raw-omission compatibility, incomplete non-final dynamic metadata, and first-baseline comparison metadata; all accepted spec-review findings were resolved in the spec. Plan-review R1 requested a milestone-boundary revision; M1 now owns standalone token-cost metadata validation and M5 owns release validation integration. Plan-review R2 approved the revised plan with no material findings. Code-review R1 requested M1 fixes for RC reuse metadata validation and Markdown report metadata-link validation; both findings were resolved in the standalone validator and tests. Code-review R2 requested an M1 fix for partial RC reuse checked-surface validation; RTF-CR3 was resolved in the standalone validator and tests. Code-review R3 found no material findings and closed M1. Code-review R4 found no material findings and closed M2. Code-review R5 requested M3 fixes for analyzer summary path stability, repeated same-file read signals, and justified full-file-read classification; all three findings were resolved in M3 runner/analyzer tests and implementation. Code-review R6 found no material findings and closed M3. Code-review R7 requested an M4 fix for current Codex command-output event parsing; RTF-CR7 is open.
 
 ## Resolution Overview
 
@@ -41,6 +42,7 @@ Review closeout: code-review-r6
 | RTF-CR4 | accepted | resolved | Analyzer summaries written by the runner now use stable repo-relative JSONL paths for repository outputs. |
 | RTF-CR5 | accepted | resolved | Analyzer repeated-read signals now count repeated same-file reads independently from confirmed full-file classification. |
 | RTF-CR6 | accepted | resolved | Analyzer full-file-read classification now supports justified reads when justification metadata is provided. |
+| RTF-CR7 | accepted | open | Analyzer must parse current Codex `command_execution` `aggregated_output` events and M4 summaries/report must be regenerated from corrected evidence. |
 
 ## Common Resolution Metadata
 
@@ -261,6 +263,20 @@ Validation evidence: Shared code-review R5 resolution validation evidence.
 
 No material findings.
 
+### code-review-r7
+
+#### RTF-CR7 - Analyzer summaries miss current Codex command output events
+
+Finding ID: RTF-CR7
+Disposition: accepted
+Status: open
+Owner: implementer
+Owning stage: implement M4
+Chosen action: Update the analyzer to recognize current Codex command execution events that carry command output in `aggregated_output`, add focused analyzer coverage for that event shape, and regenerate the M4 sanitized summaries plus Markdown/YAML report values from corrected analyzer evidence.
+Rationale: The first baseline report must measure command-output amplification from Codex JSONL analyzer evidence. If the analyzer treats current command execution events as unknown records, release evidence can incorrectly report zero command output.
+Validation target: Analyzer tests cover `item.completed` `command_execution` events with `aggregated_output`, and the `v0.1.1` analyzer summaries plus report no longer under-report command-output amplification from current Codex JSONL.
+Validation evidence: Pending M4 review-resolution implementation.
+
 ### code-review-r2
 
 #### RTF-CR3 - RC reuse surface coverage accepts an incomplete checked-surface rationale
@@ -293,4 +309,4 @@ Validation evidence: `python scripts/test-token-cost-report-validation.py`; `pyt
 - [x] Validation evidence is recorded for spec-review findings.
 - [x] Validation evidence is recorded for plan-review findings.
 - [x] Validation evidence is recorded for code-review findings.
-- [x] Closeout status is correct.
+- [ ] Closeout status is correct.

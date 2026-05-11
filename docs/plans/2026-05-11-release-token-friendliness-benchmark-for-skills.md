@@ -68,11 +68,11 @@ No `benchmarks/` directory exists yet. This plan creates the first `benchmarks/t
 ## Current Handoff Summary
 
 - Current milestone: M4. First baseline report and release report template
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Last reviewed milestone: M3 code-review R6 clean-with-notes
-- Review status: M4 implemented and ready for code-review
+- Review status: code-review R7 requested M4 fix RTF-CR7
 - Remaining in-scope implementation milestones: M4, M5
-- Next stage: code-review M4
+- Next stage: review-resolution for RTF-CR7, then implement M4 fixes
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: M4-M5, explain-change, verify, and PR handoff are not complete.
 
@@ -227,7 +227,7 @@ No `benchmarks/` directory exists yet. This plan creates the first `benchmarks/t
 
 ### M4. First baseline report and release report template
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Add the first release Token-Friendliness report format and baseline metadata without adding a full report generator.
 - Requirements: `R1`-`R7`, `R14`-`R23`, `R27`-`R30`, `R32`
 - Files/components likely touched:
@@ -406,6 +406,7 @@ bash scripts/release-verify.sh <release-version>
 - 2026-05-11: Started M4 implementation for the first Token-Friendliness baseline report, release metadata, sanitized analyzer summaries, and release-notes link.
 - 2026-05-11: Live Codex benchmark execution first failed in the disposable temp fixture because Codex requires `--skip-git-repo-check` outside trusted repositories; added runner/test coverage for the normalized command and reran successfully.
 - 2026-05-11: Added the `v0.1.1` Token-Friendliness Markdown report, YAML metadata, sanitized per-run analyzer summaries, and release-notes link; M4 is ready for code-review.
+- 2026-05-11: Code-review R7 requested an M4 fix for analyzer parsing of current Codex `command_execution` `aggregated_output` events; RTF-CR7 is open.
 
 ## Decision Log
 
@@ -436,6 +437,7 @@ bash scripts/release-verify.sh <release-version>
 - Code-review R6 closed M3 with no new material findings after the R5 resolution.
 - M4 records raw JSONL as omitted for the baseline report because live Codex JSONL contained disposable local temp fixture paths and full command output. The tracked analyzer summaries are the sanitized release evidence.
 - M4 adjusted the runner Codex invocation to include `--skip-git-repo-check` because the benchmark fixture intentionally runs outside the repository working tree.
+- Code-review R7 found that the analyzer does not parse current Codex command output stored in `aggregated_output`, so the M4 command-output amplification evidence must be regenerated after analyzer coverage is fixed.
 
 ## Validation Notes
 

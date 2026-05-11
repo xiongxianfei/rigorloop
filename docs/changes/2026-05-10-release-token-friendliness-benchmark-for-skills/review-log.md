@@ -115,3 +115,13 @@ Detailed record: reviews/code-review-r6.md
 Resolution: review-resolution.md#code-review-r6
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: code-review-r7
+Stage: code-review
+Round: 7
+Status: changes-requested
+Detailed record: reviews/code-review-r7.md
+Resolution: review-resolution.md#code-review-r7
+Material findings: RTF-CR7
+Open findings: RTF-CR7
