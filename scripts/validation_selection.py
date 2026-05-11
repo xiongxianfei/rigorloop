@@ -118,6 +118,17 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "token-cost",
         parallel_safe=True,
     ),
+    "token_cost.report_regression": CheckCatalogEntry(
+        "token_cost.report_regression",
+        "python scripts/test-token-cost-report-validation.py",
+        "token-cost",
+        parallel_safe=True,
+    ),
+    "token_cost.report_validate": CheckCatalogEntry(
+        "token_cost.report_validate",
+        "python scripts/validate-token-cost-report.py <report-yaml>...",
+        "token-cost",
+    ),
     "broad_smoke.repo": CheckCatalogEntry(
         "broad_smoke.repo",
         "bash scripts/ci.sh --mode broad-smoke",
@@ -286,6 +297,10 @@ def catalog_command(
         if len(versions) != 1:
             raise ValueError("release.validate requires exactly one release version")
         return _join("python", "scripts/validate-release.py", "--version", versions[0])
+    if check_id == "token_cost.report_validate":
+        if not paths:
+            raise ValueError("token_cost.report_validate requires at least one report YAML path")
+        return _join("python", "scripts/validate-token-cost-report.py", *paths)
 
     return CHECK_CATALOG[check_id].command_template
 
@@ -615,6 +630,19 @@ def _apply_path_selection(
             "token_cost.regression",
             "Changed token-cost measurement surface requires token-cost measurement regression fixtures.",
         )
+        if _is_token_cost_report_validation_surface(path):
+            _add_check(
+                selected,
+                "token_cost.report_regression",
+                "Changed token-cost report validation surface requires report validator regression fixtures.",
+            )
+        if _is_token_cost_release_report_yaml(path):
+            _add_check(
+                selected,
+                "token_cost.report_validate",
+                "Changed token-cost release report metadata requires report validation.",
+                path=path,
+            )
         return
 
     if category == "validator-review-artifacts":
@@ -846,10 +874,15 @@ def _path_category(path: str) -> str | None:
     if path in {
         "scripts/analyze-codex-jsonl.py",
         "scripts/measure-skill-tokens.py",
+        "scripts/run-token-cost-benchmarks.py",
         "scripts/test-token-cost-measurement.py",
+        "scripts/test-token-cost-report-validation.py",
+        "scripts/validate-token-cost-report.py",
     }:
         return "token-cost"
-    if path.startswith("docs/reports/token-cost/") and path.endswith(".md"):
+    if path.startswith("benchmarks/token-cost/"):
+        return "token-cost"
+    if path.startswith("docs/reports/token-cost/"):
         return "token-cost"
     if path.startswith("tests/fixtures/token-cost/"):
         return "token-cost"
@@ -904,6 +937,20 @@ def _is_lifecycle_path(path: str) -> bool:
     if path.startswith("docs/explain/") and path.endswith(".md"):
         return True
     return False
+
+
+def _is_token_cost_release_report_yaml(path: str) -> bool:
+    return (
+        path.startswith("docs/reports/token-cost/releases/")
+        and path.endswith(".yaml")
+    )
+
+
+def _is_token_cost_report_validation_surface(path: str) -> bool:
+    return path in {
+        "scripts/validate-token-cost-report.py",
+        "scripts/test-token-cost-report-validation.py",
+    } or path.startswith("tests/fixtures/token-cost/reports/")
 
 
 def _is_learn_artifact_path(path: str) -> bool:

@@ -46,6 +46,8 @@ EXPECTED_CATALOG = {
     "readme.vision_markers": "python scripts/validate-readme.py README.md --vision-markers",
     "selector.regression": "python scripts/test-select-validation.py",
     "token_cost.regression": "python scripts/test-token-cost-measurement.py",
+    "token_cost.report_regression": "python scripts/test-token-cost-report-validation.py",
+    "token_cost.report_validate": "python scripts/validate-token-cost-report.py <report-yaml>...",
     "broad_smoke.repo": "bash scripts/ci.sh --mode broad-smoke",
 }
 
@@ -307,6 +309,7 @@ raise SystemExit({exit_code})
             "selector.regression",
             "skills.regression",
             "token_cost.regression",
+            "token_cost.report_regression",
         }
 
         self.assertEqual(
@@ -559,7 +562,55 @@ raise SystemExit({exit_code})
                 "checks": {"token_cost.regression"},
             },
             {
+                "path": "scripts/run-token-cost-benchmarks.py",
+                "category": "token-cost",
+                "status": "ok",
+                "checks": {"token_cost.regression"},
+            },
+            {
+                "path": "scripts/validate-token-cost-report.py",
+                "category": "token-cost",
+                "status": "ok",
+                "checks": {"token_cost.regression", "token_cost.report_regression"},
+            },
+            {
+                "path": "scripts/test-token-cost-report-validation.py",
+                "category": "token-cost",
+                "status": "ok",
+                "checks": {"token_cost.regression", "token_cost.report_regression"},
+            },
+            {
+                "path": "benchmarks/token-cost/manifest.yaml",
+                "category": "token-cost",
+                "status": "ok",
+                "checks": {"token_cost.regression"},
+            },
+            {
+                "path": "benchmarks/token-cost/prompts/proposal-short.md",
+                "category": "token-cost",
+                "status": "ok",
+                "checks": {"token_cost.regression"},
+            },
+            {
+                "path": "benchmarks/token-cost/fixtures/minimal-public-project/AGENTS.md",
+                "category": "token-cost",
+                "status": "ok",
+                "checks": {"token_cost.regression"},
+            },
+            {
                 "path": "docs/reports/token-cost/2026-05-10-baseline.md",
+                "category": "token-cost",
+                "status": "ok",
+                "checks": {"token_cost.regression"},
+            },
+            {
+                "path": "docs/reports/token-cost/releases/v0.1.1.yaml",
+                "category": "token-cost",
+                "status": "ok",
+                "checks": {"token_cost.regression", "token_cost.report_validate"},
+            },
+            {
+                "path": "docs/reports/token-cost/runs/v0.1.1/proposal-short-run1.analysis.yaml",
                 "category": "token-cost",
                 "status": "ok",
                 "checks": {"token_cost.regression"},
@@ -569,6 +620,12 @@ raise SystemExit({exit_code})
                 "category": "token-cost",
                 "status": "ok",
                 "checks": {"token_cost.regression"},
+            },
+            {
+                "path": "tests/fixtures/token-cost/reports/valid-final-pass/v0.1.1.yaml",
+                "category": "token-cost",
+                "status": "ok",
+                "checks": {"token_cost.regression", "token_cost.report_regression"},
             },
         ]
 

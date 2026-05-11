@@ -477,6 +477,18 @@ validation:
     result: pass_final_verify
   - command: git diff --check -- docs/learn/sessions/2026-05-11-dynamic-token-cost-root-cause.md docs/learn/topics/token-cost-measurement.md docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
     result: pass_after_learn_session
+  - command: gh run view 25668284406 --log-failed
+    result: fail_hosted_ci_selector_blocked_new_token_cost_paths_before_validation
+  - command: python scripts/test-select-validation.py
+    result: pass_57_tests_after_ci_selector_fix
+  - command: python -m py_compile scripts/validation_selection.py scripts/test-select-validation.py
+    result: pass_after_ci_selector_fix
+  - command: python scripts/select-validation.py --mode pr --base origin/main --head HEAD
+    result: pass_after_ci_selector_fix_no_unclassified_paths_no_blocking_results
+  - command: bash scripts/ci.sh --mode pr --base origin/main --head HEAD
+    result: pass_after_ci_selector_fix_selected_checks_and_broad_smoke
+  - command: git diff --check -- scripts/validation_selection.py scripts/test-select-validation.py
+    result: pass_after_ci_selector_fix
 changed_files:
   - benchmarks/token-cost/manifest.yaml
   - benchmarks/token-cost/prompts/workflow-route.md
@@ -493,6 +505,8 @@ changed_files:
   - benchmarks/token-cost/fixtures/minimal-public-project/docs/changes/.gitkeep
   - benchmarks/token-cost/fixtures/minimal-public-project/src/example.txt
   - scripts/test-token-cost-measurement.py
+  - scripts/validation_selection.py
+  - scripts/test-select-validation.py
   - scripts/run-token-cost-benchmarks.py
   - scripts/analyze-codex-jsonl.py
   - scripts/adapter_distribution.py
