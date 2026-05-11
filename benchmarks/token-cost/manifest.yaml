@@ -1,5 +1,33 @@
-suite: skill-token-runtime-v1
+suite: skill-token-runtime-v2
+previous_suite_id: skill-token-runtime-v1
+baseline_for_suite: true
+strict_suite_total_comparison: false
 fixture: fixtures/minimal-public-project
+required_core:
+  - workflow-route
+  - proposal-short
+  - plan-handoff
+  - implement-handoff
+  - code-review-small
+  - explain-change-summary
+  - verify-final-pack
+  - pr-handoff
+transition_carryover_required:
+  - architecture-no-impact
+  - learn-no-durable-lesson
+optional_extended:
+  - proposal-review
+  - spec
+  - spec-review
+  - architecture
+  - architecture-review
+  - plan-review
+  - test-spec
+  - learn
+  - research
+  - explore
+  - vision
+  - project-map
 prompts:
   - id: workflow-route
     path: prompts/workflow-route.md
@@ -21,6 +49,16 @@ prompts:
       - proposal
       - public-skill
       - short-output
+  - id: plan-handoff
+    path: prompts/plan-handoff.md
+    tool: codex
+    fixture: fixtures/minimal-public-project
+    expected_skill: plan
+    expected_result: pass
+    tags:
+      - plan
+      - handoff
+      - no-edit
   - id: implement-handoff
     path: prompts/implement-handoff.md
     tool: codex
@@ -41,6 +79,16 @@ prompts:
       - code-review
       - small-change
       - no-edit
+  - id: explain-change-summary
+    path: prompts/explain-change-summary.md
+    tool: codex
+    fixture: fixtures/minimal-public-project
+    expected_skill: explain-change
+    expected_result: pass
+    tags:
+      - explain-change
+      - summary
+      - no-edit
   - id: verify-final-pack
     path: prompts/verify-final-pack.md
     tool: codex
@@ -50,6 +98,16 @@ prompts:
     tags:
       - verify
       - evidence
+      - no-edit
+  - id: pr-handoff
+    path: prompts/pr-handoff.md
+    tool: codex
+    fixture: fixtures/minimal-public-project
+    expected_skill: pr
+    expected_result: pass
+    tags:
+      - pr
+      - handoff
       - no-edit
   - id: architecture-no-impact
     path: prompts/architecture-no-impact.md
