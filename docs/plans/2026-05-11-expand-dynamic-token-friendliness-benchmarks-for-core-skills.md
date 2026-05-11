@@ -85,16 +85,16 @@ The v2 change is release-process and evidence-shape work. It must not hand-edit 
 ## Current Handoff Summary
 
 - Current stage: implement
-- Current milestone: M2. Architecture-review optional scenario fixture
-- Current milestone state: review-requested
-- Last reviewed milestone: M1. Manifest and required core prompt fixtures
-- Review status: code-review M1 R1 clean-with-notes; no material findings
+- Current milestone: M3. Token-cost validator v2 metadata and context support
+- Current milestone state: ready
+- Last reviewed milestone: M2. Architecture-review optional scenario fixture
+- Review status: code-review M2 R1 clean-with-notes; no material findings
 - Next stage after plan-review: test-spec
 - Test-spec artifact: `specs/expand-dynamic-token-friendliness-benchmarks-for-core-skills.test.md`
 - Test-spec status: active
 - Implementation may start after: test-spec is authored and accepted for use; complete
-- Remaining in-scope implementation milestones: M2 review pending, then M3, M4, M5
-- Next stage: code-review for M2
+- Remaining in-scope implementation milestones: M3, M4, M5
+- Next stage: implement M3
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: No implementation milestones are closed, and final explain-change, verify, and PR handoff are not complete.
 
@@ -192,7 +192,7 @@ Suggested validation for the test-spec stage:
 
 ### M2. Architecture-review optional scenario fixture
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Add the first optional extended benchmark, using a separate architecture-review fixture that tests canonical architecture review without a change-local delta.
 - Requirements: `R4`-`R6`, `R8`.
 - Files/components likely touched:
@@ -222,6 +222,7 @@ Suggested validation for the test-spec stage:
   - [x] decision log updated if needed
   - [x] validation notes updated
   - [x] milestone committed
+  - [x] code-review passed
 - Risks:
   - The scenario fixture can grow enough to distort token cost for unrelated prompts if accidentally reused.
 - Rollback/recovery:
@@ -229,7 +230,7 @@ Suggested validation for the test-spec stage:
 
 ### M3. Token-cost validator v2 metadata and context support
 
-- Milestone state: planned
+- Milestone state: ready
 - Goal: Teach standalone token-cost validation to enforce v2 coverage metadata, result quality, waiver roles, claimed optional gates, and required benchmark context.
 - Requirements: `R7`-`R9`, `R12`-`R16`, `R17`.
 - Files/components likely touched:
@@ -400,6 +401,7 @@ Implementation-stage validation is listed per milestone. Prefer the smallest rel
 - 2026-05-11: M1 implementation updated the manifest to `skill-token-runtime-v2`, added required core prompts for `plan-handoff`, `explain-change-summary`, and `pr-handoff`, kept transition carryover prompts in the executable list, and updated prompt fixture tests.
 - 2026-05-11: Code-review M1 R1 found no material findings and closed M1; next stage is M2 implementation.
 - 2026-05-11: M2 implementation added the optional `architecture-review` prompt declaration, prompt fixture, and separate `minimal-public-project-architecture-review` scenario fixture with canonical architecture package, ADR-not-required note, change metadata, explain-change evidence, spec, diagrams, and tiny source file.
+- 2026-05-11: Code-review M2 R1 found no material findings and closed M2; next stage is M3 implementation.
 
 ## Decision log
 
@@ -438,6 +440,10 @@ Implementation-stage validation is listed per milestone. Prefer the smallest rel
 - 2026-05-11: `python scripts/validate-change-metadata.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml` passed after M2 implementation.
 - 2026-05-11: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ... explain-change.md` passed after M2 implementation with the existing unrelated `docs/plan.md` lifecycle-language warning.
 - 2026-05-11: `git diff --check -- benchmarks/token-cost scripts/test-token-cost-measurement.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md docs/plan.md` passed.
+- 2026-05-11: Code-review M2 R1 reviewer reran `python scripts/test-token-cost-measurement.py`; passed 24 tests.
+- 2026-05-11: Code-review M2 R1 reviewer reran `python scripts/validate-change-metadata.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml`; passed.
+- 2026-05-11: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills` passed after M2 code-review closeout with `reviews=9`, `findings=6`, `log_entries=9`, and `resolution_entries=6`.
+- 2026-05-11: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ... code-review-m2-r1.md` passed with the existing unrelated `docs/plan.md` lifecycle-language warning.
 
 ## Outcome and retrospective
 

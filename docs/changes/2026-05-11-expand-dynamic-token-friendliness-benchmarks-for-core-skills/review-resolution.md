@@ -12,11 +12,12 @@ Review closeout: architecture-review-r1
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
 Review closeout: code-review-m1-r1
+Review closeout: code-review-m2-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-m1-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-m1-r1`, `code-review-m2-r1`
 - Findings resolved: 6
 - Unresolved findings: 0
-- Final result: Proposal-review R1 requested revisions for release-report identity and result-quality gate semantics. The proposal author accepted both findings, revised the proposal, and recorded owner closeout evidence. Proposal-review R2 approved the revised proposal with no material findings. Spec-review R1 requested revisions for waiver authority consistency and claimed optional benchmark gate semantics. The spec author accepted both findings and revised the spec. Spec-review R2 approved the revised spec with no material findings. Architecture-review R1 approved the canonical architecture update with no material findings. Plan-review R1 requested revisions for test-spec sequencing and M5 release-validation scope. The plan author accepted both findings and revised the plan. Plan-review R2 approved the revised plan with no material findings. Code-review M1 R1 approved M1 with no material findings.
+- Final result: Proposal-review R1 requested revisions for release-report identity and result-quality gate semantics. The proposal author accepted both findings, revised the proposal, and recorded owner closeout evidence. Proposal-review R2 approved the revised proposal with no material findings. Spec-review R1 requested revisions for waiver authority consistency and claimed optional benchmark gate semantics. The spec author accepted both findings and revised the spec. Spec-review R2 approved the revised spec with no material findings. Architecture-review R1 approved the canonical architecture update with no material findings. Plan-review R1 requested revisions for test-spec sequencing and M5 release-validation scope. The plan author accepted both findings and revised the plan. Plan-review R2 approved the revised plan with no material findings. Code-review M1 R1 approved M1 with no material findings. Code-review M2 R1 approved M2 with no material findings.
 
 ## Resolution Overview
 
@@ -138,5 +139,9 @@ Validation evidence: Shared plan-review R1 resolution validation evidence.
 No material findings.
 
 ### code-review-m1-r1
+
+No material findings.
+
+### code-review-m2-r1
 
 No material findings.
