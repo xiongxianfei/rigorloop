@@ -42,6 +42,7 @@ tests:
   - M4 code-review R2 clean review record and milestone closeout state.
   - M5 v2 transition report evidence, preserved pre-transition v1 report, and sanitized analyzer summaries.
   - M5 code-review clean review record and milestone closeout state.
+  - Final explain-change rationale before verify.
 validation:
   - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills
     result: pass_closeout_reviews_4_findings_4_log_entries_4_resolution_entries_4
@@ -302,7 +303,7 @@ review:
   status: m5-closed-explain-change-ready
   open_findings: 0
   unresolved_items: 0
-  last_review: code-review-m5-r1 clean-with-notes; M5 closed
+  last_review: code-review-m5-r1 clean-with-notes; final explain-change updated
 status:
-  lifecycle: explain-change
+  lifecycle: verify
   review: code-review-m5-r1-clean

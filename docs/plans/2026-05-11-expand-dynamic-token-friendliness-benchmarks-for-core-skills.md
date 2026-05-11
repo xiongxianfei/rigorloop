@@ -84,7 +84,7 @@ The v2 change is release-process and evidence-shape work. It must not hand-edit 
 
 ## Current Handoff Summary
 
-- Current stage: explain-change
+- Current stage: verify
 - Current milestone: all implementation milestones complete
 - Current milestone state: M5 closed
 - Last reviewed milestone: M5. V2 transition report evidence and lifecycle closeout
@@ -94,9 +94,9 @@ The v2 change is release-process and evidence-shape work. It must not hand-edit 
 - Test-spec status: active
 - Implementation may start after: test-spec is authored and accepted for use; complete
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: all implementation milestones are closed, but final explain-change, verify, and PR handoff are not complete.
+- Reason final closeout is or is not ready: all implementation milestones are closed and final explain-change is current, but verify and PR handoff are not complete.
 
 ## Requirements covered
 
@@ -415,6 +415,7 @@ Implementation-stage validation is listed per milestone. Prefer the smallest rel
 - 2026-05-11: Code-review M4 R2 closed M4 with no material findings. The release CLI now accepts changed-surface input, final v2 validation blocks when it is omitted, and focused CLI/API tests prove changed-skill benchmark enforcement.
 - 2026-05-11: M5 preserved the existing `v0.1.1` v1 report as `v0.1.1-skill-token-runtime-v1-pretransition`, ran the live required v2 transition suite with Codex, regenerated sanitized analyzer summaries for all ten required core and transition carryover prompts, and replaced the canonical `v0.1.1` YAML/Markdown with the first `skill-token-runtime-v2` transition report.
 - 2026-05-11: Code-review M5 R1 found no material findings and closed M5. All in-scope implementation milestones are now closed; next stage is final explain-change.
+- 2026-05-11: Final explain-change updated `docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/explain-change.md` with problem, decision trail, file rationale, tests, validation evidence, review-resolution summary, alternatives, scope control, and risks; next stage is verify.
 
 ## Decision log
 
