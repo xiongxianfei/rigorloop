@@ -115,6 +115,8 @@ validation:
     result: complete_final_change_local_explanation_recorded
   - command: verify
     result: pass_branch_ready_local_validation_complete_hosted_ci_not_observed
+  - command: pr
+    result: opened_pr_43
 changed_files:
   - .codex/skills/code-review/SKILL.md
   - .codex/skills/implement/SKILL.md
@@ -143,5 +145,5 @@ changed_files:
   - skills/workflow/SKILL.md
   - specs/progressive-loading-high-cost-public-skills.test.md
 review:
-  status: verify_passed_branch_ready
+  status: pr_opened
   unresolved_items: 0
