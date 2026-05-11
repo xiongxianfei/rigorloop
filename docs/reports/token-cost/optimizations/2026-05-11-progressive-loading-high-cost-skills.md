@@ -2,7 +2,7 @@
 
 ## Status
 
-M2 static evidence recorded; dynamic benchmark comparison pending M4
+M4 dynamic benchmark evidence recorded; code-review M4 pending
 
 ## Baseline
 
@@ -38,21 +38,32 @@ Total static estimate changed from 54,294 to 52,843 tokens across 23 skills.
 
 ## Dynamic Benchmark Comparison
 
-Targeted dynamic benchmark evidence is scheduled for the dynamic benchmark milestone after regenerated public skill output exists.
+M4 reran the full required benchmark suite because the runner does not expose a targeted prompt filter. The run used regenerated public Codex skill output from `dist/adapters/codex/.agents/skills/`.
 
-| Benchmark | Before | After | Result quality |
-|---|---|---|---|
-| `workflow-route` | v0.1.1 baseline | pending M4 | pending M4 |
-| `implement-handoff` | v0.1.1 baseline | pending M4 | pending M4 |
-| `code-review-small` | v0.1.1 baseline | pending M4 | pending M4 |
-| `verify-final-pack` | v0.1.1 baseline | pending M4 | pending M4 |
+Command:
+
+```bash
+python scripts/run-token-cost-benchmarks.py --suite benchmarks/token-cost/manifest.yaml --release v0.1.1 --tool codex --output-dir /tmp/rigorloop-token-progressive-loading-m4
+```
+
+| Benchmark | Before input tokens | After input tokens | Before largest output | After largest output | Before full-skill reads | After full-skill reads | Before broad searches | After broad searches | Result quality |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| `workflow-route` | 34,853 | 53,855 | 4,071 | 3,234 | 1 | 1 | 0 | 0 | pass |
+| `implement-handoff` | 92,262 | 91,698 | 20,738 | 3,098 | 1 | 1 | 2 | 4 | pass |
+| `code-review-small` | 72,313 | 113,726 | 3,177 | 2,850 | 1 | 1 | 0 | 3 | pass |
+| `verify-final-pack` | 76,400 | 73,524 | 3,515 | 3,515 | 1 | 1 | 0 | 1 | pass |
+
+Manual M4 result-quality review found no targeted benchmark result-quality regression from `pass` to `fail`. The run outputs stayed within the requested no-edit behavior and output shape for these prompts.
 
 ## Command Output And Reads
 
 - Largest command output before: `implement-handoff`, 20,738 estimated tokens.
-- Largest command output after: pending M4.
+- Largest command output after, targeted set: `verify-final-pack`, 3,515 estimated tokens.
+- Largest command output after, full required suite: `verify-final-pack`, 3,515 estimated tokens.
 - Full-skill read count before: all ten required transition runs read active public skill files.
-- Full-skill read count after: pending M4.
+- Full-skill read count after: all ten required transition runs still read active public skill files.
+- Targeted full-skill read count before/after: 4 before, 4 after.
+- Targeted broad-search count before/after: 2 before, 8 after.
 
 ## Remaining Warnings
 
@@ -60,4 +71,12 @@ Targeted dynamic benchmark evidence is scheduled for the dynamic benchmark miles
 
 `code-review` remains above the 4,000 warning target because independent-review posture, mixed-evidence handling, material findings, detailed review records, milestone-aware handoff, stop conditions, and result format remain protected public contracts.
 
-Dynamic benchmark warnings will be explained after M4 compares regenerated public skill output.
+## Dynamic Result Interpretation
+
+The optimization materially reduced command-output amplification for the measured top offender: `implement-handoff` largest command output fell from 20,738 to 3,098 estimated tokens.
+
+The optimization did not eliminate whole-skill-style reads. All required runs still read active public skill files, which suggests the remaining read pattern is driven by benchmark prompt/tool behavior rather than static skill text alone.
+
+The broad-search signal did not improve in this run. `implement-handoff` still recorded broad searches, and `code-review-small` gained broad-search signals. This remains a follow-up measurement target; it is not a result-quality regression because the reviewed benchmark outputs still satisfied the prompt shape and ownership boundaries.
+
+`workflow` remains above the 4,000 warning target but below the high-warning threshold, with safety-critical routing and milestone handoff guidance retained. `code-review` remains above the target range because protected independent-review, mixed-evidence, material-finding, detailed-record, milestone-aware handoff, stop-condition, and result-format guidance remains public.
