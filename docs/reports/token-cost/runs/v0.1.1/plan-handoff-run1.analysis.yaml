@@ -1,0 +1,66 @@
+schema_version: 1
+
+run:
+  id: plan-handoff
+  raw_jsonl_tracked: false
+  jsonl: ""
+  sanitized_source: codex-jsonl-local-run
+  sanitized_summary: docs/reports/token-cost/runs/v0.1.1/plan-handoff-run1.analysis.yaml
+  raw_omission_reason: "raw JSONL contains disposable local temp fixture paths and full command output; analyzer summary is tracked as sanitized release evidence"
+
+usage:
+  cached_input_tokens: 63488
+  input_tokens: 71658
+  output_tokens: 859
+  reasoning_output_tokens: 96
+
+tool_output:
+  total_estimated_tokens: 2914
+  largest_event:
+    kind: command_execution
+    command: "/bin/bash -lc \"sed -n '1,220p' /tmp/rigorloop-token-bench-v0.1.1-1778518843-4eaaefaa/.agents/skills/plan/SKILL.md && pwd && rg --files -g '\"'!*node_modules*'\"' -g '\"'!*.git*'\"' | sed -n '1,200p'\""
+    path: /tmp/rigorloop-token-bench-v0.1.1-1778518843-4eaaefaa/.agents/skills/plan/SKILL.md
+    lines: 226
+    estimated_tokens: 2542
+
+signals:
+  full_file_read_count: 1
+  broad_search_count: 1
+  generated_output_read_count: 0
+  repeated_file_read_count: 0
+
+full_file_read:
+  result: confirmed
+  justification: ""
+  signals:
+    - full_file_read_command
+    - large_leading_range_read
+  justified_reads: []
+  confirmed_reads:
+    - path: /tmp/rigorloop-token-bench-v0.1.1-1778518843-4eaaefaa/.agents/skills/plan/SKILL.md
+      lines: 226
+      estimated_tokens: 2542
+  suspected_reads:
+    - path: AGENTS.md
+      lines: 5
+      estimated_tokens: 43
+    - path: docs/workflows.md
+      lines: 3
+      estimated_tokens: 32
+    - path: CONSTITUTION.md
+      lines: 0
+      estimated_tokens: 0
+    - path: README.md
+      lines: 3
+      estimated_tokens: 27
+    - path: VISION.md
+      lines: 3
+      estimated_tokens: 30
+  repeated_file_reads: []
+
+verdict:
+  result: warning
+  warnings:
+    - "broad search observed"
+    - "full-file-style read observed"
+  blockers: []

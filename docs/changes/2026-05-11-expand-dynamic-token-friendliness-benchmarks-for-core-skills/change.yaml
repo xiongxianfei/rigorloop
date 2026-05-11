@@ -1,0 +1,335 @@
+change_id: 2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills
+title: Expand dynamic token-friendliness benchmarks for core skills
+classification: release-process-proposal
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md
+  spec: specs/expand-dynamic-token-friendliness-benchmarks-for-core-skills.md
+  test_spec: specs/expand-dynamic-token-friendliness-benchmarks-for-core-skills.test.md
+  architecture: docs/architecture/system/architecture.md
+  plan: docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md
+  explain_change: docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/explain-change.md
+  review_resolution: docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-resolution.md
+requirements:
+  - Resolve proposal-review findings EDTF-PR1 and EDTF-PR2 before downstream spec authoring relies on the proposal.
+  - Return to proposal-review after proposal-review R1 findings are resolved.
+  - Record clean proposal-review R2 before downstream spec authoring relies on the proposal.
+  - Keep the expanded dynamic benchmark policy explicit about release-report identity, v1/v2 comparability, required benchmark result quality, and optional benchmark gate semantics.
+  - Draft the v2 expansion feature spec before architecture, planning, or implementation relies on the accepted proposal.
+  - Update the canonical architecture package for v2 release benchmark coverage, required benchmark context, result-quality evidence, and claimed optional coverage gates.
+  - Create a milestone-based execution plan before test-spec or implementation.
+  - Create an active test spec before implementation starts.
+  - Close proposal open questions before clean proposal-review rerun.
+tests:
+  - Proposal-review record validation for material findings.
+  - Artifact lifecycle validation for the reviewed proposal and change-local review artifacts.
+  - Artifact lifecycle validation for the draft v2 expansion spec.
+  - Artifact lifecycle validation for the approved v2 expansion spec and canonical architecture update.
+  - Artifact lifecycle validation for the active v2 expansion execution plan and plan index.
+  - Plan-review rerun validation after EDTF-PL1 and EDTF-PL2 resolution.
+  - Artifact lifecycle validation for the active v2 expansion test spec and plan handoff.
+  - M1 manifest and prompt fixture tests for v2 required core and transition carryover coverage.
+  - M1 code-review clean review record and milestone closeout state.
+  - M2 architecture-review optional prompt and separate scenario fixture tests.
+  - M2 code-review clean review record and milestone closeout state.
+  - M3 token-cost report validator tests for v2 coverage metadata, result quality, required benchmark context, waiver roles, claimed optional gates, and unclaimed optional warnings.
+  - M3 code-review changes-requested review record and open finding EDTF-CR1.
+  - M3 EDTF-CR1 fix for reconciling optional coverage status with actual dynamic run result-quality status.
+  - M3 code-review rerun clean review record and milestone closeout state.
+  - M4 release validation tests for required benchmark context generation, generated adapter tracebacks, generated-only drift handling, missing benchmark follow-up metadata, and token-cost validator delegation.
+  - M4 code-review R1 changes-requested finding EDTF-CR2.
+  - M4 EDTF-CR2 fix for maintainer-facing changed-surface input on `validate-release.py`.
+  - M4 code-review R2 clean review record and milestone closeout state.
+  - M5 v2 transition report evidence, preserved pre-transition v1 report, and sanitized analyzer summaries.
+  - M5 code-review clean review record and milestone closeout state.
+  - Final explain-change rationale before verify.
+  - Final verify test-drift fix for v2 release-validation command tests.
+  - PR #42 opened after final verify.
+validation:
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills
+    result: pass_closeout_reviews_4_findings_4_log_entries_4_resolution_entries_4
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml
+    result: pass_valid_change_metadata
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-log.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-resolution.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/proposal-review-r1.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/proposal-review-r2.md
+    result: superseded_by_spec_stage_lifecycle_validation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path specs/expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-log.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-resolution.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/proposal-review-r1.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/proposal-review-r2.md
+    result: superseded_by_architecture_stage_lifecycle_validation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path specs/expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path docs/architecture/system/architecture.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-log.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-resolution.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/proposal-review-r1.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/proposal-review-r2.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/spec-review-r1.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/spec-review-r2.md
+    result: superseded_by_plan_stage_lifecycle_validation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path specs/expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path docs/architecture/system/architecture.md --path docs/plan.md --path docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-log.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-resolution.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/proposal-review-r1.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/proposal-review-r2.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/spec-review-r1.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/spec-review-r2.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/architecture-review-r1.md
+    result: pass_validated_5_artifact_files_with_existing_docs_plan_lifecycle_language_warning
+  - command: git diff --check -- docs/plan.md docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md docs/proposals/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md specs/expand-dynamic-token-friendliness-benchmarks-for-core-skills.md docs/architecture/system/architecture.md docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills
+    result: pass_closeout_reviews_7_findings_6_log_entries_7_resolution_entries_6
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml
+    result: pass_valid_change_metadata_after_plan_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path docs/plan.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-log.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-resolution.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/plan-review-r1.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/plan-review-r2.md
+    result: pass_validated_5_artifact_files_with_existing_docs_plan_warning
+  - command: git diff --check -- docs/plan.md docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/expand-dynamic-token-friendliness-benchmarks-for-core-skills.test.md --path specs/expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path docs/plan.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml
+    result: pass_validated_6_artifact_files_with_existing_docs_plan_warning
+  - command: git diff --check -- specs/expand-dynamic-token-friendliness-benchmarks-for-core-skills.test.md docs/plan.md docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills
+    result: pass
+  - command: python scripts/test-token-cost-measurement.py BenchmarkFixtureTests.test_manifest_lists_v2_prompt_groups_and_fixtures
+    result: fail_before_implementation_then_pass_after_v2_manifest_and_prompt_updates
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_23_tests
+  - command: python scripts/run-token-cost-benchmarks.py --dry-run --suite benchmarks/token-cost/manifest.yaml --release test --tool codex
+    result: pass_enumerated_10_required_core_and_transition_carryover_benchmarks
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml
+    result: pass_valid_change_metadata_after_m1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/expand-dynamic-token-friendliness-benchmarks-for-core-skills.test.md --path specs/expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path docs/plan.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/explain-change.md
+    result: pass_validated_6_artifact_files_with_existing_docs_plan_warning_after_m1
+  - command: git diff --check -- benchmarks/token-cost scripts/test-token-cost-measurement.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills
+    result: pass
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_23_tests_code_review_m1_rerun
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml
+    result: pass_valid_change_metadata_code_review_m1_rerun
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills
+    result: pass_closeout_reviews_8_findings_6_log_entries_8_resolution_entries_6
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path docs/plan.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-log.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-resolution.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/code-review-m1-r1.md
+    result: pass_validated_6_artifact_files_with_existing_docs_plan_warning_after_code_review_m1
+  - command: python scripts/test-token-cost-measurement.py BenchmarkFixtureTests.test_architecture_review_optional_prompt_and_fixture_are_self_contained
+    result: fail_before_implementation_then_pass_after_optional_prompt_and_fixture_added
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_24_tests_after_m2
+  - command: python scripts/run-token-cost-benchmarks.py --dry-run --suite benchmarks/token-cost/manifest.yaml --release test --tool codex
+    result: pass_required_carryover_dry_run_unchanged_by_optional_prompt_declaration
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml
+    result: pass_valid_change_metadata_after_m2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path docs/plan.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/explain-change.md
+    result: pass_validated_6_artifact_files_with_existing_docs_plan_warning_after_m2
+  - command: git diff --check -- benchmarks/token-cost scripts/test-token-cost-measurement.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md docs/plan.md
+    result: pass
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_24_tests_code_review_m2_rerun
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml
+    result: pass_valid_change_metadata_code_review_m2_rerun
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills
+    result: pass_closeout_reviews_9_findings_6_log_entries_9_resolution_entries_6
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path docs/plan.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-log.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-resolution.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/code-review-m2-r1.md
+    result: pass_validated_6_artifact_files_with_existing_docs_plan_warning_after_code_review_m2
+  - command: python scripts/test-token-cost-report-validation.py TokenCostReportValidatorTests.test_v2_result_quality_and_required_context_are_enforced_by_cli TokenCostReportValidatorTests.test_v2_required_benchmark_context_is_supported_in_process TokenCostReportValidatorTests.test_v2_required_benchmark_result_quality_waiver_roles_are_enforced TokenCostReportValidatorTests.test_v2_claimed_optional_coverage_is_gated_and_unclaimed_optional_warns TokenCostReportValidatorTests.test_v2_changed_skill_required_context_requires_optional_benchmark
+    result: fail_before_implementation_then_pass_after_m3_validator_context_and_result_quality_support
+  - command: python scripts/test-token-cost-report-validation.py
+    result: pass_15_tests_after_m3
+  - command: python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml
+    result: pass_valid_token_cost_report_metadata_after_m3
+  - command: python -m py_compile scripts/validate-token-cost-report.py scripts/test-token-cost-report-validation.py
+    result: pass_after_m3
+  - command: git diff --check -- scripts/validate-token-cost-report.py scripts/test-token-cost-report-validation.py tests docs/reports/token-cost/releases
+    result: pass_after_m3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml
+    result: pass_valid_change_metadata_after_m3
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path docs/plan.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/explain-change.md
+    result: pass_validated_6_artifact_files_with_existing_docs_plan_warning_after_m3
+  - command: git diff --check -- scripts/validate-token-cost-report.py scripts/test-token-cost-report-validation.py tests docs/reports/token-cost/releases docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md docs/plan.md
+    result: pass_after_m3_handoff_artifact_updates
+  - command: python reviewer_probe_optional_status_mismatch
+    result: fail_review_probe_validator_accepted_optional_run_fail_when_coverage_result_quality_status_was_pass
+  - command: python scripts/test-token-cost-report-validation.py TokenCostReportValidatorTests.test_v2_optional_coverage_result_quality_must_match_dynamic_run
+    result: fail_before_fix_then_pass_after_edtf_cr1_resolution
+  - command: python scripts/test-token-cost-report-validation.py
+    result: pass_16_tests_after_edtf_cr1_resolution
+  - command: python -m py_compile scripts/validate-token-cost-report.py scripts/test-token-cost-report-validation.py
+    result: pass_after_edtf_cr1_resolution
+  - command: python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml
+    result: pass_after_edtf_cr1_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills
+    result: pass_closeout_reviews_10_findings_7_log_entries_10_resolution_entries_7
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml
+    result: pass_valid_change_metadata_after_edtf_cr1_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-resolution.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-log.md --path docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path docs/plan.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml
+    result: pass_validated_6_artifact_files_with_existing_docs_plan_warning_after_edtf_cr1_resolution
+  - command: git diff --check -- scripts/validate-token-cost-report.py scripts/test-token-cost-report-validation.py tests docs/reports/token-cost/releases docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md docs/plan.md
+    result: pass_after_edtf_cr1_resolution
+  - command: python scripts/test-token-cost-report-validation.py TokenCostReportValidatorTests.test_v2_optional_coverage_result_quality_must_match_dynamic_run
+    result: pass_code_review_m3_r2_rerun
+  - command: python scripts/test-token-cost-report-validation.py
+    result: pass_16_tests_code_review_m3_r2_rerun
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills
+    result: pass_closeout_reviews_10_findings_7_log_entries_10_resolution_entries_7_code_review_m3_r2_rerun
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml
+    result: pass_valid_change_metadata_code_review_m3_r2_rerun
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_required_benchmark_context_requires_changed_skill_benchmark AdapterDistributionTests.test_required_benchmark_context_traces_generated_adapter_paths AdapterDistributionTests.test_generated_only_adapter_change_traces_to_required_dynamic_benchmark AdapterDistributionTests.test_changed_public_skill_without_benchmark_records_warning_follow_up
+    result: fail_before_m4_implementation_then_pass_after_release_context_builder_added
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_release_validation_passes_required_context_to_token_cost_validation
+    result: pass_after_m4_release_validation_delegation
+  - command: python scripts/test-token-cost-report-validation.py
+    result: pass_16_tests_after_m4
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_64_tests_after_m4
+  - command: python -m py_compile scripts/validate-release.py scripts/validate-token-cost-report.py scripts/adapter_distribution.py scripts/test-adapter-distribution.py
+    result: pass_after_m4
+  - command: python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml
+    result: pass_after_m4
+  - command: python scripts/validate-release.py --version v0.1.1
+    result: pass_after_m4_pretransition_v1_report_still_validates
+  - command: git diff --check -- scripts/validate-release.py scripts/adapter_distribution.py scripts/test-adapter-distribution.py scripts/test-token-cost-report-validation.py tests docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md
+    result: pass_after_m4
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml
+    result: pass_valid_change_metadata_after_m4
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path docs/plan.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/explain-change.md
+    result: pass_validated_6_artifact_files_with_existing_docs_plan_warning_after_m4
+  - command: git diff --check -- scripts/validate-release.py scripts/adapter_distribution.py scripts/test-adapter-distribution.py scripts/test-token-cost-report-validation.py tests docs/plan.md docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills
+    result: pass_after_m4_artifact_updates
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills
+    result: pass_structure_reviews_12_findings_8_log_entries_12_resolution_entries_8_after_code_review_m4_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml
+    result: pass_valid_change_metadata_after_code_review_m4_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/code-review-m4-r1.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-log.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-resolution.md --path docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path docs/plan.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml
+    result: pass_validated_6_artifact_files_with_existing_docs_plan_warning_after_code_review_m4_r1
+  - command: git diff --check -- docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md docs/plan.md
+    result: pass_after_code_review_m4_r1
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_validate_release_cli_passes_changed_surface_inputs AdapterDistributionTests.test_v2_final_release_validation_requires_changed_surface_input AdapterDistributionTests.test_generated_only_adapter_change_traces_to_required_dynamic_benchmark AdapterDistributionTests.test_generated_adapter_changed_path_requires_missing_benchmark_through_release_validation AdapterDistributionTests.test_release_validation_passes_required_context_to_token_cost_validation AdapterDistributionTests.test_changed_skill_with_complete_v2_metadata_passes_release_validation
+    result: fail_before_fix_then_pass_after_edtf_cr2_resolution
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_68_tests_after_edtf_cr2_resolution
+  - command: python scripts/test-token-cost-report-validation.py
+    result: pass_16_tests_after_edtf_cr2_resolution
+  - command: python -m py_compile scripts/validate-release.py scripts/validate-token-cost-report.py scripts/adapter_distribution.py scripts/test-adapter-distribution.py
+    result: pass_after_edtf_cr2_resolution
+  - command: python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml
+    result: pass_after_edtf_cr2_resolution
+  - command: python scripts/validate-release.py --version v0.1.1
+    result: pass_after_edtf_cr2_resolution_pretransition_v1_report_still_validates
+  - command: git diff --check -- scripts/validate-release.py scripts/adapter_distribution.py scripts/test-adapter-distribution.py scripts/test-token-cost-report-validation.py tests docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md docs/plan.md
+    result: pass_after_edtf_cr2_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills
+    result: pass_closeout_reviews_12_findings_8_log_entries_12_resolution_entries_8_after_edtf_cr2_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml
+    result: pass_valid_change_metadata_after_edtf_cr2_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-resolution.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-log.md --path docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path docs/plan.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/explain-change.md
+    result: pass_validated_6_artifact_files_with_existing_docs_plan_warning_after_edtf_cr2_resolution
+  - command: git diff --check -- scripts/validate-release.py scripts/adapter_distribution.py scripts/test-adapter-distribution.py scripts/test-token-cost-report-validation.py tests docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md docs/plan.md
+    result: pass_after_edtf_cr2_resolution_artifact_updates
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_validate_release_cli_passes_changed_surface_inputs AdapterDistributionTests.test_v2_final_release_validation_requires_changed_surface_input AdapterDistributionTests.test_generated_adapter_changed_path_requires_missing_benchmark_through_release_validation AdapterDistributionTests.test_changed_skill_with_complete_v2_metadata_passes_release_validation
+    result: pass_code_review_m4_r2_rerun
+  - command: python scripts/run-token-cost-benchmarks.py --suite benchmarks/token-cost/manifest.yaml --release v0.1.1 --tool codex --output-dir /tmp/rigorloop-token-v2-runs-v0.1.1
+    result: pass_live_required_v2_transition_suite_raw_jsonl_outside_repo
+  - command: python scripts/measure-skill-tokens.py
+    result: pass_skills_measured_23_total_estimated_tokens_54294
+  - command: python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml
+    result: pass_valid_v2_token_cost_report_metadata_after_m5
+  - command: python scripts/run-token-cost-benchmarks.py --dry-run --suite benchmarks/token-cost/manifest.yaml --release v0.1.1 --tool codex --output-dir /tmp/rigorloop-token-v2-dry-run-v0.1.1
+    result: pass_dry_run_temp_output_after_m5
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_24_tests_after_m5
+  - command: python scripts/test-token-cost-report-validation.py
+    result: pass_16_tests_after_m5
+  - command: python -m py_compile scripts/run-token-cost-benchmarks.py scripts/analyze-codex-jsonl.py scripts/validate-token-cost-report.py scripts/validate-release.py scripts/adapter_distribution.py
+    result: pass_after_m5
+  - command: python scripts/validate-release.py --version v0.1.1 --changed-paths-file /tmp/rigorloop-empty-changed-paths.txt
+    result: pass_after_m5_with_explicit_empty_changed_surface_input
+  - command: bash scripts/ci.sh --mode explicit --path benchmarks/token-cost --path scripts/validate-token-cost-report.py --path scripts/validate-release.py --path docs/reports/token-cost/releases/v0.1.1.yaml --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml
+    result: blocked_unclassified_directory_path_benchmarks_token_cost
+  - command: bash scripts/ci.sh --mode explicit --path docs/reports/token-cost/releases/v0.1.1.yaml --path docs/reports/token-cost/releases/v0.1.1.md --path docs/reports/token-cost/releases/v0.1.1-skill-token-runtime-v1-pretransition.yaml --path docs/reports/token-cost/releases/v0.1.1-skill-token-runtime-v1-pretransition.md --path docs/reports/token-cost/runs/v0.1.1/workflow-route-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/proposal-short-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/plan-handoff-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/implement-handoff-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/code-review-small-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/explain-change-summary-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/verify-final-pack-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/pr-handoff-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/architecture-no-impact-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/learn-no-durable-lesson-run1.analysis.yaml --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml
+    result: pass_selected_checks_after_m5
+  - command: python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1-skill-token-runtime-v1-pretransition.yaml docs/reports/token-cost/releases/v0.1.1.yaml
+    result: pass_code_review_m5_r1_rerun
+  - command: python scripts/validate-release.py --version v0.1.1 --changed-paths-file /tmp/rigorloop-empty-changed-paths.txt
+    result: pass_code_review_m5_r1_rerun
+  - command: python scripts/test-token-cost-report-validation.py
+    result: pass_16_tests_code_review_m5_r1_rerun
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_24_tests_code_review_m5_r1_rerun
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills
+    result: pass_closeout_reviews_13_findings_8_log_entries_13_resolution_entries_8_code_review_m5_r1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills
+    result: pass_closeout_reviews_14_findings_8_log_entries_14_resolution_entries_8_final_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml
+    result: pass_final_verify
+  - command: python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1-skill-token-runtime-v1-pretransition.yaml docs/reports/token-cost/releases/v0.1.1.yaml
+    result: pass_final_verify
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_24_tests_final_verify
+  - command: python scripts/test-token-cost-report-validation.py
+    result: pass_16_tests_final_verify
+  - command: python scripts/validate-release.py --version v0.1.1 --changed-paths-file /tmp/rigorloop-empty-changed-paths.txt
+    result: pass_final_verify
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_v0_1_1_release_metadata_requires_command_alias_smoke_evidence AdapterDistributionTests.test_validate_release_cli_accepts_repository_v0_1_1_artifacts
+    result: fail_before_verify_fix_then_pass_after_explicit_changed_surface_input
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_68_tests_final_verify
+  - command: python -m py_compile scripts/run-token-cost-benchmarks.py scripts/analyze-codex-jsonl.py scripts/validate-token-cost-report.py scripts/validate-release.py scripts/adapter_distribution.py
+    result: pass_final_verify
+  - command: python -m py_compile scripts/test-adapter-distribution.py
+    result: pass_final_verify
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path specs/expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path specs/expand-dynamic-token-friendliness-benchmarks-for-core-skills.test.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path docs/plan.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/explain-change.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-log.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-resolution.md --path docs/reports/token-cost/releases/v0.1.1.yaml --path docs/reports/token-cost/releases/v0.1.1.md --path docs/reports/token-cost/releases/v0.1.1-skill-token-runtime-v1-pretransition.yaml --path docs/reports/token-cost/releases/v0.1.1-skill-token-runtime-v1-pretransition.md
+    result: pass_final_verify_with_existing_docs_plan_lifecycle_language_warning
+  - command: bash scripts/ci.sh --mode explicit --path docs/reports/token-cost/releases/v0.1.1.yaml --path docs/reports/token-cost/releases/v0.1.1.md --path docs/reports/token-cost/releases/v0.1.1-skill-token-runtime-v1-pretransition.yaml --path docs/reports/token-cost/releases/v0.1.1-skill-token-runtime-v1-pretransition.md --path docs/reports/token-cost/runs/v0.1.1/workflow-route-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/proposal-short-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/plan-handoff-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/implement-handoff-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/code-review-small-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/explain-change-summary-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/verify-final-pack-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/pr-handoff-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/architecture-no-impact-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/learn-no-durable-lesson-run1.analysis.yaml --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml --path scripts/test-adapter-distribution.py
+    result: pass_selected_checks_final_verify_adapters_regression_adapters_drift_adapters_validate_artifact_lifecycle_change_metadata_token_cost
+changed_files:
+  - benchmarks/token-cost/manifest.yaml
+  - benchmarks/token-cost/prompts/workflow-route.md
+  - benchmarks/token-cost/prompts/plan-handoff.md
+  - benchmarks/token-cost/prompts/explain-change-summary.md
+  - benchmarks/token-cost/prompts/pr-handoff.md
+  - benchmarks/token-cost/prompts/architecture-review.md
+  - benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/AGENTS.md
+  - benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/VISION.md
+  - benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/README.md
+  - benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/docs/workflows.md
+  - benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/docs/architecture/system/architecture.md
+  - benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/docs/architecture/system/diagrams/context.mmd
+  - benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/docs/architecture/system/diagrams/container.mmd
+  - benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/docs/adr/README.md
+  - benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/docs/changes/2026-05-11-architecture-review-benchmark/change.yaml
+  - benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/docs/changes/2026-05-11-architecture-review-benchmark/explain-change.md
+  - benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/specs/example-feature.md
+  - benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/src/app.txt
+  - scripts/test-token-cost-measurement.py
+  - scripts/adapter_distribution.py
+  - scripts/test-adapter-distribution.py
+  - scripts/validate-release.py
+  - scripts/validate-token-cost-report.py
+  - scripts/test-token-cost-report-validation.py
+  - docs/proposals/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md
+  - specs/expand-dynamic-token-friendliness-benchmarks-for-core-skills.md
+  - specs/expand-dynamic-token-friendliness-benchmarks-for-core-skills.test.md
+  - docs/architecture/system/architecture.md
+  - docs/plan.md
+  - docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md
+  - docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml
+  - docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/explain-change.md
+  - docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-log.md
+  - docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-resolution.md
+  - docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/proposal-review-r1.md
+  - docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/proposal-review-r2.md
+  - docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/spec-review-r1.md
+  - docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/spec-review-r2.md
+  - docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/architecture-review-r1.md
+  - docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/plan-review-r1.md
+  - docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/plan-review-r2.md
+  - docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/code-review-m1-r1.md
+  - docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/code-review-m2-r1.md
+  - docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/code-review-m3-r1.md
+  - docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/code-review-m3-r2.md
+  - docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/code-review-m4-r1.md
+  - docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/code-review-m4-r2.md
+  - docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/code-review-m5-r1.md
+  - docs/reports/token-cost/releases/v0.1.1.md
+  - docs/reports/token-cost/releases/v0.1.1.yaml
+  - docs/reports/token-cost/releases/v0.1.1-skill-token-runtime-v1-pretransition.md
+  - docs/reports/token-cost/releases/v0.1.1-skill-token-runtime-v1-pretransition.yaml
+  - docs/reports/token-cost/runs/v0.1.1/workflow-route-run1.analysis.yaml
+  - docs/reports/token-cost/runs/v0.1.1/proposal-short-run1.analysis.yaml
+  - docs/reports/token-cost/runs/v0.1.1/plan-handoff-run1.analysis.yaml
+  - docs/reports/token-cost/runs/v0.1.1/implement-handoff-run1.analysis.yaml
+  - docs/reports/token-cost/runs/v0.1.1/code-review-small-run1.analysis.yaml
+  - docs/reports/token-cost/runs/v0.1.1/explain-change-summary-run1.analysis.yaml
+  - docs/reports/token-cost/runs/v0.1.1/verify-final-pack-run1.analysis.yaml
+  - docs/reports/token-cost/runs/v0.1.1/pr-handoff-run1.analysis.yaml
+  - docs/reports/token-cost/runs/v0.1.1/architecture-no-impact-run1.analysis.yaml
+  - docs/reports/token-cost/runs/v0.1.1/learn-no-durable-lesson-run1.analysis.yaml
+review:
+  status: pr-open
+  open_findings: 0
+  unresolved_items: 0
+  last_review: code-review-m5-r1 clean-with-notes; final verify passed locally; PR #42 opened
+status:
+  lifecycle: done
+  review: code-review-m5-r1-clean

@@ -9,23 +9,23 @@ run:
   raw_omission_reason: "raw JSONL contains disposable local temp fixture paths and full command output; analyzer summary is tracked as sanitized release evidence"
 
 usage:
-  cached_input_tokens: 66560
-  input_tokens: 77019
-  output_tokens: 1111
-  reasoning_output_tokens: 163
+  cached_input_tokens: 66048
+  input_tokens: 76400
+  output_tokens: 854
+  reasoning_output_tokens: 92
 
 tool_output:
-  total_estimated_tokens: 5893
+  total_estimated_tokens: 5527
   largest_event:
     kind: command_execution
-    command: "/bin/bash -lc \"sed -n '1,220p' /tmp/rigorloop-token-bench-v0.1.1-1778496244-bff770cd/.agents/skills/verify/SKILL.md\""
-    path: /tmp/rigorloop-token-bench-v0.1.1-1778496244-bff770cd/.agents/skills/verify/SKILL.md
+    command: "/bin/bash -lc \"sed -n '1,220p' /tmp/rigorloop-token-bench-v0.1.1-1778518843-4eaaefaa/.agents/skills/verify/SKILL.md\""
+    path: /tmp/rigorloop-token-bench-v0.1.1-1778518843-4eaaefaa/.agents/skills/verify/SKILL.md
     lines: 220
     estimated_tokens: 3515
 
 signals:
   full_file_read_count: 1
-  broad_search_count: 2
+  broad_search_count: 0
   generated_output_read_count: 0
   repeated_file_read_count: 0
 
@@ -37,27 +37,26 @@ full_file_read:
     - large_leading_range_read
   justified_reads: []
   confirmed_reads:
-    - path: /tmp/rigorloop-token-bench-v0.1.1-1778496244-bff770cd/.agents/skills/verify/SKILL.md
+    - path: /tmp/rigorloop-token-bench-v0.1.1-1778518843-4eaaefaa/.agents/skills/verify/SKILL.md
       lines: 220
       estimated_tokens: 3515
   suspected_reads:
     - path: AGENTS.md
       lines: 5
       estimated_tokens: 43
-    - path: README.md
-      lines: 3
-      estimated_tokens: 27
-    - path: docs/workflows.md
-      lines: 3
-      estimated_tokens: 32
     - path: VISION.md
       lines: 3
       estimated_tokens: 30
+    - path: docs/workflows.md
+      lines: 3
+      estimated_tokens: 32
+    - path: README.md
+      lines: 3
+      estimated_tokens: 27
   repeated_file_reads: []
 
 verdict:
   result: warning
   warnings:
-    - "broad search observed"
     - "full-file-style read observed"
   blockers: []

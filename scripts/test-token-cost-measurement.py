@@ -27,14 +27,38 @@ CHANGE_METADATA = (
 BENCHMARK_ROOT = ROOT / "benchmarks" / "token-cost"
 BENCHMARK_MANIFEST = BENCHMARK_ROOT / "manifest.yaml"
 BENCHMARK_FIXTURE = BENCHMARK_ROOT / "fixtures" / "minimal-public-project"
-EXPECTED_BENCHMARKS = {
+ARCHITECTURE_REVIEW_FIXTURE = BENCHMARK_ROOT / "fixtures" / "minimal-public-project-architecture-review"
+EXPECTED_REQUIRED_CORE_BENCHMARKS = {
     "workflow-route": "workflow",
     "proposal-short": "proposal",
+    "plan-handoff": "plan",
     "implement-handoff": "implement",
     "code-review-small": "code-review",
+    "explain-change-summary": "explain-change",
     "verify-final-pack": "verify",
+    "pr-handoff": "pr",
+}
+EXPECTED_TRANSITION_CARRYOVER_BENCHMARKS = {
     "architecture-no-impact": "architecture",
     "learn-no-durable-lesson": "learn",
+}
+EXPECTED_BENCHMARKS = {
+    **EXPECTED_REQUIRED_CORE_BENCHMARKS,
+    **EXPECTED_TRANSITION_CARRYOVER_BENCHMARKS,
+}
+EXPECTED_OPTIONAL_EXTENDED = {
+    "proposal-review",
+    "spec",
+    "spec-review",
+    "architecture",
+    "architecture-review",
+    "plan-review",
+    "test-spec",
+    "learn",
+    "research",
+    "explore",
+    "vision",
+    "project-map",
 }
 
 
@@ -536,18 +560,50 @@ class BenchmarkFixtureTests(unittest.TestCase):
         self.assertTrue(BENCHMARK_MANIFEST.exists(), "benchmark manifest must exist")
         return BENCHMARK_MANIFEST.read_text(encoding="utf-8")
 
-    def test_manifest_lists_all_initial_prompt_fixtures(self) -> None:
+    def test_manifest_lists_v2_prompt_groups_and_fixtures(self) -> None:
         manifest = self.read_manifest()
-        self.assertIn("suite: skill-token-runtime-v1", manifest)
+        self.assertIn("suite: skill-token-runtime-v2", manifest)
+        self.assertIn("previous_suite_id: skill-token-runtime-v1", manifest)
+        self.assertIn("baseline_for_suite: true", manifest)
+        self.assertIn("strict_suite_total_comparison: false", manifest)
 
-        ids = set(re.findall(r"^\s+- id: ([a-z0-9-]+)$", manifest, flags=re.MULTILINE))
+        executable_prompts = manifest.split("prompts:", 1)[1].split("optional_prompts:", 1)[0]
+        ids = set(re.findall(r"^\s+- id: ([a-z0-9-]+)$", executable_prompts, flags=re.MULTILINE))
         self.assertEqual(set(EXPECTED_BENCHMARKS), ids)
+
+        required_core = set(
+            re.findall(
+                r"^\s{2}- ([a-z0-9-]+)$",
+                manifest.split("required_core:", 1)[1].split("transition_carryover_required:", 1)[0],
+                flags=re.MULTILINE,
+            )
+        )
+        self.assertEqual(set(EXPECTED_REQUIRED_CORE_BENCHMARKS), required_core)
+
+        transition_carryover = set(
+            re.findall(
+                r"^\s{2}- ([a-z0-9-]+)$",
+                manifest.split("transition_carryover_required:", 1)[1].split("optional_extended:", 1)[0],
+                flags=re.MULTILINE,
+            )
+        )
+        self.assertEqual(set(EXPECTED_TRANSITION_CARRYOVER_BENCHMARKS), transition_carryover)
+
+        optional_extended = set(
+            re.findall(
+                r"^\s{2}- ([a-z0-9-]+)$",
+                manifest.split("optional_extended:", 1)[1].split("prompts:", 1)[0],
+                flags=re.MULTILINE,
+            )
+        )
+        self.assertEqual(EXPECTED_OPTIONAL_EXTENDED, optional_extended)
 
         for benchmark_id, expected_skill in EXPECTED_BENCHMARKS.items():
             prompt_path = BENCHMARK_ROOT / "prompts" / f"{benchmark_id}.md"
             self.assertTrue(prompt_path.exists(), f"{benchmark_id} prompt must exist")
             prompt = prompt_path.read_text(encoding="utf-8")
             self.assertIn("Do not edit files.", prompt)
+            self.assertIn("Output only:", prompt)
             self.assertIn(f"expected_skill: {expected_skill}", manifest)
             self.assertIn(f"path: prompts/{benchmark_id}.md", manifest)
             self.assertIn("tool: codex", manifest)
@@ -581,6 +637,68 @@ class BenchmarkFixtureTests(unittest.TestCase):
         fixture_text = "\n".join(path.read_text(encoding="utf-8") for path in fixture_files)
         self.assertNotIn("dist/adapters", fixture_text)
         self.assertNotIn(".codex/skills", fixture_text)
+
+    def test_architecture_review_optional_prompt_and_fixture_are_self_contained(self) -> None:
+        manifest = self.read_manifest()
+        self.assertIn("optional_prompts:", manifest)
+        self.assertIn("id: architecture-review", manifest)
+        self.assertIn("path: prompts/architecture-review.md", manifest)
+        self.assertIn("fixture: fixtures/minimal-public-project-architecture-review", manifest)
+        self.assertIn("expected_skill: architecture-review", manifest)
+
+        prompt_path = BENCHMARK_ROOT / "prompts" / "architecture-review.md"
+        self.assertTrue(prompt_path.exists(), "architecture-review prompt must exist")
+        prompt = prompt_path.read_text(encoding="utf-8")
+        self.assertIn("Do not edit files.", prompt)
+        self.assertIn("Output only:", prompt)
+        for expected_line in [
+            "- review surface",
+            "- review status",
+            "- findings, if any",
+            "- whether a change-local architecture delta is required",
+            "- next stage",
+        ]:
+            self.assertIn(expected_line, prompt)
+
+        required_files = [
+            "AGENTS.md",
+            "VISION.md",
+            "README.md",
+            "docs/workflows.md",
+            "docs/architecture/system/architecture.md",
+            "docs/architecture/system/diagrams/context.mmd",
+            "docs/architecture/system/diagrams/container.mmd",
+            "docs/adr/README.md",
+            "docs/changes/2026-05-11-architecture-review-benchmark/change.yaml",
+            "docs/changes/2026-05-11-architecture-review-benchmark/explain-change.md",
+            "specs/example-feature.md",
+            "src/app.txt",
+        ]
+        for relative_path in required_files:
+            self.assertTrue(
+                (ARCHITECTURE_REVIEW_FIXTURE / relative_path).exists(),
+                f"architecture-review fixture missing {relative_path}",
+            )
+
+        self.assertNotEqual(ARCHITECTURE_REVIEW_FIXTURE, BENCHMARK_FIXTURE)
+        self.assertFalse(
+            (
+                ARCHITECTURE_REVIEW_FIXTURE
+                / "docs"
+                / "changes"
+                / "2026-05-11-architecture-review-benchmark"
+                / "architecture.md"
+            ).exists(),
+            "architecture-review scenario must not require a change-local architecture delta",
+        )
+        fixture_text = "\n".join(
+            path.read_text(encoding="utf-8")
+            for path in ARCHITECTURE_REVIEW_FIXTURE.rglob("*")
+            if path.is_file()
+        )
+        self.assertIn("canonical architecture package", fixture_text)
+        self.assertIn("No ADR is required", fixture_text)
+        self.assertNotIn("base fixture overlay", fixture_text.lower())
 
 
 class BenchmarkRunnerTests(unittest.TestCase):

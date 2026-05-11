@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import importlib.util
 import sys
 import shutil
 import subprocess
@@ -17,6 +18,7 @@ FIXTURES = ROOT / "tests" / "fixtures" / "adapters"
 TOKEN_COST_VALID_FIXTURE = (
     ROOT / "tests" / "fixtures" / "token-cost" / "reports" / "valid-final-pass" / "v0.1.1.yaml"
 )
+VALIDATE_RELEASE = ROOT / "scripts" / "validate-release.py"
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import adapter_distribution as adapter_distribution_module  # noqa: E402
@@ -25,9 +27,11 @@ from adapter_distribution import (  # noqa: E402
     AdapterDriftEntry,
     OPENCODE_COMMAND_ALIASES,
     SUPPORTED_ADAPTERS,
+    build_required_benchmark_context,
     collect_adapter_drift,
     collect_adapter_drift_entries,
     evaluate_skill,
+    generated_adapter_skill_owner,
     expected_adapter_files,
     format_adapter_drift_normal,
     format_adapter_drift_verbose,
@@ -38,6 +42,16 @@ from adapter_distribution import (  # noqa: E402
     validate_adapter_output,
     validate_release_output,
 )
+
+
+def load_validate_release_module():
+    spec = importlib.util.spec_from_file_location("validate_release_test", VALIDATE_RELEASE)
+    assert spec is not None
+    assert spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
 
 
 class AdapterDistributionTests(unittest.TestCase):
@@ -190,6 +204,160 @@ class AdapterDistributionTests(unittest.TestCase):
             'repeated ARGUMENT_MARKER_M3_SMOKE."'
         )
         return smoke
+
+    def write_minimal_v2_token_report(
+        self,
+        token_cost_root: Path,
+        *,
+        run_ids: tuple[str, ...] = ("proposal-short",),
+    ) -> None:
+        token_cost_root.mkdir(parents=True, exist_ok=True)
+        markdown = token_cost_root / "v0.1.1.md"
+        metadata = token_cost_root / "v0.1.1.yaml"
+        markdown.write_text(
+            "# Token-Friendliness Report\n\nMetadata: v0.1.1.yaml\n",
+            encoding="utf-8",
+        )
+        run_blocks: list[str] = []
+        for run_id in run_ids:
+            prompt = f"benchmarks/token-cost/prompts/{run_id}.md"
+            fixture = "benchmarks/token-cost/fixtures/minimal-public-project"
+            if run_id == "architecture-review":
+                fixture = "benchmarks/token-cost/fixtures/minimal-public-project-architecture-review"
+            run_blocks.append(
+                f"""
+    - id: {run_id}
+      prompt: {prompt}
+      fixture: {fixture}
+      result: pass
+      evidence:
+        raw_jsonl_tracked: true
+        jsonl: tests/fixtures/token-cost/reports/valid-final-pass/runs/v0.1.1/proposal-short-run1.jsonl
+        analysis: tests/fixtures/token-cost/reports/valid-final-pass/runs/v0.1.1/proposal-short-run1.analysis.yaml
+        sanitized_summary: ""
+        raw_omission_reason: ""
+      result_quality:
+        status: pass
+        reviewed_by: maintainer
+        review_surface: {markdown}
+        reviewed_at: "2026-05-11"
+        criteria:
+          - id: output_shape
+            expectation: Output followed the requested shape.
+            result: pass
+            notes: ""
+        notes: Manual review accepted this benchmark.
+        blockers: []
+"""
+            )
+        metadata.write_text(
+            f"""schema_version: 1
+
+report:
+  release: v0.1.1
+  report_date: 2026-05-11
+  repository: xiongxianfei/rigorloop
+  commit: abc123
+  report_markdown: {markdown}
+
+benchmark_suite:
+  id: skill-token-runtime-v2
+  previous_suite_id: skill-token-runtime-v1
+  baseline_for_suite: true
+  manifest: benchmarks/token-cost/manifest.yaml
+  prompt_count: 10
+  fixture: benchmarks/token-cost/fixtures/minimal-public-project
+  runs_per_prompt: 1
+
+benchmark_coverage:
+  suite_id: skill-token-runtime-v2
+  required_core_status: pass
+  required_core:
+    - proposal-short
+  transition_carryover_status: pass
+  transition_carryover_required: []
+  changed_skill_benchmark_status: pass
+  optional_extended:
+    - architecture-review
+  optional_run: []
+  missing_required: []
+  missing_optional: []
+
+environment:
+  primary_tool: codex
+  codex_available: true
+  codex_version: fixture
+  model: fixture-model
+  os: fixture-os
+  runner: maintainer-local
+
+runner:
+  command: python scripts/run-token-cost-benchmarks.py --release v0.1.1 --suite benchmarks/token-cost/manifest.yaml --tool codex
+  tool: codex
+  suite: benchmarks/token-cost/manifest.yaml
+  fixture: benchmarks/token-cost/fixtures/minimal-public-project
+  skill_source: dist/adapters/codex/.agents/skills/
+  output_dir: tests/fixtures/token-cost/reports/valid-final-pass/runs/v0.1.1
+  temp_policy: system-temp
+  install_public_skills: true
+
+static_skill_size:
+  status: pass
+  command: python scripts/measure-skill-tokens.py
+  skills_measured: 1
+  total_estimated_tokens: 100
+  max_skill:
+    path: skills/proposal/SKILL.md
+    estimated_tokens: 100
+  warnings: []
+
+dynamic_runtime:
+  status: pass
+  tool: codex
+  command_pattern: codex exec --json --ephemeral ...
+  incomplete: null
+  runs:{''.join(run_blocks)}
+
+summary:
+  median_input_tokens: 100
+  median_cached_input_tokens: 50
+  median_output_tokens: 10
+  median_reasoning_output_tokens: 5
+  max_single_tool_output_estimated_tokens: 20
+  full_file_read_count: 0
+  broad_search_count: 0
+  generated_output_read_count: 0
+
+portability:
+  status: pass
+  public_skill_internal_path_leaks: 0
+  generated_output_internals_in_public_skills: 0
+  local_examples_in_public_skills: 0
+  notes: []
+
+comparison:
+  baseline: true
+  previous_release: null
+  previous_report: null
+  comparable: false
+  deltas: null
+  rationale: First skill-token-runtime-v2 report.
+
+waiver:
+  required: false
+  status: none
+  reason: ""
+  approved_by: ""
+  approval_surface: ""
+  evidence: ""
+
+release_gate:
+  result: pass
+  blockers: []
+  warnings: []
+""",
+            encoding="utf-8",
+        )
 
     def test_adapter_model_matches_required_paths(self) -> None:
         self.assertEqual(SUPPORTED_ADAPTERS, ("codex", "claude", "opencode"))
@@ -1432,7 +1600,11 @@ class AdapterDistributionTests(unittest.TestCase):
                 notes_extra=self.v0_1_1_notes_extra(),
             )
 
-            errors = validate_release_output("v0.1.1", release_root=release_root)
+            errors = validate_release_output(
+                "v0.1.1",
+                release_root=release_root,
+                changed_paths=(),
+            )
 
             self.assertTrue(
                 any("smoke.opencode.evidence: v0.1.1 requires command alias behavior evidence" in error for error in errors),
@@ -1452,7 +1624,14 @@ class AdapterDistributionTests(unittest.TestCase):
                 notes_extra=self.v0_1_1_notes_extra(),
             )
 
-            self.assertEqual(validate_release_output("v0.1.1", release_root=release_root), [])
+            self.assertEqual(
+                validate_release_output(
+                    "v0.1.1",
+                    release_root=release_root,
+                    changed_paths=(),
+                ),
+                [],
+            )
 
     def test_v0_1_1_release_validation_requires_token_cost_report(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -1513,6 +1692,307 @@ class AdapterDistributionTests(unittest.TestCase):
                 any("report.report_markdown" in error for error in errors),
                 errors,
             )
+
+    def test_required_benchmark_context_requires_changed_skill_benchmark(self) -> None:
+        context = build_required_benchmark_context(
+            "v0.1.1",
+            release_stage="final",
+            commit="abc123",
+            changed_paths=("skills/architecture-review/SKILL.md",),
+        )
+
+        required = context["required_benchmarks"]
+        self.assertEqual(
+            required["core"],
+            [
+                "workflow-route",
+                "proposal-short",
+                "plan-handoff",
+                "implement-handoff",
+                "code-review-small",
+                "explain-change-summary",
+                "verify-final-pack",
+                "pr-handoff",
+            ],
+        )
+        self.assertEqual(
+            required["transition_carryover"],
+            ["architecture-no-impact", "learn-no-durable-lesson"],
+        )
+        self.assertEqual(
+            required["required_due_to_changes"],
+            [
+                {
+                    "benchmark": "architecture-review",
+                    "skill": "architecture-review",
+                    "reason": "public-skill-changed",
+                    "changed_surfaces": {
+                        "canonical": ["skills/architecture-review/SKILL.md"],
+                        "generated": [],
+                    },
+                }
+            ],
+        )
+
+    def test_required_benchmark_context_traces_generated_adapter_paths(self) -> None:
+        context = build_required_benchmark_context(
+            "v0.1.1",
+            release_stage="final",
+            commit="abc123",
+            changed_paths=(
+                "skills/architecture-review/SKILL.md",
+                "dist/adapters/codex/.agents/skills/architecture-review/SKILL.md",
+                "dist/adapters/claude/.claude/skills/architecture-review/SKILL.md",
+                "dist/adapters/opencode/.opencode/skills/architecture-review/SKILL.md",
+            ),
+        )
+
+        changed = context["required_benchmarks"]["required_due_to_changes"][0]
+        self.assertEqual(changed["skill"], "architecture-review")
+        self.assertEqual(
+            changed["changed_surfaces"]["generated"],
+            [
+                "dist/adapters/codex/.agents/skills/architecture-review/SKILL.md",
+                "dist/adapters/claude/.claude/skills/architecture-review/SKILL.md",
+                "dist/adapters/opencode/.opencode/skills/architecture-review/SKILL.md",
+            ],
+        )
+        self.assertEqual(
+            generated_adapter_skill_owner(
+                "dist/adapters/codex/.agents/skills/architecture-review/SKILL.md"
+            ),
+            "architecture-review",
+        )
+
+    def test_generated_only_adapter_change_traces_to_required_dynamic_benchmark(self) -> None:
+        context = build_required_benchmark_context(
+            "v0.1.1",
+            release_stage="final",
+            commit="abc123",
+            changed_paths=(
+                "dist/adapters/codex/.agents/skills/architecture-review/SKILL.md",
+            ),
+        )
+
+        self.assertEqual(
+            context["required_benchmarks"]["required_due_to_changes"],
+            [
+                {
+                    "benchmark": "architecture-review",
+                    "skill": "architecture-review",
+                    "reason": "generated-public-skill-changed",
+                    "changed_surfaces": {
+                        "canonical": [],
+                        "generated": [
+                            "dist/adapters/codex/.agents/skills/architecture-review/SKILL.md"
+                        ],
+                    },
+                }
+            ],
+        )
+        self.assertEqual(
+            context["required_benchmarks"]["generated_trace"],
+            [
+                {
+                    "generated_path": "dist/adapters/codex/.agents/skills/architecture-review/SKILL.md",
+                    "owning_skill": "skills/architecture-review/SKILL.md",
+                    "benchmark": "architecture-review",
+                    "canonical_changed": False,
+                    "action": "adapter-drift-or-regeneration-evidence",
+                }
+            ],
+        )
+
+    def test_changed_public_skill_without_benchmark_records_warning_follow_up(self) -> None:
+        context = build_required_benchmark_context(
+            "v0.1.1",
+            release_stage="final",
+            commit="abc123",
+            changed_paths=("skills/spec-review/SKILL.md",),
+        )
+
+        self.assertEqual(context["required_benchmarks"]["required_due_to_changes"], [])
+        self.assertEqual(
+            context["required_benchmarks"]["missing_benchmarks"],
+            [
+                {
+                    "skill": "spec-review",
+                    "reason": "public-skill-changed",
+                    "follow_up": "add token-cost benchmark fixture for spec-review",
+                }
+            ],
+        )
+
+    def test_release_validation_passes_required_context_to_token_cost_validation(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            release_root = root / "docs" / "releases"
+            token_cost_root = root / "docs" / "reports" / "token-cost" / "releases"
+            self.write_minimal_v2_token_report(token_cost_root)
+            self.write_release_artifacts(
+                root,
+                version="v0.1.1",
+                release_type="final",
+                manifest_version="0.1.1",
+                smoke_overrides=self.v0_1_1_smoke_overrides(),
+                notes_extra=self.v0_1_1_notes_extra(),
+            )
+
+            errors = validate_release_output(
+                "v0.1.1",
+                release_root=release_root,
+                token_cost_report_root=token_cost_root,
+                changed_paths=("skills/architecture-review/SKILL.md",),
+            )
+
+            self.assertTrue(
+                any("token-cost report validation failed" in error for error in errors),
+                errors,
+            )
+            self.assertTrue(
+                any("dynamic_runtime.runs: missing required benchmark architecture-review" in error for error in errors),
+                errors,
+            )
+
+    def test_v2_final_release_validation_requires_changed_surface_input(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            release_root = root / "docs" / "releases"
+            token_cost_root = root / "docs" / "reports" / "token-cost" / "releases"
+            self.write_minimal_v2_token_report(token_cost_root)
+            self.write_release_artifacts(
+                root,
+                version="v0.1.1",
+                release_type="final",
+                manifest_version="0.1.1",
+                smoke_overrides=self.v0_1_1_smoke_overrides(),
+                notes_extra=self.v0_1_1_notes_extra(),
+            )
+
+            errors = validate_release_output(
+                "v0.1.1",
+                release_root=release_root,
+                token_cost_report_root=token_cost_root,
+            )
+
+            self.assertTrue(
+                any("release validation requires changed-surface input" in error for error in errors),
+                errors,
+            )
+
+    def test_validate_release_cli_passes_changed_surface_inputs(self) -> None:
+        module = load_validate_release_module()
+        with tempfile.NamedTemporaryFile("w", encoding="utf-8") as handle:
+            handle.write(
+                "\n".join(
+                    [
+                        "# comment",
+                        "skills/architecture-review/SKILL.md",
+                        "dist/adapters/codex/.agents/skills/architecture-review/SKILL.md",
+                        "skills/architecture-review/SKILL.md",
+                        "",
+                    ]
+                )
+            )
+            handle.flush()
+            captured: dict[str, object] = {}
+
+            def fake_validate_release_output(version: str, *, changed_paths=()):
+                captured["version"] = version
+                captured["changed_paths"] = changed_paths
+                return [
+                    "token-cost report validation failed: dynamic_runtime.runs: "
+                    "missing required benchmark architecture-review"
+                ]
+
+            with patch.object(module, "validate_release_output", fake_validate_release_output):
+                result = module.main(
+                    [
+                        "--version",
+                        "v0.1.1",
+                        "--changed-path",
+                        "dist/adapters/claude/.claude/skills/architecture-review/SKILL.md",
+                        "--changed-paths-file",
+                        handle.name,
+                    ]
+                )
+
+        self.assertEqual(result, 1)
+        self.assertEqual(captured["version"], "v0.1.1")
+        self.assertEqual(
+            captured["changed_paths"],
+            (
+                "dist/adapters/claude/.claude/skills/architecture-review/SKILL.md",
+                "skills/architecture-review/SKILL.md",
+                "dist/adapters/codex/.agents/skills/architecture-review/SKILL.md",
+            ),
+        )
+
+    def test_generated_adapter_changed_path_requires_missing_benchmark_through_release_validation(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            release_root = root / "docs" / "releases"
+            token_cost_root = root / "docs" / "reports" / "token-cost" / "releases"
+            self.write_minimal_v2_token_report(token_cost_root)
+            self.write_release_artifacts(
+                root,
+                version="v0.1.1",
+                release_type="final",
+                manifest_version="0.1.1",
+                smoke_overrides=self.v0_1_1_smoke_overrides(),
+                notes_extra=self.v0_1_1_notes_extra(),
+            )
+
+            errors = validate_release_output(
+                "v0.1.1",
+                release_root=release_root,
+                token_cost_report_root=token_cost_root,
+                changed_paths=(
+                    "dist/adapters/codex/.agents/skills/architecture-review/SKILL.md",
+                ),
+            )
+
+            self.assertTrue(
+                any("dynamic_runtime.runs: missing required benchmark architecture-review" in error for error in errors),
+                errors,
+            )
+
+    def test_changed_skill_with_complete_v2_metadata_passes_release_validation(self) -> None:
+        required_runs = (
+            "workflow-route",
+            "proposal-short",
+            "plan-handoff",
+            "implement-handoff",
+            "code-review-small",
+            "explain-change-summary",
+            "verify-final-pack",
+            "pr-handoff",
+            "architecture-no-impact",
+            "learn-no-durable-lesson",
+            "architecture-review",
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            release_root = root / "docs" / "releases"
+            token_cost_root = root / "docs" / "reports" / "token-cost" / "releases"
+            self.write_minimal_v2_token_report(token_cost_root, run_ids=required_runs)
+            self.write_release_artifacts(
+                root,
+                version="v0.1.1",
+                release_type="final",
+                manifest_version="0.1.1",
+                smoke_overrides=self.v0_1_1_smoke_overrides(),
+                notes_extra=self.v0_1_1_notes_extra(),
+            )
+
+            errors = validate_release_output(
+                "v0.1.1",
+                release_root=release_root,
+                token_cost_report_root=token_cost_root,
+                changed_paths=("skills/architecture-review/SKILL.md",),
+            )
+
+            self.assertEqual(errors, [])
 
     def test_historical_release_validation_does_not_require_token_cost_report(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -1594,17 +2074,21 @@ class AdapterDistributionTests(unittest.TestCase):
             self.assertEqual(errors, [])
 
     def test_validate_release_cli_accepts_repository_v0_1_1_artifacts(self) -> None:
-        result = subprocess.run(
-            [
-                sys.executable,
-                str(ROOT / "scripts" / "validate-release.py"),
-                "--version",
-                "v0.1.1",
-            ],
-            capture_output=True,
-            text=True,
-            cwd=ROOT,
-        )
+        with tempfile.NamedTemporaryFile("w", encoding="utf-8") as changed_paths:
+            changed_paths.flush()
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "scripts" / "validate-release.py"),
+                    "--version",
+                    "v0.1.1",
+                    "--changed-paths-file",
+                    changed_paths.name,
+                ],
+                capture_output=True,
+                text=True,
+                cwd=ROOT,
+            )
 
         self.assertEqual(
             result.returncode,

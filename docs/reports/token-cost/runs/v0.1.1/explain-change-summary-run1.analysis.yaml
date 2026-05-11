@@ -1,0 +1,59 @@
+schema_version: 1
+
+run:
+  id: explain-change-summary
+  raw_jsonl_tracked: false
+  jsonl: ""
+  sanitized_source: codex-jsonl-local-run
+  sanitized_summary: docs/reports/token-cost/runs/v0.1.1/explain-change-summary-run1.analysis.yaml
+  raw_omission_reason: "raw JSONL contains disposable local temp fixture paths and full command output; analyzer summary is tracked as sanitized release evidence"
+
+usage:
+  cached_input_tokens: 58880
+  input_tokens: 72286
+  output_tokens: 1042
+  reasoning_output_tokens: 149
+
+tool_output:
+  total_estimated_tokens: 3616
+  largest_event:
+    kind: command_execution
+    command: "/bin/bash -lc 'git diff --stat && git diff -- src docs README.md VISION.md AGENTS.md'"
+    path: ""
+    lines: 130
+    estimated_tokens: 1840
+
+signals:
+  full_file_read_count: 1
+  broad_search_count: 0
+  generated_output_read_count: 0
+  repeated_file_read_count: 0
+
+full_file_read:
+  result: confirmed
+  justification: ""
+  signals:
+    - full_file_read_command
+    - large_leading_range_read
+  justified_reads: []
+  confirmed_reads:
+    - path: /tmp/rigorloop-token-bench-v0.1.1-1778518843-4eaaefaa/.agents/skills/explain-change/SKILL.md
+      lines: 135
+      estimated_tokens: 1611
+  suspected_reads:
+    - path: README.md
+      lines: 3
+      estimated_tokens: 27
+    - path: VISION.md
+      lines: 3
+      estimated_tokens: 30
+    - path: docs/workflows.md
+      lines: 3
+      estimated_tokens: 32
+  repeated_file_reads: []
+
+verdict:
+  result: warning
+  warnings:
+    - "full-file-style read observed"
+  blockers: []
