@@ -1,10 +1,10 @@
 # Release Token-Friendliness Benchmark for Skills
 
-- Status: active
+- Status: done
 - Owner: maintainer
 - Start date: 2026-05-11
 - Last updated: 2026-05-11
-- Related issue or PR: none yet
+- Related issue or PR: PR #41, https://github.com/xiongxianfei/rigorloop/pull/41
 - Supersedes: none
 
 ## Purpose / Big Picture
@@ -72,9 +72,9 @@ No `benchmarks/` directory exists yet. This plan creates the first `benchmarks/t
 - Last reviewed milestone: M5 code-review R10 clean-with-notes
 - Review status: M5 closed with no material findings after RTF-CR8 resolution.
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: branch-ready for PR handoff
-- Reason final closeout is or is not ready: Explain-change and final verification are complete; PR handoff remains.
+- Next stage: Done
+- Final closeout readiness: complete
+- Reason final closeout is or is not ready: Explain-change and final verification are complete, PR #41 passed hosted CI, and PR #41 was merged.
 
 ## Milestones
 
@@ -416,6 +416,7 @@ bash scripts/release-verify.sh <release-version>
 - 2026-05-11: Code-review R10 found no material findings after RTF-CR8 resolution; M5 is closed and the plan is ready for final closeout via explain-change.
 - 2026-05-11: Added durable explain-change rationale for the release Token-Friendliness benchmark implementation; the plan is ready for verify.
 - 2026-05-11: Final verification passed for the release Token-Friendliness benchmark implementation; the branch is ready for PR handoff.
+- 2026-05-11: PR #41 passed hosted CI and was merged; this plan is complete.
 
 ## Decision Log
 
@@ -495,11 +496,15 @@ bash scripts/release-verify.sh <release-version>
 
 ## Outcome and Retrospective
 
-- Implementation, review-resolution, explain-change, and verify are complete. PR handoff remains.
+This plan is done. M1-M5 are closed after their code-review loops, required review-resolution is closed, final verification passed, learn capture was added, PR #41 passed hosted CI, and PR #41 was merged.
+No true downstream lifecycle event remains for this plan.
 
 ## Readiness
 
-- See `Current Handoff Summary`.
+- Next stage: Done
+- Test-spec readiness: complete for the release Token-Friendliness benchmark contract.
+- Implementation readiness: complete for M1-M5; no in-scope implementation milestone remains open.
+- Final closeout: complete. Plan index and plan body are synchronized as Done after merged PR #41.
 
 ## Risks and Follow-ups
 
