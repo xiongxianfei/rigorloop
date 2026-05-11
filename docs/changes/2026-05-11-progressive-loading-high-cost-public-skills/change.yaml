@@ -55,6 +55,20 @@ validation:
     result: pass_with_existing_docs_plan_lifecycle_language_warning_after_m1_static_proof
   - command: git diff --check -- specs/progressive-loading-high-cost-public-skills.test.md scripts/test-skill-validator.py scripts/validate-skills.py docs/changes/2026-05-11-progressive-loading-high-cost-public-skills docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md docs/plan.md
     result: pass_after_m1_static_proof
+  - command: code-review M1
+    result: clean_with_notes_no_material_findings_commit_c889850
+  - command: python scripts/test-skill-validator.py
+    result: pass_62_tests_after_m2_canonical_skill_guidance
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m2_canonical_skill_guidance
+  - command: python scripts/measure-skill-tokens.py
+    result: pass_total_52843_workflow_4857_implement_3963_code_review_4671_after_m2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml
+    result: pass_valid_change_metadata_after_m2_canonical_skill_guidance
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path skills/workflow/SKILL.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path docs/workflows.md --path specs/progressive-loading-high-cost-public-skills.md --path specs/progressive-loading-high-cost-public-skills.test.md --path docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md --path docs/plan.md
+    result: pass_with_existing_docs_plan_and_docs_workflows_lifecycle_language_warnings_after_m2
+  - command: git diff --check -- skills/workflow/SKILL.md skills/implement/SKILL.md skills/code-review/SKILL.md docs/workflows.md docs/reports/token-cost/optimizations docs/changes/2026-05-11-progressive-loading-high-cost-public-skills docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md docs/plan.md
+    result: pass_after_m2_canonical_skill_guidance
 changed_files:
   - docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml
   - docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/review-log.md
@@ -62,8 +76,13 @@ changed_files:
   - docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/reviews/plan-review-r1.md
   - docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/reviews/plan-review-r2.md
   - docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md
+  - docs/reports/token-cost/optimizations/2026-05-11-progressive-loading-high-cost-skills.md
+  - docs/workflows.md
   - scripts/test-skill-validator.py
+  - skills/code-review/SKILL.md
+  - skills/implement/SKILL.md
+  - skills/workflow/SKILL.md
   - specs/progressive-loading-high-cost-public-skills.test.md
 review:
-  status: resolved
+  status: m2_review_requested
   unresolved_items: 0

@@ -11,6 +11,33 @@ You are reviewing in independent-review mode with fresh eyes.
 
 Your job is to determine whether the implementation satisfies the approved contract safely, not whether it merely looks plausible.
 
+## Quick operating guide
+
+Use this skill to: independently review an implementation slice against governing artifacts, actual diff, tests, and validation evidence.
+
+Read first:
+
+- the actual diff or changed files;
+- the active plan `Current Handoff Summary` when a plan exists;
+- the governing spec, test spec, plan milestone, and validation notes;
+- the specific needed section first; use broader-section or full-file reading only when bounded evidence is insufficient.
+
+Produce:
+
+- a first-pass review status, material findings or no-finding rationale, checklist coverage, and milestone-aware handoff.
+
+Stop when:
+
+- the diff, governing artifacts, milestone state, or validation evidence cannot support a credible review.
+
+Do not claim:
+
+- branch-ready, PR-ready, verification passed, CI passed, or implementation fixes unless separately owned.
+
+Next stage:
+
+- review-resolution for findings, next implementation milestone after a clean non-final review, or final closeout after a clean final review.
+
 ## Purpose
 
 Review the actual implementation slice against approved artifacts, tests, diff, and validation evidence, then produce a first-pass review status and milestone-aware handoff.
@@ -28,17 +55,9 @@ Do not use this skill to fix findings before recording them, claim branch or PR 
 Read:
 
 - actual diff or changed files;
-- feature spec;
-- test spec;
-- concrete plan;
-- architecture doc and ADRs when relevant;
-- plan validation notes;
-- test and CI results;
-- selector-selected targeted proof, including selected checks and their stable check IDs when the selector is in scope;
-- invocation context for `workflow-managed`, isolated, or review-only behavior;
-- explicit user instructions to stop after review;
-- `AGENTS.md` and `CONSTITUTION.md`;
-- related code paths and tests when needed.
+- governing spec, test spec, plan milestone, architecture, and ADRs when relevant;
+- plan validation notes, tests, CI results, and selector-selected targeted proof with stable check IDs when in scope;
+- invocation context, explicit stop instructions, repository governance, and related code/tests when needed.
 
 Prefer a fresh session, separate reviewer, or separate agent when available. If not, intentionally reset assumptions before reading the diff.
 
@@ -50,9 +69,8 @@ Produce a first-pass review record with status, inputs, diff summary, findings o
 
 - Normal next stage: follow the active plan and milestone state after the first-pass review.
 - Conditional next stages: `review-resolution` for material or required-change findings; `implement <next milestone>` after a clean non-final milestone; final closeout after a clean final milestone; stop on `blocked` or `inconclusive`.
-- A clean review of a non-final implementation milestone closes that milestone and hands off to `implement <next milestone>`.
-- A clean review of the final in-scope implementation milestone reaches final closeout, not direct `verify`.
-- Final closeout runs `ci-maintenance` when triggered, otherwise `explain-change`, then `verify`, then `pr`.
+- A clean non-final milestone closes only that milestone and hands off to `implement <next milestone>`.
+- A clean final milestone reaches final closeout, not direct `verify`; final closeout runs `ci-maintenance` when triggered, then `explain-change`, `verify`, and `pr`.
 - Do not hand off to final closeout while implementation milestones remain open or required review-resolution remains unresolved.
 - For full stage order and downstream-blocking semantics, route through the `workflow` skill.
 
@@ -82,10 +100,9 @@ Do not claim:
 ## Review surface and tracked governing branch state
 
 - The review surface may be changed files, a staged diff, an unstaged diff, a PR diff, a commit range, an explicit patch, or another local review target.
-- Tracked governing branch state is the tracked Git state that can support branch-scoped conclusions about cleanliness, authority, or readiness.
-- This review does not require every reviewed implementation change to already be committed.
-- If you cite a proposal, spec, test spec, plan, architecture document, or ADR as authoritative support for a clean branch-scoped conclusion, confirm that artifact is present in tracked governing branch state.
-- Local-only governing artifacts may inform reviewer background understanding, but they must not support a clean branch-scoped conclusion.
+- Tracked governing branch state supports branch-scoped conclusions about cleanliness, authority, or readiness.
+- Reviewed implementation changes need not all be committed, but governing artifacts cited for a clean branch-scoped conclusion must be present in tracked governing branch state.
+- Local-only governing artifacts may inform background understanding, but not a clean branch-scoped conclusion.
 
 ## Mixed-evidence handling
 
@@ -97,24 +114,23 @@ Do not claim:
 
 - Clean review conclusions for named edge cases must cite direct proof from a targeted test, targeted validation output, or an explicit manual verification note when manual verification is allowed.
 - Code-shape inference alone is insufficient direct proof for a named edge case.
-- When a named edge-case proof gap is actionable within approved scope, report it as a finding instead of a clean result.
-- When the reviewer cannot inspect enough evidence to assess a named edge case credibly, use `inconclusive` rather than a clean result.
-- For validation-routing changes, targeted proof should name checks selected or executed by the project's validation tooling; broad smoke evidence is separate and required only when an authoritative trigger applies.
+- If a named edge-case proof gap is actionable within approved scope, report it as a finding; if evidence is too limited to assess, use `inconclusive`.
+- For validation-routing changes, targeted proof names selected or executed checks; broad smoke is separate and required only when an authoritative trigger applies.
 
 ## First-pass checklist coverage
 
 Evaluate each check with `pass`, `concern`, or `block`, and cite concrete evidence from the diff, tests, or governing artifacts:
 
-1. **Spec alignment**: the changed behavior matches the approved spec and non-goals.
-2. **Test coverage**: tests prove the changed behavior and regressions at the right level.
-3. **Edge cases**: named edge cases and failure paths are handled as specified.
-4. **Error handling**: invalid states, partial failures, permissions, and fallbacks are handled safely.
-5. **Architecture boundaries**: the diff respects approved design boundaries and ADR decisions.
-6. **Compatibility**: existing workflow expectations, contributor contracts, and migrations remain valid.
+1. **Spec alignment**: behavior matches approved scope and non-goals.
+2. **Test coverage**: tests prove changed behavior and regressions.
+3. **Edge cases**: named edge cases and failure paths are covered.
+4. **Error handling**: invalid states, partial failures, permissions, and fallbacks are safe.
+5. **Architecture boundaries**: design and ADR boundaries are respected.
+6. **Compatibility**: workflow expectations, contributor contracts, and migrations remain valid.
 7. **Security/privacy**: no secret leakage, unsafe logging, auth bypass, or policy regression.
-8. **Derived artifact currency**: canonical/derived artifacts remain synchronized when generation is involved.
+8. **Derived artifact currency**: canonical and derived artifacts stay synchronized when generation is involved.
 9. **Unrelated changes**: the reviewed diff does not quietly include unrelated edits.
-10. **Validation evidence**: named commands and results are present, relevant, and credible.
+10. **Validation evidence**: named commands and results are relevant and credible.
 
 For sensitive change classes, explicitly cite the relevant governing requirements, risks, or checklist items instead of relying on a generic clean summary.
 
@@ -265,57 +281,29 @@ When review is `clean-with-notes` and no review-resolution is required, update o
 ## Recommended clean review template
 
 ```md
-Code Review
-
 ## Review status
-
 clean-with-notes
 
 ## Review inputs
-
-- Diff range:
-- Review surface:
+- Diff/review surface:
 - Tracked governing branch state:
-- Spec:
-- Test spec:
-- Plan milestone:
-- Architecture / ADR:
+- Governing artifacts:
 - Validation evidence:
 
 ## Diff summary
-
-<What changed, based on the actual diff.>
+<Actual-diff summary.>
 
 ## Findings
-
 No blocking or required-change findings.
 
 ## Checklist coverage
-
-| Check | Result | Notes |
-|---|---|---|
-| Spec alignment | pass | <evidence> |
-| Test coverage | pass | <evidence> |
-| Edge cases | pass | <evidence> |
-| Error handling | pass | <evidence> |
-| Architecture boundaries | pass | <evidence> |
-| Compatibility | pass | <evidence> |
-| Security/privacy | pass | <evidence> |
-| Derived artifact currency | pass | <evidence> |
-| Unrelated changes | pass | <evidence> |
+<Each required checklist item marked pass, concern, or block with evidence.>
 
 ## No-finding rationale
-
-No blocking findings were found because:
-
-- the diff matches the approved spec and plan scope
-- tests cover the changed behavior
-- no unrelated files are present in the reviewed diff
-- validation evidence supports the implemented behavior
+<Why the diff, tests, and validation support clean-with-notes.>
 
 ## Residual risks
-
-- None identified.
+<Remaining limits or None identified.>
 ```
 
 ## Evidence collection efficiency
@@ -332,6 +320,8 @@ Read exact ranges after locating relevant lines, then expand only when the narro
 Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
 
 ## Expected output
+
+Use this result format.
 
 Start with:
 
