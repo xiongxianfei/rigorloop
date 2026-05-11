@@ -71,14 +71,14 @@ The goal is to reduce unnecessary whole-skill reads and `implement-handoff` comm
 
 ## Current Handoff Summary
 
-- Current milestone: M3. Generated Output and Adapter Validation
-- Current milestone state: review-requested
-- Last reviewed milestone: M2. Canonical Skill and Workflow Guidance
-- Review status: code-review M2 clean-with-notes; no review-resolution required
-- Remaining in-scope implementation milestones: M3, M4
-- Next stage: code-review M3
+- Current milestone: M4. Benchmark Evidence and Lifecycle Closeout
+- Current milestone state: planned
+- Last reviewed milestone: M3. Generated Output and Adapter Validation
+- Review status: code-review M3 clean-with-notes; no review-resolution required
+- Remaining in-scope implementation milestones: M4
+- Next stage: implement M4
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 is awaiting code-review, M4 is not started, final verification/PR handoff evidence does not exist, and dynamic benchmark evidence has not been recorded.
+- Reason final closeout is or is not ready: M4 is not started, final verification/PR handoff evidence does not exist, and dynamic benchmark evidence has not been recorded.
 
 ## Pre-Implementation Gates
 
@@ -196,7 +196,7 @@ Implementation must not start until plan-review passes and the test spec is auth
 
 ### M3. Generated Output and Adapter Validation
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Regenerate or check generated local skills and public adapters so dynamic benchmarks measure current public skill output.
 - Requirements: `R7`, `R7a`, `R7b`, `R11`, `R12`.
 - Files/components likely touched:
@@ -344,6 +344,7 @@ Final pre-PR validation is expected to include:
 - 2026-05-11: Code-review M2 completed clean-with-notes; no material findings and no review-resolution required. M2 closed; next stage is implement M3.
 - 2026-05-11: M3 implementation started; scope is generated local skill output, public adapter output, adapter validation, and current generated-output evidence before dynamic benchmarks.
 - 2026-05-11: M3 generated local skill mirror and public adapters regenerated from canonical skills. Public Codex adapter output now includes the quick operating guides and `implement` handoff inspection budget needed before dynamic benchmarks.
+- 2026-05-11: Code-review M3 completed clean-with-notes; no material findings and no review-resolution required. M3 closed; next stage is implement M4.
 
 ## Decision Log
 
@@ -395,6 +396,14 @@ Final pre-PR validation is expected to include:
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml` passed.
   - `git diff --check -- .codex/skills dist/adapters docs/changes/2026-05-11-progressive-loading-high-cost-public-skills docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md docs/plan.md` passed.
   - `rg -n "## Quick operating guide|Handoff inspection budget" .codex/skills/code-review/SKILL.md .codex/skills/implement/SKILL.md .codex/skills/workflow/SKILL.md dist/adapters/codex/.agents/skills/code-review/SKILL.md dist/adapters/codex/.agents/skills/implement/SKILL.md dist/adapters/codex/.agents/skills/workflow/SKILL.md` confirmed regenerated local and public Codex skill surfaces include the M2 progressive-loading sections.
+- Code-review M3 reviewer-side validation passed:
+  - `python scripts/build-skills.py --check` passed.
+  - `python scripts/build-adapters.py --version 0.1.1 --check` passed with `adapters.drift: ok`.
+  - `python scripts/validate-adapters.py --version 0.1.1` passed.
+  - `python scripts/validate-skills.py` passed, validating 23 skill files.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml` passed.
+  - `git diff --check d0cb7eb..f4013f2 -- .codex/skills dist/adapters docs/changes/2026-05-11-progressive-loading-high-cost-public-skills docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md docs/plan.md` passed.
+  - `rg -n "## Quick operating guide|Handoff inspection budget" .codex/skills/code-review/SKILL.md .codex/skills/implement/SKILL.md .codex/skills/workflow/SKILL.md dist/adapters/codex/.agents/skills/code-review/SKILL.md dist/adapters/codex/.agents/skills/implement/SKILL.md dist/adapters/codex/.agents/skills/workflow/SKILL.md` confirmed generated local and public Codex progressive-loading sections.
 
 ## Outcome and Retrospective
 

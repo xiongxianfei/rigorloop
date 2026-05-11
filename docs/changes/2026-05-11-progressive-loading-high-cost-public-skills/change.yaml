@@ -87,6 +87,8 @@ validation:
     result: pass_after_m3_regeneration
   - command: rg -n "## Quick operating guide|Handoff inspection budget" .codex/skills/code-review/SKILL.md .codex/skills/implement/SKILL.md .codex/skills/workflow/SKILL.md dist/adapters/codex/.agents/skills/code-review/SKILL.md dist/adapters/codex/.agents/skills/implement/SKILL.md dist/adapters/codex/.agents/skills/workflow/SKILL.md
     result: pass_confirmed_local_and_public_codex_generated_skill_surfaces_include_progressive_loading_sections
+  - command: code-review M3
+    result: clean_with_notes_no_material_findings_commit_f4013f2
 changed_files:
   - .codex/skills/code-review/SKILL.md
   - .codex/skills/implement/SKILL.md
@@ -114,5 +116,5 @@ changed_files:
   - skills/workflow/SKILL.md
   - specs/progressive-loading-high-cost-public-skills.test.md
 review:
-  status: m3_review_requested
+  status: m3_clean_with_notes
   unresolved_items: 0
