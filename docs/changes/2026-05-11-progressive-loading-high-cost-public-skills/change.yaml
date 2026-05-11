@@ -113,6 +113,8 @@ validation:
     result: clean_with_notes_no_material_findings_commit_43347b6
   - command: explain-change
     result: complete_final_change_local_explanation_recorded
+  - command: verify
+    result: pass_branch_ready_local_validation_complete_hosted_ci_not_observed
 changed_files:
   - .codex/skills/code-review/SKILL.md
   - .codex/skills/implement/SKILL.md
@@ -141,5 +143,5 @@ changed_files:
   - skills/workflow/SKILL.md
   - specs/progressive-loading-high-cost-public-skills.test.md
 review:
-  status: explain_change_complete
+  status: verify_passed_branch_ready
   unresolved_items: 0

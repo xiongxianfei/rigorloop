@@ -76,9 +76,9 @@ The goal is to reduce unnecessary whole-skill reads and `implement-handoff` comm
 - Last reviewed milestone: M4. Benchmark Evidence and Lifecycle Closeout
 - Review status: code-review M4 clean-with-notes; no review-resolution required
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: all implementation milestones are closed and final explain-change is recorded, but final verification and PR handoff evidence do not exist yet.
+- Next stage: pr
+- Final closeout readiness: branch-ready; PR handoff still pending
+- Reason final closeout is or is not ready: all implementation milestones are closed, final explain-change is recorded, final verification passed, and the branch is ready for PR handoff. PR body readiness and PR opening are not claimed until the `pr` stage completes.
 
 ## Pre-Implementation Gates
 
@@ -350,6 +350,7 @@ Final pre-PR validation is expected to include:
 - 2026-05-11: M4 added the change-local `explain-change.md` reasoning surface because lifecycle validation found the path already declared in `change.yaml` but missing on disk.
 - 2026-05-11: Code-review M4 completed clean-with-notes; no material findings and no review-resolution required. All implementation milestones are closed; next stage is explain-change.
 - 2026-05-11: Final explain-change completed in the change-local pack; next stage is verify.
+- 2026-05-11: Final verification passed locally. Branch is ready for PR handoff; next stage is pr.
 
 ## Decision Log
 
@@ -432,6 +433,23 @@ Final pre-PR validation is expected to include:
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml` passed.
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-11-progressive-loading-for-high-cost-public-skills.md --path specs/progressive-loading-high-cost-public-skills.md --path specs/progressive-loading-high-cost-public-skills.test.md --path docs/reports/token-cost/optimizations/2026-05-11-progressive-loading-high-cost-skills.md --path docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml --path docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/explain-change.md --path docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md --path docs/plan.md` passed with the existing `docs/plan.md` lifecycle-language warning.
   - `git diff --check -- docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/explain-change.md docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md` passed.
+- Final verify validation passed:
+  - `python scripts/test-skill-validator.py` passed, 62 tests.
+  - `python scripts/validate-skills.py` passed, validating 23 skill files.
+  - `python scripts/measure-skill-tokens.py` passed: total 52,843 estimated tokens; `workflow` 4,857, `implement` 3,963, `code-review` 4,671.
+  - `python scripts/build-skills.py --check` passed.
+  - `python scripts/build-adapters.py --version 0.1.1 --check` passed with `adapters.drift: ok`.
+  - `python scripts/validate-adapters.py --version 0.1.1` passed.
+  - `python scripts/test-adapter-distribution.py` passed, 68 tests.
+  - `python scripts/test-token-cost-measurement.py` passed, 24 tests.
+  - `python scripts/test-token-cost-report-validation.py` passed, 16 tests.
+  - `python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml` passed.
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-11-progressive-loading-high-cost-public-skills` passed with reviews=2, findings=1, log_entries=2, resolution_entries=1.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml` passed.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-11-progressive-loading-for-high-cost-public-skills.md --path specs/progressive-loading-high-cost-public-skills.md --path specs/progressive-loading-high-cost-public-skills.test.md --path docs/reports/token-cost/optimizations/2026-05-11-progressive-loading-high-cost-skills.md --path docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml --path docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/explain-change.md --path docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md --path docs/plan.md` passed with the existing `docs/plan.md` lifecycle-language warning.
+  - `git diff --check -- .` passed.
+  - `python scripts/run-token-cost-benchmarks.py --suite benchmarks/token-cost/manifest.yaml --release v0.1.1 --tool codex --output-dir /tmp/rigorloop-token-progressive-loading-verify` passed for the full required suite against regenerated public Codex adapter skills.
+  - Hosted CI was not observed locally.
 
 ## Outcome and Retrospective
 
