@@ -1,0 +1,193 @@
+# Review Resolution: Release Token-Friendliness Benchmark For Skills
+
+## Summary
+
+Closeout status: closed
+
+Review closeout: proposal-review-r1
+Review closeout: proposal-review-r2
+Review closeout: spec-review-r1
+Review closeout: plan-review-r1
+Review closeout: plan-review-r2
+
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `plan-review-r1`, `plan-review-r2`
+- Findings resolved: 10
+- Unresolved findings: 0
+- Final result: Proposal-review R1 requested changes for release-gate semantics, run evidence, analyzer summaries, RC reuse, milestone slicing, and warning severity wording; all accepted proposal-review findings were resolved in the proposal. Proposal-review R2 approved the revised proposal with no material findings. Spec-review R1 requested changes for analyzer summary raw-omission compatibility, incomplete non-final dynamic metadata, and first-baseline comparison metadata; all accepted spec-review findings were resolved in the spec. Plan-review R1 requested a milestone-boundary revision; M1 now owns standalone token-cost metadata validation and M5 owns release validation integration. Plan-review R2 approved the revised plan with no material findings.
+
+## Resolution Overview
+
+| Finding ID | Disposition | Status | Resolution summary |
+|---|---|---|---|
+| RTF1 | accepted | resolved | Made dynamic benchmark gate wording waiver-aware. |
+| RTF2 | accepted | resolved | Added raw JSONL versus sanitized-summary run evidence metadata. |
+| RTF3 | accepted | resolved | Added a minimal analyzer summary schema. |
+| RTF4 | accepted | resolved | Added RC reuse decision metadata and rerun-or-waiver rule. |
+| RTF5 | accepted | resolved | Added follow-on implementation milestone guidance. |
+| RTF6 | accepted | resolved | Replaced `hard warning` with `high-warning` and clarified blocker semantics. |
+| RTF-SR1 | accepted | resolved | Aligned analyzer summary schema with raw JSONL omission and sanitized evidence. |
+| RTF-SR2 | accepted | resolved | Defined exact metadata fields for non-final blocked/not-run dynamic benchmark states. |
+| RTF-SR3 | accepted | resolved | Defined first-baseline comparison metadata when no previous release report exists. |
+| RTF-PLR1 | accepted | resolved | Separated standalone token-cost validator work from release validation integration. |
+
+## Common Resolution Metadata
+
+- Owner: proposal author
+- Owning stage: proposal
+- Validation target: proposal text and change-local review artifacts
+- Validation evidence: `git diff --check -- docs/proposals/2026-05-10-release-token-friendliness-benchmark-for-skills.md docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills`; `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills`; `python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml`
+
+## Finding Details
+
+### proposal-review-r1
+
+#### RTF1 - Dynamic benchmark waiver semantics conflict with "benchmark suite was not run"
+
+Finding ID: RTF1
+Disposition: accepted
+Status: resolved
+Owner: proposal author
+Owning stage: proposal
+Chosen action: Updated the release-gate wording to block missing dynamic benchmark runs only when no valid waiver exists, and clarified that final public release dynamic status must be `pass` or valid `waived`.
+Rationale: Final-release waivers need to be compatible with the gate wording.
+Validation target: Proposal release-gate section distinguishes `pass` and valid `waived` final-release dynamic statuses.
+Validation evidence: Shared validation evidence.
+
+### proposal-review-r2
+
+No material findings.
+
+### spec-review-r1
+
+#### RTF-SR1 - Analyzer summary schema conflicts with sanitized raw-JSONL omission
+
+Finding ID: RTF-SR1
+Disposition: accepted
+Status: resolved
+Owner: spec author
+Owning stage: spec
+Chosen action: Updated analyzer summary schema so `run.jsonl` is required only when raw JSONL is tracked. Added `run.raw_jsonl_tracked`, `run.sanitized_source`, `run.sanitized_summary`, and `run.raw_omission_reason` fields.
+Rationale: Durable release evidence must not require private or untracked local raw JSONL paths.
+Validation target: R15 and related examples explicitly support raw omitted runs without requiring `run.jsonl` to point at untracked raw JSONL.
+Validation evidence: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/spec-review-r1.md`; `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills`; `python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml`; `git diff --check -- specs/release-token-friendliness-benchmark-for-skills.md docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills`
+
+#### RTF-SR2 - Non-final blocked/not-run dynamic metadata is required but not shaped
+
+Finding ID: RTF-SR2
+Disposition: accepted
+Status: resolved
+Owner: spec author
+Owning stage: spec
+Chosen action: Added `dynamic_runtime.incomplete` with `reason`, `owner`, `environment`, `follow_up`, and boolean `release_may_proceed`.
+Rationale: Non-final blocked/not-run states must be reviewable and testable.
+Validation target: R6, R2d, and metadata requirements define the required reason, owner, environment, follow-up, and release-proceed fields.
+Validation evidence: Shared spec-review R1 resolution validation evidence.
+
+#### RTF-SR3 - First-baseline comparison metadata is ambiguous
+
+Finding ID: RTF-SR3
+Disposition: accepted
+Status: resolved
+Owner: spec author
+Owning stage: spec
+Chosen action: Added a first-baseline comparison shape with `baseline: true`, null previous fields, `comparable: false`, `deltas: null`, and a rationale. Numeric deltas are required only when a previous comparable report exists.
+Rationale: The first report has no prior release and should not fabricate comparison deltas.
+Validation target: R21 and comparison metadata define a first-baseline shape that validators can check without guessing.
+Validation evidence: Shared spec-review R1 resolution validation evidence.
+
+#### RTF2 - Raw JSONL tracking and sanitized-summary behavior need one contract
+
+Finding ID: RTF2
+Disposition: accepted
+Status: resolved
+Owner: proposal author
+Owning stage: proposal
+Chosen action: Added per-run evidence fields for raw JSONL, analyzer summary, sanitized summary, and omission reason.
+Rationale: Release validation needs to distinguish missing evidence from intentionally sanitized evidence.
+Validation target: Proposal metadata schema includes raw or sanitized run evidence contract.
+Validation evidence: Shared validation evidence.
+
+#### RTF3 - Analyzer summary format is required by the runner but not specified enough
+
+Finding ID: RTF3
+Disposition: accepted
+Status: resolved
+Owner: proposal author
+Owning stage: proposal
+Chosen action: Added a minimal analyzer summary schema with run, usage, tool output, signals, and verdict fields.
+Rationale: Release metadata and validator logic need stable per-run analyzer summary fields.
+Validation target: Proposal defines required analyzer summary fields.
+Validation evidence: Shared validation evidence.
+
+#### RTF4 - Benchmark-relevant change detection needs a release-owner decision surface
+
+Finding ID: RTF4
+Disposition: accepted
+Status: resolved
+Owner: proposal author
+Owning stage: proposal
+Chosen action: Added RC reuse metadata with `checked_by`, `checked_surface`, and rationale fields, plus a rerun-or-waiver rule when benchmark-relevant changes occurred.
+Rationale: RC reuse is a release decision and should be attributable.
+Validation target: Proposal requires release-owner decision metadata for RC reuse.
+Validation evidence: Shared validation evidence.
+
+#### RTF5 - First implementation may be too large without milestone boundaries
+
+Finding ID: RTF5
+Disposition: accepted
+Status: resolved
+Owner: proposal author
+Owning stage: plan
+Chosen action: Added milestone slicing guidance for the follow-on execution plan.
+Rationale: The proposal is coherent but the first implementation touches enough surfaces to require reviewable milestones.
+Validation target: Proposal rollout guidance lists milestone boundaries.
+Validation evidence: Shared validation evidence.
+
+#### RTF6 - "Hard warning" phrasing may confuse release gates
+
+Finding ID: RTF6
+Disposition: accepted
+Status: resolved
+Owner: proposal author
+Owning stage: proposal
+Chosen action: Replaced `hard warning` wording with `high-warning` and distinguished warnings from blockers.
+Rationale: Severity terms should not imply that warning-only token thresholds block the first slice.
+Validation target: Proposal warning thresholds use `warning`, `high-warning`, and `blocker` consistently.
+Validation evidence: Shared validation evidence.
+
+### plan-review-r1
+
+#### RTF-PLR1 - Release validation integration is split across M1 and M5
+
+Finding ID: RTF-PLR1
+Disposition: accepted
+Status: resolved
+Owner: plan author
+Owning stage: plan
+Chosen action: Revised M1 to remove `scripts/validate-release.py`, `scripts/release-verify.sh`, release-level delegation, and release-level validation commands. M1 now focuses on `scripts/validate-token-cost-report.py`, parser behavior, schema checks, waiver/incomplete/baseline cases, evidence reference checks, and standalone validator tests. M5 remains the release validation integration milestone.
+Rationale: The current plan assigns `scripts/validate-release.py`, `scripts/release-verify.sh`, release-level delegation, and release-level validation commands to both M1 and M5, which makes implementation sequencing and test-spec mapping ambiguous.
+Validation target: Revised plan has non-overlapping M1/M5 ownership and remains ready for a plan-review rerun before test-spec.
+Validation evidence: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills`; `python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/plan-review-r1.md`; `git diff --check -- docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills`
+
+### plan-review-r2
+
+No material findings.
+
+## Shared Validation Evidence
+
+| Validation area | Result | Notes |
+|---|---|---|
+| Proposal and review formatting | pass | `git diff --check -- docs/proposals/2026-05-10-release-token-friendliness-benchmark-for-skills.md docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills` |
+| Review artifact closeout | pass | `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills` |
+| Change metadata | pass | `python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml` |
+
+## Closeout Checklist
+
+- [x] Every material finding has a disposition.
+- [x] Every accepted finding has a chosen action or stop state.
+- [x] Every rejected finding has rationale.
+- [x] Every deferred finding has follow-up or explicit no-follow-up rationale.
+- [x] Every `needs-decision` finding is resolved or blocks closeout.
+- [x] Validation evidence is recorded for spec-review findings.
+- [x] Validation evidence is recorded for plan-review findings.
+- [x] Closeout status is correct.

@@ -7,6 +7,7 @@ flowchart TB
   subgraph repo["RigorLoop repository<br/>[Git repository]"]
     governance["Governance and workflow guidance<br/>[Markdown]"]:::container
     lifecycle["Lifecycle artifacts and ADRs<br/>[Markdown and YAML]"]:::container
+    token_bench["Token-cost benchmark fixtures and reports<br/>[Markdown, YAML, JSONL]"]:::container
     architecture["Canonical architecture package<br/>[Markdown and Mermaid]"]:::container
     changes["Change-local evidence<br/>[Markdown and YAML]"]:::container
     templates["Templates and diagram styles<br/>[Markdown and Mermaid]"]:::container
@@ -20,6 +21,7 @@ flowchart TB
   contributor -->|records workflow intent, manual-skill isolation, and no-impact rationale in| lifecycle
   contributor -->|updates clear current architecture truth directly in| architecture
   contributor -->|uses for historical, review, validation, and exceptional evidence in| changes
+  contributor -->|authors benchmark prompts, fixtures, reports, and metadata in| token_bench
   contributor -->|uses scaffolds from| templates
   contributor -->|edits canonical sources in| skills
   reviewer -->|reviews selected architecture surface and ADR need in| architecture
@@ -33,9 +35,12 @@ flowchart TB
   templates -->|scaffold architecture and ADR records in| lifecycle
   skills -->|are transformed by| scripts
   scripts -->|refresh| generated
+  scripts -->|runs benchmarks, analyzes JSONL, and validates metadata for| token_bench
+  generated -->|provides public Codex skills for benchmark temp fixtures used by| token_bench
   scripts -->|validate lifecycle, metadata, review artifacts, release data, and drift for| lifecycle
   scripts -->|run in| execution
   release -->|describes publication of| generated
+  release -->|links token-friendliness report evidence from| token_bench
   generated -->|is consumed by| adapter_user
   legacy -->|preserves historical evidence after accepted current content reaches| architecture
   architecture -->|summarizes and links ADRs in| lifecycle

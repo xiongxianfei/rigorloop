@@ -1,0 +1,118 @@
+schema_version: 1
+
+report:
+  release: v0.1.1
+  report_date: 2026-05-11
+  repository: xiongxianfei/rigorloop
+  commit: abc123
+  report_markdown: tests/fixtures/token-cost/reports/valid-final-pass/v0.1.1.md
+
+benchmark_suite:
+  id: skill-token-runtime-v1
+  manifest: tests/fixtures/token-cost/reports/valid-final-pass/manifest.yaml
+  prompt_count: 1
+  fixture: tests/fixtures/token-cost/reports/valid-final-pass/minimal-public-project
+  runs_per_prompt: 1
+
+environment:
+  primary_tool: codex
+  codex_available: true
+  codex_version: fixture
+  model: fixture-model
+  os: fixture-os
+  runner: maintainer-local
+
+runner:
+  command: python scripts/run-token-cost-benchmarks.py --release v0.1.1 --suite tests/fixtures/token-cost/reports/valid-final-pass/manifest.yaml --tool codex
+  tool: codex
+  suite: tests/fixtures/token-cost/reports/valid-final-pass/manifest.yaml
+  fixture: tests/fixtures/token-cost/reports/valid-final-pass/minimal-public-project
+  skill_source: dist/adapters/codex/.agents/skills/
+  output_dir: tests/fixtures/token-cost/reports/valid-final-pass/runs/v0.1.1
+  temp_policy: system-temp
+  install_public_skills: true
+
+static_skill_size:
+  status: pass
+  command: python scripts/measure-skill-tokens.py
+  skills_measured: 1
+  total_estimated_tokens: 100
+  max_skill:
+    path: skills/proposal/SKILL.md
+    estimated_tokens: 100
+  warnings: []
+
+dynamic_runtime:
+  status: pass
+  tool: codex
+  command_pattern: codex exec --json --ephemeral ...
+  incomplete: null
+  runs:
+    - id: proposal-short
+      prompt: tests/fixtures/token-cost/reports/valid-final-pass/prompts/proposal-short.md
+      fixture: tests/fixtures/token-cost/reports/valid-final-pass/minimal-public-project
+      result: pass
+      evidence:
+        raw_jsonl_tracked: true
+        jsonl: tests/fixtures/token-cost/reports/valid-final-pass/runs/v0.1.1/proposal-short-run1.jsonl
+        analysis: tests/fixtures/token-cost/reports/valid-final-pass/runs/v0.1.1/proposal-short-run1.analysis.yaml
+        sanitized_summary: ""
+        raw_omission_reason: ""
+      usage:
+        input_tokens: 100
+        cached_input_tokens: 50
+        output_tokens: 10
+        reasoning_output_tokens: 5
+      tool_output:
+        total_estimated_tokens: 20
+        largest_event:
+          kind: shell-output
+          command: date
+          path: ""
+          lines: 1
+          estimated_tokens: 20
+      signals:
+        full_file_read_count: 0
+        broad_search_count: 0
+        generated_output_read_count: 0
+        repeated_file_read_count: 0
+
+summary:
+  median_input_tokens: 100
+  median_cached_input_tokens: 50
+  median_output_tokens: 10
+  median_reasoning_output_tokens: 5
+  max_single_tool_output_estimated_tokens: 20
+  full_file_read_count: 0
+  broad_search_count: 0
+  generated_output_read_count: 0
+
+portability:
+  status: pass
+  public_skill_internal_path_leaks: 0
+  generated_output_internals_in_public_skills: 0
+  local_examples_in_public_skills: 0
+  notes: []
+
+comparison:
+  baseline: true
+  previous_release: null
+  previous_report: null
+  comparable: false
+  deltas: null
+  rationale: First release token-friendliness report.
+
+waiver:
+  required: false
+  status: none
+  reason: ""
+  approved_by: ""
+  approval_surface: ""
+  evidence: ""
+
+release_gate:
+  result: pass
+  blockers: []
+  warnings: []
+  notes:
+    - Token thresholds are warning-only for this release unless portability or report structure fails.
