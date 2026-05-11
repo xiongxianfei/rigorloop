@@ -111,6 +111,8 @@ validation:
     result: pass_after_m4_dynamic_evidence
   - command: code-review M4
     result: clean_with_notes_no_material_findings_commit_43347b6
+  - command: explain-change
+    result: complete_final_change_local_explanation_recorded
 changed_files:
   - .codex/skills/code-review/SKILL.md
   - .codex/skills/implement/SKILL.md
@@ -139,5 +141,5 @@ changed_files:
   - skills/workflow/SKILL.md
   - specs/progressive-loading-high-cost-public-skills.test.md
 review:
-  status: m4_clean_with_notes
+  status: explain_change_complete
   unresolved_items: 0
