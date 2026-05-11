@@ -20,15 +20,14 @@ This is not only a `plan-review` problem. The same class of omission can occur i
 
 The policy exists. The review skills need a sharper output-flow guardrail so a material finding is not treated as fully reported until it is durably recorded or a concrete recording blocker is reported.
 
-A related gap appears after clean approvals. The learn session [Review Approval Status Sync](../learn/sessions/2026-05-12-review-approval-status-sync.md) records that `proposal-review` can return `approved` while the reviewed proposal remains `Status: draft` until someone manually updates it. That leaves chat review status and tracked artifact lifecycle status out of sync even when the review result is clean. Because lifecycle-managed artifacts keep status inside the artifact as the durable source of truth, review skills should either update the corresponding artifact to its next artifact-specific status or report exactly why that status sync is blocked.
+A related gap appears after clean approvals. The learn session [Review Approval Status Sync](../learn/sessions/2026-05-12-review-approval-status-sync.md) records that `proposal-review` can return `approved` while the reviewed proposal remains `Status: draft` until someone manually updates it. That leaves chat review status and tracked artifact lifecycle status out of sync even when the review result is clean. This proposal now keeps review skills from directly updating upstream lifecycle status and records a lighter review-side recommendation. The direct settlement behavior is deferred to the follow-up proposal [Downstream Upstream-Status Settlement Before Reliance](2026-05-12-downstream-upstream-status-settlement-before-reliance.md).
 
 ## Goals
 
 - Make material-finding recording an explicit output obligation across all formal lifecycle review skills.
 - Require complete material-finding shape in durable records, including `Location`.
 - Require final review output to report recording status and artifact paths when material findings exist.
-- Require approving or clean formal review results to synchronize the reviewed artifact to its next artifact-specific lifecycle status when the status surface is clear.
-- Require final review output to report artifact-status sync status when an approving or clean result is returned.
+- Require final review output to report a lightweight status settlement recommendation when useful.
 - Preserve isolation semantics: direct and review-only requests do not continue downstream automatically, but still record material findings.
 - Keep clean reviews with no material findings lightweight.
 - Keep the change skill-focused and aligned with the existing formal review recording spec.
@@ -40,8 +39,7 @@ A related gap appears after clean approvals. The learn session [Review Approval 
 - Do not change the review-resolution disposition vocabulary.
 - Do not require detailed review files for clean reviews with no material findings and no detailed-record trigger.
 - Do not make isolated reviews automatically continue to downstream workflow stages.
-- Do not make review skills edit reviewed artifact content beyond the minimal lifecycle-status, readiness, follow-on, or closeout fields needed to make the clean review result durable.
-- Do not force a status edit when the reviewed artifact has no clear owned status surface, when multiple lifecycle owners disagree, or when the user forbids edits.
+- Do not make review skills directly update proposal, spec, architecture, ADR, or plan lifecycle/status/readiness/closeout surfaces for approval settlement in this slice.
 - Do not replace the existing shared `## Isolation and Recording` block.
 - Do not introduce semantic validation that decides whether a finding should have been material in the first slice.
 - Do not make this only a `plan-review` fix.
@@ -66,7 +64,7 @@ Those artifacts addressed the policy ambiguity. The new evidence shows an operat
 
 The current review skills also vary in how directly their expected output exposes recording status. The guardrail should be common across all formal review skills so a recurrence does not move from `plan-review` to another review stage.
 
-The approval-status sync learn session adds a related direction: a clean approving review should not leave the durable reviewed document in a pre-review status. Current workflow guidance already distinguishes artifact-specific lifecycle vocabulary:
+The approval-status sync learn session adds a related direction: a downstream skill should not rely on a stale upstream artifact status. Current workflow guidance already distinguishes artifact-specific lifecycle vocabulary:
 
 - proposals settle as `accepted`;
 - specs and architecture documents settle as `approved`;
@@ -86,8 +84,8 @@ The approval-status sync learn session adds a related direction: a clean approvi
 | Preserve isolated review behavior | in scope | Goals, Non-goals, Expected behavior changes |
 | Keep clean reviews lightweight | in scope | Goals, Non-goals |
 | Avoid heavy automation first | in scope | Non-goals, Testing and verification strategy |
-| On approving or clean review, update the corresponding document directly to its next status | in scope | Goals, Recommended direction, Expected behavior changes |
-| Allow manual review/status updates when needed | in scope | Non-goals, Recommended direction |
+| On approving or clean review, update the corresponding document directly to its next status | deferred | Follow-on artifacts |
+| Allow downstream/manual review/status updates when needed | in scope | Recommended direction, Follow-on artifacts |
 | Use the approval-status sync learn session as evidence | in scope | Problem, Context, Follow-on artifacts |
 
 ## Options Considered
@@ -114,11 +112,11 @@ This preserves strict review-only isolation, but it keeps the observed drift: ch
 
 ### Option 6: Add artifact-status synchronization for clean approving review outcomes
 
-This is now included in the recommended direction. It keeps review skills from silently claiming lifecycle progress while the tracked artifact still says otherwise. The status update is narrow: it changes only the reviewed artifact's lifecycle/status/readiness/closeout surface, uses artifact-specific vocabulary, and blocks rather than guessing when the status owner is ambiguous.
+This is deferred. It solves a real problem, but it is broader than the recording guardrail because it changes upstream artifact lifecycle behavior across downstream reliance points.
 
 ## Recommended direction
 
-Choose Option 3 plus Option 6.
+Choose Option 3 and defer Option 6 to a follow-up.
 
 Update every formal lifecycle review skill so material-finding recording is part of the required output flow:
 
@@ -130,9 +128,16 @@ Update every formal lifecycle review skill so material-finding recording is part
 
 Each review skill should say that when the review produces one or more material findings, the review is not complete until the required durable review artifacts are created or a concrete blocker is reported.
 
-Each review skill should also say that when the review returns an approving or clean outcome, the review is not complete until the reviewed artifact's owned status surface is synchronized to the next artifact-specific state or a concrete status-sync blocker is reported.
+Each review skill may also include a lightweight status-settlement recommendation:
 
-Status sync is allowed in workflow-managed reviews and isolated or review-only reviews because it updates the reviewed artifact's own lifecycle surface; it is not downstream continuation. However, explicit user instructions such as "review only, do not modify files" override that default. When edits are forbidden, the review skill should report `Status sync: blocked`, name the intended next status, and state the smallest manual action needed.
+```text
+Status settlement recommendation:
+- not-applicable
+- upstream artifact may be settled by downstream skill
+- blocked until findings close
+```
+
+Review skills should not directly update proposal, spec, architecture, ADR, or plan lifecycle/status/readiness/closeout surfaces solely for that recommendation in this slice.
 
 The shared operating pattern should include this recording-status contract:
 
@@ -211,9 +216,7 @@ Expected review output should keep review outcome and recording state separate:
 - Material findings:
 - Recording status:
 - Recording blocker:
-- Status sync:
-- Status artifact:
-- Status sync blocker:
+- Status settlement recommendation:
 - Review record:
 - Review log:
 - Review resolution:
@@ -223,39 +226,7 @@ Expected review output should keep review outcome and recording state separate:
 
 `Recording status` is not the review verdict. It reports whether required review-recording artifacts were created, were not required, or are blocked.
 
-`Status sync` is also not the review verdict. It reports whether the reviewed artifact's durable lifecycle/status surface was updated, was not required, or is blocked.
-
 `Recording blocker` is required when `Recording status: blocked`.
-
-`Status sync blocker` is required when `Status sync: blocked`.
-
-Add a separate artifact-status sync contract:
-
-```text
-Status sync:
-- not-required
-- updated
-- blocked
-```
-
-Use `not-required` when the review outcome is not approving or clean, or when no lifecycle status change is expected for that review result. Use `updated` when the reviewed artifact's owned status surface was updated to the next artifact-specific state. Use `blocked` when the review result is approving or clean but the artifact status could not be updated because the status owner is ambiguous, the artifact lacks an editable status surface, the user forbids edits, repository state is unavailable, or another concrete blocker exists.
-
-For artifact-specific next states, preserve current lifecycle vocabulary unless a later accepted proposal changes it:
-
-| Review skill | Clean or approving review result | Status sync target |
-|---|---|---|
-| `proposal-review` | `approved` | proposal `Status: accepted` |
-| `spec-review` | `approved` | spec `Status: approved` |
-| `architecture-review` | `approved` for architecture package | architecture `Status: approved` |
-| `architecture-review` | `approved` for ADR | ADR `Status: accepted` or `Status: active`, according to the ADR's existing lifecycle field |
-| `plan-review` | `approve` | plan review/readiness section says ready for `test-spec`; `docs/plan.md` index updated only if the index owns active-plan state |
-| `code-review` | `clean` or `clean-with-notes` | active plan milestone state updated according to the milestone contract; no source artifact status edit unless the reviewed artifact explicitly owns that state |
-
-If the next status cannot be chosen from this table or an artifact-local lifecycle field, use `Status sync: blocked`.
-
-When `updated`, final output should name the artifact path and the exact status field or section changed.
-
-When `blocked`, final output should name the intended next status, the blocker, and the smallest manual action needed.
 
 The guardrail should fit alongside the existing shared `## Isolation and Recording` block rather than replacing it. The shared block continues to own policy. The new guardrail makes the required action and final output observable.
 
@@ -275,7 +246,7 @@ After this change, formal review output includes recording status and relevant a
 
 Before this change, a clean approving review could leave the reviewed artifact in `draft`, unresolved, or pre-review state until a later manual edit.
 
-After this change, a clean approving review updates the corresponding artifact to the next artifact-specific status when the status owner is clear, or reports `Status sync: blocked` with the manual action required.
+After this change, a clean approving review can recommend downstream status settlement, but direct upstream lifecycle edits are deferred to the follow-up proposal.
 
 Clean reviews with no material findings remain lightweight and can report `Recording status: not-required` when no detailed-record trigger applies.
 
@@ -294,7 +265,7 @@ Expected touched surfaces:
 - `skills/plan-review/SKILL.md`
 - `skills/code-review/SKILL.md`
 - static skill-validator tests for the recording-status output contract
-- static skill-validator tests for the artifact-status sync output contract
+- static skill-validator tests for the status settlement recommendation wording
 - generated `.codex/skills/` output after canonical skill edits
 - generated public adapter output under `dist/adapters/` after canonical skill edits
 
@@ -311,10 +282,11 @@ Static skill-validator coverage should confirm that all five formal review skill
 - `not-required`
 - `recorded`
 - `blocked`
-- `Status sync`
-- `updated`
+- `Status settlement recommendation`
+- `not-applicable`
+- `upstream artifact may be settled by downstream skill`
+- `blocked until findings close`
 - `Recording blocker`
-- `Status sync blocker`
 - `Finding ID`
 - `Severity`
 - `Location`
@@ -326,15 +298,11 @@ Static skill-validator coverage should confirm that all five formal review skill
 - `review-resolution.md`
 - language equivalent to "Do not merely tell the user that these files should be created"
 - language explaining that `Recording status` is not the review verdict
-- language explaining that `Status sync` is not the review verdict
 - language requiring `Recording blocker` when `Recording status: blocked`
-- language requiring `Status sync blocker` when `Status sync: blocked`
 - the change ID selection order or reference to the shared section that defines it
-- artifact-specific next statuses or a reference to the shared section that defines them
+- language deferring direct upstream status settlement to the follow-up proposal
 
 Generated output should be refreshed and validated after canonical skill edits.
-
-Lifecycle validation or artifact lifecycle tests should confirm that accepted review results do not leave touched lifecycle-managed artifacts in stale pre-review statuses when the status surface is clear.
 
 Expected validation:
 
@@ -356,23 +324,23 @@ If a formal review skill again reports material findings without `Recording stat
 Rollout:
 
 1. Accept proposal after proposal-review.
-2. Add a focused spec amendment for formal review output recording and artifact-status sync.
-3. Update all five formal review skills with the recording-status and artifact-status sync output guardrails.
+2. Add a focused spec amendment for formal review output recording and status-settlement recommendation.
+3. Update all five formal review skills with the recording-status guardrail and status-settlement recommendation.
 4. Add static skill-validator coverage.
-5. Add or update lifecycle validation coverage if existing validators can check clear status-sync cases without semantic review judgment.
+5. Create the follow-up proposal for downstream upstream-status settlement before reliance.
 6. Regenerate `.codex/skills/` and public adapter output.
 7. Run focused validation and selector-selected CI.
 
 Rollback:
 
 - Revert the skill wording, validator checks, and regenerated outputs if the guardrail causes incorrect record creation or conflicts with the approved formal review recording contract.
-- Revert artifact-status sync wording or validation if it causes review skills to edit the wrong lifecycle owner or overstep isolated review boundaries.
+- Revert status-settlement recommendation wording if it causes review skills to edit upstream lifecycle owners directly.
 - Keep any valid review records created under the existing artifact model; the rollback affects guidance, not artifact compatibility.
 
 Execution planning should split implementation into two milestones:
 
 - M1: recording-status guardrail across formal review skills.
-- M2: artifact-status sync guardrail for clean or approving outcomes.
+- M2: status settlement recommendation and direct-settlement deferral.
 
 ## Risks and Mitigations
 
@@ -384,16 +352,15 @@ Execution planning should split implementation into two milestones:
 | Finding shape becomes too rigid | Require only the fields needed to reconstruct a material finding without chat history. |
 | The new wording drifts across review skills | Use the same concise wording across the review skill family and add static assertions across all formal review skills. |
 | The guardrail duplicates the shared `Isolation and Recording` block | Treat the shared block as policy and this proposal as output-flow guidance. |
-| Review skills update the wrong artifact status | Use artifact-specific vocabulary and block when status ownership is ambiguous. |
-| Status sync weakens isolated-review behavior | Limit status sync to the reviewed artifact's own lifecycle surface; do not auto-continue to downstream authoring or implementation stages. |
+| Review skills update upstream artifact status too early | Defer direct upstream status settlement to the follow-up proposal and use recommendation-only wording here. |
 | `approved` review status is confused with proposal `accepted` status | Keep review outcome separate from artifact lifecycle status and preserve artifact-specific vocabulary. |
-| The first implementation slice becomes too broad | Split the execution plan into M1 recording-status guardrails and M2 artifact-status sync guardrails. |
+| The first implementation slice becomes too broad | Keep PR #44 focused on recording status, static validation, generated output, and recommendation-only settlement wording. |
 
 ## Open Questions
 
 None that block proposal-review.
 
-Implementation may still decide whether the guardrail appears as a single combined status section in each review skill or is integrated into each skill's existing expected-output section, as long as the shared recording-status and artifact-status sync contracts are present and validated consistently.
+Implementation may still decide whether the guardrail appears as a single combined status section in each review skill or is integrated into each skill's existing expected-output section, as long as the shared recording-status contract and status-settlement recommendation are present and validated consistently.
 
 ## Decision Log
 
@@ -406,16 +373,16 @@ Implementation may still decide whether the guardrail appears as a single combin
 | 2026-05-12 | Add deterministic change ID selection before blocking. | Review skills need a consistent change-local path for isolated reviews that lack an existing change root. | Block whenever no change root already exists; invent paths ad hoc. |
 | 2026-05-12 | Require flexible but specific `Location` values. | Some material findings are about absent evidence or missing artifacts rather than one line of text. | Require only file-and-line locations; allow missing locations. |
 | 2026-05-12 | Treat recurrence as the trigger for runtime or output validation. | Static checks are a proportional first slice, but another omission would prove guidance alone is insufficient. | Add runtime/output validation immediately; never escalate beyond static checks. |
-| 2026-05-12 | Add artifact-status sync for approving and clean review outcomes. | The approval-status sync learn session showed that chat review approval can drift from tracked artifact lifecycle status. | Leave status updates manual-only; use one universal `approved` status for all artifact types. |
+| 2026-05-12 | Defer direct upstream lifecycle settlement for approving and clean review outcomes to a follow-up. | The approval-status sync learn session showed a real drift problem, but direct upstream lifecycle edits are broader than the recording guardrail. | Keep direct settlement in PR #44; ignore the drift entirely. |
 | 2026-05-12 | Preserve artifact-specific lifecycle vocabulary. | Current workflow guidance uses `accepted` for proposals, `approved` for specs and architecture, and plan-owned lifecycle state for plans. | Rename all approving statuses to `approved`; ignore plan-owned status surfaces. |
-| 2026-05-12 | Require a focused spec amendment for the recording/status-sync output contract. | Artifact-status sync is cross-review normative behavior and should not live only in skill prose. | Implement only in skills. |
-| 2026-05-12 | Respect explicit no-edit instructions during isolated reviews. | Status sync edits the reviewed artifact even though it is not downstream continuation. | Always edit on isolated approval; never edit during isolated review. |
-| 2026-05-12 | Split implementation planning into recording-status and artifact-status milestones. | The combined change touches five review skills, validators, generated output, and lifecycle behavior. | Implement everything as one broad slice. |
+| 2026-05-12 | Require a focused spec amendment for the recording output contract. | Review-output recording behavior is cross-review normative behavior and should not live only in skill prose. | Implement only in skills. |
+| 2026-05-12 | Split direct upstream status settlement into a follow-up proposal. | Settlement before reliance likely belongs in downstream relying skills rather than formal review skills. | Keep status updates manual-only forever; require review skills to update upstream artifacts directly. |
 
 ## Next Artifacts
 
 - proposal-review
-- focused spec amendment for formal review output recording and artifact-status sync
+- focused spec amendment for formal review output recording and status settlement recommendation
+- follow-up proposal: Downstream Upstream-Status Settlement Before Reliance
 - implementation plan for review skill and validator updates
 - skill-validator update
 - generated skill and adapter refresh

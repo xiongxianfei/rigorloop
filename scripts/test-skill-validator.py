@@ -77,40 +77,30 @@ FORMAL_REVIEW_RECORDING_OUTPUT_TERMS = [
     "`YYYY-MM-DD-<reviewed-artifact-or-topic>-review-recording`",
     "Do not merely tell the user that these files should be created",
 ]
-FORMAL_REVIEW_STATUS_SYNC_OUTPUT_TERMS = [
-    "Status sync",
-    "Status artifact",
-    "Status sync blocker",
-    "`Status sync` is not the review verdict",
-    "is not downstream workflow continuation",
-    "not-required",
-    "updated",
-    "blocked",
-    "intended next status",
-    "smallest manual action",
-    "status artifact path",
-    "exact status field or section changed",
-    "Explicit user instructions that forbid file edits",
-    "ambiguous",
+FORMAL_REVIEW_STATUS_SETTLEMENT_TERMS = [
+    "Status settlement recommendation",
+    "`Status settlement recommendation` is not the review verdict",
+    "not-applicable",
+    "upstream artifact may be settled by downstream skill",
+    "blocked until findings close",
+    "Do not directly update",
+    "Downstream Upstream-Status Settlement Before Reliance",
 ]
-FORMAL_REVIEW_STATUS_SYNC_TARGET_TERMS = {
+FORMAL_REVIEW_STATUS_SETTLEMENT_TARGET_TERMS = {
     "proposal-review": [
-        "proposal `Status: accepted`",
+        "proposal lifecycle status",
     ],
     "spec-review": [
-        "spec `Status: approved`",
+        "spec lifecycle status",
     ],
     "architecture-review": [
-        "architecture `Status: approved`",
-        "ADR `Status: accepted` or `Status: active`",
+        "architecture or ADR lifecycle status",
     ],
     "plan-review": [
-        "plan review/readiness section",
-        "`docs/plan.md` index",
+        "plan lifecycle or readiness state",
     ],
     "code-review": [
-        "active plan milestone state",
-        "must not edit source files solely to record review status",
+        "source files or active plan milestone state",
     ],
 }
 DOWNSTREAM_REVIEW_CLOSEOUT_SKILLS = [
@@ -1230,7 +1220,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                 with self.subTest(skill=skill_name, term=term):
                     self.assertIn(term, body)
 
-    def test_formal_review_skills_define_status_sync_output_contract(self) -> None:
+    def test_formal_review_skills_define_status_settlement_recommendation(self) -> None:
         canonical_shared_block = extract_markdown_block(
             SHARED_REVIEW_BLOCK_PATH.read_text(encoding="utf-8"),
             "Isolation and Recording",
@@ -1240,12 +1230,15 @@ class SkillValidatorFixtureTests(unittest.TestCase):
 
         for skill_name in FORMAL_REVIEW_SKILLS:
             body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
-            with self.subTest(skill=skill_name, section="status sync heading"):
-                self.assertIn("## Status sync output", body)
-            for term in FORMAL_REVIEW_STATUS_SYNC_OUTPUT_TERMS:
+            with self.subTest(skill=skill_name, section="status settlement heading"):
+                self.assertIn("## Status settlement recommendation", body)
+            for term in FORMAL_REVIEW_STATUS_SETTLEMENT_TERMS:
                 with self.subTest(skill=skill_name, term=term):
                     self.assertIn(term, body)
-            for term in FORMAL_REVIEW_STATUS_SYNC_TARGET_TERMS[skill_name]:
+            for forbidden in ["Status sync:", "Status artifact:", "Status sync blocker:"]:
+                with self.subTest(skill=skill_name, forbidden=forbidden):
+                    self.assertNotIn(forbidden, body)
+            for term in FORMAL_REVIEW_STATUS_SETTLEMENT_TARGET_TERMS[skill_name]:
                 with self.subTest(skill=skill_name, target=term):
                     self.assertIn(term, body)
 

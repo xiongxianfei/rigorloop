@@ -9,7 +9,7 @@
 
 ## Purpose / big picture
 
-Implement the approved formal review output guardrail so every formal lifecycle review skill reports review status, recording status, and status sync separately, records material findings durably before claiming completion, and synchronizes clean or approving review outcomes to the reviewed artifact's owned lifecycle surface when the target is clear and edits are allowed.
+Implement the approved formal review output guardrail so every formal lifecycle review skill reports review status and recording status separately, records material findings durably before claiming completion, and gives only a lightweight status-settlement recommendation while deferring direct upstream lifecycle settlement to follow-up work.
 
 ## Why now
 
@@ -26,7 +26,7 @@ The accepted proposal records repeated evidence that review skills can report ma
   - `skills/architecture-review/SKILL.md`
   - `skills/plan-review/SKILL.md`
   - `skills/code-review/SKILL.md`
-- Add static skill-validator coverage for the recording-status and status-sync output contracts.
+- Add static skill-validator coverage for the recording-status output contract and status-settlement recommendation wording.
 - Preserve or update the shared `## Isolation and Recording` policy block without mixing stage-specific output wording into it.
 - Regenerate `.codex/skills/` and public adapter output from canonical sources.
 - Keep the change-local pack current:
@@ -41,7 +41,7 @@ The accepted proposal records repeated evidence that review skills can report ma
 - Requiring detailed review files for clean reviews with no material findings and no detailed-record trigger.
 - Changing review-resolution disposition vocabulary.
 - Changing artifact-specific lifecycle vocabulary such as proposal `accepted` or spec `approved`.
-- Treating status sync as downstream workflow continuation.
+- Treating status settlement recommendation as permission for review skills to edit upstream lifecycle state directly.
 - Editing reviewed artifact content beyond minimal lifecycle/status/readiness/follow-on/closeout fields.
 - Hand-editing generated `.codex/skills/` or `dist/adapters/` output.
 
@@ -66,10 +66,10 @@ The accepted proposal records repeated evidence that review skills can report ma
 
 The existing formal review recording contract already owns stage-neutral durable review records, the shared `## Isolation and Recording` block, and review artifact validation. This initiative adds an output-flow guardrail above that policy:
 
-- Review verdict, recording status, and status sync are separate fields.
+- Review verdict, recording status, and status settlement recommendation are separate fields.
 - `Recording status` is `not-required`, `recorded`, or `blocked`.
 - Material findings require complete durable shape: Finding ID, Severity, Location, Evidence, Required outcome, and Safe resolution path or `needs-decision` rationale.
-- `Status sync` is `not-required`, `updated`, or `blocked`.
+- `Status settlement recommendation` is `not-applicable`, `upstream artifact may be settled by downstream skill`, or `blocked until findings close`.
 - Clean or approving review outcomes update only the reviewed artifact's owned status/readiness/closeout surface when clear and allowed.
 
 Likely implementation surfaces:
@@ -99,7 +99,7 @@ Likely implementation surfaces:
 - `R17`-`R21d`: preserve isolation-versus-recording behavior and byte-identical shared recording policy.
 - `R22`-`R23`: align affected governance/operating guidance or record unaffected rationale; keep first-slice validation structural/static.
 - `R24`-`R28a`: add formal review output recording-status fields, blocker semantics, complete material-finding shape, and change ID selection.
-- `R29`-`R31b`: add artifact-status sync fields, blocker semantics, edit-permission rule, and artifact-specific target table.
+- `R29`-`R31`: add status-settlement recommendation wording and defer direct settlement-before-reliance behavior.
 - `R32`-`R33a`: update formal review skill final output shape consistently and regenerate generated skill/adapters after canonical skill changes.
 
 ## Dependencies
@@ -131,7 +131,7 @@ Likely implementation surfaces:
 
 - Risk: the five review skills drift in wording. Recovery: keep a concise common pattern and enforce stable terms through `scripts/test-skill-validator.py`.
 - Risk: stage-specific output guidance is accidentally inserted inside the shared `## Isolation and Recording` block. Recovery: preserve the shared block byte-for-byte or update the template and all copies in one reviewed change.
-- Risk: status sync oversteps isolated review behavior. Recovery: keep sync limited to the reviewed artifact's owned lifecycle/status/readiness/closeout surface and use `Status sync: blocked` for no-edit instructions or ambiguous owners.
+- Risk: status settlement recommendation oversteps isolated review behavior. Recovery: keep it recommendation-only and defer direct settlement to downstream reliance work.
 - Risk: generated outputs drift or are hand-edited. Recovery: regenerate from canonical sources with repository scripts and validate with versioned adapter commands.
 - Risk: another material review finding appears during this plan. Recovery: record it under the change-local review pack before review-driven fixes, then close it through `review-resolution.md`.
 
@@ -197,28 +197,28 @@ Likely implementation surfaces:
    - Rollback/recovery:
      - Revert M1 skill and validator changes while keeping already-valid review records as historical evidence.
 
-2. M2. Artifact-status sync guardrail for clean or approving outcomes
+2. M2. Status settlement recommendation and direct-settlement deferral
    - Milestone state: closed
-   - Goal: Make clean or approving formal review outcomes update the reviewed artifact's owned lifecycle/status/readiness/closeout surface when clear and allowed, or report `Status sync: blocked`.
-   - Requirements: `R24`-`R24b`, `R29`-`R31b`, `R32`-`R33a`
+   - Goal: Replace direct review-skill status sync with a lightweight settlement recommendation and follow-up proposal.
+   - Requirements: `R24`-`R24b`, `R29`-`R31`, `R32`-`R33a`
    - Files/components likely touched:
      - `specs/formal-review-recording.test.md`
      - five formal review skill files
      - `scripts/test-skill-validator.py`
      - `scripts/validate-skills.py` if needed
-     - lifecycle validation tests or fixtures only if existing validators can check clear status-sync cases without semantic review judgment
+     - follow-up proposal for downstream upstream-status settlement before reliance
      - `docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml`
      - durable evidence under `docs/changes/2026-05-12-review-skill-recording-output-guardrail/`
    - Dependencies:
      - M1 complete or intentionally integrated without weakening recording-status coverage.
-     - Test-spec coverage for status sync examples and `R29`-`R31b`.
+     - Test-spec coverage for status settlement recommendation examples and `R29`-`R31`.
    - Tests to add/update:
-     - Static assertions that all five formal review skills include `Status sync`, `updated`, `Status artifact`, `Status sync blocker`, and the required status-sync blocker semantics.
-     - Static assertions that status sync is distinct from the review verdict and from recording status.
+     - Static assertions that all five formal review skills include `Status settlement recommendation`, `not-applicable`, `upstream artifact may be settled by downstream skill`, and `blocked until findings close`.
+     - Static assertions that status settlement recommendation is distinct from the review verdict and from recording status.
      - Static assertions or manual test-spec coverage for artifact-specific target table behavior.
-     - Existing lifecycle validator coverage only if clear artifact-status cases can be checked without guessing review semantics.
+     - No lifecycle validator requirement for direct status edits in this slice.
    - Implementation steps:
-     - Update formal review skill expected output blocks to include status-sync fields.
+     - Update formal review skill expected output blocks to include status settlement recommendation.
      - Add artifact-specific target guidance for `proposal-review`, `spec-review`, `architecture-review`, `plan-review`, and `code-review`.
      - Add no-edit and ambiguous-target blocker guidance.
      - Record unaffected rationale for any governance or workflow surface that remains aligned and does not need text changes.
@@ -228,8 +228,8 @@ Likely implementation surfaces:
      - `python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml`
      - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-12-review-skill-recording-output-guardrail`
      - `git diff --check -- specs/formal-review-recording.test.md skills/proposal-review/SKILL.md skills/spec-review/SKILL.md skills/architecture-review/SKILL.md skills/plan-review/SKILL.md skills/code-review/SKILL.md scripts/test-skill-validator.py scripts/validate-skills.py docs/changes/2026-05-12-review-skill-recording-output-guardrail`
-   - Expected observable result: approving or clean review outputs cannot silently leave status sync unreported; the skills update the reviewed artifact status surface when clear and allowed or report a concrete blocker.
-   - Commit message: `M2: add review status sync guardrail`
+   - Expected observable result: approving or clean review outputs can recommend downstream status settlement without direct review-skill lifecycle edits, and the follow-up proposal owns settlement-before-reliance behavior.
+   - Commit message: `M2: add review status settlement recommendation`
    - Milestone closeout:
      - [x] targeted validation passed
      - [x] progress updated
@@ -241,7 +241,7 @@ Likely implementation surfaces:
      - Review skills might over-edit artifacts during isolated reviews.
      - Artifact-specific status mapping may be too vague for plan and code-review cases.
    - Rollback/recovery:
-     - Revert status-sync skill and validator additions while preserving the M1 recording-status guardrail if it remains valid.
+     - Revert status-settlement recommendation wording while preserving the M1 recording-status guardrail if it remains valid.
 
 3. M3. Generated output, closeout evidence, and PR readiness
    - Milestone state: closed
@@ -300,10 +300,10 @@ Likely implementation surfaces:
 - 2026-05-12: architecture-review approved the no-architecture-impact rationale with no material findings.
 - 2026-05-12: execution plan created and registered in `docs/plan.md`.
 - 2026-05-12: plan-review approved with no material findings; next stage is `test-spec`.
-- 2026-05-12: test spec updated for the review output recording/status-sync guardrail; next stage is `implement M1`.
+- 2026-05-12: test spec updated for the review output recording and status-settlement recommendation guardrail; next stage is `implement M1`.
 - 2026-05-12: M1 implemented recording-status output guidance in all five formal review skills and added static skill-validator coverage; next stage is `code-review M1`.
 - 2026-05-12: code-review M1 returned clean-with-notes with no material findings; M1 closed and next stage is `implement M2`.
-- 2026-05-12: M2 implemented status-sync output guidance in all five formal review skills, including status-sync vocabulary, blocker semantics, per-review artifact-specific targets, and static skill-validator coverage; next stage is `code-review M2`.
+- 2026-05-12: M2 initially implemented direct status-sync output guidance, then PR #44 was narrowed to status-settlement recommendation wording and direct settlement was deferred to a follow-up proposal; next stage is `code-review M2`.
 - 2026-05-12: code-review M2 returned clean-with-notes with no material findings; M2 closed and next stage is `implement M3`.
 - 2026-05-12: M3 refreshed generated Codex skills and public adapters from canonical review skills, added durable change explanation, and validated generated-output drift and adapter output; next stage is `code-review M3`.
 - 2026-05-12: code-review M3 returned clean-with-notes with no material findings; M3 closed and next stage is `explain-change`.
@@ -313,12 +313,12 @@ Likely implementation surfaces:
 
 ## Decision log
 
-- 2026-05-12: split implementation into M1 recording-status guardrail and M2 artifact-status sync guardrail -> proposal review requested distinct milestones to keep the slice reviewable.
+- 2026-05-12: split implementation into M1 recording-status guardrail and M2 status-settlement recommendation -> proposal review requested distinct milestones to keep the slice reviewable; PR #44 later narrowed M2 away from direct status sync.
 - 2026-05-12: keep generated-output refresh in M3 -> canonical skill edits should be reviewed before generated mirrors and adapters are finalized.
 - 2026-05-12: require versioned adapter validation commands with `--version 0.1.1` -> matches repository workflow guidance and the accepted proposal's validation strategy.
 - 2026-05-12: keep first-slice validation structural/static -> approved spec `R23` excludes semantic edit-reference flagging in this slice.
 - 2026-05-12: M1 updated canonical skills only and deferred generated output refresh to M3 -> the active plan separates canonical review-skill changes from generated-output closeout.
-- 2026-05-12: M2 kept status-sync validation static -> approved test spec `T22` covers vocabulary, blockers, no-edit behavior, and artifact-specific targets without adding semantic review-output parsing.
+- 2026-05-12: M2 kept status-settlement validation static -> approved test spec `T22` covers recommendation vocabulary and direct settlement deferral without adding semantic review-output parsing.
 - 2026-05-12: M3 added `docs/changes/2026-05-12-review-skill-recording-output-guardrail/explain-change.md` as the required durable Markdown reasoning surface; the formal final explain-change stage remains downstream after implementation review closes.
 - 2026-05-12: final verify restored `partially-accepted` in `workflow` review-resolution guidance -> broad smoke showed the workflow skill must preserve the same disposition vocabulary as the review-resolution contract.
 
@@ -335,11 +335,11 @@ Likely implementation surfaces:
 - 2026-05-12: `git diff --check -- specs/formal-review-recording.test.md docs/plan.md docs/plans/2026-05-12-review-skill-recording-output-guardrail.md docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml` passed after the test spec update.
 - 2026-05-12: `python scripts/test-skill-validator.py` passed after M1 skill and validator updates.
 - 2026-05-12: `python scripts/validate-skills.py` passed after M1 skill updates.
-- 2026-05-12: `python scripts/test-skill-validator.py` passed after M2 status-sync skill and validator updates.
-- 2026-05-12: `python scripts/validate-skills.py` passed after M2 status-sync skill updates.
-- 2026-05-12: `python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml` passed after M2 status-sync updates.
-- 2026-05-12: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-12-review-skill-recording-output-guardrail` passed after M2 status-sync updates.
-- 2026-05-12: `git diff --check -- specs/formal-review-recording.test.md skills/proposal-review/SKILL.md skills/spec-review/SKILL.md skills/architecture-review/SKILL.md skills/plan-review/SKILL.md skills/code-review/SKILL.md scripts/test-skill-validator.py scripts/validate-skills.py docs/changes/2026-05-12-review-skill-recording-output-guardrail docs/plans/2026-05-12-review-skill-recording-output-guardrail.md docs/plan.md` passed after M2 status-sync updates.
+- 2026-05-12: `python scripts/test-skill-validator.py` passed after initial M2 status-sync skill and validator updates.
+- 2026-05-12: `python scripts/validate-skills.py` passed after initial M2 status-sync skill updates.
+- 2026-05-12: `python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml` passed after initial M2 status-sync updates.
+- 2026-05-12: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-12-review-skill-recording-output-guardrail` passed after initial M2 status-sync updates.
+- 2026-05-12: `git diff --check -- specs/formal-review-recording.test.md skills/proposal-review/SKILL.md skills/spec-review/SKILL.md skills/architecture-review/SKILL.md skills/plan-review/SKILL.md skills/code-review/SKILL.md scripts/test-skill-validator.py scripts/validate-skills.py docs/changes/2026-05-12-review-skill-recording-output-guardrail docs/plans/2026-05-12-review-skill-recording-output-guardrail.md docs/plan.md` passed after initial M2 status-sync updates.
 - 2026-05-12: `python scripts/build-skills.py` synced generated Codex skills after M3.
 - 2026-05-12: `python scripts/build-adapters.py --version 0.1.1` synced generated adapter output after M3.
 - 2026-05-12: `python scripts/test-skill-validator.py` passed after M3 generated-output refresh.
@@ -378,6 +378,6 @@ Likely implementation surfaces:
 
 ## Risks and follow-ups
 
-- The active formal review test spec currently predates `R24`-`R33`; update it before implementation.
+- Follow-up proposal `Downstream Upstream-Status Settlement Before Reliance` owns direct settlement behavior before downstream reliance.
 - If runtime review-output omissions recur after this static guidance slice, create a follow-up proposal for runtime or output validation.
-- If lifecycle validation cannot check clear status-sync cases without semantic review judgment, record that limitation and keep enforcement in skill guidance plus static checks for this slice.
+- If lifecycle validation cannot check clear status-settlement cases without semantic review judgment, keep enforcement in downstream reliance guidance plus static checks for this slice.

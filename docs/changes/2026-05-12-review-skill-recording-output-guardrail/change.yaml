@@ -187,7 +187,30 @@ validation:
     result: pass_after_pr_handoff_lifecycle_sync_with_unrelated_docs_plan_merge_dependent_warning
   - command: git diff --check -- docs/plan.md docs/plans/2026-05-12-review-skill-recording-output-guardrail.md
     result: pass_after_pr_handoff_lifecycle_sync
+  - command: python scripts/test-skill-validator.py
+    result: pass_64_tests_after_pr44_scope_narrowing
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_pr44_scope_narrowing
+  - command: python scripts/build-skills.py --check
+    result: pass_generated_codex_skills_in_sync_after_pr44_scope_narrowing
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_generated_adapter_output_in_sync_after_pr44_scope_narrowing
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_validated_generated_adapters_after_pr44_scope_narrowing
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml
+    result: pass_valid_change_metadata_after_pr44_scope_narrowing
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-review-skill-recording-output-guardrail
+    result: pass_closeout_reviews_3_findings_12_log_entries_3_resolution_entries_12_after_pr44_scope_narrowing
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-review-skill-recording-output-guardrail.md --path docs/proposals/2026-05-12-downstream-upstream-status-settlement-before-reliance.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path docs/plans/2026-05-12-review-skill-recording-output-guardrail.md --path docs/plan.md --path docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml
+    result: pass_after_pr44_scope_narrowing_with_unrelated_docs_plan_merge_dependent_warning
+  - command: bash scripts/ci.sh --mode explicit --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path skills/architecture-review/SKILL.md --path skills/plan-review/SKILL.md --path skills/code-review/SKILL.md --path scripts/test-skill-validator.py --path scripts/validate-skills.py --path docs/proposals/2026-05-12-review-skill-recording-output-guardrail.md --path docs/proposals/2026-05-12-downstream-upstream-status-settlement-before-reliance.md --path docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml
+    result: pass_selected_ci_checks_after_pr44_scope_narrowing
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: pass_after_pr44_scope_narrowing
+  - command: git diff --check --
+    result: pass_after_pr44_scope_narrowing
 changed_files:
+  - docs/proposals/2026-05-12-downstream-upstream-status-settlement-before-reliance.md
   - docs/proposals/2026-05-12-review-skill-recording-output-guardrail.md
   - docs/plan.md
   - docs/plans/2026-05-12-review-skill-recording-output-guardrail.md
@@ -229,6 +252,7 @@ changed_files:
   - docs/changes/2026-05-12-review-skill-recording-output-guardrail/review-log.md
   - docs/changes/2026-05-12-review-skill-recording-output-guardrail/review-resolution.md
   - docs/changes/2026-05-12-review-skill-recording-output-guardrail/reviews/proposal-review-r1.md
+  - docs/changes/2026-05-12-review-skill-recording-output-guardrail/reviews/proposal-review-r2.md
   - docs/changes/2026-05-12-review-skill-recording-output-guardrail/reviews/spec-review-r1.md
   - docs/learn/sessions/2026-05-12-review-approval-status-sync.md
 review:

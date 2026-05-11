@@ -20,7 +20,7 @@ The goal is stage-neutral recording for material review findings without forcing
 
 This amendment clarifies that isolated review handoff behavior and material-finding recording are independent. A direct or review-only review remains isolated by default, but every material finding still requires durable change-local review evidence.
 
-This amendment also defines formal review output status guardrails. Review output must distinguish review verdicts, review-recording state, and artifact-status synchronization state. Clean or approving review results must synchronize the reviewed artifact's owned lifecycle surface when the status owner is clear, or report a concrete status-sync blocker.
+This amendment also defines formal review output recording guardrails. Review output must distinguish review verdicts, review-recording state, and a lightweight upstream status-settlement recommendation. Review skills do not directly synchronize proposal, spec, architecture, or plan lifecycle status in this slice; downstream stages that rely on upstream artifacts should settle stale upstream status in a follow-up change.
 
 ## Glossary
 
@@ -36,11 +36,8 @@ This amendment also defines formal review output status guardrails. Review outpu
 - `shared review-skill recording subsection`: the identical `## Isolation and Recording` guidance copied into all formal review skills from `templates/shared/review-isolation-and-recording.md`.
 - `recording status`: the review-output field that reports whether required review-recording artifacts were not required, recorded, or blocked.
 - `recording blocker`: the review-output field that explains why required review-recording artifacts could not be created or updated.
-- `status sync`: the review-output field that reports whether the reviewed artifact's durable lifecycle/status surface was not required, updated, or blocked.
-- `status sync blocker`: the review-output field that explains why an expected artifact-status update could not be made.
-- `status artifact`: the reviewed artifact whose lifecycle/status surface is updated by status sync.
 - `clean or approving review result`: a review status that approves the reviewed artifact for its immediate next lifecycle state, including `approved`, `approve`, `clean`, and `clean-with-notes`.
-- `artifact-status sync`: the act of updating only the reviewed artifact's owned lifecycle/status/readiness/closeout surface to match a clean or approving review result.
+- `status settlement recommendation`: the review-output field that reports whether upstream artifact status settlement is not applicable, may be handled by a downstream relying skill, or is blocked until findings close.
 
 ## Examples first
 
@@ -125,36 +122,32 @@ Then `Recording status` is `recorded`.
 And the output names the detailed review record and `review-log.md`.
 And `review-resolution.md` is not required solely for that no-material review event.
 
-### Example E13: clean proposal review synchronizes proposal status
+### Example E13: clean proposal review recommends downstream settlement
 
 Given `proposal-review` returns `approved`
 And the reviewed proposal has `Status: draft`
-And no instruction forbids edits
 When the review completes
-Then the proposal status is updated to `accepted`.
-And the output reports `Status sync: updated` with the proposal path and status field.
+Then the review does not directly edit the proposal status solely as review closeout.
+And the output reports `Status settlement recommendation: upstream artifact may be settled by downstream skill`.
 
-### Example E14: no-edit isolated review blocks status sync
+### Example E14: material findings block upstream settlement
 
-Given the user invokes isolated `spec-review` and says "do not modify files"
-And the review returns `approved`
+Given `spec-review` returns material findings
 When the review completes
-Then the spec is not edited.
-And the output reports `Status sync: blocked`.
-And `Status sync blocker` names the no-edit instruction and the manual action needed.
+Then the output reports `Status settlement recommendation: blocked until findings close`.
+And the review records the material findings before any follow-up settlement can rely on the spec.
 
-### Example E15: ambiguous status target blocks status sync
+### Example E15: non-approving review has no settlement recommendation
 
-Given `architecture-review` approves an artifact whose lifecycle field is missing or ambiguous
-When the next status cannot be chosen from this spec's status table or the artifact-local lifecycle field
-Then the output reports `Status sync: blocked`.
-And the review does not guess a status value.
+Given `architecture-review` returns a non-approval outcome
+When the review completes
+Then the output reports `Status settlement recommendation: not-applicable`.
 
-### Example E16: code-review clean result updates plan-owned review state
+### Example E16: code-review clean result does not edit source status
 
 Given `code-review` returns `clean-with-notes` for a planned milestone
-When the active plan owns milestone review state
-Then status sync updates the active plan milestone state according to the milestone contract.
+When the review completes
+Then the output may recommend downstream settlement by the plan-owning workflow stage.
 And it does not edit source files solely to record code-review status.
 
 ## Requirements
@@ -347,11 +340,11 @@ R23. First-slice validation for this clarification MUST remain structural. It MU
 R24. Formal review output MUST distinguish:
 - the review verdict;
 - recording status;
-- artifact-status sync state.
+- status settlement recommendation.
 
-R24a. Review verdicts MUST NOT be used as a substitute for recording status or artifact-status sync state.
+R24a. Review verdicts MUST NOT be used as a substitute for recording status.
 
-R24b. Recording status and status sync MUST NOT be used as substitutes for the review verdict.
+R24b. Recording status and status settlement recommendation MUST NOT be used as substitutes for the review verdict.
 
 R25. Formal review output MUST include `Recording status` using exactly one of:
 - `not-required`;
@@ -399,47 +392,22 @@ R28. When recording is required and no active change root is obvious, review ski
 
 R28a. If the change ID remains ambiguous after this order, review output MUST use `Recording status: blocked`.
 
-R29. Formal review output MUST include `Status sync` using exactly one of:
-- `not-required`;
-- `updated`;
-- `blocked`.
+R29. Formal review output SHOULD include `Status settlement recommendation` using one of:
+- `not-applicable`;
+- `upstream artifact may be settled by downstream skill`;
+- `blocked until findings close`.
 
-R29a. `Status sync: not-required` means the review outcome is not approving or clean, or no lifecycle status change is expected for that review result.
+R29a. `Status settlement recommendation: not-applicable` means the review outcome is not clean or approving, or no upstream lifecycle settlement question is raised by the review.
 
-R29b. `Status sync: updated` means the reviewed artifact's owned lifecycle/status/readiness/closeout surface was updated to the next artifact-specific state.
+R29b. `Status settlement recommendation: upstream artifact may be settled by downstream skill` means the review outcome is clean or approving, no material findings remain open, and a downstream skill that relies on the reviewed artifact may settle stale upstream status before reliance.
 
-R29c. `Status sync: blocked` means an approving or clean review result expected an artifact-status update, but the update could not be made.
+R29c. `Status settlement recommendation: blocked until findings close` means material findings, blocked recording, or another review-owned blocker prevents upstream settlement.
 
-R29d. If `Status sync` is `blocked`, review output MUST include `Status sync blocker`.
+R29d. Review skills MUST NOT directly update proposal, spec, architecture, ADR, or plan lifecycle/status/readiness/closeout surfaces solely to satisfy this recommendation in this slice.
 
-R29e. `Status sync blocker` MUST name the intended next status, the blocker, and the smallest manual action needed.
+R30. Direct upstream status settlement before reliance is deferred to a follow-up proposal: `Downstream Upstream-Status Settlement Before Reliance`.
 
-R29f. If `Status sync` is `updated`, review output MUST include the status artifact path and the exact status field or section changed.
-
-R30. For clean or approving formal review results, review skills MUST update the reviewed artifact's owned lifecycle/status/readiness/closeout surface when the target is clear and edits are allowed; otherwise they MUST report `Status sync: blocked`.
-
-R30a. Status sync MUST NOT be treated as downstream workflow continuation.
-
-R30b. Explicit user instructions that forbid file edits MUST block status sync.
-
-R30c. When edits are forbidden, review output MUST use `Status sync: blocked` and MUST name the manual status update needed.
-
-R30d. Review skills MUST NOT edit reviewed artifact content beyond the minimal lifecycle/status/readiness/follow-on/closeout fields needed to make the clean review result durable.
-
-R31. Artifact-status sync MUST use these artifact-specific targets:
-
-| Review skill | Clean or approving review result | Status sync target |
-|---|---|---|
-| `proposal-review` | `approved` | proposal `Status: accepted` |
-| `spec-review` | `approved` | spec `Status: approved` |
-| `architecture-review` | `approved` for architecture package | architecture `Status: approved` |
-| `architecture-review` | `approved` for ADR | ADR `Status: accepted` or `Status: active`, according to the ADR's existing lifecycle field |
-| `plan-review` | `approve` | plan review/readiness section says ready for `test-spec`; `docs/plan.md` index updated only if the index owns active-plan state |
-| `code-review` | `clean` or `clean-with-notes` | active plan milestone state updated according to the milestone contract; no source artifact status edit unless the reviewed artifact explicitly owns that state |
-
-R31a. If the next status cannot be chosen from the table or an artifact-local lifecycle field, review output MUST use `Status sync: blocked`.
-
-R31b. Status sync MUST preserve artifact-specific lifecycle vocabulary unless a later approved spec changes that vocabulary.
+R31. Reserved for future upstream status-settlement requirements.
 
 R32. Formal review skill final output MUST include this status shape or equivalent labeled fields:
 - Skill;
@@ -447,9 +415,7 @@ R32. Formal review skill final output MUST include this status shape or equivale
 - Material findings;
 - Recording status;
 - Recording blocker;
-- Status sync;
-- Status artifact;
-- Status sync blocker;
+- Status settlement recommendation;
 - Review record;
 - Review log;
 - Review resolution;
@@ -458,11 +424,9 @@ R32. Formal review skill final output MUST include this status shape or equivale
 
 R32a. `Recording blocker` MAY be empty or `not applicable` unless `Recording status` is `blocked`.
 
-R32b. `Status sync blocker` MAY be empty or `not applicable` unless `Status sync` is `blocked`.
+R33. Canonical review-stage skill guidance MUST describe recording status consistently when those skills are updated for this behavior.
 
-R33. Canonical review-stage skill guidance MUST describe recording status and status sync consistently when those skills are updated for this behavior.
-
-R33a. If canonical skills shipped through generated adapters change for recording status or status sync, generated `.codex/skills/` and public adapter output MUST be regenerated and validated through existing repository-owned generation checks.
+R33a. If canonical skills shipped through generated adapters change for recording status or status settlement recommendation, generated `.codex/skills/` and public adapter output MUST be regenerated and validated through existing repository-owned generation checks.
 
 ## Inputs and outputs
 
@@ -470,7 +434,6 @@ Inputs:
 
 - formal lifecycle review output;
 - isolated formal lifecycle review output;
-- explicit user edit-permission instructions for isolated or review-only requests;
 - reviewed proposal, spec, architecture artifact, ADR, plan, code, tests, validation, or generated output;
 - tracked artifacts that will be committed or reviewed as part of the work;
 - existing `docs/changes/<change-id>/` root when present;
@@ -480,14 +443,13 @@ Inputs:
 Outputs:
 
 - artifact-local settlement for clean required reviews;
-- formal review output fields for review verdict, recording status, recording blocker, status sync, status artifact, and status sync blocker;
+- formal review output fields for review verdict, recording status, recording blocker, and status settlement recommendation;
 - detailed review files for triggered formal lifecycle reviews;
 - initial review-record root when an `R2` trigger requires a detailed review file before a change-local root exists;
 - review-log entries indexing detailed review files;
 - review-resolution entries for material Finding IDs;
 - aggregate `change.yaml.review` status and optional pointers.
 - shared formal review skill guidance from `templates/shared/review-isolation-and-recording.md`.
-- artifact-status updates to the reviewed artifact's owned lifecycle/status/readiness/closeout surface when a clean or approving review result requires status sync.
 
 ## State and invariants
 
@@ -500,9 +462,7 @@ Outputs:
 - Material Finding IDs originate in review records before they are dispositioned.
 - `change.yaml.review.status` and `change.yaml.review.unresolved_items` remain present.
 - Final artifact status remains artifact-local.
-- Clean or approving review results do not leave the reviewed artifact's owned lifecycle/status surface stale when the status owner is clear and edits are allowed.
-- Status sync changes only the reviewed artifact's lifecycle/status/readiness/closeout surface and does not imply downstream workflow continuation.
-- Explicit no-edit instructions block status sync even when the review result is clean or approving.
+- Review skills may recommend upstream artifact settlement, but do not directly update proposal, spec, architecture, ADR, or plan lifecycle/status/readiness/closeout surfaces solely for settlement in this slice.
 - Review files do not become proposal, spec, architecture, ADR, or plan sources of truth.
 - The final non-trivial change-local pack includes durable Markdown reasoning even when an initial review-record root was created earlier.
 - The shared review-skill recording subsection remains byte-identical across formal review skills.
@@ -525,11 +485,7 @@ Outputs:
 - If a no-material `R2` trigger requires a detailed review file before a change-local root exists, the initial review-record root needs `change.yaml`, `review-log.md`, and the detailed review file, but not an empty `review-resolution.md`.
 - If a non-trivial change reaches final handoff without durable Markdown reasoning, final handoff is incomplete even if the initial review-record root exists.
 - If `Recording status` is `blocked` and `Recording blocker` is missing, review output is incomplete.
-- If `Status sync` is `blocked` and `Status sync blocker` is missing, review output is incomplete.
-- If a clean or approving review result has a clear status sync target and edits are allowed, leaving the status artifact stale makes review output incomplete.
-- If explicit no-edit instructions are present, status sync must not edit files and must instead report `Status sync: blocked`.
-- If a status sync target cannot be chosen from `R31` or an artifact-local lifecycle field, review output must report `Status sync: blocked` rather than guessing.
-- If status sync for `code-review` would require editing source files only to record review status, the review output must report a status-sync blocker or use the active plan/review-owned surface instead.
+- If material findings remain open, review output should recommend `blocked until findings close` rather than implying upstream settlement is available.
 
 ## Compatibility and migration
 
@@ -538,7 +494,7 @@ Outputs:
 - Existing validator support for `proposal-review`, `spec-review`, `architecture-review`, `plan-review`, and `code-review` remains the target stage set.
 - This spec does not require a `change.yaml` schema change because additional `review` pointer fields are optional under the current permissive object shape.
 - This spec does not require a new artifact status vocabulary. It preserves existing artifact-specific settlement states unless a later approved spec changes them.
-- Existing review outputs do not need retroactive status-sync fields unless touched, regenerated, or relied on as current authoritative guidance.
+- Existing review outputs do not need retroactive status settlement recommendation fields unless touched, regenerated, or relied on as current authoritative guidance.
 - Rollback may remove the new trigger guidance while keeping already-authored upstream review records as valid historical artifacts.
 - Existing historical review skills and generated adapter output do not need migration until the implementation slice updates canonical skill behavior.
 
@@ -549,8 +505,7 @@ Outputs:
 - Reviewers can distinguish artifact-local settlement from detailed review-event evidence.
 - Reviewers can tell from isolated review output whether downstream continuation stopped and what durable recording action is required before fixes.
 - Reviewers can tell from formal review output whether required recording artifacts were not required, recorded, or blocked.
-- Reviewers can tell from formal review output whether artifact-status sync was not required, updated, or blocked.
-- Reviewers can distinguish recording blockers from status-sync blockers.
+- Reviewers can tell from formal review output whether upstream artifact settlement is not applicable, may be handled by a downstream relying skill, or is blocked until findings close.
 - Validation output should identify malformed review artifact paths and relationship failures.
 
 ## Security and privacy
@@ -592,14 +547,14 @@ This spec MUST NOT require broad smoke solely because upstream review records ex
 15. A material isolated review output that omits Finding IDs, required record path, record-before-fixing or reconstruction status, or owner-decision status is incomplete.
 16. A skill-specific paragraph inserted inside the shared `## Isolation and Recording` block fails static validation.
 17. A tracked generated adapter file changed because of a material review finding is a tracked artifact edit.
-18. A clean `proposal-review` changes proposal `Status: draft` to `Status: accepted` when edits are allowed.
-19. A clean `spec-review` changes spec `Status: draft` to `Status: approved` when edits are allowed.
-20. A clean `architecture-review` for an ADR with an existing `Status` field chooses `accepted` or `active` from the ADR's artifact-local lifecycle field, not from review status wording alone.
-21. A `plan-review` approval updates plan readiness text and the plan index only when those surfaces own the reviewed plan state.
-22. A `code-review` clean result updates active plan or review-owned milestone state but does not edit source code solely to record review status.
-23. A review-only request with explicit no-edit instructions reports `Status sync: blocked` instead of updating the artifact.
-24. A formal review output can have `Recording status: not-required` and `Status sync: updated` for a clean approval.
-25. A formal review output can have `Recording status: recorded` and `Status sync: blocked` when material findings were recorded but an expected status update was forbidden.
+18. A clean `proposal-review` can recommend that the proposal may be settled by a downstream relying skill.
+19. A clean `spec-review` can recommend that the spec may be settled by a downstream relying skill.
+20. A clean `architecture-review` for an architecture artifact or ADR can recommend downstream settlement without guessing artifact-local lifecycle vocabulary.
+21. A `plan-review` approval can recommend downstream settlement by the next relying stage without updating plan readiness itself.
+22. A `code-review` clean result can recommend plan-owned milestone settlement but does not edit source code solely to record review status.
+23. A review-only request with explicit no-edit instructions still records material findings when required, but direct status settlement is out of scope for review skills.
+24. A formal review output can have `Recording status: not-required` and `Status settlement recommendation: upstream artifact may be settled by downstream skill` for a clean approval.
+25. A formal review output can have `Recording status: recorded` and `Status settlement recommendation: blocked until findings close` when material findings remain unresolved.
 
 ## Non-goals
 
@@ -614,9 +569,8 @@ This spec MUST NOT require broad smoke solely because upstream review records ex
 - Generating formal review skill shared subsections instead of manually copying a canonical block.
 - Migrating historical review packs that are not otherwise touched.
 - Changing artifact-specific lifecycle vocabulary such as proposal `accepted` or spec `approved`.
-- Treating status sync as permission to continue into downstream authoring, implementation, verify, or PR stages.
-- Editing reviewed artifact content beyond lifecycle/status/readiness/follow-on/closeout fields.
-- Requiring status sync when user instructions explicitly forbid file edits.
+- Requiring review skills to directly update proposal, spec, architecture, ADR, or plan lifecycle/status/readiness/closeout surfaces for approval settlement in this slice.
+- Treating status settlement recommendations as permission to continue into downstream authoring, implementation, verify, or PR stages.
 
 ## Acceptance criteria
 
@@ -636,12 +590,10 @@ This spec MUST NOT require broad smoke solely because upstream review records ex
 - Isolated review outputs with material findings expose Finding IDs, required review record path, record-before-fixing or reconstruction status, and owner-decision status.
 - `CONSTITUTION.md`, `AGENTS.md`, and `docs/workflows.md` teach the same rule: every material finding is recorded, all material findings require change-local review files, and isolation stops handoff rather than recording.
 - Formal review skills contain a byte-identical `## Isolation and Recording` block from a canonical template.
-- Formal review output separates review status, recording status, and status sync.
+- Formal review output separates review status, recording status, and status settlement recommendation.
 - Formal review output includes `Recording blocker` when recording is blocked.
-- Formal review output includes `Status sync blocker` when status sync is blocked.
-- A clean or approving review result updates the reviewed artifact's status surface when the target is clear and edits are allowed.
-- A clean or approving review result reports `Status sync: blocked` when the target is ambiguous or edits are forbidden.
-- Artifact-status sync uses the artifact-specific status table and does not guess outside the table or artifact-local lifecycle fields.
+- Formal review output can recommend downstream upstream-status settlement without requiring review skills to edit upstream lifecycle status.
+- Formal review output can report settlement as blocked until findings close.
 
 ## Open questions
 
@@ -650,9 +602,9 @@ This spec MUST NOT require broad smoke solely because upstream review records ex
 ## Next artifacts
 
 - Implementation M1 under the active review skill material-finding recording plan.
-- Spec-review for this recording/status-sync amendment.
-- Test-spec update for formal review output recording and artifact-status sync.
-- Execution plan update with M1 recording-status guardrail and M2 artifact-status sync guardrail.
+- Spec-review for this recording-status amendment.
+- Test-spec update for formal review output recording and status settlement recommendation.
+- Execution plan update with M1 recording-status guardrail and follow-up status-settlement deferral.
 - `code-review` after implementation milestones complete.
 - `verify`.
 - `explain-change`.
@@ -669,9 +621,10 @@ This spec MUST NOT require broad smoke solely because upstream review records ex
 - Test spec: [Formal Review Recording test spec](formal-review-recording.test.md) updated for the review skill material-finding recording amendment.
 - Proposal amendment: [Review Skill Recording and Status Output Guardrail](../docs/proposals/2026-05-12-review-skill-recording-output-guardrail.md)
 - Learn session: [Review Approval Status Sync](../docs/learn/sessions/2026-05-12-review-approval-status-sync.md)
+- Follow-up proposal: [Downstream Upstream-Status Settlement Before Reliance](../docs/proposals/2026-05-12-downstream-upstream-status-settlement-before-reliance.md)
 - Spec-review R1: changes requested with material finding `SR1`, accepted and closed after `R30` revision.
 - Spec-review R2: approved with no material findings.
 
 ## Readiness
 
-Approved amendment for formal review output recording and artifact-status sync. Ready for test-spec update and execution planning.
+Approved amendment for formal review output recording and lightweight status settlement recommendation. Direct upstream status settlement before reliance is deferred to a follow-up proposal.

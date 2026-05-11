@@ -242,23 +242,17 @@ When recording is required and no active change root is obvious, choose the chan
 
 If the change ID remains ambiguous, use `Recording status: blocked`.
 
-## Status sync output
+## Status settlement recommendation
 
-`Status sync` is not the review verdict, is separate from `Recording status`, and is not downstream workflow continuation. It reports whether a clean or approving review result updated the reviewed artifact's owned lifecycle/status/readiness/closeout surface.
+`Status settlement recommendation` is not the review verdict and is separate from `Recording status`. It reports whether upstream artifact status settlement is not applicable, may be handled by a downstream relying skill, or is blocked until findings close.
 
 Use exactly one:
 
-- `not-required`: the review outcome is not approving or clean, or no lifecycle status change is expected for that review result.
-- `updated`: the reviewed artifact's owned lifecycle/status/readiness/closeout surface was updated to the next artifact-specific state.
-- `blocked`: an approving or clean review result expected an artifact-status update, but the update could not be made.
+- `not-applicable`: the review outcome is not approving or clean, or no upstream lifecycle settlement question is raised by the review.
+- `upstream artifact may be settled by downstream skill`: the review outcome is approving or clean and no material findings remain open.
+- `blocked until findings close`: material findings, blocked recording, or another review-owned blocker prevents upstream settlement.
 
-For `architecture-review`, an `approved` architecture package targets architecture `Status: approved`. An `approved` ADR targets ADR `Status: accepted` or `Status: active`, according to the ADR's existing lifecycle field.
-
-If `Status sync: updated`, include `Status artifact` with the status artifact path and exact status field or section changed.
-
-If `Status sync: blocked`, include `Status sync blocker` with the intended next status, the blocker, and the smallest manual action needed.
-
-Explicit user instructions that forbid file edits block status sync even when the review result is approving or clean. If the target is ambiguous, do not guess; use `Status sync: blocked`.
+Do not directly update architecture or ADR lifecycle status solely for this recommendation. Upstream status settlement before reliance is deferred to the follow-up proposal `Downstream Upstream-Status Settlement Before Reliance`.
 
 ## Rules
 
@@ -270,7 +264,7 @@ Explicit user instructions that forbid file edits block status sync even when th
 - Do not require component, code-level, or deployment diagrams unless the change needs them.
 - Do not require architecture updates for leaf changes with no architecture impact.
 - Do not edit the architecture doc unless the user explicitly asks.
-- When the review outcome is approval, the tracked architecture artifact should be ready to normalize to `approved` before planning or implementation relies on it. Do not leave a relied-on design in durable `reviewed` state.
+- When the review outcome is approval, recommend downstream settlement if the tracked architecture artifact may need to normalize to `approved` before planning or implementation relies on it.
 - When spec-review or architecture-review identifies required changes, the artifact must not remain in `approved` state until the required changes are resolved and re-reviewed.
 
 ## Workflow handoff behavior
@@ -295,9 +289,7 @@ Start with:
 - Material findings:
 - Recording status:
 - Recording blocker:
-- Status sync:
-- Status artifact:
-- Status sync blocker:
+- Status settlement recommendation:
 - Review record:
 - Review log:
 - Review resolution:
