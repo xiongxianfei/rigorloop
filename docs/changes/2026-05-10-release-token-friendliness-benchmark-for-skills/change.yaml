@@ -35,6 +35,7 @@ requirements:
   - Record clean code-review R6 before closing M3 and handing off to M4.
   - Implement M4 first baseline report and release report template before M4 code-review.
   - Resolve code-review R7 finding RTF-CR7 before M4 can close.
+  - Return M4 to code-review after accepted code-review R7 finding is fixed.
 tests:
   - Artifact lifecycle validation for the proposal and change-local review artifacts.
   - Artifact lifecycle validation for the new feature spec.
@@ -59,6 +60,8 @@ tests:
   - Review artifact closeout validation after clean code-review R6 closes M3.
   - Focused M4 report validation for baseline YAML, Markdown/YAML pairing, sanitized run summaries, release notes link, and runner command reproducibility.
   - Review artifact structure validation after code-review R7 material finding is recorded.
+  - Focused analyzer test for current Codex `item.completed` `command_execution` events with `aggregated_output`.
+  - Corrected M4 report validation after regenerated analyzer summaries include command-output amplification.
 validation:
   - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
     result: pass_structure_reviews_1_findings_6_log_entries_1_resolution_entries_6
@@ -334,6 +337,28 @@ validation:
     result: pass_validated_4_artifact_files_after_m4_with_existing_plan_index_merge_dependent_warning
   - command: printf current-codex-command-execution-event | python scripts/analyze-codex-jsonl.py /dev/stdin
     result: fail_review_proof_current_aggregated_output_event_reported_tool_calls_0_and_unknown_records_1_before_rtf_cr7_fix
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_23_tests_after_rtf_cr7_current_codex_aggregated_output_fix
+  - command: python scripts/run-token-cost-benchmarks.py --suite benchmarks/token-cost/manifest.yaml --release v0.1.1 --tool codex
+    result: pass_live_codex_benchmark_regenerated_7_corrected_sanitized_analyzer_summaries_after_rtf_cr7_fix
+  - command: python scripts/measure-skill-tokens.py
+    result: pass_23_skills_54294_estimated_tokens_after_rtf_cr7_fix
+  - command: python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml
+    result: pass_valid_token_cost_report_metadata_after_rtf_cr7_fix
+  - command: python -m py_compile scripts/run-token-cost-benchmarks.py scripts/analyze-codex-jsonl.py
+    result: pass_after_rtf_cr7_fix
+  - command: python scripts/test-token-cost-report-validation.py
+    result: pass_10_tests_after_rtf_cr7_fix
+  - command: python scripts/analyze-codex-jsonl.py tests/fixtures/token-cost/sample-codex-session.jsonl
+    result: pass_after_rtf_cr7_fix
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_rtf_cr7_fix
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_closeout_reviews_12_findings_17_log_entries_12_resolution_entries_17_after_rtf_cr7_fix
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r7.md --path docs/reports/token-cost/releases/v0.1.1.md --path docs/reports/token-cost/releases/v0.1.1.yaml --path docs/releases/v0.1.1/release-notes.md
+    result: pass_validated_4_artifact_files_after_rtf_cr7_fix_with_existing_plan_index_merge_dependent_warning
+  - command: git diff --check -- scripts/analyze-codex-jsonl.py scripts/test-token-cost-measurement.py docs/reports/token-cost docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md
+    result: pass_after_rtf_cr7_fix
 changed_files:
   - benchmarks/token-cost/manifest.yaml
   - benchmarks/token-cost/prompts/workflow-route.md
@@ -402,7 +427,7 @@ changed_files:
   - docs/reports/token-cost/runs/v0.1.1/learn-no-durable-lesson-run1.analysis.yaml
   - docs/releases/v0.1.1/release-notes.md
 review:
-  status: m4_resolution_needed_after_code_review_r7
-  unresolved_items: 1
+  status: m4_review_requested_after_code_review_r7_resolution
+  unresolved_items: 0
   review_log: docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md
   review_resolution: docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md

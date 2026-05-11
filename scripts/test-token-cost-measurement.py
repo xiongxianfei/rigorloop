@@ -175,6 +175,42 @@ class CodexJsonlAnalyzerTests(unittest.TestCase):
         self.assertIn("token_usage: unavailable", result.stdout)
         self.assertIn("command_output_lines: 1", result.stdout)
 
+    def test_current_codex_command_execution_events_report_aggregated_output(self) -> None:
+        path = self.write_jsonl(
+            {
+                "type": "item.completed",
+                "item": {
+                    "type": "command_execution",
+                    "command": "sed -n '1,220p' /tmp/example/SKILL.md",
+                    "aggregated_output": "alpha\nbeta\n",
+                },
+            }
+        )
+        summary = Path(tempfile.NamedTemporaryFile(suffix=".analysis.yaml", delete=True).name)
+        try:
+            result = run_command(
+                str(ANALYZE),
+                str(path),
+                "--summary-output",
+                str(summary),
+                "--run-id",
+                "current-codex-shape",
+            )
+            summary_text = summary.read_text(encoding="utf-8")
+        finally:
+            path.unlink()
+            if summary.exists():
+                summary.unlink()
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("tool_calls: 1", result.stdout)
+        self.assertIn("command_output_lines: 2", result.stdout)
+        self.assertRegex(result.stdout, r"estimated_command_output_tokens: [1-9][0-9]*")
+        self.assertIn("unknown_records: 0", result.stdout)
+        self.assertIn("kind: command_execution", summary_text)
+        self.assertIn("sed -n", summary_text)
+        self.assertRegex(summary_text, r"estimated_tokens: [1-9][0-9]*")
+
     def test_unknown_events_and_no_output_are_reported_without_fake_drivers(self) -> None:
         path = self.write_jsonl({"unexpected": {"shape": True}}, {"message": "hello"})
         try:

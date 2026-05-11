@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -18,9 +18,9 @@ Review closeout: code-review-r6
 Review closeout: code-review-r7
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-r1`, `code-review-r2`, `code-review-r3`, `code-review-r4`, `code-review-r5`, `code-review-r6`, `code-review-r7`
-- Findings resolved: 16
-- Unresolved findings: 1
-- Final result: Proposal-review R1 requested changes for release-gate semantics, run evidence, analyzer summaries, RC reuse, milestone slicing, and warning severity wording; all accepted proposal-review findings were resolved in the proposal. Proposal-review R2 approved the revised proposal with no material findings. Spec-review R1 requested changes for analyzer summary raw-omission compatibility, incomplete non-final dynamic metadata, and first-baseline comparison metadata; all accepted spec-review findings were resolved in the spec. Plan-review R1 requested a milestone-boundary revision; M1 now owns standalone token-cost metadata validation and M5 owns release validation integration. Plan-review R2 approved the revised plan with no material findings. Code-review R1 requested M1 fixes for RC reuse metadata validation and Markdown report metadata-link validation; both findings were resolved in the standalone validator and tests. Code-review R2 requested an M1 fix for partial RC reuse checked-surface validation; RTF-CR3 was resolved in the standalone validator and tests. Code-review R3 found no material findings and closed M1. Code-review R4 found no material findings and closed M2. Code-review R5 requested M3 fixes for analyzer summary path stability, repeated same-file read signals, and justified full-file-read classification; all three findings were resolved in M3 runner/analyzer tests and implementation. Code-review R6 found no material findings and closed M3. Code-review R7 requested an M4 fix for current Codex command-output event parsing; RTF-CR7 is open.
+- Findings resolved: 17
+- Unresolved findings: 0
+- Final result: Proposal-review R1 requested changes for release-gate semantics, run evidence, analyzer summaries, RC reuse, milestone slicing, and warning severity wording; all accepted proposal-review findings were resolved in the proposal. Proposal-review R2 approved the revised proposal with no material findings. Spec-review R1 requested changes for analyzer summary raw-omission compatibility, incomplete non-final dynamic metadata, and first-baseline comparison metadata; all accepted spec-review findings were resolved in the spec. Plan-review R1 requested a milestone-boundary revision; M1 now owns standalone token-cost metadata validation and M5 owns release validation integration. Plan-review R2 approved the revised plan with no material findings. Code-review R1 requested M1 fixes for RC reuse metadata validation and Markdown report metadata-link validation; both findings were resolved in the standalone validator and tests. Code-review R2 requested an M1 fix for partial RC reuse checked-surface validation; RTF-CR3 was resolved in the standalone validator and tests. Code-review R3 found no material findings and closed M1. Code-review R4 found no material findings and closed M2. Code-review R5 requested M3 fixes for analyzer summary path stability, repeated same-file read signals, and justified full-file-read classification; all three findings were resolved in M3 runner/analyzer tests and implementation. Code-review R6 found no material findings and closed M3. Code-review R7 requested an M4 fix for current Codex command-output event parsing; RTF-CR7 was resolved in analyzer parsing, focused tests, regenerated summaries, and the corrected M4 report evidence. M4 is ready for code-review rerun.
 
 ## Resolution Overview
 
@@ -42,7 +42,7 @@ Review closeout: code-review-r7
 | RTF-CR4 | accepted | resolved | Analyzer summaries written by the runner now use stable repo-relative JSONL paths for repository outputs. |
 | RTF-CR5 | accepted | resolved | Analyzer repeated-read signals now count repeated same-file reads independently from confirmed full-file classification. |
 | RTF-CR6 | accepted | resolved | Analyzer full-file-read classification now supports justified reads when justification metadata is provided. |
-| RTF-CR7 | accepted | open | Analyzer must parse current Codex `command_execution` `aggregated_output` events and M4 summaries/report must be regenerated from corrected evidence. |
+| RTF-CR7 | accepted | resolved | Analyzer now parses current Codex `command_execution` `aggregated_output` events, and M4 summaries/report metadata were regenerated with corrected command-output amplification evidence. |
 
 ## Common Resolution Metadata
 
@@ -269,13 +269,13 @@ No material findings.
 
 Finding ID: RTF-CR7
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implementer
 Owning stage: implement M4
-Chosen action: Update the analyzer to recognize current Codex command execution events that carry command output in `aggregated_output`, add focused analyzer coverage for that event shape, and regenerate the M4 sanitized summaries plus Markdown/YAML report values from corrected analyzer evidence.
-Rationale: The first baseline report must measure command-output amplification from Codex JSONL analyzer evidence. If the analyzer treats current command execution events as unknown records, release evidence can incorrectly report zero command output.
-Validation target: Analyzer tests cover `item.completed` `command_execution` events with `aggregated_output`, and the `v0.1.1` analyzer summaries plus report no longer under-report command-output amplification from current Codex JSONL.
-Validation evidence: Pending M4 review-resolution implementation.
+Chosen action: Updated `scripts/analyze-codex-jsonl.py` to parse current Codex `item.completed` events whose nested `item.type` is `command_execution` and whose output is stored in `item.aggregated_output`. Added focused analyzer test coverage, reran the live v0.1.1 benchmark, regenerated sanitized analyzer summaries, and updated the v0.1.1 Markdown/YAML release report.
+Rationale: M4 release evidence must measure command-output amplification from current Codex JSONL. Treating current command-output events as unknown records under-reported runtime cost and made the baseline unreliable.
+Validation target: Analyzer reports tool calls, command output lines, estimated output tokens, largest command-output event, and zero unknown records for current Codex `command_execution` `aggregated_output` events; v0.1.1 report evidence no longer claims zero command-output amplification.
+Validation evidence: `python scripts/test-token-cost-measurement.py`; `python scripts/run-token-cost-benchmarks.py --suite benchmarks/token-cost/manifest.yaml --release v0.1.1 --tool codex`; `python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml`; `python -m py_compile scripts/run-token-cost-benchmarks.py scripts/analyze-codex-jsonl.py`; `python scripts/test-token-cost-report-validation.py`; final M4 validation set after RTF-CR7 resolution.
 
 ### code-review-r2
 

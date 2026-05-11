@@ -68,11 +68,11 @@ No `benchmarks/` directory exists yet. This plan creates the first `benchmarks/t
 ## Current Handoff Summary
 
 - Current milestone: M4. First baseline report and release report template
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M3 code-review R6 clean-with-notes
-- Review status: code-review R7 requested M4 fix RTF-CR7
+- Review status: code-review R7 finding RTF-CR7 resolved; M4 is ready for code-review rerun
 - Remaining in-scope implementation milestones: M4, M5
-- Next stage: review-resolution for RTF-CR7, then implement M4 fixes
+- Next stage: code-review M4 rerun
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: M4-M5, explain-change, verify, and PR handoff are not complete.
 
@@ -227,7 +227,7 @@ No `benchmarks/` directory exists yet. This plan creates the first `benchmarks/t
 
 ### M4. First baseline report and release report template
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Add the first release Token-Friendliness report format and baseline metadata without adding a full report generator.
 - Requirements: `R1`-`R7`, `R14`-`R23`, `R27`-`R30`, `R32`
 - Files/components likely touched:
@@ -257,13 +257,13 @@ No `benchmarks/` directory exists yet. This plan creates the first `benchmarks/t
 - Expected observable result: The first release Token-Friendliness report exists as Markdown plus YAML and can be validated.
 - Commit message: `M4: add token-friendliness baseline report`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] hand off to code-review for M4
+  - [x] targeted validation passed
+  - [x] hand off to code-review for M4
   - [ ] code-review completed
-  - [ ] material findings resolved or explicitly dispositioned
-  - [ ] progress updated
+  - [x] material findings resolved or explicitly dispositioned
+  - [x] progress updated
   - [ ] decision log updated if needed
-  - [ ] validation notes updated
+  - [x] validation notes updated
   - [ ] milestone committed
 - Risks:
   - raw JSONL may contain local data and require sanitized summaries;
@@ -407,6 +407,7 @@ bash scripts/release-verify.sh <release-version>
 - 2026-05-11: Live Codex benchmark execution first failed in the disposable temp fixture because Codex requires `--skip-git-repo-check` outside trusted repositories; added runner/test coverage for the normalized command and reran successfully.
 - 2026-05-11: Added the `v0.1.1` Token-Friendliness Markdown report, YAML metadata, sanitized per-run analyzer summaries, and release-notes link; M4 is ready for code-review.
 - 2026-05-11: Code-review R7 requested an M4 fix for analyzer parsing of current Codex `command_execution` `aggregated_output` events; RTF-CR7 is open.
+- 2026-05-11: Resolved RTF-CR7 by parsing current Codex `command_execution` `aggregated_output` events, adding focused analyzer coverage, rerunning the v0.1.1 benchmark, regenerating sanitized summaries, and correcting the Markdown/YAML baseline report; M4 is ready for code-review rerun.
 
 ## Decision Log
 
@@ -438,6 +439,7 @@ bash scripts/release-verify.sh <release-version>
 - M4 records raw JSONL as omitted for the baseline report because live Codex JSONL contained disposable local temp fixture paths and full command output. The tracked analyzer summaries are the sanitized release evidence.
 - M4 adjusted the runner Codex invocation to include `--skip-git-repo-check` because the benchmark fixture intentionally runs outside the repository working tree.
 - Code-review R7 found that the analyzer does not parse current Codex command output stored in `aggregated_output`, so the M4 command-output amplification evidence must be regenerated after analyzer coverage is fixed.
+- RTF-CR7 resolution found current Codex `command_execution` events expose command output through nested `item.aggregated_output`. Corrected analyzer summaries now show non-zero command-output amplification and confirmed skill-file reads for the v0.1.1 baseline.
 
 ## Validation Notes
 
@@ -467,6 +469,9 @@ bash scripts/release-verify.sh <release-version>
 - M4 test-first proof: `python scripts/test-token-cost-measurement.py` failed after adding the expected `--skip-git-repo-check` runner command assertion and before the runner command was updated.
 - M4 validation: `python scripts/measure-skill-tokens.py` passed and reported 23 skills with 54,294 estimated tokens; `python scripts/run-token-cost-benchmarks.py --suite benchmarks/token-cost/manifest.yaml --release v0.1.1 --tool codex` passed after the runner command fix; `python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml` passed; `python scripts/test-token-cost-measurement.py` passed 22 tests; `python -m py_compile scripts/run-token-cost-benchmarks.py scripts/analyze-codex-jsonl.py` passed; `python scripts/test-token-cost-report-validation.py` passed 10 tests; `git diff --check -- docs/reports/token-cost docs/releases/v0.1.1/release-notes.md scripts/run-token-cost-benchmarks.py scripts/test-token-cost-measurement.py` passed.
 - M4 lifecycle validation: `python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml` passed; `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills` passed; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/reports/token-cost/releases/v0.1.1.md --path docs/reports/token-cost/releases/v0.1.1.yaml --path docs/releases/v0.1.1/release-notes.md` passed with the existing `docs/plan.md` lifecycle-language warning.
+- RTF-CR7 test-first proof: `python scripts/test-token-cost-measurement.py` failed before the analyzer fix because current Codex `item.completed` / `command_execution` / `aggregated_output` events reported `tool_calls: 0` and `unknown_records: 1`.
+- RTF-CR7 resolution validation: `python scripts/test-token-cost-measurement.py` passed 23 tests; `python scripts/run-token-cost-benchmarks.py --suite benchmarks/token-cost/manifest.yaml --release v0.1.1 --tool codex` passed and regenerated seven run summaries; raw JSONL was omitted after sanitized analyzer summaries were regenerated; additional M4 validation is recorded in the change metadata.
+- RTF-CR7 final validation: `python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml`, `python -m py_compile scripts/run-token-cost-benchmarks.py scripts/analyze-codex-jsonl.py`, `python scripts/test-token-cost-report-validation.py`, `python scripts/analyze-codex-jsonl.py tests/fixtures/token-cost/sample-codex-session.jsonl`, `python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills`, and scoped `git diff --check -- ...` passed. Artifact lifecycle validation passed with the existing `docs/plan.md` lifecycle-language warning.
 
 ## Outcome and Retrospective
 

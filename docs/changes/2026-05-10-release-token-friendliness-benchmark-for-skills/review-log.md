@@ -124,4 +124,4 @@ Status: changes-requested
 Detailed record: reviews/code-review-r7.md
 Resolution: review-resolution.md#code-review-r7
 Material findings: RTF-CR7
-Open findings: RTF-CR7
+Open findings: None

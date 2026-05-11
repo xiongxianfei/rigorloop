@@ -9,36 +9,55 @@ run:
   raw_omission_reason: "raw JSONL contains disposable local temp fixture paths and full command output; analyzer summary is tracked as sanitized release evidence"
 
 usage:
-  cached_input_tokens: 44672
-  input_tokens: 50901
-  output_tokens: 641
-  reasoning_output_tokens: 72
+  cached_input_tokens: 61952
+  input_tokens: 69072
+  output_tokens: 935
+  reasoning_output_tokens: 159
 
 tool_output:
-  total_estimated_tokens: 0
+  total_estimated_tokens: 2190
   largest_event:
-    kind: none
-    command: ""
-    path: ""
-    lines: 0
-    estimated_tokens: 0
+    kind: command_execution
+    command: "/bin/bash -lc \"sed -n '1,220p' /tmp/rigorloop-token-bench-v0.1.1-1778496244-bff770cd/.agents/skills/proposal/SKILL.md\""
+    path: /tmp/rigorloop-token-bench-v0.1.1-1778496244-bff770cd/.agents/skills/proposal/SKILL.md
+    lines: 168
+    estimated_tokens: 2018
 
 signals:
-  full_file_read_count: 0
-  broad_search_count: 0
+  full_file_read_count: 1
+  broad_search_count: 1
   generated_output_read_count: 0
   repeated_file_read_count: 0
 
 full_file_read:
-  result: none
+  result: confirmed
   justification: ""
-  signals: []
+  signals:
+    - full_file_read_command
+    - large_leading_range_read
   justified_reads: []
-  confirmed_reads: []
-  suspected_reads: []
+  confirmed_reads:
+    - path: /tmp/rigorloop-token-bench-v0.1.1-1778496244-bff770cd/.agents/skills/proposal/SKILL.md
+      lines: 168
+      estimated_tokens: 2018
+  suspected_reads:
+    - path: docs/workflows.md
+      lines: 3
+      estimated_tokens: 32
+    - path: AGENTS.md
+      lines: 5
+      estimated_tokens: 43
+    - path: VISION.md
+      lines: 3
+      estimated_tokens: 30
+    - path: README.md
+      lines: 3
+      estimated_tokens: 27
   repeated_file_reads: []
 
 verdict:
-  result: pass
-  warnings: []
+  result: warning
+  warnings:
+    - "broad search observed"
+    - "full-file-style read observed"
   blockers: []
