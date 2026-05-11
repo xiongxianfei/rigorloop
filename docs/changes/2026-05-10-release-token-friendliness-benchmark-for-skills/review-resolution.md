@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -16,9 +16,9 @@ Review closeout: code-review-r4
 Review closeout: code-review-r5
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-r1`, `code-review-r2`, `code-review-r3`, `code-review-r4`, `code-review-r5`
-- Findings resolved: 13
-- Unresolved findings: 3
-- Final result: Proposal-review R1 requested changes for release-gate semantics, run evidence, analyzer summaries, RC reuse, milestone slicing, and warning severity wording; all accepted proposal-review findings were resolved in the proposal. Proposal-review R2 approved the revised proposal with no material findings. Spec-review R1 requested changes for analyzer summary raw-omission compatibility, incomplete non-final dynamic metadata, and first-baseline comparison metadata; all accepted spec-review findings were resolved in the spec. Plan-review R1 requested a milestone-boundary revision; M1 now owns standalone token-cost metadata validation and M5 owns release validation integration. Plan-review R2 approved the revised plan with no material findings. Code-review R1 requested M1 fixes for RC reuse metadata validation and Markdown report metadata-link validation; both findings were resolved in the standalone validator and tests. Code-review R2 requested an M1 fix for partial RC reuse checked-surface validation; RTF-CR3 was resolved in the standalone validator and tests. Code-review R3 found no material findings and closed M1. Code-review R4 found no material findings and closed M2. Code-review R5 requested M3 fixes for analyzer summary path stability, repeated same-file read signals, and justified full-file-read classification.
+- Findings resolved: 16
+- Unresolved findings: 0
+- Final result: Proposal-review R1 requested changes for release-gate semantics, run evidence, analyzer summaries, RC reuse, milestone slicing, and warning severity wording; all accepted proposal-review findings were resolved in the proposal. Proposal-review R2 approved the revised proposal with no material findings. Spec-review R1 requested changes for analyzer summary raw-omission compatibility, incomplete non-final dynamic metadata, and first-baseline comparison metadata; all accepted spec-review findings were resolved in the spec. Plan-review R1 requested a milestone-boundary revision; M1 now owns standalone token-cost metadata validation and M5 owns release validation integration. Plan-review R2 approved the revised plan with no material findings. Code-review R1 requested M1 fixes for RC reuse metadata validation and Markdown report metadata-link validation; both findings were resolved in the standalone validator and tests. Code-review R2 requested an M1 fix for partial RC reuse checked-surface validation; RTF-CR3 was resolved in the standalone validator and tests. Code-review R3 found no material findings and closed M1. Code-review R4 found no material findings and closed M2. Code-review R5 requested M3 fixes for analyzer summary path stability, repeated same-file read signals, and justified full-file-read classification; all three findings were resolved in M3 runner/analyzer tests and implementation.
 
 ## Resolution Overview
 
@@ -37,9 +37,9 @@ Review closeout: code-review-r5
 | RTF-CR1 | accepted | resolved | Added RC reuse metadata validation and fixtures to the standalone token-cost validator. |
 | RTF-CR2 | accepted | resolved | Validated that the Markdown report names or links the YAML metadata file. |
 | RTF-CR3 | accepted | resolved | Validator now requires all RC reuse checked-surface categories. |
-| RTF-CR4 | accepted | open | Analyzer summaries written by the runner must use stable repo-relative JSONL paths instead of absolute maintainer-local paths. |
-| RTF-CR5 | accepted | open | Analyzer repeated-read signals must count repeated same-file reads independently from confirmed full-file classification. |
-| RTF-CR6 | accepted | open | Analyzer full-file-read classification must support justified reads when justification metadata is provided. |
+| RTF-CR4 | accepted | resolved | Analyzer summaries written by the runner now use stable repo-relative JSONL paths for repository outputs. |
+| RTF-CR5 | accepted | resolved | Analyzer repeated-read signals now count repeated same-file reads independently from confirmed full-file classification. |
+| RTF-CR6 | accepted | resolved | Analyzer full-file-read classification now supports justified reads when justification metadata is provided. |
 
 ## Common Resolution Metadata
 
@@ -212,37 +212,37 @@ No material findings.
 
 Finding ID: RTF-CR4
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implementer
 Owning stage: implement M3
 Chosen action: Convert analyzer summary `run.jsonl` to a repo-relative path when the JSONL path is under the repository root, and add focused runner/analyzer coverage that rejects absolute repository paths in durable summaries.
 Rationale: Release evidence must be stable and must not persist maintainer-local absolute paths.
 Validation target: Runner-produced analyzer summaries under `docs/reports/token-cost/runs/<release>/` use repo-relative `run.jsonl` values.
-Validation evidence: pending
+Validation evidence: `python scripts/test-token-cost-measurement.py`; `python -m py_compile scripts/run-token-cost-benchmarks.py scripts/analyze-codex-jsonl.py`; `python scripts/analyze-codex-jsonl.py tests/fixtures/token-cost/sample-codex-session.jsonl`; `python scripts/test-token-cost-report-validation.py`; `git diff --check -- scripts/run-token-cost-benchmarks.py scripts/analyze-codex-jsonl.py scripts/test-token-cost-measurement.py tests/fixtures/token-cost docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md`
 
 #### RTF-CR5 - Repeated same-file read signal misses repeated capped reads
 
 Finding ID: RTF-CR5
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implementer
 Owning stage: implement M3
 Chosen action: Count repeated file-read-like commands by path independently from confirmed full-file events, and add focused coverage for repeated capped reads of the same file.
 Rationale: Repeated same-file reads are a runtime cost signal even when each individual read is capped.
 Validation target: Analyzer summaries report a non-zero repeated-read signal when the same file is read repeatedly below full-file thresholds.
-Validation evidence: pending
+Validation evidence: Shared code-review R5 resolution validation evidence.
 
 #### RTF-CR6 - Full-file-read classification cannot represent justified reads
 
 Finding ID: RTF-CR6
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implementer
 Owning stage: implement M3
 Chosen action: Add analyzer support for justified full-file/generated-output read classification when justification metadata is provided, and add focused tests for the `justified` classification.
 Rationale: The spec and test spec require `justified` as part of the full-file-read classification contract.
 Validation target: Analyzer summary can emit `full_file_read.result: justified` for explicitly justified reads.
-Validation evidence: pending
+Validation evidence: Shared code-review R5 resolution validation evidence.
 
 #### RTF-CR2 - Markdown report link/name requirement is not validated
 
@@ -287,5 +287,5 @@ Validation evidence: `python scripts/test-token-cost-report-validation.py`; `pyt
 - [x] Every `needs-decision` finding is resolved or blocks closeout.
 - [x] Validation evidence is recorded for spec-review findings.
 - [x] Validation evidence is recorded for plan-review findings.
-- [ ] Validation evidence is recorded for code-review findings.
+- [x] Validation evidence is recorded for code-review findings.
 - [x] Closeout status is correct.

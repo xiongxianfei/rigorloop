@@ -248,6 +248,40 @@ class CodexJsonlAnalyzerTests(unittest.TestCase):
         self.assertIn("full_file_read_count: 1", summary_text)
         self.assertIn("result: warning", summary_text)
 
+    def test_summary_uses_repo_relative_jsonl_path_when_under_repo(self) -> None:
+        with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
+            run_dir = Path(tmp)
+            path = run_dir / "proposal-short-run1.jsonl"
+            summary = run_dir / "proposal-short-run1.analysis.yaml"
+            path.write_text(
+                json.dumps(
+                    {
+                        "usage": {
+                            "input_tokens": 1,
+                            "cached_input_tokens": 0,
+                            "output_tokens": 1,
+                            "reasoning_output_tokens": 0,
+                        }
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            result = run_command(
+                str(ANALYZE),
+                str(path),
+                "--summary-output",
+                str(summary),
+                "--run-id",
+                "proposal-short",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            summary_text = summary.read_text(encoding="utf-8")
+            self.assertIn(f"jsonl: {path.relative_to(ROOT)}", summary_text)
+            self.assertNotIn(str(ROOT), summary_text)
+
     def test_writes_schema_version_1_summary_for_omitted_raw_jsonl(self) -> None:
         path = self.write_jsonl(
             {
@@ -289,6 +323,151 @@ class CodexJsonlAnalyzerTests(unittest.TestCase):
         self.assertIn("sanitized_source: codex-jsonl-local-run", summary_text)
         self.assertIn(f"sanitized_summary: {sanitized_summary}", summary_text)
         self.assertIn('raw_omission_reason: "raw JSONL contained local machine paths"', summary_text)
+
+    def test_repeated_capped_same_file_reads_are_reported_as_signal(self) -> None:
+        path = self.write_jsonl(
+            {
+                "tool": "functions.exec_command",
+                "args": {"cmd": "sed -n '1,20p' docs/workflows.md"},
+                "output": "a\nb\n",
+            },
+            {
+                "tool": "functions.exec_command",
+                "args": {"cmd": "sed -n '1,20p' docs/workflows.md"},
+                "output": "c\nd\n",
+            },
+            {
+                "tool": "functions.exec_command",
+                "args": {"cmd": "sed -n '1,20p' docs/workflows.md"},
+                "output": "e\nf\n",
+            },
+        )
+        summary = Path(tempfile.NamedTemporaryFile(suffix=".analysis.yaml", delete=True).name)
+        try:
+            result = run_command(
+                str(ANALYZE),
+                str(path),
+                "--summary-output",
+                str(summary),
+                "--run-id",
+                "repeated-check",
+            )
+            summary_text = summary.read_text(encoding="utf-8")
+        finally:
+            path.unlink()
+            if summary.exists():
+                summary.unlink()
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("repeated_file_read_count: 1", summary_text)
+        self.assertIn("path: docs/workflows.md", summary_text)
+        self.assertIn("count: 3", summary_text)
+        self.assertIn("result: none", summary_text)
+
+    def test_justified_full_file_read_classification(self) -> None:
+        path = self.write_jsonl(
+            {
+                "tool": "functions.exec_command",
+                "args": {"cmd": "cat docs/workflows.md"},
+                "output": "x\n" * 120,
+            },
+        )
+        summary = Path(tempfile.NamedTemporaryFile(suffix=".analysis.yaml", delete=True).name)
+        try:
+            result = run_command(
+                str(ANALYZE),
+                str(path),
+                "--summary-output",
+                str(summary),
+                "--run-id",
+                "justified-check",
+                "--justified-read",
+                "docs/workflows.md",
+                "--justification",
+                "explicit benchmark target",
+            )
+            summary_text = summary.read_text(encoding="utf-8")
+        finally:
+            path.unlink()
+            if summary.exists():
+                summary.unlink()
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("result: justified", summary_text)
+        self.assertIn('justification: "explicit benchmark target"', summary_text)
+        self.assertIn("path: docs/workflows.md", summary_text)
+
+    def test_mixed_justified_and_unjustified_reads_remain_confirmed(self) -> None:
+        path = self.write_jsonl(
+            {
+                "tool": "functions.exec_command",
+                "args": {"cmd": "cat docs/workflows.md"},
+                "output": "x\n" * 120,
+            },
+            {
+                "tool": "functions.exec_command",
+                "args": {"cmd": "cat AGENTS.md"},
+                "output": "y\n" * 120,
+            },
+        )
+        summary = Path(tempfile.NamedTemporaryFile(suffix=".analysis.yaml", delete=True).name)
+        try:
+            result = run_command(
+                str(ANALYZE),
+                str(path),
+                "--summary-output",
+                str(summary),
+                "--run-id",
+                "mixed-check",
+                "--justified-read",
+                "docs/workflows.md",
+                "--justification",
+                "explicit benchmark target",
+            )
+            summary_text = summary.read_text(encoding="utf-8")
+        finally:
+            path.unlink()
+            if summary.exists():
+                summary.unlink()
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("result: confirmed", summary_text)
+        self.assertIn("justified_reads:", summary_text)
+        self.assertIn("confirmed_reads:", summary_text)
+        self.assertIn("path: AGENTS.md", summary_text)
+
+    def test_justified_generated_output_read_classification(self) -> None:
+        path = self.write_jsonl(
+            {
+                "tool": "functions.exec_command",
+                "args": {"cmd": "cat dist/adapters/codex/.agents/skills/workflow/SKILL.md"},
+                "output": "x\n" * 120,
+            },
+        )
+        summary = Path(tempfile.NamedTemporaryFile(suffix=".analysis.yaml", delete=True).name)
+        try:
+            result = run_command(
+                str(ANALYZE),
+                str(path),
+                "--summary-output",
+                str(summary),
+                "--run-id",
+                "generated-check",
+                "--justified-read",
+                "dist/adapters/codex/.agents/skills/workflow/SKILL.md",
+                "--justification",
+                "generated-output validation",
+            )
+            summary_text = summary.read_text(encoding="utf-8")
+        finally:
+            path.unlink()
+            if summary.exists():
+                summary.unlink()
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("result: justified", summary_text)
+        self.assertIn("generated_output_read_count: 1", summary_text)
+        self.assertIn('justification: "generated-output validation"', summary_text)
 
 
 class BaselineReportTests(unittest.TestCase):
@@ -372,7 +551,10 @@ class BenchmarkRunnerTests(unittest.TestCase):
     def test_runner_dry_run_installs_public_skills_and_writes_analyzer_summaries(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             temp_root = Path(tmp) / "temp"
-            output_dir = Path(tmp) / "runs"
+            output_dir = ROOT / "docs" / "reports" / "token-cost" / "runs" / "review-check"
+            if output_dir.exists():
+                for path in output_dir.iterdir():
+                    path.unlink()
             result = run_command(
                 str(RUNNER),
                 "--release",
@@ -389,24 +571,38 @@ class BenchmarkRunnerTests(unittest.TestCase):
                 "--dry-run",
             )
 
-            self.assertEqual(result.returncode, 0, result.stderr)
-            self.assertIn("dry_run: true", result.stdout)
-            self.assertIn("skill_source: dist/adapters/codex/.agents/skills/", result.stdout)
-            self.assertIn("codex_command: codex exec --json --ephemeral", result.stdout)
-            self.assertIn("analyzer_command:", result.stdout)
-            self.assertEqual(
-                sorted(path.name for path in output_dir.glob("*.jsonl")),
-                [f"{benchmark_id}-run1.jsonl" for benchmark_id in sorted(EXPECTED_BENCHMARKS)],
-            )
-            for benchmark_id in EXPECTED_BENCHMARKS:
-                summary = output_dir / f"{benchmark_id}-run1.analysis.yaml"
-                self.assertTrue(summary.exists(), f"missing analyzer summary for {benchmark_id}")
-                self.assertIn("schema_version: 1", summary.read_text(encoding="utf-8"))
+            try:
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertIn("dry_run: true", result.stdout)
+                self.assertIn("skill_source: dist/adapters/codex/.agents/skills/", result.stdout)
+                self.assertIn("codex_command: codex exec --json --ephemeral", result.stdout)
+                self.assertIn("analyzer_command:", result.stdout)
+                self.assertEqual(
+                    sorted(path.name for path in output_dir.glob("*.jsonl")),
+                    [f"{benchmark_id}-run1.jsonl" for benchmark_id in sorted(EXPECTED_BENCHMARKS)],
+                )
+                for benchmark_id in EXPECTED_BENCHMARKS:
+                    summary = output_dir / f"{benchmark_id}-run1.analysis.yaml"
+                    self.assertTrue(summary.exists(), f"missing analyzer summary for {benchmark_id}")
+                    summary_text = summary.read_text(encoding="utf-8")
+                    self.assertIn("schema_version: 1", summary_text)
+                    self.assertIn(
+                        f"jsonl: {output_dir.relative_to(ROOT)}/{benchmark_id}-run1.jsonl",
+                        summary_text,
+                    )
+                    self.assertNotIn(str(ROOT), summary_text)
 
-            temp_runs = list(temp_root.glob("rigorloop-token-bench-v0.1.1-*"))
-            self.assertEqual(len(temp_runs), 1)
-            self.assertTrue((temp_runs[0] / ".agents" / "skills" / "proposal" / "SKILL.md").exists())
-            self.assertFalse((BENCHMARK_FIXTURE / ".agents" / "skills").exists())
+                temp_runs = list(temp_root.glob("rigorloop-token-bench-v0.1.1-*"))
+                self.assertEqual(len(temp_runs), 1)
+                self.assertTrue(
+                    (temp_runs[0] / ".agents" / "skills" / "proposal" / "SKILL.md").exists()
+                )
+                self.assertFalse((BENCHMARK_FIXTURE / ".agents" / "skills").exists())
+            finally:
+                if output_dir.exists():
+                    for path in output_dir.iterdir():
+                        path.unlink()
+                    output_dir.rmdir()
 
     def test_runner_rejects_repository_local_codex_skill_source(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

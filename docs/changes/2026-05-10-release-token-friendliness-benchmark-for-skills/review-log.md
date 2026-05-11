@@ -104,4 +104,4 @@ Status: changes-requested
 Detailed record: reviews/code-review-r5.md
 Resolution: review-resolution.md#code-review-r5
 Material findings: RTF-CR4, RTF-CR5, RTF-CR6
-Open findings: RTF-CR4, RTF-CR5, RTF-CR6
+Open findings: None

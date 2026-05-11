@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 
+ROOT = Path(__file__).resolve().parents[1]
 USAGE_KEYS = {
     "input_tokens",
     "cached_input_tokens",
@@ -21,6 +22,7 @@ USAGE_KEYS = {
 }
 HIGH_OUTPUT_TOKEN_THRESHOLD = 20000
 SUMMARY_WARNING_TOKEN_THRESHOLD = 8000
+REPEATED_READ_THRESHOLD = 3
 
 
 @dataclass
@@ -179,6 +181,24 @@ def command_path(command: str) -> str | None:
     return None
 
 
+def display_path(path: Path, repo_root: Path) -> str:
+    resolved = path.resolve()
+    try:
+        return resolved.relative_to(repo_root.resolve()).as_posix()
+    except ValueError:
+        return str(resolved)
+
+
+def is_file_read_like_command(command: str) -> bool:
+    stripped = command.strip()
+    return bool(
+        re.search(r"\b(?:cat|nl|head|tail)\s+[^\s|;&]+", stripped)
+        or re.search(r"\bsed\s+-n\s+['\"]?[^'\"]+['\"]?\s+[^\s|;&]+", stripped)
+        or re.search(r"\bawk\b.*\s+[^\s|;&]+$", stripped)
+        or re.search(r"open\([^)]+\)\.read\(\)", stripped)
+    )
+
+
 def event_kind(event: ToolEvent) -> str:
     if command_path(event.command):
         return "file-read"
@@ -233,9 +253,9 @@ def repeated_file_reads(events: list[ToolEvent]) -> list[tuple[str, int]]:
     counts: dict[str, int] = {}
     for event in events:
         path = command_path(event.command)
-        if path and is_full_file_read_event(event):
+        if path and is_file_read_like_command(event.command):
             counts[path] = counts.get(path, 0) + 1
-    return sorted((path, count) for path, count in counts.items() if count > 1)
+    return sorted((path, count) for path, count in counts.items() if count >= REPEATED_READ_THRESHOLD)
 
 
 def command_summary(command: str, limit: int = 120) -> str:
@@ -285,6 +305,58 @@ def full_file_read_classification(events: list[ToolEvent]) -> tuple[str, list[st
     return "none", signals
 
 
+def normalized_read_path(path_text: str, repo_root: Path) -> str:
+    path = Path(path_text)
+    if path.is_absolute():
+        return display_path(path, repo_root)
+    return path.as_posix()
+
+
+def justified_read_set(paths: list[str], repo_root: Path) -> set[str]:
+    return {normalized_read_path(path, repo_root) for path in paths}
+
+
+def read_is_justified(event: ToolEvent, justified_reads: set[str], repo_root: Path) -> bool:
+    path = command_path(event.command)
+    if not path:
+        return False
+    normalized = normalized_read_path(path, repo_root)
+    if normalized in justified_reads:
+        return True
+    resolved = (repo_root / normalized).resolve()
+    return any(resolved == (repo_root / item).resolve() for item in justified_reads)
+
+
+def full_file_read_detail(
+    events: list[ToolEvent], justified_reads: set[str], repo_root: Path
+) -> tuple[str, list[str], list[ToolEvent], list[ToolEvent], list[ToolEvent]]:
+    confirmed = [event for event in events if is_full_file_read_event(event)]
+    suspected = [event for event in events if is_suspected_full_file_read_event(event)]
+    justified = [
+        event
+        for event in confirmed + suspected
+        if read_is_justified(event, justified_reads, repo_root)
+    ]
+    unjustified_confirmed = [event for event in confirmed if event not in justified]
+    unjustified_suspected = [event for event in suspected if event not in justified]
+    if unjustified_confirmed:
+        result = "confirmed"
+    elif unjustified_suspected:
+        result = "suspected"
+    elif justified:
+        result = "justified"
+    else:
+        result = "none"
+    signals: list[str] = []
+    if confirmed:
+        signals.append("full_file_read_command")
+    if any(event.output_lines >= 300 for event in confirmed):
+        signals.append("high_volume_single_file_output")
+    if suspected:
+        signals.append("large_leading_range_read")
+    return result, signals, justified, unjustified_confirmed, unjustified_suspected
+
+
 def verdict_for(events: list[ToolEvent]) -> tuple[str, list[str], list[str]]:
     warnings: list[str] = []
     blockers: list[str] = []
@@ -314,6 +386,9 @@ def write_summary(
     sanitized_source: str,
     sanitized_summary: str,
     raw_omission_reason: str,
+    repo_root: Path,
+    justified_reads: set[str],
+    justification: str,
     usage: dict[str, int],
     events: list[ToolEvent],
 ) -> None:
@@ -322,8 +397,14 @@ def write_summary(
     largest = ranked_outputs[0] if ranked_outputs else None
     counts = signal_counts(events)
     verdict, warnings, blockers = verdict_for(events)
-    full_file_result, full_file_signals = full_file_read_classification(events)
-    jsonl_value = str(jsonl_path) if raw_jsonl_tracked else ""
+    (
+        full_file_result,
+        full_file_signals,
+        justified_events,
+        confirmed_events,
+        suspected_events,
+    ) = full_file_read_detail(events, justified_reads, repo_root)
+    jsonl_value = display_path(jsonl_path, repo_root) if raw_jsonl_tracked else ""
     lines = [
         "schema_version: 1",
         "",
@@ -361,6 +442,7 @@ def write_summary(
             "",
             "full_file_read:",
             f"  result: {full_file_result}",
+            f"  justification: {yaml_scalar(justification if justified_events else '')}",
         ]
     )
     if full_file_signals:
@@ -368,6 +450,27 @@ def write_summary(
         lines.extend(f"    - {yaml_scalar(item)}" for item in full_file_signals)
     else:
         lines.append("  signals: []")
+    for title, detail_events in [
+        ("justified_reads", justified_events),
+        ("confirmed_reads", confirmed_events),
+        ("suspected_reads", suspected_events),
+    ]:
+        if detail_events:
+            lines.append(f"  {title}:")
+            for event in detail_events:
+                lines.append(f"    - path: {yaml_scalar(command_path(event.command) or '')}")
+                lines.append(f"      lines: {event.output_lines}")
+                lines.append(f"      estimated_tokens: {event.estimated_output_tokens}")
+        else:
+            lines.append(f"  {title}: []")
+    repeated = repeated_file_reads(events)
+    if repeated:
+        lines.append("  repeated_file_reads:")
+        for path_text, count in repeated:
+            lines.append(f"    - path: {yaml_scalar(path_text)}")
+            lines.append(f"      count: {count}")
+    else:
+        lines.append("  repeated_file_reads: []")
     lines.extend(["", "verdict:", f"  result: {verdict}"])
     if warnings:
         lines.append("  warnings:")
@@ -404,6 +507,14 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--sanitized-source", default="", help="Sanitized source label.")
     parser.add_argument("--sanitized-summary", default="", help="Sanitized summary evidence path.")
     parser.add_argument("--raw-omission-reason", default="", help="Reason raw JSONL is omitted.")
+    parser.add_argument("--repo-root", default=str(ROOT), help="Repository root for stable paths.")
+    parser.add_argument(
+        "--justified-read",
+        action="append",
+        default=[],
+        help="File path whose whole-file/generated-output read is justified.",
+    )
+    parser.add_argument("--justification", default="", help="Reason justified reads are allowed.")
     args = parser.parse_args(argv)
 
     if args.raw_jsonl_omitted and (
@@ -423,6 +534,7 @@ def main(argv: list[str] | None = None) -> int:
         return 1
 
     if args.summary_output:
+        repo_root = Path(args.repo_root)
         write_summary(
             Path(args.summary_output),
             run_id=args.run_id or Path(args.jsonl_path).stem,
@@ -431,6 +543,9 @@ def main(argv: list[str] | None = None) -> int:
             sanitized_source=args.sanitized_source,
             sanitized_summary=args.sanitized_summary,
             raw_omission_reason=args.raw_omission_reason,
+            repo_root=repo_root,
+            justified_reads=justified_read_set(args.justified_read, repo_root),
+            justification=args.justification,
             usage=usage,
             events=events,
         )
