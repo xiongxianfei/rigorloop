@@ -71,14 +71,14 @@ The goal is to reduce unnecessary whole-skill reads and `implement-handoff` comm
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Canonical Skill and Workflow Guidance
-- Current milestone state: review-requested
-- Last reviewed milestone: M1. Static Proof and Test Coverage
-- Review status: M2 implementation complete; code-review M2 pending
-- Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: code-review M2
+- Current milestone: M3. Generated Output and Adapter Validation
+- Current milestone state: planned
+- Last reviewed milestone: M2. Canonical Skill and Workflow Guidance
+- Review status: code-review M2 clean-with-notes; no review-resolution required
+- Remaining in-scope implementation milestones: M3, M4
+- Next stage: implement M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2 is awaiting code-review, M3-M4 are not started, final verification/PR handoff evidence does not exist, and dynamic benchmark evidence has not been recorded.
+- Reason final closeout is or is not ready: M3-M4 are not started, generated output has not been refreshed or validated, final verification/PR handoff evidence does not exist, and dynamic benchmark evidence has not been recorded.
 
 ## Pre-Implementation Gates
 
@@ -149,7 +149,7 @@ Implementation must not start until plan-review passes and the test spec is auth
 
 ### M2. Canonical Skill and Workflow Guidance
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Add progressive-loading guidance to `workflow`, `implement`, and `code-review`, compress duplicate prose, and account for moved workflow detail.
 - Requirements: `R1`-`R6`, `R8b`-`R8d`, `R11`, `R12`.
 - Files/components likely touched:
@@ -341,6 +341,7 @@ Final pre-PR validation is expected to include:
 - 2026-05-11: Code-review M1 completed clean-with-notes; no review-resolution required; next stage is implement M2.
 - 2026-05-11: M2 implementation started; scope is canonical `workflow`, `implement`, `code-review`, workflow docs, static measurement, and migration evidence.
 - 2026-05-11: M2 canonical skill edits completed. `workflow`, `implement`, and `code-review` now have quick operating guides; `implement` starts handoff inspection from the active plan `Current Handoff Summary`; `docs/workflows.md` and the optimization report own the workflow detail migration evidence.
+- 2026-05-11: Code-review M2 completed clean-with-notes; no material findings and no review-resolution required. M2 closed; next stage is implement M3.
 
 ## Decision Log
 
@@ -374,6 +375,13 @@ Final pre-PR validation is expected to include:
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml` passed.
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path skills/workflow/SKILL.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path docs/workflows.md --path specs/progressive-loading-high-cost-public-skills.md --path specs/progressive-loading-high-cost-public-skills.test.md --path docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md --path docs/plan.md` passed with existing lifecycle-language warnings in `docs/plan.md` and `docs/workflows.md`.
   - `git diff --check -- skills/workflow/SKILL.md skills/implement/SKILL.md skills/code-review/SKILL.md docs/workflows.md docs/reports/token-cost/optimizations docs/changes/2026-05-11-progressive-loading-high-cost-public-skills docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md docs/plan.md` passed.
+- Code-review M2 reviewer-side validation passed:
+  - `python scripts/test-skill-validator.py` passed, 62 tests.
+  - `python scripts/validate-skills.py` passed, validating 23 skill files.
+  - `python scripts/measure-skill-tokens.py | rg "total_estimated_tokens|path: (workflow|implement|code-review)/SKILL.md|estimated_tokens"` reproduced total 52,843 estimated tokens; `workflow` 4,857, `implement` 3,963, `code-review` 4,671.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml` passed.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path skills/workflow/SKILL.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path docs/workflows.md --path specs/progressive-loading-high-cost-public-skills.md --path specs/progressive-loading-high-cost-public-skills.test.md --path docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md --path docs/plan.md` passed with existing lifecycle-language warnings in `docs/plan.md` and `docs/workflows.md`.
+  - `git diff --check c889850..182dc1f -- skills/workflow/SKILL.md skills/implement/SKILL.md skills/code-review/SKILL.md docs/workflows.md docs/reports/token-cost/optimizations docs/changes/2026-05-11-progressive-loading-high-cost-public-skills docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md docs/plan.md` passed.
 
 ## Outcome and Retrospective
 
