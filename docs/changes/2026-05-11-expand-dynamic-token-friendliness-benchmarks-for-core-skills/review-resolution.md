@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -13,11 +13,12 @@ Review closeout: plan-review-r1
 Review closeout: plan-review-r2
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m2-r1
+Review closeout: code-review-m3-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-m1-r1`, `code-review-m2-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-m1-r1`, `code-review-m2-r1`, `code-review-m3-r1`
 - Findings resolved: 6
-- Unresolved findings: 0
-- Final result: Proposal-review R1 requested revisions for release-report identity and result-quality gate semantics. The proposal author accepted both findings, revised the proposal, and recorded owner closeout evidence. Proposal-review R2 approved the revised proposal with no material findings. Spec-review R1 requested revisions for waiver authority consistency and claimed optional benchmark gate semantics. The spec author accepted both findings and revised the spec. Spec-review R2 approved the revised spec with no material findings. Architecture-review R1 approved the canonical architecture update with no material findings. Plan-review R1 requested revisions for test-spec sequencing and M5 release-validation scope. The plan author accepted both findings and revised the plan. Plan-review R2 approved the revised plan with no material findings. Code-review M1 R1 approved M1 with no material findings. Code-review M2 R1 approved M2 with no material findings.
+- Unresolved findings: 1
+- Final result: Proposal-review R1 requested revisions for release-report identity and result-quality gate semantics. The proposal author accepted both findings, revised the proposal, and recorded owner closeout evidence. Proposal-review R2 approved the revised proposal with no material findings. Spec-review R1 requested revisions for waiver authority consistency and claimed optional benchmark gate semantics. The spec author accepted both findings and revised the spec. Spec-review R2 approved the revised spec with no material findings. Architecture-review R1 approved the canonical architecture update with no material findings. Plan-review R1 requested revisions for test-spec sequencing and M5 release-validation scope. The plan author accepted both findings and revised the plan. Plan-review R2 approved the revised plan with no material findings. Code-review M1 R1 approved M1 with no material findings. Code-review M2 R1 approved M2 with no material findings. Code-review M3 R1 requested a validator/test fix for mismatched optional benchmark coverage metadata and dynamic run result-quality status.
 
 ## Resolution Overview
 
@@ -29,6 +30,7 @@ Review closeout: code-review-m2-r1
 | EDTF-SR2 | accepted | resolved | Spec now treats optional benchmarks claimed as release coverage as release-required for evidence and result-quality gates. |
 | EDTF-PL1 | accepted | resolved | Plan now separates the pre-implementation `test-spec` gate from implementation milestones. |
 | EDTF-PL2 | accepted | resolved | Plan now uses fixture-focused integration proof in release validation integration and keeps real `validate-release.py --version v0.1.1` in the report-evidence milestone. |
+| EDTF-CR1 | needs-decision | open | Code-review M3 R1 found that optional run result-quality can be hidden by mismatched coverage metadata. Owner must accept, reject, defer, or request another disposition before M3 can close. |
 
 ## Finding Details
 
@@ -145,3 +147,21 @@ No material findings.
 ### code-review-m2-r1
 
 No material findings.
+
+### code-review-m3-r1
+
+#### EDTF-CR1 - Optional run result-quality can be hidden by mismatched coverage metadata
+
+Finding ID: EDTF-CR1
+Disposition: needs-decision
+Status: open
+Owner: implementation owner
+Decision owner: implementation owner
+Owning stage: code-review
+Decision needed: Accept, reject, defer, or otherwise disposition the code-review finding before M3 can close.
+Stop state: M3 remains in resolution-needed until EDTF-CR1 is dispositioned and any accepted fix is implemented and rereviewed.
+Required outcome: The validator must reject or otherwise block inconsistent v2 metadata where `benchmark_coverage.optional_run[*].result_quality_status` does not match the corresponding dynamic run's `result_quality.status`.
+Safe resolution: Track each dynamic run's `result_quality.status` by `dynamic_runtime.runs[*].id`, compare it against `benchmark_coverage.optional_run[*].result_quality_status`, validate optional warning requirements from the reconciled actual run status, and add focused negative and positive tests for mismatched optional `fail` and `inconclusive` cases.
+Rationale: Optional extended benchmarks with `fail` or `inconclusive` must warn when not required and not claimed as release coverage. Mismatched coverage metadata can currently hide an actual optional run failure by reporting `result_quality_status: pass`.
+Validation target: `scripts/validate-token-cost-report.py` and `scripts/test-token-cost-report-validation.py`.
+Validation evidence: pending owner disposition and implementation fix.

@@ -33,6 +33,7 @@ tests:
   - M2 architecture-review optional prompt and separate scenario fixture tests.
   - M2 code-review clean review record and milestone closeout state.
   - M3 token-cost report validator tests for v2 coverage metadata, result quality, required benchmark context, waiver roles, claimed optional gates, and unclaimed optional warnings.
+  - M3 code-review changes-requested review record and open finding EDTF-CR1.
 validation:
   - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills
     result: pass_closeout_reviews_4_findings_4_log_entries_4_resolution_entries_4
@@ -116,6 +117,8 @@ validation:
     result: pass_validated_6_artifact_files_with_existing_docs_plan_warning_after_m3
   - command: git diff --check -- scripts/validate-token-cost-report.py scripts/test-token-cost-report-validation.py tests docs/reports/token-cost/releases docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md docs/plan.md
     result: pass_after_m3_handoff_artifact_updates
+  - command: python reviewer_probe_optional_status_mismatch
+    result: fail_review_probe_validator_accepted_optional_run_fail_when_coverage_result_quality_status_was_pass
 changed_files:
   - benchmarks/token-cost/manifest.yaml
   - benchmarks/token-cost/prompts/workflow-route.md
@@ -157,11 +160,12 @@ changed_files:
   - docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/plan-review-r2.md
   - docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/code-review-m1-r1.md
   - docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/code-review-m2-r1.md
+  - docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/code-review-m3-r1.md
 review:
-  status: ready-for-code-review
-  open_findings: 0
+  status: changes-requested
+  open_findings: 1
   unresolved_items: 0
-  last_review: code-review-m2-r1 approved M2 with no material findings; M3 implementation is ready for code-review
+  last_review: code-review-m3-r1 requested changes for EDTF-CR1
 status:
   lifecycle: implement
-  review: m3-review-requested
+  review: m3-resolution-needed

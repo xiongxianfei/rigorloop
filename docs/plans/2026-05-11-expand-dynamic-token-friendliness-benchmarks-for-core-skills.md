@@ -86,17 +86,17 @@ The v2 change is release-process and evidence-shape work. It must not hand-edit 
 
 - Current stage: implement
 - Current milestone: M3. Token-cost validator v2 metadata and context support
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Last reviewed milestone: M2. Architecture-review optional scenario fixture
-- Review status: code-review M2 R1 clean-with-notes; no material findings
+- Review status: code-review M3 R1 changes-requested; material finding EDTF-CR1 open
 - Next stage after plan-review: test-spec
 - Test-spec artifact: `specs/expand-dynamic-token-friendliness-benchmarks-for-core-skills.test.md`
 - Test-spec status: active
 - Implementation may start after: test-spec is authored and accepted for use; complete
-- Remaining in-scope implementation milestones: M3 review, M4, M5
-- Next stage: code-review M3
+- Remaining in-scope implementation milestones: M3 resolution, M4, M5
+- Next stage: review-resolution for EDTF-CR1, then implement accepted M3 fix
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: No implementation milestones are closed, and final explain-change, verify, and PR handoff are not complete.
+- Reason final closeout is or is not ready: M3 has an open code-review finding, M4-M5 remain open, and final explain-change, verify, and PR handoff are not complete.
 
 ## Requirements covered
 
@@ -230,7 +230,7 @@ Suggested validation for the test-spec stage:
 
 ### M3. Token-cost validator v2 metadata and context support
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Teach standalone token-cost validation to enforce v2 coverage metadata, result quality, waiver roles, claimed optional gates, and required benchmark context.
 - Requirements: `R7`-`R9`, `R12`-`R16`, `R17`.
 - Files/components likely touched:
@@ -267,6 +267,7 @@ Suggested validation for the test-spec stage:
   - [x] decision log updated if needed
   - [x] validation notes updated
   - [x] milestone committed
+  - [ ] code-review passed
 - Risks:
   - Adding v2 validation can regress v1 release report validation.
 - Rollback/recovery:
@@ -403,6 +404,7 @@ Implementation-stage validation is listed per milestone. Prefer the smallest rel
 - 2026-05-11: M2 implementation added the optional `architecture-review` prompt declaration, prompt fixture, and separate `minimal-public-project-architecture-review` scenario fixture with canonical architecture package, ADR-not-required note, change metadata, explain-change evidence, spec, diagrams, and tiny source file.
 - 2026-05-11: Code-review M2 R1 found no material findings and closed M2; next stage is M3 implementation.
 - 2026-05-11: M3 implementation added standalone validator support for v2 benchmark coverage metadata, per-run manual `result_quality`, required benchmark context via in-process API and `--required-benchmark-context`, role-scoped result-quality waivers, claimed optional gates, changed-skill-required benchmark enforcement, and unclaimed optional warning behavior.
+- 2026-05-11: Code-review M3 R1 found EDTF-CR1, a major validator gap where optional dynamic run `result_quality.status` can be hidden by mismatched `benchmark_coverage.optional_run[*].result_quality_status`; M3 is in `resolution-needed`.
 
 ## Decision log
 
