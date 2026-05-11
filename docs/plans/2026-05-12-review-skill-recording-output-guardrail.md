@@ -137,14 +137,14 @@ Likely implementation surfaces:
 
 ## Current Handoff Summary
 
-- Current milestone: M3. Generated output, closeout evidence, and PR readiness
-- Current milestone state: planned
-- Last reviewed milestone: M2. Artifact-status sync guardrail for clean or approving outcomes
-- Review status: code-review M2 clean-with-notes with no material findings on 2026-05-12
-- Remaining in-scope implementation milestones: M3
-- Next stage: implement M3
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 remains planned, generated output validation is pending, and explain-change, verify, and PR handoff are still pending.
+- Current milestone: final closeout
+- Current milestone state: ready
+- Last reviewed milestone: M3. Generated output, closeout evidence, and PR readiness
+- Review status: code-review M3 clean-with-notes with no material findings on 2026-05-12
+- Remaining in-scope implementation milestones: none
+- Next stage: explain-change
+- Final closeout readiness: ready
+- Reason final closeout is or is not ready: all in-scope implementation milestones are closed, review-resolution is closed, and final explain-change, verify, and PR handoff remain pending.
 
 ## Milestones
 
@@ -244,7 +244,7 @@ Likely implementation surfaces:
      - Revert status-sync skill and validator additions while preserving the M1 recording-status guardrail if it remains valid.
 
 3. M3. Generated output, closeout evidence, and PR readiness
-   - Milestone state: planned
+   - Milestone state: closed
    - Goal: Refresh generated outputs, validate the full touched surface, record durable reasoning, and prepare PR handoff after implementation reviews are closed.
    - Requirements: `R15a`, `R21d`, `R22`-`R23`, `R33a`
    - Files/components likely touched:
@@ -274,17 +274,17 @@ Likely implementation surfaces:
      - `python scripts/validate-adapters.py --version 0.1.1`
      - `python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml`
      - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-review-skill-recording-output-guardrail`
-     - `bash scripts/ci.sh --mode explicit specs/formal-review-recording.md specs/formal-review-recording.test.md skills/proposal-review/SKILL.md skills/spec-review/SKILL.md skills/architecture-review/SKILL.md skills/plan-review/SKILL.md skills/code-review/SKILL.md scripts/test-skill-validator.py scripts/validate-skills.py docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml`
+     - `bash scripts/ci.sh --mode explicit --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path skills/architecture-review/SKILL.md --path skills/plan-review/SKILL.md --path skills/code-review/SKILL.md --path scripts/test-skill-validator.py --path scripts/validate-skills.py --path docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml`
      - `git diff --check --`
    - Expected observable result: generated outputs match canonical skills, adapter validation passes with version `0.1.1`, change metadata and review artifacts validate, durable reasoning explains the change, verify passes, and PR handoff is ready.
    - Commit message: `M3: refresh review skill generated outputs`
    - Milestone closeout:
-     - [ ] targeted validation passed
-     - [ ] generated output refreshed
-     - [ ] progress updated
+     - [x] targeted validation passed
+     - [x] generated output refreshed
+     - [x] progress updated
      - [ ] decision log updated if needed
-     - [ ] validation notes updated
-     - [ ] milestone committed
+     - [x] validation notes updated
+     - [x] milestone committed
      - [ ] final explain-change completed
      - [ ] verify completed
      - [ ] PR handoff prepared
@@ -305,6 +305,8 @@ Likely implementation surfaces:
 - 2026-05-12: code-review M1 returned clean-with-notes with no material findings; M1 closed and next stage is `implement M2`.
 - 2026-05-12: M2 implemented status-sync output guidance in all five formal review skills, including status-sync vocabulary, blocker semantics, per-review artifact-specific targets, and static skill-validator coverage; next stage is `code-review M2`.
 - 2026-05-12: code-review M2 returned clean-with-notes with no material findings; M2 closed and next stage is `implement M3`.
+- 2026-05-12: M3 refreshed generated Codex skills and public adapters from canonical review skills, added durable change explanation, and validated generated-output drift and adapter output; next stage is `code-review M3`.
+- 2026-05-12: code-review M3 returned clean-with-notes with no material findings; M3 closed and next stage is `explain-change`.
 
 ## Decision log
 
@@ -314,6 +316,7 @@ Likely implementation surfaces:
 - 2026-05-12: keep first-slice validation structural/static -> approved spec `R23` excludes semantic edit-reference flagging in this slice.
 - 2026-05-12: M1 updated canonical skills only and deferred generated output refresh to M3 -> the active plan separates canonical review-skill changes from generated-output closeout.
 - 2026-05-12: M2 kept status-sync validation static -> approved test spec `T22` covers vocabulary, blockers, no-edit behavior, and artifact-specific targets without adding semantic review-output parsing.
+- 2026-05-12: M3 added `docs/changes/2026-05-12-review-skill-recording-output-guardrail/explain-change.md` as the required durable Markdown reasoning surface; the formal final explain-change stage remains downstream after implementation review closes.
 
 ## Surprises and discoveries
 
@@ -333,6 +336,19 @@ Likely implementation surfaces:
 - 2026-05-12: `python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml` passed after M2 status-sync updates.
 - 2026-05-12: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-12-review-skill-recording-output-guardrail` passed after M2 status-sync updates.
 - 2026-05-12: `git diff --check -- specs/formal-review-recording.test.md skills/proposal-review/SKILL.md skills/spec-review/SKILL.md skills/architecture-review/SKILL.md skills/plan-review/SKILL.md skills/code-review/SKILL.md scripts/test-skill-validator.py scripts/validate-skills.py docs/changes/2026-05-12-review-skill-recording-output-guardrail docs/plans/2026-05-12-review-skill-recording-output-guardrail.md docs/plan.md` passed after M2 status-sync updates.
+- 2026-05-12: `python scripts/build-skills.py` synced generated Codex skills after M3.
+- 2026-05-12: `python scripts/build-adapters.py --version 0.1.1` synced generated adapter output after M3.
+- 2026-05-12: `python scripts/test-skill-validator.py` passed after M3 generated-output refresh.
+- 2026-05-12: `python scripts/validate-skills.py` passed after M3 generated-output refresh.
+- 2026-05-12: `python scripts/build-skills.py --check` passed after M3 generated-output refresh.
+- 2026-05-12: `python scripts/build-adapters.py --version 0.1.1 --check` passed after M3 generated-output refresh.
+- 2026-05-12: `python scripts/validate-adapters.py --version 0.1.1` passed after M3 generated-output refresh.
+- 2026-05-12: `bash scripts/ci.sh --mode explicit specs/formal-review-recording.md specs/formal-review-recording.test.md skills/proposal-review/SKILL.md skills/spec-review/SKILL.md skills/architecture-review/SKILL.md skills/plan-review/SKILL.md skills/code-review/SKILL.md scripts/test-skill-validator.py scripts/validate-skills.py docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml` failed with usage error because `ci.sh` requires `--path` before explicit paths; plan command corrected before rerun.
+- 2026-05-12: `python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml` passed after M3 generated-output refresh.
+- 2026-05-12: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-review-skill-recording-output-guardrail` passed after M3 generated-output refresh.
+- 2026-05-12: `git diff --check --` passed after M3 generated-output refresh.
+- 2026-05-12: corrected explicit CI rerun initially failed `artifact_lifecycle.validate` because the accepted proposal heading used `## Recommended Direction`; normalized it to `## Recommended direction`.
+- 2026-05-12: `bash scripts/ci.sh --mode explicit --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path skills/architecture-review/SKILL.md --path skills/plan-review/SKILL.md --path skills/code-review/SKILL.md --path scripts/test-skill-validator.py --path scripts/validate-skills.py --path docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml` passed after the proposal heading fix.
 
 ## Outcome and retrospective
 
