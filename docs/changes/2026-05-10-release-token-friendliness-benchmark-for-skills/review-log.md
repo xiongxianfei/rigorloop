@@ -75,3 +75,13 @@ Detailed record: reviews/code-review-r2.md
 Resolution: review-resolution.md#code-review-r2
 Material findings: RTF-CR3
 Open findings: None
+
+### Review entry
+Review ID: code-review-r3
+Stage: code-review
+Round: 3
+Status: clean-with-notes
+Detailed record: reviews/code-review-r3.md
+Resolution: review-resolution.md#code-review-r3
+Material findings: None
+Open findings: None
