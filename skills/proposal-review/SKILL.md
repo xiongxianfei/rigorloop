@@ -178,6 +178,42 @@ In this contract, clean reviews can settle artifact-locally when no detailed rev
 
 Do not add a dedicated `pr-review` stage. It is an unsupported review stage unless a later approved spec extends the stage set. A material maintainer PR comment that needs disposition must first be promoted into a supported formal lifecycle review record with a stable `Finding ID`.
 
+## Recording status output
+
+`Recording status` is not the review verdict. It reports whether required review-recording artifacts were created, were not required, or are blocked.
+
+Use exactly one:
+
+- `not-required`: no material findings exist and no detailed-record trigger applies.
+- `recorded`: every artifact required by the active recording trigger exists or was updated.
+- `blocked`: required review-recording artifacts could not be created or updated.
+
+For material findings, `recorded` requires a detailed review record, `review-log.md`, and `review-resolution.md`. For no-material detailed-record triggers, `recorded` requires a detailed review record and `review-log.md`; do not require an empty `review-resolution.md` solely for that no-material review event.
+
+If `Recording status: blocked`, include `Recording blocker` with the blocker and smallest action needed to create or update the required recording artifacts.
+
+Do not merely tell the user that these files should be created. Create or update them before final output, or report `Recording status: blocked`.
+
+Every material finding in final output and durable records must preserve complete finding shape:
+
+- Finding ID
+- Severity
+- Location
+- Evidence
+- Required outcome
+- Safe resolution path, or `needs-decision` rationale
+
+`Location` may be a file path and section, file path and line, artifact and milestone or requirement ID, missing expected artifact path, or review surface plus not-present rationale. It must be specific enough to find the affected surface without chat history.
+
+When recording is required and no active change root is obvious, choose the change ID in this order:
+
+1. active `docs/changes/<change-id>/change.yaml`
+2. active plan or reviewed artifact metadata
+3. user-provided change ID
+4. generated review-recording change ID: `YYYY-MM-DD-<reviewed-artifact-or-topic>-review-recording`
+
+If the change ID remains ambiguous, use `Recording status: blocked`.
+
 ## Rules
 
 - Do not rubber-stamp a proposal because it is well formatted.
@@ -207,6 +243,25 @@ Read exact ranges after locating relevant lines, then expand only when the narro
 Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
 
 ## Expected output
+
+Start with:
+
+```md
+## Result
+
+- Skill: proposal-review
+- Review status:
+- Material findings:
+- Recording status:
+- Recording blocker:
+- Review record:
+- Review log:
+- Review resolution:
+- Open blockers:
+- Immediate next stage:
+```
+
+Then include:
 
 - review status: `approved`, `changes-requested`, `blocked`, or `inconclusive`;
 - findings by review dimension;

@@ -43,6 +43,40 @@ FORMAL_REVIEW_SKILLS = [
     "plan-review",
     "code-review",
 ]
+FORMAL_REVIEW_RECORDING_OUTPUT_TERMS = [
+    "Review status",
+    "Material findings",
+    "Recording status",
+    "Recording blocker",
+    "Review record",
+    "Review log",
+    "Review resolution",
+    "Open blockers",
+    "Immediate next stage",
+    "not-required",
+    "recorded",
+    "blocked",
+    "`Recording status` is not the review verdict",
+    "`Recording blocker`",
+    "smallest action needed",
+    "Finding ID",
+    "Severity",
+    "Location",
+    "Evidence",
+    "Required outcome",
+    "Safe resolution path",
+    "`needs-decision` rationale",
+    "file path and section",
+    "file path and line",
+    "artifact and milestone",
+    "missing expected artifact path",
+    "not-present rationale",
+    "active `docs/changes/<change-id>/change.yaml`",
+    "active plan or reviewed artifact metadata",
+    "user-provided change ID",
+    "`YYYY-MM-DD-<reviewed-artifact-or-topic>-review-recording`",
+    "Do not merely tell the user that these files should be created",
+]
 DOWNSTREAM_REVIEW_CLOSEOUT_SKILLS = [
     "workflow",
     "verify",
@@ -1143,6 +1177,22 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         for term in forbidden_inside_block:
             with self.subTest(term=term):
                 self.assertNotIn(term, canonical)
+
+    def test_formal_review_skills_define_recording_status_output_contract(self) -> None:
+        canonical_shared_block = extract_markdown_block(
+            SHARED_REVIEW_BLOCK_PATH.read_text(encoding="utf-8"),
+            "Isolation and Recording",
+        )
+        self.assertNotIn("Recording status", canonical_shared_block)
+        self.assertNotIn("Recording blocker", canonical_shared_block)
+
+        for skill_name in FORMAL_REVIEW_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            with self.subTest(skill=skill_name, section="recording status heading"):
+                self.assertIn("## Recording status output", body)
+            for term in FORMAL_REVIEW_RECORDING_OUTPUT_TERMS:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, body)
 
     def test_shared_isolation_and_recording_block_defines_broad_material_rule(self) -> None:
         canonical = extract_markdown_block(
