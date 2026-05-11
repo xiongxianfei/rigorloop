@@ -41,6 +41,7 @@ tests:
   - M4 EDTF-CR2 fix for maintainer-facing changed-surface input on `validate-release.py`.
   - M4 code-review R2 clean review record and milestone closeout state.
   - M5 v2 transition report evidence, preserved pre-transition v1 report, and sanitized analyzer summaries.
+  - M5 code-review clean review record and milestone closeout state.
 validation:
   - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills
     result: pass_closeout_reviews_4_findings_4_log_entries_4_resolution_entries_4
@@ -224,6 +225,16 @@ validation:
     result: blocked_unclassified_directory_path_benchmarks_token_cost
   - command: bash scripts/ci.sh --mode explicit --path docs/reports/token-cost/releases/v0.1.1.yaml --path docs/reports/token-cost/releases/v0.1.1.md --path docs/reports/token-cost/releases/v0.1.1-skill-token-runtime-v1-pretransition.yaml --path docs/reports/token-cost/releases/v0.1.1-skill-token-runtime-v1-pretransition.md --path docs/reports/token-cost/runs/v0.1.1/workflow-route-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/proposal-short-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/plan-handoff-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/implement-handoff-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/code-review-small-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/explain-change-summary-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/verify-final-pack-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/pr-handoff-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/architecture-no-impact-run1.analysis.yaml --path docs/reports/token-cost/runs/v0.1.1/learn-no-durable-lesson-run1.analysis.yaml --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml
     result: pass_selected_checks_after_m5
+  - command: python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1-skill-token-runtime-v1-pretransition.yaml docs/reports/token-cost/releases/v0.1.1.yaml
+    result: pass_code_review_m5_r1_rerun
+  - command: python scripts/validate-release.py --version v0.1.1 --changed-paths-file /tmp/rigorloop-empty-changed-paths.txt
+    result: pass_code_review_m5_r1_rerun
+  - command: python scripts/test-token-cost-report-validation.py
+    result: pass_16_tests_code_review_m5_r1_rerun
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_24_tests_code_review_m5_r1_rerun
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills
+    result: pass_closeout_reviews_13_findings_8_log_entries_13_resolution_entries_8_code_review_m5_r1
 changed_files:
   - benchmarks/token-cost/manifest.yaml
   - benchmarks/token-cost/prompts/workflow-route.md
@@ -272,6 +283,7 @@ changed_files:
   - docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/code-review-m3-r2.md
   - docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/code-review-m4-r1.md
   - docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/code-review-m4-r2.md
+  - docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/code-review-m5-r1.md
   - docs/reports/token-cost/releases/v0.1.1.md
   - docs/reports/token-cost/releases/v0.1.1.yaml
   - docs/reports/token-cost/releases/v0.1.1-skill-token-runtime-v1-pretransition.md
@@ -287,10 +299,10 @@ changed_files:
   - docs/reports/token-cost/runs/v0.1.1/architecture-no-impact-run1.analysis.yaml
   - docs/reports/token-cost/runs/v0.1.1/learn-no-durable-lesson-run1.analysis.yaml
 review:
-  status: m5-ready-for-code-review
+  status: m5-closed-explain-change-ready
   open_findings: 0
   unresolved_items: 0
-  last_review: code-review-m4-r2 clean-with-notes; M5 implementation complete
+  last_review: code-review-m5-r1 clean-with-notes; M5 closed
 status:
-  lifecycle: code-review
-  review: m5-review-requested
+  lifecycle: explain-change
+  review: code-review-m5-r1-clean

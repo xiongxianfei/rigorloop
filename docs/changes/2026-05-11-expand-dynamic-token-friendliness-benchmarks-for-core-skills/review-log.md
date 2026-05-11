@@ -27,6 +27,16 @@ Material findings: None
 Open findings: None
 
 ### Review entry
+Review ID: code-review-m5-r1
+Stage: code-review
+Round: 1
+Status: clean-with-notes
+Detailed record: reviews/code-review-m5-r1.md
+Resolution: review-resolution.md#code-review-m5-r1
+Material findings: None
+Open findings: None
+
+### Review entry
 Review ID: proposal-review-r2
 Stage: proposal-review
 Round: 2
