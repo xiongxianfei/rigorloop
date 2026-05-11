@@ -70,11 +70,11 @@ No `benchmarks/` directory exists yet. This plan creates the first `benchmarks/t
 - Current milestone: M1. Metadata schema and validator
 - Current milestone state: review-requested
 - Last reviewed milestone: plan-review R2 approved execution plan
-- Review status: M1 implementation complete; code-review not started
+- Review status: code-review R1 findings resolved; ready for code-review rerun
 - Remaining in-scope implementation milestones: M1, M2, M3, M4, M5
-- Next stage: code-review M1
+- Next stage: code-review M1 rerun
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 code-review, remaining implementation milestones, review-resolution if triggered, explain-change, verify, and PR handoff are not complete.
+- Reason final closeout is or is not ready: M1 code-review rerun, remaining implementation milestones, explain-change, verify, and PR handoff are not complete.
 
 ## Milestones
 
@@ -115,8 +115,8 @@ No `benchmarks/` directory exists yet. This plan creates the first `benchmarks/t
 - Milestone closeout:
   - [x] targeted validation passed
   - [x] hand off to code-review for M1
-  - [ ] code-review completed
-  - [ ] material findings resolved or explicitly dispositioned
+  - [x] code-review completed
+  - [x] material findings resolved or explicitly dispositioned
   - [x] progress updated
   - [ ] decision log updated if needed
   - [x] validation notes updated
@@ -388,6 +388,8 @@ bash scripts/release-verify.sh <release-version>
 - 2026-05-11: Plan-review R2 approved the revised plan for test-spec handoff.
 - 2026-05-11: Created active test spec and moved the handoff to implement M1.
 - 2026-05-11: Implemented M1 standalone token-cost report metadata validator, fixture-backed tests, and valid report evidence cases; M1 is ready for code-review.
+- 2026-05-11: Code-review R1 requested M1 fixes for RC reuse metadata validation and Markdown report metadata-link validation.
+- 2026-05-11: Resolved code-review R1 findings with RC reuse validation, Markdown/YAML pairing validation, and focused tests; M1 is ready for code-review rerun.
 
 ## Decision Log
 
@@ -400,6 +402,7 @@ bash scripts/release-verify.sh <release-version>
 
 - No `benchmarks/` directory exists yet; M2 creates the benchmark fixture root.
 - M1 can validate runner metadata shape before the runner exists by using test fixture paths and checking the required public skill source string.
+- Code-review R1 found that RC reuse and Markdown/YAML pairing were part of the M1 validator contract, not later release integration. Both are now covered by standalone tests.
 
 ## Validation Notes
 
@@ -408,6 +411,8 @@ bash scripts/release-verify.sh <release-version>
 - `python -m py_compile scripts/validate-token-cost-report.py` passed.
 - `python scripts/test-token-cost-measurement.py` passed as a regression check for existing token-cost measurement scripts.
 - `git diff --check -- scripts/validate-token-cost-report.py scripts/test-token-cost-report-validation.py tests/fixtures/token-cost` passed.
+- Code-review R1 resolution: `python scripts/test-token-cost-report-validation.py` passed 9 tests; `python scripts/validate-token-cost-report.py tests/fixtures/token-cost/reports/valid-final-pass/v0.1.1.yaml`, `python -m py_compile scripts/validate-token-cost-report.py`, `python scripts/test-token-cost-measurement.py`, `python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills`, and `git diff --check -- scripts/validate-token-cost-report.py scripts/test-token-cost-report-validation.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md` passed.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r1.md` passed with the existing `docs/plan.md` lifecycle-language warning.
 
 ## Outcome and Retrospective
 
