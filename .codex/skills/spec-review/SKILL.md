@@ -144,23 +144,17 @@ When recording is required and no active change root is obvious, choose the chan
 
 If the change ID remains ambiguous, use `Recording status: blocked`.
 
-## Status sync output
+## Status settlement recommendation
 
-`Status sync` is not the review verdict, is separate from `Recording status`, and is not downstream workflow continuation. It reports whether a clean or approving review result updated the reviewed artifact's owned lifecycle/status/readiness/closeout surface.
+`Status settlement recommendation` is not the review verdict and is separate from `Recording status`. It reports whether upstream artifact status settlement is not applicable, may be handled by a downstream relying skill, or is blocked until findings close.
 
 Use exactly one:
 
-- `not-required`: the review outcome is not approving or clean, or no lifecycle status change is expected for that review result.
-- `updated`: the reviewed artifact's owned lifecycle/status/readiness/closeout surface was updated to the next artifact-specific state.
-- `blocked`: an approving or clean review result expected an artifact-status update, but the update could not be made.
+- `not-applicable`: the review outcome is not approving or clean, or no upstream lifecycle settlement question is raised by the review.
+- `upstream artifact may be settled by downstream skill`: the review outcome is approving or clean and no material findings remain open.
+- `blocked until findings close`: material findings, blocked recording, or another review-owned blocker prevents upstream settlement.
 
-For `spec-review`, an `approved` result targets spec `Status: approved`.
-
-If `Status sync: updated`, include `Status artifact` with the status artifact path and exact status field or section changed.
-
-If `Status sync: blocked`, include `Status sync blocker` with the intended next status, the blocker, and the smallest manual action needed.
-
-Explicit user instructions that forbid file edits block status sync even when the review result is approving or clean. If the target is ambiguous, do not guess; use `Status sync: blocked`.
+Do not directly update spec lifecycle status solely for this recommendation. Upstream status settlement before reliance is deferred to the follow-up proposal `Downstream Upstream-Status Settlement Before Reliance`.
 
 ## Rules
 
@@ -169,7 +163,7 @@ Explicit user instructions that forbid file edits block status sync even when th
 - Do not collapse spec review into plan or code review.
 - Do not require implementation detail unless it is needed for the observable contract.
 - Do not edit the spec unless the user explicitly asks.
-- When the review outcome is `approved`, the tracked spec should be ready to normalize to `approved` before architecture, plan, test-spec, or implementation relies on it. Do not leave a governing spec in durable `reviewed` state.
+- When the review outcome is `approved`, recommend downstream settlement if the tracked spec may need to normalize to `approved` before architecture, plan, test-spec, or implementation relies on it.
 - Do not report `approved` without explicit eventual `test-spec` readiness of `ready` or `conditionally-ready`.
 - Do not use pseudo-routing states such as `blocker handling` or `missing-context resolution` in the immediate-next-stage field.
 - Do not name `test-spec` as the immediate next stage while `architecture` or `plan` still remains.
@@ -206,9 +200,7 @@ Start with:
 - Material findings:
 - Recording status:
 - Recording blocker:
-- Status sync:
-- Status artifact:
-- Status sync blocker:
+- Status settlement recommendation:
 - Review record:
 - Review log:
 - Review resolution:

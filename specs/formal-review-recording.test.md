@@ -16,7 +16,7 @@
 - Architecture: not required. The approved spec and accepted plan reuse the existing `docs/changes/<change-id>/reviews/`, `review-log.md`, `review-resolution.md`, and review-artifact validator model without adding a new storage architecture, parser architecture, persistence layer, deployment path, or integration boundary.
 - Spec-review: approved after the initial review-record root was split into material and no-material variants.
 - Output guardrail architecture: no architecture impact; architecture-review approved the no-impact rationale on 2026-05-12 with no material findings.
-- Output guardrail spec-review: approved after `SR1` revised `R30` to require status sync or `Status sync: blocked`.
+- Output guardrail spec-review: approved after `SR1`; direct upstream status settlement is narrowed in PR #44 and deferred to follow-up settlement-before-reliance work.
 - Output guardrail plan-review: approved on 2026-05-12 with no material findings; `test-spec` is the immediate next handoff before implementation.
 
 ## Testing strategy
@@ -26,8 +26,8 @@
 - Use manual contract review for contributor-facing workflow, governance, proposal/spec/plan source-of-truth boundaries, and no-empty-boilerplate rules that are not semantic validator behavior.
 - Use focused skill-validator assertions only for stable contractual review guidance terms when canonical review-stage skills change.
 - Use static assertions for the current amendment: canonical shared block existence, byte-equality across the five formal review skills, placement outside stage-specific guidance, isolated material-review output fields, broad material-finding trigger wording, governance alignment, and the structural-only first-slice boundary.
-- Use static assertions for the 2026-05-12 output guardrail: review-status, recording-status, recording-blocker, status-sync, status-artifact, status-sync-blocker, complete material-finding shape, change ID selection, artifact-specific status targets, and generated-output alignment across the five formal review skills.
-- Use manual contract checks for status-sync behavior that depends on review result interpretation, edit permission, or artifact-specific lifecycle ownership. The first slice does not add semantic runtime validation for whether a review result should have been clean or approving.
+- Use static assertions for the 2026-05-12 output guardrail: review-status, recording-status, recording-blocker, status settlement recommendation, complete material-finding shape, change ID selection, and generated-output alignment across the five formal review skills.
+- Use manual contract checks for the deferral boundary: review skills recommend downstream upstream-status settlement but do not directly update proposal, spec, architecture, ADR, or plan lifecycle status in this slice.
 - Use generated-output drift checks and adapter validation when canonical `skills/**` changes.
 - Use explicit-path lifecycle validation and explicit-path CI for top-level lifecycle artifacts, workflow specs, matched test specs, change-local artifacts, validator scripts, skills, and generated output selected by the active plan.
 - Treat broad smoke as unnecessary unless plan-review, test-spec review, code-review, review-resolution, verify, selector mode, release metadata, or a maintainer decision elevates it.
@@ -57,9 +57,9 @@
 | `R21`-`R21d` | `T19` | integration | Shared `## Isolation and Recording` block is canonical, byte-equal, and placement-safe |
 | `R22`-`R22b` | `T18` | manual, integration | `CONSTITUTION.md`, `AGENTS.md`, and `docs/workflows.md` teach the same broad rule |
 | `R23` | `T20` | integration, manual | First-slice validation remains structural/static and does not add semantic edit-reference flagging |
-| `R24`-`R24b` | `T21`, `T22` | integration, manual | Review verdict, recording status, and status sync stay separate |
+| `R24`-`R24b` | `T21`, `T22` | integration, manual | Review verdict, recording status, and status settlement recommendation stay separate |
 | `R25`-`R28a` | `T21` | integration, manual | Recording status vocabulary, blockers, complete material-finding shape, and change ID selection |
-| `R29`-`R31b` | `T22` | integration, manual | Status-sync vocabulary, edit-permission blocker, and artifact-specific target table |
+| `R29`-`R31` | `T22` | integration, manual | Status settlement recommendation vocabulary and direct settlement deferral |
 | `R32`-`R33a` | `T21`, `T22`, `T23` | integration, manual | Formal review final output shape, consistent skill guidance, and generated output refresh |
 | Security/privacy `MUST`s | `T14` | manual, integration | Review artifacts do not preserve secrets and structural validation requires no network or secrets |
 | Performance `MUST` | `T14` | integration, manual | Upstream review records do not by themselves require broad smoke |
@@ -80,10 +80,10 @@
 | `E10` | `T19` | Formal review skills share byte-identical `Isolation and Recording` guidance from the canonical template |
 | `E11` | `T21` | Material finding output reports `Recording status: recorded` and required artifact paths |
 | `E12` | `T21` | No-material detailed record reports recorded state without empty `review-resolution.md` |
-| `E13` | `T22` | Clean proposal review synchronizes proposal status to `accepted` |
-| `E14` | `T22` | Explicit no-edit isolated review blocks status sync and reports manual action |
-| `E15` | `T22` | Ambiguous status target blocks status sync instead of guessing |
-| `E16` | `T22` | Clean code-review result updates plan-owned milestone state rather than source status |
+| `E13` | `T22` | Clean proposal review recommends downstream settlement instead of direct status edits |
+| `E14` | `T22` | Material findings block upstream settlement recommendation |
+| `E15` | `T22` | Non-approving review has no settlement recommendation |
+| `E16` | `T22` | Clean code-review result does not edit source status |
 
 ## Edge case coverage
 
@@ -102,14 +102,14 @@
 - Isolated material review output missing Finding IDs, record path, record-before-fixing or reconstruction status, or owner-decision status: `T17`
 - Skill-specific guidance inserted inside the shared `## Isolation and Recording` block: `T19`
 - Generated adapter output changed because of a material review finding as a tracked artifact edit: `T18`
-- Clean `proposal-review` status sync from `draft` to `accepted`: `T22`
-- Clean `spec-review` status sync from `draft` to `approved`: `T22`
-- Clean `architecture-review` status sync using architecture or ADR lifecycle vocabulary: `T22`
-- `plan-review` approval updating plan readiness/index state only when those surfaces own state: `T22`
-- `code-review` clean result updating active plan or review-owned milestone state without editing source files solely for review status: `T22`
-- Review-only request with explicit no-edit instructions reporting `Status sync: blocked`: `T22`
-- Formal review output with `Recording status: not-required` and `Status sync: updated`: `T21`, `T22`
-- Formal review output with `Recording status: recorded` and `Status sync: blocked`: `T21`, `T22`
+- Clean `proposal-review` recommending downstream settlement rather than direct status edits: `T22`
+- Clean `spec-review` recommending downstream settlement rather than direct status edits: `T22`
+- Clean `architecture-review` not guessing architecture or ADR lifecycle vocabulary: `T22`
+- `plan-review` approval leaving status settlement to the downstream relying stage: `T22`
+- `code-review` clean result not editing source files solely for review status: `T22`
+- Review-only request preserving recording obligations while direct status settlement remains out of scope: `T22`
+- Formal review output with `Recording status: not-required` and `Status settlement recommendation: upstream artifact may be settled by downstream skill`: `T21`, `T22`
+- Formal review output with `Recording status: recorded` and `Status settlement recommendation: blocked until findings close`: `T21`, `T22`
 
 ## Milestone coverage map
 
@@ -124,7 +124,7 @@
 | `2026-05-07` M3 generated output | `T12`, `T19` | Generated Codex mirrors and public adapters reflect canonical formal review skill changes |
 | `2026-05-07` M4 closeout | `T13`, `T15`, `T16`, `T20` | Review artifacts, lifecycle state, paired governing test specs, and final validation remain synchronized |
 | `2026-05-12` M1 recording-status guardrail | `T21`, `T23` | Review output recording status, blocker fields, complete finding shape, and static skill validation |
-| `2026-05-12` M2 artifact-status sync guardrail | `T22`, `T23` | Status-sync output, artifact-specific targets, edit-permission blockers, and static skill validation |
+| `2026-05-12` M2 status settlement deferral | `T22`, `T23` | Status settlement recommendation output, direct settlement deferral, follow-up proposal, and static skill validation |
 | `2026-05-12` M3 generated output and closeout | `T12`, `T13`, `T14`, `T15`, `T23` | Generated skills/adapters, closeout evidence, change-local validation, and final explicit validation |
 
 ## Test cases
@@ -634,28 +634,26 @@
   - `python scripts/test-skill-validator.py`
   - Manual review during 2026-05-12 M1
 
-### T22. Clean or approving formal review output reports status sync separately from review verdict
+### T22. Formal review output recommends status settlement without direct status edits
 
-- Covers: `R24`-`R24b`, `R29`-`R31b`, `R32`, `E13`-`E16`, edge cases 18-25
+- Covers: `R24`-`R24b`, `R29`-`R31`, `R32`, `E13`-`E16`, edge cases 18-25
 - Level: integration, manual
 - Fixture/setup:
   - the five formal review skills
   - `scripts/test-skill-validator.py`
   - representative reviewed artifact examples for proposal, spec, architecture/ADR, active plan, and code-review milestone state
-  - explicit no-edit review-only instruction examples
+  - follow-up proposal for downstream upstream-status settlement before reliance
 - Steps:
-  - Add static assertions that every formal review skill final output shape includes `Status sync`, `Status artifact`, and `Status sync blocker`.
-  - Assert each formal review skill includes the exact status-sync vocabulary: `not-required`, `updated`, and `blocked`.
-  - Assert each formal review skill states that `Status sync` is not the review verdict and is not downstream workflow continuation.
-  - Assert `Status sync: blocked` requires `Status sync blocker` with the intended next status, blocker, and smallest manual action.
-  - Assert `Status sync: updated` requires the status artifact path and exact status field or section changed.
-  - Assert explicit no-edit instructions block status sync even when the review result is clean or approving.
-  - Assert formal review skills preserve artifact-specific targets: proposal `accepted`, spec `approved`, architecture `approved`, ADR `accepted` or `active` according to local lifecycle field, plan review/readiness state for `plan-review`, and active-plan or review-owned milestone state for clean `code-review`.
-  - Manually confirm status-sync guidance does not tell review skills to edit source files solely to record code-review status.
+  - Add static assertions that every formal review skill final output shape includes `Status settlement recommendation`.
+  - Assert each formal review skill includes the exact recommendation vocabulary: `not-applicable`, `upstream artifact may be settled by downstream skill`, and `blocked until findings close`.
+  - Assert each formal review skill states that the recommendation is not the review verdict and does not directly settle upstream status.
+  - Assert formal review skills do not include direct status-settlement output fields such as `Status sync`, `Status artifact`, or `Status sync blocker`.
+  - Assert formal review skills point status settlement before reliance to the follow-up proposal.
+  - Manually confirm status settlement guidance does not tell review skills to edit source files or upstream artifact lifecycle status solely to record review status.
 - Expected result:
-  - Clean or approving review output either updates the reviewed artifact's owned lifecycle/status/readiness/closeout surface or reports a concrete status-sync blocker.
+  - Clean or approving review output can recommend downstream settlement, but review skills do not directly synchronize proposal, spec, architecture, plan, or source status in this slice.
 - Failure proves:
-  - Chat review approval can drift from durable artifact lifecycle state, or review skills can overstep isolated/no-edit boundaries.
+  - Review skills can still overstep by directly changing upstream lifecycle status, or downstream status settlement before reliance has no visible follow-up path.
 - Automation location:
   - `python scripts/test-skill-validator.py`
   - Manual review during 2026-05-12 M2
@@ -673,14 +671,14 @@
   - skill and adapter generation scripts
   - current change root `docs/changes/2026-05-12-review-skill-recording-output-guardrail/`
 - Steps:
-  - Confirm all five formal review skills contain equivalent final output fields for review status, recording status, recording blocker, status sync, status artifact, status sync blocker, review record, review log, review resolution, open blockers, and immediate next stage.
+  - Confirm all five formal review skills contain equivalent final output fields for review status, recording status, recording blocker, status settlement recommendation, review record, review log, review resolution, open blockers, and immediate next stage.
   - Confirm status-output wording lives outside the shared `## Isolation and Recording` block unless a later approved change explicitly updates the shared template and all copied blocks.
   - Run skill validator tests and skill validation after canonical skill changes.
   - Regenerate `.codex/skills/` and public adapters after canonical skill changes.
   - Run generated-output drift checks and versioned adapter validation.
   - Validate change metadata and review artifacts for the current change root during closeout.
 - Expected result:
-  - Canonical and generated formal review skills expose the same recording/status-sync guardrail, and the change-local evidence proves validation and closeout.
+  - Canonical and generated formal review skills expose the same recording/status-settlement recommendation guardrail, and the change-local evidence proves validation and closeout.
 - Failure proves:
   - The guardrail is present only in canonical files, only in generated files, or inconsistently copied across review skills.
 - Automation location:
@@ -701,7 +699,7 @@
 - Use `docs/changes/2026-05-04-formal-review-recording/change.yaml` and `docs/changes/2026-05-04-formal-review-recording/explain-change.md` as durable traceability fixtures once M1 creates the change-local pack.
 - Use `templates/shared/review-isolation-and-recording.md` as the canonical shared-block source for the 2026-05-07 amendment.
 - Use `docs/changes/2026-05-07-review-skill-material-finding-recording/**` as current change-local evidence for material review recording and closeout behavior.
-- Use `docs/changes/2026-05-12-review-skill-recording-output-guardrail/**` as current change-local evidence for review output recording/status-sync guardrails, status-sync proof, and final closeout.
+- Use `docs/changes/2026-05-12-review-skill-recording-output-guardrail/**` as current change-local evidence for review output recording and status-settlement recommendation guardrails.
 
 ## Mocking/stubbing policy
 
@@ -715,7 +713,7 @@
 - No historical change pack migration is required unless a historical artifact is touched, generated, or relied on as current authoritative guidance.
 - Existing clean artifact-local review settlements remain compatible when no detailed-record trigger applied.
 - Existing review-artifact validation for `proposal-review`, `spec-review`, `architecture-review`, `plan-review`, and `code-review` remains the target stage set.
-- Existing review outputs do not need retroactive recording-status or status-sync fields unless touched, regenerated, or relied on as current authoritative guidance.
+- Existing review outputs do not need retroactive recording-status or status-settlement recommendation fields unless touched, regenerated, or relied on as current authoritative guidance.
 - The 2026-05-12 implementation must preserve artifact-specific lifecycle vocabulary and must not add a universal review-approved artifact state.
 - Rollback compatibility is covered by keeping the new behavior on existing review artifact paths and validator code paths rather than adding a second path taxonomy.
 
@@ -725,7 +723,7 @@
 - `T10` verifies that open material findings and open review-resolution closeout block downstream handoff.
 - `T13` verifies failure output remains actionable by naming path, Review ID or Finding ID when available, validation mode, and short reason.
 - `T21` verifies review output makes recording state observable.
-- `T22` verifies review output makes artifact-status sync observable.
+- `T22` verifies review output makes status-settlement recommendation observable without direct status edits.
 - `T23` verifies canonical and generated review skills expose the same output guardrail.
 - Successful validation may report counts for detailed reviews, findings, log entries, and closeout state, but exact counts are not required unless implemented as stable validator output.
 
@@ -754,10 +752,10 @@
 - [ ] Review `CONSTITUTION.md`, `AGENTS.md`, and `docs/workflows.md` for the same broad material-finding rule.
 - [ ] Review generated output drift checks after canonical skill edits.
 - [ ] Review final change-local artifacts for durable reasoning and no sensitive values.
-- [ ] Review all five formal review skills for separate `Review status`, `Recording status`, and `Status sync` fields.
+- [ ] Review all five formal review skills for separate `Review status`, `Recording status`, and `Status settlement recommendation` fields.
 - [ ] Review complete material-finding shape guidance for `Location`, evidence, required outcome, and safe resolution or `needs-decision` rationale.
-- [ ] Review artifact-specific status-sync targets for proposal, spec, architecture, ADR, plan-review, and code-review.
-- [ ] Review explicit no-edit and ambiguous-target status-sync blocker behavior.
+- [ ] Review that artifact-specific status settlement targets are deferred to the follow-up proposal.
+- [ ] Review that no direct upstream status-edit requirement remains in formal review skills.
 
 ## What not to test
 
