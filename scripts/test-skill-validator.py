@@ -7,6 +7,7 @@ import re
 import subprocess
 import sys
 import unittest
+import math
 from pathlib import Path
 
 
@@ -100,6 +101,31 @@ TOKEN_COST_SELECTED_SKILLS = [
     "verify",
     "pr",
     "learn",
+]
+PROGRESSIVE_LOADING_OPTIMIZED_SKILLS = [
+    "workflow",
+    "implement",
+    "code-review",
+]
+PROGRESSIVE_LOADING_QUICK_GUIDE_LABELS = [
+    "Use this skill to:",
+    "Read first:",
+    "Produce:",
+    "Stop when:",
+    "Do not claim:",
+    "Next stage:",
+]
+PROGRESSIVE_LOADING_CODE_REVIEW_PROTECTED_TERMS = [
+    "independent-review",
+    "mixed-evidence",
+    "material finding",
+    "first-pass status",
+    "severity",
+    "isolation",
+    "detailed review record",
+    "milestone-aware",
+    "stop conditions",
+    "result format",
 ]
 SKILL_CONTRACT_FORBIDDEN_NEW_SKILLS = [
     "ci-maintenance",
@@ -261,6 +287,75 @@ def extract_markdown_block(text: str, heading: str) -> str:
     if next_heading == -1:
         return text[start:].rstrip() + "\n"
     return text[start:next_heading].rstrip() + "\n"
+
+
+def estimate_local_tokens(text: str) -> int:
+    if not text:
+        return 0
+    return max(1, max(len(text.split()), math.ceil(len(text) / 4)))
+
+
+def assert_progressive_loading_quick_guide_contract(
+    test_case: unittest.TestCase,
+    skill_body: str,
+    *,
+    max_position_tokens: int = 800,
+    max_words: int = 250,
+) -> None:
+    quick_guide = extract_markdown_block(skill_body, "Quick operating guide")
+    heading_index = skill_body.find("## Quick operating guide")
+    leading_text = skill_body[:heading_index]
+    test_case.assertLessEqual(
+        estimate_local_tokens(leading_text),
+        max_position_tokens,
+        "Quick operating guide must appear within the first 800 estimated tokens",
+    )
+
+    for label in PROGRESSIVE_LOADING_QUICK_GUIDE_LABELS:
+        test_case.assertIn(label, quick_guide)
+
+    guide_word_count = len(quick_guide.split())
+    has_safety_rationale = "safety rationale" in skill_body.lower()
+    test_case.assertTrue(
+        guide_word_count <= max_words or has_safety_rationale,
+        "Quick operating guide over 250 words requires a safety rationale",
+    )
+    test_case.assertIn("full-file", skill_body)
+    test_case.assertIn("broader-section", skill_body)
+
+
+def assert_progressive_loading_implement_handoff_contract(
+    test_case: unittest.TestCase,
+    skill_body: str,
+) -> None:
+    required_terms = [
+        "Current Handoff Summary",
+        "current milestone section",
+        "validation notes",
+        "do not run broad repository searches to infer milestone state",
+        "stop and report the missing state",
+    ]
+    for term in required_terms:
+        test_case.assertIn(term, skill_body)
+
+    forbidden_first_steps = [
+        "start by searching all docs",
+        "start by searching generated adapter output",
+        "infer current state from broad `rg` output",
+    ]
+    for term in forbidden_first_steps:
+        test_case.assertNotIn(term, skill_body)
+
+
+def assert_progressive_loading_code_review_protected_contracts(
+    test_case: unittest.TestCase,
+    skill_body: str,
+) -> None:
+    lowered = skill_body.lower()
+    for term in PROGRESSIVE_LOADING_CODE_REVIEW_PROTECTED_TERMS:
+        test_case.assertIn(term, lowered)
+    test_case.assertNotIn("references/clean-review-template.md", skill_body)
+    test_case.assertNotIn("references/finding-format.md", skill_body)
 
 
 def iter_public_workflow_and_skill_surfaces() -> list[Path]:
@@ -1782,6 +1877,167 @@ class SkillValidatorFixtureTests(unittest.TestCase):
 
             with self.subTest(skill=skill_name, term="validation_semantics"):
                 self.assertIn("Validation summaries must not change selected check coverage", body)
+
+    def test_progressive_loading_quick_guide_contract_helper_detects_required_shape(self) -> None:
+        valid_skill = """# Skill
+
+## Quick operating guide
+
+Use this skill to: route work from the shortest safe operating path.
+
+Read first:
+- active plan
+
+Produce:
+- reviewed route
+
+Stop when:
+- state is missing
+
+Do not claim:
+- downstream readiness
+
+Next stage:
+- test-spec
+
+## When full-file read is required
+
+Use a full-file or broader-section read when correctness requires surrounding context.
+"""
+        assert_progressive_loading_quick_guide_contract(self, valid_skill)
+
+        missing_label = valid_skill.replace("Next stage:\n- test-spec\n", "")
+        with self.assertRaises(AssertionError):
+            assert_progressive_loading_quick_guide_contract(self, missing_label)
+
+        late_guide = "# Skill\n\n" + ("padding " * 900) + "\n" + valid_skill
+        with self.assertRaises(AssertionError):
+            assert_progressive_loading_quick_guide_contract(self, late_guide)
+
+        overlong_guide = valid_skill.replace(
+            "Use this skill to: route work from the shortest safe operating path.",
+            "Use this skill to: " + ("preserve safety " * 260),
+        )
+        with self.assertRaises(AssertionError):
+            assert_progressive_loading_quick_guide_contract(self, overlong_guide)
+
+    def test_progressive_loading_implement_handoff_contract_helper_detects_bounded_state_inspection(self) -> None:
+        valid_skill = """# Implement
+
+## Handoff inspection budget
+
+Start with the active plan's Current Handoff Summary.
+Then read the current milestone section and validation notes.
+For milestone readiness, do not run broad repository searches to infer milestone state.
+If the active plan does not identify the current milestone or next stage, stop and report the missing state.
+"""
+        assert_progressive_loading_implement_handoff_contract(self, valid_skill)
+
+        missing_summary = valid_skill.replace("Current Handoff Summary", "handoff notes")
+        with self.assertRaises(AssertionError):
+            assert_progressive_loading_implement_handoff_contract(self, missing_summary)
+
+        broad_first_step = valid_skill + "\nAgents may start by searching all docs for milestones.\n"
+        with self.assertRaises(AssertionError):
+            assert_progressive_loading_implement_handoff_contract(self, broad_first_step)
+
+    def test_progressive_loading_code_review_protected_contract_helper_detects_safety_regression(self) -> None:
+        valid_skill = """# Code Review
+
+Keep independent-review mode, mixed-evidence handling, material finding requirements,
+first-pass status vocabulary, severity vocabulary, isolation and recording rules,
+detailed review record triggers, milestone-aware review handoff, stop conditions,
+and result format.
+"""
+        assert_progressive_loading_code_review_protected_contracts(self, valid_skill)
+
+        missing_material_findings = valid_skill.replace("material finding requirements,\n", "")
+        with self.assertRaises(AssertionError):
+            assert_progressive_loading_code_review_protected_contracts(self, missing_material_findings)
+
+        split_template = valid_skill + "\nUse references/clean-review-template.md for the clean review template.\n"
+        with self.assertRaises(AssertionError):
+            assert_progressive_loading_code_review_protected_contracts(self, split_template)
+
+    def test_progressive_loading_test_spec_maps_static_proof_surfaces(self) -> None:
+        test_spec = (
+            ROOT / "specs" / "progressive-loading-high-cost-public-skills.test.md"
+        ).read_text(encoding="utf-8")
+        plan = (
+            ROOT
+            / "docs"
+            / "plans"
+            / "2026-05-11-progressive-loading-high-cost-public-skills.md"
+        ).read_text(encoding="utf-8")
+
+        required_test_terms = [
+            "T2. Optimized skills contain valid quick operating guides",
+            "T3. `implement` starts handoff-state inspection from active plan state",
+            "T4. Workflow detail migration has owner-surface accounting",
+            "T5. `code-review` preserves protected review contracts",
+            "T6. Section-first reading guidance preserves escape conditions",
+            "scripts/test-skill-validator.py",
+        ]
+        for term in required_test_terms:
+            with self.subTest(file="test_spec", term=term):
+                self.assertIn(term, test_spec)
+
+        plan_terms = [
+            "Quick guide heading, required labels, and top-of-skill placement checks",
+            "Static checks that `implement` names `Current Handoff Summary`",
+            "Static or manual-check scaffolding for protected `code-review` contracts",
+            "Static or report-check scaffolding for workflow migration accounting",
+        ]
+        for term in plan_terms:
+            with self.subTest(file="plan", term=term):
+                self.assertIn(term, plan)
+
+    def test_progressive_loading_canonical_skills_satisfy_quick_guide_contract(self) -> None:
+        for skill_name in PROGRESSIVE_LOADING_OPTIMIZED_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            with self.subTest(skill=skill_name):
+                assert_progressive_loading_quick_guide_contract(self, body)
+
+    def test_progressive_loading_canonical_implement_handoff_contract(self) -> None:
+        body = (ROOT / "skills" / "implement" / "SKILL.md").read_text(encoding="utf-8")
+        assert_progressive_loading_implement_handoff_contract(self, body)
+
+    def test_progressive_loading_canonical_code_review_preserves_protected_contracts(self) -> None:
+        body = (ROOT / "skills" / "code-review" / "SKILL.md").read_text(encoding="utf-8")
+        assert_progressive_loading_code_review_protected_contracts(self, body)
+
+    def test_progressive_loading_workflow_migration_and_report_surfaces_exist(self) -> None:
+        workflows = (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8")
+        report = (
+            ROOT
+            / "docs"
+            / "reports"
+            / "token-cost"
+            / "optimizations"
+            / "2026-05-11-progressive-loading-high-cost-skills.md"
+        ).read_text(encoding="utf-8")
+
+        for term in [
+            "## Workflow Detail Ownership",
+            "review-resolution detail",
+            "lifecycle-managed artifact tables",
+            "validation-layering detail",
+            "default artifact path lists",
+        ]:
+            with self.subTest(file="workflows", term=term):
+                self.assertIn(term, workflows)
+
+        report_terms = [
+            "## Workflow Detail Migration Table",
+            "| Removed or summarized topic | New owner surface | Rationale |",
+            "Review-resolution details",
+            "Lifecycle-managed artifact table",
+            "Detailed validation layering",
+            "## Static Skill Size",
+        ]
+        for term in report_terms:
+            with self.subTest(file="optimization_report", term=term):
+                self.assertIn(term, report)
 
     def test_proposal_scope_preservation_guidance_is_static_validated(self) -> None:
         proposal = (ROOT / "skills" / "proposal" / "SKILL.md").read_text(encoding="utf-8")

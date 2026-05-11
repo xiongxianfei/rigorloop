@@ -103,6 +103,20 @@ Notes:
 - When normal output omits detail, it must say how to request the omitted detail.
 - A full-file read is required when the file itself is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on understanding the whole source-of-truth artifact.
 
+## Workflow Detail Ownership
+
+The public `workflow` skill should route and assess state. Long-form workflow explanation belongs here, the workflow spec, or the owning stage skill.
+
+Moved or summarized detail is owned as follows:
+
+- review-resolution detail: `docs/workflows.md`, `specs/rigorloop-workflow.md`, and review-resolution or review-stage guidance own detailed disposition, review-log, and closeout behavior.
+- lifecycle-managed artifact tables: `docs/workflows.md` and the workflow spec own full contributor-facing artifact state tables and settlement rules.
+- validation-layering detail: validation selectors, test specs, release specs, and verify guidance own detailed proof selection, broad-smoke triggers, and manual-proof rules.
+- default artifact path lists: contributor-facing workflow guidance and examples own repository path conventions; public skill text should not require path-list reads to route ordinary work.
+- bugfix and support-stage detail: the owning skill and workflow summary own specialized behavior after the workflow router identifies the trigger.
+
+Workflow safety topics MUST NOT be removed when public skill text is compressed. A removed or summarized topic needs a new owner surface or an explicit no-longer-needed rationale in the change evidence.
+
 ## Change-Local Artifacts
 
 - Manual skill invocations may omit `docs/changes/<change-id>/` when they are not used to claim complete workflow delivery.
