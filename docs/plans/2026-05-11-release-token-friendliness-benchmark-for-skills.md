@@ -68,13 +68,13 @@ No `benchmarks/` directory exists yet. This plan creates the first `benchmarks/t
 ## Current Handoff Summary
 
 - Current milestone: M5. Release validation integration and documentation
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M4 code-review R8 clean-with-notes
-- Review status: M4 closed with no material findings after RTF-CR7 resolution
+- Review status: M5 implemented and ready for code-review
 - Remaining in-scope implementation milestones: M5
-- Next stage: implement M5
+- Next stage: code-review M5
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M5, explain-change, verify, and PR handoff are not complete.
+- Reason final closeout is or is not ready: M5 code-review, explain-change, verify, and PR handoff are not complete.
 
 ## Milestones
 
@@ -276,7 +276,7 @@ No `benchmarks/` directory exists yet. This plan creates the first `benchmarks/t
 
 ### M5. Release validation integration and documentation
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Wire token-friendliness validation into release readiness and contributor-facing release guidance.
 - Requirements: `R24`-`R33`
 - Files/components likely touched:
@@ -308,13 +308,13 @@ No `benchmarks/` directory exists yet. This plan creates the first `benchmarks/t
 - Expected observable result: Public release validation fails missing or invalid token-cost evidence for governed releases and remains warning-only for token regressions.
 - Commit message: `M5: gate releases on token-friendliness evidence`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] hand off to code-review for M5
+  - [x] targeted validation passed
+  - [x] hand off to code-review for M5
   - [ ] code-review completed
   - [ ] material findings resolved or explicitly dispositioned
-  - [ ] progress updated
+  - [x] progress updated
   - [ ] decision log updated if needed
-  - [ ] validation notes updated
+  - [x] validation notes updated
   - [ ] milestone committed
 - Risks:
   - release verifier scope may be too broad for historical releases;
@@ -409,6 +409,8 @@ bash scripts/release-verify.sh <release-version>
 - 2026-05-11: Code-review R7 requested an M4 fix for analyzer parsing of current Codex `command_execution` `aggregated_output` events; RTF-CR7 is open.
 - 2026-05-11: Resolved RTF-CR7 by parsing current Codex `command_execution` `aggregated_output` events, adding focused analyzer coverage, rerunning the v0.1.1 benchmark, regenerating sanitized summaries, and correcting the Markdown/YAML baseline report; M4 is ready for code-review rerun.
 - 2026-05-11: Code-review R8 found no material findings for M4 after RTF-CR7 resolution; M4 is closed and the plan is ready for implement M5.
+- 2026-05-11: Started M5 implementation for release validation integration and documentation.
+- 2026-05-11: Added release-level token-cost report validation for governed `v0.1.1`, added release verifier invocation, updated release metadata/workflow guidance, and added regression tests for missing token-cost evidence and historical release scope; M5 is ready for code-review.
 
 ## Decision Log
 
@@ -441,6 +443,8 @@ bash scripts/release-verify.sh <release-version>
 - M4 adjusted the runner Codex invocation to include `--skip-git-repo-check` because the benchmark fixture intentionally runs outside the repository working tree.
 - Code-review R7 found that the analyzer does not parse current Codex command output stored in `aggregated_output`, so the M4 command-output amplification evidence must be regenerated after analyzer coverage is fixed.
 - RTF-CR7 resolution found current Codex `command_execution` events expose command output through nested `item.aggregated_output`. Corrected analyzer summaries now show non-zero command-output amplification and confirmed skill-file reads for the v0.1.1 baseline.
+- M5 scopes the first required token-cost release gate to `v0.1.1`; earlier release targets remain validated by the existing adapter/release checks without requiring backfilled token-cost metadata.
+- `python scripts/validate-release.py --version v0.1.0` fails against the current repository-generated `dist/adapters/manifest.yaml` because the working tree holds `0.1.1` adapter output. The historical-scope behavior is covered through fixture-backed release validation and `RELEASE_VERIFY_DRY_RUN=1 bash scripts/release-verify.sh v0.1.0`.
 
 ## Validation Notes
 
@@ -473,6 +477,8 @@ bash scripts/release-verify.sh <release-version>
 - RTF-CR7 test-first proof: `python scripts/test-token-cost-measurement.py` failed before the analyzer fix because current Codex `item.completed` / `command_execution` / `aggregated_output` events reported `tool_calls: 0` and `unknown_records: 1`.
 - RTF-CR7 resolution validation: `python scripts/test-token-cost-measurement.py` passed 23 tests; `python scripts/run-token-cost-benchmarks.py --suite benchmarks/token-cost/manifest.yaml --release v0.1.1 --tool codex` passed and regenerated seven run summaries; raw JSONL was omitted after sanitized analyzer summaries were regenerated; additional M4 validation is recorded in the change metadata.
 - RTF-CR7 final validation: `python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml`, `python -m py_compile scripts/run-token-cost-benchmarks.py scripts/analyze-codex-jsonl.py`, `python scripts/test-token-cost-report-validation.py`, `python scripts/analyze-codex-jsonl.py tests/fixtures/token-cost/sample-codex-session.jsonl`, `python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills`, and scoped `git diff --check -- ...` passed. Artifact lifecycle validation passed with the existing `docs/plan.md` lifecycle-language warning.
+- M5 test-first proof: `python scripts/test-adapter-distribution.py` failed before implementation because `validate_release_output` did not accept token-cost report validation parameters, governed `v0.1.1` did not block missing token-cost metadata, and `release-verify.sh v0.1.1` did not invoke `scripts/validate-token-cost-report.py`.
+- M5 validation: `python scripts/test-adapter-distribution.py` passed 58 tests; `bash scripts/release-verify.sh v0.1.1` passed; `python scripts/validate-release.py --version v0.1.1` passed; `RELEASE_VERIFY_DRY_RUN=1 bash scripts/release-verify.sh v0.1.0` passed; `python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml`, `python -m py_compile scripts/validate-release.py scripts/validate-token-cost-report.py scripts/adapter_distribution.py`, and `python scripts/test-token-cost-report-validation.py` passed.
 
 ## Outcome and Retrospective
 

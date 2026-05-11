@@ -37,6 +37,7 @@ requirements:
   - Resolve code-review R7 finding RTF-CR7 before M4 can close.
   - Return M4 to code-review after accepted code-review R7 finding is fixed.
   - Record clean code-review R8 before closing M4 and handing off to M5.
+  - Implement M5 release validation integration and documentation before M5 code-review.
 tests:
   - Artifact lifecycle validation for the proposal and change-local review artifacts.
   - Artifact lifecycle validation for the new feature spec.
@@ -64,6 +65,8 @@ tests:
   - Focused analyzer test for current Codex `item.completed` `command_execution` events with `aggregated_output`.
   - Corrected M4 report validation after regenerated analyzer summaries include command-output amplification.
   - Review artifact closeout validation after clean code-review R8 closes M4.
+  - Focused release validation tests for governed `v0.1.1` token-cost evidence and historical release scope.
+  - Release verifier proof that `v0.1.1` invokes token-cost report validation.
 validation:
   - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
     result: pass_structure_reviews_1_findings_6_log_entries_1_resolution_entries_6
@@ -373,6 +376,32 @@ validation:
     result: pass_validated_4_artifact_files_after_code_review_r8_with_existing_plan_index_merge_dependent_warning
   - command: git diff --check -- docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md
     result: pass_after_code_review_r8
+  - command: python scripts/test-adapter-distribution.py
+    result: fail_expected_before_m5_release_token_cost_validation_integration
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_58_tests_after_m5
+  - command: bash scripts/release-verify.sh v0.1.1
+    result: pass_after_m5
+  - command: python scripts/validate-release.py --version v0.1.1
+    result: pass_after_m5
+  - command: RELEASE_VERIFY_DRY_RUN=1 bash scripts/release-verify.sh v0.1.0
+    result: pass_historical_release_scope_dry_run_after_m5
+  - command: python scripts/validate-release.py --version v0.1.0
+    result: fail_expected_current_dist_adapters_are_0_1_1_not_0_1_0_after_m5
+  - command: python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml
+    result: pass_after_m5
+  - command: python -m py_compile scripts/validate-release.py scripts/validate-token-cost-report.py scripts/adapter_distribution.py
+    result: pass_after_m5
+  - command: python scripts/test-token-cost-report-validation.py
+    result: pass_10_tests_after_m5
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_m5
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_closeout_reviews_13_findings_17_log_entries_13_resolution_entries_17_after_m5
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/releases/v0.1.1/release.yaml --path docs/reports/token-cost/releases/v0.1.1.yaml --path docs/workflows.md
+    result: pass_validated_4_artifact_files_after_m5_with_existing_plan_and_workflow_lifecycle_language_warnings
+  - command: git diff --check --
+    result: pass_after_m5
 changed_files:
   - benchmarks/token-cost/manifest.yaml
   - benchmarks/token-cost/prompts/workflow-route.md
@@ -391,6 +420,9 @@ changed_files:
   - scripts/test-token-cost-measurement.py
   - scripts/run-token-cost-benchmarks.py
   - scripts/analyze-codex-jsonl.py
+  - scripts/adapter_distribution.py
+  - scripts/release-verify.sh
+  - scripts/test-adapter-distribution.py
   - docs/proposals/2026-05-10-release-token-friendliness-benchmark-for-skills.md
   - specs/release-token-friendliness-benchmark-for-skills.md
   - docs/architecture/system/architecture.md
@@ -441,8 +473,10 @@ changed_files:
   - docs/reports/token-cost/runs/v0.1.1/architecture-no-impact-run1.analysis.yaml
   - docs/reports/token-cost/runs/v0.1.1/learn-no-durable-lesson-run1.analysis.yaml
   - docs/releases/v0.1.1/release-notes.md
+  - docs/releases/v0.1.1/release.yaml
+  - docs/workflows.md
 review:
-  status: m4_closed_after_code_review_r8
+  status: m5_review_requested
   unresolved_items: 0
   review_log: docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md
   review_resolution: docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md

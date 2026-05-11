@@ -42,3 +42,4 @@ validation:
   release_notes_consistency: pass
   placeholder_release_check: pass
   security: pass
+  token_cost_report: pass
