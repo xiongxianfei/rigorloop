@@ -86,15 +86,15 @@ The v2 change is release-process and evidence-shape work. It must not hand-edit 
 
 - Current stage: implement
 - Current milestone: M2. Architecture-review optional scenario fixture
-- Current milestone state: ready
+- Current milestone state: review-requested
 - Last reviewed milestone: M1. Manifest and required core prompt fixtures
 - Review status: code-review M1 R1 clean-with-notes; no material findings
 - Next stage after plan-review: test-spec
 - Test-spec artifact: `specs/expand-dynamic-token-friendliness-benchmarks-for-core-skills.test.md`
 - Test-spec status: active
 - Implementation may start after: test-spec is authored and accepted for use; complete
-- Remaining in-scope implementation milestones: M2, M3, M4, M5
-- Next stage: implement M2
+- Remaining in-scope implementation milestones: M2 review pending, then M3, M4, M5
+- Next stage: code-review for M2
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: No implementation milestones are closed, and final explain-change, verify, and PR handoff are not complete.
 
@@ -192,7 +192,7 @@ Suggested validation for the test-spec stage:
 
 ### M2. Architecture-review optional scenario fixture
 
-- Milestone state: ready
+- Milestone state: review-requested
 - Goal: Add the first optional extended benchmark, using a separate architecture-review fixture that tests canonical architecture review without a change-local delta.
 - Requirements: `R4`-`R6`, `R8`.
 - Files/components likely touched:
@@ -217,11 +217,11 @@ Suggested validation for the test-spec stage:
 - Expected observable result: The optional `architecture-review` benchmark exists and remains separate from the minimal public fixture.
 - Commit message: `M2: add architecture-review benchmark fixture`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - The scenario fixture can grow enough to distort token cost for unrelated prompts if accidentally reused.
 - Rollback/recovery:
@@ -399,6 +399,7 @@ Implementation-stage validation is listed per milestone. Prefer the smallest rel
 - 2026-05-11: Test spec created and marked active; next stage is M1 implementation.
 - 2026-05-11: M1 implementation updated the manifest to `skill-token-runtime-v2`, added required core prompts for `plan-handoff`, `explain-change-summary`, and `pr-handoff`, kept transition carryover prompts in the executable list, and updated prompt fixture tests.
 - 2026-05-11: Code-review M1 R1 found no material findings and closed M1; next stage is M2 implementation.
+- 2026-05-11: M2 implementation added the optional `architecture-review` prompt declaration, prompt fixture, and separate `minimal-public-project-architecture-review` scenario fixture with canonical architecture package, ADR-not-required note, change metadata, explain-change evidence, spec, diagrams, and tiny source file.
 
 ## Decision log
 
@@ -407,6 +408,7 @@ Implementation-stage validation is listed per milestone. Prefer the smallest rel
 - 2026-05-11: Keep validator support and release validation integration separate -> token-cost report schema validation and release changed-surface detection have different ownership.
 - 2026-05-11: Keep real `validate-release.py --version v0.1.1` in M5 -> final release validation depends on v2 report evidence created in the report-evidence milestone.
 - 2026-05-11: Keep the runner executable manifest as a flat `prompts:` list in M1 while adding v2 grouping metadata beside it -> the current runner can enumerate all required prompts without a loader refactor, and validator/report grouping work remains scoped to later milestones.
+- 2026-05-11: Add `architecture-review` under `optional_prompts` rather than the flat executable `prompts` list -> M2 makes the optional benchmark discoverable and fixture-backed without making it part of the release-required dry-run set before runner/validator optional-suite handling lands.
 
 ## Surprises and discoveries
 
@@ -430,6 +432,12 @@ Implementation-stage validation is listed per milestone. Prefer the smallest rel
 - 2026-05-11: Code-review M1 R1 reviewer reran `python scripts/validate-change-metadata.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml`; passed.
 - 2026-05-11: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills` passed after M1 code-review closeout with `reviews=8`, `findings=6`, `log_entries=8`, and `resolution_entries=6`.
 - 2026-05-11: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ... code-review-m1-r1.md` passed with the existing unrelated `docs/plan.md` lifecycle-language warning.
+- 2026-05-11: `python scripts/test-token-cost-measurement.py BenchmarkFixtureTests.test_architecture_review_optional_prompt_and_fixture_are_self_contained` failed before M2 implementation because `optional_prompts` and the scenario fixture were missing; it passed after the optional prompt and fixture were added.
+- 2026-05-11: `python scripts/test-token-cost-measurement.py` passed with 24 tests after M2 implementation.
+- 2026-05-11: `python scripts/run-token-cost-benchmarks.py --dry-run --suite benchmarks/token-cost/manifest.yaml --release test --tool codex` passed after M2 implementation; the optional prompt declaration did not change the current required/carryover dry-run execution list.
+- 2026-05-11: `python scripts/validate-change-metadata.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml` passed after M2 implementation.
+- 2026-05-11: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ... explain-change.md` passed after M2 implementation with the existing unrelated `docs/plan.md` lifecycle-language warning.
+- 2026-05-11: `git diff --check -- benchmarks/token-cost scripts/test-token-cost-measurement.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md docs/plan.md` passed.
 
 ## Outcome and retrospective
 

@@ -129,3 +129,14 @@ prompts:
       - learn
       - trigger-discipline
       - no-edit
+optional_prompts:
+  - id: architecture-review
+    path: prompts/architecture-review.md
+    tool: codex
+    fixture: fixtures/minimal-public-project-architecture-review
+    expected_skill: architecture-review
+    expected_result: pass
+    tags:
+      - architecture-review
+      - optional-extended
+      - no-edit
