@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import importlib.util
 import re
 import subprocess
 import sys
@@ -39,6 +40,7 @@ ADAPTER_TEMPLATE_ROOT = ROOT / "scripts" / "adapter_templates"
 RELEASE_ROOT = ROOT / "docs" / "releases"
 TOKEN_COST_REPORT_ROOT = ROOT / "docs" / "reports" / "token-cost" / "releases"
 TOKEN_COST_VALIDATOR = ROOT / "scripts" / "validate-token-cost-report.py"
+TOKEN_COST_MANIFEST = ROOT / "benchmarks" / "token-cost" / "manifest.yaml"
 ADAPTER_OUTPUT_CONTRACT_ROOT = PurePosixPath("dist/adapters")
 OPENCODE_COMMAND_ROOT = PurePosixPath(".opencode/commands")
 COMMON_FRONTMATTER = frozenset({"name", "description"})
@@ -212,6 +214,7 @@ REQUIRED_RELEASE_VALIDATION_KEYS = (
     "security",
 )
 TOKEN_COST_REPORT_REQUIRED_RELEASES = frozenset({"v0.1.1"})
+TOKEN_COST_RUNTIME_V2 = "skill-token-runtime-v2"
 PLACEHOLDER_RELEASE_PATTERNS = (
     "Replace this script with repository-specific release checks",
     "TODO: release checks",
@@ -1903,11 +1906,212 @@ def _validate_opencode_command_alias_smoke(version: str, metadata: ReleaseMetada
     return [f"smoke.opencode.evidence: {version} requires command alias behavior evidence"]
 
 
+def canonical_skill_owner(path: str | Path) -> str | None:
+    parts = PurePosixPath(str(path).replace("\\", "/")).parts
+    if len(parts) == 3 and parts[0] == "skills" and parts[2] == "SKILL.md":
+        return parts[1]
+    return None
+
+
+def generated_adapter_skill_owner(path: str | Path) -> str | None:
+    candidate = PurePosixPath(str(path).replace("\\", "/"))
+    for config in ADAPTERS.values():
+        prefix = config.package_root / config.skill_root
+        parts = candidate.parts
+        prefix_parts = prefix.parts
+        if len(parts) != len(prefix_parts) + 2:
+            continue
+        if parts[: len(prefix_parts)] != prefix_parts:
+            continue
+        if parts[-1] == "SKILL.md":
+            return parts[-2]
+    return None
+
+
+def _current_git_commit() -> str:
+    result = subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    commit = result.stdout.strip()
+    return commit if result.returncode == 0 and commit else "unknown"
+
+
+def _load_token_cost_validator_module(token_cost_validator: Path = TOKEN_COST_VALIDATOR) -> Any:
+    spec = importlib.util.spec_from_file_location(
+        "rigorloop_token_cost_validator",
+        token_cost_validator,
+    )
+    if spec is None or spec.loader is None:
+        raise ValueError(f"cannot load token-cost validator: {token_cost_validator}")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+def _load_token_cost_yaml(path: Path, token_cost_validator: Path = TOKEN_COST_VALIDATOR) -> Any:
+    module = _load_token_cost_validator_module(token_cost_validator)
+    return module.load_yaml(path)
+
+
+def _token_cost_manifest_contract(
+    manifest_path: Path = TOKEN_COST_MANIFEST,
+    *,
+    token_cost_validator: Path = TOKEN_COST_VALIDATOR,
+) -> tuple[list[str], list[str], list[str], dict[str, str]]:
+    data = _load_token_cost_yaml(manifest_path, token_cost_validator)
+    if not isinstance(data, dict):
+        raise ValueError(f"{manifest_path}: expected mapping")
+
+    def string_list(key: str) -> list[str]:
+        value = data.get(key)
+        if not isinstance(value, list) or not all(isinstance(item, str) and item for item in value):
+            raise ValueError(f"{manifest_path}: {key}: expected list of strings")
+        return list(value)
+
+    core = string_list("required_core")
+    transition = string_list("transition_carryover_required")
+    optional = string_list("optional_extended")
+    skill_to_benchmark: dict[str, str] = {}
+    prompt_groups = []
+    for key in ("prompts", "optional_prompts"):
+        value = data.get(key)
+        if isinstance(value, list):
+            prompt_groups.extend(value)
+    for prompt in prompt_groups:
+        if not isinstance(prompt, dict):
+            continue
+        benchmark = prompt.get("id")
+        skill = prompt.get("expected_skill")
+        if isinstance(benchmark, str) and benchmark and isinstance(skill, str) and skill:
+            skill_to_benchmark.setdefault(skill, benchmark)
+    return core, transition, optional, skill_to_benchmark
+
+
+def build_required_benchmark_context(
+    version: str,
+    *,
+    release_stage: str,
+    commit: str,
+    changed_paths: Iterable[str | Path] = (),
+    manifest_path: Path = TOKEN_COST_MANIFEST,
+    token_cost_validator: Path = TOKEN_COST_VALIDATOR,
+) -> dict[str, Any]:
+    core, transition, optional, skill_to_benchmark = _token_cost_manifest_contract(
+        manifest_path,
+        token_cost_validator=token_cost_validator,
+    )
+    base_required = set(core) | set(transition)
+    canonical_by_skill: dict[str, list[str]] = {}
+    generated_by_skill: dict[str, list[str]] = {}
+    for changed in changed_paths:
+        normalized = PurePosixPath(str(changed).replace("\\", "/")).as_posix()
+        canonical = canonical_skill_owner(normalized)
+        if canonical:
+            canonical_by_skill.setdefault(canonical, []).append(normalized)
+            continue
+        generated = generated_adapter_skill_owner(normalized)
+        if generated:
+            generated_by_skill.setdefault(generated, []).append(normalized)
+
+    required_due_to_changes: list[dict[str, Any]] = []
+    missing_benchmarks: list[dict[str, str]] = []
+    for skill in sorted(canonical_by_skill):
+        benchmark = skill_to_benchmark.get(skill)
+        if benchmark and benchmark not in base_required:
+            required_due_to_changes.append(
+                {
+                    "benchmark": benchmark,
+                    "skill": skill,
+                    "reason": "public-skill-changed",
+                    "changed_surfaces": {
+                        "canonical": sorted(canonical_by_skill[skill]),
+                        "generated": list(generated_by_skill.get(skill, [])),
+                    },
+                }
+            )
+        elif not benchmark:
+            missing_benchmarks.append(
+                {
+                    "skill": skill,
+                    "reason": "public-skill-changed",
+                    "follow_up": f"add token-cost benchmark fixture for {skill}",
+                }
+            )
+
+    generated_trace: list[dict[str, Any]] = []
+    for skill in sorted(generated_by_skill):
+        if skill in canonical_by_skill:
+            continue
+        benchmark = skill_to_benchmark.get(skill, "")
+        for path in sorted(generated_by_skill[skill]):
+            generated_trace.append(
+                {
+                    "generated_path": path,
+                    "owning_skill": f"skills/{skill}/SKILL.md",
+                    "benchmark": benchmark,
+                    "canonical_changed": False,
+                    "action": "adapter-drift-or-regeneration-evidence",
+                }
+            )
+
+    return {
+        "schema_version": 1,
+        "context_source": "release-validation",
+        "release": {
+            "version": version,
+            "stage": release_stage,
+            "commit": commit,
+        },
+        "benchmark_suite": {
+            "id": TOKEN_COST_RUNTIME_V2,
+            "manifest": manifest_path.relative_to(ROOT).as_posix()
+            if manifest_path.is_absolute() and manifest_path.is_relative_to(ROOT)
+            else str(manifest_path),
+        },
+        "required_benchmarks": {
+            "core": core,
+            "transition_carryover": transition,
+            "required_due_to_changes": required_due_to_changes,
+            "missing_benchmarks": missing_benchmarks,
+            "generated_trace": generated_trace,
+        },
+        "optional_benchmarks": {
+            "extended": optional,
+        },
+        "waiver_policy": {
+            "final_release_requires_pass_or_waiver": True,
+            "inconclusive_requires_waiver_for_required_benchmarks": True,
+            "allowed_approver_roles": [
+                "release-owner",
+                "release-manager",
+                "repository-maintainer",
+            ],
+        },
+    }
+
+
+def _token_cost_report_suite_id(metadata_path: Path, token_cost_validator: Path) -> str:
+    try:
+        data = _load_token_cost_yaml(metadata_path, token_cost_validator)
+    except Exception:
+        return ""
+    suite = data.get("benchmark_suite") if isinstance(data, dict) else None
+    suite_id = suite.get("id") if isinstance(suite, dict) else ""
+    return suite_id if isinstance(suite_id, str) else ""
+
+
 def _validate_token_cost_report(
     version: str,
     *,
     token_cost_report_root: Path = TOKEN_COST_REPORT_ROOT,
     token_cost_validator: Path = TOKEN_COST_VALIDATOR,
+    required_benchmark_context: Any | None = None,
+    changed_paths: Iterable[str | Path] = (),
 ) -> list[str]:
     metadata_path = token_cost_report_root / f"{version}.yaml"
     if not metadata_path.is_file():
@@ -1915,18 +2119,29 @@ def _validate_token_cost_report(
     if not token_cost_validator.is_file():
         return [f"missing token-cost validator: {token_cost_validator}"]
 
-    result = subprocess.run(
-        [sys.executable, str(token_cost_validator), str(metadata_path)],
-        capture_output=True,
-        text=True,
-        cwd=ROOT,
-    )
-    if result.returncode == 0:
+    try:
+        module = _load_token_cost_validator_module(token_cost_validator)
+        metadata = module.load_yaml(metadata_path)
+        context = required_benchmark_context
+        if context is None and _token_cost_report_suite_id(metadata_path, token_cost_validator) == TOKEN_COST_RUNTIME_V2:
+            context = build_required_benchmark_context(
+                version,
+                release_stage="final" if "-" not in version else "rc",
+                commit=_current_git_commit(),
+                changed_paths=changed_paths,
+                token_cost_validator=token_cost_validator,
+            )
+        errors = module.validate_token_cost_report(
+            metadata,
+            required_benchmark_context=context,
+            metadata_path=metadata_path,
+        )
+    except Exception as exc:
+        return [f"token-cost report validation failed: {metadata_path}: {exc}"]
+    if not errors:
         return []
 
-    output = "\n".join(part for part in (result.stdout.strip(), result.stderr.strip()) if part)
-    if not output:
-        output = f"validator exited with status {result.returncode}"
+    output = "\n".join(errors)
     return [f"token-cost report validation failed: {metadata_path}: {output}"]
 
 
@@ -1939,6 +2154,7 @@ def validate_release_output(
     release_root: Path = RELEASE_ROOT,
     token_cost_report_root: Path = TOKEN_COST_REPORT_ROOT,
     token_cost_validator: Path = TOKEN_COST_VALIDATOR,
+    changed_paths: Iterable[str | Path] = (),
 ) -> list[str]:
     """Validate one target-version release metadata and notes surface."""
 
@@ -2053,6 +2269,7 @@ def validate_release_output(
             version,
             token_cost_report_root=token_cost_report_root,
             token_cost_validator=token_cost_validator,
+            changed_paths=changed_paths,
         )
         if token_cost_required
         else []

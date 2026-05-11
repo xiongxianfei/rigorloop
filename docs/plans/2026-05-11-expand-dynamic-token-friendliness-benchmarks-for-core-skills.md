@@ -84,19 +84,19 @@ The v2 change is release-process and evidence-shape work. It must not hand-edit 
 
 ## Current Handoff Summary
 
-- Current stage: implement
+- Current stage: code-review
 - Current milestone: M4. Release validation required benchmark context integration
-- Current milestone state: ready
+- Current milestone state: implemented and committed; awaiting code-review
 - Last reviewed milestone: M3. Token-cost validator v2 metadata and context support
-- Review status: code-review M3 R2 clean-with-notes; no material findings
+- Review status: M4 implementation complete; code-review M4 not yet run
 - Next stage after plan-review: test-spec
 - Test-spec artifact: `specs/expand-dynamic-token-friendliness-benchmarks-for-core-skills.test.md`
 - Test-spec status: active
 - Implementation may start after: test-spec is authored and accepted for use; complete
-- Remaining in-scope implementation milestones: M4, M5
-- Next stage: implement M4
+- Remaining in-scope implementation milestones: M4 review, M5
+- Next stage: code-review M4
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M4-M5 remain open, and final explain-change, verify, and PR handoff are not complete.
+- Reason final closeout is or is not ready: M4 still needs code-review, M5 remains open, and final explain-change, verify, and PR handoff are not complete.
 
 ## Requirements covered
 
@@ -275,7 +275,7 @@ Suggested validation for the test-spec stage:
 
 ### M4. Release validation required benchmark context integration
 
-- Milestone state: ready
+- Milestone state: implemented and committed; awaiting code-review
 - Goal: Generate release-specific required benchmark context from changed surfaces and pass it to token-cost validation.
 - Requirements: `R10`-`R13`, `R15`.
 - Files/components likely touched:
@@ -304,11 +304,11 @@ Suggested validation for the test-spec stage:
 - Expected observable result: Focused tests prove release validation decides which benchmarks are required, delegates to token-cost validation, and blocks invalid governed metadata without depending on final `v0.1.1` v2 report evidence.
 - Commit message: `M4: integrate required benchmark context into release validation`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - Git diff range ambiguity can make changed-skill detection brittle.
   - Accidentally running final release validation here can create a false dependency on report metadata intentionally created later.
@@ -407,6 +407,7 @@ Implementation-stage validation is listed per milestone. Prefer the smallest rel
 - 2026-05-11: Code-review M3 R1 found EDTF-CR1, a major validator gap where optional dynamic run `result_quality.status` can be hidden by mismatched `benchmark_coverage.optional_run[*].result_quality_status`; M3 is in `resolution-needed`.
 - 2026-05-11: EDTF-CR1 was accepted and fixed by reconciling optional coverage result-quality status with actual dynamic run result-quality status and adding focused mismatch tests; M3 is ready for code-review rerun.
 - 2026-05-11: Code-review M3 R2 found no material findings and closed M3; next stage is M4 implementation.
+- 2026-05-11: M4 implementation added release-side required benchmark context generation, generated adapter path tracing, changed-skill missing-benchmark warning metadata, and in-process token-cost validator delegation for v2 reports; next stage is code-review M4.
 
 ## Decision log
 
@@ -418,6 +419,7 @@ Implementation-stage validation is listed per milestone. Prefer the smallest rel
 - 2026-05-11: Add `architecture-review` under `optional_prompts` rather than the flat executable `prompts` list -> M2 makes the optional benchmark discoverable and fixture-backed without making it part of the release-required dry-run set before runner/validator optional-suite handling lands.
 - 2026-05-11: Gate v2-only validation by `skill-token-runtime-v2` suite id or an explicit required benchmark context -> the historical v1 report fixture keeps its existing schema while v2 reports receive the new coverage and result-quality checks.
 - 2026-05-11: Keep required benchmark context validation in the token-cost validator but leave changed-surface detection for M4 release validation -> M3 proves the context contract without moving release diff analysis into the standalone validator.
+- 2026-05-11: Keep the tracked `v0.1.1` v1 report on the existing release validation path until M5 creates v2 evidence -> M4 only passes required benchmark context when the governed token-cost report declares `skill-token-runtime-v2`, preserving pre-transition validation.
 
 ## Surprises and discoveries
 
@@ -471,6 +473,17 @@ Implementation-stage validation is listed per milestone. Prefer the smallest rel
 - 2026-05-11: Code-review M3 R2 reviewer reran `python scripts/test-token-cost-report-validation.py`; passed with 16 tests.
 - 2026-05-11: Code-review M3 R2 reviewer reran `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills`; passed with `reviews=10`, `findings=7`, `log_entries=10`, and `resolution_entries=7`.
 - 2026-05-11: Code-review M3 R2 reviewer reran `python scripts/validate-change-metadata.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml`; passed.
+- 2026-05-11: `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_required_benchmark_context_requires_changed_skill_benchmark AdapterDistributionTests.test_required_benchmark_context_traces_generated_adapter_paths AdapterDistributionTests.test_generated_only_adapter_change_does_not_require_dynamic_benchmark AdapterDistributionTests.test_changed_public_skill_without_benchmark_records_warning_follow_up` failed before M4 implementation because release validation did not expose required benchmark context construction; it passed after the context builder and generated adapter path tracing were added.
+- 2026-05-11: `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_release_validation_passes_required_context_to_token_cost_validation` passed after M4 implementation, proving v2 release validation delegates to token-cost validation with generated required benchmark context.
+- 2026-05-11: `python scripts/test-token-cost-report-validation.py` passed with 16 tests after M4 implementation.
+- 2026-05-11: `python scripts/test-adapter-distribution.py` passed with 64 tests after M4 implementation.
+- 2026-05-11: `python -m py_compile scripts/validate-release.py scripts/validate-token-cost-report.py scripts/adapter_distribution.py scripts/test-adapter-distribution.py` passed after M4 implementation.
+- 2026-05-11: `python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml` passed after M4 implementation.
+- 2026-05-11: `python scripts/validate-release.py --version v0.1.1` passed after M4 implementation, confirming the v1 pre-transition report still validates before M5 creates v2 report evidence.
+- 2026-05-11: `git diff --check -- scripts/validate-release.py scripts/adapter_distribution.py scripts/test-adapter-distribution.py scripts/test-token-cost-report-validation.py tests docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md` passed after M4 implementation.
+- 2026-05-11: `python scripts/validate-change-metadata.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml` passed after M4 artifact updates.
+- 2026-05-11: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path docs/plan.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/explain-change.md` passed after M4 artifact updates with the existing unrelated `docs/plan.md` lifecycle-language warning.
+- 2026-05-11: `git diff --check -- scripts/validate-release.py scripts/adapter_distribution.py scripts/test-adapter-distribution.py scripts/test-token-cost-report-validation.py tests docs/plan.md docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills` passed after M4 artifact updates.
 
 ## Outcome and retrospective
 
