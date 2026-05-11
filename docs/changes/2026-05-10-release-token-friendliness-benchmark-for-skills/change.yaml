@@ -71,6 +71,7 @@ tests:
   - Focused release validation integration test proving invalid governed token-cost metadata blocks through validator delegation.
   - T16 test-spec clarification for delegated validator failure propagation.
   - Review artifact closeout validation after clean code-review R10 closes M5.
+  - Durable explain-change rationale for the release Token-Friendliness benchmark implementation.
 validation:
   - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
     result: pass_structure_reviews_1_findings_6_log_entries_1_resolution_entries_6
@@ -444,6 +445,12 @@ validation:
     result: pass_valid_change_metadata_during_code_review_r10
   - command: git diff --check --
     result: pass_during_code_review_r10
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_explain_change
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_closeout_reviews_15_findings_18_log_entries_15_resolution_entries_18_after_explain_change
+  - command: git diff --check --
+    result: pass_after_explain_change
 changed_files:
   - benchmarks/token-cost/manifest.yaml
   - benchmarks/token-cost/prompts/workflow-route.md
@@ -492,6 +499,7 @@ changed_files:
   - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
   - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md
   - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md
+  - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/explain-change.md
   - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/proposal-review-r1.md
   - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/proposal-review-r2.md
   - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/spec-review-r1.md
@@ -520,7 +528,7 @@ changed_files:
   - docs/releases/v0.1.1/release.yaml
   - docs/workflows.md
 review:
-  status: m5_closed_after_code_review_r10
+  status: explain_change_complete_ready_for_verify
   unresolved_items: 0
   review_log: docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md
   review_resolution: docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md
