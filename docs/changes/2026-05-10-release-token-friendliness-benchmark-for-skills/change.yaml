@@ -70,6 +70,7 @@ tests:
   - Code-review R9 review artifact recording for M5.
   - Focused release validation integration test proving invalid governed token-cost metadata blocks through validator delegation.
   - T16 test-spec clarification for delegated validator failure propagation.
+  - Review artifact closeout validation after clean code-review R10 closes M5.
 validation:
   - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
     result: pass_structure_reviews_1_findings_6_log_entries_1_resolution_entries_6
@@ -435,6 +436,14 @@ validation:
     result: pass_validated_4_artifact_files_after_rtf_cr8_resolution_with_existing_plan_and_workflow_lifecycle_language_warnings
   - command: git diff --check --
     result: pass_after_rtf_cr8_resolution
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_v0_1_1_release_validation_blocks_invalid_token_cost_report
+    result: pass_during_code_review_r10
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
+    result: pass_closeout_reviews_14_findings_18_log_entries_14_resolution_entries_18_during_code_review_r10
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_during_code_review_r10
+  - command: git diff --check --
+    result: pass_during_code_review_r10
 changed_files:
   - benchmarks/token-cost/manifest.yaml
   - benchmarks/token-cost/prompts/workflow-route.md
@@ -497,6 +506,7 @@ changed_files:
   - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r7.md
   - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r8.md
   - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r9.md
+  - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r10.md
   - docs/reports/token-cost/releases/v0.1.1.md
   - docs/reports/token-cost/releases/v0.1.1.yaml
   - docs/reports/token-cost/runs/v0.1.1/workflow-route-run1.analysis.yaml
@@ -510,7 +520,7 @@ changed_files:
   - docs/releases/v0.1.1/release.yaml
   - docs/workflows.md
 review:
-  status: m5_review_requested_after_rtf_cr8_resolution
+  status: m5_closed_after_code_review_r10
   unresolved_items: 0
   review_log: docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md
   review_resolution: docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md

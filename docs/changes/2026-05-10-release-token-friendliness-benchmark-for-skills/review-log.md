@@ -145,3 +145,13 @@ Detailed record: reviews/code-review-r9.md
 Resolution: review-resolution.md#code-review-r9
 Material findings: RTF-CR8
 Open findings: None
+
+### Review entry
+Review ID: code-review-r10
+Stage: code-review
+Round: 10
+Status: clean-with-notes
+Detailed record: reviews/code-review-r10.md
+Resolution: review-resolution.md#code-review-r10
+Material findings: None
+Open findings: None

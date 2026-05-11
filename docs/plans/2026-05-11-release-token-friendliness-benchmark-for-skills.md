@@ -68,13 +68,13 @@ No `benchmarks/` directory exists yet. This plan creates the first `benchmarks/t
 ## Current Handoff Summary
 
 - Current milestone: M5. Release validation integration and documentation
-- Current milestone state: review-requested
-- Last reviewed milestone: M5 code-review R9 changes-requested
-- Review status: RTF-CR8 resolved; M5 is ready for code-review rerun.
-- Remaining in-scope implementation milestones: M5
-- Next stage: code-review M5 rerun
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M5 code-review rerun, explain-change, verify, and PR handoff are not complete.
+- Current milestone state: closed
+- Last reviewed milestone: M5 code-review R10 clean-with-notes
+- Review status: M5 closed with no material findings after RTF-CR8 resolution.
+- Remaining in-scope implementation milestones: none
+- Next stage: explain-change
+- Final closeout readiness: ready to start final closeout
+- Reason final closeout is or is not ready: All in-scope implementation milestones are closed and review-resolution is closed; explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -276,7 +276,7 @@ No `benchmarks/` directory exists yet. This plan creates the first `benchmarks/t
 
 ### M5. Release validation integration and documentation
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Wire token-friendliness validation into release readiness and contributor-facing release guidance.
 - Requirements: `R24`-`R33`
 - Files/components likely touched:
@@ -413,6 +413,7 @@ bash scripts/release-verify.sh <release-version>
 - 2026-05-11: Added release-level token-cost report validation for governed `v0.1.1`, added release verifier invocation, updated release metadata/workflow guidance, and added regression tests for missing token-cost evidence and historical release scope; M5 is ready for code-review.
 - 2026-05-11: Code-review R9 requested an M5 test fix for invalid governed token-cost metadata propagation through release validation; RTF-CR8 is open.
 - 2026-05-11: Resolved RTF-CR8 by adding a release-level integration test that points governed `v0.1.1` release validation at invalid token-cost metadata, asserting the token-cost validator failure is propagated, and clarifying T16 test-spec language; M5 is ready for code-review rerun.
+- 2026-05-11: Code-review R10 found no material findings after RTF-CR8 resolution; M5 is closed and the plan is ready for final closeout via explain-change.
 
 ## Decision Log
 
@@ -485,6 +486,7 @@ bash scripts/release-verify.sh <release-version>
 - M5 validation: `python scripts/test-adapter-distribution.py` passed 58 tests; `bash scripts/release-verify.sh v0.1.1` passed; `python scripts/validate-release.py --version v0.1.1` passed; `RELEASE_VERIFY_DRY_RUN=1 bash scripts/release-verify.sh v0.1.0` passed; `python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml`, `python -m py_compile scripts/validate-release.py scripts/validate-token-cost-report.py scripts/adapter_distribution.py`, and `python scripts/test-token-cost-report-validation.py` passed.
 - RTF-CR8 focused proof: `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_v0_1_1_release_validation_blocks_invalid_token_cost_report` passed.
 - RTF-CR8 resolution validation: `python scripts/test-adapter-distribution.py` passed 59 tests; `python scripts/test-token-cost-report-validation.py`, `python scripts/validate-release.py --version v0.1.1`, `python -m py_compile scripts/validate-release.py scripts/validate-token-cost-report.py scripts/adapter_distribution.py`, `bash scripts/release-verify.sh v0.1.1`, `python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml`, `python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills`, and `git diff --check --` passed. Artifact lifecycle validation passed with the existing `docs/plan.md` and `docs/workflows.md` lifecycle-language warnings.
+- Code-review R10 validation rerun: `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_v0_1_1_release_validation_blocks_invalid_token_cost_report`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills`, `python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml`, and `git diff --check --` passed.
 
 ## Outcome and Retrospective
 
