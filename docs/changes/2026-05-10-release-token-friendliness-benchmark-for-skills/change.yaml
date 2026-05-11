@@ -27,6 +27,7 @@ requirements:
   - Resolve code-review R2 finding RTF-CR3 before M1 can close.
   - Return M1 to code-review after accepted code-review R2 findings are fixed.
   - Record clean code-review R3 before closing M1 and handing off to M2.
+  - Implement M2 benchmark fixture and prompt suite before M2 code-review.
 tests:
   - Artifact lifecycle validation for the proposal and change-local review artifacts.
   - Artifact lifecycle validation for the new feature spec.
@@ -43,6 +44,7 @@ tests:
   - Review artifact structure validation after code-review R2 material finding is recorded.
   - Focused M1 validator tests for complete RC reuse checked-surface coverage after code-review R2 resolution.
   - Review artifact closeout validation after clean code-review R3 closes M1.
+  - Focused M2 fixture tests for benchmark manifest, prompt files, clean fixture contents, no installed skill copies, and no generated-surface references.
 validation:
   - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills
     result: pass_structure_reviews_1_findings_6_log_entries_1_resolution_entries_6
@@ -206,7 +208,38 @@ validation:
     result: pass_closeout_reviews_8_findings_13_log_entries_8_resolution_entries_13_after_code_review_r3
   - command: git diff --check -- scripts/validate-token-cost-report.py scripts/test-token-cost-report-validation.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md
     result: pass_after_code_review_r3
+  - command: python scripts/test-token-cost-measurement.py
+    result: fail_expected_before_m2_fixture_creation_missing_manifest_and_fixture_agents
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_10_tests_after_m2_fixtures
+  - command: test -f benchmarks/token-cost/manifest.yaml
+    result: pass_after_m2_fixtures
+  - command: find benchmarks/token-cost -maxdepth 4 -type f | sort
+    result: pass_listed_manifest_prompts_and_top_level_fixture_files_after_m2_fixtures
+  - command: rg -n "dist/adapters|\\.codex/skills|\\.agents/skills" benchmarks/token-cost
+    result: pass_no_matches_after_m2_fixtures
+  - command: git diff --check -- benchmarks/token-cost scripts/test-token-cost-measurement.py docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_after_m2_fixtures
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml
+    result: pass_valid_change_metadata_after_m2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md
+    result: pass_validated_4_artifact_files_after_m2_with_existing_plan_index_merge_dependent_warning
 changed_files:
+  - benchmarks/token-cost/manifest.yaml
+  - benchmarks/token-cost/prompts/workflow-route.md
+  - benchmarks/token-cost/prompts/proposal-short.md
+  - benchmarks/token-cost/prompts/implement-handoff.md
+  - benchmarks/token-cost/prompts/code-review-small.md
+  - benchmarks/token-cost/prompts/verify-final-pack.md
+  - benchmarks/token-cost/prompts/architecture-no-impact.md
+  - benchmarks/token-cost/prompts/learn-no-durable-lesson.md
+  - benchmarks/token-cost/fixtures/minimal-public-project/AGENTS.md
+  - benchmarks/token-cost/fixtures/minimal-public-project/VISION.md
+  - benchmarks/token-cost/fixtures/minimal-public-project/README.md
+  - benchmarks/token-cost/fixtures/minimal-public-project/docs/workflows.md
+  - benchmarks/token-cost/fixtures/minimal-public-project/docs/changes/.gitkeep
+  - benchmarks/token-cost/fixtures/minimal-public-project/src/example.txt
+  - scripts/test-token-cost-measurement.py
   - docs/proposals/2026-05-10-release-token-friendliness-benchmark-for-skills.md
   - specs/release-token-friendliness-benchmark-for-skills.md
   - docs/architecture/system/architecture.md
@@ -243,7 +276,7 @@ changed_files:
   - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r2.md
   - docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r3.md
 review:
-  status: m1_closed_after_clean_code_review_r3
+  status: m2_review_requested
   unresolved_items: 0
   review_log: docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md
   review_resolution: docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md

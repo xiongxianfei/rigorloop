@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 import sys
 import tempfile
@@ -22,6 +23,18 @@ CHANGE_METADATA = (
     / "2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation"
     / "change.yaml"
 )
+BENCHMARK_ROOT = ROOT / "benchmarks" / "token-cost"
+BENCHMARK_MANIFEST = BENCHMARK_ROOT / "manifest.yaml"
+BENCHMARK_FIXTURE = BENCHMARK_ROOT / "fixtures" / "minimal-public-project"
+EXPECTED_BENCHMARKS = {
+    "workflow-route": "workflow",
+    "proposal-short": "proposal",
+    "implement-handoff": "implement",
+    "code-review-small": "code-review",
+    "verify-final-pack": "verify",
+    "architecture-no-impact": "architecture",
+    "learn-no-durable-lesson": "learn",
+}
 
 
 def run_command(*args: str) -> subprocess.CompletedProcess[str]:
@@ -215,6 +228,58 @@ class BaselineReportTests(unittest.TestCase):
             "docs/reports/token-cost/2026-05-10-baseline.md",
             metadata,
         )
+
+
+class BenchmarkFixtureTests(unittest.TestCase):
+    def read_manifest(self) -> str:
+        self.assertTrue(BENCHMARK_MANIFEST.exists(), "benchmark manifest must exist")
+        return BENCHMARK_MANIFEST.read_text(encoding="utf-8")
+
+    def test_manifest_lists_all_initial_prompt_fixtures(self) -> None:
+        manifest = self.read_manifest()
+        self.assertIn("suite: skill-token-runtime-v1", manifest)
+
+        ids = set(re.findall(r"^\s+- id: ([a-z0-9-]+)$", manifest, flags=re.MULTILINE))
+        self.assertEqual(set(EXPECTED_BENCHMARKS), ids)
+
+        for benchmark_id, expected_skill in EXPECTED_BENCHMARKS.items():
+            prompt_path = BENCHMARK_ROOT / "prompts" / f"{benchmark_id}.md"
+            self.assertTrue(prompt_path.exists(), f"{benchmark_id} prompt must exist")
+            prompt = prompt_path.read_text(encoding="utf-8")
+            self.assertIn("Do not edit files.", prompt)
+            self.assertIn(f"expected_skill: {expected_skill}", manifest)
+            self.assertIn(f"path: prompts/{benchmark_id}.md", manifest)
+            self.assertIn("tool: codex", manifest)
+            self.assertIn("expected_result: pass", manifest)
+
+    def test_minimal_public_project_fixture_is_clean_and_complete(self) -> None:
+        required_files = [
+            "AGENTS.md",
+            "VISION.md",
+            "README.md",
+            "docs/workflows.md",
+            "docs/changes/.gitkeep",
+            "src/example.txt",
+        ]
+        for relative_path in required_files:
+            self.assertTrue(
+                (BENCHMARK_FIXTURE / relative_path).exists(),
+                f"fixture missing {relative_path}",
+            )
+
+        forbidden_paths = [
+            BENCHMARK_FIXTURE / ".codex" / "skills",
+            BENCHMARK_FIXTURE / ".agents" / "skills",
+        ]
+        for path in forbidden_paths:
+            self.assertFalse(path.exists(), f"fixture must not contain installed skills: {path}")
+
+        fixture_files = [path for path in BENCHMARK_FIXTURE.rglob("*") if path.is_file()]
+        self.assertLessEqual(len(fixture_files), 8, "fixture should stay intentionally small")
+
+        fixture_text = "\n".join(path.read_text(encoding="utf-8") for path in fixture_files)
+        self.assertNotIn("dist/adapters", fixture_text)
+        self.assertNotIn(".codex/skills", fixture_text)
 
 
 if __name__ == "__main__":
