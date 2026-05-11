@@ -86,15 +86,15 @@ The v2 change is release-process and evidence-shape work. It must not hand-edit 
 
 - Current stage: implement
 - Current milestone: M3. Token-cost validator v2 metadata and context support
-- Current milestone state: ready
+- Current milestone state: review-requested
 - Last reviewed milestone: M2. Architecture-review optional scenario fixture
 - Review status: code-review M2 R1 clean-with-notes; no material findings
 - Next stage after plan-review: test-spec
 - Test-spec artifact: `specs/expand-dynamic-token-friendliness-benchmarks-for-core-skills.test.md`
 - Test-spec status: active
 - Implementation may start after: test-spec is authored and accepted for use; complete
-- Remaining in-scope implementation milestones: M3, M4, M5
-- Next stage: implement M3
+- Remaining in-scope implementation milestones: M3 review, M4, M5
+- Next stage: code-review M3
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: No implementation milestones are closed, and final explain-change, verify, and PR handoff are not complete.
 
@@ -230,7 +230,7 @@ Suggested validation for the test-spec stage:
 
 ### M3. Token-cost validator v2 metadata and context support
 
-- Milestone state: ready
+- Milestone state: review-requested
 - Goal: Teach standalone token-cost validation to enforce v2 coverage metadata, result quality, waiver roles, claimed optional gates, and required benchmark context.
 - Requirements: `R7`-`R9`, `R12`-`R16`, `R17`.
 - Files/components likely touched:
@@ -262,11 +262,11 @@ Suggested validation for the test-spec stage:
 - Expected observable result: Standalone validator accepts valid v2 metadata/context and rejects invalid required or claimed coverage cases.
 - Commit message: `M3: validate v2 token benchmark coverage metadata`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - Adding v2 validation can regress v1 release report validation.
 - Rollback/recovery:
@@ -402,6 +402,7 @@ Implementation-stage validation is listed per milestone. Prefer the smallest rel
 - 2026-05-11: Code-review M1 R1 found no material findings and closed M1; next stage is M2 implementation.
 - 2026-05-11: M2 implementation added the optional `architecture-review` prompt declaration, prompt fixture, and separate `minimal-public-project-architecture-review` scenario fixture with canonical architecture package, ADR-not-required note, change metadata, explain-change evidence, spec, diagrams, and tiny source file.
 - 2026-05-11: Code-review M2 R1 found no material findings and closed M2; next stage is M3 implementation.
+- 2026-05-11: M3 implementation added standalone validator support for v2 benchmark coverage metadata, per-run manual `result_quality`, required benchmark context via in-process API and `--required-benchmark-context`, role-scoped result-quality waivers, claimed optional gates, changed-skill-required benchmark enforcement, and unclaimed optional warning behavior.
 
 ## Decision log
 
@@ -411,6 +412,8 @@ Implementation-stage validation is listed per milestone. Prefer the smallest rel
 - 2026-05-11: Keep real `validate-release.py --version v0.1.1` in M5 -> final release validation depends on v2 report evidence created in the report-evidence milestone.
 - 2026-05-11: Keep the runner executable manifest as a flat `prompts:` list in M1 while adding v2 grouping metadata beside it -> the current runner can enumerate all required prompts without a loader refactor, and validator/report grouping work remains scoped to later milestones.
 - 2026-05-11: Add `architecture-review` under `optional_prompts` rather than the flat executable `prompts` list -> M2 makes the optional benchmark discoverable and fixture-backed without making it part of the release-required dry-run set before runner/validator optional-suite handling lands.
+- 2026-05-11: Gate v2-only validation by `skill-token-runtime-v2` suite id or an explicit required benchmark context -> the historical v1 report fixture keeps its existing schema while v2 reports receive the new coverage and result-quality checks.
+- 2026-05-11: Keep required benchmark context validation in the token-cost validator but leave changed-surface detection for M4 release validation -> M3 proves the context contract without moving release diff analysis into the standalone validator.
 
 ## Surprises and discoveries
 
@@ -444,6 +447,14 @@ Implementation-stage validation is listed per milestone. Prefer the smallest rel
 - 2026-05-11: Code-review M2 R1 reviewer reran `python scripts/validate-change-metadata.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml`; passed.
 - 2026-05-11: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills` passed after M2 code-review closeout with `reviews=9`, `findings=6`, `log_entries=9`, and `resolution_entries=6`.
 - 2026-05-11: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ... code-review-m2-r1.md` passed with the existing unrelated `docs/plan.md` lifecycle-language warning.
+- 2026-05-11: `python scripts/test-token-cost-report-validation.py TokenCostReportValidatorTests.test_v2_result_quality_and_required_context_are_enforced_by_cli TokenCostReportValidatorTests.test_v2_required_benchmark_context_is_supported_in_process TokenCostReportValidatorTests.test_v2_required_benchmark_result_quality_waiver_roles_are_enforced TokenCostReportValidatorTests.test_v2_claimed_optional_coverage_is_gated_and_unclaimed_optional_warns TokenCostReportValidatorTests.test_v2_changed_skill_required_context_requires_optional_benchmark` failed before M3 implementation because the validator lacked `--required-benchmark-context` parsing and the `validate_token_cost_report` in-process API; it passed after M3 implementation.
+- 2026-05-11: `python scripts/test-token-cost-report-validation.py` passed with 15 tests after M3 implementation.
+- 2026-05-11: `python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml` passed after M3 implementation, confirming v1 report validation remains compatible.
+- 2026-05-11: `python -m py_compile scripts/validate-token-cost-report.py scripts/test-token-cost-report-validation.py` passed after M3 implementation.
+- 2026-05-11: `git diff --check -- scripts/validate-token-cost-report.py scripts/test-token-cost-report-validation.py tests docs/reports/token-cost/releases` passed after M3 implementation.
+- 2026-05-11: `python scripts/validate-change-metadata.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml` passed after M3 handoff artifact updates.
+- 2026-05-11: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path docs/plan.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/explain-change.md` passed after M3 with the existing unrelated `docs/plan.md` lifecycle-language warning.
+- 2026-05-11: `git diff --check -- scripts/validate-token-cost-report.py scripts/test-token-cost-report-validation.py tests docs/reports/token-cost/releases docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md docs/plan.md` passed after M3 handoff artifact updates.
 
 ## Outcome and retrospective
 
