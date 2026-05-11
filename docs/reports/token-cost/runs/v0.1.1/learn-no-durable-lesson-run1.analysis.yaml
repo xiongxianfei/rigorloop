@@ -9,17 +9,17 @@ run:
   raw_omission_reason: "raw JSONL contains disposable local temp fixture paths and full command output; analyzer summary is tracked as sanitized release evidence"
 
 usage:
-  cached_input_tokens: 27904
-  input_tokens: 33695
-  output_tokens: 446
-  reasoning_output_tokens: 232
+  cached_input_tokens: 30464
+  input_tokens: 33984
+  output_tokens: 487
+  reasoning_output_tokens: 282
 
 tool_output:
   total_estimated_tokens: 3097
   largest_event:
     kind: command_execution
-    command: "/bin/bash -lc \"sed -n '1,220p' /tmp/rigorloop-token-bench-v0.1.1-1778496244-bff770cd/.agents/skills/learn/SKILL.md\""
-    path: /tmp/rigorloop-token-bench-v0.1.1-1778496244-bff770cd/.agents/skills/learn/SKILL.md
+    command: "/bin/bash -lc \"sed -n '1,220p' /tmp/rigorloop-token-bench-v0.1.1-1778518843-4eaaefaa/.agents/skills/learn/SKILL.md\""
+    path: /tmp/rigorloop-token-bench-v0.1.1-1778518843-4eaaefaa/.agents/skills/learn/SKILL.md
     lines: 194
     estimated_tokens: 3097
 
@@ -36,7 +36,7 @@ full_file_read:
     - full_file_read_command
   justified_reads: []
   confirmed_reads:
-    - path: /tmp/rigorloop-token-bench-v0.1.1-1778496244-bff770cd/.agents/skills/learn/SKILL.md
+    - path: /tmp/rigorloop-token-bench-v0.1.1-1778518843-4eaaefaa/.agents/skills/learn/SKILL.md
       lines: 194
       estimated_tokens: 3097
   suspected_reads: []
