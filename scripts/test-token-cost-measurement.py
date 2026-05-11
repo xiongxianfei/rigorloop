@@ -27,14 +27,37 @@ CHANGE_METADATA = (
 BENCHMARK_ROOT = ROOT / "benchmarks" / "token-cost"
 BENCHMARK_MANIFEST = BENCHMARK_ROOT / "manifest.yaml"
 BENCHMARK_FIXTURE = BENCHMARK_ROOT / "fixtures" / "minimal-public-project"
-EXPECTED_BENCHMARKS = {
+EXPECTED_REQUIRED_CORE_BENCHMARKS = {
     "workflow-route": "workflow",
     "proposal-short": "proposal",
+    "plan-handoff": "plan",
     "implement-handoff": "implement",
     "code-review-small": "code-review",
+    "explain-change-summary": "explain-change",
     "verify-final-pack": "verify",
+    "pr-handoff": "pr",
+}
+EXPECTED_TRANSITION_CARRYOVER_BENCHMARKS = {
     "architecture-no-impact": "architecture",
     "learn-no-durable-lesson": "learn",
+}
+EXPECTED_BENCHMARKS = {
+    **EXPECTED_REQUIRED_CORE_BENCHMARKS,
+    **EXPECTED_TRANSITION_CARRYOVER_BENCHMARKS,
+}
+EXPECTED_OPTIONAL_EXTENDED = {
+    "proposal-review",
+    "spec",
+    "spec-review",
+    "architecture",
+    "architecture-review",
+    "plan-review",
+    "test-spec",
+    "learn",
+    "research",
+    "explore",
+    "vision",
+    "project-map",
 }
 
 
@@ -536,18 +559,49 @@ class BenchmarkFixtureTests(unittest.TestCase):
         self.assertTrue(BENCHMARK_MANIFEST.exists(), "benchmark manifest must exist")
         return BENCHMARK_MANIFEST.read_text(encoding="utf-8")
 
-    def test_manifest_lists_all_initial_prompt_fixtures(self) -> None:
+    def test_manifest_lists_v2_prompt_groups_and_fixtures(self) -> None:
         manifest = self.read_manifest()
-        self.assertIn("suite: skill-token-runtime-v1", manifest)
+        self.assertIn("suite: skill-token-runtime-v2", manifest)
+        self.assertIn("previous_suite_id: skill-token-runtime-v1", manifest)
+        self.assertIn("baseline_for_suite: true", manifest)
+        self.assertIn("strict_suite_total_comparison: false", manifest)
 
         ids = set(re.findall(r"^\s+- id: ([a-z0-9-]+)$", manifest, flags=re.MULTILINE))
         self.assertEqual(set(EXPECTED_BENCHMARKS), ids)
+
+        required_core = set(
+            re.findall(
+                r"^\s{2}- ([a-z0-9-]+)$",
+                manifest.split("required_core:", 1)[1].split("transition_carryover_required:", 1)[0],
+                flags=re.MULTILINE,
+            )
+        )
+        self.assertEqual(set(EXPECTED_REQUIRED_CORE_BENCHMARKS), required_core)
+
+        transition_carryover = set(
+            re.findall(
+                r"^\s{2}- ([a-z0-9-]+)$",
+                manifest.split("transition_carryover_required:", 1)[1].split("optional_extended:", 1)[0],
+                flags=re.MULTILINE,
+            )
+        )
+        self.assertEqual(set(EXPECTED_TRANSITION_CARRYOVER_BENCHMARKS), transition_carryover)
+
+        optional_extended = set(
+            re.findall(
+                r"^\s{2}- ([a-z0-9-]+)$",
+                manifest.split("optional_extended:", 1)[1].split("prompts:", 1)[0],
+                flags=re.MULTILINE,
+            )
+        )
+        self.assertEqual(EXPECTED_OPTIONAL_EXTENDED, optional_extended)
 
         for benchmark_id, expected_skill in EXPECTED_BENCHMARKS.items():
             prompt_path = BENCHMARK_ROOT / "prompts" / f"{benchmark_id}.md"
             self.assertTrue(prompt_path.exists(), f"{benchmark_id} prompt must exist")
             prompt = prompt_path.read_text(encoding="utf-8")
             self.assertIn("Do not edit files.", prompt)
+            self.assertIn("Output only:", prompt)
             self.assertIn(f"expected_skill: {expected_skill}", manifest)
             self.assertIn(f"path: prompts/{benchmark_id}.md", manifest)
             self.assertIn("tool: codex", manifest)
