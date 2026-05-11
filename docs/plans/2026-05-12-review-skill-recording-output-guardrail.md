@@ -138,13 +138,13 @@ Likely implementation surfaces:
 ## Current Handoff Summary
 
 - Current milestone: final closeout
-- Current milestone state: ready
+- Current milestone state: verify-ready
 - Last reviewed milestone: M3. Generated output, closeout evidence, and PR readiness
 - Review status: code-review M3 clean-with-notes with no material findings on 2026-05-12
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: ready
-- Reason final closeout is or is not ready: all in-scope implementation milestones are closed, review-resolution is closed, and final explain-change, verify, and PR handoff remain pending.
+- Reason final closeout is or is not ready: all in-scope implementation milestones are closed, review-resolution is closed, final explain-change is complete, and verify plus PR handoff remain pending.
 
 ## Milestones
 
@@ -285,7 +285,7 @@ Likely implementation surfaces:
      - [ ] decision log updated if needed
      - [x] validation notes updated
      - [x] milestone committed
-     - [ ] final explain-change completed
+     - [x] final explain-change completed
      - [ ] verify completed
      - [ ] PR handoff prepared
    - Risks:
@@ -307,6 +307,7 @@ Likely implementation surfaces:
 - 2026-05-12: code-review M2 returned clean-with-notes with no material findings; M2 closed and next stage is `implement M3`.
 - 2026-05-12: M3 refreshed generated Codex skills and public adapters from canonical review skills, added durable change explanation, and validated generated-output drift and adapter output; next stage is `code-review M3`.
 - 2026-05-12: code-review M3 returned clean-with-notes with no material findings; M3 closed and next stage is `explain-change`.
+- 2026-05-12: final explain-change refreshed `docs/changes/2026-05-12-review-skill-recording-output-guardrail/explain-change.md` with actual diff rationale, review-resolution summary, validation evidence, and remaining risks; next stage is `verify`.
 
 ## Decision log
 
@@ -349,6 +350,9 @@ Likely implementation surfaces:
 - 2026-05-12: `git diff --check --` passed after M3 generated-output refresh.
 - 2026-05-12: corrected explicit CI rerun initially failed `artifact_lifecycle.validate` because the accepted proposal heading used `## Recommended Direction`; normalized it to `## Recommended direction`.
 - 2026-05-12: `bash scripts/ci.sh --mode explicit --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path skills/architecture-review/SKILL.md --path skills/plan-review/SKILL.md --path skills/code-review/SKILL.md --path scripts/test-skill-validator.py --path scripts/validate-skills.py --path docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml` passed after the proposal heading fix.
+- 2026-05-12: `python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml` passed after final explain-change refresh.
+- 2026-05-12: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-review-skill-recording-output-guardrail` passed after final explain-change refresh.
+- 2026-05-12: `git diff --check -- docs/changes/2026-05-12-review-skill-recording-output-guardrail/explain-change.md` passed after final explain-change refresh.
 
 ## Outcome and retrospective
 
