@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import argparse
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -14,6 +15,13 @@ GENERIC_STATUSES = {"pass", "warning", "blocked", "not-run", "waived", "fail"}
 RELEASE_GATE_STATUSES = {"pass", "warning", "blocked", "waived"}
 WARNING_SEVERITIES = {"warning", "high-warning"}
 ANALYZER_VERDICTS = {"pass", "warning", "blocked"}
+RESULT_QUALITY_STATUSES = {"pass", "fail", "inconclusive", "not-reviewed"}
+RESULT_QUALITY_CRITERIA_RESULTS = {"pass", "fail", "inconclusive"}
+ALLOWED_WAIVER_ROLES = {"release-owner", "release-manager", "repository-maintainer"}
+OPTIONAL_BENCHMARK_WARNING_CODES = {
+    "fail": "optional-benchmark-failed",
+    "inconclusive": "optional-benchmark-inconclusive",
+}
 PUBLIC_CODEX_SKILL_SOURCE = "dist/adapters/codex/.agents/skills/"
 VALID_WAIVER_REASON_MARKERS = (
     "codex unavailable",
@@ -320,6 +328,189 @@ def is_final_release(release: str) -> bool:
     return "-" not in release
 
 
+def validate_required_benchmark_context(
+    context: Any, errors: list[str]
+) -> set[str]:
+    data = require_mapping(context, "required_benchmark_context", errors)
+    if data.get("schema_version") != 1:
+        errors.append("required_benchmark_context.schema_version: expected 1")
+    for key in [
+        "context_source",
+        "release",
+        "benchmark_suite",
+        "required_benchmarks",
+        "optional_benchmarks",
+        "waiver_policy",
+    ]:
+        if key not in data:
+            errors.append(f"required_benchmark_context.{key}: missing required field")
+
+    require_non_empty_string(
+        data.get("context_source"), "required_benchmark_context.context_source", errors
+    )
+    release = require_mapping(data.get("release"), "required_benchmark_context.release", errors)
+    require_non_empty_string(release.get("version"), "required_benchmark_context.release.version", errors)
+    require_enum(
+        release.get("stage"),
+        "required_benchmark_context.release.stage",
+        {"rc", "final"},
+        errors,
+    )
+    require_non_empty_string(release.get("commit"), "required_benchmark_context.release.commit", errors)
+
+    suite = require_mapping(
+        data.get("benchmark_suite"), "required_benchmark_context.benchmark_suite", errors
+    )
+    require_non_empty_string(
+        suite.get("id"), "required_benchmark_context.benchmark_suite.id", errors
+    )
+    require_existing_repo_path(
+        suite.get("manifest"), "required_benchmark_context.benchmark_suite.manifest", errors
+    )
+
+    required = require_mapping(
+        data.get("required_benchmarks"), "required_benchmark_context.required_benchmarks", errors
+    )
+    core = require_list(
+        required.get("core"), "required_benchmark_context.required_benchmarks.core", errors
+    )
+    transition = require_list(
+        required.get("transition_carryover"),
+        "required_benchmark_context.required_benchmarks.transition_carryover",
+        errors,
+    )
+    due_to_changes = require_list(
+        required.get("required_due_to_changes"),
+        "required_benchmark_context.required_benchmarks.required_due_to_changes",
+        errors,
+    )
+
+    required_ids: set[str] = set()
+    for index, benchmark in enumerate(core):
+        value = require_non_empty_string(
+            benchmark,
+            f"required_benchmark_context.required_benchmarks.core[{index}]",
+            errors,
+        )
+        if value:
+            required_ids.add(value)
+    for index, benchmark in enumerate(transition):
+        value = require_non_empty_string(
+            benchmark,
+            f"required_benchmark_context.required_benchmarks.transition_carryover[{index}]",
+            errors,
+        )
+        if value:
+            required_ids.add(value)
+    for index, entry in enumerate(due_to_changes):
+        path = (
+            "required_benchmark_context.required_benchmarks."
+            f"required_due_to_changes[{index}]"
+        )
+        item = require_mapping(entry, path, errors)
+        benchmark = require_non_empty_string(item.get("benchmark"), f"{path}.benchmark", errors)
+        require_non_empty_string(item.get("skill"), f"{path}.skill", errors)
+        require_non_empty_string(item.get("reason"), f"{path}.reason", errors)
+        if "changed_surfaces" in item:
+            surfaces = require_mapping(item.get("changed_surfaces"), f"{path}.changed_surfaces", errors)
+            for surface_key in ["canonical", "generated"]:
+                if surface_key in surfaces:
+                    require_list(surfaces.get(surface_key), f"{path}.changed_surfaces.{surface_key}", errors)
+        if benchmark:
+            required_ids.add(benchmark)
+
+    optional = require_mapping(
+        data.get("optional_benchmarks"), "required_benchmark_context.optional_benchmarks", errors
+    )
+    for index, benchmark in enumerate(
+        require_list(optional.get("extended"), "required_benchmark_context.optional_benchmarks.extended", errors)
+    ):
+        require_non_empty_string(
+            benchmark,
+            f"required_benchmark_context.optional_benchmarks.extended[{index}]",
+            errors,
+        )
+
+    waiver_policy = require_mapping(
+        data.get("waiver_policy"), "required_benchmark_context.waiver_policy", errors
+    )
+    for key in [
+        "final_release_requires_pass_or_waiver",
+        "inconclusive_requires_waiver_for_required_benchmarks",
+    ]:
+        require_bool(
+            waiver_policy.get(key), f"required_benchmark_context.waiver_policy.{key}", errors
+        )
+    roles = require_list(
+        waiver_policy.get("allowed_approver_roles"),
+        "required_benchmark_context.waiver_policy.allowed_approver_roles",
+        errors,
+    )
+    for index, role in enumerate(roles):
+        require_enum(
+            role,
+            f"required_benchmark_context.waiver_policy.allowed_approver_roles[{index}]",
+            ALLOWED_WAIVER_ROLES,
+            errors,
+        )
+    return required_ids
+
+
+def validate_result_quality_waiver(waiver: Any, path: str, errors: list[str]) -> None:
+    item = require_mapping(waiver, path, errors)
+    if item.get("status") != "approved":
+        errors.append(f"{path}.status: expected approved")
+    for key in ["approved_by", "approval_surface", "approved_at", "reason", "evidence"]:
+        require_non_empty_string(item.get(key), f"{path}.{key}", errors)
+    require_enum(item.get("approved_role"), f"{path}.approved_role", ALLOWED_WAIVER_ROLES, errors)
+    evidence = item.get("evidence")
+    if isinstance(evidence, str) and evidence.strip():
+        require_existing_repo_path(evidence, f"{path}.evidence", errors)
+
+
+def validate_result_quality(
+    value: Any,
+    path: str,
+    errors: list[str],
+    *,
+    is_required: bool,
+    final: bool,
+) -> str:
+    result_quality = require_mapping(value, path, errors)
+    status = require_enum(result_quality.get("status"), f"{path}.status", RESULT_QUALITY_STATUSES, errors)
+    for key in ["reviewed_by", "review_surface", "reviewed_at", "notes"]:
+        require_non_empty_string(result_quality.get(key), f"{path}.{key}", errors)
+    review_surface = result_quality.get("review_surface")
+    if isinstance(review_surface, str) and review_surface.strip():
+        require_existing_repo_path(review_surface, f"{path}.review_surface", errors)
+    criteria = require_list(result_quality.get("criteria"), f"{path}.criteria", errors)
+    for index, criterion in enumerate(criteria):
+        criterion_path = f"{path}.criteria[{index}]"
+        item = require_mapping(criterion, criterion_path, errors)
+        require_non_empty_string(item.get("id"), f"{criterion_path}.id", errors)
+        require_non_empty_string(item.get("expectation"), f"{criterion_path}.expectation", errors)
+        require_enum(
+            item.get("result"),
+            f"{criterion_path}.result",
+            RESULT_QUALITY_CRITERIA_RESULTS,
+            errors,
+        )
+        if "notes" in item and not isinstance(item.get("notes"), str):
+            errors.append(f"{criterion_path}.notes: expected string")
+    require_list(result_quality.get("blockers"), f"{path}.blockers", errors)
+
+    if is_required and status == "not-reviewed":
+        errors.append(f"{path}.status: required benchmark must not be not-reviewed")
+    if is_required and final and status in {"fail", "inconclusive"}:
+        if "waiver" not in result_quality:
+            errors.append(
+                f"{path}.waiver: required for required benchmark result_quality.status {status}"
+            )
+        else:
+            validate_result_quality_waiver(result_quality.get("waiver"), f"{path}.waiver", errors)
+    return status
+
+
 def validate_analyzer_summary(path: str, expected_raw_tracked: bool, errors: list[str]) -> None:
     if not path:
         return
@@ -384,13 +575,21 @@ def validate_analyzer_summary(path: str, expected_raw_tracked: bool, errors: lis
     require_list(verdict.get("blockers"), f"{path}.verdict.blockers", errors)
 
 
-def validate_run(run: Any, index: int, errors: list[str]) -> None:
+def validate_run(
+    run: Any,
+    index: int,
+    errors: list[str],
+    *,
+    require_result_quality: bool = False,
+    required_benchmark_ids: set[str] | None = None,
+    final: bool = False,
+) -> str:
     path = f"dynamic_runtime.runs[{index}]"
     item = require_mapping(run, path, errors)
     for key in ["id", "prompt", "fixture", "result", "evidence"]:
         if key not in item:
             errors.append(f"{path}.{key}: missing required field")
-    require_non_empty_string(item.get("id"), f"{path}.id", errors)
+    run_id = require_non_empty_string(item.get("id"), f"{path}.id", errors)
     require_existing_repo_path(item.get("prompt"), f"{path}.prompt", errors)
     require_existing_repo_path(item.get("fixture"), f"{path}.fixture", errors)
     require_enum(item.get("result"), f"{path}.result", {"pass", "fail", "blocked", "not-run"}, errors)
@@ -434,9 +633,28 @@ def validate_run(run: Any, index: int, errors: list[str]) -> None:
     analysis_value = evidence.get("analysis")
     if isinstance(analysis_value, str) and analysis_value:
         validate_analyzer_summary(analysis_value, raw_tracked is True, errors)
+    if require_result_quality:
+        if "result_quality" not in item:
+            errors.append(f"{path}.result_quality: missing required field")
+        else:
+            validate_result_quality(
+                item.get("result_quality"),
+                f"{path}.result_quality",
+                errors,
+                is_required=run_id in (required_benchmark_ids or set()),
+                final=final,
+            )
+    return run_id
 
 
-def validate_dynamic_runtime(data: dict[str, Any], release: str, errors: list[str]) -> None:
+def validate_dynamic_runtime(
+    data: dict[str, Any],
+    release: str,
+    errors: list[str],
+    *,
+    require_result_quality: bool = False,
+    required_benchmark_ids: set[str] | None = None,
+) -> set[str]:
     dynamic = require_mapping(data.get("dynamic_runtime"), "dynamic_runtime", errors)
     status = require_enum(dynamic.get("status"), "dynamic_runtime.status", GENERIC_STATUSES, errors)
     final = is_final_release(release)
@@ -462,8 +680,23 @@ def validate_dynamic_runtime(data: dict[str, Any], release: str, errors: list[st
         runs = require_list(dynamic.get("runs"), "dynamic_runtime.runs", errors)
         if not runs and final:
             errors.append("dynamic_runtime.runs: required when no final waiver exists")
+        seen_ids: set[str] = set()
         for index, run in enumerate(runs):
-            validate_run(run, index, errors)
+            run_id = validate_run(
+                run,
+                index,
+                errors,
+                require_result_quality=require_result_quality,
+                required_benchmark_ids=required_benchmark_ids,
+                final=final,
+            )
+            if run_id:
+                seen_ids.add(run_id)
+        for benchmark in sorted(required_benchmark_ids or set()):
+            if benchmark not in seen_ids:
+                errors.append(f"dynamic_runtime.runs: missing required benchmark {benchmark}")
+        return seen_ids
+    return set()
 
 
 def validate_waiver(data: dict[str, Any], dynamic_status: str, errors: list[str]) -> None:
@@ -581,6 +814,94 @@ def validate_comparison(data: dict[str, Any], errors: list[str]) -> None:
             require_non_empty_string(comparison.get("rationale"), "comparison.rationale", errors)
 
 
+def validate_benchmark_coverage(
+    data: dict[str, Any],
+    errors: list[str],
+) -> tuple[set[str], dict[str, str], set[str]]:
+    coverage = require_mapping(data.get("benchmark_coverage"), "benchmark_coverage", errors)
+    suite = data.get("benchmark_suite") if isinstance(data.get("benchmark_suite"), dict) else {}
+    if coverage.get("suite_id") != suite.get("id"):
+        errors.append("benchmark_coverage.suite_id: must match benchmark_suite.id")
+    for key in [
+        "required_core_status",
+        "transition_carryover_status",
+        "changed_skill_benchmark_status",
+    ]:
+        require_enum(coverage.get(key), f"benchmark_coverage.{key}", GENERIC_STATUSES, errors)
+
+    required_ids: set[str] = set()
+    optional_statuses: dict[str, str] = {}
+    claimed_or_required: set[str] = set()
+    for key in ["required_core", "transition_carryover_required"]:
+        for index, benchmark in enumerate(
+            require_list(coverage.get(key), f"benchmark_coverage.{key}", errors)
+        ):
+            value = require_non_empty_string(benchmark, f"benchmark_coverage.{key}[{index}]", errors)
+            if value:
+                required_ids.add(value)
+    for key in ["optional_extended", "missing_required", "missing_optional"]:
+        for index, benchmark in enumerate(
+            require_list(coverage.get(key), f"benchmark_coverage.{key}", errors)
+        ):
+            require_non_empty_string(benchmark, f"benchmark_coverage.{key}[{index}]", errors)
+
+    optional_run = require_list(coverage.get("optional_run"), "benchmark_coverage.optional_run", errors)
+    for index, entry in enumerate(optional_run):
+        path = f"benchmark_coverage.optional_run[{index}]"
+        item = require_mapping(entry, path, errors)
+        benchmark = require_non_empty_string(item.get("benchmark"), f"{path}.benchmark", errors)
+        require_non_empty_string(item.get("skill"), f"{path}.skill", errors)
+        claimed = require_bool(item.get("claimed_as_release_coverage"), f"{path}.claimed_as_release_coverage", errors)
+        required = require_bool(item.get("required_for_release"), f"{path}.required_for_release", errors)
+        status = require_enum(
+            item.get("result_quality_status"),
+            f"{path}.result_quality_status",
+            RESULT_QUALITY_STATUSES,
+            errors,
+        )
+        if benchmark:
+            optional_statuses[benchmark] = status
+            if claimed is True or required is True:
+                required_ids.add(benchmark)
+                claimed_or_required.add(benchmark)
+    return required_ids, optional_statuses, claimed_or_required
+
+
+def validate_optional_warning_coverage(
+    gate: dict[str, Any],
+    optional_statuses: dict[str, str],
+    required_ids: set[str],
+    errors: list[str],
+) -> None:
+    warnings = gate.get("warnings") if isinstance(gate.get("warnings"), list) else []
+    warning_pairs = {
+        (warning.get("benchmark"), warning.get("code"))
+        for warning in warnings
+        if isinstance(warning, dict)
+    }
+    for warning in warnings:
+        if not isinstance(warning, dict):
+            continue
+        benchmark = warning.get("benchmark")
+        code = warning.get("code")
+        if benchmark in required_ids and code in OPTIONAL_BENCHMARK_WARNING_CODES.values():
+            errors.append(
+                f"release_gate.warnings: required benchmark {benchmark} must not use optional warning code {code}"
+            )
+        if code in OPTIONAL_BENCHMARK_WARNING_CODES.values():
+            require_non_empty_string(warning.get("message"), "release_gate.warnings.message", errors)
+            require_non_empty_string(warning.get("follow_up"), "release_gate.warnings.follow_up", errors)
+    for benchmark, status in optional_statuses.items():
+        if benchmark in required_ids or status not in OPTIONAL_BENCHMARK_WARNING_CODES:
+            continue
+        expected_code = OPTIONAL_BENCHMARK_WARNING_CODES[status]
+        if (benchmark, expected_code) not in warning_pairs:
+            errors.append(
+                f"release_gate.warnings: optional benchmark {benchmark} with result_quality.status "
+                f"{status} requires warning code {expected_code}"
+            )
+
+
 def validate_runner_and_suite(data: dict[str, Any], errors: list[str]) -> None:
     suite = require_mapping(data.get("benchmark_suite"), "benchmark_suite", errors)
     runner = require_mapping(data.get("runner"), "runner", errors)
@@ -663,10 +984,17 @@ def validate_portability_and_gate(data: dict[str, Any], errors: list[str]) -> No
             errors.append("release_gate.warnings: use high-warning, not hard warning")
 
 
-def validate_report(path: Path) -> list[str]:
-    data = load_yaml(path)
+def validate_token_cost_report(
+    report_metadata: Any,
+    *,
+    required_benchmark_context: Any | None = None,
+    metadata_path: Path | None = None,
+) -> list[str]:
     errors: list[str] = []
-    root = require_mapping(data, "$", errors)
+    root = require_mapping(report_metadata, "$", errors)
+    suite = root.get("benchmark_suite") if isinstance(root, dict) else {}
+    suite_id = suite.get("id") if isinstance(suite, dict) else ""
+    v2_report = suite_id == "skill-token-runtime-v2" or required_benchmark_context is not None
     for section in [
         "schema_version",
         "report",
@@ -683,10 +1011,24 @@ def validate_report(path: Path) -> list[str]:
     ]:
         if section not in root:
             errors.append(f"{section}: missing required field")
+    if v2_report and "benchmark_coverage" not in root:
+        errors.append("benchmark_coverage: missing required field")
     if errors:
         return errors
     if root.get("schema_version") != 1:
         errors.append("schema_version: expected 1")
+
+    required_benchmark_ids: set[str] = set()
+    optional_statuses: dict[str, str] = {}
+    if required_benchmark_context is not None:
+        required_benchmark_ids.update(
+            validate_required_benchmark_context(required_benchmark_context, errors)
+        )
+    if v2_report:
+        coverage_required, optional_statuses, _claimed_or_required = validate_benchmark_coverage(
+            root, errors
+        )
+        required_benchmark_ids.update(coverage_required)
 
     report = require_mapping(root.get("report"), "report", errors)
     for key in ["release", "report_date", "commit", "report_markdown"]:
@@ -708,29 +1050,69 @@ def validate_report(path: Path) -> list[str]:
 
     validate_runner_and_suite(root, errors)
     validate_static_and_summary(root, errors)
-    validate_dynamic_runtime(root, release, errors)
+    validate_dynamic_runtime(
+        root,
+        release,
+        errors,
+        require_result_quality=v2_report,
+        required_benchmark_ids=required_benchmark_ids,
+    )
     dynamic = require_mapping(root.get("dynamic_runtime"), "dynamic_runtime", errors)
     dynamic_status = dynamic.get("status") if isinstance(dynamic.get("status"), str) else ""
     validate_waiver(root, dynamic_status, errors)
     validate_rc_reuse(root, dynamic_status, release, errors)
     validate_comparison(root, errors)
     validate_portability_and_gate(root, errors)
+    if v2_report:
+        gate = require_mapping(root.get("release_gate"), "release_gate", errors)
+        validate_optional_warning_coverage(gate, optional_statuses, required_benchmark_ids, errors)
     return errors
 
 
+def validate_report(
+    path: Path,
+    *,
+    required_benchmark_context: Any | None = None,
+) -> list[str]:
+    data = load_yaml(path)
+    return validate_token_cost_report(
+        data,
+        required_benchmark_context=required_benchmark_context,
+        metadata_path=path,
+    )
+
+
 def main(argv: list[str]) -> int:
-    if len(argv) < 2:
-        print(
-            "usage: validate-token-cost-report.py <release-metadata.yaml> [<release-metadata.yaml> ...]",
-            file=sys.stderr,
-        )
-        return 2
+    parser = argparse.ArgumentParser(
+        description="Validate release Token-Friendliness report metadata."
+    )
+    parser.add_argument("reports", nargs="+", help="release metadata YAML file")
+    parser.add_argument(
+        "--required-benchmark-context",
+        help="YAML file containing required benchmark context from release validation",
+    )
+    args = parser.parse_args(argv[1:])
+
+    required_benchmark_context = None
+    if args.required_benchmark_context:
+        try:
+            required_benchmark_context = load_yaml(Path(args.required_benchmark_context))
+        except FileNotFoundError:
+            print(f"{args.required_benchmark_context}: file not found", file=sys.stderr)
+            return 1
+        except MetadataValidationError as exc:
+            print(f"{args.required_benchmark_context}: invalid required benchmark context", file=sys.stderr)
+            print(f"  - {exc}", file=sys.stderr)
+            return 1
 
     exit_code = 0
-    for raw_path in argv[1:]:
+    for raw_path in args.reports:
         path = Path(raw_path)
         try:
-            errors = validate_report(path)
+            errors = validate_report(
+                path,
+                required_benchmark_context=required_benchmark_context,
+            )
         except FileNotFoundError:
             print(f"{path}: file not found", file=sys.stderr)
             exit_code = 1

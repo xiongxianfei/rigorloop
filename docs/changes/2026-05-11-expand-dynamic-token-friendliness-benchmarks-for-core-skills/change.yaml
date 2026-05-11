@@ -32,6 +32,7 @@ tests:
   - M1 code-review clean review record and milestone closeout state.
   - M2 architecture-review optional prompt and separate scenario fixture tests.
   - M2 code-review clean review record and milestone closeout state.
+  - M3 token-cost report validator tests for v2 coverage metadata, result quality, required benchmark context, waiver roles, claimed optional gates, and unclaimed optional warnings.
 validation:
   - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills
     result: pass_closeout_reviews_4_findings_4_log_entries_4_resolution_entries_4
@@ -99,6 +100,22 @@ validation:
     result: pass_closeout_reviews_9_findings_6_log_entries_9_resolution_entries_6
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path docs/plan.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-log.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-resolution.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/code-review-m2-r1.md
     result: pass_validated_6_artifact_files_with_existing_docs_plan_warning_after_code_review_m2
+  - command: python scripts/test-token-cost-report-validation.py TokenCostReportValidatorTests.test_v2_result_quality_and_required_context_are_enforced_by_cli TokenCostReportValidatorTests.test_v2_required_benchmark_context_is_supported_in_process TokenCostReportValidatorTests.test_v2_required_benchmark_result_quality_waiver_roles_are_enforced TokenCostReportValidatorTests.test_v2_claimed_optional_coverage_is_gated_and_unclaimed_optional_warns TokenCostReportValidatorTests.test_v2_changed_skill_required_context_requires_optional_benchmark
+    result: fail_before_implementation_then_pass_after_m3_validator_context_and_result_quality_support
+  - command: python scripts/test-token-cost-report-validation.py
+    result: pass_15_tests_after_m3
+  - command: python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml
+    result: pass_valid_token_cost_report_metadata_after_m3
+  - command: python -m py_compile scripts/validate-token-cost-report.py scripts/test-token-cost-report-validation.py
+    result: pass_after_m3
+  - command: git diff --check -- scripts/validate-token-cost-report.py scripts/test-token-cost-report-validation.py tests docs/reports/token-cost/releases
+    result: pass_after_m3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml
+    result: pass_valid_change_metadata_after_m3
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path docs/plan.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/explain-change.md
+    result: pass_validated_6_artifact_files_with_existing_docs_plan_warning_after_m3
+  - command: git diff --check -- scripts/validate-token-cost-report.py scripts/test-token-cost-report-validation.py tests docs/reports/token-cost/releases docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md docs/plan.md
+    result: pass_after_m3_handoff_artifact_updates
 changed_files:
   - benchmarks/token-cost/manifest.yaml
   - benchmarks/token-cost/prompts/workflow-route.md
@@ -119,6 +136,8 @@ changed_files:
   - benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/specs/example-feature.md
   - benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/src/app.txt
   - scripts/test-token-cost-measurement.py
+  - scripts/validate-token-cost-report.py
+  - scripts/test-token-cost-report-validation.py
   - docs/proposals/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md
   - specs/expand-dynamic-token-friendliness-benchmarks-for-core-skills.md
   - specs/expand-dynamic-token-friendliness-benchmarks-for-core-skills.test.md
@@ -139,10 +158,10 @@ changed_files:
   - docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/code-review-m1-r1.md
   - docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/code-review-m2-r1.md
 review:
-  status: clean-with-notes
+  status: ready-for-code-review
   open_findings: 0
   unresolved_items: 0
-  last_review: code-review-m2-r1 approved M2 with no material findings
+  last_review: code-review-m2-r1 approved M2 with no material findings; M3 implementation is ready for code-review
 status:
   lifecycle: implement
-  review: m2-closed-ready-for-m3
+  review: m3-review-requested
