@@ -14,11 +14,12 @@ Review closeout: code-review-r2
 Review closeout: code-review-r3
 Review closeout: code-review-r4
 Review closeout: code-review-r5
+Review closeout: code-review-r6
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-r1`, `code-review-r2`, `code-review-r3`, `code-review-r4`, `code-review-r5`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-r1`, `code-review-r2`, `code-review-r3`, `code-review-r4`, `code-review-r5`, `code-review-r6`
 - Findings resolved: 16
 - Unresolved findings: 0
-- Final result: Proposal-review R1 requested changes for release-gate semantics, run evidence, analyzer summaries, RC reuse, milestone slicing, and warning severity wording; all accepted proposal-review findings were resolved in the proposal. Proposal-review R2 approved the revised proposal with no material findings. Spec-review R1 requested changes for analyzer summary raw-omission compatibility, incomplete non-final dynamic metadata, and first-baseline comparison metadata; all accepted spec-review findings were resolved in the spec. Plan-review R1 requested a milestone-boundary revision; M1 now owns standalone token-cost metadata validation and M5 owns release validation integration. Plan-review R2 approved the revised plan with no material findings. Code-review R1 requested M1 fixes for RC reuse metadata validation and Markdown report metadata-link validation; both findings were resolved in the standalone validator and tests. Code-review R2 requested an M1 fix for partial RC reuse checked-surface validation; RTF-CR3 was resolved in the standalone validator and tests. Code-review R3 found no material findings and closed M1. Code-review R4 found no material findings and closed M2. Code-review R5 requested M3 fixes for analyzer summary path stability, repeated same-file read signals, and justified full-file-read classification; all three findings were resolved in M3 runner/analyzer tests and implementation.
+- Final result: Proposal-review R1 requested changes for release-gate semantics, run evidence, analyzer summaries, RC reuse, milestone slicing, and warning severity wording; all accepted proposal-review findings were resolved in the proposal. Proposal-review R2 approved the revised proposal with no material findings. Spec-review R1 requested changes for analyzer summary raw-omission compatibility, incomplete non-final dynamic metadata, and first-baseline comparison metadata; all accepted spec-review findings were resolved in the spec. Plan-review R1 requested a milestone-boundary revision; M1 now owns standalone token-cost metadata validation and M5 owns release validation integration. Plan-review R2 approved the revised plan with no material findings. Code-review R1 requested M1 fixes for RC reuse metadata validation and Markdown report metadata-link validation; both findings were resolved in the standalone validator and tests. Code-review R2 requested an M1 fix for partial RC reuse checked-surface validation; RTF-CR3 was resolved in the standalone validator and tests. Code-review R3 found no material findings and closed M1. Code-review R4 found no material findings and closed M2. Code-review R5 requested M3 fixes for analyzer summary path stability, repeated same-file read signals, and justified full-file-read classification; all three findings were resolved in M3 runner/analyzer tests and implementation. Code-review R6 found no material findings and closed M3.
 
 ## Resolution Overview
 
@@ -198,6 +199,18 @@ Rationale: The approved spec and test spec require RC reuse metadata to make ben
 Validation target: Validator rejects RC-based final waiver metadata without required `rc_reuse` fields and accepts valid true/false RC reuse fixtures.
 Validation evidence: `python scripts/test-token-cost-report-validation.py`; `python scripts/validate-token-cost-report.py tests/fixtures/token-cost/reports/valid-final-pass/v0.1.1.yaml`; `python -m py_compile scripts/validate-token-cost-report.py`; `python scripts/test-token-cost-measurement.py`; `git diff --check -- scripts/validate-token-cost-report.py scripts/test-token-cost-report-validation.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md`
 
+#### RTF-CR2 - Markdown report link/name requirement is not validated
+
+Finding ID: RTF-CR2
+Disposition: accepted
+Status: resolved
+Owner: implementer
+Owning stage: implement M1
+Chosen action: Updated the validator to read `report.report_markdown` and require the Markdown report to name or link the expected YAML metadata file. Added a negative test where Markdown exists but omits the YAML metadata reference.
+Rationale: The approved spec requires Markdown human evidence and YAML gate metadata to be visibly paired.
+Validation target: Validator rejects metadata whose `report.report_markdown` points to Markdown that does not name or link the YAML metadata file.
+Validation evidence: Shared code-review R1 resolution validation evidence.
+
 ### code-review-r3
 
 No material findings.
@@ -244,17 +257,9 @@ Rationale: The spec and test spec require `justified` as part of the full-file-r
 Validation target: Analyzer summary can emit `full_file_read.result: justified` for explicitly justified reads.
 Validation evidence: Shared code-review R5 resolution validation evidence.
 
-#### RTF-CR2 - Markdown report link/name requirement is not validated
+### code-review-r6
 
-Finding ID: RTF-CR2
-Disposition: accepted
-Status: resolved
-Owner: implementer
-Owning stage: implement M1
-Chosen action: Updated the validator to read `report.report_markdown` and require the Markdown report to name or link the expected YAML metadata file. Added a negative test where Markdown exists but omits the YAML metadata reference.
-Rationale: The approved spec requires Markdown human evidence and YAML gate metadata to be visibly paired.
-Validation target: Validator rejects metadata whose `report.report_markdown` points to Markdown that does not name or link the YAML metadata file.
-Validation evidence: Shared code-review R1 resolution validation evidence.
+No material findings.
 
 ### code-review-r2
 

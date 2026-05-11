@@ -67,14 +67,14 @@ No `benchmarks/` directory exists yet. This plan creates the first `benchmarks/t
 
 ## Current Handoff Summary
 
-- Current milestone: M3. Runner and analyzer-summary integration
-- Current milestone state: review-requested
-- Last reviewed milestone: M2 code-review R4 clean-with-notes
-- Review status: code-review R5 findings resolved; ready for code-review rerun
-- Remaining in-scope implementation milestones: M3, M4, M5
-- Next stage: code-review M3 rerun
+- Current milestone: M4. First baseline report and release report template
+- Current milestone state: planned
+- Last reviewed milestone: M3 code-review R6 clean-with-notes
+- Review status: M3 closed; no review-resolution required
+- Remaining in-scope implementation milestones: M4, M5
+- Next stage: implement M4
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3-M5, explain-change, verify, and PR handoff are not complete.
+- Reason final closeout is or is not ready: M4-M5, explain-change, verify, and PR handoff are not complete.
 
 ## Milestones
 
@@ -174,7 +174,7 @@ No `benchmarks/` directory exists yet. This plan creates the first `benchmarks/t
 
 ### M3. Runner and analyzer-summary integration
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Add repeatable Codex benchmark execution and analyzer summary output.
 - Requirements: `R11`-`R18`, `R20`, `R25`, `R29`, `R33`
 - Files/components likely touched:
@@ -402,6 +402,7 @@ bash scripts/release-verify.sh <release-version>
 - 2026-05-11: Implemented `scripts/run-token-cost-benchmarks.py` and extended `scripts/analyze-codex-jsonl.py` to write schema version 1 summaries beside JSONL runs; M3 is ready for code-review.
 - 2026-05-11: Code-review R5 requested M3 fixes for analyzer summary path stability, repeated same-file read signals, and justified full-file-read classification.
 - 2026-05-11: Resolved RTF-CR4, RTF-CR5, and RTF-CR6 with repo-relative analyzer summary paths, repeated capped read signals, justified read classification, and focused tests; M3 is ready for code-review rerun.
+- 2026-05-11: Code-review R6 found no material findings for M3; M3 is closed and the plan is ready for implement M4.
 
 ## Decision Log
 
@@ -429,6 +430,7 @@ bash scripts/release-verify.sh <release-version>
 - RTF-CR4 resolution keeps absolute paths only for JSONL outside the repository; repository output paths now become stable repo-relative summary evidence.
 - RTF-CR5 resolution counts repeated file-read-like paths independently from full-file classification and reports repeated files rather than extra reads.
 - RTF-CR6 resolution adds a small `--justified-read` plus `--justification` analyzer interface for explicit whole-file or generated-output validation cases.
+- Code-review R6 closed M3 with no new material findings after the R5 resolution.
 
 ## Validation Notes
 
@@ -453,6 +455,8 @@ bash scripts/release-verify.sh <release-version>
 - M3 validation: `python scripts/test-token-cost-measurement.py` passed 17 tests; `python -m py_compile scripts/run-token-cost-benchmarks.py scripts/analyze-codex-jsonl.py` passed; `python scripts/analyze-codex-jsonl.py tests/fixtures/token-cost/sample-codex-session.jsonl` passed; `python scripts/test-token-cost-report-validation.py` passed 10 tests; `git diff --check -- scripts/run-token-cost-benchmarks.py scripts/analyze-codex-jsonl.py scripts/test-token-cost-measurement.py tests/fixtures/token-cost` passed.
 - Code-review R5 recording validation: `python scripts/validate-review-artifacts.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills`, `python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml`, and `git diff --check -- docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md` passed. `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r5.md` passed with the existing `docs/plan.md` lifecycle-language warning.
 - Code-review R5 resolution validation: `python scripts/test-token-cost-measurement.py` passed 22 tests; `python -m py_compile scripts/run-token-cost-benchmarks.py scripts/analyze-codex-jsonl.py` passed; `python scripts/analyze-codex-jsonl.py tests/fixtures/token-cost/sample-codex-session.jsonl` passed; `python scripts/test-token-cost-report-validation.py` passed 10 tests; `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills` passed; `python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml` passed; `git diff --check -- scripts/run-token-cost-benchmarks.py scripts/analyze-codex-jsonl.py scripts/test-token-cost-measurement.py tests/fixtures/token-cost docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md` passed. `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r5.md` passed with the existing `docs/plan.md` lifecycle-language warning.
+- Code-review R6 validation rerun: `python scripts/test-token-cost-measurement.py` passed 22 tests; `python -m py_compile scripts/run-token-cost-benchmarks.py scripts/analyze-codex-jsonl.py` passed; `python scripts/analyze-codex-jsonl.py tests/fixtures/token-cost/sample-codex-session.jsonl` passed; `python scripts/test-token-cost-report-validation.py` passed 10 tests; `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills` passed after review recording with 11 reviews, 16 findings, 11 log entries, and 16 resolution entries; `python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml` passed; `git diff --check -- docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md` passed.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/reviews/code-review-r6.md` passed with the existing `docs/plan.md` lifecycle-language warning.
 
 ## Outcome and Retrospective
 
