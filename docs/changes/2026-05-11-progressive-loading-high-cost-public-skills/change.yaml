@@ -71,7 +71,35 @@ validation:
     result: pass_after_m2_canonical_skill_guidance
   - command: code-review M2
     result: clean_with_notes_no_material_findings_commit_182dc1f
+  - command: python scripts/build-skills.py --check
+    result: failed_stale_generated_local_skills_for_code_review_implement_workflow_before_m3_regeneration_then_pass_after_regeneration
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: failed_9_stale_public_adapter_skill_files_before_m3_regeneration_then_pass_adapters_drift_ok_after_regeneration
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_validated_generated_adapters_for_version_0_1_1_after_m3_regeneration
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_68_tests_after_m3_regeneration
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m3_regeneration
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml
+    result: pass_valid_change_metadata_after_m3_regeneration
+  - command: git diff --check -- .codex/skills dist/adapters docs/changes/2026-05-11-progressive-loading-high-cost-public-skills docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md docs/plan.md
+    result: pass_after_m3_regeneration
+  - command: rg -n "## Quick operating guide|Handoff inspection budget" .codex/skills/code-review/SKILL.md .codex/skills/implement/SKILL.md .codex/skills/workflow/SKILL.md dist/adapters/codex/.agents/skills/code-review/SKILL.md dist/adapters/codex/.agents/skills/implement/SKILL.md dist/adapters/codex/.agents/skills/workflow/SKILL.md
+    result: pass_confirmed_local_and_public_codex_generated_skill_surfaces_include_progressive_loading_sections
 changed_files:
+  - .codex/skills/code-review/SKILL.md
+  - .codex/skills/implement/SKILL.md
+  - .codex/skills/workflow/SKILL.md
+  - dist/adapters/claude/.claude/skills/code-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/implement/SKILL.md
+  - dist/adapters/claude/.claude/skills/workflow/SKILL.md
+  - dist/adapters/codex/.agents/skills/code-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/implement/SKILL.md
+  - dist/adapters/codex/.agents/skills/workflow/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/code-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/implement/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/workflow/SKILL.md
   - docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml
   - docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/review-log.md
   - docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/review-resolution.md
@@ -86,5 +114,5 @@ changed_files:
   - skills/workflow/SKILL.md
   - specs/progressive-loading-high-cost-public-skills.test.md
 review:
-  status: m2_clean_with_notes
+  status: m3_review_requested
   unresolved_items: 0
