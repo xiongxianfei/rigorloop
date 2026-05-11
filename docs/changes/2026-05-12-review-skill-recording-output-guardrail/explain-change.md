@@ -37,6 +37,7 @@ A related learn session showed the same shape of drift for clean approvals: a re
 | `skills/architecture-review/SKILL.md` | Added recording-status and status-sync output guidance; architecture approvals target `Status: approved`, ADR approvals target `accepted` or `active` according to local lifecycle field. | Architecture and ADR lifecycle vocabulary differs and must not be guessed. | Spec `R31`, `R31a`, `R31b`. | Skill validator and generated-output drift checks. |
 | `skills/plan-review/SKILL.md` | Added recording-status and status-sync output guidance; plan approvals target the plan readiness section and plan index only when it owns active-plan state. | Plan readiness is plan-owned and must not be replaced by chat approval. | Spec `R31`; plan-review approval-status sync rule. | Skill validator and generated-output drift checks. |
 | `skills/code-review/SKILL.md` | Added recording-status and status-sync output guidance; clean code-review targets active plan milestone state and does not edit source files solely for review status. | Code-review clean status closes or advances review-owned workflow state, not product source. | Spec `R31`; milestone-aware review contract. | Skill validator and generated-output drift checks. |
+| `skills/workflow/SKILL.md` | Restored explicit review-resolution disposition vocabulary including `partially-accepted`. | Final broad smoke found workflow guidance no longer named a validator-required disposition. | Review artifact validator contract; `CONSTITUTION.md` and `docs/workflows.md` already name the same vocabulary. | `python scripts/test-review-artifact-validator.py`; `bash scripts/ci.sh --mode broad-smoke`. |
 | `.codex/skills/**` | Regenerated local Codex runtime mirror for the five changed formal review skills. | Canonical skill changes must be reflected in runtime skill surfaces. | Spec `R15a`, `R33a`; test spec `T12`, `T23`. | `python scripts/build-skills.py --check`. |
 | `dist/adapters/**` | Regenerated Claude, Codex, and opencode adapter skill output for the five changed formal review skills. | Public adapter output must match canonical skill behavior. | Spec `R15a`, `R33a`; token-cost spec versioned adapter guidance. | `python scripts/build-adapters.py --version 0.1.1 --check`; `python scripts/validate-adapters.py --version 0.1.1`. |
 | `docs/changes/2026-05-12-review-skill-recording-output-guardrail/**` | Added change metadata, detailed review records, review log, review resolution, and this explanation. | Material proposal/spec review findings required durable records; ordinary non-trivial work required change-local reasoning. | Formal review recording spec; docs-changes baseline pack. | `validate-change-metadata`; `validate-review-artifacts --mode closeout`. |
@@ -63,12 +64,14 @@ The change metadata records the full command history. The key passing checks bef
 - `python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml` passed.
 - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-review-skill-recording-output-guardrail` passed.
 - `bash scripts/ci.sh --mode explicit --path ...` passed after correcting the explicit-path syntax and proposal heading.
+- `bash scripts/ci.sh --mode broad-smoke` passed after restoring the workflow disposition vocabulary.
 - `git diff --check --` passed.
 
 Two validation failures were intentionally preserved in evidence:
 
 - The first explicit CI command used paths without `--path`; the plan was corrected to the repository-supported syntax.
 - The corrected explicit CI run found the proposal heading `Recommended Direction`; it was normalized to `Recommended direction`, then CI passed.
+- The first broad-smoke run found `skills/workflow/SKILL.md` missing `partially-accepted`; workflow guidance was corrected and generated output was refreshed, then broad smoke passed.
 
 ## Review Resolution Summary
 

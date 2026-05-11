@@ -167,6 +167,7 @@ For standard workflow completion on non-trivial work, carry the required change-
 - Material review findings must include evidence, required outcome, and a safe resolution path or `needs-decision` rationale.
 - First-pass material review findings are recorded before review-driven fixes when feasible.
 - `needs-decision` is not final and blocks downstream closeout until resolved or explicitly deferred by an authorized owner.
+- Review-resolution dispositions are `accepted`, `rejected`, `deferred`, `partially-accepted`, or `needs-decision`.
 - `Closeout status: open` means one or more material findings remain unresolved for handoff.
 - `Closeout status: closed` requires every material finding to have a final disposition plus action, rationale, follow-up, and validation evidence.
 - `review-log.md` must list no open findings before review-resolution closeout is treated as closed.

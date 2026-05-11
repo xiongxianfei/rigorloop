@@ -138,13 +138,13 @@ Likely implementation surfaces:
 ## Current Handoff Summary
 
 - Current milestone: final closeout
-- Current milestone state: verify-ready
+- Current milestone state: branch-ready
 - Last reviewed milestone: M3. Generated output, closeout evidence, and PR readiness
 - Review status: code-review M3 clean-with-notes with no material findings on 2026-05-12
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
+- Next stage: pr
 - Final closeout readiness: ready
-- Reason final closeout is or is not ready: all in-scope implementation milestones are closed, review-resolution is closed, final explain-change is complete, and verify plus PR handoff remain pending.
+- Reason final closeout is or is not ready: all in-scope implementation milestones are closed, review-resolution is closed, final explain-change and verify are complete, and PR handoff remains pending.
 
 ## Milestones
 
@@ -286,7 +286,7 @@ Likely implementation surfaces:
      - [x] validation notes updated
      - [x] milestone committed
      - [x] final explain-change completed
-     - [ ] verify completed
+     - [x] verify completed
      - [ ] PR handoff prepared
    - Risks:
      - Generated adapter drift check exposes unrelated stale output.
@@ -308,6 +308,7 @@ Likely implementation surfaces:
 - 2026-05-12: M3 refreshed generated Codex skills and public adapters from canonical review skills, added durable change explanation, and validated generated-output drift and adapter output; next stage is `code-review M3`.
 - 2026-05-12: code-review M3 returned clean-with-notes with no material findings; M3 closed and next stage is `explain-change`.
 - 2026-05-12: final explain-change refreshed `docs/changes/2026-05-12-review-skill-recording-output-guardrail/explain-change.md` with actual diff rationale, review-resolution summary, validation evidence, and remaining risks; next stage is `verify`.
+- 2026-05-12: final verify passed selected CI, broad smoke, generated-output drift checks, adapter validation, change metadata validation, review-artifact closeout validation, and lifecycle validation; branch-ready and next stage is `pr`.
 
 ## Decision log
 
@@ -318,6 +319,7 @@ Likely implementation surfaces:
 - 2026-05-12: M1 updated canonical skills only and deferred generated output refresh to M3 -> the active plan separates canonical review-skill changes from generated-output closeout.
 - 2026-05-12: M2 kept status-sync validation static -> approved test spec `T22` covers vocabulary, blockers, no-edit behavior, and artifact-specific targets without adding semantic review-output parsing.
 - 2026-05-12: M3 added `docs/changes/2026-05-12-review-skill-recording-output-guardrail/explain-change.md` as the required durable Markdown reasoning surface; the formal final explain-change stage remains downstream after implementation review closes.
+- 2026-05-12: final verify restored `partially-accepted` in `workflow` review-resolution guidance -> broad smoke showed the workflow skill must preserve the same disposition vocabulary as the review-resolution contract.
 
 ## Surprises and discoveries
 
@@ -353,6 +355,17 @@ Likely implementation surfaces:
 - 2026-05-12: `python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml` passed after final explain-change refresh.
 - 2026-05-12: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-review-skill-recording-output-guardrail` passed after final explain-change refresh.
 - 2026-05-12: `git diff --check -- docs/changes/2026-05-12-review-skill-recording-output-guardrail/explain-change.md` passed after final explain-change refresh.
+- 2026-05-12: `python scripts/test-skill-validator.py` passed during final verify.
+- 2026-05-12: `python scripts/validate-skills.py` passed during final verify.
+- 2026-05-12: `python scripts/build-skills.py --check` passed during final verify.
+- 2026-05-12: `python scripts/build-adapters.py --version 0.1.1 --check` passed during final verify.
+- 2026-05-12: `python scripts/validate-adapters.py --version 0.1.1` passed during final verify.
+- 2026-05-12: `python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml` passed during final verify.
+- 2026-05-12: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-review-skill-recording-output-guardrail` passed during final verify.
+- 2026-05-12: `git diff --check --` passed during final verify.
+- 2026-05-12: `bash scripts/ci.sh --mode explicit --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path skills/proposal-review/SKILL.md --path skills/spec-review/SKILL.md --path skills/architecture-review/SKILL.md --path skills/plan-review/SKILL.md --path skills/code-review/SKILL.md --path scripts/test-skill-validator.py --path scripts/validate-skills.py --path docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml` passed during final verify.
+- 2026-05-12: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-review-skill-recording-output-guardrail.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path docs/plans/2026-05-12-review-skill-recording-output-guardrail.md --path docs/plan.md --path docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml` passed during final verify with an unrelated lifecycle-language warning in `docs/plan.md`.
+- 2026-05-12: first `bash scripts/ci.sh --mode broad-smoke` run failed because `skills/workflow/SKILL.md` missed `partially-accepted`; after workflow guidance and generated output refresh, `python scripts/test-review-artifact-validator.py`, generated-output drift checks, adapter validation, and `bash scripts/ci.sh --mode broad-smoke` passed.
 
 ## Outcome and retrospective
 
