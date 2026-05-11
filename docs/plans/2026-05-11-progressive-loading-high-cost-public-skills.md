@@ -2,11 +2,11 @@
 
 ## Status
 
-- active
+- done
 - Owner: maintainers
 - Start date: 2026-05-11
 - Last updated: 2026-05-11
-- Related issue or PR: none yet
+- Related issue or PR: PR #43
 - Supersedes: none
 - selected_workflow_contract: standard
 - broad_smoke_required: false
@@ -76,9 +76,9 @@ The goal is to reduce unnecessary whole-skill reads and `implement-handoff` comm
 - Last reviewed milestone: M4. Benchmark Evidence and Lifecycle Closeout
 - Review status: code-review M4 clean-with-notes; no review-resolution required
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: branch-ready; PR handoff still pending
-- Reason final closeout is or is not ready: all implementation milestones are closed, final explain-change is recorded, final verification passed, and the branch is ready for PR handoff. PR body readiness and PR opening are not claimed until the `pr` stage completes.
+- Next stage: done
+- Final closeout readiness: done; PR #43 is open
+- Reason final closeout is or is not ready: all implementation milestones are closed, final explain-change is recorded, final verification passed, and PR #43 is open for review.
 
 ## Pre-Implementation Gates
 
@@ -351,6 +351,7 @@ Final pre-PR validation is expected to include:
 - 2026-05-11: Code-review M4 completed clean-with-notes; no material findings and no review-resolution required. All implementation milestones are closed; next stage is explain-change.
 - 2026-05-11: Final explain-change completed in the change-local pack; next stage is verify.
 - 2026-05-11: Final verification passed locally. Branch is ready for PR handoff; next stage is pr.
+- 2026-05-11: PR #43 opened for final review.
 
 ## Decision Log
 
@@ -453,11 +454,11 @@ Final pre-PR validation is expected to include:
 
 ## Outcome and Retrospective
 
-- Final-only. Do not use this section for current readiness; see `Current Handoff Summary`.
+- Completed. PR #43 is open for review.
 
 ## Readiness
 
-- See `Current Handoff Summary`.
+- Done; PR #43 is open.
 
 ## Risks and Follow-ups
 
