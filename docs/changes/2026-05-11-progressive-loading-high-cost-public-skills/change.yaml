@@ -1,0 +1,69 @@
+change_id: 2026-05-11-progressive-loading-high-cost-public-skills
+title: Progressive loading for high-cost public skills
+classification: workflow-governance-proposal
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-11-progressive-loading-for-high-cost-public-skills.md
+  spec: specs/progressive-loading-high-cost-public-skills.md
+  plan: docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md
+  test_spec: specs/progressive-loading-high-cost-public-skills.test.md
+  explain_change: docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/explain-change.md
+  review_resolution: docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/review-resolution.md
+requirements:
+  - Accept the progressive loading proposal before specification and planning.
+  - Approve the progressive loading spec before execution planning.
+  - Record material plan-review findings before review-driven plan fixes.
+  - Require the change-local artifact pack for the non-trivial implementation slice.
+  - Create an active test spec before implementation starts.
+  - Add quick operating guides to workflow, implement, and code-review.
+  - Preserve workflow, handoff, review, validation, and material-finding safety contracts.
+  - Regenerate and validate generated public skill output before dynamic benchmarks.
+  - Record before and after static and dynamic token-cost evidence.
+tests:
+  - Proposal-review acceptance evidence.
+  - Spec-review approval evidence.
+  - Plan-review material finding record and resolution evidence.
+  - Change metadata validation.
+  - Test-spec requirement coverage before implementation.
+  - Artifact lifecycle validation after test-spec creation.
+  - Static skill validator coverage for quick guides and handoff guidance.
+  - Skill validation and static token measurement.
+  - Generated skill and adapter validation.
+  - Targeted dynamic benchmark comparison report.
+validation:
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-11-progressive-loading-high-cost-public-skills
+    result: pass_structure_reviews_1_findings_1_log_entries_1_resolution_entries_1_after_plan_review_r1_record
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml
+    result: pass_valid_change_metadata_after_plan_revision_for_pl_pr1
+  - command: git diff --check -- docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md docs/changes/2026-05-11-progressive-loading-high-cost-public-skills
+    result: pass_after_plan_revision_for_pl_pr1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml
+    result: pass_valid_change_metadata_during_plan_review_r2
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-11-progressive-loading-high-cost-public-skills
+    result: pass_structure_reviews_1_findings_1_log_entries_1_resolution_entries_1_during_plan_review_r2
+  - command: git diff --check -- docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md docs/changes/2026-05-11-progressive-loading-high-cost-public-skills
+    result: pass_during_plan_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-11-progressive-loading-for-high-cost-public-skills.md --path specs/progressive-loading-high-cost-public-skills.md --path specs/progressive-loading-high-cost-public-skills.test.md --path docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md --path docs/plan.md --path docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml --path docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/review-log.md --path docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/review-resolution.md
+    result: blocked_readiness_wording_before_test_spec_readiness_sync_fix_then_pass_with_existing_docs_plan_lifecycle_language_warning
+  - command: python scripts/test-skill-validator.py
+    result: pass_58_tests_after_m1_static_proof
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m1_static_proof
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml
+    result: pass_valid_change_metadata_after_m1_static_proof
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/progressive-loading-high-cost-public-skills.md --path specs/progressive-loading-high-cost-public-skills.test.md --path docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md --path docs/plan.md --path docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml
+    result: pass_with_existing_docs_plan_lifecycle_language_warning_after_m1_static_proof
+  - command: git diff --check -- specs/progressive-loading-high-cost-public-skills.test.md scripts/test-skill-validator.py scripts/validate-skills.py docs/changes/2026-05-11-progressive-loading-high-cost-public-skills docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md docs/plan.md
+    result: pass_after_m1_static_proof
+changed_files:
+  - docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/change.yaml
+  - docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/review-log.md
+  - docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/review-resolution.md
+  - docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/reviews/plan-review-r1.md
+  - docs/changes/2026-05-11-progressive-loading-high-cost-public-skills/reviews/plan-review-r2.md
+  - docs/plans/2026-05-11-progressive-loading-high-cost-public-skills.md
+  - scripts/test-skill-validator.py
+  - specs/progressive-loading-high-cost-public-skills.test.md
+review:
+  status: resolved
+  unresolved_items: 0
