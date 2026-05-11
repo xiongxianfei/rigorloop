@@ -178,7 +178,7 @@ For standard workflow completion on non-trivial work, carry the required change-
 - Named edge cases need direct proof for clean review or branch-ready conclusions.
 - `verify` owns branch-ready. `pr` owns PR-body and PR-open readiness.
 
-Use targeted validation before broad smoke unless an authoritative trigger requires broad smoke. Preserve stable check IDs and validation source attribution when available.
+Use targeted proof and targeted validation before broad smoke unless an authoritative trigger requires broad smoke. Required manual proof belongs in `verify-report.md`, and broad-smoke source attribution belongs in `broad_smoke.sources`. Preserve stable check IDs and validation source attribution when available.
 
 ### Bugfix skill invocation
 

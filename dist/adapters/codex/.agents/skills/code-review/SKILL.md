@@ -115,7 +115,7 @@ Do not claim:
 - Clean review conclusions for named edge cases must cite direct proof from a targeted test, targeted validation output, or an explicit manual verification note when manual verification is allowed.
 - Code-shape inference alone is insufficient direct proof for a named edge case.
 - If a named edge-case proof gap is actionable within approved scope, report it as a finding; if evidence is too limited to assess, use `inconclusive`.
-- For validation-routing changes, targeted proof names selected or executed checks; broad smoke is separate and required only when an authoritative trigger applies.
+- For validation-routing changes, targeted proof names selected checks or executed checks; broad smoke is separate and required only when an authoritative trigger applies.
 
 ## First-pass checklist coverage
 
