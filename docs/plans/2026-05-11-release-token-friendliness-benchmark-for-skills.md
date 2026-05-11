@@ -68,11 +68,11 @@ No `benchmarks/` directory exists yet. This plan creates the first `benchmarks/t
 ## Current Handoff Summary
 
 - Current milestone: M3. Runner and analyzer-summary integration
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M2 code-review R4 clean-with-notes
-- Review status: M2 closed; no review-resolution required
+- Review status: M3 implementation complete; ready for code-review
 - Remaining in-scope implementation milestones: M3, M4, M5
-- Next stage: implement M3
+- Next stage: code-review M3
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: M3-M5, explain-change, verify, and PR handoff are not complete.
 
@@ -174,7 +174,7 @@ No `benchmarks/` directory exists yet. This plan creates the first `benchmarks/t
 
 ### M3. Runner and analyzer-summary integration
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Add repeatable Codex benchmark execution and analyzer summary output.
 - Requirements: `R11`-`R18`, `R20`, `R25`, `R29`, `R33`
 - Files/components likely touched:
@@ -208,14 +208,14 @@ No `benchmarks/` directory exists yet. This plan creates the first `benchmarks/t
 - Expected observable result: Maintainers can run one command to prepare temp fixture runs and analyzer summaries; tests can verify runner behavior without requiring Codex availability.
 - Commit message: `M3: add token-cost benchmark runner`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] hand off to code-review for M3
+  - [x] targeted validation passed
+  - [x] hand off to code-review for M3
   - [ ] code-review completed
   - [ ] material findings resolved or explicitly dispositioned
-  - [ ] progress updated
+  - [x] progress updated
   - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - Codex may be unavailable in local or CI validation;
   - temp cleanup mistakes can leave local artifacts;
@@ -397,6 +397,9 @@ bash scripts/release-verify.sh <release-version>
 - 2026-05-11: Added fixture-first tests for benchmark manifest, seven prompt fixtures, clean minimal fixture contents, absence of installed skills, and absence of generated-surface references.
 - 2026-05-11: Added `benchmarks/token-cost/manifest.yaml`, seven no-edit prompt fixtures, and the clean minimal public project fixture; M2 is ready for code-review.
 - 2026-05-11: Code-review R4 found no material findings for M2; M2 is closed and the plan is ready for implement M3.
+- 2026-05-11: Started M3 implementation for the benchmark runner, analyzer schema-versioned summaries, and dry-run/test-mode proof surfaces.
+- 2026-05-11: Added failing M3 tests for analyzer tracked and omitted raw JSONL summaries, runner dry-run installation, public skill source rejection, temp-root isolation, cleanup behavior, analyzer invocation, and no Markdown generation.
+- 2026-05-11: Implemented `scripts/run-token-cost-benchmarks.py` and extended `scripts/analyze-codex-jsonl.py` to write schema version 1 summaries beside JSONL runs; M3 is ready for code-review.
 
 ## Decision Log
 
@@ -404,6 +407,7 @@ bash scripts/release-verify.sh <release-version>
 - 2026-05-11: Keep report generation out of scope. The approved spec defers a generator until repeated manual-report errors or three comparable stable reports.
 - 2026-05-11: Treat live Codex execution as release-run evidence, not a unit-test prerequisite. Runner tests should cover deterministic setup and command construction without requiring every contributor to have Codex installed.
 - 2026-05-11: M1 uses the repository's lightweight YAML parsing style with local schema/semantic checks rather than adding a YAML dependency. The schema version 1 metadata shape used in M1 is covered by standalone fixtures.
+- 2026-05-11: M3 runner uses a `--dry-run` test mode that prepares the temp fixture, installs public Codex skills, writes synthetic JSONL, and invokes the real analyzer without requiring local Codex availability.
 
 ## Surprises and Discoveries
 
@@ -416,6 +420,9 @@ bash scripts/release-verify.sh <release-version>
 - M2 fixture validation deliberately checks the clean source fixture only. Public skill installation remains M3 runner scope.
 - The plan's `find benchmarks/token-cost -maxdepth 4 -type f | sort` command does not list the deeper `docs/changes/.gitkeep` fixture file, but the focused test checks it directly.
 - Code-review R4 closed M2 without new material findings and confirmed public skill installation remains M3 runner scope.
+- M3 reuses the existing lightweight YAML parser from `scripts/validate-token-cost-report.py` for the benchmark manifest instead of adding a dependency.
+- M3 keeps live Codex execution available for release runs, but contributor tests use `--dry-run` so Codex installation is not required for ordinary validation.
+- Analyzer full-file read evidence now uses event context, so small capped excerpts are not counted as full-file reads solely because the command starts at line 1.
 
 ## Validation Notes
 
@@ -436,6 +443,8 @@ bash scripts/release-verify.sh <release-version>
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md` passed with the existing `docs/plan.md` lifecycle-language warning.
 - Code-review R4 validation rerun: `python scripts/test-token-cost-measurement.py` passed 10 tests; `python scripts/validate-change-metadata.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills`, and `git diff --check -- benchmarks/token-cost scripts/test-token-cost-measurement.py docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md docs/plan.md` passed.
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/release-token-friendliness-benchmark-for-skills.md --path specs/release-token-friendliness-benchmark-for-skills.test.md --path docs/plans/2026-05-11-release-token-friendliness-benchmark-for-skills.md --path docs/plan.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/change.yaml --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-log.md --path docs/changes/2026-05-10-release-token-friendliness-benchmark-for-skills/review-resolution.md` passed with the existing `docs/plan.md` lifecycle-language warning.
+- M3 test-first proof: `python scripts/test-token-cost-measurement.py` failed before implementation with missing analyzer summary output support and missing `scripts/run-token-cost-benchmarks.py`.
+- M3 validation: `python scripts/test-token-cost-measurement.py` passed 17 tests; `python -m py_compile scripts/run-token-cost-benchmarks.py scripts/analyze-codex-jsonl.py` passed; `python scripts/analyze-codex-jsonl.py tests/fixtures/token-cost/sample-codex-session.jsonl` passed; `python scripts/test-token-cost-report-validation.py` passed 10 tests; `git diff --check -- scripts/run-token-cost-benchmarks.py scripts/analyze-codex-jsonl.py scripts/test-token-cost-measurement.py tests/fixtures/token-cost` passed.
 
 ## Outcome and Retrospective
 

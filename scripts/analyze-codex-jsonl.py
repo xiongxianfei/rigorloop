@@ -20,6 +20,7 @@ USAGE_KEYS = {
     "reasoning_output_tokens",
 }
 HIGH_OUTPUT_TOKEN_THRESHOLD = 20000
+SUMMARY_WARNING_TOKEN_THRESHOLD = 8000
 
 
 @dataclass
@@ -178,6 +179,14 @@ def command_path(command: str) -> str | None:
     return None
 
 
+def event_kind(event: ToolEvent) -> str:
+    if command_path(event.command):
+        return "file-read"
+    if event.command != "unknown":
+        return "shell-output"
+    return "unknown"
+
+
 def is_broad_search(command: str) -> bool:
     stripped = command.strip()
     if re.search(r"\b(?:rg|grep|find)\b", stripped) is None:
@@ -196,11 +205,35 @@ def is_full_file_read(command: str) -> bool:
     return bool(re.search(r"\bsed\s+-n\s+['\"]?1,\d+p['\"]?", stripped))
 
 
+def large_leading_range(command: str) -> bool:
+    match = re.search(r"\bsed\s+-n\s+['\"]?1,(\d+)p['\"]?", command.strip())
+    return bool(match and int(match.group(1)) >= 200)
+
+
+def is_full_file_read_event(event: ToolEvent) -> bool:
+    if not is_full_file_read(event.command):
+        return False
+    return event.output_lines > 80 or event.estimated_output_tokens >= SUMMARY_WARNING_TOKEN_THRESHOLD
+
+
+def is_suspected_full_file_read_event(event: ToolEvent) -> bool:
+    if is_full_file_read_event(event):
+        return False
+    return large_leading_range(event.command) or event.output_lines >= 300
+
+
+def is_generated_output_read(command: str) -> bool:
+    path = command_path(command)
+    if not path:
+        return False
+    return ".codex/skills/" in path or "dist/adapters/" in path
+
+
 def repeated_file_reads(events: list[ToolEvent]) -> list[tuple[str, int]]:
     counts: dict[str, int] = {}
     for event in events:
         path = command_path(event.command)
-        if path and is_full_file_read(event.command):
+        if path and is_full_file_read_event(event):
             counts[path] = counts.get(path, 0) + 1
     return sorted((path, count) for path, count in counts.items() if count > 1)
 
@@ -210,6 +243,143 @@ def command_summary(command: str, limit: int = 120) -> str:
     if len(normalized) <= limit:
         return normalized
     return normalized[: limit - 3] + "..."
+
+
+def yaml_scalar(value: object) -> str:
+    if value is None:
+        return '""'
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    if isinstance(value, int):
+        return str(value)
+    text = str(value)
+    if text == "":
+        return '""'
+    if re.fullmatch(r"[A-Za-z0-9_./:@+=,-]+", text):
+        return text
+    return json.dumps(text)
+
+
+def signal_counts(events: list[ToolEvent]) -> dict[str, int]:
+    repeated = repeated_file_reads(events)
+    return {
+        "full_file_read_count": len([event for event in events if is_full_file_read_event(event)]),
+        "broad_search_count": len([event for event in events if is_broad_search(event.command)]),
+        "generated_output_read_count": len(
+            [event for event in events if is_generated_output_read(event.command)]
+        ),
+        "repeated_file_read_count": len(repeated),
+    }
+
+
+def full_file_read_classification(events: list[ToolEvent]) -> tuple[str, list[str]]:
+    signals: list[str] = []
+    if any(is_full_file_read_event(event) for event in events):
+        signals.append("full_file_read_command")
+        if any(event.output_lines >= 300 for event in events):
+            signals.append("high_volume_single_file_output")
+        return "confirmed", signals
+    if any(is_suspected_full_file_read_event(event) for event in events):
+        signals.append("large_leading_range_read")
+        return "suspected", signals
+    return "none", signals
+
+
+def verdict_for(events: list[ToolEvent]) -> tuple[str, list[str], list[str]]:
+    warnings: list[str] = []
+    blockers: list[str] = []
+    if any(event.estimated_output_tokens >= HIGH_OUTPUT_TOKEN_THRESHOLD for event in events):
+        blockers.append("single tool output exceeds 20000 estimated tokens")
+    elif any(event.estimated_output_tokens >= SUMMARY_WARNING_TOKEN_THRESHOLD for event in events):
+        warnings.append("single tool output exceeds 8000 estimated tokens")
+    if any(is_broad_search(event.command) for event in events):
+        warnings.append("broad search observed")
+    if any(is_full_file_read_event(event) for event in events):
+        warnings.append("full-file-style read observed")
+    if any(is_generated_output_read(event.command) for event in events):
+        warnings.append("generated output read observed")
+    if blockers:
+        return "blocked", warnings, blockers
+    if warnings:
+        return "warning", warnings, blockers
+    return "pass", warnings, blockers
+
+
+def write_summary(
+    path: Path,
+    *,
+    run_id: str,
+    jsonl_path: Path,
+    raw_jsonl_tracked: bool,
+    sanitized_source: str,
+    sanitized_summary: str,
+    raw_omission_reason: str,
+    usage: dict[str, int],
+    events: list[ToolEvent],
+) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    ranked_outputs = sorted(events, key=lambda event: event.estimated_output_tokens, reverse=True)
+    largest = ranked_outputs[0] if ranked_outputs else None
+    counts = signal_counts(events)
+    verdict, warnings, blockers = verdict_for(events)
+    full_file_result, full_file_signals = full_file_read_classification(events)
+    jsonl_value = str(jsonl_path) if raw_jsonl_tracked else ""
+    lines = [
+        "schema_version: 1",
+        "",
+        "run:",
+        f"  id: {yaml_scalar(run_id)}",
+        f"  raw_jsonl_tracked: {yaml_scalar(raw_jsonl_tracked)}",
+        f"  jsonl: {yaml_scalar(jsonl_value)}",
+        f"  sanitized_source: {yaml_scalar(sanitized_source)}",
+        f"  sanitized_summary: {yaml_scalar(sanitized_summary)}",
+        f"  raw_omission_reason: {yaml_scalar(raw_omission_reason)}",
+        "",
+        "usage:",
+    ]
+    for key in sorted(USAGE_KEYS):
+        lines.append(f"  {key}: {usage.get(key, 0)}")
+    lines.extend(
+        [
+            "",
+            "tool_output:",
+            f"  total_estimated_tokens: {sum(event.estimated_output_tokens for event in events)}",
+            "  largest_event:",
+            f"    kind: {yaml_scalar(event_kind(largest) if largest else 'none')}",
+            f"    command: {yaml_scalar(largest.command if largest else '')}",
+            f"    path: {yaml_scalar(command_path(largest.command) if largest else '')}",
+            f"    lines: {largest.output_lines if largest else 0}",
+            f"    estimated_tokens: {largest.estimated_output_tokens if largest else 0}",
+            "",
+            "signals:",
+        ]
+    )
+    for key, value in counts.items():
+        lines.append(f"  {key}: {value}")
+    lines.extend(
+        [
+            "",
+            "full_file_read:",
+            f"  result: {full_file_result}",
+        ]
+    )
+    if full_file_signals:
+        lines.append("  signals:")
+        lines.extend(f"    - {yaml_scalar(item)}" for item in full_file_signals)
+    else:
+        lines.append("  signals: []")
+    lines.extend(["", "verdict:", f"  result: {verdict}"])
+    if warnings:
+        lines.append("  warnings:")
+        lines.extend(f"    - {yaml_scalar(item)}" for item in warnings)
+    else:
+        lines.append("  warnings: []")
+    if blockers:
+        lines.append("  blockers:")
+        lines.extend(f"    - {yaml_scalar(item)}" for item in blockers)
+    else:
+        lines.append("  blockers: []")
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def print_event_list(title: str, events: list[ToolEvent]) -> None:
@@ -224,19 +394,52 @@ def print_event_list(title: str, events: list[ToolEvent]) -> None:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("jsonl_path", help="Path to exported Codex JSONL session.")
+    parser.add_argument("--summary-output", help="Write schema version 1 analyzer summary YAML.")
+    parser.add_argument("--run-id", default="", help="Benchmark run id for summary output.")
+    parser.add_argument(
+        "--raw-jsonl-omitted",
+        action="store_true",
+        help="Write summary identity for intentionally omitted raw JSONL.",
+    )
+    parser.add_argument("--sanitized-source", default="", help="Sanitized source label.")
+    parser.add_argument("--sanitized-summary", default="", help="Sanitized summary evidence path.")
+    parser.add_argument("--raw-omission-reason", default="", help="Reason raw JSONL is omitted.")
     args = parser.parse_args(argv)
 
+    if args.raw_jsonl_omitted and (
+        not args.sanitized_source or not args.sanitized_summary or not args.raw_omission_reason
+    ):
+        sys.stderr.write(
+            "error: --raw-jsonl-omitted requires --sanitized-source, "
+            "--sanitized-summary, and --raw-omission-reason\n"
+        )
+        return 1
+
     try:
-        usage, events, unknown_records = read_events(Path(args.jsonl_path))
+        jsonl_path = Path(args.jsonl_path)
+        usage, events, unknown_records = read_events(jsonl_path)
     except ValueError as exc:
         sys.stderr.write(f"error: {exc}\n")
         return 1
+
+    if args.summary_output:
+        write_summary(
+            Path(args.summary_output),
+            run_id=args.run_id or Path(args.jsonl_path).stem,
+            jsonl_path=jsonl_path,
+            raw_jsonl_tracked=not args.raw_jsonl_omitted,
+            sanitized_source=args.sanitized_source,
+            sanitized_summary=args.sanitized_summary,
+            raw_omission_reason=args.raw_omission_reason,
+            usage=usage,
+            events=events,
+        )
 
     output_lines = sum(event.output_lines for event in events)
     output_bytes = sum(event.output_bytes for event in events)
     output_tokens = sum(event.estimated_output_tokens for event in events)
     broad_search_events = [event for event in events if is_broad_search(event.command)]
-    full_file_events = [event for event in events if is_full_file_read(event.command)]
+    full_file_events = [event for event in events if is_full_file_read_event(event)]
     high_cap_events = [
         event
         for event in events
