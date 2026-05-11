@@ -1,0 +1,11 @@
+change_id: 2026-05-11-architecture-review-benchmark
+status: active
+
+artifacts:
+  spec: specs/example-feature.md
+  architecture: docs/architecture/system/architecture.md
+  explain_change: docs/changes/2026-05-11-architecture-review-benchmark/explain-change.md
+
+review:
+  status: none
+  unresolved_items: 0

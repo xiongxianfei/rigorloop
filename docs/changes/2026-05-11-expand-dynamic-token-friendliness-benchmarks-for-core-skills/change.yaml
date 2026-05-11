@@ -30,6 +30,7 @@ tests:
   - Artifact lifecycle validation for the active v2 expansion test spec and plan handoff.
   - M1 manifest and prompt fixture tests for v2 required core and transition carryover coverage.
   - M1 code-review clean review record and milestone closeout state.
+  - M2 architecture-review optional prompt and separate scenario fixture tests.
 validation:
   - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills
     result: pass_closeout_reviews_4_findings_4_log_entries_4_resolution_entries_4
@@ -77,12 +78,37 @@ validation:
     result: pass_closeout_reviews_8_findings_6_log_entries_8_resolution_entries_6
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path docs/plan.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-log.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/review-resolution.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/reviews/code-review-m1-r1.md
     result: pass_validated_6_artifact_files_with_existing_docs_plan_warning_after_code_review_m1
+  - command: python scripts/test-token-cost-measurement.py BenchmarkFixtureTests.test_architecture_review_optional_prompt_and_fixture_are_self_contained
+    result: fail_before_implementation_then_pass_after_optional_prompt_and_fixture_added
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_24_tests_after_m2
+  - command: python scripts/run-token-cost-benchmarks.py --dry-run --suite benchmarks/token-cost/manifest.yaml --release test --tool codex
+    result: pass_required_carryover_dry_run_unchanged_by_optional_prompt_declaration
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml
+    result: pass_valid_change_metadata_after_m2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md --path docs/plan.md --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/change.yaml --path docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills/explain-change.md
+    result: pass_validated_6_artifact_files_with_existing_docs_plan_warning_after_m2
+  - command: git diff --check -- benchmarks/token-cost scripts/test-token-cost-measurement.py docs/changes/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills docs/plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md docs/plan.md
+    result: pass
 changed_files:
   - benchmarks/token-cost/manifest.yaml
   - benchmarks/token-cost/prompts/workflow-route.md
   - benchmarks/token-cost/prompts/plan-handoff.md
   - benchmarks/token-cost/prompts/explain-change-summary.md
   - benchmarks/token-cost/prompts/pr-handoff.md
+  - benchmarks/token-cost/prompts/architecture-review.md
+  - benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/AGENTS.md
+  - benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/VISION.md
+  - benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/README.md
+  - benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/docs/workflows.md
+  - benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/docs/architecture/system/architecture.md
+  - benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/docs/architecture/system/diagrams/context.mmd
+  - benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/docs/architecture/system/diagrams/container.mmd
+  - benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/docs/adr/README.md
+  - benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/docs/changes/2026-05-11-architecture-review-benchmark/change.yaml
+  - benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/docs/changes/2026-05-11-architecture-review-benchmark/explain-change.md
+  - benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/specs/example-feature.md
+  - benchmarks/token-cost/fixtures/minimal-public-project-architecture-review/src/app.txt
   - scripts/test-token-cost-measurement.py
   - docs/proposals/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md
   - specs/expand-dynamic-token-friendliness-benchmarks-for-core-skills.md
@@ -109,4 +135,4 @@ review:
   last_review: code-review-m1-r1 approved M1 with no material findings
 status:
   lifecycle: implement
-  review: m1-closed-ready-for-m2
+  review: m2-review-requested
