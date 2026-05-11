@@ -97,6 +97,16 @@ validation:
     result: pass_structure_reviews_3_findings_12_log_entries_3_resolution_entries_12_after_m1_recording_status_guardrail
   - command: git diff --check -- specs/formal-review-recording.test.md skills/proposal-review/SKILL.md skills/spec-review/SKILL.md skills/architecture-review/SKILL.md skills/plan-review/SKILL.md skills/code-review/SKILL.md scripts/test-skill-validator.py scripts/validate-skills.py docs/changes/2026-05-12-review-skill-recording-output-guardrail docs/plans/2026-05-12-review-skill-recording-output-guardrail.md docs/plan.md
     result: pass_after_m1_recording_status_guardrail
+  - command: python scripts/test-skill-validator.py
+    result: pass_64_tests_after_m2_status_sync_guardrail
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m2_status_sync_guardrail
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml
+    result: pass_valid_change_metadata_after_m2_status_sync_guardrail
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-12-review-skill-recording-output-guardrail
+    result: pass_structure_reviews_3_findings_12_log_entries_3_resolution_entries_12_after_m2_status_sync_guardrail
+  - command: git diff --check -- specs/formal-review-recording.test.md skills/proposal-review/SKILL.md skills/spec-review/SKILL.md skills/architecture-review/SKILL.md skills/plan-review/SKILL.md skills/code-review/SKILL.md scripts/test-skill-validator.py scripts/validate-skills.py docs/changes/2026-05-12-review-skill-recording-output-guardrail docs/plans/2026-05-12-review-skill-recording-output-guardrail.md docs/plan.md
+    result: pass_after_m2_status_sync_guardrail
 changed_files:
   - docs/proposals/2026-05-12-review-skill-recording-output-guardrail.md
   - docs/plan.md

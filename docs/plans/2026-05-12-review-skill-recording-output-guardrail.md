@@ -137,14 +137,14 @@ Likely implementation surfaces:
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Artifact-status sync guardrail for clean or approving outcomes
+- Current milestone: M3. Generated output, closeout evidence, and PR readiness
 - Current milestone state: planned
-- Last reviewed milestone: M1. Recording-status guardrail across formal review skills
-- Review status: code-review M1 clean-with-notes with no material findings on 2026-05-12
-- Remaining in-scope implementation milestones: M2, M3
-- Next stage: implement M2
+- Last reviewed milestone: M2. Artifact-status sync guardrail for clean or approving outcomes
+- Review status: code-review M2 clean-with-notes with no material findings on 2026-05-12
+- Remaining in-scope implementation milestones: M3
+- Next stage: implement M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2-M3 remain planned, generated output validation is pending, and explain-change, verify, and PR handoff are still pending.
+- Reason final closeout is or is not ready: M3 remains planned, generated output validation is pending, and explain-change, verify, and PR handoff are still pending.
 
 ## Milestones
 
@@ -198,7 +198,7 @@ Likely implementation surfaces:
      - Revert M1 skill and validator changes while keeping already-valid review records as historical evidence.
 
 2. M2. Artifact-status sync guardrail for clean or approving outcomes
-   - Milestone state: planned
+   - Milestone state: closed
    - Goal: Make clean or approving formal review outcomes update the reviewed artifact's owned lifecycle/status/readiness/closeout surface when clear and allowed, or report `Status sync: blocked`.
    - Requirements: `R24`-`R24b`, `R29`-`R31b`, `R32`-`R33a`
    - Files/components likely touched:
@@ -231,12 +231,12 @@ Likely implementation surfaces:
    - Expected observable result: approving or clean review outputs cannot silently leave status sync unreported; the skills update the reviewed artifact status surface when clear and allowed or report a concrete blocker.
    - Commit message: `M2: add review status sync guardrail`
    - Milestone closeout:
-     - [ ] targeted validation passed
-     - [ ] progress updated
+     - [x] targeted validation passed
+     - [x] progress updated
      - [ ] decision log updated if needed
-     - [ ] validation notes updated
-     - [ ] milestone committed
-     - [ ] hand off to code-review for M2
+     - [x] validation notes updated
+     - [x] milestone committed
+     - [x] hand off to code-review for M2
    - Risks:
      - Review skills might over-edit artifacts during isolated reviews.
      - Artifact-specific status mapping may be too vague for plan and code-review cases.
@@ -303,6 +303,8 @@ Likely implementation surfaces:
 - 2026-05-12: test spec updated for the review output recording/status-sync guardrail; next stage is `implement M1`.
 - 2026-05-12: M1 implemented recording-status output guidance in all five formal review skills and added static skill-validator coverage; next stage is `code-review M1`.
 - 2026-05-12: code-review M1 returned clean-with-notes with no material findings; M1 closed and next stage is `implement M2`.
+- 2026-05-12: M2 implemented status-sync output guidance in all five formal review skills, including status-sync vocabulary, blocker semantics, per-review artifact-specific targets, and static skill-validator coverage; next stage is `code-review M2`.
+- 2026-05-12: code-review M2 returned clean-with-notes with no material findings; M2 closed and next stage is `implement M3`.
 
 ## Decision log
 
@@ -311,6 +313,7 @@ Likely implementation surfaces:
 - 2026-05-12: require versioned adapter validation commands with `--version 0.1.1` -> matches repository workflow guidance and the accepted proposal's validation strategy.
 - 2026-05-12: keep first-slice validation structural/static -> approved spec `R23` excludes semantic edit-reference flagging in this slice.
 - 2026-05-12: M1 updated canonical skills only and deferred generated output refresh to M3 -> the active plan separates canonical review-skill changes from generated-output closeout.
+- 2026-05-12: M2 kept status-sync validation static -> approved test spec `T22` covers vocabulary, blockers, no-edit behavior, and artifact-specific targets without adding semantic review-output parsing.
 
 ## Surprises and discoveries
 
@@ -325,6 +328,11 @@ Likely implementation surfaces:
 - 2026-05-12: `git diff --check -- specs/formal-review-recording.test.md docs/plan.md docs/plans/2026-05-12-review-skill-recording-output-guardrail.md docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml` passed after the test spec update.
 - 2026-05-12: `python scripts/test-skill-validator.py` passed after M1 skill and validator updates.
 - 2026-05-12: `python scripts/validate-skills.py` passed after M1 skill updates.
+- 2026-05-12: `python scripts/test-skill-validator.py` passed after M2 status-sync skill and validator updates.
+- 2026-05-12: `python scripts/validate-skills.py` passed after M2 status-sync skill updates.
+- 2026-05-12: `python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-skill-recording-output-guardrail/change.yaml` passed after M2 status-sync updates.
+- 2026-05-12: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-12-review-skill-recording-output-guardrail` passed after M2 status-sync updates.
+- 2026-05-12: `git diff --check -- specs/formal-review-recording.test.md skills/proposal-review/SKILL.md skills/spec-review/SKILL.md skills/architecture-review/SKILL.md skills/plan-review/SKILL.md skills/code-review/SKILL.md scripts/test-skill-validator.py scripts/validate-skills.py docs/changes/2026-05-12-review-skill-recording-output-guardrail docs/plans/2026-05-12-review-skill-recording-output-guardrail.md docs/plan.md` passed after M2 status-sync updates.
 
 ## Outcome and retrospective
 
