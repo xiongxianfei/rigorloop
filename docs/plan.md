@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-11 Expand dynamic token-friendliness benchmarks for core skills](plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md) - active execution plan with M1-M2 closed and M3 ready for code-review rerun after EDTF-CR1 fix.
+- [2026-05-11 Expand dynamic token-friendliness benchmarks for core skills](plans/2026-05-11-expand-dynamic-token-friendliness-benchmarks-for-core-skills.md) - active execution plan with M1-M3 closed and M4 ready for implementation.
 - [2026-05-10 Token cost measurement baseline and proposal scope preservation](plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md) - active execution plan with M1-M5 closed, PR #40 open, and local PR-mode CI selector fix passed; hosted CI rerun is pending.
 
 ## Blocked
