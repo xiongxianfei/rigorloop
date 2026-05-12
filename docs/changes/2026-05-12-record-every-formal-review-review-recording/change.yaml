@@ -18,8 +18,8 @@ tests:
   - Future test-spec coverage for clean receipt roots and review-log indexing.
   - Future validator coverage for clean receipt structure and no empty review-resolution requirement.
 review:
-  status: m2_resolution_needed
-  unresolved_items: 1
+  status: m2_review_requested
+  unresolved_items: 0
   review_log: docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md
   review_resolution: docs/changes/2026-05-12-record-every-formal-review-review-recording/review-resolution.md
 validation:
@@ -117,6 +117,20 @@ validation:
     result: pass_m2_fix
   - command: code-review M2 rerun
     result: changes_requested_cr_m2_002
+  - command: python scripts/test-review-artifact-validator.py
+    result: pass_m2_cr_m2_002_fix_35_tests
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_m2_cr_m2_002_fix_7_tests
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml tests/fixtures/review-artifacts/valid-clean-receipt-root/change.yaml
+    result: pass_m2_cr_m2_002_fix_change_metadata
+  - command: python scripts/validate-review-artifacts.py --mode structure tests/fixtures/review-artifacts/valid-clean-receipt-root
+    result: pass_m2_cr_m2_002_fix_clean_receipt_structure
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-record-every-formal-review-review-recording
+    result: pass_m2_cr_m2_002_fix_closeout_reviews_7_findings_3_log_entries_7_resolution_entries_3
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/formal-review-recording.test.md --path specs/formal-review-recording.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml
+    result: pass_m2_cr_m2_002_fix_state_sync
+  - command: git diff --check --
+    result: pass_m2_cr_m2_002_fix
 changed_files:
   - docs/proposals/2026-05-12-record-every-formal-review.md
   - specs/formal-review-recording.md

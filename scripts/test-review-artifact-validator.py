@@ -456,6 +456,11 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
                 "review.status must identify clean receipt root status",
             ),
             (
+                "  status: clean\n",
+                "  status: approved\n",
+                "review.status must be clean for clean receipt roots",
+            ),
+            (
                 "  unresolved_items: 0\n",
                 "",
                 "review.unresolved_items must be 0 for clean receipt roots",

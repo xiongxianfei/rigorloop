@@ -105,6 +105,11 @@ class ChangeMetadataValidatorFixtureTests(unittest.TestCase):
                 "review.status: missing required field",
             ),
             (
+                "  status: clean\n",
+                "  status: approved\n",
+                "review.status must be clean for clean receipt roots",
+            ),
+            (
                 "  unresolved_items: 0\n",
                 "",
                 "review.unresolved_items: missing required field",

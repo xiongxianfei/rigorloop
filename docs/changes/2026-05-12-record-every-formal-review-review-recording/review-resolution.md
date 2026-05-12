@@ -4,7 +4,7 @@
 
 This record resolves material findings from formal lifecycle reviews for the record-every-formal-review amendment.
 
-Closeout status: open
+Closeout status: closed
 
 ## Resolution Entries
 
@@ -60,13 +60,16 @@ Validation evidence: `python scripts/test-review-artifact-validator.py` passed w
 
 ### code-review-m2-r2
 
+Review closeout: code-review-m2-r2
+
 #### CR-M2-002
 
 Finding ID: CR-M2-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implementer
 Owning stage: implement
 Chosen action: Require `review.status: clean` for strict clean receipt root metadata validation and add invalid-status negative tests for both validators.
 Rationale: Clean receipt roots must be discoverable as clean receipt roots. Accepting another status such as `approved` leaves the root ambiguous while still passing clean-root validation.
 Validation target: `python scripts/test-review-artifact-validator.py`, `python scripts/test-change-metadata-validator.py`, and focused validation proving `review.status: approved` fails for clean receipt roots.
+Validation evidence: `python scripts/test-review-artifact-validator.py` passed with 35 tests; `python scripts/test-change-metadata-validator.py` passed with 7 tests; active change metadata remains compatible while clean-root-shaped metadata with `review.status: approved` fails.
