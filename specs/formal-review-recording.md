@@ -9,6 +9,7 @@
 - [Formal Review Recording](../docs/proposals/2026-05-04-formal-review-recording.md)
 - [Review Skill Material Finding Recording](../docs/proposals/2026-05-07-review-skill-material-finding-recording.md)
 - [Review Recording Guardrail and Downstream Status Settlement](../docs/proposals/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md)
+- [Record Every Formal Review](../docs/proposals/2026-05-12-record-every-formal-review.md)
 
 ## Goal and context
 
@@ -16,25 +17,30 @@ This spec defines when formal lifecycle reviews create durable change-local revi
 
 The repository already has a review artifact model under `docs/changes/<change-id>/reviews/`, `review-log.md`, and `review-resolution.md`. The gap is the trigger policy for stages before `code-review`: `proposal-review`, `spec-review`, `architecture-review`, and `plan-review`.
 
-The goal is stage-neutral recording for material review findings without forcing detailed files for every clean review.
+The goal is stage-neutral recording for every formal lifecycle review while keeping clean no-finding reviews lightweight.
 
 This amendment clarifies that isolated review handoff behavior and material-finding recording are independent. A direct or review-only review remains isolated by default, but every material finding still requires durable change-local review evidence.
 
-This 2026-05-12 draft amendment makes the recording obligation operational in formal review skill output. It requires formal review skills to report whether required review-recording artifacts were created, were not required, or were blocked; it requires complete material-finding shape including `Location`; and it keeps examples under `docs/examples/` instead of active lifecycle directories. It intentionally does not implement downstream upstream-status settlement in this first slice.
+This 2026-05-12 draft amendment makes the recording obligation operational in formal review skill output. It requires formal review skills to report whether required review-recording artifacts were recorded or blocked; it requires complete material-finding shape including `Location`; and it keeps examples under `docs/examples/` instead of active lifecycle directories. It intentionally does not implement downstream upstream-status settlement in this first slice.
+
+This 2026-05-12 record-every-formal-review draft amendment intentionally changes the clean-review settlement model. Clean formal reviews with no material findings no longer rely only on artifact-local settlement. Every supported formal lifecycle review invocation creates a lightweight review receipt or reports blocked recording. Artifact-local lifecycle/status settlement remains required when the reviewed artifact status changes; a receipt proves that the review happened and does not replace artifact status settlement.
 
 ## Glossary
 
 - `formal lifecycle review`: one of `proposal-review`, `spec-review`, `architecture-review`, `plan-review`, or `code-review`.
-- `detailed review file`: a Markdown file under `docs/changes/<change-id>/reviews/` that records one formal lifecycle review event.
+- `formal review invocation`: use of a supported formal lifecycle review skill to produce a lifecycle review result for a tracked artifact.
+- `review file`: a Markdown file under `docs/changes/<change-id>/reviews/` that records one formal lifecycle review event.
+- `clean review receipt`: a lightweight review file for a formal lifecycle review with no material findings and no blocking findings.
+- `detailed review file`: a review file that records material findings, blocking findings, reconstructed evidence, closeout evidence, or another detailed-record trigger.
 - `stage-owned non-approval outcome`: a review outcome in that stage's vocabulary that blocks downstream progress or requires revision.
-- `initial review-record root`: the smallest `docs/changes/<change-id>/` root created before review-driven fixes or downstream routing when a detailed review file is required but no change-local root exists yet.
+- `initial review-record root`: the smallest `docs/changes/<change-id>/` root created before review-driven fixes or downstream routing when a review file is required but no change-local root exists yet.
 - `artifact-local settlement`: final status, decision log, readiness, follow-on, or closeout text in the reviewed proposal, spec, architecture artifact, ADR, or plan.
 - `material finding`: a review finding that changes or blocks tracked work, requires disposition, changes scope or risk, creates follow-up work, exposes process problems, or changes the review outcome.
 - `PR comment promotion`: durable capture of a material maintainer PR comment through a review record so it can receive a stable Finding ID and review-resolution disposition.
 - `isolated review request`: a direct or review-only review invocation that reports a review result without automatically continuing into downstream workflow stages.
 - `tracked artifact`: any version-controlled repository file whose change will be committed or reviewed as part of the work.
 - `shared review-skill recording subsection`: the identical `## Isolation and Recording` guidance copied into all formal review skills from `templates/shared/review-isolation-and-recording.md`.
-- `recording status`: the formal review output field that reports whether required review-recording artifacts were not required, recorded, or blocked.
+- `recording status`: the formal review output field that reports whether required review-recording artifacts were recorded or blocked.
 - `complete material-finding shape`: the minimum fields needed for a future reader to understand a material finding without chat history.
 - `Location`: the material-finding field that identifies the affected file, section, line, artifact, missing artifact, or other specific review surface.
 - `examples surface`: `docs/examples/**`, the non-normative directory for illustrative artifact examples that must not be treated as active lifecycle state.
@@ -47,12 +53,15 @@ Given `spec-review` returns material findings before `docs/changes/<change-id>/`
 When the workflow-managed change will fix those findings
 Then the contributor creates `change.yaml`, `review-log.md`, `review-resolution.md`, and `reviews/spec-review-r1.md` before fixes proceed.
 
-### Example E2: clean required review stays artifact-local
+### Example E2: clean required review creates a receipt
 
 Given `proposal-review` is required
 And it has no material findings
 When the proposal records accepted status and a decision log entry
-Then no empty detailed review file, `review-log.md`, or `review-resolution.md` is required solely for that clean review.
+Then a lightweight `reviews/proposal-review-r1.md` receipt records the clean review.
+And `review-log.md` indexes that receipt.
+And no empty `review-resolution.md` is required solely for that clean review.
+And the receipt does not replace proposal status settlement.
 
 ### Example E3: no-material non-approval review outcome
 
@@ -138,39 +147,59 @@ Then `docs/examples/plans/example-plan.md` is not treated as an active plan.
 
 Given `proposal-review` returns a clean approval
 When the review output is generated
-Then the output may settle the proposal artifact-local status only when no detailed-record trigger applies under the existing clean-review rule
+Then the output records or blocks the required clean review receipt
 And it does not add `Status sync`, `Status artifact`, or `Status sync blocker` fields to the review result.
+
+### Example E16: clean receipt is concise
+
+Given `spec-review` approves a spec with no material findings
+When the review record is created
+Then the receipt includes review metadata, outcome, scope checked, and a no-finding statement.
+And it avoids full detailed checklist prose unless a detailed-record trigger applies.
+
+### Example E17: clean receipt needs status settlement separately
+
+Given `spec-review` approves a draft spec with no material findings
+When the clean receipt is recorded
+Then the receipt proves the review happened.
+And the spec still needs artifact-local status settlement from `draft` to `approved` before downstream reliance.
 
 ## Requirements
 
 R1. Formal review recording MUST be stage-neutral across `proposal-review`, `spec-review`, `architecture-review`, `plan-review`, and `code-review`.
 
-R1a. A detailed review file's `Stage:` value MUST be one of the formal lifecycle review stages unless a later approved spec extends the allowed stage set.
+R1a. A review file's `Stage:` value MUST be one of the formal lifecycle review stages unless a later approved spec extends the allowed stage set.
 
 R1b. A dedicated `pr-review` stage MUST NOT be treated as valid under this spec unless a later approved spec explicitly adds it and updates validation.
 
-R2. A detailed review file MUST be created for a formal lifecycle review when any of the following is true:
+R2. Every supported formal lifecycle review invocation MUST create or update a review file under `docs/changes/<change-id>/reviews/<stage>-r<n>.md` or report blocked recording.
+
+R2a. A detailed review file MUST be created for a formal lifecycle review when any of the following is true:
 - the review produces material findings;
 - the review returns a stage-owned non-approval outcome that blocks downstream progress or requires revision;
 - the review is reconstructed;
 - the review findings will be cited as closeout evidence;
 - a reviewer or maintainer explicitly requests a detailed record.
 
-R2a. Stage-owned non-approval outcomes MUST include `revise`, `changes-requested`, `blocked`, `rethink`, `inconclusive`, and equivalent stage-specific outcomes that prevent downstream progress.
+R2b. Stage-owned non-approval outcomes MUST include `revise`, `changes-requested`, `blocked`, `rethink`, `inconclusive`, and equivalent stage-specific outcomes that prevent downstream progress.
 
-R2b. A clean formal review with no material findings MUST NOT require an empty detailed review file solely because the review was required.
+R2c. A clean formal review with no material findings and no blocking findings MUST create a clean review receipt rather than a detailed review file.
 
-R2c. Material findings MUST always be recorded.
+R2d. A clean review receipt MUST NOT require an empty `review-resolution.md` solely because the clean receipt exists.
 
-R2d. All material findings require change-local review files.
+R2e. Material findings MUST always be recorded in detailed review files.
 
-R3. A required formal review with no material findings MAY be recorded through artifact-local settlement.
+R2f. All material findings require change-local review files.
 
-R3a. Artifact-local settlement MAY use the reviewed artifact's status, decision log, readiness, follow-on artifacts, or closeout section.
+R3. A required formal review with no material findings MUST NOT be recorded only through artifact-local settlement.
 
-R3b. Artifact-local settlement MUST NOT replace detailed review records when any `R2` trigger applies.
+R3a. Artifact-local settlement MAY still use the reviewed artifact's status, decision log, readiness, follow-on artifacts, or closeout section to settle lifecycle state.
 
-R4. When a workflow-managed formal review triggers a detailed review file before a change-local root exists, the change MUST create an initial review-record root before review-driven fixes or downstream routing proceed.
+R3b. Artifact-local settlement MUST NOT replace clean review receipts or detailed review records.
+
+R3c. A clean review receipt MUST NOT by itself settle the reviewed artifact's lifecycle status.
+
+R4. When a workflow-managed formal review triggers a review file before a change-local root exists, the change MUST create an initial review-record root before review-driven fixes or downstream routing proceed.
 
 R4a. The initial review-record root exists to preserve the review event and make it discoverable. It MUST NOT be treated as the final non-trivial change-local pack.
 
@@ -182,7 +211,7 @@ R4b. If material findings exist, the initial review-record root MUST include:
 
 R4c. `review-resolution.md` is required in the initial review-record root when a detailed review file records material findings.
 
-R4d. If `R2` requires a detailed review file for a no-material trigger, the initial review-record root MUST include:
+R4d. If `R2` requires a clean review receipt or detailed review file for a no-material trigger, the initial review-record root MUST include:
 - `docs/changes/<change-id>/change.yaml`;
 - `docs/changes/<change-id>/review-log.md`;
 - `docs/changes/<change-id>/reviews/<stage>-r<n>.md`.
@@ -193,7 +222,20 @@ R4f. The initial review-record root MUST preserve the first-pass review record b
 
 R4g. Final handoff for non-trivial work MUST still satisfy the baseline non-trivial pack, including durable Markdown reasoning such as `docs/changes/<change-id>/explain-change.md` or another approved durable reasoning surface.
 
-R5. If a review is isolated or review-only and has no material findings, a detailed review file MAY be omitted unless another `R2` trigger applies.
+R4h. When a formal lifecycle review requires a clean review receipt and no existing change-local root exists, the review MUST create a minimal clean-receipt root under `docs/changes/<change-id>/`.
+
+R4i. The minimal clean-receipt root MUST include:
+- `docs/changes/<change-id>/change.yaml`;
+- `docs/changes/<change-id>/review-log.md`;
+- `docs/changes/<change-id>/reviews/<stage>-r<n>.md`.
+
+R4j. The minimal clean-receipt root MUST NOT include `review-resolution.md` solely for a clean review with no material findings and no review-resolution trigger.
+
+R4k. `review-resolution.md` is required for a clean-receipt root only when material findings exist, a blocking or revision outcome requires disposition, or another approved review-resolution trigger applies.
+
+R4l. The minimal clean-receipt root's `change.yaml` MUST identify the change ID, reviewed artifact, review-log path, review status, and unresolved item count `0`, using the current repository change metadata schema.
+
+R5. If a review is isolated or review-only and has no material findings, a clean review receipt MUST still be created or the output MUST report blocked recording when the request is a supported formal lifecycle review invocation.
 
 R5a. If an isolated or review-only review has material findings, the isolated final output MUST identify the required change-local review files even though downstream handoff remains stopped.
 
@@ -215,11 +257,17 @@ R7a. Minor copyedits, formatting nits, positive notes, and non-actionable observ
 
 R8. If `docs/changes/<change-id>/reviews/` exists, `docs/changes/<change-id>/review-log.md` MUST exist.
 
-R8a. Every detailed review file under `reviews/` MUST contain exactly one stable `Review ID`.
+R8a. Every review file under `reviews/` MUST contain exactly one stable `Review ID`.
 
-R8b. Every detailed review file's `Review ID` MUST appear exactly once in `review-log.md`.
+R8b. Every review file's `Review ID` MUST appear exactly once in `review-log.md`.
 
-R8c. `review-log.md` MUST NOT contain ledger entries for Review IDs that lack matching detailed review files.
+R8c. `review-log.md` MUST NOT contain ledger entries for Review IDs that lack matching review files.
+
+R8d. Clean review receipts MUST be indexed in `review-log.md`.
+
+R8e. Each clean receipt `review-log.md` entry MUST include review ID, stage, round, reviewed artifact, review record path, review status, material findings count, and recording status.
+
+R8f. Clean receipt log entries MUST use material findings count `0`.
 
 R9. Every material Finding ID dispositioned in `review-resolution.md` MUST originate in a durable review record.
 
@@ -265,11 +313,11 @@ R14d. Plan status MUST remain in the plan body and plan index where applicable.
 
 R14e. Review files MUST preserve review event evidence and finding closeout, not final artifact settlement.
 
-R15. Canonical review-stage skill guidance MUST describe the detailed review record triggers consistently when those skills are updated for this behavior.
+R15. Canonical review-stage skill guidance MUST describe clean receipt and detailed review record triggers consistently when those skills are updated for this behavior.
 
 R15a. If canonical skills shipped through generated adapters change, generated `.codex/skills/` and public adapter output MUST be regenerated and validated through existing repository-owned generation checks.
 
-R16. Structural validation MUST continue to reject malformed detailed review records, missing `review-log.md`, duplicate or dangling Review IDs, material Finding IDs missing from required `review-resolution.md`, and `review-resolution.md` Finding IDs that do not exist in review records.
+R16. Structural validation MUST continue to reject malformed review records, missing `review-log.md`, duplicate or dangling Review IDs, material Finding IDs missing from required `review-resolution.md`, and `review-resolution.md` Finding IDs that do not exist in review records.
 
 R16a. New validation for upstream stages SHOULD reuse the existing review-artifact validator instead of creating a second parser model.
 
@@ -331,17 +379,18 @@ R23. First-slice validation for this clarification MUST remain structural. It MU
 R24. Formal review skill output MUST include a `Recording status` field.
 
 R24a. `Recording status` MUST use exactly one of:
-- `not-required`;
 - `recorded`;
 - `blocked`.
 
-R24b. `not-required` MUST mean no material findings and no detailed-record trigger.
+R24b. `recorded` MUST mean every artifact required by the active recording trigger exists or was updated.
 
-R24c. `recorded` MUST mean every artifact required by the active recording trigger exists or was updated.
+R24c. `blocked` MUST mean required review-recording artifacts could not be created or updated.
 
-R24d. `blocked` MUST mean required review-recording artifacts could not be created or updated.
+R24d. `Recording status` MUST NOT be treated as the review verdict.
 
-R24e. `Recording status` MUST NOT be treated as the review verdict.
+R24e. `not-required` MUST NOT be used for supported formal lifecycle review invocations.
+
+R24f. `not-required` MAY be used only for non-formal review-like requests outside the formal lifecycle review model.
 
 R25. Formal review skill output MUST include review-recording artifact path fields:
 - `Review record`;
@@ -357,11 +406,28 @@ R26. For material findings, `Recording status: recorded` MUST require:
 - `review-log.md`;
 - `review-resolution.md`.
 
-R26a. For no-material detailed-record triggers, `Recording status: recorded` MUST require:
-- a detailed review record;
+R26a. For no-material formal review invocations, `Recording status: recorded` MUST require:
+- a clean review receipt or detailed review file;
 - `review-log.md`.
 
-R26b. A no-material detailed-record trigger MUST NOT require an empty `review-resolution.md` unless another approved review-resolution trigger applies.
+R26b. A no-material formal review invocation MUST NOT require an empty `review-resolution.md` unless another approved review-resolution trigger applies.
+
+R26c. A clean formal review receipt MUST include:
+- review stage;
+- review round;
+- reviewed artifact;
+- review date;
+- reviewer;
+- recording status;
+- review outcome;
+- material findings: none;
+- blocking findings: none;
+- scope checked;
+- no-finding statement.
+
+R26d. A clean receipt SHOULD remain under 300 words unless the reviewer records a reason.
+
+R26e. A clean receipt MUST NOT include full detailed checklist prose unless a detailed-record trigger applies.
 
 R27. Every material finding in formal review output or a durable review record MUST include complete material-finding shape:
 - Finding ID;
@@ -381,11 +447,10 @@ R28a. The review skill MUST create or update the required review-recording artif
 
 R29. Formal review skills MUST include concise recording-status guidance covering:
 - `Recording status`;
-- `not-required`;
 - `recorded`;
 - `blocked`;
 - material-finding artifact requirements;
-- no-material detailed-record artifact requirements;
+- clean review receipt and no-material detailed-record artifact requirements;
 - `Recording blocker`;
 - complete material-finding shape;
 - the rule not to merely tell the user to create review artifacts.
@@ -435,9 +500,13 @@ R31k. When recording is required and the selected change ID is valid, the review
 
 R31l. When recording is required and the change ID cannot be selected, the review skill MUST NOT merely tell the user that records should be created. It MUST report `Recording status: blocked`, material Finding IDs, why the change ID is ambiguous or unavailable, and the smallest action needed to continue.
 
-R31m. Formal review skills MUST NOT duplicate long change-ID algorithms or long `Location` example sets.
+R31m. When a clean receipt root is required, the review MUST use the formal review recording change-ID selection rule from `R31a` through `R31l`.
 
-R31n. Full illustrative examples for change-ID selection and material-finding `Location` SHOULD live under `docs/examples/formal-review-recording/`.
+R31n. If no change ID can be selected safely for a clean receipt root, the review MUST report `Recording status: blocked` and state the smallest action needed to select or create the change root.
+
+R31o. Formal review skills MUST NOT duplicate long change-ID algorithms or long `Location` example sets.
+
+R31p. Full illustrative examples for change-ID selection, clean receipt roots, and material-finding `Location` SHOULD live under `docs/examples/formal-review-recording/`.
 
 R32. `docs/examples/**` MUST be treated as a non-normative examples surface.
 
@@ -476,10 +545,11 @@ Inputs:
 
 Outputs:
 
-- artifact-local settlement for clean required reviews;
+- clean review receipts for clean formal lifecycle reviews;
+- artifact-local settlement for lifecycle/status changes when required;
 - detailed review files for triggered formal lifecycle reviews;
-- initial review-record root when an `R2` trigger requires a detailed review file before a change-local root exists;
-- review-log entries indexing detailed review files;
+- initial review-record root when a formal review requires a review file before a change-local root exists;
+- review-log entries indexing clean receipts and detailed review files;
 - review-resolution entries for material Finding IDs;
 - aggregate `change.yaml.review` status and optional pointers;
 - formal review output that reports `Recording status`, review artifact paths, and blockers when applicable;
@@ -490,17 +560,18 @@ Outputs:
 
 - Formal lifecycle review recording is stage-neutral.
 - Isolation affects downstream handoff only and does not affect material-finding recording obligations.
-- Clean reviews stay lightweight unless a detailed-record trigger applies.
+- Clean reviews use lightweight receipts unless a detailed-record trigger applies.
+- Every supported formal lifecycle review invocation records a review file or reports blocked recording.
 - Material findings are recorded in change-local review files.
 - Material isolated-review findings require change-local review files even when downstream handoff remains stopped.
-- Review-log entries and detailed review files remain in one-to-one Review ID correspondence.
+- Review-log entries and review files remain in one-to-one Review ID correspondence.
 - Material Finding IDs originate in review records before they are dispositioned.
 - `change.yaml.review.status` and `change.yaml.review.unresolved_items` remain present.
 - Final artifact status remains artifact-local.
 - Review files do not become proposal, spec, architecture, ADR, or plan sources of truth.
 - The final non-trivial change-local pack includes durable Markdown reasoning even when an initial review-record root was created earlier.
 - The shared review-skill recording subsection remains byte-identical across formal review skills.
-- `Recording status` reports recording completion only and does not replace the review verdict.
+- `Recording status` reports recording completion only and does not replace the review verdict or artifact lifecycle status.
 - Material findings preserve complete material-finding shape, including `Location`.
 - Normative review-recording rules live in specs or linked references, while examples live in `docs/examples/**`.
 - `docs/examples/**` is never active lifecycle state.
@@ -508,22 +579,28 @@ Outputs:
 
 ## Error and boundary behavior
 
-- If a required detailed review file is missing, review-driven fixes or downstream routing must stop until the review evidence is created or reconstructed.
+- If a required review file is missing, review-driven fixes or downstream routing must stop until the review evidence is created or reconstructed.
 - If material findings are acted on before durable review records exist, the repair path is a reconstructed detailed review record.
 - If an isolated material review finding lacks required change-local review files, review-driven edits and downstream routing must stop until the durable review record exists.
 - If an isolated review output with material findings omits the required review record path, whether the record must be created before fixing or reconstructed, or whether owner decision is needed, the review output is incomplete and must be revised before fixes or downstream routing proceed.
 - If a copied `## Isolation and Recording` skill subsection differs from the canonical template, static validation fails.
 - If stage-specific text appears inside the shared subsection, static validation fails.
 - If `reviews/` exists without `review-log.md`, structural validation fails.
-- If a detailed review file has zero or multiple Review IDs, structural validation fails.
+- If a review file has zero or multiple Review IDs, structural validation fails.
 - If a Review ID is missing from or duplicated in `review-log.md`, structural validation fails.
 - If `review-resolution.md` references a Finding ID absent from review records, structural validation fails.
-- If a clean review is recorded only through artifact-local settlement, no `review-log.md` or `review-resolution.md` is required solely for that review.
+- If a clean formal lifecycle review is recorded only through artifact-local settlement, the recording is incomplete under this amendment.
+- If a clean review receipt exists without a matching `review-log.md` entry, structural validation fails.
+- If a clean review receipt creates an empty `review-resolution.md` solely for that clean review, the artifact set is too heavy and must be corrected.
 - If a PR comment is material but has no durable review record, it cannot be dispositioned in `review-resolution.md`.
 - If a dedicated `pr-review` file appears before the allowed stage set is extended, validation must treat it as unsupported.
-- If a no-material `R2` trigger requires a detailed review file before a change-local root exists, the initial review-record root needs `change.yaml`, `review-log.md`, and the detailed review file, but not an empty `review-resolution.md`.
+- If a no-material `R2` trigger requires a clean receipt or detailed review file before a change-local root exists, the initial review-record root needs `change.yaml`, `review-log.md`, and the review file, but not an empty `review-resolution.md`.
+- If an isolated or review-only clean formal review has no existing change-local root, it creates a minimal clean-receipt root with `change.yaml`, `review-log.md`, and `reviews/<stage>-r<n>.md`, but not `review-resolution.md`.
+- If a clean receipt root's `change.yaml` does not identify the reviewed artifact, review-log path, review status, and zero unresolved items, the root is incomplete.
+- If a clean receipt root cannot safely select a change ID, the review output must report `Recording status: blocked` and name the smallest action needed to select or create the root.
 - If a non-trivial change reaches final handoff without durable Markdown reasoning, final handoff is incomplete even if the initial review-record root exists.
 - If a formal review produces material findings but returns without `Recording status: recorded` or `Recording status: blocked`, the review output is incomplete.
+- If a supported formal lifecycle review returns `Recording status: not-required`, the output is incomplete under this amendment.
 - If a material finding omits `Location`, the finding is incomplete and cannot be treated as durably recorded.
 - If required recording artifacts cannot be created or updated, the review output must use `Recording status: blocked` and name the blocking condition.
 - If a formal review skill adds standardized `Status sync`-style fields in this amendment's first slice, static validation should fail.
@@ -532,7 +609,8 @@ Outputs:
 ## Compatibility and migration
 
 - Existing historical change packs do not require migration unless touched, generated, or relied on as current authoritative guidance.
-- Existing clean review settlements in proposal, spec, architecture, ADR, or plan artifacts remain valid historical evidence when no detailed-record trigger applied.
+- Existing clean review settlements in proposal, spec, architecture, ADR, or plan artifacts remain valid historical evidence when no detailed-record trigger applied under the previous model.
+- The clean receipt rule applies prospectively to formal lifecycle reviews after this amendment is implemented.
 - Existing validator support for `proposal-review`, `spec-review`, `architecture-review`, `plan-review`, and `code-review` remains the target stage set.
 - This spec does not require a `change.yaml` schema change because additional `review` pointer fields are optional under the current permissive object shape.
 - Rollback may remove the new trigger guidance while keeping already-authored upstream review records as valid historical artifacts.
@@ -545,8 +623,9 @@ Outputs:
 - Reviewers can find detailed formal review records through `review-log.md`.
 - Reviewers can tell from `change.yaml.review.unresolved_items`, `review-log.md`, and `review-resolution.md` whether material findings remain open.
 - Reviewers can distinguish artifact-local settlement from detailed review-event evidence.
+- Reviewers can find clean formal review receipts through `review-log.md`.
 - Reviewers can tell from isolated review output whether downstream continuation stopped and what durable recording action is required before fixes.
-- Reviewers can tell from formal review output whether review recording was not required, completed, or blocked.
+- Reviewers can tell from formal review output whether required review recording completed or was blocked.
 - Reviewers can find illustrative examples under `docs/examples/**` without confusing them for current project state.
 - Validation output should identify malformed review artifact paths and relationship failures.
 
@@ -577,8 +656,8 @@ Moving examples to `docs/examples/**` MUST NOT make selector or lifecycle valida
 
 ## Edge cases
 
-1. A clean required `proposal-review` can settle through proposal status and decision log without creating review files.
-2. A clean required `spec-review` can settle through spec readiness when no detailed-record trigger applies.
+1. A clean required `proposal-review` creates a clean receipt, is indexed in `review-log.md`, and still settles proposal status separately.
+2. A clean required `spec-review` creates a clean receipt, is indexed in `review-log.md`, and still settles spec readiness or status separately.
 3. A `plan-review` with `rethink` creates a detailed review file and a no-material initial review-record root because the outcome blocks downstream progress.
 4. A material `architecture-review` finding before any change-local root creates an initial review-record root with `review-resolution.md` before design fixes proceed.
 5. An isolated review-only material finding requires change-local review files even when no tracked change proceeds.
@@ -586,7 +665,7 @@ Moving examples to `docs/examples/**` MUST NOT make selector or lifecycle valida
 7. A material PR comment cannot be added directly to `review-resolution.md`; it needs a durable review record first.
 8. A `pr-review-r1.md` file remains unsupported unless a later spec extends the formal stage set.
 9. `change.yaml.review` may include `review_log` and `review_resolution`, but it still requires `status` and `unresolved_items`.
-10. A detailed review file with no material findings still needs `review-log.md` if it was created because a reviewer explicitly requested it.
+10. A clean receipt or detailed review file with no material findings still needs `review-log.md`.
 11. A detailed review file created only for reconstructed evidence must include reconstructed-record metadata under the review finding resolution contract.
 12. A final PR-ready handoff is incomplete if only the initial review-record root exists and durable Markdown reasoning was never added.
 13. A direct `proposal-review` material finding that will revise a tracked proposal creates durable review evidence before the proposal edit begins.
@@ -598,15 +677,18 @@ Moving examples to `docs/examples/**` MUST NOT make selector or lifecycle valida
 19. A formal review output reports `Recording status: recorded`, but the required review record path does not exist; the output is false and validation or review must block.
 20. A material finding names evidence and required outcome but omits `Location`; the finding is incomplete.
 21. A material finding concerns an absent artifact; `Location` points to the missing expected artifact path or review surface with a not-present rationale.
-22. A no-material detailed-record trigger reports `Review resolution: not-required`.
+22. A no-material formal review reports `Review resolution: not-required`.
 23. A formal review skill contains a standardized `Status sync:` field in the first slice; static validation fails.
 24. A selector lists `docs/examples/plans/example-plan.md` as an active plan; selector behavior is wrong.
 25. `docs/changes/0001-skill-validator/` cannot move in the first slice because a validator fixture path still depends on it; the implementation records explicit rationale and follow-up ownership.
+26. An isolated clean `spec-review` with no existing change root creates `change.yaml`, `review-log.md`, and `reviews/spec-review-r1.md`; `review-resolution.md` is absent.
+27. An isolated clean review with an ambiguous reviewed topic or change ID reports `Recording status: blocked` instead of inventing an unrelated change root.
 
 ## Non-goals
 
 - Creating separate review directories per stage.
 - Requiring detailed review files for every clean review.
+- Requiring empty `review-resolution.md` files for clean reviews.
 - Automatically copying maintainer PR comments into review records.
 - Adding `pr-review` to the supported formal review-stage set in this spec.
 - Replacing artifact-local status for proposals, specs, architecture artifacts, ADRs, or plans.
@@ -623,7 +705,10 @@ Moving examples to `docs/examples/**` MUST NOT make selector or lifecycle valida
 ## Acceptance criteria
 
 - A contributor can tell which formal lifecycle review outcomes require a detailed review file.
-- A contributor can record a clean required review without creating empty review artifacts.
+- A contributor can record a clean required review with a lightweight receipt and `review-log.md` entry without creating empty `review-resolution.md`.
+- A contributor can record an isolated or review-only clean formal review with a minimal clean-receipt root containing `change.yaml`, `review-log.md`, and `reviews/<stage>-r<n>.md`.
+- A contributor can tell that clean receipt roots do not create `review-resolution.md` unless a separate review-resolution trigger applies.
+- A clean receipt root's `change.yaml` identifies the reviewed artifact, review-log path, review status, and zero unresolved items using the current repository metadata schema.
 - A contributor can open an initial review-record root before fixing upstream material findings.
 - A contributor can open an initial review-record root for a no-material non-approval review without creating an empty `review-resolution.md`.
 - A reviewer can trace every material Finding ID from detailed review record to `review-resolution.md`.
@@ -638,11 +723,12 @@ Moving examples to `docs/examples/**` MUST NOT make selector or lifecycle valida
 - Isolated review outputs with material findings expose Finding IDs, required review record path, record-before-fixing or reconstruction status, and owner-decision status.
 - `CONSTITUTION.md`, `AGENTS.md`, and `docs/workflows.md` teach the same rule: every material finding is recorded, all material findings require change-local review files, and isolation stops handoff rather than recording.
 - Formal review skills contain a byte-identical `## Isolation and Recording` block from a canonical template.
-- Formal review skills expose `Recording status` with only `not-required`, `recorded`, and `blocked`.
+- Formal review skills expose `Recording status` with only `recorded` and `blocked` for supported formal lifecycle review invocations.
+- `not-required` is reserved for non-formal review-like requests outside the formal lifecycle review model.
 - Formal review output distinguishes `Recording status` from the review verdict.
 - Material review findings include Finding ID, Severity, Location, Evidence, Required outcome, and Safe resolution path or `needs-decision` rationale.
 - Material findings require review record, `review-log.md`, and `review-resolution.md` paths when recorded.
-- No-material detailed-record triggers report `Review resolution: not-required` instead of creating an empty `review-resolution.md`.
+- No-material formal reviews report `Review resolution: not-required` instead of creating an empty `review-resolution.md`.
 - Formal review skills do not include standardized `Status sync`, `Status artifact`, `Status sync blocker`, or `Status settlement recommendation` fields.
 - Normative change-ID and `Location` rules live in this spec or a linked formal review recording reference.
 - Full illustrative examples live under `docs/examples/**`.
@@ -657,10 +743,12 @@ Moving examples to `docs/examples/**` MUST NOT make selector or lifecycle valida
 - Whether the full change-ID and `Location` rules should stay directly in this spec or move to a small linked formal review recording reference. This does not block spec review because the owning surface requirement is defined.
 - Whether `docs/changes/0001-skill-validator/` can move in the first implementation slice or must be retained temporarily with fixture-coupling rationale. This does not block spec review because both acceptable outcomes are defined.
 - Which downstream status-settlement questions should be answered in a follow-up proposal versus a later implementation plan. This does not block spec review because downstream settlement is excluded from the first implementation slice.
+- Whether clean receipt examples should be validated as fixtures or kept as purely documentation examples. This does not block spec review because the normative receipt contract lives in this spec.
 
 ## Next artifacts
 
 - Implementation plan for review recording output guardrail and examples cleanup.
+- Spec-review for the record-every-formal-review amendment.
 - Review skill and static validator updates.
 - Generated skill and adapter refresh.
 - Optional downstream status-settlement follow-up proposal.
@@ -676,9 +764,11 @@ Moving examples to `docs/examples/**` MUST NOT make selector or lifecycle valida
 - Test spec: [Formal Review Recording test spec](formal-review-recording.test.md) updated for the review skill material-finding recording amendment.
 - Proposal amendment: [Review Recording Guardrail and Downstream Status Settlement](../docs/proposals/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md), accepted.
 - Spec-review: approved on 2026-05-12 after material finding `SR-001` was resolved.
+- Proposal amendment: [Record Every Formal Review](../docs/proposals/2026-05-12-record-every-formal-review.md), accepted.
+- Spec-review: approved on 2026-05-12 after material finding `SR-001` was resolved.
 
 ## Readiness
 
-Approved for implementation planning.
+Approved for architecture review and planning.
 
-This amendment defines the formal review recording output guardrail and examples cleanup contract. Downstream upstream-status settlement remains follow-up scope.
+This amendment defines the record-every-formal-review receipt contract. Downstream upstream-status settlement remains follow-up scope.

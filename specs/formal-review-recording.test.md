@@ -10,21 +10,24 @@
 - Original proposal: [Formal Review Recording](../docs/proposals/2026-05-04-formal-review-recording.md), accepted.
 - Amendment proposal: [Review Skill Material Finding Recording](../docs/proposals/2026-05-07-review-skill-material-finding-recording.md), accepted.
 - Current amendment proposal: [Review Recording Guardrail and Downstream Status Settlement](../docs/proposals/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md), accepted.
+- Record-every-formal-review proposal: [Record Every Formal Review](../docs/proposals/2026-05-12-record-every-formal-review.md), accepted.
 - Historical plan: [Formal Review Recording Implementation Plan](../docs/plans/2026-05-04-formal-review-recording.md), done.
 - Current amendment plan: [Review Recording Guardrail and Examples Cleanup Plan](../docs/plans/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md), active.
-- Architecture: not required. The approved spec and accepted plan reuse the existing `docs/changes/<change-id>/reviews/`, `review-log.md`, `review-resolution.md`, and review-artifact validator model without adding a new storage architecture, parser architecture, persistence layer, deployment path, or integration boundary.
+- Record-every-formal-review plan: [Record every formal review execution plan](../docs/plans/2026-05-12-record-every-formal-review.md), active.
+- Architecture: [System Architecture](../docs/architecture/system/architecture.md), approved. The record-every-formal-review amendment reuses the existing `docs/changes/<change-id>/reviews/`, `review-log.md`, `review-resolution.md`, `change.yaml`, and review-artifact validator model.
 - Spec-review: approved after the initial review-record root was split into material and no-material variants.
 - Spec-review: 2026-05-12 amendment approved after material finding `SR-001` was resolved.
+- Plan-review: approved on 2026-05-12 with no material findings.
 
 ## Testing strategy
 
-- Use unit and integration tests around `scripts/test-review-artifact-validator.py` and `scripts/review_artifact_validation.py` for executable review artifact structure: allowed stages, unsupported `pr-review`, review-log indexing, material Finding ID traceability, and no-material detailed records without `review-resolution.md`.
-- Use existing change metadata validation for `change.yaml.review` aggregate fields when a change-local root is created.
+- Use unit and integration tests around `scripts/test-review-artifact-validator.py` and `scripts/review_artifact_validation.py` for executable review artifact structure: allowed stages, unsupported `pr-review`, review-log indexing, material Finding ID traceability, clean review receipts, and no-material detailed records without `review-resolution.md`.
+- Use existing change metadata validation for `change.yaml.review` aggregate fields when a change-local root or clean-receipt root is created.
 - Use manual contract review for contributor-facing workflow, governance, proposal/spec/plan source-of-truth boundaries, and no-empty-boilerplate rules that are not semantic validator behavior.
 - Use focused skill-validator assertions only for stable contractual review guidance terms when canonical review-stage skills change.
 - Use static assertions for the current amendment: canonical shared block existence, byte-equality across the five formal review skills, placement outside stage-specific guidance, isolated material-review output fields, broad material-finding trigger wording, governance alignment, and the structural-only first-slice boundary.
 - Use generated-output drift checks and adapter validation when canonical `skills/**` changes.
-- Use focused static assertions for the 2026-05-12 recording-status output vocabulary, complete material-finding shape, absence of standardized status-sync fields, and examples-surface handling.
+- Use focused static assertions for the 2026-05-12 recording-status output vocabulary, complete material-finding shape, clean receipt output requirements, absence of standardized status-sync fields, and examples-surface handling.
 - Use explicit-path lifecycle validation and explicit-path CI for top-level lifecycle artifacts, workflow specs, matched test specs, change-local artifacts, validator scripts, skills, and generated output selected by the active plan.
 - Treat broad smoke as unnecessary unless plan-review, test-spec review, code-review, review-resolution, verify, selector mode, release metadata, or a maintainer decision elevates it.
 
@@ -33,13 +36,16 @@
 | Requirement IDs | Covered by | Level | Notes |
 | --- | --- | --- | --- |
 | `R1`-`R1b` | `T1`, `T2`, `T13` | integration, manual | Stage-neutral lifecycle stages and unsupported `pr-review` boundary |
-| `R2`-`R2b` | `T2`, `T3`, `T4`, `T5`, `T6` | integration, manual | Detailed-record triggers and clean-review lightweight behavior |
-| `R3`-`R3b` | `T2`, `T3`, `T4`, `T5`, `T11` | manual, integration | Artifact-local settlement only when no `R2` trigger applies |
+| `R2`-`R2b` | `T2`, `T4`, `T5`, `T6` | integration, manual | Detailed-record triggers and clean-review lightweight behavior |
+| `R2c`-`R2f` | `T3`, `T21`, `T27` | integration, manual | Clean formal reviews create receipts; material findings still create detailed records |
+| `R3`-`R3c` | `T3`, `T11`, `T27` | manual, integration | Artifact-local settlement remains required but cannot replace formal review receipts |
 | `R4`-`R4g` | `T4`, `T5`, `T15` | integration, manual | Material and no-material initial review-record roots plus final non-trivial pack |
-| `R5`-`R5a` | `T3`, `T6` | manual | Isolated review-only omission and later reconstruction before tracked fixes |
+| `R4h`-`R4l` | `T8`, `T27` | integration, manual | Minimal clean-receipt root and clean `change.yaml.review` shape |
+| `R5`-`R5a` | `T3`, `T6`, `T27` | manual, integration | Isolated clean reviews still record receipts; isolated material reviews identify recording files |
 | `R6`-`R6b` | `T4`, `T6`, `T10` | integration, manual | Material findings recorded before fixes, reconstructed repair, and no first-pass rewriting |
 | `R7`-`R7a` | `T7` | manual, integration | Material finding boundary and non-material note behavior |
 | `R8`-`R8c` | `T4`, `T5`, `T13` | integration | `review-log.md`, Review IDs, exact-once indexing, and no dangling ledger entries |
+| `R8d`-`R8f` | `T27` | integration | Clean receipts are indexed with material findings count `0` and recording status |
 | `R9`-`R9b` | `T4`, `T9`, `T13` | integration, manual | Material Finding IDs originate in review records and are dispositioned traceably |
 | `R10`-`R10c` | `T8` | integration, manual | `change.yaml.review` required fields and optional pointer boundaries |
 | `R11`-`R11c` | `T1`, `T9` | manual, integration | PR comment promotion without automatic copying or unsupported `pr-review` stage |
@@ -53,12 +59,13 @@
 | `R21`-`R21d` | `T19` | integration | Shared `## Isolation and Recording` block is canonical, byte-equal, and placement-safe |
 | `R22`-`R22b` | `T18` | manual, integration | `CONSTITUTION.md`, `AGENTS.md`, and `docs/workflows.md` teach the same broad rule |
 | `R23` | `T20` | integration, manual | First-slice validation remains structural/static and does not add semantic edit-reference flagging |
-| `R24`-`R26b` | `T21` | integration, manual | Recording-status vocabulary, artifact paths, blocked status, and no-empty-resolution behavior |
+| `R24`-`R26b` | `T21`, `T27` | integration, manual | Formal recording-status vocabulary, artifact paths, blocked status, clean receipts, and no-empty-resolution behavior |
+| `R26c`-`R26e` | `T27` | integration, manual | Minimal clean receipt fields, concise receipt size, and no detailed checklist prose |
 | `R27`-`R28a` | `T22` | integration, manual | Complete material-finding shape including `Location`, and create-or-block output flow |
 | `R29`-`R30b` | `T23` | integration, manual | Concise review-skill recording-status block, stable static assertions, and no standardized status-sync fields |
 | `R31`-`R31l` | `T26` | integration, manual | Deterministic change-ID selection order, fallback format, collision behavior, and blocked-recording behavior |
-| `R31m`-`R32f` | `T24` | integration, manual | Long examples stay out of skills; examples live under `docs/examples/**` and are not active lifecycle state |
-| `R33`-`R33b` | `T25` | manual | Downstream upstream-status settlement remains follow-up scope for the first slice |
+| `R31m`-`R31p` | `T24`, `T26`, `T27` | integration, manual | Clean receipt roots use the same change-ID rule and examples stay out of skills |
+| `R32`-`R32f` | `T24` | integration, manual | Examples live under `docs/examples/**` and are not active lifecycle state |
 | Security/privacy `MUST`s | `T14` | manual, integration | Review artifacts do not preserve secrets and structural validation requires no network or secrets |
 | Performance `MUST` | `T14` | integration, manual | Upstream review records do not by themselves require broad smoke |
 
@@ -67,7 +74,7 @@
 | Example | Covered by | Notes |
 | --- | --- | --- |
 | `E1` | `T4` | Upstream material `spec-review` findings open a material initial review-record root |
-| `E2` | `T3`, `T11` | Clean `proposal-review` can settle in the reviewed artifact without empty review artifacts |
+| `E2` | `T3`, `T11`, `T27` | Clean `proposal-review` creates a lightweight receipt, indexes it, and does not replace proposal status settlement |
 | `E3` | `T5`, `T10` | No-material `plan-review` `rethink` creates a detailed review file and no empty `review-resolution.md` |
 | `E4` | `T9` | Material PR comment receives a stable Finding ID before review-resolution disposition |
 | `E5` | `T8` | `change.yaml.review` remains aggregate metadata with optional pointers |
@@ -81,11 +88,16 @@
 | `E13` | `T22` | Material findings include flexible but specific `Location` |
 | `E14` | `T24` | Examples under `docs/examples/**` are not active lifecycle state |
 | `E15` | `T23`, `T25` | Review skills do not add standardized status-sync fields |
+| `E16` | `T27` | Clean receipts remain concise and include only required no-finding fields |
+| `E17` | `T3`, `T11`, `T27` | Clean receipts prove review happened but do not settle artifact lifecycle status |
 
 ## Edge case coverage
 
-- Clean required `proposal-review` with artifact-local status and decision log only: `T3`, `T11`
-- Clean required `spec-review` with readiness text and no detailed-record trigger: `T3`, `T11`
+- Clean required `proposal-review` with artifact status and decision log plus a lightweight review receipt: `T3`, `T11`, `T27`
+- Clean required `spec-review` with readiness text plus a lightweight review receipt and no detailed-record trigger: `T3`, `T11`, `T27`
+- Isolated or review-only clean formal review with no existing change root creates `change.yaml`, `review-log.md`, and `reviews/<stage>-r<n>.md`: `T27`
+- Isolated or review-only clean formal review does not create `review-resolution.md` solely for the clean receipt: `T27`
+- Ambiguous clean receipt change ID produces `Recording status: blocked`: `T26`, `T27`
 - `plan-review` with `rethink` and no material findings: `T5`, `T10`
 - Material `architecture-review` before any change-local root exists: `T4`
 - Isolated review-only material finding, even when downstream handoff stops: `T17`
@@ -103,7 +115,7 @@
 - `Recording status: recorded` but required artifact path is missing: `T21`
 - Material finding lacks `Location`: `T22`
 - Material finding concerns a missing expected artifact: `T22`
-- No-material detailed-record trigger needs `Review resolution: not-required`: `T21`
+- No-material formal review output needs `Review resolution: not-required` when no review-resolution trigger applies: `T21`, `T27`
 - Formal review skill contains `- Status sync:` in first-slice output shape: `T23`
 - `docs/examples/plans/example-plan.md` treated as active plan state: `T24`
 - `docs/changes/0001-skill-validator/` retained without fixture-coupling rationale: `T24`
@@ -130,6 +142,11 @@
 | `2026-05-12` Slice 1 examples cleanup | `T24` | Examples move under `docs/examples/**` and selectors/lifecycle validation do not treat them as active lifecycle state |
 | `2026-05-12` follow-up boundary | `T25` | Downstream upstream-status settlement remains outside the first implementation slice |
 | `2026-05-12` change-ID selection | `T26` | Required review recording selects a deterministic change root or blocks |
+| `2026-05-12` Record every formal review M1 | `T3`, `T8`, `T21`, `T24`, `T26`, `T27` | Test spec and fixtures for clean receipt roots, no empty review-resolution, log indexing, metadata, examples, and blocked recording |
+| `2026-05-12` Record every formal review M2 | `T8`, `T13`, `T21`, `T27` | Validator and metadata support for clean receipt roots |
+| `2026-05-12` Record every formal review M3 | `T3`, `T11`, `T19`, `T21`, `T23`, `T26`, `T27` | Formal review skill and governance alignment |
+| `2026-05-12` Record every formal review M4 | `T12`, `T23` | Generated local skills and public adapters refreshed after canonical skill edits |
+| `2026-05-12` Record every formal review M5 | `T10`, `T13`, `T14`, `T15`, `T16` | Lifecycle closeout, explain-change, verify, and PR readiness |
 
 ## Test cases
 
@@ -185,23 +202,24 @@
   - `python scripts/test-skill-validator.py` if stable skill assertions are added.
   - `bash scripts/ci.sh --mode explicit ...` for touched governance and skill paths.
 
-### T3. Clean required reviews stay artifact-local when no detailed-record trigger applies
+### T3. Clean required reviews create receipts without replacing artifact-local status
 
-- Covers: `R2b`, `R3`, `R3a`, `R5`, `R14`, `R14a`, `R14b`, `R14c`, `R14d`
+- Covers: `R2c`, `R2d`, `R3`, `R3a`, `R3b`, `R3c`, `R5`, `R14`, `R14a`, `R14b`, `R14c`, `R14d`
 - Level: integration, manual
 - Fixture/setup:
-  - existing `scripts/test-review-artifact-validator.py` no-review-artifacts coverage
+  - clean receipt fixture from `T27`
   - reviewed proposal, spec, architecture, ADR, or plan examples touched during implementation
   - workflow and review-stage guidance touched during M1 or M3
 - Steps:
-  - Validate that a change root without `reviews/`, `review-log.md`, or `review-resolution.md` still passes review-artifact structure checks.
-  - Confirm guidance allows clean required reviews to settle through reviewed artifact status, decision log, readiness, follow-on artifacts, or closeout text.
-  - Confirm isolated or review-only clean reviews do not require durable detailed files unless explicitly requested.
+  - Validate that a clean formal review with no material findings creates a lightweight review receipt and is indexed in `review-log.md`.
+  - Confirm the clean receipt does not create an empty `review-resolution.md` unless a separate review-resolution trigger applies.
+  - Confirm guidance still requires artifact-local status settlement when the reviewed artifact's lifecycle state changes.
+  - Confirm isolated or review-only clean formal reviews create a clean receipt or report blocked recording.
   - Confirm no touched guidance says proposal/spec/architecture/ADR/plan final status belongs in review files.
 - Expected result:
-  - Clean required reviews remain lightweight and artifact-local unless another detailed-record trigger applies.
+  - Clean required reviews are durable and lightweight: the receipt proves the review happened, while the reviewed artifact remains the lifecycle status source of truth.
 - Failure proves:
-  - The change adds empty boilerplate or makes review files a replacement source of truth for reviewed artifacts.
+  - The implementation regresses to chat/artifact-local-only review evidence, creates empty resolution boilerplate, or makes review files a replacement source of truth for reviewed artifacts.
 - Automation location:
   - `python scripts/test-review-artifact-validator.py`
   - Manual review during M1 and M3.
@@ -623,12 +641,13 @@
   - review-artifact validator fixtures for material and no-material detailed records
 - Steps:
   - Assert each formal review skill describes `Recording status`.
-  - Assert the allowed values are exactly `not-required`, `recorded`, and `blocked`.
+  - Assert supported formal lifecycle review invocations use only `recorded` and `blocked`.
+  - Assert `not-required` is reserved only for non-formal review-like requests outside the formal lifecycle review model.
   - Assert the guidance distinguishes `Recording status` from the review verdict.
   - Assert the expected review output includes `Review record`, `Review log`, and `Review resolution`.
   - Assert `Review resolution` can be reported as a path, `not-required`, or `blocked`.
   - Assert material findings require a detailed review record, `review-log.md`, and `review-resolution.md` for `Recording status: recorded`.
-  - Assert no-material detailed-record triggers require a detailed review record and `review-log.md` but not an empty `review-resolution.md`.
+  - Assert no-material formal review invocations require a clean receipt or detailed review file and `review-log.md` but not an empty `review-resolution.md`.
   - Assert blocked recording guidance requires `Recording blocker` and the smallest action needed.
 - Expected result:
   - Formal review outputs make recording completion observable without confusing it with the review verdict.
@@ -672,6 +691,7 @@
   - generated skill mirrors and adapters when canonical skills change
 - Steps:
   - Assert every formal review skill contains the stable recording-status terms required by `R29`.
+  - Assert formal review skills keep the rule operational and do not duplicate schema-level details such as clean receipt root metadata, change-ID selection examples, review-log table shape, or validator semantics.
   - Assert formal review skills do not contain exact standardized fields:
     - `- Status settlement recommendation:`
     - `- Status sync:`
@@ -720,26 +740,27 @@
 
 ### T25. Downstream upstream-status settlement remains follow-up scope
 
-- Covers: `R33`-`R33b`, `E15`
+- Covers: proposal non-goal, `R14`-`R14e`, `R30`-`R30b`, `E15`
 - Level: manual
 - Fixture/setup:
   - changed review skills
   - downstream skills if touched
   - implementation plan
 - Steps:
-  - Confirm the first implementation slice does not update downstream authoring or execution skills for upstream status settlement.
-  - Confirm any downstream settlement wording remains follow-up direction and does not create first-slice acceptance criteria for `spec`, `architecture`, `plan`, `test-spec`, `implement`, `explain-change`, `verify`, or `pr`.
-  - Confirm a later follow-up may define the simpler model where downstream skill execution implies permission for minimal lifecycle/status settlement before reliance.
+  - Confirm review skills record review evidence and do not own downstream artifact lifecycle/status settlement.
+  - Confirm any downstream settlement wording remains outside review-skill output shape and does not create acceptance criteria for review receipts.
+  - Confirm formal review skills do not add standardized review-side artifact-status sync fields.
 - Expected result:
-  - The urgent recording-output fix remains separate from downstream settlement behavior.
+  - Review receipts prove review events, while artifact lifecycle/status settlement remains owned by artifact-local or downstream settlement surfaces.
 - Failure proves:
-  - The implementation has again bundled two distinct behavior changes into one hard-to-review slice.
+  - The implementation bundles receipt recording with artifact status authority or reintroduces review-side status-sync fields.
 - Automation location:
-  - Manual review during spec-review, plan-review, and implementation closeout.
+  - Manual review during implementation closeout.
+  - `python scripts/test-skill-validator.py` for status-sync negative field checks.
 
 ### T26. Change ID selection is deterministic or blocked
 
-- Covers: `R31`-`R31l`, `E12`
+- Covers: `R31`-`R31n`, `E12`
 - Level: integration, manual
 - Fixture/setup:
   - formal review skills
@@ -756,6 +777,7 @@
   - Assert an existing generated fallback ID that appears to belong to a different review subject produces `Recording status: blocked`.
   - Assert multiple ambiguous candidate change IDs produce `Recording status: blocked`.
   - Assert blocked change-ID selection reports material Finding IDs, why selection is ambiguous or unavailable, and the smallest action needed to continue.
+  - Assert clean receipt roots use the same change-ID selection order and block when the clean review root cannot be selected safely.
 - Expected result:
   - Required review recording has one deterministic change-root selection contract, and ambiguous cases block instead of inventing or merging unrelated paths.
 - Failure proves:
@@ -765,11 +787,45 @@
   - review-artifact or selector tests if implementation adds helper logic
   - Manual review of formal review skill wording and change-ID examples.
 
+### T27. Clean formal review receipts create minimal roots and log entries
+
+- Covers: `R2c`-`R2f`, `R3`-`R3c`, `R4h`-`R4l`, `R5`, `R8d`-`R8f`, `R24`-`R26e`, `R31m`-`R31p`, `E2`, `E16`, `E17`
+- Level: integration, manual
+- Fixture/setup:
+  - `scripts/test-review-artifact-validator.py`
+  - `scripts/test-change-metadata-validator.py`
+  - temporary or committed clean receipt root containing:
+    - `change.yaml`
+    - `review-log.md`
+    - `reviews/spec-review-r1.md` or another supported formal review stage
+  - no `review-resolution.md` file unless a separate trigger is intentionally added
+  - optional filled example under `docs/examples/formal-review-recording/`
+- Steps:
+  - Assert an isolated or review-only clean formal review with no existing change root creates the minimal clean-receipt root: `change.yaml`, `review-log.md`, and `reviews/<stage>-r<n>.md`.
+  - Assert the clean receipt includes review stage, review round, reviewed artifact, review date, reviewer, recording status, review outcome, material findings none, blocking findings none, scope checked, and a no-finding statement.
+  - Assert the clean receipt is indexed in `review-log.md` with review ID, stage, round, reviewed artifact, record path, review status, material findings count, and recording status.
+  - Assert clean receipt log entries use material findings count `0`.
+  - Assert the minimal clean-receipt root's `change.yaml.review` identifies review status, unresolved item count `0`, reviewed artifact, and review-log path using the current metadata schema.
+  - Assert the clean receipt root validates without `review-resolution.md`.
+  - Assert an otherwise clean receipt root that creates an empty `review-resolution.md` solely for the clean review fails or is flagged by the selected structural/manual proof.
+  - Assert clean receipts stay concise and do not include full detailed checklist prose unless a detailed-record trigger applies.
+  - Assert a clean receipt does not settle the reviewed artifact's lifecycle status; artifact-local status settlement remains a separate proof surface.
+- Expected result:
+  - Clean formal reviews are reconstructable from tracked artifacts without adding material-finding resolution boilerplate or moving artifact status authority into review files.
+- Failure proves:
+  - Clean formal reviews can still disappear into chat, create noisy empty resolution artifacts, or blur review evidence with artifact lifecycle settlement.
+- Automation location:
+  - `python scripts/test-review-artifact-validator.py`
+  - `python scripts/test-change-metadata-validator.py`
+  - `python scripts/validate-review-artifacts.py --mode structure <clean-receipt-root>`
+  - `python scripts/validate-change-metadata.py <clean-receipt-root>/change.yaml`
+
 ## Fixtures and data
 
 - Prefer temporary change roots in `scripts/test-review-artifact-validator.py` for focused validator scenarios.
 - Add committed fixtures under `tests/fixtures/review-artifacts/**` only when reuse is clearer than inline temporary setup.
 - Reuse existing review-artifact fixture conventions for `Review ID`, `Stage`, `Status`, `Finding ID`, `review-log.md`, and `review-resolution.md` syntax.
+- Add a clean receipt root fixture or temporary root for `T27` with `change.yaml`, `review-log.md`, and `reviews/<stage>-r<n>.md`, and intentionally no `review-resolution.md`.
 - Reuse existing change metadata fixtures under `tests/fixtures/change-metadata/**` for schema and `change.yaml` behavior.
 - Use `docs/changes/2026-05-04-formal-review-recording/change.yaml` and `docs/changes/2026-05-04-formal-review-recording/explain-change.md` as durable traceability fixtures once M1 creates the change-local pack.
 - Use `templates/shared/review-isolation-and-recording.md` as the canonical shared-block source for the 2026-05-07 amendment.
@@ -787,7 +843,8 @@
 ## Migration or compatibility tests
 
 - No historical change pack migration is required unless a historical artifact is touched, generated, or relied on as current authoritative guidance.
-- Existing clean artifact-local review settlements remain compatible when no detailed-record trigger applied.
+- Existing clean artifact-local status settlements remain compatible only as lifecycle/status evidence; new formal review invocations still need clean receipts or blocked recording.
+- No broad backfill is required for old clean reviews unless an active change touches or relies on them as current formal review evidence.
 - Existing review-artifact validation for `proposal-review`, `spec-review`, `architecture-review`, `plan-review`, and `code-review` remains the target stage set.
 - Rollback compatibility is covered by keeping the new behavior on existing review artifact paths and validator code paths rather than adding a second path taxonomy.
 - Moving examples from active lifecycle directories to `docs/examples/**` requires updating all tests, selectors, validators, and guidance that rely on the old paths in the same slice.
@@ -798,7 +855,8 @@
 - `T4`, `T5`, and `T13` verify that detailed review files can be found through `review-log.md`.
 - `T10` verifies that open material findings and open review-resolution closeout block downstream handoff.
 - `T13` verifies failure output remains actionable by naming path, Review ID or Finding ID when available, validation mode, and short reason.
-- `T21` verifies review output reports whether recording was not required, recorded, or blocked.
+- `T21` verifies formal review output reports whether recording was recorded or blocked, and reserves `not-required` for non-formal review-like requests.
+- `T27` verifies clean formal review receipts are discoverable through `review-log.md` and retain material findings count `0`.
 - `T24` verifies examples can be located under `docs/examples/**` without becoming active lifecycle state.
 - Successful validation may report counts for detailed reviews, findings, log entries, and closeout state, but exact counts are not required unless implemented as stable validator output.
 
@@ -819,7 +877,7 @@
 ## Manual QA checklist
 
 - [ ] Review governing contract wording for stage-neutral detailed-record triggers.
-- [ ] Review clean review wording for no empty detailed files, no empty `review-log.md`, and no empty `review-resolution.md` solely because a review was required.
+- [ ] Review clean review wording for required lightweight receipts, required `review-log.md` indexing, and no empty `review-resolution.md` solely because a clean review was required.
 - [ ] Review no-material non-approval wording for `review-log.md` without mandatory empty `review-resolution.md`.
 - [ ] Review artifact-local status authority for proposals, specs, architecture artifacts, ADRs, and plans.
 - [ ] Review PR comment promotion wording for stable Finding IDs and unsupported `pr-review`.
@@ -840,18 +898,19 @@
 
 - Do not test semantic correctness or quality of review findings; structural validation only verifies paths, required fields, IDs, logs, and closeout relationships.
 - Do not test a new `pr-review` stage as valid behavior; it is explicitly unsupported until a later approved spec extends the stage set.
-- Do not require detailed review files for every clean review.
+- Do not require detailed review files for every clean review; clean formal reviews use lightweight receipts unless a detailed-record trigger applies.
 - Do not add a separate directory taxonomy per review stage.
 - Do not migrate historical change packs that are not touched, generated, or relied on as current authoritative guidance.
 - Do not test hosted CI status unless a hosted run is actually observed.
 
 ## Uncovered gaps
 
-- Downstream upstream-status settlement proof is intentionally not covered by this draft amendment's first slice.
+- No uncovered gaps remain for the approved record-every-formal-review implementation slice. Downstream artifact lifecycle/status settlement behavior remains separate from review receipt recording and is covered only at the boundary where receipts must not replace artifact-local status.
 
 ## Next artifacts
 
-- Implementation and code-review.
+- Implement M1 from [Record every formal review execution plan](../docs/plans/2026-05-12-record-every-formal-review.md).
+- Code-review after each implementation milestone.
 - Review-resolution if material findings are produced.
 - Explain-change, verify, and PR.
 
@@ -860,9 +919,10 @@
 - Spec-review: approved on 2026-05-12 after material finding `SR-001` was resolved.
 - Implementation plan: active.
 - Plan-review: approved on 2026-05-12 with no material findings.
+- Test spec updated for the record-every-formal-review implementation slice on 2026-05-12.
 
 ## Readiness
 
-Active proof-planning surface for implementation.
+Active proof-planning surface for implementation M1.
 
-This test spec maps the 2026-05-12 formal review recording output guardrail and examples cleanup amendment to static, structural, generated-output, selector, lifecycle, and manual proof paths. Downstream upstream-status settlement remains follow-up scope.
+This test spec maps the formal review recording amendments, including the 2026-05-12 record-every-formal-review clean receipt contract, to static, structural, generated-output, selector, lifecycle, and manual proof paths. Immediate next stage: `implement M1`.

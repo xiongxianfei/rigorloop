@@ -28,6 +28,9 @@
 - Single Authored Skill Source proposal: `docs/proposals/2026-05-12-single-authored-skill-source-and-generated-adapter-output-cleanup.md`
 - Single Authored Skill Source spec: `specs/single-authored-skill-source-generated-output.md`
 - Generated output migration ADR: `docs/adr/ADR-20260512-generated-skill-output-release-artifacts.md`
+- Record Every Formal Review proposal: `docs/proposals/2026-05-12-record-every-formal-review.md`
+- Formal Review Recording spec: `specs/formal-review-recording.md`
+- Record Every Formal Review change metadata: `docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml`
 - C4 system context diagram: `diagrams/context.mmd`
 - C4 container diagram: `diagrams/container.mmd`
 
@@ -151,10 +154,11 @@ This decomposition is prose-only for now. A component diagram should be added wh
 1. Non-trivial work records `change.yaml` plus durable Markdown reasoning under `docs/changes/<change-id>/`.
 2. Workflow-managed delivery follows one recommended standard workflow, stage triggers, completed stage outcomes, and stop conditions.
 3. Direct manual skill requests remain isolated unless the user explicitly asks to continue through the standard workflow.
-4. Material review findings are recorded in detailed review records and summarized in `review-log.md`.
-5. `review-resolution.md` closes material findings only after final dispositions, actions, rationale, and validation evidence are recorded.
-6. Final closeout runs `ci-maintenance` when triggered, then `explain-change`, `verify`, and `pr`.
-7. `explain-change`, `verify`, and `pr` use the change-local evidence pack, plan state, validation output, and review closeout state before claiming readiness.
+4. Every supported formal lifecycle review records change-local review evidence or reports blocked recording. Clean no-finding reviews use lightweight receipts; material findings use detailed review records.
+5. `review-log.md` indexes clean receipts and detailed review records so review events are discoverable without chat history.
+6. `review-resolution.md` closes material findings only after final dispositions, actions, rationale, and validation evidence are recorded. Clean no-finding reviews do not create empty `review-resolution.md` solely because a receipt exists.
+7. Final closeout runs `ci-maintenance` when triggered, then `explain-change`, `verify`, and `pr`.
+8. `explain-change`, `verify`, and `pr` use the change-local evidence pack, plan state, validation output, and review closeout state before claiming readiness.
 
 ### Validation flow
 
@@ -284,6 +288,8 @@ Reports under `docs/reports/` are durable authored evidence for longitudinal com
 
 Review records are authored change-local evidence. The review artifact validator checks structure, references, allowed dispositions, and closeout completeness; it does not decide whether a finding is substantively correct.
 
+Clean formal review receipts are also authored change-local evidence. When no existing change root exists, an isolated or review-only clean formal review uses a minimal clean-receipt root containing `change.yaml`, `review-log.md`, and `reviews/<stage>-r<n>.md`. That root omits `review-resolution.md` unless material findings, a blocking or revision outcome, or another approved review-resolution trigger requires it.
+
 ### Security and privacy
 
 Architecture artifacts and diagrams must not include secrets, credentials, private keys, or machine-local debug-only data. When a change affects trust boundaries, permissions, data exposure, or secret handling, the relevant architecture section and diagrams should state that explicitly.
@@ -301,6 +307,8 @@ The legacy normalization follow-on inventoried every current `docs/architecture/
 - `docs/adr/ADR-20260512-generated-skill-output-release-artifacts.md`: staged migration from tracked generated skill mirrors to untracked local mirrors and generated release artifacts.
 
 No additional ADR is required for the 2026-04-29 package-quality refinement because it sharpens the accepted method without changing the durable architecture decision.
+
+No additional ADR is required for the 2026-05-12 record-every-formal-review amendment because it refines the existing review artifact and workflow evidence architecture under the approved formal review recording spec. The durable rule is carried by `specs/formal-review-recording.md`, and this canonical package records the affected runtime and crosscutting architecture.
 
 ## Quality Requirements
 

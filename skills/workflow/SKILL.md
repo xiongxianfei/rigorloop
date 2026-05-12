@@ -169,6 +169,7 @@ For standard workflow completion on non-trivial work, carry the required change-
 - `needs-decision` is not final and blocks downstream closeout until resolved or explicitly deferred by an authorized owner.
 - `Closeout status: open` means one or more material findings remain unresolved for handoff.
 - `Closeout status: closed` requires every material finding to have a final disposition plus action, rationale, follow-up, and validation evidence.
+- Final material-finding dispositions include `accepted`, `rejected`, `deferred`, and `partially-accepted`.
 - `review-log.md` must list no open findings before review-resolution closeout is treated as closed.
 - A stage-owned non-approval outcome that requires revision needs a same-stage later review round or explicit reviewer or owner closeout evidence.
 - `review-resolution.md` alone is not a silent substitute for required re-review.
