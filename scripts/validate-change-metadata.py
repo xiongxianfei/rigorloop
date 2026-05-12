@@ -311,12 +311,21 @@ def validate_metadata_semantics(data: Any) -> list[str]:
     if not isinstance(data, dict):
         return []
 
+    errors: list[str] = []
+    review = data.get("review")
+    if isinstance(review, dict):
+        reviewed_artifact = review.get("reviewed_artifact")
+        if reviewed_artifact is not None and not isinstance(reviewed_artifact, str):
+            errors.append("review.reviewed_artifact: expected string")
+        review_log = review.get("review_log")
+        if review_log is not None and not isinstance(review_log, str):
+            errors.append("review.review_log: expected string")
+
     artifacts = data.get("artifacts")
     if not isinstance(artifacts, dict):
-        return []
+        return errors
 
     allowed_keys = ", ".join(sorted(CANONICAL_ARTIFACT_KEYS))
-    errors: list[str] = []
     for key in artifacts:
         if key not in CANONICAL_ARTIFACT_KEYS:
             errors.append(

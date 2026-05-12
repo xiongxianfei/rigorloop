@@ -11,6 +11,7 @@ tests:
 review:
   status: approved
   unresolved_items: 0
+  reviewed_artifact: specs/example.md
   review_log: tests/fixtures/review-artifacts/valid-clean-receipt-root/review-log.md
 validation:
   - command: python scripts/validate-review-artifacts.py --mode structure tests/fixtures/review-artifacts/valid-clean-receipt-root
