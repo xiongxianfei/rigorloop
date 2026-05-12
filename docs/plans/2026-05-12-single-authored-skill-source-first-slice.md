@@ -56,13 +56,13 @@ Likely implementation surfaces:
 ## Current Handoff Summary
 
 - Current milestone: M3. Public Adapter Preservation And Benchmark Source Guardrails
-- Current milestone state: implemented; code-review requested
-- Last reviewed milestone: M2. Untrack Local Codex Mirror And Update Contributor Guidance
-- Review status: M3 code-review requested; M2 code-review was clean-with-notes with no material findings
+- Current milestone state: closed
+- Last reviewed milestone: M3. Public Adapter Preservation And Benchmark Source Guardrails
+- Review status: M3 code-review clean-with-notes; no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: code-review M3
+- Next stage: explain-change
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 code-review, final explain-change, verify, and PR handoff have not happened.
+- Reason final closeout is or is not ready: final explain-change, verify, and PR handoff have not happened.
 
 ## Non-goals
 
@@ -295,7 +295,7 @@ If `scripts/test-build-skills.py` is not added because coverage lands in an exis
 - [x] 2026-05-12: test spec created and activated.
 - [x] M1. Local Mirror Temp-Output Generation - closed after clean code-review
 - [x] M2. Untrack Local Codex Mirror And Update Contributor Guidance - closed after clean code-review
-- [x] M3. Public Adapter Preservation And Benchmark Source Guardrails - implemented; code-review requested
+- [x] M3. Public Adapter Preservation And Benchmark Source Guardrails - closed after clean code-review
 
 ## Decision log
 
@@ -359,6 +359,7 @@ If `scripts/test-build-skills.py` is not added because coverage lands in an exis
 - 2026-05-12 M3: `python scripts/validate-token-cost-report.py tests/fixtures/token-cost/reports/valid-final-pass/v0.1.1.yaml` passed.
 - 2026-05-12 M3: `test -n "$(git ls-files 'dist/adapters/*/*/skills/*/SKILL.md' 'dist/adapters/*/.*/skills/*/SKILL.md')"` passed.
 - 2026-05-12 M3: `! git ls-files | rg '(^|/)rigorloop-adapter-.*\.(zip|tar\.gz)$'` passed.
+- 2026-05-12 M3 code-review: clean-with-notes; no material findings; detailed review record not required.
 
 ## Outcome and retrospective
 
@@ -367,4 +368,4 @@ If `scripts/test-build-skills.py` is not added because coverage lands in an exis
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for `code-review M3`; it is not ready for final verification or PR handoff until M3 review and the required downstream gates complete.
+- This plan is ready for `explain-change`; it is not ready for final verification or PR handoff until explain-change and the required downstream gates complete.
