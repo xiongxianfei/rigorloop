@@ -3,6 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
+- [2026-05-12 Review recording guardrail and examples cleanup](plans/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md) - active execution plan for implementing formal review recording-status output, complete material-finding shape, deterministic review-recording change-ID selection, non-normative `docs/examples/**` migration, static validator coverage, canonical formal review skill updates, and generated public skill refresh. Current next stage: plan-review.
 - [2026-05-10 Token cost measurement baseline and proposal scope preservation](plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md) - active execution plan with M1-M5 closed, PR #40 open, and local PR-mode CI selector fix passed; hosted CI rerun is pending.
 
 ## Blocked

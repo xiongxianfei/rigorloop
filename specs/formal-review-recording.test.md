@@ -2,7 +2,7 @@
 
 ## Status
 
-- draft
+- active
 
 ## Related spec and plan
 
@@ -14,7 +14,7 @@
 - Current amendment plan: [Review Skill Material Finding Recording Execution Plan](../docs/plans/2026-05-07-review-skill-material-finding-recording.md), active.
 - Architecture: not required. The approved spec and accepted plan reuse the existing `docs/changes/<change-id>/reviews/`, `review-log.md`, `review-resolution.md`, and review-artifact validator model without adding a new storage architecture, parser architecture, persistence layer, deployment path, or integration boundary.
 - Spec-review: approved after the initial review-record root was split into material and no-material variants.
-- Plan-review: 2026-05-07 amendment plan approved with no material findings. This 2026-05-12 draft amendment requires spec-review before implementation planning.
+- Spec-review: 2026-05-12 amendment approved after material finding `SR-001` was resolved.
 
 ## Testing strategy
 
@@ -851,7 +851,6 @@
 
 ## Next artifacts
 
-- Spec-review for the 2026-05-12 draft amendment.
 - Implementation plan for review recording output guardrail and examples cleanup.
 - Plan-review.
 - Implementation and code-review.
@@ -860,10 +859,10 @@
 
 ## Follow-on artifacts
 
-- None yet.
+- Spec-review: approved on 2026-05-12 after material finding `SR-001` was resolved.
 
 ## Readiness
 
-Ready for `spec-review`.
+Active proof-planning surface for implementation.
 
-This draft test spec maps the 2026-05-12 formal review recording output guardrail and examples cleanup amendment to static, structural, generated-output, selector, lifecycle, and manual proof paths. Downstream upstream-status settlement remains follow-up scope.
+This test spec maps the 2026-05-12 formal review recording output guardrail and examples cleanup amendment to static, structural, generated-output, selector, lifecycle, and manual proof paths. Downstream upstream-status settlement remains follow-up scope.
