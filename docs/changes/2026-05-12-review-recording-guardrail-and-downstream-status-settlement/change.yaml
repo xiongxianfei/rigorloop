@@ -1,0 +1,42 @@
+change_id: 2026-05-12-review-recording-guardrail-and-downstream-status-settlement
+title: Review recording guardrail and downstream status settlement
+classification: workflow-governance-spec-amendment
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md
+  spec: specs/formal-review-recording.md
+  test_spec: specs/formal-review-recording.test.md
+  review_resolution: docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/review-resolution.md
+requirements:
+  - Accept the review recording guardrail proposal before specification.
+  - Define the formal review recording output guardrail in the governing spec.
+  - Preserve complete material-finding shape including Location.
+  - Keep review skills concise and free of standardized review-side status-sync fields.
+  - Move illustrative examples under docs/examples without treating them as active lifecycle state.
+  - Keep downstream upstream-status settlement out of the first implementation slice.
+tests:
+  - Spec-review approval or recorded material finding resolution.
+  - Formal review recording test-spec coverage for recording status output.
+  - Static skill-validator coverage for formal review skills.
+  - Selector and lifecycle validation coverage for docs/examples handling.
+  - Generated skill and adapter validation after canonical skill updates.
+validation:
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md
+    result: pass_before_spec_review_r1
+  - command: git diff --check -- docs/proposals/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md specs/formal-review-recording.md specs/formal-review-recording.test.md
+    result: pass_before_spec_review_r1
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_48_tests_before_spec_review_r1
+changed_files:
+  - docs/proposals/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md
+  - specs/formal-review-recording.md
+  - specs/formal-review-recording.test.md
+  - docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/change.yaml
+  - docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/review-log.md
+  - docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/review-resolution.md
+  - docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/reviews/spec-review-r1.md
+review:
+  status: changes_requested
+  unresolved_items: 1
+  review_log: docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/review-log.md
+  review_resolution: docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/review-resolution.md
