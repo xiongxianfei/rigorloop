@@ -160,7 +160,7 @@
 - Level: manual
 - Fixture/setup:
   - `specs/rigorloop-workflow.md`
-  - `docs/plans/0000-00-00-example-plan.md`
+  - `docs/examples/plans/example-plan.md`
   - `docs/plan.md`
   - `docs/plans/2026-05-03-workflow-refactor.md`
   - `skills/plan/SKILL.md`
@@ -727,7 +727,7 @@
   - `docs/workflows.md`
   - `AGENTS.md`
   - `docs/learn/topics/plan-lifecycle-closeout.md`
-  - `docs/plans/0000-00-00-example-plan.md`
+  - `docs/examples/plans/example-plan.md`
   - `docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md`
 - Steps:
   - Confirm `CONSTITUTION.md` states that lifecycle synchronization happens in the PR performing the transition before review opens, and that merge is a fast-forward of pre-validated state rather than a trigger for further lifecycle changes.

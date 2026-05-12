@@ -1447,7 +1447,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         workflows = (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8")
         agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
         constitution = (ROOT / "CONSTITUTION.md").read_text(encoding="utf-8")
-        example_plan = (ROOT / "docs" / "plans" / "0000-00-00-example-plan.md").read_text(
+        example_plan = (ROOT / "docs" / "examples" / "plans" / "example-plan.md").read_text(
             encoding="utf-8"
         )
 

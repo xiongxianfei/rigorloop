@@ -134,7 +134,7 @@ Workflow safety topics MUST NOT be removed when public skill text is compressed.
 - `Closeout status: closed` means every material finding has a final disposition, `review-log.md` lists no open findings, and the required action, rationale, follow-up, and validation evidence records for that disposition exist.
 - Keep PR and explain-change review summaries concise: summarize counts by disposition and link `review-resolution.md` instead of duplicating detailed review records.
 - Approved legacy top-level artifacts under `docs/explain/` remain valid durable reasoning surfaces until they are migrated or retired.
-- `docs/changes/0001-skill-validator/` is a rich example of a fully formed pack, not the universal minimum for every non-trivial change.
+- `docs/changes/0001-skill-validator/` is retained as a rich validator fixture and historical proof pack, not the universal minimum for every non-trivial change.
 
 ## Autoprogression
 
@@ -179,7 +179,7 @@ Workflow safety topics MUST NOT be removed when public skill text is compressed.
 - If completion depends on a true downstream event such as release, deploy, package publication, external migration, or an observed hosted result, keep the plan `Active` and name the downstream event or follow-up condition.
 - Do not use merge itself as a routine downstream completion event.
 - `verify` blocks PR readiness when stale lifecycle state remains between the plan index and the plan body.
-- Execution plans follow `docs/plans/0000-00-00-example-plan.md`.
+- Execution plans follow the illustrative structure in `docs/examples/plans/example-plan.md`; examples under `docs/examples/` are not active lifecycle state.
 - Each completed planned milestone ends with a coherent commit using:
   - `M<n>: <completed milestone outcome>`
 - A pull request may contain one or more completed milestone commits when that is the clearest review boundary.
@@ -222,7 +222,7 @@ Notes:
 - Do not hand-edit generated public adapter packages in:
   - `dist/adapters/`
 - For public adapter packages, `skills/` is the canonical authored skill source, `dist/adapters/` is generated installable output for Codex, Claude Code, and opencode, and `.codex/skills/` is a separate generated local Codex mirror.
-- Use `docs/plans/0000-00-00-example-plan.md` for plan structure. Do not reintroduce a second plan-template path.
+- Use `docs/examples/plans/example-plan.md` for illustrative plan structure. Do not treat `docs/examples/**` as active lifecycle state or reintroduce a second plan-template path.
 
 ## Validation
 

@@ -11,7 +11,7 @@
 - Amendment proposal: [Review Skill Material Finding Recording](../docs/proposals/2026-05-07-review-skill-material-finding-recording.md), accepted.
 - Current amendment proposal: [Review Recording Guardrail and Downstream Status Settlement](../docs/proposals/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md), accepted.
 - Historical plan: [Formal Review Recording Implementation Plan](../docs/plans/2026-05-04-formal-review-recording.md), done.
-- Current amendment plan: [Review Skill Material Finding Recording Execution Plan](../docs/plans/2026-05-07-review-skill-material-finding-recording.md), active.
+- Current amendment plan: [Review Recording Guardrail and Examples Cleanup Plan](../docs/plans/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md), active.
 - Architecture: not required. The approved spec and accepted plan reuse the existing `docs/changes/<change-id>/reviews/`, `review-log.md`, `review-resolution.md`, and review-artifact validator model without adding a new storage architecture, parser architecture, persistence layer, deployment path, or integration boundary.
 - Spec-review: approved after the initial review-record root was split into material and no-material variants.
 - Spec-review: 2026-05-12 amendment approved after material finding `SR-001` was resolved.
@@ -851,8 +851,6 @@
 
 ## Next artifacts
 
-- Implementation plan for review recording output guardrail and examples cleanup.
-- Plan-review.
 - Implementation and code-review.
 - Review-resolution if material findings are produced.
 - Explain-change, verify, and PR.
@@ -860,6 +858,8 @@
 ## Follow-on artifacts
 
 - Spec-review: approved on 2026-05-12 after material finding `SR-001` was resolved.
+- Implementation plan: active.
+- Plan-review: approved on 2026-05-12 with no material findings.
 
 ## Readiness
 
