@@ -76,6 +76,7 @@ MILESTONE_AWARE_REVIEW_HANDOFF_SKILLS = [
     "plan",
 ]
 SHARED_REVIEW_BLOCK_PATH = ROOT / "templates" / "shared" / "review-isolation-and-recording.md"
+FORMAL_REVIEW_RECORDING_SPEC = ROOT / "specs" / "formal-review-recording.md"
 MILESTONE_AWARE_REVIEW_HANDOFF_SPEC = ROOT / "specs" / "milestone-aware-review-handoff.md"
 MILESTONE_AWARE_REVIEW_HANDOFF_TEST_SPEC = (
     ROOT / "specs" / "milestone-aware-review-handoff.test.md"
@@ -1107,28 +1108,52 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                     self.assertNotIn(term, body)
 
     def test_formal_review_skills_define_detailed_record_triggers(self) -> None:
-        required_terms = [
+        skill_required_terms = [
+            "Every formal lifecycle review result must be recorded or explicitly blocked.",
+            "lightweight review receipt",
+            "review-log.md",
+            "Do not create an\nempty `review-resolution.md` solely for a clean review.",
+            "For material findings or blocking outcomes, create the required detailed review\nrecord",
+            "Finding ID",
+            "Severity",
+            "Location",
+            "Evidence",
+            "Required outcome",
+            "Safe resolution path",
+            "`needs-decision` rationale",
+        ]
+        skill_forbidden_terms = [
             "detailed review record triggers",
-            "material findings",
             "stage-owned non-approval outcomes that block downstream progress or require revision",
             "reconstructed review evidence",
             "closeout evidence citation",
-            "explicit reviewer or maintainer request",
-            "clean formal reviews use lightweight review receipts",
-            "no-material detailed records need `review-log.md` but not an empty `review-resolution.md`",
-            "artifact-local settlement must not replace detailed review records when a trigger applies",
-            "A clean review receipt proves the review happened",
-            "does not by itself settle the reviewed artifact's lifecycle status",
-            "stable `Finding ID`",
-            "disposition in `review-resolution.md`",
-            "`pr-review`",
-            "unsupported review stage",
+            "clean receipt root",
+            "review.status must be",
+            "unresolved_items",
+            "reviewed_artifact",
+            "review_log",
+            "Generated review-recording change ID",
         ]
         for skill_name in FORMAL_REVIEW_SKILLS:
             body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
-            for term in required_terms:
+            for term in skill_required_terms:
                 with self.subTest(skill=skill_name, term=term):
                     self.assertIn(term, body)
+            for term in skill_forbidden_terms:
+                with self.subTest(skill=skill_name, forbidden_term=term):
+                    self.assertNotIn(term, body)
+
+        spec = FORMAL_REVIEW_RECORDING_SPEC.read_text(encoding="utf-8")
+        spec_required_terms = [
+            "stage-owned non-approval outcome",
+            "reconstructed evidence",
+            "closeout evidence",
+            "reviewer or maintainer explicitly requests",
+            "`pr-review`",
+        ]
+        for term in spec_required_terms:
+            with self.subTest(file="spec", term=term):
+                self.assertIn(term, spec)
 
     def test_formal_review_skills_share_isolation_and_recording_block(self) -> None:
         self.assertTrue(
@@ -1160,13 +1185,10 @@ class SkillValidatorFixtureTests(unittest.TestCase):
 
     def test_formal_review_skills_define_recording_status_output(self) -> None:
         required_terms = [
-            "Recording status output",
-            "`Recording status` is separate from the review verdict.",
-            "For supported formal lifecycle review invocations, use exactly one:",
-            "`recorded`",
-            "`blocked`",
+            "Every formal lifecycle review result must be recorded or explicitly blocked.",
+            "`Recording status: recorded`",
+            "`Recording status: blocked`",
             "`not-required` is reserved for non-formal review-like requests",
-            "Recording blocker",
             "Review record",
             "Review log",
             "Review resolution",
@@ -1178,9 +1200,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "Safe resolution path",
             "`needs-decision` rationale",
             "Do not merely tell the user that review artifacts should be created.",
-            "Use the formal review recording change-ID selection rule.",
-            "If no change ID can",
-            "be selected, report `Recording status: blocked`",
+            "smallest next action",
         ]
         forbidden_exact_fields = [
             "- Status settlement recommendation:",
@@ -1216,17 +1236,13 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "Isolation governs handoff. Recording follows formal review triggers.",
             "A direct or review-only request remains isolated by default",
             "Isolation does not suppress recording.",
-            "Every supported formal lifecycle review invocation requires durable review recording.",
-            "Every material finding requires a durable change-local review record",
-            "`docs/changes/<change-id>/reviews/<stage>-r<n>.md`",
-            "The review record must be indexed in `review-log.md` and resolved in `review-resolution.md`.",
-            "Create the durable record before fixing.",
-            "A material finding must include:",
-            "evidence",
-            "required outcome",
-            "safe resolution path, or `needs-decision` rationale",
-            "Clean formal reviews use lightweight review receipts",
-            "Material findings use detailed review records",
+            "Every formal lifecycle review result must be recorded or explicitly blocked.",
+            "`Recording status: recorded`",
+            "`Recording status: blocked`",
+            "For a clean review, create the lightweight review receipt required by the formal review recording spec",
+            "Do not create an empty `review-resolution.md` solely for a clean review.",
+            "For material findings or blocking outcomes, create the required detailed review record",
+            "Material findings must include:",
             "For an isolated review with material findings",
             "the final review output must state:",
             "no automatic downstream handoff",
@@ -1250,6 +1266,11 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "The durable record should be created",
             "clean reviews can settle artifact-locally",
             "`not-required`: no material findings and no detailed-record trigger",
+            "Use the formal review recording change-ID selection rule.",
+            "clean receipt root",
+            "review.status",
+            "unresolved_items",
+            "reviewed_artifact",
         ]
         for term in removed_terms:
             with self.subTest(removed_term=term):
@@ -2014,7 +2035,10 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "generated-output handling is contributor-maintenance guidance, not an adopted shared block",
         )
 
-        self.assertIn("Every material finding requires a durable change-local review record", review_block)
+        self.assertIn(
+            "Every formal lifecycle review result must be recorded or explicitly blocked.",
+            review_block,
+        )
         for block_name in SKILL_CONTRACT_DEFERRED_SHARED_BLOCKS:
             with self.subTest(deferred_block=block_name):
                 self.assertFalse((ROOT / "templates" / "shared" / f"{block_name}.md").exists())

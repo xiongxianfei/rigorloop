@@ -691,6 +691,7 @@
   - generated skill mirrors and adapters when canonical skills change
 - Steps:
   - Assert every formal review skill contains the stable recording-status terms required by `R29`.
+  - Assert formal review skills keep the rule operational and do not duplicate schema-level details such as clean receipt root metadata, change-ID selection examples, review-log table shape, or validator semantics.
   - Assert formal review skills do not contain exact standardized fields:
     - `- Status settlement recommendation:`
     - `- Status sync:`
