@@ -726,6 +726,14 @@ def _apply_path_selection(
         )
         return
 
+    if category == "ignore-policy":
+        _add_check(
+            selected,
+            "skills.generation_regression",
+            "Changed ignore policy requires local mirror generation regression fixtures.",
+        )
+        return
+
     if category == "schemas":
         _add_check(
             selected,
@@ -880,6 +888,8 @@ def _path_category(path: str) -> str | None:
         return "selector"
     if path == "scripts/ci.sh":
         return "ci-wrapper"
+    if path == ".gitignore":
+        return "ignore-policy"
     if path == ".github/workflows/ci.yml":
         return "ci-workflow"
     if path in {"scripts/validate-review-artifacts.py", "scripts/review_artifact_validation.py", "scripts/test-review-artifact-validator.py"}:
