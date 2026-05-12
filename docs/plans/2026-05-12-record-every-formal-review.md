@@ -68,9 +68,9 @@ Generated local Codex runtime output under `.codex/skills/` is not authored or t
 - Last reviewed milestone: M5. Lifecycle state, explanation, verification, and PR readiness
 - Review status: M5 code-review clean-with-notes
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1-M5 are closed and explain-change exists; final verify has not run and PR handoff is not prepared.
+- Next stage: pr
+- Final closeout readiness: branch-ready for PR handoff
+- Reason final closeout is or is not ready: M1-M5 are closed, review-resolution is closed, explain-change exists, and local final verify passed. PR body/open readiness is still owned by the PR stage.
 
 ## Milestones
 
@@ -253,7 +253,7 @@ Generated local Codex runtime output under `.codex/skills/` is not authored or t
   - [x] decision log updated if needed
   - [x] validation notes updated
   - [x] explain-change recorded
-  - [ ] verify recorded
+  - [x] verify recorded
   - [x] plan body and plan index synchronized
   - [ ] PR handoff prepared
   - [x] code-review completed
@@ -306,6 +306,7 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - 2026-05-12: Code-review M4 passed with no material findings and M4 moved to closed.
 - 2026-05-12: Implemented M5 by recording explain-change evidence, rerunning final targeted validation, and moving M5 to review-requested.
 - 2026-05-12: Code-review M5 passed with no material findings and M5 moved to closed; next stage is final verify.
+- 2026-05-13: Final local verify passed and the plan moved to PR handoff.
 
 ## Decision Log
 
@@ -422,10 +423,15 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - 2026-05-12: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-record-every-formal-review.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/plan.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md` passed during `code-review M5 r1`.
 - 2026-05-12: `bash scripts/ci.sh --mode explicit --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path scripts/review_artifact_validation.py --path scripts/test-review-artifact-validator.py --path templates/shared/review-isolation-and-recording.md --path skills/spec-review/SKILL.md --path skills/code-review/SKILL.md --path dist/adapters/codex/.agents/skills/spec-review/SKILL.md --path dist/adapters/codex/.agents/skills/code-review/SKILL.md` passed during `code-review M5 r1`.
 - 2026-05-12: `git diff --check` passed during `code-review M5 r1`.
+- 2026-05-13: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-record-every-formal-review-review-recording` passed during final verify with 12 reviews, 3 findings, 12 log entries, and 3 resolution entries.
+- 2026-05-13: `python scripts/validate-change-metadata.py docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml` passed during final verify.
+- 2026-05-13: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-record-every-formal-review.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/plan.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md` passed during final verify.
+- 2026-05-13: `bash scripts/ci.sh --mode explicit --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path scripts/review_artifact_validation.py --path scripts/test-review-artifact-validator.py --path templates/shared/review-isolation-and-recording.md --path skills/spec-review/SKILL.md --path skills/code-review/SKILL.md --path dist/adapters/codex/.agents/skills/spec-review/SKILL.md --path dist/adapters/codex/.agents/skills/code-review/SKILL.md` passed during final verify with selected checks `skills.validate`, `skills.regression`, `skills.generation_regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.regression`, `artifact_lifecycle.validate`, and `selector.regression`.
+- 2026-05-13: `git diff --check` passed during final verify.
 
 ## Outcome and Retrospective
 
-- Not started. Fill after all implementation milestones, reviews, final verification, and PR handoff are complete.
+- Final local verify passed. PR handoff remains open.
 
 ## Readiness
 
