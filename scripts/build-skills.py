@@ -5,9 +5,14 @@ from __future__ import annotations
 
 import argparse
 import shutil
+import tempfile
 from pathlib import Path
 
-from skill_validation import CANONICAL_SKILLS_DIR, GENERATED_SKILLS_DIR
+from skill_validation import (
+    CANONICAL_SKILLS_DIR,
+    GENERATED_SKILLS_DIR,
+    validate_skill_tree,
+)
 
 
 def collect_files(root: Path) -> dict[Path, Path]:
@@ -73,6 +78,19 @@ def sync_generated_output(source_root: Path, generated_root: Path) -> None:
             continue
 
 
+def validate_generated_output(generated_root: Path) -> list[str]:
+    result = validate_skill_tree(generated_root, allow_generated=True)
+    return result.errors
+
+
+def check_generated_output(source_root: Path, output_root: Path) -> list[str]:
+    sync_generated_output(source_root, output_root)
+    errors = validate_generated_output(output_root)
+    if errors:
+        return errors
+    return collect_drift(source_root, output_root)
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Build or check .codex/skills from canonical skills/."
@@ -80,7 +98,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--check",
         action="store_true",
-        help="Fail if generated output is missing, stale, or hand-edited.",
+        help="Generate and validate local mirror output without requiring tracked .codex/skills files.",
+    )
+    parser.add_argument(
+        "--output-dir",
+        type=Path,
+        help="Write generated skill mirror output to this directory. Defaults to .codex/skills outside --check; --check uses a temporary directory when omitted.",
     )
     return parser
 
@@ -88,16 +111,33 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     if args.check:
-        drift = collect_drift(CANONICAL_SKILLS_DIR, GENERATED_SKILLS_DIR)
-        if drift:
-            for entry in drift:
+        if args.output_dir is None:
+            with tempfile.TemporaryDirectory(prefix="rigorloop-skills-check-") as tmpdir:
+                output_root = Path(tmpdir) / "skills"
+                errors = check_generated_output(CANONICAL_SKILLS_DIR, output_root)
+                if errors:
+                    for entry in errors:
+                        print(entry)
+                    return 1
+                print(
+                    "validated generated skills from "
+                    f"{CANONICAL_SKILLS_DIR} using temporary output {output_root}"
+                )
+                return 0
+
+        errors = check_generated_output(CANONICAL_SKILLS_DIR, args.output_dir)
+        if errors:
+            for entry in errors:
                 print(entry)
             return 1
-        print(f"generated skills are in sync under {GENERATED_SKILLS_DIR}")
+        print(
+            f"validated generated skills from {CANONICAL_SKILLS_DIR} under {args.output_dir}"
+        )
         return 0
 
-    sync_generated_output(CANONICAL_SKILLS_DIR, GENERATED_SKILLS_DIR)
-    print(f"synced generated skills from {CANONICAL_SKILLS_DIR} to {GENERATED_SKILLS_DIR}")
+    output_root = args.output_dir or GENERATED_SKILLS_DIR
+    sync_generated_output(CANONICAL_SKILLS_DIR, output_root)
+    print(f"synced generated skills from {CANONICAL_SKILLS_DIR} to {output_root}")
     return 0
 
 

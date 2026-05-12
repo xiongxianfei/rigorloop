@@ -954,7 +954,13 @@ def validate_runner_and_suite(data: dict[str, Any], errors: list[str]) -> None:
         errors.append("runner.suite: must match benchmark_suite.manifest")
     if runner.get("fixture") != suite.get("fixture"):
         errors.append("runner.fixture: must match benchmark_suite.fixture")
-    if runner.get("skill_source") != PUBLIC_CODEX_SKILL_SOURCE:
+    skill_source = runner.get("skill_source")
+    if skill_source == ".codex/skills/" or skill_source == ".codex/skills":
+        errors.append(
+            "runner.skill_source: .codex/skills/ is repository-local generated output and "
+            "must not be used as a public benchmark source"
+        )
+    elif skill_source != PUBLIC_CODEX_SKILL_SOURCE:
         errors.append(f"runner.skill_source: expected {PUBLIC_CODEX_SKILL_SOURCE}")
     require_existing_repo_path(runner.get("output_dir"), "runner.output_dir", errors)
     require_bool(runner.get("install_public_skills"), "runner.install_public_skills", errors)

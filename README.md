@@ -53,7 +53,9 @@ RigorLoop ships generated adapter packages for Codex, Claude Code, and opencode 
 
 To install one adapter, copy that adapter package root's contents into a project root. The current support matrix is generated in `dist/adapters/manifest.yaml`; for adapter package version `0.1.1`, all current skills are included for Codex, Claude Code, and opencode. The manifest also lists the generated opencode command aliases under `command_aliases.opencode`.
 
-Canonical skill edits happen in `skills/`. Adapter packages under `dist/adapters/` are generated release output, and `.codex/skills/` remains a separate generated local Codex runtime mirror for this repository.
+`skills/` is the only authored skill source. `.codex/skills/` is generated local Codex runtime output and ignored by Git. Regenerate it with `python scripts/build-skills.py` when needed.
+
+Public adapter packages under `dist/adapters/` remain tracked generated installable output during the compatibility window. Adapter packages under `dist/adapters/` are generated release output, and `.codex/skills/` remains a separate generated local Codex runtime mirror for this repository. When a later release retires repository-tree adapter install, generated adapter archives will be published as release assets with tracked metadata and checksums.
 
 Adapter compatibility claims are versioned. If external tool contracts change, update the affected adapter contract through the RigorLoop lifecycle before changing release claims.
 
@@ -123,7 +125,7 @@ The normative contract lives in [specs/rigorloop-workflow.md](specs/rigorloop-wo
 - isolated manual skill invocation for focused skill output
 - standing artifacts, living references, on-demand support, a per-change chain, and periodic learning as distinct lifecycle categories
 - canonical workflow sources in `docs/`, `specs/`, `skills/`, `schemas/`, and `scripts/`
-- generated Codex compatibility output in `.codex/skills/`
+- ignored generated local Codex runtime output in `.codex/skills/`
 - generated public adapter packages in `dist/adapters/`
 - a change-local artifact pattern under `docs/changes/<change-id>/` for the shipped example and later non-trivial work
 
@@ -147,6 +149,9 @@ The normative contract lives in [specs/rigorloop-workflow.md](specs/rigorloop-wo
   - `.codex/skills/`
 - Do not hand-edit generated public adapter packages in:
   - `dist/adapters/`
+- `skills/` is the only authored skill source. `.codex/skills/` is generated local Codex runtime output and ignored by Git. Regenerate it with `python scripts/build-skills.py` when needed.
+- Public adapter packages under `dist/adapters/` remain tracked generated installable output during the compatibility window.
+- Public-surface token-cost benchmarks must identify public adapter output such as `dist/adapters/codex/.agents/skills/`, not repository-local `.codex/skills/`.
 - Execution plans follow:
   - `docs/examples/plans/example-plan.md`
 

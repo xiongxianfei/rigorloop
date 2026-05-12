@@ -77,7 +77,11 @@ Canonical authored workflow content lives in:
 
 Templates under `templates/` are canonical authored scaffolds. They are not lifecycle-managed architecture or ADR records, and template-like files MUST NOT be placed under `docs/architecture/` or `docs/adr/`.
 
-Generated Codex compatibility output under `.codex/skills/` MUST NOT be hand-edited. It is derived output, not the source of truth.
+`skills/` is the only authored skill source.
+
+Generated local Codex runtime output under `.codex/skills/` MUST NOT be hand-edited. `.codex/skills/` is generated local Codex runtime output and ignored by Git. Regenerate it with `python scripts/build-skills.py` when needed.
+
+Public adapter packages under `dist/adapters/` remain tracked generated installable output during the compatibility window.
 
 Repository validation logic MUST live in repo-owned scripts. GitHub Actions workflows SHOULD remain thin wrappers that set up tooling and delegate to those scripts.
 
