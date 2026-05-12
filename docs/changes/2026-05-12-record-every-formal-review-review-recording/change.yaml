@@ -1,0 +1,102 @@
+change_id: 2026-05-12-record-every-formal-review-review-recording
+title: Record every formal review
+classification: workflow-governance-spec-amendment
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-12-record-every-formal-review.md
+  spec: specs/formal-review-recording.md
+  plan: docs/plans/2026-05-12-record-every-formal-review.md
+  review_resolution: docs/changes/2026-05-12-record-every-formal-review-review-recording/review-resolution.md
+requirements:
+  - Accept the record-every-formal-review proposal before specification.
+  - Define the clean formal review receipt contract in the governing formal review recording spec.
+  - Preserve material-finding review records and review-resolution behavior.
+  - Keep clean receipts separate from artifact lifecycle/status settlement.
+  - Reserve Recording status not-required for non-formal review-like requests.
+tests:
+  - Spec-review approval or recorded material finding resolution.
+  - Future test-spec coverage for clean receipt roots and review-log indexing.
+  - Future validator coverage for clean receipt structure and no empty review-resolution requirement.
+review:
+  status: m1_review_requested
+  unresolved_items: 0
+  review_log: docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md
+  review_resolution: docs/changes/2026-05-12-record-every-formal-review-review-recording/review-resolution.md
+validation:
+  - command: spec-review r1
+    result: changes_requested_sr_001_open
+  - command: spec revision for SR-001
+    result: clean_receipt_root_rule_added_pending_spec_review_rerun
+  - command: spec-review r2
+    result: approved_no_material_findings_sr_001_resolved
+  - command: architecture
+    result: canonical_architecture_updated_no_adr_required
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-record-every-formal-review-review-recording
+    result: pass_closeout_reviews_2_findings_1_log_entries_2_resolution_entries_1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml
+    result: pass_valid_change_metadata
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-record-every-formal-review.md --path specs/formal-review-recording.md --path docs/architecture/system/architecture.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-resolution.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/spec-review-r1.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/spec-review-r2.md
+    result: pass
+  - command: git diff --check -- docs/proposals/2026-05-12-record-every-formal-review.md specs/formal-review-recording.md docs/architecture/system/architecture.md docs/changes/2026-05-12-record-every-formal-review-review-recording
+    result: pass
+  - command: architecture-review r1
+    result: approved_no_material_findings
+  - command: plan
+    result: active_plan_created_ready_for_plan_review
+  - command: plan-review r1
+    result: approved_no_material_findings
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml
+    result: pass_valid_change_metadata_after_plan
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-record-every-formal-review-review-recording
+    result: pass_closeout_reviews_3_findings_1_log_entries_3_resolution_entries_1_after_plan
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-record-every-formal-review.md --path specs/formal-review-recording.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/plan.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-resolution.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/spec-review-r1.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/spec-review-r2.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/architecture-review-r1.md
+    result: pass_after_plan
+  - command: git diff --check -- docs/plan.md docs/plans/2026-05-12-record-every-formal-review.md docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml
+    result: pass_after_plan
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-record-every-formal-review-review-recording
+    result: pass_closeout_reviews_4_findings_1_log_entries_4_resolution_entries_1_after_plan_review
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml
+    result: pass_valid_change_metadata_after_plan_review
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-record-every-formal-review.md --path specs/formal-review-recording.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/plan.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-resolution.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/spec-review-r1.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/spec-review-r2.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/architecture-review-r1.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/plan-review-r1.md
+    result: pass_after_plan_review
+  - command: git diff --check -- docs/changes/2026-05-12-record-every-formal-review-review-recording
+    result: pass_after_plan_review
+  - command: test-spec
+    result: formal_review_recording_test_spec_updated_for_clean_receipts
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/formal-review-recording.test.md --path specs/formal-review-recording.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml
+    result: pass_after_test_spec_update
+  - command: git diff --check -- specs/formal-review-recording.test.md docs/plans/2026-05-12-record-every-formal-review.md docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml
+    result: pass_after_test_spec_update
+  - command: implement M1
+    result: clean_receipt_test_spec_fixture_and_example_ready_for_code_review
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/formal-review-recording.test.md --path specs/formal-review-recording.md
+    result: pass_m1
+  - command: python scripts/validate-change-metadata.py tests/fixtures/review-artifacts/valid-clean-receipt-root/change.yaml
+    result: pass_m1_fixture_metadata
+  - command: git diff --check -- specs/formal-review-recording.test.md tests/fixtures/review-artifacts docs/examples/formal-review-recording
+    result: pass_m1
+  - command: wc -w tests/fixtures/review-artifacts/valid-clean-receipt-root/reviews/spec-review-r1.md docs/examples/formal-review-recording/clean-review-receipt-root.md
+    result: pass_m1_receipt_fixture_66_words_example_183_words
+  - command: python scripts/validate-review-artifacts.py --mode structure tests/fixtures/review-artifacts/valid-clean-receipt-root
+    result: expected_fail_before_m2_table_log_entries_not_supported
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-record-every-formal-review.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/plan.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-resolution.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/spec-review-r1.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/spec-review-r2.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/architecture-review-r1.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/plan-review-r1.md
+    result: pass_m1
+changed_files:
+  - docs/proposals/2026-05-12-record-every-formal-review.md
+  - specs/formal-review-recording.md
+  - specs/formal-review-recording.test.md
+  - docs/architecture/system/architecture.md
+  - docs/plan.md
+  - docs/plans/2026-05-12-record-every-formal-review.md
+  - docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml
+  - docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md
+  - docs/changes/2026-05-12-record-every-formal-review-review-recording/review-resolution.md
+  - docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/spec-review-r1.md
+  - docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/spec-review-r2.md
+  - docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/architecture-review-r1.md
+  - docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/plan-review-r1.md
+  - docs/examples/formal-review-recording/README.md
+  - docs/examples/formal-review-recording/clean-review-receipt-root.md
+  - tests/fixtures/review-artifacts/valid-clean-receipt-root/change.yaml
+  - tests/fixtures/review-artifacts/valid-clean-receipt-root/review-log.md
+  - tests/fixtures/review-artifacts/valid-clean-receipt-root/reviews/spec-review-r1.md

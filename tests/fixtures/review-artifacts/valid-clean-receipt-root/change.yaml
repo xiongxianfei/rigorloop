@@ -1,0 +1,19 @@
+change_id: 2026-05-12-example-spec-review-recording
+title: Example spec review recording
+classification: review-recording-fixture
+risk: low
+artifacts:
+  spec: specs/example.md
+requirements:
+  - Clean formal reviews create lightweight receipts.
+tests:
+  - T27
+review:
+  status: approved
+  unresolved_items: 0
+  review_log: tests/fixtures/review-artifacts/valid-clean-receipt-root/review-log.md
+validation:
+  - command: python scripts/validate-review-artifacts.py --mode structure tests/fixtures/review-artifacts/valid-clean-receipt-root
+    result: pending_m2_validator_support
+changed_files:
+  - specs/example.md
