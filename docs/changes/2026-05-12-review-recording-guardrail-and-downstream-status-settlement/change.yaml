@@ -35,6 +35,8 @@ validation:
     result: pass_valid_change_metadata_after_sr_001_spec_fix
   - command: git diff --check -- specs/formal-review-recording.md specs/formal-review-recording.test.md docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement
     result: pass_after_sr_001_spec_fix
+  - command: spec-review r2
+    result: approved_no_material_findings_sr_001_resolved
 changed_files:
   - docs/proposals/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md
   - specs/formal-review-recording.md
@@ -44,7 +46,7 @@ changed_files:
   - docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/review-resolution.md
   - docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/reviews/spec-review-r1.md
 review:
-  status: changes_requested
-  unresolved_items: 1
+  status: approved
+  unresolved_items: 0
   review_log: docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/review-log.md
   review_resolution: docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/review-resolution.md
