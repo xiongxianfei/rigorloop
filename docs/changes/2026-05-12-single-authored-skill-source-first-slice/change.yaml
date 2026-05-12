@@ -134,5 +134,5 @@ changed_files:
   - docs/plans/2026-05-12-single-authored-skill-source-first-slice.md
   - docs/plan.md
 review:
-  status: implementation_m3_review_requested
+  status: code_review_m3_clean_with_notes
   unresolved_items: 0
