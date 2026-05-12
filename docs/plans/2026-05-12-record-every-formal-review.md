@@ -63,14 +63,14 @@ Generated local Codex runtime output under `.codex/skills/` is not authored or t
 
 ## Current Handoff Summary
 
-- Current milestone: M4. Generated outputs and adapter validation
-- Current milestone state: review-requested
-- Last reviewed milestone: M3. Formal review skill and governance alignment
-- Review status: M3 code-review clean-with-notes
-- Remaining in-scope implementation milestones: M4, M5
-- Next stage: code-review M4
+- Current milestone: M5. Lifecycle state, explanation, verification, and PR readiness
+- Current milestone state: planned
+- Last reviewed milestone: M4. Generated outputs and adapter validation
+- Review status: M4 code-review clean-with-notes
+- Remaining in-scope implementation milestones: M5
+- Next stage: implement M5
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1-M3 are closed, M4 is awaiting code-review, M5 remains open, explain-change and verify evidence do not exist, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M1-M4 are closed, M5 remains open, explain-change and verify evidence do not exist, and PR handoff is not prepared.
 
 ## Milestones
 
@@ -190,7 +190,7 @@ Generated local Codex runtime output under `.codex/skills/` is not authored or t
 
 ### M4. Generated outputs and adapter validation
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Refresh generated skill outputs after canonical skill changes and validate local and public adapter packages.
 - Requirements: `R15a`.
 - Files/components likely touched:
@@ -218,8 +218,8 @@ Generated local Codex runtime output under `.codex/skills/` is not authored or t
   - [x] decision log updated if needed
   - [x] validation notes updated
   - [x] hand off to code-review for M4
-  - [ ] material findings resolved or explicitly dispositioned
-  - [ ] milestone state updated before starting M5
+  - [x] material findings resolved or explicitly dispositioned
+  - [x] milestone state updated before starting M5
 - Risks: adapter generation may update unrelated generated files due to prior drift.
 - Rollback/recovery: inspect generated diffs before keeping them; if unrelated drift appears, isolate the cause and do not hand-edit generated output.
 
@@ -302,6 +302,7 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - 2026-05-12: Implemented M3 by updating the shared formal review recording block, copied formal review skills, governance guidance, and static skill assertions; M3 moved to review-requested.
 - 2026-05-12: Code-review M3 passed with no material findings and M3 moved to closed.
 - 2026-05-12: Implemented M4 by regenerating the local Codex mirror and tracked public adapter output after canonical skill changes; M4 moved to review-requested.
+- 2026-05-12: Code-review M4 passed with no material findings and M4 moved to closed.
 
 ## Decision Log
 
@@ -395,6 +396,16 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - 2026-05-12: `python scripts/test-adapter-distribution.py` passed after generation with 72 tests.
 - 2026-05-12: `python scripts/build-skills.py --check` passed after generation.
 - 2026-05-12: `git diff --check -- dist/adapters` passed after generation.
+- 2026-05-12: `code-review M4 r1` reviewed commit `e52a022` and recorded clean-with-notes with no material findings.
+- 2026-05-12: `python scripts/build-adapters.py --version 0.1.1 --check` passed during `code-review M4 r1`.
+- 2026-05-12: `python scripts/validate-adapters.py --version 0.1.1` passed during `code-review M4 r1`.
+- 2026-05-12: `python scripts/build-skills.py --check` passed during `code-review M4 r1`.
+- 2026-05-12: `git diff --check -- dist/adapters` passed during `code-review M4 r1`.
+- 2026-05-12: `python scripts/test-adapter-distribution.py` passed during `code-review M4 r1` with 72 tests.
+- 2026-05-12: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-record-every-formal-review-review-recording` passed after `code-review M4 r1` with 11 reviews, 3 findings, 11 log entries, and 3 resolution entries.
+- 2026-05-12: `python scripts/validate-change-metadata.py docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml` passed after `code-review M4 r1`.
+- 2026-05-12: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/code-review-m4-r1.md` passed after `code-review M4 r1`.
+- 2026-05-12: `git diff --check --` passed after `code-review M4 r1`.
 
 ## Outcome and Retrospective
 
