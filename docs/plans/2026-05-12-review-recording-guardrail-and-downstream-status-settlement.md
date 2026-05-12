@@ -31,13 +31,13 @@ Example artifacts currently live in active-looking paths such as `docs/plans/000
 ## Current Handoff Summary
 
 - Current milestone: M3. Generated Output Refresh And Final Static Proof
-- Current milestone state: review-requested
+- Current milestone state: closed
 - Last reviewed milestone: M2. Formal Review Skill Recording Output Guardrail
-- Review status: M2 code-review clean-with-notes; no material findings
-- Remaining in-scope implementation milestones: M3 review
-- Next stage: code-review M3
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 and M2 are closed, M3 implementation is awaiting code-review, and final explain-change, verify, and PR handoff are not complete.
+- Review status: M3 code-review clean-with-notes; no material findings
+- Remaining in-scope implementation milestones: none
+- Next stage: explain-change
+- Final closeout readiness: ready to begin final closeout sequence
+- Reason final closeout is or is not ready: M1, M2, and M3 are closed with no open review-resolution, so the next required stage is durable explain-change before verify and PR handoff.
 
 ## Non-goals
 
@@ -161,7 +161,7 @@ Example artifacts currently live in active-looking paths such as `docs/plans/000
 
 ### M3. Generated Output Refresh And Final Static Proof
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: regenerate local Codex skill mirrors and public adapters from canonical skill changes, then validate generated drift and adapter packages.
 - Requirements: `R15a`, `R29a`, generated-output obligations from the approved workflow.
 - Files/components likely touched:
@@ -256,9 +256,10 @@ Also run explicit artifact lifecycle validation over the proposal, spec, test sp
 - [x] 2026-05-12: M2 added static validator coverage for formal review `Recording status` output and updated the five formal review skills plus the shared isolation/recording block.
 - [x] 2026-05-12: M2 code-review returned `clean-with-notes` with no material findings; no detailed review record was required.
 - [x] 2026-05-12: M3 regenerated local Codex skill mirrors and public adapters for version `0.1.1`, then validated generated-output drift and adapter structure.
+- [x] 2026-05-12: M3 code-review returned `clean-with-notes` with no material findings; no detailed review record was required.
 - [x] M1. Examples Surface And Validator Routing - closed
 - [x] M2. Formal Review Skill Recording Output Guardrail - closed
-- [ ] M3. Generated Output Refresh And Final Static Proof
+- [x] M3. Generated Output Refresh And Final Static Proof - closed
 
 ## Decision log
 
@@ -296,6 +297,7 @@ Also run explicit artifact lifecycle validation over the proposal, spec, test sp
 - `python scripts/build-adapters.py --version 0.1.1` regenerated public adapter output.
 - `python scripts/build-skills.py --check`, `python scripts/build-adapters.py --version 0.1.1 --check`, `python scripts/validate-adapters.py --version 0.1.1`, `python scripts/test-adapter-distribution.py`, `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement`, `python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/change.yaml`, and `git diff --check -- .codex/skills dist/adapters docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement docs/plans/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md docs/plan.md` passed after M3 generation.
 - Manual generated-output proof found `Recording status output`, `Review resolution: <path | not-required | blocked>`, and the formal review recording change-ID pointer in generated local Codex, Claude, Codex adapter, and opencode adapter review skills; exact status-sync fields were absent.
+- M3 code-review reran `python scripts/build-skills.py --check`, `python scripts/build-adapters.py --version 0.1.1 --check`, `python scripts/validate-adapters.py --version 0.1.1`, `python scripts/test-adapter-distribution.py`, `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement`, `python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/change.yaml`, and `git diff --check -- .codex/skills dist/adapters docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement docs/plans/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md docs/plan.md`; all passed.
 
 ## Outcome and retrospective
 
@@ -304,4 +306,4 @@ Also run explicit artifact lifecycle validation over the proposal, spec, test sp
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for code-review of M3.
+- This plan is ready for explain-change.
