@@ -99,6 +99,18 @@ validation:
     result: pass_valid_change_metadata_after_m2_handoff
   - command: git diff --check -- skills templates scripts docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement docs/plans/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md docs/plan.md
     result: pass_after_m2_handoff
+  - command: code-review M2
+    result: clean_with_notes_no_material_findings
+  - command: python scripts/test-skill-validator.py
+    result: pass_63_tests_during_m2_code_review
+  - command: python scripts/validate-skills.py
+    result: pass_23_skill_files_during_m2_code_review
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement
+    result: pass_closeout_reviews_2_findings_1_log_entries_2_resolution_entries_1_during_m2_code_review
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/change.yaml
+    result: pass_valid_change_metadata_during_m2_code_review
+  - command: git diff --check -- skills templates scripts docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement docs/plans/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md docs/plan.md
+    result: pass_during_m2_code_review
 changed_files:
   - AGENTS.md
   - CONSTITUTION.md

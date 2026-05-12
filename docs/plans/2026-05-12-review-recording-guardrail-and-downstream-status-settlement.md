@@ -31,13 +31,13 @@ Example artifacts currently live in active-looking paths such as `docs/plans/000
 ## Current Handoff Summary
 
 - Current milestone: M2. Formal Review Skill Recording Output Guardrail
-- Current milestone state: review-requested
-- Last reviewed milestone: M1. Examples Surface And Validator Routing
-- Review status: M1 code-review clean-with-notes; no material findings
-- Remaining in-scope implementation milestones: M2 review and M3
-- Next stage: code-review M2
+- Current milestone state: closed
+- Last reviewed milestone: M2. Formal Review Skill Recording Output Guardrail
+- Review status: M2 code-review clean-with-notes; no material findings
+- Remaining in-scope implementation milestones: M3
+- Next stage: implement M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 is closed, M2 implementation is awaiting code-review, M3 is not implemented, generated output is not refreshed, and final explain-change, verify, and PR handoff are not complete.
+- Reason final closeout is or is not ready: M1 and M2 are closed, M3 is not implemented, generated output is not refreshed, and final explain-change, verify, and PR handoff are not complete.
 
 ## Non-goals
 
@@ -114,7 +114,7 @@ Example artifacts currently live in active-looking paths such as `docs/plans/000
 
 ### M2. Formal Review Skill Recording Output Guardrail
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: update canonical formal review skills with concise `Recording status` output guidance, complete finding shape, deterministic change-ID selection pointer, and status-sync exclusions.
 - Requirements: `R24`-`R31l`, `R33`-`R33b`
 - Files/components likely touched:
@@ -254,8 +254,9 @@ Also run explicit artifact lifecycle validation over the proposal, spec, test sp
 - [x] 2026-05-12: M1 retained `docs/changes/0001-skill-validator/` as a validator fixture and historical proof pack because it remains referenced by existing validator tests, README-facing specs, and workflow compatibility specs.
 - [x] 2026-05-12: M1 code-review returned `clean-with-notes` with no material findings; no detailed review record was required.
 - [x] 2026-05-12: M2 added static validator coverage for formal review `Recording status` output and updated the five formal review skills plus the shared isolation/recording block.
+- [x] 2026-05-12: M2 code-review returned `clean-with-notes` with no material findings; no detailed review record was required.
 - [x] M1. Examples Surface And Validator Routing - closed
-- [ ] M2. Formal Review Skill Recording Output Guardrail
+- [x] M2. Formal Review Skill Recording Output Guardrail - closed
 - [ ] M3. Generated Output Refresh And Final Static Proof
 
 ## Decision log
@@ -288,6 +289,7 @@ Also run explicit artifact lifecycle validation over the proposal, spec, test sp
 - M2 first added failing static coverage in `scripts/test-skill-validator.py` for formal review `Recording status` output, complete material-finding shape, review artifact path fields, negative exact status-sync fields, and the short change-ID selection pointer.
 - `python scripts/test-skill-validator.py` passed after updating the shared isolation/recording block and the five canonical formal review skill expected-output shapes.
 - `python scripts/validate-skills.py` passed after M2 canonical skill updates.
+- M2 code-review reran `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement`, `python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/change.yaml`, and `git diff --check -- skills templates scripts docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement docs/plans/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md docs/plan.md`; all passed.
 
 ## Outcome and retrospective
 
