@@ -89,6 +89,16 @@ validation:
     result: pass_closeout_reviews_2_findings_1_log_entries_2_resolution_entries_1_after_m1_code_review_state_sync
   - command: git diff --check -- docs/plans/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md docs/plan.md docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/change.yaml
     result: pass_after_m1_code_review_state_sync
+  - command: python scripts/test-skill-validator.py
+    result: pass_63_tests_after_m2_recording_status_guidance
+  - command: python scripts/validate-skills.py
+    result: pass_23_skill_files_after_m2_recording_status_guidance
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement
+    result: pass_closeout_reviews_2_findings_1_log_entries_2_resolution_entries_1_after_m2_handoff
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/change.yaml
+    result: pass_valid_change_metadata_after_m2_handoff
+  - command: git diff --check -- skills templates scripts docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement docs/plans/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md docs/plan.md
+    result: pass_after_m2_handoff
 changed_files:
   - AGENTS.md
   - CONSTITUTION.md
@@ -108,6 +118,12 @@ changed_files:
   - docs/workflows.md
   - docs/plans/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md
   - docs/plan.md
+  - skills/proposal-review/SKILL.md
+  - skills/spec-review/SKILL.md
+  - skills/architecture-review/SKILL.md
+  - skills/plan-review/SKILL.md
+  - skills/code-review/SKILL.md
+  - templates/shared/review-isolation-and-recording.md
   - scripts/test-artifact-lifecycle-validator.py
   - scripts/test-select-validation.py
   - scripts/test-skill-validator.py
