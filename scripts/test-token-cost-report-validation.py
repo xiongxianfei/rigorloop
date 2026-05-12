@@ -815,7 +815,14 @@ release_gate:
                 "skill_source: dist/adapters/codex/.agents/skills/",
                 "skill_source: .codex/skills/",
             ),
-            "runner.skill_source: expected dist/adapters/codex/.agents/skills/",
+            "runner.skill_source: .codex/skills/ is repository-local generated output and "
+            "must not be used as a public benchmark source",
+        )
+        self.assertPasses(
+            self.valid_text.replace(
+                "skill_source: dist/adapters/codex/.agents/skills/",
+                "skill_source: dist/adapters/codex/.agents/skills/",
+            )
         )
 
 

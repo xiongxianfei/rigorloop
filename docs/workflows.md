@@ -225,6 +225,7 @@ Notes:
 - `.codex/skills/` is generated local Codex runtime output and ignored by Git. Regenerate it with `python scripts/build-skills.py` when needed.
 - Public adapter packages under `dist/adapters/` remain tracked generated installable output during the compatibility window.
 - For public adapter packages, `skills/` is the canonical authored skill source, `dist/adapters/` is generated installable output for Codex, Claude Code, and opencode, and `.codex/skills/` is a separate generated local Codex mirror.
+- Public-surface token-cost benchmarks must use public adapter output, such as `dist/adapters/codex/.agents/skills/` while public adapter skill copies remain tracked. They must not use `.codex/skills/`, which is repository-local runtime output.
 - Use `docs/examples/plans/example-plan.md` for illustrative plan structure. Do not treat `docs/examples/**` as active lifecycle state or reintroduce a second plan-template path.
 
 ## Validation
