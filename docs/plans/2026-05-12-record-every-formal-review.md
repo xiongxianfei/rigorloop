@@ -63,20 +63,20 @@ Generated local Codex runtime output under `.codex/skills/` is not authored or t
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Test spec and clean receipt fixtures
-- Current milestone state: review-requested
-- Last reviewed milestone: none
-- Review status: plan-review approved
-- Remaining in-scope implementation milestones: M1, M2, M3, M4, M5
-- Next stage: code-review M1
+- Current milestone: M2. Review artifact and metadata validation
+- Current milestone state: planned
+- Last reviewed milestone: M1. Test spec and clean receipt fixtures
+- Review status: M1 code-review clean-with-notes
+- Remaining in-scope implementation milestones: M2, M3, M4, M5
+- Next stage: implement M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 is implemented but not code-reviewed or closed; M2-M5 remain open, explain-change and verify evidence do not exist, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M1 is closed, but M2-M5 remain open, explain-change and verify evidence do not exist, and PR handoff is not prepared.
 
 ## Milestones
 
 ### M1. Test spec and clean receipt fixtures
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Update the test spec and fixtures so the approved clean formal review receipt contract is testable before implementation.
 - Requirements: `R2c`-`R5`, `R8d`-`R8f`, `R24`-`R26e`, `R31m`-`R31p`.
 - Files/components likely touched:
@@ -99,11 +99,11 @@ Generated local Codex runtime output under `.codex/skills/` is not authored or t
 - Milestone closeout:
   - [x] targeted validation passed
   - [x] progress updated
-  - [ ] decision log updated if needed
+  - [x] decision log updated if needed
   - [x] validation notes updated
   - [x] hand off to code-review for M1
-  - [ ] material findings resolved or explicitly dispositioned
-  - [ ] milestone state updated before starting M2
+  - [x] material findings resolved or explicitly dispositioned
+  - [x] milestone state updated before starting M2
 - Risks: fixture shape may not match current validator parsing.
 - Rollback/recovery: revert the fixture additions and keep the amended test spec as the guide for M2 if fixture implementation needs to move with validator code.
 
@@ -292,6 +292,7 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - 2026-05-12: Plan-review approved the plan with no material findings.
 - 2026-05-12: Updated `specs/formal-review-recording.test.md` for the record-every-formal-review clean receipt implementation slice.
 - 2026-05-12: Implemented M1 by adding the clean receipt root fixture and non-normative clean receipt example, then handed M1 to code-review.
+- 2026-05-12: Code-review M1 passed with no material findings and M1 moved to closed.
 
 ## Decision Log
 
@@ -318,6 +319,7 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - 2026-05-12: `wc -w tests/fixtures/review-artifacts/valid-clean-receipt-root/reviews/spec-review-r1.md docs/examples/formal-review-recording/clean-review-receipt-root.md` reported 66 words for the clean receipt fixture and 183 words for the example file.
 - 2026-05-12: `python scripts/validate-review-artifacts.py --mode structure tests/fixtures/review-artifacts/valid-clean-receipt-root` failed as expected before M2 with `Review ID missing from review-log.md`; current parser does not yet support table-based clean receipt log entries.
 - 2026-05-12: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-record-every-formal-review.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/plan.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-resolution.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/spec-review-r1.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/spec-review-r2.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/architecture-review-r1.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/plan-review-r1.md` passed for M1.
+- 2026-05-12: `code-review M1` recorded clean-with-notes with no material findings.
 
 ## Outcome and Retrospective
 
