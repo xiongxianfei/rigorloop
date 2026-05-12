@@ -55,14 +55,14 @@ Likely implementation surfaces:
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Untrack Local Codex Mirror And Update Contributor Guidance
-- Current milestone state: closed
+- Current milestone: M3. Public Adapter Preservation And Benchmark Source Guardrails
+- Current milestone state: implemented; code-review requested
 - Last reviewed milestone: M2. Untrack Local Codex Mirror And Update Contributor Guidance
-- Review status: M2 code-review clean-with-notes; no material findings
-- Remaining in-scope implementation milestones: M3
-- Next stage: implement M3
+- Review status: M3 code-review requested; M2 code-review was clean-with-notes with no material findings
+- Remaining in-scope implementation milestones: none
+- Next stage: code-review M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 is not implemented, and explain-change, verify, and PR handoff have not happened.
+- Reason final closeout is or is not ready: M3 code-review, final explain-change, verify, and PR handoff have not happened.
 
 ## Non-goals
 
@@ -295,7 +295,7 @@ If `scripts/test-build-skills.py` is not added because coverage lands in an exis
 - [x] 2026-05-12: test spec created and activated.
 - [x] M1. Local Mirror Temp-Output Generation - closed after clean code-review
 - [x] M2. Untrack Local Codex Mirror And Update Contributor Guidance - closed after clean code-review
-- [ ] M3. Public Adapter Preservation And Benchmark Source Guardrails - planned
+- [x] M3. Public Adapter Preservation And Benchmark Source Guardrails - implemented; code-review requested
 
 ## Decision log
 
@@ -351,6 +351,14 @@ If `scripts/test-build-skills.py` is not added because coverage lands in an exis
 - 2026-05-12 M2: `python -m py_compile scripts/validation_selection.py scripts/test-select-validation.py scripts/test-skill-validator.py` passed.
 - 2026-05-12 M2: `git diff --check -- .gitignore README.md AGENTS.md CONSTITUTION.md docs/workflows.md scripts docs/plans/2026-05-12-single-authored-skill-source-first-slice.md docs/plan.md docs/changes/2026-05-12-single-authored-skill-source-first-slice` passed.
 - 2026-05-12 M2 code-review: clean-with-notes; no material findings; detailed review record not required.
+- 2026-05-12 M3: `python scripts/test-token-cost-report-validation.py` passed.
+- 2026-05-12 M3: `python scripts/test-adapter-distribution.py` passed.
+- 2026-05-12 M3: `python scripts/build-adapters.py --version 0.1.1 --check` passed.
+- 2026-05-12 M3: `python scripts/validate-adapters.py --version 0.1.1` passed.
+- 2026-05-12 M3: `python scripts/build-skills.py --check` passed.
+- 2026-05-12 M3: `python scripts/validate-token-cost-report.py tests/fixtures/token-cost/reports/valid-final-pass/v0.1.1.yaml` passed.
+- 2026-05-12 M3: `test -n "$(git ls-files 'dist/adapters/*/*/skills/*/SKILL.md' 'dist/adapters/*/.*/skills/*/SKILL.md')"` passed.
+- 2026-05-12 M3: `! git ls-files | rg '(^|/)rigorloop-adapter-.*\.(zip|tar\.gz)$'` passed.
 
 ## Outcome and retrospective
 
@@ -359,4 +367,4 @@ If `scripts/test-build-skills.py` is not added because coverage lands in an exis
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for `implement M3`; it is not ready for final verification or PR handoff until M3 and the required downstream gates complete.
+- This plan is ready for `code-review M3`; it is not ready for final verification or PR handoff until M3 review and the required downstream gates complete.

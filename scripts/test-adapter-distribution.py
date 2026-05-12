@@ -2250,6 +2250,69 @@ release_gate:
         self.assertNotIn("marketplace package", combined)
         self.assertNotIn("package-manager distribution", combined)
 
+    def test_public_adapter_compatibility_surface_remains_tracked(self) -> None:
+        result = subprocess.run(
+            [
+                "git",
+                "ls-files",
+                "dist/adapters/*/.*/skills/*/SKILL.md",
+            ],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=True,
+        )
+        tracked = result.stdout.splitlines()
+
+        for adapter in SUPPORTED_ADAPTERS:
+            with self.subTest(adapter=adapter):
+                self.assertTrue(
+                    any(path.startswith(f"dist/adapters/{adapter}/") for path in tracked),
+                    f"expected tracked generated public skill copies for {adapter}",
+                )
+
+    def test_public_adapter_readme_documents_metadata_and_install_transition(self) -> None:
+        text = (ROOT / "dist" / "adapters" / "README.md").read_text(encoding="utf-8")
+
+        self.assertIn("canonical `skills/`", text)
+        self.assertIn("Do not edit generated adapter skill files by hand", text)
+        self.assertIn("`dist/adapters/manifest.yaml`", text)
+        self.assertIn("support matrix", text)
+        self.assertIn("repository-tree install", text)
+        self.assertIn("release assets", text)
+        self.assertIn("`.codex/skills/`", text)
+        self.assertIn("not a public adapter install source", text)
+
+    def test_adapter_manifest_remains_metadata_only(self) -> None:
+        manifest_path = ROOT / "dist" / "adapters" / "manifest.yaml"
+        manifest = manifest_path.read_text(encoding="utf-8")
+
+        self.assertIn("version:", manifest)
+        self.assertIn("skills:", manifest)
+        self.assertIn("command_aliases:", manifest)
+        self.assertNotIn("# ", manifest)
+        self.assertNotIn("## ", manifest)
+        self.assertNotIn("description:", manifest)
+        self.assertNotIn("argument-hint:", manifest)
+        self.assertNotIn("When to use", manifest)
+        self.assertNotIn("How to use", manifest)
+
+    def test_generated_adapter_archives_are_not_committed(self) -> None:
+        result = subprocess.run(
+            ["git", "ls-files"],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=True,
+        )
+        archives = [
+            path
+            for path in result.stdout.splitlines()
+            if path.endswith(".zip") or path.endswith(".tar.gz")
+        ]
+
+        self.assertEqual([], [path for path in archives if "rigorloop-adapter-" in path])
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

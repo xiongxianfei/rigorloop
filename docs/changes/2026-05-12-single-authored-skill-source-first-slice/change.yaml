@@ -17,12 +17,19 @@ requirements:
   - Keep public adapter output untouched in the first slice.
   - Document the current source boundary for contributors.
   - Keep lifecycle plan state current for milestone handoff.
+  - Preserve tracked public adapter skill copies during the compatibility window.
+  - Keep dist/adapters/manifest.yaml as tracked metadata without generated skill bodies.
+  - Add tracked dist/adapters/README.md install and migration guidance.
+  - Reject .codex/skills as a public-surface token-cost benchmark source.
+  - Prove no generated adapter archives are committed.
 tests:
   - scripts/test-build-skills.py covers build-skills temp-output generation and validation.
   - scripts/test-select-validation.py covers selector routing for local mirror generation checks.
   - scripts/test-skill-validator.py covers contributor docs and generated-output boundary assertions.
   - scripts/validate-skills.py covers canonical skill validity.
   - scripts/build-skills.py --check covers generated local mirror validation without tracked .codex/skills.
+  - scripts/test-token-cost-report-validation.py covers rejection of .codex/skills as a public benchmark source and acceptance of dist/adapters/codex/.agents/skills/.
+  - scripts/test-adapter-distribution.py covers tracked public adapter skill copies, dist/adapters/README.md, metadata-only manifest content, and absence of generated adapter archives.
 validation:
   - command: python scripts/test-build-skills.py
     result: pass
@@ -70,6 +77,40 @@ validation:
     result: pass
   - command: git diff --check -- .gitignore README.md AGENTS.md CONSTITUTION.md docs/workflows.md scripts docs/plans/2026-05-12-single-authored-skill-source-first-slice.md docs/plan.md docs/changes/2026-05-12-single-authored-skill-source-first-slice
     result: pass
+  - command: python scripts/test-token-cost-report-validation.py
+    result: pass
+  - command: python scripts/test-adapter-distribution.py
+    result: pass
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass
+  - command: python scripts/build-skills.py --check
+    result: pass
+  - command: python scripts/validate-token-cost-report.py tests/fixtures/token-cost/reports/valid-final-pass/v0.1.1.yaml
+    result: pass
+  - command: test -n "$(git ls-files 'dist/adapters/*/*/skills/*/SKILL.md' 'dist/adapters/*/.*/skills/*/SKILL.md')"
+    result: pass
+  - command: "! git ls-files | rg '(^|/)rigorloop-adapter-.*\\.(zip|tar\\.gz)$'"
+    result: pass
+  - command: python scripts/validate-readme.py README.md
+    result: pass
+  - command: python scripts/validate-readme.py README.md --vision-markers
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-single-authored-skill-source-first-slice/change.yaml
+    result: pass
+  - command: python -m py_compile scripts/adapter_distribution.py scripts/validate-token-cost-report.py scripts/test-adapter-distribution.py scripts/test-token-cost-report-validation.py
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path README.md --path docs/workflows.md --path dist/adapters/README.md --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path scripts/validate-token-cost-report.py --path scripts/test-token-cost-report-validation.py --path docs/changes/2026-05-12-single-authored-skill-source-first-slice/change.yaml --path docs/changes/2026-05-12-single-authored-skill-source-first-slice/explain-change.md --path docs/plans/2026-05-12-single-authored-skill-source-first-slice.md --path docs/plan.md
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-12-single-authored-skill-source-first-slice/change.yaml --path docs/changes/2026-05-12-single-authored-skill-source-first-slice/explain-change.md --path docs/plan.md --path docs/plans/2026-05-12-single-authored-skill-source-first-slice.md --path docs/workflows.md
+    result: pass_with_existing_lifecycle_language_warnings
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass
+  - command: python scripts/test-select-validation.py
+    result: pass
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass
 changed_files:
   - .gitignore
   - .codex/skills/**
@@ -77,16 +118,21 @@ changed_files:
   - AGENTS.md
   - CONSTITUTION.md
   - docs/workflows.md
+  - dist/adapters/README.md
+  - scripts/adapter_distribution.py
   - scripts/build-skills.py
   - scripts/skill_validation.py
   - scripts/ci.sh
   - scripts/validation_selection.py
   - scripts/test-build-skills.py
+  - scripts/test-adapter-distribution.py
   - scripts/test-select-validation.py
+  - scripts/test-token-cost-report-validation.py
+  - scripts/validate-token-cost-report.py
   - docs/changes/2026-05-12-single-authored-skill-source-first-slice/change.yaml
   - docs/changes/2026-05-12-single-authored-skill-source-first-slice/explain-change.md
   - docs/plans/2026-05-12-single-authored-skill-source-first-slice.md
   - docs/plan.md
 review:
-  status: implementation_m2_review_requested
+  status: implementation_m3_review_requested
   unresolved_items: 0

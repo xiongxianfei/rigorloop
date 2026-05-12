@@ -55,7 +55,7 @@ To install one adapter, copy that adapter package root's contents into a project
 
 `skills/` is the only authored skill source. `.codex/skills/` is generated local Codex runtime output and ignored by Git. Regenerate it with `python scripts/build-skills.py` when needed.
 
-Public adapter packages under `dist/adapters/` remain tracked generated installable output during the compatibility window. Adapter packages under `dist/adapters/` are generated release output, and `.codex/skills/` remains a separate generated local Codex runtime mirror for this repository.
+Public adapter packages under `dist/adapters/` remain tracked generated installable output during the compatibility window. Adapter packages under `dist/adapters/` are generated release output, and `.codex/skills/` remains a separate generated local Codex runtime mirror for this repository. When a later release retires repository-tree adapter install, generated adapter archives will be published as release assets with tracked metadata and checksums.
 
 Adapter compatibility claims are versioned. If external tool contracts change, update the affected adapter contract through the RigorLoop lifecycle before changing release claims.
 
@@ -151,6 +151,7 @@ The normative contract lives in [specs/rigorloop-workflow.md](specs/rigorloop-wo
   - `dist/adapters/`
 - `skills/` is the only authored skill source. `.codex/skills/` is generated local Codex runtime output and ignored by Git. Regenerate it with `python scripts/build-skills.py` when needed.
 - Public adapter packages under `dist/adapters/` remain tracked generated installable output during the compatibility window.
+- Public-surface token-cost benchmarks must identify public adapter output such as `dist/adapters/codex/.agents/skills/`, not repository-local `.codex/skills/`.
 - Execution plans follow:
   - `docs/examples/plans/example-plan.md`
 
