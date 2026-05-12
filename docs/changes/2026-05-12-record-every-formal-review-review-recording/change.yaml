@@ -18,7 +18,7 @@ tests:
   - Future test-spec coverage for clean receipt roots and review-log indexing.
   - Future validator coverage for clean receipt structure and no empty review-resolution requirement.
 review:
-  status: m2_review_requested
+  status: m2_closed_ready_m3
   unresolved_items: 0
   review_log: docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md
   review_resolution: docs/changes/2026-05-12-record-every-formal-review-review-recording/review-resolution.md
@@ -131,6 +131,8 @@ validation:
     result: pass_m2_cr_m2_002_fix_state_sync
   - command: git diff --check --
     result: pass_m2_cr_m2_002_fix
+  - command: code-review M2 rerun
+    result: clean_with_notes_no_material_findings_r3
 changed_files:
   - docs/proposals/2026-05-12-record-every-formal-review.md
   - specs/formal-review-recording.md
@@ -148,6 +150,7 @@ changed_files:
   - docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/code-review-m1-r1.md
   - docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/code-review-m2-r1.md
   - docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/code-review-m2-r2.md
+  - docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/code-review-m2-r3.md
   - docs/examples/formal-review-recording/README.md
   - docs/examples/formal-review-recording/clean-review-receipt-root.md
   - scripts/change_metadata_semantics.py
