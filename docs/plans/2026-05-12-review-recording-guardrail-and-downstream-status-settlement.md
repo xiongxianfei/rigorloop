@@ -31,13 +31,13 @@ Example artifacts currently live in active-looking paths such as `docs/plans/000
 ## Current Handoff Summary
 
 - Current milestone: M2. Formal Review Skill Recording Output Guardrail
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M1. Examples Surface And Validator Routing
 - Review status: M1 code-review clean-with-notes; no material findings
-- Remaining in-scope implementation milestones: M2, M3
-- Next stage: implement M2
+- Remaining in-scope implementation milestones: M2 review and M3
+- Next stage: code-review M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 is closed, M2 and M3 are not implemented, generated output is not refreshed, and final explain-change, verify, and PR handoff are not complete.
+- Reason final closeout is or is not ready: M1 is closed, M2 implementation is awaiting code-review, M3 is not implemented, generated output is not refreshed, and final explain-change, verify, and PR handoff are not complete.
 
 ## Non-goals
 
@@ -114,7 +114,7 @@ Example artifacts currently live in active-looking paths such as `docs/plans/000
 
 ### M2. Formal Review Skill Recording Output Guardrail
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: update canonical formal review skills with concise `Recording status` output guidance, complete finding shape, deterministic change-ID selection pointer, and status-sync exclusions.
 - Requirements: `R24`-`R31l`, `R33`-`R33b`
 - Files/components likely touched:
@@ -253,6 +253,7 @@ Also run explicit artifact lifecycle validation over the proposal, spec, test sp
 - [x] 2026-05-12: M1 moved the plan example to `docs/examples/plans/example-plan.md`, added formal review recording examples, taught selector routing to classify `docs/examples/**` as non-lifecycle examples, and updated active guidance references.
 - [x] 2026-05-12: M1 retained `docs/changes/0001-skill-validator/` as a validator fixture and historical proof pack because it remains referenced by existing validator tests, README-facing specs, and workflow compatibility specs.
 - [x] 2026-05-12: M1 code-review returned `clean-with-notes` with no material findings; no detailed review record was required.
+- [x] 2026-05-12: M2 added static validator coverage for formal review `Recording status` output and updated the five formal review skills plus the shared isolation/recording block.
 - [x] M1. Examples Surface And Validator Routing - closed
 - [ ] M2. Formal Review Skill Recording Output Guardrail
 - [ ] M3. Generated Output Refresh And Final Static Proof
@@ -284,6 +285,9 @@ Also run explicit artifact lifecycle validation over the proposal, spec, test sp
 - `git diff --check -- docs/examples docs/plans docs/changes/0001-skill-validator AGENTS.md CONSTITUTION.md README.md docs/workflows.md scripts specs/rigorloop-workflow.test.md specs/plan-index-lifecycle-ownership.test.md specs/single-source-of-workflow-state.test.md docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement docs/plan.md` passed after M1.
 - M1 code-review reran `python scripts/test-artifact-lifecycle-validator.py`, `python scripts/test-select-validation.py`, and `python scripts/test-skill-validator.py`; all passed.
 - M1 code-review checked stale old plan-example references with `rg -n "docs/plans/0000-00-00-example-plan|0000-00-00-example-plan" README.md AGENTS.md CONSTITUTION.md docs/workflows.md scripts specs`; remaining hits are only the governing spec/test-spec migration assertions.
+- M2 first added failing static coverage in `scripts/test-skill-validator.py` for formal review `Recording status` output, complete material-finding shape, review artifact path fields, negative exact status-sync fields, and the short change-ID selection pointer.
+- `python scripts/test-skill-validator.py` passed after updating the shared isolation/recording block and the five canonical formal review skill expected-output shapes.
+- `python scripts/validate-skills.py` passed after M2 canonical skill updates.
 
 ## Outcome and retrospective
 

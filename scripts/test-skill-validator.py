@@ -1144,6 +1144,53 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             with self.subTest(term=term):
                 self.assertNotIn(term, canonical)
 
+    def test_formal_review_skills_define_recording_status_output(self) -> None:
+        required_terms = [
+            "Recording status output",
+            "`Recording status` is separate from the review verdict.",
+            "`not-required`",
+            "`recorded`",
+            "`blocked`",
+            "Recording blocker",
+            "Review record",
+            "Review log",
+            "Review resolution",
+            "Finding ID",
+            "Severity",
+            "Location",
+            "Evidence",
+            "Required outcome",
+            "Safe resolution path",
+            "`needs-decision` rationale",
+            "Do not merely tell the user that review artifacts should be created.",
+            "Use the formal review recording change-ID selection rule.",
+            "If no change ID can",
+            "be selected, report `Recording status: blocked`",
+        ]
+        forbidden_exact_fields = [
+            "- Status settlement recommendation:",
+            "- Status sync:",
+            "- Status artifact:",
+            "- Status sync blocker:",
+        ]
+        forbidden_long_change_id_terms = [
+            "YYYY-MM-DD-<reviewed-artifact-or-topic>-review-recording",
+            "Generated review-recording change ID",
+            "Existing active change root",
+        ]
+
+        for skill_name in FORMAL_REVIEW_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            for term in required_terms:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, body)
+            for term in forbidden_exact_fields:
+                with self.subTest(skill=skill_name, forbidden_field=term):
+                    self.assertNotIn(term, body)
+            for term in forbidden_long_change_id_terms:
+                with self.subTest(skill=skill_name, long_rule=term):
+                    self.assertNotIn(term, body)
+
     def test_shared_isolation_and_recording_block_defines_broad_material_rule(self) -> None:
         canonical = extract_markdown_block(
             SHARED_REVIEW_BLOCK_PATH.read_text(encoding="utf-8"),
