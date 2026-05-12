@@ -60,9 +60,9 @@ Likely implementation surfaces:
 - Last reviewed milestone: M3. Public Adapter Preservation And Benchmark Source Guardrails
 - Review status: M3 code-review clean-with-notes; no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: final explain-change, verify, and PR handoff have not happened.
+- Reason final closeout is or is not ready: final verify and PR handoff have not happened.
 
 ## Non-goals
 
@@ -360,6 +360,7 @@ If `scripts/test-build-skills.py` is not added because coverage lands in an exis
 - 2026-05-12 M3: `test -n "$(git ls-files 'dist/adapters/*/*/skills/*/SKILL.md' 'dist/adapters/*/.*/skills/*/SKILL.md')"` passed.
 - 2026-05-12 M3: `! git ls-files | rg '(^|/)rigorloop-adapter-.*\.(zip|tar\.gz)$'` passed.
 - 2026-05-12 M3 code-review: clean-with-notes; no material findings; detailed review record not required.
+- 2026-05-12 explain-change: final durable rationale recorded in `docs/changes/2026-05-12-single-authored-skill-source-first-slice/explain-change.md`.
 
 ## Outcome and retrospective
 
@@ -368,4 +369,4 @@ If `scripts/test-build-skills.py` is not added because coverage lands in an exis
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for `explain-change`; it is not ready for final verification or PR handoff until explain-change and the required downstream gates complete.
+- This plan is ready for `verify`; it is not ready for PR handoff until verify and the required downstream gates complete.
