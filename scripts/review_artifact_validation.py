@@ -3,9 +3,14 @@
 
 from __future__ import annotations
 
+import importlib.util
 import re
+import sys
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
+
+from change_metadata_semantics import validate_clean_receipt_root_review_metadata
 
 
 APPROVED_DISPOSITIONS = frozenset(
@@ -205,6 +210,7 @@ def validate_change_root(change_root: Path, *, mode: str = "structure") -> Revie
         resolution, resolution_findings = _parse_review_resolution(resolution_path, mode)
         findings.extend(resolution_findings)
 
+    findings.extend(_validate_clean_receipt_change_metadata(change_root, finding_records, log_entries, mode))
     findings.extend(_validate_review_relationships(change_root, review_records, finding_records, log_entries, resolution, mode))
     findings.extend(_validate_finding_relationships(resolution_path, finding_records, resolution, mode))
     findings.extend(_validate_clean_receipt_resolution_absence(resolution_path, finding_records, log_entries, resolution, mode))
@@ -1020,6 +1026,49 @@ def _validate_clean_receipt_resolution_absence(
     ]
 
 
+def _validate_clean_receipt_change_metadata(
+    change_root: Path,
+    finding_records: list[FindingRecord],
+    log_entries: list[ReviewLogEntry],
+    mode: str,
+) -> list[ValidationFinding]:
+    if finding_records:
+        return []
+    if not any(entry.recording_status == "recorded" for entry in log_entries):
+        return []
+
+    metadata_path = change_root / "change.yaml"
+    if not metadata_path.exists():
+        return [
+            ValidationFinding(
+                path=metadata_path,
+                line=None,
+                mode=mode,
+                message="change.yaml is required for clean receipt roots",
+            )
+        ]
+
+    try:
+        metadata = _load_change_metadata(metadata_path)
+    except Exception as exc:  # noqa: BLE001 - preserve parser detail as validator evidence.
+        return [
+            ValidationFinding(
+                path=metadata_path,
+                line=None,
+                mode=mode,
+                message=f"change.yaml could not be parsed: {exc}",
+            )
+        ]
+
+    return [
+        ValidationFinding(path=metadata_path, line=None, mode=mode, message=message)
+        for message in validate_clean_receipt_root_review_metadata(
+            metadata,
+            require_clean_receipt_root=True,
+        )
+    ]
+
+
 def _validate_log_finding_lists(
     finding_records: list[FindingRecord],
     log_entries: list[ReviewLogEntry],
@@ -1384,6 +1433,17 @@ def _round_number(value: str) -> int | None:
 
 def _read_lines(path: Path) -> list[str]:
     return path.read_text(encoding="utf-8").splitlines()
+
+
+def _load_change_metadata(path: Path) -> Any:
+    script_path = Path(__file__).with_name("validate-change-metadata.py")
+    spec = importlib.util.spec_from_file_location("validate_change_metadata_for_review_artifacts", script_path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError("could not load change metadata parser")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module.load_yaml(path)
 
 
 def _collect_fields(lines: list[str], *, start_line: int = 1) -> dict[str, list[FieldValue]]:

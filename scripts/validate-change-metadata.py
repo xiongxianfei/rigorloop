@@ -10,6 +10,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from change_metadata_semantics import validate_clean_receipt_root_review_metadata
+
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_PATH = ROOT / "schemas" / "change.schema.json"
@@ -320,6 +322,7 @@ def validate_metadata_semantics(data: Any) -> list[str]:
         review_log = review.get("review_log")
         if review_log is not None and not isinstance(review_log, str):
             errors.append("review.review_log: expected string")
+    errors.extend(validate_clean_receipt_root_review_metadata(data))
 
     artifacts = data.get("artifacts")
     if not isinstance(artifacts, dict):

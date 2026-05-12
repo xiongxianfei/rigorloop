@@ -438,6 +438,44 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
         replace_field(root / "reviews" / "spec-review-r1.md", "Recording status", "blocked")
         self.assertFails(root, "clean receipt Recording status must be recorded")
 
+    def test_clean_receipt_root_requires_change_metadata_contract(self) -> None:
+        cases = [
+            (
+                "  reviewed_artifact: specs/example.md\n",
+                "",
+                "review.reviewed_artifact is required for clean receipt roots",
+            ),
+            (
+                "  review_log: tests/fixtures/review-artifacts/valid-clean-receipt-root/review-log.md\n",
+                "",
+                "review.review_log is required for clean receipt roots",
+            ),
+            (
+                "  status: clean\n",
+                "",
+                "review.status must identify clean receipt root status",
+            ),
+            (
+                "  unresolved_items: 0\n",
+                "",
+                "review.unresolved_items must be 0 for clean receipt roots",
+            ),
+            (
+                "  unresolved_items: 0\n",
+                "  unresolved_items: 1\n",
+                "review.unresolved_items must be 0 for clean receipt roots",
+            ),
+        ]
+        for old, new, expected in cases:
+            with self.subTest(expected=expected):
+                root = self.clean_receipt_fixture()
+                metadata_path = root / "change.yaml"
+                metadata_path.write_text(
+                    metadata_path.read_text(encoding="utf-8").replace(old, new),
+                    encoding="utf-8",
+                )
+                self.assertFails(root, expected)
+
     def test_clean_receipt_root_rejects_empty_resolution_file(self) -> None:
         root = self.clean_receipt_fixture()
         write_text(
