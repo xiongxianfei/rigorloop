@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-12 Record every formal review](plans/2026-05-12-record-every-formal-review.md) - active execution plan with M1-M5 closed and final verify next.
+- [2026-05-12 Record every formal review](plans/2026-05-12-record-every-formal-review.md) - active execution plan with M1-M5 closed, local final verify passed, and PR handoff next.
 - [2026-05-10 Token cost measurement baseline and proposal scope preservation](plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md) - active execution plan with M1-M5 closed, PR #40 open, and local PR-mode CI selector fix passed; hosted CI rerun is pending.
 
 ## Blocked
