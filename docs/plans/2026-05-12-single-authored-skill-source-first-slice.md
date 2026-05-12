@@ -62,13 +62,13 @@ Likely implementation surfaces:
 ## Current Handoff Summary
 
 - Current milestone: M1. Local Mirror Temp-Output Generation
-- Current milestone state: review-requested
-- Last reviewed milestone: none
-- Review status: M1 implementation complete; code-review requested
-- Remaining in-scope implementation milestones: M1, M2, M3
-- Next stage: code-review M1
+- Current milestone state: closed
+- Last reviewed milestone: M1. Local Mirror Temp-Output Generation
+- Review status: M1 code-review clean-with-notes; no material findings
+- Remaining in-scope implementation milestones: M2, M3
+- Next stage: implement M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 is awaiting code-review, M2-M3 are not implemented, and review-resolution if triggered, explain-change, verify, and PR handoff have not happened.
+- Reason final closeout is or is not ready: M2-M3 are not implemented, and explain-change, verify, and PR handoff have not happened.
 
 ## Non-goals
 
@@ -97,7 +97,7 @@ Requirements `R24`-`R42`, `R44`-`R48`, `R50`, `R57`-`R58`, and full release-arti
 
 ### M1. Local Mirror Temp-Output Generation
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: make `.codex/skills/` generation and validation work without requiring tracked `.codex/skills/` files.
 - Requirements: `R10`-`R17`, `R51`-`R56`, `R59`-`R60`
 - Files/components likely touched:
@@ -299,7 +299,7 @@ If `scripts/test-build-skills.py` is not added because coverage lands in an exis
 - [x] 2026-05-12: execution plan created.
 - [x] 2026-05-12: plan-review approved with no material findings.
 - [x] 2026-05-12: test spec created and activated.
-- [ ] M1. Local Mirror Temp-Output Generation - review-requested
+- [x] M1. Local Mirror Temp-Output Generation - closed after clean code-review
 - [ ] M2. Untrack Local Codex Mirror And Update Contributor Guidance - planned
 - [ ] M3. Public Adapter Preservation And Benchmark Source Guardrails - planned
 
@@ -334,6 +334,7 @@ If `scripts/test-build-skills.py` is not added because coverage lands in an exis
 - 2026-05-12 M1: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...` passed with the existing `docs/plan.md` lifecycle-language warning.
 - 2026-05-12 M1: `python -m py_compile scripts/build-skills.py scripts/skill_validation.py scripts/validation_selection.py scripts/test-build-skills.py scripts/test-select-validation.py` passed.
 - 2026-05-12 M1: `git diff --check -- scripts docs/plans/2026-05-12-single-authored-skill-source-first-slice.md docs/plan.md specs/single-authored-skill-source-generated-output.test.md specs/single-authored-skill-source-generated-output.md docs/changes/2026-05-12-single-authored-skill-source-first-slice` passed.
+- 2026-05-12 M1 code-review: clean-with-notes; no material findings; detailed review record not required.
 
 ## Outcome and retrospective
 
@@ -342,4 +343,4 @@ If `scripts/test-build-skills.py` is not added because coverage lands in an exis
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for `code-review` of M1; it is not ready for M2, final verification, or PR handoff until M1 review closes and the required downstream gates complete.
+- This plan is ready for `implement M2`; it is not ready for final verification or PR handoff until M2-M3 and the required downstream gates complete.
