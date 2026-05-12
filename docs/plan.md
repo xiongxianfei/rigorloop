@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-12 Downstream status settlement before reliance](plans/2026-05-12-downstream-status-settlement-before-reliance.md) - active execution plan for implementing first-slice upstream status settlement before reliance in `spec`, `architecture`, and `plan`, with static proof, generated output refresh, and review-recording closeout. Current next stage: code-review M1.
+- [2026-05-12 Downstream status settlement before reliance](plans/2026-05-12-downstream-status-settlement-before-reliance.md) - active execution plan for implementing first-slice upstream status settlement before reliance in `spec`, `architecture`, and `plan`, with static proof, generated output refresh, and review-recording closeout. Current next stage: code-review M1 rerun.
 - [2026-05-10 Token cost measurement baseline and proposal scope preservation](plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md) - active execution plan with M1-M5 closed, PR #40 open, and local PR-mode CI selector fix passed; hosted CI rerun is pending.
 
 ## Blocked

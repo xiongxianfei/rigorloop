@@ -41,12 +41,12 @@ The likely implementation surfaces are:
 
 - Current milestone: M1
 - Current milestone state: review-requested
-- Last reviewed milestone: none
-- Review status: M1 implementation complete; code-review pending
+- Last reviewed milestone: M1
+- Review status: code-review R1 changes-requested; `CR-001` accepted and fixed; rerun code-review pending
 - Remaining in-scope implementation milestones: M1, M2
-- Next stage: code-review M1
+- Next stage: code-review M1 rerun
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 code-review, M2 generated output refresh, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M1 rerun code-review, M2 generated output refresh, explain-change, verify, and PR handoff remain.
 
 ## Non-goals
 
@@ -201,7 +201,7 @@ git diff --check -- skills .codex/skills dist/adapters scripts docs/proposals/20
 - [x] 2026-05-12: spec-review R2 approved the amended spec.
 - [x] 2026-05-12: plan-review approved the execution plan with no material findings.
 - [x] 2026-05-12: test-spec created active proof-planning surface for M1-M2.
-- [x] M1. Canonical Skill Guidance And Static Proof - review-requested
+- [x] M1. Canonical Skill Guidance And Static Proof - review-requested after `CR-001` fix
 - [ ] M2. Generated Output Refresh And Final Static Proof - planned
 
 ## Decision log
@@ -229,6 +229,10 @@ git diff --check -- skills .codex/skills dist/adapters scripts docs/proposals/20
 - M1 validation: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording` passed with 2 review records, 1 finding, 2 log entries, and 1 resolution entry.
 - M1 validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-downstream-status-settlement-before-reliance.md --path specs/downstream-status-settlement-before-reliance.md --path specs/downstream-status-settlement-before-reliance.test.md --path docs/plans/2026-05-12-downstream-status-settlement-before-reliance.md --path docs/plan.md --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/change.yaml --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/review-log.md --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/review-resolution.md` passed with the existing unrelated `docs/plan.md` lifecycle-language warning.
 - M1 validation: `git diff --check -- skills scripts docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording docs/plans/2026-05-12-downstream-status-settlement-before-reliance.md docs/plan.md` passed.
+- Code-review R1 found material finding `CR-001`: static proof and skill guidance omit required blocked-settlement and edit-permission semantics. Review record: `docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/reviews/code-review-r1.md`.
+- Review-resolution for `CR-001` accepted the finding and fixed M1 by tightening skill guidance and validator assertions.
+- M1 fix validation: `python scripts/test-skill-validator.py` passed after the `CR-001` fix.
+- M1 fix validation: `python scripts/validate-skills.py` passed after the `CR-001` fix.
 
 ## Outcome and retrospective
 
