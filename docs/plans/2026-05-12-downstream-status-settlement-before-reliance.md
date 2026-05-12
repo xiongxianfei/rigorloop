@@ -1,6 +1,6 @@
 # Downstream Status Settlement Before Reliance Plan
 
-- Status: active
+- Status: done
 - Owner: maintainers
 - Start date: 2026-05-12
 - Last updated: 2026-05-12
@@ -40,13 +40,13 @@ The likely implementation surfaces are:
 ## Current Handoff Summary
 
 - Current milestone: lifecycle-closeout
-- Current milestone state: branch-ready
+- Current milestone state: closed
 - Last reviewed milestone: M2
 - Review status: code-review M2 clean-with-notes; no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: final local verification passed; PR handoff remains.
+- Next stage: PR #46 review
+- Final closeout readiness: PR #46 opened
+- Reason final closeout is or is not ready: all implementation milestones, review-resolution, explain-change, verify, and PR handoff are complete locally; hosted CI was pending/not observed at PR creation.
 
 ## Non-goals
 
@@ -205,6 +205,7 @@ git diff --check -- skills .codex/skills dist/adapters scripts docs/proposals/20
 - [x] M2. Generated Output Refresh And Final Static Proof - closed after clean code-review
 - [x] 2026-05-12: explain-change recorded durable rationale and handed off to verify.
 - [x] 2026-05-12: verify passed final local validation and marked the branch ready for PR handoff.
+- [x] 2026-05-12: PR #46 opened for review; hosted CI was pending/not observed at handoff.
 
 ## Decision log
 
@@ -261,9 +262,9 @@ git diff --check -- skills .codex/skills dist/adapters scripts docs/proposals/20
 
 ## Outcome and retrospective
 
-- Implemented first-slice upstream status settlement before reliance for `spec`, `architecture`, and `plan`, with static proof, generated output refresh, review-resolution closeout, durable explain-change evidence, and final local verification.
+- Implemented first-slice upstream status settlement before reliance for `spec`, `architecture`, and `plan`, with static proof, generated output refresh, review-resolution closeout, durable explain-change evidence, final local verification, and PR #46 handoff.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Branch readiness: `verify` passed with verdict `ready`; PR handoff is the next stage.
+- This plan is closed locally and handed off to PR #46 for review.
