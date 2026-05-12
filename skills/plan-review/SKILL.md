@@ -47,12 +47,15 @@ If a safe resolution cannot be chosen without an owner decision, use a `needs-de
 
 ## Isolation and Recording
 
-Isolation governs handoff. Recording follows material findings.
+Isolation governs handoff. Recording follows formal review triggers.
 
 A direct or review-only request remains isolated by default: it does
 not automatically continue into downstream workflow stages.
 
 Isolation does not suppress recording.
+
+Every supported formal lifecycle review invocation requires durable review
+recording.
 
 Every material finding requires a durable change-local review record
 under:
@@ -83,25 +86,30 @@ Use the formal review recording change-ID selection rule. If no change ID can
 be selected, report `Recording status: blocked` and state the smallest action
 needed.
 
-Clean reviews with no material findings remain lightweight and do not
-require detailed review files.
+Clean formal reviews use lightweight review receipts. Material findings use
+detailed review records.
 
 ### Recording status output
 
 `Recording status` is separate from the review verdict.
 
-Use exactly one:
+For supported formal lifecycle review invocations, use exactly one:
 
-- `not-required`: no material findings and no detailed-record trigger.
 - `recorded`: required review-recording artifacts were created or updated.
 - `blocked`: required review-recording artifacts could not be created or updated.
+
+`not-required` is reserved for non-formal review-like requests outside the
+formal lifecycle review model.
 
 For material findings, `recorded` requires a detailed review record,
 `review-log.md`, and `review-resolution.md`.
 
-For no-material detailed-record triggers, `recorded` requires a detailed
-review record and `review-log.md`. Do not require an empty
-`review-resolution.md` for a no-material review event.
+For clean formal reviews, `recorded` requires a lightweight review receipt and
+`review-log.md`.
+
+For no-material detailed-record triggers, `recorded` requires a detailed review
+record and `review-log.md`. Do not require an empty `review-resolution.md` for a
+no-material review event.
 
 Formal review output must include `Recording status`, `Recording blocker`,
 `Review record`, `Review log`, and `Review resolution` (`path`,
@@ -136,7 +144,7 @@ Examples of stage-owned non-approval outcomes include `revise`, `changes-request
 
 When a detailed review file is created, `review-log.md` indexes it. Material findings need stable `Finding ID` values and disposition in `review-resolution.md`.
 
-In this contract, clean reviews can settle artifact-locally when no detailed review record triggers apply. For no-material review events, no-material detailed records need `review-log.md` but not an empty `review-resolution.md`. Likewise, artifact-local settlement must not replace detailed review records when a trigger applies.
+In this contract, clean formal reviews use lightweight review receipts. A clean review receipt proves the review happened and does not by itself settle the reviewed artifact's lifecycle status. For no-material review events, no-material detailed records need `review-log.md` but not an empty `review-resolution.md`. Likewise, artifact-local settlement must not replace detailed review records when a trigger applies.
 
 Do not add a dedicated `pr-review` stage. It is an unsupported review stage unless a later approved spec extends the stage set. A material maintainer PR comment that needs disposition must first be promoted into a supported formal lifecycle review record with a stable `Finding ID`.
 

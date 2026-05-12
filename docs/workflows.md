@@ -125,10 +125,10 @@ Workflow safety topics MUST NOT be removed when public skill text is compressed.
 - PR text remains the reviewer-facing summary surface; it does not replace required durable reasoning for non-trivial work.
 - Standalone `review-resolution.md` and `verify-report.md` remain conditional and are added only when their governing workflow triggers apply.
 - Detailed formal review files under `docs/changes/<change-id>/reviews/` are stage-neutral across proposal, spec, architecture, plan, and code review.
-- Review recording has one material-finding rule: Material review findings are always recorded. All material findings require detailed change-local review files.
+- Every supported formal lifecycle review creates durable review evidence or reports blocked recording. Clean formal reviews use a lightweight clean review receipt. Material review findings are always recorded. All material findings require detailed change-local review files.
 - Direct or review-only requests remain isolated by default. Isolation stops handoff, not recording.
 - If a detailed file is required before a change-local root exists, create the smallest initial review-record root first. Material findings require `change.yaml`, `review-log.md`, `review-resolution.md`, and `reviews/<stage>-r<n>.md`; no-material triggers require `change.yaml`, `review-log.md`, and `reviews/<stage>-r<n>.md` without an empty `review-resolution.md`.
-- Clean required reviews with no material findings may settle in the reviewed artifact when no detailed-record trigger applies.
+- Clean required reviews with no material findings still create a clean review receipt or report blocked recording. A clean review receipt proves the review happened; it does not settle artifact lifecycle/status by itself.
 - When material findings exist for a non-trivial change, use `docs/changes/<change-id>/review-resolution.md` and approved dispositions: `accepted`, `rejected`, `deferred`, `partially-accepted`, and `needs-decision`.
 - `needs-decision` is not final. It keeps `review-resolution.md` at `Closeout status: open` and blocks `explain-change`, `verify`, and `pr` until an authorized owner resolves or explicitly defers it.
 - `Closeout status: closed` means every material finding has a final disposition, `review-log.md` lists no open findings, and the required action, rationale, follow-up, and validation evidence records for that disposition exist.

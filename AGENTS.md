@@ -40,8 +40,9 @@ Do not silently blend conflicting higher-priority instructions. Call out the con
 - `VISION.md` is the canonical project-vision artifact. Proposals created or substantively revised after this spec is adopted include `Vision fit`.
 - README content between `<!-- vision:start -->` and `<!-- vision:end -->` is generated from `VISION.md`; README front-matter is not the source of truth when it conflicts with `VISION.md`.
 - For non-trivial work, the baseline change-local artifact pack is `docs/changes/<change-id>/change.yaml` plus durable Markdown reasoning. Standalone `review-resolution.md` and `verify-report.md` remain conditional under the workflow contract.
+- Every supported formal lifecycle review creates durable review evidence or reports blocked recording. Clean formal reviews use a lightweight clean review receipt; material findings use detailed change-local review records.
 - Material review findings are always recorded with evidence, required outcome, and safe resolution or `needs-decision` rationale. All material findings require detailed change-local review records and `review-resolution.md` dispositions `accepted`, `rejected`, `deferred`, `partially-accepted`, or `needs-decision`; `needs-decision` keeps `Closeout status: open`, while `Closeout status: closed` requires final dispositions, validation evidence, and no `review-log.md` open findings.
-- Isolation stops downstream handoff, not recording. Isolated review-only material findings still require detailed change-local review records. Clean reviews may settle artifact-locally when no detailed-record trigger applies; no-material detailed records need `review-log.md` but not an empty `review-resolution.md`.
+- Isolation stops downstream handoff, not recording. Isolated review-only material findings still require detailed change-local review records. Clean review receipts prove the review happened but do not settle artifact lifecycle/status; no-material detailed records need `review-log.md` but not an empty `review-resolution.md`.
 - Keep `AGENTS.md` practical. Move workflow detail to `docs/workflows.md` and feature-specific detail to `specs/`.
 
 ## Planning and workflow

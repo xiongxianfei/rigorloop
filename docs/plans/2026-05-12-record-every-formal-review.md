@@ -63,14 +63,14 @@ Generated local Codex runtime output under `.codex/skills/` is not authored or t
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Review artifact and metadata validation
-- Current milestone state: closed
+- Current milestone: M3. Formal review skill and governance alignment
+- Current milestone state: review-requested
 - Last reviewed milestone: M2. Review artifact and metadata validation
 - Review status: M2 code-review clean-with-notes
 - Remaining in-scope implementation milestones: M3, M4, M5
-- Next stage: implement M3
+- Next stage: code-review M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 and M2 are closed, but M3-M5 remain open, explain-change and verify evidence do not exist, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M1 and M2 are closed, M3 is awaiting code-review, M4-M5 remain open, explain-change and verify evidence do not exist, and PR handoff is not prepared.
 
 ## Milestones
 
@@ -148,7 +148,7 @@ Generated local Codex runtime output under `.codex/skills/` is not authored or t
 
 ### M3. Formal review skill and governance alignment
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Update formal review skills and governing guidance so operators create clean receipts for every formal review and reserve `not-required` for non-formal requests.
 - Requirements: `R14`-`R15a`, `R21`-`R31p`.
 - Files/components likely touched:
@@ -178,11 +178,11 @@ Generated local Codex runtime output under `.codex/skills/` is not authored or t
 - Expected observable result: formal review skills and governing docs consistently require a receipt or blocked recording for every formal lifecycle review.
 - Commit message: `M3: align formal review skills with receipt recording`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] hand off to code-review for M3
+  - [x] targeted validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] hand off to code-review for M3
   - [ ] material findings resolved or explicitly dispositioned
   - [ ] milestone state updated before starting M4
 - Risks: copied shared sections can drift across skills.
@@ -299,6 +299,7 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - 2026-05-12: Code-review M2 rerun found material finding `CR-M2-002`; M2 moved to resolution-needed.
 - 2026-05-12: Implemented the accepted `CR-M2-002` fix by requiring `review.status: clean` for clean-root-shaped metadata; M2 returned to review-requested.
 - 2026-05-12: Code-review M2 rerun passed with no material findings and M2 moved to closed.
+- 2026-05-12: Implemented M3 by updating the shared formal review recording block, copied formal review skills, governance guidance, and static skill assertions; M3 moved to review-requested.
 
 ## Decision Log
 
@@ -314,6 +315,7 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - `CR-M2-001` showed the positive clean receipt fixture was insufficient proof for the minimal `change.yaml.review` contract. The fix adds negative tests for missing or invalid clean receipt root metadata.
 - `CR-M2-002` showed invalid status still passes: a validator-identified clean receipt root with `review.status: approved` is accepted. The next M2 fix must require `review.status: clean` under strict clean-root validation.
 - The `CR-M2-002` fix needed a narrower trigger than any metadata with `review_log`; active change metadata can legitimately carry `review_log` while not being a clean receipt root.
+- M3 intentionally leaves `.codex/skills/` and `dist/adapters/` untouched; generated output refresh and adapter validation are M4 responsibilities.
 
 ## Validation Notes
 
@@ -366,6 +368,14 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - 2026-05-12: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-record-every-formal-review-review-recording` passed after `code-review M2 r4` with 9 reviews, 3 findings, 9 log entries, and 3 resolution entries.
 - 2026-05-12: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/code-review-m2-r4.md` passed after `code-review M2 r4`.
 - 2026-05-12: `git diff --check -- docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/code-review-m2-r4.md` passed after `code-review M2 r4`.
+- 2026-05-12: `python scripts/test-skill-validator.py` failed as expected after M3 test updates because the shared block, copied formal review skills, and governance docs still used the old material-triggered clean-review recording wording.
+- 2026-05-12: `python scripts/test-skill-validator.py` passed for M3 with 67 tests.
+- 2026-05-12: `python scripts/validate-skills.py` passed for M3 with 23 skill files.
+- 2026-05-12: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path specs/formal-review-recording.md` passed for M3 and emitted the existing reviewer-attention warning for `docs/workflows.md` line 209 lifecycle wording.
+- 2026-05-12: `git diff --check -- templates/shared skills CONSTITUTION.md AGENTS.md docs/workflows.md scripts` passed for M3.
+- 2026-05-12: `python scripts/validate-change-metadata.py docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml` passed after M3 handoff metadata updates.
+- 2026-05-12: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml` passed after M3 handoff metadata updates.
+- 2026-05-12: `git diff --check --` passed after M3 handoff metadata updates.
 
 ## Outcome and Retrospective
 
