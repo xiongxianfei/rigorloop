@@ -37,6 +37,12 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "skills",
         parallel_safe=True,
     ),
+    "skills.generation_regression": CheckCatalogEntry(
+        "skills.generation_regression",
+        "python scripts/test-build-skills.py",
+        "skills",
+        parallel_safe=True,
+    ),
     "skills.drift": CheckCatalogEntry(
         "skills.drift",
         "python scripts/build-skills.py --check",
@@ -469,7 +475,12 @@ def _apply_path_selection(
             affected_roots.add(root)
         _add_check(selected, "skills.validate", "Changed canonical skill source requires skill validation.")
         _add_check(selected, "skills.regression", "Changed canonical skill source requires skill regression fixtures.")
-        _add_check(selected, "skills.drift", "Changed canonical skill source requires generated skill drift check.")
+        _add_check(
+            selected,
+            "skills.generation_regression",
+            "Changed canonical skill source requires local mirror generation regression fixtures.",
+        )
+        _add_check(selected, "skills.drift", "Changed canonical skill source requires generated skill mirror validation.")
         _add_check(selected, "adapters.drift", "Public adapter output can be affected by canonical skill changes.")
         _add_lifecycle_warning_check(
             selected,
@@ -479,7 +490,12 @@ def _apply_path_selection(
         return
 
     if category == "generated-skills":
-        _add_check(selected, "skills.drift", "Generated Codex skill output must match canonical skills.")
+        _add_check(
+            selected,
+            "skills.generation_regression",
+            "Generated Codex skill output requires local mirror generation regression fixtures.",
+        )
+        _add_check(selected, "skills.drift", "Generated Codex skill output must be reproducible from canonical skills.")
         return
 
     if category in {"generated-adapters", "adapters"}:
@@ -681,7 +697,12 @@ def _apply_path_selection(
         return
 
     if category == "validator-skills":
-        _add_check(selected, "skills.regression", "Changed skill validator requires skill regression fixtures.")
+        _add_check(selected, "skills.regression", "Changed skill generation or validation requires skill regression fixtures.")
+        _add_check(
+            selected,
+            "skills.generation_regression",
+            "Changed skill generation or validation requires local mirror generation regression fixtures.",
+        )
         return
 
     if category in {"ci-workflow", "templates"}:
@@ -872,7 +893,13 @@ def _path_category(path: str) -> str | None:
         return "validator-artifact-lifecycle"
     if path in {"scripts/validate-change-metadata.py", "scripts/test-change-metadata-validator.py"}:
         return "validator-change-metadata"
-    if path in {"scripts/validate-skills.py", "scripts/skill_validation.py", "scripts/test-skill-validator.py"}:
+    if path in {
+        "scripts/build-skills.py",
+        "scripts/validate-skills.py",
+        "scripts/skill_validation.py",
+        "scripts/test-build-skills.py",
+        "scripts/test-skill-validator.py",
+    }:
         return "validator-skills"
     if path in {
         "scripts/analyze-codex-jsonl.py",

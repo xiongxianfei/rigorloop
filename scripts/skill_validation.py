@@ -199,10 +199,10 @@ def validate_skill_file(path: Path, schema: dict) -> tuple[list[str], str | None
     return errors, name.strip() if isinstance(name, str) and name.strip() else None
 
 
-def validate_skill_tree(target: Path) -> ValidationResult:
+def validate_skill_tree(target: Path, *, allow_generated: bool = False) -> ValidationResult:
     resolved_target = target.resolve()
     resolved_generated = GENERATED_SKILLS_DIR.resolve()
-    if _is_relative_to(resolved_target, resolved_generated):
+    if not allow_generated and _is_relative_to(resolved_target, resolved_generated):
         return ValidationResult(
             checked_files=[],
             errors=[

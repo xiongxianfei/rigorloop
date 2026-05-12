@@ -1,0 +1,61 @@
+change_id: 2026-05-12-single-authored-skill-source-first-slice
+title: Single authored skill source first slice
+classification: generated-output-migration
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-12-single-authored-skill-source-and-generated-adapter-output-cleanup.md
+  spec: specs/single-authored-skill-source-generated-output.md
+  architecture: docs/architecture/system/architecture.md
+  adr: docs/adr/ADR-20260512-generated-skill-output-release-artifacts.md
+  plan: docs/plans/2026-05-12-single-authored-skill-source-first-slice.md
+  test_spec: specs/single-authored-skill-source-generated-output.test.md
+  explain_change: docs/changes/2026-05-12-single-authored-skill-source-first-slice/explain-change.md
+requirements:
+  - Replace tracked local Codex mirror drift checks with generated temp-output validation.
+  - Preserve local Codex mirror generation from canonical skills.
+  - Keep public adapter output untouched in M1.
+  - Keep lifecycle plan state current for milestone handoff.
+tests:
+  - scripts/test-build-skills.py covers build-skills temp-output generation and validation.
+  - scripts/test-select-validation.py covers selector routing for local mirror generation checks.
+  - scripts/validate-skills.py covers canonical skill validity.
+  - scripts/build-skills.py --check covers generated local mirror validation without tracked .codex/skills.
+validation:
+  - command: python scripts/test-build-skills.py
+    result: pass
+  - command: python scripts/test-select-validation.py
+    result: pass
+  - command: python scripts/test-skill-validator.py
+    result: pass
+  - command: python scripts/validate-skills.py
+    result: pass
+  - command: python scripts/build-skills.py --check
+    result: pass
+  - command: tmpdir="$(mktemp -d)" && python scripts/build-skills.py --output-dir "$tmpdir/skills" && python scripts/validate-skills.py "$tmpdir/skills"
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-single-authored-skill-source-first-slice/change.yaml
+    result: pass
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path scripts/build-skills.py --path scripts/skill_validation.py --path scripts/ci.sh --path scripts/validation_selection.py --path scripts/test-select-validation.py --path scripts/test-build-skills.py --path docs/plans/2026-05-12-single-authored-skill-source-first-slice.md --path docs/plan.md --path specs/single-authored-skill-source-generated-output.test.md --path docs/changes/2026-05-12-single-authored-skill-source-first-slice/change.yaml --path docs/changes/2026-05-12-single-authored-skill-source-first-slice/explain-change.md
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-12-single-authored-skill-source-first-slice/change.yaml --path docs/changes/2026-05-12-single-authored-skill-source-first-slice/explain-change.md --path docs/plan.md --path docs/plans/2026-05-12-single-authored-skill-source-first-slice.md --path specs/single-authored-skill-source-generated-output.test.md
+    result: pass_with_existing_docs_plan_merge_dependent_language_warning
+  - command: python -m py_compile scripts/build-skills.py scripts/skill_validation.py scripts/validation_selection.py scripts/test-build-skills.py scripts/test-select-validation.py
+    result: pass
+  - command: git diff --check -- scripts docs/plans/2026-05-12-single-authored-skill-source-first-slice.md docs/plan.md specs/single-authored-skill-source-generated-output.test.md specs/single-authored-skill-source-generated-output.md docs/changes/2026-05-12-single-authored-skill-source-first-slice
+    result: pass
+changed_files:
+  - scripts/build-skills.py
+  - scripts/skill_validation.py
+  - scripts/ci.sh
+  - scripts/validation_selection.py
+  - scripts/test-build-skills.py
+  - scripts/test-select-validation.py
+  - docs/changes/2026-05-12-single-authored-skill-source-first-slice/change.yaml
+  - docs/changes/2026-05-12-single-authored-skill-source-first-slice/explain-change.md
+  - docs/plans/2026-05-12-single-authored-skill-source-first-slice.md
+  - docs/plan.md
+review:
+  status: implementation_m1_review_requested
+  unresolved_items: 0
