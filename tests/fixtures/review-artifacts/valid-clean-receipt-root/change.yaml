@@ -9,7 +9,7 @@ requirements:
 tests:
   - T27
 review:
-  status: approved
+  status: clean
   unresolved_items: 0
   reviewed_artifact: specs/example.md
   review_log: tests/fixtures/review-artifacts/valid-clean-receipt-root/review-log.md

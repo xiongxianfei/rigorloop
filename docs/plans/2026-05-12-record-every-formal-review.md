@@ -64,13 +64,13 @@ Generated local Codex runtime output under `.codex/skills/` is not authored or t
 ## Current Handoff Summary
 
 - Current milestone: M2. Review artifact and metadata validation
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M2. Review artifact and metadata validation
-- Review status: M2 code-review changes-requested, material finding CR-M2-001
+- Review status: M2 code-review changes-requested; CR-M2-001 accepted and fixed, rerun review required
 - Remaining in-scope implementation milestones: M2, M3, M4, M5
-- Next stage: review-resolution M2, then implement M2 fixes
+- Next stage: code-review M2 rerun
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 is closed, but M2 has an open material code-review finding, M2-M5 remain open, explain-change and verify evidence do not exist, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M1 is closed and M2 is ready for code-review rerun, but M2-M5 remain open, explain-change and verify evidence do not exist, and PR handoff is not prepared.
 
 ## Milestones
 
@@ -109,7 +109,7 @@ Generated local Codex runtime output under `.codex/skills/` is not authored or t
 
 ### M2. Review artifact and metadata validation
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Teach repository validation to accept and reject clean receipt roots according to the approved spec.
 - Requirements: `R4h`-`R4l`, `R8d`-`R8f`, `R10`-`R10c`, `R16`-`R16b`, `R24`-`R26e`.
 - Files/components likely touched:
@@ -141,7 +141,7 @@ Generated local Codex runtime output under `.codex/skills/` is not authored or t
   - [ ] decision log updated if needed
   - [x] validation notes updated
   - [x] hand off to code-review for M2
-  - [ ] material findings resolved or explicitly dispositioned
+  - [x] material findings resolved or explicitly dispositioned
   - [x] milestone state updated before starting M3
 - Risks: tightening `review-log.md` parsing could break historical review records.
 - Rollback/recovery: keep new checks fixture-scoped first; if historical records fail, document the compatibility rule and add explicit legacy handling rather than weakening new clean receipt validation.
@@ -295,6 +295,7 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - 2026-05-12: Code-review M1 passed with no material findings and M1 moved to closed.
 - 2026-05-12: Implemented M2 by adding clean receipt review-log table parsing, no-empty-resolution validation for clean roots, and minimal `change.yaml.review` semantic checks.
 - 2026-05-12: Code-review M2 found material finding `CR-M2-001`; M2 moved to resolution-needed.
+- 2026-05-12: Implemented the accepted `CR-M2-001` fix by adding shared clean receipt root metadata semantics and negative validator coverage; M2 returned to review-requested.
 
 ## Decision Log
 
@@ -307,6 +308,7 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - The existing test spec still includes old clean-review artifact-local-only coverage and must be amended before validator implementation.
 - The new clean receipt root fixture intentionally exposes the current review-artifact parser gap: it fails structure validation because table-based clean receipt log entries are not parsed yet. M2 owns that validator support.
 - `python scripts/test-review-artifact-validator.py` exposed a pre-existing alignment gap: `skills/workflow/SKILL.md` named `needs-decision` but not the supported `partially-accepted` disposition. M2 fixed the smallest canonical wording mismatch so the existing contract-alignment test passes.
+- `CR-M2-001` showed the positive clean receipt fixture was insufficient proof for the minimal `change.yaml.review` contract. The fix adds negative tests for missing or invalid clean receipt root metadata.
 
 ## Validation Notes
 
@@ -331,6 +333,14 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - 2026-05-12: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/formal-review-recording.test.md --path specs/formal-review-recording.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml` passed for M2 state sync.
 - 2026-05-12: `git diff --check -- scripts tests/fixtures docs/examples/formal-review-recording skills/workflow/SKILL.md` passed for M2.
 - 2026-05-12: `code-review M2` recorded material finding `CR-M2-001`: clean receipt root metadata validation accepts missing `review.reviewed_artifact` and nonzero `review.unresolved_items`.
+- 2026-05-12: `python scripts/test-review-artifact-validator.py` passed for the `CR-M2-001` fix with 35 tests.
+- 2026-05-12: `python scripts/test-change-metadata-validator.py` passed for the `CR-M2-001` fix with 7 tests.
+- 2026-05-12: `python scripts/validate-change-metadata.py tests/fixtures/review-artifacts/valid-clean-receipt-root/change.yaml` passed for the `CR-M2-001` fix.
+- 2026-05-12: `python scripts/validate-review-artifacts.py --mode structure tests/fixtures/review-artifacts/valid-clean-receipt-root` passed for the `CR-M2-001` fix with 1 review, 0 findings, 1 log entry, and 0 resolution entries.
+- 2026-05-12: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-record-every-formal-review-review-recording` passed for the `CR-M2-001` fix with 6 reviews, 2 findings, 6 log entries, and 2 resolution entries.
+- 2026-05-12: `python scripts/validate-change-metadata.py docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml tests/fixtures/review-artifacts/valid-clean-receipt-root/change.yaml` passed for the `CR-M2-001` fix.
+- 2026-05-12: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/formal-review-recording.test.md --path specs/formal-review-recording.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml` passed for the `CR-M2-001` fix state sync.
+- 2026-05-12: `git diff --check --` passed for the `CR-M2-001` fix.
 
 ## Outcome and Retrospective
 

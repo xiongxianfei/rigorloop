@@ -86,6 +86,47 @@ class ChangeMetadataValidatorFixtureTests(unittest.TestCase):
             )
             self.assertPathFails(target, "review.review_log: expected string")
 
+    def test_clean_receipt_review_metadata_required_fields_fail(self) -> None:
+        fixture_text = CLEAN_RECEIPT_ROOT.read_text(encoding="utf-8")
+        cases = [
+            (
+                "  reviewed_artifact: specs/example.md\n",
+                "",
+                "review.reviewed_artifact is required for clean receipt roots",
+            ),
+            (
+                "  review_log: tests/fixtures/review-artifacts/valid-clean-receipt-root/review-log.md\n",
+                "",
+                "review.review_log is required for clean receipt roots",
+            ),
+            (
+                "  status: clean\n",
+                "",
+                "review.status: missing required field",
+            ),
+            (
+                "  unresolved_items: 0\n",
+                "",
+                "review.unresolved_items: missing required field",
+            ),
+            (
+                "  unresolved_items: 0\n",
+                "  unresolved_items: 1\n",
+                "review.unresolved_items must be 0 for clean receipt roots",
+            ),
+            (
+                "  unresolved_items: 0\n",
+                "  unresolved_items: \"0\"\n",
+                "review.unresolved_items: expected integer",
+            ),
+        ]
+        for old, new, expected in cases:
+            with self.subTest(expected=expected):
+                with tempfile.TemporaryDirectory(prefix="change-metadata-clean-receipt-") as temp_dir:
+                    target = Path(temp_dir) / "change.yaml"
+                    target.write_text(fixture_text.replace(old, new), encoding="utf-8")
+                    self.assertPathFails(target, expected)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
