@@ -64,13 +64,13 @@ Generated local Codex runtime output under `.codex/skills/` is not authored or t
 ## Current Handoff Summary
 
 - Current milestone: M4. Generated outputs and adapter validation
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M3. Formal review skill and governance alignment
 - Review status: M3 code-review clean-with-notes
 - Remaining in-scope implementation milestones: M4, M5
-- Next stage: implement M4
+- Next stage: code-review M4
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1-M3 are closed, but M4-M5 remain open, explain-change and verify evidence do not exist, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M1-M3 are closed, M4 is awaiting code-review, M5 remains open, explain-change and verify evidence do not exist, and PR handoff is not prepared.
 
 ## Milestones
 
@@ -190,7 +190,7 @@ Generated local Codex runtime output under `.codex/skills/` is not authored or t
 
 ### M4. Generated outputs and adapter validation
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Refresh generated skill outputs after canonical skill changes and validate local and public adapter packages.
 - Requirements: `R15a`.
 - Files/components likely touched:
@@ -213,11 +213,11 @@ Generated local Codex runtime output under `.codex/skills/` is not authored or t
 - Expected observable result: generated local Codex mirror is reproducible and tracked public adapters match canonical skill text.
 - Commit message: `M4: refresh generated review skill adapters`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] hand off to code-review for M4
+  - [x] targeted validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] hand off to code-review for M4
   - [ ] material findings resolved or explicitly dispositioned
   - [ ] milestone state updated before starting M5
 - Risks: adapter generation may update unrelated generated files due to prior drift.
@@ -301,6 +301,7 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - 2026-05-12: Code-review M2 rerun passed with no material findings and M2 moved to closed.
 - 2026-05-12: Implemented M3 by updating the shared formal review recording block, copied formal review skills, governance guidance, and static skill assertions; M3 moved to review-requested.
 - 2026-05-12: Code-review M3 passed with no material findings and M3 moved to closed.
+- 2026-05-12: Implemented M4 by regenerating the local Codex mirror and tracked public adapter output after canonical skill changes; M4 moved to review-requested.
 
 ## Decision Log
 
@@ -317,6 +318,7 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - `CR-M2-002` showed invalid status still passes: a validator-identified clean receipt root with `review.status: approved` is accepted. The next M2 fix must require `review.status: clean` under strict clean-root validation.
 - The `CR-M2-002` fix needed a narrower trigger than any metadata with `review_log`; active change metadata can legitimately carry `review_log` while not being a clean receipt root.
 - M3 intentionally leaves `.codex/skills/` and `dist/adapters/` untouched; generated output refresh and adapter validation are M4 responsibilities.
+- M4 generated output includes the M3 formal review skill changes and an earlier canonical workflow skill update that had not yet been refreshed in public adapters. The generated workflow diffs are accepted as adapter drift cleanup produced by the repository generator, not hand edits.
 
 ## Validation Notes
 
@@ -382,6 +384,17 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - 2026-05-12: `python scripts/validate-change-metadata.py docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml` passed after `code-review M3 r1`.
 - 2026-05-12: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/code-review-m3-r1.md` passed after `code-review M3 r1`.
 - 2026-05-12: `git diff --check --` passed after `code-review M3 r1`.
+- 2026-05-12: `python scripts/build-skills.py --check` passed for M4 before generation.
+- 2026-05-12: `python scripts/build-adapters.py --version 0.1.1 --check` failed as expected before generation with 18 stale generated adapter files.
+- 2026-05-12: `python scripts/validate-adapters.py --version 0.1.1` failed as expected before generation with 18 stale generated adapter files.
+- 2026-05-12: `python scripts/test-adapter-distribution.py` failed as expected before generation because adapter output was stale.
+- 2026-05-12: `python scripts/build-skills.py` regenerated `.codex/skills/` local runtime output; `.codex/skills/` remains ignored and untracked.
+- 2026-05-12: `python scripts/build-adapters.py --version 0.1.1` regenerated tracked public adapter output under `dist/adapters/`.
+- 2026-05-12: `python scripts/build-adapters.py --version 0.1.1 --check` passed after generation.
+- 2026-05-12: `python scripts/validate-adapters.py --version 0.1.1` passed after generation.
+- 2026-05-12: `python scripts/test-adapter-distribution.py` passed after generation with 72 tests.
+- 2026-05-12: `python scripts/build-skills.py --check` passed after generation.
+- 2026-05-12: `git diff --check -- dist/adapters` passed after generation.
 
 ## Outcome and Retrospective
 
