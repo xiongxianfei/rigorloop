@@ -1,0 +1,376 @@
+change_id: 2026-05-12-record-every-formal-review-review-recording
+title: Record every formal review
+classification: workflow-governance-spec-amendment
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-12-record-every-formal-review.md
+  spec: specs/formal-review-recording.md
+  plan: docs/plans/2026-05-12-record-every-formal-review.md
+  review_resolution: docs/changes/2026-05-12-record-every-formal-review-review-recording/review-resolution.md
+  explain_change: docs/changes/2026-05-12-record-every-formal-review-review-recording/explain-change.md
+requirements:
+  - Accept the record-every-formal-review proposal before specification.
+  - Define the clean formal review receipt contract in the governing formal review recording spec.
+  - Preserve material-finding review records and review-resolution behavior.
+  - Keep clean receipts separate from artifact lifecycle/status settlement.
+  - Reserve Recording status not-required for non-formal review-like requests.
+tests:
+  - Spec-review approval or recorded material finding resolution.
+  - Future test-spec coverage for clean receipt roots and review-log indexing.
+  - Future validator coverage for clean receipt structure and no empty review-resolution requirement.
+review:
+  status: pr_open
+  unresolved_items: 0
+  review_log: docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md
+  review_resolution: docs/changes/2026-05-12-record-every-formal-review-review-recording/review-resolution.md
+validation:
+  - command: spec-review r1
+    result: changes_requested_sr_001_open
+  - command: spec revision for SR-001
+    result: clean_receipt_root_rule_added_pending_spec_review_rerun
+  - command: spec-review r2
+    result: approved_no_material_findings_sr_001_resolved
+  - command: architecture
+    result: canonical_architecture_updated_no_adr_required
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-record-every-formal-review-review-recording
+    result: pass_closeout_reviews_2_findings_1_log_entries_2_resolution_entries_1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml
+    result: pass_valid_change_metadata
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-record-every-formal-review.md --path specs/formal-review-recording.md --path docs/architecture/system/architecture.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-resolution.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/spec-review-r1.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/spec-review-r2.md
+    result: pass
+  - command: git diff --check -- docs/proposals/2026-05-12-record-every-formal-review.md specs/formal-review-recording.md docs/architecture/system/architecture.md docs/changes/2026-05-12-record-every-formal-review-review-recording
+    result: pass
+  - command: architecture-review r1
+    result: approved_no_material_findings
+  - command: plan
+    result: active_plan_created_ready_for_plan_review
+  - command: plan-review r1
+    result: approved_no_material_findings
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml
+    result: pass_valid_change_metadata_after_plan
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-record-every-formal-review-review-recording
+    result: pass_closeout_reviews_3_findings_1_log_entries_3_resolution_entries_1_after_plan
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-record-every-formal-review.md --path specs/formal-review-recording.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/plan.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-resolution.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/spec-review-r1.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/spec-review-r2.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/architecture-review-r1.md
+    result: pass_after_plan
+  - command: git diff --check -- docs/plan.md docs/plans/2026-05-12-record-every-formal-review.md docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml
+    result: pass_after_plan
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-record-every-formal-review-review-recording
+    result: pass_closeout_reviews_4_findings_1_log_entries_4_resolution_entries_1_after_plan_review
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml
+    result: pass_valid_change_metadata_after_plan_review
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-record-every-formal-review.md --path specs/formal-review-recording.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/plan.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-resolution.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/spec-review-r1.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/spec-review-r2.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/architecture-review-r1.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/plan-review-r1.md
+    result: pass_after_plan_review
+  - command: git diff --check -- docs/changes/2026-05-12-record-every-formal-review-review-recording
+    result: pass_after_plan_review
+  - command: test-spec
+    result: formal_review_recording_test_spec_updated_for_clean_receipts
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/formal-review-recording.test.md --path specs/formal-review-recording.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml
+    result: pass_after_test_spec_update
+  - command: git diff --check -- specs/formal-review-recording.test.md docs/plans/2026-05-12-record-every-formal-review.md docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml
+    result: pass_after_test_spec_update
+  - command: implement M1
+    result: clean_receipt_test_spec_fixture_and_example_ready_for_code_review
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/formal-review-recording.test.md --path specs/formal-review-recording.md
+    result: pass_m1
+  - command: python scripts/validate-change-metadata.py tests/fixtures/review-artifacts/valid-clean-receipt-root/change.yaml
+    result: pass_m1_fixture_metadata
+  - command: git diff --check -- specs/formal-review-recording.test.md tests/fixtures/review-artifacts docs/examples/formal-review-recording
+    result: pass_m1
+  - command: wc -w tests/fixtures/review-artifacts/valid-clean-receipt-root/reviews/spec-review-r1.md docs/examples/formal-review-recording/clean-review-receipt-root.md
+    result: pass_m1_receipt_fixture_66_words_example_183_words
+  - command: python scripts/validate-review-artifacts.py --mode structure tests/fixtures/review-artifacts/valid-clean-receipt-root
+    result: expected_fail_before_m2_table_log_entries_not_supported
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-record-every-formal-review.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/plan.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-resolution.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/spec-review-r1.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/spec-review-r2.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/architecture-review-r1.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/plan-review-r1.md
+    result: pass_m1
+  - command: code-review M1
+    result: clean_with_notes_no_material_findings
+  - command: python scripts/test-review-artifact-validator.py
+    result: pass_m2_34_tests
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_m2_6_tests
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-record-every-formal-review-review-recording
+    result: pass_m2_closeout_reviews_5_findings_1_log_entries_5_resolution_entries_1
+  - command: python scripts/validate-review-artifacts.py --mode structure tests/fixtures/review-artifacts/valid-clean-receipt-root
+    result: pass_m2_clean_receipt_root_reviews_1_findings_0_log_entries_1_resolution_entries_0
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml tests/fixtures/review-artifacts/valid-clean-receipt-root/change.yaml
+    result: pass_m2_change_metadata
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/formal-review-recording.test.md --path specs/formal-review-recording.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml
+    result: pass_m2_state_sync
+  - command: git diff --check -- scripts tests/fixtures docs/examples/formal-review-recording skills/workflow/SKILL.md
+    result: pass_m2
+  - command: code-review M2
+    result: changes_requested_cr_m2_001
+  - command: python scripts/test-review-artifact-validator.py
+    result: pass_m2_fix_35_tests
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_m2_fix_7_tests
+  - command: python scripts/validate-change-metadata.py tests/fixtures/review-artifacts/valid-clean-receipt-root/change.yaml
+    result: pass_m2_fix_clean_receipt_metadata
+  - command: python scripts/validate-review-artifacts.py --mode structure tests/fixtures/review-artifacts/valid-clean-receipt-root
+    result: pass_m2_fix_clean_receipt_structure
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-record-every-formal-review-review-recording
+    result: pass_m2_fix_closeout_reviews_6_findings_2_log_entries_6_resolution_entries_2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml tests/fixtures/review-artifacts/valid-clean-receipt-root/change.yaml
+    result: pass_m2_fix_change_metadata
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/formal-review-recording.test.md --path specs/formal-review-recording.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml
+    result: pass_m2_fix_state_sync
+  - command: git diff --check --
+    result: pass_m2_fix
+  - command: code-review M2 rerun
+    result: changes_requested_cr_m2_002
+  - command: python scripts/test-review-artifact-validator.py
+    result: pass_m2_cr_m2_002_fix_35_tests
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_m2_cr_m2_002_fix_7_tests
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml tests/fixtures/review-artifacts/valid-clean-receipt-root/change.yaml
+    result: pass_m2_cr_m2_002_fix_change_metadata
+  - command: python scripts/validate-review-artifacts.py --mode structure tests/fixtures/review-artifacts/valid-clean-receipt-root
+    result: pass_m2_cr_m2_002_fix_clean_receipt_structure
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-record-every-formal-review-review-recording
+    result: pass_m2_cr_m2_002_fix_closeout_reviews_7_findings_3_log_entries_7_resolution_entries_3
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/formal-review-recording.test.md --path specs/formal-review-recording.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml
+    result: pass_m2_cr_m2_002_fix_state_sync
+  - command: git diff --check --
+    result: pass_m2_cr_m2_002_fix
+  - command: code-review M2 rerun
+    result: clean_with_notes_no_material_findings_r3
+  - command: python scripts/test-review-artifact-validator.py
+    result: pass_m2_cr_m2_002_tightening_35_tests
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_m2_cr_m2_002_tightening_7_tests
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-record-every-formal-review-review-recording
+    result: pass_m2_cr_m2_002_tightening_closeout_reviews_8_findings_3_log_entries_8_resolution_entries_3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml tests/fixtures/review-artifacts/valid-clean-receipt-root/change.yaml
+    result: pass_m2_cr_m2_002_tightening_change_metadata
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/formal-review-recording.test.md --path specs/formal-review-recording.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml
+    result: pass_m2_cr_m2_002_tightening_state_sync
+  - command: git diff --check --
+    result: pass_m2_cr_m2_002_tightening
+  - command: code-review M2 r4
+    result: clean_with_notes_no_material_findings_r4
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-record-every-formal-review-review-recording
+    result: pass_after_code_review_m2_r4_reviews_9_findings_3_log_entries_9_resolution_entries_3
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/code-review-m2-r4.md
+    result: pass_after_code_review_m2_r4
+  - command: git diff --check -- docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/code-review-m2-r4.md
+    result: pass_after_code_review_m2_r4
+  - command: python scripts/test-skill-validator.py
+    result: expected_fail_m3_tests_before_skill_governance_alignment
+  - command: python scripts/test-skill-validator.py
+    result: pass_m3_67_tests
+  - command: python scripts/validate-skills.py
+    result: pass_m3_23_skill_files
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path specs/formal-review-recording.md
+    result: pass_m3_with_existing_docs_workflows_lifecycle_language_warning
+  - command: git diff --check -- templates/shared skills CONSTITUTION.md AGENTS.md docs/workflows.md scripts
+    result: pass_m3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml
+    result: pass_m3_handoff_metadata
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml
+    result: pass_m3_handoff_metadata
+  - command: git diff --check --
+    result: pass_m3_handoff_metadata
+  - command: code-review M3 r1
+    result: clean_with_notes_no_material_findings
+  - command: python scripts/test-skill-validator.py
+    result: pass_code_review_m3_67_tests
+  - command: python scripts/validate-skills.py
+    result: pass_code_review_m3_23_skill_files
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path specs/formal-review-recording.md
+    result: pass_code_review_m3_with_existing_docs_workflows_lifecycle_language_warning
+  - command: git diff --check -- templates/shared skills CONSTITUTION.md AGENTS.md docs/workflows.md scripts
+    result: pass_code_review_m3
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-record-every-formal-review-review-recording
+    result: pass_after_code_review_m3_reviews_10_findings_3_log_entries_10_resolution_entries_3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml
+    result: pass_after_code_review_m3
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/code-review-m3-r1.md
+    result: pass_after_code_review_m3
+  - command: git diff --check --
+    result: pass_after_code_review_m3
+  - command: python scripts/build-skills.py --check
+    result: pass_m4_before_generation
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: expected_fail_m4_before_generation_18_stale_adapter_files
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: expected_fail_m4_before_generation_18_stale_adapter_files
+  - command: python scripts/test-adapter-distribution.py
+    result: expected_fail_m4_before_generation_stale_adapter_output
+  - command: python scripts/build-skills.py
+    result: pass_m4_regenerated_local_codex_mirror_untracked
+  - command: python scripts/build-adapters.py --version 0.1.1
+    result: pass_m4_regenerated_public_adapter_output
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_m4_after_generation
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_m4_after_generation
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_m4_after_generation_72_tests
+  - command: python scripts/build-skills.py --check
+    result: pass_m4_after_generation
+  - command: git diff --check -- dist/adapters
+    result: pass_m4_after_generation
+  - command: code-review M4 r1
+    result: clean_with_notes_no_material_findings
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_code_review_m4
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_code_review_m4
+  - command: python scripts/build-skills.py --check
+    result: pass_code_review_m4
+  - command: git diff --check -- dist/adapters
+    result: pass_code_review_m4
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_code_review_m4_72_tests
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-record-every-formal-review-review-recording
+    result: pass_after_code_review_m4_reviews_11_findings_3_log_entries_11_resolution_entries_3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml
+    result: pass_after_code_review_m4
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/code-review-m4-r1.md
+    result: pass_after_code_review_m4
+  - command: git diff --check --
+    result: pass_after_code_review_m4
+  - command: implement M5
+    result: explain_change_recorded_lifecycle_handoff_ready_for_code_review
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-record-every-formal-review-review-recording
+    result: pass_m5
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml
+    result: pass_m5
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-record-every-formal-review.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/plan.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md
+    result: pass_m5
+  - command: bash scripts/ci.sh --mode explicit --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path scripts/review_artifact_validation.py --path scripts/test-review-artifact-validator.py --path templates/shared/review-isolation-and-recording.md --path skills/spec-review/SKILL.md --path skills/code-review/SKILL.md --path dist/adapters
+    result: expected_fail_m5_unclassified_directory_path
+  - command: bash scripts/ci.sh --mode explicit --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path scripts/review_artifact_validation.py --path scripts/test-review-artifact-validator.py --path templates/shared/review-isolation-and-recording.md --path skills/spec-review/SKILL.md --path skills/code-review/SKILL.md --path dist/adapters/codex/.agents/skills/spec-review/SKILL.md --path dist/adapters/codex/.agents/skills/code-review/SKILL.md
+    result: pass_m5
+  - command: git diff --check
+    result: pass_m5
+  - command: code-review M5 r1
+    result: clean_with_notes_no_material_findings
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-record-every-formal-review-review-recording
+    result: pass_code_review_m5
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml
+    result: pass_code_review_m5
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-record-every-formal-review.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/plan.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md
+    result: pass_code_review_m5
+  - command: bash scripts/ci.sh --mode explicit --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path scripts/review_artifact_validation.py --path scripts/test-review-artifact-validator.py --path templates/shared/review-isolation-and-recording.md --path skills/spec-review/SKILL.md --path skills/code-review/SKILL.md --path dist/adapters/codex/.agents/skills/spec-review/SKILL.md --path dist/adapters/codex/.agents/skills/code-review/SKILL.md
+    result: pass_code_review_m5
+  - command: git diff --check
+    result: pass_code_review_m5
+  - command: verify
+    result: branch_ready_local_final_verify_passed_ready_for_pr_stage
+  - command: python scripts/test-skill-validator.py
+    result: pass_post_pr_skill_prose_tightening_67_tests
+  - command: python scripts/validate-skills.py
+    result: pass_post_pr_skill_prose_tightening_23_skill_files
+  - command: python scripts/build-skills.py
+    result: pass_post_pr_skill_prose_tightening_regenerated_local_codex_mirror_untracked
+  - command: python scripts/build-adapters.py --version 0.1.1
+    result: pass_post_pr_skill_prose_tightening_regenerated_public_adapter_output
+  - command: python scripts/build-skills.py --check
+    result: pass_post_pr_skill_prose_tightening
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_post_pr_skill_prose_tightening
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_post_pr_skill_prose_tightening
+  - command: bash scripts/ci.sh --mode explicit --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path scripts/review_artifact_validation.py --path scripts/test-review-artifact-validator.py --path templates/shared/review-isolation-and-recording.md --path skills/spec-review/SKILL.md --path skills/code-review/SKILL.md --path dist/adapters/codex/.agents/skills/spec-review/SKILL.md --path dist/adapters/codex/.agents/skills/code-review/SKILL.md
+    result: pass_post_pr_skill_prose_tightening_selected_checks
+  - command: git diff --check
+    result: pass_post_pr_skill_prose_tightening
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-record-every-formal-review-review-recording
+    result: pass_post_pr_skill_prose_tightening_closeout_reviews_12_findings_3_log_entries_12_resolution_entries_3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml
+    result: pass_post_pr_skill_prose_tightening
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml --path specs/formal-review-recording.test.md --path templates/shared/review-isolation-and-recording.md --path skills/spec-review/SKILL.md --path skills/code-review/SKILL.md
+    result: pass_post_pr_skill_prose_tightening
+  - command: git diff --check
+    result: pass_post_pr_skill_prose_tightening_final
+  - command: gh run view 25763419259 --log-failed
+    result: hosted_ci_failed_selector_blocked_unclassified_change_metadata_semantics_and_review_artifact_fixture_paths
+  - command: python scripts/test-select-validation.py
+    result: pass_hosted_ci_selector_fix_58_tests
+  - command: python scripts/select-validation.py --mode explicit --path scripts/change_metadata_semantics.py --path tests/fixtures/review-artifacts/valid-clean-receipt-root/change.yaml --path tests/fixtures/review-artifacts/valid-clean-receipt-root/review-log.md --path tests/fixtures/review-artifacts/valid-clean-receipt-root/reviews/spec-review-r1.md
+    result: pass_hosted_ci_selector_fix_no_unclassified_paths
+  - command: bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path scripts/change_metadata_semantics.py --path tests/fixtures/review-artifacts/valid-clean-receipt-root/change.yaml --path tests/fixtures/review-artifacts/valid-clean-receipt-root/review-log.md --path tests/fixtures/review-artifacts/valid-clean-receipt-root/reviews/spec-review-r1.md
+    result: pass_hosted_ci_selector_fix_selected_checks
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml
+    result: pass_hosted_ci_selector_fix
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml --path scripts/validation_selection.py --path scripts/test-select-validation.py
+    result: pass_hosted_ci_selector_fix
+  - command: git diff --check
+    result: pass_hosted_ci_selector_fix
+  - command: bash scripts/ci.sh --mode pr --base 2df914c20bca7707aff3e3f4872d6e4858dc2c01 --head 87fc29d4011bf32aaab4b2c44ddee0103a2e5a02
+    result: pass_hosted_ci_selector_fix_pr_mode
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-record-every-formal-review-review-recording
+    result: pass_verify_reviews_12_findings_3_log_entries_12_resolution_entries_3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml
+    result: pass_verify
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-record-every-formal-review.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/plan.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md
+    result: pass_verify
+  - command: bash scripts/ci.sh --mode explicit --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path scripts/review_artifact_validation.py --path scripts/test-review-artifact-validator.py --path templates/shared/review-isolation-and-recording.md --path skills/spec-review/SKILL.md --path skills/code-review/SKILL.md --path dist/adapters/codex/.agents/skills/spec-review/SKILL.md --path dist/adapters/codex/.agents/skills/code-review/SKILL.md
+    result: pass_verify_selected_checks
+  - command: git diff --check
+    result: pass_verify
+  - command: gh pr create --base main --head record-every-formal-review --title "feat: record every formal review" --body-file .pr-body-record-every-formal-review.md
+    result: opened_pr_48
+changed_files:
+  - docs/proposals/2026-05-12-record-every-formal-review.md
+  - specs/formal-review-recording.md
+  - specs/formal-review-recording.test.md
+  - docs/architecture/system/architecture.md
+  - docs/plan.md
+  - docs/plans/2026-05-12-record-every-formal-review.md
+  - docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml
+  - docs/changes/2026-05-12-record-every-formal-review-review-recording/explain-change.md
+  - docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md
+  - docs/changes/2026-05-12-record-every-formal-review-review-recording/review-resolution.md
+  - docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/spec-review-r1.md
+  - docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/spec-review-r2.md
+  - docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/architecture-review-r1.md
+  - docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/plan-review-r1.md
+  - docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/code-review-m1-r1.md
+  - docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/code-review-m2-r1.md
+  - docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/code-review-m2-r2.md
+  - docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/code-review-m2-r3.md
+  - docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/code-review-m2-r4.md
+  - docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/code-review-m3-r1.md
+  - docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/code-review-m4-r1.md
+  - docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/code-review-m5-r1.md
+  - docs/examples/formal-review-recording/README.md
+  - docs/examples/formal-review-recording/clean-review-receipt-root.md
+  - AGENTS.md
+  - CONSTITUTION.md
+  - docs/workflows.md
+  - scripts/change_metadata_semantics.py
+  - scripts/review_artifact_validation.py
+  - scripts/test-change-metadata-validator.py
+  - scripts/test-review-artifact-validator.py
+  - scripts/test-skill-validator.py
+  - scripts/validate-change-metadata.py
+  - templates/shared/review-isolation-and-recording.md
+  - skills/proposal-review/SKILL.md
+  - skills/spec-review/SKILL.md
+  - skills/architecture-review/SKILL.md
+  - skills/plan-review/SKILL.md
+  - skills/code-review/SKILL.md
+  - skills/workflow/SKILL.md
+  - tests/fixtures/review-artifacts/valid-clean-receipt-root/change.yaml
+  - tests/fixtures/review-artifacts/valid-clean-receipt-root/review-log.md
+  - tests/fixtures/review-artifacts/valid-clean-receipt-root/reviews/spec-review-r1.md
+  - dist/adapters/claude/.claude/skills/architecture-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/code-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/plan-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/proposal-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/spec-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/workflow/SKILL.md
+  - dist/adapters/codex/.agents/skills/architecture-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/code-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/plan-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/proposal-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/spec-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/workflow/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/architecture-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/code-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/plan-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/proposal-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/spec-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/workflow/SKILL.md

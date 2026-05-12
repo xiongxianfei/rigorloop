@@ -672,6 +672,20 @@ def _apply_path_selection(
         )
         return
 
+    if category == "review-artifact-fixtures":
+        _add_check(
+            selected,
+            "review_artifacts.regression",
+            "Changed review artifact fixture requires review artifact regression fixtures.",
+        )
+        if path.endswith("/change.yaml"):
+            _add_check(
+                selected,
+                "change_metadata.regression",
+                "Changed review artifact metadata fixture requires change metadata regression fixtures.",
+            )
+        return
+
     if category == "validator-artifact-lifecycle":
         _add_check(
             selected,
@@ -866,6 +880,8 @@ def _path_category(path: str) -> str | None:
         return "vision"
     if path.startswith("tests/fixtures/artifact-lifecycle/"):
         return "artifact-lifecycle-fixtures"
+    if path.startswith("tests/fixtures/review-artifacts/"):
+        return "review-artifact-fixtures"
     if path.startswith("skills/"):
         return "skills"
     if path.startswith(".codex/skills/"):
@@ -901,7 +917,11 @@ def _path_category(path: str) -> str | None:
         "scripts/test-artifact-lifecycle-validator.py",
     }:
         return "validator-artifact-lifecycle"
-    if path in {"scripts/validate-change-metadata.py", "scripts/test-change-metadata-validator.py"}:
+    if path in {
+        "scripts/change_metadata_semantics.py",
+        "scripts/validate-change-metadata.py",
+        "scripts/test-change-metadata-validator.py",
+    }:
         return "validator-change-metadata"
     if path in {
         "scripts/build-skills.py",

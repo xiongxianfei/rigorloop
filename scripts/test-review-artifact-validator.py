@@ -353,6 +353,11 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
         self.addCleanupTree(root)
         return root
 
+    def clean_receipt_fixture(self) -> Path:
+        root = copy_fixture("valid-clean-receipt-root")
+        self.addCleanupTree(root)
+        return root
+
     def test_valid_structure_fixture_passes_module_and_cli(self) -> None:
         root = self.fixture()
         result = self.validate(root)
@@ -381,6 +386,117 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
         write_text(root / "reviews" / "code-review-r1.md", valid_clean_review_text())
         write_text(root / "review-log.md", valid_log_text("None", "None").replace("changes-requested", "approved"))
         self.assertPasses(root)
+
+    def test_clean_receipt_table_log_passes_without_resolution(self) -> None:
+        root = self.clean_receipt_fixture()
+        result = self.validate(root)
+        self.assertFalse(result.blocking_findings)
+        self.assertEqual(result.review_count, 1)
+        self.assertEqual(result.finding_count, 0)
+        self.assertEqual(result.review_log_entry_count, 1)
+        self.assertEqual(result.resolution_entry_count, 0)
+
+        cli_result = run_cli(root)
+        self.assertEqual(
+            cli_result.returncode,
+            0,
+            msg=f"stdout:\n{cli_result.stdout}\nstderr:\n{cli_result.stderr}",
+        )
+
+    def test_clean_receipt_table_requires_matching_record_and_zero_material_count(self) -> None:
+        root = self.clean_receipt_fixture()
+        log_text = (root / "review-log.md").read_text(encoding="utf-8")
+        (root / "review-log.md").write_text(
+            log_text.replace("reviews/spec-review-r1.md", "reviews/missing.md"),
+            encoding="utf-8",
+        )
+        self.assertFails(root, "Record does not match review file")
+
+        root = self.clean_receipt_fixture()
+        log_text = (root / "review-log.md").read_text(encoding="utf-8")
+        (root / "review-log.md").write_text(
+            log_text.replace("| approved | 0 | recorded |", "| approved | 1 | recorded |"),
+            encoding="utf-8",
+        )
+        self.assertFails(root, "clean receipt Material findings must be 0")
+
+    def test_clean_receipt_table_requires_recorded_status(self) -> None:
+        root = self.clean_receipt_fixture()
+        log_text = (root / "review-log.md").read_text(encoding="utf-8")
+        (root / "review-log.md").write_text(
+            log_text.replace("| approved | 0 | recorded |", "| approved | 0 | blocked |"),
+            encoding="utf-8",
+        )
+        self.assertFails(root, "clean receipt Recording must be recorded")
+
+    def test_clean_receipt_review_file_requires_receipt_metadata(self) -> None:
+        root = self.clean_receipt_fixture()
+        drop_field(root / "reviews" / "spec-review-r1.md", "Reviewed artifact")
+        self.assertFails(root, "clean receipt missing required field Reviewed artifact")
+
+        root = self.clean_receipt_fixture()
+        replace_field(root / "reviews" / "spec-review-r1.md", "Recording status", "blocked")
+        self.assertFails(root, "clean receipt Recording status must be recorded")
+
+    def test_clean_receipt_root_requires_change_metadata_contract(self) -> None:
+        cases = [
+            (
+                "  reviewed_artifact: specs/example.md\n",
+                "",
+                "review.reviewed_artifact is required for clean receipt roots",
+            ),
+            (
+                "  review_log: tests/fixtures/review-artifacts/valid-clean-receipt-root/review-log.md\n",
+                "",
+                "review.review_log is required for clean receipt roots",
+            ),
+            (
+                "  status: clean\n",
+                "",
+                "review.status must identify clean receipt root status",
+            ),
+            (
+                "  status: clean\n",
+                "  status: approved\n",
+                "review.status must be 'clean' for clean receipt roots",
+            ),
+            (
+                "  status: clean\n",
+                "  status: changes-requested\n",
+                "review.status must be 'clean' for clean receipt roots",
+            ),
+            (
+                "  unresolved_items: 0\n",
+                "",
+                "review.unresolved_items must be 0 for clean receipt roots",
+            ),
+            (
+                "  unresolved_items: 0\n",
+                "  unresolved_items: 1\n",
+                "review.unresolved_items must be 0 for clean receipt roots",
+            ),
+        ]
+        for old, new, expected in cases:
+            with self.subTest(expected=expected):
+                root = self.clean_receipt_fixture()
+                metadata_path = root / "change.yaml"
+                metadata_path.write_text(
+                    metadata_path.read_text(encoding="utf-8").replace(old, new),
+                    encoding="utf-8",
+                )
+                self.assertFails(root, expected)
+
+    def test_clean_receipt_root_rejects_empty_resolution_file(self) -> None:
+        root = self.clean_receipt_fixture()
+        write_text(
+            root / "review-resolution.md",
+            """
+            # Review Resolution
+
+            Closeout status: closed
+            """,
+        )
+        self.assertFails(root, "clean receipt root must not include review-resolution.md without material findings")
 
     def test_all_formal_lifecycle_stages_are_supported_and_pr_review_is_rejected(self) -> None:
         for stage in [

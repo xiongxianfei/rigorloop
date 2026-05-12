@@ -505,6 +505,12 @@ raise SystemExit({exit_code})
                 "checks": {"skills.regression", "skills.generation_regression"},
             },
             {
+                "path": "scripts/change_metadata_semantics.py",
+                "category": "validator-change-metadata",
+                "status": "ok",
+                "checks": {"change_metadata.regression"},
+            },
+            {
                 "path": "scripts/build-skills.py",
                 "category": "validator-skills",
                 "status": "ok",
@@ -563,6 +569,18 @@ raise SystemExit({exit_code})
                 "category": "artifact-lifecycle-fixtures",
                 "status": "ok",
                 "checks": {"artifact_lifecycle.regression"},
+            },
+            {
+                "path": "tests/fixtures/review-artifacts/valid-clean-receipt-root/review-log.md",
+                "category": "review-artifact-fixtures",
+                "status": "ok",
+                "checks": {"review_artifacts.regression"},
+            },
+            {
+                "path": "tests/fixtures/review-artifacts/valid-clean-receipt-root/change.yaml",
+                "category": "review-artifact-fixtures",
+                "status": "ok",
+                "checks": {"review_artifacts.regression", "change_metadata.regression"},
             },
             {
                 "path": "scripts/measure-skill-tokens.py",

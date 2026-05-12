@@ -163,13 +163,13 @@ Manual skill invocations and bugfix skill invocations remain isolated or explici
 
 When review feedback exists, each material finding MUST include evidence, a required outcome, and a safe resolution path or `needs-decision` rationale before it drives fixes.
 
-Material review findings MUST always be recorded. All material findings require detailed change-local review records. Isolation controls downstream handoff; it does not erase or downgrade material findings. Isolation stops handoff, not recording.
+Every supported formal lifecycle review MUST create durable review evidence or report blocked recording. Clean formal reviews use a lightweight clean review receipt. Material review findings MUST always be recorded. All material findings require detailed change-local review records. Isolation controls downstream handoff; it does not erase or downgrade review recording. Isolation stops handoff, not recording.
 
 A detailed change-local review record MUST be preserved for every material finding before review-driven fixes or downstream routing proceed. For isolated or review-only requests, the record is required even when no downstream handoff follows.
 
 When material findings exist for a non-trivial change, dispositions MUST be recorded in `review-resolution.md` using only `accepted`, `rejected`, `deferred`, `partially-accepted`, or `needs-decision`. `needs-decision` is not final and blocks `explain-change`, `verify`, and `pr` until resolved or explicitly deferred by an authorized owner.
 
-Clean required formal reviews with no material findings MAY settle in the reviewed artifact when no detailed-record trigger applies. A no-material detailed review record requires `review-log.md` but MUST NOT create an empty `review-resolution.md` solely because `reviews/` exists.
+Clean required formal reviews with no material findings MUST still create a clean review receipt or report blocked recording. A clean review receipt proves the review happened; it does not by itself settle the reviewed artifact's lifecycle status. A no-material detailed review record requires `review-log.md` but MUST NOT create an empty `review-resolution.md` solely because `reviews/` exists.
 
 `review-resolution.md` MUST use top-level `Closeout status: open` or `Closeout status: closed`. `Closeout status: closed` requires final dispositions, no `review-log.md` open findings, plus the disposition-specific action, rationale, follow-up, and validation evidence records required by the governing spec.
 
