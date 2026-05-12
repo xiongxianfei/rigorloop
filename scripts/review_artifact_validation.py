@@ -93,9 +93,12 @@ class ReviewLogEntry:
     round: str
     status: str
     detailed_record: str
-    resolution: str
+    resolution: str | None
     material_finding_ids: tuple[str, ...]
     open_finding_ids: tuple[str, ...]
+    material_findings_count: int | None = None
+    recording_status: str | None = None
+    record_label: str = "Detailed record"
 
 
 @dataclass(frozen=True)
@@ -204,6 +207,7 @@ def validate_change_root(change_root: Path, *, mode: str = "structure") -> Revie
 
     findings.extend(_validate_review_relationships(change_root, review_records, finding_records, log_entries, resolution, mode))
     findings.extend(_validate_finding_relationships(resolution_path, finding_records, resolution, mode))
+    findings.extend(_validate_clean_receipt_resolution_absence(resolution_path, finding_records, log_entries, resolution, mode))
     if mode == "closeout":
         findings.extend(_validate_closeout(finding_records, log_entries, resolution, mode))
 
@@ -308,6 +312,7 @@ def _parse_review_file(
     record_mode_field = _first_nonempty(fields, "Record mode")
     record_mode = record_mode_field.value if record_mode_field else None
     finding_records = _parse_finding_records(path, review_id, fields, mode, findings)
+    _validate_clean_receipt_review_fields(path, review_id, fields, mode, findings)
 
     if record_mode == "reconstructed":
         _validate_reconstructed_record(path, review_id, fields, finding_records, mode, findings)
@@ -373,6 +378,39 @@ def _parse_finding_records(
             )
         )
     return records
+
+
+def _validate_clean_receipt_review_fields(
+    path: Path,
+    review_id: str,
+    fields: dict[str, list[FieldValue]],
+    mode: str,
+    findings: list[ValidationFinding],
+) -> None:
+    if _first_nonempty(fields, "Recording status") is None and _first_nonempty(fields, "Reviewed artifact") is None:
+        return
+    for label in ("Reviewed artifact", "Review date", "Recording status"):
+        if _first_nonempty(fields, label) is None:
+            findings.append(
+                ValidationFinding(
+                    path=path,
+                    line=None,
+                    mode=mode,
+                    message=f"clean receipt missing required field {label}",
+                    review_id=review_id,
+                )
+            )
+    recording_status = _first_nonempty(fields, "Recording status")
+    if recording_status is not None and recording_status.value != "recorded":
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=recording_status.line,
+                mode=mode,
+                message="clean receipt Recording status must be recorded",
+                review_id=review_id,
+            )
+        )
 
 
 def _validate_reconstructed_record(
@@ -503,6 +541,114 @@ def _parse_review_log(path: Path, mode: str) -> tuple[list[ReviewLogEntry], list
             )
         )
 
+    table_entries, table_findings = _parse_clean_receipt_log_table(path, lines, mode)
+    entries.extend(table_entries)
+    findings.extend(table_findings)
+    return entries, findings
+
+
+def _parse_clean_receipt_log_table(
+    path: Path,
+    lines: list[str],
+    mode: str,
+) -> tuple[list[ReviewLogEntry], list[ValidationFinding]]:
+    entries: list[ReviewLogEntry] = []
+    findings: list[ValidationFinding] = []
+    required_headers = [
+        "Review ID",
+        "Stage",
+        "Round",
+        "Reviewed artifact",
+        "Record",
+        "Status",
+        "Material findings",
+        "Recording",
+    ]
+
+    for index, line in enumerate(lines):
+        cells = _markdown_table_cells(line)
+        if cells != required_headers:
+            continue
+        if index + 2 > len(lines):
+            continue
+        for row_index in range(index + 2, len(lines)):
+            row = _markdown_table_cells(lines[row_index])
+            if not row:
+                break
+            if len(row) != len(required_headers):
+                findings.append(
+                    ValidationFinding(
+                        path=path,
+                        line=row_index + 1,
+                        mode=mode,
+                        message="clean receipt review-log row must match header column count",
+                    )
+                )
+                continue
+            values = dict(zip(required_headers, row))
+            review_id = _strip_code(values["Review ID"])
+            material_count_text = _strip_code(values["Material findings"])
+            recording_status = _strip_code(values["Recording"])
+            material_count: int | None = None
+            if material_count_text.isdigit():
+                material_count = int(material_count_text)
+            else:
+                findings.append(
+                    ValidationFinding(
+                        path=path,
+                        line=row_index + 1,
+                        mode=mode,
+                        message="clean receipt Material findings must be 0",
+                        review_id=review_id or None,
+                    )
+                )
+            if material_count is not None and material_count != 0:
+                findings.append(
+                    ValidationFinding(
+                        path=path,
+                        line=row_index + 1,
+                        mode=mode,
+                        message="clean receipt Material findings must be 0",
+                        review_id=review_id or None,
+                    )
+                )
+            if recording_status != "recorded":
+                findings.append(
+                    ValidationFinding(
+                        path=path,
+                        line=row_index + 1,
+                        mode=mode,
+                        message="clean receipt Recording must be recorded",
+                        review_id=review_id or None,
+                    )
+                )
+            if not _is_stable_identifier(review_id):
+                findings.append(
+                    ValidationFinding(
+                        path=path,
+                        line=row_index + 1,
+                        mode=mode,
+                        message="Review ID must be a stable ASCII identifier with no whitespace",
+                        review_id=review_id or None,
+                    )
+                )
+            entries.append(
+                ReviewLogEntry(
+                    path=path,
+                    line=row_index + 1,
+                    review_id=review_id,
+                    stage=_strip_code(values["Stage"]),
+                    round=_strip_code(values["Round"]),
+                    status=_strip_code(values["Status"]),
+                    detailed_record=_strip_code(values["Record"]),
+                    resolution=None,
+                    material_finding_ids=(),
+                    open_finding_ids=(),
+                    material_findings_count=material_count,
+                    recording_status=recording_status,
+                    record_label="Record",
+                )
+            )
     return entries, findings
 
 
@@ -795,31 +941,32 @@ def _validate_review_relationships(
                     path=entry.path,
                     line=entry.line,
                     mode=mode,
-                    message=f"Detailed record does not match review file {expected_path}",
+                    message=f"{entry.record_label} does not match review file {expected_path}",
                     review_id=entry.review_id,
                 )
             )
-        expected_resolution = f"review-resolution.md#{entry.review_id}"
-        if entry.resolution != expected_resolution:
-            findings.append(
-                ValidationFinding(
-                    path=entry.path,
-                    line=entry.line,
-                    mode=mode,
-                    message="Resolution must be review-resolution.md#<Review ID>",
-                    review_id=entry.review_id,
+        if entry.resolution is not None:
+            expected_resolution = f"review-resolution.md#{entry.review_id}"
+            if entry.resolution != expected_resolution:
+                findings.append(
+                    ValidationFinding(
+                        path=entry.path,
+                        line=entry.line,
+                        mode=mode,
+                        message="Resolution must be review-resolution.md#<Review ID>",
+                        review_id=entry.review_id,
+                    )
                 )
-            )
-        elif resolution is not None and entry.review_id not in set(resolution.review_ids):
-            findings.append(
-                ValidationFinding(
-                    path=entry.path,
-                    line=entry.line,
-                    mode=mode,
-                    message="Resolution Review ID not found in review-resolution.md",
-                    review_id=entry.review_id,
+            elif resolution is not None and entry.review_id not in set(resolution.review_ids):
+                findings.append(
+                    ValidationFinding(
+                        path=entry.path,
+                        line=entry.line,
+                        mode=mode,
+                        message="Resolution Review ID not found in review-resolution.md",
+                        review_id=entry.review_id,
+                    )
                 )
-            )
         for label, entry_value, review_value in (
             ("Stage", entry.stage, review.stage),
             ("Round", entry.round, review.round),
@@ -850,6 +997,27 @@ def _validate_review_relationships(
 
     findings.extend(_validate_log_finding_lists(finding_records, log_entries, mode))
     return findings
+
+
+def _validate_clean_receipt_resolution_absence(
+    resolution_path: Path,
+    finding_records: list[FindingRecord],
+    log_entries: list[ReviewLogEntry],
+    resolution: ReviewResolution | None,
+    mode: str,
+) -> list[ValidationFinding]:
+    if resolution is None or finding_records:
+        return []
+    if not any(entry.recording_status == "recorded" for entry in log_entries):
+        return []
+    return [
+        ValidationFinding(
+            path=resolution_path,
+            line=resolution.closeout_line,
+            mode=mode,
+            message="clean receipt root must not include review-resolution.md without material findings",
+        )
+    ]
 
 
 def _validate_log_finding_lists(
@@ -1253,6 +1421,25 @@ def _parse_id_list(raw_value: str) -> tuple[str, ...]:
         for part in value.split(",")
         if part.strip() and part.strip().lower() != "none"
     )
+
+
+def _markdown_table_cells(line: str) -> list[str]:
+    stripped = line.strip()
+    if not stripped.startswith("|") or not stripped.endswith("|"):
+        return []
+    cells = [cell.strip() for cell in stripped.strip("|").split("|")]
+    if not cells:
+        return []
+    if all(re.fullmatch(r":?-{3,}:?", cell) for cell in cells):
+        return []
+    return cells
+
+
+def _strip_code(value: str) -> str:
+    stripped = value.strip()
+    if len(stripped) >= 2 and stripped.startswith("`") and stripped.endswith("`"):
+        return stripped[1:-1].strip()
+    return stripped
 
 
 def _is_stable_identifier(value: str) -> bool:

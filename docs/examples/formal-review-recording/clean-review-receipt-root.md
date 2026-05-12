@@ -23,6 +23,7 @@ artifacts:
 review:
   status: approved
   unresolved_items: 0
+  reviewed_artifact: specs/example.md
   review_log: docs/changes/2026-05-12-example-spec-review-recording/review-log.md
 ```
 

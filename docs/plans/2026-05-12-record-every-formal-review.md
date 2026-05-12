@@ -64,13 +64,13 @@ Generated local Codex runtime output under `.codex/skills/` is not authored or t
 ## Current Handoff Summary
 
 - Current milestone: M2. Review artifact and metadata validation
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M1. Test spec and clean receipt fixtures
 - Review status: M1 code-review clean-with-notes
 - Remaining in-scope implementation milestones: M2, M3, M4, M5
-- Next stage: implement M2
+- Next stage: code-review M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 is closed, but M2-M5 remain open, explain-change and verify evidence do not exist, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M1 is closed and M2 is ready for code-review, but M2-M5 remain open, explain-change and verify evidence do not exist, and PR handoff is not prepared.
 
 ## Milestones
 
@@ -109,7 +109,7 @@ Generated local Codex runtime output under `.codex/skills/` is not authored or t
 
 ### M2. Review artifact and metadata validation
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Teach repository validation to accept and reject clean receipt roots according to the approved spec.
 - Requirements: `R4h`-`R4l`, `R8d`-`R8f`, `R10`-`R10c`, `R16`-`R16b`, `R24`-`R26e`.
 - Files/components likely touched:
@@ -136,13 +136,13 @@ Generated local Codex runtime output under `.codex/skills/` is not authored or t
 - Expected observable result: clean receipt roots validate structurally without requiring `review-resolution.md`, while malformed or ambiguous clean receipt evidence fails.
 - Commit message: `M2: validate clean formal review receipts`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] progress updated
+  - [x] targeted validation passed
+  - [x] progress updated
   - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] hand off to code-review for M2
+  - [x] validation notes updated
+  - [x] hand off to code-review for M2
   - [ ] material findings resolved or explicitly dispositioned
-  - [ ] milestone state updated before starting M3
+  - [x] milestone state updated before starting M3
 - Risks: tightening `review-log.md` parsing could break historical review records.
 - Rollback/recovery: keep new checks fixture-scoped first; if historical records fail, document the compatibility rule and add explicit legacy handling rather than weakening new clean receipt validation.
 
@@ -293,6 +293,7 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - 2026-05-12: Updated `specs/formal-review-recording.test.md` for the record-every-formal-review clean receipt implementation slice.
 - 2026-05-12: Implemented M1 by adding the clean receipt root fixture and non-normative clean receipt example, then handed M1 to code-review.
 - 2026-05-12: Code-review M1 passed with no material findings and M1 moved to closed.
+- 2026-05-12: Implemented M2 by adding clean receipt review-log table parsing, no-empty-resolution validation for clean roots, and minimal `change.yaml.review` semantic checks.
 
 ## Decision Log
 
@@ -304,6 +305,7 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - The existing shared review-skill block still allows `Recording status: not-required` for formal reviews. M3 must remove that formal-review path while preserving `not-required` only for non-formal review-like requests if still documented elsewhere.
 - The existing test spec still includes old clean-review artifact-local-only coverage and must be amended before validator implementation.
 - The new clean receipt root fixture intentionally exposes the current review-artifact parser gap: it fails structure validation because table-based clean receipt log entries are not parsed yet. M2 owns that validator support.
+- `python scripts/test-review-artifact-validator.py` exposed a pre-existing alignment gap: `skills/workflow/SKILL.md` named `needs-decision` but not the supported `partially-accepted` disposition. M2 fixed the smallest canonical wording mismatch so the existing contract-alignment test passes.
 
 ## Validation Notes
 
@@ -320,6 +322,13 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - 2026-05-12: `python scripts/validate-review-artifacts.py --mode structure tests/fixtures/review-artifacts/valid-clean-receipt-root` failed as expected before M2 with `Review ID missing from review-log.md`; current parser does not yet support table-based clean receipt log entries.
 - 2026-05-12: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-record-every-formal-review.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/plan.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-resolution.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/spec-review-r1.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/spec-review-r2.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/architecture-review-r1.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/plan-review-r1.md` passed for M1.
 - 2026-05-12: `code-review M1` recorded clean-with-notes with no material findings.
+- 2026-05-12: `python scripts/test-review-artifact-validator.py` passed for M2 with 34 tests.
+- 2026-05-12: `python scripts/test-change-metadata-validator.py` passed for M2 with 6 tests.
+- 2026-05-12: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-record-every-formal-review-review-recording` passed for M2 with 5 reviews, 1 finding, 5 log entries, and 1 resolution entry.
+- 2026-05-12: `python scripts/validate-review-artifacts.py --mode structure tests/fixtures/review-artifacts/valid-clean-receipt-root` passed for M2 with 1 review, 0 findings, 1 log entry, and 0 resolution entries.
+- 2026-05-12: `python scripts/validate-change-metadata.py docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml tests/fixtures/review-artifacts/valid-clean-receipt-root/change.yaml` passed for M2.
+- 2026-05-12: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/formal-review-recording.test.md --path specs/formal-review-recording.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml` passed for M2 state sync.
+- 2026-05-12: `git diff --check -- scripts tests/fixtures docs/examples/formal-review-recording skills/workflow/SKILL.md` passed for M2.
 
 ## Outcome and Retrospective
 
