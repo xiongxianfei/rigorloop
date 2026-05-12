@@ -56,13 +56,13 @@ Likely implementation surfaces:
 ## Current Handoff Summary
 
 - Current milestone: M2. Untrack Local Codex Mirror And Update Contributor Guidance
-- Current milestone state: review-requested
-- Last reviewed milestone: M1. Local Mirror Temp-Output Generation
-- Review status: M2 implementation complete; code-review requested
-- Remaining in-scope implementation milestones: M2, M3
-- Next stage: code-review M2
+- Current milestone state: closed
+- Last reviewed milestone: M2. Untrack Local Codex Mirror And Update Contributor Guidance
+- Review status: M2 code-review clean-with-notes; no material findings
+- Remaining in-scope implementation milestones: M3
+- Next stage: implement M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2 is awaiting code-review, M3 is not implemented, and explain-change, verify, and PR handoff have not happened.
+- Reason final closeout is or is not ready: M3 is not implemented, and explain-change, verify, and PR handoff have not happened.
 
 ## Non-goals
 
@@ -138,7 +138,7 @@ Requirements `R24`-`R42`, `R44`-`R48`, `R50`, `R57`-`R58`, and full release-arti
 
 ### M2. Untrack Local Codex Mirror And Update Contributor Guidance
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: remove `.codex/skills/` from tracked Git state, ignore it as local generated output, and update contributor-facing guidance for the first slice.
 - Requirements: `R1`-`R17`, `R43`, `R49`, `R67`-`R73`
 - Files/components likely touched:
@@ -294,7 +294,7 @@ If `scripts/test-build-skills.py` is not added because coverage lands in an exis
 - [x] 2026-05-12: plan-review approved with no material findings.
 - [x] 2026-05-12: test spec created and activated.
 - [x] M1. Local Mirror Temp-Output Generation - closed after clean code-review
-- [ ] M2. Untrack Local Codex Mirror And Update Contributor Guidance - review-requested
+- [x] M2. Untrack Local Codex Mirror And Update Contributor Guidance - closed after clean code-review
 - [ ] M3. Public Adapter Preservation And Benchmark Source Guardrails - planned
 
 ## Decision log
@@ -350,6 +350,7 @@ If `scripts/test-build-skills.py` is not added because coverage lands in an exis
 - 2026-05-12 M2: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...` passed with existing lifecycle-language warnings in `docs/plan.md` and `docs/workflows.md`.
 - 2026-05-12 M2: `python -m py_compile scripts/validation_selection.py scripts/test-select-validation.py scripts/test-skill-validator.py` passed.
 - 2026-05-12 M2: `git diff --check -- .gitignore README.md AGENTS.md CONSTITUTION.md docs/workflows.md scripts docs/plans/2026-05-12-single-authored-skill-source-first-slice.md docs/plan.md docs/changes/2026-05-12-single-authored-skill-source-first-slice` passed.
+- 2026-05-12 M2 code-review: clean-with-notes; no material findings; detailed review record not required.
 
 ## Outcome and retrospective
 
@@ -358,4 +359,4 @@ If `scripts/test-build-skills.py` is not added because coverage lands in an exis
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for `code-review` of M2; it is not ready for M3, final verification, or PR handoff until M2 review closes and the required downstream gates complete.
+- This plan is ready for `implement M3`; it is not ready for final verification or PR handoff until M3 and the required downstream gates complete.
