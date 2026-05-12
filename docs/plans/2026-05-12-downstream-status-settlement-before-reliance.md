@@ -39,14 +39,14 @@ The likely implementation surfaces are:
 
 ## Current Handoff Summary
 
-- Current milestone: M1
-- Current milestone state: review-requested
+- Current milestone: M2
+- Current milestone state: planned
 - Last reviewed milestone: M1
-- Review status: code-review R1 changes-requested; `CR-001` accepted and fixed; rerun code-review pending
-- Remaining in-scope implementation milestones: M1, M2
-- Next stage: code-review M1 rerun
+- Review status: code-review M1 rerun clean-with-notes; no material findings
+- Remaining in-scope implementation milestones: M2
+- Next stage: implement M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 rerun code-review, M2 generated output refresh, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M2 generated output refresh, explain-change, verify, and PR handoff remain.
 
 ## Non-goals
 
@@ -71,7 +71,7 @@ The likely implementation surfaces are:
 
 ### M1. Canonical Skill Guidance And Static Proof
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: update canonical downstream skills and static checks for first-slice upstream status settlement.
 - Requirements: `R1`-`R24a`
 - Files/components likely touched:
@@ -201,7 +201,7 @@ git diff --check -- skills .codex/skills dist/adapters scripts docs/proposals/20
 - [x] 2026-05-12: spec-review R2 approved the amended spec.
 - [x] 2026-05-12: plan-review approved the execution plan with no material findings.
 - [x] 2026-05-12: test-spec created active proof-planning surface for M1-M2.
-- [x] M1. Canonical Skill Guidance And Static Proof - review-requested after `CR-001` fix
+- [x] M1. Canonical Skill Guidance And Static Proof - closed after clean code-review rerun
 - [ ] M2. Generated Output Refresh And Final Static Proof - planned
 
 ## Decision log
@@ -233,6 +233,7 @@ git diff --check -- skills .codex/skills dist/adapters scripts docs/proposals/20
 - Review-resolution for `CR-001` accepted the finding and fixed M1 by tightening skill guidance and validator assertions.
 - M1 fix validation: `python scripts/test-skill-validator.py` passed after the `CR-001` fix.
 - M1 fix validation: `python scripts/validate-skills.py` passed after the `CR-001` fix.
+- Code-review M1 rerun returned `clean-with-notes` with no material findings. No detailed clean review record was required.
 
 ## Outcome and retrospective
 
