@@ -2,7 +2,7 @@
 
 ## Status
 
-draft
+accepted
 
 ## Problem
 
@@ -656,7 +656,6 @@ Rollback:
 
 ## Next artifacts
 
-- proposal-review
 - focused formal review recording spec/reference update
 - examples cleanup
 - implementation plan
@@ -669,11 +668,13 @@ Rollback:
 
 ## Follow-on artifacts
 
-None yet.
+- Proposal-review: approved on 2026-05-12 with no material findings.
+- Spec amendment: [Formal Review Recording](../../specs/formal-review-recording.md), drafted for review recording output guardrail and examples cleanup.
+- Test spec amendment: [Formal Review Recording Test Spec](../../specs/formal-review-recording.test.md), drafted for the same amendment.
 
 ## Readiness
 
-Ready for proposal-review.
+Accepted. The focused spec and test-spec amendments now carry the next review gate for this change.
 
 This proposal narrows the first implementation slice to the actual repeated failure: material findings must be durably recorded or explicitly blocked, while moving examples out of active lifecycle directories. It records downstream artifact lifecycle settlement as follow-up direction for the skills that rely on reviewed artifacts.
 
