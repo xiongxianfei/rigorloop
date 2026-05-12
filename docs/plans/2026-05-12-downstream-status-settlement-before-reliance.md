@@ -41,12 +41,12 @@ The likely implementation surfaces are:
 
 - Current milestone: lifecycle-closeout
 - Current milestone state: planned
-- Last reviewed milestone: M1
+- Last reviewed milestone: M2
 - Review status: code-review M2 clean-with-notes; no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: durable explain-change is complete; verify and PR handoff remain.
 
 ## Non-goals
 
@@ -203,6 +203,7 @@ git diff --check -- skills .codex/skills dist/adapters scripts docs/proposals/20
 - [x] 2026-05-12: test-spec created active proof-planning surface for M1-M2.
 - [x] M1. Canonical Skill Guidance And Static Proof - closed after clean code-review rerun
 - [x] M2. Generated Output Refresh And Final Static Proof - closed after clean code-review
+- [x] 2026-05-12: explain-change recorded durable rationale and handed off to verify.
 
 ## Decision log
 
@@ -249,6 +250,11 @@ git diff --check -- skills .codex/skills dist/adapters scripts docs/proposals/20
 - M2 validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-downstream-status-settlement-before-reliance.md --path specs/downstream-status-settlement-before-reliance.md --path specs/downstream-status-settlement-before-reliance.test.md --path docs/plans/2026-05-12-downstream-status-settlement-before-reliance.md --path docs/plan.md --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/change.yaml --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/review-log.md --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/review-resolution.md` passed with the existing unrelated `docs/plan.md` lifecycle-language warning.
 - M2 validation: `git diff --check -- .codex/skills dist/adapters docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording docs/plans/2026-05-12-downstream-status-settlement-before-reliance.md docs/plan.md` passed.
 - Code-review M2 returned `clean-with-notes` with no material findings. No detailed clean review record was required.
+- Explain-change recorded the durable rationale at `docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/explain-change.md`.
+- Explain-change validation: `python scripts/validate-change-metadata.py docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/change.yaml` passed.
+- Explain-change validation: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording` passed.
+- Explain-change validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-downstream-status-settlement-before-reliance.md --path specs/downstream-status-settlement-before-reliance.md --path specs/downstream-status-settlement-before-reliance.test.md --path docs/plans/2026-05-12-downstream-status-settlement-before-reliance.md --path docs/plan.md --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/change.yaml --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/review-log.md --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/review-resolution.md --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/explain-change.md` passed with the existing unrelated `docs/plan.md` lifecycle-language warning.
+- Explain-change validation: `git diff --check -- docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording docs/plans/2026-05-12-downstream-status-settlement-before-reliance.md docs/plan.md` passed.
 
 ## Outcome and retrospective
 
