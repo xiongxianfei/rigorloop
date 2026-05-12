@@ -60,9 +60,9 @@ Likely implementation surfaces:
 - Last reviewed milestone: M3. Public Adapter Preservation And Benchmark Source Guardrails
 - Review status: M3 code-review clean-with-notes; no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: final verify and PR handoff have not happened.
+- Next stage: pr
+- Final closeout readiness: branch-ready for PR handoff
+- Reason final closeout is or is not ready: local final verify passed; PR handoff has not happened.
 
 ## Non-goals
 
@@ -361,6 +361,8 @@ If `scripts/test-build-skills.py` is not added because coverage lands in an exis
 - 2026-05-12 M3: `! git ls-files | rg '(^|/)rigorloop-adapter-.*\.(zip|tar\.gz)$'` passed.
 - 2026-05-12 M3 code-review: clean-with-notes; no material findings; detailed review record not required.
 - 2026-05-12 explain-change: final durable rationale recorded in `docs/changes/2026-05-12-single-authored-skill-source-first-slice/explain-change.md`.
+- 2026-05-12 verify: selected explicit CI wrapper passed all selected checks: `skills.regression`, `skills.generation_regression`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `readme.validate`, `readme.vision_markers`, `selector.regression`, `token_cost.regression`, and `token_cost.report_regression`.
+- 2026-05-12 verify: direct generated-output guardrails passed: `.codex/skills` has no tracked files, `.codex/skills/proposal/SKILL.md` is ignored, public adapter skill copies remain tracked, and no generated adapter archives are tracked.
 
 ## Outcome and retrospective
 
@@ -369,4 +371,4 @@ If `scripts/test-build-skills.py` is not added because coverage lands in an exis
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for `verify`; it is not ready for PR handoff until verify and the required downstream gates complete.
+- This plan is ready for `pr`; branch-ready local verification has passed, but PR handoff has not happened.
