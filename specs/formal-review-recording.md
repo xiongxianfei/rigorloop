@@ -406,9 +406,38 @@ R30b. Formal review skills MAY mention stale lifecycle status only as a normal r
 
 R31. Normative change-ID selection, `Location`, and detailed recording artifact rules MUST live in this spec or a linked formal review recording reference.
 
-R31a. Formal review skills MUST NOT duplicate long change-ID algorithms or long `Location` example sets.
+R31a. When a formal lifecycle review requires durable recording, the review skill MUST choose the change ID in this order:
+1. existing active change root;
+2. reviewed artifact or active plan metadata;
+3. user-provided change ID;
+4. generated review-recording change ID.
 
-R31b. Full illustrative examples for change-ID selection and material-finding `Location` SHOULD live under `docs/examples/formal-review-recording/`.
+R31b. Existing active change root means the active `docs/changes/<change-id>/change.yaml` for the reviewed work.
+
+R31c. Reviewed artifact or active plan metadata MAY identify the change ID through an active plan field naming the change ID, reviewed artifact metadata, reviewed artifact section explicitly linking to `docs/changes/<change-id>/`, review request text that names the change ID, or an existing review-log or review-resolution path for the same change.
+
+R31d. User-provided change ID means a change ID explicitly provided by the user or maintainer.
+
+R31e. If no existing change ID is available, the review skill MUST generate the fallback change ID as:
+`YYYY-MM-DD-<reviewed-artifact-or-topic>-review-recording`.
+
+R31f. The generated slug MUST be lowercase kebab-case and derived from the reviewed artifact name, active plan/proposal/spec topic, or review subject.
+
+R31g. Chat-only context MAY help locate a change ID, but durable recording MUST still use a tracked change root or the generated review-recording fallback.
+
+R31h. If the generated change ID already exists and clearly belongs to the same reviewed artifact or review subject, the review MAY use that existing change root.
+
+R31i. If the generated change ID already exists but appears to belong to a different review subject, the review MUST use `Recording status: blocked` instead of silently merging unrelated review records.
+
+R31j. If the change ID remains ambiguous after applying `R31a` through `R31i`, the review output MUST use `Recording status: blocked` and state the smallest action needed to select or create the change root.
+
+R31k. When recording is required and the selected change ID is valid, the review skill MUST create or update the required review artifacts under `docs/changes/<change-id>/`.
+
+R31l. When recording is required and the change ID cannot be selected, the review skill MUST NOT merely tell the user that records should be created. It MUST report `Recording status: blocked`, material Finding IDs, why the change ID is ambiguous or unavailable, and the smallest action needed to continue.
+
+R31m. Formal review skills MUST NOT duplicate long change-ID algorithms or long `Location` example sets.
+
+R31n. Full illustrative examples for change-ID selection and material-finding `Location` SHOULD live under `docs/examples/formal-review-recording/`.
 
 R32. `docs/examples/**` MUST be treated as a non-normative examples surface.
 

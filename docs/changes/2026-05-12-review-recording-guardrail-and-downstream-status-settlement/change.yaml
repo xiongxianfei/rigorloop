@@ -27,6 +27,14 @@ validation:
     result: pass_before_spec_review_r1
   - command: python scripts/test-artifact-lifecycle-validator.py
     result: pass_48_tests_before_spec_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md
+    result: pass_after_sr_001_spec_fix
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement
+    result: pass_structure_reviews_1_findings_1_log_entries_1_resolution_entries_1_after_sr_001_spec_fix
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/change.yaml
+    result: pass_valid_change_metadata_after_sr_001_spec_fix
+  - command: git diff --check -- specs/formal-review-recording.md specs/formal-review-recording.test.md docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement
+    result: pass_after_sr_001_spec_fix
 changed_files:
   - docs/proposals/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md
   - specs/formal-review-recording.md

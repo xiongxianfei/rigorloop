@@ -56,7 +56,8 @@
 | `R24`-`R26b` | `T21` | integration, manual | Recording-status vocabulary, artifact paths, blocked status, and no-empty-resolution behavior |
 | `R27`-`R28a` | `T22` | integration, manual | Complete material-finding shape including `Location`, and create-or-block output flow |
 | `R29`-`R30b` | `T23` | integration, manual | Concise review-skill recording-status block, stable static assertions, and no standardized status-sync fields |
-| `R31`-`R32f` | `T24` | integration, manual | Normative rules stay in specs/reference; examples live under `docs/examples/**` and are not active lifecycle state |
+| `R31`-`R31l` | `T26` | integration, manual | Deterministic change-ID selection order, fallback format, collision behavior, and blocked-recording behavior |
+| `R31m`-`R32f` | `T24` | integration, manual | Long examples stay out of skills; examples live under `docs/examples/**` and are not active lifecycle state |
 | `R33`-`R33b` | `T25` | manual | Downstream upstream-status settlement remains follow-up scope for the first slice |
 | Security/privacy `MUST`s | `T14` | manual, integration | Review artifacts do not preserve secrets and structural validation requires no network or secrets |
 | Performance `MUST` | `T14` | integration, manual | Upstream review records do not by themselves require broad smoke |
@@ -106,6 +107,12 @@
 - Formal review skill contains `- Status sync:` in first-slice output shape: `T23`
 - `docs/examples/plans/example-plan.md` treated as active plan state: `T24`
 - `docs/changes/0001-skill-validator/` retained without fixture-coupling rationale: `T24`
+- Existing active `change.yaml` supplies the review-recording change ID: `T26`
+- Active plan or reviewed artifact metadata supplies the change ID: `T26`
+- User-provided change ID supplies the change root when no tracked root exists: `T26`
+- Generated fallback creates `YYYY-MM-DD-<reviewed-artifact-or-topic>-review-recording`: `T26`
+- Multiple possible change IDs remain ambiguous and produce `Recording status: blocked`: `T26`
+- Generated fallback collides with unrelated existing change root and blocks: `T26`
 
 ## Milestone coverage map
 
@@ -122,6 +129,7 @@
 | `2026-05-12` Slice 1 recording-status output | `T21`, `T22`, `T23` | Formal review output reports recording completion, preserves complete material-finding shape, and keeps review skills concise |
 | `2026-05-12` Slice 1 examples cleanup | `T24` | Examples move under `docs/examples/**` and selectors/lifecycle validation do not treat them as active lifecycle state |
 | `2026-05-12` follow-up boundary | `T25` | Downstream upstream-status settlement remains outside the first implementation slice |
+| `2026-05-12` change-ID selection | `T26` | Required review recording selects a deterministic change root or blocks |
 
 ## Test cases
 
@@ -728,6 +736,34 @@
   - The implementation has again bundled two distinct behavior changes into one hard-to-review slice.
 - Automation location:
   - Manual review during spec-review, plan-review, and implementation closeout.
+
+### T26. Change ID selection is deterministic or blocked
+
+- Covers: `R31`-`R31l`, `E12`
+- Level: integration, manual
+- Fixture/setup:
+  - formal review skills
+  - `specs/formal-review-recording.md`
+  - `docs/examples/formal-review-recording/change-id-selection-examples.md`
+  - temporary review-recording scenarios with and without existing change roots
+- Steps:
+  - Assert required formal review recording uses an existing active `docs/changes/<change-id>/change.yaml` when present for the reviewed work.
+  - Assert reviewed artifact or active plan metadata supplies the change ID when it unambiguously names one change.
+  - Assert a user-provided change ID supplies the change root when no tracked change root or unambiguous metadata exists.
+  - Assert fallback generation uses `YYYY-MM-DD-<reviewed-artifact-or-topic>-review-recording`.
+  - Assert the generated slug is lowercase kebab-case and derived from the reviewed artifact name, plan/proposal/spec topic, or review subject.
+  - Assert an existing generated fallback ID may be reused only when it clearly belongs to the same reviewed artifact or review subject.
+  - Assert an existing generated fallback ID that appears to belong to a different review subject produces `Recording status: blocked`.
+  - Assert multiple ambiguous candidate change IDs produce `Recording status: blocked`.
+  - Assert blocked change-ID selection reports material Finding IDs, why selection is ambiguous or unavailable, and the smallest action needed to continue.
+- Expected result:
+  - Required review recording has one deterministic change-root selection contract, and ambiguous cases block instead of inventing or merging unrelated paths.
+- Failure proves:
+  - Formal review skills can still create inconsistent or ambiguous change-local roots when material findings require recording.
+- Automation location:
+  - `python scripts/test-skill-validator.py`
+  - review-artifact or selector tests if implementation adds helper logic
+  - Manual review of formal review skill wording and change-ID examples.
 
 ## Fixtures and data
 

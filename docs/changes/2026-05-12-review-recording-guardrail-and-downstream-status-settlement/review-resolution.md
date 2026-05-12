@@ -15,12 +15,10 @@ Review closeout: spec-review-r1
 #### SR-001
 
 Finding ID: SR-001
-Disposition: needs-decision
+Disposition: accepted
 Owner: implementer
 Owning stage: spec
-Decision owner: spec author
-Decision needed: Define the deterministic change-ID selection rule directly in `specs/formal-review-recording.md` or choose a linked normative reference that owns it.
-Chosen action: pending
-Rationale: The spec-review finding identifies a missing normative change-ID selection rule. The spec needs revision before implementation planning can rely on the recording contract.
-Validation target: Update `specs/formal-review-recording.md` and `specs/formal-review-recording.test.md` so the change-ID selection rule is concrete and testable, then rerun `spec-review`.
-Validation evidence: pending
+Chosen action: Add a normative change-ID selection rule to `specs/formal-review-recording.md`, including deterministic selection order, generated fallback format, collision behavior, and blocked-recording behavior. Update `specs/formal-review-recording.test.md` to cover each selection path.
+Rationale: Formal review skills must not infer or invent change roots inconsistently when recording is required. The spec must define the rule so implementation and tests have one source of truth.
+Validation target: Rerun spec-review after the spec and test-spec updates.
+Validation evidence: Spec and test-spec updates are drafted in `specs/formal-review-recording.md` and `specs/formal-review-recording.test.md`; spec-review rerun pending.
