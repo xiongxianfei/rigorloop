@@ -28,8 +28,9 @@ The first problem belongs in review skills. The second problem should be handled
 - Preserve lightweight clean reviews with no material findings.
 - Remove artifact-status sync behavior from review skills.
 - Remove downstream status-settlement follow-up references from review skills.
-- Move full change-ID selection rules and full `Location` examples to the formal review recording spec or reference.
-- Record downstream status settlement as a follow-up direction, not first-slice implementation scope.
+- Keep normative change-ID and `Location` rules in the formal review recording spec or reference.
+- Move full change-ID, `Location`, plan, and shipped change-pack examples under `docs/examples/` where practical.
+- Record downstream status settlement as the follow-up model, not first-slice implementation scope.
 - Keep artifacts as the durable source of truth.
 
 ## Non-goals
@@ -44,6 +45,8 @@ The first problem belongs in review skills. The second problem should be handled
 - Do not duplicate long change-ID or `Location` examples in every skill.
 - Do not implement downstream status settlement in the first slice.
 - Do not define broad automatic status edits without a later settlement-specific plan.
+- Do not treat `docs/examples/**` as active lifecycle state.
+- Do not move example fixtures without updating all validator and selector references in the same slice.
 
 ## Vision fit
 
@@ -71,8 +74,9 @@ PR #44 went beyond that by adding status-settlement behavior to review skills. T
 | Keep generated adapter refresh | in scope | Rollout and rollback |
 | Remove artifact-status sync from review skills | in scope | Non-goals, Recommended direction |
 | Remove downstream status-settlement references from review skills | in scope | Non-goals, Remove from review skills |
-| Move full change-ID selection rule elsewhere | in scope | Move elsewhere |
-| Move full `Location` examples elsewhere | in scope | Move elsewhere |
+| Move full change-ID selection rule elsewhere | in scope | Move examples elsewhere |
+| Move full `Location` examples elsewhere | in scope | Move examples elsewhere |
+| Put examples under `docs/examples/` | in scope | Move examples elsewhere, Examples cleanup acceptance criteria |
 | Add downstream status settlement before reliance | follow-up direction | Follow-up direction: downstream status settlement |
 | Keep artifacts as source of truth | in scope | Recommended direction |
 | Close and do not reopen PR #44 | in scope | Non-goals, Decision log |
@@ -131,13 +135,13 @@ This proposal has two parts:
 
 ```text
 Accepted first slice:
-  formal review recording output guardrail
+  formal review recording output guardrail and examples cleanup
 
 Follow-up direction:
   downstream status settlement before reliance
 ```
 
-The first slice updates only formal review skills, formal review recording reference/spec text, static skill-validator coverage, and generated skill/adapters.
+The first slice updates formal review skills, formal review recording reference/spec text, docs examples surfaces, static skill-validator coverage, and generated skill/adapters.
 
 Downstream status settlement is not implemented in the first slice unless a later plan explicitly scopes it as a separate milestone after the recording guardrail is complete.
 
@@ -164,7 +168,7 @@ Artifact:
 
 Review skills should not include a standardized downstream status-settlement result block, status-sync vocabulary, or follow-up proposal references. If lifecycle status appears stale during review, the review may mention it as an ordinary finding, concern, or note when it affects the reviewed surface, but it does not own settlement by default.
 
-The first implementation slice is recording-only:
+The first implementation slice is limited to review recording and examples cleanup:
 
 - `proposal-review`
 - `spec-review`
@@ -172,6 +176,7 @@ The first implementation slice is recording-only:
 - `plan-review`
 - `code-review`
 - formal review recording contract/reference text
+- `docs/examples/` cleanup
 - static skill-validator coverage
 - generated skill/adapters
 
@@ -179,11 +184,13 @@ It does not update downstream authoring or execution skills for upstream status 
 
 ## Formal review recording reference update
 
-The first implementation slice must update the formal review recording contract or a linked reference so it owns:
+The first implementation slice must update the formal review recording contract or a linked reference so it owns the normative rules for:
 
 - full change-ID selection rule
-- full `Location` examples
+- required `Location` behavior
 - detailed recording artifact rules
+
+Full examples should live under `docs/examples/formal-review-recording/` instead of every skill or active lifecycle directories.
 
 Review skills should contain only the concise recording-status block and point to the project review-recording process.
 
@@ -322,45 +329,64 @@ Review skills may mention stale lifecycle status only as a normal review finding
 
 They must not include a standardized `Status settlement recommendation`, `Status sync`, `Status artifact`, or `Status sync blocker` field in this slice.
 
-## Move elsewhere
+## Move examples elsewhere
 
-Move the full change-ID selection rule to:
-
-```text
-specs/formal-review-recording.md
-```
-
-or a formal review recording reference.
-
-Move full `Location` examples to:
+Normative rules remain in:
 
 ```text
 specs/formal-review-recording.md
 ```
 
-or a formal review recording reference.
+or a linked formal review recording reference.
+
+Examples move to:
+
+```text
+docs/examples/
+```
+
+Planned example surfaces:
+
+- `docs/examples/README.md`
+- `docs/examples/formal-review-recording/change-id-selection-examples.md`
+- `docs/examples/formal-review-recording/material-finding-location-examples.md`
+- `docs/examples/plans/example-plan.md`
+- `docs/examples/changes/skill-validator/`
+
+Examples are non-normative and must not be treated as active lifecycle artifacts.
 
 Do not duplicate those details in every skill.
 
 ## Follow-up direction: downstream status settlement
 
-Downstream skills must not rely on upstream artifacts whose durable status contradicts clear review evidence.
+Downstream skills must not rely on stale upstream artifact status.
 
 This direction is not implemented in the first slice. A follow-up proposal, plan, or later milestone must define the exact settlement contract before downstream skills are changed.
+
+Downstream skill execution implies minimal upstream lifecycle-status settlement is allowed. Review-only or manual inspection requests remain isolated; this rule applies when a downstream authoring or execution skill is actually running and needs to rely on upstream artifacts.
 
 Before a downstream skill relies on an upstream artifact, it should check:
 
 ```text
-Is the upstream artifact status settled?
-Is there clear approving review evidence?
-Are there unresolved material findings?
-Is the status update deterministic?
-Are edits allowed?
+upstream artifact path
+review evidence
+unresolved material findings
+current artifact status
+expected settled status
 ```
 
-If the review result is clear and no unresolved findings remain, the downstream skill may perform minimal lifecycle-status settlement before continuing.
+If review evidence is clear, final, and has no unresolved material findings, the downstream skill updates the minimal lifecycle/status fields and continues.
 
-If the settlement is ambiguous, forbidden, or unsafe, the downstream skill must stop and report a blocker.
+If the evidence is unclear, contradictory, missing, or has unresolved material findings, the downstream skill blocks.
+
+Allowed edits are limited to lifecycle/status surfaces:
+
+- `Status`
+- readiness
+- follow-on artifacts
+- closeout or lifecycle metadata
+
+Downstream settlement must not rewrite substantive artifact content.
 
 ### Downstream status settlement result
 
@@ -476,7 +502,7 @@ downstream skills should eventually settle stale upstream status before relying,
 
 No runtime architecture change is expected.
 
-This is a skill-contract and workflow-execution improvement. The first slice affects formal review skills, formal review recording reference text, static validation, and generated output.
+This is a skill-contract and workflow-execution improvement. The first slice affects formal review skills, formal review recording reference text, examples, static validation, and generated output.
 
 Affected surfaces may include:
 
@@ -488,6 +514,12 @@ skills/plan-review/SKILL.md
 skills/code-review/SKILL.md
 
 specs/formal-review-recording.md
+docs/examples/README.md
+docs/examples/formal-review-recording/
+docs/examples/plans/example-plan.md
+docs/examples/changes/skill-validator/
+docs/plans/0000-00-00-example-plan.md
+docs/changes/0001-skill-validator/
 scripts/test-skill-validator.py
 generated .codex/skills/
 generated dist/adapters/
@@ -533,9 +565,17 @@ For the required formal review recording reference update, validate that the ref
 
 ```text
 change-ID selection
-Location examples
+Location rule
 detailed recording artifact rules
 ```
+
+Examples cleanup acceptance criteria:
+
+- `docs/examples/README.md` exists and states examples are non-normative.
+- `docs/plans/0000-00-00-example-plan.md` is moved to `docs/examples/plans/example-plan.md`.
+- `docs/changes/0001-skill-validator/` is moved to `docs/examples/changes/skill-validator/`, or retained with explicit rationale if validator coupling makes it a separate slice.
+- Tests and validators that reference moved examples are updated.
+- `docs/examples/**` is routed or ignored consistently by selector/lifecycle validation.
 
 Suggested validation:
 
@@ -556,13 +596,17 @@ python scripts/validate-review-artifacts.py
 
 ## Rollout and rollback
 
-### Slice 1. Review recording output guardrail
+### Slice 1. Review recording output guardrail and examples cleanup
 
 - Update five formal review skills.
 - Update the formal review recording contract or linked reference.
+- Add `docs/examples/README.md`.
+- Move the example plan to `docs/examples/plans/example-plan.md`.
+- Move the shipped example change pack to `docs/examples/changes/skill-validator/`, or retain it with explicit rationale if validator coupling makes that a separate slice.
 - Keep recording block concise.
 - Remove artifact-status sync language.
 - Add static validator coverage.
+- Update tests, validators, and selectors that reference moved examples.
 - Regenerate public skills/adapters.
 - Validate.
 
@@ -570,7 +614,7 @@ python scripts/validate-review-artifacts.py
 
 - Define exact settlement rules in a follow-up proposal, plan, or later milestone.
 - Identify participating downstream skills.
-- Define sufficient review evidence, allowed status fields, no-edit behavior, and validation.
+- Define sufficient review evidence, allowed lifecycle/status fields, blocking behavior, and validation.
 - Update downstream skills only after that scope is approved.
 
 Rollback:
@@ -586,15 +630,18 @@ Rollback:
 |---|---|
 | Review skills remain too long | Use the concise recording block only |
 | Review skills lose material-finding rigor | Preserve complete finding shape |
+| Example move breaks validator fixtures | Move examples only when references are updated in the same slice, or retain with explicit rationale |
+| `docs/examples/**` is mistaken for active lifecycle state | Document examples as non-normative and update selector/lifecycle handling |
 | Downstream settlement remains unresolved after Slice 1 | Track as follow-up direction with explicit questions |
 | Later settlement causes unsafe edits | Require a separate approved contract before downstream skill changes |
 | Change-ID selection becomes inconsistent | Move full rule to spec/reference |
-| `Location` guidance becomes too verbose | Move examples to spec/reference |
+| `Location` guidance becomes too verbose | Keep normative rule in spec/reference and examples in `docs/examples/` |
 | Generated outputs drift | Regenerate and validate adapters |
 
 ## Open questions
 
-- Should the full change-ID and `Location` reference live directly in `specs/formal-review-recording.md` or in a small linked reference file?
+- Should the full change-ID and `Location` rules live directly in `specs/formal-review-recording.md` or in a small linked reference file?
+- Should `docs/changes/0001-skill-validator/` move in Slice 1 or be retained temporarily with explicit fixture-coupling rationale?
 - Which downstream status-settlement questions should be answered in a follow-up proposal versus a later implementation plan?
 
 ## Decision log
@@ -605,12 +652,13 @@ Rollback:
 | 2026-05-12 | Keep material-finding recording guardrail. | It directly fixes the observed repeated failure. | Drop the recording guardrail. |
 | 2026-05-12 | Remove artifact-status sync from review skills. | Review skills should record verdict and findings, not own artifact settlement by default. | Make review skills update reviewed artifacts. |
 | 2026-05-12 | Move downstream status settlement to follow-up direction for relying skills. | Downstream skills should eventually reconcile upstream status before relying, but this first slice must stay recording-only. | Bundle downstream settlement into the first slice. |
-| 2026-05-12 | Move long change-ID and `Location` details to formal recording spec/reference. | Avoid duplicating long policy in every review skill. | Copy full rules into every review skill. |
+| 2026-05-12 | Keep normative change-ID and `Location` rules in formal recording spec/reference and examples under `docs/examples/`. | Avoid duplicating long policy in every review skill and avoid active lifecycle directories for examples. | Copy full rules into every review skill or keep examples in active lifecycle directories. |
 
 ## Next artifacts
 
 - proposal-review
 - focused formal review recording spec/reference update
+- examples cleanup
 - implementation plan
 - skill-validator update
 - review skill updates
@@ -627,12 +675,13 @@ None yet.
 
 Ready for proposal-review.
 
-This proposal narrows the first implementation slice to the actual repeated failure: material findings must be durably recorded or explicitly blocked. It records downstream artifact lifecycle settlement as follow-up direction for the skills that rely on reviewed artifacts.
+This proposal narrows the first implementation slice to the actual repeated failure: material findings must be durably recorded or explicitly blocked, while moving examples out of active lifecycle directories. It records downstream artifact lifecycle settlement as follow-up direction for the skills that rely on reviewed artifacts.
 
 ## Core invariant
 
 ```text
 Review records evidence.
-Downstream settles status before reliance.
+Examples are not active lifecycle state.
+Downstream execution may settle upstream status before reliance.
 Artifacts remain the source of truth.
 ```
