@@ -18,7 +18,7 @@ tests:
   - Future test-spec coverage for clean receipt roots and review-log indexing.
   - Future validator coverage for clean receipt structure and no empty review-resolution requirement.
 review:
-  status: m1_review_requested
+  status: m1_closed_ready_m2
   unresolved_items: 0
   review_log: docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md
   review_resolution: docs/changes/2026-05-12-record-every-formal-review-review-recording/review-resolution.md
@@ -81,6 +81,8 @@ validation:
     result: expected_fail_before_m2_table_log_entries_not_supported
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-record-every-formal-review.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/plan.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-resolution.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/spec-review-r1.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/spec-review-r2.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/architecture-review-r1.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/plan-review-r1.md
     result: pass_m1
+  - command: code-review M1
+    result: clean_with_notes_no_material_findings
 changed_files:
   - docs/proposals/2026-05-12-record-every-formal-review.md
   - specs/formal-review-recording.md
@@ -95,6 +97,7 @@ changed_files:
   - docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/spec-review-r2.md
   - docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/architecture-review-r1.md
   - docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/plan-review-r1.md
+  - docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/code-review-m1-r1.md
   - docs/examples/formal-review-recording/README.md
   - docs/examples/formal-review-recording/clean-review-receipt-root.md
   - tests/fixtures/review-artifacts/valid-clean-receipt-root/change.yaml
