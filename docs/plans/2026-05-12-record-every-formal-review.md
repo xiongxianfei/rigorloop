@@ -309,6 +309,7 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - 2026-05-13: Final local verify passed and the plan moved to PR handoff.
 - 2026-05-13: PR #48 opened for human review.
 - 2026-05-13: Applied post-PR reviewer guidance by shortening formal review skill prose to the operational record-or-block obligation, leaving clean receipt root schema, change-ID selection, review-log table shape, examples, and validator semantics in the formal review recording spec, examples, and validators.
+- 2026-05-13: Fixed hosted PR CI selector routing after GitHub Actions blocked on the new `scripts/change_metadata_semantics.py` helper and clean receipt review-artifact fixture paths.
 
 ## Decision Log
 
@@ -328,6 +329,7 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - M4 generated output includes the M3 formal review skill changes and an earlier canonical workflow skill update that had not yet been refreshed in public adapters. The generated workflow diffs are accepted as adapter drift cleanup produced by the repository generator, not hand edits.
 - The initial M5 explicit CI command used `--path dist/adapters`, but the v1 selector requires classified concrete paths. M5 now records the selected public adapter skill files used to route adapter checks.
 - Post-PR reviewer guidance confirmed the skill text should not duplicate the full formal-review-recording spec. The public review skills now keep the first principle and point to the spec-owned contract.
+- Hosted PR CI exposed missing selector classifications for a new validator helper and review-artifact fixtures. The selector now routes those paths to deterministic regression checks instead of blocking as unclassified or manually routed.
 
 ## Validation Notes
 
@@ -445,6 +447,14 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - 2026-05-13: `python scripts/validate-change-metadata.py docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml` passed after post-PR lifecycle evidence update.
 - 2026-05-13: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml --path specs/formal-review-recording.test.md --path templates/shared/review-isolation-and-recording.md --path skills/spec-review/SKILL.md --path skills/code-review/SKILL.md` passed after post-PR lifecycle evidence update.
 - 2026-05-13: `git diff --check` passed after post-PR lifecycle evidence update.
+- 2026-05-13: `gh run view 25763419259 --log-failed` showed hosted PR CI blocked before execution because PR-mode selector did not classify `scripts/change_metadata_semantics.py` or the clean receipt root fixture paths under `tests/fixtures/review-artifacts/`.
+- 2026-05-13: `python scripts/test-select-validation.py` passed after the hosted CI selector fix with 58 tests.
+- 2026-05-13: `python scripts/select-validation.py --mode explicit --path scripts/change_metadata_semantics.py --path tests/fixtures/review-artifacts/valid-clean-receipt-root/change.yaml --path tests/fixtures/review-artifacts/valid-clean-receipt-root/review-log.md --path tests/fixtures/review-artifacts/valid-clean-receipt-root/reviews/spec-review-r1.md` passed after the hosted CI selector fix with no unclassified paths.
+- 2026-05-13: `bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path scripts/change_metadata_semantics.py --path tests/fixtures/review-artifacts/valid-clean-receipt-root/change.yaml --path tests/fixtures/review-artifacts/valid-clean-receipt-root/review-log.md --path tests/fixtures/review-artifacts/valid-clean-receipt-root/reviews/spec-review-r1.md` passed after the hosted CI selector fix with selected checks `review_artifacts.regression`, `change_metadata.regression`, and `selector.regression`.
+- 2026-05-13: `python scripts/validate-change-metadata.py docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml` passed after the hosted CI selector fix.
+- 2026-05-13: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml --path scripts/validation_selection.py --path scripts/test-select-validation.py` passed after the hosted CI selector fix.
+- 2026-05-13: `git diff --check` passed after the hosted CI selector fix.
+- 2026-05-13: `bash scripts/ci.sh --mode pr --base 2df914c20bca7707aff3e3f4872d6e4858dc2c01 --head 87fc29d4011bf32aaab4b2c44ddee0103a2e5a02` passed locally after the hosted CI selector fix with selected checks `skills.validate`, `skills.regression`, `skills.generation_regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.regression`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
 
 ## Outcome and Retrospective
 
