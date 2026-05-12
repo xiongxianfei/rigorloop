@@ -64,13 +64,13 @@ Generated local Codex runtime output under `.codex/skills/` is not authored or t
 ## Current Handoff Summary
 
 - Current milestone: M2. Review artifact and metadata validation
-- Current milestone state: review-requested
+- Current milestone state: closed
 - Last reviewed milestone: M2. Review artifact and metadata validation
-- Review status: M2 code-review changes-requested; CR-M2-002 accepted and fixed, rerun review required
-- Remaining in-scope implementation milestones: M2, M3, M4, M5
-- Next stage: code-review M2 rerun
+- Review status: M2 code-review clean-with-notes
+- Remaining in-scope implementation milestones: M3, M4, M5
+- Next stage: implement M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 is closed and M2 is ready for code-review rerun, but M2-M5 remain open, explain-change and verify evidence do not exist, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M1 and M2 are closed, but M3-M5 remain open, explain-change and verify evidence do not exist, and PR handoff is not prepared.
 
 ## Milestones
 
@@ -109,7 +109,7 @@ Generated local Codex runtime output under `.codex/skills/` is not authored or t
 
 ### M2. Review artifact and metadata validation
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Teach repository validation to accept and reject clean receipt roots according to the approved spec.
 - Requirements: `R4h`-`R4l`, `R8d`-`R8f`, `R10`-`R10c`, `R16`-`R16b`, `R24`-`R26e`.
 - Files/components likely touched:
@@ -298,6 +298,7 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - 2026-05-12: Implemented the accepted `CR-M2-001` fix by adding shared clean receipt root metadata semantics and negative validator coverage; M2 returned to review-requested.
 - 2026-05-12: Code-review M2 rerun found material finding `CR-M2-002`; M2 moved to resolution-needed.
 - 2026-05-12: Implemented the accepted `CR-M2-002` fix by requiring `review.status: clean` for clean-root-shaped metadata; M2 returned to review-requested.
+- 2026-05-12: Code-review M2 rerun passed with no material findings and M2 moved to closed.
 
 ## Decision Log
 
@@ -353,6 +354,7 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - 2026-05-12: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-record-every-formal-review-review-recording` passed for the `CR-M2-002` fix with 7 reviews, 3 findings, 7 log entries, and 3 resolution entries.
 - 2026-05-12: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/formal-review-recording.test.md --path specs/formal-review-recording.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml` passed for the `CR-M2-002` fix state sync.
 - 2026-05-12: `git diff --check --` passed for the `CR-M2-002` fix.
+- 2026-05-12: `code-review M2 rerun` recorded clean-with-notes with no material findings.
 
 ## Outcome and Retrospective
 
