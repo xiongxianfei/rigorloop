@@ -19,7 +19,7 @@ tests:
   - Future test-spec coverage for clean receipt roots and review-log indexing.
   - Future validator coverage for clean receipt structure and no empty review-resolution requirement.
 review:
-  status: verified_ready_pr
+  status: pr_open
   unresolved_items: 0
   review_log: docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md
   review_resolution: docs/changes/2026-05-12-record-every-formal-review-review-recording/review-resolution.md
@@ -268,6 +268,8 @@ validation:
     result: pass_verify_selected_checks
   - command: git diff --check
     result: pass_verify
+  - command: gh pr create --base main --head record-every-formal-review --title "feat: record every formal review" --body-file .pr-body-record-every-formal-review.md
+    result: opened_pr_48
 changed_files:
   - docs/proposals/2026-05-12-record-every-formal-review.md
   - specs/formal-review-recording.md

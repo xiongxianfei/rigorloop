@@ -68,9 +68,9 @@ Generated local Codex runtime output under `.codex/skills/` is not authored or t
 - Last reviewed milestone: M5. Lifecycle state, explanation, verification, and PR readiness
 - Review status: M5 code-review clean-with-notes
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: branch-ready for PR handoff
-- Reason final closeout is or is not ready: M1-M5 are closed, review-resolution is closed, explain-change exists, and local final verify passed. PR body/open readiness is still owned by the PR stage.
+- Next stage: monitor hosted CI and PR review
+- Final closeout readiness: PR #48 open; hosted CI pending
+- Reason final closeout is or is not ready: M1-M5 are closed, review-resolution is closed, explain-change exists, local final verify passed, and PR #48 is open. Hosted CI has not been observed passing yet.
 
 ## Milestones
 
@@ -307,6 +307,7 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - 2026-05-12: Implemented M5 by recording explain-change evidence, rerunning final targeted validation, and moving M5 to review-requested.
 - 2026-05-12: Code-review M5 passed with no material findings and M5 moved to closed; next stage is final verify.
 - 2026-05-13: Final local verify passed and the plan moved to PR handoff.
+- 2026-05-13: PR #48 opened for human review.
 
 ## Decision Log
 
@@ -428,10 +429,11 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - 2026-05-13: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-record-every-formal-review.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/plan.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md` passed during final verify.
 - 2026-05-13: `bash scripts/ci.sh --mode explicit --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path scripts/review_artifact_validation.py --path scripts/test-review-artifact-validator.py --path templates/shared/review-isolation-and-recording.md --path skills/spec-review/SKILL.md --path skills/code-review/SKILL.md --path dist/adapters/codex/.agents/skills/spec-review/SKILL.md --path dist/adapters/codex/.agents/skills/code-review/SKILL.md` passed during final verify with selected checks `skills.validate`, `skills.regression`, `skills.generation_regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.regression`, `artifact_lifecycle.validate`, and `selector.regression`.
 - 2026-05-13: `git diff --check` passed during final verify.
+- 2026-05-13: `gh pr create --base main --head record-every-formal-review --title "feat: record every formal review" --body-file .pr-body-record-every-formal-review.md` opened PR #48: `https://github.com/xiongxianfei/rigorloop/pull/48`.
 
 ## Outcome and Retrospective
 
-- Final local verify passed. PR handoff remains open.
+- Final local verify passed and PR #48 is open. Hosted CI and human review remain pending.
 
 ## Readiness
 
