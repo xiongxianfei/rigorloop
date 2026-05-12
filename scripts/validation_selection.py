@@ -607,6 +607,9 @@ def _apply_path_selection(
     if category == "learn-artifact":
         return
 
+    if category == "examples":
+        return
+
     if category == "vision":
         _add_check(
             selected,
@@ -886,6 +889,8 @@ def _path_category(path: str) -> str | None:
         return "token-cost"
     if path.startswith("tests/fixtures/token-cost/"):
         return "token-cost"
+    if path.startswith("docs/examples/"):
+        return "examples"
     if path.startswith("docs/changes/") and len(parts) >= 4:
         if parts[3] == "change.yaml":
             return "change-metadata"

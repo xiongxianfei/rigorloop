@@ -81,7 +81,7 @@ Generated Codex compatibility output under `.codex/skills/` MUST NOT be hand-edi
 
 Repository validation logic MUST live in repo-owned scripts. GitHub Actions workflows SHOULD remain thin wrappers that set up tooling and delegate to those scripts.
 
-Plans MUST follow `docs/plans/0000-00-00-example-plan.md`. `.codex/PLANS.md` MUST NOT be reintroduced as a second planning surface.
+Plans MUST follow the illustrative structure in `docs/examples/plans/example-plan.md`. Files under `docs/examples/` are non-normative examples, not active lifecycle state. `.codex/PLANS.md` MUST NOT be reintroduced as a second planning surface.
 
 For planned initiatives, `docs/plan.md` MUST remain the lifecycle index and concrete files under `docs/plans/` MUST remain the plan bodies that carry initiative detail.
 

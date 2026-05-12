@@ -47,7 +47,38 @@ validation:
     result: pass_valid_change_metadata_after_plan_creation
   - command: git diff --check -- docs/proposals/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md specs/formal-review-recording.md specs/formal-review-recording.test.md docs/plans/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md docs/plan.md docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement
     result: pass_after_plan_creation
+  - command: test-spec readiness check
+    result: active_test_spec_references_current_plan_and_covers_approved_amendment_after_plan_review
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path docs/plans/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md --path docs/plan.md --path docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/change.yaml --path docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/review-log.md --path docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/review-resolution.md
+    result: pass_with_existing_docs_plan_lifecycle_language_warning_after_test_spec_state_sync
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/change.yaml
+    result: pass_valid_change_metadata_after_test_spec_state_sync
+  - command: git diff --check -- specs/formal-review-recording.test.md docs/plans/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md docs/plan.md docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/change.yaml
+    result: pass_after_test_spec_state_sync
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_49_tests_after_m1_examples_routing
+  - command: python scripts/test-select-validation.py
+    result: pass_58_tests_after_m1_examples_routing
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_4_tests_after_m1_examples_routing
+  - command: python scripts/test-skill-validator.py
+    result: pass_62_tests_after_m1_examples_routing
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path docs/plans/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md --path docs/plan.md
+    result: pass_with_existing_docs_plan_lifecycle_language_warning_after_m1_handoff
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement
+    result: pass_closeout_reviews_2_findings_1_log_entries_2_resolution_entries_1_after_m1_handoff
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/change.yaml
+    result: pass_valid_change_metadata_after_m1_handoff
+  - command: git diff --check -- docs/examples docs/plans docs/changes/0001-skill-validator AGENTS.md CONSTITUTION.md README.md docs/workflows.md scripts specs/rigorloop-workflow.test.md specs/plan-index-lifecycle-ownership.test.md specs/single-source-of-workflow-state.test.md docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement docs/plan.md
+    result: pass_after_m1_handoff
 changed_files:
+  - AGENTS.md
+  - CONSTITUTION.md
+  - README.md
+  - docs/examples/README.md
+  - docs/examples/formal-review-recording/change-id-selection-examples.md
+  - docs/examples/formal-review-recording/material-finding-location-examples.md
+  - docs/examples/plans/example-plan.md
   - docs/proposals/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md
   - specs/formal-review-recording.md
   - specs/formal-review-recording.test.md
@@ -56,8 +87,16 @@ changed_files:
   - docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/review-resolution.md
   - docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/reviews/spec-review-r1.md
   - docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/reviews/spec-review-r2.md
+  - docs/workflows.md
   - docs/plans/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md
   - docs/plan.md
+  - scripts/test-artifact-lifecycle-validator.py
+  - scripts/test-select-validation.py
+  - scripts/test-skill-validator.py
+  - scripts/validation_selection.py
+  - specs/plan-index-lifecycle-ownership.test.md
+  - specs/rigorloop-workflow.test.md
+  - specs/single-source-of-workflow-state.test.md
 review:
   status: approved
   unresolved_items: 0

@@ -15,7 +15,7 @@
   - `docs/workflows.md`
   - `specs/rigorloop-workflow.md`
   - `docs/plan.md`
-  - `docs/plans/0000-00-00-example-plan.md`
+  - `docs/examples/plans/example-plan.md`
   - `skills/plan/SKILL.md`
   - `skills/implement/SKILL.md`
   - `skills/verify/SKILL.md`
@@ -119,7 +119,7 @@
 - Fixture/setup:
   - `specs/rigorloop-workflow.md`
   - `docs/workflows.md`
-  - `docs/plans/0000-00-00-example-plan.md`
+  - `docs/examples/plans/example-plan.md`
   - `skills/pr/SKILL.md`
   - `skills/verify/SKILL.md`
 - Steps:
@@ -141,7 +141,7 @@
 - Fixture/setup:
   - `specs/rigorloop-workflow.md`
   - `docs/workflows.md`
-  - `docs/plans/0000-00-00-example-plan.md`
+  - `docs/examples/plans/example-plan.md`
   - `skills/verify/SKILL.md`
   - `skills/workflow/SKILL.md`
 - Steps:
@@ -201,7 +201,7 @@
 - Level: integration, manual
 - Fixture/setup:
   - `docs/plan.md`
-  - `docs/plans/0000-00-00-example-plan.md`
+  - `docs/examples/plans/example-plan.md`
   - `AGENTS.md`
 - Steps:
   - Review `docs/plan.md` and confirm it remains an index rather than a plan body.
@@ -284,7 +284,7 @@
   - `specs/rigorloop-workflow.md`
 - Real plan surfaces:
   - `docs/plan.md`
-  - `docs/plans/0000-00-00-example-plan.md`
+  - `docs/examples/plans/example-plan.md`
   - `docs/plans/2026-04-19-rigorloop-first-release-implementation.md`
   - `docs/plans/2026-04-20-constitution-governance-migration.md`
   - `docs/plans/2026-04-20-plan-index-lifecycle-ownership.md`
