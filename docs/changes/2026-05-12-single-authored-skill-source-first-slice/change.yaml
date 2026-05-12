@@ -12,12 +12,15 @@ artifacts:
   explain_change: docs/changes/2026-05-12-single-authored-skill-source-first-slice/explain-change.md
 requirements:
   - Replace tracked local Codex mirror drift checks with generated temp-output validation.
+  - Remove .codex/skills from tracked Git state and ignore it as local generated output.
   - Preserve local Codex mirror generation from canonical skills.
-  - Keep public adapter output untouched in M1.
+  - Keep public adapter output untouched in the first slice.
+  - Document the current source boundary for contributors.
   - Keep lifecycle plan state current for milestone handoff.
 tests:
   - scripts/test-build-skills.py covers build-skills temp-output generation and validation.
   - scripts/test-select-validation.py covers selector routing for local mirror generation checks.
+  - scripts/test-skill-validator.py covers contributor docs and generated-output boundary assertions.
   - scripts/validate-skills.py covers canonical skill validity.
   - scripts/build-skills.py --check covers generated local mirror validation without tracked .codex/skills.
 validation:
@@ -45,7 +48,35 @@ validation:
     result: pass
   - command: git diff --check -- scripts docs/plans/2026-05-12-single-authored-skill-source-first-slice.md docs/plan.md specs/single-authored-skill-source-generated-output.test.md specs/single-authored-skill-source-generated-output.md docs/changes/2026-05-12-single-authored-skill-source-first-slice
     result: pass
+  - command: test -z "$(git ls-files .codex/skills)"
+    result: pass
+  - command: git check-ignore .codex/skills/proposal/SKILL.md
+    result: pass
+  - command: python scripts/build-skills.py
+    result: pass
+  - command: test -n "$(git ls-files 'dist/adapters/*/.*/skills/*/SKILL.md')"
+    result: pass
+  - command: python scripts/validate-readme.py README.md
+    result: pass
+  - command: python scripts/validate-readme.py README.md --vision-markers
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path README.md --path AGENTS.md --path CONSTITUTION.md --path docs/workflows.md --path .gitignore --path scripts/build-skills.py --path scripts/validation_selection.py --path scripts/test-select-validation.py --path scripts/test-skill-validator.py --path docs/changes/2026-05-12-single-authored-skill-source-first-slice/change.yaml --path docs/changes/2026-05-12-single-authored-skill-source-first-slice/explain-change.md --path docs/plans/2026-05-12-single-authored-skill-source-first-slice.md --path docs/plan.md
+    result: pass
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path AGENTS.md --path CONSTITUTION.md --path docs/changes/2026-05-12-single-authored-skill-source-first-slice/change.yaml --path docs/changes/2026-05-12-single-authored-skill-source-first-slice/explain-change.md --path docs/plan.md --path docs/plans/2026-05-12-single-authored-skill-source-first-slice.md --path docs/workflows.md
+    result: pass_with_existing_lifecycle_language_warnings
+  - command: python -m py_compile scripts/validation_selection.py scripts/test-select-validation.py scripts/test-skill-validator.py
+    result: pass
+  - command: git diff --check -- .gitignore README.md AGENTS.md CONSTITUTION.md docs/workflows.md scripts docs/plans/2026-05-12-single-authored-skill-source-first-slice.md docs/plan.md docs/changes/2026-05-12-single-authored-skill-source-first-slice
+    result: pass
 changed_files:
+  - .gitignore
+  - .codex/skills/**
+  - README.md
+  - AGENTS.md
+  - CONSTITUTION.md
+  - docs/workflows.md
   - scripts/build-skills.py
   - scripts/skill_validation.py
   - scripts/ci.sh
@@ -57,5 +88,5 @@ changed_files:
   - docs/plans/2026-05-12-single-authored-skill-source-first-slice.md
   - docs/plan.md
 review:
-  status: implementation_m1_review_requested
+  status: implementation_m2_review_requested
   unresolved_items: 0

@@ -463,6 +463,12 @@ raise SystemExit({exit_code})
                 "checks": {"selector.regression"},
             },
             {
+                "path": ".gitignore",
+                "category": "ignore-policy",
+                "status": "ok",
+                "checks": {"skills.generation_regression"},
+            },
+            {
                 "path": "CONSTITUTION.md",
                 "category": "governance",
                 "status": "ok",

@@ -10,4 +10,6 @@ M1 changes local Codex mirror validation so `scripts/build-skills.py --check` pr
 
 The implementation adds `scripts/test-build-skills.py` coverage for explicit `--output-dir` generation, temp-output `--check`, structural validation failures, and the invariant that check mode does not depend on the tracked `.codex/skills/` root. `scripts/validation_selection.py` now exposes `skills.generation_regression` so generator and canonical skill changes select the focused local-mirror proof alongside existing skill validation.
 
+M2 removes `.codex/skills/**` from tracked Git state, adds `.codex/skills/` to `.gitignore`, and updates contributor-facing docs to state that `skills/` is the only authored skill source. It preserves public adapter package tracking under `dist/adapters/` during the compatibility window.
+
 The final `explain-change` stage will replace or expand this preliminary note with full change rationale after implementation milestones and review-resolution, if any, are complete.
