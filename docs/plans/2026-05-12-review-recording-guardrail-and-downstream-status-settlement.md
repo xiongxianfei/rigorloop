@@ -1,6 +1,6 @@
 # Review Recording Guardrail and Examples Cleanup Plan
 
-- Status: active
+- Status: done
 - Owner: maintainers
 - Start date: 2026-05-12
 - Last updated: 2026-05-12
@@ -35,9 +35,9 @@ Example artifacts currently live in active-looking paths such as `docs/plans/000
 - Last reviewed milestone: M2. Formal Review Skill Recording Output Guardrail
 - Review status: M3 code-review clean-with-notes; no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: branch-ready for PR handoff
-- Reason final closeout is or is not ready: M1, M2, and M3 are closed with no open review-resolution, durable explain-change is complete, generated output is in sync, adapter validation passed, and final local verification passed; hosted CI has not been observed in this stage.
+- Next stage: PR review
+- Final closeout readiness: PR #45 opened
+- Reason final closeout is or is not ready: M1, M2, and M3 are closed with no open review-resolution, durable explain-change is complete, generated output is in sync, adapter validation passed, final local verification passed, and PR #45 is open; hosted CI is in progress and not yet claimed as passed.
 
 ## Non-goals
 
@@ -259,6 +259,7 @@ Also run explicit artifact lifecycle validation over the proposal, spec, test sp
 - [x] 2026-05-12: M3 code-review returned `clean-with-notes` with no material findings; no detailed review record was required.
 - [x] 2026-05-12: explain-change created `docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/explain-change.md`.
 - [x] 2026-05-12: verify passed final local validation and marked the branch ready for PR handoff.
+- [x] 2026-05-12: PR #45 opened for review; hosted CI was in progress at PR handoff.
 - [x] M1. Examples Surface And Validator Routing - closed
 - [x] M2. Formal Review Skill Recording Output Guardrail - closed
 - [x] M3. Generated Output Refresh And Final Static Proof - closed
@@ -308,9 +309,10 @@ Also run explicit artifact lifecycle validation over the proposal, spec, test sp
 
 ## Outcome and retrospective
 
-- Pending implementation and downstream lifecycle closeout.
+- Implemented formal review recording-status output, complete material-finding shape, deterministic review-recording change-ID selection, non-normative examples routing, validator coverage, and generated public skill refresh.
+- Opened PR #45 for review after final local verification; hosted CI was in progress at handoff.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for PR handoff.
+- This plan is closed locally and handed off to PR #45 for review.
