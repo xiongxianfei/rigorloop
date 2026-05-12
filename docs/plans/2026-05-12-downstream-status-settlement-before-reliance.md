@@ -39,14 +39,14 @@ The likely implementation surfaces are:
 
 ## Current Handoff Summary
 
-- Current milestone: M2
-- Current milestone state: review-requested
+- Current milestone: lifecycle-closeout
+- Current milestone state: planned
 - Last reviewed milestone: M1
-- Review status: M2 implementation complete; code-review pending
-- Remaining in-scope implementation milestones: M2
-- Next stage: code-review M2
+- Review status: code-review M2 clean-with-notes; no material findings
+- Remaining in-scope implementation milestones: none
+- Next stage: explain-change
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2 code-review, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: explain-change, verify, and PR handoff remain.
 
 ## Non-goals
 
@@ -113,7 +113,7 @@ The likely implementation surfaces are:
 
 ### M2. Generated Output Refresh And Final Static Proof
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: regenerate generated skill mirrors and public adapter output from canonical skill changes, then validate drift and adapter structure.
 - Requirements: generated-output consistency for `R1`-`R24a`
 - Files/components likely touched:
@@ -202,7 +202,7 @@ git diff --check -- skills .codex/skills dist/adapters scripts docs/proposals/20
 - [x] 2026-05-12: plan-review approved the execution plan with no material findings.
 - [x] 2026-05-12: test-spec created active proof-planning surface for M1-M2.
 - [x] M1. Canonical Skill Guidance And Static Proof - closed after clean code-review rerun
-- [x] M2. Generated Output Refresh And Final Static Proof - review-requested
+- [x] M2. Generated Output Refresh And Final Static Proof - closed after clean code-review
 
 ## Decision log
 
@@ -248,6 +248,7 @@ git diff --check -- skills .codex/skills dist/adapters scripts docs/proposals/20
 - M2 validation: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording` passed with 3 review records, 2 findings, 3 log entries, and 2 resolution entries.
 - M2 validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-downstream-status-settlement-before-reliance.md --path specs/downstream-status-settlement-before-reliance.md --path specs/downstream-status-settlement-before-reliance.test.md --path docs/plans/2026-05-12-downstream-status-settlement-before-reliance.md --path docs/plan.md --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/change.yaml --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/review-log.md --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/review-resolution.md` passed with the existing unrelated `docs/plan.md` lifecycle-language warning.
 - M2 validation: `git diff --check -- .codex/skills dist/adapters docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording docs/plans/2026-05-12-downstream-status-settlement-before-reliance.md docs/plan.md` passed.
+- Code-review M2 returned `clean-with-notes` with no material findings. No detailed clean review record was required.
 
 ## Outcome and retrospective
 
