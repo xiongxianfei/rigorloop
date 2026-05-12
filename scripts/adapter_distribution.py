@@ -42,6 +42,7 @@ TOKEN_COST_REPORT_ROOT = ROOT / "docs" / "reports" / "token-cost" / "releases"
 TOKEN_COST_VALIDATOR = ROOT / "scripts" / "validate-token-cost-report.py"
 TOKEN_COST_MANIFEST = ROOT / "benchmarks" / "token-cost" / "manifest.yaml"
 ADAPTER_OUTPUT_CONTRACT_ROOT = PurePosixPath("dist/adapters")
+ADAPTER_SUPPORT_METADATA_FILES = frozenset({Path("README.md")})
 OPENCODE_COMMAND_ROOT = PurePosixPath(".opencode/commands")
 COMMON_FRONTMATTER = frozenset({"name", "description"})
 TRANSFORMABLE_FRONTMATTER = frozenset({"argument-hint"})
@@ -1213,7 +1214,7 @@ def collect_adapter_drift_entries(
                 )
             )
 
-    for relative_path in sorted(set(existing) - set(expected)):
+    for relative_path in sorted(set(existing) - set(expected) - ADAPTER_SUPPORT_METADATA_FILES):
         entries.append(
             AdapterDriftEntry(
                 category="unexpected",
@@ -1385,7 +1386,7 @@ def sync_adapter_output(
         if not target_path.exists() or target_path.read_text(encoding="utf-8") != expected_text:
             target_path.write_text(expected_text, encoding="utf-8")
 
-    for relative_path in sorted(set(existing) - set(expected), reverse=True):
+    for relative_path in sorted(set(existing) - set(expected) - ADAPTER_SUPPORT_METADATA_FILES, reverse=True):
         path = output_root / relative_path
         if path.exists():
             path.unlink()

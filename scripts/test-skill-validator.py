@@ -1923,7 +1923,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "Shared skill policy blocks live under `templates/shared/<block-name>.md`.",
             "Public shared blocks are copied into consuming skills and checked for drift; maintainer-only blocks such as generated-output handling are not copied into published skills.",
             "Add a skill only when it owns a distinct artifact, gate, review responsibility, recurring action, or approved operational process.",
-            "Edit canonical skill source under `skills/<skill>/SKILL.md`; regenerate `.codex/skills/` and `dist/adapters/` instead of hand-editing generated output.",
+            "Edit canonical skill source under `skills/<skill>/SKILL.md`; regenerate `.codex/skills/` locally with `python scripts/build-skills.py`; keep public `dist/adapters/` output generated rather than hand-edited.",
         ]
         for term in required_workflows_terms:
             with self.subTest(surface="workflows_doc", term=term):
@@ -1940,6 +1940,33 @@ class SkillValidatorFixtureTests(unittest.TestCase):
 
         self.assertNotIn("## Required core sections", agents)
         self.assertNotIn("## Shared-block source of truth", agents)
+
+    def test_single_authored_first_slice_docs_and_ignore_policy(self) -> None:
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        workflows_doc = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
+        agents = SKILL_CONTRACT_AGENTS.read_text(encoding="utf-8")
+        constitution = (ROOT / "CONSTITUTION.md").read_text(encoding="utf-8")
+        gitignore = (ROOT / ".gitignore").read_text(encoding="utf-8")
+
+        shared_terms = [
+            "`skills/` is the only authored skill source.",
+            "`.codex/skills/` is generated local Codex runtime output",
+            "Regenerate it with `python scripts/build-skills.py`",
+            "Public adapter packages under `dist/adapters/` remain tracked generated installable output during the compatibility window.",
+        ]
+        for term in shared_terms:
+            for surface_name, surface in {
+                "README": readme,
+                "workflows": workflows_doc,
+                "AGENTS": agents,
+                "CONSTITUTION": constitution,
+            }.items():
+                with self.subTest(surface=surface_name, term=term):
+                    self.assertIn(term, surface)
+
+        self.assertIn(".codex/skills/", gitignore)
+        self.assertNotIn("commit `.codex/skills/`", readme)
+        self.assertNotIn("tracked `.codex/skills/`", workflows_doc)
 
     def test_skill_contract_m2_shared_block_sources_exist_and_stay_bounded(self) -> None:
         shared_blocks = {

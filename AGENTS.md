@@ -30,9 +30,10 @@ Do not silently blend conflicting higher-priority instructions. Call out the con
 - Reuse existing scripts and workflows before inventing new commands or processes.
 - Edit canonical workflow content in `docs/`, `specs/`, `skills/`, `schemas/`, `scripts/`, and `templates/`.
 - Keep architecture and ADR scaffolds under `templates/`; do not place template-like files under `docs/architecture/` or `docs/adr/`.
-- Do not hand-edit generated Codex compatibility output in `.codex/skills/`.
+- `skills/` is the only authored skill source.
+- Do not hand-edit generated local Codex runtime output in `.codex/skills/`. `.codex/skills/` is generated local Codex runtime output, and is ignored by Git. Regenerate it with `python scripts/build-skills.py` when needed.
 - Do not hand-edit generated public adapter package output in `dist/adapters/`.
-- Public adapter packages for Codex, Claude Code, and opencode are generated under `dist/adapters/`; `.codex/skills/` remains a separate generated local Codex runtime mirror.
+- Public adapter packages under `dist/adapters/` remain tracked generated installable output during the compatibility window. Public adapter packages for Codex, Claude Code, and opencode are generated under `dist/adapters/`; `.codex/skills/` remains a separate generated local Codex runtime mirror.
 - Follow `specs/skill-contract.md` for normalized skill structure and claim boundaries.
 - Treat shipped skill text as user-facing. Keep repository-maintainer details about canonical source paths, generated mirrors, adapter paths, selector path constraints, drift checks, and shared-block implementation mechanics in contributor or governance surfaces, not in published skills.
 - Do not create a new skill for one-off behavior; update an existing skill unless the new skill owns a distinct artifact, gate, review responsibility, recurring action, or approved operational process.

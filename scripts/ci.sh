@@ -205,7 +205,10 @@ run_broad_smoke() {
   run_check "Run skill validator fixtures" \
     python scripts/test-skill-validator.py
 
-  run_check "Check generated skill drift" \
+  run_check "Run local skill mirror generation fixtures" \
+    python scripts/test-build-skills.py
+
+  run_check "Validate generated skill mirror output" \
     python scripts/build-skills.py --check
 
   run_check "Run adapter distribution fixtures" \
