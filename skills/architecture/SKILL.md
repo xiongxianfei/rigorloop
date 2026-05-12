@@ -31,6 +31,8 @@ In workflow-managed downstream execution, before relying on a spec, check whethe
 
 Do not run upstream status settlement for review-only, no-edit, or manual inspection requests. Those requests remain isolated.
 
+During normal workflow-managed downstream execution, do not ask whether edits are allowed; the downstream invocation permits minimal settlement.
+
 Settle only lifecycle/status/readiness/follow-on/closeout metadata. Do not rewrite substantive artifact content.
 
 The clear review evidence check requires:
@@ -48,6 +50,8 @@ Mapping for this skill:
 
 If review evidence is missing, contradictory, unresolved, or the status surface is absent, block instead of guessing.
 
+If the artifact type, lifecycle field, next status, or target status is unknown or unmapped, block instead of inferring a settlement.
+
 Report `## Upstream status settlement` when settlement was updated, blocked, or stale status was detected:
 
 ```md
@@ -61,7 +65,7 @@ Report `## Upstream status settlement` when settlement was updated, blocked, or 
 - Settlement blocker:
 ```
 
-Use `New status: not-applicable` when no deterministic target status exists. `Settlement blocker` is required for blocked settlement.
+For blocked settlement with a deterministic target, report that intended target in `New status`. For blocked settlement with no deterministic target, report `New status: not-applicable`. `Settlement blocker` is required for blocked settlement and must distinguish a known target blocked by evidence/state from an unknown target blocked by missing mapping or lifecycle vocabulary.
 
 ## Architecture Surface Decision
 

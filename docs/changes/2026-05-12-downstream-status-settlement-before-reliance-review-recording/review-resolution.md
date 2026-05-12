@@ -27,3 +27,19 @@ Validation evidence: `specs/downstream-status-settlement-before-reliance.md` now
 ### spec-review-r2
 
 No material findings.
+
+### code-review-r1
+
+Review closeout: code-review-r1
+
+#### CR-001
+
+Finding ID: CR-001
+Disposition: accepted
+Status: resolved
+Owner: implementer
+Owning stage: implement
+Chosen action: Updated the first-slice upstream status settlement guidance in `skills/spec/SKILL.md`, `skills/architecture/SKILL.md`, and `skills/plan/SKILL.md` to explicitly cover the no-edit-question rule, unknown artifact/lifecycle/target blockers, known-target blocked `New status`, unknown-target `New status: not-applicable`, and blocker distinction. Tightened `scripts/test-skill-validator.py` to assert those semantics for all first-slice skills.
+Rationale: The finding identifies missing direct static proof and missing skill guidance for approved blocked-settlement and edit-permission semantics in M1.
+Validation target: Update first-slice skill guidance and `scripts/test-skill-validator.py`, then rerun M1 validation and code-review.
+Validation evidence: `python scripts/test-skill-validator.py` and `python scripts/validate-skills.py` passed after the fix.
