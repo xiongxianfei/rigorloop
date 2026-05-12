@@ -18,7 +18,7 @@ tests:
   - Future test-spec coverage for clean receipt roots and review-log indexing.
   - Future validator coverage for clean receipt structure and no empty review-resolution requirement.
 review:
-  status: m3_review_requested
+  status: m3_closed_ready_m4
   unresolved_items: 0
   review_log: docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md
   review_resolution: docs/changes/2026-05-12-record-every-formal-review-review-recording/review-resolution.md
@@ -169,6 +169,24 @@ validation:
     result: pass_m3_handoff_metadata
   - command: git diff --check --
     result: pass_m3_handoff_metadata
+  - command: code-review M3 r1
+    result: clean_with_notes_no_material_findings
+  - command: python scripts/test-skill-validator.py
+    result: pass_code_review_m3_67_tests
+  - command: python scripts/validate-skills.py
+    result: pass_code_review_m3_23_skill_files
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path specs/formal-review-recording.md
+    result: pass_code_review_m3_with_existing_docs_workflows_lifecycle_language_warning
+  - command: git diff --check -- templates/shared skills CONSTITUTION.md AGENTS.md docs/workflows.md scripts
+    result: pass_code_review_m3
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-record-every-formal-review-review-recording
+    result: pass_after_code_review_m3_reviews_10_findings_3_log_entries_10_resolution_entries_3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml
+    result: pass_after_code_review_m3
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/code-review-m3-r1.md
+    result: pass_after_code_review_m3
+  - command: git diff --check --
+    result: pass_after_code_review_m3
 changed_files:
   - docs/proposals/2026-05-12-record-every-formal-review.md
   - specs/formal-review-recording.md
@@ -188,6 +206,7 @@ changed_files:
   - docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/code-review-m2-r2.md
   - docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/code-review-m2-r3.md
   - docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/code-review-m2-r4.md
+  - docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/code-review-m3-r1.md
   - docs/examples/formal-review-recording/README.md
   - docs/examples/formal-review-recording/clean-review-receipt-root.md
   - AGENTS.md
