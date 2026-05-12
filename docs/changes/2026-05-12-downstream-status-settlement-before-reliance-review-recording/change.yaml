@@ -54,6 +54,34 @@ validation:
     result: pass_after_cr_001_fix
   - command: code-review M1 rerun
     result: clean_with_notes_no_material_findings
+  - command: python scripts/build-skills.py --check
+    result: expected_fail_stale_generated_codex_skills_before_m2_generation
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: expected_fail_stale_generated_adapter_skills_before_m2_generation
+  - command: python scripts/build-skills.py
+    result: synced_generated_codex_skills_after_m2_generation
+  - command: python scripts/build-adapters.py --version 0.1.1
+    result: synced_generated_adapter_output_after_m2_generation
+  - command: python scripts/build-skills.py --check
+    result: pass_after_m2_generation
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_after_m2_generation
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_after_m2_generation
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_after_m2_generation
+  - command: python scripts/test-skill-validator.py
+    result: pass_after_m2_generation
+  - command: python scripts/validate-skills.py
+    result: pass_after_m2_generation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/change.yaml
+    result: pass_after_m2_metadata_update
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording
+    result: pass_after_m2_metadata_update
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-downstream-status-settlement-before-reliance.md --path specs/downstream-status-settlement-before-reliance.md --path specs/downstream-status-settlement-before-reliance.test.md --path docs/plans/2026-05-12-downstream-status-settlement-before-reliance.md --path docs/plan.md --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/change.yaml --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/review-log.md --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/review-resolution.md
+    result: pass_with_existing_docs_plan_lifecycle_language_warning
+  - command: git diff --check -- .codex/skills dist/adapters docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording docs/plans/2026-05-12-downstream-status-settlement-before-reliance.md docs/plan.md
+    result: pass_after_m2_metadata_update
 changed_files:
   - docs/proposals/2026-05-12-downstream-status-settlement-before-reliance.md
   - specs/downstream-status-settlement-before-reliance.md
@@ -70,7 +98,19 @@ changed_files:
   - docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/reviews/spec-review-r1.md
   - docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/reviews/spec-review-r2.md
   - docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/reviews/code-review-r1.md
+  - .codex/skills/spec/SKILL.md
+  - .codex/skills/architecture/SKILL.md
+  - .codex/skills/plan/SKILL.md
+  - dist/adapters/claude/.claude/skills/spec/SKILL.md
+  - dist/adapters/claude/.claude/skills/architecture/SKILL.md
+  - dist/adapters/claude/.claude/skills/plan/SKILL.md
+  - dist/adapters/codex/.agents/skills/spec/SKILL.md
+  - dist/adapters/codex/.agents/skills/architecture/SKILL.md
+  - dist/adapters/codex/.agents/skills/plan/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/spec/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/architecture/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/plan/SKILL.md
 review:
-  status: m1_clean_pending_m2
+  status: m2_review_requested
   unresolved_items: 0
   latest_review: docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/reviews/code-review-r1.md

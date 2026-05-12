@@ -40,13 +40,13 @@ The likely implementation surfaces are:
 ## Current Handoff Summary
 
 - Current milestone: M2
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M1
-- Review status: code-review M1 rerun clean-with-notes; no material findings
+- Review status: M2 implementation complete; code-review pending
 - Remaining in-scope implementation milestones: M2
-- Next stage: implement M2
+- Next stage: code-review M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2 generated output refresh, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M2 code-review, explain-change, verify, and PR handoff remain.
 
 ## Non-goals
 
@@ -113,7 +113,7 @@ The likely implementation surfaces are:
 
 ### M2. Generated Output Refresh And Final Static Proof
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: regenerate generated skill mirrors and public adapter output from canonical skill changes, then validate drift and adapter structure.
 - Requirements: generated-output consistency for `R1`-`R24a`
 - Files/components likely touched:
@@ -147,11 +147,11 @@ The likely implementation surfaces are:
 - Expected observable result: generated local and public skill output reflects canonical settlement guidance and adapter validation passes.
 - Commit message: `M2: refresh generated settlement skill output`
 - Milestone closeout:
-  - validation passed
-  - progress updated
-  - decision log updated if needed
-  - validation notes updated
-  - milestone committed
+  - validation passed: yes
+  - progress updated: yes
+  - decision log updated if needed: no new decision needed
+  - validation notes updated: yes
+  - milestone committed: yes
 - Risks:
   - Generated output drift is broader than expected.
   - Adapter validation exposes stale package metadata.
@@ -202,7 +202,7 @@ git diff --check -- skills .codex/skills dist/adapters scripts docs/proposals/20
 - [x] 2026-05-12: plan-review approved the execution plan with no material findings.
 - [x] 2026-05-12: test-spec created active proof-planning surface for M1-M2.
 - [x] M1. Canonical Skill Guidance And Static Proof - closed after clean code-review rerun
-- [ ] M2. Generated Output Refresh And Final Static Proof - planned
+- [x] M2. Generated Output Refresh And Final Static Proof - review-requested
 
 ## Decision log
 
@@ -234,6 +234,20 @@ git diff --check -- skills .codex/skills dist/adapters scripts docs/proposals/20
 - M1 fix validation: `python scripts/test-skill-validator.py` passed after the `CR-001` fix.
 - M1 fix validation: `python scripts/validate-skills.py` passed after the `CR-001` fix.
 - Code-review M1 rerun returned `clean-with-notes` with no material findings. No detailed clean review record was required.
+- M2 pre-generation check: `python scripts/build-skills.py --check` failed with expected stale generated local Codex skill mirrors for `architecture`, `plan`, and `spec`.
+- M2 pre-generation check: `python scripts/build-adapters.py --version 0.1.1 --check` failed with expected stale generated adapter skill files for `architecture`, `plan`, and `spec` across Claude, Codex, and opencode adapters.
+- M2 generation: `python scripts/build-skills.py` synced generated local Codex skills.
+- M2 generation: `python scripts/build-adapters.py --version 0.1.1` synced generated adapter output.
+- M2 validation: `python scripts/build-skills.py --check` passed after generation.
+- M2 validation: `python scripts/build-adapters.py --version 0.1.1 --check` passed after generation.
+- M2 validation: `python scripts/validate-adapters.py --version 0.1.1` passed.
+- M2 validation: `python scripts/test-adapter-distribution.py` passed.
+- M2 validation: `python scripts/test-skill-validator.py` passed.
+- M2 validation: `python scripts/validate-skills.py` passed.
+- M2 validation: `python scripts/validate-change-metadata.py docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/change.yaml` passed.
+- M2 validation: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording` passed with 3 review records, 2 findings, 3 log entries, and 2 resolution entries.
+- M2 validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-downstream-status-settlement-before-reliance.md --path specs/downstream-status-settlement-before-reliance.md --path specs/downstream-status-settlement-before-reliance.test.md --path docs/plans/2026-05-12-downstream-status-settlement-before-reliance.md --path docs/plan.md --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/change.yaml --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/review-log.md --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/review-resolution.md` passed with the existing unrelated `docs/plan.md` lifecycle-language warning.
+- M2 validation: `git diff --check -- .codex/skills dist/adapters docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording docs/plans/2026-05-12-downstream-status-settlement-before-reliance.md docs/plan.md` passed.
 
 ## Outcome and retrospective
 
