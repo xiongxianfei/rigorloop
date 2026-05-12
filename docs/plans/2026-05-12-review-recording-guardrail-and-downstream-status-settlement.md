@@ -35,9 +35,9 @@ Example artifacts currently live in active-looking paths such as `docs/plans/000
 - Last reviewed milestone: M2. Formal Review Skill Recording Output Guardrail
 - Review status: M3 code-review clean-with-notes; no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: ready to begin final closeout sequence
-- Reason final closeout is or is not ready: M1, M2, and M3 are closed with no open review-resolution, so the next required stage is durable explain-change before verify and PR handoff.
+- Reason final closeout is or is not ready: M1, M2, and M3 are closed with no open review-resolution, and durable explain-change is complete; the next required stage is verify before PR handoff.
 
 ## Non-goals
 
@@ -257,6 +257,7 @@ Also run explicit artifact lifecycle validation over the proposal, spec, test sp
 - [x] 2026-05-12: M2 code-review returned `clean-with-notes` with no material findings; no detailed review record was required.
 - [x] 2026-05-12: M3 regenerated local Codex skill mirrors and public adapters for version `0.1.1`, then validated generated-output drift and adapter structure.
 - [x] 2026-05-12: M3 code-review returned `clean-with-notes` with no material findings; no detailed review record was required.
+- [x] 2026-05-12: explain-change created `docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/explain-change.md`.
 - [x] M1. Examples Surface And Validator Routing - closed
 - [x] M2. Formal Review Skill Recording Output Guardrail - closed
 - [x] M3. Generated Output Refresh And Final Static Proof - closed
@@ -298,6 +299,9 @@ Also run explicit artifact lifecycle validation over the proposal, spec, test sp
 - `python scripts/build-skills.py --check`, `python scripts/build-adapters.py --version 0.1.1 --check`, `python scripts/validate-adapters.py --version 0.1.1`, `python scripts/test-adapter-distribution.py`, `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement`, `python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/change.yaml`, and `git diff --check -- .codex/skills dist/adapters docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement docs/plans/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md docs/plan.md` passed after M3 generation.
 - Manual generated-output proof found `Recording status output`, `Review resolution: <path | not-required | blocked>`, and the formal review recording change-ID pointer in generated local Codex, Claude, Codex adapter, and opencode adapter review skills; exact status-sync fields were absent.
 - M3 code-review reran `python scripts/build-skills.py --check`, `python scripts/build-adapters.py --version 0.1.1 --check`, `python scripts/validate-adapters.py --version 0.1.1`, `python scripts/test-adapter-distribution.py`, `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement`, `python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/change.yaml`, and `git diff --check -- .codex/skills dist/adapters docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement docs/plans/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md docs/plan.md`; all passed.
+- `docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/explain-change.md` records the durable rationale linking the proposal, `R15a`, `R24`-`R31m`, `R33`, `T12`, `T21`-`T26`, M1-M3, review outcomes, and validation evidence to the actual diff.
+- `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement`, `python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/change.yaml`, and `git diff --check -- docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/explain-change.md docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/change.yaml docs/plans/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md docs/plan.md` passed after explain-change.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/explain-change.md --path docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/change.yaml --path docs/plans/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md --path docs/plan.md` passed after explain-change with the existing unrelated `docs/plan.md` lifecycle-language warning.
 
 ## Outcome and retrospective
 
@@ -306,4 +310,4 @@ Also run explicit artifact lifecycle validation over the proposal, spec, test sp
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for explain-change.
+- This plan is ready for verify.
