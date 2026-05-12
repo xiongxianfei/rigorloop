@@ -18,8 +18,8 @@ tests:
   - Future test-spec coverage for clean receipt roots and review-log indexing.
   - Future validator coverage for clean receipt structure and no empty review-resolution requirement.
 review:
-  status: m2_review_requested
-  unresolved_items: 0
+  status: m2_resolution_needed
+  unresolved_items: 1
   review_log: docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md
   review_resolution: docs/changes/2026-05-12-record-every-formal-review-review-recording/review-resolution.md
 validation:
@@ -97,6 +97,8 @@ validation:
     result: pass_m2_state_sync
   - command: git diff --check -- scripts tests/fixtures docs/examples/formal-review-recording skills/workflow/SKILL.md
     result: pass_m2
+  - command: code-review M2
+    result: changes_requested_cr_m2_001
 changed_files:
   - docs/proposals/2026-05-12-record-every-formal-review.md
   - specs/formal-review-recording.md
@@ -112,6 +114,7 @@ changed_files:
   - docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/architecture-review-r1.md
   - docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/plan-review-r1.md
   - docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/code-review-m1-r1.md
+  - docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/code-review-m2-r1.md
   - docs/examples/formal-review-recording/README.md
   - docs/examples/formal-review-recording/clean-review-receipt-root.md
   - scripts/review_artifact_validation.py

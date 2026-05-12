@@ -64,13 +64,13 @@ Generated local Codex runtime output under `.codex/skills/` is not authored or t
 ## Current Handoff Summary
 
 - Current milestone: M2. Review artifact and metadata validation
-- Current milestone state: review-requested
-- Last reviewed milestone: M1. Test spec and clean receipt fixtures
-- Review status: M1 code-review clean-with-notes
+- Current milestone state: resolution-needed
+- Last reviewed milestone: M2. Review artifact and metadata validation
+- Review status: M2 code-review changes-requested, material finding CR-M2-001
 - Remaining in-scope implementation milestones: M2, M3, M4, M5
-- Next stage: code-review M2
+- Next stage: review-resolution M2, then implement M2 fixes
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 is closed and M2 is ready for code-review, but M2-M5 remain open, explain-change and verify evidence do not exist, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M1 is closed, but M2 has an open material code-review finding, M2-M5 remain open, explain-change and verify evidence do not exist, and PR handoff is not prepared.
 
 ## Milestones
 
@@ -109,7 +109,7 @@ Generated local Codex runtime output under `.codex/skills/` is not authored or t
 
 ### M2. Review artifact and metadata validation
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Teach repository validation to accept and reject clean receipt roots according to the approved spec.
 - Requirements: `R4h`-`R4l`, `R8d`-`R8f`, `R10`-`R10c`, `R16`-`R16b`, `R24`-`R26e`.
 - Files/components likely touched:
@@ -294,6 +294,7 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - 2026-05-12: Implemented M1 by adding the clean receipt root fixture and non-normative clean receipt example, then handed M1 to code-review.
 - 2026-05-12: Code-review M1 passed with no material findings and M1 moved to closed.
 - 2026-05-12: Implemented M2 by adding clean receipt review-log table parsing, no-empty-resolution validation for clean roots, and minimal `change.yaml.review` semantic checks.
+- 2026-05-12: Code-review M2 found material finding `CR-M2-001`; M2 moved to resolution-needed.
 
 ## Decision Log
 
@@ -329,6 +330,7 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - 2026-05-12: `python scripts/validate-change-metadata.py docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml tests/fixtures/review-artifacts/valid-clean-receipt-root/change.yaml` passed for M2.
 - 2026-05-12: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/formal-review-recording.test.md --path specs/formal-review-recording.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml` passed for M2 state sync.
 - 2026-05-12: `git diff --check -- scripts tests/fixtures docs/examples/formal-review-recording skills/workflow/SKILL.md` passed for M2.
+- 2026-05-12: `code-review M2` recorded material finding `CR-M2-001`: clean receipt root metadata validation accepts missing `review.reviewed_artifact` and nonzero `review.unresolved_items`.
 
 ## Outcome and Retrospective
 

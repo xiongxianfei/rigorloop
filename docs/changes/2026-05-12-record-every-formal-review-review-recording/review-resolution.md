@@ -4,7 +4,7 @@
 
 This record resolves material findings from formal lifecycle reviews for the record-every-formal-review amendment.
 
-Closeout status: closed
+Closeout status: open
 
 ## Resolution Entries
 
@@ -41,3 +41,16 @@ No material findings.
 ### code-review-m1-r1
 
 No material findings.
+
+### code-review-m2-r1
+
+#### CR-M2-001
+
+Finding ID: CR-M2-001
+Disposition: accepted
+Status: open
+Owner: implementer
+Owning stage: implement
+Chosen action: Add clean receipt root metadata validation and negative tests for missing reviewed artifact, missing review-log path, and nonzero unresolved items.
+Rationale: The approved M2 scope requires validation for the minimal clean-receipt root metadata shape, and current validation accepts malformed clean roots.
+Validation target: `python scripts/test-review-artifact-validator.py`, `python scripts/test-change-metadata-validator.py`, and focused temporary negative checks or equivalent tests showing malformed clean receipt root metadata fails.
