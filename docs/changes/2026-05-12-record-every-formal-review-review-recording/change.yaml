@@ -18,7 +18,7 @@ tests:
   - Future test-spec coverage for clean receipt roots and review-log indexing.
   - Future validator coverage for clean receipt structure and no empty review-resolution requirement.
 review:
-  status: m3_closed_ready_m4
+  status: m4_review_requested
   unresolved_items: 0
   review_log: docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md
   review_resolution: docs/changes/2026-05-12-record-every-formal-review-review-recording/review-resolution.md
@@ -187,6 +187,28 @@ validation:
     result: pass_after_code_review_m3
   - command: git diff --check --
     result: pass_after_code_review_m3
+  - command: python scripts/build-skills.py --check
+    result: pass_m4_before_generation
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: expected_fail_m4_before_generation_18_stale_adapter_files
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: expected_fail_m4_before_generation_18_stale_adapter_files
+  - command: python scripts/test-adapter-distribution.py
+    result: expected_fail_m4_before_generation_stale_adapter_output
+  - command: python scripts/build-skills.py
+    result: pass_m4_regenerated_local_codex_mirror_untracked
+  - command: python scripts/build-adapters.py --version 0.1.1
+    result: pass_m4_regenerated_public_adapter_output
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_m4_after_generation
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_m4_after_generation
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_m4_after_generation_72_tests
+  - command: python scripts/build-skills.py --check
+    result: pass_m4_after_generation
+  - command: git diff --check -- dist/adapters
+    result: pass_m4_after_generation
 changed_files:
   - docs/proposals/2026-05-12-record-every-formal-review.md
   - specs/formal-review-recording.md
@@ -228,3 +250,21 @@ changed_files:
   - tests/fixtures/review-artifacts/valid-clean-receipt-root/change.yaml
   - tests/fixtures/review-artifacts/valid-clean-receipt-root/review-log.md
   - tests/fixtures/review-artifacts/valid-clean-receipt-root/reviews/spec-review-r1.md
+  - dist/adapters/claude/.claude/skills/architecture-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/code-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/plan-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/proposal-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/spec-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/workflow/SKILL.md
+  - dist/adapters/codex/.agents/skills/architecture-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/code-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/plan-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/proposal-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/spec-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/workflow/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/architecture-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/code-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/plan-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/proposal-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/spec-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/workflow/SKILL.md
