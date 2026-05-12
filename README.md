@@ -148,7 +148,7 @@ The normative contract lives in [specs/rigorloop-workflow.md](specs/rigorloop-wo
 - Do not hand-edit generated public adapter packages in:
   - `dist/adapters/`
 - Execution plans follow:
-  - `docs/plans/0000-00-00-example-plan.md`
+  - `docs/examples/plans/example-plan.md`
 
 ## Validation Commands
 
@@ -178,8 +178,10 @@ Use `bash scripts/ci.sh` to run the same checks through the repository-owned CI 
 │   ├── workflows.md
 │   ├── changes/
 │   │   └── 0001-skill-validator/
+│   ├── examples/
+│   │   └── plans/
+│   │       └── example-plan.md
 │   ├── plans/
-│   │   └── 0000-00-00-example-plan.md
 │   ├── architecture/
 │   └── adr/
 ├── .codex/

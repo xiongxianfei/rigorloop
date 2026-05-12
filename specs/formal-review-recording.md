@@ -8,6 +8,7 @@
 
 - [Formal Review Recording](../docs/proposals/2026-05-04-formal-review-recording.md)
 - [Review Skill Material Finding Recording](../docs/proposals/2026-05-07-review-skill-material-finding-recording.md)
+- [Review Recording Guardrail and Downstream Status Settlement](../docs/proposals/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md)
 
 ## Goal and context
 
@@ -18,6 +19,8 @@ The repository already has a review artifact model under `docs/changes/<change-i
 The goal is stage-neutral recording for material review findings without forcing detailed files for every clean review.
 
 This amendment clarifies that isolated review handoff behavior and material-finding recording are independent. A direct or review-only review remains isolated by default, but every material finding still requires durable change-local review evidence.
+
+This 2026-05-12 draft amendment makes the recording obligation operational in formal review skill output. It requires formal review skills to report whether required review-recording artifacts were created, were not required, or were blocked; it requires complete material-finding shape including `Location`; and it keeps examples under `docs/examples/` instead of active lifecycle directories. It intentionally does not implement downstream upstream-status settlement in this first slice.
 
 ## Glossary
 
@@ -31,6 +34,10 @@ This amendment clarifies that isolated review handoff behavior and material-find
 - `isolated review request`: a direct or review-only review invocation that reports a review result without automatically continuing into downstream workflow stages.
 - `tracked artifact`: any version-controlled repository file whose change will be committed or reviewed as part of the work.
 - `shared review-skill recording subsection`: the identical `## Isolation and Recording` guidance copied into all formal review skills from `templates/shared/review-isolation-and-recording.md`.
+- `recording status`: the formal review output field that reports whether required review-recording artifacts were not required, recorded, or blocked.
+- `complete material-finding shape`: the minimum fields needed for a future reader to understand a material finding without chat history.
+- `Location`: the material-finding field that identifies the affected file, section, line, artifact, missing artifact, or other specific review surface.
+- `examples surface`: `docs/examples/**`, the non-normative directory for illustrative artifact examples that must not be treated as active lifecycle state.
 
 ## Examples first
 
@@ -99,6 +106,40 @@ Then the output names no automatic downstream handoff, material Finding IDs, req
 Given the formal review skills are updated for this behavior
 When validation compares their `## Isolation and Recording` sections
 Then every copied section matches `templates/shared/review-isolation-and-recording.md` byte-for-byte, and stage-specific text appears only outside the shared block.
+
+### Example E11: material review output records before final response
+
+Given `plan-review` produces material finding `PR-001`
+When the review output is ready to return
+Then the review creates or updates the required change-local review record, `review-log.md`, and `review-resolution.md`
+And the final output reports `Recording status: recorded` and the artifact paths.
+
+### Example E12: blocked recording is explicit
+
+Given `proposal-review` produces a material finding
+And the change ID cannot be selected from the active change root, reviewed artifact metadata, user input, or deterministic fallback rule
+When the review output is returned
+Then the output reports `Recording status: blocked`
+And it includes the `Recording blocker` and the smallest action needed to create the record.
+
+### Example E13: material findings include Location
+
+Given `spec-review` reports a material finding about missing testability requirements
+When the finding is recorded
+Then the finding includes `Location` pointing to the affected spec section or to the missing expected artifact path with a not-present rationale.
+
+### Example E14: examples are not active lifecycle state
+
+Given an illustrative plan example exists
+When the repository lists active plans or validates current lifecycle state
+Then `docs/examples/plans/example-plan.md` is not treated as an active plan.
+
+### Example E15: no review-side artifact-status sync field
+
+Given `proposal-review` returns a clean approval
+When the review output is generated
+Then the output may settle the proposal artifact-local status only when no detailed-record trigger applies under the existing clean-review rule
+And it does not add `Status sync`, `Status artifact`, or `Status sync blocker` fields to the review result.
 
 ## Requirements
 
@@ -287,17 +328,151 @@ R22b. Those surfaces MUST use the same rule: every material finding is recorded,
 
 R23. First-slice validation for this clarification MUST remain structural. It MUST NOT add semantic flagging for tracked artifact edits that reference unresolved review findings.
 
+R24. Formal review skill output MUST include a `Recording status` field.
+
+R24a. `Recording status` MUST use exactly one of:
+- `not-required`;
+- `recorded`;
+- `blocked`.
+
+R24b. `not-required` MUST mean no material findings and no detailed-record trigger.
+
+R24c. `recorded` MUST mean every artifact required by the active recording trigger exists or was updated.
+
+R24d. `blocked` MUST mean required review-recording artifacts could not be created or updated.
+
+R24e. `Recording status` MUST NOT be treated as the review verdict.
+
+R25. Formal review skill output MUST include review-recording artifact path fields:
+- `Review record`;
+- `Review log`;
+- `Review resolution`.
+
+R25a. `Review resolution` MUST be reported as a path, `not-required`, or `blocked`.
+
+R25b. If `Recording status: blocked`, the output MUST include `Recording blocker` and the smallest action needed to create or update the required artifacts.
+
+R26. For material findings, `Recording status: recorded` MUST require:
+- a detailed review record;
+- `review-log.md`;
+- `review-resolution.md`.
+
+R26a. For no-material detailed-record triggers, `Recording status: recorded` MUST require:
+- a detailed review record;
+- `review-log.md`.
+
+R26b. A no-material detailed-record trigger MUST NOT require an empty `review-resolution.md` unless another approved review-resolution trigger applies.
+
+R27. Every material finding in formal review output or a durable review record MUST include complete material-finding shape:
+- Finding ID;
+- Severity;
+- Location;
+- Evidence;
+- Required outcome;
+- Safe resolution path, or `needs-decision` rationale.
+
+R27a. `Location` MAY be a file path and section, file path and line or range, artifact and milestone or requirement ID, missing expected artifact path, or review surface with a not-present rationale.
+
+R27b. `Location` MUST be specific enough that a future reader can find the affected surface without chat history.
+
+R28. Formal review skills MUST NOT merely tell the user that required review artifacts should be created when recording is required.
+
+R28a. The review skill MUST create or update the required review-recording artifacts before final output, or report `Recording status: blocked`.
+
+R29. Formal review skills MUST include concise recording-status guidance covering:
+- `Recording status`;
+- `not-required`;
+- `recorded`;
+- `blocked`;
+- material-finding artifact requirements;
+- no-material detailed-record artifact requirements;
+- `Recording blocker`;
+- complete material-finding shape;
+- the rule not to merely tell the user to create review artifacts.
+
+R29a. Static skill validation MUST cover the stable terms required by `R29`.
+
+R29b. Static validation MAY use exact negative field checks to prevent standardized review-side artifact-status sync fields in formal review skills.
+
+R30. Formal review skills MUST NOT include standardized review-side artifact-status sync fields for this amendment.
+
+R30a. The disallowed standardized fields are:
+- `Status settlement recommendation`;
+- `Status sync`;
+- `Status artifact`;
+- `Status sync blocker`.
+
+R30b. Formal review skills MAY mention stale lifecycle status only as a normal review finding, concern, or note when it affects the reviewed surface.
+
+R31. Normative change-ID selection, `Location`, and detailed recording artifact rules MUST live in this spec or a linked formal review recording reference.
+
+R31a. When a formal lifecycle review requires durable recording, the review skill MUST choose the change ID in this order:
+1. existing active change root;
+2. reviewed artifact or active plan metadata;
+3. user-provided change ID;
+4. generated review-recording change ID.
+
+R31b. Existing active change root means the active `docs/changes/<change-id>/change.yaml` for the reviewed work.
+
+R31c. Reviewed artifact or active plan metadata MAY identify the change ID through an active plan field naming the change ID, reviewed artifact metadata, reviewed artifact section explicitly linking to `docs/changes/<change-id>/`, review request text that names the change ID, or an existing review-log or review-resolution path for the same change.
+
+R31d. User-provided change ID means a change ID explicitly provided by the user or maintainer.
+
+R31e. If no existing change ID is available, the review skill MUST generate the fallback change ID as:
+`YYYY-MM-DD-<reviewed-artifact-or-topic>-review-recording`.
+
+R31f. The generated slug MUST be lowercase kebab-case and derived from the reviewed artifact name, active plan/proposal/spec topic, or review subject.
+
+R31g. Chat-only context MAY help locate a change ID, but durable recording MUST still use a tracked change root or the generated review-recording fallback.
+
+R31h. If the generated change ID already exists and clearly belongs to the same reviewed artifact or review subject, the review MAY use that existing change root.
+
+R31i. If the generated change ID already exists but appears to belong to a different review subject, the review MUST use `Recording status: blocked` instead of silently merging unrelated review records.
+
+R31j. If the change ID remains ambiguous after applying `R31a` through `R31i`, the review output MUST use `Recording status: blocked` and state the smallest action needed to select or create the change root.
+
+R31k. When recording is required and the selected change ID is valid, the review skill MUST create or update the required review artifacts under `docs/changes/<change-id>/`.
+
+R31l. When recording is required and the change ID cannot be selected, the review skill MUST NOT merely tell the user that records should be created. It MUST report `Recording status: blocked`, material Finding IDs, why the change ID is ambiguous or unavailable, and the smallest action needed to continue.
+
+R31m. Formal review skills MUST NOT duplicate long change-ID algorithms or long `Location` example sets.
+
+R31n. Full illustrative examples for change-ID selection and material-finding `Location` SHOULD live under `docs/examples/formal-review-recording/`.
+
+R32. `docs/examples/**` MUST be treated as a non-normative examples surface.
+
+R32a. `docs/examples/README.md` MUST state that examples are illustrative, non-normative, and not active lifecycle artifacts.
+
+R32b. The plan example SHOULD move from `docs/plans/0000-00-00-example-plan.md` to `docs/examples/plans/example-plan.md`.
+
+R32c. The shipped skill-validator example change pack SHOULD move from `docs/changes/0001-skill-validator/` to `docs/examples/changes/skill-validator/`.
+
+R32d. If the shipped skill-validator example change pack is not moved in the first implementation slice, the implementation MUST record explicit fixture-coupling rationale in a tracked or review-visible surface.
+
+R32e. Tests, validators, selectors, and guidance that reference moved examples MUST be updated in the same slice as the move.
+
+R32f. Lifecycle validation and selector behavior MUST NOT treat `docs/examples/**` as active lifecycle state.
+
+R33. The first implementation slice for this amendment MUST NOT update downstream authoring or execution skills for upstream status settlement.
+
+R33a. Downstream status settlement before reliance MAY be specified in a follow-up proposal, plan, or later milestone.
+
+R33b. If downstream status settlement is specified later, downstream skill execution MAY imply permission for minimal upstream lifecycle/status settlement before reliance, but that behavior is outside this amendment's first implementation slice.
+
 ## Inputs and outputs
 
 Inputs:
 
 - formal lifecycle review output;
 - isolated formal lifecycle review output;
+- formal review skill result output;
 - reviewed proposal, spec, architecture artifact, ADR, plan, code, tests, validation, or generated output;
 - tracked artifacts that will be committed or reviewed as part of the work;
 - existing `docs/changes/<change-id>/` root when present;
+- change ID sources such as active change roots, reviewed artifact metadata, user-provided IDs, or deterministic fallback IDs;
 - maintainer PR comments when they are promoted as evidence;
 - `change.yaml`, `review-log.md`, `review-resolution.md`, and detailed review files when they exist.
+- example artifact files under active lifecycle directories or `docs/examples/**`.
 
 Outputs:
 
@@ -306,8 +481,10 @@ Outputs:
 - initial review-record root when an `R2` trigger requires a detailed review file before a change-local root exists;
 - review-log entries indexing detailed review files;
 - review-resolution entries for material Finding IDs;
-- aggregate `change.yaml.review` status and optional pointers.
-- shared formal review skill guidance from `templates/shared/review-isolation-and-recording.md`.
+- aggregate `change.yaml.review` status and optional pointers;
+- formal review output that reports `Recording status`, review artifact paths, and blockers when applicable;
+- shared formal review skill guidance from `templates/shared/review-isolation-and-recording.md`;
+- non-normative examples under `docs/examples/**`.
 
 ## State and invariants
 
@@ -323,6 +500,11 @@ Outputs:
 - Review files do not become proposal, spec, architecture, ADR, or plan sources of truth.
 - The final non-trivial change-local pack includes durable Markdown reasoning even when an initial review-record root was created earlier.
 - The shared review-skill recording subsection remains byte-identical across formal review skills.
+- `Recording status` reports recording completion only and does not replace the review verdict.
+- Material findings preserve complete material-finding shape, including `Location`.
+- Normative review-recording rules live in specs or linked references, while examples live in `docs/examples/**`.
+- `docs/examples/**` is never active lifecycle state.
+- The first implementation slice does not change downstream skill upstream-status settlement behavior.
 
 ## Error and boundary behavior
 
@@ -341,6 +523,11 @@ Outputs:
 - If a dedicated `pr-review` file appears before the allowed stage set is extended, validation must treat it as unsupported.
 - If a no-material `R2` trigger requires a detailed review file before a change-local root exists, the initial review-record root needs `change.yaml`, `review-log.md`, and the detailed review file, but not an empty `review-resolution.md`.
 - If a non-trivial change reaches final handoff without durable Markdown reasoning, final handoff is incomplete even if the initial review-record root exists.
+- If a formal review produces material findings but returns without `Recording status: recorded` or `Recording status: blocked`, the review output is incomplete.
+- If a material finding omits `Location`, the finding is incomplete and cannot be treated as durably recorded.
+- If required recording artifacts cannot be created or updated, the review output must use `Recording status: blocked` and name the blocking condition.
+- If a formal review skill adds standardized `Status sync`-style fields in this amendment's first slice, static validation should fail.
+- If a selector or lifecycle validator treats `docs/examples/**` as current lifecycle state, validation behavior is wrong for this amendment.
 
 ## Compatibility and migration
 
@@ -350,6 +537,8 @@ Outputs:
 - This spec does not require a `change.yaml` schema change because additional `review` pointer fields are optional under the current permissive object shape.
 - Rollback may remove the new trigger guidance while keeping already-authored upstream review records as valid historical artifacts.
 - Existing historical review skills and generated adapter output do not need migration until the implementation slice updates canonical skill behavior.
+- Moving examples out of active lifecycle directories is a path migration for illustrative fixtures only; it must update tests, selectors, validators, and guidance that reference those paths.
+- If `docs/changes/0001-skill-validator/` is retained temporarily because validator fixtures still depend on it, the implementation must record explicit rationale and follow-up ownership.
 
 ## Observability
 
@@ -357,12 +546,15 @@ Outputs:
 - Reviewers can tell from `change.yaml.review.unresolved_items`, `review-log.md`, and `review-resolution.md` whether material findings remain open.
 - Reviewers can distinguish artifact-local settlement from detailed review-event evidence.
 - Reviewers can tell from isolated review output whether downstream continuation stopped and what durable recording action is required before fixes.
+- Reviewers can tell from formal review output whether review recording was not required, completed, or blocked.
+- Reviewers can find illustrative examples under `docs/examples/**` without confusing them for current project state.
 - Validation output should identify malformed review artifact paths and relationship failures.
 
 ## Security and privacy
 
 - Review records, `review-log.md`, `review-resolution.md`, and `change.yaml` MUST NOT include secrets, credentials, private keys, or sensitive runtime values from review evidence.
 - PR comment promotion MUST preserve only the evidence needed for review closeout and MUST NOT copy sensitive context unnecessarily.
+- Example files under `docs/examples/**` MUST NOT include real secrets, credentials, private keys, or sensitive runtime values.
 - Structural validation MUST NOT require network access or repository secrets.
 
 ## Accessibility and UX
@@ -373,11 +565,15 @@ Review artifacts SHOULD use stable labels and concise sections so contributors c
 
 The shared review-skill recording subsection SHOULD be short enough to remain readable inside each formal review skill without requiring a spec lookup mid-review.
 
+Formal review skills SHOULD keep the recording-status block concise and link or point to the project review-recording process instead of embedding long example sets.
+
 ## Performance expectations
 
 Review artifact validation SHOULD remain lightweight enough for targeted local validation and CI.
 
 This spec MUST NOT require broad smoke solely because upstream review records exist.
+
+Moving examples to `docs/examples/**` MUST NOT make selector or lifecycle validation scan active lifecycle directories more broadly than before.
 
 ## Edge cases
 
@@ -398,6 +594,14 @@ This spec MUST NOT require broad smoke solely because upstream review records ex
 15. A material isolated review output that omits Finding IDs, required record path, record-before-fixing or reconstruction status, or owner-decision status is incomplete.
 16. A skill-specific paragraph inserted inside the shared `## Isolation and Recording` block fails static validation.
 17. A tracked generated adapter file changed because of a material review finding is a tracked artifact edit.
+18. A formal review output reports material findings but no `Recording status`; the output is incomplete.
+19. A formal review output reports `Recording status: recorded`, but the required review record path does not exist; the output is false and validation or review must block.
+20. A material finding names evidence and required outcome but omits `Location`; the finding is incomplete.
+21. A material finding concerns an absent artifact; `Location` points to the missing expected artifact path or review surface with a not-present rationale.
+22. A no-material detailed-record trigger reports `Review resolution: not-required`.
+23. A formal review skill contains a standardized `Status sync:` field in the first slice; static validation fails.
+24. A selector lists `docs/examples/plans/example-plan.md` as an active plan; selector behavior is wrong.
+25. `docs/changes/0001-skill-validator/` cannot move in the first slice because a validator fixture path still depends on it; the implementation records explicit rationale and follow-up ownership.
 
 ## Non-goals
 
@@ -411,6 +615,10 @@ This spec MUST NOT require broad smoke solely because upstream review records ex
 - Adding semantic validator detection for tracked artifact edits that mention unresolved review findings in the first slice.
 - Generating formal review skill shared subsections instead of manually copying a canonical block.
 - Migrating historical review packs that are not otherwise touched.
+- Implementing downstream upstream-status settlement in the first slice.
+- Adding standardized review-side artifact-status sync result fields.
+- Treating `docs/examples/**` as active lifecycle state.
+- Rewriting substantive artifact content when moving illustrative examples.
 
 ## Acceptance criteria
 
@@ -430,18 +638,32 @@ This spec MUST NOT require broad smoke solely because upstream review records ex
 - Isolated review outputs with material findings expose Finding IDs, required review record path, record-before-fixing or reconstruction status, and owner-decision status.
 - `CONSTITUTION.md`, `AGENTS.md`, and `docs/workflows.md` teach the same rule: every material finding is recorded, all material findings require change-local review files, and isolation stops handoff rather than recording.
 - Formal review skills contain a byte-identical `## Isolation and Recording` block from a canonical template.
+- Formal review skills expose `Recording status` with only `not-required`, `recorded`, and `blocked`.
+- Formal review output distinguishes `Recording status` from the review verdict.
+- Material review findings include Finding ID, Severity, Location, Evidence, Required outcome, and Safe resolution path or `needs-decision` rationale.
+- Material findings require review record, `review-log.md`, and `review-resolution.md` paths when recorded.
+- No-material detailed-record triggers report `Review resolution: not-required` instead of creating an empty `review-resolution.md`.
+- Formal review skills do not include standardized `Status sync`, `Status artifact`, `Status sync blocker`, or `Status settlement recommendation` fields.
+- Normative change-ID and `Location` rules live in this spec or a linked formal review recording reference.
+- Full illustrative examples live under `docs/examples/**`.
+- `docs/examples/README.md` states examples are non-normative and not active lifecycle artifacts.
+- The plan example is moved to `docs/examples/plans/example-plan.md`.
+- The shipped skill-validator example change pack is moved to `docs/examples/changes/skill-validator/` or retained with explicit fixture-coupling rationale.
+- Selectors and lifecycle validation do not treat `docs/examples/**` as active lifecycle state.
+- Downstream upstream-status settlement is not implemented in the first slice.
 
 ## Open questions
 
-- None.
+- Whether the full change-ID and `Location` rules should stay directly in this spec or move to a small linked formal review recording reference. This does not block spec review because the owning surface requirement is defined.
+- Whether `docs/changes/0001-skill-validator/` can move in the first implementation slice or must be retained temporarily with fixture-coupling rationale. This does not block spec review because both acceptable outcomes are defined.
+- Which downstream status-settlement questions should be answered in a follow-up proposal versus a later implementation plan. This does not block spec review because downstream settlement is excluded from the first implementation slice.
 
 ## Next artifacts
 
-- Implementation M1 under the active review skill material-finding recording plan.
-- `code-review` after implementation milestones complete.
-- `verify`.
-- `explain-change`.
-- `pr`.
+- Implementation plan for review recording output guardrail and examples cleanup.
+- Review skill and static validator updates.
+- Generated skill and adapter refresh.
+- Optional downstream status-settlement follow-up proposal.
 
 ## Follow-on artifacts
 
@@ -452,7 +674,11 @@ This spec MUST NOT require broad smoke solely because upstream review records ex
 - Execution plan: [Review Skill Material Finding Recording plan](../docs/plans/2026-05-07-review-skill-material-finding-recording.md)
 - Plan-review: approved on 2026-05-07 with no material findings.
 - Test spec: [Formal Review Recording test spec](formal-review-recording.test.md) updated for the review skill material-finding recording amendment.
+- Proposal amendment: [Review Recording Guardrail and Downstream Status Settlement](../docs/proposals/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md), accepted.
+- Spec-review: approved on 2026-05-12 after material finding `SR-001` was resolved.
 
 ## Readiness
 
-Approved amendment for review skill material-finding recording. Matching test spec is updated; the active plan now governs M1 proof-map work.
+Approved for implementation planning.
+
+This amendment defines the formal review recording output guardrail and examples cleanup contract. Downstream upstream-status settlement remains follow-up scope.

@@ -9,11 +9,12 @@
 - Spec: [Formal Review Recording](formal-review-recording.md), approved.
 - Original proposal: [Formal Review Recording](../docs/proposals/2026-05-04-formal-review-recording.md), accepted.
 - Amendment proposal: [Review Skill Material Finding Recording](../docs/proposals/2026-05-07-review-skill-material-finding-recording.md), accepted.
+- Current amendment proposal: [Review Recording Guardrail and Downstream Status Settlement](../docs/proposals/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md), accepted.
 - Historical plan: [Formal Review Recording Implementation Plan](../docs/plans/2026-05-04-formal-review-recording.md), done.
-- Current amendment plan: [Review Skill Material Finding Recording Execution Plan](../docs/plans/2026-05-07-review-skill-material-finding-recording.md), active.
+- Current amendment plan: [Review Recording Guardrail and Examples Cleanup Plan](../docs/plans/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md), active.
 - Architecture: not required. The approved spec and accepted plan reuse the existing `docs/changes/<change-id>/reviews/`, `review-log.md`, `review-resolution.md`, and review-artifact validator model without adding a new storage architecture, parser architecture, persistence layer, deployment path, or integration boundary.
 - Spec-review: approved after the initial review-record root was split into material and no-material variants.
-- Plan-review: current amendment plan approved on 2026-05-07 with no material findings; `test-spec` is the immediate next handoff before implementation.
+- Spec-review: 2026-05-12 amendment approved after material finding `SR-001` was resolved.
 
 ## Testing strategy
 
@@ -23,6 +24,7 @@
 - Use focused skill-validator assertions only for stable contractual review guidance terms when canonical review-stage skills change.
 - Use static assertions for the current amendment: canonical shared block existence, byte-equality across the five formal review skills, placement outside stage-specific guidance, isolated material-review output fields, broad material-finding trigger wording, governance alignment, and the structural-only first-slice boundary.
 - Use generated-output drift checks and adapter validation when canonical `skills/**` changes.
+- Use focused static assertions for the 2026-05-12 recording-status output vocabulary, complete material-finding shape, absence of standardized status-sync fields, and examples-surface handling.
 - Use explicit-path lifecycle validation and explicit-path CI for top-level lifecycle artifacts, workflow specs, matched test specs, change-local artifacts, validator scripts, skills, and generated output selected by the active plan.
 - Treat broad smoke as unnecessary unless plan-review, test-spec review, code-review, review-resolution, verify, selector mode, release metadata, or a maintainer decision elevates it.
 
@@ -51,6 +53,12 @@
 | `R21`-`R21d` | `T19` | integration | Shared `## Isolation and Recording` block is canonical, byte-equal, and placement-safe |
 | `R22`-`R22b` | `T18` | manual, integration | `CONSTITUTION.md`, `AGENTS.md`, and `docs/workflows.md` teach the same broad rule |
 | `R23` | `T20` | integration, manual | First-slice validation remains structural/static and does not add semantic edit-reference flagging |
+| `R24`-`R26b` | `T21` | integration, manual | Recording-status vocabulary, artifact paths, blocked status, and no-empty-resolution behavior |
+| `R27`-`R28a` | `T22` | integration, manual | Complete material-finding shape including `Location`, and create-or-block output flow |
+| `R29`-`R30b` | `T23` | integration, manual | Concise review-skill recording-status block, stable static assertions, and no standardized status-sync fields |
+| `R31`-`R31l` | `T26` | integration, manual | Deterministic change-ID selection order, fallback format, collision behavior, and blocked-recording behavior |
+| `R31m`-`R32f` | `T24` | integration, manual | Long examples stay out of skills; examples live under `docs/examples/**` and are not active lifecycle state |
+| `R33`-`R33b` | `T25` | manual | Downstream upstream-status settlement remains follow-up scope for the first slice |
 | Security/privacy `MUST`s | `T14` | manual, integration | Review artifacts do not preserve secrets and structural validation requires no network or secrets |
 | Performance `MUST` | `T14` | integration, manual | Upstream review records do not by themselves require broad smoke |
 
@@ -68,6 +76,11 @@
 | `E8` | `T17` | Late isolated-review capture is reconstructed with source, timing, evidence, Finding IDs, and fidelity-loss disclosure |
 | `E9` | `T17` | Isolated material review output names the required recording obligation |
 | `E10` | `T19` | Formal review skills share byte-identical `Isolation and Recording` guidance from the canonical template |
+| `E11` | `T21`, `T22` | Material review output records artifacts and reports `Recording status: recorded` |
+| `E12` | `T21` | Blocked recording reports blocker and smallest action needed |
+| `E13` | `T22` | Material findings include flexible but specific `Location` |
+| `E14` | `T24` | Examples under `docs/examples/**` are not active lifecycle state |
+| `E15` | `T23`, `T25` | Review skills do not add standardized status-sync fields |
 
 ## Edge case coverage
 
@@ -86,6 +99,20 @@
 - Isolated material review output missing Finding IDs, record path, record-before-fixing or reconstruction status, or owner-decision status: `T17`
 - Skill-specific guidance inserted inside the shared `## Isolation and Recording` block: `T19`
 - Generated adapter output changed because of a material review finding as a tracked artifact edit: `T18`
+- Material review output lacks `Recording status`: `T21`
+- `Recording status: recorded` but required artifact path is missing: `T21`
+- Material finding lacks `Location`: `T22`
+- Material finding concerns a missing expected artifact: `T22`
+- No-material detailed-record trigger needs `Review resolution: not-required`: `T21`
+- Formal review skill contains `- Status sync:` in first-slice output shape: `T23`
+- `docs/examples/plans/example-plan.md` treated as active plan state: `T24`
+- `docs/changes/0001-skill-validator/` retained without fixture-coupling rationale: `T24`
+- Existing active `change.yaml` supplies the review-recording change ID: `T26`
+- Active plan or reviewed artifact metadata supplies the change ID: `T26`
+- User-provided change ID supplies the change root when no tracked root exists: `T26`
+- Generated fallback creates `YYYY-MM-DD-<reviewed-artifact-or-topic>-review-recording`: `T26`
+- Multiple possible change IDs remain ambiguous and produce `Recording status: blocked`: `T26`
+- Generated fallback collides with unrelated existing change root and blocks: `T26`
 
 ## Milestone coverage map
 
@@ -99,6 +126,10 @@
 | `2026-05-07` M2 authored guidance | `T17`, `T18`, `T19` | Canonical shared block and copied formal review skill guidance |
 | `2026-05-07` M3 generated output | `T12`, `T19` | Generated Codex mirrors and public adapters reflect canonical formal review skill changes |
 | `2026-05-07` M4 closeout | `T13`, `T15`, `T16`, `T20` | Review artifacts, lifecycle state, paired governing test specs, and final validation remain synchronized |
+| `2026-05-12` Slice 1 recording-status output | `T21`, `T22`, `T23` | Formal review output reports recording completion, preserves complete material-finding shape, and keeps review skills concise |
+| `2026-05-12` Slice 1 examples cleanup | `T24` | Examples move under `docs/examples/**` and selectors/lifecycle validation do not treat them as active lifecycle state |
+| `2026-05-12` follow-up boundary | `T25` | Downstream upstream-status settlement remains outside the first implementation slice |
+| `2026-05-12` change-ID selection | `T26` | Required review recording selects a deterministic change root or blocks |
 
 ## Test cases
 
@@ -578,6 +609,162 @@
   - `python scripts/test-review-artifact-validator.py`
   - manual M1/M4 review
 
+### T21. Formal review output reports recording status and required artifact paths
+
+- Covers: `R24`-`R26b`, `E11`, `E12`, edge cases 18, 19, 22
+- Level: integration, manual
+- Fixture/setup:
+  - `skills/proposal-review/SKILL.md`
+  - `skills/spec-review/SKILL.md`
+  - `skills/architecture-review/SKILL.md`
+  - `skills/plan-review/SKILL.md`
+  - `skills/code-review/SKILL.md`
+  - `scripts/test-skill-validator.py`
+  - review-artifact validator fixtures for material and no-material detailed records
+- Steps:
+  - Assert each formal review skill describes `Recording status`.
+  - Assert the allowed values are exactly `not-required`, `recorded`, and `blocked`.
+  - Assert the guidance distinguishes `Recording status` from the review verdict.
+  - Assert the expected review output includes `Review record`, `Review log`, and `Review resolution`.
+  - Assert `Review resolution` can be reported as a path, `not-required`, or `blocked`.
+  - Assert material findings require a detailed review record, `review-log.md`, and `review-resolution.md` for `Recording status: recorded`.
+  - Assert no-material detailed-record triggers require a detailed review record and `review-log.md` but not an empty `review-resolution.md`.
+  - Assert blocked recording guidance requires `Recording blocker` and the smallest action needed.
+- Expected result:
+  - Formal review outputs make recording completion observable without confusing it with the review verdict.
+- Failure proves:
+  - Review skills can still report findings without making recording status operationally checkable.
+- Automation location:
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/test-review-artifact-validator.py`
+  - Manual review of changed formal review skills.
+
+### T22. Material findings keep complete finding shape including Location
+
+- Covers: `R27`-`R28a`, `E11`, `E13`, edge cases 20, 21
+- Level: integration, manual
+- Fixture/setup:
+  - formal review skills
+  - `specs/formal-review-recording.md` or linked formal review recording reference
+  - `docs/examples/formal-review-recording/material-finding-location-examples.md`
+  - review-artifact fixtures with material Finding IDs
+- Steps:
+  - Assert formal review guidance requires Finding ID, Severity, Location, Evidence, Required outcome, and Safe resolution path or `needs-decision` rationale for every material finding.
+  - Assert `Location` guidance accepts file section, line/range, artifact plus milestone or requirement ID, missing expected artifact path, or review surface with not-present rationale.
+  - Assert the guidance says `Location` must be specific enough to find the affected surface without chat history.
+  - Assert review skills instruct agents to create or update required review artifacts before final output, or report `Recording status: blocked`.
+  - If examples are added, inspect them for at least one missing-artifact Location example.
+- Expected result:
+  - Material findings are durable enough to reconstruct without chat history.
+- Failure proves:
+  - The original lapse can recur by recording incomplete findings or only telling users what should be recorded.
+- Automation location:
+  - `python scripts/test-skill-validator.py`
+  - Manual review of examples and changed review skills.
+
+### T23. Review skills stay concise and exclude standardized status-sync fields
+
+- Covers: `R29`-`R30b`, `E15`, edge case 23
+- Level: integration, manual
+- Fixture/setup:
+  - five formal review skills
+  - `scripts/test-skill-validator.py`
+  - generated skill mirrors and adapters when canonical skills change
+- Steps:
+  - Assert every formal review skill contains the stable recording-status terms required by `R29`.
+  - Assert formal review skills do not contain exact standardized fields:
+    - `- Status settlement recommendation:`
+    - `- Status sync:`
+    - `- Status artifact:`
+    - `- Status sync blocker:`
+  - Confirm explanatory prose that says artifact-status sync is out of scope does not fail validation.
+  - Confirm review skills may mention stale lifecycle status only as an ordinary finding, concern, or note when relevant to the reviewed surface.
+  - Regenerate generated skill mirrors and adapter output after canonical skill changes.
+- Expected result:
+  - Review skills expose the recording guardrail without reintroducing review-side artifact-status sync.
+- Failure proves:
+  - The first slice recreates PR #44's scope problem or lets the recording block drift.
+- Automation location:
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/build-adapters.py --version 0.1.1 --check`
+  - `python scripts/validate-adapters.py --version 0.1.1`
+
+### T24. Examples live under docs/examples and are not active lifecycle state
+
+- Covers: `R31`-`R32f`, `E14`, edge cases 24, 25
+- Level: integration, manual
+- Fixture/setup:
+  - `docs/examples/README.md`
+  - `docs/examples/plans/example-plan.md`
+  - `docs/examples/changes/skill-validator/`
+  - `docs/examples/formal-review-recording/change-id-selection-examples.md`
+  - `docs/examples/formal-review-recording/material-finding-location-examples.md`
+  - validators or selectors that reference `docs/plans/0000-00-00-example-plan.md` or `docs/changes/0001-skill-validator/`
+- Steps:
+  - Assert `docs/examples/README.md` states examples are illustrative, non-normative, and not active lifecycle artifacts.
+  - Assert the plan example is moved from `docs/plans/0000-00-00-example-plan.md` to `docs/examples/plans/example-plan.md`.
+  - Assert the shipped skill-validator example change pack is moved to `docs/examples/changes/skill-validator/`, or a tracked rationale explains why fixture coupling defers that move.
+  - Update tests, validators, selectors, and guidance that reference moved examples.
+  - Assert selector and lifecycle validation behavior does not treat `docs/examples/**` as active proposal, spec, plan, change, or review state.
+- Expected result:
+  - Examples are findable without being mistaken for active lifecycle artifacts.
+- Failure proves:
+  - Example files can pollute lifecycle state or path migrations break validator fixtures.
+- Automation location:
+  - `python scripts/test-artifact-lifecycle-validator.py`
+  - `python scripts/test-select-validation.py`
+  - `python scripts/test-change-metadata-validator.py`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`
+  - Manual review of example documentation.
+
+### T25. Downstream upstream-status settlement remains follow-up scope
+
+- Covers: `R33`-`R33b`, `E15`
+- Level: manual
+- Fixture/setup:
+  - changed review skills
+  - downstream skills if touched
+  - implementation plan
+- Steps:
+  - Confirm the first implementation slice does not update downstream authoring or execution skills for upstream status settlement.
+  - Confirm any downstream settlement wording remains follow-up direction and does not create first-slice acceptance criteria for `spec`, `architecture`, `plan`, `test-spec`, `implement`, `explain-change`, `verify`, or `pr`.
+  - Confirm a later follow-up may define the simpler model where downstream skill execution implies permission for minimal lifecycle/status settlement before reliance.
+- Expected result:
+  - The urgent recording-output fix remains separate from downstream settlement behavior.
+- Failure proves:
+  - The implementation has again bundled two distinct behavior changes into one hard-to-review slice.
+- Automation location:
+  - Manual review during spec-review, plan-review, and implementation closeout.
+
+### T26. Change ID selection is deterministic or blocked
+
+- Covers: `R31`-`R31l`, `E12`
+- Level: integration, manual
+- Fixture/setup:
+  - formal review skills
+  - `specs/formal-review-recording.md`
+  - `docs/examples/formal-review-recording/change-id-selection-examples.md`
+  - temporary review-recording scenarios with and without existing change roots
+- Steps:
+  - Assert required formal review recording uses an existing active `docs/changes/<change-id>/change.yaml` when present for the reviewed work.
+  - Assert reviewed artifact or active plan metadata supplies the change ID when it unambiguously names one change.
+  - Assert a user-provided change ID supplies the change root when no tracked change root or unambiguous metadata exists.
+  - Assert fallback generation uses `YYYY-MM-DD-<reviewed-artifact-or-topic>-review-recording`.
+  - Assert the generated slug is lowercase kebab-case and derived from the reviewed artifact name, plan/proposal/spec topic, or review subject.
+  - Assert an existing generated fallback ID may be reused only when it clearly belongs to the same reviewed artifact or review subject.
+  - Assert an existing generated fallback ID that appears to belong to a different review subject produces `Recording status: blocked`.
+  - Assert multiple ambiguous candidate change IDs produce `Recording status: blocked`.
+  - Assert blocked change-ID selection reports material Finding IDs, why selection is ambiguous or unavailable, and the smallest action needed to continue.
+- Expected result:
+  - Required review recording has one deterministic change-root selection contract, and ambiguous cases block instead of inventing or merging unrelated paths.
+- Failure proves:
+  - Formal review skills can still create inconsistent or ambiguous change-local roots when material findings require recording.
+- Automation location:
+  - `python scripts/test-skill-validator.py`
+  - review-artifact or selector tests if implementation adds helper logic
+  - Manual review of formal review skill wording and change-ID examples.
+
 ## Fixtures and data
 
 - Prefer temporary change roots in `scripts/test-review-artifact-validator.py` for focused validator scenarios.
@@ -587,6 +774,8 @@
 - Use `docs/changes/2026-05-04-formal-review-recording/change.yaml` and `docs/changes/2026-05-04-formal-review-recording/explain-change.md` as durable traceability fixtures once M1 creates the change-local pack.
 - Use `templates/shared/review-isolation-and-recording.md` as the canonical shared-block source for the 2026-05-07 amendment.
 - Use `docs/changes/2026-05-07-review-skill-material-finding-recording/**` as current change-local evidence for material review recording and closeout behavior.
+- Use `docs/examples/**` for illustrative examples after the 2026-05-12 amendment implementation.
+- Do not use `docs/examples/**` as active lifecycle fixture state unless a test is explicitly verifying example routing or ignore behavior.
 
 ## Mocking/stubbing policy
 
@@ -601,23 +790,29 @@
 - Existing clean artifact-local review settlements remain compatible when no detailed-record trigger applied.
 - Existing review-artifact validation for `proposal-review`, `spec-review`, `architecture-review`, `plan-review`, and `code-review` remains the target stage set.
 - Rollback compatibility is covered by keeping the new behavior on existing review artifact paths and validator code paths rather than adding a second path taxonomy.
+- Moving examples from active lifecycle directories to `docs/examples/**` requires updating all tests, selectors, validators, and guidance that rely on the old paths in the same slice.
+- If the shipped skill-validator example change pack cannot move safely in the first slice, the implementation records fixture-coupling rationale and leaves the old path intentionally until a follow-up move.
 
 ## Observability verification
 
 - `T4`, `T5`, and `T13` verify that detailed review files can be found through `review-log.md`.
 - `T10` verifies that open material findings and open review-resolution closeout block downstream handoff.
 - `T13` verifies failure output remains actionable by naming path, Review ID or Finding ID when available, validation mode, and short reason.
+- `T21` verifies review output reports whether recording was not required, recorded, or blocked.
+- `T24` verifies examples can be located under `docs/examples/**` without becoming active lifecycle state.
 - Successful validation may report counts for detailed reviews, findings, log entries, and closeout state, but exact counts are not required unless implemented as stable validator output.
 
 ## Security/privacy verification
 
 - `T14` verifies no review artifacts or promoted PR comment evidence include secrets, credentials, private keys, or sensitive runtime values.
+- `T24` verifies examples do not need real secrets, live runtime values, or private project state.
 - `T14` verifies structural validation does not require network access or repository secrets.
 - Skill and workflow guidance should avoid instructing contributors to copy full PR comment transcripts when narrow evidence is enough for closeout.
 
 ## Performance checks
 
 - `T14` verifies review-artifact validation remains lightweight and targeted.
+- `T24` verifies example relocation does not make selectors or lifecycle validation scan active lifecycle directories more broadly than before.
 - M4 validation uses explicit-path CI and selected checks first.
 - Broad smoke is out of scope unless a higher-priority trigger elevates it.
 
@@ -634,6 +829,12 @@
 - [ ] Review `CONSTITUTION.md`, `AGENTS.md`, and `docs/workflows.md` for the same broad material-finding rule.
 - [ ] Review generated output drift checks after canonical skill edits.
 - [ ] Review final change-local artifacts for durable reasoning and no sensitive values.
+- [ ] Review formal review outputs for `Recording status`, path fields, and blocker fields.
+- [ ] Review material finding examples for complete `Location` values.
+- [ ] Review formal review skills for absence of standardized `Status sync` fields.
+- [ ] Review `docs/examples/README.md` and moved example paths.
+- [ ] Review selector and lifecycle behavior for `docs/examples/**`.
+- [ ] Review first-slice scope to ensure downstream status settlement is not implemented.
 
 ## What not to test
 
@@ -646,21 +847,22 @@
 
 ## Uncovered gaps
 
-- None.
+- Downstream upstream-status settlement proof is intentionally not covered by this draft amendment's first slice.
 
 ## Next artifacts
 
-- Implementation M1 under [Review Skill Material Finding Recording Execution Plan](../docs/plans/2026-05-07-review-skill-material-finding-recording.md).
-- Code review after implementation milestones complete.
+- Implementation and code-review.
 - Review-resolution if material findings are produced.
-- Verify.
-- Explain-change.
-- PR.
+- Explain-change, verify, and PR.
 
 ## Follow-on artifacts
 
-- None yet.
+- Spec-review: approved on 2026-05-12 after material finding `SR-001` was resolved.
+- Implementation plan: active.
+- Plan-review: approved on 2026-05-12 with no material findings.
 
 ## Readiness
 
-This test spec is an active proof-planning surface for the review skill material-finding recording amendment. Implementation may proceed under the active 2026-05-07 plan starting with M1.
+Active proof-planning surface for implementation.
+
+This test spec maps the 2026-05-12 formal review recording output guardrail and examples cleanup amendment to static, structural, generated-output, selector, lifecycle, and manual proof paths. Downstream upstream-status settlement remains follow-up scope.
