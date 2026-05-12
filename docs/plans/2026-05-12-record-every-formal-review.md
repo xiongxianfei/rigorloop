@@ -362,6 +362,10 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - 2026-05-12: `python scripts/validate-change-metadata.py docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml tests/fixtures/review-artifacts/valid-clean-receipt-root/change.yaml` passed after `CR-M2-002` tightening.
 - 2026-05-12: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/formal-review-recording.test.md --path specs/formal-review-recording.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml` passed after `CR-M2-002` tightening.
 - 2026-05-12: `git diff --check --` passed after `CR-M2-002` tightening.
+- 2026-05-12: `code-review M2 r4` reviewed commit `1e8637c` and recorded clean-with-notes with no material findings.
+- 2026-05-12: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-record-every-formal-review-review-recording` passed after `code-review M2 r4` with 9 reviews, 3 findings, 9 log entries, and 3 resolution entries.
+- 2026-05-12: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/code-review-m2-r4.md` passed after `code-review M2 r4`.
+- 2026-05-12: `git diff --check -- docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md docs/changes/2026-05-12-record-every-formal-review-review-recording/reviews/code-review-m2-r4.md` passed after `code-review M2 r4`.
 
 ## Outcome and Retrospective
 

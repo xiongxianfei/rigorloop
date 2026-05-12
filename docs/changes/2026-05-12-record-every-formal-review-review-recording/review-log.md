@@ -89,3 +89,9 @@ Detailed record: reviews/code-review-m2-r3.md
 Resolution: review-resolution.md#code-review-m2-r3
 Material findings: None
 Open findings: None
+
+## Clean Review Receipts
+
+| Review ID | Stage | Round | Reviewed artifact | Record | Status | Material findings | Recording |
+|---|---|---:|---|---|---|---:|---|
+| code-review-m2-r4 | code-review | 4 | `docs/plans/2026-05-12-record-every-formal-review.md#M2` | `reviews/code-review-m2-r4.md` | clean-with-notes | 0 | recorded |
