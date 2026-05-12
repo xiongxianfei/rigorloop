@@ -37,7 +37,7 @@ def validate_clean_receipt_root_review_metadata(
     if not isinstance(status, str) or not status.strip():
         errors.append("review.status must identify clean receipt root status")
     elif status != "clean":
-        errors.append("review.status must be clean for clean receipt roots")
+        errors.append("review.status must be 'clean' for clean receipt roots")
 
     reviewed_artifact = review.get("reviewed_artifact")
     if reviewed_artifact is None:

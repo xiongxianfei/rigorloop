@@ -355,6 +355,13 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - 2026-05-12: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/formal-review-recording.test.md --path specs/formal-review-recording.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml` passed for the `CR-M2-002` fix state sync.
 - 2026-05-12: `git diff --check --` passed for the `CR-M2-002` fix.
 - 2026-05-12: `code-review M2 rerun` recorded clean-with-notes with no material findings.
+- 2026-05-12: Tightened `CR-M2-002` evidence by adding exact quoted error coverage and `review.status: changes-requested` negative tests for both metadata and review-artifact validators.
+- 2026-05-12: `python scripts/test-review-artifact-validator.py` passed for the `CR-M2-002` tightening with 35 tests.
+- 2026-05-12: `python scripts/test-change-metadata-validator.py` passed for the `CR-M2-002` tightening with 7 tests.
+- 2026-05-12: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-record-every-formal-review-review-recording` passed after `CR-M2-002` tightening with 8 reviews, 3 findings, 8 log entries, and 3 resolution entries.
+- 2026-05-12: `python scripts/validate-change-metadata.py docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml tests/fixtures/review-artifacts/valid-clean-receipt-root/change.yaml` passed after `CR-M2-002` tightening.
+- 2026-05-12: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/formal-review-recording.test.md --path specs/formal-review-recording.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml` passed after `CR-M2-002` tightening.
+- 2026-05-12: `git diff --check --` passed after `CR-M2-002` tightening.
 
 ## Outcome and Retrospective
 
