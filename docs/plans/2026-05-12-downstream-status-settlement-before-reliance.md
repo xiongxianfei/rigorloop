@@ -40,13 +40,13 @@ The likely implementation surfaces are:
 ## Current Handoff Summary
 
 - Current milestone: lifecycle-closeout
-- Current milestone state: planned
+- Current milestone state: branch-ready
 - Last reviewed milestone: M2
 - Review status: code-review M2 clean-with-notes; no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
+- Next stage: pr
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: durable explain-change is complete; verify and PR handoff remain.
+- Reason final closeout is or is not ready: final local verification passed; PR handoff remains.
 
 ## Non-goals
 
@@ -204,6 +204,7 @@ git diff --check -- skills .codex/skills dist/adapters scripts docs/proposals/20
 - [x] M1. Canonical Skill Guidance And Static Proof - closed after clean code-review rerun
 - [x] M2. Generated Output Refresh And Final Static Proof - closed after clean code-review
 - [x] 2026-05-12: explain-change recorded durable rationale and handed off to verify.
+- [x] 2026-05-12: verify passed final local validation and marked the branch ready for PR handoff.
 
 ## Decision log
 
@@ -255,11 +256,14 @@ git diff --check -- skills .codex/skills dist/adapters scripts docs/proposals/20
 - Explain-change validation: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording` passed.
 - Explain-change validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-downstream-status-settlement-before-reliance.md --path specs/downstream-status-settlement-before-reliance.md --path specs/downstream-status-settlement-before-reliance.test.md --path docs/plans/2026-05-12-downstream-status-settlement-before-reliance.md --path docs/plan.md --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/change.yaml --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/review-log.md --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/review-resolution.md --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/explain-change.md` passed with the existing unrelated `docs/plan.md` lifecycle-language warning.
 - Explain-change validation: `git diff --check -- docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording docs/plans/2026-05-12-downstream-status-settlement-before-reliance.md docs/plan.md` passed.
+- Final verify passed: `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, `python scripts/build-skills.py --check`, `python scripts/build-adapters.py --version 0.1.1 --check`, `python scripts/validate-adapters.py --version 0.1.1`, `python scripts/test-adapter-distribution.py`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording`, `python scripts/validate-change-metadata.py docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/change.yaml`, and scoped `git diff --check -- ...`.
+- Final explicit artifact lifecycle validation passed for the proposal, spec, test spec, plan body, plan index, change metadata, explain-change, review log, and review resolution with the existing unrelated `docs/plan.md` lifecycle-language warning.
 
 ## Outcome and retrospective
 
-- Pending implementation and downstream lifecycle closeout.
+- Implemented first-slice upstream status settlement before reliance for `spec`, `architecture`, and `plan`, with static proof, generated output refresh, review-resolution closeout, durable explain-change evidence, and final local verification.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
+- Branch readiness: `verify` passed with verdict `ready`; PR handoff is the next stage.
