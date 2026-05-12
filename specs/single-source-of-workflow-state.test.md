@@ -76,7 +76,7 @@
 - Level: integration, manual
 - Fixture/setup:
   - `docs/workflows.md`
-  - `docs/plans/0000-00-00-example-plan.md`
+  - `docs/examples/plans/example-plan.md`
   - `skills/plan/SKILL.md`
   - active plan after each milestone update
 - Steps:
@@ -97,7 +97,7 @@
 - Covers: `R3`-`R8`, `R28`, `E1`
 - Level: integration, manual
 - Fixture/setup:
-  - `docs/plans/0000-00-00-example-plan.md`
+  - `docs/examples/plans/example-plan.md`
   - active plan body
   - `skills/plan/SKILL.md`
 - Steps:

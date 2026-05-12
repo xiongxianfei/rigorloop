@@ -396,6 +396,31 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
         self.assertTrue(result.blocking_findings)
         self.assertIn("generated output path must not be treated as authored source of truth", combined_messages)
 
+    def test_docs_examples_plan_is_not_active_lifecycle_state(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="artifact-lifecycle-examples-"))
+        self.addCleanupTree(fixture_root)
+        example_plan = fixture_root / "docs" / "examples" / "plans" / "example-plan.md"
+        example_plan.parent.mkdir(parents=True)
+        example_plan.write_text(
+            """# Example Plan
+
+- Status: active
+
+## Readiness
+
+- Ready for `implement M1`.
+""",
+            encoding="utf-8",
+        )
+
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=["docs/examples/plans/example-plan.md"],
+        )
+
+        self.assertFalse(result.blocking_findings)
+
     def test_dist_adapters_generated_output_path_is_rejected(self) -> None:
         fixture_root = copy_fixture("invalid-generated-source")
         self.addCleanupTree(fixture_root)
