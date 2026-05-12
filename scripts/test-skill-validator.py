@@ -43,6 +43,18 @@ FORMAL_REVIEW_SKILLS = [
     "plan-review",
     "code-review",
 ]
+DOWNSTREAM_STATUS_SETTLEMENT_FIRST_SLICE_SKILLS = [
+    "spec",
+    "architecture",
+    "plan",
+]
+DOWNSTREAM_STATUS_SETTLEMENT_LATER_SLICE_SKILLS = [
+    "test-spec",
+    "implement",
+    "explain-change",
+    "verify",
+    "pr",
+]
 DOWNSTREAM_REVIEW_CLOSEOUT_SKILLS = [
     "workflow",
     "verify",
@@ -1269,6 +1281,87 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             for term in required_terms:
                 with self.subTest(skill=skill_name, term=term):
                     self.assertIn(term, body)
+
+    def test_downstream_status_settlement_first_slice_skill_guidance(self) -> None:
+        common_required_terms = [
+            "Upstream status settlement",
+            "workflow-managed downstream execution",
+            "review-only",
+            "no-edit",
+            "lifecycle/status/readiness/follow-on/closeout metadata",
+            "Do not rewrite substantive artifact content",
+            "clear review evidence",
+            "approving or clean",
+            "no later contradictory review record",
+            "review-log.md",
+            "review-resolution.md",
+            "Settlement result: updated | blocked | not-needed",
+            "New status",
+            "not-applicable",
+            "Settlement blocker",
+            "updated, blocked, or stale status was detected",
+        ]
+        skill_specific_terms = {
+            "spec": [
+                "proposal-review approved",
+                "proposal `Status: accepted`",
+            ],
+            "architecture": [
+                "spec-review approved",
+                "spec `Status: approved`",
+            ],
+            "plan": [
+                "spec-review approved",
+                "spec `Status: approved`",
+                "architecture-review approved",
+                "architecture `Status: approved`",
+                "ADR",
+                "`accepted` or `active`",
+                "unknown lifecycle vocabulary",
+            ],
+        }
+
+        for skill_name in DOWNSTREAM_STATUS_SETTLEMENT_FIRST_SLICE_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            for term in common_required_terms + skill_specific_terms[skill_name]:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, body)
+
+    def test_downstream_status_settlement_first_slice_boundaries(self) -> None:
+        forbidden_operational_terms = [
+            "## Upstream status settlement",
+            "Settlement result: updated | blocked | not-needed",
+        ]
+        for skill_name in DOWNSTREAM_STATUS_SETTLEMENT_LATER_SLICE_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            for term in forbidden_operational_terms:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertNotIn(term, body)
+
+        forbidden_review_fields = [
+            "- Status settlement recommendation:",
+            "- Status sync:",
+            "- Status artifact:",
+            "- Status sync blocker:",
+        ]
+        for skill_name in FORMAL_REVIEW_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            for term in forbidden_review_fields:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertNotIn(term, body)
+
+    def test_downstream_status_settlement_validator_enforcement_is_deferred(self) -> None:
+        validator_body = (ROOT / "scripts" / "validate-artifact-lifecycle.py").read_text(
+            encoding="utf-8"
+        )
+        deferred_enforcement_terms = [
+            "Upstream status settlement",
+            "Settlement result",
+            "stale upstream artifact status",
+        ]
+        for term in deferred_enforcement_terms:
+            with self.subTest(term=term):
+                self.assertNotIn(term, validator_body)
 
     def test_pr_self_contained_lifecycle_completion_skill_guidance(self) -> None:
         required_terms = [
