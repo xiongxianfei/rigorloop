@@ -1,0 +1,152 @@
+change_id: 2026-05-12-downstream-status-settlement-before-reliance-review-recording
+title: Downstream status settlement before reliance review recording
+classification: workflow-governance-spec-amendment
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-12-downstream-status-settlement-before-reliance.md
+  spec: specs/downstream-status-settlement-before-reliance.md
+  plan: docs/plans/2026-05-12-downstream-status-settlement-before-reliance.md
+  test_spec: specs/downstream-status-settlement-before-reliance.test.md
+  review_resolution: docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/review-resolution.md
+  explain_change: docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/explain-change.md
+requirements:
+  - Define downstream status settlement before reliance for the first slice.
+  - Preserve deterministic status mappings and block-on-unknown behavior.
+  - Record material spec-review findings durably before fixing.
+  - Create a reviewed execution plan before test-spec and implementation.
+  - Create an active test spec before implementation.
+tests:
+  - Spec-review approval or recorded material finding resolution.
+  - Artifact lifecycle validation for proposal and spec.
+  - Plan-review approval before test-spec.
+  - Test-spec coverage for every MUST requirement.
+validation:
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-downstream-status-settlement-before-reliance.md --path specs/downstream-status-settlement-before-reliance.md
+    result: pass_before_spec_review_r1
+  - command: git diff --check -- docs/proposals/2026-05-12-downstream-status-settlement-before-reliance.md specs/downstream-status-settlement-before-reliance.md
+    result: pass_before_spec_review_r1
+  - command: spec revision for SR-001
+    result: resolved_new_status_semantics_for_blocked_known_and_unknown_target_settlement
+  - command: plan creation
+    result: active_plan_created_for_first_slice_pending_plan_review
+  - command: plan-review
+    result: approved_no_material_findings
+  - command: test-spec creation
+    result: active_test_spec_created_for_r1_to_r27_and_m1_to_m2
+  - command: python scripts/test-skill-validator.py
+    result: pass_after_m1_static_proof_and_canonical_skill_guidance
+  - command: python scripts/validate-skills.py
+    result: pass_after_m1_canonical_skill_updates
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/change.yaml
+    result: pass_after_m1_metadata_update
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording
+    result: pass_after_m1_review_artifact_recheck
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-downstream-status-settlement-before-reliance.md --path specs/downstream-status-settlement-before-reliance.md --path specs/downstream-status-settlement-before-reliance.test.md --path docs/plans/2026-05-12-downstream-status-settlement-before-reliance.md --path docs/plan.md --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/change.yaml --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/review-log.md --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/review-resolution.md
+    result: pass_with_existing_docs_plan_merge_dependent_warning
+  - command: git diff --check -- skills scripts docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording docs/plans/2026-05-12-downstream-status-settlement-before-reliance.md docs/plan.md
+    result: pass_after_m1_plan_and_metadata_updates
+  - command: code-review M1
+    result: changes_requested_cr_001_recorded
+  - command: review-resolution CR-001
+    result: accepted_and_fixed
+  - command: python scripts/test-skill-validator.py
+    result: pass_after_cr_001_fix
+  - command: python scripts/validate-skills.py
+    result: pass_after_cr_001_fix
+  - command: code-review M1 rerun
+    result: clean_with_notes_no_material_findings
+  - command: python scripts/build-skills.py --check
+    result: expected_fail_stale_generated_codex_skills_before_m2_generation
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: expected_fail_stale_generated_adapter_skills_before_m2_generation
+  - command: python scripts/build-skills.py
+    result: synced_generated_codex_skills_after_m2_generation
+  - command: python scripts/build-adapters.py --version 0.1.1
+    result: synced_generated_adapter_output_after_m2_generation
+  - command: python scripts/build-skills.py --check
+    result: pass_after_m2_generation
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_after_m2_generation
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_after_m2_generation
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_after_m2_generation
+  - command: python scripts/test-skill-validator.py
+    result: pass_after_m2_generation
+  - command: python scripts/validate-skills.py
+    result: pass_after_m2_generation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/change.yaml
+    result: pass_after_m2_metadata_update
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording
+    result: pass_after_m2_metadata_update
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-downstream-status-settlement-before-reliance.md --path specs/downstream-status-settlement-before-reliance.md --path specs/downstream-status-settlement-before-reliance.test.md --path docs/plans/2026-05-12-downstream-status-settlement-before-reliance.md --path docs/plan.md --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/change.yaml --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/review-log.md --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/review-resolution.md
+    result: pass_with_existing_docs_plan_lifecycle_language_warning
+  - command: git diff --check -- .codex/skills dist/adapters docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording docs/plans/2026-05-12-downstream-status-settlement-before-reliance.md docs/plan.md
+    result: pass_after_m2_metadata_update
+  - command: code-review M2
+    result: clean_with_notes_no_material_findings
+  - command: explain-change
+    result: durable_explain_change_created_pending_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/change.yaml
+    result: pass_after_explain_change_metadata_update
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording
+    result: pass_after_explain_change
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-downstream-status-settlement-before-reliance.md --path specs/downstream-status-settlement-before-reliance.md --path specs/downstream-status-settlement-before-reliance.test.md --path docs/plans/2026-05-12-downstream-status-settlement-before-reliance.md --path docs/plan.md --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/change.yaml --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/review-log.md --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/review-resolution.md --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/explain-change.md
+    result: pass_with_existing_docs_plan_lifecycle_language_warning_after_explain_change
+  - command: git diff --check -- docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording docs/plans/2026-05-12-downstream-status-settlement-before-reliance.md docs/plan.md
+    result: pass_after_explain_change
+  - command: python scripts/test-skill-validator.py
+    result: pass_final_verify
+  - command: python scripts/validate-skills.py
+    result: pass_final_verify
+  - command: python scripts/build-skills.py --check
+    result: pass_final_verify
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_final_verify
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_final_verify
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_final_verify_with_nonblocking_token_cost_report_diagnostic
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording
+    result: pass_final_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/change.yaml
+    result: pass_final_verify
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-downstream-status-settlement-before-reliance.md --path specs/downstream-status-settlement-before-reliance.md --path specs/downstream-status-settlement-before-reliance.test.md --path docs/plans/2026-05-12-downstream-status-settlement-before-reliance.md --path docs/plan.md --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/change.yaml --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/review-log.md --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/review-resolution.md --path docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/explain-change.md
+    result: pass_final_verify_with_existing_docs_plan_lifecycle_language_warning
+  - command: git diff --check -- skills .codex/skills dist/adapters scripts docs/proposals/2026-05-12-downstream-status-settlement-before-reliance.md specs/downstream-status-settlement-before-reliance.md specs/downstream-status-settlement-before-reliance.test.md docs/plans/2026-05-12-downstream-status-settlement-before-reliance.md docs/plan.md docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording
+    result: pass_final_verify
+  - command: gh pr create --base main --head downstream-status-settlement-before-reliance
+    result: opened_pr_46
+changed_files:
+  - docs/proposals/2026-05-12-downstream-status-settlement-before-reliance.md
+  - specs/downstream-status-settlement-before-reliance.md
+  - docs/plans/2026-05-12-downstream-status-settlement-before-reliance.md
+  - docs/plan.md
+  - specs/downstream-status-settlement-before-reliance.test.md
+  - skills/spec/SKILL.md
+  - skills/architecture/SKILL.md
+  - skills/plan/SKILL.md
+  - scripts/test-skill-validator.py
+  - docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/change.yaml
+  - docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/review-log.md
+  - docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/review-resolution.md
+  - docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/reviews/spec-review-r1.md
+  - docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/reviews/spec-review-r2.md
+  - docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/reviews/code-review-r1.md
+  - docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/explain-change.md
+  - .codex/skills/spec/SKILL.md
+  - .codex/skills/architecture/SKILL.md
+  - .codex/skills/plan/SKILL.md
+  - dist/adapters/claude/.claude/skills/spec/SKILL.md
+  - dist/adapters/claude/.claude/skills/architecture/SKILL.md
+  - dist/adapters/claude/.claude/skills/plan/SKILL.md
+  - dist/adapters/codex/.agents/skills/spec/SKILL.md
+  - dist/adapters/codex/.agents/skills/architecture/SKILL.md
+  - dist/adapters/codex/.agents/skills/plan/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/spec/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/architecture/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/plan/SKILL.md
+review:
+  status: pr_opened
+  unresolved_items: 0
+  latest_review: docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/reviews/code-review-r1.md
