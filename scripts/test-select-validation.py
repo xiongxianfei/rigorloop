@@ -31,6 +31,7 @@ from validation_selection import (  # noqa: E402
 EXPECTED_CATALOG = {
     "skills.validate": "python scripts/validate-skills.py",
     "skills.regression": "python scripts/test-skill-validator.py",
+    "skills.generation_regression": "python scripts/test-build-skills.py",
     "skills.drift": "python scripts/build-skills.py --check",
     "adapters.regression": "python scripts/test-adapter-distribution.py",
     "adapters.drift": "python scripts/build-adapters.py --version <adapter-version> --check",
@@ -307,6 +308,7 @@ raise SystemExit({exit_code})
             "change_metadata.regression",
             "review_artifacts.regression",
             "selector.regression",
+            "skills.generation_regression",
             "skills.regression",
             "token_cost.regression",
             "token_cost.report_regression",
@@ -344,7 +346,14 @@ raise SystemExit({exit_code})
             payload["classified_paths"],
         )
         self.assertEqual(payload["unclassified_paths"], [])
-        self.assertTrue({"skills.validate", "skills.regression", "skills.drift"}.issubset(selected_ids(payload)))
+        self.assertTrue(
+            {
+                "skills.validate",
+                "skills.regression",
+                "skills.generation_regression",
+                "skills.drift",
+            }.issubset(selected_ids(payload))
+        )
         self.assertIn("adapters.drift", selected_ids(payload))
 
     def test_missing_mode_specific_inputs_return_json_error(self) -> None:
@@ -445,7 +454,7 @@ raise SystemExit({exit_code})
                 "path": ".codex/skills/code-review/SKILL.md",
                 "category": "generated-skills",
                 "status": "ok",
-                "checks": {"skills.drift"},
+                "checks": {"skills.generation_regression", "skills.drift"},
             },
             {
                 "path": "docs/workflows.md",
@@ -487,7 +496,13 @@ raise SystemExit({exit_code})
                 "path": "scripts/validate-skills.py",
                 "category": "validator-skills",
                 "status": "ok",
-                "checks": {"skills.regression"},
+                "checks": {"skills.regression", "skills.generation_regression"},
+            },
+            {
+                "path": "scripts/build-skills.py",
+                "category": "validator-skills",
+                "status": "ok",
+                "checks": {"skills.regression", "skills.generation_regression"},
             },
             {
                 "path": "scripts/validate-release.py",
@@ -873,6 +888,8 @@ raise SystemExit({exit_code})
             "dist/adapters/codex/.agents/skills/workflow/SKILL.md",
             "scripts/test-select-validation.py",
             "scripts/test-artifact-lifecycle-validator.py",
+            "scripts/build-skills.py",
+            "scripts/test-build-skills.py",
             "scripts/test-skill-validator.py",
             "docs/changes/2026-05-03-workflow-refactor/change.yaml",
             "docs/changes/2026-05-03-workflow-refactor/explain-change.md",
@@ -902,6 +919,8 @@ raise SystemExit({exit_code})
             "dist/adapters/codex/.agents/skills/workflow/SKILL.md": "generated-adapters",
             "scripts/test-select-validation.py": "selector",
             "scripts/test-artifact-lifecycle-validator.py": "validator-artifact-lifecycle",
+            "scripts/build-skills.py": "validator-skills",
+            "scripts/test-build-skills.py": "validator-skills",
             "scripts/test-skill-validator.py": "validator-skills",
             "docs/changes/2026-05-03-workflow-refactor/change.yaml": "change-metadata",
             "docs/changes/2026-05-03-workflow-refactor/explain-change.md": "change-local-lifecycle",
@@ -916,6 +935,7 @@ raise SystemExit({exit_code})
             {
                 "skills.validate",
                 "skills.regression",
+                "skills.generation_regression",
                 "skills.drift",
                 "adapters.regression",
                 "adapters.drift",
