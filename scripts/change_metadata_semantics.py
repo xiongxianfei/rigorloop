@@ -10,7 +10,12 @@ def is_declared_clean_receipt_root(data: Any) -> bool:
     if not isinstance(data, dict):
         return False
     review = data.get("review")
-    return isinstance(review, dict) and review.get("status") == "clean"
+    if not isinstance(review, dict):
+        return False
+    return (
+        review.get("status") == "clean"
+        or ("reviewed_artifact" in review and "review_log" in review)
+    )
 
 
 def validate_clean_receipt_root_review_metadata(
@@ -31,6 +36,8 @@ def validate_clean_receipt_root_review_metadata(
     status = review.get("status")
     if not isinstance(status, str) or not status.strip():
         errors.append("review.status must identify clean receipt root status")
+    elif status != "clean":
+        errors.append("review.status must be clean for clean receipt roots")
 
     reviewed_artifact = review.get("reviewed_artifact")
     if reviewed_artifact is None:
