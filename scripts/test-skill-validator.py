@@ -1114,9 +1114,11 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "reconstructed review evidence",
             "closeout evidence citation",
             "explicit reviewer or maintainer request",
-            "clean reviews can settle artifact-locally",
+            "clean formal reviews use lightweight review receipts",
             "no-material detailed records need `review-log.md` but not an empty `review-resolution.md`",
             "artifact-local settlement must not replace detailed review records when a trigger applies",
+            "A clean review receipt proves the review happened",
+            "does not by itself settle the reviewed artifact's lifecycle status",
             "stable `Finding ID`",
             "disposition in `review-resolution.md`",
             "`pr-review`",
@@ -1160,9 +1162,10 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         required_terms = [
             "Recording status output",
             "`Recording status` is separate from the review verdict.",
-            "`not-required`",
+            "For supported formal lifecycle review invocations, use exactly one:",
             "`recorded`",
             "`blocked`",
+            "`not-required` is reserved for non-formal review-like requests",
             "Recording blocker",
             "Review record",
             "Review log",
@@ -1210,9 +1213,10 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         )
         normalized = " ".join(canonical.split())
         required_terms = [
-            "Isolation governs handoff. Recording follows material findings.",
+            "Isolation governs handoff. Recording follows formal review triggers.",
             "A direct or review-only request remains isolated by default",
             "Isolation does not suppress recording.",
+            "Every supported formal lifecycle review invocation requires durable review recording.",
             "Every material finding requires a durable change-local review record",
             "`docs/changes/<change-id>/reviews/<stage>-r<n>.md`",
             "The review record must be indexed in `review-log.md` and resolved in `review-resolution.md`.",
@@ -1221,8 +1225,8 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "evidence",
             "required outcome",
             "safe resolution path, or `needs-decision` rationale",
-            "Clean reviews with no material findings remain lightweight",
-            "do not require detailed review files",
+            "Clean formal reviews use lightweight review receipts",
+            "Material findings use detailed review records",
             "For an isolated review with material findings",
             "the final review output must state:",
             "no automatic downstream handoff",
@@ -1244,6 +1248,8 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "`reconstruct-record-because-fixes-already-began`",
             "`stop-for-owner-decision`",
             "The durable record should be created",
+            "clean reviews can settle artifact-locally",
+            "`not-required`: no material findings and no detailed-record trigger",
         ]
         for term in removed_terms:
             with self.subTest(removed_term=term):
@@ -1258,12 +1264,19 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "Isolation",
             "handoff",
             "not recording",
+            "Every supported formal lifecycle review",
+            "clean review receipt",
         ]
         for relative_path in ["CONSTITUTION.md", "AGENTS.md", "docs/workflows.md"]:
             body = (ROOT / relative_path).read_text(encoding="utf-8")
             for term in required_terms:
                 with self.subTest(path=relative_path, term=term):
                     self.assertIn(term, body)
+            with self.subTest(path=relative_path, term="old clean review settlement"):
+                self.assertNotIn(
+                    "Clean reviews may settle artifact-locally when no detailed-record trigger applies",
+                    body,
+                )
 
     def test_downstream_skills_preserve_review_closeout_boundaries(self) -> None:
         required_terms = [
