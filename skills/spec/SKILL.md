@@ -26,6 +26,44 @@ Read, if present:
 
 A concrete execution plan is not required before writing the spec. In this workflow, the spec normally comes before the execution plan.
 
+## Upstream status settlement
+
+In workflow-managed downstream execution, before relying on a proposal, check whether its tracked status matches clear formal review evidence.
+
+Do not run upstream status settlement for review-only, no-edit, or manual inspection requests. Those requests remain isolated.
+
+Settle only lifecycle/status/readiness/follow-on/closeout metadata. Do not rewrite substantive artifact content.
+
+The clear review evidence check requires:
+
+- durable formal review evidence for the upstream artifact;
+- an approving or clean review outcome;
+- no later contradictory review record;
+- no open findings in `review-log.md` when present;
+- closed `review-resolution.md` for material findings when required;
+- an explicit settlement mapping for this skill.
+
+Mapping for this skill:
+
+- proposal-review approved with no unresolved material findings -> proposal `Status: accepted`.
+
+If review evidence is missing, contradictory, unresolved, or the status surface is absent, block instead of guessing.
+
+Report `## Upstream status settlement` when settlement was updated, blocked, or stale status was detected:
+
+```md
+## Upstream status settlement
+
+- Upstream artifact:
+- Review evidence:
+- Previous status:
+- New status:
+- Settlement result: updated | blocked | not-needed
+- Settlement blocker:
+```
+
+Use `New status: not-applicable` when no deterministic target status exists. `Settlement blocker` is required for blocked settlement.
+
 ## Output path
 
 Prefer:

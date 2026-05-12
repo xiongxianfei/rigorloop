@@ -39,6 +39,46 @@ Read:
 - `docs/project-map.md`
 - relevant code, tests, CI, and workflows
 
+## Upstream status settlement
+
+In workflow-managed downstream execution, before relying on a spec, architecture package, or ADR, check whether its tracked status matches clear formal review evidence.
+
+Do not run upstream status settlement for review-only, no-edit, or manual inspection requests. Those requests remain isolated.
+
+Settle only lifecycle/status/readiness/follow-on/closeout metadata. Do not rewrite substantive artifact content.
+
+The clear review evidence check requires:
+
+- durable formal review evidence for the upstream artifact;
+- an approving or clean review outcome;
+- no later contradictory review record;
+- no open findings in `review-log.md` when present;
+- closed `review-resolution.md` for material findings when required;
+- an explicit settlement mapping for this skill.
+
+Mappings for this skill:
+
+- spec-review approved with no unresolved material findings -> spec `Status: approved`.
+- architecture-review approved for an architecture package with no unresolved material findings -> architecture `Status: approved`.
+- architecture-review approved for an ADR with no unresolved material findings -> ADR status `accepted` or `active` only when the ADR lifecycle vocabulary clearly supports that target.
+
+If review evidence is missing, contradictory, unresolved, the status surface is absent, the artifact type is unmapped, or the ADR has unknown lifecycle vocabulary, block instead of guessing.
+
+Report `## Upstream status settlement` when settlement was updated, blocked, or stale status was detected:
+
+```md
+## Upstream status settlement
+
+- Upstream artifact:
+- Review evidence:
+- Previous status:
+- New status:
+- Settlement result: updated | blocked | not-needed
+- Settlement blocker:
+```
+
+Use `New status: not-applicable` when no deterministic target status exists. `Settlement blocker` is required for blocked settlement.
+
 ## Output paths
 
 Prefer:
