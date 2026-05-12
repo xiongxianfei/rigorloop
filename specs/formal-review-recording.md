@@ -2,7 +2,7 @@
 
 ## Status
 
-- draft
+- approved
 
 ## Related proposal
 
@@ -660,9 +660,7 @@ Moving examples to `docs/examples/**` MUST NOT make selector or lifecycle valida
 
 ## Next artifacts
 
-- Spec-review for this 2026-05-12 draft amendment.
 - Implementation plan for review recording output guardrail and examples cleanup.
-- Test-spec update or review for this amendment.
 - Review skill and static validator updates.
 - Generated skill and adapter refresh.
 - Optional downstream status-settlement follow-up proposal.
@@ -677,9 +675,10 @@ Moving examples to `docs/examples/**` MUST NOT make selector or lifecycle valida
 - Plan-review: approved on 2026-05-07 with no material findings.
 - Test spec: [Formal Review Recording test spec](formal-review-recording.test.md) updated for the review skill material-finding recording amendment.
 - Proposal amendment: [Review Recording Guardrail and Downstream Status Settlement](../docs/proposals/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md), accepted.
+- Spec-review: approved on 2026-05-12 after material finding `SR-001` was resolved.
 
 ## Readiness
 
-Ready for `spec-review`.
+Approved for implementation planning.
 
-This draft amendment defines the formal review recording output guardrail and examples cleanup contract. Downstream upstream-status settlement remains follow-up scope.
+This amendment defines the formal review recording output guardrail and examples cleanup contract. Downstream upstream-status settlement remains follow-up scope.

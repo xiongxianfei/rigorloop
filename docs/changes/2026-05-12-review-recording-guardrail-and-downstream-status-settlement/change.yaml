@@ -37,6 +37,16 @@ validation:
     result: pass_after_sr_001_spec_fix
   - command: spec-review r2
     result: approved_no_material_findings_sr_001_resolved
+  - command: plan lifecycle setup
+    result: normalized_formal_review_recording_spec_to_approved_and_test_spec_to_active_before_planning
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path docs/plans/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md --path docs/plan.md --path docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/change.yaml --path docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/review-log.md --path docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/review-resolution.md
+    result: pass_with_existing_docs_plan_lifecycle_language_warning_after_plan_creation
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement
+    result: pass_closeout_reviews_2_findings_1_log_entries_2_resolution_entries_1_after_plan_creation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/change.yaml
+    result: pass_valid_change_metadata_after_plan_creation
+  - command: git diff --check -- docs/proposals/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md specs/formal-review-recording.md specs/formal-review-recording.test.md docs/plans/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md docs/plan.md docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement
+    result: pass_after_plan_creation
 changed_files:
   - docs/proposals/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md
   - specs/formal-review-recording.md
@@ -45,6 +55,9 @@ changed_files:
   - docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/review-log.md
   - docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/review-resolution.md
   - docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/reviews/spec-review-r1.md
+  - docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/reviews/spec-review-r2.md
+  - docs/plans/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md
+  - docs/plan.md
 review:
   status: approved
   unresolved_items: 0
