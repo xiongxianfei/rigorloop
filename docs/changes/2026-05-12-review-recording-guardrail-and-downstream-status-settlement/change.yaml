@@ -71,6 +71,24 @@ validation:
     result: pass_valid_change_metadata_after_m1_handoff
   - command: git diff --check -- docs/examples docs/plans docs/changes/0001-skill-validator AGENTS.md CONSTITUTION.md README.md docs/workflows.md scripts specs/rigorloop-workflow.test.md specs/plan-index-lifecycle-ownership.test.md specs/single-source-of-workflow-state.test.md docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement docs/plan.md
     result: pass_after_m1_handoff
+  - command: code-review M1
+    result: clean_with_notes_no_material_findings
+  - command: rg -n "docs/plans/0000-00-00-example-plan|0000-00-00-example-plan" README.md AGENTS.md CONSTITUTION.md docs/workflows.md scripts specs
+    result: pass_remaining_hits_only_governing_spec_test_spec_migration_assertions
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_49_tests_during_m1_code_review
+  - command: python scripts/test-select-validation.py
+    result: pass_58_tests_during_m1_code_review
+  - command: python scripts/test-skill-validator.py
+    result: pass_62_tests_during_m1_code_review
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path docs/plans/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md --path docs/plan.md
+    result: pass_with_existing_docs_plan_lifecycle_language_warning_after_m1_code_review_state_sync
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/change.yaml
+    result: pass_valid_change_metadata_after_m1_code_review_state_sync
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement
+    result: pass_closeout_reviews_2_findings_1_log_entries_2_resolution_entries_1_after_m1_code_review_state_sync
+  - command: git diff --check -- docs/plans/2026-05-12-review-recording-guardrail-and-downstream-status-settlement.md docs/plan.md docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/change.yaml
+    result: pass_after_m1_code_review_state_sync
 changed_files:
   - AGENTS.md
   - CONSTITUTION.md

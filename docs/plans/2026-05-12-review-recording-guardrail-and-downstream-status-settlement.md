@@ -30,14 +30,14 @@ Example artifacts currently live in active-looking paths such as `docs/plans/000
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Examples Surface And Validator Routing
-- Current milestone state: review-requested
-- Last reviewed milestone: none
-- Review status: M1 implementation complete; code-review pending
-- Remaining in-scope implementation milestones: M1, M2, M3
-- Next stage: code-review M1
+- Current milestone: M2. Formal Review Skill Recording Output Guardrail
+- Current milestone state: planned
+- Last reviewed milestone: M1. Examples Surface And Validator Routing
+- Review status: M1 code-review clean-with-notes; no material findings
+- Remaining in-scope implementation milestones: M2, M3
+- Next stage: implement M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 is implemented but unreviewed, M2 and M3 are not implemented, generated output is not refreshed, and final explain-change, verify, and PR handoff are not complete.
+- Reason final closeout is or is not ready: M1 is closed, M2 and M3 are not implemented, generated output is not refreshed, and final explain-change, verify, and PR handoff are not complete.
 
 ## Non-goals
 
@@ -62,7 +62,7 @@ Example artifacts currently live in active-looking paths such as `docs/plans/000
 
 ### M1. Examples Surface And Validator Routing
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: establish `docs/examples/**` as the non-normative examples surface and update validation/routing proof for moved examples.
 - Requirements: `R31m`-`R32f`
 - Files/components likely touched:
@@ -252,7 +252,8 @@ Also run explicit artifact lifecycle validation over the proposal, spec, test sp
 - [x] 2026-05-12: test-spec readiness checked; existing active test spec covers the approved amendment and current plan.
 - [x] 2026-05-12: M1 moved the plan example to `docs/examples/plans/example-plan.md`, added formal review recording examples, taught selector routing to classify `docs/examples/**` as non-lifecycle examples, and updated active guidance references.
 - [x] 2026-05-12: M1 retained `docs/changes/0001-skill-validator/` as a validator fixture and historical proof pack because it remains referenced by existing validator tests, README-facing specs, and workflow compatibility specs.
-- [x] M1. Examples Surface And Validator Routing - implementation complete, review requested
+- [x] 2026-05-12: M1 code-review returned `clean-with-notes` with no material findings; no detailed review record was required.
+- [x] M1. Examples Surface And Validator Routing - closed
 - [ ] M2. Formal Review Skill Recording Output Guardrail
 - [ ] M3. Generated Output Refresh And Final Static Proof
 
@@ -281,6 +282,8 @@ Also run explicit artifact lifecycle validation over the proposal, spec, test sp
 - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement` passed after M1.
 - `python scripts/validate-change-metadata.py docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement/change.yaml` passed after M1.
 - `git diff --check -- docs/examples docs/plans docs/changes/0001-skill-validator AGENTS.md CONSTITUTION.md README.md docs/workflows.md scripts specs/rigorloop-workflow.test.md specs/plan-index-lifecycle-ownership.test.md specs/single-source-of-workflow-state.test.md docs/changes/2026-05-12-review-recording-guardrail-and-downstream-status-settlement docs/plan.md` passed after M1.
+- M1 code-review reran `python scripts/test-artifact-lifecycle-validator.py`, `python scripts/test-select-validation.py`, and `python scripts/test-skill-validator.py`; all passed.
+- M1 code-review checked stale old plan-example references with `rg -n "docs/plans/0000-00-00-example-plan|0000-00-00-example-plan" README.md AGENTS.md CONSTITUTION.md docs/workflows.md scripts specs`; remaining hits are only the governing spec/test-spec migration assertions.
 
 ## Outcome and retrospective
 
@@ -289,4 +292,4 @@ Also run explicit artifact lifecycle validation over the proposal, spec, test sp
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for `code-review` of M1.
+- This plan is ready for implementation of M2.
