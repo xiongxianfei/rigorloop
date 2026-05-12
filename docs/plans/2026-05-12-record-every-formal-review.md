@@ -64,13 +64,13 @@ Generated local Codex runtime output under `.codex/skills/` is not authored or t
 ## Current Handoff Summary
 
 - Current milestone: M5. Lifecycle state, explanation, verification, and PR readiness
-- Current milestone state: review-requested
-- Last reviewed milestone: M4. Generated outputs and adapter validation
-- Review status: M4 code-review clean-with-notes
-- Remaining in-scope implementation milestones: M5
-- Next stage: code-review M5
+- Current milestone state: closed
+- Last reviewed milestone: M5. Lifecycle state, explanation, verification, and PR readiness
+- Review status: M5 code-review clean-with-notes
+- Remaining in-scope implementation milestones: none
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1-M4 are closed, M5 is awaiting code-review, final verify has not run, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M1-M5 are closed and explain-change exists; final verify has not run and PR handoff is not prepared.
 
 ## Milestones
 
@@ -225,7 +225,7 @@ Generated local Codex runtime output under `.codex/skills/` is not authored or t
 
 ### M5. Lifecycle state, explanation, verification, and PR readiness
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Close the planned initiative only after all implementation milestones, reviews, resolution records, explanation, and final verification are synchronized.
 - Requirements: all touched requirements, with emphasis on lifecycle consistency.
 - Files/components likely touched:
@@ -256,6 +256,7 @@ Generated local Codex runtime output under `.codex/skills/` is not authored or t
   - [ ] verify recorded
   - [x] plan body and plan index synchronized
   - [ ] PR handoff prepared
+  - [x] code-review completed
 - Risks: final closeout can become stale if review-resolution or plan state changes after verify.
 - Rollback/recovery: rerun review artifact and lifecycle validation after any closeout metadata edit before PR handoff.
 
@@ -304,6 +305,7 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - 2026-05-12: Implemented M4 by regenerating the local Codex mirror and tracked public adapter output after canonical skill changes; M4 moved to review-requested.
 - 2026-05-12: Code-review M4 passed with no material findings and M4 moved to closed.
 - 2026-05-12: Implemented M5 by recording explain-change evidence, rerunning final targeted validation, and moving M5 to review-requested.
+- 2026-05-12: Code-review M5 passed with no material findings and M5 moved to closed; next stage is final verify.
 
 ## Decision Log
 
@@ -414,6 +416,12 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - 2026-05-12: `bash scripts/ci.sh --mode explicit --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path scripts/review_artifact_validation.py --path scripts/test-review-artifact-validator.py --path templates/shared/review-isolation-and-recording.md --path skills/spec-review/SKILL.md --path skills/code-review/SKILL.md --path dist/adapters` failed for M5 with `unclassified-path` because the v1 selector does not classify directory-only `dist/adapters`.
 - 2026-05-12: `bash scripts/ci.sh --mode explicit --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path scripts/review_artifact_validation.py --path scripts/test-review-artifact-validator.py --path templates/shared/review-isolation-and-recording.md --path skills/spec-review/SKILL.md --path skills/code-review/SKILL.md --path dist/adapters/codex/.agents/skills/spec-review/SKILL.md --path dist/adapters/codex/.agents/skills/code-review/SKILL.md` passed for M5.
 - 2026-05-12: `git diff --check` passed for M5.
+- 2026-05-12: `code-review M5 r1` reviewed commit `2582471` and recorded clean-with-notes with no material findings.
+- 2026-05-12: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-record-every-formal-review-review-recording` passed during `code-review M5 r1`.
+- 2026-05-12: `python scripts/validate-change-metadata.py docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml` passed during `code-review M5 r1`.
+- 2026-05-12: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-record-every-formal-review.md --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/plan.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml --path docs/changes/2026-05-12-record-every-formal-review-review-recording/review-log.md` passed during `code-review M5 r1`.
+- 2026-05-12: `bash scripts/ci.sh --mode explicit --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path scripts/review_artifact_validation.py --path scripts/test-review-artifact-validator.py --path templates/shared/review-isolation-and-recording.md --path skills/spec-review/SKILL.md --path skills/code-review/SKILL.md --path dist/adapters/codex/.agents/skills/spec-review/SKILL.md --path dist/adapters/codex/.agents/skills/code-review/SKILL.md` passed during `code-review M5 r1`.
+- 2026-05-12: `git diff --check` passed during `code-review M5 r1`.
 
 ## Outcome and Retrospective
 
