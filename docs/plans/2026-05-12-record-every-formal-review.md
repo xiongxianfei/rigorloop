@@ -3,7 +3,7 @@
 - Status: active
 - Owner: maintainer
 - Start date: 2026-05-12
-- Last updated: 2026-05-12
+- Last updated: 2026-05-13
 - Related issue or PR: none yet
 - Supersedes: none
 
@@ -69,8 +69,8 @@ Generated local Codex runtime output under `.codex/skills/` is not authored or t
 - Review status: M5 code-review clean-with-notes
 - Remaining in-scope implementation milestones: none
 - Next stage: monitor hosted CI and PR review
-- Final closeout readiness: PR #48 open; hosted CI pending
-- Reason final closeout is or is not ready: M1-M5 are closed, review-resolution is closed, explain-change exists, local final verify passed, and PR #48 is open. Hosted CI has not been observed passing yet.
+- Final closeout readiness: PR #48 open; post-PR skill-prose tightening in progress; hosted CI pending
+- Reason final closeout is or is not ready: M1-M5 are closed, review-resolution is closed, explain-change exists, local final verify passed, and PR #48 is open. A post-PR wording tightening keeps public review skills concise while leaving schema details in the spec, examples, and validators. Hosted CI has not been observed passing yet.
 
 ## Milestones
 
@@ -308,6 +308,7 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - 2026-05-12: Code-review M5 passed with no material findings and M5 moved to closed; next stage is final verify.
 - 2026-05-13: Final local verify passed and the plan moved to PR handoff.
 - 2026-05-13: PR #48 opened for human review.
+- 2026-05-13: Applied post-PR reviewer guidance by shortening formal review skill prose to the operational record-or-block obligation, leaving clean receipt root schema, change-ID selection, review-log table shape, examples, and validator semantics in the formal review recording spec, examples, and validators.
 
 ## Decision Log
 
@@ -326,6 +327,7 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - M3 intentionally leaves `.codex/skills/` and `dist/adapters/` untouched; generated output refresh and adapter validation are M4 responsibilities.
 - M4 generated output includes the M3 formal review skill changes and an earlier canonical workflow skill update that had not yet been refreshed in public adapters. The generated workflow diffs are accepted as adapter drift cleanup produced by the repository generator, not hand edits.
 - The initial M5 explicit CI command used `--path dist/adapters`, but the v1 selector requires classified concrete paths. M5 now records the selected public adapter skill files used to route adapter checks.
+- Post-PR reviewer guidance confirmed the skill text should not duplicate the full formal-review-recording spec. The public review skills now keep the first principle and point to the spec-owned contract.
 
 ## Validation Notes
 
@@ -430,10 +432,23 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - 2026-05-13: `bash scripts/ci.sh --mode explicit --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path scripts/review_artifact_validation.py --path scripts/test-review-artifact-validator.py --path templates/shared/review-isolation-and-recording.md --path skills/spec-review/SKILL.md --path skills/code-review/SKILL.md --path dist/adapters/codex/.agents/skills/spec-review/SKILL.md --path dist/adapters/codex/.agents/skills/code-review/SKILL.md` passed during final verify with selected checks `skills.validate`, `skills.regression`, `skills.generation_regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.regression`, `artifact_lifecycle.validate`, and `selector.regression`.
 - 2026-05-13: `git diff --check` passed during final verify.
 - 2026-05-13: `gh pr create --base main --head record-every-formal-review --title "feat: record every formal review" --body-file .pr-body-record-every-formal-review.md` opened PR #48: `https://github.com/xiongxianfei/rigorloop/pull/48`.
+- 2026-05-13: `python scripts/test-skill-validator.py` passed after post-PR skill-prose tightening with 67 tests.
+- 2026-05-13: `python scripts/validate-skills.py` passed after post-PR skill-prose tightening with 23 skill files.
+- 2026-05-13: `python scripts/build-skills.py` regenerated `.codex/skills/` local runtime output; `.codex/skills/` remains ignored and untracked.
+- 2026-05-13: `python scripts/build-adapters.py --version 0.1.1` regenerated tracked public adapter output after post-PR skill-prose tightening.
+- 2026-05-13: `python scripts/build-skills.py --check` passed after post-PR skill-prose tightening.
+- 2026-05-13: `python scripts/build-adapters.py --version 0.1.1 --check` passed after post-PR skill-prose tightening.
+- 2026-05-13: `python scripts/validate-adapters.py --version 0.1.1` passed after post-PR skill-prose tightening.
+- 2026-05-13: `bash scripts/ci.sh --mode explicit --path specs/formal-review-recording.md --path specs/formal-review-recording.test.md --path scripts/review_artifact_validation.py --path scripts/test-review-artifact-validator.py --path templates/shared/review-isolation-and-recording.md --path skills/spec-review/SKILL.md --path skills/code-review/SKILL.md --path dist/adapters/codex/.agents/skills/spec-review/SKILL.md --path dist/adapters/codex/.agents/skills/code-review/SKILL.md` passed after post-PR skill-prose tightening with selected checks `skills.validate`, `skills.regression`, `skills.generation_regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.regression`, `artifact_lifecycle.validate`, and `selector.regression`.
+- 2026-05-13: `git diff --check` passed after post-PR skill-prose tightening.
+- 2026-05-13: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-record-every-formal-review-review-recording` passed after post-PR lifecycle evidence update with 12 reviews, 3 findings, 12 log entries, and 3 resolution entries.
+- 2026-05-13: `python scripts/validate-change-metadata.py docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml` passed after post-PR lifecycle evidence update.
+- 2026-05-13: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml --path specs/formal-review-recording.test.md --path templates/shared/review-isolation-and-recording.md --path skills/spec-review/SKILL.md --path skills/code-review/SKILL.md` passed after post-PR lifecycle evidence update.
+- 2026-05-13: `git diff --check` passed after post-PR lifecycle evidence update.
 
 ## Outcome and Retrospective
 
-- Final local verify passed and PR #48 is open. Hosted CI and human review remain pending.
+- Final local verify passed and PR #48 is open. Post-PR review-skill wording has been tightened. Hosted CI and human review remain pending.
 
 ## Readiness
 
