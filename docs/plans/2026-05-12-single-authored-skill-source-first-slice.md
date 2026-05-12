@@ -1,6 +1,6 @@
 # Single Authored Skill Source First Slice Plan
 
-- Status: active
+- Status: done
 - Owner: maintainers
 - Start date: 2026-05-12
 - Last updated: 2026-05-12
@@ -60,9 +60,9 @@ Likely implementation surfaces:
 - Last reviewed milestone: M3. Public Adapter Preservation And Benchmark Source Guardrails
 - Review status: M3 code-review clean-with-notes; no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: PR #47 review
-- Final closeout readiness: PR open
-- Reason final closeout is or is not ready: local final verify passed and PR #47 is open for review.
+- Next stage: done
+- Final closeout readiness: completed
+- Reason final closeout is or is not ready: PR #47 merged after local final verify and hosted CI success.
 
 ## Non-goals
 
@@ -364,12 +364,13 @@ If `scripts/test-build-skills.py` is not added because coverage lands in an exis
 - 2026-05-12 verify: selected explicit CI wrapper passed all selected checks: `skills.regression`, `skills.generation_regression`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `readme.validate`, `readme.vision_markers`, `selector.regression`, `token_cost.regression`, and `token_cost.report_regression`.
 - 2026-05-12 verify: direct generated-output guardrails passed: `.codex/skills` has no tracked files, `.codex/skills/proposal/SKILL.md` is ignored, public adapter skill copies remain tracked, and no generated adapter archives are tracked.
 - 2026-05-12 PR: opened PR #47, `https://github.com/xiongxianfei/rigorloop/pull/47`.
+- 2026-05-12 PR: PR #47 merged at 2026-05-12T18:06:49Z with merge commit `bed11c8efa6dab79515da5812a7ee2f5287c63e4`; hosted `ci` completed successfully before merge.
 
 ## Outcome and retrospective
 
-- Pending implementation and final closeout.
+- Completed. PR #47 merged the first slice: `.codex/skills/` was removed from tracked Git state, local mirror generation validates from canonical `skills/`, public adapter skill copies remain tracked during the compatibility window, adapter support metadata is tracked, and token-cost benchmark source guardrails reject `.codex/skills/`.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- PR #47 is open for review after local branch-ready verification.
+- Done. PR #47 merged after local branch-ready verification and hosted CI success.
