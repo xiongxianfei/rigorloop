@@ -69,10 +69,10 @@ Disposition: accepted
 Status: resolved
 Owner: implementer
 Owning stage: implement
-Chosen action: Require `review.status: clean` for strict clean receipt root metadata validation and add invalid-status negative tests for both validators.
+Chosen action: Require `review.status: clean` for strict clean receipt root metadata validation, emit the exact error `review.status must be 'clean' for clean receipt roots`, and add invalid-status negative tests for both validators.
 Rationale: Clean receipt roots must be discoverable as clean receipt roots. Accepting another status such as `approved` leaves the root ambiguous while still passing clean-root validation.
-Validation target: `python scripts/test-review-artifact-validator.py`, `python scripts/test-change-metadata-validator.py`, and focused validation proving `review.status: approved` fails for clean receipt roots.
-Validation evidence: `python scripts/test-review-artifact-validator.py` passed with 35 tests; `python scripts/test-change-metadata-validator.py` passed with 7 tests; active change metadata remains compatible while clean-root-shaped metadata with `review.status: approved` fails.
+Validation target: `python scripts/test-review-artifact-validator.py`, `python scripts/test-change-metadata-validator.py`, and focused validation proving `review.status: approved` and another non-clean value fail for clean receipt roots.
+Validation evidence: `python scripts/test-review-artifact-validator.py` passed with 35 tests; `python scripts/test-change-metadata-validator.py` passed with 7 tests; both validator test suites reject `review.status: approved` and `review.status: changes-requested` for clean receipt roots.
 
 ### code-review-m2-r3
 

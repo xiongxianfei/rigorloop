@@ -133,6 +133,18 @@ validation:
     result: pass_m2_cr_m2_002_fix
   - command: code-review M2 rerun
     result: clean_with_notes_no_material_findings_r3
+  - command: python scripts/test-review-artifact-validator.py
+    result: pass_m2_cr_m2_002_tightening_35_tests
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_m2_cr_m2_002_tightening_7_tests
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-record-every-formal-review-review-recording
+    result: pass_m2_cr_m2_002_tightening_closeout_reviews_8_findings_3_log_entries_8_resolution_entries_3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml tests/fixtures/review-artifacts/valid-clean-receipt-root/change.yaml
+    result: pass_m2_cr_m2_002_tightening_change_metadata
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/formal-review-recording.test.md --path specs/formal-review-recording.md --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml
+    result: pass_m2_cr_m2_002_tightening_state_sync
+  - command: git diff --check --
+    result: pass_m2_cr_m2_002_tightening
 changed_files:
   - docs/proposals/2026-05-12-record-every-formal-review.md
   - specs/formal-review-recording.md

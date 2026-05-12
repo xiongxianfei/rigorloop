@@ -107,7 +107,12 @@ class ChangeMetadataValidatorFixtureTests(unittest.TestCase):
             (
                 "  status: clean\n",
                 "  status: approved\n",
-                "review.status must be clean for clean receipt roots",
+                "review.status must be 'clean' for clean receipt roots",
+            ),
+            (
+                "  status: clean\n",
+                "  status: changes-requested\n",
+                "review.status must be 'clean' for clean receipt roots",
             ),
             (
                 "  unresolved_items: 0\n",
