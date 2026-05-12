@@ -52,6 +52,8 @@ validation:
     result: pass_after_cr_001_fix
   - command: python scripts/validate-skills.py
     result: pass_after_cr_001_fix
+  - command: code-review M1 rerun
+    result: clean_with_notes_no_material_findings
 changed_files:
   - docs/proposals/2026-05-12-downstream-status-settlement-before-reliance.md
   - specs/downstream-status-settlement-before-reliance.md
@@ -69,6 +71,6 @@ changed_files:
   - docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/reviews/spec-review-r2.md
   - docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/reviews/code-review-r1.md
 review:
-  status: cr_001_fixed_pending_code_review_rerun
+  status: m1_clean_pending_m2
   unresolved_items: 0
   latest_review: docs/changes/2026-05-12-downstream-status-settlement-before-reliance-review-recording/reviews/code-review-r1.md
