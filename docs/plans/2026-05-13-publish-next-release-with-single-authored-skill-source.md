@@ -71,14 +71,14 @@ Current known mismatch before implementation:
 
 ## Current Handoff Summary
 
-- Current milestone: M3. Release evidence and final validation pack
-- Current milestone state: closed
+- Current milestone: final closeout
+- Current milestone state: explain-change complete; verify pending
 - Last reviewed milestone: M3 code-review r1 clean-with-notes
 - Review status: M1-M3 closed; no open material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: final closeout, starting with `explain-change` unless a separate CI-maintenance trigger is identified
-- Final closeout readiness: ready for final closeout
-- Reason final closeout is or is not ready: all implementation milestones are implemented and reviewed; final explain-change, verify, and PR handoff have not run.
+- Next stage: verify
+- Final closeout readiness: in progress
+- Reason final closeout is or is not ready: explain-change is recorded; final verify and PR handoff have not run.
 
 ## Milestones
 
@@ -310,6 +310,7 @@ Before PR handoff, run the M3 final validation pack plus any commands added by t
 - 2026-05-13: M2 updates `CONSTITUTION.md` in addition to the planned docs because it carried higher-priority stale local Codex setup guidance that conflicted with the approved transition-release contract.
 - 2026-05-13: `docs/releases/v0.1.1/release.yaml` is intentionally unchanged in M2; the release metadata values remain valid and `python scripts/validate-release.py --version v0.1.1` passes after the release-note wording update.
 - 2026-05-13: M3 closed after code-review confirmed the final validation pack and full `bash scripts/release-verify.sh v0.1.1` gate pass without treating `.codex/skills/` generation as release evidence.
+- 2026-05-13: Final explain-change was recorded as change-local rationale; verify remains the next gate.
 
 ## Surprises and discoveries
 
@@ -367,7 +368,7 @@ Before PR handoff, run the M3 final validation pack plus any commands added by t
 
 ## Outcome and retrospective
 
-Not completed. M1-M3 are closed; final explain-change, verify, and PR handoff remain open.
+Not completed. M1-M3 are closed and explain-change is recorded; final verify and PR handoff remain open.
 
 ## Readiness
 
