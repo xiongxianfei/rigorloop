@@ -707,7 +707,9 @@ raise SystemExit({exit_code})
         paths = [
             "docs/examples/README.md",
             "docs/examples/plans/example-plan.md",
+            "docs/examples/formal-review-recording/README.md",
             "docs/examples/formal-review-recording/change-id-selection-examples.md",
+            "docs/examples/formal-review-recording/clean-review-receipt-root.md",
             "docs/examples/formal-review-recording/material-finding-location-examples.md",
         ]
 
@@ -722,6 +724,7 @@ raise SystemExit({exit_code})
                 self.assertIn({"path": path, "category": "examples"}, payload["classified_paths"])
 
         self.assertNotIn("artifact_lifecycle.validate", selected_ids(payload))
+        self.assertNotIn("review_artifacts.validate", selected_ids(payload))
         self.assertEqual(payload["selected_checks"], [])
 
     def test_selector_and_validation_script_paths_select_regressions(self) -> None:
