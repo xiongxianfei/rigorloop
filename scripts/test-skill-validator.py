@@ -1957,7 +1957,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "Shared skill policy blocks live under `templates/shared/<block-name>.md`.",
             "Public shared blocks are copied into consuming skills and checked for drift; maintainer-only blocks such as generated-output handling are not copied into published skills.",
             "Add a skill only when it owns a distinct artifact, gate, review responsibility, recurring action, or approved operational process.",
-            "Edit canonical skill source under `skills/<skill>/SKILL.md`; regenerate `.codex/skills/` locally with `python scripts/build-skills.py`; keep public `dist/adapters/` output generated rather than hand-edited.",
+            "Edit canonical skill source under `skills/<skill>/SKILL.md`; for local Codex use, install or copy public Codex adapter output into ignored `.codex/skills/`; keep public `dist/adapters/` output generated rather than hand-edited.",
         ]
         for term in required_workflows_terms:
             with self.subTest(surface="workflows_doc", term=term):
@@ -1984,8 +1984,8 @@ class SkillValidatorFixtureTests(unittest.TestCase):
 
         shared_terms = [
             "`skills/` is the only authored skill source.",
-            "`.codex/skills/` is generated local Codex runtime output",
-            "Regenerate it with `python scripts/build-skills.py`",
+            "public Codex adapter output",
+            "`.codex/skills/` untracked",
             "Public adapter packages under `dist/adapters/` remain tracked generated installable output during the compatibility window.",
         ]
         for term in shared_terms:
@@ -2001,6 +2001,16 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         self.assertIn(".codex/skills/", gitignore)
         self.assertNotIn("commit `.codex/skills/`", readme)
         self.assertNotIn("tracked `.codex/skills/`", workflows_doc)
+        for surface_name, surface in {
+            "README": readme,
+            "workflows": workflows_doc,
+            "AGENTS": agents,
+            "CONSTITUTION": constitution,
+        }.items():
+            with self.subTest(surface=surface_name, stale_term="Regenerate build-skills"):
+                self.assertNotIn("Regenerate it with `python scripts/build-skills.py`", surface)
+            with self.subTest(surface=surface_name, stale_term="generated local Codex runtime"):
+                self.assertNotIn("`.codex/skills/` is generated local Codex runtime output", surface)
 
     def test_skill_contract_m2_shared_block_sources_exist_and_stay_bounded(self) -> None:
         shared_blocks = {
