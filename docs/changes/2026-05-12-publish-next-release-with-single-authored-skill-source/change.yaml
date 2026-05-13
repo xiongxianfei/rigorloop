@@ -138,6 +138,10 @@ validation:
     result: clean-with-notes_no_material_findings
   - command: explain-change
     result: recorded
+  - command: verify
+    result: branch-ready_local_validation_passed
+  - command: bash scripts/ci.sh --mode pr --base 2df914c20bca7707aff3e3f4872d6e4858dc2c01 --head HEAD --timeout 180
+    result: pass
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-publish-next-release-with-single-authored-skill-source.md --path specs/publish-next-release-with-single-authored-skill-source.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-13-publish-next-release-with-single-authored-skill-source.md --path docs/plan.md --path docs/changes/2026-05-12-publish-next-release-with-single-authored-skill-source/change.yaml
     result: pass
   - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-publish-next-release-with-single-authored-skill-source/change.yaml
