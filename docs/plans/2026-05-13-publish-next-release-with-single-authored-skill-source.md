@@ -1,6 +1,6 @@
 # Publish Next Release With Single Authored Skill Source
 
-- Status: active
+- Status: done
 - Owner: maintainer
 - Start date: 2026-05-13
 - Last updated: 2026-05-13
@@ -72,13 +72,13 @@ Current known mismatch before implementation:
 ## Current Handoff Summary
 
 - Current milestone: final closeout
-- Current milestone state: PR #49 open; hosted CI pending
+- Current milestone state: done
 - Last reviewed milestone: M3 code-review r1 clean-with-notes
 - Review status: M1-M3 closed; no open material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: observe hosted CI and review
-- Final closeout readiness: in progress
-- Reason final closeout is or is not ready: explain-change is recorded, final verify passed, and PR #49 is open; hosted CI and review have not completed.
+- Next stage: none
+- Final closeout readiness: complete
+- Reason final closeout is or is not ready: PR #49 merged on 2026-05-13 with hosted CI passing; release publication remains outside this plan.
 
 ## Milestones
 
@@ -314,6 +314,7 @@ Before PR handoff, run the M3 final validation pack plus any commands added by t
 - 2026-05-13: Final verify passed with branch-ready evidence. No standalone `verify-report.md` was added because verification evidence is automated and recorded concisely in this plan, `change.yaml`, and `explain-change.md`.
 - 2026-05-13: PR handoff prepared after branch-ready verification; hosted CI remains pending until the PR opens.
 - 2026-05-13: PR #49 opened for review; hosted CI is pending.
+- 2026-05-13: PR #49 merged as `f6e00324fcaa8c6ce3175fa13409392244346244`; hosted `ci` passed.
 
 ## Surprises and discoveries
 
@@ -390,7 +391,7 @@ Before PR handoff, run the M3 final validation pack plus any commands added by t
 
 ## Outcome and retrospective
 
-Not completed. M1-M3 are closed, explain-change is recorded, final verify passed, and PR #49 is open; hosted CI and review remain open.
+Done. M1-M3 are closed, explain-change is recorded, final verify passed, PR #49 merged, and hosted CI passed. Public release publication remains outside this plan.
 
 ## Readiness
 
@@ -398,6 +399,5 @@ See `Current Handoff Summary`.
 
 ## Remaining completion gates
 
-- Explain-change.
-- PR handoff.
+- None for this implementation plan.
 - Public release publication remains outside this plan.
