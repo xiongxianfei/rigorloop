@@ -43,6 +43,7 @@ TOKEN_COST_VALIDATOR = ROOT / "scripts" / "validate-token-cost-report.py"
 TOKEN_COST_MANIFEST = ROOT / "benchmarks" / "token-cost" / "manifest.yaml"
 ADAPTER_OUTPUT_CONTRACT_ROOT = PurePosixPath("dist/adapters")
 ADAPTER_SUPPORT_METADATA_FILES = frozenset({Path("README.md")})
+CODEX_LOCAL_RUNTIME_ROOT = ".codex/skills/"
 OPENCODE_COMMAND_ROOT = PurePosixPath(".opencode/commands")
 COMMON_FRONTMATTER = frozenset({"name", "description"})
 TRANSFORMABLE_FRONTMATTER = frozenset({"argument-hint"})
@@ -1781,6 +1782,16 @@ def _release_notes_consistency_errors(
         )
     if "dist/adapters/" not in notes_text:
         errors.append("release notes must describe generated adapter packages under dist/adapters/")
+    if version == "v0.1.1":
+        stale_codex_evidence = (
+            "generated `.codex/skills/`" in notes_text
+            or "checks `.codex/skills/` generation" in notes_text
+            or "checks generated .codex/skills/" in notes_text.lower()
+        )
+        if stale_codex_evidence:
+            errors.append("v0.1.1 release notes must not describe .codex/skills generation as release evidence")
+        if "does not require `.codex/skills/` generation as release evidence" not in notes_text:
+            errors.append("v0.1.1 release notes must state that .codex/skills generation is not release evidence")
 
     non_portable = sorted(name for name, entry in manifest.skills.items() if not entry.portable)
     if non_portable:
@@ -2178,6 +2189,63 @@ def _validate_token_cost_report(
     return [f"token-cost report validation failed: {metadata_path}: {output}"]
 
 
+def _tracked_repo_files(pathspec: str) -> tuple[str, ...]:
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(ROOT), "ls-files", "--", pathspec],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    except OSError:
+        return ()
+    if result.returncode != 0:
+        return ()
+    return tuple(line.strip() for line in result.stdout.splitlines() if line.strip())
+
+
+def _is_git_ignored(pathspec: str) -> bool:
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(ROOT), "check-ignore", "-q", pathspec],
+            check=False,
+        )
+    except OSError:
+        return False
+    return result.returncode == 0
+
+
+def _validate_codex_local_runtime_state(
+    *,
+    tracked_files: Iterable[str | Path] | None,
+    codex_skills_ignored: bool | None,
+) -> list[str]:
+    tracked = (
+        tuple(str(path).strip().replace("\\", "/") for path in tracked_files)
+        if tracked_files is not None
+        else _tracked_repo_files(CODEX_LOCAL_RUNTIME_ROOT)
+    )
+    codex_tracked = tuple(
+        path for path in tracked if path.startswith(CODEX_LOCAL_RUNTIME_ROOT)
+    )
+    errors: list[str] = []
+    if codex_tracked:
+        sample = ", ".join(codex_tracked[:5])
+        errors.append(
+            ".codex/skills/ must be untracked for release evidence; "
+            f"tracked files: {sample}"
+        )
+
+    ignored = (
+        codex_skills_ignored
+        if codex_skills_ignored is not None
+        else _is_git_ignored(f"{CODEX_LOCAL_RUNTIME_ROOT}proposal/SKILL.md")
+    )
+    if not ignored:
+        errors.append(".codex/skills/ must be ignored local runtime state")
+    return errors
+
+
 def validate_release_output(
     version: str,
     *,
@@ -2188,6 +2256,8 @@ def validate_release_output(
     token_cost_report_root: Path = TOKEN_COST_REPORT_ROOT,
     token_cost_validator: Path = TOKEN_COST_VALIDATOR,
     changed_paths: Iterable[str | Path] | None = None,
+    tracked_files: Iterable[str | Path] | None = None,
+    codex_skills_ignored: bool | None = None,
 ) -> list[str]:
     """Validate one target-version release metadata and notes surface."""
 
@@ -2233,6 +2303,13 @@ def validate_release_output(
         errors.append(f"{release_path}: adapter_paths mismatch")
     if metadata.instruction_entrypoints != _expected_instruction_entrypoints():
         errors.append(f"{release_path}: instruction_entrypoints mismatch")
+    if version == "v0.1.1":
+        errors.extend(
+            _validate_codex_local_runtime_state(
+                tracked_files=tracked_files,
+                codex_skills_ignored=codex_skills_ignored,
+            )
+        )
     if set(metadata.smoke) != set(SUPPORTED_ADAPTERS):
         errors.append(f"{release_path}: smoke rows must be exactly {SUPPORTED_ADAPTERS}")
     for tool in SUPPORTED_ADAPTERS:

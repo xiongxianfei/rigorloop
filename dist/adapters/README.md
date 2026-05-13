@@ -6,7 +6,7 @@ Do not edit generated adapter skill files by hand. `skills/` is the only authore
 
 ## Current Repository-Tree Install
 
-During the public adapter compatibility window, generated adapter skill copies under `dist/adapters/` remain tracked installable output. This repository-tree install path remains valid until release assets replace it in a later release.
+For `v0.1.1`, generated adapter skill copies under `dist/adapters/` remain tracked installable output and the public adapter install path. This repository-tree install path remains valid until release assets replace it in a later release.
 
 To install one adapter from the repository tree, copy that adapter package root's contents into a project root:
 
@@ -20,8 +20,10 @@ To install one adapter from the repository tree, copy that adapter package root'
 
 ## Release Artifact Migration
 
+No downloadable adapter archives are required for `v0.1.1`. `dist/adapters/` remains the public adapter install path for this transition release.
+
 A later release may move generated public adapter skill copies out of ordinary tracked Git state after downloadable adapter archives, install docs, validation, release notes, and compatibility notices are ready.
 
 When that migration happens, download adapter archives from GitHub release assets. The release artifact metadata and checksums will be recorded under `docs/reports/adapter-artifacts/releases/<version>.yaml`.
 
-`.codex/skills/` is repository-local generated Codex runtime output and not a public adapter install source.
+`.codex/skills/` is an ignored local runtime install directory and not a public adapter install source. For local Codex use, install or copy public Codex adapter output from `dist/adapters/codex/.agents/skills/` into `.codex/skills/`.
