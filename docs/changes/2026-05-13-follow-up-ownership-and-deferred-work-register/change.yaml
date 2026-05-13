@@ -1,0 +1,109 @@
+change_id: 2026-05-13-follow-up-ownership-and-deferred-work-register
+title: Follow-up ownership and deferred work register
+classification: proposal-review
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-13-follow-up-ownership-and-deferred-work-register.md
+  spec: specs/follow-up-ownership-and-deferred-work-register.md
+  test_spec: specs/follow-up-ownership-and-deferred-work-register.test.md
+  plan: docs/plans/2026-05-13-follow-up-ownership-and-deferred-work-register.md
+requirements:
+  - Review the follow-up ownership proposal before implementation.
+  - Define the follow-up ownership and deferred work register behavior in a contract-level spec.
+  - Create a milestone-based execution plan for the approved workflow contract.
+  - Create a traceable test spec before implementation.
+  - Confirm that project-map does not own deferred execution.
+  - Confirm that docs/follow-ups.md is optional and constrained to real unowned cross-change follow-ups.
+  - Implement M1 follow-up ownership guidance without creating an empty register or shared wording template.
+  - Record maintainer-accepted unowned cross-change follow-up for token-friendliness work on other skills.
+tests:
+  - Proposal-review approval or recorded material findings.
+  - Spec drafted with examples, normative requirements, edge cases, and acceptance criteria.
+  - Plan created and indexed in docs/plan.md.
+  - Test spec maps approved requirements, examples, edge cases, and milestones to concrete proof.
+  - Static validator coverage proves M1 workflow guidance, concise skill wording, and absence of docs/follow-ups.md and follow-up shared templates.
+  - Static validator coverage proves docs/follow-ups.md is either absent or structurally valid and populated.
+review:
+  status: clean
+  unresolved_items: 0
+  reviewed_artifact: docs/plans/2026-05-13-follow-up-ownership-and-deferred-work-register.md
+  review_log: docs/changes/2026-05-13-follow-up-ownership-and-deferred-work-register/review-log.md
+  location: docs/changes/2026-05-13-follow-up-ownership-and-deferred-work-register/review-resolution.md
+validation:
+  - command: proposal-review r1
+    result: approved_no_material_findings
+  - command: spec
+    result: draft_spec_created_ready_for_spec_review
+  - command: spec-review r1
+    result: approved_no_material_findings
+  - command: plan
+    result: active_plan_created_ready_for_plan_review
+  - command: plan-review r1
+    result: approved_no_material_findings
+  - command: test-spec
+    result: active_test_spec_created_ready_for_implement_M1
+  - command: maintainer approval
+    result: test_spec_approved_ready_for_implement_M1
+  - command: python scripts/test-skill-validator.py
+    result: passed
+  - command: python scripts/validate-skills.py
+    result: passed
+  - command: python scripts/select-validation.py --mode explicit --path docs/workflows.md --path skills/workflow/SKILL.md --path skills/project-map/SKILL.md
+    result: passed
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/workflows.md --path skills/workflow/SKILL.md --path skills/project-map/SKILL.md
+    result: passed
+  - command: python scripts/test-build-skills.py
+    result: passed
+  - command: python scripts/build-skills.py --check
+    result: passed
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives
+    result: passed
+  - command: python scripts/test-select-validation.py
+    result: passed
+  - command: git diff --check --
+    result: passed
+  - command: code-review-m1-r1
+    result: clean-with-notes_no_material_findings
+  - command: M2 python scripts/test-skill-validator.py
+    result: passed
+  - command: M2 python scripts/validate-skills.py
+    result: passed
+  - command: M2 python scripts/test-select-validation.py
+    result: passed
+  - command: M2 python scripts/build-adapters.py --check
+    result: failed_non_applicable_stale_tracked_adapter_tree_check
+  - command: M2 python scripts/build-adapters.py --version v0.1.3 --check
+    result: failed_non_applicable_stale_tracked_adapter_tree_check
+  - command: M2 python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives
+    result: passed
+  - command: code-review-m2-r1
+    result: clean-with-notes_no_material_findings
+  - command: explain-change
+    result: recorded
+  - command: verify
+    result: branch-ready_local_validation_passed
+  - command: pr
+    result: opened https://github.com/xiongxianfei/rigorloop/pull/53
+changed_files:
+  - docs/workflows.md
+  - docs/follow-ups.md
+  - scripts/validation_selection.py
+  - scripts/test-select-validation.py
+  - docs/proposals/2026-05-13-follow-up-ownership-and-deferred-work-register.md
+  - specs/follow-up-ownership-and-deferred-work-register.md
+  - specs/follow-up-ownership-and-deferred-work-register.test.md
+  - docs/plans/2026-05-13-follow-up-ownership-and-deferred-work-register.md
+  - docs/plan.md
+  - scripts/test-skill-validator.py
+  - skills/workflow/SKILL.md
+  - skills/project-map/SKILL.md
+  - docs/changes/2026-05-13-follow-up-ownership-and-deferred-work-register/change.yaml
+  - docs/changes/2026-05-13-follow-up-ownership-and-deferred-work-register/review-log.md
+  - docs/changes/2026-05-13-follow-up-ownership-and-deferred-work-register/review-resolution.md
+  - docs/changes/2026-05-13-follow-up-ownership-and-deferred-work-register/explain-change.md
+  - docs/changes/2026-05-13-follow-up-ownership-and-deferred-work-register/verify-report.md
+  - docs/changes/2026-05-13-follow-up-ownership-and-deferred-work-register/reviews/proposal-review-r1.md
+  - docs/changes/2026-05-13-follow-up-ownership-and-deferred-work-register/reviews/spec-review-r1.md
+  - docs/changes/2026-05-13-follow-up-ownership-and-deferred-work-register/reviews/plan-review-r1.md
+  - docs/changes/2026-05-13-follow-up-ownership-and-deferred-work-register/reviews/code-review-m1-r1.md
+  - docs/changes/2026-05-13-follow-up-ownership-and-deferred-work-register/reviews/code-review-m2-r1.md
