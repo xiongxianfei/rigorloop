@@ -89,9 +89,9 @@ Current known implementation shape before work begins:
 - Last reviewed milestone: M5 code-review r1 found no material findings and closed M5.
 - Review status: proposal-review, spec-review, architecture-review, and plan-review are approved; plan-review r1 finding PR-001 is closed in review-resolution; M1 code-review r1 found no material findings; M2 code-review r2 found no material findings after PAAM-M2-CR1 resolution; M3 code-review r1 found no material findings; M4 code-review r1 found no material findings; M5 code-review r1 found no material findings.
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
+- Next stage: monitor PR #51 hosted checks and complete PR review
 - Final closeout readiness: ready for final closeout sequence
-- Reason final closeout is or is not ready: M1-M5 are implemented and closed after code-review, explain-change and final verify are recorded, and no required review-resolution remains open. PR handoff and release-publication handoff remain pending. M6 is a tracked later-release gate and is not part of `v0.1.2` implementation closeout until the stable archive release has shipped and a plan revision makes untracking current.
+- Reason final closeout is or is not ready: M1-M5 are implemented and closed after code-review, explain-change and final verify are recorded, PR #51 is open, and no required review-resolution remains open. Hosted PR checks, PR review, and release-publication handoff remain pending. M6 is a tracked later-release gate and is not part of `v0.1.2` implementation closeout until the stable archive release has shipped and a plan revision makes untracking current.
 
 ## Milestones
 
@@ -433,7 +433,7 @@ Before PR handoff, run the M5 final validation pack plus any commands added by t
 - [x] M5 final release-readiness evidence completed and reviewed.
 - [x] Final explain-change recorded.
 - [x] Final verify passed.
-- [ ] PR handoff completed.
+- [x] PR #51 opened.
 - [ ] `v0.1.2` release publication handoff completed or explicitly deferred.
 - [ ] M6 follow-up untracking plan or plan revision created after `v0.1.2` ships.
 
@@ -464,6 +464,7 @@ Before PR handoff, run the M5 final validation pack plus any commands added by t
 - 2026-05-13: Code-review M5 R1 found no material findings and closed M5. Proceed to final closeout sequence starting with `explain-change`.
 - 2026-05-13: Final explain-change recorded at `docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/explain-change.md`; proceed to `verify`.
 - 2026-05-13: Final local verify passed and recorded `docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/verify-report.md`; proceed to `pr`.
+- 2026-05-13: PR #51 opened at `https://github.com/xiongxianfei/rigorloop/pull/51`; hosted checks and PR review are tracked on the PR.
 
 ## Surprises and discoveries
 
@@ -620,9 +621,15 @@ Before PR handoff, run the M5 final validation pack plus any commands added by t
   - `find docs/reports/token-cost/runs/v0.1.2 -name '*.jsonl' -print && git ls-files '*.zip' '*.tar.gz' | rg 'rigorloop-adapter|rigorloop-adapters' || true`
   - Verify report: `docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/verify-report.md`
 
+- PR handoff:
+  - PR #51 opened: `https://github.com/xiongxianfei/rigorloop/pull/51`
+  - Branch: `public-adapter-artifact-migration-v0.1.2`
+  - Base: `main`
+  - Hosted CI: pending or not observed at PR creation.
+
 ## Outcome and retrospective
 
-Not completed. M5 is closed after clean code-review, explain-change is recorded, and final local verify passed; PR handoff and release-publication handoff remain pending.
+Not completed. M5 is closed after clean code-review, explain-change is recorded, final local verify passed, and PR #51 is open; hosted PR checks, PR review, and release-publication handoff remain pending.
 
 ## Readiness
 
@@ -632,6 +639,6 @@ See `Current Handoff Summary`.
 
 - M1-M5 implementation, targeted validation, and code-review loops are closed.
 - Required review-resolution if code-review records material findings.
-- PR handoff.
+- PR review and hosted checks on PR #51.
 - Explicit release handoff for publishing `v0.1.2` and attaching archives.
 - Later M6 follow-up after the stable archive release ships.
