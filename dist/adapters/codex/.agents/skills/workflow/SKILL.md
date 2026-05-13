@@ -136,6 +136,23 @@ For planned work:
 
 State-sync checks update affected owners before downstream readiness is claimed. Do not infer final closeout when the active plan does not identify reviewed and remaining milestones. The merge itself is not a routine downstream completion event.
 
+## Project workflow guide
+
+The workflow skill creates or refreshes the project workflow guide and artifact-location map. The guide tells users where artifacts go; the owning stage skill still authors its own artifact content.
+
+Create or refresh the guide when:
+
+- RigorLoop is adopted in a project and no workflow guide exists;
+- artifact locations are added, removed, renamed, or customized;
+- review-recording, examples, reports, or change-root placement changes;
+- stage skill guidance starts relying on the artifact-location map;
+- generated-output or adapter source-of-truth guidance changes;
+- the existing guide contradicts current repository paths or governing specs.
+
+For ordinary routing where the guide is current, reference the guide rather than rewrite it.
+
+The workflow skill must not author proposals, specs, plans, reviews, ADRs, or exact schemas solely because it owns the artifact-location map. Route users to the owning stage skill for artifact content.
+
 ## Lifecycle-managed artifacts
 
 Top-level proposals, specs, test specs, architecture docs, and ADRs keep status inside the artifact. `reviewed` is transitional review output; durable current states are artifact-specific states such as accepted, approved, active, deprecated, superseded, archived, rejected, or abandoned.

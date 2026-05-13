@@ -103,6 +103,23 @@ Common default paths are:
 
 If the project uses different architecture paths, follow the project's configured paths.
 
+## Artifact placement
+
+Use the project workflow guide for artifact locations when placement matters.
+
+Lookup order:
+
+1. explicit user path or change ID;
+2. active plan, change metadata, reviewed artifact path, or current artifact metadata;
+3. known governing spec or schema constraint when directly relevant;
+4. `docs/workflows.md` artifact-location table;
+5. this skill's portable default path;
+6. block on ambiguity.
+
+This discovery order is subordinate to the source-rank rule in `docs/workflows.md` when sources conflict.
+
+Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
+
 Use `templates/architecture.md` for the full 12-section arc42 structure. Use `templates/diagram-styles.mmd` for Mermaid flowchart or graph C4 role styles. Use `templates/adr.md` for ADR structure.
 
 Full worked examples, if needed, belong outside this skill body, for example in `skills/architecture/references/architecture-example.md`.

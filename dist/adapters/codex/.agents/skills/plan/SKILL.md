@@ -95,6 +95,23 @@ docs/plan.md
 Create a new dated plan for new initiatives. Update `docs/plan.md` as the lifecycle index of active, blocked, done, and superseded plans.
 For planned initiatives, `docs/plan.md` remains the lifecycle index while files under `docs/plans/` remain the plan bodies. `plan` owns creating or revising those surfaces when an initiative starts or is re-planned, not every later execution-time update.
 
+## Artifact placement
+
+Use the project workflow guide for artifact locations when placement matters.
+
+Lookup order:
+
+1. explicit user path or change ID;
+2. active plan, change metadata, reviewed artifact path, or current artifact metadata;
+3. known governing spec or schema constraint when directly relevant;
+4. `docs/workflows.md` artifact-location table;
+5. this skill's portable default path;
+6. block on ambiguity.
+
+This discovery order is subordinate to the source-rank rule in `docs/workflows.md` when sources conflict.
+
+Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
+
 ## Outputs
 
 Produce or update the concrete plan body and, when starting or replanning an initiative, the `docs/plan.md` lifecycle index. The plan must name the milestone sequence, validation commands, recovery path, current handoff summary, and remaining completion gates.

@@ -19,6 +19,7 @@ requirements:
   - Implement M1 artifact map, workflow guide refresh responsibility, and retained-fixture rationale.
   - Implement M2 token-efficient artifact-placement lookup wording in affected public skills.
   - Implement M3 repository-owned validation proof for examples routing, lifecycle behavior, formal-review examples, and retained fixture rationale.
+  - Implement M4 generated public adapter output refresh and generated-output validation.
 tests:
   - proposal-review-r1
   - plan-review-r1
@@ -27,6 +28,7 @@ tests:
   - project-artifact-location-guide-and-examples-surface M1 static assertions
   - project-artifact-location-guide-and-examples-surface M2 static assertions
   - project-artifact-location-guide-and-examples-surface M3 selector, lifecycle, review-artifact, and retained-fixture assertions
+  - project-artifact-location-guide-and-examples-surface M4 generated-output checks
   - code-review-r1
   - code-review-r2
   - code-review-r3
@@ -119,6 +121,38 @@ validation:
     result: pass_after_m3_validation_proof
   - command: code-review r3
     result: clean_with_notes_m3_closed_next_implement_m4
+  - command: python scripts/build-skills.py --check
+    result: pass_before_m4_adapter_regeneration
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: fail_before_m4_regeneration_42_stale_generated_adapter_files
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: fail_before_m4_regeneration_stale_generated_adapter_files
+  - command: python scripts/build-adapters.py --version 0.1.1
+    result: pass_synced_generated_adapter_output_after_m4_regeneration
+  - command: python scripts/build-skills.py --check
+    result: pass_after_m4_regeneration
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_after_m4_regeneration_adapters_in_sync
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_after_m4_regeneration
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_77_tests_after_m4_regeneration
+  - command: python scripts/test-skill-validator.py
+    result: pass_after_m4_regeneration
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m4_regeneration
+  - command: python scripts/test-select-validation.py
+    result: pass_after_m4_regeneration
+  - command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_after_m4_regeneration
+  - command: python scripts/test-review-artifact-validator.py
+    result: pass_after_m4_regeneration
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_after_m4_regeneration
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording
+    result: pass_closeout_reviews_8_findings_2_log_entries_8_resolution_entries_2_after_m4_regeneration
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/change.yaml
+    result: pass_valid_change_metadata_after_m4_regeneration
   - command: python scripts/validate-change-metadata.py docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/change.yaml
     result: pass_valid_change_metadata_after_plan
   - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording
@@ -190,3 +224,45 @@ changed_files:
   - docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/reviews/code-review-r1.md
   - docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/reviews/code-review-r2.md
   - docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/reviews/code-review-r3.md
+  - dist/adapters/claude/.claude/skills/architecture-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/architecture/SKILL.md
+  - dist/adapters/claude/.claude/skills/code-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/explain-change/SKILL.md
+  - dist/adapters/claude/.claude/skills/plan-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/plan/SKILL.md
+  - dist/adapters/claude/.claude/skills/pr/SKILL.md
+  - dist/adapters/claude/.claude/skills/proposal-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/proposal/SKILL.md
+  - dist/adapters/claude/.claude/skills/spec-review/SKILL.md
+  - dist/adapters/claude/.claude/skills/spec/SKILL.md
+  - dist/adapters/claude/.claude/skills/test-spec/SKILL.md
+  - dist/adapters/claude/.claude/skills/verify/SKILL.md
+  - dist/adapters/claude/.claude/skills/workflow/SKILL.md
+  - dist/adapters/codex/.agents/skills/architecture-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/architecture/SKILL.md
+  - dist/adapters/codex/.agents/skills/code-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/explain-change/SKILL.md
+  - dist/adapters/codex/.agents/skills/plan-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/plan/SKILL.md
+  - dist/adapters/codex/.agents/skills/pr/SKILL.md
+  - dist/adapters/codex/.agents/skills/proposal-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/proposal/SKILL.md
+  - dist/adapters/codex/.agents/skills/spec-review/SKILL.md
+  - dist/adapters/codex/.agents/skills/spec/SKILL.md
+  - dist/adapters/codex/.agents/skills/test-spec/SKILL.md
+  - dist/adapters/codex/.agents/skills/verify/SKILL.md
+  - dist/adapters/codex/.agents/skills/workflow/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/architecture-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/architecture/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/code-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/explain-change/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/plan-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/plan/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/pr/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/proposal-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/proposal/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/spec-review/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/spec/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/test-spec/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/verify/SKILL.md
+  - dist/adapters/opencode/.opencode/skills/workflow/SKILL.md
