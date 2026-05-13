@@ -7,6 +7,7 @@ import importlib.util
 import re
 import subprocess
 import sys
+import zipfile
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 from typing import Any, Iterable
@@ -38,6 +39,7 @@ ROOT = Path(__file__).resolve().parents[1]
 ADAPTER_OUTPUT_ROOT = ROOT / "dist" / "adapters"
 ADAPTER_TEMPLATE_ROOT = ROOT / "scripts" / "adapter_templates"
 RELEASE_ROOT = ROOT / "docs" / "releases"
+ARCHIVE_TIMESTAMP = (1980, 1, 1, 0, 0, 0)
 TOKEN_COST_REPORT_ROOT = ROOT / "docs" / "reports" / "token-cost" / "releases"
 TOKEN_COST_VALIDATOR = ROOT / "scripts" / "validate-token-cost-report.py"
 TOKEN_COST_MANIFEST = ROOT / "benchmarks" / "token-cost" / "manifest.yaml"
@@ -1395,6 +1397,63 @@ def sync_adapter_output(
     _remove_empty_directories(output_root)
 
 
+def adapter_archive_name(adapter: str, version: str) -> str:
+    """Return the release archive name for one adapter."""
+
+    if adapter not in SUPPORTED_ADAPTERS:
+        raise ValueError(f"unsupported adapter: {adapter}")
+    return f"rigorloop-adapter-{adapter}-{version}.zip"
+
+
+def _archive_relative_path(adapter: AdapterConfig, expected_path: Path) -> Path | None:
+    package_root = _adapter_package_relative_root(adapter)
+    try:
+        return expected_path.relative_to(package_root)
+    except ValueError:
+        return None
+
+
+def _write_deterministic_zip(path: Path, files: dict[Path, str]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(path, "w") as archive:
+        for relative_path, text in sorted(files.items(), key=lambda item: item[0].as_posix()):
+            info = zipfile.ZipInfo(relative_path.as_posix(), ARCHIVE_TIMESTAMP)
+            info.compress_type = zipfile.ZIP_DEFLATED
+            info.external_attr = 0o644 << 16
+            archive.writestr(info, text.encode("utf-8"))
+
+
+def build_adapter_archives(
+    version: str,
+    output_dir: Path,
+    *,
+    skills_root: Path = CANONICAL_SKILLS_DIR,
+    template_root: Path = ADAPTER_TEMPLATE_ROOT,
+) -> tuple[Path, ...]:
+    """Build deterministic per-adapter release archives from canonical sources."""
+
+    expected = expected_adapter_files(
+        version,
+        skills_root=skills_root,
+        template_root=template_root,
+    )
+    output_dir.mkdir(parents=True, exist_ok=True)
+    archives: list[Path] = []
+
+    for adapter_name in SUPPORTED_ADAPTERS:
+        adapter = ADAPTERS[adapter_name]
+        archive_files: dict[Path, str] = {}
+        for expected_path, text in expected.items():
+            relative_path = _archive_relative_path(adapter, expected_path)
+            if relative_path is not None:
+                archive_files[relative_path] = text
+        archive_path = output_dir / adapter_archive_name(adapter_name, version)
+        _write_deterministic_zip(archive_path, archive_files)
+        archives.append(archive_path)
+
+    return tuple(archives)
+
+
 def _adapter_root(output_root: Path, config: AdapterConfig) -> Path:
     return output_root / _adapter_package_relative_root(config)
 
@@ -1737,6 +1796,91 @@ def validate_adapter_output(
         )
 
     errors.extend(scan_security_paths((output_root, template_root)))
+    return _dedupe_errors(errors)
+
+
+def _read_archive_text(archive: zipfile.ZipFile, name: str) -> str:
+    try:
+        return archive.read(name).decode("utf-8")
+    except KeyError:
+        raise
+    except UnicodeDecodeError as exc:
+        raise ValueError(f"{name}: archive entry must be UTF-8 text") from exc
+
+
+def validate_adapter_archives(
+    version: str,
+    root: Path,
+    *,
+    skills_root: Path = CANONICAL_SKILLS_DIR,
+    template_root: Path = ADAPTER_TEMPLATE_ROOT,
+) -> list[str]:
+    """Validate generated per-adapter release archive output."""
+
+    errors: list[str] = []
+    canonical_errors = _canonical_skill_source_errors(skills_root)
+    errors.extend(canonical_errors)
+    if canonical_errors:
+        return _dedupe_errors(errors)
+
+    expected = expected_adapter_files(
+        version,
+        skills_root=skills_root,
+        template_root=template_root,
+    )
+
+    for adapter_name in SUPPORTED_ADAPTERS:
+        config = ADAPTERS[adapter_name]
+        archive_path = root / adapter_archive_name(adapter_name, version)
+        if not archive_path.is_file():
+            errors.append(f"missing adapter archive: {adapter_name}: {archive_path}")
+            continue
+        try:
+            archive = zipfile.ZipFile(archive_path)
+        except zipfile.BadZipFile:
+            errors.append(f"invalid adapter archive: {adapter_name}: {archive_path}")
+            continue
+        with archive:
+            entries = tuple(sorted(name for name in archive.namelist() if not name.endswith("/")))
+            expected_files = {
+                relative_path: text
+                for expected_path, text in expected.items()
+                if (relative_path := _archive_relative_path(config, expected_path)) is not None
+            }
+            expected_names = tuple(path.as_posix() for path in sorted(expected_files))
+            if entries != expected_names:
+                missing = sorted(set(expected_names) - set(entries))
+                unexpected = sorted(set(entries) - set(expected_names))
+                if missing:
+                    errors.append(
+                        f"adapter archive missing entries: {adapter_name}: {archive_path}: "
+                        f"{', '.join(missing[:10])}"
+                    )
+                if unexpected:
+                    errors.append(
+                        f"adapter archive unexpected entries: {adapter_name}: {archive_path}: "
+                        f"{', '.join(unexpected[:10])}"
+                    )
+
+            entrypoint = config.entrypoint.as_posix()
+            if entrypoint not in entries:
+                errors.append(f"adapter archive missing entrypoint: {adapter_name}: {entrypoint}")
+            skill_root = config.skill_root.as_posix().rstrip("/") + "/"
+            if not any(name.startswith(skill_root) for name in entries):
+                errors.append(f"adapter archive missing skill root: {adapter_name}: {config.skill_root}")
+
+            for relative_path, expected_text in expected_files.items():
+                entry_name = relative_path.as_posix()
+                if entry_name not in entries:
+                    continue
+                try:
+                    actual_text = _read_archive_text(archive, entry_name)
+                except (KeyError, ValueError) as exc:
+                    errors.append(f"{archive_path}: {exc}")
+                    continue
+                if actual_text != expected_text:
+                    errors.append(f"adapter archive entry drift: {adapter_name}: {entry_name}")
+
     return _dedupe_errors(errors)
 
 

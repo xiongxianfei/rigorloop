@@ -4,10 +4,12 @@
 from __future__ import annotations
 
 import argparse
+from pathlib import Path
 
 from adapter_distribution import (
     ADAPTER_OUTPUT_ROOT,
     DEFAULT_ADAPTER_VERSION,
+    build_adapter_archives,
     collect_adapter_drift_entries,
     format_adapter_drift_normal,
     format_adapter_drift_verbose,
@@ -30,6 +32,10 @@ def build_parser() -> argparse.ArgumentParser:
         help="Fail if generated adapter output is missing, stale, or hand-edited.",
     )
     parser.add_argument(
+        "--output-dir",
+        help="Generate per-adapter release archives in this directory instead of syncing dist/adapters.",
+    )
+    parser.add_argument(
         "--verbose",
         action="store_true",
         help="With --check, print complete adapter drift diagnostics.",
@@ -42,6 +48,8 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if args.verbose and not args.check:
         parser.error("--verbose is only supported with --check")
+    if args.output_dir and args.check:
+        parser.error("--output-dir cannot be combined with --check")
 
     if args.check:
         drift = collect_adapter_drift_entries(args.version)
@@ -70,6 +78,12 @@ def main(argv: list[str] | None = None) -> int:
                 output_root=ADAPTER_OUTPUT_ROOT,
             )
         )
+        return 0
+
+    if args.output_dir:
+        archives = build_adapter_archives(args.version, Path(args.output_dir))
+        for archive in archives:
+            print(f"built adapter archive: {archive}")
         return 0
 
     sync_adapter_output(args.version)
