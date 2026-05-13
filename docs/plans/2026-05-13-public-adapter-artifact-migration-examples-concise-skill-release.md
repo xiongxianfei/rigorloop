@@ -85,13 +85,13 @@ Current known implementation shape before work begins:
 ## Current Handoff Summary
 
 - Current milestone: M5. Produce token-cost and final release-readiness evidence
-- Current milestone state: review-requested
-- Last reviewed milestone: M4 code-review r1 found no material findings and closed M4.
-- Review status: proposal-review, spec-review, architecture-review, and plan-review are approved; plan-review r1 finding PR-001 is closed in review-resolution; M1 code-review r1 found no material findings; M2 code-review r2 found no material findings after PAAM-M2-CR1 resolution; M3 code-review r1 found no material findings; M4 code-review r1 found no material findings; M5 is implemented and pending code-review.
-- Remaining in-scope implementation milestones: M5
-- Next stage: code-review M5
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M5 is implemented with local release-readiness evidence, but M5 code-review, explain-change, verify, PR handoff, and release-publication handoff remain pending. M6 is a tracked later-release gate and is not part of `v0.1.2` implementation closeout until the stable archive release has shipped and a plan revision makes untracking current.
+- Current milestone state: closed
+- Last reviewed milestone: M5 code-review r1 found no material findings and closed M5.
+- Review status: proposal-review, spec-review, architecture-review, and plan-review are approved; plan-review r1 finding PR-001 is closed in review-resolution; M1 code-review r1 found no material findings; M2 code-review r2 found no material findings after PAAM-M2-CR1 resolution; M3 code-review r1 found no material findings; M4 code-review r1 found no material findings; M5 code-review r1 found no material findings.
+- Remaining in-scope implementation milestones: none
+- Next stage: explain-change
+- Final closeout readiness: ready for final closeout sequence
+- Reason final closeout is or is not ready: M1-M5 are implemented and closed after code-review, and no required review-resolution remains open. Final explain-change, verify, PR handoff, and release-publication handoff remain pending. M6 is a tracked later-release gate and is not part of `v0.1.2` implementation closeout until the stable archive release has shipped and a plan revision makes untracking current.
 
 ## Milestones
 
@@ -280,7 +280,7 @@ Current known implementation shape before work begins:
 
 ### M5. Produce token-cost and final release-readiness evidence
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Produce `v0.1.2` token-cost reports, run final release validation, and update lifecycle evidence for downstream explain-change, verify, PR, and release handoff.
 - Requirements: R1-R6, R52-R60, R63, R76-R85
 - Files/components likely touched:
@@ -328,6 +328,7 @@ Current known implementation shape before work begins:
   - [x] decision log updated if needed
   - [x] validation notes updated
   - [x] milestone committed
+  - [x] code-review closed
 - Risks:
   - Token-cost dynamic tooling may require environment support not present locally.
   - Full release verification may reveal stale generated adapter output.
@@ -428,8 +429,8 @@ Before PR handoff, run the M5 final validation pack plus any commands added by t
 - [x] M4 implemented and handed to code-review.
 - [x] M4 code-review closed.
 - [x] M5 implemented and handed to code-review.
-- [ ] M5 code-review closed.
-- [ ] M5 final release-readiness evidence completed and reviewed.
+- [x] M5 code-review closed.
+- [x] M5 final release-readiness evidence completed and reviewed.
 - [ ] Final explain-change, verify, and PR handoff completed.
 - [ ] `v0.1.2` release publication handoff completed or explicitly deferred.
 - [ ] M6 follow-up untracking plan or plan revision created after `v0.1.2` ships.
@@ -458,6 +459,7 @@ Before PR handoff, run the M5 final validation pack plus any commands added by t
 - 2026-05-13: Code-review M4 R1 found no material findings and closed M4. Proceed to M5 token-cost and final release-readiness evidence.
 - 2026-05-13: M5 recorded `v0.1.2` token-cost evidence using canonical `skills/` for static measurement and public Codex adapter output `dist/adapters/codex/.agents/skills/` for dynamic benchmarks. `.codex/skills/` was not used as a benchmark source.
 - 2026-05-13: M5 full local release verification passed with `RELEASE_COMMIT=5514ef14ce5f310787f464ea78bd777838cb5537`; release archives were generated in temporary output and were not tracked.
+- 2026-05-13: Code-review M5 R1 found no material findings and closed M5. Proceed to final closeout sequence starting with `explain-change`.
 
 ## Surprises and discoveries
 
@@ -583,9 +585,15 @@ Before PR handoff, run the M5 final validation pack plus any commands added by t
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md --path specs/public-adapter-artifact-migration-examples-concise-skill-release.md --path specs/public-adapter-artifact-migration-examples-concise-skill-release.test.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md --path docs/plan.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/change.yaml --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/review-log.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/review-resolution.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/proposal-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/spec-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/architecture-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/plan-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/plan-review-r2.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m1-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m2-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m2-r2.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m3-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m4-r1.md --path docs/changes/0001-skill-validator/README.md --path docs/reports/token-cost/releases/v0.1.2.md --path docs/reports/token-cost/releases/v0.1.2.yaml`
   - `git diff --check --`
 
+- M5 code-review r1 found no material findings and closed M5. Review evidence:
+  - `python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.2.yaml`
+  - `python scripts/test-token-cost-report-validation.py`
+  - `git show --check 930afd5 -- docs/reports/token-cost docs/plans/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md docs/plan.md docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/change.yaml`
+  - Review record: `docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m5-r1.md`
+
 ## Outcome and retrospective
 
-Not completed. M5 is implemented and ready for code-review; final explain-change, verify, PR handoff, and release-publication handoff remain pending.
+Not completed. M5 is closed after clean code-review; final explain-change, verify, PR handoff, and release-publication handoff remain pending.
 
 ## Readiness
 
@@ -593,7 +601,7 @@ See `Current Handoff Summary`.
 
 ## Remaining completion gates
 
-- M1-M5 implementation, targeted validation, and code-review loops.
+- M1-M5 implementation, targeted validation, and code-review loops are closed.
 - Required review-resolution if code-review records material findings.
 - Explain-change, verify, and PR handoff.
 - Explicit release handoff for publishing `v0.1.2` and attaching archives.

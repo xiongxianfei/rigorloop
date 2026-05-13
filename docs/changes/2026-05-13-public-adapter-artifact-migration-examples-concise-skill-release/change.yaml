@@ -27,10 +27,11 @@ tests:
   - M4 retained skill-validator fixture rationale and bounded skill wording validation.
   - code-review-m4-r1
   - M5 token-cost and final release-readiness evidence validation.
+  - code-review-m5-r1
 review:
   status: clean
   unresolved_items: 0
-  reviewed_artifact: commit 4b6af34 M4 review closeout; M5 pending code-review
+  reviewed_artifact: commit 930afd5 M5 implementation slice
   review_log: docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/review-log.md
   review_resolution: docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/review-resolution.md
 validation:
@@ -302,6 +303,14 @@ validation:
     result: pass_after_implement_m5_no_raw_jsonl_tracked
   - command: git ls-files '*.zip' '*.tar.gz' | rg 'rigorloop-adapter|rigorloop-adapters' || true
     result: pass_after_implement_m5_no_tracked_adapter_archives
+  - command: code-review-m5-r1
+    result: clean_with_notes_no_material_findings
+  - command: python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.2.yaml
+    result: pass_after_code_review_m5_r1
+  - command: python scripts/test-token-cost-report-validation.py
+    result: pass_after_code_review_m5_r1_16_tests
+  - command: git show --check 930afd5 -- docs/reports/token-cost docs/plans/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md docs/plan.md docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/change.yaml
+    result: pass_after_code_review_m5_r1
 changed_files:
   - docs/proposals/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md
   - specs/public-adapter-artifact-migration-examples-concise-skill-release.md
@@ -316,6 +325,7 @@ changed_files:
   - docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m2-r2.md
   - docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m3-r1.md
   - docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m4-r1.md
+  - docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m5-r1.md
   - docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/plan-review-r2.md
   - scripts/adapter_distribution.py
   - scripts/build-adapters.py
