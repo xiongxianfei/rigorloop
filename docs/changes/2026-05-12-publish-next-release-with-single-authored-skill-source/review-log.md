@@ -21,3 +21,14 @@ Detailed record: reviews/code-review-m2-r1.md
 Resolution: review-resolution.md#code-review-m2-r1
 Material findings: CR-M2-F1
 Open findings: none
+
+### Review entry
+
+Review ID: code-review-m2-r2
+Stage: code-review
+Round: 2
+Status: clean-with-notes
+Detailed record: reviews/code-review-m2-r2.md
+Resolution: review-resolution.md#code-review-m2-r2
+Material findings: none
+Open findings: none

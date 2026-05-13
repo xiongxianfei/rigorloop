@@ -116,6 +116,8 @@ validation:
     result: pass
   - command: python scripts/validate-release.py --version v0.1.1
     result: pass
+  - command: code-review m2 r2
+    result: clean-with-notes_no_material_findings
 changed_files:
   - docs/proposals/2026-05-12-publish-next-release-with-single-authored-skill-source.md
   - specs/publish-next-release-with-single-authored-skill-source.md
@@ -145,3 +147,4 @@ changed_files:
   - CONSTITUTION.md
   - docs/changes/2026-05-12-publish-next-release-with-single-authored-skill-source/reviews/code-review-m2-r1.md
   - docs/changes/2026-05-12-publish-next-release-with-single-authored-skill-source/review-resolution.md
+  - docs/changes/2026-05-12-publish-next-release-with-single-authored-skill-source/reviews/code-review-m2-r2.md
