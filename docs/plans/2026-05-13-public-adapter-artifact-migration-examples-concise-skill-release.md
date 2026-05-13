@@ -89,9 +89,9 @@ Current known implementation shape before work begins:
 - Last reviewed milestone: M5 code-review r1 found no material findings and closed M5.
 - Review status: proposal-review, spec-review, architecture-review, and plan-review are approved; plan-review r1 finding PR-001 is closed in review-resolution; M1 code-review r1 found no material findings; M2 code-review r2 found no material findings after PAAM-M2-CR1 resolution; M3 code-review r1 found no material findings; M4 code-review r1 found no material findings; M5 code-review r1 found no material findings.
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
+- Next stage: pr
 - Final closeout readiness: ready for final closeout sequence
-- Reason final closeout is or is not ready: M1-M5 are implemented and closed after code-review, explain-change is recorded, and no required review-resolution remains open. Final verify, PR handoff, and release-publication handoff remain pending. M6 is a tracked later-release gate and is not part of `v0.1.2` implementation closeout until the stable archive release has shipped and a plan revision makes untracking current.
+- Reason final closeout is or is not ready: M1-M5 are implemented and closed after code-review, explain-change and final verify are recorded, and no required review-resolution remains open. PR handoff and release-publication handoff remain pending. M6 is a tracked later-release gate and is not part of `v0.1.2` implementation closeout until the stable archive release has shipped and a plan revision makes untracking current.
 
 ## Milestones
 
@@ -432,7 +432,8 @@ Before PR handoff, run the M5 final validation pack plus any commands added by t
 - [x] M5 code-review closed.
 - [x] M5 final release-readiness evidence completed and reviewed.
 - [x] Final explain-change recorded.
-- [ ] Final verify and PR handoff completed.
+- [x] Final verify passed.
+- [ ] PR handoff completed.
 - [ ] `v0.1.2` release publication handoff completed or explicitly deferred.
 - [ ] M6 follow-up untracking plan or plan revision created after `v0.1.2` ships.
 
@@ -462,6 +463,7 @@ Before PR handoff, run the M5 final validation pack plus any commands added by t
 - 2026-05-13: M5 full local release verification passed with `RELEASE_COMMIT=5514ef14ce5f310787f464ea78bd777838cb5537`; release archives were generated in temporary output and were not tracked.
 - 2026-05-13: Code-review M5 R1 found no material findings and closed M5. Proceed to final closeout sequence starting with `explain-change`.
 - 2026-05-13: Final explain-change recorded at `docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/explain-change.md`; proceed to `verify`.
+- 2026-05-13: Final local verify passed and recorded `docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/verify-report.md`; proceed to `pr`.
 
 ## Surprises and discoveries
 
@@ -600,9 +602,27 @@ Before PR handoff, run the M5 final validation pack plus any commands added by t
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md --path specs/public-adapter-artifact-migration-examples-concise-skill-release.md --path specs/public-adapter-artifact-migration-examples-concise-skill-release.test.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md --path docs/plan.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/change.yaml --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/review-log.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/review-resolution.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/explain-change.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/proposal-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/spec-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/architecture-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/plan-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/plan-review-r2.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m1-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m2-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m2-r2.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m3-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m4-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m5-r1.md --path docs/changes/0001-skill-validator/README.md --path docs/reports/token-cost/releases/v0.1.2.md --path docs/reports/token-cost/releases/v0.1.2.yaml`
   - `git diff --check --`
 
+- Final verify passed:
+  - `python scripts/validate-skills.py`
+  - `python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.2.yaml`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release`
+  - `python scripts/test-adapter-distribution.py`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/test-token-cost-report-validation.py`
+  - `python scripts/build-adapters.py --version 0.1.1 --check`
+  - `python scripts/select-validation.py --mode explicit --path docs/reports/token-cost/releases/v0.1.2.md --path docs/reports/token-cost/releases/v0.1.2.yaml --path docs/reports/token-cost/runs/v0.1.2/workflow-route-run1.analysis.yaml --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/explain-change.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/change.yaml`
+  - `python scripts/test-token-cost-measurement.py`
+  - `python scripts/test-change-metadata-validator.py`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/change.yaml`
+  - `RELEASE_COMMIT=5514ef14ce5f310787f464ea78bd777838cb5537 bash scripts/release-verify.sh v0.1.2`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`
+  - `git diff --check --`
+  - `find docs/reports/token-cost/runs/v0.1.2 -name '*.jsonl' -print && git ls-files '*.zip' '*.tar.gz' | rg 'rigorloop-adapter|rigorloop-adapters' || true`
+  - Verify report: `docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/verify-report.md`
+
 ## Outcome and retrospective
 
-Not completed. M5 is closed after clean code-review and explain-change is recorded; final verify, PR handoff, and release-publication handoff remain pending.
+Not completed. M5 is closed after clean code-review, explain-change is recorded, and final local verify passed; PR handoff and release-publication handoff remain pending.
 
 ## Readiness
 
@@ -612,6 +632,6 @@ See `Current Handoff Summary`.
 
 - M1-M5 implementation, targeted validation, and code-review loops are closed.
 - Required review-resolution if code-review records material findings.
-- Verify and PR handoff.
+- PR handoff.
 - Explicit release handoff for publishing `v0.1.2` and attaching archives.
 - Later M6 follow-up after the stable archive release ships.

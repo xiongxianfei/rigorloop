@@ -29,6 +29,7 @@ tests:
   - M5 token-cost and final release-readiness evidence validation.
   - code-review-m5-r1
   - explain-change
+  - verify
 review:
   status: clean
   unresolved_items: 0
@@ -322,6 +323,38 @@ validation:
     result: pass_after_explain_change_validated_5_artifact_files
   - command: git diff --check --
     result: pass_after_explain_change
+  - command: verify
+    result: branch_ready_local_validation_passed
+  - command: python scripts/validate-skills.py
+    result: pass_after_verify_23_skills
+  - command: python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.2.yaml
+    result: pass_after_verify
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release
+    result: pass_after_verify_reviews_11_findings_2_log_entries_11_resolution_entries_2
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_after_verify_88_tests
+  - command: python scripts/test-skill-validator.py
+    result: pass_after_verify_73_tests
+  - command: python scripts/test-token-cost-report-validation.py
+    result: pass_after_verify_16_tests
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_after_verify
+  - command: python scripts/select-validation.py --mode explicit --path docs/reports/token-cost/releases/v0.1.2.md --path docs/reports/token-cost/releases/v0.1.2.yaml --path docs/reports/token-cost/runs/v0.1.2/workflow-route-run1.analysis.yaml --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/explain-change.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/change.yaml
+    result: pass_after_verify_selected_artifact_lifecycle_change_metadata_token_cost_checks_broad_smoke_not_required
+  - command: python scripts/test-token-cost-measurement.py
+    result: pass_after_verify_24_tests
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_after_verify_7_tests
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/change.yaml
+    result: pass_after_verify_valid_change_metadata
+  - command: RELEASE_COMMIT=5514ef14ce5f310787f464ea78bd777838cb5537 bash scripts/release-verify.sh v0.1.2
+    result: pass_after_verify
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md --path specs/public-adapter-artifact-migration-examples-concise-skill-release.md --path specs/public-adapter-artifact-migration-examples-concise-skill-release.test.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md --path docs/plan.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/change.yaml --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/review-log.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/review-resolution.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/explain-change.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/proposal-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/spec-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/architecture-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/plan-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/plan-review-r2.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m1-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m2-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m2-r2.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m3-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m4-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m5-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/verify-report.md --path docs/changes/0001-skill-validator/README.md --path docs/reports/token-cost/releases/v0.1.2.md --path docs/reports/token-cost/releases/v0.1.2.yaml
+    result: pass_after_verify_validated_5_artifact_files
+  - command: git diff --check --
+    result: pass_after_verify
+  - command: find docs/reports/token-cost/runs/v0.1.2 -name '*.jsonl' -print && git ls-files '*.zip' '*.tar.gz' | rg 'rigorloop-adapter|rigorloop-adapters' || true
+    result: pass_after_verify_no_raw_jsonl_or_tracked_adapter_archives
 changed_files:
   - docs/proposals/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md
   - specs/public-adapter-artifact-migration-examples-concise-skill-release.md
@@ -338,6 +371,7 @@ changed_files:
   - docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m4-r1.md
   - docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m5-r1.md
   - docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/explain-change.md
+  - docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/verify-report.md
   - docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/plan-review-r2.md
   - scripts/adapter_distribution.py
   - scripts/build-adapters.py
