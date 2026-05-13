@@ -72,13 +72,13 @@ Current known mismatch before implementation:
 ## Current Handoff Summary
 
 - Current milestone: M3. Release evidence and final validation pack
-- Current milestone state: review-requested
-- Last reviewed milestone: M2 code-review r2 clean-with-notes
-- Review status: M2 closed after CR-M2-F1 resolution; M1 closed
-- Remaining in-scope implementation milestones: M3 review-requested
-- Next stage: code-review M3
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 is implemented but not reviewed, final lifecycle closeout has not run, and PR handoff is not prepared.
+- Current milestone state: closed
+- Last reviewed milestone: M3 code-review r1 clean-with-notes
+- Review status: M1-M3 closed; no open material findings
+- Remaining in-scope implementation milestones: none
+- Next stage: final closeout, starting with `explain-change` unless a separate CI-maintenance trigger is identified
+- Final closeout readiness: ready for final closeout
+- Reason final closeout is or is not ready: all implementation milestones are implemented and reviewed; final explain-change, verify, and PR handoff have not run.
 
 ## Milestones
 
@@ -179,7 +179,7 @@ Current known mismatch before implementation:
 
 ### M3. Release evidence and final validation pack
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Prove `v0.1.1` release readiness with the updated gate, public adapter output, token-cost evidence, release notes, and lifecycle state.
 - Requirements: R1-R35
 - Files/components likely touched:
@@ -245,6 +245,8 @@ Current known mismatch before implementation:
   - `docs/reports/token-cost/releases/v0.1.1.yaml` and `.md` were unchanged; token-cost metadata validation passed and continues to use public adapter output for dynamic evidence.
   - `dist/adapters/manifest.yaml` and generated public adapter packages were unchanged; adapter drift and adapter validation passed.
   - No downloadable adapter archives or adapter artifact metadata were introduced for `v0.1.1`.
+- Review notes:
+  - code-review-m3-r1 closed M3 with no material findings after reviewing commit `0c90340` and rerunning the full `bash scripts/release-verify.sh v0.1.1` gate.
 - Risks:
   - Full release verification may expose stale adapter output or stale token-cost metadata.
   - Running the full release gate may depend on local tool availability for smoke-adjacent evidence.
@@ -291,7 +293,7 @@ Before PR handoff, run the M3 final validation pack plus any commands added by t
 - [x] Test-spec created.
 - [x] M1 implemented and reviewed clean.
 - [x] M2 implemented and ready for code-review.
-- [ ] M3 implemented and reviewed.
+- [x] M3 implemented and reviewed.
 - [ ] Final explain-change, verify, and PR handoff completed.
 
 ## Decision log
@@ -307,6 +309,7 @@ Before PR handoff, run the M3 final validation pack plus any commands added by t
 - 2026-05-13: M1 was committed as `4eb0521` and code-review r2 closed the milestone cleanly with no material findings.
 - 2026-05-13: M2 updates `CONSTITUTION.md` in addition to the planned docs because it carried higher-priority stale local Codex setup guidance that conflicted with the approved transition-release contract.
 - 2026-05-13: `docs/releases/v0.1.1/release.yaml` is intentionally unchanged in M2; the release metadata values remain valid and `python scripts/validate-release.py --version v0.1.1` passes after the release-note wording update.
+- 2026-05-13: M3 closed after code-review confirmed the final validation pack and full `bash scripts/release-verify.sh v0.1.1` gate pass without treating `.codex/skills/` generation as release evidence.
 
 ## Surprises and discoveries
 
@@ -364,7 +367,7 @@ Before PR handoff, run the M3 final validation pack plus any commands added by t
 
 ## Outcome and retrospective
 
-Not completed. M1 is closed; M2 implementation is ready for code-review; M3, final explain-change, verify, and PR handoff remain open.
+Not completed. M1-M3 are closed; final explain-change, verify, and PR handoff remain open.
 
 ## Readiness
 
@@ -372,8 +375,6 @@ See `Current Handoff Summary`.
 
 ## Remaining completion gates
 
-- M2 implementation, targeted validation, code-review, and review-resolution if triggered.
-- M3 implementation, targeted validation, code-review, and review-resolution if triggered.
 - Explain-change.
 - Verify.
 - PR handoff.
