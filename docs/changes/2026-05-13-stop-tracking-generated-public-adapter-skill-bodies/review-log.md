@@ -153,3 +153,17 @@ Resolution: review-resolution.md#code-review-m3-r2
 Material findings: None
 Open findings: None
 Recording status: recorded
+
+### Review entry
+Review ID: code-review-m4-r1
+Stage: code-review
+Round: 1
+Reviewed artifact: commit 167aa22a7a0b299b37cb0c8367d62d4bd5c20d01
+Reviewed milestone: M4. Release verification and lifecycle closeout
+Status: clean-with-notes
+Detailed record: reviews/code-review-m4-r1.md
+Record: reviews/code-review-m4-r1.md
+Resolution: review-resolution.md#code-review-m4-r1
+Material findings: None
+Open findings: None
+Recording status: recorded

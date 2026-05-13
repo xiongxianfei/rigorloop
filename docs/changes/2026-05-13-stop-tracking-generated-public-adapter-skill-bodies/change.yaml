@@ -123,6 +123,10 @@ validation:
     result: pass_lifecycle_explicit_paths
   - command: git diff --check --
     result: pass
+  - command: code-review-m4-r1
+    result: clean_with_notes_M4_closed
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies.md --path docs/plan.md --path docs/changes/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies/change.yaml
+    result: pass_lifecycle_state_sync_review_check
   - command: code-review-m2-r1
     result: clean_with_notes_M2_closed
   - command: code-review-m1-r2
@@ -162,6 +166,7 @@ changed_files:
   - docs/changes/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies/reviews/code-review-m2-r1.md
   - docs/changes/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies/reviews/code-review-m3-r1.md
   - docs/changes/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies/reviews/code-review-m3-r2.md
+  - docs/changes/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies/reviews/code-review-m4-r1.md
   - docs/changes/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies/reviews/plan-review-r1.md
   - docs/changes/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies/reviews/proposal-review-r1.md
   - docs/changes/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies/reviews/proposal-review-r2.md

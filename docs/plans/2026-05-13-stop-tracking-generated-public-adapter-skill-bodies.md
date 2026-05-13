@@ -97,14 +97,14 @@ The token-cost `--skill-source` value must point to generated public adapter rel
 
 ## Current Handoff Summary
 
-- Current milestone: M4. Release verification and lifecycle closeout
-- Current milestone state: review-requested
-- Last reviewed milestone: M3
-- Review status: M4 implementation complete; awaiting code-review
-- Remaining in-scope implementation milestones: M4
-- Next stage: code-review M4
+- Current milestone: final closeout
+- Current milestone state: ready-for-explain-change
+- Last reviewed milestone: M4
+- Review status: code-review-m4-r1 completed clean-with-notes; M4 is closed
+- Remaining in-scope implementation milestones: none
+- Next stage: explain-change
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M4 code-review is pending, explain-change and verify are missing, and PR/release handoff is not prepared.
+- Reason final closeout is or is not ready: all implementation milestones are closed, but explain-change, verify, PR handoff, and release publication are still pending.
 
 ## Milestones
 
@@ -249,7 +249,7 @@ The token-cost `--skill-source` value must point to generated public adapter rel
 
 ### M4. Release verification and lifecycle closeout
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Prove the full `v0.1.3` release gate locally and prepare downstream closeout without claiming publication prematurely.
 - Requirements: all acceptance criteria, especially R50-R51.
 - Files/components likely touched:
@@ -346,6 +346,9 @@ Review result: `code-review-m3-r2` completed clean-with-notes; M3 is closed and 
 - [x] M4 release verification closeout completed.
 
 Implementation result: `bash scripts/release-verify.sh v0.1.3` and planned lifecycle validation passed; M4 is ready for code-review.
+- [x] M4 code-review completed.
+
+Review result: `code-review-m4-r1` completed clean-with-notes; all implementation milestones are closed and final closeout starts with explain-change.
 - [ ] explain-change recorded.
 - [ ] verify passed.
 - [ ] PR handoff completed.
@@ -409,6 +412,7 @@ Implementation result: `bash scripts/release-verify.sh v0.1.3` and planned lifec
 - 2026-05-13: `python scripts/validate-change-metadata.py docs/changes/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies/change.yaml` passed.
 - 2026-05-13: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies.md --path specs/stop-tracking-generated-public-adapter-skill-bodies.md --path specs/stop-tracking-generated-public-adapter-skill-bodies.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260513-v0-1-3-adapter-release-archive-install-surface.md --path docs/plans/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies.md` passed.
 - 2026-05-13: `git diff --check --` passed.
+- 2026-05-13: `code-review-m4-r1` completed clean-with-notes. M4 is closed; all implementation milestones are closed; next stage is `explain-change`.
 - 2026-05-13: `python scripts/test-select-validation.py` passed: 59 tests.
 - 2026-05-13: `python scripts/select-validation.py --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path dist/adapters/README.md --path dist/adapters/manifest.yaml` passed with status `ok` and selected adapter, lifecycle, and selector checks.
 - 2026-05-13: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path AGENTS.md --path CONSTITUTION.md --path docs/workflows.md` passed.
@@ -425,7 +429,6 @@ Implementation result: `bash scripts/release-verify.sh v0.1.3` and planned lifec
 
 ## Remaining completion gates
 
-- implementation and code-review for M1-M4
 - review-resolution if material findings are raised
 - explain-change
 - verify

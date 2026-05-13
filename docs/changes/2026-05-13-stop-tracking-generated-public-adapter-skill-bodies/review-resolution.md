@@ -111,3 +111,11 @@ Review result: clean-with-notes.
 Material findings: none.
 
 Closeout: no review-resolution action required; M3 can close and hand off to M4.
+
+### code-review-m4-r1
+
+Review result: clean-with-notes.
+
+Material findings: none.
+
+Closeout: no review-resolution action required; all implementation milestones are closed and final closeout can start with explain-change.
