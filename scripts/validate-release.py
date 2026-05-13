@@ -70,7 +70,7 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     changed_paths = merge_changed_paths(args.changed_path, args.changed_paths_file)
-    changed_paths_arg = changed_paths if args.changed_path or args.changed_paths_file else None
+    changed_paths_arg = changed_paths if args.changed_path or args.changed_paths_file else ()
     errors = validate_release_output(args.version, changed_paths=changed_paths_arg)
     if errors:
         for error in errors:
