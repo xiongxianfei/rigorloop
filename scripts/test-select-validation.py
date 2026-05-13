@@ -538,6 +538,12 @@ raise SystemExit({exit_code})
                 "checks": {"adapters.regression"},
             },
             {
+                "path": ".github/workflows/release.yml",
+                "category": "release-script",
+                "status": "ok",
+                "checks": {"adapters.regression"},
+            },
+            {
                 "path": "scripts/ci.sh",
                 "category": "ci-wrapper",
                 "status": "ok",
