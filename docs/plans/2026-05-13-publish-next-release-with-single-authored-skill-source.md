@@ -72,13 +72,13 @@ Current known mismatch before implementation:
 ## Current Handoff Summary
 
 - Current milestone: final closeout
-- Current milestone state: verify complete; PR handoff pending
+- Current milestone state: PR handoff prepared
 - Last reviewed milestone: M3 code-review r1 clean-with-notes
 - Review status: M1-M3 closed; no open material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
+- Next stage: open PR and observe hosted CI
 - Final closeout readiness: in progress
-- Reason final closeout is or is not ready: explain-change is recorded and final verify passed; PR handoff has not run.
+- Reason final closeout is or is not ready: explain-change is recorded, final verify passed, and PR handoff is prepared; hosted CI and review have not run.
 
 ## Milestones
 
@@ -312,6 +312,7 @@ Before PR handoff, run the M3 final validation pack plus any commands added by t
 - 2026-05-13: M3 closed after code-review confirmed the final validation pack and full `bash scripts/release-verify.sh v0.1.1` gate pass without treating `.codex/skills/` generation as release evidence.
 - 2026-05-13: Final explain-change was recorded as change-local rationale; verify remains the next gate.
 - 2026-05-13: Final verify passed with branch-ready evidence. No standalone `verify-report.md` was added because verification evidence is automated and recorded concisely in this plan, `change.yaml`, and `explain-change.md`.
+- 2026-05-13: PR handoff prepared after branch-ready verification; hosted CI remains pending until the PR opens.
 
 ## Surprises and discoveries
 
@@ -388,7 +389,7 @@ Before PR handoff, run the M3 final validation pack plus any commands added by t
 
 ## Outcome and retrospective
 
-Not completed. M1-M3 are closed, explain-change is recorded, and final verify passed; PR handoff remains open.
+Not completed. M1-M3 are closed, explain-change is recorded, final verify passed, and PR handoff is prepared; hosted CI and review remain open.
 
 ## Readiness
 
