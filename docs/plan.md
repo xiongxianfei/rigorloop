@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-13 Project artifact location guide and examples surface](plans/2026-05-13-project-artifact-location-guide-and-examples-surface.md) - active execution plan for adding the project artifact-location map, token-efficient stage-skill lookup wording, examples/fixture routing proof, generated skill refresh, per-milestone code-review handoffs, and final lifecycle closeout.
+- [2026-05-13 Project artifact location guide and examples surface](plans/2026-05-13-project-artifact-location-guide-and-examples-surface.md) - active execution plan with M1-M4 closed, explain-change recorded, local final verify passed, and PR handoff pending.
 - [2026-05-12 Record every formal review](plans/2026-05-12-record-every-formal-review.md) - active execution plan with M1-M5 closed, local final verify passed, PR #48 open, and hosted CI pending.
 - [2026-05-10 Token cost measurement baseline and proposal scope preservation](plans/2026-05-10-token-cost-measurement-baseline-and-proposal-scope-preservation.md) - active execution plan with M1-M5 closed, PR #40 open, and local PR-mode CI selector fix passed; hosted CI rerun is pending.
 
