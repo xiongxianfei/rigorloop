@@ -2526,6 +2526,94 @@ and result format.
                 with self.subTest(skill=skill_name, term=term):
                     self.assertNotIn(term, body)
 
+    def test_follow_up_ownership_m1_workflows_doc_contains_policy_table(self) -> None:
+        workflows = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
+        follow_up = extract_markdown_block(workflows, "Follow-up ownership")
+
+        required_terms = [
+            "Record follow-ups where they can be acted on.",
+            "| Follow-up type | Owner |",
+            "Active implementation follow-up",
+            "active plan",
+            "Review finding follow-up",
+            "`review-resolution.md`",
+            "Change closeout follow-up",
+            "`explain-change.md` or `change.yaml`",
+            "Release follow-up",
+            "release report or release plan",
+            "Repeated lesson",
+            "`learn`",
+            "Architecture risk or open question",
+            "`project-map` risk/open-question note",
+            "Unowned cross-change future work",
+            "`docs/follow-ups.md`, only when needed",
+            "New direction or policy change",
+            "`proposal`",
+            "`project-map` may identify risks and open questions, but it does not own deferred execution.",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, follow_up)
+
+    def test_follow_up_ownership_m1_workflow_skill_routes_concisely(self) -> None:
+        workflow = (ROOT / "skills" / "workflow" / "SKILL.md").read_text(encoding="utf-8")
+
+        required_terms = [
+            "## Follow-up routing",
+            "Route future work to the artifact that can act on it.",
+            "according to `docs/workflows.md`",
+            "Do not put deferred execution work in `project-map`.",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, workflow)
+
+        forbidden_terms = [
+            "| Follow-up type | Owner |",
+            "Active implementation follow-up",
+            "Architecture risk or open question",
+        ]
+        for term in forbidden_terms:
+            with self.subTest(term=term):
+                self.assertNotIn(term, workflow)
+
+    def test_follow_up_ownership_m1_project_map_skill_boundary(self) -> None:
+        project_map = (ROOT / "skills" / "project-map" / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+
+        required_terms = [
+            "## Follow-up boundary",
+            "`project-map` may record risks and open questions for orientation.",
+            "It does not own deferred execution or act as a backlog.",
+            "route it to `proposal`, `plan`, `learn`, review-resolution, release evidence, or `docs/follow-ups.md` through the workflow guide.",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, project_map)
+
+        forbidden_terms = [
+            "| Follow-up type | Owner |",
+            "Active implementation follow-up",
+            "Review finding follow-up",
+        ]
+        for term in forbidden_terms:
+            with self.subTest(term=term):
+                self.assertNotIn(term, project_map)
+
+    def test_follow_up_ownership_m1_no_empty_register_or_shared_block(self) -> None:
+        self.assertFalse(
+            (ROOT / "docs" / "follow-ups.md").exists(),
+            "docs/follow-ups.md must not be created without a qualifying follow-up",
+        )
+
+        follow_up_shared_blocks = [
+            path
+            for path in (ROOT / "templates" / "shared").glob("*")
+            if "follow" in path.name.lower()
+        ]
+        self.assertEqual([], follow_up_shared_blocks)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
