@@ -67,19 +67,19 @@ Validation and generated-output context:
 ## Current Handoff Summary
 
 - Current milestone: M1
-- Current milestone state: review-requested
-- Last reviewed milestone: none
-- Review status: M1 code-review pending
-- Remaining in-scope implementation milestones: M1 pending code-review, M2
-- Next stage: code-review M1
+- Current milestone state: closed
+- Last reviewed milestone: M1
+- Review status: M1 clean-with-notes
+- Remaining in-scope implementation milestones: M2
+- Next stage: implement M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 code-review, M2, final code-review closeout, explain-change, verify, and PR handoff have not completed.
+- Reason final closeout is or is not ready: M2, final code-review closeout, explain-change, verify, and PR handoff have not completed.
 
 ## Milestones
 
 ### M1. Follow-up ownership guidance and concise skill boundaries
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Add the durable follow-up ownership rule to `docs/workflows.md` and concise operational wording to `workflow` and `project-map`.
 - Requirements: `R1`-`R6c`, `R10`-`R11f`, `R13`-`R13a`
 - Files/components likely touched:
@@ -218,6 +218,7 @@ Final verification before PR should include:
 - 2026-05-13: plan-review approved with no material findings; test spec created, active, and maintainer-approved; ready for implement M1.
 - 2026-05-13: M1 implementation started; static validator tests were added first and failed against the missing workflow and skill wording as expected.
 - 2026-05-13: M1 implementation completed: `docs/workflows.md` now owns the follow-up ownership table, `workflow` and `project-map` contain concise operational wording, and no `docs/follow-ups.md` or follow-up shared template was created.
+- 2026-05-13: M1 code-review passed with `clean-with-notes`; M1 is closed and M2 is the next implementation milestone.
 
 ## Decision log
 
