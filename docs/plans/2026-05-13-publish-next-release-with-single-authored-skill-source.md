@@ -72,13 +72,13 @@ Current known mismatch before implementation:
 ## Current Handoff Summary
 
 - Current milestone: final closeout
-- Current milestone state: explain-change complete; verify pending
+- Current milestone state: verify complete; PR handoff pending
 - Last reviewed milestone: M3 code-review r1 clean-with-notes
 - Review status: M1-M3 closed; no open material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
+- Next stage: pr
 - Final closeout readiness: in progress
-- Reason final closeout is or is not ready: explain-change is recorded; final verify and PR handoff have not run.
+- Reason final closeout is or is not ready: explain-change is recorded and final verify passed; PR handoff has not run.
 
 ## Milestones
 
@@ -311,6 +311,7 @@ Before PR handoff, run the M3 final validation pack plus any commands added by t
 - 2026-05-13: `docs/releases/v0.1.1/release.yaml` is intentionally unchanged in M2; the release metadata values remain valid and `python scripts/validate-release.py --version v0.1.1` passes after the release-note wording update.
 - 2026-05-13: M3 closed after code-review confirmed the final validation pack and full `bash scripts/release-verify.sh v0.1.1` gate pass without treating `.codex/skills/` generation as release evidence.
 - 2026-05-13: Final explain-change was recorded as change-local rationale; verify remains the next gate.
+- 2026-05-13: Final verify passed with branch-ready evidence. No standalone `verify-report.md` was added because verification evidence is automated and recorded concisely in this plan, `change.yaml`, and `explain-change.md`.
 
 ## Surprises and discoveries
 
@@ -366,9 +367,28 @@ Before PR handoff, run the M3 final validation pack plus any commands added by t
   - `docs/releases/v0.1.1/release.yaml` remains unchanged because M2 changed release-note prose and docs assertions only; structured validation still passes.
   - Generated public adapter skill bodies under `dist/adapters/**/skills` remain unchanged because M2 changed install guidance and release notes only.
 
+- Final verify validation passed:
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/test-adapter-distribution.py`
+  - `python scripts/build-adapters.py --version 0.1.1 --check`
+  - `python scripts/validate-adapters.py --version 0.1.1`
+  - `python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml`
+  - `python scripts/validate-release.py --version v0.1.1`
+  - `python scripts/validate-review-artifacts.py docs/changes/2026-05-12-publish-next-release-with-single-authored-skill-source/`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-12-publish-next-release-with-single-authored-skill-source`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-12-publish-next-release-with-single-authored-skill-source/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`
+  - `git ls-files -- .codex/skills/`
+  - `git check-ignore -v .codex/skills/proposal/SKILL.md`
+  - stale `.codex/skills` wording scan over README, workflow docs, governance docs, release notes, and adapter README
+  - `git diff --check --`
+  - `bash scripts/release-verify.sh v0.1.1`
+  - `bash scripts/ci.sh --mode pr --base 2df914c20bca7707aff3e3f4872d6e4858dc2c01 --head HEAD --timeout 180`
+
 ## Outcome and retrospective
 
-Not completed. M1-M3 are closed and explain-change is recorded; final verify and PR handoff remain open.
+Not completed. M1-M3 are closed, explain-change is recorded, and final verify passed; PR handoff remains open.
 
 ## Readiness
 
@@ -377,6 +397,5 @@ See `Current Handoff Summary`.
 ## Remaining completion gates
 
 - Explain-change.
-- Verify.
 - PR handoff.
 - Public release publication remains outside this plan.
