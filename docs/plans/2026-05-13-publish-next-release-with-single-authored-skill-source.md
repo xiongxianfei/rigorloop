@@ -72,13 +72,13 @@ Current known mismatch before implementation:
 ## Current Handoff Summary
 
 - Current milestone: M2. Release docs and adapter install guidance describe the transition
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M1 code-review r2 clean-with-notes
-- Review status: M1 closed; code-review r2 recorded clean-with-notes with no material findings
-- Remaining in-scope implementation milestones: M2 planned, M3 planned
-- Next stage: implement M2
+- Review status: M2 implementation ready for code-review; M1 closed
+- Remaining in-scope implementation milestones: M2 review-requested, M3 planned
+- Next stage: code-review M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2-M3 are not implemented or reviewed, final validation has not run, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M2 is implemented but not reviewed, M3 is not implemented or reviewed, final validation has not run, and PR handoff is not prepared.
 
 ## Milestones
 
@@ -130,7 +130,7 @@ Current known mismatch before implementation:
 
 ### M2. Release docs and adapter install guidance describe the transition
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Make public and contributor-facing docs match the transition release contract.
 - Requirements: R1-R6, R20-R31
 - Files/components likely touched:
@@ -138,6 +138,7 @@ Current known mismatch before implementation:
   - `docs/releases/v0.1.1/release-notes.md`
   - `docs/releases/v0.1.1/release.yaml`
   - `README.md`, `docs/workflows.md`, or `AGENTS.md` only if existing contributor guidance conflicts with the approved spec
+  - `CONSTITUTION.md` if governance guidance conflicts with the approved spec
   - `scripts/test-adapter-distribution.py`
 - Dependencies:
   - M1 release-gate contract should be settled so docs can name the right verification behavior.
@@ -160,10 +161,10 @@ Current known mismatch before implementation:
 - Expected observable result: Adapter docs and release notes state `dist/adapters/` remains the `v0.1.1` public install path, archives are not required, and `.codex/skills/` is ignored local runtime state rather than release evidence.
 - Commit message: `M2: document transition release adapter install path`
 - Milestone closeout:
-  - [ ] validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
+  - [x] validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
   - [ ] milestone committed
 - Risks:
   - Docs could overstate archive availability.
@@ -264,7 +265,7 @@ Before PR handoff, run the M3 final validation pack plus any commands added by t
 - [x] Plan-review completed.
 - [x] Test-spec created.
 - [x] M1 implemented and reviewed clean.
-- [ ] M2 implemented and reviewed.
+- [x] M2 implemented and ready for code-review.
 - [ ] M3 implemented and reviewed.
 - [ ] Final explain-change, verify, and PR handoff completed.
 
@@ -279,6 +280,8 @@ Before PR handoff, run the M3 final validation pack plus any commands added by t
 - 2026-05-13: `validate-release.py` treats a no-argument CLI invocation as an explicit empty changed-surface context, while direct helper callers still must pass changed-surface context for final `skill-token-runtime-v2` release validation.
 - 2026-05-13: M1 code-review r1 did not close the milestone because the governing artifacts and change-local records are still untracked in the local worktree.
 - 2026-05-13: M1 was committed as `4eb0521` and code-review r2 closed the milestone cleanly with no material findings.
+- 2026-05-13: M2 updates `CONSTITUTION.md` in addition to the planned docs because it carried higher-priority stale local Codex setup guidance that conflicted with the approved transition-release contract.
+- 2026-05-13: `docs/releases/v0.1.1/release.yaml` is intentionally unchanged in M2; the release metadata values remain valid and `python scripts/validate-release.py --version v0.1.1` passes after the release-note wording update.
 
 ## Surprises and discoveries
 
@@ -286,6 +289,7 @@ Before PR handoff, run the M3 final validation pack plus any commands added by t
 - `scripts/build-skills.py --check` already uses temporary output, but `scripts/release-verify.sh` still treats it as required release evidence for `v0.1.1`, which is the main release-gate mismatch this plan addresses.
 - `dist/adapters/README.md` already contains most transition guidance but needs `v0.1.1`-specific wording and archive-scope clarification.
 - `python scripts/validate-release.py --version v0.1.1` initially failed without changed-path arguments because the CLI passed missing changed-surface context through to the structured validator; the CLI now supplies an explicit empty context for maintainer-facing release validation.
+- M2 tests exposed stale local Codex setup wording in README, workflow guidance, AGENTS, and CONSTITUTION; all now point local Codex use through public Codex adapter output.
 
 ## Validation notes
 
@@ -323,9 +327,19 @@ Before PR handoff, run the M3 final validation pack plus any commands added by t
     - `git ls-files -- .codex/skills/`
     - `git check-ignore -v .codex/skills/proposal/SKILL.md`
 
+- M2 targeted validation passed:
+  - `python scripts/test-adapter-distribution.py`
+  - `python scripts/validate-release.py --version v0.1.1`
+  - `python scripts/validate-adapters.py --version 0.1.1`
+  - `git diff --check -- dist/adapters/README.md docs/releases/v0.1.1/release-notes.md docs/releases/v0.1.1/release.yaml README.md docs/workflows.md AGENTS.md CONSTITUTION.md scripts/test-adapter-distribution.py scripts/adapter_distribution.py`
+
+- M2 unaffected with rationale:
+  - `docs/releases/v0.1.1/release.yaml` remains unchanged because M2 changed release-note prose and docs assertions only; structured validation still passes.
+  - Generated public adapter skill bodies under `dist/adapters/**/skills` remain unchanged because M2 changed install guidance and release notes only.
+
 ## Outcome and retrospective
 
-Not completed. M1 is closed; M2, M3, final explain-change, verify, and PR handoff remain open.
+Not completed. M1 is closed; M2 implementation is ready for code-review; M3, final explain-change, verify, and PR handoff remain open.
 
 ## Readiness
 

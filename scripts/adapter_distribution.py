@@ -1782,6 +1782,16 @@ def _release_notes_consistency_errors(
         )
     if "dist/adapters/" not in notes_text:
         errors.append("release notes must describe generated adapter packages under dist/adapters/")
+    if version == "v0.1.1":
+        stale_codex_evidence = (
+            "generated `.codex/skills/`" in notes_text
+            or "checks `.codex/skills/` generation" in notes_text
+            or "checks generated .codex/skills/" in notes_text.lower()
+        )
+        if stale_codex_evidence:
+            errors.append("v0.1.1 release notes must not describe .codex/skills generation as release evidence")
+        if "does not require `.codex/skills/` generation as release evidence" not in notes_text:
+            errors.append("v0.1.1 release notes must state that .codex/skills generation is not release evidence")
 
     non_portable = sorted(name for name, entry in manifest.skills.items() if not entry.portable)
     if non_portable:

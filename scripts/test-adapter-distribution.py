@@ -185,6 +185,13 @@ class AdapterDistributionTests(unittest.TestCase):
                 '```text',
                 'opencode run --command proposal "Draft a proposal for the requested change."',
                 '```',
+                "",
+                "## Transition Release Boundaries",
+                "",
+                "`skills/` is the canonical authored skill source.",
+                "`dist/adapters/` remains the public adapter install path for `v0.1.1`.",
+                "The release gate does not require `.codex/skills/` generation as release evidence.",
+                "No downloadable adapter archives are introduced in this release.",
             ]
         )
 
@@ -2361,9 +2368,43 @@ release_gate:
         self.assertIn("`dist/adapters/manifest.yaml`", text)
         self.assertIn("support matrix", text)
         self.assertIn("repository-tree install", text)
+        self.assertIn("For `v0.1.1`", text)
+        self.assertIn("public adapter install path", text)
+        self.assertIn("No downloadable adapter archives are required for `v0.1.1`", text)
+        self.assertIn("`docs/reports/adapter-artifacts/releases/<version>.yaml`", text)
         self.assertIn("release assets", text)
         self.assertIn("`.codex/skills/`", text)
+        self.assertIn("ignored local runtime install directory", text)
         self.assertIn("not a public adapter install source", text)
+
+    def test_v0_1_1_release_notes_document_transition_contract(self) -> None:
+        text = (ROOT / "docs" / "releases" / "v0.1.1" / "release-notes.md").read_text(
+            encoding="utf-8"
+        )
+
+        self.assertIn("`skills/` is the canonical authored skill source", text)
+        self.assertIn("`dist/adapters/` remains the public adapter install path", text)
+        self.assertIn("does not require `.codex/skills/` generation as release evidence", text)
+        self.assertIn("No downloadable adapter archives are introduced in this release", text)
+        self.assertNotIn("checks canonical skills, generated `.codex/skills/`", text)
+
+    def test_contributor_docs_install_local_codex_from_public_adapter(self) -> None:
+        docs = {
+            "README.md": (ROOT / "README.md").read_text(encoding="utf-8"),
+            "docs/workflows.md": (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8"),
+            "AGENTS.md": (ROOT / "AGENTS.md").read_text(encoding="utf-8"),
+            "CONSTITUTION.md": (ROOT / "CONSTITUTION.md").read_text(encoding="utf-8"),
+        }
+
+        for path, text in docs.items():
+            with self.subTest(path=path):
+                self.assertIn("public Codex adapter output", text)
+                self.assertIn("`.codex/skills/`", text)
+                self.assertIn("untracked", text)
+                self.assertNotIn(
+                    "Regenerate it with `python scripts/build-skills.py` when needed.",
+                    text,
+                )
 
     def test_adapter_manifest_remains_metadata_only(self) -> None:
         manifest_path = ROOT / "dist" / "adapters" / "manifest.yaml"
