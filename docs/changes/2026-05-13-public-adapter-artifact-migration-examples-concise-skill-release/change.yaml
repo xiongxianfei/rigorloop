@@ -21,10 +21,11 @@ tests:
   - active test specification creation before implementation.
   - code-review-m1-r1
   - M2 adapter artifact metadata schema and checksum validation.
+  - code-review-m2-r2
 review:
   status: clean
   unresolved_items: 0
-  reviewed_artifact: PAAM-M2-CR1 resolution pending rerun code-review
+  reviewed_artifact: commit 2c51445 M2 PAAM-M2-CR1 resolution
   review_log: docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/review-log.md
   review_resolution: docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/review-resolution.md
 validation:
@@ -206,6 +207,8 @@ validation:
     result: pass_after_PAAM-M2-CR1_resolution
   - command: git diff --check --
     result: pass_after_PAAM-M2-CR1_resolution
+  - command: code-review-m2-r2
+    result: clean_with_notes_no_material_findings
 changed_files:
   - docs/proposals/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md
   - specs/public-adapter-artifact-migration-examples-concise-skill-release.md
@@ -217,6 +220,7 @@ changed_files:
   - docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/review-log.md
   - docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m1-r1.md
   - docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m2-r1.md
+  - docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m2-r2.md
   - docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/plan-review-r2.md
   - scripts/adapter_distribution.py
   - scripts/build-adapters.py

@@ -62,3 +62,7 @@ Required outcome: Release validation must reject adapter artifact metadata whose
 Safe resolution: Add direct validation for `release.source_commit` against the release commit input used by validation, add a negative regression test for source-commit mismatch, and either update the metadata to the accepted source commit model or record an approved policy exception if the metadata intentionally points to a pre-metadata archive source commit.
 Validation target: Source-commit mismatch regression fails before the fix, passes after the fix, and `python scripts/validate-release.py --version v0.1.2 --release-output-dir <release-output-dir> --release-commit <source-commit>` rejects mismatched source commits.
 Validation evidence: `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_artifact_metadata_validation_accepts_schema_and_optional_combined AdapterDistributionTests.test_adapter_artifact_metadata_validation_rejects_bad_results_checksums_and_source_commit_mismatch AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata AdapterDistributionTests.test_validate_release_cli_passes_changed_surface_inputs AdapterDistributionTests.test_release_verify_script_supports_v0_1_2_archive_metadata_gate` initially failed before CLI and release-gate plumbing, then passed after the fix.
+
+### code-review-m2-r2
+
+No material findings.
