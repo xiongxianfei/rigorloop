@@ -255,6 +255,51 @@ class AdapterDistributionTests(unittest.TestCase):
             ]
         )
 
+    def v0_1_3_notes_extra(self) -> str:
+        return "\n".join(
+            [
+                "## Adapter Archives",
+                "",
+                "`v0.1.3` retires tracked repository-tree generated public adapter skill bodies.",
+                "Generated public adapter skill bodies are no longer tracked source.",
+                "Release archives are the active public adapter install path for `v0.1.3` and later.",
+                "Use `dist/adapters/README.md` for active public adapter installation guidance.",
+                "",
+                "- `rigorloop-adapter-codex-v0.1.3.zip` installs to `.agents/skills/`.",
+                "- `rigorloop-adapter-claude-v0.1.3.zip` installs to `.claude/skills/`.",
+                "- `rigorloop-adapter-opencode-v0.1.3.zip` installs to `.opencode/skills/`.",
+                "",
+                "Checksums and adapter artifact metadata are recorded in `docs/reports/adapter-artifacts/releases/v0.1.3.yaml`.",
+                "",
+                "The repository-owned release gate is `bash scripts/release-verify.sh v0.1.3`.",
+            ]
+        )
+
+    def write_v0_1_3_adapter_support_surface(self, output_root: Path) -> None:
+        sync_adapter_output("v0.1.3", output_root=output_root)
+        for adapter in SUPPORTED_ADAPTERS:
+            shutil.rmtree(output_root / adapter)
+        (output_root / "README.md").write_text(
+            "\n".join(
+                [
+                    "# Adapter installation",
+                    "",
+                    "`skills/` is the canonical authored source.",
+                    "`dist/adapters/manifest.yaml` is the tracked adapter support matrix.",
+                    "For `v0.1.3` and later, public adapter installation uses GitHub release archives.",
+                    "Generated public adapter skill bodies are not tracked source after `v0.1.3`.",
+                    "",
+                    "- `rigorloop-adapter-codex-v0.1.3.zip` installs to `.agents/skills/`.",
+                    "- `rigorloop-adapter-claude-v0.1.3.zip` installs to `.claude/skills/`.",
+                    "- `rigorloop-adapter-opencode-v0.1.3.zip` installs to `.opencode/skills/`.",
+                    "",
+                    "Checksums and metadata are recorded under `docs/reports/adapter-artifacts/releases/`.",
+                    "",
+                ]
+            ),
+            encoding="utf-8",
+        )
+
     def write_adapter_artifact_metadata(
         self,
         root: Path,
@@ -730,6 +775,94 @@ release_gate:
             )
 
             self.assertTrue(any("missing adapter artifact metadata" in error for error in errors), errors)
+
+    def test_v0_1_3_release_validation_uses_release_output_not_tracked_adapter_tree(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            output_root = root / "dist" / "adapters"
+            self.write_v0_1_3_adapter_support_surface(output_root)
+            release_output_dir = root / "release-output"
+            build_adapter_archives("v0.1.3", release_output_dir)
+            adapter_artifact_root = self.write_adapter_artifact_metadata(
+                root,
+                release_output_dir,
+                version="v0.1.3",
+            ).parent
+            release_root = root / "docs" / "releases"
+            self.write_release_artifacts(
+                root,
+                version="v0.1.3",
+                release_type="final",
+                manifest_version="v0.1.3",
+                smoke_overrides=self.v0_1_1_smoke_overrides(),
+                validation_overrides={
+                    "adapter_archives": "pass",
+                    "adapter_artifact_metadata": "pass",
+                },
+                notes_extra=self.v0_1_3_notes_extra(),
+            )
+
+            errors = validate_release_output(
+                "v0.1.3",
+                output_root=output_root,
+                release_root=release_root,
+                release_output_dir=release_output_dir,
+                adapter_artifact_report_root=adapter_artifact_root,
+                release_commit="0123456789abcdef0123456789abcdef01234567",
+                tracked_files=(
+                    "dist/adapters/README.md",
+                    "dist/adapters/manifest.yaml",
+                ),
+            )
+
+            self.assertEqual([], errors)
+
+    def test_v0_1_3_release_validation_rejects_tracked_adapter_package_fragments(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            output_root = root / "dist" / "adapters"
+            self.write_v0_1_3_adapter_support_surface(output_root)
+            release_output_dir = root / "release-output"
+            build_adapter_archives("v0.1.3", release_output_dir)
+            adapter_artifact_root = self.write_adapter_artifact_metadata(
+                root,
+                release_output_dir,
+                version="v0.1.3",
+            ).parent
+            release_root = root / "docs" / "releases"
+            self.write_release_artifacts(
+                root,
+                version="v0.1.3",
+                release_type="final",
+                manifest_version="v0.1.3",
+                smoke_overrides=self.v0_1_1_smoke_overrides(),
+                validation_overrides={
+                    "adapter_archives": "pass",
+                    "adapter_artifact_metadata": "pass",
+                },
+                notes_extra=self.v0_1_3_notes_extra(),
+            )
+
+            errors = validate_release_output(
+                "v0.1.3",
+                output_root=output_root,
+                release_root=release_root,
+                release_output_dir=release_output_dir,
+                adapter_artifact_report_root=adapter_artifact_root,
+                release_commit="0123456789abcdef0123456789abcdef01234567",
+                tracked_files=(
+                    "dist/adapters/README.md",
+                    "dist/adapters/manifest.yaml",
+                    "dist/adapters/codex/AGENTS.md",
+                    "dist/adapters/codex/.agents/skills/proposal/SKILL.md",
+                    "dist/adapters/opencode/.opencode/commands/proposal.md",
+                ),
+            )
+
+            self.assertTrue(
+                any("tracked adapter package fragments are retired for v0.1.3" in error for error in errors),
+                errors,
+            )
 
     def test_portable_skill_includes_all_adapters(self) -> None:
         report = evaluate_skill(self.fixture("portable-basic"))

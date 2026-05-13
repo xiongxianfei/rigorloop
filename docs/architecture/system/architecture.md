@@ -34,6 +34,10 @@
 - Public Adapter Artifact Migration proposal: `docs/proposals/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md`
 - Public Adapter Artifact Migration spec: `specs/public-adapter-artifact-migration-examples-concise-skill-release.md`
 - Public Adapter Artifact Migration change metadata: `docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/change.yaml`
+- Stop Tracking Generated Public Adapter Skill Bodies proposal: `docs/proposals/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies.md`
+- Stop Tracking Generated Public Adapter Skill Bodies spec: `specs/stop-tracking-generated-public-adapter-skill-bodies.md`
+- Stop Tracking Generated Public Adapter Skill Bodies change metadata: `docs/changes/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies/change.yaml`
+- v0.1.3 adapter release archive install ADR: `docs/adr/ADR-20260513-v0-1-3-adapter-release-archive-install-surface.md`
 - Record Every Formal Review proposal: `docs/proposals/2026-05-12-record-every-formal-review.md`
 - Formal Review Recording spec: `specs/formal-review-recording.md`
 - Record Every Formal Review change metadata: `docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml`
@@ -76,6 +80,8 @@ The goals are:
 - The `v0.1.1` transition release validates canonical `skills/`, tracked public adapter output under `dist/adapters/`, release notes, adapter install guidance, and token-cost metadata; it does not build or validate `.codex/skills/` as release evidence.
 - The `v0.1.2` archive-introduction release publishes per-adapter release archives for Codex, Claude Code, and opencode while keeping tracked public adapter skill bodies available for the stable compatibility window.
 - The first public adapter untracking release occurs only after at least one stable release has shipped downloadable adapter archives and release-archive install documentation, unless an approved compatibility-window exception explicitly says otherwise.
+- For `v0.1.3` and later, release archives are the active public adapter install surface. Generated adapter skill bodies, generated adapter instruction entrypoints, and generated opencode command wrappers are release or temporary output, not tracked package fragments under `dist/adapters/<adapter>/`.
+- After the `v0.1.3` adapter untracking migration, the tracked default adapter support surface under `dist/adapters/` is limited to `README.md` and `manifest.yaml` unless a later approved spec explicitly names more tracked metadata or templates.
 - `docs/releases/<version>/release.yaml` and `docs/releases/<version>/release-notes.md` are authored release evidence, not generated release-note substitutes.
 - First implementation remains review-based for architecture package completeness; required package-shape, C4-file, and ADR-presence enforcement automation is deferred.
 - Top-level legacy documents under `docs/architecture/*.md` are archived historical artifacts after accepted current content has been merged into this canonical package.
@@ -128,7 +134,7 @@ The repository system is composed of authored guidance, lifecycle artifacts, val
 | Templates and diagram styles | Canonical scaffolding for architecture, ADRs, and shared Mermaid C4 role styling | Markdown/Mermaid under `templates/` |
 | Canonical skills and adapter templates | Source instructions for workflow stages and thin adapter entrypoints | Markdown in `skills/`, templates in `scripts/adapter_templates/` |
 | Validation and generation scripts | Select checks, validate artifacts, refresh generated output, and prove drift status | Python and shell under `scripts/` |
-| Generated runtime state and adapters | Derived local Codex runtime state and public adapter packages for supported agent tools; local runtime state and public adapter skill bodies are not authored sources | Ignored local files under `.codex/skills/`, tracked public adapter output and metadata under `dist/adapters/`, and release asset archives |
+| Generated runtime state and adapters | Derived local Codex runtime state and public adapter packages for supported agent tools; local runtime state and public adapter packages are generated from canonical sources and are not authored sources | Ignored local files under `.codex/skills/`, tracked adapter support metadata under `dist/adapters/`, generated temporary or release-output package directories, and release asset archives |
 | Release evidence | Authored release contract, notes, adapter artifact metadata, checksums, and maintainer smoke evidence | YAML/Markdown under `docs/releases/<version>/` and `docs/reports/adapter-artifacts/releases/` |
 | Legacy architecture archive | Historical architecture records retained after accepted current content is merged here | Archived Markdown under `docs/architecture/*.md` |
 
@@ -139,7 +145,7 @@ The validation and generation container has four important internal responsibili
 - selector and CI wrapper: `scripts/validation_selection.py`, `scripts/select-validation.py`, and `scripts/ci.sh` classify paths, select stable check IDs, and run repository-owned proof commands;
 - lifecycle and change validators: `scripts/validate-artifact-lifecycle.py`, `scripts/validate-change-metadata.py`, and `scripts/validate-review-artifacts.py` validate artifact status, change metadata, and material review closeout structure;
 - skill and adapter generation: `scripts/build-skills.py`, `scripts/build-adapters.py`, and adapter distribution helpers generate local runtime state, public adapter output, and release artifact outputs from canonical sources;
-- release and adapter validation: `scripts/validate-adapters.py`, `scripts/validate-release.py`, and `scripts/release-verify.sh` check generated packages, manifests, release metadata, adapter artifact metadata, tracked release notes, checksums, and smoke evidence. For the `v0.1.1` transition release, `release-verify.sh` is the maintainer-facing gate and `validate-release.py` owns structured release validation delegated from that gate.
+- release and adapter validation: `scripts/validate-adapters.py`, `scripts/validate-release.py`, and `scripts/release-verify.sh` check generated packages, manifests, release metadata, adapter artifact metadata, tracked release notes, checksums, and smoke evidence. For public releases, `release-verify.sh` is the maintainer-facing gate and `validate-release.py` owns structured release validation delegated from that gate. For `v0.1.3` and later, these checks validate generated temporary or release-output adapter packages and release archives instead of tracked adapter package trees.
 - measurement, benchmark, and reporting scripts: repository-local commands measure skill size, run token-cost benchmark prompts in disposable fixtures, analyze Codex JSONL session exports, summarize tool-output amplification, validate token-cost release metadata, and produce reviewable evidence for reports without requiring hosted telemetry.
 - required-benchmark context: release validation determines the release-specific required dynamic benchmark set from core suite policy, transition carryover policy, changed public skills, and claimed optional coverage, then passes that context to token-cost validation in process or through a transient YAML file for CLI and debugging use.
 
@@ -196,7 +202,7 @@ This decomposition is prose-only for now. A component diagram should be added wh
 2. For `skill-token-runtime-v2`, release validation determines the effective required dynamic benchmark set from required core benchmarks, one-release transition carryover benchmarks, changed public skill benchmarks, and optional benchmarks that are explicitly claimed as release coverage.
 3. Release validation passes that required benchmark context to token-cost validation in process. The standalone validator may receive the same context as YAML through `--required-benchmark-context`; that YAML is normally transient and tracked only when it becomes release decision evidence.
 4. The benchmark runner copies the clean minimal downstream fixture into an isolated temporary directory outside the repository.
-5. For Codex benchmarks, the runner installs current public Codex adapter skills from tracked public adapter output while that output remains tracked, or from generated temporary adapter output or release artifact output after public adapter skill copies move out of tracked Git. The runner does not use repository-local `.codex/skills/` as the public benchmark source.
+5. For Codex benchmarks, the runner installs current public Codex adapter skills from tracked public adapter output while that output remains tracked, or from generated temporary adapter output or release artifact output after public adapter skill copies move out of tracked Git. For `v0.1.3` and later, dynamic benchmark inputs use generated public adapter output or release archive output. The runner does not use repository-local `.codex/skills/` as the public benchmark source.
 6. The runner executes prompt fixtures with `codex exec --json --ephemeral`, writes raw JSONL under `docs/reports/token-cost/runs/<release-version>/` when raw JSONL is tracked, and invokes the JSONL analyzer automatically.
 7. Analyzer summaries are written beside run evidence and carry structured usage, tool-output, signal, verdict, and raw-or-sanitized evidence identity fields.
 8. Maintainers manually review `skill-token-runtime-v2` benchmark result quality and record structured criteria for each dynamic run until stable expected-output checks justify automation.
@@ -215,8 +221,9 @@ This decomposition is prose-only for now. A component diagram should be added wh
 7. For the `v0.1.1` transition release, release validation checks canonical `skills/`, tracked public adapter output under `dist/adapters/`, adapter manifest and install guidance, tracked release notes, token-cost metadata, and `.codex/skills/` tracked-state absence. It does not build or structurally validate `.codex/skills/` as release evidence.
 8. For the `v0.1.2` archive-introduction release, release artifact preparation generates separate per-adapter archives for Codex, Claude Code, and opencode, may generate an optional combined archive, records tracked adapter artifact metadata under `docs/reports/adapter-artifacts/releases/<version>.yaml`, and keeps tracked public adapter skill bodies available.
 9. Release validation for the archive-introduction release checks canonical skills, tracked adapter output, generated adapter archives, adapter artifact metadata, checksums, token-cost evidence, tracked release notes, install guidance, and the retained compatibility path.
-10. After public adapter skill copies move to release artifacts in a later stable release, adapter validation checks generated temporary or release artifact output instead of tracked public skill-copy drift.
-11. Release validation checks manifest shape, generated output structure, artifact metadata when applicable, checksums when applicable, tracked release notes, smoke evidence, and security constraints.
+10. For the `v0.1.3` public adapter untracking release, repository-tree adapter package fragments under `dist/adapters/<adapter>/` are retired. Complete packages are generated into temporary or release-output directories and published as release archives.
+11. Adapter validation checks generated temporary or release artifact output instead of tracked public skill-copy drift.
+12. Release validation checks manifest shape, generated output structure, archive structure, artifact metadata, checksums, tracked release notes, root guidance alignment, token-cost evidence, smoke evidence, and security constraints. For `v0.1.3` and later, release validation fails if tracked generated public adapter skill bodies remain under `dist/adapters/**/skills`.
 
 ## Deployment View
 
@@ -228,8 +235,8 @@ The main execution and publication boundaries are:
 
 - local contributor shell: runs selector, CI wrapper, validation, generation, and drift checks;
 - GitHub Actions: runs the same repository-owned scripts in hosted CI when configured;
-- local Codex runtime state: `.codex/skills/`, ignored by Git and installed locally from public Codex adapter output when contributors need local Codex use for this transition release;
-- public adapter packages: tracked `dist/adapters/` output during the compatibility window, including the archive-introduction release, then generated release artifact output after public adapter skill copies are untracked;
+- local Codex runtime state: `.codex/skills/`, ignored by Git and installed locally from public Codex adapter output when contributors need local Codex use;
+- public adapter packages: tracked `dist/adapters/` output during the compatibility window through `v0.1.2`, then generated temporary or release-output packages and release archives for `v0.1.3` and later;
 - adapter support metadata: `dist/adapters/manifest.yaml` and `dist/adapters/README.md`, tracked guidance and support surfaces rather than authored skill bodies;
 - adapter artifact metadata: `docs/reports/adapter-artifacts/releases/<version>.yaml`, tracked release evidence with source commit, generator command, required per-adapter archive list, optional combined archive details, checksums, install roots, and validation result;
 - adapter release artifacts: generated per-adapter archives, plus optional combined archive, uploaded as release assets rather than committed by default;
@@ -239,7 +246,7 @@ The main execution and publication boundaries are:
 - token-cost release evidence: `docs/reports/token-cost/releases/<version>.md`, `docs/reports/token-cost/releases/<version>.yaml`, and tracked raw or sanitized run summaries under `docs/reports/token-cost/runs/<version>/`;
 - release evidence: tracked `docs/releases/<version>/release.yaml`, release notes, and maintainer smoke evidence used by release verification.
 
-Rollback before public adapter skill-copy untracking keeps `dist/adapters/**/skills` tracked and defers archive publication or fixes archive metadata, install docs, and validation before release. Rollback after public adapter skill-copy untracking preserves generation from `skills/` and either re-tracks generated adapter output temporarily or republishes release artifacts from last known good generated output. No runtime data migration is required.
+Rollback before public adapter skill-copy untracking keeps `dist/adapters/**/skills` tracked and defers archive publication or fixes archive metadata, install docs, and validation before release. Rollback before `v0.1.3` publication may regenerate and restore tracked adapter output from `skills/` if the release cannot validate generated packages or archives. Rollback after public adapter skill-copy untracking preserves generation from `skills/` and either republishes release artifacts from last known good generated output or uses a later approved recovery release. No runtime data migration is required.
 
 ## Crosscutting Concepts
 
@@ -272,7 +279,7 @@ Package diagrams have one authored source file and are linked from `architecture
 
 Canonical skills and adapter templates are authored sources. `.codex/skills/`, public adapter skill copies, adapter archives, and OpenCode command aliases are generated or installed runtime outputs produced from canonical sources and approved templates or metadata. Public adapter output may be copied into `.codex/skills/` only as local ignored runtime installation; generated output must not become an authored source of truth.
 
-After `.codex/skills/` is untracked, non-release local Codex mirror validation proves generation into a non-tracked output surface rather than tracked-file equality. Release validation for the `v0.1.1` transition release does not use `.codex/skills/` as release evidence; it proves the public adapter path works. Public adapter skill copies stay tracked until at least one stable public release has shipped downloadable adapter artifacts and release-artifact installation docs. After that compatibility window, public adapter skill-copy drift checks move to temp-output or release-artifact validation.
+After `.codex/skills/` is untracked, non-release local Codex mirror validation proves generation into a non-tracked output surface rather than tracked-file equality. Release validation for the `v0.1.1` transition release does not use `.codex/skills/` as release evidence; it proves the public adapter path works. Public adapter skill copies stay tracked until at least one stable public release has shipped downloadable adapter artifacts and release-artifact installation docs. `v0.1.2` satisfies that compatibility-window rule. For `v0.1.3` and later, public adapter skill-copy drift checks are replaced by generated temporary-output or release-artifact validation, and root guidance points ordinary contributors to `dist/adapters/README.md` as the active adapter install-contract surface.
 
 ### Release and adapter evidence
 
@@ -281,6 +288,8 @@ Release verification uses tracked `docs/releases/<version>/release.yaml` and `re
 Generated adapter releases have an additional artifact evidence layer. `docs/reports/adapter-artifacts/releases/<version>.yaml` records release version, source commit, generator command, canonical source, manifest path, generated archive names, SHA-256 checksums, validation command, and validation result. Public releases that distribute generated adapters publish separate per-adapter archives as release assets and may publish a combined archive for convenience. The repository tracks metadata and checksums, not generated archive files by default.
 
 The `v0.1.1` transition release does not require downloadable adapter archives. `dist/adapters/` remains the public adapter install path, and release notes or adapter docs state whether archives are absent or separately published. If a separate accepted plan publishes optional archives for `v0.1.1`, repository-tree installation from `dist/adapters/` remains the required public install path for that release and archive metadata becomes additional evidence rather than a replacement for tracked public adapter validation.
+
+The `v0.1.2` archive-introduction release keeps repository-tree adapter packages for the compatibility window while publishing downloadable archives and metadata. For `v0.1.3` and later, release archives are the active install surface, `dist/adapters/README.md` and `dist/adapters/manifest.yaml` remain tracked, and generated adapter package contents are validated from temporary or release-output directories rather than tracked `dist/adapters/<adapter>/` package trees.
 
 ### Release token-friendliness evidence
 
@@ -319,6 +328,7 @@ The legacy normalization follow-on inventoried every current `docs/architecture/
 - `docs/adr/ADR-20260419-repository-source-layout.md`: repository source layout and canonical-source/generated-output separation.
 - `docs/adr/ADR-20260424-generated-adapter-packages.md`: generated public adapter package boundary.
 - `docs/adr/ADR-20260512-generated-skill-output-release-artifacts.md`: staged migration from tracked generated skill mirrors to untracked local mirrors and generated release artifacts.
+- `docs/adr/ADR-20260513-v0-1-3-adapter-release-archive-install-surface.md`: `v0.1.3` public adapter archive install surface and tracked adapter package retirement.
 
 No additional ADR is required for the 2026-04-29 package-quality refinement because it sharpens the accepted method without changing the durable architecture decision.
 
@@ -336,6 +346,7 @@ No additional ADR is required for the `v0.1.1` single-authored-source transition
 | Determinism | Canonical skill guidance changes and generated guidance must be refreshed. | Generated local mirrors, public adapter output, and adapter release artifacts are produced from `skills/` through repository generators; tracked generated surfaces use drift checks and untracked generated surfaces use temp-output or release-artifact validation. |
 | Adapter artifact reproducibility | A maintainer publishes generated adapter archives. | Tracked adapter artifact metadata records source commit, generator command, archive names, SHA-256 checksums, validation command, and validation result. |
 | Transition release compatibility | A maintainer prepares `v0.1.1`. | `release-verify.sh` delegates structured checks to `validate-release.py`; release validation proves canonical skills and tracked public adapter output are current, release notes and adapter docs describe the transition, token-cost metadata uses public adapter output, and `.codex/skills/` is only checked for ignored/untracked state. |
+| Public adapter untracking | A maintainer prepares `v0.1.3`. | Release validation proves no tracked generated adapter skill bodies remain, `dist/adapters/README.md` and `manifest.yaml` remain tracked, generated temporary or release-output packages validate, release archives validate, metadata and checksums validate, and root guidance no longer advertises retired repository-tree adapter skill bodies as the active install model. |
 | Measurement usefulness | A contributor optimizes skill token cost. | Static skill measurement, JSONL analysis, and baseline reports identify measured cost drivers before hard token-budget gates are introduced. |
 | Release token-friendliness | A maintainer prepares a public release. | Markdown and YAML token-friendliness reports exist under `docs/reports/token-cost/releases/`, Codex benchmark evidence or a valid waiver is recorded, portability passes, and release validation delegates to the token-cost report validator. |
 | Dynamic benchmark coverage | A maintainer prepares a public release with `skill-token-runtime-v2`. | The report records required core coverage, transition carryover coverage when applicable, changed-skill-required coverage, claimed optional coverage, optional warnings, and per-run result-quality evidence. |
@@ -357,6 +368,8 @@ No additional ADR is required for the `v0.1.1` single-authored-source transition
 | Benchmark runners could accidentally measure the repository-local Codex mirror instead of public adapter output | The release benchmark installs public Codex skills from tracked public adapter output while available, generated temporary adapter output, or release artifact output, and rejects `.codex/skills/` as the public benchmark source. |
 | Release metadata can become prose-only or unreproducible | Structured YAML records runner invocation, fixture source, public skill source, run evidence, waiver state, and comparison data; release validation reads YAML rather than Markdown prose. |
 | Users rely on copying public adapter skills from the repository tree | Public adapter skill copies remain tracked for at least one stable public release after downloadable adapter artifacts and install docs are available; release notes announce the repository-tree install transition. |
+| Root guidance could preserve the retired repository-tree install model | The `v0.1.3` spec requires `CONSTITUTION.md`, `AGENTS.md`, and `docs/workflows.md` to be updated or explicitly recorded as unaffected, with ordinary contributors pointed to `dist/adapters/README.md` as the install-contract surface. |
+| Partial tracked adapter package fragments could look installable | The `v0.1.3` architecture keeps only `dist/adapters/README.md` and `manifest.yaml` tracked by default; complete adapter packages are generated in temporary or release-output directories and attached as release archives. |
 | Release validation could keep treating `.codex/skills/` as a privileged internal release path | The `v0.1.1` transition release gate validates public adapter output and only confirms `.codex/skills/` ignored/untracked state; optional local Codex smoke installs from the public Codex adapter path and stays outside required release evidence. |
 | Generated adapter archives could create binary churn in Git | Generated archives are release assets by default; Git tracks artifact metadata and checksums instead of archive files. |
 | Warning-only token budgets could be mistaken for CI gates | The first measurement slice treats budget thresholds as report warnings; hard gates require a later accepted proposal and spec. |
@@ -371,6 +384,7 @@ No additional ADR is required for the `v0.1.1` single-authored-source transition
 - change-local architecture delta: historical or explicitly exceptional evidence under `docs/changes/<change-id>/`; not part of the normal architecture authoring path.
 - generated output: derived files under `.codex/skills/`, public adapter skill paths under `dist/adapters/`, generated adapter archives, and generated command aliases.
 - transition release: a stable release that preserves repository-tree adapter installation from `dist/adapters/` while `.codex/skills/` remains ignored local runtime state and adapter archives remain a follow-on migration by default.
+- compatibility-window release: a stable release that preserves repository-tree adapter packages while also providing release archives and install guidance, giving downstream users one release to transition install models.
 - adapter artifact metadata: tracked YAML under `docs/reports/adapter-artifacts/releases/<version>.yaml` that records source commit, generator command, archive paths, checksums, and validation evidence for generated adapter release artifacts.
 - artifact-install path: installing adapter packages from downloadable release assets rather than copying generated skill bodies from the repository tree.
 - release token-friendliness metadata: structured YAML under `docs/reports/token-cost/releases/` that gates public release token-cost evidence.
@@ -386,7 +400,7 @@ No additional ADR is required for the `v0.1.1` single-authored-source transition
 
 ## Next artifacts
 
-- `architecture-review` for the generated skill output and adapter release artifact architecture update.
+- `architecture-review` for the `v0.1.3` adapter release archive install architecture update.
 
 ## Follow-on artifacts
 
@@ -404,9 +418,10 @@ No additional ADR is required for the `v0.1.1` single-authored-source transition
 - Expanded dynamic Token-Friendliness benchmarks for core skills: accepted proposal and approved spec define `skill-token-runtime-v2`, required core coverage, transition carryover coverage, optional extended coverage, changed-skill-required benchmarks, claimed optional coverage gates, required benchmark context, and structured result-quality evidence.
 - Single Authored Skill Source and Generated Output: accepted proposal and approved spec define `skills/` as the only authored skill source, untracked `.codex/skills/` local mirror generation, staged public adapter artifact migration, adapter artifact metadata, and temp-output validation for untracked generated trees.
 - Publish Next Release With Single Authored Skill Source: accepted proposal and approved spec define the `v0.1.1` transition-release architecture: validate canonical `skills/`, tracked public adapter output, release notes, adapter install guidance, and token-cost metadata; keep `.codex/skills/` out of required release evidence; retain `dist/adapters/` as the public install path; defer downloadable adapter archives unless separately planned.
+- Stop Tracking Generated Public Adapter Skill Bodies: accepted proposal and approved spec define the `v0.1.3` public adapter untracking release architecture: retire tracked generated adapter package fragments under `dist/adapters/<adapter>/`, keep `dist/adapters/README.md` and `manifest.yaml`, validate generated temporary or release-output packages and release archives, update root guidance, and preserve `v0.1.2` as compatibility-window evidence.
 
 ## Readiness
 
-This canonical package revision records the current repository architecture for generated skill output, adapter release artifact migration, and the `v0.1.1` single-authored-source transition release.
+This canonical package revision records the current repository architecture for generated skill output, adapter release artifact migration, the `v0.1.1` single-authored-source transition release, and the `v0.1.3` public adapter untracking release.
 
-ADR `docs/adr/ADR-20260512-generated-skill-output-release-artifacts.md` records the durable decision to move generated local and public skill copies out of ordinary authored Git state through staged temp-output and release-artifact validation. No change-local architecture delta is produced because the canonical package carries the intended durable guidance directly.
+ADR `docs/adr/ADR-20260512-generated-skill-output-release-artifacts.md` records the durable decision to move generated local and public skill copies out of ordinary authored Git state through staged temp-output and release-artifact validation. ADR `docs/adr/ADR-20260513-v0-1-3-adapter-release-archive-install-surface.md` records the durable `v0.1.3` decision to make release archives the active public adapter install surface and retire tracked generated adapter package fragments. No change-local architecture delta is produced because the canonical package carries the intended durable guidance directly.
