@@ -72,13 +72,13 @@ Current known mismatch before implementation:
 ## Current Handoff Summary
 
 - Current milestone: M3. Release evidence and final validation pack
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M2 code-review r2 clean-with-notes
 - Review status: M2 closed after CR-M2-F1 resolution; M1 closed
-- Remaining in-scope implementation milestones: M3 planned
-- Next stage: implement M3
+- Remaining in-scope implementation milestones: M3 review-requested
+- Next stage: code-review M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 is not implemented or reviewed, final validation has not run, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M3 is implemented but not reviewed, final lifecycle closeout has not run, and PR handoff is not prepared.
 
 ## Milestones
 
@@ -179,7 +179,7 @@ Current known mismatch before implementation:
 
 ### M3. Release evidence and final validation pack
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Prove `v0.1.1` release readiness with the updated gate, public adapter output, token-cost evidence, release notes, and lifecycle state.
 - Requirements: R1-R35
 - Files/components likely touched:
@@ -220,11 +220,31 @@ Current known mismatch before implementation:
 - Expected observable result: The updated `v0.1.1` release gate passes without requiring `.codex/skills/` generation as release evidence, public adapter output validates, token-cost metadata validates, and lifecycle artifacts are synchronized.
 - Commit message: `M3: validate transition release readiness evidence`
 - Milestone closeout:
-  - [ ] validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
+- Validation notes:
+  - `python scripts/validate-skills.py` passed: validated 23 skill files under `skills/`.
+  - `python scripts/test-skill-validator.py` initially failed because stale test expectations still required `.codex/skills/` generated-output and `build-skills.py` local regeneration wording in contributor docs.
+  - Updated `scripts/test-skill-validator.py` so the docs tests assert the current public Codex adapter local setup wording and reject the stale local-regeneration wording.
+  - `python scripts/test-skill-validator.py` passed after the test update.
+  - `python scripts/test-adapter-distribution.py` passed. It printed the expected negative-fixture line `token-cost report validation failed: dynamic_runtime.runs: missing required benchmark architecture-review` while exiting successfully.
+  - `python scripts/build-adapters.py --version 0.1.1 --check` passed with adapter output in sync.
+  - `python scripts/validate-adapters.py --version 0.1.1` passed.
+  - `python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml` passed.
+  - `python scripts/validate-release.py --version v0.1.1` passed.
+  - `bash scripts/release-verify.sh v0.1.1` passed and did not require `.codex/skills/` generation as release evidence.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-publish-next-release-with-single-authored-skill-source.md --path specs/publish-next-release-with-single-authored-skill-source.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-13-publish-next-release-with-single-authored-skill-source.md --path docs/plan.md --path docs/changes/2026-05-12-publish-next-release-with-single-authored-skill-source/change.yaml` passed.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-12-publish-next-release-with-single-authored-skill-source/change.yaml` passed.
+  - `python scripts/validate-review-artifacts.py docs/changes/2026-05-12-publish-next-release-with-single-authored-skill-source/` passed.
+  - `git diff --check --` passed.
+- Aligned-surface notes:
+  - `docs/releases/v0.1.1/release.yaml` was unchanged; `validate-release.py --version v0.1.1` confirmed release metadata remains valid.
+  - `docs/reports/token-cost/releases/v0.1.1.yaml` and `.md` were unchanged; token-cost metadata validation passed and continues to use public adapter output for dynamic evidence.
+  - `dist/adapters/manifest.yaml` and generated public adapter packages were unchanged; adapter drift and adapter validation passed.
+  - No downloadable adapter archives or adapter artifact metadata were introduced for `v0.1.1`.
 - Risks:
   - Full release verification may expose stale adapter output or stale token-cost metadata.
   - Running the full release gate may depend on local tool availability for smoke-adjacent evidence.
