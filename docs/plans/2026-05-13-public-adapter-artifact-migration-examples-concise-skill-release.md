@@ -84,20 +84,20 @@ Current known implementation shape before work begins:
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Generate adapter archives without removing tracked adapter skills
-- Current milestone state: review-requested
-- Last reviewed milestone: plan-review r2 approved the plan with no material findings
-- Review status: proposal-review, spec-review, architecture-review, and plan-review are approved; plan-review r1 finding PR-001 is closed in review-resolution; M1 implementation is ready for code-review.
-- Remaining in-scope implementation milestones: M1, M2, M3, M4, M5
-- Next stage: code-review M1
+- Current milestone: M2. Validate adapter artifact metadata and checksums
+- Current milestone state: planned
+- Last reviewed milestone: M1 code-review r1 closed with no material findings
+- Review status: proposal-review, spec-review, architecture-review, and plan-review are approved; plan-review r1 finding PR-001 is closed in review-resolution; M1 code-review r1 found no material findings.
+- Remaining in-scope implementation milestones: M2, M3, M4, M5
+- Next stage: implement M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1-M5 are not implemented or reviewed, required review-resolution is closed only for plan-review PR-001, and final release validation has not run. M6 is a tracked later-release gate and is not part of `v0.1.2` implementation closeout until the stable archive release has shipped and a plan revision makes untracking current.
+- Reason final closeout is or is not ready: M2-M5 are not implemented or reviewed, required review-resolution is closed for plan-review PR-001 and has no M1 material findings, and final release validation has not run. M6 is a tracked later-release gate and is not part of `v0.1.2` implementation closeout until the stable archive release has shipped and a plan revision makes untracking current.
 
 ## Milestones
 
 ### M1. Generate adapter archives without removing tracked adapter skills
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Add deterministic per-adapter archive generation for `v0.1.2` while preserving tracked repository-tree adapter packages.
 - Requirements: R1-R6, R12-R22, R52-R56, R59, R63
 - Files/components likely touched:
@@ -416,7 +416,8 @@ Before PR handoff, run the M5 final validation pack plus any commands added by t
 - [x] 2026-05-13: Execution plan created and added to `docs/plan.md`.
 - [x] Plan-review completed.
 - [x] Test-spec created.
-- [x] M1 implemented and ready for code-review.
+- [x] M1 implemented and handed to code-review.
+- [x] M1 code-review completed with no material findings.
 - [ ] M2 implemented and reviewed.
 - [ ] M3 implemented and reviewed.
 - [ ] M4 implemented, deferred with rationale, or removed by plan revision.
@@ -436,6 +437,7 @@ Before PR handoff, run the M5 final validation pack plus any commands added by t
 - 2026-05-13: Test spec created as the active proof-planning surface; proceed to implement M1.
 - 2026-05-13: During M1, keep tracked `dist/adapters` at the current `0.1.1` compatibility version and validate it with `build-adapters.py --version 0.1.1 --check`; archive generation uses `v0.1.2` release output without mutating tracked adapter packages.
 - 2026-05-13: M1 implements per-adapter release archives only; adapter artifact metadata and final `v0.1.2` release validation remain M2 and M5 work.
+- 2026-05-13: Code-review M1 R1 found no material findings and closed M1; proceed to M2 metadata and checksum validation.
 
 ## Surprises and discoveries
 
@@ -465,9 +467,22 @@ Before PR handoff, run the M5 final validation pack plus any commands added by t
   - `git ls-files 'dist/adapters/**/skills/**' | wc -l` returned `69`.
   - `git ls-files '*.zip' '*.tar.gz' | rg 'rigorloop-adapter|rigorloop-adapters' || true` returned no tracked adapter archives.
 
+- M1 code-review validation passed:
+  - `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives AdapterDistributionTests.test_adapter_archives_install_under_target_project_roots AdapterDistributionTests.test_validate_adapter_archives_rejects_missing_required_archive AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root`
+  - `python scripts/test-adapter-distribution.py`
+  - `tmpdir=$(mktemp -d); python scripts/build-adapters.py --version v0.1.2 --output-dir "$tmpdir"; python scripts/validate-adapters.py --root "$tmpdir" --version v0.1.2`
+  - `python scripts/build-adapters.py --version 0.1.1 --check`
+  - `git show --check HEAD -- scripts/adapter_distribution.py scripts/build-adapters.py scripts/validate-adapters.py scripts/test-adapter-distribution.py`
+  - `git ls-files 'dist/adapters/**/skills/**' | wc -l` returned `69`.
+  - `git ls-files '*.zip' '*.tar.gz' | rg 'rigorloop-adapter|rigorloop-adapters' || true` returned no tracked adapter archives.
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md --path specs/public-adapter-artifact-migration-examples-concise-skill-release.md --path specs/public-adapter-artifact-migration-examples-concise-skill-release.test.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md --path docs/plan.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/change.yaml --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/review-log.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/review-resolution.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/proposal-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/spec-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/architecture-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/plan-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/plan-review-r2.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m1-r1.md`
+  - `git diff --check -- docs/plan.md docs/plans/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release`
+
 ## Outcome and retrospective
 
-Not completed. M1 implementation is ready for `code-review`; M2-M5 remain open.
+Not completed. M1 is closed after clean code-review; M2-M5 remain open.
 
 ## Readiness
 
