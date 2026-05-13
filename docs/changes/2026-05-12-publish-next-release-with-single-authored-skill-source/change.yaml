@@ -52,6 +52,16 @@ validation:
     result: pass
   - command: RELEASE_VERIFY_DRY_RUN=1 bash scripts/release-verify.sh v0.1.1
     result: pass
+  - command: git commit -m "M1: align release gate with public adapter evidence"
+    result: 4eb0521
+  - command: code-review m1 r2
+    result: clean-with-notes_no_material_findings
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_release_verify_script_supports_v0_1_1 AdapterDistributionTests.test_v0_1_1_release_validation_accepts_ignored_untracked_codex_skills AdapterDistributionTests.test_v0_1_1_release_validation_rejects_tracked_codex_skills AdapterDistributionTests.test_v0_1_1_release_validation_rejects_unignored_codex_skills AdapterDistributionTests.test_v2_final_release_validation_requires_changed_surface_input
+    result: pass
+  - command: RELEASE_VERIFY_DRY_RUN=1 bash scripts/release-verify.sh v0.1.1
+    result: pass
+  - command: python scripts/validate-release.py --version v0.1.1
+    result: pass
   - command: python scripts/validate-release.py --version v0.1.1
     result: pass
   - command: python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml
@@ -102,6 +112,7 @@ changed_files:
   - docs/changes/2026-05-12-publish-next-release-with-single-authored-skill-source/reviews/architecture-review-r2.md
   - docs/changes/2026-05-12-publish-next-release-with-single-authored-skill-source/reviews/plan-review-r1.md
   - docs/changes/2026-05-12-publish-next-release-with-single-authored-skill-source/reviews/code-review-m1-r1.md
+  - docs/changes/2026-05-12-publish-next-release-with-single-authored-skill-source/reviews/code-review-m1-r2.md
   - docs/architecture/system/architecture.md
   - docs/plans/2026-05-13-publish-next-release-with-single-authored-skill-source.md
   - specs/publish-next-release-with-single-authored-skill-source.test.md

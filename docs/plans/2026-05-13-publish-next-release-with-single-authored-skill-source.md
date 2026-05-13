@@ -71,20 +71,20 @@ Current known mismatch before implementation:
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Release gate validates public output, not `.codex/skills/`
-- Current milestone state: review-requested
-- Last reviewed milestone: M1 code-review r1 inconclusive
-- Review status: code-review r1 recorded inconclusive because governing artifacts are local-only/untracked; M1 is not closed
-- Remaining in-scope implementation milestones: M1 review-requested, M2 planned, M3 planned
-- Next stage: track or commit governing artifacts, then rerun code-review M1
+- Current milestone: M2. Release docs and adapter install guidance describe the transition
+- Current milestone state: planned
+- Last reviewed milestone: M1 code-review r2 clean-with-notes
+- Review status: M1 closed; code-review r2 recorded clean-with-notes with no material findings
+- Remaining in-scope implementation milestones: M2 planned, M3 planned
+- Next stage: implement M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 implementation has an inconclusive code-review and is not closed, M2-M3 are not implemented or reviewed, final validation has not run, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M2-M3 are not implemented or reviewed, final validation has not run, and PR handoff is not prepared.
 
 ## Milestones
 
 ### M1. Release gate validates public output, not `.codex/skills/`
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Make the `v0.1.1` release gate validate canonical skills and public adapter output without requiring `.codex/skills/` generation as release evidence.
 - Requirements: R7-R19, R32-R35
 - Files/components likely touched:
@@ -120,7 +120,7 @@ Current known mismatch before implementation:
   - [x] progress updated
   - [x] decision log updated if needed
   - [x] validation notes updated
-  - [ ] milestone committed
+  - [x] milestone committed
 - Risks:
   - Accidentally weakening non-release local mirror validation.
   - Breaking historical `v0.1.0` release gate tests.
@@ -263,7 +263,7 @@ Before PR handoff, run the M3 final validation pack plus any commands added by t
 - [x] 2026-05-13: Execution plan created and added to `docs/plan.md`.
 - [x] Plan-review completed.
 - [x] Test-spec created.
-- [x] M1 implemented; first code-review recorded inconclusive pending tracked governing artifacts.
+- [x] M1 implemented and reviewed clean.
 - [ ] M2 implemented and reviewed.
 - [ ] M3 implemented and reviewed.
 - [ ] Final explain-change, verify, and PR handoff completed.
@@ -278,6 +278,7 @@ Before PR handoff, run the M3 final validation pack plus any commands added by t
 - 2026-05-13: M1 keeps `build-skills.py --check` available for historical release gates but removes it from required `v0.1.1` release evidence.
 - 2026-05-13: `validate-release.py` treats a no-argument CLI invocation as an explicit empty changed-surface context, while direct helper callers still must pass changed-surface context for final `skill-token-runtime-v2` release validation.
 - 2026-05-13: M1 code-review r1 did not close the milestone because the governing artifacts and change-local records are still untracked in the local worktree.
+- 2026-05-13: M1 was committed as `4eb0521` and code-review r2 closed the milestone cleanly with no material findings.
 
 ## Surprises and discoveries
 
@@ -312,9 +313,19 @@ Before PR handoff, run the M3 final validation pack plus any commands added by t
     - `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_release_verify_script_supports_v0_1_1 AdapterDistributionTests.test_v0_1_1_release_validation_accepts_ignored_untracked_codex_skills AdapterDistributionTests.test_v0_1_1_release_validation_rejects_tracked_codex_skills AdapterDistributionTests.test_v0_1_1_release_validation_rejects_unignored_codex_skills AdapterDistributionTests.test_v2_final_release_validation_requires_changed_surface_input`
     - `RELEASE_VERIFY_DRY_RUN=1 bash scripts/release-verify.sh v0.1.1`
 
+- M1 code-review r2 recorded clean-with-notes:
+  - Review record: `docs/changes/2026-05-12-publish-next-release-with-single-authored-skill-source/reviews/code-review-m1-r2.md`
+  - Reviewed commit: `4eb0521`
+  - Direct review checks passed:
+    - `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_release_verify_script_supports_v0_1_1 AdapterDistributionTests.test_v0_1_1_release_validation_accepts_ignored_untracked_codex_skills AdapterDistributionTests.test_v0_1_1_release_validation_rejects_tracked_codex_skills AdapterDistributionTests.test_v0_1_1_release_validation_rejects_unignored_codex_skills AdapterDistributionTests.test_v2_final_release_validation_requires_changed_surface_input`
+    - `RELEASE_VERIFY_DRY_RUN=1 bash scripts/release-verify.sh v0.1.1`
+    - `python scripts/validate-release.py --version v0.1.1`
+    - `git ls-files -- .codex/skills/`
+    - `git check-ignore -v .codex/skills/proposal/SKILL.md`
+
 ## Outcome and retrospective
 
-Not completed. M1 implementation has an inconclusive code-review pending tracked governing artifacts; M2, M3, final explain-change, verify, and PR handoff remain open.
+Not completed. M1 is closed; M2, M3, final explain-change, verify, and PR handoff remain open.
 
 ## Readiness
 
@@ -322,7 +333,6 @@ See `Current Handoff Summary`.
 
 ## Remaining completion gates
 
-- M1 code-review and review-resolution if triggered.
 - M2 implementation, targeted validation, code-review, and review-resolution if triggered.
 - M3 implementation, targeted validation, code-review, and review-resolution if triggered.
 - Explain-change.

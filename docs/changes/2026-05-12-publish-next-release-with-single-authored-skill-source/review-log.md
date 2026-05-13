@@ -9,3 +9,4 @@
 | architecture-review-r2 | architecture-review | 2 | `docs/architecture/system/architecture.md` | `reviews/architecture-review-r2.md` | approved | 0 | recorded |
 | plan-review-r1 | plan-review | 1 | `docs/plans/2026-05-13-publish-next-release-with-single-authored-skill-source.md` | `reviews/plan-review-r1.md` | approved | 0 | recorded |
 | code-review-m1-r1 | code-review | 1 | M1 implementation diff | `reviews/code-review-m1-r1.md` | inconclusive | 0 | recorded |
+| code-review-m1-r2 | code-review | 2 | M1 implementation diff `4eb0521` | `reviews/code-review-m1-r2.md` | clean-with-notes | 0 | recorded |
