@@ -97,14 +97,14 @@ The token-cost `--skill-source` value must point to generated public adapter rel
 
 ## Current Handoff Summary
 
-- Current milestone: M3. v0.1.3 release evidence and token-cost reports
-- Current milestone state: review-requested
-- Last reviewed milestone: M2
-- Review status: code-review-m3-r1 finding CR-M3-1 accepted and resolved; awaiting code-review rerun
-- Remaining in-scope implementation milestones: M3 rerun review, M4
-- Next stage: code-review M3 rerun
+- Current milestone: M4. Release verification and lifecycle closeout
+- Current milestone state: planned
+- Last reviewed milestone: M3
+- Review status: code-review-m3-r2 completed clean-with-notes; M3 is closed
+- Remaining in-scope implementation milestones: M4
+- Next stage: implement M4
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 rerun review is pending, M4 is not implemented, explain-change and verify are missing, and PR/release handoff is not prepared.
+- Reason final closeout is or is not ready: M4 is not implemented, explain-change and verify are missing, and PR/release handoff is not prepared.
 
 ## Milestones
 
@@ -202,7 +202,7 @@ The token-cost `--skill-source` value must point to generated public adapter rel
 
 ### M3. v0.1.3 release evidence and token-cost reports
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Produce `v0.1.3` release evidence for adapter archives, metadata/checksums, release notes, and token-cost reports using generated public adapter output.
 - Requirements: R42-R57.
 - Files/components likely touched:
@@ -340,7 +340,9 @@ bash scripts/release-verify.sh v0.1.3
 - [x] 2026-05-13: M3 implementation completed and handed to code-review.
 - [x] 2026-05-13: M3 code-review r1 completed with changes-requested.
 - [x] 2026-05-13: M3 review-resolution for CR-M3-1 closed after maintainer-confirmed manual adapter smoke was recorded.
-- [ ] M3 rerun review completed.
+- [x] M3 rerun review completed.
+
+Review result: `code-review-m3-r2` completed clean-with-notes; M3 is closed and hands off to M4.
 - [ ] M4 release verification closeout completed.
 - [ ] explain-change recorded.
 - [ ] verify passed.
@@ -399,6 +401,7 @@ bash scripts/release-verify.sh v0.1.3
 - 2026-05-13: `code-review-m3-r1` recorded material finding `CR-M3-1`; M3 remains open in `resolution-needed`.
 - 2026-05-13: Maintainer reported manual smoke passed for all v0.1.3 adapter archives; release metadata smoke evidence updated.
 - 2026-05-13: `RELEASE_OUTPUT_DIR=/tmp/rigorloop-v013-release-output bash scripts/release-verify.sh v0.1.3` passed after manual smoke evidence was recorded. The adapter distribution suite emitted an expected negative-fixture token-cost validation message while still completing `OK`.
+- 2026-05-13: `code-review-m3-r2` completed clean-with-notes after the smoke evidence fix. M3 is closed; next stage is `implement M4`.
 - 2026-05-13: `python scripts/test-select-validation.py` passed: 59 tests.
 - 2026-05-13: `python scripts/select-validation.py --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path dist/adapters/README.md --path dist/adapters/manifest.yaml` passed with status `ok` and selected adapter, lifecycle, and selector checks.
 - 2026-05-13: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path AGENTS.md --path CONSTITUTION.md --path docs/workflows.md` passed.
