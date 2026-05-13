@@ -98,11 +98,11 @@ The token-cost `--skill-source` value must point to generated public adapter rel
 ## Current Handoff Summary
 
 - Current milestone: M2. Repository tree untracking and guidance alignment
-- Current milestone state: review-requested
-- Last reviewed milestone: M1
-- Review status: M2 implementation completed; awaiting code-review for repository tree untracking and guidance alignment
+- Current milestone state: closed
+- Last reviewed milestone: M2
+- Review status: code-review-m2-r1 completed clean-with-notes; M2 closed
 - Remaining in-scope implementation milestones: M3, M4
-- Next stage: code-review M2
+- Next stage: implement M3
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: M3-M4 are not implemented, release validation has not run against final release evidence, explain-change and verify are missing, and PR/release handoff is not prepared.
 
@@ -157,7 +157,7 @@ The token-cost `--skill-source` value must point to generated public adapter rel
 
 ### M2. Repository tree untracking and guidance alignment
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Remove tracked generated adapter package fragments and align root/install guidance with the archive-install model.
 - Requirements: R8-R32, R58-R61.
 - Files/components likely touched:
@@ -198,7 +198,7 @@ The token-cost `--skill-source` value must point to generated public adapter rel
 - Risks: root guidance could keep stale compatibility-window text that looks active.
 - Rollback/recovery: restore generated adapter output from canonical `skills/` and stop release preparation if guidance or validation cannot be aligned.
 - Implementation result: tracked generated adapter skill bodies, generated adapter instruction entrypoints, and generated opencode command wrappers were removed from `dist/adapters/`; `dist/adapters/README.md` and `dist/adapters/manifest.yaml` remain the tracked support surface. Root guidance now points ordinary users and contributors to archive installation through `dist/adapters/README.md`, and CI/selector adapter checks use archive-output validation instead of retired repository-tree package validation.
-- Review result: pending M2 code-review.
+- Review result: `code-review-m2-r1` completed with status `clean-with-notes`. M2 is closed and hands off to M3.
 
 ### M3. v0.1.3 release evidence and token-cost reports
 
@@ -336,7 +336,7 @@ bash scripts/release-verify.sh v0.1.3
 - [x] 2026-05-13: M1 code-review finding CR-M1-1 resolved.
 - [x] M1 implemented and reviewed.
 - [x] 2026-05-13: M2 implementation completed and handed to code-review.
-- [ ] M2 reviewed.
+- [x] M2 implemented and reviewed.
 - [ ] M3 implemented and reviewed.
 - [ ] M4 release verification closeout completed.
 - [ ] explain-change recorded.
