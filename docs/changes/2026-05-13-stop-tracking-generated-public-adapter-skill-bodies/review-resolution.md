@@ -103,3 +103,11 @@ Chosen action: Updated `docs/releases/v0.1.3/release.yaml` smoke evidence to rec
 Safe resolution path: Extract or otherwise install each generated `v0.1.3` adapter archive into a disposable root, run the accepted smoke command/form for Codex, Claude Code, and opencode, and update `docs/releases/v0.1.3/release.yaml` evidence with the actual commands/results. If smoke cannot be run in this slice, change the release metadata and lifecycle state so `v0.1.3` is not release-ready, then record the blocker instead of marking smoke rows `pass`.
 Validation target: Rerun `code-review M3` after validating release metadata and review artifacts.
 Validation evidence: `python scripts/validate-release.py --version v0.1.3 --release-output-dir /tmp/rigorloop-v013-release-output --release-commit 0f3fe12c8d03d9cb64d9315acc25ac1045c745a8` passed. Review-artifact closeout remains pending same-stage rerun review, as expected after a changes-requested review.
+
+### code-review-m3-r2
+
+Review result: clean-with-notes.
+
+Material findings: none.
+
+Closeout: no review-resolution action required; M3 can close and hand off to M4.

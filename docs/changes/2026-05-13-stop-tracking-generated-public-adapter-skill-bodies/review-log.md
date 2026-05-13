@@ -139,3 +139,17 @@ Resolution: review-resolution.md#code-review-m3-r1
 Material findings: CR-M3-1
 Open findings: None
 Recording status: recorded
+
+### Review entry
+Review ID: code-review-m3-r2
+Stage: code-review
+Round: 2
+Reviewed artifact: M3 implementation plus CR-M3-1 smoke evidence resolution
+Reviewed milestone: M3. v0.1.3 release evidence and token-cost reports
+Status: clean-with-notes
+Detailed record: reviews/code-review-m3-r2.md
+Record: reviews/code-review-m3-r2.md
+Resolution: review-resolution.md#code-review-m3-r2
+Material findings: None
+Open findings: None
+Recording status: recorded
