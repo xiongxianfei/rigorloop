@@ -84,14 +84,14 @@ Current known implementation shape before work begins:
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Validate adapter artifact metadata and checksums
-- Current milestone state: review-requested
-- Last reviewed milestone: M2 code-review r1 requested changes for PAAM-M2-CR1; review-resolution is closed and the fix is ready for rerun code-review.
-- Review status: proposal-review, spec-review, architecture-review, and plan-review are approved; plan-review r1 finding PR-001 is closed in review-resolution; M1 code-review r1 found no material findings; M2 code-review r1 finding PAAM-M2-CR1 is resolved in review-resolution and pending rerun code-review.
-- Remaining in-scope implementation milestones: M2, M3, M4, M5
-- Next stage: code-review M2 rerun
+- Current milestone: M3. Update install contract, release notes, and artifact-location guidance
+- Current milestone state: planned
+- Last reviewed milestone: M2 code-review r2 found no material findings and closed M2.
+- Review status: proposal-review, spec-review, architecture-review, and plan-review are approved; plan-review r1 finding PR-001 is closed in review-resolution; M1 code-review r1 found no material findings; M2 code-review r2 found no material findings after PAAM-M2-CR1 resolution.
+- Remaining in-scope implementation milestones: M3, M4, M5
+- Next stage: implement M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2 is pending rerun code-review after review-resolution, M3-M5 are not implemented or reviewed, and final release validation has not run. M6 is a tracked later-release gate and is not part of `v0.1.2` implementation closeout until the stable archive release has shipped and a plan revision makes untracking current.
+- Reason final closeout is or is not ready: M3-M5 are not implemented or reviewed, and final release validation has not run. M6 is a tracked later-release gate and is not part of `v0.1.2` implementation closeout until the stable archive release has shipped and a plan revision makes untracking current.
 
 ## Milestones
 
@@ -141,7 +141,7 @@ Current known implementation shape before work begins:
 
 ### M2. Validate adapter artifact metadata and checksums
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Add tracked metadata for `v0.1.2` adapter archives and make release validation fail on missing, malformed, inconsistent, or checksum-mismatched evidence.
 - Requirements: R23-R42, R52-R56, R59, R63
 - Files/components likely touched:
@@ -420,7 +420,7 @@ Before PR handoff, run the M5 final validation pack plus any commands added by t
 - [x] M1 code-review completed with no material findings.
 - [x] M2 implemented and reviewed once.
 - [x] M2 review-resolution completed and returned to code-review.
-- [ ] M2 rerun code-review closed.
+- [x] M2 rerun code-review closed.
 - [ ] M3 implemented and reviewed.
 - [ ] M4 implemented, deferred with rationale, or removed by plan revision.
 - [ ] M5 final release-readiness evidence completed and reviewed.
@@ -444,6 +444,7 @@ Before PR handoff, run the M5 final validation pack plus any commands added by t
 - 2026-05-13: M2 added minimal `v0.1.2` release metadata and notes so the adapter artifact metadata gate can run end to end. M3 remains responsible for refining install-contract documentation and release-note wording.
 - 2026-05-13: Code-review M2 R1 found PAAM-M2-CR1: source-commit mismatch is accepted instead of rejected. M2 is in review-resolution before rerun code-review.
 - 2026-05-13: Resolved PAAM-M2-CR1 by validating `release.source_commit` against the release/source commit input. For `v0.1.2`, the approved policy exception is that metadata names the archive source commit `5514ef14ce5f310787f464ea78bd777838cb5537`; validation commands must pass that commit explicitly when validating the tracked metadata and generated archives.
+- 2026-05-13: Code-review M2 R2 found no material findings and closed M2. Proceed to M3 install contract, release notes, and artifact-location guidance.
 
 ## Surprises and discoveries
 
@@ -515,9 +516,11 @@ Before PR handoff, run the M5 final validation pack plus any commands added by t
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md --path specs/public-adapter-artifact-migration-examples-concise-skill-release.md --path specs/public-adapter-artifact-migration-examples-concise-skill-release.test.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md --path docs/plan.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/change.yaml --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/review-log.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/review-resolution.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/proposal-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/spec-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/architecture-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/plan-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/plan-review-r2.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m1-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m2-r1.md`
   - `git diff --check --`
 
+- M2 code-review r2 found no material findings and closed M2. Review record: `docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m2-r2.md`.
+
 ## Outcome and retrospective
 
-Not completed. M2 review-resolution for PAAM-M2-CR1 is complete and ready for rerun code-review; M3-M5 remain open.
+Not completed. M2 is closed after clean rerun code-review; M3-M5 remain open.
 
 ## Readiness
 
