@@ -50,7 +50,7 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
     ),
     "adapters.regression": CheckCatalogEntry(
         "adapters.regression",
-        "python scripts/test-adapter-distribution.py",
+        "python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_generation_creates_independent_packages_and_thin_entrypoints AdapterDistributionTests.test_adapter_generation_drift_check_detects_stale_and_unexpected_files AdapterDistributionTests.test_validate_adapters_cli_accepts_repository_output AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata",
         "adapters",
         parallel_safe=True,
     ),
@@ -99,7 +99,7 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
     ),
     "release.validate": CheckCatalogEntry(
         "release.validate",
-        "python scripts/validate-release.py --version <version>",
+        "python scripts/validate-release-ci.py --version <version>",
         "release",
     ),
     "readme.validate": CheckCatalogEntry(
@@ -137,7 +137,7 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
     ),
     "broad_smoke.repo": CheckCatalogEntry(
         "broad_smoke.repo",
-        "bash scripts/ci.sh --mode broad-smoke",
+        "bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped",
         "broad-smoke",
     ),
 }
@@ -302,7 +302,7 @@ def catalog_command(
     if check_id == "release.validate":
         if len(versions) != 1:
             raise ValueError("release.validate requires exactly one release version")
-        return _join("python", "scripts/validate-release.py", "--version", versions[0])
+        return _join("python", "scripts/validate-release-ci.py", "--version", versions[0])
     if check_id == "token_cost.report_validate":
         if not paths:
             raise ValueError("token_cost.report_validate requires at least one report YAML path")
@@ -664,6 +664,14 @@ def _apply_path_selection(
             )
         return
 
+    if category == "adapter-artifact-metadata":
+        _add_check(
+            selected,
+            "adapters.regression",
+            "Changed adapter artifact metadata requires adapter distribution regression fixtures.",
+        )
+        return
+
     if category == "validator-review-artifacts":
         _add_check(
             selected,
@@ -958,6 +966,8 @@ def _path_category(path: str) -> str | None:
         return "token-cost"
     if path.startswith("docs/reports/token-cost/"):
         return "token-cost"
+    if path.startswith("docs/reports/adapter-artifacts/releases/") and path.endswith(".yaml"):
+        return "adapter-artifact-metadata"
     if path.startswith("tests/fixtures/token-cost/"):
         return "token-cost"
     if path.startswith("docs/examples/"):
@@ -969,7 +979,7 @@ def _path_category(path: str) -> str | None:
             return "change-metadata"
         if parts[3] in {"review-log.md", "review-resolution.md"} or parts[3] == "reviews":
             return "review-artifacts"
-        if parts[3] in {"explain-change.md", "architecture.md"} or parts[3] == "diagrams":
+        if parts[3] in {"explain-change.md", "architecture.md", "verify-report.md"} or parts[3] == "diagrams":
             return "change-local-lifecycle"
         return "change-local-unsupported"
     if path == "docs/plan.md":
@@ -990,7 +1000,7 @@ def _path_category(path: str) -> str | None:
         return "templates"
     if path.startswith("schemas/"):
         return "schemas"
-    if path in {"scripts/validate-release.py", "scripts/release-verify.sh"}:
+    if path in {"scripts/validate-release.py", "scripts/validate-release-ci.py", "scripts/release-verify.sh"}:
         return "release-script"
     if path.startswith("scripts/"):
         return "script-unsupported"

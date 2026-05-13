@@ -358,6 +358,38 @@ validation:
     result: pass_after_verify_no_raw_jsonl_or_tracked_adapter_archives
   - command: PR #51
     result: opened_https://github.com/xiongxianfei/rigorloop/pull/51
+  - command: gh run view 25810860553 --log-failed
+    result: failed_selector_block_verify_report_and_adapter_artifact_metadata
+  - command: python scripts/test-select-validation.py
+    result: pass_after_ci_selector_fix_59_tests
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/verify-report.md --path docs/reports/adapter-artifacts/releases/v0.1.2.yaml
+    result: pass_after_ci_selector_fix_change_local_lifecycle_and_adapter_artifact_metadata
+  - command: bash scripts/ci.sh --mode pr --base 318641d2c42dcf05931c162e1d6b83628b3f2778 --head HEAD
+    result: fail_after_selector_unblocked_adapter_regression_timeout_and_release_validate_missing_release_output
+  - command: python scripts/validate-release-ci.py --version v0.1.2
+    result: pass_after_ci_release_validate_wrapper
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_generation_creates_independent_packages_and_thin_entrypoints AdapterDistributionTests.test_adapter_generation_drift_check_detects_stale_and_unexpected_files AdapterDistributionTests.test_validate_adapters_cli_accepts_repository_output AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata
+    result: pass_after_ci_focused_adapter_regression_6_tests
+  - command: python scripts/test-select-validation.py
+    result: pass_after_ci_release_wrapper_and_focused_adapter_regression_59_tests
+  - command: bash scripts/ci.sh --mode pr --base 318641d2c42dcf05931c162e1d6b83628b3f2778 --head HEAD
+    result: pass_after_ci_selector_release_wrapper_and_focused_adapter_regression
+  - command: gh run view 25812063916 --log-failed
+    result: failed_broad_smoke_review_root_detection_after_fixture_execution
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: pass_after_broad_smoke_scope_precomputed_before_fixture_execution
+  - command: gh run view 25812546063 --log-failed
+    result: failed_broad_smoke_selected_check_needed_pr_safe_skip_diff_scoped_shape
+  - command: bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped
+    result: pass_after_selected_broad_smoke_skips_dirty_worktree_review_roots
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/change.yaml
+    result: pass_after_ci_selector_fix_valid_change_metadata
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/verify-report.md --path docs/reports/adapter-artifacts/releases/v0.1.2.yaml --path scripts/validation_selection.py --path scripts/test-select-validation.py
+    result: pass_after_ci_selector_fix_selected_adapter_lifecycle_and_selector_checks
+  - command: git diff --check --
+    result: pass_after_ci_selector_fix
+  - command: bash scripts/ci.sh --mode local
+    result: pass_after_ci_selector_fix_selected_artifact_lifecycle_change_metadata_and_selector_checks
 changed_files:
   - docs/proposals/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md
   - specs/public-adapter-artifact-migration-examples-concise-skill-release.md
@@ -402,3 +434,7 @@ changed_files:
   - docs/reports/token-cost/runs/v0.1.2/pr-handoff-run1.analysis.yaml
   - docs/reports/token-cost/runs/v0.1.2/architecture-no-impact-run1.analysis.yaml
   - docs/reports/token-cost/runs/v0.1.2/learn-no-durable-lesson-run1.analysis.yaml
+  - scripts/validation_selection.py
+  - scripts/test-select-validation.py
+  - scripts/validate-release-ci.py
+  - scripts/ci.sh

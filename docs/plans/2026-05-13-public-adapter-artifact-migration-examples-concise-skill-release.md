@@ -89,9 +89,9 @@ Current known implementation shape before work begins:
 - Last reviewed milestone: M5 code-review r1 found no material findings and closed M5.
 - Review status: proposal-review, spec-review, architecture-review, and plan-review are approved; plan-review r1 finding PR-001 is closed in review-resolution; M1 code-review r1 found no material findings; M2 code-review r2 found no material findings after PAAM-M2-CR1 resolution; M3 code-review r1 found no material findings; M4 code-review r1 found no material findings; M5 code-review r1 found no material findings.
 - Remaining in-scope implementation milestones: none
-- Next stage: monitor PR #51 hosted checks and complete PR review
+- Next stage: push the selector-routing CI fix for PR #51 and monitor hosted checks
 - Final closeout readiness: ready for final closeout sequence
-- Reason final closeout is or is not ready: M1-M5 are implemented and closed after code-review, explain-change and final verify are recorded, PR #51 is open, and no required review-resolution remains open. Hosted PR checks, PR review, and release-publication handoff remain pending. M6 is a tracked later-release gate and is not part of `v0.1.2` implementation closeout until the stable archive release has shipped and a plan revision makes untracking current.
+- Reason final closeout is or is not ready: M1-M5 are implemented and closed after code-review, explain-change and final verify are recorded, PR #51 is open, and no required review-resolution remains open. Hosted PR CI initially failed on selector routing for `verify-report.md` and adapter artifact metadata; the selector fix is in progress. Hosted PR checks, PR review, and release-publication handoff remain pending. M6 is a tracked later-release gate and is not part of `v0.1.2` implementation closeout until the stable archive release has shipped and a plan revision makes untracking current.
 
 ## Milestones
 
@@ -434,6 +434,9 @@ Before PR handoff, run the M5 final validation pack plus any commands added by t
 - [x] Final explain-change recorded.
 - [x] Final verify passed.
 - [x] PR #51 opened.
+- [x] Hosted PR CI failure diagnosed as selector routing gaps for `verify-report.md` and adapter artifact metadata.
+- [x] Selector-routing CI fix implemented and locally validated.
+- [ ] Selector-routing CI fix pushed and hosted checks re-observed.
 - [ ] `v0.1.2` release publication handoff completed or explicitly deferred.
 - [ ] M6 follow-up untracking plan or plan revision created after `v0.1.2` ships.
 
@@ -465,6 +468,9 @@ Before PR handoff, run the M5 final validation pack plus any commands added by t
 - 2026-05-13: Final explain-change recorded at `docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/explain-change.md`; proceed to `verify`.
 - 2026-05-13: Final local verify passed and recorded `docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/verify-report.md`; proceed to `pr`.
 - 2026-05-13: PR #51 opened at `https://github.com/xiongxianfei/rigorloop/pull/51`; hosted checks and PR review are tracked on the PR.
+- 2026-05-13: Hosted PR CI failed before execution because the v1 selector did not classify change-local `verify-report.md` or `docs/reports/adapter-artifacts/releases/v0.1.2.yaml`. Treat both as deterministic validation surfaces: `verify-report.md` routes to change-local lifecycle validation and adapter artifact metadata routes to adapter distribution regression.
+- 2026-05-13: Local PR-mode rerun exposed two follow-on CI shape issues after the selector block was removed: full adapter distribution regression exceeded the 60-second selected-check timeout, and `release.validate` needed generated `v0.1.2` release output plus the accepted source commit. Keep the 60-second CI contract, make selected adapter regression a focused distribution subset, and route release validation through a CI wrapper that generates temporary archives and uses tracked metadata's `source_commit`.
+- 2026-05-13: Hosted PR CI then failed in nested broad smoke because broad-smoke review-root discovery happened after fixture execution and picked up unrelated retained-example dirt. Broad smoke now determines review and lifecycle scopes before running fixture commands.
 
 ## Surprises and discoveries
 
@@ -625,7 +631,19 @@ Before PR handoff, run the M5 final validation pack plus any commands added by t
   - PR #51 opened: `https://github.com/xiongxianfei/rigorloop/pull/51`
   - Branch: `public-adapter-artifact-migration-v0.1.2`
   - Base: `main`
-  - Hosted CI: pending or not observed at PR creation.
+  - Hosted CI: run `25810860553` failed on selector routing before selected checks executed.
+
+- CI-maintenance validation for hosted selector failure:
+  - `python scripts/test-select-validation.py`
+  - `python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/verify-report.md --path docs/reports/adapter-artifacts/releases/v0.1.2.yaml`
+  - `python scripts/validate-release-ci.py --version v0.1.2`
+  - `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_generation_creates_independent_packages_and_thin_entrypoints AdapterDistributionTests.test_adapter_generation_drift_check_detects_stale_and_unexpected_files AdapterDistributionTests.test_validate_adapters_cli_accepts_repository_output AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/change.yaml`
+  - `python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/verify-report.md --path docs/reports/adapter-artifacts/releases/v0.1.2.yaml --path scripts/validation_selection.py --path scripts/test-select-validation.py`
+  - `git diff --check --`
+  - `bash scripts/ci.sh --mode local`
+  - `bash scripts/ci.sh --mode pr --base 318641d2c42dcf05931c162e1d6b83628b3f2778 --head HEAD`
+  - `bash scripts/ci.sh --mode broad-smoke`
 
 ## Outcome and retrospective
 

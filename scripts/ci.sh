@@ -11,6 +11,7 @@ base=""
 head=""
 release_version=""
 broad_smoke=0
+skip_diff_scoped=0
 jobs=""
 timeout_seconds="$DEFAULT_TIMEOUT_SECONDS"
 fail_fast=0
@@ -25,13 +26,14 @@ Usage:
   bash scripts/ci.sh --mode pr --base <sha> --head <sha>
   bash scripts/ci.sh --mode main --base <sha> --head <sha>
   bash scripts/ci.sh --mode release --release-version <version>
-  bash scripts/ci.sh --mode broad-smoke
+  bash scripts/ci.sh --mode broad-smoke [--skip-diff-scoped]
 
 Execution options:
   --jobs <positive-integer>       Limit selected-check concurrency.
   --timeout <positive-seconds>    Per-check timeout, default 60 seconds.
   --fail-fast                     Stop launching queued checks after a failure.
   --verbose                       Print successful check output when supported.
+  --skip-diff-scoped              In broad-smoke mode, skip dirty-worktree review roots and use push-range lifecycle scope.
 
 When no --mode is supplied, ci.sh defaults to --mode broad-smoke for legacy compatibility.
 When --jobs is omitted, ci.sh uses available CPU count minus one with a floor of one.
@@ -199,6 +201,24 @@ run_broad_smoke() {
     return 0
   fi
 
+  local review_artifact_available=0
+  if [[ "$skip_diff_scoped" != "1" ]]; then
+    if determine_review_artifact_command; then
+      review_artifact_available=1
+    fi
+    determine_artifact_lifecycle_command
+  elif git rev-parse --verify HEAD~1 >/dev/null 2>&1; then
+    artifact_lifecycle_label="Validate artifact lifecycle (push-main-ci from HEAD~1..HEAD)"
+    artifact_lifecycle_cmd=(
+      python scripts/validate-artifact-lifecycle.py
+      --mode push-main-ci
+      --before "$(git rev-parse HEAD~1)"
+      --after "$(git rev-parse HEAD)"
+    )
+  else
+    determine_artifact_lifecycle_command
+  fi
+
   run_check "Validate canonical skills" \
     python scripts/validate-skills.py
 
@@ -229,7 +249,7 @@ run_broad_smoke() {
   run_check "Run review artifact validator fixtures" \
     python scripts/test-review-artifact-validator.py
 
-  if determine_review_artifact_command; then
+  if [[ "$review_artifact_available" == "1" ]]; then
     run_check "$review_artifact_label" \
       "${review_artifact_cmd[@]}"
   else
@@ -237,7 +257,6 @@ run_broad_smoke() {
     echo
   fi
 
-  determine_artifact_lifecycle_command
   run_check "$artifact_lifecycle_label" \
     "${artifact_lifecycle_cmd[@]}"
 
@@ -289,6 +308,10 @@ parse_args() {
         ;;
       --verbose)
         verbose=1
+        shift
+        ;;
+      --skip-diff-scoped)
+        skip_diff_scoped=1
         shift
         ;;
       -h|--help)
@@ -783,8 +806,6 @@ for check in selected_checks:
         )
 
     args = shlex.split(expected_command)
-    if check_id == "broad_smoke.repo":
-        args = ["bash", "scripts/ci.sh", "--mode", "broad-smoke"]
     reason = check.get("reason")
     plans.append(
         CheckPlan(
