@@ -85,11 +85,11 @@ Current known implementation shape before work begins:
 ## Current Handoff Summary
 
 - Current milestone: M2. Validate adapter artifact metadata and checksums
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M1 code-review r1 closed with no material findings
-- Review status: proposal-review, spec-review, architecture-review, and plan-review are approved; plan-review r1 finding PR-001 is closed in review-resolution; M1 code-review r1 found no material findings.
+- Review status: proposal-review, spec-review, architecture-review, and plan-review are approved; plan-review r1 finding PR-001 is closed in review-resolution; M1 code-review r1 found no material findings; M2 implementation is ready for code-review.
 - Remaining in-scope implementation milestones: M2, M3, M4, M5
-- Next stage: implement M2
+- Next stage: code-review M2
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: M2-M5 are not implemented or reviewed, required review-resolution is closed for plan-review PR-001 and has no M1 material findings, and final release validation has not run. M6 is a tracked later-release gate and is not part of `v0.1.2` implementation closeout until the stable archive release has shipped and a plan revision makes untracking current.
 
@@ -141,7 +141,7 @@ Current known implementation shape before work begins:
 
 ### M2. Validate adapter artifact metadata and checksums
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Add tracked metadata for `v0.1.2` adapter archives and make release validation fail on missing, malformed, inconsistent, or checksum-mismatched evidence.
 - Requirements: R23-R42, R52-R56, R59, R63
 - Files/components likely touched:
@@ -171,11 +171,11 @@ Current known implementation shape before work begins:
 - Expected observable result: Release validation accepts valid `v0.1.2` adapter artifact metadata and rejects missing archives, invalid results, and checksum mismatches.
 - Commit message: `M2: validate adapter artifact release metadata`
 - Milestone closeout:
-  - [ ] validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - Metadata schema could drift from the approved spec.
   - Validation could require locally committed archives instead of release-output artifacts.
@@ -418,7 +418,7 @@ Before PR handoff, run the M5 final validation pack plus any commands added by t
 - [x] Test-spec created.
 - [x] M1 implemented and handed to code-review.
 - [x] M1 code-review completed with no material findings.
-- [ ] M2 implemented and reviewed.
+- [x] M2 implemented and ready for code-review.
 - [ ] M3 implemented and reviewed.
 - [ ] M4 implemented, deferred with rationale, or removed by plan revision.
 - [ ] M5 final release-readiness evidence completed and reviewed.
@@ -438,6 +438,8 @@ Before PR handoff, run the M5 final validation pack plus any commands added by t
 - 2026-05-13: During M1, keep tracked `dist/adapters` at the current `0.1.1` compatibility version and validate it with `build-adapters.py --version 0.1.1 --check`; archive generation uses `v0.1.2` release output without mutating tracked adapter packages.
 - 2026-05-13: M1 implements per-adapter release archives only; adapter artifact metadata and final `v0.1.2` release validation remain M2 and M5 work.
 - 2026-05-13: Code-review M1 R1 found no material findings and closed M1; proceed to M2 metadata and checksum validation.
+- 2026-05-13: M2 treats `v0.1.2` as an archive-introduction release while keeping the tracked repository-tree adapter compatibility matrix at `0.1.1`; release validation checks generated `v0.1.2` archives through `--release-output-dir`.
+- 2026-05-13: M2 added minimal `v0.1.2` release metadata and notes so the adapter artifact metadata gate can run end to end. M3 remains responsible for refining install-contract documentation and release-note wording.
 
 ## Surprises and discoveries
 
@@ -480,9 +482,20 @@ Before PR handoff, run the M5 final validation pack plus any commands added by t
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md --path specs/public-adapter-artifact-migration-examples-concise-skill-release.md --path specs/public-adapter-artifact-migration-examples-concise-skill-release.test.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md --path docs/plan.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/change.yaml --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/review-log.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/review-resolution.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/proposal-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/spec-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/architecture-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/plan-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/plan-review-r2.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m1-r1.md`
   - `git diff --check -- docs/plan.md docs/plans/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release`
 
+- M2 targeted validation passed:
+  - `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_artifact_metadata_validation_accepts_schema_and_optional_combined AdapterDistributionTests.test_adapter_artifact_metadata_validation_rejects_bad_results_and_checksums AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata AdapterDistributionTests.test_validate_release_cli_passes_changed_surface_inputs AdapterDistributionTests.test_release_verify_script_supports_v0_1_2_archive_metadata_gate`
+  - `python scripts/test-adapter-distribution.py`
+  - `tmpdir=$(mktemp -d); python scripts/build-adapters.py --version v0.1.2 --output-dir "$tmpdir"; python scripts/validate-release.py --version v0.1.2 --release-output-dir "$tmpdir"`
+  - `RELEASE_VERIFY_DRY_RUN=1 RELEASE_OUTPUT_DIR=release-output bash scripts/release-verify.sh v0.1.2`
+  - `git diff --check -- docs/reports/adapter-artifacts/releases/v0.1.2.yaml docs/releases/v0.1.2 scripts/adapter_distribution.py scripts/validate-release.py scripts/release-verify.sh scripts/test-adapter-distribution.py`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/change.yaml`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md --path specs/public-adapter-artifact-migration-examples-concise-skill-release.md --path specs/public-adapter-artifact-migration-examples-concise-skill-release.test.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md --path docs/plan.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/change.yaml --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/review-log.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/review-resolution.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/proposal-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/spec-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/architecture-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/plan-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/plan-review-r2.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m1-r1.md`
+  - `git diff --check --`
+
 ## Outcome and retrospective
 
-Not completed. M1 is closed after clean code-review; M2-M5 remain open.
+Not completed. M2 implementation is ready for `code-review`; M3-M5 remain open.
 
 ## Readiness
 
