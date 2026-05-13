@@ -10,3 +10,14 @@
 | plan-review-r1 | plan-review | 1 | `docs/plans/2026-05-13-publish-next-release-with-single-authored-skill-source.md` | `reviews/plan-review-r1.md` | approved | 0 | recorded |
 | code-review-m1-r1 | code-review | 1 | M1 implementation diff | `reviews/code-review-m1-r1.md` | inconclusive | 0 | recorded |
 | code-review-m1-r2 | code-review | 2 | M1 implementation diff `4eb0521` | `reviews/code-review-m1-r2.md` | clean-with-notes | 0 | recorded |
+
+### Review entry
+
+Review ID: code-review-m2-r1
+Stage: code-review
+Round: 1
+Status: changes-requested
+Detailed record: reviews/code-review-m2-r1.md
+Resolution: review-resolution.md#code-review-m2-r1
+Material findings: CR-M2-F1
+Open findings: CR-M2-F1

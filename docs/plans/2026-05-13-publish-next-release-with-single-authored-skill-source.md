@@ -72,13 +72,13 @@ Current known mismatch before implementation:
 ## Current Handoff Summary
 
 - Current milestone: M2. Release docs and adapter install guidance describe the transition
-- Current milestone state: review-requested
-- Last reviewed milestone: M1 code-review r2 clean-with-notes
-- Review status: M2 implementation ready for code-review; M1 closed
-- Remaining in-scope implementation milestones: M2 review-requested, M3 planned
-- Next stage: code-review M2
+- Current milestone state: resolution-needed
+- Last reviewed milestone: M2 code-review r1 changes-requested
+- Review status: M2 has material finding CR-M2-F1 open; M1 closed
+- Remaining in-scope implementation milestones: M2 resolution-needed, M3 planned
+- Next stage: review-resolution M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2 is implemented but not reviewed, M3 is not implemented or reviewed, final validation has not run, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M2 has an open material finding, M3 is not implemented or reviewed, final validation has not run, and PR handoff is not prepared.
 
 ## Milestones
 
@@ -130,7 +130,7 @@ Current known mismatch before implementation:
 
 ### M2. Release docs and adapter install guidance describe the transition
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Make public and contributor-facing docs match the transition release contract.
 - Requirements: R1-R6, R20-R31
 - Files/components likely touched:
@@ -165,7 +165,9 @@ Current known mismatch before implementation:
   - [x] progress updated
   - [x] decision log updated if needed
   - [x] validation notes updated
-  - [ ] milestone committed
+  - [x] milestone committed
+- Review notes:
+  - code-review-m2-r1 requested changes for CR-M2-F1: contributor/governance docs still preserve obsolete `.codex/skills/` hand-edit/generated-output wording instead of only the concise active local setup rule.
 - Risks:
   - Docs could overstate archive availability.
   - Contributor docs could imply `.codex/skills/` is generated directly as release output.

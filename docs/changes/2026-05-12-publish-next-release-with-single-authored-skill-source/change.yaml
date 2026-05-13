@@ -108,6 +108,8 @@ validation:
     result: pass
   - command: git diff --check -- docs/proposals/2026-05-12-publish-next-release-with-single-authored-skill-source.md specs/publish-next-release-with-single-authored-skill-source.md docs/architecture/system/architecture.md docs/changes/2026-05-12-publish-next-release-with-single-authored-skill-source
     result: pass
+  - command: code-review m2 r1
+    result: changes_requested_CR-M2-F1
 changed_files:
   - docs/proposals/2026-05-12-publish-next-release-with-single-authored-skill-source.md
   - specs/publish-next-release-with-single-authored-skill-source.md
@@ -135,3 +137,5 @@ changed_files:
   - docs/workflows.md
   - AGENTS.md
   - CONSTITUTION.md
+  - docs/changes/2026-05-12-publish-next-release-with-single-authored-skill-source/reviews/code-review-m2-r1.md
+  - docs/changes/2026-05-12-publish-next-release-with-single-authored-skill-source/review-resolution.md
