@@ -19,10 +19,11 @@ tests:
   - plan-review-r1
   - plan-review-r2
   - active test specification creation before implementation.
+  - code-review-m1-r1
 review:
   status: clean
   unresolved_items: 0
-  reviewed_artifact: docs/plans/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md
+  reviewed_artifact: commit 49c0017 M1 implementation slice
   review_log: docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/review-log.md
   review_resolution: docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/review-resolution.md
 validation:
@@ -136,6 +137,30 @@ validation:
     result: pass_after_test_spec
   - command: git diff --check -- specs/public-adapter-artifact-migration-examples-concise-skill-release.test.md docs/plans/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md docs/plan.md docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release
     result: pass_after_test_spec
+  - command: code-review-m1-r1
+    result: clean_with_notes_no_material_findings
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives AdapterDistributionTests.test_adapter_archives_install_under_target_project_roots AdapterDistributionTests.test_validate_adapter_archives_rejects_missing_required_archive AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root
+    result: pass_after_code_review_m1_r1
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_after_code_review_m1_r1
+  - command: tmpdir=$(mktemp -d); python scripts/build-adapters.py --version v0.1.2 --output-dir "$tmpdir"; python scripts/validate-adapters.py --root "$tmpdir" --version v0.1.2
+    result: pass_after_code_review_m1_r1
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_after_code_review_m1_r1
+  - command: git show --check HEAD -- scripts/adapter_distribution.py scripts/build-adapters.py scripts/validate-adapters.py scripts/test-adapter-distribution.py
+    result: pass_after_code_review_m1_r1
+  - command: git ls-files 'dist/adapters/**/skills/**' | wc -l
+    result: pass_after_code_review_m1_r1_69_tracked_skill_body_files
+  - command: git ls-files '*.zip' '*.tar.gz' | rg 'rigorloop-adapter|rigorloop-adapters' || true
+    result: pass_after_code_review_m1_r1_no_tracked_adapter_archives
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release
+    result: pass_after_code_review_m1_r1_reviews_6_findings_1_log_entries_6_resolution_entries_1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/change.yaml
+    result: pass_after_code_review_m1_r1_valid_change_metadata
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md --path specs/public-adapter-artifact-migration-examples-concise-skill-release.md --path specs/public-adapter-artifact-migration-examples-concise-skill-release.test.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md --path docs/plan.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/change.yaml --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/review-log.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/review-resolution.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/proposal-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/spec-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/architecture-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/plan-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/plan-review-r2.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m1-r1.md
+    result: pass_after_code_review_m1_r1
+  - command: git diff --check -- docs/plan.md docs/plans/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release
+    result: pass_after_code_review_m1_r1
 changed_files:
   - docs/proposals/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md
   - specs/public-adapter-artifact-migration-examples-concise-skill-release.md
@@ -144,6 +169,8 @@ changed_files:
   - docs/plans/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md
   - docs/plan.md
   - docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/review-resolution.md
+  - docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/review-log.md
+  - docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m1-r1.md
   - docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/plan-review-r2.md
   - scripts/adapter_distribution.py
   - scripts/build-adapters.py
