@@ -29,12 +29,13 @@ tests:
   - project-artifact-location-guide-and-examples-surface M3 selector, lifecycle, review-artifact, and retained-fixture assertions
   - code-review-r1
   - code-review-r2
+  - code-review-r3
   - artifact lifecycle validation for the settled proposal, draft spec, and review evidence
   - artifact lifecycle validation for the approved spec, active plan, plan index, and review evidence
 review:
   status: clean
   unresolved_items: 0
-  reviewed_artifact: commit ff4073d M2 implementation slice
+  reviewed_artifact: commit 8181388 M3 implementation slice
   review_log: docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/review-log.md
   review_resolution: docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/review-resolution.md
 validation:
@@ -116,6 +117,8 @@ validation:
     result: pass_examples_not_active_lifecycle_state
   - command: git diff --check -- scripts tests docs/examples docs/changes/0001-skill-validator docs/plans/2026-05-13-project-artifact-location-guide-and-examples-surface.md docs/plan.md
     result: pass_after_m3_validation_proof
+  - command: code-review r3
+    result: clean_with_notes_m3_closed_next_implement_m4
   - command: python scripts/validate-change-metadata.py docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/change.yaml
     result: pass_valid_change_metadata_after_plan
   - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording
@@ -186,3 +189,4 @@ changed_files:
   - docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/reviews/plan-review-r2.md
   - docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/reviews/code-review-r1.md
   - docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/reviews/code-review-r2.md
+  - docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/reviews/code-review-r3.md
