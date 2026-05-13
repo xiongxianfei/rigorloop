@@ -98,13 +98,13 @@ The token-cost `--skill-source` value must point to generated public adapter rel
 ## Current Handoff Summary
 
 - Current milestone: final closeout
-- Current milestone state: branch-ready
+- Current milestone state: pr-open
 - Last reviewed milestone: M4
 - Review status: code-review-m4-r1 completed clean-with-notes; M4 is closed
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
+- Next stage: release publication after PR #52 is integrated and release authorization is granted
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: all implementation milestones are closed, explain-change and verify are recorded, and the tracked change pack is branch-ready; PR handoff and release publication are still pending.
+- Reason final closeout is or is not ready: all implementation milestones are closed, explain-change and verify are recorded, PR #52 is open, and authorized release publication is still pending.
 
 ## Milestones
 
@@ -351,7 +351,7 @@ Implementation result: `bash scripts/release-verify.sh v0.1.3` and planned lifec
 Review result: `code-review-m4-r1` completed clean-with-notes; all implementation milestones are closed and final closeout starts with explain-change.
 - [x] explain-change recorded.
 - [x] verify passed.
-- [ ] PR handoff completed.
+- [x] PR handoff completed.
 - [ ] release publication completed.
 
 ## Decision log
@@ -415,6 +415,7 @@ Review result: `code-review-m4-r1` completed clean-with-notes; all implementatio
 - 2026-05-13: `code-review-m4-r1` completed clean-with-notes. M4 is closed; all implementation milestones are closed; next stage is `explain-change`.
 - 2026-05-13: `explain-change` recorded durable rationale at `docs/changes/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies/explain-change.md`; next stage is `verify`.
 - 2026-05-13: `verify` passed and recorded `docs/changes/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies/verify-report.md`; tracked change pack is branch-ready and next stage is `pr`.
+- 2026-05-13: PR handoff completed with PR #52: https://github.com/xiongxianfei/rigorloop/pull/52. Authorized release publication remains the downstream completion event after PR integration.
 - 2026-05-13: `python scripts/test-select-validation.py` passed: 59 tests.
 - 2026-05-13: `python scripts/select-validation.py --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path dist/adapters/README.md --path dist/adapters/manifest.yaml` passed with status `ok` and selected adapter, lifecycle, and selector checks.
 - 2026-05-13: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path AGENTS.md --path CONSTITUTION.md --path docs/workflows.md` passed.
@@ -432,5 +433,4 @@ Review result: `code-review-m4-r1` completed clean-with-notes; all implementatio
 ## Remaining completion gates
 
 - review-resolution if material findings are raised
-- pr
 - release publication
