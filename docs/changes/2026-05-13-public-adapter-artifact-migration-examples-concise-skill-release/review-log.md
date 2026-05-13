@@ -8,6 +8,20 @@
 | plan-review-r2 | plan-review | 2 | `docs/plans/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md` | `reviews/plan-review-r2.md` | approved | 0 | recorded |
 ### Review entry
 
+Review ID: code-review-m4-r1
+Stage: code-review
+Round: 1
+Reviewed artifact: commit bd4e4ce
+Status: clean-with-notes
+Detailed record: reviews/code-review-m4-r1.md
+Record: reviews/code-review-m4-r1.md
+Resolution: review-resolution.md#code-review-m4-r1
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
 Review ID: code-review-m3-r1
 Stage: code-review
 Round: 1

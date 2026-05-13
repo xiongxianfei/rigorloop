@@ -84,14 +84,14 @@ Current known implementation shape before work begins:
 
 ## Current Handoff Summary
 
-- Current milestone: M4. Settle skill-validator proof pack and bounded skill wording
-- Current milestone state: review-requested
-- Last reviewed milestone: M3 code-review r1 found no material findings and closed M3; M4 is implemented and ready for code-review.
-- Review status: proposal-review, spec-review, architecture-review, and plan-review are approved; plan-review r1 finding PR-001 is closed in review-resolution; M1 code-review r1 found no material findings; M2 code-review r2 found no material findings after PAAM-M2-CR1 resolution; M3 code-review r1 found no material findings.
-- Remaining in-scope implementation milestones: M4, M5
-- Next stage: code-review M4
+- Current milestone: M5. Produce token-cost and final release-readiness evidence
+- Current milestone state: planned
+- Last reviewed milestone: M4 code-review r1 found no material findings and closed M4.
+- Review status: proposal-review, spec-review, architecture-review, and plan-review are approved; plan-review r1 finding PR-001 is closed in review-resolution; M1 code-review r1 found no material findings; M2 code-review r2 found no material findings after PAAM-M2-CR1 resolution; M3 code-review r1 found no material findings; M4 code-review r1 found no material findings.
+- Remaining in-scope implementation milestones: M5
+- Next stage: implement M5
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M4 is pending code-review, M5 is not implemented or reviewed, and final release validation has not run. M6 is a tracked later-release gate and is not part of `v0.1.2` implementation closeout until the stable archive release has shipped and a plan revision makes untracking current.
+- Reason final closeout is or is not ready: M5 is not implemented or reviewed, and final release validation has not run. M6 is a tracked later-release gate and is not part of `v0.1.2` implementation closeout until the stable archive release has shipped and a plan revision makes untracking current.
 
 ## Milestones
 
@@ -230,7 +230,7 @@ Current known implementation shape before work begins:
 
 ### M4. Settle skill-validator proof pack and bounded skill wording
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Either move the retained skill-validator proof pack safely into `docs/examples/` or record retained-fixture rationale, then finish any bounded artifact-location wording that did not belong in M3.
 - Requirements: R64-R75
 - Files/components likely touched:
@@ -270,6 +270,7 @@ Current known implementation shape before work begins:
   - [x] decision log updated if needed
   - [x] validation notes updated
   - [x] milestone committed
+  - [x] code-review closed
 - Risks:
   - Hidden tests or validators may depend on the old fixture path.
   - Skill wording changes could remove behavior under the label of token reduction.
@@ -425,6 +426,7 @@ Before PR handoff, run the M5 final validation pack plus any commands added by t
 - [x] M3 implemented and handed to code-review.
 - [x] M3 code-review closed.
 - [x] M4 implemented and handed to code-review.
+- [x] M4 code-review closed.
 - [ ] M5 final release-readiness evidence completed and reviewed.
 - [ ] Final explain-change, verify, and PR handoff completed.
 - [ ] `v0.1.2` release publication handoff completed or explicitly deferred.
@@ -451,6 +453,7 @@ Before PR handoff, run the M5 final validation pack plus any commands added by t
 - 2026-05-13: Code-review M3 R1 found no material findings and closed M3. Proceed to M4 skill-validator proof-pack settlement and bounded skill wording.
 - 2026-05-13: M4 retained `docs/changes/0001-skill-validator/` rather than moving it. The reference inventory found active README, workflow, selector, lifecycle, change-metadata, test, and historical references to the old path; retaining it with explicit v0.1.2 release non-blocking rationale is the scope-complete path for this release slice.
 - 2026-05-13: M4 did not change canonical skill text because existing public skills already carry the bounded artifact-location lookup wording and safety-critical guidance validated by `scripts/test-skill-validator.py`; generated adapter output was not refreshed.
+- 2026-05-13: Code-review M4 R1 found no material findings and closed M4. Proceed to M5 token-cost and final release-readiness evidence.
 
 ## Surprises and discoveries
 
@@ -550,9 +553,16 @@ Before PR handoff, run the M5 final validation pack plus any commands added by t
   - `tmpdir=$(mktemp -d); python scripts/build-adapters.py --version v0.1.2 --output-dir "$tmpdir" >/dev/null; python scripts/validate-release.py --version v0.1.2 --release-output-dir "$tmpdir" --release-commit 5514ef14ce5f310787f464ea78bd777838cb5537`
   - `git diff --check -- docs/changes/0001-skill-validator docs/examples docs/workflows.md skills scripts`
 
+- M4 code-review r1 found no material findings and closed M4. Review evidence:
+  - `python scripts/test-skill-validator.py SkillValidatorFixtureTests.test_project_artifact_location_m1_retained_fixture_has_durable_rationale`
+  - `python scripts/test-artifact-lifecycle-validator.py ArtifactLifecycleValidatorFixtureTests.test_retained_skill_validator_fixture_readme_documents_non_active_status`
+  - `python scripts/test-select-validation.py ValidationSelectionTests.test_retained_skill_validator_fixture_rationale_has_deterministic_routing`
+  - `tmpdir=$(mktemp -d); python scripts/build-adapters.py --version v0.1.2 --output-dir "$tmpdir" >/dev/null; python scripts/validate-release.py --version v0.1.2 --release-output-dir "$tmpdir" --release-commit 5514ef14ce5f310787f464ea78bd777838cb5537`
+  - Review record: `docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m4-r1.md`
+
 ## Outcome and retrospective
 
-Not completed. M4 is implemented and ready for code-review; M5 remains open.
+Not completed. M4 is closed after clean code-review; M5 remains open.
 
 ## Readiness
 

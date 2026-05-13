@@ -25,10 +25,11 @@ tests:
   - M3 adapter install contract, release notes, and artifact-location guide validation.
   - code-review-m3-r1
   - M4 retained skill-validator fixture rationale and bounded skill wording validation.
+  - code-review-m4-r1
 review:
   status: clean
   unresolved_items: 0
-  reviewed_artifact: commit 968b3ec M3 implementation slice; M4 pending code-review
+  reviewed_artifact: commit bd4e4ce M4 implementation slice
   review_log: docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/review-log.md
   review_resolution: docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/review-resolution.md
 validation:
@@ -252,6 +253,16 @@ validation:
     result: pass_after_implement_m4
   - command: git diff --check -- docs/changes/0001-skill-validator docs/examples docs/workflows.md skills scripts
     result: pass_after_implement_m4
+  - command: code-review-m4-r1
+    result: clean_with_notes_no_material_findings
+  - command: python scripts/test-skill-validator.py SkillValidatorFixtureTests.test_project_artifact_location_m1_retained_fixture_has_durable_rationale
+    result: pass_after_code_review_m4_r1
+  - command: python scripts/test-artifact-lifecycle-validator.py ArtifactLifecycleValidatorFixtureTests.test_retained_skill_validator_fixture_readme_documents_non_active_status
+    result: pass_after_code_review_m4_r1
+  - command: python scripts/test-select-validation.py ValidationSelectionTests.test_retained_skill_validator_fixture_rationale_has_deterministic_routing
+    result: pass_after_code_review_m4_r1
+  - command: tmpdir=$(mktemp -d); python scripts/build-adapters.py --version v0.1.2 --output-dir "$tmpdir" >/dev/null; python scripts/validate-release.py --version v0.1.2 --release-output-dir "$tmpdir" --release-commit 5514ef14ce5f310787f464ea78bd777838cb5537
+    result: pass_after_code_review_m4_r1
 changed_files:
   - docs/proposals/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md
   - specs/public-adapter-artifact-migration-examples-concise-skill-release.md
@@ -265,6 +276,7 @@ changed_files:
   - docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m2-r1.md
   - docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m2-r2.md
   - docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m3-r1.md
+  - docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m4-r1.md
   - docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/plan-review-r2.md
   - scripts/adapter_distribution.py
   - scripts/build-adapters.py
