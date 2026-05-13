@@ -36,7 +36,6 @@ SEEN_LABELS=()
 REQUIRED_CHECK_COMMANDS=(
   "python scripts/validate-skills.py"
   "python scripts/test-skill-validator.py"
-  "python scripts/build-skills.py --check"
   "python scripts/test-adapter-distribution.py"
   "python scripts/build-adapters.py --version ${adapter_version} --check"
   "python scripts/validate-adapters.py --version ${adapter_version}"
@@ -45,6 +44,10 @@ REQUIRED_CHECK_COMMANDS=(
 if [[ "$release_version" == "v0.1.1" ]]; then
   REQUIRED_CHECK_COMMANDS+=(
     "python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/${release_version}.yaml"
+  )
+else
+  REQUIRED_CHECK_COMMANDS+=(
+    "python scripts/build-skills.py --check"
   )
 fi
 
@@ -119,8 +122,10 @@ run_check "Validate canonical skills" \
 run_check "Run skill regression validation" \
   python scripts/test-skill-validator.py
 
-run_check "Check generated Codex skill drift" \
-  python scripts/build-skills.py --check
+if [[ "$release_version" != "v0.1.1" ]]; then
+  run_check "Check generated Codex skill drift" \
+    python scripts/build-skills.py --check
+fi
 
 run_check "Run adapter distribution regression tests" \
   python scripts/test-adapter-distribution.py

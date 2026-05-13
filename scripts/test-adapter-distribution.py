@@ -1650,6 +1650,7 @@ release_gate:
                 "v0.1.1",
                 release_root=release_root,
                 token_cost_report_root=root / "docs" / "reports" / "token-cost" / "releases",
+                changed_paths=(),
             )
 
             self.assertTrue(
@@ -2097,6 +2098,86 @@ release_gate:
         )
         self.assertIn("validated release metadata for v0.1.1", result.stdout)
 
+    def test_v0_1_1_release_validation_accepts_ignored_untracked_codex_skills(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            release_root = root / "docs" / "releases"
+            token_cost_root = root / "docs" / "reports" / "token-cost" / "releases"
+            self.write_minimal_v2_token_report(token_cost_root)
+            self.write_release_artifacts(
+                root,
+                version="v0.1.1",
+                release_type="final",
+                manifest_version="0.1.1",
+                smoke_overrides=self.v0_1_1_smoke_overrides(),
+                notes_extra=self.v0_1_1_notes_extra(),
+            )
+
+            errors = validate_release_output(
+                "v0.1.1",
+                skills_root=ROOT / "skills",
+                output_root=ROOT / "dist" / "adapters",
+                release_root=release_root,
+                token_cost_report_root=ROOT / "docs" / "reports" / "token-cost" / "releases",
+                changed_paths=(),
+                tracked_files=(),
+                codex_skills_ignored=True,
+            )
+
+            self.assertEqual(errors, [])
+
+    def test_v0_1_1_release_validation_rejects_tracked_codex_skills(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            release_root = root / "docs" / "releases"
+            self.write_release_artifacts(
+                root,
+                version="v0.1.1",
+                release_type="final",
+                manifest_version="0.1.1",
+                smoke_overrides=self.v0_1_1_smoke_overrides(),
+                notes_extra=self.v0_1_1_notes_extra(),
+            )
+
+            errors = validate_release_output(
+                "v0.1.1",
+                skills_root=ROOT / "skills",
+                output_root=ROOT / "dist" / "adapters",
+                release_root=release_root,
+                token_cost_report_root=ROOT / "docs" / "reports" / "token-cost" / "releases",
+                changed_paths=(),
+                tracked_files=(".codex/skills/proposal/SKILL.md",),
+                codex_skills_ignored=True,
+            )
+
+            self.assertTrue(any(".codex/skills/ must be untracked" in error for error in errors))
+
+    def test_v0_1_1_release_validation_rejects_unignored_codex_skills(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            release_root = root / "docs" / "releases"
+            self.write_release_artifacts(
+                root,
+                version="v0.1.1",
+                release_type="final",
+                manifest_version="0.1.1",
+                smoke_overrides=self.v0_1_1_smoke_overrides(),
+                notes_extra=self.v0_1_1_notes_extra(),
+            )
+
+            errors = validate_release_output(
+                "v0.1.1",
+                skills_root=ROOT / "skills",
+                output_root=ROOT / "dist" / "adapters",
+                release_root=release_root,
+                token_cost_report_root=ROOT / "docs" / "reports" / "token-cost" / "releases",
+                changed_paths=(),
+                tracked_files=(),
+                codex_skills_ignored=False,
+            )
+
+            self.assertTrue(any(".codex/skills/ must be ignored" in error for error in errors))
+
     def test_release_verify_script_invokes_required_repository_checks(self) -> None:
         script = ROOT / "scripts" / "release-verify.sh"
         script_text = script.read_text(encoding="utf-8")
@@ -2151,6 +2232,7 @@ release_gate:
         self.assertIn("python scripts/build-adapters.py --version 0.1.1 --check", result.stdout)
         self.assertIn("python scripts/validate-adapters.py --version 0.1.1", result.stdout)
         self.assertIn("python scripts/validate-release.py --version v0.1.1", result.stdout)
+        self.assertNotIn("python scripts/build-skills.py --check", result.stdout)
         self.assertIn(
             "python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml",
             result.stdout,
