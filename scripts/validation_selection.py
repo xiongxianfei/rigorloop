@@ -930,6 +930,8 @@ def _path_category(path: str) -> str | None:
         return "ignore-policy"
     if path == ".github/workflows/ci.yml":
         return "ci-workflow"
+    if path == ".github/workflows/release.yml":
+        return "release-script"
     if path in {"scripts/validate-review-artifacts.py", "scripts/review_artifact_validation.py", "scripts/test-review-artifact-validator.py"}:
         return "validator-review-artifacts"
     if path in {
