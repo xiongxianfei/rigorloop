@@ -40,14 +40,14 @@ Generated skill mirrors and public adapters must be refreshed or checked after c
 
 ## Current Handoff Summary
 
-- Current milestone: M4. Generated Output Refresh And Final Milestone Review
-- Current milestone state: review-requested
-- Last reviewed milestone: M3. Examples Routing And Lifecycle Validation
-- Review status: code-review requested for M4
-- Remaining in-scope implementation milestones: M4
-- Next stage: code-review M4
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1, M2, and M3 are closed after clean code-review; M4 implementation and targeted validation are complete and awaiting its own code-review; explain-change and verify are not complete, and PR handoff is not prepared.
+- Current milestone: downstream closeout after implementation milestones
+- Current milestone state: ready-for-explain-change
+- Last reviewed milestone: M4. Generated Output Refresh And Final Milestone Review
+- Review status: clean code-review for M4 recorded in `code-review-r4`
+- Remaining in-scope implementation milestones: none
+- Next stage: explain-change
+- Final closeout readiness: ready to start downstream closeout; not PR-ready
+- Reason final closeout is or is not ready: M1, M2, M3, and M4 are closed after clean code-review; explain-change and verify are not complete, and PR handoff is not prepared.
 
 ## Non-goals
 
@@ -242,7 +242,7 @@ Each in-scope implementation milestone follows the same review handoff:
 
 ### M4. Generated Output Refresh And Final Milestone Review
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: refresh generated skill and adapter output after canonical skill changes, validate generated output, update lifecycle evidence, and hand off the final implementation milestone to `code-review`.
 - Requirements: `R10`-`R10b`, lifecycle closeout requirements, all implementation milestone closeout obligations
 - Files/components likely touched:
@@ -356,7 +356,7 @@ Broad smoke is not planned by default. Add it only if selector output, the test 
 - [x] 2026-05-13: M1. Workflow Artifact Map And Retained Fixture Rationale closed after clean `code-review-r1`.
 - [x] 2026-05-13: M2. Stage Skill Lookup Wording And Static Proof closed after clean `code-review-r2`.
 - [x] 2026-05-13: M3. Examples Routing And Lifecycle Validation closed after clean `code-review-r3`.
-- [ ] 2026-05-13: M4. Generated Output Refresh And Final Milestone Review implemented and handed off to `code-review`.
+- [x] 2026-05-13: M4. Generated Output Refresh And Final Milestone Review closed after clean `code-review-r4`.
 
 ## Decision log
 
@@ -394,6 +394,7 @@ Broad smoke is not planned by default. Add it only if selector output, the test 
 - 2026-05-13: M4 proof-first adapter drift observed before regeneration: `python scripts/build-adapters.py --version 0.1.1 --check` failed with 42 stale generated adapter files; `python scripts/validate-adapters.py --version 0.1.1` failed on the same stale generated output.
 - 2026-05-13: M4 generated adapter output refreshed with `python scripts/build-adapters.py --version 0.1.1`.
 - 2026-05-13: M4 validation passed: `python scripts/build-skills.py --check`; `python scripts/build-adapters.py --version 0.1.1 --check`; `python scripts/validate-adapters.py --version 0.1.1`; `python scripts/test-adapter-distribution.py`; `python scripts/test-skill-validator.py`; `python scripts/validate-skills.py`; `python scripts/test-select-validation.py`; `python scripts/test-artifact-lifecycle-validator.py`; `python scripts/test-review-artifact-validator.py`; `python scripts/test-change-metadata-validator.py`; `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording`; `python scripts/validate-change-metadata.py docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/change.yaml`.
+- 2026-05-13: Clean M4 code review recorded in `docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/reviews/code-review-r4.md`; M4 closed and Current Handoff Summary advanced to `explain-change`.
 
 ## Outcome and retrospective
 
@@ -402,4 +403,4 @@ Broad smoke is not planned by default. Add it only if selector output, the test 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Readiness is not Done; M4 is ready for `code-review`.
+- Readiness is not Done; implementation milestones are closed and the next stage is `explain-change`.
