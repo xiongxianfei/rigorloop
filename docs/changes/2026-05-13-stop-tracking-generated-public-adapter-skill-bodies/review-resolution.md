@@ -80,3 +80,7 @@ Validation evidence: `python scripts/test-adapter-distribution.py -k release_ver
 ### code-review-m1-r2
 
 No material findings.
+
+### code-review-m2-r1
+
+No material findings.
