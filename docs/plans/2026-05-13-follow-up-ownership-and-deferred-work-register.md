@@ -71,9 +71,9 @@ Validation and generated-output context:
 - Last reviewed milestone: M2
 - Review status: M2 clean-with-notes
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
+- Next stage: pr
 - Final closeout readiness: ready
-- Reason final closeout is or is not ready: all implementation milestones are closed and explain-change is recorded; final closeout still needs verify and PR handoff.
+- Reason final closeout is or is not ready: all implementation milestones are closed, explain-change is recorded, and local verify passed; PR handoff remains.
 
 ## Milestones
 
@@ -223,6 +223,7 @@ Final verification before PR should include:
 - 2026-05-13: M2 implementation completed; validation alignment is recorded, optional register validation remains unintroduced because no register exists, and M2 is ready for code-review.
 - 2026-05-13: M2 code-review passed with `clean-with-notes`; all implementation milestones are closed and final closeout starts with `explain-change`.
 - 2026-05-13: explain-change recorded; next stage is `verify`.
+- 2026-05-13: verify passed local validation and recorded `verify-report.md`; next stage is `pr`.
 
 ## Decision log
 

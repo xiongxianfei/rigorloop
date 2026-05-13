@@ -78,6 +78,8 @@ validation:
     result: clean-with-notes_no_material_findings
   - command: explain-change
     result: recorded
+  - command: verify
+    result: branch-ready_local_validation_passed
 changed_files:
   - docs/workflows.md
   - docs/proposals/2026-05-13-follow-up-ownership-and-deferred-work-register.md
@@ -92,6 +94,7 @@ changed_files:
   - docs/changes/2026-05-13-follow-up-ownership-and-deferred-work-register/review-log.md
   - docs/changes/2026-05-13-follow-up-ownership-and-deferred-work-register/review-resolution.md
   - docs/changes/2026-05-13-follow-up-ownership-and-deferred-work-register/explain-change.md
+  - docs/changes/2026-05-13-follow-up-ownership-and-deferred-work-register/verify-report.md
   - docs/changes/2026-05-13-follow-up-ownership-and-deferred-work-register/reviews/proposal-review-r1.md
   - docs/changes/2026-05-13-follow-up-ownership-and-deferred-work-register/reviews/spec-review-r1.md
   - docs/changes/2026-05-13-follow-up-ownership-and-deferred-work-register/reviews/plan-review-r1.md
