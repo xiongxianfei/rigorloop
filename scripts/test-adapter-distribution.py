@@ -2782,6 +2782,36 @@ release_gate:
             default_result.stdout,
         )
 
+    def test_release_verify_script_supports_v0_1_3_archive_only_gate(self) -> None:
+        result = subprocess.run(
+            ["bash", str(ROOT / "scripts" / "release-verify.sh"), "v0.1.3"],
+            capture_output=True,
+            text=True,
+            cwd=ROOT,
+            env={
+                "RELEASE_VERIFY_DRY_RUN": "1",
+                "RELEASE_OUTPUT_DIR": "release-output",
+                "RELEASE_COMMIT": "0123456789abcdef0123456789abcdef01234567",
+            },
+        )
+
+        self.assertEqual(
+            result.returncode,
+            0,
+            msg=f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+        )
+        self.assertIn(
+            "python scripts/build-adapters.py --version v0.1.3 --output-dir release-output",
+            result.stdout,
+        )
+        self.assertIn(
+            "python scripts/validate-release.py --version v0.1.3 --release-output-dir release-output --release-commit 0123456789abcdef0123456789abcdef01234567",
+            result.stdout,
+        )
+        self.assertNotIn("python scripts/build-adapters.py --version v0.1.3 --check", result.stdout)
+        self.assertNotIn("python scripts/validate-adapters.py --version v0.1.3", result.stdout)
+        self.assertIn("security", result.stdout.lower())
+
     def test_release_verify_script_accepts_github_ref_name(self) -> None:
         result = subprocess.run(
             ["bash", str(ROOT / "scripts" / "release-verify.sh")],
