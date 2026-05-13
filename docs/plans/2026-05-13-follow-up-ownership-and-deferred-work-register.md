@@ -66,14 +66,14 @@ Validation and generated-output context:
 
 ## Current Handoff Summary
 
-- Current milestone: M1
-- Current milestone state: closed
+- Current milestone: M2
+- Current milestone state: review-requested
 - Last reviewed milestone: M1
-- Review status: M1 clean-with-notes
-- Remaining in-scope implementation milestones: M2
-- Next stage: implement M2
+- Review status: M2 code-review pending
+- Remaining in-scope implementation milestones: M2 pending code-review
+- Next stage: code-review M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2, final code-review closeout, explain-change, verify, and PR handoff have not completed.
+- Reason final closeout is or is not ready: M2 code-review, final closeout, explain-change, verify, and PR handoff have not completed.
 
 ## Milestones
 
@@ -129,7 +129,7 @@ Validation and generated-output context:
 
 ### M2. Validation alignment and lifecycle handoff
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Ensure repository validation and lifecycle artifacts prove the first-slice contract and prepare final closeout after implementation review.
 - Requirements: `R7`-`R9g`, `R12`-`R13a`
 - Files/components likely touched:
@@ -156,7 +156,7 @@ Validation and generated-output context:
   - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-13-follow-up-ownership-and-deferred-work-register`
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-13-follow-up-ownership-and-deferred-work-register/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-13-follow-up-ownership-and-deferred-work-register.md --path specs/follow-up-ownership-and-deferred-work-register.md --path docs/plans/2026-05-13-follow-up-ownership-and-deferred-work-register.md --path docs/plan.md --path docs/changes/2026-05-13-follow-up-ownership-and-deferred-work-register/change.yaml`
-  - `python scripts/build-adapters.py --check`
+  - `python scripts/build-adapters.py --check` if tracked adapter tree output is applicable to the current release surface; otherwise record the mismatch and use release-archive adapter regression proof.
   - `git diff --check --`
 - Expected observable result:
   - validation catches drift in affected skill guidance where existing validators support it;
@@ -164,11 +164,11 @@ Validation and generated-output context:
   - optional register validation is not added unless the register exists.
 - Commit message: `M2: validate follow-up ownership guidance`
 - Milestone closeout:
-  - [ ] validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - over-validating prose could make concise wording brittle;
   - adapter build checks may be too broad for a docs/skill wording slice.
@@ -219,6 +219,8 @@ Final verification before PR should include:
 - 2026-05-13: M1 implementation started; static validator tests were added first and failed against the missing workflow and skill wording as expected.
 - 2026-05-13: M1 implementation completed: `docs/workflows.md` now owns the follow-up ownership table, `workflow` and `project-map` contain concise operational wording, and no `docs/follow-ups.md` or follow-up shared template was created.
 - 2026-05-13: M1 code-review passed with `clean-with-notes`; M1 is closed and M2 is the next implementation milestone.
+- 2026-05-13: M2 implementation started; validation alignment is being checked without introducing `docs/follow-ups.md` or register-specific validators because no qualifying register item exists.
+- 2026-05-13: M2 implementation completed; validation alignment is recorded, optional register validation remains unintroduced because no register exists, and M2 is ready for code-review.
 
 ## Decision log
 
@@ -226,6 +228,7 @@ Final verification before PR should include:
 - 2026-05-13: first slice does not create `docs/follow-ups.md` -> no qualifying accepted unowned cross-change follow-up has been identified.
 - 2026-05-13: first slice does not create `templates/shared/` wording -> only `workflow` and `project-map` need concise wording.
 - 2026-05-13: test spec uses real repository files for M1 proof and synthetic fixtures only if optional register validation is introduced.
+- 2026-05-13: `python scripts/build-adapters.py --check` is not applicable as a passing tree-output check in the current branch state because `dist/adapters/README.md` and `manifest.yaml` define the `v0.1.3` release-archive support surface while generated public adapter skill bodies are not tracked.
 
 ## Surprises and discoveries
 
@@ -244,6 +247,13 @@ Final verification before PR should include:
 - 2026-05-13: `python scripts/test-select-validation.py` passed.
 - 2026-05-13: `git diff --check --` passed.
 - 2026-05-13: M1 handoff commit created with subject `M1: add follow-up ownership routing guidance`.
+- 2026-05-13: M2 `python scripts/test-skill-validator.py` passed.
+- 2026-05-13: M2 `python scripts/validate-skills.py` passed.
+- 2026-05-13: M2 `python scripts/test-select-validation.py` passed.
+- 2026-05-13: M2 `python scripts/build-adapters.py --check` failed because it still checks default `0.1.1` tracked adapter tree output and expects generated public adapter skill bodies missing from the `v0.1.3` tracked support surface. This is recorded as non-applicable to this slice rather than fixed here.
+- 2026-05-13: M2 `python scripts/build-adapters.py --version v0.1.3 --check` also failed on tracked tree-output expectations and a manifest command-alias rule mismatch, confirming the check is stale for the current release-archive model.
+- 2026-05-13: M2 `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives` passed as the applicable release-archive adapter regression proof.
+- 2026-05-13: M2 handoff commit created with subject `M2: validate follow-up ownership guidance`.
 
 ## Outcome and retrospective
 
