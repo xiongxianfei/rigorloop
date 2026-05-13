@@ -234,11 +234,15 @@ run_broad_smoke() {
   run_check "Run adapter distribution fixtures" \
     python scripts/test-adapter-distribution.py
 
-  run_check "Check generated adapter drift" \
-    python scripts/build-adapters.py --version 0.1.1 --check
+  local adapter_release_output
+  adapter_release_output="$(mktemp -d)"
+  trap 'rm -rf "$adapter_release_output"' RETURN
 
-  run_check "Validate generated adapters" \
-    python scripts/validate-adapters.py --version 0.1.1
+  run_check "Build generated adapter archives" \
+    python scripts/build-adapters.py --version v0.1.3 --output-dir "$adapter_release_output"
+
+  run_check "Validate generated adapter archives" \
+    python scripts/validate-adapters.py --root "$adapter_release_output" --version v0.1.3
 
   run_check "Run change metadata validator fixtures" \
     python scripts/test-change-metadata-validator.py

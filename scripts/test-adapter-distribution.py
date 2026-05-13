@@ -1514,8 +1514,6 @@ release_gate:
             [
                 sys.executable,
                 str(ROOT / "scripts" / "build-adapters.py"),
-                "--version",
-                "0.1.1",
                 "--check",
                 "--verbose",
             ],
@@ -1524,12 +1522,9 @@ release_gate:
             cwd=ROOT,
         )
 
-        self.assertEqual(
-            verbose_check.returncode,
-            0,
-            msg=f"stdout:\n{verbose_check.stdout}\nstderr:\n{verbose_check.stderr}",
-        )
-        self.assertIn("adapters.drift: ok", verbose_check.stdout)
+        self.assertNotEqual(verbose_check.returncode, 0)
+        self.assertIn("adapters.drift: failed", verbose_check.stdout)
+        self.assertIn("generated adapter file is missing", verbose_check.stdout)
 
         invalid_verbose = subprocess.run(
             [
@@ -1876,32 +1871,28 @@ release_gate:
             self.assertTrue(any("machine-local absolute path" in error for error in errors))
             self.assertTrue(any("permission bypass" in error for error in errors))
 
-    def test_validate_adapters_cli_accepts_repository_output(self) -> None:
+    def test_validate_adapters_cli_rejects_retired_repository_output(self) -> None:
         result = subprocess.run(
             [
                 sys.executable,
                 str(ROOT / "scripts" / "validate-adapters.py"),
                 "--version",
-                "0.1.1",
+                "v0.1.3",
             ],
             capture_output=True,
             text=True,
             cwd=ROOT,
         )
 
-        self.assertEqual(
-            result.returncode,
-            0,
-            msg=f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}",
-        )
-        self.assertIn("validated generated adapters for version 0.1.1", result.stdout)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("missing adapter directory", result.stdout)
 
     def test_ci_script_runs_adapter_checks_and_filters_generated_paths(self) -> None:
         ci_text = (ROOT / "scripts" / "ci.sh").read_text(encoding="utf-8")
 
         self.assertIn("python scripts/test-adapter-distribution.py", ci_text)
-        self.assertIn("python scripts/build-adapters.py --version 0.1.1 --check", ci_text)
-        self.assertIn("python scripts/validate-adapters.py --version 0.1.1", ci_text)
+        self.assertIn("python scripts/build-adapters.py --version v0.1.3 --output-dir", ci_text)
+        self.assertIn("python scripts/validate-adapters.py --root", ci_text)
         self.assertIn('"$path" == dist/adapters/*', ci_text)
 
     def test_release_metadata_validation_accepts_rc_artifacts(self) -> None:
@@ -2061,6 +2052,9 @@ release_gate:
     def test_v0_1_1_release_metadata_requires_command_alias_smoke_evidence(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
+            skills_root = ROOT / "skills"
+            output_root = root / "dist" / "adapters"
+            sync_adapter_output("0.1.1", skills_root=skills_root, output_root=output_root)
             release_root = root / "docs" / "releases"
             smoke = {
                 tool: {
@@ -2083,6 +2077,8 @@ release_gate:
 
             errors = validate_release_output(
                 "v0.1.1",
+                skills_root=skills_root,
+                output_root=output_root,
                 release_root=release_root,
                 changed_paths=(),
             )
@@ -2108,6 +2104,8 @@ release_gate:
             self.assertEqual(
                 validate_release_output(
                     "v0.1.1",
+                    skills_root=skills_root,
+                    output_root=output_root,
                     release_root=release_root,
                     changed_paths=(),
                 ),
@@ -2142,6 +2140,9 @@ release_gate:
     def test_v0_1_1_release_validation_blocks_invalid_token_cost_report(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
+            skills_root = ROOT / "skills"
+            output_root = root / "dist" / "adapters"
+            sync_adapter_output("0.1.1", skills_root=skills_root, output_root=output_root)
             release_root = root / "docs" / "releases"
             token_cost_root = root / "docs" / "reports" / "token-cost" / "releases"
             token_cost_root.mkdir(parents=True)
@@ -2162,6 +2163,8 @@ release_gate:
 
             errors = validate_release_output(
                 "v0.1.1",
+                skills_root=skills_root,
+                output_root=output_root,
                 release_root=release_root,
                 token_cost_report_root=token_cost_root,
             )
@@ -2308,6 +2311,9 @@ release_gate:
     def test_release_validation_passes_required_context_to_token_cost_validation(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
+            skills_root = ROOT / "skills"
+            output_root = root / "dist" / "adapters"
+            sync_adapter_output("0.1.1", skills_root=skills_root, output_root=output_root)
             release_root = root / "docs" / "releases"
             token_cost_root = root / "docs" / "reports" / "token-cost" / "releases"
             self.write_minimal_v2_token_report(token_cost_root)
@@ -2322,6 +2328,8 @@ release_gate:
 
             errors = validate_release_output(
                 "v0.1.1",
+                skills_root=skills_root,
+                output_root=output_root,
                 release_root=release_root,
                 token_cost_report_root=token_cost_root,
                 changed_paths=("skills/architecture-review/SKILL.md",),
@@ -2469,6 +2477,9 @@ release_gate:
         )
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
+            skills_root = ROOT / "skills"
+            output_root = root / "dist" / "adapters"
+            sync_adapter_output("0.1.1", skills_root=skills_root, output_root=output_root)
             release_root = root / "docs" / "releases"
             token_cost_root = root / "docs" / "reports" / "token-cost" / "releases"
             self.write_minimal_v2_token_report(token_cost_root, run_ids=required_runs)
@@ -2483,6 +2494,8 @@ release_gate:
 
             errors = validate_release_output(
                 "v0.1.1",
+                skills_root=skills_root,
+                output_root=output_root,
                 release_root=release_root,
                 token_cost_report_root=token_cost_root,
                 changed_paths=("skills/architecture-review/SKILL.md",),
@@ -2569,7 +2582,7 @@ release_gate:
 
             self.assertEqual(errors, [])
 
-    def test_validate_release_cli_accepts_repository_v0_1_1_artifacts(self) -> None:
+    def test_validate_release_cli_rejects_repository_v0_1_1_after_adapter_untracking(self) -> None:
         with tempfile.NamedTemporaryFile("w", encoding="utf-8") as changed_paths:
             changed_paths.flush()
             result = subprocess.run(
@@ -2586,19 +2599,32 @@ release_gate:
                 cwd=ROOT,
             )
 
-        self.assertEqual(
-            result.returncode,
-            0,
-            msg=f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}",
-        )
-        self.assertIn("validated release metadata for v0.1.1", result.stdout)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("missing adapter directory", result.stdout)
 
     def test_v0_1_1_release_validation_accepts_ignored_untracked_codex_skills(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
+            skills_root = ROOT / "skills"
+            output_root = root / "dist" / "adapters"
+            sync_adapter_output("0.1.1", skills_root=skills_root, output_root=output_root)
             release_root = root / "docs" / "releases"
             token_cost_root = root / "docs" / "reports" / "token-cost" / "releases"
-            self.write_minimal_v2_token_report(token_cost_root)
+            self.write_minimal_v2_token_report(
+                token_cost_root,
+                run_ids=(
+                    "workflow-route",
+                    "proposal-short",
+                    "plan-handoff",
+                    "implement-handoff",
+                    "code-review-small",
+                    "explain-change-summary",
+                    "verify-final-pack",
+                    "pr-handoff",
+                    "architecture-no-impact",
+                    "learn-no-durable-lesson",
+                ),
+            )
             self.write_release_artifacts(
                 root,
                 version="v0.1.1",
@@ -2610,10 +2636,10 @@ release_gate:
 
             errors = validate_release_output(
                 "v0.1.1",
-                skills_root=ROOT / "skills",
-                output_root=ROOT / "dist" / "adapters",
+                skills_root=skills_root,
+                output_root=output_root,
                 release_root=release_root,
-                token_cost_report_root=ROOT / "docs" / "reports" / "token-cost" / "releases",
+                token_cost_report_root=token_cost_root,
                 changed_paths=(),
                 tracked_files=(),
                 codex_skills_ignored=True,
@@ -2908,12 +2934,12 @@ release_gate:
         self.assertNotIn("marketplace package", combined)
         self.assertNotIn("package-manager distribution", combined)
 
-    def test_public_adapter_compatibility_surface_remains_tracked(self) -> None:
+    def test_public_adapter_support_surface_only_tracks_readme_and_manifest(self) -> None:
         result = subprocess.run(
             [
                 "git",
                 "ls-files",
-                "dist/adapters/*/.*/skills/*/SKILL.md",
+                "dist/adapters/**",
             ],
             cwd=ROOT,
             text=True,
@@ -2922,38 +2948,54 @@ release_gate:
         )
         tracked = result.stdout.splitlines()
 
-        for adapter in SUPPORTED_ADAPTERS:
-            with self.subTest(adapter=adapter):
-                self.assertTrue(
-                    any(path.startswith(f"dist/adapters/{adapter}/") for path in tracked),
-                    f"expected tracked generated public skill copies for {adapter}",
-                )
+        self.assertEqual(
+            tracked,
+            [
+                "dist/adapters/README.md",
+                "dist/adapters/manifest.yaml",
+            ],
+        )
+        self.assertFalse(any("/skills/" in path for path in tracked), tracked)
+        self.assertFalse(any(path.endswith(("AGENTS.md", "CLAUDE.md")) for path in tracked), tracked)
+        self.assertFalse(any("/commands/" in path for path in tracked), tracked)
 
-    def test_public_adapter_readme_documents_metadata_and_install_transition(self) -> None:
+    def test_public_adapter_readme_documents_archive_install_contract(self) -> None:
         text = (ROOT / "dist" / "adapters" / "README.md").read_text(encoding="utf-8")
 
         self.assertIn("canonical `skills/`", text)
-        self.assertIn("Do not edit generated adapter skill files by hand", text)
         self.assertIn("`dist/adapters/manifest.yaml`", text)
         self.assertIn("support matrix", text)
-        self.assertIn("repository-tree install", text)
-        self.assertIn("For `v0.1.1`", text)
-        self.assertIn("For `v0.1.2`", text)
-        self.assertIn("public adapter install path", text)
-        self.assertIn("tracked adapter skill bodies", text)
-        self.assertIn("compatibility window", text)
+        self.assertIn("For `v0.1.3` and later", text)
+        self.assertIn("GitHub release archives", text)
         self.assertIn("rigorloop-adapter-codex-<version>.zip", text)
         self.assertIn("rigorloop-adapter-claude-<version>.zip", text)
         self.assertIn("rigorloop-adapter-opencode-<version>.zip", text)
         self.assertIn("`.agents/skills/`", text)
         self.assertIn("`.claude/skills/`", text)
         self.assertIn("`.opencode/skills/`", text)
-        self.assertIn("generated adapter skill bodies are not tracked source after the later untracking release", text.lower())
+        self.assertIn("generated public adapter skill bodies are not tracked source", text.lower())
         self.assertIn("`docs/reports/adapter-artifacts/releases/<version>.yaml`", text)
-        self.assertIn("release assets", text)
+        self.assertIn("v0.1.2 kept repository-tree adapter packages", text)
         self.assertIn("`.codex/skills/`", text)
         self.assertIn("ignored local runtime install directory", text)
         self.assertIn("not a public adapter install source", text)
+        self.assertNotIn("copy that adapter package root's contents", text)
+        self.assertNotIn("tracked adapter skill bodies under `dist/adapters/**/skills` remain available", text)
+
+    def test_root_guidance_points_to_adapter_install_contract_surface(self) -> None:
+        docs = {
+            "CONSTITUTION.md": (ROOT / "CONSTITUTION.md").read_text(encoding="utf-8"),
+            "AGENTS.md": (ROOT / "AGENTS.md").read_text(encoding="utf-8"),
+            "docs/workflows.md": (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8"),
+        }
+
+        for path, text in docs.items():
+            with self.subTest(path=path):
+                self.assertIn("dist/adapters/README.md", text)
+                self.assertIn("release archives", text.lower())
+                self.assertIn("skills/", text)
+                self.assertNotIn("remain tracked generated installable output during the compatibility window", text)
+                self.assertNotIn("install or copy public Codex adapter output from `dist/adapters/codex/.agents/skills/`", text)
 
     def test_v0_1_2_release_notes_document_archive_introduction_contract(self) -> None:
         text = (ROOT / "docs" / "releases" / "v0.1.2" / "release-notes.md").read_text(
@@ -3024,7 +3066,7 @@ release_gate:
         self.assertIn("No downloadable adapter archives are introduced in this release", text)
         self.assertNotIn("checks canonical skills, generated `.codex/skills/`", text)
 
-    def test_contributor_docs_install_local_codex_from_public_adapter(self) -> None:
+    def test_contributor_docs_keep_codex_runtime_local_and_untracked(self) -> None:
         docs = {
             "README.md": (ROOT / "README.md").read_text(encoding="utf-8"),
             "docs/workflows.md": (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8"),
@@ -3034,13 +3076,15 @@ release_gate:
 
         for path, text in docs.items():
             with self.subTest(path=path):
-                self.assertIn("public Codex adapter output", text)
+                self.assertIn("dist/adapters/README.md", text)
+                self.assertIn("release archives", text.lower())
                 self.assertIn("`.codex/skills/`", text)
                 self.assertIn("untracked", text)
                 self.assertNotIn(
                     "Regenerate it with `python scripts/build-skills.py` when needed.",
                     text,
                 )
+                self.assertNotIn("install or copy public Codex adapter output from `dist/adapters/codex/.agents/skills/`", text)
                 self.assertNotIn("Do not hand-edit local Codex runtime state", text)
                 self.assertNotIn("Do not hand-edit generated Codex compatibility output", text)
                 self.assertNotIn("MUST NOT be hand-edited or tracked", text)

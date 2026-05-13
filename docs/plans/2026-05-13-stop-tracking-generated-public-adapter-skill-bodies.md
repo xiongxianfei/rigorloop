@@ -98,13 +98,13 @@ The token-cost `--skill-source` value must point to generated public adapter rel
 ## Current Handoff Summary
 
 - Current milestone: M2. Repository tree untracking and guidance alignment
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M1
-- Review status: code-review-m1-r2 clean-with-notes; M1 closed
-- Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: implement M2
+- Review status: M2 implementation completed; awaiting code-review for repository tree untracking and guidance alignment
+- Remaining in-scope implementation milestones: M3, M4
+- Next stage: code-review M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2-M4 are not implemented, release validation has not run against final release evidence, explain-change and verify are missing, and PR/release handoff is not prepared.
+- Reason final closeout is or is not ready: M3-M4 are not implemented, release validation has not run against final release evidence, explain-change and verify are missing, and PR/release handoff is not prepared.
 
 ## Milestones
 
@@ -157,7 +157,7 @@ The token-cost `--skill-source` value must point to generated public adapter rel
 
 ### M2. Repository tree untracking and guidance alignment
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Remove tracked generated adapter package fragments and align root/install guidance with the archive-install model.
 - Requirements: R8-R32, R58-R61.
 - Files/components likely touched:
@@ -197,6 +197,8 @@ The token-cost `--skill-source` value must point to generated public adapter rel
   - milestone committed
 - Risks: root guidance could keep stale compatibility-window text that looks active.
 - Rollback/recovery: restore generated adapter output from canonical `skills/` and stop release preparation if guidance or validation cannot be aligned.
+- Implementation result: tracked generated adapter skill bodies, generated adapter instruction entrypoints, and generated opencode command wrappers were removed from `dist/adapters/`; `dist/adapters/README.md` and `dist/adapters/manifest.yaml` remain the tracked support surface. Root guidance now points ordinary users and contributors to archive installation through `dist/adapters/README.md`, and CI/selector adapter checks use archive-output validation instead of retired repository-tree package validation.
+- Review result: pending M2 code-review.
 
 ### M3. v0.1.3 release evidence and token-cost reports
 
@@ -333,7 +335,8 @@ bash scripts/release-verify.sh v0.1.3
 - [x] 2026-05-13: M1 implementation completed and handed to code-review.
 - [x] 2026-05-13: M1 code-review finding CR-M1-1 resolved.
 - [x] M1 implemented and reviewed.
-- [ ] M2 implemented and reviewed.
+- [x] 2026-05-13: M2 implementation completed and handed to code-review.
+- [ ] M2 reviewed.
 - [ ] M3 implemented and reviewed.
 - [ ] M4 release verification closeout completed.
 - [ ] explain-change recorded.
@@ -350,12 +353,15 @@ bash scripts/release-verify.sh v0.1.3
 - 2026-05-13: For `v0.1.3`, treat `generated_sync` as proof that the tracked adapter support surface is clean while adapter package correctness is proved by release-output archive validation and artifact metadata validation.
 - 2026-05-13: `code-review-m1-r1` found that the maintainer release gate itself remains outside the migrated validation model until `scripts/release-verify.sh` accepts `v0.1.3` and invokes generated-output/archive checks.
 - 2026-05-13: Resolve `CR-M1-1` by making `v0.1.3` release verification archive-only for adapter packages: it builds release archives, validates release metadata with `--release-output-dir` and `--release-commit`, and skips tracked adapter package drift checks.
+- 2026-05-13: Treat `dist/adapters/README.md` and `dist/adapters/manifest.yaml` as the only tracked adapter support surface after M2; generated package correctness is proved by archive/temp-output tests and release-output validation.
+- 2026-05-13: Update broad CI and selector adapter checks to exercise generated archive output instead of `build-adapters.py --check` and `validate-adapters.py` against the retired tracked package tree.
 
 ## Surprises and discoveries
 
 - Existing script interfaces already support generated release-output validation and benchmark skill-source injection through `--output-dir`, `--root`, `--release-output-dir`, `--release-commit`, and `--skill-source`.
 - Release validation needed a version-gated notes and tracked-surface branch so the old `dist/adapters/<adapter>/` drift check remains active for compatibility releases but does not require retired package trees for `v0.1.3`.
 - `RELEASE_VERIFY_DRY_RUN=1 bash scripts/release-verify.sh v0.1.3` now passes and uses a temporary release-output directory plus the current Git commit when explicit values are not supplied.
+- Historical `v0.1.1` validator tests still need fixture-generated adapter output once the current repository no longer carries tracked package trees; those tests now pass explicit temporary output roots instead of relying on current `dist/adapters/`.
 
 ## Validation notes
 
@@ -368,6 +374,15 @@ bash scripts/release-verify.sh v0.1.3
 - 2026-05-13: `RELEASE_VERIFY_DRY_RUN=1 RELEASE_OUTPUT_DIR=release-output RELEASE_COMMIT=0123456789abcdef0123456789abcdef01234567 bash scripts/release-verify.sh v0.1.3` passed.
 - 2026-05-13: `python scripts/test-adapter-distribution.py` passed: 91 tests. The suite emitted an expected negative-fixture token-cost validation message while still completing `OK`.
 - 2026-05-13: `RELEASE_VERIFY_DRY_RUN=1 bash scripts/release-verify.sh v0.1.3` passed using a temporary release-output directory and the current Git commit.
+- 2026-05-13: `git ls-files 'dist/adapters/**/skills/**' && git ls-files 'dist/adapters/**'` confirmed only `dist/adapters/README.md` and `dist/adapters/manifest.yaml` remain tracked under `dist/adapters/`.
+- 2026-05-13: `python scripts/test-adapter-distribution.py -k public_adapter` passed: 2 tests.
+- 2026-05-13: `python scripts/test-adapter-distribution.py -k root_guidance` passed: 1 test.
+- 2026-05-13: `python scripts/test-adapter-distribution.py` passed: 92 tests. The suite emitted an expected negative-fixture token-cost validation message while still completing `OK`.
+- 2026-05-13: `python scripts/test-select-validation.py` passed: 59 tests.
+- 2026-05-13: `python scripts/select-validation.py --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path dist/adapters/README.md --path dist/adapters/manifest.yaml` passed with status `ok` and selected adapter, lifecycle, and selector checks.
+- 2026-05-13: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path AGENTS.md --path CONSTITUTION.md --path docs/workflows.md` passed.
+- 2026-05-13: `python scripts/build-adapters.py --version v0.1.3 --output-dir <tmp> && python scripts/validate-adapters.py --root <tmp> --version v0.1.3` passed.
+- 2026-05-13: `RELEASE_VERIFY_DRY_RUN=1 bash scripts/release-verify.sh v0.1.3` passed.
 
 ## Outcome and retrospective
 

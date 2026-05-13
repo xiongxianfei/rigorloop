@@ -43,19 +43,19 @@ README content between `<!-- vision:start -->` and `<!-- vision:end -->` is gene
 
 ## Adapter Packages
 
-RigorLoop ships generated adapter packages for Codex, Claude Code, and opencode under `dist/adapters/`.
+RigorLoop ships generated adapter packages for Codex, Claude Code, and opencode as GitHub release archives. The active install contract is in `dist/adapters/README.md`.
 
-| Tool | Package root | Instruction entrypoint | Skill directory |
-| --- | --- | --- | --- |
-| Codex | `dist/adapters/codex/` | `AGENTS.md` | `.agents/skills/` |
-| Claude Code | `dist/adapters/claude/` | `CLAUDE.md` | `.claude/skills/` |
-| opencode | `dist/adapters/opencode/` | `AGENTS.md` | `.opencode/skills/` |
+| Tool | Archive pattern | Skill directory |
+| --- | --- | --- |
+| Codex | `rigorloop-adapter-codex-<version>.zip` | `.agents/skills/` |
+| Claude Code | `rigorloop-adapter-claude-<version>.zip` | `.claude/skills/` |
+| opencode | `rigorloop-adapter-opencode-<version>.zip` | `.opencode/skills/` |
 
-To install one adapter, copy that adapter package root's contents into a project root. The current support matrix is generated in `dist/adapters/manifest.yaml`; for adapter package version `0.1.1`, all current skills are included for Codex, Claude Code, and opencode. The manifest also lists the generated opencode command aliases under `command_aliases.opencode`.
+The current support matrix is tracked in `dist/adapters/manifest.yaml`; it records adapter support and generated opencode command aliases under `command_aliases.opencode`.
 
-`skills/` is the only authored skill source. `.codex/skills/` is ignored local Codex runtime state. For local Codex use, install or copy public Codex adapter output from `dist/adapters/codex/.agents/skills/` into `.codex/skills/`, and keep `.codex/skills/` untracked.
+`skills/` is the only authored skill source. `.codex/skills/` is ignored local Codex runtime state; keep it untracked if you copy installed Codex adapter skills there for local runtime use.
 
-Public adapter packages under `dist/adapters/` remain tracked generated installable output during the compatibility window. Adapter packages under `dist/adapters/` are generated release output. When a later release retires repository-tree adapter install, generated adapter archives will be published as release assets with tracked metadata and checksums.
+For `v0.1.3` and later, generated public adapter skill bodies are release archives, not tracked source under `dist/adapters/`. Historical note: `v0.1.2` kept repository-tree adapter packages during the compatibility window while introducing release archives.
 
 Adapter compatibility claims are versioned. If external tool contracts change, update the affected adapter contract through the RigorLoop lifecycle before changing release claims.
 
@@ -145,11 +145,10 @@ The normative contract lives in [specs/rigorloop-workflow.md](specs/rigorloop-wo
   - `skills/`
   - `schemas/`
   - `scripts/`
-- Do not hand-edit generated public adapter packages in:
-  - `dist/adapters/`
-- `skills/` is the only authored skill source. `.codex/skills/` is ignored local Codex runtime state. For local Codex use, install or copy public Codex adapter output from `dist/adapters/codex/.agents/skills/` into `.codex/skills/`, keep `.codex/skills/` untracked, and edit canonical skills under `skills/`.
-- Public adapter packages under `dist/adapters/` remain tracked generated installable output during the compatibility window.
-- Public-surface token-cost benchmarks must identify public adapter output such as `dist/adapters/codex/.agents/skills/`, not repository-local `.codex/skills/`.
+- Do not hand-edit generated public adapter packages. Use `dist/adapters/README.md` for public adapter installation.
+- `skills/` is the only authored skill source. `.codex/skills/` is ignored local Codex runtime state; keep it untracked when copying installed Codex adapter skills there for local runtime use, and edit canonical skills under `skills/`.
+- `dist/adapters/README.md` and `dist/adapters/manifest.yaml` are the tracked adapter support surface.
+- Public-surface token-cost benchmarks must identify generated public adapter output or release archive output, not repository-local `.codex/skills/`.
 - Execution plans follow:
   - `docs/examples/plans/example-plan.md`
 
@@ -160,8 +159,9 @@ Before PR, run the same structural checks that CI runs:
 - `python scripts/validate-skills.py`
 - `python scripts/test-skill-validator.py`
 - `python scripts/build-skills.py --check`
-- `python scripts/build-adapters.py --version 0.1.1 --check`
-- `python scripts/validate-adapters.py --version 0.1.1`
+- `python scripts/test-adapter-distribution.py`
+- `python scripts/build-adapters.py --version v0.1.3 --output-dir <release-output-dir>`
+- `python scripts/validate-adapters.py --root <release-output-dir> --version v0.1.3`
 
 Use `bash scripts/ci.sh` to run the same checks through the repository-owned CI wrapper.
 
