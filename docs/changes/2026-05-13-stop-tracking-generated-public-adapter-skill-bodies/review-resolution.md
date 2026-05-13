@@ -4,7 +4,7 @@
 
 This record tracks material findings from formal lifecycle reviews for the v0.1.3 generated public adapter skill-body untracking proposal.
 
-Closeout status: closed
+Closeout status: open
 
 ## Resolution Entries
 
@@ -84,3 +84,22 @@ No material findings.
 ### code-review-m2-r1
 
 No material findings.
+
+### code-review-m3-r1
+
+Review closeout: open
+
+#### CR-M3-1
+
+Finding ID: CR-M3-1
+Disposition: needs-decision
+Owner: implementer
+Owning stage: implement M3
+Decision owner: implementer
+Decision needed: Choose whether to run and record actual v0.1.3 adapter smoke evidence in M3 or mark release readiness blocked until smoke can be performed.
+Required outcome: Stable `v0.1.3` smoke rows must be backed by actual maintainer smoke evidence for the installed/generated `v0.1.3` adapters, or the release metadata must stop claiming smoke `pass` until such evidence exists.
+Rationale: `docs/releases/v0.1.3/release.yaml` marks Codex, Claude Code, and opencode smoke rows as `pass`, but the evidence strings only cite repository-owned archive validation and tool-version checks. The governing architecture and workflow guidance preserve maintainer smoke evidence for stable releases.
+Chosen action: pending
+Safe resolution path: Extract or otherwise install each generated `v0.1.3` adapter archive into a disposable root, run the accepted smoke command/form for Codex, Claude Code, and opencode, and update `docs/releases/v0.1.3/release.yaml` evidence with the actual commands/results. If smoke cannot be run in this slice, change the release metadata and lifecycle state so `v0.1.3` is not release-ready, then record the blocker instead of marking smoke rows `pass`.
+Validation target: Rerun `code-review M3` after updating smoke evidence or recording an approved blocker/policy decision.
+Validation evidence: pending
