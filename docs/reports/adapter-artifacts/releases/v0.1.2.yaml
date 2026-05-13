@@ -2,6 +2,7 @@ schema_version: 1
 
 release:
   version: v0.1.2
+  # Records the archive source commit for v0.1.2; see PAAM-M2-CR1 resolution.
   source_commit: 5514ef14ce5f310787f464ea78bd777838cb5537
   date: "2026-05-13"
 
