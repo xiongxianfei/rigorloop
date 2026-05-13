@@ -1,0 +1,46 @@
+version: v0.1.3
+release_type: final
+manifest_version: v0.1.3
+
+supported_tools:
+  - codex
+  - claude
+  - opencode
+
+adapter_paths:
+  codex: dist/adapters/codex/
+  claude: dist/adapters/claude/
+  opencode: dist/adapters/opencode/
+
+instruction_entrypoints:
+  codex: dist/adapters/codex/AGENTS.md
+  claude: dist/adapters/claude/CLAUDE.md
+  opencode: dist/adapters/opencode/AGENTS.md
+
+smoke:
+  codex:
+    result: pass
+    tool_version: "codex-cli 0.130.0"
+    evidence: "Maintainer manually smoke-tested the extracted v0.1.3 Codex adapter archive in a disposable root on 2026-05-13 and confirmed the installed adapter loaded AGENTS.md plus .agents/skills/ generated from canonical skills; codex --version reported codex-cli 0.130.0."
+    reason: ""
+    owner: maintainer
+  claude:
+    result: pass
+    tool_version: "2.1.119 (Claude Code)"
+    evidence: "Maintainer manually smoke-tested the extracted v0.1.3 Claude Code adapter archive in a disposable root on 2026-05-13 and confirmed the installed adapter loaded CLAUDE.md plus .claude/skills/ generated from canonical skills; claude --version reported 2.1.119 (Claude Code)."
+    reason: ""
+    owner: maintainer
+  opencode:
+    result: pass
+    tool_version: "1.14.22"
+    evidence: "Maintainer manually smoke-tested the extracted v0.1.3 opencode adapter archive in a disposable root on 2026-05-13 and confirmed the installed adapter loaded AGENTS.md, .opencode/skills/, and generated command aliases; opencode --version reported 1.14.22."
+    reason: ""
+    owner: maintainer
+
+validation:
+  generated_sync: pass
+  release_notes_consistency: pass
+  placeholder_release_check: pass
+  security: pass
+  adapter_archives: pass
+  adapter_artifact_metadata: pass

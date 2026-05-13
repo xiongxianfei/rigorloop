@@ -22,7 +22,7 @@ if [[ -z "$release_version" ]]; then
 fi
 
 case "$release_version" in
-  v0.1.0-rc.1|v0.1.0|v0.1.1|v0.1.2)
+  v0.1.0-rc.1|v0.1.0|v0.1.1|v0.1.2|v0.1.3)
     ;;
   *)
     echo "Unsupported release target: ${release_version}" >&2
@@ -36,7 +36,7 @@ if [[ "$release_version" == "v0.1.2" ]]; then
 fi
 release_output_dir="${RELEASE_OUTPUT_DIR:-}"
 cleanup_release_output_dir=""
-if [[ "$release_version" == "v0.1.2" && -z "$release_output_dir" ]]; then
+if [[ "$release_version" == "v0.1.2" || "$release_version" == "v0.1.3" ]] && [[ -z "$release_output_dir" ]]; then
   release_output_dir="$(mktemp -d)"
   cleanup_release_output_dir="$release_output_dir"
 fi
@@ -44,8 +44,8 @@ if [[ -n "$cleanup_release_output_dir" ]]; then
   trap 'rm -rf "$cleanup_release_output_dir"' EXIT
 fi
 release_commit="${RELEASE_COMMIT:-}"
-if [[ "$release_version" == "v0.1.2" && -z "$release_commit" ]]; then
-  release_commit="$(python - <<'PY'
+if [[ "$release_version" == "v0.1.2" || "$release_version" == "v0.1.3" ]] && [[ -z "$release_commit" ]]; then
+  release_commit="$(python - "$release_version" <<'PY'
 import sys
 from pathlib import Path
 
@@ -56,7 +56,8 @@ from adapter_distribution import (
     parse_adapter_artifact_metadata_yaml,
 )
 
-path = ADAPTER_ARTIFACT_REPORT_ROOT / "v0.1.2.yaml"
+release_version = sys.argv[1]
+path = ADAPTER_ARTIFACT_REPORT_ROOT / f"{release_version}.yaml"
 metadata = parse_adapter_artifact_metadata_yaml(path.read_text(encoding="utf-8"), path)
 print(metadata.source_commit)
 PY
@@ -68,10 +69,14 @@ REQUIRED_CHECK_COMMANDS=(
   "python scripts/validate-skills.py"
   "python scripts/test-skill-validator.py"
   "python scripts/test-adapter-distribution.py"
-  "python scripts/build-adapters.py --version ${adapter_version} --check"
-  "python scripts/validate-adapters.py --version ${adapter_version}"
 )
-if [[ "$release_version" == "v0.1.2" ]]; then
+if [[ "$release_version" != "v0.1.3" ]]; then
+  REQUIRED_CHECK_COMMANDS+=(
+    "python scripts/build-adapters.py --version ${adapter_version} --check"
+    "python scripts/validate-adapters.py --version ${adapter_version}"
+  )
+fi
+if [[ "$release_version" == "v0.1.2" || "$release_version" == "v0.1.3" ]]; then
   REQUIRED_CHECK_COMMANDS+=(
     "python scripts/build-adapters.py --version ${release_version} --output-dir ${release_output_dir}"
     "python scripts/validate-release.py --version ${release_version} --release-output-dir ${release_output_dir} --release-commit ${release_commit}"
@@ -170,13 +175,15 @@ fi
 run_check "Run adapter distribution regression tests" \
   python scripts/test-adapter-distribution.py
 
-run_check "Check generated adapter drift" \
-  python scripts/build-adapters.py --version "$adapter_version" --check
+if [[ "$release_version" != "v0.1.3" ]]; then
+  run_check "Check generated adapter drift" \
+    python scripts/build-adapters.py --version "$adapter_version" --check
 
-run_check "Validate generated adapters and security" \
-  python scripts/validate-adapters.py --version "$adapter_version"
+  run_check "Validate generated adapters and security" \
+    python scripts/validate-adapters.py --version "$adapter_version"
+fi
 
-if [[ "$release_version" == "v0.1.2" ]]; then
+if [[ "$release_version" == "v0.1.2" || "$release_version" == "v0.1.3" ]]; then
   run_check "Build adapter release archives" \
     python scripts/build-adapters.py --version "$release_version" --output-dir "$release_output_dir"
 fi
@@ -186,7 +193,7 @@ if [[ "$release_version" == "v0.1.1" ]]; then
     python scripts/validate-token-cost-report.py "docs/reports/token-cost/releases/${release_version}.yaml"
 fi
 
-if [[ "$release_version" == "v0.1.2" ]]; then
+if [[ "$release_version" == "v0.1.2" || "$release_version" == "v0.1.3" ]]; then
   run_check "Validate release metadata, adapter artifacts, smoke rules, notes, and security" \
     python scripts/validate-release.py --version "$release_version" --release-output-dir "$release_output_dir" --release-commit "$release_commit"
 else

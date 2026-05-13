@@ -1973,7 +1973,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "Shared skill policy blocks live under `templates/shared/<block-name>.md`.",
             "Public shared blocks are copied into consuming skills and checked for drift; maintainer-only blocks such as generated-output handling are not copied into published skills.",
             "Add a skill only when it owns a distinct artifact, gate, review responsibility, recurring action, or approved operational process.",
-            "Edit canonical skill source under `skills/<skill>/SKILL.md`; for local Codex use, install or copy public Codex adapter output into ignored `.codex/skills/`; keep public `dist/adapters/` output generated rather than hand-edited.",
+            "Edit canonical skill source under `skills/<skill>/SKILL.md`; for public adapter installation, use `dist/adapters/README.md`. For `v0.1.3` and later, generated public adapter skill bodies are release archives, not tracked source under `dist/adapters/`.",
         ]
         for term in required_workflows_terms:
             with self.subTest(surface="workflows_doc", term=term):
@@ -2000,9 +2000,10 @@ class SkillValidatorFixtureTests(unittest.TestCase):
 
         shared_terms = [
             "`skills/` is the only authored skill source.",
-            "public Codex adapter output",
-            "`.codex/skills/` untracked",
-            "Public adapter packages under `dist/adapters/` remain tracked generated installable output during the compatibility window.",
+            "dist/adapters/README.md",
+            "generated public adapter skill bodies are release archives",
+            ".codex/skills/",
+            "Historical note: `v0.1.2` kept repository-tree adapter packages during the compatibility window",
         ]
         for term in shared_terms:
             for surface_name, surface in {

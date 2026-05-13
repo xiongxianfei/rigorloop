@@ -1,0 +1,44 @@
+schema_version: 1
+
+run:
+  id: explain-change-summary
+  raw_jsonl_tracked: true
+  jsonl: docs/reports/token-cost/runs/v0.1.3/explain-change-summary-run1.jsonl
+  sanitized_source: ""
+  sanitized_summary: ""
+  raw_omission_reason: ""
+
+usage:
+  cached_input_tokens: 0
+  input_tokens: 0
+  output_tokens: 0
+  reasoning_output_tokens: 0
+
+tool_output:
+  total_estimated_tokens: 0
+  largest_event:
+    kind: shell-output
+    command: "token-cost dry-run explain-change-summary"
+    path: ""
+    lines: 0
+    estimated_tokens: 0
+
+signals:
+  full_file_read_count: 0
+  broad_search_count: 0
+  generated_output_read_count: 0
+  repeated_file_read_count: 0
+
+full_file_read:
+  result: none
+  justification: ""
+  signals: []
+  justified_reads: []
+  confirmed_reads: []
+  suspected_reads: []
+  repeated_file_reads: []
+
+verdict:
+  result: pass
+  warnings: []
+  blockers: []
