@@ -110,6 +110,12 @@ validation:
     result: pass
   - command: code-review m2 r1
     result: changes_requested_CR-M2-F1
+  - command: review-resolution m2 CR-M2-F1
+    result: accepted_resolved_pending_code_review_rerun
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_contributor_docs_install_local_codex_from_public_adapter AdapterDistributionTests.test_public_adapter_readme_documents_metadata_and_install_transition AdapterDistributionTests.test_v0_1_1_release_notes_document_transition_contract AdapterDistributionTests.test_validate_release_cli_accepts_repository_v0_1_1_artifacts
+    result: pass
+  - command: python scripts/validate-release.py --version v0.1.1
+    result: pass
 changed_files:
   - docs/proposals/2026-05-12-publish-next-release-with-single-authored-skill-source.md
   - specs/publish-next-release-with-single-authored-skill-source.md

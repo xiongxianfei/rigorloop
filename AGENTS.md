@@ -31,7 +31,7 @@ Do not silently blend conflicting higher-priority instructions. Call out the con
 - Edit canonical workflow content in `docs/`, `specs/`, `skills/`, `schemas/`, `scripts/`, and `templates/`.
 - Keep architecture and ADR scaffolds under `templates/`; do not place template-like files under `docs/architecture/` or `docs/adr/`.
 - `skills/` is the only authored skill source.
-- Do not hand-edit local Codex runtime state in `.codex/skills/`. For local Codex use, install or copy public Codex adapter output from `dist/adapters/codex/.agents/skills/` into ignored `.codex/skills/`, keep `.codex/skills/` untracked, and edit canonical skills under `skills/`.
+- For local Codex use, install or copy public Codex adapter output from `dist/adapters/codex/.agents/skills/` into ignored `.codex/skills/`; keep `.codex/skills/` untracked and edit canonical skills under `skills/`.
 - Do not hand-edit generated public adapter package output in `dist/adapters/`.
 - Public adapter packages under `dist/adapters/` remain tracked generated installable output during the compatibility window. Public adapter packages for Codex, Claude Code, and opencode are generated under `dist/adapters/`; `.codex/skills/` is local runtime state installed from public Codex adapter output when needed.
 - Follow `specs/skill-contract.md` for normalized skill structure and claim boundaries.
