@@ -41,13 +41,13 @@ Generated skill mirrors and public adapters must be refreshed or checked after c
 ## Current Handoff Summary
 
 - Current milestone: downstream closeout after implementation milestones
-- Current milestone state: ready-for-verify
+- Current milestone state: branch-ready
 - Last reviewed milestone: M4. Generated Output Refresh And Final Milestone Review
 - Review status: clean code-review for M4 recorded in `code-review-r4`
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
-- Final closeout readiness: ready to start downstream closeout; not PR-ready
-- Reason final closeout is or is not ready: M1, M2, M3, and M4 are closed after clean code-review; explain-change is complete; verify is not complete, and PR handoff is not prepared.
+- Next stage: pr
+- Final closeout readiness: local branch-ready for PR handoff; not PR-open-ready
+- Reason final closeout is or is not ready: M1, M2, M3, and M4 are closed after clean code-review; explain-change and local final verify are complete; PR handoff is not prepared or opened.
 
 ## Non-goals
 
@@ -358,6 +358,7 @@ Broad smoke is not planned by default. Add it only if selector output, the test 
 - [x] 2026-05-13: M3. Examples Routing And Lifecycle Validation closed after clean `code-review-r3`.
 - [x] 2026-05-13: M4. Generated Output Refresh And Final Milestone Review closed after clean `code-review-r4`.
 - [x] 2026-05-13: Explain-change recorded in `docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/explain-change.md`.
+- [x] 2026-05-13: Local final verify passed; branch-ready for `pr` handoff.
 
 ## Decision log
 
@@ -397,6 +398,7 @@ Broad smoke is not planned by default. Add it only if selector output, the test 
 - 2026-05-13: M4 validation passed: `python scripts/build-skills.py --check`; `python scripts/build-adapters.py --version 0.1.1 --check`; `python scripts/validate-adapters.py --version 0.1.1`; `python scripts/test-adapter-distribution.py`; `python scripts/test-skill-validator.py`; `python scripts/validate-skills.py`; `python scripts/test-select-validation.py`; `python scripts/test-artifact-lifecycle-validator.py`; `python scripts/test-review-artifact-validator.py`; `python scripts/test-change-metadata-validator.py`; `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording`; `python scripts/validate-change-metadata.py docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/change.yaml`.
 - 2026-05-13: Clean M4 code review recorded in `docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/reviews/code-review-r4.md`; M4 closed and Current Handoff Summary advanced to `explain-change`.
 - 2026-05-13: Explain-change recorded with diff rationale by area, test and validation evidence, review-resolution summary, alternatives rejected, scope controls, and remaining risks.
+- 2026-05-13: Final verify passed locally. Validation included generated-output drift checks, adapter validation and distribution tests, skill/selector/lifecycle/review/change-metadata regression suites, review-artifact closeout, change metadata validation, explicit lifecycle validation, selected CI checks, and whitespace checks. Selector routing for `docs/changes/0001-skill-validator/README.md` reported manual routing required because it is an intentionally retained active-looking fixture path; retained-fixture tests and lifecycle validation cover that path.
 
 ## Outcome and retrospective
 
@@ -405,4 +407,4 @@ Broad smoke is not planned by default. Add it only if selector output, the test 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Readiness is not Done; implementation milestones and explain-change are closed and the next stage is `verify`.
+- Readiness is not Done; local final verify passed and the next stage is `pr`.
