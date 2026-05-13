@@ -144,6 +144,8 @@ validation:
     result: pass
   - command: pr
     result: opened_PR_49
+  - command: PR #49
+    result: merged_hosted_ci_passed_f6e00324fcaa8c6ce3175fa13409392244346244
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-12-publish-next-release-with-single-authored-skill-source.md --path specs/publish-next-release-with-single-authored-skill-source.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-13-publish-next-release-with-single-authored-skill-source.md --path docs/plan.md --path docs/changes/2026-05-12-publish-next-release-with-single-authored-skill-source/change.yaml
     result: pass
   - command: python scripts/validate-change-metadata.py docs/changes/2026-05-12-publish-next-release-with-single-authored-skill-source/change.yaml
