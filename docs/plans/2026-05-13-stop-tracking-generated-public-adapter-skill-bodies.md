@@ -97,20 +97,20 @@ The token-cost `--skill-source` value must point to generated public adapter rel
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Validation model migration and regression tests
-- Current milestone state: review-requested
+- Current milestone: M2. Repository tree untracking and guidance alignment
+- Current milestone state: planned
 - Last reviewed milestone: M1
-- Review status: CR-M1-1 accepted and fixed; awaiting code-review rerun
-- Remaining in-scope implementation milestones: M1 review closeout, M2, M3, M4
-- Next stage: code-review M1 rerun
+- Review status: code-review-m1-r2 clean-with-notes; M1 closed
+- Remaining in-scope implementation milestones: M2, M3, M4
+- Next stage: implement M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 needs code-review rerun after the accepted finding fix, M2-M4 are not implemented, release validation has not run against final release evidence, explain-change and verify are missing, and PR/release handoff is not prepared.
+- Reason final closeout is or is not ready: M2-M4 are not implemented, release validation has not run against final release evidence, explain-change and verify are missing, and PR/release handoff is not prepared.
 
 ## Milestones
 
 ### M1. Validation model migration and regression tests
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Make adapter and release validation use generated temporary or release-output adapter packages instead of tracked `dist/adapters/<adapter>/` package trees.
 - Requirements: R33-R41g, R62-R68.
 - Files/components likely touched:
@@ -153,6 +153,7 @@ The token-cost `--skill-source` value must point to generated public adapter rel
 - Rollback/recovery: keep tracked adapter output until validation is migrated; if migration cannot be completed, stop before M2 and revise the spec or plan.
 - Implementation result: `v0.1.3` release validation now supports the release-output/archive validation model, requires only the tracked adapter support surface under `dist/adapters/`, rejects tracked adapter package fragments for `v0.1.3`, and keeps archive/metadata validation required for the release.
 - Review result: `code-review-m1-r1` requested changes for `CR-M1-1` because `scripts/release-verify.sh` still rejected `v0.1.3` before invoking generated release-output/archive validation. The finding is accepted and fixed; M1 is ready for code-review rerun.
+- Closeout: `code-review-m1-r2` completed with status `clean-with-notes`. M1 is closed and hands off to M2.
 
 ### M2. Repository tree untracking and guidance alignment
 
@@ -331,7 +332,7 @@ bash scripts/release-verify.sh v0.1.3
 - [x] M1 started.
 - [x] 2026-05-13: M1 implementation completed and handed to code-review.
 - [x] 2026-05-13: M1 code-review finding CR-M1-1 resolved.
-- [ ] M1 implemented and reviewed.
+- [x] M1 implemented and reviewed.
 - [ ] M2 implemented and reviewed.
 - [ ] M3 implemented and reviewed.
 - [ ] M4 release verification closeout completed.
