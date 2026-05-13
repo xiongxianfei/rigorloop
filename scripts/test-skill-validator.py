@@ -2480,6 +2480,8 @@ and result format.
             "historical proof pack",
             "not an active change root",
             "not the universal template",
+            "does not block the v0.1.2 archive-introduction release",
+            "M4 retention decision",
             "tests, validators, compatibility references, or historical proof references",
             "docs/examples/changes/skill-validator/",
         ]

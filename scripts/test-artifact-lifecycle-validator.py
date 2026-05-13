@@ -458,6 +458,7 @@ This is an example, not active lifecycle state.
         self.assertIn("retained validator fixture", text)
         self.assertIn("not an active change root", text)
         self.assertIn("not the universal template", text)
+        self.assertIn("does not block the v0.1.2 archive-introduction release", text)
         self.assertIn("docs/examples/changes/skill-validator/", text)
 
     def test_dist_adapters_generated_output_path_is_rejected(self) -> None:

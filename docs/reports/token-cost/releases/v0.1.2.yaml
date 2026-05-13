@@ -1,0 +1,633 @@
+schema_version: 1
+
+report:
+  release: v0.1.2
+  report_date: '2026-05-13'
+  repository: xiongxianfei/rigorloop
+  commit: 4b6af34938921e1433adf11bc98e37abe10e4812
+  report_markdown: docs/reports/token-cost/releases/v0.1.2.md
+benchmark_suite:
+  id: skill-token-runtime-v2
+  previous_suite_id: skill-token-runtime-v2
+  baseline_for_suite: false
+  transition_report: false
+  transition_from_release: v0.1.1
+  manifest: benchmarks/token-cost/manifest.yaml
+  prompt_count: 10
+  fixture: benchmarks/token-cost/fixtures/minimal-public-project
+  runs_per_prompt: 1
+benchmark_coverage:
+  suite_id: skill-token-runtime-v2
+  required_core_status: pass
+  required_core:
+    - workflow-route
+    - proposal-short
+    - plan-handoff
+    - implement-handoff
+    - code-review-small
+    - explain-change-summary
+    - verify-final-pack
+    - pr-handoff
+  transition_carryover_status: pass
+  transition_carryover_required:
+    - architecture-no-impact
+    - learn-no-durable-lesson
+  changed_skill_benchmark_status: pass
+  optional_extended:
+    - proposal-review
+    - spec
+    - spec-review
+    - architecture
+    - architecture-review
+    - plan-review
+    - test-spec
+    - learn
+    - research
+    - explore
+    - vision
+    - project-map
+  optional_run: []
+  missing_required: []
+  missing_optional:
+    - proposal-review
+    - spec
+    - spec-review
+    - architecture
+    - architecture-review
+    - plan-review
+    - test-spec
+    - learn
+    - research
+    - explore
+    - vision
+    - project-map
+environment:
+  primary_tool: codex
+  codex_available: true
+  codex_version: codex-cli 0.130.0
+  model: unknown
+  os: "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39"
+  runner: maintainer-local
+runner:
+  command: "python scripts/run-token-cost-benchmarks.py --release v0.1.2 --suite benchmarks/token-cost/manifest.yaml --tool codex --output-dir docs/reports/token-cost/runs/v0.1.2 --skill-source dist/adapters/codex/.agents/skills/"
+  tool: codex
+  suite: benchmarks/token-cost/manifest.yaml
+  fixture: benchmarks/token-cost/fixtures/minimal-public-project
+  skill_source: dist/adapters/codex/.agents/skills/
+  output_dir: docs/reports/token-cost/runs/v0.1.2
+  temp_policy: system-temp
+  install_public_skills: true
+static_skill_size:
+  status: warning
+  command: python scripts/measure-skill-tokens.py
+  skills_measured: 23
+  total_estimated_tokens: 56615
+  max_skill:
+    path: skills/workflow/SKILL.md
+    estimated_tokens: 5163
+  warnings:
+    - severity: high-warning
+      skill: skills/workflow/SKILL.md
+      code: static-public-skill-over-5000
+      message: workflow skill is above the initial 5000 estimated-token high-warning threshold
+    - severity: warning
+      skill: skills/code-review/SKILL.md
+      code: static-public-skill-over-4000
+      message: code-review skill is above the initial 4000 estimated-token warning threshold
+dynamic_runtime:
+  status: pass
+  tool: codex
+  command_pattern: codex exec --json --ephemeral --skip-git-repo-check ...
+  incomplete: null
+  runs:
+    - id: workflow-route
+      prompt: benchmarks/token-cost/prompts/workflow-route.md
+      fixture: benchmarks/token-cost/fixtures/minimal-public-project
+      result: pass
+      evidence:
+        raw_jsonl_tracked: false
+        jsonl: ""
+        analysis: docs/reports/token-cost/runs/v0.1.2/workflow-route-run1.analysis.yaml
+        sanitized_summary: docs/reports/token-cost/runs/v0.1.2/workflow-route-run1.analysis.yaml
+        raw_omission_reason: raw JSONL contains disposable local temp fixture paths and full command output; analyzer summary is tracked as sanitized release evidence
+      usage:
+        cached_input_tokens: 27392
+        input_tokens: 34343
+        output_tokens: 214
+        reasoning_output_tokens: 16
+      tool_output:
+        total_estimated_tokens: 3447
+        largest_event:
+          kind: command_execution
+          command: "/bin/bash -lc \\"sed -n '1,220p' /tmp/rigorloop-token-bench-v0.1.2-1778686349-4f31b7e6/.agents/skills/workflow/SKILL.md\\""
+          path: "/tmp/rigorloop-token-bench-v0.1.2-1778686349-4f31b7e6/.agents/skills/workflow/SKILL.md"
+          lines: 220
+          estimated_tokens: 3447
+      signals:
+        full_file_read_count: 1
+        broad_search_count: 0
+        generated_output_read_count: 0
+        repeated_file_read_count: 0
+      result_quality:
+        status: pass
+        reviewed_by: maintainer
+        review_surface: docs/reports/token-cost/releases/v0.1.2.md
+        reviewed_at: '2026-05-13'
+        criteria:
+          - id: obeyed_no_edit_instruction
+            expectation: The benchmark did not edit files.
+            result: pass
+            notes: ""
+          - id: output_shape
+            expectation: The response followed the prompt requested output shape.
+            result: pass
+            notes: ""
+          - id: ownership_boundary
+            expectation: The response did not claim downstream readiness that the skill could not prove from the fixture.
+            result: pass
+            notes: ""
+        notes: Manual review found the workflow-route output acceptable for this benchmark.
+        blockers: []
+    - id: proposal-short
+      prompt: benchmarks/token-cost/prompts/proposal-short.md
+      fixture: benchmarks/token-cost/fixtures/minimal-public-project
+      result: pass
+      evidence:
+        raw_jsonl_tracked: false
+        jsonl: ""
+        analysis: docs/reports/token-cost/runs/v0.1.2/proposal-short-run1.analysis.yaml
+        sanitized_summary: docs/reports/token-cost/runs/v0.1.2/proposal-short-run1.analysis.yaml
+        raw_omission_reason: raw JSONL contains disposable local temp fixture paths and full command output; analyzer summary is tracked as sanitized release evidence
+      usage:
+        cached_input_tokens: 62976
+        input_tokens: 70558
+        output_tokens: 862
+        reasoning_output_tokens: 147
+      tool_output:
+        total_estimated_tokens: 2498
+        largest_event:
+          kind: command_execution
+          command: "/bin/bash -lc \\"sed -n '1,220p' /tmp/rigorloop-token-bench-v0.1.2-1778686349-4f31b7e6/.agents/skills/proposal/SKILL.md\\""
+          path: "/tmp/rigorloop-token-bench-v0.1.2-1778686349-4f31b7e6/.agents/skills/proposal/SKILL.md"
+          lines: 185
+          estimated_tokens: 2202
+      signals:
+        full_file_read_count: 1
+        broad_search_count: 1
+        generated_output_read_count: 0
+        repeated_file_read_count: 0
+      result_quality:
+        status: pass
+        reviewed_by: maintainer
+        review_surface: docs/reports/token-cost/releases/v0.1.2.md
+        reviewed_at: '2026-05-13'
+        criteria:
+          - id: obeyed_no_edit_instruction
+            expectation: The benchmark did not edit files.
+            result: pass
+            notes: ""
+          - id: output_shape
+            expectation: The response followed the prompt requested output shape.
+            result: pass
+            notes: ""
+          - id: ownership_boundary
+            expectation: The response did not claim downstream readiness that the skill could not prove from the fixture.
+            result: pass
+            notes: ""
+        notes: Manual review found the proposal-short output acceptable for this benchmark.
+        blockers: []
+    - id: plan-handoff
+      prompt: benchmarks/token-cost/prompts/plan-handoff.md
+      fixture: benchmarks/token-cost/fixtures/minimal-public-project
+      result: pass
+      evidence:
+        raw_jsonl_tracked: false
+        jsonl: ""
+        analysis: docs/reports/token-cost/runs/v0.1.2/plan-handoff-run1.analysis.yaml
+        sanitized_summary: docs/reports/token-cost/runs/v0.1.2/plan-handoff-run1.analysis.yaml
+        raw_omission_reason: raw JSONL contains disposable local temp fixture paths and full command output; analyzer summary is tracked as sanitized release evidence
+      usage:
+        cached_input_tokens: 75136
+        input_tokens: 90736
+        output_tokens: 1041
+        reasoning_output_tokens: 171
+      tool_output:
+        total_estimated_tokens: 3105
+        largest_event:
+          kind: command_execution
+          command: "/bin/bash -lc \\"sed -n '1,220p' /tmp/rigorloop-token-bench-v0.1.2-1778686349-4f31b7e6/.agents/skills/plan/SKILL.md\\""
+          path: "/tmp/rigorloop-token-bench-v0.1.2-1778686349-4f31b7e6/.agents/skills/plan/SKILL.md"
+          lines: 220
+          estimated_tokens: 2500
+      signals:
+        full_file_read_count: 1
+        broad_search_count: 2
+        generated_output_read_count: 0
+        repeated_file_read_count: 0
+      result_quality:
+        status: pass
+        reviewed_by: maintainer
+        review_surface: docs/reports/token-cost/releases/v0.1.2.md
+        reviewed_at: '2026-05-13'
+        criteria:
+          - id: obeyed_no_edit_instruction
+            expectation: The benchmark did not edit files.
+            result: pass
+            notes: ""
+          - id: output_shape
+            expectation: The response followed the prompt requested output shape.
+            result: pass
+            notes: ""
+          - id: ownership_boundary
+            expectation: The response did not claim downstream readiness that the skill could not prove from the fixture.
+            result: pass
+            notes: ""
+        notes: Manual review found the plan-handoff output acceptable for this benchmark.
+        blockers: []
+    - id: implement-handoff
+      prompt: benchmarks/token-cost/prompts/implement-handoff.md
+      fixture: benchmarks/token-cost/fixtures/minimal-public-project
+      result: pass
+      evidence:
+        raw_jsonl_tracked: false
+        jsonl: ""
+        analysis: docs/reports/token-cost/runs/v0.1.2/implement-handoff-run1.analysis.yaml
+        sanitized_summary: docs/reports/token-cost/runs/v0.1.2/implement-handoff-run1.analysis.yaml
+        raw_omission_reason: raw JSONL contains disposable local temp fixture paths and full command output; analyzer summary is tracked as sanitized release evidence
+      usage:
+        cached_input_tokens: 63488
+        input_tokens: 76511
+        output_tokens: 779
+        reasoning_output_tokens: 176
+      tool_output:
+        total_estimated_tokens: 5630
+        largest_event:
+          kind: command_execution
+          command: "/bin/bash -lc \\"sed -n '1,220p' /tmp/rigorloop-token-bench-v0.1.2-1778686349-4f31b7e6/.agents/skills/implement/SKILL.md\\""
+          path: "/tmp/rigorloop-token-bench-v0.1.2-1778686349-4f31b7e6/.agents/skills/implement/SKILL.md"
+          lines: 220
+          estimated_tokens: 3098
+      signals:
+        full_file_read_count: 1
+        broad_search_count: 3
+        generated_output_read_count: 0
+        repeated_file_read_count: 0
+      result_quality:
+        status: pass
+        reviewed_by: maintainer
+        review_surface: docs/reports/token-cost/releases/v0.1.2.md
+        reviewed_at: '2026-05-13'
+        criteria:
+          - id: obeyed_no_edit_instruction
+            expectation: The benchmark did not edit files.
+            result: pass
+            notes: ""
+          - id: output_shape
+            expectation: The response followed the prompt requested output shape.
+            result: pass
+            notes: ""
+          - id: ownership_boundary
+            expectation: The response did not claim downstream readiness that the skill could not prove from the fixture.
+            result: pass
+            notes: ""
+        notes: Manual review found the implement-handoff output acceptable for this benchmark.
+        blockers: []
+    - id: code-review-small
+      prompt: benchmarks/token-cost/prompts/code-review-small.md
+      fixture: benchmarks/token-cost/fixtures/minimal-public-project
+      result: pass
+      evidence:
+        raw_jsonl_tracked: false
+        jsonl: ""
+        analysis: docs/reports/token-cost/runs/v0.1.2/code-review-small-run1.analysis.yaml
+        sanitized_summary: docs/reports/token-cost/runs/v0.1.2/code-review-small-run1.analysis.yaml
+        raw_omission_reason: raw JSONL contains disposable local temp fixture paths and full command output; analyzer summary is tracked as sanitized release evidence
+      usage:
+        cached_input_tokens: 81792
+        input_tokens: 91677
+        output_tokens: 1136
+        reasoning_output_tokens: 272
+      tool_output:
+        total_estimated_tokens: 3138
+        largest_event:
+          kind: command_execution
+          command: "/bin/bash -lc \\"sed -n '1,220p' /tmp/rigorloop-token-bench-v0.1.2-1778686349-4f31b7e6/.agents/skills/code-review/SKILL.md && git status --short && git diff --stat && git diff -- .\\""
+          path: "/tmp/rigorloop-token-bench-v0.1.2-1778686349-4f31b7e6/.agents/skills/code-review/SKILL.md"
+          lines: 221
+          estimated_tokens: 2799
+      signals:
+        full_file_read_count: 1
+        broad_search_count: 0
+        generated_output_read_count: 0
+        repeated_file_read_count: 0
+      result_quality:
+        status: pass
+        reviewed_by: maintainer
+        review_surface: docs/reports/token-cost/releases/v0.1.2.md
+        reviewed_at: '2026-05-13'
+        criteria:
+          - id: obeyed_no_edit_instruction
+            expectation: The benchmark did not edit files.
+            result: pass
+            notes: ""
+          - id: output_shape
+            expectation: The response followed the prompt requested output shape.
+            result: pass
+            notes: ""
+          - id: ownership_boundary
+            expectation: The response did not claim downstream readiness that the skill could not prove from the fixture.
+            result: pass
+            notes: ""
+        notes: Manual review found the code-review-small output acceptable for this benchmark.
+        blockers: []
+    - id: explain-change-summary
+      prompt: benchmarks/token-cost/prompts/explain-change-summary.md
+      fixture: benchmarks/token-cost/fixtures/minimal-public-project
+      result: pass
+      evidence:
+        raw_jsonl_tracked: false
+        jsonl: ""
+        analysis: docs/reports/token-cost/runs/v0.1.2/explain-change-summary-run1.analysis.yaml
+        sanitized_summary: docs/reports/token-cost/runs/v0.1.2/explain-change-summary-run1.analysis.yaml
+        raw_omission_reason: raw JSONL contains disposable local temp fixture paths and full command output; analyzer summary is tracked as sanitized release evidence
+      usage:
+        cached_input_tokens: 76160
+        input_tokens: 95431
+        output_tokens: 1404
+        reasoning_output_tokens: 258
+      tool_output:
+        total_estimated_tokens: 4469
+        largest_event:
+          kind: command_execution
+          command: "/bin/bash -lc \\"sed -n '1,220p' /tmp/rigorloop-token-bench-v0.1.2-1778686349-4f31b7e6/.agents/skills/explain-change/SKILL.md && rg --files -g '*explain*' -g '*change*' -g '*.md' .agents . 2>/dev/null | sed -n '1,120p'\\""
+          path: "/tmp/rigorloop-token-bench-v0.1.2-1778686349-4f31b7e6/.agents/skills/explain-change/SKILL.md"
+          lines: 173
+          estimated_tokens: 1972
+      signals:
+        full_file_read_count: 1
+        broad_search_count: 3
+        generated_output_read_count: 0
+        repeated_file_read_count: 0
+      result_quality:
+        status: pass
+        reviewed_by: maintainer
+        review_surface: docs/reports/token-cost/releases/v0.1.2.md
+        reviewed_at: '2026-05-13'
+        criteria:
+          - id: obeyed_no_edit_instruction
+            expectation: The benchmark did not edit files.
+            result: pass
+            notes: ""
+          - id: output_shape
+            expectation: The response followed the prompt requested output shape.
+            result: pass
+            notes: ""
+          - id: ownership_boundary
+            expectation: The response did not claim downstream readiness that the skill could not prove from the fixture.
+            result: pass
+            notes: ""
+        notes: Manual review found the explain-change-summary output acceptable for this benchmark.
+        blockers: []
+    - id: verify-final-pack
+      prompt: benchmarks/token-cost/prompts/verify-final-pack.md
+      fixture: benchmarks/token-cost/fixtures/minimal-public-project
+      result: pass
+      evidence:
+        raw_jsonl_tracked: false
+        jsonl: ""
+        analysis: docs/reports/token-cost/runs/v0.1.2/verify-final-pack-run1.analysis.yaml
+        sanitized_summary: docs/reports/token-cost/runs/v0.1.2/verify-final-pack-run1.analysis.yaml
+        raw_omission_reason: raw JSONL contains disposable local temp fixture paths and full command output; analyzer summary is tracked as sanitized release evidence
+      usage:
+        cached_input_tokens: 65024
+        input_tokens: 74041
+        output_tokens: 851
+        reasoning_output_tokens: 97
+      tool_output:
+        total_estimated_tokens: 3884
+        largest_event:
+          kind: command_execution
+          command: "/bin/bash -lc \\"sed -n '1,220p' /tmp/rigorloop-token-bench-v0.1.2-1778686349-4f31b7e6/.agents/skills/verify/SKILL.md\\""
+          path: "/tmp/rigorloop-token-bench-v0.1.2-1778686349-4f31b7e6/.agents/skills/verify/SKILL.md"
+          lines: 220
+          estimated_tokens: 3531
+      signals:
+        full_file_read_count: 1
+        broad_search_count: 1
+        generated_output_read_count: 0
+        repeated_file_read_count: 0
+      result_quality:
+        status: pass
+        reviewed_by: maintainer
+        review_surface: docs/reports/token-cost/releases/v0.1.2.md
+        reviewed_at: '2026-05-13'
+        criteria:
+          - id: obeyed_no_edit_instruction
+            expectation: The benchmark did not edit files.
+            result: pass
+            notes: ""
+          - id: output_shape
+            expectation: The response followed the prompt requested output shape.
+            result: pass
+            notes: ""
+          - id: ownership_boundary
+            expectation: The response did not claim downstream readiness that the skill could not prove from the fixture.
+            result: pass
+            notes: ""
+        notes: Manual review found the verify-final-pack output acceptable for this benchmark.
+        blockers: []
+    - id: pr-handoff
+      prompt: benchmarks/token-cost/prompts/pr-handoff.md
+      fixture: benchmarks/token-cost/fixtures/minimal-public-project
+      result: pass
+      evidence:
+        raw_jsonl_tracked: false
+        jsonl: ""
+        analysis: docs/reports/token-cost/runs/v0.1.2/pr-handoff-run1.analysis.yaml
+        sanitized_summary: docs/reports/token-cost/runs/v0.1.2/pr-handoff-run1.analysis.yaml
+        raw_omission_reason: raw JSONL contains disposable local temp fixture paths and full command output; analyzer summary is tracked as sanitized release evidence
+      usage:
+        cached_input_tokens: 82304
+        input_tokens: 90439
+        output_tokens: 1302
+        reasoning_output_tokens: 184
+      tool_output:
+        total_estimated_tokens: 2671
+        largest_event:
+          kind: command_execution
+          command: "/bin/bash -lc \\"sed -n '1,220p' /tmp/rigorloop-token-bench-v0.1.2-1778686349-4f31b7e6/.agents/skills/pr/SKILL.md\\""
+          path: "/tmp/rigorloop-token-bench-v0.1.2-1778686349-4f31b7e6/.agents/skills/pr/SKILL.md"
+          lines: 220
+          estimated_tokens: 2400
+      signals:
+        full_file_read_count: 1
+        broad_search_count: 2
+        generated_output_read_count: 0
+        repeated_file_read_count: 0
+      result_quality:
+        status: pass
+        reviewed_by: maintainer
+        review_surface: docs/reports/token-cost/releases/v0.1.2.md
+        reviewed_at: '2026-05-13'
+        criteria:
+          - id: obeyed_no_edit_instruction
+            expectation: The benchmark did not edit files.
+            result: pass
+            notes: ""
+          - id: output_shape
+            expectation: The response followed the prompt requested output shape.
+            result: pass
+            notes: ""
+          - id: ownership_boundary
+            expectation: The response did not claim downstream readiness that the skill could not prove from the fixture.
+            result: pass
+            notes: ""
+        notes: Manual review found the pr-handoff output acceptable for this benchmark.
+        blockers: []
+    - id: architecture-no-impact
+      prompt: benchmarks/token-cost/prompts/architecture-no-impact.md
+      fixture: benchmarks/token-cost/fixtures/minimal-public-project
+      result: pass
+      evidence:
+        raw_jsonl_tracked: false
+        jsonl: ""
+        analysis: docs/reports/token-cost/runs/v0.1.2/architecture-no-impact-run1.analysis.yaml
+        sanitized_summary: docs/reports/token-cost/runs/v0.1.2/architecture-no-impact-run1.analysis.yaml
+        raw_omission_reason: raw JSONL contains disposable local temp fixture paths and full command output; analyzer summary is tracked as sanitized release evidence
+      usage:
+        cached_input_tokens: 27392
+        input_tokens: 33809
+        output_tokens: 254
+        reasoning_output_tokens: 77
+      tool_output:
+        total_estimated_tokens: 2819
+        largest_event:
+          kind: command_execution
+          command: "/bin/bash -lc \\"sed -n '1,220p' /tmp/rigorloop-token-bench-v0.1.2-1778686349-4f31b7e6/.agents/skills/architecture/SKILL.md\\""
+          path: "/tmp/rigorloop-token-bench-v0.1.2-1778686349-4f31b7e6/.agents/skills/architecture/SKILL.md"
+          lines: 220
+          estimated_tokens: 2819
+      signals:
+        full_file_read_count: 1
+        broad_search_count: 0
+        generated_output_read_count: 0
+        repeated_file_read_count: 0
+      result_quality:
+        status: pass
+        reviewed_by: maintainer
+        review_surface: docs/reports/token-cost/releases/v0.1.2.md
+        reviewed_at: '2026-05-13'
+        criteria:
+          - id: obeyed_no_edit_instruction
+            expectation: The benchmark did not edit files.
+            result: pass
+            notes: ""
+          - id: output_shape
+            expectation: The response followed the prompt requested output shape.
+            result: pass
+            notes: ""
+          - id: ownership_boundary
+            expectation: The response did not claim downstream readiness that the skill could not prove from the fixture.
+            result: pass
+            notes: ""
+        notes: Manual review found the architecture-no-impact output acceptable for this benchmark.
+        blockers: []
+    - id: learn-no-durable-lesson
+      prompt: benchmarks/token-cost/prompts/learn-no-durable-lesson.md
+      fixture: benchmarks/token-cost/fixtures/minimal-public-project
+      result: pass
+      evidence:
+        raw_jsonl_tracked: false
+        jsonl: ""
+        analysis: docs/reports/token-cost/runs/v0.1.2/learn-no-durable-lesson-run1.analysis.yaml
+        sanitized_summary: docs/reports/token-cost/runs/v0.1.2/learn-no-durable-lesson-run1.analysis.yaml
+        raw_omission_reason: raw JSONL contains disposable local temp fixture paths and full command output; analyzer summary is tracked as sanitized release evidence
+      usage:
+        cached_input_tokens: 30464
+        input_tokens: 34062
+        output_tokens: 374
+        reasoning_output_tokens: 177
+      tool_output:
+        total_estimated_tokens: 3097
+        largest_event:
+          kind: command_execution
+          command: "/bin/bash -lc \\"sed -n '1,220p' /tmp/rigorloop-token-bench-v0.1.2-1778686349-4f31b7e6/.agents/skills/learn/SKILL.md\\""
+          path: "/tmp/rigorloop-token-bench-v0.1.2-1778686349-4f31b7e6/.agents/skills/learn/SKILL.md"
+          lines: 194
+          estimated_tokens: 3097
+      signals:
+        full_file_read_count: 1
+        broad_search_count: 0
+        generated_output_read_count: 0
+        repeated_file_read_count: 0
+      result_quality:
+        status: pass
+        reviewed_by: maintainer
+        review_surface: docs/reports/token-cost/releases/v0.1.2.md
+        reviewed_at: '2026-05-13'
+        criteria:
+          - id: obeyed_no_edit_instruction
+            expectation: The benchmark did not edit files.
+            result: pass
+            notes: ""
+          - id: output_shape
+            expectation: The response followed the prompt requested output shape.
+            result: pass
+            notes: ""
+          - id: ownership_boundary
+            expectation: The response did not claim downstream readiness that the skill could not prove from the fixture.
+            result: pass
+            notes: ""
+        notes: Manual review found the learn-no-durable-lesson output acceptable for this benchmark.
+        blockers: []
+summary:
+  median_input_tokens: 75276
+  median_cached_input_tokens: 64256
+  median_output_tokens: 856
+  median_reasoning_output_tokens: 173
+  max_single_tool_output_estimated_tokens: 3531
+  full_file_read_count: 10
+  broad_search_count: 12
+  generated_output_read_count: 0
+portability:
+  status: pass
+  public_skill_internal_path_leaks: 0
+  generated_output_internals_in_public_skills: 0
+  local_examples_in_public_skills: 0
+  notes: []
+comparison:
+  baseline: false
+  previous_release: v0.1.1
+  previous_report: docs/reports/token-cost/releases/v0.1.1.yaml
+  comparable: true
+  deltas:
+    static_total_estimated_tokens: 2321
+    median_input_tokens: 3793
+    median_output_tokens: 0
+    max_single_tool_output_estimated_tokens: -17207
+  rationale: Same skill-token-runtime-v2 suite and required prompt set as v0.1.1.
+waiver:
+  required: false
+  status: none
+  reason: ""
+  approved_by: ""
+  approval_surface: ""
+  evidence: ""
+release_gate:
+  result: warning
+  blockers: []
+  warnings:
+    - severity: high-warning
+      code: static-public-skill-over-5000
+      skill: skills/workflow/SKILL.md
+      message: workflow skill is above the initial 5000 estimated-token high-warning threshold
+      follow_up: Continue targeted token-cost optimization only through separately reviewed skill-surface changes.
+    - severity: warning
+      code: static-public-skill-over-4000
+      skill: skills/code-review/SKILL.md
+      message: code-review skill is above the initial 4000 estimated-token warning threshold
+      follow_up: Continue targeted token-cost optimization only through separately reviewed skill-surface changes.
+  notes:
+    - Token thresholds are warning-only for this release unless required evidence fails.
+    - Dynamic benchmarks used public Codex adapter output from dist/adapters/codex/.agents/skills/, not .codex/skills/.
+    - Adapter archive packaging impact is release-distribution evidence only; archive payload generation does not change static canonical skill size.

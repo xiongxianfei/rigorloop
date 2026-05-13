@@ -1,0 +1,43 @@
+schema_version: 1
+
+release:
+  version: v0.1.2
+  # Records the archive source commit for v0.1.2; see PAAM-M2-CR1 resolution.
+  source_commit: 5514ef14ce5f310787f464ea78bd777838cb5537
+  date: "2026-05-13"
+
+generator:
+  command: "python scripts/build-adapters.py --version v0.1.2 --output-dir <release-output-dir>"
+  source_skills: "skills/"
+  manifest: "dist/adapters/manifest.yaml"
+
+artifacts:
+  - adapter: codex
+    archive: rigorloop-adapter-codex-v0.1.2.zip
+    sha256: 60708ea8e6cd75cfd8902c687a64ea8c445cf40a9205519be843cfb3520de0f9
+    install_root: .agents/skills/
+    result: pass
+  - adapter: claude
+    archive: rigorloop-adapter-claude-v0.1.2.zip
+    sha256: b14b040756a9f5232a06bb48096078bf3076e3e61f43c7f98a083e9f32813f85
+    install_root: .claude/skills/
+    result: pass
+  - adapter: opencode
+    archive: rigorloop-adapter-opencode-v0.1.2.zip
+    sha256: 0254a3196d10df4dec0d8a3f299b6372d17ff4788a25f08431b4878db0a1dfc7
+    install_root: .opencode/skills/
+    result: pass
+
+combined_artifact:
+  required: false
+  archive: rigorloop-adapters-v0.1.2.tar.gz
+  sha256: ""
+  included_adapters:
+    - codex
+    - claude
+    - opencode
+
+validation:
+  command: "python scripts/validate-adapters.py --root <release-output-dir> --version v0.1.2"
+  result: pass
+  validated_at: "2026-05-13"
