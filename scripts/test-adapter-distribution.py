@@ -2838,6 +2838,27 @@ release_gate:
         self.assertNotIn("python scripts/validate-adapters.py --version v0.1.3", result.stdout)
         self.assertIn("security", result.stdout.lower())
 
+        default_result = subprocess.run(
+            ["bash", str(ROOT / "scripts" / "release-verify.sh"), "v0.1.3"],
+            capture_output=True,
+            text=True,
+            cwd=ROOT,
+            env={
+                "RELEASE_VERIFY_DRY_RUN": "1",
+                "RELEASE_OUTPUT_DIR": "release-output",
+            },
+        )
+
+        self.assertEqual(
+            default_result.returncode,
+            0,
+            msg=f"stdout:\n{default_result.stdout}\nstderr:\n{default_result.stderr}",
+        )
+        self.assertIn(
+            "python scripts/validate-release.py --version v0.1.3 --release-output-dir release-output --release-commit 0f3fe12c8d03d9cb64d9315acc25ac1045c745a8",
+            default_result.stdout,
+        )
+
     def test_release_verify_script_accepts_github_ref_name(self) -> None:
         result = subprocess.run(
             ["bash", str(ROOT / "scripts" / "release-verify.sh")],

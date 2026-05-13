@@ -34,6 +34,7 @@ Do not silently blend conflicting higher-priority instructions. Call out the con
 - For public adapter installation, use `dist/adapters/README.md`; for `v0.1.3` and later, generated public adapter skill bodies are release archives, not tracked source under `dist/adapters/`.
 - Keep `.codex/skills/` untracked when copying installed Codex adapter skills there for local runtime use, and edit canonical skills under `skills/`.
 - Do not hand-edit generated public adapter package output. `dist/adapters/README.md` and `dist/adapters/manifest.yaml` are the tracked adapter support surface.
+- Historical note: `v0.1.2` kept repository-tree adapter packages during the compatibility window.
 - Follow `specs/skill-contract.md` for normalized skill structure and claim boundaries.
 - Treat shipped skill text as user-facing. Keep repository-maintainer details about canonical source paths, generated mirrors, adapter paths, selector path constraints, drift checks, and shared-block implementation mechanics in contributor or governance surfaces, not in published skills.
 - Do not create a new skill for one-off behavior; update an existing skill unless the new skill owns a distinct artifact, gate, review responsibility, recurring action, or approved operational process.

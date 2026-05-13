@@ -44,8 +44,8 @@ if [[ -n "$cleanup_release_output_dir" ]]; then
   trap 'rm -rf "$cleanup_release_output_dir"' EXIT
 fi
 release_commit="${RELEASE_COMMIT:-}"
-if [[ "$release_version" == "v0.1.2" && -z "$release_commit" ]]; then
-  release_commit="$(python - <<'PY'
+if [[ "$release_version" == "v0.1.2" || "$release_version" == "v0.1.3" ]] && [[ -z "$release_commit" ]]; then
+  release_commit="$(python - "$release_version" <<'PY'
 import sys
 from pathlib import Path
 
@@ -56,14 +56,12 @@ from adapter_distribution import (
     parse_adapter_artifact_metadata_yaml,
 )
 
-path = ADAPTER_ARTIFACT_REPORT_ROOT / "v0.1.2.yaml"
+release_version = sys.argv[1]
+path = ADAPTER_ARTIFACT_REPORT_ROOT / f"{release_version}.yaml"
 metadata = parse_adapter_artifact_metadata_yaml(path.read_text(encoding="utf-8"), path)
 print(metadata.source_commit)
 PY
 )"
-fi
-if [[ "$release_version" == "v0.1.3" && -z "$release_commit" ]]; then
-  release_commit="$(git rev-parse HEAD)"
 fi
 SEEN_COMMANDS=()
 SEEN_LABELS=()

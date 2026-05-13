@@ -1,0 +1,46 @@
+version: v0.1.3
+release_type: final
+manifest_version: v0.1.3
+
+supported_tools:
+  - codex
+  - claude
+  - opencode
+
+adapter_paths:
+  codex: dist/adapters/codex/
+  claude: dist/adapters/claude/
+  opencode: dist/adapters/opencode/
+
+instruction_entrypoints:
+  codex: dist/adapters/codex/AGENTS.md
+  claude: dist/adapters/claude/CLAUDE.md
+  opencode: dist/adapters/opencode/AGENTS.md
+
+smoke:
+  codex:
+    result: pass
+    tool_version: "codex-cli 0.130.0"
+    evidence: "Repository-owned v0.1.3 archive validation confirmed the Codex release archive contains AGENTS.md and .agents/skills/ generated from canonical skills. Tool availability was checked with codex --version."
+    reason: ""
+    owner: maintainer
+  claude:
+    result: pass
+    tool_version: "2.1.119 (Claude Code)"
+    evidence: "Repository-owned v0.1.3 archive validation confirmed the Claude Code release archive contains CLAUDE.md and .claude/skills/ generated from canonical skills. Tool availability was checked with claude --version."
+    reason: ""
+    owner: maintainer
+  opencode:
+    result: pass
+    tool_version: "1.14.22"
+    evidence: "Repository-owned v0.1.3 archive validation confirmed the opencode release archive contains AGENTS.md, .opencode/skills/, and command aliases generated from canonical skills. Tool availability was checked with opencode --version."
+    reason: ""
+    owner: maintainer
+
+validation:
+  generated_sync: pass
+  release_notes_consistency: pass
+  placeholder_release_check: pass
+  security: pass
+  adapter_archives: pass
+  adapter_artifact_metadata: pass
