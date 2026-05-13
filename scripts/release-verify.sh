@@ -45,7 +45,22 @@ if [[ -n "$cleanup_release_output_dir" ]]; then
 fi
 release_commit="${RELEASE_COMMIT:-}"
 if [[ "$release_version" == "v0.1.2" && -z "$release_commit" ]]; then
-  release_commit="$(git rev-parse HEAD)"
+  release_commit="$(python - <<'PY'
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path("scripts").resolve()))
+
+from adapter_distribution import (
+    ADAPTER_ARTIFACT_REPORT_ROOT,
+    parse_adapter_artifact_metadata_yaml,
+)
+
+path = ADAPTER_ARTIFACT_REPORT_ROOT / "v0.1.2.yaml"
+metadata = parse_adapter_artifact_metadata_yaml(path.read_text(encoding="utf-8"), path)
+print(metadata.source_commit)
+PY
+)"
 fi
 SEEN_COMMANDS=()
 SEEN_LABELS=()
