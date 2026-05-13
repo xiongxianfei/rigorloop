@@ -50,18 +50,18 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
     ),
     "adapters.regression": CheckCatalogEntry(
         "adapters.regression",
-        "python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_generation_creates_independent_packages_and_thin_entrypoints AdapterDistributionTests.test_adapter_generation_drift_check_detects_stale_and_unexpected_files AdapterDistributionTests.test_validate_adapters_cli_accepts_repository_output AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata",
+        "python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_generation_creates_independent_packages_and_thin_entrypoints AdapterDistributionTests.test_adapter_generation_drift_check_detects_stale_and_unexpected_files AdapterDistributionTests.test_validate_adapters_cli_rejects_retired_repository_output AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata",
         "adapters",
         parallel_safe=True,
     ),
     "adapters.drift": CheckCatalogEntry(
         "adapters.drift",
-        "python scripts/build-adapters.py --version <adapter-version> --check",
+        "python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives",
         "adapters",
     ),
     "adapters.validate": CheckCatalogEntry(
         "adapters.validate",
-        "python scripts/validate-adapters.py --version <adapter-version>",
+        "python scripts/test-adapter-distribution.py AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root",
         "adapters",
     ),
     "review_artifacts.regression": CheckCatalogEntry(
@@ -281,9 +281,17 @@ def catalog_command(
         raise ValueError(f"unknown check ID: {check_id}")
 
     if check_id == "adapters.drift":
-        return _join("python", "scripts/build-adapters.py", "--version", adapter_version, "--check")
+        return _join(
+            "python",
+            "scripts/test-adapter-distribution.py",
+            "AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives",
+        )
     if check_id == "adapters.validate":
-        return _join("python", "scripts/validate-adapters.py", "--version", adapter_version)
+        return _join(
+            "python",
+            "scripts/test-adapter-distribution.py",
+            "AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root",
+        )
     if check_id == "review_artifacts.validate":
         if not affected_roots:
             raise ValueError("review_artifacts.validate requires at least one change root")

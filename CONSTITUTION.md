@@ -79,9 +79,9 @@ Templates under `templates/` are canonical authored scaffolds. They are not life
 
 `skills/` is the only authored skill source.
 
-For local Codex use, contributors MUST install or copy public Codex adapter output from `dist/adapters/codex/.agents/skills/` into ignored `.codex/skills/`; they MUST keep `.codex/skills/` untracked and edit canonical skills under `skills/`.
+For public adapter installation, contributors MUST use the active install guidance in `dist/adapters/README.md`. For `v0.1.3` and later, generated public adapter skill bodies are release archives, not tracked source under `dist/adapters/`. Contributors MUST keep `.codex/skills/` untracked when copying installed Codex adapter skills there for local runtime use, and edit canonical skills under `skills/`.
 
-Public adapter packages under `dist/adapters/` remain tracked generated installable output during the compatibility window.
+`dist/adapters/README.md` and `dist/adapters/manifest.yaml` are the tracked adapter support surface. Historical note: `v0.1.2` kept repository-tree adapter packages during the compatibility window.
 
 Repository validation logic MUST live in repo-owned scripts. GitHub Actions workflows SHOULD remain thin wrappers that set up tooling and delegate to those scripts.
 

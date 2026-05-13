@@ -18,6 +18,7 @@ requirements:
   - Create a milestone-based execution plan before test-spec or implementation.
   - Create a traceable test spec before implementation.
   - Implement M1 validation-model migration and regression tests.
+  - Implement M2 repository tree untracking and root guidance alignment.
 tests:
   - Proposal-review approval or recorded material findings.
   - Spec-review approval or recorded material findings.
@@ -28,6 +29,9 @@ tests:
   - Test spec maps approved requirements to concrete tests.
   - M1 regression tests prove v0.1.3 validates generated release output without tracked adapter skill trees.
   - M1 regression tests prove tracked adapter package fragments are rejected for v0.1.3.
+  - M2 regression tests prove only `dist/adapters/README.md` and `dist/adapters/manifest.yaml` remain tracked under `dist/adapters/`.
+  - M2 regression tests prove root guidance points to archive installation through `dist/adapters/README.md`.
+  - M2 validation proves adapter archive output can be generated and validated without tracked adapter package trees.
 review:
   status: clean
   unresolved_items: 0
@@ -81,6 +85,24 @@ validation:
     result: pass_temp_release_output_current_head_commit
   - command: code-review-m1-r2
     result: clean_with_notes_M1_closed
+  - command: git ls-files 'dist/adapters/**/skills/**' && git ls-files 'dist/adapters/**'
+    result: pass_only_dist_adapters_README_and_manifest_tracked
+  - command: python scripts/test-adapter-distribution.py -k public_adapter
+    result: pass_2_tests
+  - command: python scripts/test-adapter-distribution.py -k root_guidance
+    result: pass_1_test
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_92_tests
+  - command: python scripts/test-select-validation.py
+    result: pass_59_tests
+  - command: python scripts/select-validation.py --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path dist/adapters/README.md --path dist/adapters/manifest.yaml
+    result: pass_status_ok_selected_adapter_lifecycle_selector_checks
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path AGENTS.md --path CONSTITUTION.md --path docs/workflows.md
+    result: pass
+  - command: python scripts/build-adapters.py --version v0.1.3 --output-dir <tmp> && python scripts/validate-adapters.py --root <tmp> --version v0.1.3
+    result: pass_generated_v0_1_3_archives_validated
+  - command: RELEASE_VERIFY_DRY_RUN=1 bash scripts/release-verify.sh v0.1.3
+    result: pass_temp_release_output_current_head_commit
 changed_files:
   - docs/proposals/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies.md
   - specs/stop-tracking-generated-public-adapter-skill-bodies.md
@@ -101,5 +123,16 @@ changed_files:
   - docs/changes/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies/reviews/spec-review-r1.md
   - docs/changes/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies/reviews/spec-review-r2.md
   - scripts/adapter_distribution.py
+  - scripts/ci.sh
   - scripts/release-verify.sh
   - scripts/test-adapter-distribution.py
+  - scripts/test-select-validation.py
+  - scripts/validation_selection.py
+  - AGENTS.md
+  - CONSTITUTION.md
+  - README.md
+  - docs/workflows.md
+  - dist/adapters/README.md
+  - dist/adapters/claude/
+  - dist/adapters/codex/
+  - dist/adapters/opencode/
