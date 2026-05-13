@@ -9,6 +9,7 @@ import shutil
 import subprocess
 import tempfile
 import unittest
+import zipfile
 from pathlib import Path
 from unittest.mock import patch
 
@@ -27,6 +28,8 @@ from adapter_distribution import (  # noqa: E402
     AdapterDriftEntry,
     OPENCODE_COMMAND_ALIASES,
     SUPPORTED_ADAPTERS,
+    adapter_archive_name,
+    build_adapter_archives,
     build_required_benchmark_context,
     collect_adapter_drift,
     collect_adapter_drift_entries,
@@ -39,6 +42,7 @@ from adapter_distribution import (  # noqa: E402
     render_opencode_command_alias,
     render_manifest_yaml,
     sync_adapter_output,
+    validate_adapter_archives,
     validate_adapter_output,
     validate_release_output,
 )
@@ -389,6 +393,108 @@ release_gate:
             ADAPTERS["opencode"].skill_path("workflow").as_posix(),
             ".opencode/skills/workflow/SKILL.md",
         )
+
+    def test_build_adapter_archives_creates_required_release_archives(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.copy_fixture_skills(root, ("portable-basic", "transformable-frontmatter"))
+            output_dir = root / "release-output"
+
+            archives = build_adapter_archives(
+                "v0.1.2",
+                output_dir,
+                skills_root=root / "skills",
+            )
+
+            self.assertEqual(
+                [archive.name for archive in archives],
+                [
+                    "rigorloop-adapter-codex-v0.1.2.zip",
+                    "rigorloop-adapter-claude-v0.1.2.zip",
+                    "rigorloop-adapter-opencode-v0.1.2.zip",
+                ],
+            )
+            for archive in archives:
+                self.assertEqual(archive.parent, output_dir)
+                self.assertTrue(archive.is_file())
+
+            self.assertFalse((output_dir / "dist").exists())
+            self.assertEqual([], validate_adapter_archives("v0.1.2", output_dir, skills_root=root / "skills"))
+
+    def test_adapter_archives_install_under_target_project_roots(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.copy_fixture_skills(root, ("portable-basic",))
+            output_dir = root / "release-output"
+            build_adapter_archives("v0.1.2", output_dir, skills_root=root / "skills")
+
+            expected = {
+                "codex": ("AGENTS.md", ".agents/skills/portable-basic/SKILL.md"),
+                "claude": ("CLAUDE.md", ".claude/skills/portable-basic/SKILL.md"),
+                "opencode": ("AGENTS.md", ".opencode/skills/portable-basic/SKILL.md"),
+            }
+            for adapter, required_entries in expected.items():
+                archive_path = output_dir / adapter_archive_name(adapter, "v0.1.2")
+                with zipfile.ZipFile(archive_path) as archive:
+                    names = set(archive.namelist())
+                for entry in required_entries:
+                    self.assertIn(entry, names)
+                self.assertFalse(
+                    any(name.startswith(f"{adapter}/") or name.startswith("dist/") for name in names)
+                )
+
+    def test_validate_adapter_archives_rejects_missing_required_archive(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.copy_fixture_skills(root, ("portable-basic",))
+            output_dir = root / "release-output"
+            build_adapter_archives("v0.1.2", output_dir, skills_root=root / "skills")
+            (output_dir / adapter_archive_name("claude", "v0.1.2")).unlink()
+
+            errors = validate_adapter_archives("v0.1.2", output_dir, skills_root=root / "skills")
+
+            self.assertTrue(
+                any("missing adapter archive: claude" in error for error in errors),
+                errors,
+            )
+
+    def test_validate_adapters_cli_accepts_release_archive_root(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "release-output"
+
+            build_result = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "scripts" / "build-adapters.py"),
+                    "--version",
+                    "v0.1.2",
+                    "--output-dir",
+                    str(output_dir),
+                ],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(0, build_result.returncode, build_result.stdout + build_result.stderr)
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "scripts" / "validate-adapters.py"),
+                    "--root",
+                    str(output_dir),
+                    "--version",
+                    "v0.1.2",
+                ],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(0, result.returncode, result.stdout + result.stderr)
+            self.assertIn("validated generated adapter archives for version v0.1.2", result.stdout)
 
     def test_portable_skill_includes_all_adapters(self) -> None:
         report = evaluate_skill(self.fixture("portable-basic"))
