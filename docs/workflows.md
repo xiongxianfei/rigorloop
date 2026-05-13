@@ -117,6 +117,23 @@ Moved or summarized detail is owned as follows:
 
 Workflow safety topics MUST NOT be removed when public skill text is compressed. A removed or summarized topic needs a new owner surface or an explicit no-longer-needed rationale in the change evidence.
 
+## Follow-up ownership
+
+Record follow-ups where they can be acted on.
+
+| Follow-up type | Owner |
+| --- | --- |
+| Active implementation follow-up | active plan |
+| Review finding follow-up | `review-resolution.md` |
+| Change closeout follow-up | `explain-change.md` or `change.yaml` |
+| Release follow-up | release report or release plan |
+| Repeated lesson | `learn` |
+| Architecture risk or open question | `project-map` risk/open-question note |
+| Unowned cross-change future work | `docs/follow-ups.md`, only when needed |
+| New direction or policy change | `proposal` |
+
+`project-map` may identify risks and open questions, but it does not own deferred execution.
+
 ## Artifact-location source rank
 
 `docs/workflows.md` is the project-local user-facing artifact-location map.
@@ -148,6 +165,7 @@ If this project customizes artifact locations, update this table. Skills use the
 | --- | --- | --- |
 | Project vision | `VISION.md` | `vision` |
 | Workflow guide | `docs/workflows.md` | `workflow` |
+| Follow-up register | `docs/follow-ups.md` | `workflow` |
 | Examples | `docs/examples/` | none; examples are non-normative |
 | Proposals | `docs/proposals/YYYY-MM-DD-slug.md` | `proposal` |
 | Specs | `specs/slug.md` | `spec` |

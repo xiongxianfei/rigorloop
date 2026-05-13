@@ -153,6 +153,14 @@ For ordinary routing where the guide is current, reference the guide rather than
 
 The workflow skill must not author proposals, specs, plans, reviews, ADRs, or exact schemas solely because it owns the artifact-location map. Route users to the owning stage skill for artifact content.
 
+## Follow-up routing
+
+Route future work to the artifact that can act on it.
+
+Use the active plan, change artifacts, review-resolution, release report, learn session, proposal, or `docs/follow-ups.md` according to `docs/workflows.md`.
+
+Do not put deferred execution work in `project-map`.
+
 ## Lifecycle-managed artifacts
 
 Top-level proposals, specs, test specs, architecture docs, and ADRs keep status inside the artifact. `reviewed` is transitional review output; durable current states are artifact-specific states such as accepted, approved, active, deprecated, superseded, archived, rejected, or abandoned.
