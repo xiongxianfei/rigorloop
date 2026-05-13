@@ -145,8 +145,6 @@ The normative contract lives in [specs/rigorloop-workflow.md](specs/rigorloop-wo
   - `skills/`
   - `schemas/`
   - `scripts/`
-- Do not hand-edit generated Codex compatibility output in:
-  - `.codex/skills/`
 - Do not hand-edit generated public adapter packages in:
   - `dist/adapters/`
 - `skills/` is the only authored skill source. `.codex/skills/` is ignored local Codex runtime state. For local Codex use, install or copy public Codex adapter output from `dist/adapters/codex/.agents/skills/` into `.codex/skills/`, keep `.codex/skills/` untracked, and edit canonical skills under `skills/`.

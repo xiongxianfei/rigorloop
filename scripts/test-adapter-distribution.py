@@ -2405,6 +2405,9 @@ release_gate:
                     "Regenerate it with `python scripts/build-skills.py` when needed.",
                     text,
                 )
+                self.assertNotIn("Do not hand-edit local Codex runtime state", text)
+                self.assertNotIn("Do not hand-edit generated Codex compatibility output", text)
+                self.assertNotIn("MUST NOT be hand-edited or tracked", text)
 
     def test_adapter_manifest_remains_metadata_only(self) -> None:
         manifest_path = ROOT / "dist" / "adapters" / "manifest.yaml"

@@ -217,8 +217,6 @@ Notes:
   - `schemas/`
   - `scripts/`
   - `templates/`
-- Do not hand-edit generated Codex compatibility output in:
-  - `.codex/skills/`
 - Do not hand-edit generated public adapter packages in:
   - `dist/adapters/`
 - `skills/` is the only authored skill source.

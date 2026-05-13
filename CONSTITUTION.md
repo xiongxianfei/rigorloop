@@ -79,7 +79,7 @@ Templates under `templates/` are canonical authored scaffolds. They are not life
 
 `skills/` is the only authored skill source.
 
-Local Codex runtime state under `.codex/skills/` MUST NOT be hand-edited or tracked. For local Codex use, contributors MUST install or copy public Codex adapter output from `dist/adapters/codex/.agents/skills/` into ignored `.codex/skills/`, keep `.codex/skills/` untracked, and edit canonical skills under `skills/`.
+For local Codex use, contributors MUST install or copy public Codex adapter output from `dist/adapters/codex/.agents/skills/` into ignored `.codex/skills/`; they MUST keep `.codex/skills/` untracked and edit canonical skills under `skills/`.
 
 Public adapter packages under `dist/adapters/` remain tracked generated installable output during the compatibility window.
 
