@@ -22,7 +22,7 @@ if [[ -z "$release_version" ]]; then
 fi
 
 case "$release_version" in
-  v0.1.0-rc.1|v0.1.0|v0.1.1)
+  v0.1.0-rc.1|v0.1.0|v0.1.1|v0.1.2)
     ;;
   *)
     echo "Unsupported release target: ${release_version}" >&2
@@ -31,6 +31,18 @@ case "$release_version" in
 esac
 
 adapter_version="${release_version#v}"
+if [[ "$release_version" == "v0.1.2" ]]; then
+  adapter_version="0.1.1"
+fi
+release_output_dir="${RELEASE_OUTPUT_DIR:-}"
+cleanup_release_output_dir=""
+if [[ "$release_version" == "v0.1.2" && -z "$release_output_dir" ]]; then
+  release_output_dir="$(mktemp -d)"
+  cleanup_release_output_dir="$release_output_dir"
+fi
+if [[ -n "$cleanup_release_output_dir" ]]; then
+  trap 'rm -rf "$cleanup_release_output_dir"' EXIT
+fi
 SEEN_COMMANDS=()
 SEEN_LABELS=()
 REQUIRED_CHECK_COMMANDS=(
@@ -39,8 +51,17 @@ REQUIRED_CHECK_COMMANDS=(
   "python scripts/test-adapter-distribution.py"
   "python scripts/build-adapters.py --version ${adapter_version} --check"
   "python scripts/validate-adapters.py --version ${adapter_version}"
-  "python scripts/validate-release.py --version ${release_version}"
 )
+if [[ "$release_version" == "v0.1.2" ]]; then
+  REQUIRED_CHECK_COMMANDS+=(
+    "python scripts/build-adapters.py --version ${release_version} --output-dir ${release_output_dir}"
+    "python scripts/validate-release.py --version ${release_version} --release-output-dir ${release_output_dir}"
+  )
+else
+  REQUIRED_CHECK_COMMANDS+=(
+    "python scripts/validate-release.py --version ${release_version}"
+  )
+fi
 if [[ "$release_version" == "v0.1.1" ]]; then
   REQUIRED_CHECK_COMMANDS+=(
     "python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/${release_version}.yaml"
@@ -136,13 +157,23 @@ run_check "Check generated adapter drift" \
 run_check "Validate generated adapters and security" \
   python scripts/validate-adapters.py --version "$adapter_version"
 
+if [[ "$release_version" == "v0.1.2" ]]; then
+  run_check "Build adapter release archives" \
+    python scripts/build-adapters.py --version "$release_version" --output-dir "$release_output_dir"
+fi
+
 if [[ "$release_version" == "v0.1.1" ]]; then
   run_check "Validate token-friendliness report evidence" \
     python scripts/validate-token-cost-report.py "docs/reports/token-cost/releases/${release_version}.yaml"
 fi
 
-run_check "Validate release metadata, smoke rules, notes, and security" \
-  python scripts/validate-release.py --version "$release_version"
+if [[ "$release_version" == "v0.1.2" ]]; then
+  run_check "Validate release metadata, adapter artifacts, smoke rules, notes, and security" \
+    python scripts/validate-release.py --version "$release_version" --release-output-dir "$release_output_dir"
+else
+  run_check "Validate release metadata, smoke rules, notes, and security" \
+    python scripts/validate-release.py --version "$release_version"
+fi
 
 verify_required_invocations
 

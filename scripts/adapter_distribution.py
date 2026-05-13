@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import importlib.util
+import hashlib
 import re
 import subprocess
 import sys
@@ -41,6 +42,7 @@ ADAPTER_TEMPLATE_ROOT = ROOT / "scripts" / "adapter_templates"
 RELEASE_ROOT = ROOT / "docs" / "releases"
 ARCHIVE_TIMESTAMP = (1980, 1, 1, 0, 0, 0)
 TOKEN_COST_REPORT_ROOT = ROOT / "docs" / "reports" / "token-cost" / "releases"
+ADAPTER_ARTIFACT_REPORT_ROOT = ROOT / "docs" / "reports" / "adapter-artifacts" / "releases"
 TOKEN_COST_VALIDATOR = ROOT / "scripts" / "validate-token-cost-report.py"
 TOKEN_COST_MANIFEST = ROOT / "benchmarks" / "token-cost" / "manifest.yaml"
 ADAPTER_OUTPUT_CONTRACT_ROOT = PurePosixPath("dist/adapters")
@@ -184,6 +186,38 @@ class ReleaseMetadata:
     validation: dict[str, str]
 
 
+@dataclass(frozen=True)
+class AdapterArtifactEntry:
+    adapter: str
+    archive: str
+    sha256: str
+    install_root: str
+    result: str
+
+
+@dataclass(frozen=True)
+class CombinedAdapterArtifact:
+    required: bool
+    archive: str
+    sha256: str
+    included_adapters: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class AdapterArtifactMetadata:
+    version: str
+    source_commit: str
+    date: str
+    generator_command: str
+    source_skills: str
+    manifest: str
+    artifacts: tuple[AdapterArtifactEntry, ...]
+    combined_artifact: CombinedAdapterArtifact
+    validation_command: str
+    validation_result: str
+    validated_at: str
+
+
 ADAPTERS = {
     "codex": AdapterConfig(
         name="codex",
@@ -210,6 +244,7 @@ RELEASE_TARGETS = {
     "v0.1.0-rc.1": ("rc", "0.1.0-rc.1"),
     "v0.1.0": ("final", "0.1.0"),
     "v0.1.1": ("final", "0.1.1"),
+    "v0.1.2": ("final", "0.1.1"),
 }
 REQUIRED_RELEASE_VALIDATION_KEYS = (
     "generated_sync",
@@ -218,6 +253,7 @@ REQUIRED_RELEASE_VALIDATION_KEYS = (
     "security",
 )
 TOKEN_COST_REPORT_REQUIRED_RELEASES = frozenset({"v0.1.1"})
+ADAPTER_ARTIFACT_METADATA_REQUIRED_RELEASES = frozenset({"v0.1.2"})
 TOKEN_COST_RUNTIME_V2 = "skill-token-runtime-v2"
 PLACEHOLDER_RELEASE_PATTERNS = (
     "Replace this script with repository-specific release checks",
@@ -617,8 +653,8 @@ def _parse_simple_yaml_list(
     index: int,
     indent: int,
     path: Path,
-) -> tuple[list[str], int]:
-    values: list[str] = []
+) -> tuple[list[Any], int]:
+    values: list[Any] = []
     while index < len(rows):
         row = rows[index]
         if row.indent < indent:
@@ -629,9 +665,39 @@ def _parse_simple_yaml_list(
             break
         item = row.text[2:].lstrip()
         if not item:
-            raise ValueError(f"{path}: line {row.lineno}: list items must be scalar values")
-        values.append(_parse_simple_yaml_scalar(item))
+            if index + 1 >= len(rows) or rows[index + 1].indent <= indent:
+                raise ValueError(f"{path}: line {row.lineno}: list item must not be empty")
+            child_indent = rows[index + 1].indent
+            if child_indent != indent + 2:
+                raise ValueError(
+                    f"{path}: line {rows[index + 1].lineno}: nested list item block "
+                    "must be indented by two spaces"
+                )
+            value, index = _parse_simple_yaml_block(rows, index + 1, child_indent, path)
+            values.append(value)
+            continue
+
         index += 1
+        candidate_key = item.split(":", 1)[0].strip() if ":" in item else ""
+        if candidate_key and re.fullmatch(r"[A-Za-z0-9_-]+", candidate_key):
+            key, remainder = _split_simple_yaml_mapping(item, path, row.lineno)
+            mapping: dict[str, Any] = {
+                key: _parse_simple_yaml_scalar(remainder) if remainder else ""
+            }
+            if index < len(rows) and rows[index].indent > indent:
+                child_indent = rows[index].indent
+                if child_indent != indent + 2:
+                    raise ValueError(
+                        f"{path}: line {rows[index].lineno}: nested list item mapping "
+                        "must be indented by two spaces"
+                    )
+                extra, index = _parse_simple_yaml_mapping(rows, index, child_indent, path)
+                mapping.update(extra)
+            values.append(mapping)
+            continue
+        if index < len(rows) and rows[index].indent > indent:
+            raise ValueError(f"{path}: line {rows[index].lineno}: unexpected indentation after scalar list item")
+        values.append(_parse_simple_yaml_scalar(item))
     return values, index
 
 
@@ -658,6 +724,26 @@ def _required_string_list(data: dict[str, Any], key: str, path: Path) -> tuple[s
     if not isinstance(value, list) or not all(isinstance(item, str) and item for item in value):
         raise ValueError(f"{path}: {key}: expected a non-empty list of strings")
     return tuple(value)
+
+
+def _required_mapping(data: dict[str, Any], key: str, path: Path) -> dict[str, Any]:
+    value = data.get(key)
+    if not isinstance(value, dict):
+        raise ValueError(f"{path}: {key}: expected mapping")
+    return value
+
+
+def _required_bool(data: dict[str, Any], key: str, path: Path) -> bool:
+    value = data.get(key)
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        lowered = value.lower()
+        if lowered == "true":
+            return True
+        if lowered == "false":
+            return False
+    raise ValueError(f"{path}: {key}: expected true or false")
 
 
 def _required_string_mapping(data: dict[str, Any], key: str, path: Path) -> dict[str, str]:
@@ -713,6 +799,60 @@ def parse_release_yaml(text: str, path: Path = Path("release.yaml")) -> ReleaseM
         instruction_entrypoints=_required_string_mapping(data, "instruction_entrypoints", path),
         smoke=smoke,
         validation=_required_string_mapping(data, "validation", path),
+    )
+
+
+def parse_adapter_artifact_metadata_yaml(
+    text: str,
+    path: Path = Path("adapter-artifacts.yaml"),
+) -> AdapterArtifactMetadata:
+    """Parse the adapter artifact metadata schema_version 1 shape."""
+
+    data = _parse_simple_yaml(text, path)
+    if not isinstance(data, dict):
+        raise ValueError(f"{path}: expected top-level mapping")
+    if str(data.get("schema_version")) != "1":
+        raise ValueError(f"{path}: schema_version: expected 1")
+
+    release = _required_mapping(data, "release", path)
+    generator = _required_mapping(data, "generator", path)
+    combined = _required_mapping(data, "combined_artifact", path)
+    validation = _required_mapping(data, "validation", path)
+
+    artifacts_value = data.get("artifacts")
+    if not isinstance(artifacts_value, list) or not artifacts_value:
+        raise ValueError(f"{path}: artifacts: expected non-empty list")
+    artifacts: list[AdapterArtifactEntry] = []
+    for index, item in enumerate(artifacts_value):
+        if not isinstance(item, dict):
+            raise ValueError(f"{path}: artifacts[{index}]: expected mapping")
+        artifacts.append(
+            AdapterArtifactEntry(
+                adapter=_required_string(item, "adapter", path),
+                archive=_required_string(item, "archive", path),
+                sha256=_required_string(item, "sha256", path),
+                install_root=_required_string(item, "install_root", path),
+                result=_required_string(item, "result", path),
+            )
+        )
+
+    return AdapterArtifactMetadata(
+        version=_required_string(release, "version", path),
+        source_commit=_required_string(release, "source_commit", path),
+        date=_required_string(release, "date", path),
+        generator_command=_required_string(generator, "command", path),
+        source_skills=_required_string(generator, "source_skills", path),
+        manifest=_required_string(generator, "manifest", path),
+        artifacts=tuple(artifacts),
+        combined_artifact=CombinedAdapterArtifact(
+            required=_required_bool(combined, "required", path),
+            archive=_required_string(combined, "archive", path),
+            sha256=str(combined.get("sha256", "")),
+            included_adapters=_required_string_list(combined, "included_adapters", path),
+        ),
+        validation_command=_required_string(validation, "command", path),
+        validation_result=_required_string(validation, "result", path),
+        validated_at=_required_string(validation, "validated_at", path),
     )
 
 
@@ -1884,6 +2024,115 @@ def validate_adapter_archives(
     return _dedupe_errors(errors)
 
 
+def _sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _expected_adapter_install_roots() -> dict[str, str]:
+    return {
+        adapter: config.skill_root.as_posix().rstrip("/") + "/"
+        for adapter, config in ADAPTERS.items()
+    }
+
+
+def validate_adapter_artifact_metadata(
+    version: str,
+    release_output_dir: Path,
+    *,
+    metadata_root: Path = ADAPTER_ARTIFACT_REPORT_ROOT,
+) -> list[str]:
+    """Validate adapter artifact metadata and checksum evidence for one release."""
+
+    metadata_path = metadata_root / f"{version}.yaml"
+    if not metadata_path.is_file():
+        return [f"missing adapter artifact metadata: {metadata_path}"]
+    try:
+        metadata = parse_adapter_artifact_metadata_yaml(
+            metadata_path.read_text(encoding="utf-8"),
+            metadata_path,
+        )
+    except ValueError as exc:
+        return [str(exc)]
+
+    errors: list[str] = []
+    if metadata.version != version:
+        errors.append(f"{metadata_path}: release.version mismatch: expected {version}, found {metadata.version}")
+    if not re.fullmatch(r"[0-9a-f]{7,40}", metadata.source_commit):
+        errors.append(f"{metadata_path}: release.source_commit must be a git SHA")
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", metadata.date):
+        errors.append(f"{metadata_path}: release.date must use YYYY-MM-DD")
+    if not metadata.generator_command:
+        errors.append(f"{metadata_path}: generator.command: missing")
+    if metadata.source_skills != "skills/":
+        errors.append(f"{metadata_path}: generator.source_skills: expected skills/")
+    if metadata.manifest != "dist/adapters/manifest.yaml":
+        errors.append(f"{metadata_path}: generator.manifest: expected dist/adapters/manifest.yaml")
+
+    by_adapter: dict[str, AdapterArtifactEntry] = {}
+    for artifact in metadata.artifacts:
+        if artifact.adapter in by_adapter:
+            errors.append(f"{metadata_path}: duplicate artifact adapter: {artifact.adapter}")
+        by_adapter[artifact.adapter] = artifact
+    if tuple(sorted(by_adapter)) != tuple(sorted(SUPPORTED_ADAPTERS)):
+        errors.append(
+            f"{metadata_path}: artifacts must include exactly {SUPPORTED_ADAPTERS}, "
+            f"found {tuple(sorted(by_adapter))}"
+        )
+
+    expected_roots = _expected_adapter_install_roots()
+    for adapter in SUPPORTED_ADAPTERS:
+        artifact = by_adapter.get(adapter)
+        if artifact is None:
+            continue
+        expected_archive = adapter_archive_name(adapter, version)
+        if artifact.archive != expected_archive:
+            errors.append(
+                f"{metadata_path}: artifact {adapter} archive mismatch: "
+                f"expected {expected_archive}, found {artifact.archive}"
+            )
+        if artifact.install_root != expected_roots[adapter]:
+            errors.append(
+                f"{metadata_path}: artifact {adapter} install_root mismatch: "
+                f"expected {expected_roots[adapter]}, found {artifact.install_root}"
+            )
+        if artifact.result != "pass":
+            errors.append(f"{metadata_path}: artifact {adapter} result must be pass")
+        archive_path = release_output_dir / artifact.archive
+        if not archive_path.is_file():
+            errors.append(f"{metadata_path}: missing recorded archive: {adapter}: {archive_path}")
+            continue
+        actual_sha256 = _sha256_file(archive_path)
+        if artifact.sha256 != actual_sha256:
+            errors.append(
+                f"{metadata_path}: sha256 mismatch: {adapter}: "
+                f"expected {actual_sha256}, found {artifact.sha256}"
+            )
+
+    combined = metadata.combined_artifact
+    if combined.required:
+        combined_path = release_output_dir / combined.archive
+        if not combined_path.is_file():
+            errors.append(f"{metadata_path}: missing required combined artifact: {combined_path}")
+        elif combined.sha256 != _sha256_file(combined_path):
+            errors.append(f"{metadata_path}: combined_artifact sha256 mismatch")
+    if tuple(sorted(combined.included_adapters)) != tuple(sorted(SUPPORTED_ADAPTERS)):
+        errors.append(
+            f"{metadata_path}: combined_artifact.included_adapters must include exactly {SUPPORTED_ADAPTERS}"
+        )
+    if metadata.validation_result != "pass":
+        errors.append(f"{metadata_path}: validation.result must be pass")
+    if not metadata.validation_command:
+        errors.append(f"{metadata_path}: validation.command: missing")
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", metadata.validated_at):
+        errors.append(f"{metadata_path}: validation.validated_at must use YYYY-MM-DD")
+
+    return _dedupe_errors(errors)
+
+
 def _expected_adapter_paths() -> dict[str, str]:
     return {
         adapter: f"{config.package_root.as_posix()}/"
@@ -2396,7 +2645,9 @@ def validate_release_output(
     skills_root: Path = CANONICAL_SKILLS_DIR,
     template_root: Path = ADAPTER_TEMPLATE_ROOT,
     output_root: Path = ADAPTER_OUTPUT_ROOT,
+    release_output_dir: Path | None = None,
     release_root: Path = RELEASE_ROOT,
+    adapter_artifact_report_root: Path = ADAPTER_ARTIFACT_REPORT_ROOT,
     token_cost_report_root: Path = TOKEN_COST_REPORT_ROOT,
     token_cost_validator: Path = TOKEN_COST_VALIDATOR,
     changed_paths: Iterable[str | Path] | None = None,
@@ -2463,7 +2714,10 @@ def validate_release_output(
     errors.extend(_validate_opencode_command_alias_smoke(version, metadata))
 
     token_cost_required = version in TOKEN_COST_REPORT_REQUIRED_RELEASES
+    adapter_artifacts_required = version in ADAPTER_ARTIFACT_METADATA_REQUIRED_RELEASES
     required_validation_keys = list(REQUIRED_RELEASE_VALIDATION_KEYS)
+    if adapter_artifacts_required:
+        required_validation_keys.extend(("adapter_archives", "adapter_artifact_metadata"))
     if token_cost_required:
         required_validation_keys.append("token_cost_report")
 
@@ -2530,12 +2784,42 @@ def validate_release_output(
     )
     errors.extend(token_cost_errors)
 
+    adapter_archive_errors: list[str] = []
+    adapter_artifact_metadata_errors: list[str] = []
+    if adapter_artifacts_required:
+        if release_output_dir is None:
+            adapter_archive_errors.append(
+                f"release-output-dir is required for adapter archive validation: {version}"
+            )
+            adapter_artifact_metadata_errors.append(
+                f"release-output-dir is required for adapter artifact metadata validation: {version}"
+            )
+        else:
+            adapter_archive_errors = validate_adapter_archives(
+                version,
+                release_output_dir,
+                skills_root=skills_root,
+                template_root=template_root,
+            )
+            adapter_artifact_metadata_errors = validate_adapter_artifact_metadata(
+                version,
+                release_output_dir,
+                metadata_root=adapter_artifact_report_root,
+            )
+        errors.extend(adapter_archive_errors)
+        errors.extend(adapter_artifact_metadata_errors)
+
     actual_validation = {
         "generated_sync": "fail" if generated_sync_errors or adapter_validation_errors else "pass",
         "release_notes_consistency": "fail" if release_notes_errors else "pass",
         "placeholder_release_check": _placeholder_release_check_status(),
         "security": "fail" if security_errors else "pass",
     }
+    if adapter_artifacts_required:
+        actual_validation["adapter_archives"] = "fail" if adapter_archive_errors else "pass"
+        actual_validation["adapter_artifact_metadata"] = (
+            "fail" if adapter_artifact_metadata_errors else "pass"
+        )
     if token_cost_required:
         actual_validation["token_cost_report"] = "fail" if token_cost_errors else "pass"
     for key, actual in actual_validation.items():
