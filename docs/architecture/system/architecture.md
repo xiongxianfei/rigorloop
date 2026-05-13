@@ -31,6 +31,9 @@
 - Publish Next Release transition proposal: `docs/proposals/2026-05-12-publish-next-release-with-single-authored-skill-source.md`
 - Publish Next Release transition spec: `specs/publish-next-release-with-single-authored-skill-source.md`
 - Publish Next Release transition change metadata: `docs/changes/2026-05-12-publish-next-release-with-single-authored-skill-source/change.yaml`
+- Public Adapter Artifact Migration proposal: `docs/proposals/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md`
+- Public Adapter Artifact Migration spec: `specs/public-adapter-artifact-migration-examples-concise-skill-release.md`
+- Public Adapter Artifact Migration change metadata: `docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/change.yaml`
 - Record Every Formal Review proposal: `docs/proposals/2026-05-12-record-every-formal-review.md`
 - Formal Review Recording spec: `specs/formal-review-recording.md`
 - Record Every Formal Review change metadata: `docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml`
@@ -71,6 +74,8 @@ The goals are:
 - Public adapter skill copies under `dist/adapters/**/skills` are generated adapter output and remain tracked only until the release-artifact compatibility window is satisfied.
 - `dist/adapters/manifest.yaml`, `dist/adapters/README.md`, and `docs/reports/adapter-artifacts/releases/<version>.yaml` are tracked support and release evidence surfaces; generated adapter archives are release assets rather than committed repository files by default.
 - The `v0.1.1` transition release validates canonical `skills/`, tracked public adapter output under `dist/adapters/`, release notes, adapter install guidance, and token-cost metadata; it does not build or validate `.codex/skills/` as release evidence.
+- The `v0.1.2` archive-introduction release publishes per-adapter release archives for Codex, Claude Code, and opencode while keeping tracked public adapter skill bodies available for the stable compatibility window.
+- The first public adapter untracking release occurs only after at least one stable release has shipped downloadable adapter archives and release-archive install documentation, unless an approved compatibility-window exception explicitly says otherwise.
 - `docs/releases/<version>/release.yaml` and `docs/releases/<version>/release-notes.md` are authored release evidence, not generated release-note substitutes.
 - First implementation remains review-based for architecture package completeness; required package-shape, C4-file, and ADR-presence enforcement automation is deferred.
 - Top-level legacy documents under `docs/architecture/*.md` are archived historical artifacts after accepted current content has been merged into this canonical package.
@@ -208,9 +213,10 @@ This decomposition is prose-only for now. A component diagram should be added wh
 5. OpenCode command aliases are generated prompt wrappers for a curated lifecycle command set and remain derived from canonical skill inclusion decisions.
 6. While public adapter skill copies remain tracked, adapter validation and release verification keep checking tracked adapter drift.
 7. For the `v0.1.1` transition release, release validation checks canonical `skills/`, tracked public adapter output under `dist/adapters/`, adapter manifest and install guidance, tracked release notes, token-cost metadata, and `.codex/skills/` tracked-state absence. It does not build or structurally validate `.codex/skills/` as release evidence.
-8. Release artifact preparation generates separate per-adapter archives, optionally a combined all-adapters archive, and tracked adapter artifact metadata under `docs/reports/adapter-artifacts/releases/<version>.yaml`.
-9. After public adapter skill copies move to release artifacts, adapter validation checks generated temporary or release artifact output instead of tracked public skill-copy drift.
-10. Release validation checks manifest shape, generated output structure, artifact metadata when applicable, checksums when applicable, tracked release notes, smoke evidence, and security constraints.
+8. For the `v0.1.2` archive-introduction release, release artifact preparation generates separate per-adapter archives for Codex, Claude Code, and opencode, may generate an optional combined archive, records tracked adapter artifact metadata under `docs/reports/adapter-artifacts/releases/<version>.yaml`, and keeps tracked public adapter skill bodies available.
+9. Release validation for the archive-introduction release checks canonical skills, tracked adapter output, generated adapter archives, adapter artifact metadata, checksums, token-cost evidence, tracked release notes, install guidance, and the retained compatibility path.
+10. After public adapter skill copies move to release artifacts in a later stable release, adapter validation checks generated temporary or release artifact output instead of tracked public skill-copy drift.
+11. Release validation checks manifest shape, generated output structure, artifact metadata when applicable, checksums when applicable, tracked release notes, smoke evidence, and security constraints.
 
 ## Deployment View
 
@@ -223,9 +229,9 @@ The main execution and publication boundaries are:
 - local contributor shell: runs selector, CI wrapper, validation, generation, and drift checks;
 - GitHub Actions: runs the same repository-owned scripts in hosted CI when configured;
 - local Codex runtime state: `.codex/skills/`, ignored by Git and installed locally from public Codex adapter output when contributors need local Codex use for this transition release;
-- public adapter packages: tracked `dist/adapters/` output during the compatibility window, then generated release artifact output after public adapter skill copies are untracked;
+- public adapter packages: tracked `dist/adapters/` output during the compatibility window, including the archive-introduction release, then generated release artifact output after public adapter skill copies are untracked;
 - adapter support metadata: `dist/adapters/manifest.yaml` and `dist/adapters/README.md`, tracked guidance and support surfaces rather than authored skill bodies;
-- adapter artifact metadata: `docs/reports/adapter-artifacts/releases/<version>.yaml`, tracked release evidence with source commit, generator command, artifact list, checksums, and validation result;
+- adapter artifact metadata: `docs/reports/adapter-artifacts/releases/<version>.yaml`, tracked release evidence with source commit, generator command, required per-adapter archive list, optional combined archive details, checksums, install roots, and validation result;
 - adapter release artifacts: generated per-adapter archives, plus optional combined archive, uploaded as release assets rather than committed by default;
 - durable reports: `docs/reports/`, authored from local measurement evidence and linked from change-local artifacts when produced by a change;
 - token-cost benchmark fixtures: `benchmarks/token-cost/`, authored prompt and fixture inputs used to exercise public skills in a downstream-style project;
@@ -233,7 +239,7 @@ The main execution and publication boundaries are:
 - token-cost release evidence: `docs/reports/token-cost/releases/<version>.md`, `docs/reports/token-cost/releases/<version>.yaml`, and tracked raw or sanitized run summaries under `docs/reports/token-cost/runs/<version>/`;
 - release evidence: tracked `docs/releases/<version>/release.yaml`, release notes, and maintainer smoke evidence used by release verification.
 
-Rollback before public adapter skill-copy untracking can restore tracked local mirror handling by reverting ignore, validation, documentation, and generation changes for that slice. Rollback after public adapter skill-copy untracking preserves generation from `skills/` and either re-tracks generated adapter output temporarily or republishes release artifacts from last known good generated output. No runtime data migration is required.
+Rollback before public adapter skill-copy untracking keeps `dist/adapters/**/skills` tracked and defers archive publication or fixes archive metadata, install docs, and validation before release. Rollback after public adapter skill-copy untracking preserves generation from `skills/` and either re-tracks generated adapter output temporarily or republishes release artifacts from last known good generated output. No runtime data migration is required.
 
 ## Crosscutting Concepts
 

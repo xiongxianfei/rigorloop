@@ -27,13 +27,22 @@ from validation_selection import (  # noqa: E402
     select_validation,
 )
 
+ADAPTER_REGRESSION_COMMAND = (
+    "python scripts/test-adapter-distribution.py "
+    "AdapterDistributionTests.test_adapter_generation_creates_independent_packages_and_thin_entrypoints "
+    "AdapterDistributionTests.test_adapter_generation_drift_check_detects_stale_and_unexpected_files "
+    "AdapterDistributionTests.test_validate_adapters_cli_accepts_repository_output "
+    "AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives "
+    "AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root "
+    "AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata"
+)
 
 EXPECTED_CATALOG = {
     "skills.validate": "python scripts/validate-skills.py",
     "skills.regression": "python scripts/test-skill-validator.py",
     "skills.generation_regression": "python scripts/test-build-skills.py",
     "skills.drift": "python scripts/build-skills.py --check",
-    "adapters.regression": "python scripts/test-adapter-distribution.py",
+    "adapters.regression": ADAPTER_REGRESSION_COMMAND,
     "adapters.drift": "python scripts/build-adapters.py --version <adapter-version> --check",
     "adapters.validate": "python scripts/validate-adapters.py --version <adapter-version>",
     "review_artifacts.regression": "python scripts/test-review-artifact-validator.py",
@@ -42,14 +51,14 @@ EXPECTED_CATALOG = {
     "artifact_lifecycle.validate": "python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path <path>...",
     "change_metadata.regression": "python scripts/test-change-metadata-validator.py",
     "change_metadata.validate": "python scripts/validate-change-metadata.py <change-yaml>...",
-    "release.validate": "python scripts/validate-release.py --version <version>",
+    "release.validate": "python scripts/validate-release-ci.py --version <version>",
     "readme.validate": "python scripts/validate-readme.py README.md",
     "readme.vision_markers": "python scripts/validate-readme.py README.md --vision-markers",
     "selector.regression": "python scripts/test-select-validation.py",
     "token_cost.regression": "python scripts/test-token-cost-measurement.py",
     "token_cost.report_regression": "python scripts/test-token-cost-report-validation.py",
     "token_cost.report_validate": "python scripts/validate-token-cost-report.py <report-yaml>...",
-    "broad_smoke.repo": "bash scripts/ci.sh --mode broad-smoke",
+    "broad_smoke.repo": "bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped",
 }
 
 
@@ -427,7 +436,7 @@ raise SystemExit({exit_code})
         self.assertIn("release.validate", selected_ids(payload))
         self.assertIn("docs/changes/2026-04-25-example/", payload["affected_roots"])
         release_check = next(check for check in payload["selected_checks"] if check["id"] == "release.validate")
-        self.assertEqual(release_check["command"], "python scripts/validate-release.py --version v0.1.1")
+        self.assertEqual(release_check["command"], "python scripts/validate-release-ci.py --version v0.1.1")
 
     def test_release_path_without_version_directory_blocks(self) -> None:
         result = run_selector("--mode", "explicit", "--path", "docs/releases/release-notes.md")
@@ -523,6 +532,12 @@ raise SystemExit({exit_code})
                 "checks": {"adapters.regression"},
             },
             {
+                "path": "scripts/validate-release-ci.py",
+                "category": "release-script",
+                "status": "ok",
+                "checks": {"adapters.regression"},
+            },
+            {
                 "path": "scripts/ci.sh",
                 "category": "ci-wrapper",
                 "status": "ok",
@@ -548,6 +563,12 @@ raise SystemExit({exit_code})
             },
             {
                 "path": "docs/changes/2026-04-25-example/architecture.md",
+                "category": "change-local-lifecycle",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/verify-report.md",
                 "category": "change-local-lifecycle",
                 "status": "ok",
                 "checks": {"artifact_lifecycle.validate"},
@@ -647,6 +668,12 @@ raise SystemExit({exit_code})
                 "category": "token-cost",
                 "status": "ok",
                 "checks": {"token_cost.regression", "token_cost.report_validate"},
+            },
+            {
+                "path": "docs/reports/adapter-artifacts/releases/v0.1.2.yaml",
+                "category": "adapter-artifact-metadata",
+                "status": "ok",
+                "checks": {"adapters.regression"},
             },
             {
                 "path": "docs/reports/token-cost/runs/v0.1.1/proposal-short-run1.analysis.yaml",
@@ -936,6 +963,7 @@ raise SystemExit({exit_code})
             "scripts/test-skill-validator.py",
             "docs/changes/2026-05-03-workflow-refactor/change.yaml",
             "docs/changes/2026-05-03-workflow-refactor/explain-change.md",
+            "docs/changes/2026-05-03-workflow-refactor/verify-report.md",
             "docs/changes/2026-05-03-workflow-refactor/review-log.md",
             "docs/changes/2026-05-03-workflow-refactor/review-resolution.md",
         ]
@@ -967,6 +995,7 @@ raise SystemExit({exit_code})
             "scripts/test-skill-validator.py": "validator-skills",
             "docs/changes/2026-05-03-workflow-refactor/change.yaml": "change-metadata",
             "docs/changes/2026-05-03-workflow-refactor/explain-change.md": "change-local-lifecycle",
+            "docs/changes/2026-05-03-workflow-refactor/verify-report.md": "change-local-lifecycle",
             "docs/changes/2026-05-03-workflow-refactor/review-log.md": "review-artifacts",
             "docs/changes/2026-05-03-workflow-refactor/review-resolution.md": "review-artifacts",
         }
@@ -1396,7 +1425,7 @@ raise SystemExit({exit_code})
                 selected_checks=[
                     {
                         "id": "release.validate",
-                        "command": "python scripts/validate-release.py --version missing-version",
+                        "command": "python scripts/validate-release-ci.py --version missing-version",
                         "reason": "fixture release version should fail validation",
                         "versions": ["missing-version"],
                     }
@@ -1456,7 +1485,7 @@ with Path(os.environ["ORDER_FILE"]).open("a", encoding="utf-8") as handle:
             self.minimal_selector_payload(
                 selected_checks=[
                     self.selected_check("skills.regression", "python scripts/test-skill-validator.py"),
-                    self.selected_check("adapters.regression", "python scripts/test-adapter-distribution.py"),
+                    self.selected_check("adapters.regression", ADAPTER_REGRESSION_COMMAND),
                 ]
             )
         )
@@ -1505,7 +1534,7 @@ with Path(os.environ["ORDER_FILE"]).open("a", encoding="utf-8") as handle:
             self.minimal_selector_payload(
                 selected_checks=[
                     self.selected_check("skills.regression", "python scripts/test-skill-validator.py"),
-                    self.selected_check("adapters.regression", "python scripts/test-adapter-distribution.py"),
+                    self.selected_check("adapters.regression", ADAPTER_REGRESSION_COMMAND),
                     self.selected_check(
                         "artifact_lifecycle.regression",
                         "python scripts/test-artifact-lifecycle-validator.py",
@@ -1553,7 +1582,7 @@ with Path(os.environ["ORDER_FILE"]).open("a", encoding="utf-8") as handle:
             self.minimal_selector_payload(
                 selected_checks=[
                     self.selected_check("skills.regression", "python scripts/test-skill-validator.py"),
-                    self.selected_check("adapters.regression", "python scripts/test-adapter-distribution.py"),
+                    self.selected_check("adapters.regression", ADAPTER_REGRESSION_COMMAND),
                     self.selected_check(
                         "artifact_lifecycle.regression",
                         "python scripts/test-artifact-lifecycle-validator.py",
@@ -1606,7 +1635,7 @@ with Path(os.environ["ORDER_FILE"]).open("a", encoding="utf-8") as handle:
                 selected_checks=[
                     self.selected_check("skills.regression", "python scripts/test-skill-validator.py"),
                     self.selected_check("skills.validate", "python scripts/validate-skills.py"),
-                    self.selected_check("adapters.regression", "python scripts/test-adapter-distribution.py"),
+                    self.selected_check("adapters.regression", ADAPTER_REGRESSION_COMMAND),
                 ]
             )
         )
@@ -1671,7 +1700,7 @@ print("adapters finished")
             self.minimal_selector_payload(
                 selected_checks=[
                     self.selected_check("skills.regression", "python scripts/test-skill-validator.py"),
-                    self.selected_check("adapters.regression", "python scripts/test-adapter-distribution.py"),
+                    self.selected_check("adapters.regression", ADAPTER_REGRESSION_COMMAND),
                 ]
             )
         )
@@ -1749,7 +1778,7 @@ marker_dir.mkdir(parents=True, exist_ok=True)
             self.minimal_selector_payload(
                 selected_checks=[
                     self.selected_check("skills.regression", "python scripts/test-skill-validator.py"),
-                    self.selected_check("adapters.regression", "python scripts/test-adapter-distribution.py"),
+                    self.selected_check("adapters.regression", ADAPTER_REGRESSION_COMMAND),
                     self.selected_check(
                         "artifact_lifecycle.regression",
                         "python scripts/test-artifact-lifecycle-validator.py",
@@ -1812,7 +1841,7 @@ print("SECOND_STDOUT")
             self.minimal_selector_payload(
                 selected_checks=[
                     self.selected_check("skills.regression", "python scripts/test-skill-validator.py"),
-                    self.selected_check("adapters.regression", "python scripts/test-adapter-distribution.py"),
+                    self.selected_check("adapters.regression", ADAPTER_REGRESSION_COMMAND),
                 ]
             )
         )
@@ -1859,7 +1888,7 @@ print("SECOND_STDOUT")
             self.minimal_selector_payload(
                 selected_checks=[
                     self.selected_check("skills.regression", "python scripts/test-skill-validator.py"),
-                    self.selected_check("adapters.regression", "python scripts/test-adapter-distribution.py"),
+                    self.selected_check("adapters.regression", ADAPTER_REGRESSION_COMMAND),
                 ]
             )
         )
@@ -1961,7 +1990,7 @@ raise SystemExit(3)
             self.minimal_selector_payload(
                 selected_checks=[
                     self.selected_check("skills.regression", "python scripts/test-skill-validator.py"),
-                    self.selected_check("adapters.regression", "python scripts/test-adapter-distribution.py"),
+                    self.selected_check("adapters.regression", ADAPTER_REGRESSION_COMMAND),
                 ]
             )
         )
@@ -2072,7 +2101,7 @@ raise SystemExit(3)
                 selected_checks=[
                     {
                         "id": "release.validate",
-                        "command": "python scripts/validate-release.py --version v0.1.1",
+                        "command": "python scripts/validate-release-ci.py --version v0.1.1",
                         "reason": "fixture command should be unavailable in the temporary workspace",
                         "versions": ["v0.1.1"],
                     }
@@ -2093,7 +2122,7 @@ raise SystemExit(3)
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("Run selected check: release.validate", output)
-        self.assertIn("release.validate | unavailable | command unavailable: scripts/validate-release.py |", output)
+        self.assertIn("release.validate | unavailable | command unavailable: scripts/validate-release-ci.py |", output)
 
     def test_ci_wrapper_forwards_mode_arguments_to_selector(self) -> None:
         fixture = self.write_selector_fixture(self.minimal_selector_payload())
@@ -2233,7 +2262,7 @@ raise SystemExit(3)
                 selected_checks=[
                     {
                         "id": "broad_smoke.repo",
-                        "command": "bash scripts/ci.sh --mode broad-smoke",
+                        "command": "bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped",
                         "reason": "must not run when wrapper arguments are invalid",
                     }
                 ]
@@ -2300,7 +2329,7 @@ raise SystemExit(3)
                 selected_checks=[
                     {
                         "id": "broad_smoke.repo",
-                        "command": "bash scripts/ci.sh --mode broad-smoke",
+                        "command": "bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped",
                         "reason": "Broad smoke is required by an authoritative source.",
                     }
                 ]

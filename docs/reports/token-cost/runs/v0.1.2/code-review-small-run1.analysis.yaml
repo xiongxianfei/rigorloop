@@ -1,0 +1,59 @@
+schema_version: 1
+
+run:
+  id: code-review-small
+  raw_jsonl_tracked: false
+  jsonl: ""
+  sanitized_source: codex-jsonl-local-run
+  sanitized_summary: docs/reports/token-cost/runs/v0.1.2/code-review-small-run1.analysis.yaml
+  raw_omission_reason: "raw JSONL contains disposable local temp fixture paths and full command output; analyzer summary is tracked as sanitized release evidence"
+
+usage:
+  cached_input_tokens: 81792
+  input_tokens: 91677
+  output_tokens: 1136
+  reasoning_output_tokens: 272
+
+tool_output:
+  total_estimated_tokens: 3138
+  largest_event:
+    kind: command_execution
+    command: "/bin/bash -lc \"sed -n '1,220p' /tmp/rigorloop-token-bench-v0.1.2-1778686349-4f31b7e6/.agents/skills/code-review/SKILL.md && git status --short && git diff --stat && git diff -- .\""
+    path: /tmp/rigorloop-token-bench-v0.1.2-1778686349-4f31b7e6/.agents/skills/code-review/SKILL.md
+    lines: 221
+    estimated_tokens: 2799
+
+signals:
+  full_file_read_count: 1
+  broad_search_count: 0
+  generated_output_read_count: 0
+  repeated_file_read_count: 0
+
+full_file_read:
+  result: confirmed
+  justification: ""
+  signals:
+    - full_file_read_command
+    - large_leading_range_read
+  justified_reads: []
+  confirmed_reads:
+    - path: /tmp/rigorloop-token-bench-v0.1.2-1778686349-4f31b7e6/.agents/skills/code-review/SKILL.md
+      lines: 221
+      estimated_tokens: 2799
+  suspected_reads:
+    - path: src/example.txt
+      lines: 1
+      estimated_tokens: 6
+    - path: README.md
+      lines: 3
+      estimated_tokens: 27
+    - path: docs/workflows.md
+      lines: 3
+      estimated_tokens: 32
+  repeated_file_reads: []
+
+verdict:
+  result: warning
+  warnings:
+    - "full-file-style read observed"
+  blockers: []

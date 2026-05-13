@@ -4,11 +4,13 @@
 from __future__ import annotations
 
 import importlib.util
+import hashlib
 import sys
 import shutil
 import subprocess
 import tempfile
 import unittest
+import zipfile
 from pathlib import Path
 from unittest.mock import patch
 
@@ -27,6 +29,8 @@ from adapter_distribution import (  # noqa: E402
     AdapterDriftEntry,
     OPENCODE_COMMAND_ALIASES,
     SUPPORTED_ADAPTERS,
+    adapter_archive_name,
+    build_adapter_archives,
     build_required_benchmark_context,
     collect_adapter_drift,
     collect_adapter_drift_entries,
@@ -39,6 +43,8 @@ from adapter_distribution import (  # noqa: E402
     render_opencode_command_alias,
     render_manifest_yaml,
     sync_adapter_output,
+    validate_adapter_archives,
+    validate_adapter_artifact_metadata,
     validate_adapter_output,
     validate_release_output,
 )
@@ -211,6 +217,116 @@ class AdapterDistributionTests(unittest.TestCase):
             'repeated ARGUMENT_MARKER_M3_SMOKE."'
         )
         return smoke
+
+    def command_alias_notes_extra(self) -> str:
+        aliases = ", ".join(f"`{alias}`" for alias in OPENCODE_COMMAND_ALIASES)
+        return "\n".join(
+            [
+                "## Command Alias Usage",
+                "",
+                f"OpenCode command aliases are generated for {aliases}.",
+                "Claude Code remains skill-native and uses native skill slash commands such as `/proposal`.",
+                "",
+                "OpenCode one-shot example:",
+                "",
+                "```text",
+                'opencode run --command proposal "Draft a proposal for the requested change."',
+                "```",
+            ]
+        )
+
+    def v0_1_2_notes_extra(self) -> str:
+        return "\n".join(
+            [
+                self.command_alias_notes_extra(),
+                "",
+                "## Adapter Archives",
+                "",
+                "Per-adapter release archives are available for `v0.1.2`:",
+                "",
+                "- `rigorloop-adapter-codex-v0.1.2.zip` installs to `.agents/skills/`.",
+                "- `rigorloop-adapter-claude-v0.1.2.zip` installs to `.claude/skills/`.",
+                "- `rigorloop-adapter-opencode-v0.1.2.zip` installs to `.opencode/skills/`.",
+                "",
+                "tracked `dist/adapters/**/skills` remain available for the compatibility window.",
+                "Checksums and adapter artifact metadata are recorded in `docs/reports/adapter-artifacts/releases/v0.1.2.yaml`.",
+                "",
+                "The repository-owned release gate is `bash scripts/release-verify.sh v0.1.2`.",
+            ]
+        )
+
+    def write_adapter_artifact_metadata(
+        self,
+        root: Path,
+        release_output_dir: Path,
+        *,
+        version: str = "v0.1.2",
+        source_commit: str = "0123456789abcdef0123456789abcdef01234567",
+        artifact_overrides: dict[str, dict[str, str]] | None = None,
+        combined_required: bool = False,
+        validation_result: str = "pass",
+    ) -> Path:
+        metadata_root = root / "docs" / "reports" / "adapter-artifacts" / "releases"
+        metadata_root.mkdir(parents=True, exist_ok=True)
+        artifact_overrides = artifact_overrides or {}
+        lines = [
+            "schema_version: 1",
+            "",
+            "release:",
+            f"  version: {version}",
+            f"  source_commit: {source_commit}",
+            '  date: "2026-05-13"',
+            "",
+            "generator:",
+            f'  command: "python scripts/build-adapters.py --version {version} --output-dir <release-output-dir>"',
+            '  source_skills: "skills/"',
+            '  manifest: "dist/adapters/manifest.yaml"',
+            "",
+            "artifacts:",
+        ]
+        for adapter in SUPPORTED_ADAPTERS:
+            archive = adapter_archive_name(adapter, version)
+            archive_path = release_output_dir / archive
+            sha256 = hashlib.sha256(archive_path.read_bytes()).hexdigest()
+            row = {
+                "adapter": adapter,
+                "archive": archive,
+                "sha256": sha256,
+                "install_root": ADAPTERS[adapter].skill_root.as_posix().rstrip("/") + "/",
+                "result": "pass",
+            }
+            row.update(artifact_overrides.get(adapter, {}))
+            lines.extend(
+                [
+                    f"  - adapter: {row['adapter']}",
+                    f"    archive: {row['archive']}",
+                    f"    sha256: {row['sha256']}",
+                    f"    install_root: {row['install_root']}",
+                    f"    result: {row['result']}",
+                ]
+            )
+        lines.extend(
+            [
+                "",
+                "combined_artifact:",
+                f"  required: {'true' if combined_required else 'false'}",
+                f"  archive: rigorloop-adapters-{version}.tar.gz",
+                '  sha256: ""',
+                "  included_adapters:",
+                "    - codex",
+                "    - claude",
+                "    - opencode",
+                "",
+                "validation:",
+                f'  command: "python scripts/validate-adapters.py --root <release-output-dir> --version {version}"',
+                f"  result: {validation_result}",
+                '  validated_at: "2026-05-13"',
+                "",
+            ]
+        )
+        metadata_path = metadata_root / f"{version}.yaml"
+        metadata_path.write_text("\n".join(lines), encoding="utf-8")
+        return metadata_path
 
     def write_minimal_v2_token_report(
         self,
@@ -389,6 +505,231 @@ release_gate:
             ADAPTERS["opencode"].skill_path("workflow").as_posix(),
             ".opencode/skills/workflow/SKILL.md",
         )
+
+    def test_build_adapter_archives_creates_required_release_archives(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.copy_fixture_skills(root, ("portable-basic", "transformable-frontmatter"))
+            output_dir = root / "release-output"
+
+            archives = build_adapter_archives(
+                "v0.1.2",
+                output_dir,
+                skills_root=root / "skills",
+            )
+
+            self.assertEqual(
+                [archive.name for archive in archives],
+                [
+                    "rigorloop-adapter-codex-v0.1.2.zip",
+                    "rigorloop-adapter-claude-v0.1.2.zip",
+                    "rigorloop-adapter-opencode-v0.1.2.zip",
+                ],
+            )
+            for archive in archives:
+                self.assertEqual(archive.parent, output_dir)
+                self.assertTrue(archive.is_file())
+
+            self.assertFalse((output_dir / "dist").exists())
+            self.assertEqual([], validate_adapter_archives("v0.1.2", output_dir, skills_root=root / "skills"))
+
+    def test_adapter_archives_install_under_target_project_roots(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.copy_fixture_skills(root, ("portable-basic",))
+            output_dir = root / "release-output"
+            build_adapter_archives("v0.1.2", output_dir, skills_root=root / "skills")
+
+            expected = {
+                "codex": ("AGENTS.md", ".agents/skills/portable-basic/SKILL.md"),
+                "claude": ("CLAUDE.md", ".claude/skills/portable-basic/SKILL.md"),
+                "opencode": ("AGENTS.md", ".opencode/skills/portable-basic/SKILL.md"),
+            }
+            for adapter, required_entries in expected.items():
+                archive_path = output_dir / adapter_archive_name(adapter, "v0.1.2")
+                with zipfile.ZipFile(archive_path) as archive:
+                    names = set(archive.namelist())
+                for entry in required_entries:
+                    self.assertIn(entry, names)
+                self.assertFalse(
+                    any(name.startswith(f"{adapter}/") or name.startswith("dist/") for name in names)
+                )
+
+    def test_validate_adapter_archives_rejects_missing_required_archive(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.copy_fixture_skills(root, ("portable-basic",))
+            output_dir = root / "release-output"
+            build_adapter_archives("v0.1.2", output_dir, skills_root=root / "skills")
+            (output_dir / adapter_archive_name("claude", "v0.1.2")).unlink()
+
+            errors = validate_adapter_archives("v0.1.2", output_dir, skills_root=root / "skills")
+
+            self.assertTrue(
+                any("missing adapter archive: claude" in error for error in errors),
+                errors,
+            )
+
+    def test_validate_adapters_cli_accepts_release_archive_root(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "release-output"
+
+            build_result = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "scripts" / "build-adapters.py"),
+                    "--version",
+                    "v0.1.2",
+                    "--output-dir",
+                    str(output_dir),
+                ],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(0, build_result.returncode, build_result.stdout + build_result.stderr)
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "scripts" / "validate-adapters.py"),
+                    "--root",
+                    str(output_dir),
+                    "--version",
+                    "v0.1.2",
+                ],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(0, result.returncode, result.stdout + result.stderr)
+            self.assertIn("validated generated adapter archives for version v0.1.2", result.stdout)
+
+    def test_adapter_artifact_metadata_validation_accepts_schema_and_optional_combined(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.copy_fixture_skills(root, ("portable-basic",))
+            output_dir = root / "release-output"
+            build_adapter_archives("v0.1.2", output_dir, skills_root=root / "skills")
+            metadata_root = self.write_adapter_artifact_metadata(root, output_dir).parent
+
+            errors = validate_adapter_artifact_metadata(
+                "v0.1.2",
+                output_dir,
+                metadata_root=metadata_root,
+                release_commit="0123456789abcdef0123456789abcdef01234567",
+            )
+
+            self.assertEqual([], errors)
+
+    def test_adapter_artifact_metadata_validation_rejects_bad_results_checksums_and_source_commit_mismatch(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.copy_fixture_skills(root, ("portable-basic",))
+            output_dir = root / "release-output"
+            build_adapter_archives("v0.1.2", output_dir, skills_root=root / "skills")
+            metadata_root = self.write_adapter_artifact_metadata(
+                root,
+                output_dir,
+                artifact_overrides={"codex": {"result": "fail"}},
+            ).parent
+
+            errors = validate_adapter_artifact_metadata(
+                "v0.1.2",
+                output_dir,
+                metadata_root=metadata_root,
+                release_commit="0123456789abcdef0123456789abcdef01234567",
+            )
+
+            self.assertTrue(any("artifact codex result must be pass" in error for error in errors), errors)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.copy_fixture_skills(root, ("portable-basic",))
+            output_dir = root / "release-output"
+            build_adapter_archives("v0.1.2", output_dir, skills_root=root / "skills")
+            metadata_root = self.write_adapter_artifact_metadata(
+                root,
+                output_dir,
+                artifact_overrides={"claude": {"sha256": "0" * 64}},
+            ).parent
+
+            errors = validate_adapter_artifact_metadata(
+                "v0.1.2",
+                output_dir,
+                metadata_root=metadata_root,
+                release_commit="0123456789abcdef0123456789abcdef01234567",
+            )
+
+            self.assertTrue(any("sha256 mismatch: claude" in error for error in errors), errors)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.copy_fixture_skills(root, ("portable-basic",))
+            output_dir = root / "release-output"
+            build_adapter_archives("v0.1.2", output_dir, skills_root=root / "skills")
+            metadata_root = self.write_adapter_artifact_metadata(root, output_dir).parent
+
+            errors = validate_adapter_artifact_metadata(
+                "v0.1.2",
+                output_dir,
+                metadata_root=metadata_root,
+                release_commit="fedcba9876543210fedcba9876543210fedcba98",
+            )
+
+            self.assertTrue(any("release.source_commit mismatch" in error for error in errors), errors)
+
+    def test_v0_1_2_release_validation_checks_archives_and_artifact_metadata(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root = root / "skills"
+            shutil.copytree(ROOT / "skills", skills_root)
+            output_root = root / "dist" / "adapters"
+            sync_adapter_output("0.1.1", skills_root=skills_root, output_root=output_root)
+            release_output_dir = root / "release-output"
+            build_adapter_archives("v0.1.2", release_output_dir, skills_root=skills_root)
+            adapter_artifact_root = self.write_adapter_artifact_metadata(root, release_output_dir).parent
+            release_root = root / "docs" / "releases"
+            self.write_release_artifacts(
+                root,
+                version="v0.1.2",
+                release_type="final",
+                manifest_version="0.1.1",
+                smoke_overrides=self.v0_1_1_smoke_overrides(),
+                validation_overrides={
+                    "adapter_archives": "pass",
+                    "adapter_artifact_metadata": "pass",
+                },
+                notes_extra=self.v0_1_2_notes_extra(),
+            )
+
+            errors = validate_release_output(
+                "v0.1.2",
+                skills_root=skills_root,
+                output_root=output_root,
+                release_root=release_root,
+                release_output_dir=release_output_dir,
+                adapter_artifact_report_root=adapter_artifact_root,
+                release_commit="0123456789abcdef0123456789abcdef01234567",
+            )
+
+            self.assertEqual([], errors)
+
+            (adapter_artifact_root / "v0.1.2.yaml").unlink()
+            errors = validate_release_output(
+                "v0.1.2",
+                skills_root=skills_root,
+                output_root=output_root,
+                release_root=release_root,
+                release_output_dir=release_output_dir,
+                adapter_artifact_report_root=adapter_artifact_root,
+                release_commit="0123456789abcdef0123456789abcdef01234567",
+            )
+
+            self.assertTrue(any("missing adapter artifact metadata" in error for error in errors), errors)
 
     def test_portable_skill_includes_all_adapters(self) -> None:
         report = evaluate_skill(self.fixture("portable-basic"))
@@ -1905,9 +2246,17 @@ release_gate:
             handle.flush()
             captured: dict[str, object] = {}
 
-            def fake_validate_release_output(version: str, *, changed_paths=()):
+            def fake_validate_release_output(
+                version: str,
+                *,
+                changed_paths=(),
+                release_output_dir=None,
+                release_commit=None,
+            ):
                 captured["version"] = version
                 captured["changed_paths"] = changed_paths
+                captured["release_output_dir"] = release_output_dir
+                captured["release_commit"] = release_commit
                 return [
                     "token-cost report validation failed: dynamic_runtime.runs: "
                     "missing required benchmark architecture-review"
@@ -1922,6 +2271,10 @@ release_gate:
                         "dist/adapters/claude/.claude/skills/architecture-review/SKILL.md",
                         "--changed-paths-file",
                         handle.name,
+                        "--release-output-dir",
+                        "release-output",
+                        "--release-commit",
+                        "0123456789abcdef0123456789abcdef01234567",
                     ]
                 )
 
@@ -1935,6 +2288,8 @@ release_gate:
                 "dist/adapters/codex/.agents/skills/architecture-review/SKILL.md",
             ),
         )
+        self.assertEqual(Path("release-output"), captured["release_output_dir"])
+        self.assertEqual("0123456789abcdef0123456789abcdef01234567", captured["release_commit"])
 
     def test_generated_adapter_changed_path_requires_missing_benchmark_through_release_validation(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -2245,6 +2600,34 @@ release_gate:
             result.stdout,
         )
 
+    def test_release_verify_script_supports_v0_1_2_archive_metadata_gate(self) -> None:
+        result = subprocess.run(
+            ["bash", str(ROOT / "scripts" / "release-verify.sh"), "v0.1.2"],
+            capture_output=True,
+            text=True,
+            cwd=ROOT,
+            env={
+                "RELEASE_VERIFY_DRY_RUN": "1",
+                "RELEASE_OUTPUT_DIR": "release-output",
+                "RELEASE_COMMIT": "0123456789abcdef0123456789abcdef01234567",
+            },
+        )
+
+        self.assertEqual(
+            result.returncode,
+            0,
+            msg=f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+        )
+        self.assertIn("python scripts/build-adapters.py --version 0.1.1 --check", result.stdout)
+        self.assertIn(
+            "python scripts/build-adapters.py --version v0.1.2 --output-dir release-output",
+            result.stdout,
+        )
+        self.assertIn(
+            "python scripts/validate-release.py --version v0.1.2 --release-output-dir release-output --release-commit 0123456789abcdef0123456789abcdef01234567",
+            result.stdout,
+        )
+
     def test_release_verify_script_accepts_github_ref_name(self) -> None:
         result = subprocess.run(
             ["bash", str(ROOT / "scripts" / "release-verify.sh")],
@@ -2369,13 +2752,80 @@ release_gate:
         self.assertIn("support matrix", text)
         self.assertIn("repository-tree install", text)
         self.assertIn("For `v0.1.1`", text)
+        self.assertIn("For `v0.1.2`", text)
         self.assertIn("public adapter install path", text)
-        self.assertIn("No downloadable adapter archives are required for `v0.1.1`", text)
+        self.assertIn("tracked adapter skill bodies", text)
+        self.assertIn("compatibility window", text)
+        self.assertIn("rigorloop-adapter-codex-<version>.zip", text)
+        self.assertIn("rigorloop-adapter-claude-<version>.zip", text)
+        self.assertIn("rigorloop-adapter-opencode-<version>.zip", text)
+        self.assertIn("`.agents/skills/`", text)
+        self.assertIn("`.claude/skills/`", text)
+        self.assertIn("`.opencode/skills/`", text)
+        self.assertIn("generated adapter skill bodies are not tracked source after the later untracking release", text.lower())
         self.assertIn("`docs/reports/adapter-artifacts/releases/<version>.yaml`", text)
         self.assertIn("release assets", text)
         self.assertIn("`.codex/skills/`", text)
         self.assertIn("ignored local runtime install directory", text)
         self.assertIn("not a public adapter install source", text)
+
+    def test_v0_1_2_release_notes_document_archive_introduction_contract(self) -> None:
+        text = (ROOT / "docs" / "releases" / "v0.1.2" / "release-notes.md").read_text(
+            encoding="utf-8"
+        )
+
+        self.assertIn("rigorloop-adapter-codex-v0.1.2.zip", text)
+        self.assertIn("rigorloop-adapter-claude-v0.1.2.zip", text)
+        self.assertIn("rigorloop-adapter-opencode-v0.1.2.zip", text)
+        self.assertIn("tracked `dist/adapters/**/skills` remain available", text)
+        self.assertIn("compatibility window", text)
+        self.assertIn("docs/reports/adapter-artifacts/releases/v0.1.2.yaml", text)
+        self.assertIn("bash scripts/release-verify.sh v0.1.2", text)
+
+    def test_v0_1_2_release_validation_rejects_notes_without_archives_or_compatibility(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root = root / "skills"
+            shutil.copytree(ROOT / "skills", skills_root)
+            output_root = root / "dist" / "adapters"
+            sync_adapter_output("0.1.1", skills_root=skills_root, output_root=output_root)
+            release_output_dir = root / "release-output"
+            build_adapter_archives("v0.1.2", release_output_dir, skills_root=skills_root)
+            adapter_artifact_root = self.write_adapter_artifact_metadata(root, release_output_dir).parent
+            release_root = root / "docs" / "releases"
+            self.write_release_artifacts(
+                root,
+                version="v0.1.2",
+                release_type="final",
+                manifest_version="0.1.1",
+                smoke_overrides=self.v0_1_1_smoke_overrides(),
+                validation_overrides={
+                    "adapter_archives": "pass",
+                    "adapter_artifact_metadata": "pass",
+                },
+                notes_extra=self.command_alias_notes_extra(),
+            )
+
+            errors = validate_release_output(
+                "v0.1.2",
+                skills_root=skills_root,
+                output_root=output_root,
+                release_root=release_root,
+                release_output_dir=release_output_dir,
+                adapter_artifact_report_root=adapter_artifact_root,
+                release_commit="0123456789abcdef0123456789abcdef01234567",
+            )
+
+        self.assertTrue(any("v0.1.2 release notes must list adapter archive" in error for error in errors), errors)
+        self.assertTrue(any("v0.1.2 release notes must describe retained dist/adapters compatibility" in error for error in errors), errors)
+
+    def test_workflows_records_adapter_artifact_metadata_location(self) -> None:
+        text = (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8")
+
+        self.assertIn("`docs/workflows.md` is the project-local user-facing artifact-location map", text)
+        self.assertIn("Adapter artifact metadata", text)
+        self.assertIn("`docs/reports/adapter-artifacts/releases/`", text)
+        self.assertIn("does not define full artifact schemas", text)
 
     def test_v0_1_1_release_notes_document_transition_contract(self) -> None:
         text = (ROOT / "docs" / "releases" / "v0.1.1" / "release-notes.md").read_text(
