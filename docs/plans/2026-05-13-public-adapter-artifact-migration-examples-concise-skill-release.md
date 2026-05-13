@@ -85,13 +85,13 @@ Current known implementation shape before work begins:
 ## Current Handoff Summary
 
 - Current milestone: M5. Produce token-cost and final release-readiness evidence
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M4 code-review r1 found no material findings and closed M4.
-- Review status: proposal-review, spec-review, architecture-review, and plan-review are approved; plan-review r1 finding PR-001 is closed in review-resolution; M1 code-review r1 found no material findings; M2 code-review r2 found no material findings after PAAM-M2-CR1 resolution; M3 code-review r1 found no material findings; M4 code-review r1 found no material findings.
+- Review status: proposal-review, spec-review, architecture-review, and plan-review are approved; plan-review r1 finding PR-001 is closed in review-resolution; M1 code-review r1 found no material findings; M2 code-review r2 found no material findings after PAAM-M2-CR1 resolution; M3 code-review r1 found no material findings; M4 code-review r1 found no material findings; M5 is implemented and pending code-review.
 - Remaining in-scope implementation milestones: M5
-- Next stage: implement M5
+- Next stage: code-review M5
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M5 is not implemented or reviewed, and final release validation has not run. M6 is a tracked later-release gate and is not part of `v0.1.2` implementation closeout until the stable archive release has shipped and a plan revision makes untracking current.
+- Reason final closeout is or is not ready: M5 is implemented with local release-readiness evidence, but M5 code-review, explain-change, verify, PR handoff, and release-publication handoff remain pending. M6 is a tracked later-release gate and is not part of `v0.1.2` implementation closeout until the stable archive release has shipped and a plan revision makes untracking current.
 
 ## Milestones
 
@@ -280,7 +280,7 @@ Current known implementation shape before work begins:
 
 ### M5. Produce token-cost and final release-readiness evidence
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Produce `v0.1.2` token-cost reports, run final release validation, and update lifecycle evidence for downstream explain-change, verify, PR, and release handoff.
 - Requirements: R1-R6, R52-R60, R63, R76-R85
 - Files/components likely touched:
@@ -323,11 +323,11 @@ Current known implementation shape before work begins:
 - Expected observable result: `v0.1.2` release readiness is locally proven with archive validation, adapter metadata checksums, token-cost evidence, release notes, canonical skill validation, and tracked adapter validation.
 - Commit message: `M5: validate archive-introduction release evidence`
 - Milestone closeout:
-  - [ ] validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - Token-cost dynamic tooling may require environment support not present locally.
   - Full release verification may reveal stale generated adapter output.
@@ -427,6 +427,8 @@ Before PR handoff, run the M5 final validation pack plus any commands added by t
 - [x] M3 code-review closed.
 - [x] M4 implemented and handed to code-review.
 - [x] M4 code-review closed.
+- [x] M5 implemented and handed to code-review.
+- [ ] M5 code-review closed.
 - [ ] M5 final release-readiness evidence completed and reviewed.
 - [ ] Final explain-change, verify, and PR handoff completed.
 - [ ] `v0.1.2` release publication handoff completed or explicitly deferred.
@@ -454,6 +456,8 @@ Before PR handoff, run the M5 final validation pack plus any commands added by t
 - 2026-05-13: M4 retained `docs/changes/0001-skill-validator/` rather than moving it. The reference inventory found active README, workflow, selector, lifecycle, change-metadata, test, and historical references to the old path; retaining it with explicit v0.1.2 release non-blocking rationale is the scope-complete path for this release slice.
 - 2026-05-13: M4 did not change canonical skill text because existing public skills already carry the bounded artifact-location lookup wording and safety-critical guidance validated by `scripts/test-skill-validator.py`; generated adapter output was not refreshed.
 - 2026-05-13: Code-review M4 R1 found no material findings and closed M4. Proceed to M5 token-cost and final release-readiness evidence.
+- 2026-05-13: M5 recorded `v0.1.2` token-cost evidence using canonical `skills/` for static measurement and public Codex adapter output `dist/adapters/codex/.agents/skills/` for dynamic benchmarks. `.codex/skills/` was not used as a benchmark source.
+- 2026-05-13: M5 full local release verification passed with `RELEASE_COMMIT=5514ef14ce5f310787f464ea78bd777838cb5537`; release archives were generated in temporary output and were not tracked.
 
 ## Surprises and discoveries
 
@@ -560,9 +564,28 @@ Before PR handoff, run the M5 final validation pack plus any commands added by t
   - `tmpdir=$(mktemp -d); python scripts/build-adapters.py --version v0.1.2 --output-dir "$tmpdir" >/dev/null; python scripts/validate-release.py --version v0.1.2 --release-output-dir "$tmpdir" --release-commit 5514ef14ce5f310787f464ea78bd777838cb5537`
   - Review record: `docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m4-r1.md`
 
+- M5 token-cost and release-readiness validation passed:
+  - `python scripts/measure-skill-tokens.py` reported 23 canonical skills, 56,615 estimated tokens, and `skills/workflow/SKILL.md` as the largest skill at 5,163 estimated tokens.
+  - `python scripts/run-token-cost-benchmarks.py --release v0.1.2 --suite benchmarks/token-cost/manifest.yaml --tool codex --output-dir docs/reports/token-cost/runs/v0.1.2 --skill-source dist/adapters/codex/.agents/skills/` passed for 10 benchmark runs.
+  - `python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.2.yaml`
+  - `python scripts/test-token-cost-report-validation.py` passed 16 tests.
+  - `python scripts/test-token-cost-measurement.py` passed 24 tests.
+  - `python scripts/validate-skills.py` passed for 23 skill files.
+  - `python scripts/test-skill-validator.py` passed 73 tests.
+  - `python scripts/test-adapter-distribution.py` passed 88 tests.
+  - `python scripts/build-adapters.py --version 0.1.1 --check`
+  - `tmpdir=$(mktemp -d); python scripts/build-adapters.py --version v0.1.2 --output-dir "$tmpdir" >/dev/null; python scripts/validate-adapters.py --root "$tmpdir" --version v0.1.2; python scripts/validate-release.py --version v0.1.2 --release-output-dir "$tmpdir" --release-commit 5514ef14ce5f310787f464ea78bd777838cb5537`
+  - `RELEASE_VERIFY_DRY_RUN=1 RELEASE_OUTPUT_DIR=release-output RELEASE_COMMIT=5514ef14ce5f310787f464ea78bd777838cb5537 bash scripts/release-verify.sh v0.1.2`
+  - `RELEASE_COMMIT=5514ef14ce5f310787f464ea78bd777838cb5537 bash scripts/release-verify.sh v0.1.2`
+  - `python scripts/select-validation.py --mode explicit --path docs/reports/token-cost/releases/v0.1.2.md --path docs/reports/token-cost/releases/v0.1.2.yaml --path docs/reports/token-cost/runs/v0.1.2/workflow-route-run1.analysis.yaml`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/change.yaml`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md --path specs/public-adapter-artifact-migration-examples-concise-skill-release.md --path specs/public-adapter-artifact-migration-examples-concise-skill-release.test.md --path docs/architecture/system/architecture.md --path docs/plans/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md --path docs/plan.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/change.yaml --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/review-log.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/review-resolution.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/proposal-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/spec-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/architecture-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/plan-review-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/plan-review-r2.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m1-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m2-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m2-r2.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m3-r1.md --path docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m4-r1.md --path docs/changes/0001-skill-validator/README.md --path docs/reports/token-cost/releases/v0.1.2.md --path docs/reports/token-cost/releases/v0.1.2.yaml`
+  - `git diff --check --`
+
 ## Outcome and retrospective
 
-Not completed. M4 is closed after clean code-review; M5 remains open.
+Not completed. M5 is implemented and ready for code-review; final explain-change, verify, PR handoff, and release-publication handoff remain pending.
 
 ## Readiness
 
