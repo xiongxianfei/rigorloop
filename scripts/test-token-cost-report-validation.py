@@ -821,8 +821,13 @@ release_gate:
         self.assertPasses(
             self.valid_text.replace(
                 "skill_source: dist/adapters/codex/.agents/skills/",
-                "skill_source: dist/adapters/codex/.agents/skills/",
+                "skill_source: <temporary-public-adapter-output>/.agents/skills/",
             )
+        )
+        self.assertFails(
+            self.valid_text.replace("release: v0.1.1", "release: v0.1.3"),
+            "runner.skill_source: dist/adapters/codex/.agents/skills/ is the retired "
+            "repository-tree adapter source for v0.1.3 and later",
         )
 
 

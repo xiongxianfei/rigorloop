@@ -11,7 +11,7 @@ This file is the short operational summary for working in this repository. The n
 - Skill-contract summaries in this file and `AGENTS.md` do not override approved specs.
 - Shared skill policy blocks live under `templates/shared/<block-name>.md`.
 - Public shared blocks are copied into consuming skills and checked for drift; maintainer-only blocks such as generated-output handling are not copied into published skills.
-- Edit canonical skill source under `skills/<skill>/SKILL.md`; for local Codex use, install or copy public Codex adapter output into ignored `.codex/skills/`; keep public `dist/adapters/` output generated rather than hand-edited.
+- Edit canonical skill source under `skills/<skill>/SKILL.md`; for public adapter installation, use `dist/adapters/README.md`. For `v0.1.3` and later, generated public adapter skill bodies are release archives, not tracked source under `dist/adapters/`.
 - Evidence reading starts from summaries, stable IDs, headings, targeted sections, check IDs, file paths, counts, and line citations before broad reads.
 - Add a skill only when it owns a distinct artifact, gate, review responsibility, recurring action, or approved operational process.
 - Do not create a new skill for one-off helper behavior, tiny formatting rules, or checklists that belong inside an existing skill.
@@ -269,10 +269,10 @@ Notes:
 - Do not hand-edit generated public adapter packages in:
   - `dist/adapters/`
 - `skills/` is the only authored skill source.
-- `.codex/skills/` is ignored local Codex runtime state. For local Codex use, install or copy public Codex adapter output from `dist/adapters/codex/.agents/skills/` into `.codex/skills/`, keep `.codex/skills/` untracked, and edit canonical skills under `skills/`.
-- Public adapter packages under `dist/adapters/` remain tracked generated installable output during the compatibility window.
-- For public adapter packages, `skills/` is the canonical authored skill source and `dist/adapters/` is generated installable output for Codex, Claude Code, and opencode.
-- Public-surface token-cost benchmarks must use public adapter output, such as `dist/adapters/codex/.agents/skills/` while public adapter skill copies remain tracked. They must not use `.codex/skills/`, which is repository-local runtime output.
+- `.codex/skills/` is ignored local Codex runtime state. Keep `.codex/skills/` untracked when copying installed Codex adapter skills there for local runtime use, and edit canonical skills under `skills/`.
+- Public adapter installation uses `dist/adapters/README.md` as the install-contract surface. For `v0.1.3` and later, generated public adapter skill bodies are release archives, not tracked source under `dist/adapters/`.
+- `dist/adapters/README.md` and `dist/adapters/manifest.yaml` are the tracked adapter support surface. Historical note: `v0.1.2` kept repository-tree adapter packages during the compatibility window.
+- Public-surface token-cost benchmarks must use generated public adapter output or release archive output. They must not use `.codex/skills/`, which is repository-local runtime output.
 - Use `docs/examples/plans/example-plan.md` for illustrative plan structure. Do not treat `docs/examples/**` as active lifecycle state or reintroduce a second plan-template path.
 
 ## Validation
@@ -297,8 +297,8 @@ Run these structural checks before PR:
 - `python scripts/test-skill-validator.py`
 - `python scripts/build-skills.py --check`
 - `python scripts/test-adapter-distribution.py`
-- `python scripts/build-adapters.py --version 0.1.1 --check`
-- `python scripts/validate-adapters.py --version 0.1.1`
+- `python scripts/build-adapters.py --version v0.1.3 --output-dir <release-output-dir>`
+- `python scripts/validate-adapters.py --root <release-output-dir> --version v0.1.3`
 - `python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml`
 - `python scripts/validate-release.py --version v0.1.1`
 - `python scripts/test-artifact-lifecycle-validator.py`

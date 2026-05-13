@@ -31,7 +31,7 @@ ADAPTER_REGRESSION_COMMAND = (
     "python scripts/test-adapter-distribution.py "
     "AdapterDistributionTests.test_adapter_generation_creates_independent_packages_and_thin_entrypoints "
     "AdapterDistributionTests.test_adapter_generation_drift_check_detects_stale_and_unexpected_files "
-    "AdapterDistributionTests.test_validate_adapters_cli_accepts_repository_output "
+    "AdapterDistributionTests.test_validate_adapters_cli_rejects_retired_repository_output "
     "AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives "
     "AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root "
     "AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata"
@@ -43,8 +43,8 @@ EXPECTED_CATALOG = {
     "skills.generation_regression": "python scripts/test-build-skills.py",
     "skills.drift": "python scripts/build-skills.py --check",
     "adapters.regression": ADAPTER_REGRESSION_COMMAND,
-    "adapters.drift": "python scripts/build-adapters.py --version <adapter-version> --check",
-    "adapters.validate": "python scripts/validate-adapters.py --version <adapter-version>",
+    "adapters.drift": "python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives",
+    "adapters.validate": "python scripts/test-adapter-distribution.py AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root",
     "review_artifacts.regression": "python scripts/test-review-artifact-validator.py",
     "review_artifacts.validate": "python scripts/validate-review-artifacts.py <change-root>...",
     "artifact_lifecycle.regression": "python scripts/test-artifact-lifecycle-validator.py",

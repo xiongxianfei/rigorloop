@@ -702,9 +702,19 @@ class BenchmarkFixtureTests(unittest.TestCase):
 
 
 class BenchmarkRunnerTests(unittest.TestCase):
+    def write_public_skill_source(self, tmp: str) -> Path:
+        skill_source = Path(tmp) / "release-output" / "codex" / ".agents" / "skills"
+        (skill_source / "proposal").mkdir(parents=True)
+        (skill_source / "proposal" / "SKILL.md").write_text(
+            "---\nname: proposal\n---\n# Proposal\n",
+            encoding="utf-8",
+        )
+        return skill_source
+
     def test_runner_dry_run_installs_public_skills_and_writes_analyzer_summaries(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             temp_root = Path(tmp) / "temp"
+            skill_source = self.write_public_skill_source(tmp)
             output_dir = ROOT / "docs" / "reports" / "token-cost" / "runs" / "review-check"
             if output_dir.exists():
                 for path in output_dir.iterdir():
@@ -721,6 +731,8 @@ class BenchmarkRunnerTests(unittest.TestCase):
                 str(temp_root),
                 "--output-dir",
                 str(output_dir),
+                "--skill-source",
+                str(skill_source),
                 "--keep-temp",
                 "--dry-run",
             )
@@ -728,7 +740,7 @@ class BenchmarkRunnerTests(unittest.TestCase):
             try:
                 self.assertEqual(result.returncode, 0, result.stderr)
                 self.assertIn("dry_run: true", result.stdout)
-                self.assertIn("skill_source: dist/adapters/codex/.agents/skills/", result.stdout)
+                self.assertIn(f"skill_source: {skill_source.as_posix()}/", result.stdout)
                 self.assertIn(
                     "codex_command: codex exec --json --ephemeral --skip-git-repo-check",
                     result.stdout,
@@ -780,29 +792,54 @@ class BenchmarkRunnerTests(unittest.TestCase):
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn(
-            "skill source must be dist/adapters/codex/.agents/skills/",
+            "skill source must be generated public Codex adapter output",
             result.stderr,
         )
 
+    def test_runner_rejects_retired_repository_tree_source_for_v0_1_3(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            result = run_command(
+                str(RUNNER),
+                "--release",
+                "v0.1.3",
+                "--suite",
+                str(BENCHMARK_MANIFEST),
+                "--tool",
+                "codex",
+                "--skill-source",
+                "dist/adapters/codex/.agents/skills/",
+                "--temp-root",
+                tmp,
+                "--dry-run",
+            )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("dist/adapters/codex/.agents/skills/ is retired for v0.1.3", result.stderr)
+
     def test_runner_rejects_temp_root_inside_repository(self) -> None:
-        result = run_command(
-            str(RUNNER),
-            "--release",
-            "v0.1.1",
-            "--suite",
-            str(BENCHMARK_MANIFEST),
-            "--tool",
-            "codex",
-            "--temp-root",
-            str(ROOT / ".tmp-token-bench"),
-            "--dry-run",
-        )
+        with tempfile.TemporaryDirectory() as tmp:
+            skill_source = self.write_public_skill_source(tmp)
+            result = run_command(
+                str(RUNNER),
+                "--release",
+                "v0.1.1",
+                "--suite",
+                str(BENCHMARK_MANIFEST),
+                "--tool",
+                "codex",
+                "--skill-source",
+                str(skill_source),
+                "--temp-root",
+                str(ROOT / ".tmp-token-bench"),
+                "--dry-run",
+            )
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("temporary root must be outside the repository", result.stderr)
 
     def test_runner_deletes_temp_directory_after_success_by_default(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
+            skill_source = self.write_public_skill_source(tmp)
             temp_root = Path(tmp) / "temp"
             output_dir = Path(tmp) / "runs"
             result = run_command(
@@ -813,6 +850,8 @@ class BenchmarkRunnerTests(unittest.TestCase):
                 str(BENCHMARK_MANIFEST),
                 "--tool",
                 "codex",
+                "--skill-source",
+                str(skill_source),
                 "--temp-root",
                 str(temp_root),
                 "--output-dir",
@@ -825,6 +864,7 @@ class BenchmarkRunnerTests(unittest.TestCase):
 
     def test_runner_does_not_generate_markdown_report(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
+            skill_source = self.write_public_skill_source(tmp)
             output_dir = Path(tmp) / "runs"
             result = run_command(
                 str(RUNNER),
@@ -834,6 +874,8 @@ class BenchmarkRunnerTests(unittest.TestCase):
                 str(BENCHMARK_MANIFEST),
                 "--tool",
                 "codex",
+                "--skill-source",
+                str(skill_source),
                 "--temp-root",
                 tmp,
                 "--output-dir",
@@ -843,7 +885,6 @@ class BenchmarkRunnerTests(unittest.TestCase):
 
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertFalse(list(output_dir.glob("*.md")))
-
 
 if __name__ == "__main__":
     unittest.main()
