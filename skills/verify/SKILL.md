@@ -51,6 +51,23 @@ Read:
 - `AGENTS.md` and `CONSTITUTION.md`;
 - CI workflow definitions relevant to the change.
 
+## Artifact placement
+
+Use the project workflow guide for artifact locations when placement matters.
+
+Lookup order:
+
+1. explicit user path or change ID;
+2. active plan, change metadata, reviewed artifact path, or current artifact metadata;
+3. known governing spec or schema constraint when directly relevant;
+4. `docs/workflows.md` artifact-location table;
+5. this skill's portable default path;
+6. block on ambiguity.
+
+This discovery order is subordinate to the source-rank rule in `docs/workflows.md` when sources conflict.
+
+Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
+
 ## Outputs
 
 Produce a verification verdict, traceability and drift assessment, validation evidence summary, blocker list if any, and the next valid handoff toward `pr` or stop.

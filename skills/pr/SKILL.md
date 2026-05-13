@@ -67,6 +67,23 @@ Apply the same readiness checks for workflow-managed and direct-`pr` invocation.
 
 PR handoff is scoped evidence and must not own the active plan's current next stage. Summarize planned-initiative state from the active plan `Current Handoff Summary`.
 
+## Artifact placement
+
+Use the project workflow guide for artifact locations when placement matters.
+
+Lookup order:
+
+1. explicit user path or change ID;
+2. active plan, change metadata, reviewed artifact path, or current artifact metadata;
+3. known governing spec or schema constraint when directly relevant;
+4. `docs/workflows.md` artifact-location table;
+5. this skill's portable default path;
+6. block on ambiguity.
+
+This discovery order is subordinate to the source-rank rule in `docs/workflows.md` when sources conflict.
+
+Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
+
 ## Outputs
 
 Produce a PR readiness check, title, body, reviewer notes, risks, follow-ups, and the opened PR URL when the repository/tooling permits opening the PR.

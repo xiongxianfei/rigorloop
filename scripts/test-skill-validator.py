@@ -181,6 +181,21 @@ SKILL_CONTRACT_PROGRESS_SKILLS = [
     "verify",
     "pr",
 ]
+PROJECT_ARTIFACT_LOOKUP_SKILLS = [
+    "proposal",
+    "spec",
+    "architecture",
+    "plan",
+    "test-spec",
+    "proposal-review",
+    "spec-review",
+    "architecture-review",
+    "plan-review",
+    "code-review",
+    "explain-change",
+    "verify",
+    "pr",
+]
 PUBLIC_WORKFLOW_AND_SKILL_SURFACES = [
     "README.md",
     "AGENTS.md",
@@ -2471,6 +2486,42 @@ and result format.
         for term in required_terms:
             with self.subTest(term=term):
                 self.assertIn(term, rationale)
+
+    def test_project_artifact_location_m2_stage_skills_share_lookup_wording(self) -> None:
+        required_terms = [
+            "Use the project workflow guide for artifact locations when placement matters.",
+            "Lookup order:",
+            "explicit user path or change ID",
+            "active plan, change metadata, reviewed artifact path, or current artifact metadata",
+            "known governing spec or schema constraint when directly relevant",
+            "`docs/workflows.md` artifact-location table",
+            "this skill's portable default path",
+            "block on ambiguity",
+            "discovery order is subordinate to the source-rank rule",
+            "Do not broad-search authoritative documents just to find paths.",
+            "Use `docs/workflows.md` as the path index",
+            "consult specs or schemas only when they govern exact shape, placement, or a detected conflict",
+        ]
+
+        for skill_name in PROJECT_ARTIFACT_LOOKUP_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            with self.subTest(skill=skill_name):
+                for term in required_terms:
+                    self.assertIn(term, body)
+
+    def test_project_artifact_location_m2_stage_skills_avoid_path_table_duplication(self) -> None:
+        forbidden_terms = [
+            "| Artifact type | Default location | Owning skill |",
+            "docs/changes/0001-skill-validator",
+            "docs/examples/formal-review-recording/",
+            "docs/examples/plans/example-plan.md",
+        ]
+
+        for skill_name in PROJECT_ARTIFACT_LOOKUP_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            for term in forbidden_terms:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertNotIn(term, body)
 
 
 if __name__ == "__main__":

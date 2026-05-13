@@ -40,15 +40,14 @@ Generated skill mirrors and public adapters must be refreshed or checked after c
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Workflow Artifact Map And Retained Fixture Rationale
 - Current milestone: M2. Stage Skill Lookup Wording And Static Proof
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M1. Workflow Artifact Map And Retained Fixture Rationale
-- Review status: clean code-review for M1 recorded in `code-review-r1`
+- Review status: code-review requested for M2
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: implement M2
+- Next stage: code-review M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 is closed after clean code-review; M2, M3, and M4 remain open, generated output has not been refreshed, explain-change and verify are not complete, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M1 is closed after clean code-review; M2 implementation is ready for code-review; M3 and M4 remain open, generated output has not been refreshed, explain-change and verify are not complete, and PR handoff is not prepared.
 
 ## Non-goals
 
@@ -132,7 +131,7 @@ Each in-scope implementation milestone follows the same review handoff:
 
 ### M2. Stage Skill Lookup Wording And Static Proof
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: update canonical stage skills with concise project-guide lookup wording that respects `R2` precedence without encouraging broad spec/schema path scans.
 - Requirements: `R2`-`R2g`, `R5`-`R5g`, `R9`-`R10b`, `R12`-`R12b`
 - Files/components likely touched:
@@ -355,7 +354,7 @@ Broad smoke is not planned by default. Add it only if selector output, the test 
 - [x] 2026-05-13: Plan approved after `plan-review-r2`; PR-001 closed.
 - [x] 2026-05-13: Test spec created and activated for implementation.
 - [x] 2026-05-13: M1. Workflow Artifact Map And Retained Fixture Rationale closed after clean `code-review-r1`.
-- [ ] M2. Stage Skill Lookup Wording And Static Proof
+- [ ] M2. Stage Skill Lookup Wording And Static Proof: implementation complete and handed off to `code-review`.
 - [ ] M3. Examples Routing And Lifecycle Validation
 - [ ] M4. Generated Output Refresh And Final Milestone Review
 
@@ -366,11 +365,14 @@ Broad smoke is not planned by default. Add it only if selector output, the test 
 - 2026-05-13: Treat `docs/changes/0001-skill-validator/` movement as an implementation-slice decision. Rationale: the spec allows either safe move with all references updated or retained-fixture rationale when coupling remains.
 - 2026-05-13: Keep M1-M4 as separate implementation milestones with per-milestone `code-review` gates. Rationale: the plan is milestone-based and repository workflow requires implementation and code review to repeat for each in-scope implementation milestone.
 - 2026-05-13: Retain `docs/changes/0001-skill-validator/` for M1. Rationale: existing specs, docs, validators, and historical references still cite the active-looking path, so this slice records retained-fixture rationale instead of moving it.
+- 2026-05-13: Apply concise artifact-placement wording directly to affected canonical public skills for M2. Rationale: this keeps the public behavior explicit now while leaving generated adapter refresh to M4.
 
 ## Surprises and discoveries
 
 - M1: `docs/examples/README.md`, `AGENTS.md`, and `CONSTITUTION.md` already align with the approved M1 contract and were left unchanged.
 - M1: lifecycle validation surfaced stale repository-integration wording in `docs/workflows.md`; it was corrected in the touched workflow guide.
+- M2: Current Handoff Summary contained a stale duplicate `Current milestone: M1` line above the M2 state after M1 closeout; this state-sync issue was corrected in the active plan.
+- M2: No shared artifact-placement template existed for public skills; the milestone used one concise repeated block and did not copy the artifact-location table into skills.
 
 ## Validation notes
 
@@ -378,6 +380,8 @@ Broad smoke is not planned by default. Add it only if selector output, the test 
 - 2026-05-13: M1 proof-first failure observed: `python scripts/test-skill-validator.py` failed because `docs/workflows.md` lacked the artifact map and source-rank sections, `skills/workflow/SKILL.md` lacked guide refresh trigger wording, and `docs/changes/0001-skill-validator/README.md` did not exist.
 - 2026-05-13: M1 validation passed: `python scripts/test-skill-validator.py`; `python scripts/validate-skills.py`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/workflows.md --path skills/workflow/SKILL.md --path docs/examples/README.md --path specs/project-artifact-location-guide-and-examples-surface.md --path specs/project-artifact-location-guide-and-examples-surface.test.md --path docs/plans/2026-05-13-project-artifact-location-guide-and-examples-surface.md --path docs/plan.md --path docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/change.yaml`; `python scripts/validate-change-metadata.py docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/change.yaml`; `git diff --check -- docs/workflows.md skills/workflow/SKILL.md docs/examples docs/changes/0001-skill-validator scripts/test-skill-validator.py specs/project-artifact-location-guide-and-examples-surface.test.md docs/plans/2026-05-13-project-artifact-location-guide-and-examples-surface.md docs/plan.md docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording`.
 - 2026-05-13: Clean M1 code review recorded in `docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/reviews/code-review-r1.md`; M1 closed and Current Handoff Summary advanced to M2.
+- 2026-05-13: M2 proof-first failure observed: `python scripts/test-skill-validator.py` failed for the affected public skills because the shared artifact-placement lookup wording was not present.
+- 2026-05-13: M2 validation passed: `python scripts/test-skill-validator.py`; `python scripts/validate-skills.py`; `python scripts/validate-change-metadata.py docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/change.yaml`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/project-artifact-location-guide-and-examples-surface.md --path docs/plans/2026-05-13-project-artifact-location-guide-and-examples-surface.md --path docs/plan.md --path docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/change.yaml`; `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording`; `git diff --check -- skills scripts docs/plans/2026-05-13-project-artifact-location-guide-and-examples-surface.md docs/plan.md docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording`.
 
 ## Outcome and retrospective
 
@@ -386,4 +390,4 @@ Broad smoke is not planned by default. Add it only if selector output, the test 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Readiness is not Done; M2 is ready for implementation.
+- Readiness is not Done; M2 is ready for `code-review`.
