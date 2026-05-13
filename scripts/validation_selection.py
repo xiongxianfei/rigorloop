@@ -634,6 +634,14 @@ def _apply_path_selection(
     if category == "examples":
         return
 
+    if category == "follow-up-register":
+        _add_check(
+            selected,
+            "skills.regression",
+            "Changed follow-up register requires follow-up register static validation.",
+        )
+        return
+
     if category == "vision":
         _add_check(
             selected,
@@ -982,6 +990,8 @@ def _path_category(path: str) -> str | None:
         return "token-cost"
     if path.startswith("docs/examples/"):
         return "examples"
+    if path == "docs/follow-ups.md":
+        return "follow-up-register"
     if path == "docs/changes/0001-skill-validator/README.md":
         return "retained-change-fixture"
     if path.startswith("docs/changes/") and len(parts) >= 4:

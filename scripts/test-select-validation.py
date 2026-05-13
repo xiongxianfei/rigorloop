@@ -760,6 +760,18 @@ raise SystemExit({exit_code})
         self.assertNotIn("review_artifacts.validate", selected_ids(payload))
         self.assertEqual(payload["selected_checks"], [])
 
+    def test_follow_up_register_path_selects_static_validation(self) -> None:
+        path = "docs/follow-ups.md"
+
+        result = self.select([path])
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertEqual(payload["unclassified_paths"], [])
+        self.assertEqual(payload["blocking_results"], [])
+        self.assertIn({"path": path, "category": "follow-up-register"}, payload["classified_paths"])
+        self.assertEqual({"skills.regression"}, selected_ids(payload))
+
     def test_retained_skill_validator_fixture_rationale_has_deterministic_routing(self) -> None:
         path = "docs/changes/0001-skill-validator/README.md"
 
