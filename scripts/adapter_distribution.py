@@ -245,6 +245,7 @@ RELEASE_TARGETS = {
     "v0.1.0": ("final", "0.1.0"),
     "v0.1.1": ("final", "0.1.1"),
     "v0.1.2": ("final", "0.1.1"),
+    "v0.1.3": ("final", "v0.1.3"),
 }
 REQUIRED_RELEASE_VALIDATION_KEYS = (
     "generated_sync",
@@ -253,7 +254,8 @@ REQUIRED_RELEASE_VALIDATION_KEYS = (
     "security",
 )
 TOKEN_COST_REPORT_REQUIRED_RELEASES = frozenset({"v0.1.1"})
-ADAPTER_ARTIFACT_METADATA_REQUIRED_RELEASES = frozenset({"v0.1.2"})
+ADAPTER_ARTIFACT_METADATA_REQUIRED_RELEASES = frozenset({"v0.1.2", "v0.1.3"})
+UNTRACKED_PUBLIC_ADAPTER_RELEASES = frozenset({"v0.1.3"})
 TOKEN_COST_RUNTIME_V2 = "skill-token-runtime-v2"
 PLACEHOLDER_RELEASE_PATTERNS = (
     "Replace this script with repository-specific release checks",
@@ -2173,6 +2175,38 @@ def _release_notes_consistency_errors(
     if first_heading != f"# RigorLoop {version}":
         errors.append(f"release notes version mismatch: expected '# RigorLoop {version}'")
 
+    if version in UNTRACKED_PUBLIC_ADAPTER_RELEASES:
+        for adapter in SUPPORTED_ADAPTERS:
+            archive = adapter_archive_name(adapter, version)
+            if archive not in notes_text:
+                errors.append(f"{version} release notes must list adapter archive: {archive}")
+        required_phrases = {
+            "generated public adapter skill bodies are no longer tracked source": (
+                f"{version} release notes must describe retired tracked adapter skill bodies"
+            ),
+            "release archives are the active public adapter install path": (
+                f"{version} release notes must describe release archives as the active install path"
+            ),
+            f"docs/reports/adapter-artifacts/releases/{version}.yaml": (
+                f"{version} release notes must identify adapter artifact metadata"
+            ),
+            f"bash scripts/release-verify.sh {version}": (
+                f"{version} release notes must name the release verification command"
+            ),
+            "dist/adapters/README.md": (
+                f"{version} release notes must identify the adapter install-contract surface"
+            ),
+        }
+        lowered_notes = notes_text.lower()
+        for phrase, error in required_phrases.items():
+            if phrase.lower() not in lowered_notes:
+                errors.append(error)
+        if "tracked `dist/adapters/**/skills` remain available" in notes_text:
+            errors.append(
+                f"{version} release notes must not present tracked dist/adapters skill bodies as active"
+            )
+        return errors
+
     notes_tools = _release_notes_tools(notes_text)
     if notes_tools != metadata.supported_tools:
         errors.append(
@@ -2658,6 +2692,45 @@ def _validate_codex_local_runtime_state(
     return errors
 
 
+def _tracked_adapter_surface_files(tracked_files: Iterable[str | Path] | None) -> tuple[str, ...]:
+    tracked = (
+        tuple(str(path).strip().replace("\\", "/") for path in tracked_files)
+        if tracked_files is not None
+        else _tracked_repo_files("dist/adapters")
+    )
+    return tuple(path for path in tracked if path.startswith("dist/adapters/"))
+
+
+def _validate_untracked_public_adapter_surface(
+    version: str,
+    *,
+    output_root: Path,
+    tracked_files: Iterable[str | Path] | None,
+) -> list[str]:
+    errors: list[str] = []
+    for filename in ("README.md", "manifest.yaml"):
+        path = output_root / filename
+        if not path.is_file():
+            errors.append(f"missing tracked adapter support surface: {path}")
+
+    allowed = {
+        "dist/adapters/README.md",
+        "dist/adapters/manifest.yaml",
+    }
+    unexpected = tuple(
+        path
+        for path in _tracked_adapter_surface_files(tracked_files)
+        if path not in allowed
+    )
+    if unexpected:
+        sample = ", ".join(unexpected[:5])
+        errors.append(
+            f"tracked adapter package fragments are retired for {version}; "
+            f"tracked files: {sample}"
+        )
+    return errors
+
+
 def validate_release_output(
     version: str,
     *,
@@ -2725,6 +2798,15 @@ def validate_release_output(
                 codex_skills_ignored=codex_skills_ignored,
             )
         )
+    untracked_public_adapters = version in UNTRACKED_PUBLIC_ADAPTER_RELEASES
+    tracked_surface_errors: list[str] = []
+    if untracked_public_adapters:
+        tracked_surface_errors = _validate_untracked_public_adapter_surface(
+            version,
+            output_root=output_root,
+            tracked_files=tracked_files,
+        )
+        errors.extend(tracked_surface_errors)
     if set(metadata.smoke) != set(SUPPORTED_ADAPTERS):
         errors.append(f"{release_path}: smoke rows must be exactly {SUPPORTED_ADAPTERS}")
     for tool in SUPPORTED_ADAPTERS:
@@ -2765,19 +2847,27 @@ def validate_release_output(
             f"found {manifest.version}"
         )
 
-    generated_sync_errors = collect_adapter_drift(
-        expected_manifest_version,
-        skills_root=skills_root,
-        template_root=template_root,
-        output_root=output_root,
+    generated_sync_errors = (
+        []
+        if untracked_public_adapters
+        else collect_adapter_drift(
+            expected_manifest_version,
+            skills_root=skills_root,
+            template_root=template_root,
+            output_root=output_root,
+        )
     )
     errors.extend(generated_sync_errors)
 
-    adapter_validation_errors = validate_adapter_output(
-        expected_manifest_version,
-        skills_root=skills_root,
-        template_root=template_root,
-        output_root=output_root,
+    adapter_validation_errors = (
+        []
+        if untracked_public_adapters
+        else validate_adapter_output(
+            expected_manifest_version,
+            skills_root=skills_root,
+            template_root=template_root,
+            output_root=output_root,
+        )
     )
     errors.extend(adapter_validation_errors)
 
@@ -2831,7 +2921,9 @@ def validate_release_output(
         errors.extend(adapter_artifact_metadata_errors)
 
     actual_validation = {
-        "generated_sync": "fail" if generated_sync_errors or adapter_validation_errors else "pass",
+        "generated_sync": "fail"
+        if generated_sync_errors or adapter_validation_errors or tracked_surface_errors
+        else "pass",
         "release_notes_consistency": "fail" if release_notes_errors else "pass",
         "placeholder_release_check": _placeholder_release_check_status(),
         "security": "fail" if security_errors else "pass",
