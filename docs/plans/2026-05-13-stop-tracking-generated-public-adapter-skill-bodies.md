@@ -98,13 +98,13 @@ The token-cost `--skill-source` value must point to generated public adapter rel
 ## Current Handoff Summary
 
 - Current milestone: final closeout
-- Current milestone state: ready-for-verify
+- Current milestone state: branch-ready
 - Last reviewed milestone: M4
 - Review status: code-review-m4-r1 completed clean-with-notes; M4 is closed
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
+- Next stage: pr
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: all implementation milestones are closed and explain-change is recorded, but verify, PR handoff, and release publication are still pending.
+- Reason final closeout is or is not ready: all implementation milestones are closed, explain-change and verify are recorded, and the tracked change pack is branch-ready; PR handoff and release publication are still pending.
 
 ## Milestones
 
@@ -350,7 +350,7 @@ Implementation result: `bash scripts/release-verify.sh v0.1.3` and planned lifec
 
 Review result: `code-review-m4-r1` completed clean-with-notes; all implementation milestones are closed and final closeout starts with explain-change.
 - [x] explain-change recorded.
-- [ ] verify passed.
+- [x] verify passed.
 - [ ] PR handoff completed.
 - [ ] release publication completed.
 
@@ -414,6 +414,7 @@ Review result: `code-review-m4-r1` completed clean-with-notes; all implementatio
 - 2026-05-13: `git diff --check --` passed.
 - 2026-05-13: `code-review-m4-r1` completed clean-with-notes. M4 is closed; all implementation milestones are closed; next stage is `explain-change`.
 - 2026-05-13: `explain-change` recorded durable rationale at `docs/changes/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies/explain-change.md`; next stage is `verify`.
+- 2026-05-13: `verify` passed and recorded `docs/changes/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies/verify-report.md`; tracked change pack is branch-ready and next stage is `pr`.
 - 2026-05-13: `python scripts/test-select-validation.py` passed: 59 tests.
 - 2026-05-13: `python scripts/select-validation.py --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path dist/adapters/README.md --path dist/adapters/manifest.yaml` passed with status `ok` and selected adapter, lifecycle, and selector checks.
 - 2026-05-13: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path AGENTS.md --path CONSTITUTION.md --path docs/workflows.md` passed.
@@ -431,6 +432,5 @@ Review result: `code-review-m4-r1` completed clean-with-notes; all implementatio
 ## Remaining completion gates
 
 - review-resolution if material findings are raised
-- verify
 - pr
 - release publication
