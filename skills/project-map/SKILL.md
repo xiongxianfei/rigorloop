@@ -11,6 +11,14 @@ You are creating architecture visibility for humans and agents before detailed d
 
 This skill is for orientation. It should describe what exists today, not invent a future design.
 
+## Follow-up boundary
+
+`project-map` may record risks and open questions for orientation.
+
+It does not own deferred execution or act as a backlog.
+
+When a risk needs action, route it to `proposal`, `plan`, `learn`, review-resolution, release evidence, or `docs/follow-ups.md` through the workflow guide.
+
 ## When to use
 
 Use when:
