@@ -207,6 +207,18 @@ validation:
     result: pass_final_verify
   - command: verify
     result: branch_ready_next_pr_local_validation_only
+  - command: pr
+    result: opened_pr_50_hosted_ci_pending
+  - command: hosted ci for PR #50
+    result: fail_selector_manual_routing_required_for_retained_fixture_readme
+  - command: python scripts/test-select-validation.py
+    result: pass_after_retained_fixture_selector_routing_fix
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/0001-skill-validator/README.md
+    result: pass_retained_fixture_readme_routes_to_lifecycle_checks
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/0001-skill-validator/README.md
+    result: pass_retained_fixture_readme_explicit_lifecycle_validation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/change.yaml
+    result: pass_valid_change_metadata_after_pr_ci_fix
   - command: python scripts/validate-change-metadata.py docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/change.yaml
     result: pass_valid_change_metadata_after_plan
   - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording
@@ -262,6 +274,7 @@ changed_files:
   - skills/pr/SKILL.md
   - docs/changes/0001-skill-validator/README.md
   - scripts/test-skill-validator.py
+  - scripts/validation_selection.py
   - scripts/test-select-validation.py
   - scripts/test-artifact-lifecycle-validator.py
   - scripts/test-review-artifact-validator.py
