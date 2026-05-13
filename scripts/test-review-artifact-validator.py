@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import json
 import shutil
 import subprocess
 import sys
@@ -542,6 +543,30 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
             ),
         )
         self.assertFails(root, "unknown review stage 'pr-review'")
+
+    def test_formal_review_examples_are_not_selected_as_active_review_roots(self) -> None:
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts" / "select-validation.py"),
+                "--mode",
+                "explicit",
+                "--path",
+                "docs/examples/formal-review-recording/clean-review-receipt-root.md",
+                "--path",
+                "docs/examples/formal-review-recording/material-finding-location-examples.md",
+            ],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        payload = json.loads(result.stdout)
+        self.assertEqual(payload["unclassified_paths"], [])
+        self.assertEqual(payload["blocking_results"], [])
+        self.assertNotIn("review_artifacts.validate", {check["id"] for check in payload["selected_checks"]})
 
     def test_upstream_material_review_traceability_is_validated(self) -> None:
         root = Path(tempfile.mkdtemp(prefix="review-artifact-upstream-material-"))
