@@ -24,6 +24,8 @@ jobs:
           fetch-depth: 0
 
       - name: Verify release readiness
+        env:
+          RELEASE_OUTPUT_DIR: release-output
         run: bash scripts/release-verify.sh "$GITHUB_REF_NAME"
 
       - name: Create GitHub release
@@ -35,5 +37,8 @@ jobs:
           args=("$tag" --verify-tag --notes-file "$notes_file")
           if [[ "$tag" == *-rc.* ]]; then
             args+=(--prerelease --latest=false)
+          fi
+          if compgen -G "release-output/*" > /dev/null; then
+            args+=(release-output/*)
           fi
           gh release create "${args[@]}"

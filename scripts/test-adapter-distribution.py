@@ -2628,6 +2628,27 @@ release_gate:
             result.stdout,
         )
 
+        default_result = subprocess.run(
+            ["bash", str(ROOT / "scripts" / "release-verify.sh"), "v0.1.2"],
+            capture_output=True,
+            text=True,
+            cwd=ROOT,
+            env={
+                "RELEASE_VERIFY_DRY_RUN": "1",
+                "RELEASE_OUTPUT_DIR": "release-output",
+            },
+        )
+
+        self.assertEqual(
+            default_result.returncode,
+            0,
+            msg=f"stdout:\n{default_result.stdout}\nstderr:\n{default_result.stderr}",
+        )
+        self.assertIn(
+            "python scripts/validate-release.py --version v0.1.2 --release-output-dir release-output --release-commit 5514ef14ce5f310787f464ea78bd777838cb5537",
+            default_result.stdout,
+        )
+
     def test_release_verify_script_accepts_github_ref_name(self) -> None:
         result = subprocess.run(
             ["bash", str(ROOT / "scripts" / "release-verify.sh")],
@@ -2650,7 +2671,9 @@ release_gate:
         )
 
         self.assertIn('bash scripts/release-verify.sh "$GITHUB_REF_NAME"', workflow_text)
+        self.assertIn("RELEASE_OUTPUT_DIR: release-output", workflow_text)
         self.assertIn('docs/releases/${tag}/release-notes.md', workflow_text)
+        self.assertIn('args+=(release-output/*)', workflow_text)
         self.assertIn("--notes-file", workflow_text)
         self.assertNotIn("--generate-notes", workflow_text)
 
