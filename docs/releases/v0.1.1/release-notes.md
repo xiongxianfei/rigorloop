@@ -4,6 +4,12 @@
 
 This stable patch release records the generated adapter package set under `dist/adapters/`. Install one adapter by copying that adapter package root into a project root.
 
+`skills/` is the canonical authored skill source. `dist/adapters/` remains the public adapter install path for `v0.1.1`.
+
+`.codex/skills/` is ignored local runtime state. The release gate does not require `.codex/skills/` generation as release evidence.
+
+No downloadable adapter archives are introduced in this release.
+
 ## Supported Tools
 
 - `codex`: `dist/adapters/codex/`
@@ -52,7 +58,7 @@ Codex and Claude Code smoke checks copied only the target adapter package into a
 
 ## Verification
 
-The repository-owned release gate is `bash scripts/release-verify.sh v0.1.1`. It checks canonical skills, generated `.codex/skills/`, generated adapter drift, adapter validation, release metadata, release notes, and security scans without requiring ordinary contributors to install all supported tools.
+The repository-owned release gate is `bash scripts/release-verify.sh v0.1.1`. It checks canonical skills, tracked public adapter output under `dist/adapters/`, adapter validation, token-friendliness metadata, release metadata, release notes, and security scans without requiring ordinary contributors to install all supported tools.
 
 Token-Friendliness baseline evidence is recorded in `docs/reports/token-cost/releases/v0.1.1.md`.
 

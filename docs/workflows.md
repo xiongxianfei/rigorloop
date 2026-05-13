@@ -11,7 +11,7 @@ This file is the short operational summary for working in this repository. The n
 - Skill-contract summaries in this file and `AGENTS.md` do not override approved specs.
 - Shared skill policy blocks live under `templates/shared/<block-name>.md`.
 - Public shared blocks are copied into consuming skills and checked for drift; maintainer-only blocks such as generated-output handling are not copied into published skills.
-- Edit canonical skill source under `skills/<skill>/SKILL.md`; regenerate `.codex/skills/` locally with `python scripts/build-skills.py`; keep public `dist/adapters/` output generated rather than hand-edited.
+- Edit canonical skill source under `skills/<skill>/SKILL.md`; for local Codex use, install or copy public Codex adapter output into ignored `.codex/skills/`; keep public `dist/adapters/` output generated rather than hand-edited.
 - Evidence reading starts from summaries, stable IDs, headings, targeted sections, check IDs, file paths, counts, and line citations before broad reads.
 - Add a skill only when it owns a distinct artifact, gate, review responsibility, recurring action, or approved operational process.
 - Do not create a new skill for one-off helper behavior, tiny formatting rules, or checklists that belong inside an existing skill.
@@ -217,14 +217,12 @@ Notes:
   - `schemas/`
   - `scripts/`
   - `templates/`
-- Do not hand-edit generated Codex compatibility output in:
-  - `.codex/skills/`
 - Do not hand-edit generated public adapter packages in:
   - `dist/adapters/`
 - `skills/` is the only authored skill source.
-- `.codex/skills/` is generated local Codex runtime output and ignored by Git. Regenerate it with `python scripts/build-skills.py` when needed.
+- `.codex/skills/` is ignored local Codex runtime state. For local Codex use, install or copy public Codex adapter output from `dist/adapters/codex/.agents/skills/` into `.codex/skills/`, keep `.codex/skills/` untracked, and edit canonical skills under `skills/`.
 - Public adapter packages under `dist/adapters/` remain tracked generated installable output during the compatibility window.
-- For public adapter packages, `skills/` is the canonical authored skill source, `dist/adapters/` is generated installable output for Codex, Claude Code, and opencode, and `.codex/skills/` is a separate generated local Codex mirror.
+- For public adapter packages, `skills/` is the canonical authored skill source and `dist/adapters/` is generated installable output for Codex, Claude Code, and opencode.
 - Public-surface token-cost benchmarks must use public adapter output, such as `dist/adapters/codex/.agents/skills/` while public adapter skill copies remain tracked. They must not use `.codex/skills/`, which is repository-local runtime output.
 - Use `docs/examples/plans/example-plan.md` for illustrative plan structure. Do not treat `docs/examples/**` as active lifecycle state or reintroduce a second plan-template path.
 
