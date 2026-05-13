@@ -2601,18 +2601,47 @@ and result format.
             with self.subTest(term=term):
                 self.assertNotIn(term, project_map)
 
-    def test_follow_up_ownership_m1_no_empty_register_or_shared_block(self) -> None:
-        self.assertFalse(
-            (ROOT / "docs" / "follow-ups.md").exists(),
-            "docs/follow-ups.md must not be created without a qualifying follow-up",
-        )
-
+    def test_follow_up_ownership_register_absent_or_valid_and_no_shared_block(self) -> None:
         follow_up_shared_blocks = [
             path
             for path in (ROOT / "templates" / "shared").glob("*")
             if "follow" in path.name.lower()
         ]
         self.assertEqual([], follow_up_shared_blocks)
+
+        register_path = ROOT / "docs" / "follow-ups.md"
+        if not register_path.exists():
+            return
+
+        register = register_path.read_text(encoding="utf-8")
+        required_terms = [
+            "# Follow-ups",
+            "This file tracks deferred work that is not owned by an active plan",
+            "## Open follow-ups",
+            "| ID | Title | Source | Owner stage | Owner surface | Status | Next action |",
+            "## Closed follow-ups",
+            "| ID | Title | Closed by | Notes |",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, register)
+
+        allowed_statuses = {"open", "planned", "blocked", "done", "superseded", "deferred"}
+        open_section = extract_markdown_block(register, "Open follow-ups")
+        rows = [
+            line
+            for line in open_section.splitlines()
+            if line.startswith("|")
+            and not re.match(r"^\|\s*-+\s*\|", line)
+            and "ID | Title | Source" not in line
+        ]
+        self.assertGreater(len(rows), 0, "docs/follow-ups.md must not be empty")
+
+        for row in rows:
+            cells = [cell.strip() for cell in row.strip("|").split("|")]
+            self.assertEqual(7, len(cells), row)
+            self.assertTrue(all(cells), row)
+            self.assertIn(cells[5], allowed_statuses, row)
 
 
 if __name__ == "__main__":

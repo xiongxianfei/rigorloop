@@ -29,6 +29,7 @@ Relevant surfaces:
 - `skills/workflow/SKILL.md` routes work through the lifecycle and should receive concise follow-up routing wording only.
 - `skills/project-map/SKILL.md` describes repository orientation and should receive concise "not a backlog" boundary wording only.
 - `docs/follow-ups.md` must not be created in M1 because no accepted unowned cross-change follow-up has been identified for this slice.
+- `docs/follow-ups.md` was created after PR handoff when maintainers accepted `FU-001` as a real unowned cross-change follow-up.
 - `templates/shared/` must not receive a new follow-up ownership block in this slice.
 - `docs/project-map.md` is absent in the current repository; no project-map content is relied on for this plan.
 - `docs/plan.md` is the lifecycle index and this file is the plan body.
@@ -73,7 +74,7 @@ Validation and generated-output context:
 - Remaining in-scope implementation milestones: none
 - Next stage: hosted CI / PR review
 - Final closeout readiness: ready
-- Reason final closeout is or is not ready: PR #53 is open; hosted CI and PR review remain downstream.
+- Reason final closeout is or is not ready: PR #53 is open; hosted CI and PR review remain downstream. On 2026-05-14, maintainers accepted one unowned cross-change follow-up and `docs/follow-ups.md` was created to record it.
 
 ## Milestones
 
@@ -210,7 +211,7 @@ Final verification before PR should include:
 - `plan-review` approval before `test-spec`.
 - `test-spec` approval before implementation.
 - No architecture package is required unless plan-review or later evidence identifies a boundary, data-flow, or generated-output architecture change.
-- No `docs/follow-ups.md` register is created unless a maintainer identifies a qualifying accepted unowned cross-change follow-up.
+- `docs/follow-ups.md` exists because maintainers identified a qualifying accepted unowned cross-change follow-up after PR handoff.
 
 ## Progress
 
@@ -225,6 +226,7 @@ Final verification before PR should include:
 - 2026-05-13: explain-change recorded; next stage is `verify`.
 - 2026-05-13: verify passed local validation and recorded `verify-report.md`; next stage is `pr`.
 - 2026-05-13: PR #53 opened for review; hosted CI not yet observed at handoff time.
+- 2026-05-14: Maintainer requested a deferred task for token-friendliness work on other skills; recorded as `FU-001` in `docs/follow-ups.md`.
 
 ## Decision log
 

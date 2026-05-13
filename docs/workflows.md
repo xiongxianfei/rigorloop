@@ -165,6 +165,7 @@ If this project customizes artifact locations, update this table. Skills use the
 | --- | --- | --- |
 | Project vision | `VISION.md` | `vision` |
 | Workflow guide | `docs/workflows.md` | `workflow` |
+| Follow-up register | `docs/follow-ups.md` | `workflow` |
 | Examples | `docs/examples/` | none; examples are non-normative |
 | Proposals | `docs/proposals/YYYY-MM-DD-slug.md` | `proposal` |
 | Specs | `specs/slug.md` | `spec` |

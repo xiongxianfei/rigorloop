@@ -15,12 +15,14 @@ requirements:
   - Confirm that project-map does not own deferred execution.
   - Confirm that docs/follow-ups.md is optional and constrained to real unowned cross-change follow-ups.
   - Implement M1 follow-up ownership guidance without creating an empty register or shared wording template.
+  - Record maintainer-accepted unowned cross-change follow-up for token-friendliness work on other skills.
 tests:
   - Proposal-review approval or recorded material findings.
   - Spec drafted with examples, normative requirements, edge cases, and acceptance criteria.
   - Plan created and indexed in docs/plan.md.
   - Test spec maps approved requirements, examples, edge cases, and milestones to concrete proof.
   - Static validator coverage proves M1 workflow guidance, concise skill wording, and absence of docs/follow-ups.md and follow-up shared templates.
+  - Static validator coverage proves docs/follow-ups.md is either absent or structurally valid and populated.
 review:
   status: clean
   unresolved_items: 0
@@ -84,6 +86,9 @@ validation:
     result: opened https://github.com/xiongxianfei/rigorloop/pull/53
 changed_files:
   - docs/workflows.md
+  - docs/follow-ups.md
+  - scripts/validation_selection.py
+  - scripts/test-select-validation.py
   - docs/proposals/2026-05-13-follow-up-ownership-and-deferred-work-register.md
   - specs/follow-up-ownership-and-deferred-work-register.md
   - specs/follow-up-ownership-and-deferred-work-register.test.md
