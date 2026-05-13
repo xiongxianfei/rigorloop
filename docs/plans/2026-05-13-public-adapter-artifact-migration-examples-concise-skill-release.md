@@ -84,14 +84,14 @@ Current known implementation shape before work begins:
 
 ## Current Handoff Summary
 
-- Current milestone: M3. Update install contract, release notes, and artifact-location guidance
-- Current milestone state: review-requested
-- Last reviewed milestone: M2 code-review r2 found no material findings and closed M2; M3 implementation is ready for code-review.
-- Review status: proposal-review, spec-review, architecture-review, and plan-review are approved; plan-review r1 finding PR-001 is closed in review-resolution; M1 code-review r1 found no material findings; M2 code-review r2 found no material findings after PAAM-M2-CR1 resolution; M3 is pending first code-review.
-- Remaining in-scope implementation milestones: M3, M4, M5
-- Next stage: code-review M3
+- Current milestone: M4. Settle skill-validator proof pack and bounded skill wording
+- Current milestone state: planned
+- Last reviewed milestone: M3 code-review r1 found no material findings and closed M3.
+- Review status: proposal-review, spec-review, architecture-review, and plan-review are approved; plan-review r1 finding PR-001 is closed in review-resolution; M1 code-review r1 found no material findings; M2 code-review r2 found no material findings after PAAM-M2-CR1 resolution; M3 code-review r1 found no material findings.
+- Remaining in-scope implementation milestones: M4, M5
+- Next stage: implement M4
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 is pending code-review, M4-M5 are not implemented or reviewed, and final release validation has not run. M6 is a tracked later-release gate and is not part of `v0.1.2` implementation closeout until the stable archive release has shipped and a plan revision makes untracking current.
+- Reason final closeout is or is not ready: M4-M5 are not implemented or reviewed, and final release validation has not run. M6 is a tracked later-release gate and is not part of `v0.1.2` implementation closeout until the stable archive release has shipped and a plan revision makes untracking current.
 
 ## Milestones
 
@@ -184,7 +184,7 @@ Current known implementation shape before work begins:
 
 ### M3. Update install contract, release notes, and artifact-location guidance
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Make user-facing release and install docs describe the archive-introduction release, retained repository-tree compatibility path, metadata/checksum location, and artifact-location map.
 - Requirements: R3-R6, R43-R51, R57, R60, R70-R75, R82-R85
 - Files/components likely touched:
@@ -220,6 +220,7 @@ Current known implementation shape before work begins:
   - [x] decision log updated if needed
   - [x] validation notes updated
   - [x] milestone committed
+  - [x] code-review closed
 - Risks:
   - Docs could imply generated skill bodies are already untracked in `v0.1.2`.
   - Skill simplification could grow beyond the release slice.
@@ -422,7 +423,7 @@ Before PR handoff, run the M5 final validation pack plus any commands added by t
 - [x] M2 review-resolution completed and returned to code-review.
 - [x] M2 rerun code-review closed.
 - [x] M3 implemented and handed to code-review.
-- [ ] M3 code-review closed.
+- [x] M3 code-review closed.
 - [ ] M4 implemented, deferred with rationale, or removed by plan revision.
 - [ ] M5 final release-readiness evidence completed and reviewed.
 - [ ] Final explain-change, verify, and PR handoff completed.
@@ -447,6 +448,7 @@ Before PR handoff, run the M5 final validation pack plus any commands added by t
 - 2026-05-13: Resolved PAAM-M2-CR1 by validating `release.source_commit` against the release/source commit input. For `v0.1.2`, the approved policy exception is that metadata names the archive source commit `5514ef14ce5f310787f464ea78bd777838cb5537`; validation commands must pass that commit explicitly when validating the tracked metadata and generated archives.
 - 2026-05-13: Code-review M2 R2 found no material findings and closed M2. Proceed to M3 install contract, release notes, and artifact-location guidance.
 - 2026-05-13: M3 did not change canonical skill text, so generated adapter output was not refreshed. Tracked adapter compatibility validation remains on manifest version `0.1.1`; `v0.1.2` is validated through generated release archive output and release metadata.
+- 2026-05-13: Code-review M3 R1 found no material findings and closed M3. Proceed to M4 skill-validator proof-pack settlement and bounded skill wording.
 
 ## Surprises and discoveries
 
@@ -529,9 +531,14 @@ Before PR handoff, run the M5 final validation pack plus any commands added by t
   - `RELEASE_VERIFY_DRY_RUN=1 RELEASE_OUTPUT_DIR=release-output RELEASE_COMMIT=5514ef14ce5f310787f464ea78bd777838cb5537 bash scripts/release-verify.sh v0.1.2`
   - `git diff --check -- dist/adapters/README.md docs/releases/v0.1.2 docs/workflows.md scripts/adapter_distribution.py scripts/test-adapter-distribution.py`
 
+- M3 code-review r1 found no material findings and closed M3. Review evidence:
+  - `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_public_adapter_readme_documents_metadata_and_install_transition AdapterDistributionTests.test_v0_1_2_release_notes_document_archive_introduction_contract AdapterDistributionTests.test_v0_1_2_release_validation_rejects_notes_without_archives_or_compatibility AdapterDistributionTests.test_workflows_records_adapter_artifact_metadata_location AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata`
+  - `tmpdir=$(mktemp -d); python scripts/build-adapters.py --version v0.1.2 --output-dir "$tmpdir" >/dev/null; python scripts/validate-release.py --version v0.1.2 --release-output-dir "$tmpdir" --release-commit 5514ef14ce5f310787f464ea78bd777838cb5537`
+  - Review record: `docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m3-r1.md`
+
 ## Outcome and retrospective
 
-Not completed. M3 is implemented and ready for code-review; M4-M5 remain open.
+Not completed. M3 is closed after clean code-review; M4-M5 remain open.
 
 ## Readiness
 
