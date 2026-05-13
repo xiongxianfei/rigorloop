@@ -58,6 +58,26 @@ def normalize_skill_source(path_text: str) -> str:
     return path_text.rstrip("/") + "/"
 
 
+def is_repository_local_codex_source(path_text: str) -> bool:
+    normalized = normalize_skill_source(path_text)
+    return normalized == ".codex/skills/" or "/.codex/skills/" in normalized
+
+
+def is_public_codex_adapter_source(path_text: str) -> bool:
+    normalized = normalize_skill_source(path_text)
+    return not is_repository_local_codex_source(normalized) and normalized.endswith(
+        "/.agents/skills/"
+    )
+
+
+def is_v013_or_later(release: str) -> bool:
+    version = release.removeprefix("v").split("-", 1)[0]
+    parts = version.split(".")
+    if not all(part.isdigit() for part in parts):
+        return False
+    return tuple(int(part) for part in parts) >= (0, 1, 3)
+
+
 def default_temp_root() -> Path:
     if os.environ.get("CI") and os.environ.get("RUNNER_TEMP"):
         return Path(os.environ["RUNNER_TEMP"])
@@ -222,8 +242,17 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     skill_source_text = normalize_skill_source(args.skill_source)
-    if skill_source_text != PUBLIC_CODEX_SKILL_SOURCE:
-        sys.stderr.write(f"error: skill source must be {PUBLIC_CODEX_SKILL_SOURCE}\n")
+    if not is_public_codex_adapter_source(skill_source_text):
+        sys.stderr.write(
+            "error: skill source must be generated public Codex adapter output ending "
+            "in .agents/skills/ and must not be .codex/skills/\n"
+        )
+        return 1
+    if is_v013_or_later(args.release) and skill_source_text == PUBLIC_CODEX_SKILL_SOURCE:
+        sys.stderr.write(
+            "error: dist/adapters/codex/.agents/skills/ is retired for v0.1.3 and later; "
+            "use generated release output or temporary public adapter output\n"
+        )
         return 1
 
     suite = repo_path(args.suite)

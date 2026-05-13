@@ -23,6 +23,12 @@ OPTIONAL_BENCHMARK_WARNING_CODES = {
     "inconclusive": "optional-benchmark-inconclusive",
 }
 PUBLIC_CODEX_SKILL_SOURCE = "dist/adapters/codex/.agents/skills/"
+GENERATED_CODEX_SKILL_SOURCE_PLACEHOLDERS = {
+    "<public-adapter-skill-source>",
+    "<public-adapter-skill-source>/",
+    "<release-output-dir>/codex/.agents/skills/",
+    "<temporary-public-adapter-output>/.agents/skills/",
+}
 VALID_WAIVER_REASON_MARKERS = (
     "codex unavailable",
     "no benchmark-relevant changes",
@@ -326,6 +332,56 @@ def resolve_repo_path(value: str) -> Path:
 
 def is_final_release(release: str) -> bool:
     return "-" not in release
+
+
+def release_tuple(release: str) -> tuple[int, ...]:
+    version = release.removeprefix("v").split("-", 1)[0]
+    values: list[int] = []
+    for part in version.split("."):
+        if not part.isdigit():
+            return ()
+        values.append(int(part))
+    return tuple(values)
+
+
+def is_v013_or_later(release: str) -> bool:
+    parsed = release_tuple(release)
+    return bool(parsed) and parsed >= (0, 1, 3)
+
+
+def normalize_source_text(value: Any) -> str:
+    if not isinstance(value, str):
+        return ""
+    return value.rstrip("/") + "/"
+
+
+def validate_public_codex_skill_source(skill_source: Any, release: str, errors: list[str]) -> None:
+    source = normalize_source_text(skill_source)
+    if not source:
+        errors.append("runner.skill_source: expected non-empty string")
+        return
+    if source == ".codex/skills/" or "/.codex/skills/" in source:
+        errors.append(
+            "runner.skill_source: .codex/skills/ is repository-local generated output and "
+            "must not be used as a public benchmark source"
+        )
+        return
+    if source == PUBLIC_CODEX_SKILL_SOURCE and is_v013_or_later(release):
+        errors.append(
+            "runner.skill_source: dist/adapters/codex/.agents/skills/ is the retired "
+            "repository-tree adapter source for v0.1.3 and later"
+        )
+        return
+    if source == PUBLIC_CODEX_SKILL_SOURCE:
+        return
+    if source in GENERATED_CODEX_SKILL_SOURCE_PLACEHOLDERS:
+        return
+    if source.endswith("/.agents/skills/"):
+        return
+    errors.append(
+        "runner.skill_source: expected generated public Codex adapter output ending "
+        "in .agents/skills/"
+    )
 
 
 def validate_required_benchmark_context(
@@ -939,7 +995,7 @@ def validate_optional_warning_coverage(
             )
 
 
-def validate_runner_and_suite(data: dict[str, Any], errors: list[str]) -> None:
+def validate_runner_and_suite(data: dict[str, Any], errors: list[str], release: str) -> None:
     suite = require_mapping(data.get("benchmark_suite"), "benchmark_suite", errors)
     runner = require_mapping(data.get("runner"), "runner", errors)
     require_existing_repo_path(suite.get("manifest"), "benchmark_suite.manifest", errors)
@@ -954,14 +1010,7 @@ def validate_runner_and_suite(data: dict[str, Any], errors: list[str]) -> None:
         errors.append("runner.suite: must match benchmark_suite.manifest")
     if runner.get("fixture") != suite.get("fixture"):
         errors.append("runner.fixture: must match benchmark_suite.fixture")
-    skill_source = runner.get("skill_source")
-    if skill_source == ".codex/skills/" or skill_source == ".codex/skills":
-        errors.append(
-            "runner.skill_source: .codex/skills/ is repository-local generated output and "
-            "must not be used as a public benchmark source"
-        )
-    elif skill_source != PUBLIC_CODEX_SKILL_SOURCE:
-        errors.append(f"runner.skill_source: expected {PUBLIC_CODEX_SKILL_SOURCE}")
+    validate_public_codex_skill_source(runner.get("skill_source"), release, errors)
     require_existing_repo_path(runner.get("output_dir"), "runner.output_dir", errors)
     require_bool(runner.get("install_public_skills"), "runner.install_public_skills", errors)
 
@@ -1091,7 +1140,7 @@ def validate_token_cost_report(
                     "report.report_markdown must name or link the YAML metadata file"
                 )
 
-    validate_runner_and_suite(root, errors)
+    validate_runner_and_suite(root, errors, release)
     validate_static_and_summary(root, errors)
     validate_dynamic_runtime(
         root,

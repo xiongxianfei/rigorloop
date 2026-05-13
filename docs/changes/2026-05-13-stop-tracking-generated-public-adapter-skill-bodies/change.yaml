@@ -19,6 +19,7 @@ requirements:
   - Create a traceable test spec before implementation.
   - Implement M1 validation-model migration and regression tests.
   - Implement M2 repository tree untracking and root guidance alignment.
+  - Implement M3 v0.1.3 release evidence, adapter artifact metadata, release notes, and token-cost report evidence.
 tests:
   - Proposal-review approval or recorded material findings.
   - Spec-review approval or recorded material findings.
@@ -32,6 +33,9 @@ tests:
   - M2 regression tests prove only `dist/adapters/README.md` and `dist/adapters/manifest.yaml` remain tracked under `dist/adapters/`.
   - M2 regression tests prove root guidance points to archive installation through `dist/adapters/README.md`.
   - M2 validation proves adapter archive output can be generated and validated without tracked adapter package trees.
+  - M3 validation proves v0.1.3 adapter archives generate and validate from release output.
+  - M3 validation proves token-cost evidence uses generated public adapter output and rejects `.codex/skills/`.
+  - M3 validation proves release metadata, archive checksums, release notes, and release gate wiring validate for v0.1.3.
 review:
   status: clean
   unresolved_items: 0
@@ -83,6 +87,24 @@ validation:
     result: pass_91_tests
   - command: RELEASE_VERIFY_DRY_RUN=1 bash scripts/release-verify.sh v0.1.3
     result: pass_temp_release_output_current_head_commit
+  - command: python scripts/test-token-cost-measurement.py && python scripts/test-token-cost-report-validation.py
+    result: pass_24_plus_16_tests
+  - command: python scripts/build-adapters.py --version v0.1.3 --output-dir /tmp/rigorloop-v013-release-output && python scripts/validate-adapters.py --root /tmp/rigorloop-v013-release-output --version v0.1.3
+    result: pass_generated_v0_1_3_archives_validated
+  - command: python scripts/run-token-cost-benchmarks.py --release v0.1.3 --suite benchmarks/token-cost/manifest.yaml --tool codex --output-dir docs/reports/token-cost/runs/v0.1.3 --skill-source /tmp/rigorloop-v013-codex/.agents/skills --dry-run
+    result: pass_dry_run_public_adapter_skill_source
+  - command: python scripts/measure-skill-tokens.py
+    result: pass_23_skills_56615_estimated_tokens_warning_only
+  - command: python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.3.yaml
+    result: pass_valid_token_cost_report
+  - command: python scripts/validate-release.py --version v0.1.3 --release-output-dir /tmp/rigorloop-v013-release-output --release-commit 0f3fe12c8d03d9cb64d9315acc25ac1045c745a8
+    result: pass_valid_release_metadata
+  - command: python -m unittest scripts.test-adapter-distribution.AdapterDistributionTests.test_release_verify_script_supports_v0_1_3_archive_only_gate && RELEASE_VERIFY_DRY_RUN=1 RELEASE_OUTPUT_DIR=/tmp/rigorloop-v013-release-output bash scripts/release-verify.sh v0.1.3
+    result: pass_release_verify_default_source_commit_path
+  - command: python scripts/test-adapter-distribution.py && RELEASE_OUTPUT_DIR=/tmp/rigorloop-v013-release-output bash scripts/release-verify.sh v0.1.3
+    result: pass_92_tests_and_release_verification
+  - command: python scripts/test-token-cost-measurement.py && python scripts/test-token-cost-report-validation.py && python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.3.yaml
+    result: pass_25_plus_16_tests_and_valid_report
   - command: code-review-m2-r1
     result: clean_with_notes_M2_closed
   - command: code-review-m1-r2
@@ -129,6 +151,10 @@ changed_files:
   - scripts/ci.sh
   - scripts/release-verify.sh
   - scripts/test-adapter-distribution.py
+  - scripts/run-token-cost-benchmarks.py
+  - scripts/validate-token-cost-report.py
+  - scripts/test-token-cost-measurement.py
+  - scripts/test-token-cost-report-validation.py
   - scripts/test-select-validation.py
   - scripts/validation_selection.py
   - AGENTS.md
@@ -136,6 +162,10 @@ changed_files:
   - README.md
   - docs/workflows.md
   - dist/adapters/README.md
-  - dist/adapters/claude/
-  - dist/adapters/codex/
-  - dist/adapters/opencode/
+  - dist/adapters/manifest.yaml
+  - docs/releases/v0.1.3/release.yaml
+  - docs/releases/v0.1.3/release-notes.md
+  - docs/reports/adapter-artifacts/releases/v0.1.3.yaml
+  - docs/reports/token-cost/releases/v0.1.3.md
+  - docs/reports/token-cost/releases/v0.1.3.yaml
+  - docs/reports/token-cost/runs/v0.1.3/

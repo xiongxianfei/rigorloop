@@ -97,14 +97,14 @@ The token-cost `--skill-source` value must point to generated public adapter rel
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Repository tree untracking and guidance alignment
-- Current milestone state: closed
+- Current milestone: M3. v0.1.3 release evidence and token-cost reports
+- Current milestone state: review-requested
 - Last reviewed milestone: M2
-- Review status: code-review-m2-r1 completed clean-with-notes; M2 closed
-- Remaining in-scope implementation milestones: M3, M4
-- Next stage: implement M3
+- Review status: M3 implementation completed and awaiting code-review
+- Remaining in-scope implementation milestones: M3 review, M4
+- Next stage: code-review M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3-M4 are not implemented, release validation has not run against final release evidence, explain-change and verify are missing, and PR/release handoff is not prepared.
+- Reason final closeout is or is not ready: M3 has not been reviewed, M4 is not implemented, explain-change and verify are missing, and PR/release handoff is not prepared.
 
 ## Milestones
 
@@ -202,7 +202,7 @@ The token-cost `--skill-source` value must point to generated public adapter rel
 
 ### M3. v0.1.3 release evidence and token-cost reports
 
-- Milestone state: planned
+- Milestone state: implementing
 - Goal: Produce `v0.1.3` release evidence for adapter archives, metadata/checksums, release notes, and token-cost reports using generated public adapter output.
 - Requirements: R42-R57.
 - Files/components likely touched:
@@ -337,7 +337,8 @@ bash scripts/release-verify.sh v0.1.3
 - [x] M1 implemented and reviewed.
 - [x] 2026-05-13: M2 implementation completed and handed to code-review.
 - [x] M2 implemented and reviewed.
-- [ ] M3 implemented and reviewed.
+- [x] 2026-05-13: M3 implementation completed and handed to code-review.
+- [ ] M3 reviewed.
 - [ ] M4 release verification closeout completed.
 - [ ] explain-change recorded.
 - [ ] verify passed.
@@ -355,6 +356,7 @@ bash scripts/release-verify.sh v0.1.3
 - 2026-05-13: Resolve `CR-M1-1` by making `v0.1.3` release verification archive-only for adapter packages: it builds release archives, validates release metadata with `--release-output-dir` and `--release-commit`, and skips tracked adapter package drift checks.
 - 2026-05-13: Treat `dist/adapters/README.md` and `dist/adapters/manifest.yaml` as the only tracked adapter support surface after M2; generated package correctness is proved by archive/temp-output tests and release-output validation.
 - 2026-05-13: Update broad CI and selector adapter checks to exercise generated archive output instead of `build-adapters.py --check` and `validate-adapters.py` against the retired tracked package tree.
+- 2026-05-13: Record `release.source_commit` for `v0.1.3` as the adapter archive source commit, and make `release-verify.sh` default to that recorded metadata value for archive releases so the final release gate does not depend on a self-referential evidence commit hash.
 
 ## Surprises and discoveries
 
@@ -362,6 +364,8 @@ bash scripts/release-verify.sh v0.1.3
 - Release validation needed a version-gated notes and tracked-surface branch so the old `dist/adapters/<adapter>/` drift check remains active for compatibility releases but does not require retired package trees for `v0.1.3`.
 - `RELEASE_VERIFY_DRY_RUN=1 bash scripts/release-verify.sh v0.1.3` now passes and uses a temporary release-output directory plus the current Git commit when explicit values are not supplied.
 - Historical `v0.1.1` validator tests still need fixture-generated adapter output once the current repository no longer carries tracked package trees; those tests now pass explicit temporary output roots instead of relying on current `dist/adapters/`.
+- The token-cost benchmark runner and report validator still assumed `dist/adapters/codex/.agents/skills/` as the only public Codex skill source. M3 updated them to accept generated public adapter output ending in `.agents/skills/`, reject `.codex/skills/`, and reject the retired tracked repository source for `v0.1.3` reports.
+- Live local Codex token-cost execution started but stalled before completing the full suite. M3 used the approved dry-run runner path for complete benchmark-source/analyzer-shape evidence and recorded the limitation in the `v0.1.3` token-cost report.
 
 ## Validation notes
 
@@ -378,6 +382,16 @@ bash scripts/release-verify.sh v0.1.3
 - 2026-05-13: `python scripts/test-adapter-distribution.py -k public_adapter` passed: 2 tests.
 - 2026-05-13: `python scripts/test-adapter-distribution.py -k root_guidance` passed: 1 test.
 - 2026-05-13: `python scripts/test-adapter-distribution.py` passed: 92 tests. The suite emitted an expected negative-fixture token-cost validation message while still completing `OK`.
+- 2026-05-13: `python scripts/test-token-cost-measurement.py && python scripts/test-token-cost-report-validation.py` passed: 24 + 16 tests.
+- 2026-05-13: `python scripts/build-adapters.py --version v0.1.3 --output-dir /tmp/rigorloop-v013-release-output && python scripts/validate-adapters.py --root /tmp/rigorloop-v013-release-output --version v0.1.3` passed.
+- 2026-05-13: `python scripts/run-token-cost-benchmarks.py --release v0.1.3 --suite benchmarks/token-cost/manifest.yaml --tool codex --output-dir docs/reports/token-cost/runs/v0.1.3 --skill-source /tmp/rigorloop-v013-codex/.agents/skills --dry-run` passed.
+- 2026-05-13: `python scripts/measure-skill-tokens.py` passed and reported 23 canonical skills, 56,615 estimated tokens, and warning-only high-cost skills `workflow` and `code-review`.
+- 2026-05-13: `python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.3.yaml` passed.
+- 2026-05-13: `python scripts/validate-release.py --version v0.1.3 --release-output-dir /tmp/rigorloop-v013-release-output --release-commit 0f3fe12c8d03d9cb64d9315acc25ac1045c745a8` passed.
+- 2026-05-13: `python -m unittest scripts.test-adapter-distribution.AdapterDistributionTests.test_release_verify_script_supports_v0_1_3_archive_only_gate && RELEASE_VERIFY_DRY_RUN=1 RELEASE_OUTPUT_DIR=/tmp/rigorloop-v013-release-output bash scripts/release-verify.sh v0.1.3` passed.
+- 2026-05-13: `python scripts/test-adapter-distribution.py && RELEASE_OUTPUT_DIR=/tmp/rigorloop-v013-release-output bash scripts/release-verify.sh v0.1.3` passed. The adapter distribution suite emitted an expected negative-fixture token-cost validation message while still completing `OK`; release verification passed for `v0.1.3`.
+- 2026-05-13: `python scripts/test-token-cost-measurement.py && python scripts/test-token-cost-report-validation.py && python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.3.yaml` passed: 25 + 16 tests, then valid token-cost report metadata.
+- 2026-05-13: `python scripts/validate-change-metadata.py docs/changes/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies/change.yaml && python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies.md --path docs/plan.md --path docs/changes/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies/change.yaml && git diff --check --` passed.
 - 2026-05-13: `python scripts/test-select-validation.py` passed: 59 tests.
 - 2026-05-13: `python scripts/select-validation.py --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path dist/adapters/README.md --path dist/adapters/manifest.yaml` passed with status `ok` and selected adapter, lifecycle, and selector checks.
 - 2026-05-13: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path AGENTS.md --path CONSTITUTION.md --path docs/workflows.md` passed.
