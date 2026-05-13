@@ -32,12 +32,13 @@ tests:
   - code-review-r1
   - code-review-r2
   - code-review-r3
+  - code-review-r4
   - artifact lifecycle validation for the settled proposal, draft spec, and review evidence
   - artifact lifecycle validation for the approved spec, active plan, plan index, and review evidence
 review:
   status: clean
   unresolved_items: 0
-  reviewed_artifact: commit 8181388 M3 implementation slice
+  reviewed_artifact: commit e06babb M4 implementation slice
   review_log: docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/review-log.md
   review_resolution: docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/review-resolution.md
 validation:
@@ -153,6 +154,8 @@ validation:
     result: pass_closeout_reviews_8_findings_2_log_entries_8_resolution_entries_2_after_m4_regeneration
   - command: python scripts/validate-change-metadata.py docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/change.yaml
     result: pass_valid_change_metadata_after_m4_regeneration
+  - command: code-review r4
+    result: clean_with_notes_m4_closed_next_explain_change
   - command: python scripts/validate-change-metadata.py docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/change.yaml
     result: pass_valid_change_metadata_after_plan
   - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording
@@ -224,6 +227,7 @@ changed_files:
   - docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/reviews/code-review-r1.md
   - docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/reviews/code-review-r2.md
   - docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/reviews/code-review-r3.md
+  - docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/reviews/code-review-r4.md
   - dist/adapters/claude/.claude/skills/architecture-review/SKILL.md
   - dist/adapters/claude/.claude/skills/architecture/SKILL.md
   - dist/adapters/claude/.claude/skills/code-review/SKILL.md
