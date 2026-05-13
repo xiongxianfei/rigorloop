@@ -137,5 +137,5 @@ Detailed record: reviews/code-review-m3-r1.md
 Record: reviews/code-review-m3-r1.md
 Resolution: review-resolution.md#code-review-m3-r1
 Material findings: CR-M3-1
-Open findings: CR-M3-1
+Open findings: None
 Recording status: recorded

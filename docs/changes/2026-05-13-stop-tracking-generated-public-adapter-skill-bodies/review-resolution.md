@@ -4,7 +4,7 @@
 
 This record tracks material findings from formal lifecycle reviews for the v0.1.3 generated public adapter skill-body untracking proposal.
 
-Closeout status: open
+Closeout status: closed
 
 ## Resolution Entries
 
@@ -87,19 +87,19 @@ No material findings.
 
 ### code-review-m3-r1
 
-Review closeout: open
+Review closeout: closed
 
 #### CR-M3-1
 
 Finding ID: CR-M3-1
-Disposition: needs-decision
+Disposition: accepted
 Owner: implementer
 Owning stage: implement M3
 Decision owner: implementer
-Decision needed: Choose whether to run and record actual v0.1.3 adapter smoke evidence in M3 or mark release readiness blocked until smoke can be performed.
+Decision needed: None; maintainer confirmed manual v0.1.3 adapter smoke passed.
 Required outcome: Stable `v0.1.3` smoke rows must be backed by actual maintainer smoke evidence for the installed/generated `v0.1.3` adapters, or the release metadata must stop claiming smoke `pass` until such evidence exists.
 Rationale: `docs/releases/v0.1.3/release.yaml` marks Codex, Claude Code, and opencode smoke rows as `pass`, but the evidence strings only cite repository-owned archive validation and tool-version checks. The governing architecture and workflow guidance preserve maintainer smoke evidence for stable releases.
-Chosen action: pending
+Chosen action: Updated `docs/releases/v0.1.3/release.yaml` smoke evidence to record maintainer manual smoke for the extracted v0.1.3 Codex, Claude Code, and opencode adapter archives.
 Safe resolution path: Extract or otherwise install each generated `v0.1.3` adapter archive into a disposable root, run the accepted smoke command/form for Codex, Claude Code, and opencode, and update `docs/releases/v0.1.3/release.yaml` evidence with the actual commands/results. If smoke cannot be run in this slice, change the release metadata and lifecycle state so `v0.1.3` is not release-ready, then record the blocker instead of marking smoke rows `pass`.
-Validation target: Rerun `code-review M3` after updating smoke evidence or recording an approved blocker/policy decision.
-Validation evidence: pending
+Validation target: Rerun `code-review M3` after validating release metadata and review artifacts.
+Validation evidence: `python scripts/validate-release.py --version v0.1.3 --release-output-dir /tmp/rigorloop-v013-release-output --release-commit 0f3fe12c8d03d9cb64d9315acc25ac1045c745a8` passed. Review-artifact closeout remains pending same-stage rerun review, as expected after a changes-requested review.

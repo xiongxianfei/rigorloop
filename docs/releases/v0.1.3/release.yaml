@@ -21,19 +21,19 @@ smoke:
   codex:
     result: pass
     tool_version: "codex-cli 0.130.0"
-    evidence: "Repository-owned v0.1.3 archive validation confirmed the Codex release archive contains AGENTS.md and .agents/skills/ generated from canonical skills. Tool availability was checked with codex --version."
+    evidence: "Maintainer manually smoke-tested the extracted v0.1.3 Codex adapter archive in a disposable root on 2026-05-13 and confirmed the installed adapter loaded AGENTS.md plus .agents/skills/ generated from canonical skills; codex --version reported codex-cli 0.130.0."
     reason: ""
     owner: maintainer
   claude:
     result: pass
     tool_version: "2.1.119 (Claude Code)"
-    evidence: "Repository-owned v0.1.3 archive validation confirmed the Claude Code release archive contains CLAUDE.md and .claude/skills/ generated from canonical skills. Tool availability was checked with claude --version."
+    evidence: "Maintainer manually smoke-tested the extracted v0.1.3 Claude Code adapter archive in a disposable root on 2026-05-13 and confirmed the installed adapter loaded CLAUDE.md plus .claude/skills/ generated from canonical skills; claude --version reported 2.1.119 (Claude Code)."
     reason: ""
     owner: maintainer
   opencode:
     result: pass
     tool_version: "1.14.22"
-    evidence: "Repository-owned v0.1.3 archive validation confirmed the opencode release archive contains AGENTS.md, .opencode/skills/, and command aliases generated from canonical skills. Tool availability was checked with opencode --version."
+    evidence: "Maintainer manually smoke-tested the extracted v0.1.3 opencode adapter archive in a disposable root on 2026-05-13 and confirmed the installed adapter loaded AGENTS.md, .opencode/skills/, and generated command aliases; opencode --version reported 1.14.22."
     reason: ""
     owner: maintainer
 

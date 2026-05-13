@@ -107,6 +107,10 @@ validation:
     result: pass_25_plus_16_tests_and_valid_report
   - command: code-review-m3-r1
     result: changes_requested_CR-M3-1_open
+  - command: maintainer manual smoke
+    result: pass_v0_1_3_adapter_smoke_recorded_for_codex_claude_opencode
+  - command: review-resolution CR-M3-1
+    result: accepted_and_closed
   - command: code-review-m2-r1
     result: clean_with_notes_M2_closed
   - command: code-review-m1-r2
