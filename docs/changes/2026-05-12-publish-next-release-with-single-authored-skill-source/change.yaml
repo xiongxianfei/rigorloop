@@ -62,6 +62,14 @@ validation:
     result: pass
   - command: python scripts/validate-release.py --version v0.1.1
     result: pass
+  - command: python scripts/test-adapter-distribution.py
+    result: pass
+  - command: python scripts/validate-release.py --version v0.1.1
+    result: pass
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass
+  - command: git diff --check -- dist/adapters/README.md docs/releases/v0.1.1/release-notes.md docs/releases/v0.1.1/release.yaml README.md docs/workflows.md AGENTS.md CONSTITUTION.md scripts/test-adapter-distribution.py scripts/adapter_distribution.py
+    result: pass
   - command: python scripts/validate-release.py --version v0.1.1
     result: pass
   - command: python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml
@@ -121,3 +129,9 @@ changed_files:
   - scripts/validate-release.py
   - scripts/adapter_distribution.py
   - scripts/test-adapter-distribution.py
+  - dist/adapters/README.md
+  - docs/releases/v0.1.1/release-notes.md
+  - README.md
+  - docs/workflows.md
+  - AGENTS.md
+  - CONSTITUTION.md
