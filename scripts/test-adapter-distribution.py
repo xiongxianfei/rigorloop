@@ -235,6 +235,26 @@ class AdapterDistributionTests(unittest.TestCase):
             ]
         )
 
+    def v0_1_2_notes_extra(self) -> str:
+        return "\n".join(
+            [
+                self.command_alias_notes_extra(),
+                "",
+                "## Adapter Archives",
+                "",
+                "Per-adapter release archives are available for `v0.1.2`:",
+                "",
+                "- `rigorloop-adapter-codex-v0.1.2.zip` installs to `.agents/skills/`.",
+                "- `rigorloop-adapter-claude-v0.1.2.zip` installs to `.claude/skills/`.",
+                "- `rigorloop-adapter-opencode-v0.1.2.zip` installs to `.opencode/skills/`.",
+                "",
+                "tracked `dist/adapters/**/skills` remain available for the compatibility window.",
+                "Checksums and adapter artifact metadata are recorded in `docs/reports/adapter-artifacts/releases/v0.1.2.yaml`.",
+                "",
+                "The repository-owned release gate is `bash scripts/release-verify.sh v0.1.2`.",
+            ]
+        )
+
     def write_adapter_artifact_metadata(
         self,
         root: Path,
@@ -683,7 +703,7 @@ release_gate:
                     "adapter_archives": "pass",
                     "adapter_artifact_metadata": "pass",
                 },
-                notes_extra=self.command_alias_notes_extra(),
+                notes_extra=self.v0_1_2_notes_extra(),
             )
 
             errors = validate_release_output(
@@ -2732,13 +2752,80 @@ release_gate:
         self.assertIn("support matrix", text)
         self.assertIn("repository-tree install", text)
         self.assertIn("For `v0.1.1`", text)
+        self.assertIn("For `v0.1.2`", text)
         self.assertIn("public adapter install path", text)
-        self.assertIn("No downloadable adapter archives are required for `v0.1.1`", text)
+        self.assertIn("tracked adapter skill bodies", text)
+        self.assertIn("compatibility window", text)
+        self.assertIn("rigorloop-adapter-codex-<version>.zip", text)
+        self.assertIn("rigorloop-adapter-claude-<version>.zip", text)
+        self.assertIn("rigorloop-adapter-opencode-<version>.zip", text)
+        self.assertIn("`.agents/skills/`", text)
+        self.assertIn("`.claude/skills/`", text)
+        self.assertIn("`.opencode/skills/`", text)
+        self.assertIn("generated adapter skill bodies are not tracked source after the later untracking release", text.lower())
         self.assertIn("`docs/reports/adapter-artifacts/releases/<version>.yaml`", text)
         self.assertIn("release assets", text)
         self.assertIn("`.codex/skills/`", text)
         self.assertIn("ignored local runtime install directory", text)
         self.assertIn("not a public adapter install source", text)
+
+    def test_v0_1_2_release_notes_document_archive_introduction_contract(self) -> None:
+        text = (ROOT / "docs" / "releases" / "v0.1.2" / "release-notes.md").read_text(
+            encoding="utf-8"
+        )
+
+        self.assertIn("rigorloop-adapter-codex-v0.1.2.zip", text)
+        self.assertIn("rigorloop-adapter-claude-v0.1.2.zip", text)
+        self.assertIn("rigorloop-adapter-opencode-v0.1.2.zip", text)
+        self.assertIn("tracked `dist/adapters/**/skills` remain available", text)
+        self.assertIn("compatibility window", text)
+        self.assertIn("docs/reports/adapter-artifacts/releases/v0.1.2.yaml", text)
+        self.assertIn("bash scripts/release-verify.sh v0.1.2", text)
+
+    def test_v0_1_2_release_validation_rejects_notes_without_archives_or_compatibility(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root = root / "skills"
+            shutil.copytree(ROOT / "skills", skills_root)
+            output_root = root / "dist" / "adapters"
+            sync_adapter_output("0.1.1", skills_root=skills_root, output_root=output_root)
+            release_output_dir = root / "release-output"
+            build_adapter_archives("v0.1.2", release_output_dir, skills_root=skills_root)
+            adapter_artifact_root = self.write_adapter_artifact_metadata(root, release_output_dir).parent
+            release_root = root / "docs" / "releases"
+            self.write_release_artifacts(
+                root,
+                version="v0.1.2",
+                release_type="final",
+                manifest_version="0.1.1",
+                smoke_overrides=self.v0_1_1_smoke_overrides(),
+                validation_overrides={
+                    "adapter_archives": "pass",
+                    "adapter_artifact_metadata": "pass",
+                },
+                notes_extra=self.command_alias_notes_extra(),
+            )
+
+            errors = validate_release_output(
+                "v0.1.2",
+                skills_root=skills_root,
+                output_root=output_root,
+                release_root=release_root,
+                release_output_dir=release_output_dir,
+                adapter_artifact_report_root=adapter_artifact_root,
+                release_commit="0123456789abcdef0123456789abcdef01234567",
+            )
+
+        self.assertTrue(any("v0.1.2 release notes must list adapter archive" in error for error in errors), errors)
+        self.assertTrue(any("v0.1.2 release notes must describe retained dist/adapters compatibility" in error for error in errors), errors)
+
+    def test_workflows_records_adapter_artifact_metadata_location(self) -> None:
+        text = (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8")
+
+        self.assertIn("`docs/workflows.md` is the project-local user-facing artifact-location map", text)
+        self.assertIn("Adapter artifact metadata", text)
+        self.assertIn("`docs/reports/adapter-artifacts/releases/`", text)
+        self.assertIn("does not define full artifact schemas", text)
 
     def test_v0_1_1_release_notes_document_transition_contract(self) -> None:
         text = (ROOT / "docs" / "releases" / "v0.1.1" / "release-notes.md").read_text(

@@ -164,6 +164,7 @@ If this project customizes artifact locations, update this table. Skills use the
 | Explain change | `docs/changes/<change-id>/explain-change.md` | `explain-change` |
 | Verify report | `docs/changes/<change-id>/verify-report.md` when required | `verify` |
 | Reports | `docs/reports/` | release / verify / measurement workflows |
+| Adapter artifact metadata | `docs/reports/adapter-artifacts/releases/` | release workflow |
 
 ## Change-Local Artifacts
 

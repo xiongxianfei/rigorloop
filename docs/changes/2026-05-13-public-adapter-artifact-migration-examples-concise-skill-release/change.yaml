@@ -22,6 +22,7 @@ tests:
   - code-review-m1-r1
   - M2 adapter artifact metadata schema and checksum validation.
   - code-review-m2-r2
+  - M3 adapter install contract, release notes, and artifact-location guide validation.
 review:
   status: clean
   unresolved_items: 0
@@ -209,6 +210,20 @@ validation:
     result: pass_after_PAAM-M2-CR1_resolution
   - command: code-review-m2-r2
     result: clean_with_notes_no_material_findings
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_public_adapter_readme_documents_metadata_and_install_transition AdapterDistributionTests.test_v0_1_2_release_notes_document_archive_introduction_contract AdapterDistributionTests.test_v0_1_2_release_validation_rejects_notes_without_archives_or_compatibility AdapterDistributionTests.test_workflows_records_adapter_artifact_metadata_location AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata
+    result: fail_then_pass_after_implement_m3
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_after_implement_m3_88_tests
+  - command: tmpdir=$(mktemp -d); python scripts/build-adapters.py --version v0.1.2 --output-dir "$tmpdir" >/dev/null; python scripts/validate-release.py --version v0.1.2 --release-output-dir "$tmpdir" --release-commit 5514ef14ce5f310787f464ea78bd777838cb5537
+    result: pass_after_implement_m3
+  - command: python scripts/build-adapters.py --version 0.1.1 --check
+    result: pass_after_implement_m3
+  - command: python scripts/validate-adapters.py --version 0.1.1
+    result: pass_after_implement_m3
+  - command: RELEASE_VERIFY_DRY_RUN=1 RELEASE_OUTPUT_DIR=release-output RELEASE_COMMIT=5514ef14ce5f310787f464ea78bd777838cb5537 bash scripts/release-verify.sh v0.1.2
+    result: pass_after_implement_m3
+  - command: git diff --check -- dist/adapters/README.md docs/releases/v0.1.2 docs/workflows.md scripts/adapter_distribution.py scripts/test-adapter-distribution.py
+    result: pass_after_implement_m3
 changed_files:
   - docs/proposals/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md
   - specs/public-adapter-artifact-migration-examples-concise-skill-release.md
@@ -231,3 +246,5 @@ changed_files:
   - docs/reports/adapter-artifacts/releases/v0.1.2.yaml
   - docs/releases/v0.1.2/release.yaml
   - docs/releases/v0.1.2/release-notes.md
+  - dist/adapters/README.md
+  - docs/workflows.md

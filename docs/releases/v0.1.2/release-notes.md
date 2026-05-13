@@ -6,6 +6,8 @@ This archive-introduction release keeps the generated adapter package set under 
 
 `skills/` is the canonical authored skill source. `dist/adapters/` remains the repository-tree adapter install path during the compatibility window.
 
+For `v0.1.2`, tracked `dist/adapters/**/skills` remain available for the compatibility window.
+
 Adapter artifact checksums and metadata are recorded in `docs/reports/adapter-artifacts/releases/v0.1.2.yaml`.
 
 ## Supported Tools
@@ -48,9 +50,9 @@ Claude Code remains skill-native and uses native skill slash commands such as `/
 
 Per-adapter release archives are available for `v0.1.2`:
 
-- `rigorloop-adapter-codex-v0.1.2.zip`
-- `rigorloop-adapter-claude-v0.1.2.zip`
-- `rigorloop-adapter-opencode-v0.1.2.zip`
+- `rigorloop-adapter-codex-v0.1.2.zip` installs to `.agents/skills/`.
+- `rigorloop-adapter-claude-v0.1.2.zip` installs to `.claude/skills/`.
+- `rigorloop-adapter-opencode-v0.1.2.zip` installs to `.opencode/skills/`.
 
 ## Smoke Verification
 

@@ -2191,6 +2191,19 @@ def _release_notes_consistency_errors(
             errors.append("v0.1.1 release notes must not describe .codex/skills generation as release evidence")
         if "does not require `.codex/skills/` generation as release evidence" not in notes_text:
             errors.append("v0.1.1 release notes must state that .codex/skills generation is not release evidence")
+    if version == "v0.1.2":
+        for adapter in SUPPORTED_ADAPTERS:
+            archive = adapter_archive_name(adapter, version)
+            if archive not in notes_text:
+                errors.append(f"v0.1.2 release notes must list adapter archive: {archive}")
+        if "tracked `dist/adapters/**/skills` remain available" not in notes_text:
+            errors.append(
+                "v0.1.2 release notes must describe retained dist/adapters compatibility"
+            )
+        if "docs/reports/adapter-artifacts/releases/v0.1.2.yaml" not in notes_text:
+            errors.append("v0.1.2 release notes must identify adapter artifact metadata")
+        if "bash scripts/release-verify.sh v0.1.2" not in notes_text:
+            errors.append("v0.1.2 release notes must name the release verification command")
 
     non_portable = sorted(name for name, entry in manifest.skills.items() if not entry.portable)
     if non_portable:
