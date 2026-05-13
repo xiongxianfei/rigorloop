@@ -99,12 +99,12 @@ The token-cost `--skill-source` value must point to generated public adapter rel
 
 - Current milestone: M1. Validation model migration and regression tests
 - Current milestone state: review-requested
-- Last reviewed milestone: none
-- Review status: M1 implementation complete; awaiting code-review
+- Last reviewed milestone: M1
+- Review status: CR-M1-1 accepted and fixed; awaiting code-review rerun
 - Remaining in-scope implementation milestones: M1 review closeout, M2, M3, M4
-- Next stage: code-review M1
+- Next stage: code-review M1 rerun
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 is implemented but not reviewed, M2-M4 are not implemented, release validation has not run against final release evidence, explain-change and verify are missing, and PR/release handoff is not prepared.
+- Reason final closeout is or is not ready: M1 needs code-review rerun after the accepted finding fix, M2-M4 are not implemented, release validation has not run against final release evidence, explain-change and verify are missing, and PR/release handoff is not prepared.
 
 ## Milestones
 
@@ -152,6 +152,7 @@ The token-cost `--skill-source` value must point to generated public adapter rel
 - Risks: validation may have implicit assumptions that `dist/adapters/<adapter>/` exists.
 - Rollback/recovery: keep tracked adapter output until validation is migrated; if migration cannot be completed, stop before M2 and revise the spec or plan.
 - Implementation result: `v0.1.3` release validation now supports the release-output/archive validation model, requires only the tracked adapter support surface under `dist/adapters/`, rejects tracked adapter package fragments for `v0.1.3`, and keeps archive/metadata validation required for the release.
+- Review result: `code-review-m1-r1` requested changes for `CR-M1-1` because `scripts/release-verify.sh` still rejected `v0.1.3` before invoking generated release-output/archive validation. The finding is accepted and fixed; M1 is ready for code-review rerun.
 
 ### M2. Repository tree untracking and guidance alignment
 
@@ -329,6 +330,7 @@ bash scripts/release-verify.sh v0.1.3
 - [x] 2026-05-13: test spec approved by maintainer.
 - [x] M1 started.
 - [x] 2026-05-13: M1 implementation completed and handed to code-review.
+- [x] 2026-05-13: M1 code-review finding CR-M1-1 resolved.
 - [ ] M1 implemented and reviewed.
 - [ ] M2 implemented and reviewed.
 - [ ] M3 implemented and reviewed.
@@ -345,11 +347,14 @@ bash scripts/release-verify.sh v0.1.3
 - 2026-05-13: Use the active test spec as the implementation proof map before M1 starts.
 - 2026-05-13: Treat maintainer test-spec approval as the handoff that unblocks implementation of M1.
 - 2026-05-13: For `v0.1.3`, treat `generated_sync` as proof that the tracked adapter support surface is clean while adapter package correctness is proved by release-output archive validation and artifact metadata validation.
+- 2026-05-13: `code-review-m1-r1` found that the maintainer release gate itself remains outside the migrated validation model until `scripts/release-verify.sh` accepts `v0.1.3` and invokes generated-output/archive checks.
+- 2026-05-13: Resolve `CR-M1-1` by making `v0.1.3` release verification archive-only for adapter packages: it builds release archives, validates release metadata with `--release-output-dir` and `--release-commit`, and skips tracked adapter package drift checks.
 
 ## Surprises and discoveries
 
 - Existing script interfaces already support generated release-output validation and benchmark skill-source injection through `--output-dir`, `--root`, `--release-output-dir`, `--release-commit`, and `--skill-source`.
 - Release validation needed a version-gated notes and tracked-surface branch so the old `dist/adapters/<adapter>/` drift check remains active for compatibility releases but does not require retired package trees for `v0.1.3`.
+- `RELEASE_VERIFY_DRY_RUN=1 bash scripts/release-verify.sh v0.1.3` now passes and uses a temporary release-output directory plus the current Git commit when explicit values are not supplied.
 
 ## Validation notes
 
@@ -357,6 +362,11 @@ bash scripts/release-verify.sh v0.1.3
 - 2026-05-13: `python scripts/test-adapter-distribution.py` passed: 90 tests. The suite emitted an expected negative-fixture token-cost validation message while still completing `OK`.
 - 2026-05-13: `python scripts/validate-skills.py` passed: validated 23 skill files.
 - 2026-05-13: `python scripts/build-adapters.py --version v0.1.3 --output-dir <tmp>/release-output && python scripts/validate-adapters.py --root <tmp>/release-output --version v0.1.3` passed.
+- 2026-05-13: `RELEASE_VERIFY_DRY_RUN=1 bash scripts/release-verify.sh v0.1.3` failed with `Unsupported release target: v0.1.3`; recorded as `CR-M1-1`.
+- 2026-05-13: `python scripts/test-adapter-distribution.py -k release_verify_script_supports_v0_1_3_archive_only_gate` passed.
+- 2026-05-13: `RELEASE_VERIFY_DRY_RUN=1 RELEASE_OUTPUT_DIR=release-output RELEASE_COMMIT=0123456789abcdef0123456789abcdef01234567 bash scripts/release-verify.sh v0.1.3` passed.
+- 2026-05-13: `python scripts/test-adapter-distribution.py` passed: 91 tests. The suite emitted an expected negative-fixture token-cost validation message while still completing `OK`.
+- 2026-05-13: `RELEASE_VERIFY_DRY_RUN=1 bash scripts/release-verify.sh v0.1.3` passed using a temporary release-output directory and the current Git commit.
 
 ## Outcome and retrospective
 

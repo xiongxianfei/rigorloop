@@ -69,6 +69,16 @@ validation:
     result: pass_validated_23_skill_files
   - command: python scripts/build-adapters.py --version v0.1.3 --output-dir <tmp>/release-output && python scripts/validate-adapters.py --root <tmp>/release-output --version v0.1.3
     result: pass_generated_v0_1_3_archives_validated
+  - command: RELEASE_VERIFY_DRY_RUN=1 bash scripts/release-verify.sh v0.1.3
+    result: fail_unsupported_release_target_CR-M1-1
+  - command: python scripts/test-adapter-distribution.py -k release_verify_script_supports_v0_1_3_archive_only_gate
+    result: pass
+  - command: RELEASE_VERIFY_DRY_RUN=1 RELEASE_OUTPUT_DIR=release-output RELEASE_COMMIT=0123456789abcdef0123456789abcdef01234567 bash scripts/release-verify.sh v0.1.3
+    result: pass_archive_only_v0_1_3_gate
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_91_tests
+  - command: RELEASE_VERIFY_DRY_RUN=1 bash scripts/release-verify.sh v0.1.3
+    result: pass_temp_release_output_current_head_commit
 changed_files:
   - docs/proposals/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies.md
   - specs/stop-tracking-generated-public-adapter-skill-bodies.md
@@ -81,10 +91,12 @@ changed_files:
   - docs/changes/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies/review-log.md
   - docs/changes/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies/review-resolution.md
   - docs/changes/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies/reviews/architecture-review-r1.md
+  - docs/changes/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies/reviews/code-review-m1-r1.md
   - docs/changes/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies/reviews/plan-review-r1.md
   - docs/changes/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies/reviews/proposal-review-r1.md
   - docs/changes/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies/reviews/proposal-review-r2.md
   - docs/changes/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies/reviews/spec-review-r1.md
   - docs/changes/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies/reviews/spec-review-r2.md
   - scripts/adapter_distribution.py
+  - scripts/release-verify.sh
   - scripts/test-adapter-distribution.py
