@@ -4,7 +4,7 @@
 - Owner: maintainers
 - Start date: 2026-05-13
 - Last updated: 2026-05-13
-- Related issue or PR: none yet
+- Related PR: [#53](https://github.com/xiongxianfei/rigorloop/pull/53)
 - Supersedes: none
 
 ## Purpose / big picture
@@ -71,9 +71,9 @@ Validation and generated-output context:
 - Last reviewed milestone: M2
 - Review status: M2 clean-with-notes
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
+- Next stage: hosted CI / PR review
 - Final closeout readiness: ready
-- Reason final closeout is or is not ready: all implementation milestones are closed, explain-change is recorded, and local verify passed; PR handoff remains.
+- Reason final closeout is or is not ready: PR #53 is open; hosted CI and PR review remain downstream.
 
 ## Milestones
 
@@ -224,6 +224,7 @@ Final verification before PR should include:
 - 2026-05-13: M2 code-review passed with `clean-with-notes`; all implementation milestones are closed and final closeout starts with `explain-change`.
 - 2026-05-13: explain-change recorded; next stage is `verify`.
 - 2026-05-13: verify passed local validation and recorded `verify-report.md`; next stage is `pr`.
+- 2026-05-13: PR #53 opened for review; hosted CI not yet observed at handoff time.
 
 ## Decision log
 

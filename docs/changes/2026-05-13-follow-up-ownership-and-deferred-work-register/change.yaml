@@ -80,6 +80,8 @@ validation:
     result: recorded
   - command: verify
     result: branch-ready_local_validation_passed
+  - command: pr
+    result: opened https://github.com/xiongxianfei/rigorloop/pull/53
 changed_files:
   - docs/workflows.md
   - docs/proposals/2026-05-13-follow-up-ownership-and-deferred-work-register.md
