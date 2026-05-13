@@ -92,6 +92,7 @@ SINGLE_SOURCE_WORKFLOW_STATE_PLAN = (
 SKILL_CONTRACT_WORKFLOW_SPEC = ROOT / "specs" / "rigorloop-workflow.md"
 SKILL_CONTRACT_WORKFLOWS_DOC = ROOT / "docs" / "workflows.md"
 SKILL_CONTRACT_AGENTS = ROOT / "AGENTS.md"
+SKILL_VALIDATOR_FIXTURE_README = ROOT / "docs" / "changes" / "0001-skill-validator" / "README.md"
 SKILL_CONTRACT_EVIDENCE_BLOCK = ROOT / "templates" / "shared" / "evidence-collection-efficiency.md"
 SKILL_CONTRACT_FIRST_SLICE_SKILLS = [
     "workflow",
@@ -177,6 +178,21 @@ SKILL_CONTRACT_PROGRESS_SKILLS = [
     "plan",
     "implement",
     "code-review",
+    "verify",
+    "pr",
+]
+PROJECT_ARTIFACT_LOOKUP_SKILLS = [
+    "proposal",
+    "spec",
+    "architecture",
+    "plan",
+    "test-spec",
+    "proposal-review",
+    "spec-review",
+    "architecture-review",
+    "plan-review",
+    "code-review",
+    "explain-change",
     "verify",
     "pr",
 ]
@@ -2376,6 +2392,132 @@ and result format.
             "shared-block implementation details",
         ]
         for skill_name in SKILL_CONTRACT_FIRST_SLICE_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            for term in forbidden_terms:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertNotIn(term, body)
+
+    def test_project_artifact_location_m1_workflows_doc_contains_artifact_map(self) -> None:
+        workflows = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
+        artifact_locations = extract_markdown_block(workflows, "Artifact locations")
+
+        required_terms = [
+            "The table defines default locations and owning skills.",
+            "It does not define full artifact schemas",
+            "For exact shapes, use the governing spec, schema, or reference",
+            "Project vision",
+            "Workflow guide",
+            "Examples",
+            "Proposals",
+            "Specs",
+            "Test specs",
+            "Architecture",
+            "ADRs",
+            "Plans",
+            "Plan index",
+            "Change root",
+            "Change metadata",
+            "Formal review records",
+            "Review log",
+            "Review resolution",
+            "Explain change",
+            "Verify report",
+            "Reports",
+            "default location only",
+            "formal review recording",
+            "when findings or blocking outcomes require disposition",
+            "when required",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, artifact_locations)
+
+    def test_project_artifact_location_m1_workflows_doc_names_source_rank(self) -> None:
+        workflows = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
+        source_rank = extract_markdown_block(workflows, "Artifact-location source rank")
+
+        required_terms = [
+            "source rank is precedence when sources conflict, not mandatory read order",
+            "explicit user-provided path or change ID",
+            "active artifact metadata, active plan metadata, or active change metadata",
+            "approved project specs or schemas",
+            "`docs/workflows.md` artifact-location map",
+            "portable default path",
+            "block on ambiguity",
+            "If a conflict is discovered",
+            "higher-priority source wins",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, source_rank)
+
+    def test_project_artifact_location_m1_workflow_skill_refreshes_guide_on_defined_triggers(
+        self,
+    ) -> None:
+        workflow = (ROOT / "skills" / "workflow" / "SKILL.md").read_text(encoding="utf-8")
+
+        required_terms = [
+            "creates or refreshes the project workflow guide",
+            "artifact-location map",
+            "RigorLoop is adopted in a project and no workflow guide exists",
+            "artifact locations are added, removed, renamed, or customized",
+            "review-recording, examples, reports, or change-root placement changes",
+            "stage skill guidance starts relying on the artifact-location map",
+            "generated-output or adapter source-of-truth guidance changes",
+            "existing guide contradicts current repository paths or governing specs",
+            "reference the guide rather than rewrite it",
+            "must not author proposals, specs, plans, reviews, ADRs, or exact schemas",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, workflow)
+
+    def test_project_artifact_location_m1_retained_fixture_has_durable_rationale(self) -> None:
+        rationale = SKILL_VALIDATOR_FIXTURE_README.read_text(encoding="utf-8")
+
+        required_terms = [
+            "retained validator fixture",
+            "historical proof pack",
+            "not an active change root",
+            "not the universal template",
+            "tests, validators, compatibility references, or historical proof references",
+            "docs/examples/changes/skill-validator/",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, rationale)
+
+    def test_project_artifact_location_m2_stage_skills_share_lookup_wording(self) -> None:
+        required_terms = [
+            "Use the project workflow guide for artifact locations when placement matters.",
+            "Lookup order:",
+            "explicit user path or change ID",
+            "active plan, change metadata, reviewed artifact path, or current artifact metadata",
+            "known governing spec or schema constraint when directly relevant",
+            "`docs/workflows.md` artifact-location table",
+            "this skill's portable default path",
+            "block on ambiguity",
+            "discovery order is subordinate to the source-rank rule",
+            "Do not broad-search authoritative documents just to find paths.",
+            "Use `docs/workflows.md` as the path index",
+            "consult specs or schemas only when they govern exact shape, placement, or a detected conflict",
+        ]
+
+        for skill_name in PROJECT_ARTIFACT_LOOKUP_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            with self.subTest(skill=skill_name):
+                for term in required_terms:
+                    self.assertIn(term, body)
+
+    def test_project_artifact_location_m2_stage_skills_avoid_path_table_duplication(self) -> None:
+        forbidden_terms = [
+            "| Artifact type | Default location | Owning skill |",
+            "docs/changes/0001-skill-validator",
+            "docs/examples/formal-review-recording/",
+            "docs/examples/plans/example-plan.md",
+        ]
+
+        for skill_name in PROJECT_ARTIFACT_LOOKUP_SKILLS:
             body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
             for term in forbidden_terms:
                 with self.subTest(skill=skill_name, term=term):
