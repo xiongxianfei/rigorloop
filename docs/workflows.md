@@ -117,6 +117,54 @@ Moved or summarized detail is owned as follows:
 
 Workflow safety topics MUST NOT be removed when public skill text is compressed. A removed or summarized topic needs a new owner surface or an explicit no-longer-needed rationale in the change evidence.
 
+## Artifact-location source rank
+
+`docs/workflows.md` is the project-local user-facing artifact-location map.
+
+The source rank is precedence when sources conflict, not mandatory read order. Skills should use the artifact-location map as a concise path index, while still obeying known higher-priority constraints.
+
+When artifact placement conflicts, use this rank:
+
+1. explicit user-provided path or change ID
+2. active artifact metadata, active plan metadata, or active change metadata
+3. approved project specs or schemas
+4. `docs/workflows.md` artifact-location map
+5. portable default path
+6. block on ambiguity
+
+An explicit user-provided path or change ID does not override a higher-priority governance, safety, schema, or security constraint.
+
+If a conflict is discovered between this guide and a higher-priority source, the higher-priority source wins. Refresh this guide or report the stale artifact-location map before downstream reliance.
+
+## Artifact locations
+
+The table defines default locations and owning skills.
+
+It does not define full artifact schemas, required fields, lifecycle status values, or validation rules. For exact shapes, use the governing spec, schema, or reference for that artifact type.
+
+If this project customizes artifact locations, update this table. Skills use the table before falling back to portable defaults.
+
+| Artifact type | Default location | Owning skill |
+| --- | --- | --- |
+| Project vision | `VISION.md` | `vision` |
+| Workflow guide | `docs/workflows.md` | `workflow` |
+| Examples | `docs/examples/` | none; examples are non-normative |
+| Proposals | `docs/proposals/YYYY-MM-DD-slug.md` | `proposal` |
+| Specs | `specs/slug.md` | `spec` |
+| Test specs | `specs/slug.test.md` | `test-spec` |
+| Architecture | `docs/architecture/` or project-configured architecture path | `architecture` |
+| ADRs | `docs/adr/ADR-YYYYMMDD-slug.md` | `architecture` |
+| Plans | `docs/plans/YYYY-MM-DD-slug.md` | `plan` |
+| Plan index | `docs/plan.md` | `plan` / workflow bookkeeping |
+| Change root | `docs/changes/<change-id>/` | current change lifecycle |
+| Change metadata | `docs/changes/<change-id>/change.yaml` | relevant stage / workflow |
+| Formal review records | `docs/changes/<change-id>/reviews/<stage>-r<n>.md`; default location only; exact receipt/root rules are owned by the formal review recording contract | review skills |
+| Review log | `docs/changes/<change-id>/review-log.md` | review skills |
+| Review resolution | `docs/changes/<change-id>/review-resolution.md` when findings or blocking outcomes require disposition | `review-resolution` |
+| Explain change | `docs/changes/<change-id>/explain-change.md` | `explain-change` |
+| Verify report | `docs/changes/<change-id>/verify-report.md` when required | `verify` |
+| Reports | `docs/reports/` | release / verify / measurement workflows |
+
 ## Change-Local Artifacts
 
 - Manual skill invocations may omit `docs/changes/<change-id>/` when they are not used to claim complete workflow delivery.
@@ -206,7 +254,7 @@ Notes:
 - `verify` blocks on stale lifecycle-managed artifacts that are touched, referenced, generated, or authoritative for the changed area, and it warns on unrelated stale baseline artifacts.
 - Draft PR-body references participate in `verify` only when draft PR text already exists. Before that, `verify` uses `docs/changes/<change-id>/change.yaml`, explain-change artifacts, the active plan, and other touched or referenced authoritative artifacts.
 - Broader repo-local lifecycle inconsistency blocks `branch-ready` when the inconsistent artifact is touched, referenced, generated, or authoritative for the changed area.
-- Tracked wording such as "after merge", "post-merge", or "once this lands" should be treated as a reviewer-attention warning unless it is corrected, classified as a true downstream event, or made blocking by a lifecycle inconsistency.
+- Tracked wording that defers lifecycle state to later repository integration should be treated as a reviewer-attention warning unless it is corrected, classified as a true downstream event, or made blocking by a lifecycle inconsistency.
 
 ## Source Of Truth
 

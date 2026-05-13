@@ -707,7 +707,9 @@ raise SystemExit({exit_code})
         paths = [
             "docs/examples/README.md",
             "docs/examples/plans/example-plan.md",
+            "docs/examples/formal-review-recording/README.md",
             "docs/examples/formal-review-recording/change-id-selection-examples.md",
+            "docs/examples/formal-review-recording/clean-review-receipt-root.md",
             "docs/examples/formal-review-recording/material-finding-location-examples.md",
         ]
 
@@ -722,7 +724,24 @@ raise SystemExit({exit_code})
                 self.assertIn({"path": path, "category": "examples"}, payload["classified_paths"])
 
         self.assertNotIn("artifact_lifecycle.validate", selected_ids(payload))
+        self.assertNotIn("review_artifacts.validate", selected_ids(payload))
         self.assertEqual(payload["selected_checks"], [])
+
+    def test_retained_skill_validator_fixture_rationale_has_deterministic_routing(self) -> None:
+        path = "docs/changes/0001-skill-validator/README.md"
+
+        result = self.select([path])
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertEqual(payload["unclassified_paths"], [])
+        self.assertEqual(payload["blocking_results"], [])
+        self.assertIn({"path": path, "category": "retained-change-fixture"}, payload["classified_paths"])
+        self.assertIn("artifact_lifecycle.regression", selected_ids(payload))
+        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
+
+        lifecycle_check = next(check for check in payload["selected_checks"] if check["id"] == "artifact_lifecycle.validate")
+        self.assertEqual(lifecycle_check["paths"], [path])
 
     def test_selector_and_validation_script_paths_select_regressions(self) -> None:
         result = self.select(["scripts/select-validation.py", "scripts/validate-review-artifacts.py"])

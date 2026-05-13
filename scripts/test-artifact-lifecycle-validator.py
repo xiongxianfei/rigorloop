@@ -421,6 +421,45 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
 
         self.assertFalse(result.blocking_findings)
 
+    def test_docs_examples_formal_review_records_are_not_active_lifecycle_state(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="artifact-lifecycle-review-examples-"))
+        self.addCleanupTree(fixture_root)
+        review_like_example = fixture_root / "docs" / "examples" / "formal-review-recording" / "clean-review-receipt-root.md"
+        review_like_example.parent.mkdir(parents=True)
+        review_like_example.write_text(
+            """# Clean Review Receipt Root
+
+Review ID: spec-review-r1
+Stage: spec-review
+Round: 1
+Status: approved
+Recording status: recorded
+
+## Review Entries
+
+This is an example, not active lifecycle state.
+""",
+            encoding="utf-8",
+        )
+
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=["docs/examples/formal-review-recording/clean-review-receipt-root.md"],
+        )
+
+        self.assertFalse(result.blocking_findings)
+        self.assertEqual(result.checked_artifacts, [])
+
+    def test_retained_skill_validator_fixture_readme_documents_non_active_status(self) -> None:
+        fixture_readme = ROOT / "docs" / "changes" / "0001-skill-validator" / "README.md"
+        text = fixture_readme.read_text(encoding="utf-8")
+
+        self.assertIn("retained validator fixture", text)
+        self.assertIn("not an active change root", text)
+        self.assertIn("not the universal template", text)
+        self.assertIn("docs/examples/changes/skill-validator/", text)
+
     def test_dist_adapters_generated_output_path_is_rejected(self) -> None:
         fixture_root = copy_fixture("invalid-generated-source")
         self.addCleanupTree(fixture_root)

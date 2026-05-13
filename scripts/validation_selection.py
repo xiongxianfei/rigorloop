@@ -702,6 +702,20 @@ def _apply_path_selection(
         )
         return
 
+    if category == "retained-change-fixture":
+        _add_check(
+            selected,
+            "artifact_lifecycle.regression",
+            "Changed retained change fixture rationale requires lifecycle regression fixtures.",
+        )
+        _add_check(
+            selected,
+            "artifact_lifecycle.validate",
+            "Changed retained change fixture rationale requires lifecycle validation.",
+            path=path,
+        )
+        return
+
     if category == "validator-change-metadata":
         _add_check(
             selected,
@@ -948,6 +962,8 @@ def _path_category(path: str) -> str | None:
         return "token-cost"
     if path.startswith("docs/examples/"):
         return "examples"
+    if path == "docs/changes/0001-skill-validator/README.md":
+        return "retained-change-fixture"
     if path.startswith("docs/changes/") and len(parts) >= 4:
         if parts[3] == "change.yaml":
             return "change-metadata"
