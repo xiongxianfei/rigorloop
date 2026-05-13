@@ -4,7 +4,7 @@
 
 This record tracks material findings from formal lifecycle reviews for the public adapter artifact migration, examples relocation, and concise skill release change.
 
-Closeout status: closed
+Closeout status: open
 
 ## Resolution Entries
 
@@ -43,3 +43,23 @@ No material findings.
 ### code-review-m1-r1
 
 No material findings.
+
+### code-review-m2-r1
+
+Review closeout: open
+
+#### PAAM-M2-CR1
+
+Finding ID: PAAM-M2-CR1
+Disposition: needs-decision
+Status: unresolved
+Owner: implementation author
+Owning stage: implement M2 review-resolution
+Decision owner: implementation author
+Decision needed: Decide whether adapter artifact metadata must name the release commit under validation, or whether a reviewed release policy permits metadata to name a pre-metadata archive source commit.
+Stop state: M2 remains `resolution-needed`; do not proceed to M3 until this finding is resolved and M2 returns to code-review.
+Chosen action: pending owner decision
+Required outcome: Release validation must reject adapter artifact metadata whose `release.source_commit` does not match the release commit under validation, unless a reviewed release policy explicitly permits that mismatch.
+Safe resolution: Add direct validation for `release.source_commit` against the release commit input used by validation, add a negative regression test for source-commit mismatch, and either update the metadata to the accepted source commit model or record an approved policy exception if the metadata intentionally points to a pre-metadata archive source commit.
+Validation target: Source-commit mismatch regression fails before the fix, passes after the fix, and `python scripts/validate-release.py --version v0.1.2 --release-output-dir <release-output-dir>` rejects mismatched source commits.
+Validation evidence: pending

@@ -24,7 +24,7 @@ tests:
 review:
   status: clean
   unresolved_items: 0
-  reviewed_artifact: commit 49c0017 M1 implementation slice
+  reviewed_artifact: commit a4efaca M2 implementation slice
   review_log: docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/review-log.md
   review_resolution: docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/review-resolution.md
 validation:
@@ -180,6 +180,14 @@ validation:
     result: pass_after_implement_m2
   - command: git diff --check --
     result: pass_after_implement_m2
+  - command: code-review-m2-r1
+    result: changes_requested_PAAM-M2-CR1
+  - command: git rev-parse HEAD
+    result: a4efaca61f7c84a8f1fc7c2976bf7428a07e7d53
+  - command: docs/reports/adapter-artifacts/releases/v0.1.2.yaml source_commit inspection
+    result: source_commit_5514ef14ce5f310787f464ea78bd777838cb5537
+  - command: tmpdir=$(mktemp -d); python scripts/build-adapters.py --version v0.1.2 --output-dir "$tmpdir" >/dev/null; python scripts/validate-release.py --version v0.1.2 --release-output-dir "$tmpdir"
+    result: pass_despite_source_commit_mismatch
 changed_files:
   - docs/proposals/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md
   - specs/public-adapter-artifact-migration-examples-concise-skill-release.md
@@ -190,6 +198,7 @@ changed_files:
   - docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/review-resolution.md
   - docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/review-log.md
   - docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m1-r1.md
+  - docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/code-review-m2-r1.md
   - docs/changes/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release/reviews/plan-review-r2.md
   - scripts/adapter_distribution.py
   - scripts/build-adapters.py
