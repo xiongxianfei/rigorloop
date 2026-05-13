@@ -67,13 +67,13 @@ Validation and generated-output context:
 ## Current Handoff Summary
 
 - Current milestone: M2
-- Current milestone state: review-requested
-- Last reviewed milestone: M1
-- Review status: M2 code-review pending
-- Remaining in-scope implementation milestones: M2 pending code-review
-- Next stage: code-review M2
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2 code-review, final closeout, explain-change, verify, and PR handoff have not completed.
+- Current milestone state: closed
+- Last reviewed milestone: M2
+- Review status: M2 clean-with-notes
+- Remaining in-scope implementation milestones: none
+- Next stage: explain-change
+- Final closeout readiness: ready
+- Reason final closeout is or is not ready: all implementation milestones are closed; final closeout still needs explain-change, verify, and PR handoff.
 
 ## Milestones
 
@@ -129,7 +129,7 @@ Validation and generated-output context:
 
 ### M2. Validation alignment and lifecycle handoff
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Ensure repository validation and lifecycle artifacts prove the first-slice contract and prepare final closeout after implementation review.
 - Requirements: `R7`-`R9g`, `R12`-`R13a`
 - Files/components likely touched:
@@ -221,6 +221,7 @@ Final verification before PR should include:
 - 2026-05-13: M1 code-review passed with `clean-with-notes`; M1 is closed and M2 is the next implementation milestone.
 - 2026-05-13: M2 implementation started; validation alignment is being checked without introducing `docs/follow-ups.md` or register-specific validators because no qualifying register item exists.
 - 2026-05-13: M2 implementation completed; validation alignment is recorded, optional register validation remains unintroduced because no register exists, and M2 is ready for code-review.
+- 2026-05-13: M2 code-review passed with `clean-with-notes`; all implementation milestones are closed and final closeout starts with `explain-change`.
 
 ## Decision log
 

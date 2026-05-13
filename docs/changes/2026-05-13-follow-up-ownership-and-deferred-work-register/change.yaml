@@ -74,6 +74,8 @@ validation:
     result: failed_non_applicable_stale_tracked_adapter_tree_check
   - command: M2 python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives
     result: passed
+  - command: code-review-m2-r1
+    result: clean-with-notes_no_material_findings
 changed_files:
   - docs/workflows.md
   - docs/proposals/2026-05-13-follow-up-ownership-and-deferred-work-register.md
@@ -91,3 +93,4 @@ changed_files:
   - docs/changes/2026-05-13-follow-up-ownership-and-deferred-work-register/reviews/spec-review-r1.md
   - docs/changes/2026-05-13-follow-up-ownership-and-deferred-work-register/reviews/plan-review-r1.md
   - docs/changes/2026-05-13-follow-up-ownership-and-deferred-work-register/reviews/code-review-m1-r1.md
+  - docs/changes/2026-05-13-follow-up-ownership-and-deferred-work-register/reviews/code-review-m2-r1.md
