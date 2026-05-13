@@ -12,7 +12,7 @@ Branch-ready for PR handoff.
 
 The implementation, tests, release evidence, token-cost reports, review records, lifecycle artifacts, and durable explanation agree. No verification blockers remain for the tracked change pack.
 
-One unrelated untracked file remains outside this change: `docs/learn/sessions/2026-05-13-release-version-gate.md`.
+After verify, the maintainer asked to include the related learn session `docs/learn/sessions/2026-05-13-release-version-gate.md`. It is committed as a separate learn artifact, selector-classified as `learn-artifact`, and selected no additional blocking checks.
 
 ## Traceability
 
@@ -81,7 +81,7 @@ Local CI/release readiness is covered by repository-owned validation:
 - Hosted CI has not been observed.
 - Token-cost runtime evidence uses the approved dry-run path because live local Codex execution stalled.
 - Static token-cost warnings for `workflow` and `code-review` remain warning-only follow-up work.
-- The unrelated untracked learn session `docs/learn/sessions/2026-05-13-release-version-gate.md` remains outside this change pack.
+- The related learn session `docs/learn/sessions/2026-05-13-release-version-gate.md` is included as a separate lesson artifact about release version gates.
 
 ## Handoff
 

@@ -141,6 +141,10 @@ validation:
     result: pass_verify
   - command: verify
     result: branch_ready_for_pr
+  - command: python scripts/select-validation.py --mode explicit --path docs/learn/sessions/2026-05-13-release-version-gate.md
+    result: pass_learn_artifact_selected_no_checks
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/learn/sessions/2026-05-13-release-version-gate.md
+    result: pass_no_lifecycle_files_applicable
   - command: code-review-m2-r1
     result: clean_with_notes_M2_closed
   - command: code-review-m1-r2
@@ -210,3 +214,4 @@ changed_files:
   - docs/reports/token-cost/releases/v0.1.3.md
   - docs/reports/token-cost/releases/v0.1.3.yaml
   - docs/reports/token-cost/runs/v0.1.3/
+  - docs/learn/sessions/2026-05-13-release-version-gate.md
