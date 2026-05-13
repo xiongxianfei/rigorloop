@@ -219,6 +219,10 @@ validation:
     result: pass_retained_fixture_readme_explicit_lifecycle_validation
   - command: python scripts/validate-change-metadata.py docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/change.yaml
     result: pass_valid_change_metadata_after_pr_ci_fix
+  - command: bash scripts/ci.sh --mode pr --base 6a382394d05c16b5cb879806e5d36fd9bb450fb9 --head HEAD --timeout 240
+    result: pass_selected_pr_mode_checks_after_retained_fixture_selector_routing_fix
+  - command: hosted ci for PR #50
+    result: pass_on_commit_3f28660_after_retained_fixture_selector_routing_fix
   - command: python scripts/validate-change-metadata.py docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/change.yaml
     result: pass_valid_change_metadata_after_plan
   - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording
