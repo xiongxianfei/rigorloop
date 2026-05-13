@@ -43,6 +43,10 @@ fi
 if [[ -n "$cleanup_release_output_dir" ]]; then
   trap 'rm -rf "$cleanup_release_output_dir"' EXIT
 fi
+release_commit="${RELEASE_COMMIT:-}"
+if [[ "$release_version" == "v0.1.2" && -z "$release_commit" ]]; then
+  release_commit="$(git rev-parse HEAD)"
+fi
 SEEN_COMMANDS=()
 SEEN_LABELS=()
 REQUIRED_CHECK_COMMANDS=(
@@ -55,7 +59,7 @@ REQUIRED_CHECK_COMMANDS=(
 if [[ "$release_version" == "v0.1.2" ]]; then
   REQUIRED_CHECK_COMMANDS+=(
     "python scripts/build-adapters.py --version ${release_version} --output-dir ${release_output_dir}"
-    "python scripts/validate-release.py --version ${release_version} --release-output-dir ${release_output_dir}"
+    "python scripts/validate-release.py --version ${release_version} --release-output-dir ${release_output_dir} --release-commit ${release_commit}"
   )
 else
   REQUIRED_CHECK_COMMANDS+=(
@@ -169,7 +173,7 @@ fi
 
 if [[ "$release_version" == "v0.1.2" ]]; then
   run_check "Validate release metadata, adapter artifacts, smoke rules, notes, and security" \
-    python scripts/validate-release.py --version "$release_version" --release-output-dir "$release_output_dir"
+    python scripts/validate-release.py --version "$release_version" --release-output-dir "$release_output_dir" --release-commit "$release_commit"
 else
   run_check "Validate release metadata, smoke rules, notes, and security" \
     python scripts/validate-release.py --version "$release_version"

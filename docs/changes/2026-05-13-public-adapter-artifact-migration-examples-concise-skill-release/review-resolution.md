@@ -4,7 +4,8 @@
 
 This record tracks material findings from formal lifecycle reviews for the public adapter artifact migration, examples relocation, and concise skill release change.
 
-Closeout status: open
+Closeout status: closed
+Review closeout: code-review-m2-r1
 
 ## Resolution Entries
 
@@ -46,20 +47,18 @@ No material findings.
 
 ### code-review-m2-r1
 
-Review closeout: open
+Review closeout: closed
 
 #### PAAM-M2-CR1
 
 Finding ID: PAAM-M2-CR1
-Disposition: needs-decision
-Status: unresolved
+Disposition: accepted
+Status: resolved
 Owner: implementation author
 Owning stage: implement M2 review-resolution
-Decision owner: implementation author
-Decision needed: Decide whether adapter artifact metadata must name the release commit under validation, or whether a reviewed release policy permits metadata to name a pre-metadata archive source commit.
-Stop state: M2 remains `resolution-needed`; do not proceed to M3 until this finding is resolved and M2 returns to code-review.
-Chosen action: pending owner decision
+Chosen action: Added direct release-source commit validation to adapter artifact metadata validation, exposed `--release-commit` on `scripts/validate-release.py`, passed the release commit through `scripts/release-verify.sh`, and added a negative regression test for source-commit mismatch. Recorded the approved `v0.1.2` policy exception that `release.source_commit` names the archive source commit `5514ef14ce5f310787f464ea78bd777838cb5537` rather than the later commit that tracks the metadata evidence.
+Rationale: The archived adapter payload is generated from a source commit that necessarily predates the tracked metadata file describing the archive checksums. Direct validation now compares metadata with the release/source commit input supplied to validation, so mismatches fail unless validation intentionally uses the approved archive-source commit for this release.
 Required outcome: Release validation must reject adapter artifact metadata whose `release.source_commit` does not match the release commit under validation, unless a reviewed release policy explicitly permits that mismatch.
 Safe resolution: Add direct validation for `release.source_commit` against the release commit input used by validation, add a negative regression test for source-commit mismatch, and either update the metadata to the accepted source commit model or record an approved policy exception if the metadata intentionally points to a pre-metadata archive source commit.
-Validation target: Source-commit mismatch regression fails before the fix, passes after the fix, and `python scripts/validate-release.py --version v0.1.2 --release-output-dir <release-output-dir>` rejects mismatched source commits.
-Validation evidence: pending
+Validation target: Source-commit mismatch regression fails before the fix, passes after the fix, and `python scripts/validate-release.py --version v0.1.2 --release-output-dir <release-output-dir> --release-commit <source-commit>` rejects mismatched source commits.
+Validation evidence: `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_artifact_metadata_validation_accepts_schema_and_optional_combined AdapterDistributionTests.test_adapter_artifact_metadata_validation_rejects_bad_results_checksums_and_source_commit_mismatch AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata AdapterDistributionTests.test_validate_release_cli_passes_changed_surface_inputs AdapterDistributionTests.test_release_verify_script_supports_v0_1_2_archive_metadata_gate` initially failed before CLI and release-gate plumbing, then passed after the fix.

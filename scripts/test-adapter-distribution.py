@@ -600,11 +600,12 @@ release_gate:
                 "v0.1.2",
                 output_dir,
                 metadata_root=metadata_root,
+                release_commit="0123456789abcdef0123456789abcdef01234567",
             )
 
             self.assertEqual([], errors)
 
-    def test_adapter_artifact_metadata_validation_rejects_bad_results_and_checksums(self) -> None:
+    def test_adapter_artifact_metadata_validation_rejects_bad_results_checksums_and_source_commit_mismatch(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             self.copy_fixture_skills(root, ("portable-basic",))
@@ -620,6 +621,7 @@ release_gate:
                 "v0.1.2",
                 output_dir,
                 metadata_root=metadata_root,
+                release_commit="0123456789abcdef0123456789abcdef01234567",
             )
 
             self.assertTrue(any("artifact codex result must be pass" in error for error in errors), errors)
@@ -639,9 +641,26 @@ release_gate:
                 "v0.1.2",
                 output_dir,
                 metadata_root=metadata_root,
+                release_commit="0123456789abcdef0123456789abcdef01234567",
             )
 
             self.assertTrue(any("sha256 mismatch: claude" in error for error in errors), errors)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.copy_fixture_skills(root, ("portable-basic",))
+            output_dir = root / "release-output"
+            build_adapter_archives("v0.1.2", output_dir, skills_root=root / "skills")
+            metadata_root = self.write_adapter_artifact_metadata(root, output_dir).parent
+
+            errors = validate_adapter_artifact_metadata(
+                "v0.1.2",
+                output_dir,
+                metadata_root=metadata_root,
+                release_commit="fedcba9876543210fedcba9876543210fedcba98",
+            )
+
+            self.assertTrue(any("release.source_commit mismatch" in error for error in errors), errors)
 
     def test_v0_1_2_release_validation_checks_archives_and_artifact_metadata(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -674,6 +693,7 @@ release_gate:
                 release_root=release_root,
                 release_output_dir=release_output_dir,
                 adapter_artifact_report_root=adapter_artifact_root,
+                release_commit="0123456789abcdef0123456789abcdef01234567",
             )
 
             self.assertEqual([], errors)
@@ -686,6 +706,7 @@ release_gate:
                 release_root=release_root,
                 release_output_dir=release_output_dir,
                 adapter_artifact_report_root=adapter_artifact_root,
+                release_commit="0123456789abcdef0123456789abcdef01234567",
             )
 
             self.assertTrue(any("missing adapter artifact metadata" in error for error in errors), errors)
@@ -2205,10 +2226,17 @@ release_gate:
             handle.flush()
             captured: dict[str, object] = {}
 
-            def fake_validate_release_output(version: str, *, changed_paths=(), release_output_dir=None):
+            def fake_validate_release_output(
+                version: str,
+                *,
+                changed_paths=(),
+                release_output_dir=None,
+                release_commit=None,
+            ):
                 captured["version"] = version
                 captured["changed_paths"] = changed_paths
                 captured["release_output_dir"] = release_output_dir
+                captured["release_commit"] = release_commit
                 return [
                     "token-cost report validation failed: dynamic_runtime.runs: "
                     "missing required benchmark architecture-review"
@@ -2225,6 +2253,8 @@ release_gate:
                         handle.name,
                         "--release-output-dir",
                         "release-output",
+                        "--release-commit",
+                        "0123456789abcdef0123456789abcdef01234567",
                     ]
                 )
 
@@ -2239,6 +2269,7 @@ release_gate:
             ),
         )
         self.assertEqual(Path("release-output"), captured["release_output_dir"])
+        self.assertEqual("0123456789abcdef0123456789abcdef01234567", captured["release_commit"])
 
     def test_generated_adapter_changed_path_requires_missing_benchmark_through_release_validation(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -2555,7 +2586,11 @@ release_gate:
             capture_output=True,
             text=True,
             cwd=ROOT,
-            env={"RELEASE_VERIFY_DRY_RUN": "1", "RELEASE_OUTPUT_DIR": "release-output"},
+            env={
+                "RELEASE_VERIFY_DRY_RUN": "1",
+                "RELEASE_OUTPUT_DIR": "release-output",
+                "RELEASE_COMMIT": "0123456789abcdef0123456789abcdef01234567",
+            },
         )
 
         self.assertEqual(
@@ -2569,7 +2604,7 @@ release_gate:
             result.stdout,
         )
         self.assertIn(
-            "python scripts/validate-release.py --version v0.1.2 --release-output-dir release-output",
+            "python scripts/validate-release.py --version v0.1.2 --release-output-dir release-output --release-commit 0123456789abcdef0123456789abcdef01234567",
             result.stdout,
         )
 

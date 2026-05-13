@@ -2044,6 +2044,7 @@ def validate_adapter_artifact_metadata(
     release_output_dir: Path,
     *,
     metadata_root: Path = ADAPTER_ARTIFACT_REPORT_ROOT,
+    release_commit: str | None = None,
 ) -> list[str]:
     """Validate adapter artifact metadata and checksum evidence for one release."""
 
@@ -2063,6 +2064,11 @@ def validate_adapter_artifact_metadata(
         errors.append(f"{metadata_path}: release.version mismatch: expected {version}, found {metadata.version}")
     if not re.fullmatch(r"[0-9a-f]{7,40}", metadata.source_commit):
         errors.append(f"{metadata_path}: release.source_commit must be a git SHA")
+    elif release_commit is not None and metadata.source_commit != release_commit:
+        errors.append(
+            f"{metadata_path}: release.source_commit mismatch: "
+            f"expected {release_commit}, found {metadata.source_commit}"
+        )
     if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", metadata.date):
         errors.append(f"{metadata_path}: release.date must use YYYY-MM-DD")
     if not metadata.generator_command:
@@ -2648,6 +2654,7 @@ def validate_release_output(
     release_output_dir: Path | None = None,
     release_root: Path = RELEASE_ROOT,
     adapter_artifact_report_root: Path = ADAPTER_ARTIFACT_REPORT_ROOT,
+    release_commit: str | None = None,
     token_cost_report_root: Path = TOKEN_COST_REPORT_ROOT,
     token_cost_validator: Path = TOKEN_COST_VALIDATOR,
     changed_paths: Iterable[str | Path] | None = None,
@@ -2805,6 +2812,7 @@ def validate_release_output(
                 version,
                 release_output_dir,
                 metadata_root=adapter_artifact_report_root,
+                release_commit=release_commit,
             )
         errors.extend(adapter_archive_errors)
         errors.extend(adapter_artifact_metadata_errors)
