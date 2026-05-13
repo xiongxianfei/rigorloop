@@ -98,13 +98,13 @@ The token-cost `--skill-source` value must point to generated public adapter rel
 ## Current Handoff Summary
 
 - Current milestone: M4. Release verification and lifecycle closeout
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M3
-- Review status: code-review-m3-r2 completed clean-with-notes; M3 is closed
+- Review status: M4 implementation complete; awaiting code-review
 - Remaining in-scope implementation milestones: M4
-- Next stage: implement M4
+- Next stage: code-review M4
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M4 is not implemented, explain-change and verify are missing, and PR/release handoff is not prepared.
+- Reason final closeout is or is not ready: M4 code-review is pending, explain-change and verify are missing, and PR/release handoff is not prepared.
 
 ## Milestones
 
@@ -249,7 +249,7 @@ The token-cost `--skill-source` value must point to generated public adapter rel
 
 ### M4. Release verification and lifecycle closeout
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Prove the full `v0.1.3` release gate locally and prepare downstream closeout without claiming publication prematurely.
 - Requirements: all acceptance criteria, especially R50-R51.
 - Files/components likely touched:
@@ -343,7 +343,9 @@ bash scripts/release-verify.sh v0.1.3
 - [x] M3 rerun review completed.
 
 Review result: `code-review-m3-r2` completed clean-with-notes; M3 is closed and hands off to M4.
-- [ ] M4 release verification closeout completed.
+- [x] M4 release verification closeout completed.
+
+Implementation result: `bash scripts/release-verify.sh v0.1.3` and planned lifecycle validation passed; M4 is ready for code-review.
 - [ ] explain-change recorded.
 - [ ] verify passed.
 - [ ] PR handoff completed.
@@ -402,6 +404,11 @@ Review result: `code-review-m3-r2` completed clean-with-notes; M3 is closed and 
 - 2026-05-13: Maintainer reported manual smoke passed for all v0.1.3 adapter archives; release metadata smoke evidence updated.
 - 2026-05-13: `RELEASE_OUTPUT_DIR=/tmp/rigorloop-v013-release-output bash scripts/release-verify.sh v0.1.3` passed after manual smoke evidence was recorded. The adapter distribution suite emitted an expected negative-fixture token-cost validation message while still completing `OK`.
 - 2026-05-13: `code-review-m3-r2` completed clean-with-notes after the smoke evidence fix. M3 is closed; next stage is `implement M4`.
+- 2026-05-13: `bash scripts/release-verify.sh v0.1.3` passed. The adapter distribution suite emitted an expected negative-fixture token-cost validation message while still completing `OK`; release verification passed for `v0.1.3`.
+- 2026-05-13: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies` passed.
+- 2026-05-13: `python scripts/validate-change-metadata.py docs/changes/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies/change.yaml` passed.
+- 2026-05-13: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies.md --path specs/stop-tracking-generated-public-adapter-skill-bodies.md --path specs/stop-tracking-generated-public-adapter-skill-bodies.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260513-v0-1-3-adapter-release-archive-install-surface.md --path docs/plans/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies.md` passed.
+- 2026-05-13: `git diff --check --` passed.
 - 2026-05-13: `python scripts/test-select-validation.py` passed: 59 tests.
 - 2026-05-13: `python scripts/select-validation.py --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path dist/adapters/README.md --path dist/adapters/manifest.yaml` passed with status `ok` and selected adapter, lifecycle, and selector checks.
 - 2026-05-13: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path AGENTS.md --path CONSTITUTION.md --path docs/workflows.md` passed.
