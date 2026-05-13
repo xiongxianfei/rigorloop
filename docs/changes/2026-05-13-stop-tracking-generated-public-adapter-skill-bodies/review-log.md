@@ -97,3 +97,17 @@ Resolution: review-resolution.md#code-review-m1-r1
 Material findings: CR-M1-1
 Open findings: None
 Recording status: recorded
+
+### Review entry
+Review ID: code-review-m1-r2
+Stage: code-review
+Round: 2
+Reviewed artifact: commits 4503926f08627dab6de9a4a238c9ea6a1d23ca9b and 70a5440ca6aeea08cbbccc852b6ff68b574954cd
+Reviewed milestone: M1. Validation model migration and regression tests
+Status: clean-with-notes
+Detailed record: reviews/code-review-m1-r2.md
+Record: reviews/code-review-m1-r2.md
+Resolution: review-resolution.md#code-review-m1-r2
+Material findings: None
+Open findings: None
+Recording status: recorded
