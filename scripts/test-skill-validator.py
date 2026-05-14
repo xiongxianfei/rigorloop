@@ -2395,6 +2395,70 @@ and result format.
             with self.subTest(skill=skill_name, forbidden="full workflow sequence"):
                 self.assertNotIn("Default evidence sequence for path or state discovery:", body)
 
+    def test_stage_evidence_access_contract_guidance(self) -> None:
+        workflows = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
+        evidence = extract_markdown_block(workflows, "Stage Evidence Access")
+
+        required_terms = [
+            "Default evidence",
+            "Conditional evidence",
+            "Expansion evidence",
+            "bounded discovery",
+            "path inventory, heading scan, line-number search, count query, targeted diff summary, and metadata lookup",
+            "substantive content outside its default evidence and triggered conditional evidence",
+            "Only include `Evidence expansion` when expansion occurred.",
+            "Do not broad-search authoritative documents solely for path or state discovery",
+            "A stage must expand when bounded evidence is missing, stale, contradictory, or insufficient",
+            "Full-file reads remain allowed",
+            "M1 validation covers `docs/workflows.md`, `skills/proposal/SKILL.md`, and `skills/proposal-review/SKILL.md`",
+            "include `skills/spec/SKILL.md` only when M1 updates `spec`",
+            "M2 validation separately covers `skills/implement/SKILL.md` and `skills/code-review/SKILL.md` when M2 runs",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, evidence)
+
+    def test_stage_evidence_access_proposal_side_skills(self) -> None:
+        skill_terms = {
+            "proposal": [
+                "## Evidence access",
+                "Default evidence:",
+                "user request",
+                "`VISION.md` when proposal fit matters",
+                "`CONSTITUTION.md` for governance, source-of-truth, workflow, or release-policy changes",
+                "related proposal only when superseding or extending it",
+                "Conditional evidence:",
+                "`docs/project-map.md` when architecture or repository orientation matters",
+                "existing specs or ADRs when the proposal changes their direction",
+                "`docs/workflows.md` when artifact placement or workflow routing matters",
+                "code only when current behavior is part of the decision",
+                "Record a compact reason only when reading substantive evidence outside the default and triggered conditional set.",
+            ],
+            "proposal-review": [
+                "## Evidence access",
+                "Default evidence:",
+                "proposal under review",
+                "user's original request or initial intent",
+                "`VISION.md` or `CONSTITUTION.md` when standing gates or vision fit matter",
+                "Conditional evidence:",
+                "linked specs, ADRs, plans, or learn sessions when the proposal relies on them",
+                "`docs/workflows.md` when workflow behavior or artifact placement is proposed",
+                "code only when the proposal depends on current implementation reality",
+                "Record a compact reason only when reading substantive evidence outside the default and triggered conditional set.",
+            ],
+        }
+
+        for skill_name, required_terms in skill_terms.items():
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            for term in required_terms:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, body)
+
+            with self.subTest(skill=skill_name, term="bounded discovery"):
+                self.assertIn("Bounded discovery is not evidence expansion.", body)
+            with self.subTest(skill=skill_name, term="full-file read"):
+                self.assertIn("full-file", body)
+
     def test_cost_bounded_rigor_m2_selected_skill_reminders(self) -> None:
         selected_skills = {
             "proposal": (ROOT / "skills" / "proposal" / "SKILL.md").read_text(encoding="utf-8"),
