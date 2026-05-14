@@ -6,6 +6,7 @@
 | proposal-review-r3 | proposal-review | 3 | `docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md` | `reviews/proposal-review-r3.md` | approved | 0 | recorded |
 | spec-review-r2 | spec-review | 2 | `specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md` | `reviews/spec-review-r2.md` | approved | 0 | recorded |
 | plan-review-r1 | plan-review | 1 | `docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md` | `reviews/plan-review-r1.md` | approved | 0 | recorded |
+| code-review-r1 | code-review | 1 | `dc59864bdc4f36a248be573c551b553c501dd0d6` / M1 implementation | `reviews/code-review-r1.md` | clean-with-notes | 0 | recorded |
 
 ### Review entry
 Review ID: proposal-review-r2
