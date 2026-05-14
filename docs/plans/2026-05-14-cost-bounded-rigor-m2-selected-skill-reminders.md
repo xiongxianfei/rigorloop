@@ -86,9 +86,9 @@ Planning basis:
 - Last reviewed milestone: M1 selected skill reminder audit and implementation, reviewed by `code-review-m1-r4`
 - Review status: `code-review-m1-r4` completed clean-with-notes after current-branch review
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 implementation, review-resolution, code-review, and explain-change are closed, but verify and PR are not complete.
+- Next stage: pr
+- Final closeout readiness: ready for PR handoff, not final Done
+- Reason final closeout is or is not ready: M1 implementation, review-resolution, code-review, explain-change, and local final verify are closed. The branch is ready for PR handoff, but the PR stage is not complete and hosted CI has not been observed.
 
 ## Milestones
 
@@ -261,6 +261,7 @@ Implementation validation is listed in M1 and recorded below after the focused M
 - 2026-05-14: `code-review-m1-r3` completed clean-with-notes after the targeted fix; M1 is closed and next stage is `explain-change`.
 - 2026-05-14: Direct current-branch `code-review-m1-r4` completed clean-with-notes; M1 remains closed and next stage remains `explain-change`.
 - 2026-05-14: Explain-change recorded at `docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/explain-change.md`; next stage is `verify`.
+- 2026-05-14: Final local verify passed over the full changed artifact set, including selected CI, closeout-mode review validation, direct skill-validator proof, diagnostic static skill token measurement, and `git diff --check --`; branch is ready for PR handoff and next stage is `pr`.
 
 ## Decision log
 
@@ -292,12 +293,14 @@ Implementation validation is listed in M1 and recorded below after the focused M
 - 2026-05-14: Rerun code-review recording validation passed for `code-review-m1-r3`; closeout-mode review-artifact validation, selected CI, and `git diff --check --` passed for the updated clean review state.
 - 2026-05-14: Direct current-branch code-review recording validation passed for `code-review-m1-r4`; closeout-mode review-artifact validation, selected CI, and `git diff --check --` passed for the updated review state.
 - 2026-05-14: Explain-change validation passed after creating the durable explanation artifact; selected CI, review-artifact closeout validation, and `git diff --check --` passed for the updated explain-change, plan, change metadata, and review surfaces.
+- 2026-05-14: Final verify selected CI passed over the full changed artifact set. Selected check IDs were `skills.validate`, `skills.regression`, `skills.generation_regression`, `skills.drift`, `adapters.drift`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+- 2026-05-14: Final verify support checks passed: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders`, `python scripts/test-skill-validator.py` (81 tests), `python scripts/measure-skill-tokens.py` (23 skills, total estimated tokens 57587, `workflow/SKILL.md` estimated tokens 5296), and `git diff --check --`. Hosted CI was not observed.
 
 ## Outcome and retrospective
 
-- Pending.
+- Branch-ready for PR handoff after local final verify. The PR stage and hosted CI observation remain outside this verify result.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `verify`, not final closeout.
+- Ready for `pr`, not final lifecycle Done.
