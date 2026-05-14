@@ -113,6 +113,29 @@ Notes:
 - When normal output omits detail, it must say how to request the omitted detail.
 - A full-file read is required when the file itself is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on understanding the whole source-of-truth artifact.
 
+## Stage Evidence Access
+
+Stage skills should start from the smallest sufficient evidence set needed to prove their owned claim.
+
+- Default evidence: read first without extra explanation because the stage normally needs it.
+- Conditional evidence: read only when the named trigger applies.
+- Expansion evidence: substantive content outside its default evidence and triggered conditional evidence.
+- Broad or full-file evidence: read only when bounded evidence cannot answer the stage-owned question.
+
+Bounded discovery is not evidence expansion. Bounded discovery includes path inventory, heading scan, line-number search, count query, targeted diff summary, and metadata lookup.
+
+Evidence expansion begins when a stage reads substantive content outside its default evidence and triggered conditional evidence. Record a compact reason when that happens. Only include `Evidence expansion` when expansion occurred.
+
+Do not broad-search authoritative documents solely for path or state discovery when bounded discovery can answer the question. Use active artifacts, `docs/workflows.md`, headings, stable IDs, counts, targeted excerpts, and diffs before broad reads.
+
+A stage must expand when bounded evidence is missing, stale, contradictory, or insufficient for the stage-owned claim. Full-file reads remain allowed when the whole file is the target, the relevant section cannot be isolated safely, bounded evidence is contradictory or incomplete, surrounding context can change the conclusion, or the decision depends on whole-file context.
+
+First-slice ownership:
+
+- M1 validation covers `docs/workflows.md`, `skills/proposal/SKILL.md`, and `skills/proposal-review/SKILL.md`; include `skills/spec/SKILL.md` only when M1 updates `spec`.
+- M2 validation separately covers `skills/implement/SKILL.md` and `skills/code-review/SKILL.md` when M2 runs.
+- The first slice is operational guidance. It does not create a new normative spec unless validators enforce the contract.
+
 ## Workflow Detail Ownership
 
 The public `workflow` skill should route and assess state. Long-form workflow explanation belongs here, the workflow spec, or the owning stage skill.
