@@ -1,0 +1,228 @@
+change_id: 2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through
+title: Cost-bounded rigor M5 progressive-loading follow-through
+classification: workflow-governance-spec
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md
+  spec: specs/cost-bounded-rigor-m5-progressive-loading-follow-through.md
+  plan: docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md
+  test_spec: specs/cost-bounded-rigor-m5-progressive-loading-follow-through.test.md
+  explain_change: docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/explain-change.md
+requirements:
+  - Record merged M4 plan state after PR #57.
+  - Create focused M5 progressive-loading follow-through spec before spec-review.
+  - Treat completed progressive-loading work as baseline instead of reopening the full optimization proposal.
+  - Keep M5 limited to audit, no-change rationale, and minimal alignment for workflow, implement, and code-review.
+  - Preserve safety-critical review, verification, material-finding, release, and milestone-handoff guidance.
+  - Preserve single-authored skill source, follow-up ownership, and docs/workflows.md ownership boundaries.
+  - Avoid release, adapter, generated-output, selector, broad-smoke, benchmark-suite, token-report-schema, dynamic-benchmark, and hard-token-gate expansion unless a later accepted artifact scopes it.
+  - Record clean spec-review before downstream plan reliance.
+  - Normalize the approved M5 spec status before downstream plan reliance.
+  - Create an active M5 plan before plan-review.
+  - Register the active M5 plan in docs/plan.md.
+  - Record clean plan-review before test-spec authoring.
+  - Create active M5 test spec before implementation.
+  - Keep implementation blocked until maintainer approves the active M5 test spec.
+  - Record maintainer approval of the active M5 test spec before implementation.
+  - Audit workflow, implement, and code-review before M5 skill or proof edits.
+  - Record no-change rationale for high-cost skills and unaffected out-of-scope surfaces when no M5 gap is found.
+  - Keep M1 implementation blocked from final closeout until code-review runs.
+  - Record clean M1 code-review before explain-change.
+  - Record durable explain-change rationale before verify.
+  - Run final local verify before PR handoff.
+  - Open PR for human review and record the PR handoff state.
+tests:
+  - M4 plan lifecycle state validation.
+  - M5 spec artifact lifecycle validation.
+  - Change metadata validation.
+  - Accepted proposal follow-on artifact validation.
+  - Selected CI for changed lifecycle and spec paths.
+  - Clean spec-review receipt and review-log validation.
+  - M5 plan artifact lifecycle validation.
+  - Plan index validation.
+  - Clean plan-review receipt and review-log validation.
+  - M5 test spec artifact lifecycle validation.
+  - M5 test spec approval validation.
+  - M1 high-cost skill audit and no-change rationale validation.
+  - Progressive-loading skill-validator proof.
+  - M1 selected validation and selected CI.
+  - Clean M1 code-review receipt and review-log validation.
+  - Explain-change lifecycle and change metadata validation.
+  - Final local verify selected CI and branch-ready validation.
+  - PR handoff lifecycle state-sync validation.
+validation:
+  - command: spec
+    result: draft_m5_progressive_loading_follow_through_spec_created_ready_for_spec_review
+  - command: python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-m4-lifecycle-token-cost-summary.md --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
+    result: pass_selected_artifact_lifecycle_and_change_metadata_checks
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-m4-lifecycle-token-cost-summary.md --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-m4-lifecycle-token-cost-summary.md --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
+    result: pass_selected_ci_artifact_lifecycle_and_change_metadata
+  - command: git diff --check --
+    result: pass
+  - command: spec-review-r1
+    result: approved_no_material_findings_ready_for_spec_status_normalization
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/reviews/spec-review-r1.md --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_and_change_metadata_checks_after_spec_review_recording
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through
+    result: pass_after_spec_review_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
+    result: pass_after_spec_review_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/reviews/spec-review-r1.md
+    result: pass_after_spec_review_recording
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/reviews/spec-review-r1.md --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.md
+    result: pass_selected_ci_after_spec_review_recording
+  - command: git diff --check --
+    result: pass_after_spec_review_recording
+  - command: plan
+    result: approved_spec_status_normalized_and_active_m5_plan_created_ready_for_plan_review
+  - command: python scripts/select-validation.py --mode explicit --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/plan.md --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/reviews/spec-review-r1.md
+    result: pass_selected_review_artifact_lifecycle_and_change_metadata_checks_after_plan_creation
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through
+    result: pass_after_plan_creation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
+    result: pass_after_plan_creation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/plan.md --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/reviews/spec-review-r1.md
+    result: pass_after_plan_creation
+  - command: bash scripts/ci.sh --mode explicit --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/plan.md --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/reviews/spec-review-r1.md
+    result: pass_selected_ci_after_plan_creation
+  - command: git diff --check --
+    result: pass_after_plan_creation
+  - command: plan-review-r1
+    result: approved_no_material_findings_ready_for_test_spec
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/reviews/plan-review-r1.md --path docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/plan.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_and_change_metadata_checks_after_plan_review_recording
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through
+    result: pass_after_plan_review_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
+    result: pass_after_plan_review_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/reviews/plan-review-r1.md --path docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/plan.md
+    result: pass_after_plan_review_recording
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/reviews/plan-review-r1.md --path docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/plan.md
+    result: pass_selected_ci_after_plan_review_recording
+  - command: git diff --check --
+    result: pass_after_plan_review_recording
+  - command: test-spec
+    result: active_m5_progressive_loading_follow_through_test_spec_created_pending_maintainer_approval
+  - command: python scripts/select-validation.py --mode explicit --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.md --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.test.md --path docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/plan.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
+    result: pass_selected_artifact_lifecycle_and_change_metadata_checks_after_test_spec_creation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
+    result: pass_after_test_spec_creation
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through
+    result: pass_after_test_spec_creation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.md --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.test.md --path docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/plan.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
+    result: pass_after_test_spec_creation
+  - command: bash scripts/ci.sh --mode explicit --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.md --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.test.md --path docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/plan.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
+    result: pass_selected_ci_after_test_spec_creation
+  - command: git diff --check --
+    result: pass_after_test_spec_creation
+  - command: test-spec approval
+    result: direct_maintainer_approval_recorded_ready_for_implementation
+  - command: python scripts/select-validation.py --mode explicit --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.md --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.test.md --path docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/plan.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
+    result: pass_selected_artifact_lifecycle_and_change_metadata_checks_after_test_spec_approval
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
+    result: pass_after_test_spec_approval
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.md --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.test.md --path docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/plan.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
+    result: pass_after_test_spec_approval
+  - command: bash scripts/ci.sh --mode explicit --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.md --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.test.md --path docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/plan.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
+    result: pass_selected_ci_after_test_spec_approval
+  - command: git diff --check --
+    result: pass_after_test_spec_approval
+  - command: python scripts/test-skill-validator.py
+    result: pass_m1_proof_first_audit_81_tests_no_skill_or_validator_gap
+  - command: python scripts/select-validation.py --mode explicit --path skills/workflow/SKILL.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/plan.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
+    result: pass_m1_selected_skills_lifecycle_and_change_metadata_checks_broad_smoke_false
+  - command: bash scripts/ci.sh --mode explicit --path skills/workflow/SKILL.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/plan.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
+    result: pass_m1_selected_ci_skills_lifecycle_change_metadata_and_adapter_archive_smoke_broad_smoke_false
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
+    result: pass_after_m1_implementation
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through
+    result: pass_after_m1_implementation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.md --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.test.md --path docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/plan.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml --path skills/workflow/SKILL.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md
+    result: pass_after_m1_implementation
+  - command: git diff --check --
+    result: pass_after_m1_implementation
+  - command: code-review-m1-r1
+    result: clean_with_notes_no_material_findings_m1_closed_ready_for_explain_change
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/reviews/code-review-m1-r1.md --path docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/plan.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_and_change_metadata_checks_after_code_review_recording
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through
+    result: pass_after_code_review_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
+    result: pass_after_code_review_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/reviews/code-review-m1-r1.md --path docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/plan.md
+    result: pass_after_code_review_recording
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/reviews/code-review-m1-r1.md --path docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/plan.md
+    result: pass_selected_ci_after_code_review_recording
+  - command: git diff --check --
+    result: pass_after_code_review_recording
+  - command: explain-change
+    result: durable_explain_change_recorded_next_stage_verify
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/reviews/code-review-m1-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/explain-change.md --path docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/plan.md
+    result: pass_selected_review_artifacts_artifact_lifecycle_and_change_metadata_checks_after_explain_change
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through
+    result: pass_after_explain_change
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
+    result: pass_after_explain_change
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/reviews/code-review-m1-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/explain-change.md --path docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/plan.md
+    result: pass_after_explain_change
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/reviews/code-review-m1-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/explain-change.md --path docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/plan.md
+    result: pass_selected_ci_after_explain_change
+  - command: git diff --check --
+    result: pass_after_explain_change
+  - command: python scripts/test-skill-validator.py
+    result: pass_final_verify_81_tests
+  - command: python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-m4-lifecycle-token-cost-summary.md --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.md --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.test.md --path docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/explain-change.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/reviews/spec-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/reviews/plan-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/reviews/code-review-m1-r1.md
+    result: pass_final_verify_selection_review_lifecycle_change_metadata_no_broad_smoke
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-m4-lifecycle-token-cost-summary.md --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.md --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.test.md --path docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/explain-change.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/reviews/spec-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/reviews/plan-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/reviews/code-review-m1-r1.md
+    result: pass_final_verify_selected_ci_review_lifecycle_change_metadata
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through
+    result: pass_final_verify_closeout
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
+    result: pass_final_verify
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-m4-lifecycle-token-cost-summary.md --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.md --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.test.md --path docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/explain-change.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/reviews/spec-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/reviews/plan-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/reviews/code-review-m1-r1.md
+    result: pass_final_verify
+  - command: git diff --check --
+    result: pass_final_verify
+  - command: git push -u origin feat/cost-bounded-rigor-m5-progressive-loading-follow-through-spec
+    result: pushed_branch_and_set_upstream
+  - command: gh pr create --base main --head feat/cost-bounded-rigor-m5-progressive-loading-follow-through-spec --title "docs: record M5 progressive-loading follow-through" --body-file /tmp/rigorloop-m5-progressive-loading-pr-body.md
+    result: opened_pr_58
+  - command: gh pr checks 58 --watch=false
+    result: hosted_ci_pending_initial_pr_handoff
+  - command: python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
+    result: pass_pr_handoff_state_sync
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
+    result: pass_pr_handoff_state_sync
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
+    result: pass_pr_handoff_state_sync
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
+    result: pass_pr_handoff_state_sync
+  - command: git diff --check --
+    result: pass_pr_handoff_state_sync
+  - command: gh pr checks 58 --watch=false
+    result: no_checks_reported_after_final_handoff_push
+  - command: gh pr checks 58 --watch=false
+    result: hosted_ci_passed
+changed_files:
+  - docs/plan.md
+  - docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md
+  - docs/plans/2026-05-14-cost-bounded-rigor-m4-lifecycle-token-cost-summary.md
+  - docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md
+  - specs/cost-bounded-rigor-m5-progressive-loading-follow-through.md
+  - specs/cost-bounded-rigor-m5-progressive-loading-follow-through.test.md
+  - docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
+  - docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/review-log.md
+  - docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/reviews/spec-review-r1.md
+  - docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/reviews/plan-review-r1.md
+  - docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/reviews/code-review-m1-r1.md
+  - docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/explain-change.md
+review:
+  status: clean
+  unresolved_items: 0
+  reviewed_artifact: specs/cost-bounded-rigor-m5-progressive-loading-follow-through.md
+  review_log: docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/review-log.md
+  latest_review: docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/reviews/code-review-m1-r1.md

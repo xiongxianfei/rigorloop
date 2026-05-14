@@ -1,9 +1,9 @@
 # Token Cost Measurement Baseline and Proposal Scope Preservation
 
-- Status: active
+- Status: done
 - Owner: Codex
 - Start date: 2026-05-10
-- Last updated: 2026-05-10
+- Last updated: 2026-05-14
 - Related issue or PR: none yet
 - Supersedes: none
 
@@ -92,14 +92,14 @@ Constraints:
 
 ## Current Handoff Summary
 
-- Current milestone: M5. Final lifecycle closeout
-- Current milestone state: closed
+- Current milestone: final lifecycle closeout
+- Current milestone state: done
 - Last reviewed milestone: M4. Generated skill and adapter refresh
 - Review status: M5 code-review completed clean-with-notes with no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: hosted CI rerun for PR #40, then human PR review
-- Final closeout readiness: PR opened; local PR-mode CI selector fix passed
-- Reason final closeout is or is not ready: M1-M5 milestone review loops are closed, review-resolution is closed, local final verify passed, and PR #40 is open; hosted CI rerun has not completed after the selector fix.
+- Next stage: none
+- Final closeout readiness: done after merged PR #40
+- Reason final closeout is or is not ready: M1-M5 milestone review loops are closed, review-resolution is closed, local final verify passed, selector routing was fixed, and PR #40 merged on 2026-05-10 after hosted CI passed.
 
 ## Milestones
 
@@ -426,6 +426,7 @@ bash scripts/ci.sh --mode explicit --path <changed-path>...
 - 2026-05-10: M5 code-review completed clean-with-notes with no material findings. M5 is closed and the plan is ready for verify.
 - 2026-05-10: Final local verify passed for the change pack. The plan remains active for PR handoff.
 - 2026-05-10: PR #40 opened, then hosted PR CI failed because the validation selector did not classify the new token-cost scripts, fixture, and report path. Added deterministic token-cost selector routing and local PR-mode CI now passes; hosted CI rerun is pending after push.
+- 2026-05-14: Lifecycle index sync verified PR #40 merged on 2026-05-10 with hosted CI passed; plan marked done.
 
 ## Decision Log
 
@@ -584,14 +585,14 @@ bash scripts/ci.sh --mode explicit --path <changed-path>...
 
 ## Outcome and Retrospective
 
-- PR #40 is open. Local PR-mode CI passes after the selector fix; this plan remains active until hosted CI and human PR review complete.
+- Completed. PR #40 merged after hosted CI passed.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for hosted CI rerun and human PR review on PR #40.
+- Done after merged PR #40.
 
 ## Remaining Completion Gates
 
-- Hosted CI rerun
+- none
 - Human PR review

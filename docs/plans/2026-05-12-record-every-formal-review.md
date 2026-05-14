@@ -1,9 +1,9 @@
 # Record every formal review execution plan
 
-- Status: active
+- Status: done
 - Owner: maintainer
 - Start date: 2026-05-12
-- Last updated: 2026-05-13
+- Last updated: 2026-05-14
 - Related issue or PR: none yet
 - Supersedes: none
 
@@ -63,14 +63,14 @@ Generated local Codex runtime output under `.codex/skills/` is not authored or t
 
 ## Current Handoff Summary
 
-- Current milestone: M5. Lifecycle state, explanation, verification, and PR readiness
-- Current milestone state: closed
+- Current milestone: final lifecycle closeout
+- Current milestone state: done
 - Last reviewed milestone: M5. Lifecycle state, explanation, verification, and PR readiness
 - Review status: M5 code-review clean-with-notes
 - Remaining in-scope implementation milestones: none
-- Next stage: monitor hosted CI and PR review
-- Final closeout readiness: PR #48 open; post-PR skill-prose tightening in progress; hosted CI pending
-- Reason final closeout is or is not ready: M1-M5 are closed, review-resolution is closed, explain-change exists, local final verify passed, and PR #48 is open. A post-PR wording tightening keeps public review skills concise while leaving schema details in the spec, examples, and validators. Hosted CI has not been observed passing yet.
+- Next stage: none
+- Final closeout readiness: done after merged PR #48
+- Reason final closeout is or is not ready: M1-M5 are closed, review-resolution is closed, explain-change exists, local final verify passed, post-PR skill-prose tightening completed, and PR #48 merged on 2026-05-12 after hosted CI passed.
 
 ## Milestones
 
@@ -455,14 +455,16 @@ Broader `scripts/ci.sh` runs are not required unless plan-review, code-review, c
 - 2026-05-13: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-12-record-every-formal-review.md --path docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml --path scripts/validation_selection.py --path scripts/test-select-validation.py` passed after the hosted CI selector fix.
 - 2026-05-13: `git diff --check` passed after the hosted CI selector fix.
 - 2026-05-13: `bash scripts/ci.sh --mode pr --base 2df914c20bca7707aff3e3f4872d6e4858dc2c01 --head 87fc29d4011bf32aaab4b2c44ddee0103a2e5a02` passed locally after the hosted CI selector fix with selected checks `skills.validate`, `skills.regression`, `skills.generation_regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.regression`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
+- 2026-05-14: Lifecycle index sync verified PR #48 merged on 2026-05-12 with hosted CI passed; plan marked done.
 
 ## Outcome and Retrospective
 
-- Final local verify passed and PR #48 is open. Post-PR review-skill wording has been tightened. Hosted CI and human review remain pending.
+- Completed. Final local verify passed, post-PR review-skill wording was tightened, hosted CI passed, and PR #48 merged.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
+- Done after merged PR #48.
 
 ## Risks and Follow-ups
 

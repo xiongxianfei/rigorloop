@@ -1,9 +1,9 @@
 # Project Artifact Location Guide and Examples Surface Plan
 
-- Status: active
+- Status: done
 - Owner: maintainers
 - Start date: 2026-05-13
-- Last updated: 2026-05-13
+- Last updated: 2026-05-14
 - Related proposal: [Project Artifact Location Guide and Examples Surface](../proposals/2026-05-13-project-artifact-location-guide-and-examples-surface.md)
 - Supersedes: none
 
@@ -40,14 +40,14 @@ Generated skill mirrors and public adapters must be refreshed or checked after c
 
 ## Current Handoff Summary
 
-- Current milestone: downstream closeout after implementation milestones
-- Current milestone state: PR open; hosted CI status tracked on PR #50
+- Current milestone: final lifecycle closeout
+- Current milestone state: done
 - Last reviewed milestone: M4. Generated Output Refresh And Final Milestone Review
 - Review status: clean code-review for M4 recorded in `code-review-r4`
 - Remaining in-scope implementation milestones: none
-- Next stage: complete PR review and monitor PR #50 hosted checks as the live CI source
-- Final closeout readiness: PR open; not done until PR review and current hosted checks complete
-- Reason final closeout is or is not ready: M1, M2, M3, and M4 are closed after clean code-review; explain-change and local final verify are complete; PR #50 is open, hosted checks are tracked on the PR, and PR review is pending.
+- Next stage: none
+- Final closeout readiness: done after merged PR #50
+- Reason final closeout is or is not ready: M1, M2, M3, and M4 are closed after clean code-review; explain-change and local final verify are complete; PR #50 merged on 2026-05-13 after hosted CI passed.
 
 ## Non-goals
 
@@ -360,6 +360,7 @@ Broad smoke is not planned by default. Add it only if selector output, the test 
 - [x] 2026-05-13: Explain-change recorded in `docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/explain-change.md`.
 - [x] 2026-05-13: Local final verify passed; branch-ready for `pr` handoff.
 - [x] 2026-05-13: PR #50 opened: `https://github.com/xiongxianfei/rigorloop/pull/50`.
+- [x] 2026-05-14: Lifecycle index sync verified PR #50 merged on 2026-05-13 with hosted CI passed; plan marked done.
 
 ## Decision log
 
@@ -408,9 +409,9 @@ Broad smoke is not planned by default. Add it only if selector output, the test 
 
 ## Outcome and retrospective
 
-- Pending final closeout. Keep this section final-only while the plan is active.
+- Completed. PR #50 merged after hosted CI passed.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Readiness is not Done; PR #50 is open, hosted checks are tracked on the PR, and PR review is pending.
+- Done after merged PR #50.

@@ -1,9 +1,9 @@
 # Public Adapter Artifact Migration, Examples Relocation, and Concise Skill Release
 
-- Status: active
+- Status: done
 - Owner: maintainer
 - Start date: 2026-05-13
-- Last updated: 2026-05-13
+- Last updated: 2026-05-14
 - Related issue or PR: none yet
 - Supersedes: none
 
@@ -84,14 +84,14 @@ Current known implementation shape before work begins:
 
 ## Current Handoff Summary
 
-- Current milestone: M5. Produce token-cost and final release-readiness evidence
-- Current milestone state: closed
+- Current milestone: final lifecycle closeout
+- Current milestone state: done
 - Last reviewed milestone: M5 code-review r1 found no material findings and closed M5.
 - Review status: proposal-review, spec-review, architecture-review, and plan-review are approved; plan-review r1 finding PR-001 is closed in review-resolution; M1 code-review r1 found no material findings; M2 code-review r2 found no material findings after PAAM-M2-CR1 resolution; M3 code-review r1 found no material findings; M4 code-review r1 found no material findings; M5 code-review r1 found no material findings.
 - Remaining in-scope implementation milestones: none
-- Next stage: push the selector-routing CI fix for PR #51 and monitor hosted checks
-- Final closeout readiness: ready for final closeout sequence
-- Reason final closeout is or is not ready: M1-M5 are implemented and closed after code-review, explain-change and final verify are recorded, PR #51 is open, and no required review-resolution remains open. Hosted PR CI initially failed on selector routing for `verify-report.md` and adapter artifact metadata; the selector fix is in progress. Hosted PR checks, PR review, and release-publication handoff remain pending. M6 is a tracked later-release gate and is not part of `v0.1.2` implementation closeout until the stable archive release has shipped and a plan revision makes untracking current.
+- Next stage: none
+- Final closeout readiness: done after merged PR #51 and published `v0.1.2`
+- Reason final closeout is or is not ready: M1-M5 are implemented and closed after code-review, explain-change and final verify are recorded, no required review-resolution remains open, PR #51 merged on 2026-05-13 after hosted CI passed, and `v0.1.2` was published on 2026-05-13. M6 was superseded by the later `v0.1.3` untracking plan and is not an open gate for this plan.
 
 ## Milestones
 
@@ -436,8 +436,9 @@ Before PR handoff, run the M5 final validation pack plus any commands added by t
 - [x] PR #51 opened.
 - [x] Hosted PR CI failure diagnosed as selector routing gaps for `verify-report.md` and adapter artifact metadata.
 - [x] Selector-routing CI fix implemented and locally validated.
-- [ ] Selector-routing CI fix pushed and hosted checks re-observed.
-- [ ] `v0.1.2` release publication handoff completed or explicitly deferred.
+- [x] Selector-routing CI fix pushed and hosted checks re-observed.
+- [x] `v0.1.2` release publication handoff completed.
+- [x] 2026-05-14: Lifecycle index sync verified PR #51 merged on 2026-05-13 with hosted CI passed and `v0.1.2` published on 2026-05-13; plan marked done.
 - [ ] M6 follow-up untracking plan or plan revision created after `v0.1.2` ships.
 
 ## Decision log
@@ -647,7 +648,7 @@ Before PR handoff, run the M5 final validation pack plus any commands added by t
 
 ## Outcome and retrospective
 
-Not completed. M5 is closed after clean code-review, explain-change is recorded, final local verify passed, and PR #51 is open; hosted PR checks, PR review, and release-publication handoff remain pending.
+Completed. M1-M5 closed after code-review, explain-change and final verify were recorded, PR #51 merged after hosted CI passed, and `v0.1.2` was published. The later adapter untracking work moved to the separate `v0.1.3` plan.
 
 ## Readiness
 
@@ -655,8 +656,4 @@ See `Current Handoff Summary`.
 
 ## Remaining completion gates
 
-- M1-M5 implementation, targeted validation, and code-review loops are closed.
-- Required review-resolution if code-review records material findings.
-- PR review and hosted checks on PR #51.
-- Explicit release handoff for publishing `v0.1.2` and attaching archives.
-- Later M6 follow-up after the stable archive release ships.
+- none
