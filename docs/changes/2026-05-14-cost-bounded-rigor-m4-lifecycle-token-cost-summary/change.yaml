@@ -34,7 +34,6 @@ requirements:
   - Record durable explain-change rationale before verify.
   - Run final local verify before PR handoff.
   - Open PR for human review and record the PR handoff state.
-  - Observe hosted CI status after PR handoff.
 tests:
   - M3 plan lifecycle state validation.
   - M4 spec artifact lifecycle validation.
@@ -54,7 +53,6 @@ tests:
   - Explain-change lifecycle and change metadata validation.
   - Final local verify selected CI and branch-ready validation.
   - PR handoff lifecycle state-sync validation.
-  - Hosted CI status check and lifecycle state-sync validation.
 validation:
   - command: spec
     result: draft_m4_lifecycle_token_cost_summary_spec_created_ready_for_spec_review
@@ -208,20 +206,6 @@ validation:
     result: pass_pr_handoff_state_sync
   - command: git diff --check --
     result: pass_pr_handoff_state_sync
-  - command: gh pr checks 57
-    result: pass_hosted_ci
-  - command: gh api repos/xiongxianfei/rigorloop/pulls/57 --jq '{number,html_url,state,title,head_sha:.head.sha,base:.base.ref,head:.head.ref,mergeable,mergeable_state}'
-    result: pr_57_open_mergeable_clean_head_5edcfa6
-  - command: python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-m4-lifecycle-token-cost-summary.md --path docs/changes/2026-05-14-cost-bounded-rigor-m4-lifecycle-token-cost-summary/change.yaml
-    result: pass_hosted_ci_state_sync
-  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m4-lifecycle-token-cost-summary/change.yaml
-    result: pass_hosted_ci_state_sync
-  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-m4-lifecycle-token-cost-summary.md --path docs/changes/2026-05-14-cost-bounded-rigor-m4-lifecycle-token-cost-summary/change.yaml
-    result: pass_hosted_ci_state_sync
-  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-m4-lifecycle-token-cost-summary.md --path docs/changes/2026-05-14-cost-bounded-rigor-m4-lifecycle-token-cost-summary/change.yaml
-    result: pass_hosted_ci_state_sync
-  - command: git diff --check --
-    result: pass_hosted_ci_state_sync
 changed_files:
   - docs/plan.md
   - docs/plans/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance.md
