@@ -1,0 +1,179 @@
+change_id: 2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders
+title: Cost-bounded rigor M2 selected skill reminders
+classification: workflow-governance-plan
+risk: low
+artifacts:
+  proposal: docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md
+  spec: specs/cost-bounded-rigor-m2-selected-skill-reminders.md
+  test_spec: specs/cost-bounded-rigor-m2-selected-skill-reminders.test.md
+  plan: docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md
+  review_resolution: docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-resolution.md
+requirements:
+  - Record the merged M1 plan as done after PR #54.
+  - Create a blocked next-slice plan for M2 selected skill reminders.
+  - Keep M2 implementation blocked until a focused M2 spec or spec amendment is approved.
+  - Review the M2 plan before any downstream reliance.
+  - Author the focused M2 selected skill reminders spec before spec-review.
+  - Review the focused M2 selected skill reminders spec before plan, test-spec, or implementation reliance.
+  - Normalize the focused M2 spec status after clean spec-review.
+  - Revise the M2 plan against the approved focused spec before plan-review.
+  - Review the revised M2 plan before test-spec handoff.
+  - Create an active M2 test spec before implementation.
+  - Record maintainer approval for the active M2 test spec before implementation.
+  - Audit every selected skill surface before editing selected skill wording.
+  - Record no-change rationale for selected skills that already satisfy the M2 contract.
+  - Add only concise local bounded-evidence and path/state lookup wording where needed.
+  - Move the M1 implementation milestone to review-requested before code-review.
+  - Preserve the boundary that M2 must not absorb validation-budget, lifecycle-token-summary, release, adapter, dynamic benchmark, or progressive-loading work.
+tests:
+  - Plan index and M1 plan lifecycle state validation.
+  - M2 blocked-plan artifact lifecycle validation.
+  - Clean plan-review receipt and review-log validation.
+  - Focused M2 spec artifact lifecycle validation.
+  - Clean spec-review receipt and review-log validation.
+  - M2 plan revision artifact lifecycle validation.
+  - Clean revised plan-review receipt and review-log validation.
+  - Active M2 test spec artifact lifecycle validation.
+  - Active M2 test spec approval lifecycle validation.
+  - Focused M2 selected skill reminder static proof.
+  - Selected skill audit and no-change rationale review.
+  - Canonical skill validation and generated local mirror checks.
+  - Diagnostic static skill token measurement.
+  - Selected lifecycle validation for changed plan and review artifacts.
+validation:
+  - command: python scripts/select-validation.py --mode explicit --path docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plan.md
+    result: pass_selected_artifact_lifecycle_no_unclassified_paths
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md --path docs/plan.md
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plan.md
+    result: pass_selected_artifact_lifecycle
+  - command: git diff --check -- docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md docs/plan.md
+    result: pass
+  - command: plan-review-r1
+    result: approved_no_material_findings_with_spec_gate_remaining
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders
+    result: pass
+  - command: spec
+    result: focused_m2_spec_drafted_ready_for_spec_review
+  - command: spec-review-r1
+    result: approved_no_material_findings_spec_ready_for_status_normalization
+  - command: python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md --path specs/cost-bounded-rigor-m2-selected-skill-reminders.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-resolution.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/plan-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/spec-review-r1.md
+    result: pass_selected_review_artifact_lifecycle_and_change_metadata_checks
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path specs/cost-bounded-rigor-m2-selected-skill-reminders.md --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md --path docs/plan.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-resolution.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/plan-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/spec-review-r1.md
+    result: pass
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md --path specs/cost-bounded-rigor-m2-selected-skill-reminders.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-resolution.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/plan-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/spec-review-r1.md
+    result: pass_selected_ci
+  - command: git diff --check -- docs/plan.md docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md specs/cost-bounded-rigor-m2-selected-skill-reminders.md docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/change.yaml docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-log.md docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-resolution.md docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/plan-review-r1.md docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/spec-review-r1.md
+    result: pass
+  - command: plan
+    result: focused_m2_spec_status_normalized_and_plan_revised_ready_for_plan_review
+  - command: plan-review-r2
+    result: approved_no_material_findings_ready_for_test_spec
+  - command: python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md --path specs/cost-bounded-rigor-m2-selected-skill-reminders.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-resolution.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/plan-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/spec-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/plan-review-r2.md
+    result: pass_selected_review_artifact_lifecycle_and_change_metadata_checks
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path specs/cost-bounded-rigor-m2-selected-skill-reminders.md --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md --path docs/plan.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-resolution.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/plan-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/spec-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/plan-review-r2.md
+    result: pass
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md --path specs/cost-bounded-rigor-m2-selected-skill-reminders.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-resolution.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/plan-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/spec-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/plan-review-r2.md
+    result: pass_selected_ci
+  - command: git diff --check -- specs/cost-bounded-rigor-m2-selected-skill-reminders.md docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md docs/plan.md docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders
+    result: pass
+  - command: test-spec
+    result: active_m2_test_spec_created_ready_for_implement
+  - command: python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md --path specs/cost-bounded-rigor-m2-selected-skill-reminders.md --path specs/cost-bounded-rigor-m2-selected-skill-reminders.test.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-resolution.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/plan-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/spec-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/plan-review-r2.md
+    result: pass_selected_review_artifact_lifecycle_and_change_metadata_checks
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path specs/cost-bounded-rigor-m2-selected-skill-reminders.md --path specs/cost-bounded-rigor-m2-selected-skill-reminders.test.md --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md --path docs/plan.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-resolution.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/plan-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/spec-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/plan-review-r2.md
+    result: pass
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md --path specs/cost-bounded-rigor-m2-selected-skill-reminders.md --path specs/cost-bounded-rigor-m2-selected-skill-reminders.test.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-resolution.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/plan-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/spec-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/plan-review-r2.md
+    result: pass_selected_ci
+  - command: git diff --check -- specs/cost-bounded-rigor-m2-selected-skill-reminders.md specs/cost-bounded-rigor-m2-selected-skill-reminders.test.md docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md docs/plan.md docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders
+    result: pass
+  - command: test-spec approval
+    result: maintainer_approved_active_m2_test_spec_ready_for_implement
+  - command: python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md --path specs/cost-bounded-rigor-m2-selected-skill-reminders.md --path specs/cost-bounded-rigor-m2-selected-skill-reminders.test.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-resolution.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/plan-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/spec-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/plan-review-r2.md
+    result: pass_selected_review_artifact_lifecycle_and_change_metadata_checks_after_test_spec_approval
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path specs/cost-bounded-rigor-m2-selected-skill-reminders.md --path specs/cost-bounded-rigor-m2-selected-skill-reminders.test.md --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md --path docs/plan.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-resolution.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/plan-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/spec-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/plan-review-r2.md
+    result: pass
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md --path specs/cost-bounded-rigor-m2-selected-skill-reminders.md --path specs/cost-bounded-rigor-m2-selected-skill-reminders.test.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-resolution.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/plan-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/spec-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/plan-review-r2.md
+    result: pass_selected_ci
+  - command: git diff --check -- specs/cost-bounded-rigor-m2-selected-skill-reminders.md specs/cost-bounded-rigor-m2-selected-skill-reminders.test.md docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md docs/plan.md docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders
+    result: pass
+  - command: python scripts/test-skill-validator.py
+    result: expected_fail_before_workflow_reminder_missing_m2_path_state_lookup_cues
+  - command: implement
+    result: proposal_and_proposal_review_unchanged_with_rationale_workflow_reminder_added
+  - command: python scripts/test-skill-validator.py
+    result: pass_after_m2_selected_skill_reminder_static_proof
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files
+  - command: python scripts/build-skills.py --check
+    result: pass_generated_skills_validated_using_temporary_output
+  - command: python scripts/measure-skill-tokens.py
+    result: pass_diagnostic_only_23_skills_total_estimated_tokens_57587_workflow_estimated_tokens_5296_no_dynamic_benchmark_required
+  - command: python scripts/select-validation.py --mode explicit --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path skills/workflow/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md --path docs/plan.md --path specs/cost-bounded-rigor-m2-selected-skill-reminders.md --path specs/cost-bounded-rigor-m2-selected-skill-reminders.test.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/change.yaml
+    result: pass_selected_skills_lifecycle_change_metadata_and_adapter_archive_regression_checks
+  - command: python scripts/test-build-skills.py
+    result: pass
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/change.yaml --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md --path skills/proposal-review/SKILL.md --path skills/proposal/SKILL.md --path skills/workflow/SKILL.md --path specs/cost-bounded-rigor-m2-selected-skill-reminders.md --path specs/cost-bounded-rigor-m2-selected-skill-reminders.test.md
+    result: pass
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/change.yaml
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md --path specs/cost-bounded-rigor-m2-selected-skill-reminders.md --path specs/cost-bounded-rigor-m2-selected-skill-reminders.test.md --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path skills/workflow/SKILL.md --path scripts/test-skill-validator.py --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-resolution.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/plan-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/spec-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/plan-review-r2.md
+    result: pass_final_selected_skills_review_artifact_lifecycle_and_change_metadata_checks
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path specs/cost-bounded-rigor-m2-selected-skill-reminders.md --path specs/cost-bounded-rigor-m2-selected-skill-reminders.test.md --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md --path docs/plan.md --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path skills/workflow/SKILL.md --path scripts/test-skill-validator.py --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-resolution.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/plan-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/spec-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/plan-review-r2.md
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md --path specs/cost-bounded-rigor-m2-selected-skill-reminders.md --path specs/cost-bounded-rigor-m2-selected-skill-reminders.test.md --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path skills/workflow/SKILL.md --path scripts/test-skill-validator.py --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-resolution.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/plan-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/spec-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/plan-review-r2.md
+    result: pass_final_selected_ci
+  - command: git diff --check -- docs/plan.md docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md specs/cost-bounded-rigor-m2-selected-skill-reminders.md specs/cost-bounded-rigor-m2-selected-skill-reminders.test.md skills/workflow/SKILL.md scripts/test-skill-validator.py docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders
+    result: pass
+changed_files:
+  - docs/plan.md
+  - docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md
+  - docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md
+  - specs/cost-bounded-rigor-m2-selected-skill-reminders.md
+  - specs/cost-bounded-rigor-m2-selected-skill-reminders.test.md
+  - skills/workflow/SKILL.md
+  - scripts/test-skill-validator.py
+  - docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/change.yaml
+  - docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-log.md
+  - docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-resolution.md
+  - docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/plan-review-r1.md
+  - docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/spec-review-r1.md
+  - docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/plan-review-r2.md
+review:
+  status: clean
+  unresolved_items: 0
+  reviewed_artifact: docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md
+  review_log: docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-log.md
+  latest_review: docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/plan-review-r2.md

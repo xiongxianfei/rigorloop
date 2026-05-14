@@ -151,6 +151,8 @@ Create or refresh the guide when:
 
 For ordinary routing where the guide is current, reference the guide rather than rewrite it.
 
+For path or state lookup, start from the active plan, current artifact metadata, `docs/workflows.md`, default paths, and targeted headings before broader searches. Expand when narrower evidence is incomplete, contradictory, or insufficient.
+
 The workflow skill must not author proposals, specs, plans, reviews, ADRs, or exact schemas solely because it owns the artifact-location map. Route users to the owning stage skill for artifact content.
 
 ## Follow-up routing
