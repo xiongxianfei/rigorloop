@@ -68,13 +68,13 @@ M3 should not turn this into a broad rewrite. Implementation should first audit 
 ## Current Handoff Summary
 
 - Current milestone: M1. Owner-surface audit and minimal validation-budget guidance
-- Current milestone state: review-requested
-- Last reviewed milestone: M0. Plan creation
-- Review status: M1 implementation ready for code-review; no code-review has run yet
-- Remaining in-scope implementation milestones: M1
-- Next stage: code-review
+- Current milestone state: closed
+- Last reviewed milestone: M1. Owner-surface audit and minimal validation-budget guidance
+- Review status: `code-review-m1-r1` clean-with-notes, no material findings
+- Remaining in-scope implementation milestones: none
+- Next stage: explain-change
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 implementation and targeted validation are complete, but code-review, explain-change, verify, and PR are not complete.
+- Reason final closeout is or is not ready: M1 implementation and code-review are complete, but explain-change, verify, and PR are not complete.
 
 ## Milestones
 
@@ -124,7 +124,7 @@ M3 should not turn this into a broad rewrite. Implementation should first audit 
 
 ### M1. Owner-surface audit and minimal validation-budget guidance
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Implement the smallest guidance or static-proof update needed for M3 validation-budget behavior, after auditing owner surfaces.
 - Requirements: M3 spec `R1`-`R19`.
 - Files/components likely touched:
@@ -232,6 +232,7 @@ Final closeout:
 - 2026-05-14: active M3 test spec maintainer-approved by direct user request; next stage remains `implement`.
 - 2026-05-14: M1 implementation started with static proof for validation owner-surface wording before editing `docs/workflows.md`.
 - 2026-05-14: M1 implementation added validation owner-surface guidance to `docs/workflows.md`, updated stable static proof in `scripts/test-select-validation.py`, recorded owner-surface rationale, and is ready for `code-review`.
+- 2026-05-14: clean `code-review-m1-r1` recorded with no material findings; M1 is closed and next stage is `explain-change`.
 
 ## Decision log
 
@@ -269,6 +270,8 @@ Final closeout:
 - 2026-05-14: M1 red/green proof: `python scripts/test-select-validation.py ValidationSelectionTests.test_workflow_guidance_aligns_with_validation_layering_contract` failed before `docs/workflows.md` gained the owner-surface terms, then passed after the guidance edit.
 - 2026-05-14: M1 selector regression passed: `python scripts/test-select-validation.py`.
 - 2026-05-14: M1 selected validation passed for `docs/workflows.md`, `scripts/test-select-validation.py`, this plan, `docs/plan.md`, and change metadata. Selected checks were `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`; `broad_smoke_required` was false.
+- 2026-05-14: M1 code-review recorded `clean-with-notes` with no material findings. Final closeout validation remains pending for `explain-change` and `verify`.
+- 2026-05-14: M1 code-review recording validation passed: selected review-artifact/lifecycle/change-metadata checks, `python scripts/validate-review-artifacts.py --mode closeout ...`, change metadata validation, artifact lifecycle validation, selected CI, and `git diff --check --`.
 
 ## Outcome and retrospective
 
@@ -277,4 +280,4 @@ Final closeout:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `code-review` on M1, not ready for final closeout.
+- Ready for `explain-change`, not ready for final closeout.
