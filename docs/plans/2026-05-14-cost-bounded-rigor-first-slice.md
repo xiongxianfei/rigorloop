@@ -92,9 +92,9 @@ Validation context:
 - Review status: code-review completed `clean-with-notes` in `code-review-r1` with no material findings
 - Test-spec status: active and maintainer-approved on 2026-05-14
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: explain-change, final verify, and PR handoff are still required.
+- Reason final closeout is or is not ready: final verify and PR handoff are still required.
 
 ## Milestones
 
@@ -215,6 +215,7 @@ Final verification before PR should include:
 - 2026-05-14: maintainer approved the active test spec; next stage remains `implement`.
 - 2026-05-14: M1 implementation added focused static proof, proposal/proposal-review scope-budget guidance, and `docs/workflows.md` bounded-evidence/path-search guidance. Targeted validation passed; next stage is `code-review`.
 - 2026-05-14: `code-review-r1` reviewed M1 implementation commit `dc59864bdc4f36a248be573c551b553c501dd0d6` and returned `clean-with-notes` with no material findings. M1 is closed; next stage is `explain-change`.
+- 2026-05-14: `explain-change.md` recorded durable rationale for M1 scope, diff areas, validation evidence, review outcomes, rejected alternatives, and no-dynamic-benchmark rationale. Next stage is `verify`.
 
 ## Decision log
 
@@ -258,6 +259,13 @@ Final verification before PR should include:
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plan.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/review-log.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/code-review-r1.md`
   - `python scripts/test-change-metadata-validator.py`
   - `bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/code-review-r1.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/review-log.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plan.md`
+- 2026-05-14: explain-change validation passed:
+  - `python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/explain-change.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plan.md`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/explain-change.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plan.md`
+  - `python scripts/test-change-metadata-validator.py`
+  - `bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/explain-change.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plan.md`
+  - `git diff --check -- docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/explain-change.md docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md docs/plan.md`
 
 ## Outcome and retrospective
 
@@ -266,4 +274,4 @@ Final verification before PR should include:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- M1 implementation is closed after clean code-review and ready for `explain-change`.
+- M1 implementation is closed after clean code-review and durable rationale is recorded; ready for `verify`.
