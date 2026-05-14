@@ -1,0 +1,176 @@
+change_id: 2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording
+title: Cost-bounded rigor proposal and first-slice spec
+classification: workflow-governance-spec
+risk: low
+artifacts:
+  proposal: docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md
+  spec: specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md
+  test_spec: specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.test.md
+  plan: docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md
+  review_resolution: docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/review-resolution.md
+requirements:
+  - Review the cost-bounded rigor proposal before downstream spec or planning.
+  - Record the isolated clean proposal-review receipt as durable formal review evidence.
+  - Preserve no-material-finding recording without creating an empty review-resolution artifact.
+  - Record maintainer proposal-review findings CBR-1 through CBR-6 before revising the proposal.
+  - Resolve proposal-review findings CBR-1 through CBR-6 before downstream spec or planning.
+  - Record direct spec-review as inconclusive when no matching spec artifact exists.
+  - Record proposal-review approval after CBR-1 through CBR-6 are resolved.
+  - Settle the approved proposal status to accepted before relying on it for spec authoring.
+  - Author the focused first-slice spec for scope-budget and bounded-evidence guidance.
+  - Review the focused first-slice spec before downstream planning or implementation.
+  - Settle the approved spec status before relying on it for planning.
+  - Create and index the first-slice execution plan.
+  - Review the first-slice execution plan before test-spec authoring.
+  - Create an active test spec before implementation.
+  - Record maintainer approval of the active test spec before implementation.
+  - Implement M1 proposal scope-budget and bounded-evidence guidance before code-review.
+tests:
+  - Clean proposal-review receipt and review-log validation.
+  - Detailed proposal-review finding record and review-resolution validation.
+  - Inconclusive spec-review record for missing required spec input.
+  - Clean proposal-review approval record after proposal revision.
+  - First-slice spec artifact lifecycle validation.
+  - Clean spec-review approval receipt and review-log validation.
+  - First-slice plan and plan-index lifecycle validation.
+  - Clean plan-review approval receipt and review-log validation.
+  - Active test-spec coverage for requirements R1 through R19b, examples E1 through E7, edge cases EC1 through EC12, and first-slice validation.
+  - Maintainer-approved test-spec handoff for implementation.
+  - Focused static checks for M1 proposal, proposal-review, and workflow-guide wording.
+  - Skill validation, generated-skill check, selected explicit CI, static token measurement, lifecycle validation, and change metadata validation after M1 implementation.
+  - Change metadata validation for the review-recording root.
+  - Artifact lifecycle validation for the reviewed proposal and review-recording artifacts.
+validation:
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording
+    result: pass
+  - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/review-log.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/review-resolution.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r1.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r2.md
+    result: pass_selected_review_artifact_lifecycle_change_metadata_no_unclassified_paths
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording
+    result: pass_reviews_2_findings_6_log_entries_2_resolution_entries_6_before_spec_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml
+    result: pass_valid_change_metadata
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/review-log.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/review-resolution.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r1.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r2.md
+    result: pass
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_7_tests
+  - command: spec-review
+    result: inconclusive_missing_spec_artifact
+  - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/review-log.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/review-resolution.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r1.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r2.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/spec-review-r1.md
+    result: pass_selected_review_artifact_lifecycle_change_metadata_no_unclassified_paths_after_spec_review_r1
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording
+    result: pass_reviews_3_findings_6_log_entries_3_resolution_entries_6
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/review-log.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/review-resolution.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r1.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r2.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/spec-review-r1.md
+    result: pass_after_spec_review_r1
+  - command: proposal-review-r3
+    result: approved_no_material_findings
+  - command: spec
+    result: authored_first_slice_spec_and_settled_upstream_proposal_status
+  - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/review-log.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/review-resolution.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r1.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r2.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r3.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/spec-review-r1.md
+    result: pass_selected_review_artifact_lifecycle_change_metadata_no_unclassified_paths_after_spec
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording
+    result: pass_reviews_4_findings_6_log_entries_4_resolution_entries_6
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/review-log.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/review-resolution.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r1.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r2.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r3.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/spec-review-r1.md
+    result: pass_after_spec_authored
+  - command: spec-review-r2
+    result: approved_no_material_findings
+  - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/review-log.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/review-resolution.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r1.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r2.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r3.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/spec-review-r1.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/spec-review-r2.md
+    result: pass_selected_review_artifact_lifecycle_change_metadata_no_unclassified_paths_after_spec_review_r2
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording
+    result: pass_reviews_5_findings_6_log_entries_5_resolution_entries_6
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml
+    result: pass_after_spec_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/review-log.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/review-resolution.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r1.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r2.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r3.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/spec-review-r1.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/spec-review-r2.md
+    result: pass_after_spec_review_r2
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_7_tests_after_spec_review_r2
+  - command: plan
+    result: created_first_slice_plan_and_settled_spec_status
+  - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plan.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/review-log.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/review-resolution.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r1.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r2.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r3.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/spec-review-r1.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/spec-review-r2.md
+    result: pass_selected_review_artifact_lifecycle_plan_index_change_metadata_no_unclassified_paths_after_plan
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plan.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/review-log.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/review-resolution.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r1.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r2.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r3.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/spec-review-r1.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/spec-review-r2.md
+    result: pass_after_plan
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml
+    result: pass_after_plan
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording
+    result: pass_after_plan
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_7_tests_after_plan
+  - command: plan-review-r1
+    result: approved_no_material_findings
+  - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plan.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/review-log.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/review-resolution.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r1.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r2.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r3.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/spec-review-r1.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/spec-review-r2.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/plan-review-r1.md
+    result: pass_selected_review_artifact_lifecycle_plan_index_change_metadata_no_unclassified_paths_after_plan_review_r1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording
+    result: pass_reviews_6_findings_6_log_entries_6_resolution_entries_6_after_plan_review_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml
+    result: pass_after_plan_review_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plan.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/review-log.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/review-resolution.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r1.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r2.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r3.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/spec-review-r1.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/spec-review-r2.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/plan-review-r1.md
+    result: pass_after_plan_review_r1
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_7_tests_after_plan_review_r1
+  - command: test-spec
+    result: authored_active_test_spec_and_synced_plan_plan_index_change_metadata_for_implement_handoff
+  - command: python scripts/select-validation.py --mode explicit --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.test.md --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plan.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml
+    result: pass_selected_artifact_lifecycle_change_metadata_no_unclassified_paths_after_test_spec
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.test.md --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plan.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml
+    result: pass_after_test_spec
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml
+    result: pass_after_test_spec
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_7_tests_after_test_spec
+  - command: git diff --check -- docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.test.md docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md docs/plan.md docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml
+    result: pass_after_test_spec
+  - command: maintainer approval
+    result: active_test_spec_approved_for_implementation_on_2026_05_14
+  - command: python scripts/select-validation.py --mode explicit --path specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.test.md --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plan.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml
+    result: pass_selected_artifact_lifecycle_change_metadata_no_unclassified_paths_after_test_spec_approval
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.test.md --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plan.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml
+    result: pass_after_test_spec_approval
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml
+    result: pass_after_test_spec_approval
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_7_tests_after_test_spec_approval
+  - command: git diff --check -- specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.test.md docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md docs/plan.md docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml
+    result: pass_after_test_spec_approval
+  - command: python scripts/test-skill-validator.py SkillValidatorFixtureTests.test_cost_bounded_rigor_m1_proposal_scope_budget_guidance SkillValidatorFixtureTests.test_cost_bounded_rigor_m1_proposal_review_scope_budget_guidance SkillValidatorFixtureTests.test_cost_bounded_rigor_m1_workflows_bounded_evidence_guidance
+    result: expected_fail_before_implementation_missing_m1_guidance_then_pass_after_implementation
+  - command: python scripts/test-skill-validator.py
+    result: pass_80_tests_after_m1_implementation
+  - command: python scripts/validate-skills.py
+    result: pass_23_skill_files_after_m1_implementation
+  - command: python scripts/build-skills.py --check
+    result: pass_generated_skills_temp_output_after_m1_implementation
+  - command: python scripts/measure-skill-tokens.py
+    result: pass_diagnostic_static_measurement_total_57526_estimated_tokens_no_dynamic_benchmark_required
+  - command: python scripts/select-validation.py --mode explicit --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path docs/workflows.md --path scripts/test-skill-validator.py --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plan.md --path specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.test.md
+    result: pass_selected_skills_lifecycle_change_metadata_selector_no_unclassified_paths_after_m1_implementation
+  - command: bash scripts/ci.sh --mode explicit --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path docs/workflows.md --path scripts/test-skill-validator.py --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plan.md --path specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.test.md
+    result: pass_selected_checks_skills_validate_skills_regression_skills_generation_regression_skills_drift_adapters_drift_artifact_lifecycle_change_metadata_selector_regression
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml
+    result: pass_after_m1_implementation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.test.md --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plan.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml
+    result: pass_after_m1_implementation
+changed_files:
+  - docs/workflows.md
+  - docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md
+  - specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md
+  - specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.test.md
+  - docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md
+  - docs/plan.md
+  - docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml
+  - docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/review-log.md
+  - docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/review-resolution.md
+  - docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r1.md
+  - docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r2.md
+  - docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r3.md
+  - docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/spec-review-r1.md
+  - docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/spec-review-r2.md
+  - docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/plan-review-r1.md
+  - scripts/test-skill-validator.py
+  - skills/proposal/SKILL.md
+  - skills/proposal-review/SKILL.md
+review:
+  status: implementation_review_requested
+  unresolved_items: 0
+  next_required_stage: code-review
+  eventual_test_spec_readiness: ready
+  location: docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/review-resolution.md

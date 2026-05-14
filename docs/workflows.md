@@ -88,9 +88,19 @@ Notes:
 ## Efficient Evidence Collection
 
 - Use bounded extraction as the default first pass for large files, repeated scans, generated output, and validation logs.
+- Do not broad-search authoritative documents solely for path or state discovery when narrower evidence is available.
+- Default evidence sequence for path or state discovery:
+  1. exact user-provided path or change ID;
+  2. current handoff summary or active plan state;
+  3. `change.yaml`, review log, review resolution, or release metadata;
+  4. `docs/workflows.md` artifact-location map;
+  5. targeted headings, stable IDs, line ranges, counts, or diffs;
+  6. full-file read only when the whole file is the target or bounded evidence is insufficient.
 - Start with inventories, headings, stable IDs, path lists, counts, or matching line numbers before reading broad file content.
 - After locating relevant lines, read exact ranges first; broaden to neighboring sections or a full-file read only when needed.
 - Prefer check IDs, requirement IDs, test IDs, file paths, counts, and line citations before raw excerpts or pasted logs.
+- Use bounded evidence before broad reads, but do not under-read.
+- Expand to a broader section or full file when bounded evidence is incomplete, contradictory, or insufficient to support the claim being made.
 - Use summary-first, failure-focused, and diff-focused normal output by default. Expand only when needed with `--verbose` or an equivalent documented escape hatch.
 - Normal output budgets:
   - routine command output target: 40 lines

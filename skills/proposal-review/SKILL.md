@@ -123,6 +123,22 @@ Scope-preservation failures must return `changes-requested`.
 
 Do not rewrite the proposal as part of proposal-review unless the user explicitly asks.
 
+## Scope-budget review
+
+Scope-budget applicability is proposal/proposal-review judgment, not validator inference.
+
+For broad or multi-workstream proposals, check whether current scope, same-slice dependencies, separate implementation slices, deferable follow-ups, separate proposals, and out-of-scope work are classified clearly enough for downstream reliance.
+
+Return `changes-requested` when a broad or multi-workstream proposal lacks required scope-budget classification.
+
+Return `changes-requested` when the proposal hides follow-up work, silently narrows a user request, leaves a treatment or reason blank, omits follow-up routing, or uses a misleading treatment value.
+
+Small single-decision proposals may omit a scope budget when omission does not create silent narrowing, hidden follow-up risk, or multi-workstream ambiguity.
+
+Do not request a scope budget solely as routine ceremony.
+
+Accept non-standard treatment values only when they are clear and create no downstream ambiguity.
+
 ## Adversarial questions
 
 Ask these when useful:

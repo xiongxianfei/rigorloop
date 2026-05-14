@@ -2318,6 +2318,83 @@ and result format.
             with self.subTest(skill="proposal-review", term=term):
                 self.assertIn(term, proposal_review)
 
+    def test_cost_bounded_rigor_m1_proposal_scope_budget_guidance(self) -> None:
+        proposal = (ROOT / "skills" / "proposal" / "SKILL.md").read_text(encoding="utf-8")
+
+        required_terms = [
+            "## Scope budget for broad proposals",
+            "Scope-budget applicability is proposal/proposal-review judgment in this first slice, not mechanical validator inference.",
+            "the user request contains two or more independent work items",
+            "the change touches more than one lifecycle family",
+            "the change could reasonably require more than one spec or implementation plan",
+            "release policy, workflow policy, generated output, public skill behavior, or validation policy",
+            "`proposal-review` identifies silent narrowing, hidden follow-up risk, or multi-workstream scope",
+            "Small single-decision proposals may omit the scope budget.",
+            "| Work item | Treatment | Reason |",
+            "`core to this proposal`",
+            "`first-slice candidate`",
+            "`same-slice dependency`",
+            "`separate implementation slice`",
+            "`deferable follow-up`",
+            "`separate proposal`",
+            "`out of scope`",
+            "Route deferred work through the follow-up ownership model rather than chat-only notes or `project-map` ownership.",
+            "workflow routes, `project-map` orients when present, action-owning artifacts track current work, and unowned cross-change follow-ups use the follow-up ownership surface.",
+            "Do not search generated adapter output for authored skill truth.",
+            "Do not add generated public adapter skill bodies back to tracked source.",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, proposal)
+
+    def test_cost_bounded_rigor_m1_proposal_review_scope_budget_guidance(self) -> None:
+        proposal_review = (
+            ROOT / "skills" / "proposal-review" / "SKILL.md"
+        ).read_text(encoding="utf-8")
+
+        required_terms = [
+            "## Scope-budget review",
+            "Scope-budget applicability is proposal/proposal-review judgment, not validator inference.",
+            "current scope, same-slice dependencies, separate implementation slices, deferable follow-ups, separate proposals, and out-of-scope work",
+            "Return `changes-requested` when a broad or multi-workstream proposal lacks required scope-budget classification.",
+            "Return `changes-requested` when the proposal hides follow-up work, silently narrows a user request, leaves a treatment or reason blank, omits follow-up routing, or uses a misleading treatment value.",
+            "Small single-decision proposals may omit a scope budget when omission does not create silent narrowing, hidden follow-up risk, or multi-workstream ambiguity.",
+            "Do not request a scope budget solely as routine ceremony.",
+            "Accept non-standard treatment values only when they are clear and create no downstream ambiguity.",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, proposal_review)
+
+    def test_cost_bounded_rigor_m1_workflows_bounded_evidence_guidance(self) -> None:
+        workflows = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
+        evidence = extract_markdown_block(workflows, "Efficient Evidence Collection")
+
+        required_terms = [
+            "Do not broad-search authoritative documents solely for path or state discovery when narrower evidence is available.",
+            "Default evidence sequence for path or state discovery:",
+            "exact user-provided path or change ID",
+            "current handoff summary or active plan state",
+            "`change.yaml`, review log, review resolution, or release metadata",
+            "`docs/workflows.md` artifact-location map",
+            "targeted headings, stable IDs, line ranges, counts, or diffs",
+            "full-file read only when the whole file is the target or bounded evidence is insufficient",
+            "Use bounded evidence before broad reads, but do not under-read.",
+            "Expand to a broader section or full file when bounded evidence is incomplete, contradictory, or insufficient to support the claim being made.",
+            "A full-file read is required when the file itself is the review target",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, evidence)
+
+        proposal = (ROOT / "skills" / "proposal" / "SKILL.md").read_text(encoding="utf-8")
+        proposal_review = (
+            ROOT / "skills" / "proposal-review" / "SKILL.md"
+        ).read_text(encoding="utf-8")
+        for body, skill_name in ((proposal, "proposal"), (proposal_review, "proposal-review")):
+            with self.subTest(skill=skill_name, forbidden="full workflow sequence"):
+                self.assertNotIn("Default evidence sequence for path or state discovery:", body)
+
     def test_skill_contract_m3_first_slice_core_sections_and_result_blocks(self) -> None:
         for skill_name in SKILL_CONTRACT_FIRST_SLICE_SKILLS:
             body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
