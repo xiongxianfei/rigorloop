@@ -4,7 +4,7 @@
 - Owner: maintainers
 - Start date: 2026-05-14
 - Last updated: 2026-05-14
-- Related issue or PR: none yet
+- Related issue or PR: PR #56
 - Supersedes: none
 - selected_workflow_contract: standard
 - broad_smoke_required: false
@@ -72,9 +72,9 @@ M3 should not turn this into a broad rewrite. Implementation should first audit 
 - Last reviewed milestone: M1. Owner-surface audit and minimal validation-budget guidance
 - Review status: `code-review-m1-r1` clean-with-notes, no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: ready for PR handoff, not final Done
-- Reason final closeout is or is not ready: M1 implementation, code-review, explain-change, and local final verify are complete. The branch is ready for PR handoff, but the PR stage is not complete and hosted CI has not been observed.
+- Next stage: hosted CI / PR review
+- Final closeout readiness: ready
+- Reason final closeout is or is not ready: PR #56 is open; hosted CI is in progress and PR review remains downstream.
 
 ## Milestones
 
@@ -235,6 +235,7 @@ Final closeout:
 - 2026-05-14: clean `code-review-m1-r1` recorded with no material findings; M1 is closed and next stage is `explain-change`.
 - 2026-05-14: Explain-change recorded at `docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/explain-change.md`; next stage is `verify`.
 - 2026-05-14: Final local verify passed over the full changed artifact set, including selected CI, closeout-mode review validation, direct selector regression proof, artifact lifecycle validation, change metadata validation, and `git diff --check --`; branch is ready for PR handoff and next stage is `pr`.
+- 2026-05-14: PR #56 opened for review; hosted CI was in progress at handoff time.
 
 ## Decision log
 
@@ -280,9 +281,9 @@ Final closeout:
 
 ## Outcome and retrospective
 
-- Branch-ready for PR handoff after local final verify. The PR stage and hosted CI observation remain outside this verify result.
+- PR #56 is open. Hosted CI and PR review remain downstream.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `pr`, not final lifecycle Done.
+- Ready for hosted CI / PR review, not final lifecycle Done.
