@@ -83,8 +83,8 @@ Planning basis:
 
 - Current milestone: M1. Selected skill reminder audit and implementation
 - Current milestone state: closed
-- Last reviewed milestone: M1 selected skill reminder audit and implementation, reviewed by `code-review-m1-r3`
-- Review status: `code-review-m1-r3` completed clean-with-notes after resolving `CBR-M2-CR2-1`
+- Last reviewed milestone: M1 selected skill reminder audit and implementation, reviewed by `code-review-m1-r4`
+- Review status: `code-review-m1-r4` completed clean-with-notes after current-branch review
 - Remaining in-scope implementation milestones: none
 - Next stage: explain-change
 - Final closeout readiness: not ready
@@ -259,6 +259,7 @@ Implementation validation is listed in M1 and recorded below after the focused M
 - 2026-05-14: Direct `code-review-m1-r2` on the current branch requested changes for `CBR-M2-CR2-1`; M1 returned to `resolution-needed`.
 - 2026-05-14: `CBR-M2-CR2-1` accepted and resolved by replacing the exact full-sentence assertion with smaller stable behavior-cue checks; M1 returned to `review-requested` for rerun code-review.
 - 2026-05-14: `code-review-m1-r3` completed clean-with-notes after the targeted fix; M1 is closed and next stage is `explain-change`.
+- 2026-05-14: Direct current-branch `code-review-m1-r4` completed clean-with-notes; M1 remains closed and next stage remains `explain-change`.
 
 ## Decision log
 
@@ -288,6 +289,7 @@ Implementation validation is listed in M1 and recorded below after the focused M
 - 2026-05-14: Code-review r2 recording validation passed for the updated open finding state; selected CI and `git diff --check --` passed for the review/state-sync surfaces.
 - 2026-05-14: `python scripts/test-skill-validator.py` passed after resolving `CBR-M2-CR2-1`; selected CI and `git diff --check --` passed for the changed validator, review-resolution, plan, and change-metadata surfaces.
 - 2026-05-14: Rerun code-review recording validation passed for `code-review-m1-r3`; closeout-mode review-artifact validation, selected CI, and `git diff --check --` passed for the updated clean review state.
+- 2026-05-14: Direct current-branch code-review recording validation passed for `code-review-m1-r4`; closeout-mode review-artifact validation, selected CI, and `git diff --check --` passed for the updated review state.
 
 ## Outcome and retrospective
 
