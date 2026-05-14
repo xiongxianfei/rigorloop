@@ -295,4 +295,4 @@ pr
 
 ## Readiness
 
-Approved after clean spec-review. The active M5 plan has clean plan-review approval, and the M5 test spec is active pending maintainer approval before implementation.
+Approved after clean spec-review. The active M5 plan has clean plan-review approval, and the M5 test spec is active and maintainer-approved for implementation.
