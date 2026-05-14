@@ -62,19 +62,19 @@ The plan turns the approved spec into a small reviewable slice: add the shared o
 ## Current Handoff Summary
 
 - Current milestone: M1. Proposal-side stage evidence access guidance
-- Current milestone state: review-requested
-- Last reviewed milestone: none
-- Review status: plan-review approved; M1 awaiting code-review
-- Remaining in-scope implementation milestones: M1
-- Next stage: code-review M1
+- Current milestone state: closed
+- Last reviewed milestone: M1. Proposal-side stage evidence access guidance
+- Review status: `code-review-m1-r2` clean-with-notes with no open material findings
+- Remaining in-scope implementation milestones: none
+- Next stage: explain-change
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 is implemented but not code-reviewed, explain-change and final verify have not run, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M1 is closed after clean code-review and closed review-resolution, but explain-change and final verify have not run, and PR handoff is not prepared.
 
 ## Milestones
 
 ### M1. Proposal-Side Stage Evidence Access Guidance
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Implement the M1 stage evidence access contract in shared workflow guidance and proposal-side skills without selecting deferred M2 surfaces.
 - Requirements: `R1`-`R24`, `R27`-`R34`
 - Files/components likely touched:
@@ -197,7 +197,8 @@ The plan turns the approved spec into a small reviewable slice: add the shared o
 - [x] M1 implemented.
 - [x] 2026-05-14: code-review M1 R1 recorded `SEA-M1-CR1-1` for an unrelated M5 plan-index transition in the implementation commit.
 - [x] 2026-05-14: fixed `SEA-M1-CR1-1` by restoring the M5 `docs/plan.md` entry to its pre-M1 state in this milestone's committed diff while leaving the unrelated dirty M5 plan body outside M1.
-- [ ] M1 code-review completed.
+- [x] 2026-05-14: code-review M1 R2 completed clean-with-notes with no open material findings.
+- [x] M1 code-review completed.
 - [ ] explain-change completed.
 - [ ] verify completed.
 - [ ] PR handoff completed.
@@ -258,7 +259,7 @@ No mandatory operating input was removed. The touched skills now separate standi
 
 ## Outcome and Retrospective
 
-- M1 implementation is complete and awaiting code-review. Final lifecycle closeout remains blocked until code-review, any required review-resolution, explain-change, verify, and PR handoff complete.
+- M1 implementation and code-review are complete. Final lifecycle closeout remains blocked until explain-change, verify, and PR handoff complete.
 
 ## Readiness
 
