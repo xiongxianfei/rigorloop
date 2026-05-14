@@ -86,9 +86,9 @@ Planning basis:
 - Last reviewed milestone: M1 selected skill reminder audit and implementation, reviewed by `code-review-m1-r4`
 - Review status: `code-review-m1-r4` completed clean-with-notes after current-branch review
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 implementation and rerun code-review are closed, but explain-change, verify, and PR are not complete.
+- Reason final closeout is or is not ready: M1 implementation, review-resolution, code-review, and explain-change are closed, but verify and PR are not complete.
 
 ## Milestones
 
@@ -260,6 +260,7 @@ Implementation validation is listed in M1 and recorded below after the focused M
 - 2026-05-14: `CBR-M2-CR2-1` accepted and resolved by replacing the exact full-sentence assertion with smaller stable behavior-cue checks; M1 returned to `review-requested` for rerun code-review.
 - 2026-05-14: `code-review-m1-r3` completed clean-with-notes after the targeted fix; M1 is closed and next stage is `explain-change`.
 - 2026-05-14: Direct current-branch `code-review-m1-r4` completed clean-with-notes; M1 remains closed and next stage remains `explain-change`.
+- 2026-05-14: Explain-change recorded at `docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/explain-change.md`; next stage is `verify`.
 
 ## Decision log
 
@@ -290,6 +291,7 @@ Implementation validation is listed in M1 and recorded below after the focused M
 - 2026-05-14: `python scripts/test-skill-validator.py` passed after resolving `CBR-M2-CR2-1`; selected CI and `git diff --check --` passed for the changed validator, review-resolution, plan, and change-metadata surfaces.
 - 2026-05-14: Rerun code-review recording validation passed for `code-review-m1-r3`; closeout-mode review-artifact validation, selected CI, and `git diff --check --` passed for the updated clean review state.
 - 2026-05-14: Direct current-branch code-review recording validation passed for `code-review-m1-r4`; closeout-mode review-artifact validation, selected CI, and `git diff --check --` passed for the updated review state.
+- 2026-05-14: Explain-change validation passed after creating the durable explanation artifact; selected CI, review-artifact closeout validation, and `git diff --check --` passed for the updated explain-change, plan, change metadata, and review surfaces.
 
 ## Outcome and retrospective
 
@@ -298,4 +300,4 @@ Implementation validation is listed in M1 and recorded below after the focused M
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `explain-change`, not final closeout.
+- Ready for `verify`, not final closeout.
