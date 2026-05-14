@@ -4,7 +4,7 @@
 
 This record tracks material findings from formal proposal-review rounds for the stage evidence access contracts proposal.
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r3
 Review closeout: spec-review-r1
@@ -48,7 +48,7 @@ No material findings.
 
 ### code-review-m1-r1
 
-Review closeout: open
+Review closeout: closed
 
 #### SEA-M1-CR1-1
 
@@ -58,7 +58,21 @@ Owner: implementer
 Owning stage: implement M1
 Required outcome: The M1 implementation commit must not include an unrelated M5 lifecycle transition unless the synchronized M5 plan-body closeout is also intentionally in scope.
 Rationale: `docs/plan.md` moved the prior M5 plan to Done in the M1 commit while the committed M5 plan body still records active/PR-open state. The unrelated M5 plan-body closeout remains only as an unstaged local worktree change.
-Chosen action: Pending. Restore the M5 `docs/plan.md` entry to its pre-M1 location/state in the M1 diff, leave the unrelated M5 plan-body work outside M1, rerun validation, and rerun code-review.
+Chosen action: Restored the M5 `docs/plan.md` entry to its pre-M1 location/state in the M1 diff, left the unrelated M5 plan-body work outside M1, reran validation, and reran code-review.
 Safe resolution path: Restore the unrelated plan-index transition, rerun lifecycle and diff validation, then rerun code-review.
 Validation target: `docs/plan.md`, active plan, change metadata, review artifacts, and selected validation for changed M1 paths.
-Validation evidence: Pending.
+Validation evidence: `python scripts/validate-change-metadata.py docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor.md --path docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/change.yaml --path docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/review-log.md --path docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/review-resolution.md --path docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/reviews/code-review-m1-r1.md`, and `git diff --check -- docs/plan.md docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording docs/plans/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor.md` passed after the fix. `code-review-m1-r2` returned clean-with-notes.
+
+### code-review-m1-r2
+
+Review closeout: closed
+
+No material findings.
+
+## Validation Evidence
+
+- `proposal-review-r1` recorded `SEA-PR-1` and the accepted proposal revision closed it.
+- `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, and `plan-review-r1` recorded no material findings.
+- `code-review-m1-r1` recorded `SEA-M1-CR1-1`; the accepted fix restored the unrelated M5 plan-index transition out of the M1 diff.
+- `code-review-m1-r2` recorded no material findings after the fix.
+- `review-log.md` records no open findings.

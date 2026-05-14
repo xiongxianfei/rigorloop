@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-14 Stage evidence access contracts for cost-bounded rigor](plans/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor.md) - active execution plan with M1 proposal-side stage evidence access guidance implemented in `docs/workflows.md`, `proposal`, and `proposal-review`, `spec` left unchanged with rationale, and code-review next.
+- [2026-05-14 Stage evidence access contracts for cost-bounded rigor](plans/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor.md) - active execution plan with M1 proposal-side stage evidence access guidance implemented, M1 closed after clean code-review, and explain-change next.
 - [2026-05-14 Cost-bounded rigor M5 progressive-loading follow-through](plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md) - active execution plan with M5 spec approved after clean spec-review, architecture not required, clean plan-review recorded, active test spec maintainer-approved, M1 closed after clean code-review and no-change high-cost skill audit, explain-change recorded, final local verify passed, PR #58 open, hosted CI passed, broad smoke not required, and lifecycle token-cost summary not required by default.
 
 ## Blocked
