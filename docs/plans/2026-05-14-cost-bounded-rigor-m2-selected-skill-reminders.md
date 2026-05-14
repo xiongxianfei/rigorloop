@@ -82,13 +82,13 @@ Planning basis:
 ## Current Handoff Summary
 
 - Current milestone: M1. Selected skill reminder audit and implementation
-- Current milestone state: closed
-- Last reviewed milestone: M1 selected skill reminder audit and implementation, reviewed by `code-review-m1-r1`
-- Review status: `code-review-m1-r1` completed clean-with-notes with no material findings
-- Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Current milestone state: resolution-needed
+- Last reviewed milestone: M1 selected skill reminder audit and implementation, reviewed by `code-review-m1-r2`
+- Review status: `code-review-m1-r2` requested changes for `CBR-M2-CR2-1`
+- Remaining in-scope implementation milestones: M1 requires targeted review-resolution and fix; no later implementation milestones are in scope
+- Next stage: review-resolution for `CBR-M2-CR2-1`
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 implementation and code-review are closed, but explain-change, verify, and PR are not complete.
+- Reason final closeout is or is not ready: `CBR-M2-CR2-1` remains open, and explain-change, verify, and PR are not complete.
 
 ## Milestones
 
@@ -136,7 +136,7 @@ Planning basis:
 
 ### M1. Selected skill reminder audit and implementation
 
-- Milestone state: closed
+- Milestone state: resolution-needed
 - Goal: Add or confirm concise bounded-evidence reminders in `proposal`, `proposal-review`, and `workflow` without duplicating `docs/workflows.md`.
 - Requirements: M2 spec `R1`-`R19`.
 - Files/components likely touched:
@@ -256,6 +256,7 @@ Implementation validation is listed in M1 and recorded below after the focused M
 - 2026-05-14: focused static proof was added for M2 selected skill reminders. The first run failed as expected on missing `workflow` path/state lookup cues, then passed after the minimal `workflow` reminder edit.
 - 2026-05-14: M1 implementation completed and moved to review-requested; next stage is `code-review`.
 - 2026-05-14: `code-review-m1-r1` completed clean-with-notes with no material findings; M1 is closed and next stage is `explain-change`.
+- 2026-05-14: Direct `code-review-m1-r2` on the current branch requested changes for `CBR-M2-CR2-1`; M1 returned to `resolution-needed`.
 
 ## Decision log
 
@@ -282,6 +283,7 @@ Implementation validation is listed in M1 and recorded below after the focused M
 - 2026-05-14: `python scripts/measure-skill-tokens.py` completed as diagnostic evidence only: 23 skills measured, total estimated tokens 57587, `workflow/SKILL.md` estimated tokens 5296. No dynamic benchmark was required or run.
 - 2026-05-14: Final selected validation over the full changed artifact set passed with skill, generated mirror, adapter archive, review artifact, lifecycle, and change-metadata checks. `git diff --check --` also passed.
 - 2026-05-14: Code-review recording validation passed after creating `code-review-m1-r1`; selected CI was rerun with the code-review receipt included.
+- 2026-05-14: Code-review r2 recording validation passed for the updated open finding state; selected CI and `git diff --check --` passed for the review/state-sync surfaces.
 
 ## Outcome and retrospective
 
@@ -290,4 +292,4 @@ Implementation validation is listed in M1 and recorded below after the focused M
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `explain-change`, not final closeout.
+- Ready for `review-resolution` for `CBR-M2-CR2-1`, not final closeout.
