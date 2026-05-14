@@ -83,12 +83,12 @@ M5 should not convert this audit into a broad skill rewrite. If current skills a
 
 - Current milestone: M0. Plan creation and spec status settlement
 - Current milestone state: closed
-- Last reviewed milestone: none
-- Review status: `spec-review-r1` approved with no material findings
+- Last reviewed milestone: M0. Plan creation and spec status settlement
+- Review status: `plan-review-r1` approved with no material findings
 - Remaining in-scope implementation milestones: M1. High-cost skill audit and minimal follow-through
-- Next stage: plan-review
+- Next stage: test-spec
 - Final closeout readiness: not-ready
-- Reason final closeout is or is not ready: M5 spec status is settled to approved, this active plan is created, and planning validation passed. Final closeout is not ready because plan-review, test-spec, implementation, code-review, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M5 spec status is settled to approved, this active plan is created, and clean plan-review is recorded. Final closeout is not ready because test-spec, implementation, code-review, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -255,7 +255,7 @@ Before PR:
 - [x] M5 spec status normalized to approved.
 - [x] M5 plan created.
 - [x] M5 plan indexed in `docs/plan.md`.
-- [ ] Plan-review complete.
+- [x] Plan-review complete.
 - [ ] Test spec created.
 - [ ] Test spec maintainer-approved.
 - [ ] M1 implementation started.
@@ -282,12 +282,13 @@ Before PR:
 ## Validation notes
 
 - 2026-05-14: Plan creation validation passed after spec status settlement and plan-index update: selected validation, review-artifact closeout, change metadata validation, artifact lifecycle validation, selected CI, and `git diff --check --`.
+- 2026-05-14: Clean `plan-review-r1` recorded with no material findings; M5 is ready for test-spec.
 
 ## Outcome and retrospective
 
-- Not complete yet. M5 is planned and ready for `plan-review`.
+- Not complete yet. M5 is planned and plan-review approved; next stage is `test-spec`.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `plan-review`.
+- Ready for `test-spec`.
