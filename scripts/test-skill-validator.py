@@ -2406,7 +2406,9 @@ and result format.
 
         common_terms = [
             "Use bounded evidence before broad reads",
-            "Read exact ranges after locating relevant lines, then expand only when the narrower evidence is insufficient.",
+            "Read exact ranges",
+            "narrower evidence",
+            "insufficient",
             "## When full-file read is required",
             "bounded searches disagree",
         ]

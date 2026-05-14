@@ -4,7 +4,7 @@
 
 This record tracks formal review dispositions for the cost-bounded rigor M2 selected skill reminders slice.
 
-Closeout status: open
+Closeout status: closed
 
 ## Resolution Entries
 
@@ -34,7 +34,7 @@ No material findings.
 
 ### code-review-m1-r2
 
-Review closeout: open
+Review closeout: closed
 
 #### CBR-M2-CR2-1
 
@@ -44,9 +44,10 @@ Owner: implementer
 Owning stage: implement M1
 Required outcome: The M2 static proof must keep narrow, stable checks without requiring one exact full sentence where equivalent concise wording would satisfy the approved contract.
 Rationale: The approved M2 spec `R14` and active test spec `T5` prohibit static proof from requiring one exact sentence when equivalent concise wording satisfies the contract. The current validator assertion requires the exact sentence `Read exact ranges after locating relevant lines, then expand only when the narrower evidence is insufficient.` in every selected skill.
-Chosen action: Pending targeted fix.
+Chosen action: Replaced the exact full-sentence assertion with separate stable behavior-cue checks for `Read exact ranges`, `narrower evidence`, and `insufficient` while preserving selected-surface and forbidden-sequence checks.
 Safe resolution path: Replace the exact full-sentence assertion with smaller stable behavior cues or section-presence checks while preserving selected-surface and forbidden-sequence checks.
 Validation target: Rerun `python scripts/test-skill-validator.py` and selected CI for the changed paths, then rerun code-review.
+Validation evidence: `python scripts/test-skill-validator.py` passed after the targeted assertion change. Selected CI for the changed paths passed after review-resolution and plan-state sync.
 
 ## Validation Evidence
 
@@ -55,10 +56,10 @@ Validation target: Rerun `python scripts/test-skill-validator.py` and selected C
 - `plan-review-r2` recorded no material findings.
 - `code-review-m1-r1` recorded no material findings.
 - `code-review-m1-r2` recorded `CBR-M2-CR2-1`.
-- `review-log.md` records `CBR-M2-CR2-1` as open.
+- `review-log.md` records no open findings.
 
 ## Closeout Checklist
 
-- [ ] No material findings require disposition.
+- [x] No material findings require disposition.
 - [x] No `needs-decision` dispositions remain.
-- [ ] Review log has no open findings.
+- [x] Review log has no open findings.

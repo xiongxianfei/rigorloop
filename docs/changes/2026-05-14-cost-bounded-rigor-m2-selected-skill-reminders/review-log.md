@@ -68,5 +68,5 @@ Detailed record: reviews/code-review-m1-r2.md
 Record: reviews/code-review-m1-r2.md
 Resolution: review-resolution.md#code-review-m1-r2
 Material findings: CBR-M2-CR2-1
-Open findings: CBR-M2-CR2-1
+Open findings: None
 Recording status: recorded
