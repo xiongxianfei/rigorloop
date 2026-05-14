@@ -16,6 +16,7 @@ changed_files:
   - docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/change.yaml
   - docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/review-log.md
   - docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/review-resolution.md
+  - docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/explain-change.md
   - docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/reviews/proposal-review-r1.md
   - docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/reviews/proposal-review-r2.md
   - docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/reviews/proposal-review-r3.md
@@ -52,6 +53,7 @@ tests:
   - code-review-m1-r1
   - code-review-m1-r2
   - code-review-m1-r3
+  - explain-change
   - review artifact validation
   - change metadata validation
   - artifact lifecycle validation for the accepted proposal, draft spec, and review evidence
@@ -105,3 +107,5 @@ validation:
     result: clean_with_notes_no_material_findings
   - command: code-review-m1-r3
     result: clean_with_notes_current_tracked_m1_state
+  - command: explain-change
+    result: durable_change_rationale_recorded

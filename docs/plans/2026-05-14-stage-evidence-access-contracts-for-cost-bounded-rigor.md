@@ -66,9 +66,9 @@ The plan turns the approved spec into a small reviewable slice: add the shared o
 - Last reviewed milestone: M1. Proposal-side stage evidence access guidance
 - Review status: `code-review-m1-r3` clean-with-notes with no open material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 is closed after clean code-review and closed review-resolution, but explain-change and final verify have not run, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M1 is closed after clean code-review, closed review-resolution, and explain-change, but final verify has not run and PR handoff is not prepared.
 
 ## Milestones
 
@@ -199,7 +199,8 @@ The plan turns the approved spec into a small reviewable slice: add the shared o
 - [x] 2026-05-14: fixed `SEA-M1-CR1-1` by restoring the M5 `docs/plan.md` entry to its pre-M1 state in this milestone's committed diff while leaving the unrelated dirty M5 plan body outside M1.
 - [x] 2026-05-14: code-review M1 R2 completed clean-with-notes with no open material findings.
 - [x] M1 code-review completed.
-- [ ] explain-change completed.
+- [x] 2026-05-14: explain-change recorded durable rationale in `docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/explain-change.md`.
+- [x] explain-change completed.
 - [ ] verify completed.
 - [ ] PR handoff completed.
 
@@ -259,7 +260,7 @@ No mandatory operating input was removed. The touched skills now separate standi
 
 ## Outcome and Retrospective
 
-- M1 implementation and code-review are complete. Final lifecycle closeout remains blocked until explain-change, verify, and PR handoff complete.
+- M1 implementation, code-review, and explain-change are complete. Final lifecycle closeout remains blocked until verify and PR handoff complete.
 
 ## Readiness
 
