@@ -77,9 +77,9 @@ M4 should add lifecycle-summary support beside those existing report types. It s
 - Last reviewed milestone: M1. Lifecycle summary guidance, template, static proof, and first summary
 - Review status: `code-review-m1-r1` clean-with-notes with no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: ready-for-pr-handoff
-- Reason final closeout is or is not ready: M1 is closed after clean code-review, explain-change is recorded, and final local verify passed. PR handoff is not recorded yet.
+- Next stage: hosted CI / PR review
+- Final closeout readiness: pr-open-hosted-ci-pending
+- Reason final closeout is or is not ready: M1 is closed after clean code-review, explain-change is recorded, final local verify passed, and PR #57 is open with the PR body updated. Hosted CI has not been observed yet.
 
 ## Milestones
 
@@ -220,7 +220,7 @@ M4 should add lifecycle-summary support beside those existing report types. It s
 - [x] M1 code-review complete.
 - [x] Explain-change recorded.
 - [x] Verify complete.
-- [ ] PR handoff complete.
+- [x] PR handoff complete.
 
 ## Decision log
 
@@ -271,12 +271,14 @@ M4 should add lifecycle-summary support beside those existing report types. It s
 - 2026-05-14: Explain-change validation passed: selected validation, review-artifact closeout, change metadata validation, artifact lifecycle validation, selected CI, and `git diff --check --`.
 - 2026-05-14: Final local verify passed over the full changed artifact set. Selected check IDs were `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `selector.regression`, `token_cost.regression`, and `token_cost.report_regression`; `broad_smoke_required` was false.
 - 2026-05-14: Final verify support checks passed: `python scripts/test-token-cost-report-validation.py` (18 tests), review-artifact closeout validation, change metadata validation, artifact lifecycle validation for the full changed lifecycle set, selected CI, and `git diff --check --`. Hosted CI was not observed.
+- 2026-05-14: PR #57 opened for M4 and the PR body was updated with local validation evidence. Hosted CI was not observed at handoff time.
+- 2026-05-14: PR handoff state-sync validation passed for `docs/plan.md`, this plan, and change metadata: selected validation, change metadata validation, artifact lifecycle validation, selected CI, and `git diff --check --`.
 
 ## Outcome and retrospective
 
-- M1 implementation, code-review, explain-change, and local final verify are complete. Final lifecycle closeout remains pending PR handoff.
+- M1 implementation, code-review, explain-change, local final verify, and PR handoff are complete. Final lifecycle closeout remains pending hosted CI / PR review.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `pr`. Branch-ready evidence is local; hosted CI has not been observed.
+- PR #57 is open. Branch-ready evidence is local; hosted CI has not been observed.
