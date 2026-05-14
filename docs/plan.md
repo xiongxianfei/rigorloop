@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-14 Stage evidence access contracts for cost-bounded rigor](plans/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor.md) - active execution plan with M1 proposal-side stage evidence access guidance implemented, M1 closed after clean code-review, and explain-change next.
+- [2026-05-14 Stage evidence access contracts for cost-bounded rigor](plans/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor.md) - active execution plan with M1 proposal-side stage evidence access guidance implemented, M1 closed after clean code-review, explain-change recorded, and verify next.
 
 ## Blocked
 - none yet
