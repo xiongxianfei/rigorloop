@@ -82,13 +82,13 @@ Planning basis:
 ## Current Handoff Summary
 
 - Current milestone: M1. Selected skill reminder audit and implementation
-- Current milestone state: review-requested
-- Last reviewed milestone: M1 selected skill reminder audit and implementation, reviewed by `code-review-m1-r2`
-- Review status: `CBR-M2-CR2-1` accepted and resolved; M1 is ready for rerun code-review
-- Remaining in-scope implementation milestones: M1 targeted review-resolution fix is review-requested; no later implementation milestones are in scope
-- Next stage: code-review for M1 rerun
+- Current milestone state: closed
+- Last reviewed milestone: M1 selected skill reminder audit and implementation, reviewed by `code-review-m1-r3`
+- Review status: `code-review-m1-r3` completed clean-with-notes after resolving `CBR-M2-CR2-1`
+- Remaining in-scope implementation milestones: none
+- Next stage: explain-change
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 needs rerun code-review after the targeted fix, and explain-change, verify, and PR are not complete.
+- Reason final closeout is or is not ready: M1 implementation and rerun code-review are closed, but explain-change, verify, and PR are not complete.
 
 ## Milestones
 
@@ -136,7 +136,7 @@ Planning basis:
 
 ### M1. Selected skill reminder audit and implementation
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Add or confirm concise bounded-evidence reminders in `proposal`, `proposal-review`, and `workflow` without duplicating `docs/workflows.md`.
 - Requirements: M2 spec `R1`-`R19`.
 - Files/components likely touched:
@@ -258,6 +258,7 @@ Implementation validation is listed in M1 and recorded below after the focused M
 - 2026-05-14: `code-review-m1-r1` completed clean-with-notes with no material findings; M1 is closed and next stage is `explain-change`.
 - 2026-05-14: Direct `code-review-m1-r2` on the current branch requested changes for `CBR-M2-CR2-1`; M1 returned to `resolution-needed`.
 - 2026-05-14: `CBR-M2-CR2-1` accepted and resolved by replacing the exact full-sentence assertion with smaller stable behavior-cue checks; M1 returned to `review-requested` for rerun code-review.
+- 2026-05-14: `code-review-m1-r3` completed clean-with-notes after the targeted fix; M1 is closed and next stage is `explain-change`.
 
 ## Decision log
 
@@ -286,6 +287,7 @@ Implementation validation is listed in M1 and recorded below after the focused M
 - 2026-05-14: Code-review recording validation passed after creating `code-review-m1-r1`; selected CI was rerun with the code-review receipt included.
 - 2026-05-14: Code-review r2 recording validation passed for the updated open finding state; selected CI and `git diff --check --` passed for the review/state-sync surfaces.
 - 2026-05-14: `python scripts/test-skill-validator.py` passed after resolving `CBR-M2-CR2-1`; selected CI and `git diff --check --` passed for the changed validator, review-resolution, plan, and change-metadata surfaces.
+- 2026-05-14: Rerun code-review recording validation passed for `code-review-m1-r3`; closeout-mode review-artifact validation, selected CI, and `git diff --check --` passed for the updated clean review state.
 
 ## Outcome and retrospective
 
@@ -294,4 +296,4 @@ Implementation validation is listed in M1 and recorded below after the focused M
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for rerun `code-review` for M1, not final closeout.
+- Ready for `explain-change`, not final closeout.

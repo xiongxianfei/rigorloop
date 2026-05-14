@@ -70,3 +70,16 @@ Resolution: review-resolution.md#code-review-m1-r2
 Material findings: CBR-M2-CR2-1
 Open findings: None
 Recording status: recorded
+
+### Review entry
+Review ID: code-review-m1-r3
+Stage: code-review
+Round: 3
+Reviewed artifact: commit f941098
+Status: clean-with-notes
+Detailed record: reviews/code-review-m1-r3.md
+Record: reviews/code-review-m1-r3.md
+Resolution: review-resolution.md#code-review-m1-r3
+Material findings: None
+Open findings: None
+Recording status: recorded

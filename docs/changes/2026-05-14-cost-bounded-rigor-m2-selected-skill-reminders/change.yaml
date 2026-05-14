@@ -27,6 +27,7 @@ requirements:
   - Record first-pass code-review for M1 before downstream explain-change.
   - Record direct second-pass code-review finding before review-resolution.
   - Resolve CBR-M2-CR2-1 before rerun code-review.
+  - Record clean rerun code-review before downstream explain-change.
   - Preserve the boundary that M2 must not absorb validation-budget, lifecycle-token-summary, release, adapter, dynamic benchmark, or progressive-loading work.
 tests:
   - Plan index and M1 plan lifecycle state validation.
@@ -45,6 +46,7 @@ tests:
   - Clean M1 code-review receipt and review-log validation.
   - Direct M1 code-review finding record and open review-resolution validation.
   - Targeted CBR-M2-CR2-1 review-resolution fix validation.
+  - Clean rerun code-review receipt and closeout validation.
   - Selected lifecycle validation for changed plan and review artifacts.
 validation:
   - command: python scripts/select-validation.py --mode explicit --path docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plan.md
@@ -179,6 +181,14 @@ validation:
     result: pass_selected_ci_after_CBR-M2-CR2-1_resolution
   - command: git diff --check -- scripts/test-skill-validator.py docs/plan.md docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders
     result: pass_after_CBR-M2-CR2-1_resolution
+  - command: code-review-m1-r3
+    result: clean_with_notes_after_CBR-M2-CR2-1_resolution_M1_closed_ready_for_explain_change
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders
+    result: pass_closeout_after_code_review_m1_r3
+  - command: bash scripts/ci.sh --mode explicit --path scripts/test-skill-validator.py --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-resolution.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/code-review-m1-r2.md --path docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/code-review-m1-r3.md
+    result: pass_selected_ci_after_code_review_m1_r3
+  - command: git diff --check -- scripts/test-skill-validator.py docs/plan.md docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders
+    result: pass_after_code_review_m1_r3
 changed_files:
   - docs/plan.md
   - docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md
@@ -195,8 +205,11 @@ changed_files:
   - docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/plan-review-r2.md
   - docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/code-review-m1-r1.md
   - docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/code-review-m1-r2.md
+  - docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/code-review-m1-r3.md
 review:
-  status: review_requested
+  status: clean
   unresolved_items: 0
-  location: docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-resolution.md
-  latest_review: docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/code-review-m1-r2.md
+  reviewed_artifact: commit f941098
+  review_log: docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-log.md
+  review_resolution: docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/review-resolution.md
+  latest_review: docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/reviews/code-review-m1-r3.md

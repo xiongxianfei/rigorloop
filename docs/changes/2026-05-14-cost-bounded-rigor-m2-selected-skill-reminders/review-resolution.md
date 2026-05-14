@@ -49,6 +49,12 @@ Safe resolution path: Replace the exact full-sentence assertion with smaller sta
 Validation target: Rerun `python scripts/test-skill-validator.py` and selected CI for the changed paths, then rerun code-review.
 Validation evidence: `python scripts/test-skill-validator.py` passed after the targeted assertion change. Selected CI for the changed paths passed after review-resolution and plan-state sync.
 
+### code-review-m1-r3
+
+Review closeout: closed
+
+No material findings.
+
 ## Validation Evidence
 
 - `plan-review-r1` recorded no material findings.
@@ -56,6 +62,7 @@ Validation evidence: `python scripts/test-skill-validator.py` passed after the t
 - `plan-review-r2` recorded no material findings.
 - `code-review-m1-r1` recorded no material findings.
 - `code-review-m1-r2` recorded `CBR-M2-CR2-1`.
+- `code-review-m1-r3` recorded no material findings after the targeted fix.
 - `review-log.md` records no open findings.
 
 ## Closeout Checklist
