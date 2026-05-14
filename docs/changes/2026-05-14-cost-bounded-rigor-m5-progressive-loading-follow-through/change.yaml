@@ -192,7 +192,7 @@ validation:
   - command: gh pr create --base main --head feat/cost-bounded-rigor-m5-progressive-loading-follow-through-spec --title "docs: record M5 progressive-loading follow-through" --body-file /tmp/rigorloop-m5-progressive-loading-pr-body.md
     result: opened_pr_58
   - command: gh pr checks 58 --watch=false
-    result: hosted_ci_pending
+    result: hosted_ci_pending_initial_pr_handoff
   - command: python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
     result: pass_pr_handoff_state_sync
   - command: python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
@@ -203,6 +203,8 @@ validation:
     result: pass_pr_handoff_state_sync
   - command: git diff --check --
     result: pass_pr_handoff_state_sync
+  - command: gh pr checks 58 --watch=false
+    result: no_checks_reported_after_final_handoff_push
 changed_files:
   - docs/plan.md
   - docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md
