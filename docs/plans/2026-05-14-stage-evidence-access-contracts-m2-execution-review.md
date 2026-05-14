@@ -73,14 +73,14 @@ The goal is to make high-cost execution/review stages start from a smallest suff
 
 ## Current Handoff Summary
 
-- Current milestone: M1. M2 test-spec alignment
+- Current milestone: M2. Implement execution/review evidence guidance
 - Current milestone state: planned
 - Last reviewed milestone: planning
 - Review status: `plan-review-r1` approved with no material findings
-- Remaining in-scope implementation milestones: M1. M2 test-spec alignment; M2. Implement execution/review evidence guidance
-- Next stage: test-spec
+- Remaining in-scope implementation milestones: M2. Implement execution/review evidence guidance
+- Next stage: implement
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: plan-review is approved, but M2 test-spec alignment, implementation, code-review, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: plan-review is approved and M2 test-spec alignment is complete, but implementation, code-review, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -118,10 +118,10 @@ The goal is to make high-cost execution/review stages start from a smallest suff
   - Implementation can proceed without relying on chat-only M2 test expectations.
 - Commit message: `M1: align stage evidence access M2 test spec`
 - Milestone closeout:
-  - [ ] validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
+  - [x] validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
   - [ ] milestone committed
 - Risks:
   - The test spec may overfit wording instead of stable concepts.
@@ -249,7 +249,8 @@ The goal is to make high-cost execution/review stages start from a smallest suff
 - [x] 2026-05-14: draft M2 plan created.
 - [x] 2026-05-14: plan-review R1 approved the M2 plan with no material findings.
 - [x] plan-review completed.
-- [ ] M2 test-spec alignment completed.
+- [x] 2026-05-14: M2 test-spec alignment added direct proof cases for `implement`, `code-review`, and M2 selected validation/lifecycle coherence.
+- [x] M2 test-spec alignment completed.
 - [ ] M2 implementation completed.
 - [ ] M2 code-review completed.
 - [ ] explain-change completed.
@@ -261,6 +262,7 @@ The goal is to make high-cost execution/review stages start from a smallest suff
 - 2026-05-14: Start M2 as a separate plan instead of reopening the completed M1 plan. Reason: M1 intentionally closed proposal-side scope and deferred execution/review evidence access.
 - 2026-05-14: Include a test-spec alignment milestone before skill edits. Reason: the current test spec is M1-centered and should name M2 proof before implementation changes `implement` and `code-review`.
 - 2026-05-14: Keep `plan` as future-slice design context. Reason: the approved spec says `plan` remains future-slice unless later promoted.
+- 2026-05-14: Update the existing active stage evidence access test spec instead of creating a separate M2 test spec. Reason: the approved spec is unchanged and the existing test spec remains the active proof-planning surface for the same stage evidence access contract.
 
 ## Surprises and Discoveries
 
@@ -291,6 +293,12 @@ Expected classifications:
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md --path docs/plan.md --path specs/stage-evidence-access-contracts-for-cost-bounded-rigor.md`
   - `git diff --check -- docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md docs/plan.md`
 - Plan-review R1 recorded no material findings in `docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/reviews/plan-review-r1.md`.
+- M2 test-spec alignment validation passed:
+  - `python scripts/select-validation.py --mode explicit --path specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md --path docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md --path docs/plan.md --path docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md --path docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md --path docs/plan.md`
+  - `python scripts/test-change-metadata-validator.py`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/change.yaml`
+  - `git diff --check -- specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md docs/plan.md docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review`
 
 ## Outcome and Retrospective
 
