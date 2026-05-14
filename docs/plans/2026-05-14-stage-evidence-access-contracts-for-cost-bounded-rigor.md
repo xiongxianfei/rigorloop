@@ -195,6 +195,8 @@ The plan turns the approved spec into a small reviewable slice: add the shared o
 - [x] 2026-05-14: added concise evidence-access sections to `skills/proposal/SKILL.md` and `skills/proposal-review/SKILL.md`.
 - [x] 2026-05-14: left `skills/spec/SKILL.md` unchanged with no-change rationale recorded below.
 - [x] M1 implemented.
+- [x] 2026-05-14: code-review M1 R1 recorded `SEA-M1-CR1-1` for an unrelated M5 plan-index transition in the implementation commit.
+- [x] 2026-05-14: fixed `SEA-M1-CR1-1` by restoring the M5 `docs/plan.md` entry to its pre-M1 state in this milestone's committed diff while leaving the unrelated dirty M5 plan body outside M1.
 - [ ] M1 code-review completed.
 - [ ] explain-change completed.
 - [ ] verify completed.
@@ -236,6 +238,12 @@ No mandatory operating input was removed. The touched skills now separate standi
 
 - Test-first proof:
   - `python scripts/test-skill-validator.py` failed before guidance edits because the new stage evidence access checks were not yet satisfied.
+- Review-driven fix proof:
+  - `code-review-m1-r1` found `SEA-M1-CR1-1`.
+  - Restored the unrelated M5 plan-index transition out of the M1 diff.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/change.yaml` passed.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor.md --path docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/change.yaml --path docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/review-log.md --path docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/review-resolution.md --path docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/reviews/code-review-m1-r1.md` passed.
+  - `git diff --check -- docs/plan.md docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording docs/plans/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor.md` passed.
 - M1 validation passed:
   - `python scripts/test-skill-validator.py`
   - `python scripts/validate-skills.py`
