@@ -1,6 +1,6 @@
 # Cost-Bounded Rigor M3 Validation-Budget Guidance Plan
 
-- Status: active
+- Status: done
 - Owner: maintainers
 - Start date: 2026-05-14
 - Last updated: 2026-05-14
@@ -72,9 +72,9 @@ M3 should not turn this into a broad rewrite. Implementation should first audit 
 - Last reviewed milestone: M1. Owner-surface audit and minimal validation-budget guidance
 - Review status: `code-review-m1-r1` clean-with-notes, no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: hosted CI / PR review
-- Final closeout readiness: ready
-- Reason final closeout is or is not ready: PR #56 is open; hosted CI is in progress and PR review remains downstream.
+- Next stage: done
+- Final closeout readiness: complete
+- Reason final closeout is or is not ready: PR #56 merged. M3 lifecycle work is complete; later cost-bounded-rigor work continues through separate accepted slices.
 
 ## Milestones
 
@@ -281,9 +281,9 @@ Final closeout:
 
 ## Outcome and retrospective
 
-- PR #56 is open. Hosted CI and PR review remain downstream.
+- PR #56 merged. M3 added validation-budget owner-surface guidance and stable static proof without changing selector behavior, release behavior, adapter packaging, lifecycle token-cost summaries, dynamic benchmark requirements, hard token gates, or progressive-loading work.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for hosted CI / PR review, not final lifecycle Done.
+- Done after merged PR #56. The next cost-bounded-rigor slice is M4 lifecycle token-cost summary specification.
