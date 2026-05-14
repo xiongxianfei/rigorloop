@@ -2395,6 +2395,53 @@ and result format.
             with self.subTest(skill=skill_name, forbidden="full workflow sequence"):
                 self.assertNotIn("Default evidence sequence for path or state discovery:", body)
 
+    def test_cost_bounded_rigor_m2_selected_skill_reminders(self) -> None:
+        selected_skills = {
+            "proposal": (ROOT / "skills" / "proposal" / "SKILL.md").read_text(encoding="utf-8"),
+            "proposal-review": (
+                ROOT / "skills" / "proposal-review" / "SKILL.md"
+            ).read_text(encoding="utf-8"),
+            "workflow": (ROOT / "skills" / "workflow" / "SKILL.md").read_text(encoding="utf-8"),
+        }
+
+        common_terms = [
+            "Use bounded evidence before broad reads",
+            "Read exact ranges",
+            "narrower evidence",
+            "insufficient",
+            "## When full-file read is required",
+            "bounded searches disagree",
+        ]
+        for skill_name, body in selected_skills.items():
+            for term in common_terms:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, body)
+            with self.subTest(skill=skill_name, forbidden="full workflow sequence"):
+                self.assertNotIn("Default evidence sequence for path or state discovery:", body)
+
+        for skill_name in ["proposal", "proposal-review"]:
+            body = selected_skills[skill_name]
+            for term in [
+                "Do not broad-search authoritative documents just to find paths.",
+                "Use `docs/workflows.md` as the path index",
+                "active plan, change metadata, reviewed artifact path, or current artifact metadata",
+            ]:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, body)
+
+        workflow = selected_skills["workflow"]
+        for term in [
+            "path or state lookup",
+            "active plan",
+            "current artifact metadata",
+            "`docs/workflows.md`",
+            "targeted headings",
+            "broader searches",
+            "incomplete, contradictory, or insufficient",
+        ]:
+            with self.subTest(skill="workflow", term=term):
+                self.assertIn(term, workflow)
+
     def test_skill_contract_m3_first_slice_core_sections_and_result_blocks(self) -> None:
         for skill_name in SKILL_CONTRACT_FIRST_SLICE_SKILLS:
             body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
