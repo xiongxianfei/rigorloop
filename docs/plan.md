@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-14 Stage evidence access contracts M2 execution/review evidence access](plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md) - active execution plan for adding M2 evidence-access guidance to `implement` and `code-review`; M2 implementation, clean code-review, explain-change, and final local verify are complete and PR handoff is next.
+- [2026-05-14 Stage evidence access contracts M2 execution/review evidence access](plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md) - active execution plan for adding M2 evidence-access guidance to `implement` and `code-review`; PR #60 is open after M2 implementation, clean code-review, explain-change, and final local verify, with hosted CI pending.
 
 ## Blocked
 - none yet
