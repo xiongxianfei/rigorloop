@@ -73,13 +73,13 @@ M4 should add lifecycle-summary support beside those existing report types. It s
 ## Current Handoff Summary
 
 - Current milestone: M1. Lifecycle summary guidance, template, static proof, and first summary
-- Current milestone state: review-requested
-- Last reviewed milestone: none
-- Review status: spec-review-r1 and plan-review-r1 approved with no material findings; M1 implementation complete and awaiting code-review
-- Remaining in-scope implementation milestones: M1 awaiting code-review
-- Next stage: code-review
-- Final closeout readiness: not-ready
-- Reason final closeout is or is not ready: M1 is implemented but not code-reviewed, explain-change and verify are not recorded, and PR handoff has not happened.
+- Current milestone state: closed
+- Last reviewed milestone: M1. Lifecycle summary guidance, template, static proof, and first summary
+- Review status: `code-review-m1-r1` clean-with-notes with no material findings
+- Remaining in-scope implementation milestones: none
+- Next stage: pr
+- Final closeout readiness: ready-for-pr-handoff
+- Reason final closeout is or is not ready: M1 is closed after clean code-review, explain-change is recorded, and final local verify passed. PR handoff is not recorded yet.
 
 ## Milestones
 
@@ -128,7 +128,7 @@ M4 should add lifecycle-summary support beside those existing report types. It s
 
 ### M1. Lifecycle summary guidance, template, static proof, and first summary
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Add the smallest useful lifecycle-summary support: contributor-facing guidance, a reusable template, focused proof for stable report sections/path coverage, and one diagnostic M4 summary because this plan classifies M4 as a large workflow-governance change.
 - Requirements: `R1`-`R29`.
 - Files/components likely touched:
@@ -217,9 +217,9 @@ M4 should add lifecycle-summary support beside those existing report types. It s
 - [x] Test spec maintainer-approved.
 - [x] M1 implementation started.
 - [x] M1 implemented.
-- [ ] M1 code-review complete.
-- [ ] Explain-change recorded.
-- [ ] Verify complete.
+- [x] M1 code-review complete.
+- [x] Explain-change recorded.
+- [x] Verify complete.
 - [ ] PR handoff complete.
 
 ## Decision log
@@ -265,12 +265,18 @@ M4 should add lifecycle-summary support beside those existing report types. It s
 - 2026-05-14: Token-cost report validation suite passed: `python scripts/test-token-cost-report-validation.py` ran 18 tests successfully.
 - 2026-05-14: M1 selected validation passed for `docs/workflows.md`, `templates/lifecycle-token-cost-summary.md`, the M4 lifecycle summary, `scripts/test-token-cost-report-validation.py`, this plan, `docs/plan.md`, and change metadata. Selected check IDs were `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `selector.regression`, `token_cost.regression`, and `token_cost.report_regression`; `broad_smoke_required` was false.
 - 2026-05-14: Full branch-changed selected CI passed for the complete M4 artifact set, including review artifacts, lifecycle artifacts, workflow guidance, template, lifecycle summary, and token-cost tests. Selected check IDs were `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `selector.regression`, `token_cost.regression`, and `token_cost.report_regression`.
+- 2026-05-14: `code-review-m1-r1` recorded clean-with-notes with no material findings. M1 is closed, no review-resolution is required, and the next stage is `explain-change`.
+- 2026-05-14: Code-review recording validation passed: selected validation, review-artifact closeout, change metadata validation, artifact lifecycle validation, selected CI, and `git diff --check --`.
+- 2026-05-14: Explain-change recorded durable rationale for the M4 diff, including why before/after dynamic benchmark comparison was not required.
+- 2026-05-14: Explain-change validation passed: selected validation, review-artifact closeout, change metadata validation, artifact lifecycle validation, selected CI, and `git diff --check --`.
+- 2026-05-14: Final local verify passed over the full changed artifact set. Selected check IDs were `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `selector.regression`, `token_cost.regression`, and `token_cost.report_regression`; `broad_smoke_required` was false.
+- 2026-05-14: Final verify support checks passed: `python scripts/test-token-cost-report-validation.py` (18 tests), review-artifact closeout validation, change metadata validation, artifact lifecycle validation for the full changed lifecycle set, selected CI, and `git diff --check --`. Hosted CI was not observed.
 
 ## Outcome and retrospective
 
-- M1 implementation is complete and ready for code-review. Final lifecycle closeout remains pending code-review, explain-change, verify, and PR handoff.
+- M1 implementation, code-review, explain-change, and local final verify are complete. Final lifecycle closeout remains pending PR handoff.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `code-review` of M1. Not ready for final closeout or PR until M1 is reviewed, explained, and verified.
+- Ready for `pr`. Branch-ready evidence is local; hosted CI has not been observed.
