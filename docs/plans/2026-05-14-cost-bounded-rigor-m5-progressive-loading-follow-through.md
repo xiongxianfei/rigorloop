@@ -86,9 +86,9 @@ M5 should not convert this audit into a broad skill rewrite. If current skills a
 - Last reviewed milestone: M1. High-cost skill audit and minimal follow-through
 - Review status: `code-review-m1-r1` clean-with-notes with no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
-- Final closeout readiness: not-ready
-- Reason final closeout is or is not ready: M1 is closed after clean code-review, no review-resolution is required, and explain-change is recorded. Final closeout is not ready because verify and PR handoff remain.
+- Next stage: pr
+- Final closeout readiness: branch-ready
+- Reason final closeout is or is not ready: M1 is closed after clean code-review, no review-resolution is required, explain-change is recorded, and final local verify passed. Final lifecycle completion is not done because PR handoff remains.
 
 ## Milestones
 
@@ -263,7 +263,7 @@ Before PR:
 - [x] M1 implemented.
 - [x] M1 code-review complete.
 - [x] Explain-change recorded.
-- [ ] Verify complete.
+- [x] Verify complete.
 - [ ] PR handoff complete.
 
 ## Decision log
@@ -308,12 +308,13 @@ Before PR:
 - 2026-05-14: `code-review-m1-r1` recorded `clean-with-notes` with no material findings. M1 is closed, no review-resolution is required, and the next stage is `explain-change`.
 - 2026-05-14: Code-review recording validation passed: selected validation, review-artifact closeout, change metadata validation, artifact lifecycle validation, selected CI, and `git diff --check --`.
 - 2026-05-14: Explain-change recorded for the M5 no-change high-cost skill audit, including affected/unaffected surfaces, static-token no-run rationale, dynamic-benchmark no-run rationale, and lifecycle-summary no-trigger rationale. Explain-change validation passed: selected validation, review-artifact closeout, change metadata validation, artifact lifecycle validation, selected CI, and `git diff --check --`. Next stage is `verify`.
+- 2026-05-14: Final local verify passed for the full changed artifact set. Support proof passed with `python scripts/test-skill-validator.py` (81 tests), selected validation reported `broad_smoke_required` false, selected CI passed `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`, review-artifact closeout validation passed, change metadata validation passed, artifact lifecycle validation passed, and `git diff --check --` passed. Hosted CI was not observed. Branch-ready evidence is recorded for PR handoff.
 
 ## Outcome and retrospective
 
-- Not complete yet. M1 implementation, code-review, and explain-change are complete; final closeout remains blocked on verify and PR handoff.
+- Not complete yet. M1 implementation, code-review, explain-change, and final local verify are complete; final lifecycle completion remains blocked on PR handoff.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `verify`.
+- Branch-ready for `pr` handoff.
