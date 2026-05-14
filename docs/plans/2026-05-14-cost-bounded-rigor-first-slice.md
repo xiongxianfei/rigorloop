@@ -1,10 +1,10 @@
 # Cost-Bounded Rigor First Slice Plan
 
-- Status: active
+- Status: done
 - Owner: maintainers
 - Start date: 2026-05-14
 - Last updated: 2026-05-14
-- Related issue or PR: none yet
+- Related issue or PR: [PR #54](https://github.com/xiongxianfei/rigorloop/pull/54)
 - Supersedes: none
 - selected_workflow_contract: standard
 - broad_smoke_required: false
@@ -92,10 +92,10 @@ Validation context:
 - Review status: code-review completed `clean-with-notes` in `code-review-r1` with no material findings
 - Test-spec status: active and maintainer-approved on 2026-05-14
 - Remaining in-scope implementation milestones: none
-- Verify status: passed on tracked branch tip from a clean temporary worktree
-- Next stage: pr
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: PR handoff is still required.
+- Verify status: passed on tracked branch tip from a clean temporary worktree; PR #54 hosted CI passed
+- Next stage: none
+- Final closeout readiness: complete
+- Reason final closeout is or is not ready: PR #54 was opened, hosted CI passed, and the PR was merged on 2026-05-14.
 
 ## Milestones
 
@@ -218,6 +218,7 @@ Final verification before PR should include:
 - 2026-05-14: `code-review-r1` reviewed M1 implementation commit `dc59864bdc4f36a248be573c551b553c501dd0d6` and returned `clean-with-notes` with no material findings. M1 is closed; next stage is `explain-change`.
 - 2026-05-14: `explain-change.md` recorded durable rationale for M1 scope, diff areas, validation evidence, review outcomes, rejected alternatives, and no-dynamic-benchmark rationale. Next stage is `verify`.
 - 2026-05-14: final verify passed against tracked branch tip `360ebe8` from clean temporary worktree `/tmp/rigorloop-verify-cost-bounded-360ebe8`. Branch-ready is satisfied for the tracked change pack; next stage is `pr`.
+- 2026-05-14: PR #54 opened for the M1 change pack plus project-map selector coverage, hosted CI passed, and the PR merged. This first-slice plan is complete.
 
 ## Decision log
 
@@ -279,9 +280,12 @@ Final verification before PR should include:
 
 ## Outcome and retrospective
 
-- Keep this section final-only or explicitly historical while the plan is active; do not duplicate the current next stage here.
+- M1 delivered scope-budget guidance in `proposal`, scope-budget review checks in `proposal-review`, and bounded evidence/path-search guidance in `docs/workflows.md`.
+- Focused static proof, selected CI, lifecycle validation, review-artifact closeout, static token measurement, code review, explain-change, final verify, and PR handoff completed.
+- Project-map selector coverage was included in PR #54 as adjacent project-map maintenance requested after the M1 verify. It does not close later cost-bounded-rigor roadmap slices.
+- Deferred roadmap slices remain: selected skill reminders, validation-budget guidance, lifecycle token-cost summaries, and progressive-loading follow-through.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- M1 implementation is closed after clean code-review, durable rationale is recorded, and final verify passed against the tracked branch tip. Ready for `pr`.
+- No next stage for this plan.
