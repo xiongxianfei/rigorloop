@@ -2,7 +2,7 @@
 
 ## Status
 
-draft
+approved
 
 ## Related proposal
 
@@ -240,8 +240,9 @@ pr
 
 ## Follow-on artifacts
 
-None yet.
+- [Spec Review R1](../docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/reviews/spec-review-r1.md)
+- [Execution Plan](../docs/plans/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance.md)
 
 ## Readiness
 
-Draft ready for spec-review. Not ready for planning, test-spec, or implementation until spec-review approves the M3 contract and the spec status is normalized to `approved`.
+Approved after clean spec-review. Ready for plan-review of the focused M3 execution plan; not ready for test-spec or implementation until plan-review approves the plan state.
