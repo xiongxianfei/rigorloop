@@ -80,7 +80,7 @@ The goal is to make high-cost execution/review stages start from a smallest suff
 - Remaining in-scope implementation milestones: M2. Implement execution/review evidence guidance
 - Next stage: implement
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: plan-review is approved and M2 test-spec alignment is complete, but implementation, code-review, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: plan-review and the M2 test-spec alignment are approved, but implementation, code-review, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -250,6 +250,7 @@ The goal is to make high-cost execution/review stages start from a smallest suff
 - [x] 2026-05-14: plan-review R1 approved the M2 plan with no material findings.
 - [x] plan-review completed.
 - [x] 2026-05-14: M2 test-spec alignment added direct proof cases for `implement`, `code-review`, and M2 selected validation/lifecycle coherence.
+- [x] 2026-05-14: maintainer approved the M2 test-spec alignment by direct user request.
 - [x] M2 test-spec alignment completed.
 - [ ] M2 implementation completed.
 - [ ] M2 code-review completed.
@@ -299,6 +300,7 @@ Expected classifications:
   - `python scripts/test-change-metadata-validator.py`
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/change.yaml`
   - `git diff --check -- specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md docs/plan.md docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review`
+- M2 test-spec alignment approval recorded in `specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md`.
 
 ## Outcome and Retrospective
 

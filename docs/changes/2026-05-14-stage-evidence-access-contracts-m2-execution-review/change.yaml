@@ -54,3 +54,5 @@ validation:
     result: passed_after_test_spec_alignment
   - command: git diff --check -- specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md docs/plan.md docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review
     result: passed_after_test_spec_alignment
+  - command: maintainer approval
+    result: approved_m2_test_spec_alignment_by_direct_user_request

@@ -8,6 +8,8 @@ active
 
 Maintainer-approved on 2026-05-14 by direct user request. Status remains `active` because this test spec is the relied-on proof-planning surface for M1 implementation and M2 execution/review evidence access.
 
+M2 alignment approved on 2026-05-14 by direct user request after `M1: align stage evidence access M2 test spec`.
+
 ## Related spec and plan
 
 - Spec: [Stage Evidence Access Contracts for Cost-Bounded Rigor](stage-evidence-access-contracts-for-cost-bounded-rigor.md)
