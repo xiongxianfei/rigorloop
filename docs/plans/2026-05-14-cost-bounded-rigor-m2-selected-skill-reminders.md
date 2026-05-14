@@ -1,10 +1,10 @@
 # Cost-Bounded Rigor M2 Selected Skill Reminders Plan
 
-- Status: active
+- Status: done
 - Owner: maintainers
 - Start date: 2026-05-14
 - Last updated: 2026-05-14
-- Related issue or PR: none yet
+- Related issue or PR: PR #55
 - Supersedes: none
 - selected_workflow_contract: standard
 - broad_smoke_required: false
@@ -86,9 +86,9 @@ Planning basis:
 - Last reviewed milestone: M1 selected skill reminder audit and implementation, reviewed by `code-review-m1-r4`
 - Review status: `code-review-m1-r4` completed clean-with-notes after current-branch review
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: ready for PR handoff, not final Done
-- Reason final closeout is or is not ready: M1 implementation, review-resolution, code-review, explain-change, and local final verify are closed. The branch is ready for PR handoff, but the PR stage is not complete and hosted CI has not been observed.
+- Next stage: none
+- Final closeout readiness: closed
+- Reason final closeout is or is not ready: M1 implementation, review-resolution, code-review, explain-change, local final verify, PR handoff, and merged PR #55 are complete.
 
 ## Milestones
 
@@ -262,6 +262,7 @@ Implementation validation is listed in M1 and recorded below after the focused M
 - 2026-05-14: Direct current-branch `code-review-m1-r4` completed clean-with-notes; M1 remains closed and next stage remains `explain-change`.
 - 2026-05-14: Explain-change recorded at `docs/changes/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders/explain-change.md`; next stage is `verify`.
 - 2026-05-14: Final local verify passed over the full changed artifact set, including selected CI, closeout-mode review validation, direct skill-validator proof, diagnostic static skill token measurement, and `git diff --check --`; branch is ready for PR handoff and next stage is `pr`.
+- 2026-05-14: PR #55 merged the M2 selected skill reminder slice; plan state moved to done.
 
 ## Decision log
 
@@ -298,9 +299,9 @@ Implementation validation is listed in M1 and recorded below after the focused M
 
 ## Outcome and retrospective
 
-- Branch-ready for PR handoff after local final verify. The PR stage and hosted CI observation remain outside this verify result.
+- Done after merged PR #55.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `pr`, not final lifecycle Done.
+- Closed.
