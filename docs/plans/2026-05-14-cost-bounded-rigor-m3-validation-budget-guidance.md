@@ -67,14 +67,14 @@ M3 should not turn this into a broad rewrite. Implementation should first audit 
 
 ## Current Handoff Summary
 
-- Current milestone: M0. Plan creation
-- Current milestone state: closed
+- Current milestone: M1. Owner-surface audit and minimal validation-budget guidance
+- Current milestone state: review-requested
 - Last reviewed milestone: M0. Plan creation
-- Review status: plan-review-r1 approved with no material findings
+- Review status: M1 implementation ready for code-review; no code-review has run yet
 - Remaining in-scope implementation milestones: M1
-- Next stage: implement
+- Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 has an approved spec, reviewed active plan, and active test spec, but implementation, code-review, explain-change, verify, and PR are not complete.
+- Reason final closeout is or is not ready: M1 implementation and targeted validation are complete, but code-review, explain-change, verify, and PR are not complete.
 
 ## Milestones
 
@@ -124,7 +124,7 @@ M3 should not turn this into a broad rewrite. Implementation should first audit 
 
 ### M1. Owner-surface audit and minimal validation-budget guidance
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Implement the smallest guidance or static-proof update needed for M3 validation-budget behavior, after auditing owner surfaces.
 - Requirements: M3 spec `R1`-`R19`.
 - Files/components likely touched:
@@ -172,11 +172,11 @@ M3 should not turn this into a broad rewrite. Implementation should first audit 
   - no release, adapter, token-cost, dynamic benchmark, hard-token-gate, or progressive-loading scope is added.
 - Commit message: `M1: add validation-budget guidance`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] targeted validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed, when this implementation commit is created
 - Risks:
   - static proof could become brittle by freezing exact prose;
   - guidance could imply broad smoke is optional when an authoritative trigger requires it;
@@ -230,6 +230,8 @@ Final closeout:
 - 2026-05-14: M3 spec status normalized to `approved`; active M3 plan created; next stage is `plan-review`.
 - 2026-05-14: clean `plan-review-r1` recorded with no material findings; active M3 test spec created at `specs/cost-bounded-rigor-m3-validation-budget-guidance.test.md`; next stage is `implement`.
 - 2026-05-14: active M3 test spec maintainer-approved by direct user request; next stage remains `implement`.
+- 2026-05-14: M1 implementation started with static proof for validation owner-surface wording before editing `docs/workflows.md`.
+- 2026-05-14: M1 implementation added validation owner-surface guidance to `docs/workflows.md`, updated stable static proof in `scripts/test-select-validation.py`, recorded owner-surface rationale, and is ready for `code-review`.
 
 ## Decision log
 
@@ -237,16 +239,36 @@ Final closeout:
 - 2026-05-14: Do not plan edits to `implement`, `code-review`, or `verify` in M1. Reason: current skills already contain targeted-validation and broad-smoke reminders, and M3 `R13` requires a specific plan-scoped gap before editing those skills.
 - 2026-05-14: Use `scripts/test-select-validation.py` as the likely static proof surface for workflow validation guidance. Reason: it already owns validation-layering and selector workflow-routing proof.
 - 2026-05-14: Do not require dynamic benchmark comparison or release/adapter validation for M3 test proof. Reason: the active test spec keeps this slice guidance/static-proof focused unless a later approved artifact broadens scope.
+- 2026-05-14: Keep selector behavior unchanged for M1. Reason: the implementation is guidance-only, and `scripts/test-select-validation.py` proved owner-surface wording and existing broad-smoke trigger behavior without changing selected-check coverage.
+
+## M1 Owner-Surface Audit
+
+| Surface | Outcome | Rationale |
+|---|---|---|
+| `docs/workflows.md` | edited | Added the validation owner-surface split and guidance-only guardrail required by M3 `R5`-`R7`. |
+| `scripts/test-select-validation.py` | edited | Added stable static cues for the owner-surface split without freezing a full exact sentence. |
+| `scripts/validation_selection.py` | unaffected with rationale | Selector behavior already supports targeted validation, broad-smoke source attribution, unclassified-path blocking, and explicit-path validation. M1 does not change executable check selection. |
+| `scripts/select-validation.py` | unaffected with rationale | CLI wrapper behavior remains aligned with current selector behavior; M1 adds guidance only. |
+| `scripts/ci.sh` | unaffected with rationale | CI wrapper behavior and command exit semantics remain unchanged; selected CI still executes the selected checks. |
+| `skills/workflow/SKILL.md` | unaffected with rationale | Existing wording already contains concise targeted-proof, broad-smoke, manual-proof, and source-attribution reminders. |
+| `skills/implement/SKILL.md` | unaffected with rationale | Existing wording already tells implementation to inspect selected checks, run targeted proof, and run broad validation only when an authoritative trigger requires it. |
+| `skills/code-review/SKILL.md` | unaffected with rationale | Existing wording already checks targeted proof, broad smoke, selected checks, and direct proof without needing a full validation-budget rule. |
+| `skills/verify/SKILL.md` | unaffected with rationale | Existing wording already requires verify to check targeted proof, broad validation triggers, release metadata, and `broad_smoke_required` evidence. |
+| Release, adapter, generated-output, token-cost, and progressive-loading surfaces | unaffected with rationale | M3 M1 does not touch release or adapter packaging, generated public adapter output, lifecycle token-cost summaries, dynamic benchmarks, hard token gates, or progressive-loading work. |
 
 ## Surprises and discoveries
 
 - Existing `docs/workflows.md`, `workflow`, `implement`, and `verify` surfaces already contain targeted-validation and broad-smoke guidance; M3 likely needs ownership clarification and proof rather than broad new behavior.
+- Selector behavior and CI wrapper behavior did not need executable changes; the selected path validation for this diff keeps `broad_smoke_required` false.
 
 ## Validation notes
 
 - 2026-05-14: Plan creation validation passed after spec status settlement and plan-index update: `python scripts/select-validation.py --mode explicit ...`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance`, `python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml`, `bash scripts/ci.sh --mode explicit ...`, and `git diff --check --`.
 - 2026-05-14: Test-spec authoring validation passed after creating the active M3 test spec and syncing lifecycle state: selected validation, review-artifact closeout, change metadata validation, artifact lifecycle validation, selected CI, and `git diff --check --`.
 - 2026-05-14: Test-spec approval validation passed after recording direct maintainer approval and syncing lifecycle state: selected validation, artifact lifecycle validation, change metadata validation, selected CI, and `git diff --check --`.
+- 2026-05-14: M1 red/green proof: `python scripts/test-select-validation.py ValidationSelectionTests.test_workflow_guidance_aligns_with_validation_layering_contract` failed before `docs/workflows.md` gained the owner-surface terms, then passed after the guidance edit.
+- 2026-05-14: M1 selector regression passed: `python scripts/test-select-validation.py`.
+- 2026-05-14: M1 selected validation passed for `docs/workflows.md`, `scripts/test-select-validation.py`, this plan, `docs/plan.md`, and change metadata. Selected checks were `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`; `broad_smoke_required` was false.
 
 ## Outcome and retrospective
 
@@ -255,4 +277,4 @@ Final closeout:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `implement`, not ready for code-review or final closeout.
+- Ready for `code-review` on M1, not ready for final closeout.
