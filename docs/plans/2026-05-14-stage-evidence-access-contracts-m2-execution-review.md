@@ -78,9 +78,9 @@ The goal is to make high-cost execution/review stages start from a smallest suff
 - Last reviewed milestone: M2. Implement execution/review evidence guidance
 - Review status: `code-review-m2-r1` clean-with-notes with no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2 implementation and code-review are complete, but explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M2 implementation, code-review, and explain-change are complete, but verify and PR handoff remain.
 
 ## Milestones
 
@@ -258,7 +258,8 @@ The goal is to make high-cost execution/review stages start from a smallest suff
 - [x] M2 implementation completed.
 - [x] 2026-05-14: code-review M2 R1 completed clean-with-notes with no material findings.
 - [x] M2 code-review completed.
-- [ ] explain-change completed.
+- [x] 2026-05-14: explain-change recorded durable rationale in `docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/explain-change.md`.
+- [x] explain-change completed.
 - [ ] verify completed.
 - [ ] PR handoff completed.
 
@@ -322,6 +323,11 @@ No mandatory operating input was removed. The touched skills now separate standi
   - `python scripts/validate-review-artifacts.py docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/`
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md --path docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/change.yaml --path docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/review-log.md --path docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/reviews/code-review-m2-r1.md`
+  - `git diff --check -- docs/plan.md docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review`
+- Explain-change recorded the durable rationale for the M2 branch diff and handed off to `verify`.
+- Post-explain-change validation passed:
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md --path docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/change.yaml --path docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/explain-change.md`
   - `git diff --check -- docs/plan.md docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review`
 
 ## Outcome and Retrospective

@@ -18,6 +18,7 @@ changed_files:
   - docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/review-log.md
   - docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/reviews/plan-review-r1.md
   - docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/reviews/code-review-m2-r1.md
+  - docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/explain-change.md
 requirements:
   - Start the M2 execution/review evidence access plan after M1 PR #59 merged.
   - Keep M2 focused on `implement` and `code-review` evidence access guidance.
@@ -34,6 +35,7 @@ tests:
   - selected M2 validation
   - static skill token measurement
   - code-review-m2-r1
+  - explain-change
 review:
   status: clean
   reviewed_artifact: docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md
@@ -92,3 +94,11 @@ validation:
     result: passed_after_code_review_recording
   - command: git diff --check -- docs/plan.md docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review
     result: passed_after_code_review_recording
+  - command: explain-change
+    result: durable_rationale_recorded_verify_next
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/change.yaml
+    result: passed_after_explain_change
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md --path docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/change.yaml --path docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/explain-change.md
+    result: passed_after_explain_change
+  - command: git diff --check -- docs/plan.md docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review
+    result: passed_after_explain_change
