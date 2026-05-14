@@ -1,6 +1,6 @@
 # Cost-Bounded Rigor M5 Progressive-Loading Follow-Through Plan
 
-- Status: active
+- Status: done
 - Owner: maintainers
 - Start date: 2026-05-14
 - Last updated: 2026-05-14
@@ -81,14 +81,14 @@ M5 should not convert this audit into a broad skill rewrite. If current skills a
 
 ## Current Handoff Summary
 
-- Current milestone: M1. High-cost skill audit and minimal follow-through
-- Current milestone state: closed
+- Current milestone: final lifecycle closeout
+- Current milestone state: done
 - Last reviewed milestone: M1. High-cost skill audit and minimal follow-through
 - Review status: `code-review-m1-r1` clean-with-notes with no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: hosted CI / PR review
-- Final closeout readiness: pr-open
-- Reason final closeout is or is not ready: M1 is closed after clean code-review, no review-resolution is required, explain-change is recorded, final local verify passed, PR #58 is open, and hosted CI passed. Final lifecycle completion remains pending PR review and PR integration.
+- Next stage: none
+- Final closeout readiness: done after merged PR #58
+- Reason final closeout is or is not ready: M1 is closed after clean code-review, no review-resolution is required, explain-change is recorded, final local verify passed, PR #58 merged on 2026-05-14 after hosted CI passed, and no release, adapter, selector, benchmark, generated-output, lifecycle-summary, or hard-token-gate follow-up is required for this slice.
 
 ## Milestones
 
@@ -265,6 +265,8 @@ Before PR:
 - [x] Explain-change recorded.
 - [x] Verify complete.
 - [x] PR handoff complete.
+- [x] Hosted CI passed.
+- [x] PR #58 merged.
 
 ## Decision log
 
@@ -311,12 +313,13 @@ Before PR:
 - 2026-05-14: Final local verify passed for the full changed artifact set. Support proof passed with `python scripts/test-skill-validator.py` (81 tests), selected validation reported `broad_smoke_required` false, selected CI passed `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`, review-artifact closeout validation passed, change metadata validation passed, artifact lifecycle validation passed, and `git diff --check --` passed. Hosted CI was not observed. Branch-ready evidence is recorded for PR handoff.
 - 2026-05-14: PR #58 opened for review. Hosted CI was observed as pending immediately after PR creation, not reported after an intermediate handoff push, and then passed on the pushed PR branch.
 - 2026-05-14: PR handoff state-sync validation passed for `docs/plan.md`, this plan, and change metadata: selected validation, change metadata validation, artifact lifecycle validation, selected CI, and `git diff --check --`.
+- 2026-05-14: PR #58 merged after hosted CI passed; lifecycle state moved to done.
 
 ## Outcome and retrospective
 
-- Not complete yet. M1 implementation, code-review, explain-change, final local verify, PR handoff, and hosted CI are complete. Final lifecycle closeout remains pending PR review and PR integration.
+- Completed. M1 implementation, code-review, explain-change, final local verify, PR handoff, hosted CI, and PR integration are complete. M5 closed as an audit/no-change follow-through without skill rewrites, dynamic benchmark changes, lifecycle token-cost summary triggers, release changes, adapter packaging changes, generated-output tracking changes, selector changes, broad-smoke trigger changes, token-cost schema changes, or hard token gates.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- PR #58 is open with local branch-ready evidence and passing hosted CI. Review is tracked on the PR.
+- Done after merged PR #58.

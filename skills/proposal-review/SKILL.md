@@ -13,15 +13,38 @@ Your job is to prevent weak ideas, premature convergence, and hidden risk from r
 
 ## Inputs to read
 
-Read:
+Read standing operating instructions when present, then use the evidence access rules below for task evidence.
 
 - the proposal under review;
-- linked exploration and research artifacts;
-- `AGENTS.md` and `CONSTITUTION.md` if present;
-- `docs/project-map.md` if architecture impact matters;
-- related specs, ADRs, or plans.
+- the user's original request or initial intent when available;
+- `AGENTS.md`;
+- `CONSTITUTION.md` when standing gates, governance, source-of-truth, workflow, or release-policy constraints matter.
 
 Do not review implementation code unless the proposal depends on current behavior and a quick inspection is necessary.
+
+## Evidence access
+
+Use the smallest sufficient evidence set.
+
+Default evidence:
+
+- proposal under review
+- user's original request or initial intent
+- `VISION.md` or `CONSTITUTION.md` when standing gates or vision fit matter
+
+Conditional evidence:
+
+- linked specs, ADRs, plans, or learn sessions when the proposal relies on them
+- linked exploration or research artifacts when the proposal relies on them
+- `docs/project-map.md` when architecture impact or repository orientation matters
+- `docs/workflows.md` when workflow behavior or artifact placement is proposed
+- code only when the proposal depends on current implementation reality
+
+Bounded discovery is not evidence expansion. Record a compact reason only when reading substantive evidence outside the default and triggered conditional set. Omit `Evidence expansion` when no expansion occurred.
+
+Do not broad-search authoritative documents just to discover paths or state. Use explicit paths, active metadata, `docs/workflows.md`, headings, stable IDs, counts, targeted excerpts, and diffs before broad reads.
+
+Use broader sections or full-file reads when bounded evidence is missing, stale, contradictory, or insufficient, or when the whole file is the target.
 
 ## Artifact placement
 
