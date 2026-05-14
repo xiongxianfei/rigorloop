@@ -78,9 +78,9 @@ The goal is to make high-cost execution/review stages start from a smallest suff
 - Last reviewed milestone: M2. Implement execution/review evidence guidance
 - Review status: `code-review-m2-r1` clean-with-notes with no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
+- Next stage: pr
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2 implementation, code-review, and explain-change are complete, but verify and PR handoff remain.
+- Reason final closeout is or is not ready: M2 implementation, code-review, explain-change, and final local verify are complete; PR handoff remains.
 
 ## Milestones
 
@@ -260,7 +260,8 @@ The goal is to make high-cost execution/review stages start from a smallest suff
 - [x] M2 code-review completed.
 - [x] 2026-05-14: explain-change recorded durable rationale in `docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/explain-change.md`.
 - [x] explain-change completed.
-- [ ] verify completed.
+- [x] 2026-05-14: final local verify passed selector-backed validation and confirmed branch-ready local evidence. Hosted CI has not been observed yet and is not claimed as passed.
+- [x] verify completed.
 - [ ] PR handoff completed.
 
 ## Decision Log
@@ -329,6 +330,22 @@ No mandatory operating input was removed. The touched skills now separate standi
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md --path docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/change.yaml --path docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/explain-change.md`
   - `git diff --check -- docs/plan.md docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review`
+- Final local verify passed:
+  - `python scripts/select-validation.py --mode explicit --path specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md --path docs/plan.md --path docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/change.yaml --path docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/explain-change.md`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/validate-skills.py`
+  - `python scripts/validate-review-artifacts.py docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/`
+  - `python scripts/test-build-skills.py`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives`
+  - `python scripts/test-change-metadata-validator.py`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/change.yaml --path docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/explain-change.md --path docs/plan.md --path docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md --path skills/code-review/SKILL.md --path skills/implement/SKILL.md --path specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md`
+  - `python scripts/measure-skill-tokens.py`
+  - `git diff --check -- specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md skills/implement/SKILL.md skills/code-review/SKILL.md scripts/test-skill-validator.py docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md docs/plan.md docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review`
+- Final selector selected `skills.validate`, `skills.regression`, `skills.generation_regression`, `skills.drift`, `adapters.drift`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`; `broad_smoke_required` was `false`.
+- CI workflow scope reviewed in `.github/workflows/ci.yml`. Hosted CI has not been observed in this local verify and is not claimed as passed.
+- No standalone `verify-report.md` was added. No required manual proof was used; automated proof is recorded in this plan, `change.yaml`, and `explain-change.md`.
 
 ## Outcome and Retrospective
 

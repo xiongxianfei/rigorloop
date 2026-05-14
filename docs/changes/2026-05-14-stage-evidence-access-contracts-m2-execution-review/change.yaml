@@ -36,6 +36,7 @@ tests:
   - static skill token measurement
   - code-review-m2-r1
   - explain-change
+  - final local verify
 review:
   status: clean
   reviewed_artifact: docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md
@@ -102,3 +103,29 @@ validation:
     result: passed_after_explain_change
   - command: git diff --check -- docs/plan.md docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review
     result: passed_after_explain_change
+  - command: python scripts/select-validation.py --mode explicit --path specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md --path docs/plan.md --path docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/change.yaml --path docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/explain-change.md
+    result: passed_final_local_verify_selected_skills_regression_generation_drift_adapters_lifecycle_and_change_metadata_broad_smoke_false
+  - command: python scripts/test-skill-validator.py
+    result: passed_final_local_verify
+  - command: python scripts/validate-skills.py
+    result: passed_final_local_verify
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/
+    result: passed_final_local_verify
+  - command: python scripts/test-build-skills.py
+    result: passed_final_local_verify
+  - command: python scripts/build-skills.py --check
+    result: passed_final_local_verify
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives
+    result: passed_final_local_verify
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_final_local_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/change.yaml
+    result: passed_final_local_verify
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/change.yaml --path docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/explain-change.md --path docs/plan.md --path docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md --path skills/code-review/SKILL.md --path skills/implement/SKILL.md --path specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md
+    result: passed_final_local_verify
+  - command: python scripts/measure-skill-tokens.py
+    result: passed_final_local_verify_diagnostic_total_58868_estimated_tokens
+  - command: git diff --check -- specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md skills/implement/SKILL.md skills/code-review/SKILL.md scripts/test-skill-validator.py docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md docs/plan.md docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review
+    result: passed_final_local_verify
+  - command: verify
+    result: branch_ready_local_validation_passed_pr_next_hosted_ci_not_observed
