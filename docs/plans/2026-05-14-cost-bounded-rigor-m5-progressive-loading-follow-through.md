@@ -82,13 +82,13 @@ M5 should not convert this audit into a broad skill rewrite. If current skills a
 ## Current Handoff Summary
 
 - Current milestone: M1. High-cost skill audit and minimal follow-through
-- Current milestone state: review-requested
-- Last reviewed milestone: M0. Plan creation and spec status settlement
-- Review status: M1 is not yet code-reviewed; latest completed review is `plan-review-r1` approved with no material findings
-- Remaining in-scope implementation milestones: M1. High-cost skill audit and minimal follow-through, review-requested
-- Next stage: code-review
+- Current milestone state: closed
+- Last reviewed milestone: M1. High-cost skill audit and minimal follow-through
+- Review status: `code-review-m1-r1` clean-with-notes with no material findings
+- Remaining in-scope implementation milestones: none
+- Next stage: explain-change
 - Final closeout readiness: not-ready
-- Reason final closeout is or is not ready: M5 spec status is settled to approved, this active plan is created, clean plan-review is recorded, the active test spec is maintainer-approved, and M1 implementation is ready for code-review. Final closeout is not ready because M1 code-review, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M1 is closed after clean code-review and no review-resolution is required. Final closeout is not ready because explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -139,7 +139,7 @@ M5 should not convert this audit into a broad skill rewrite. If current skills a
 
 ### M1. High-cost skill audit and minimal follow-through
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Audit `workflow`, `implement`, and `code-review` against M5, then record no-change rationale or make the smallest necessary skill/proof edits.
 - Requirements: `R1`-`R30`.
 - Files/components likely touched:
@@ -261,7 +261,7 @@ Before PR:
 - [x] Test spec maintainer-approved.
 - [x] M1 implementation started.
 - [x] M1 implemented.
-- [ ] M1 code-review complete.
+- [x] M1 code-review complete.
 - [ ] Explain-change recorded.
 - [ ] Verify complete.
 - [ ] PR handoff complete.
@@ -305,12 +305,14 @@ Before PR:
 - 2026-05-14: M1 proof-first audit passed with `python scripts/test-skill-validator.py` (81 tests). No high-cost skill or validator edits were needed.
 - 2026-05-14: M1 selected validation passed for the unchanged high-cost skill proof surfaces plus this plan, `docs/plan.md`, and change metadata. Selected check IDs were `skills.validate`, `skills.regression`, `skills.generation_regression`, `skills.drift`, `adapters.drift`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`; `broad_smoke_required` was false.
 - 2026-05-14: M1 selected CI passed for the unchanged high-cost skill proof surfaces plus this plan, `docs/plan.md`, and change metadata. `git diff --check --` also passed.
+- 2026-05-14: `code-review-m1-r1` recorded `clean-with-notes` with no material findings. M1 is closed, no review-resolution is required, and the next stage is `explain-change`.
+- 2026-05-14: Code-review recording validation passed: selected validation, review-artifact closeout, change metadata validation, artifact lifecycle validation, selected CI, and `git diff --check --`.
 
 ## Outcome and retrospective
 
-- Not complete yet. M1 implementation is complete and ready for `code-review`; final closeout remains blocked on code-review, explain-change, verify, and PR handoff.
+- Not complete yet. M1 implementation and code-review are complete; final closeout remains blocked on explain-change, verify, and PR handoff.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `code-review`.
+- Ready for `explain-change`.
