@@ -2412,6 +2412,13 @@ raise SystemExit(3)
             "docs/workflows.md": [
                 "targeted proof",
                 "broad smoke",
+                "Validation owner surfaces",
+                "contributor-facing validation guidance",
+                "executable check selection",
+                "concise local validation reminders",
+                "change-specific validation requirements",
+                "finding-specific validation requirements",
+                "release-specific validation requirements",
                 "scripts/select-validation.py",
                 "scripts/ci.sh --mode explicit",
                 "scripts/ci.sh --mode broad-smoke",
