@@ -1,0 +1,326 @@
+# Stage Evidence Access Contracts for Cost-Bounded Rigor Test Spec
+
+## Status
+
+active
+
+## Approval
+
+Maintainer-approved on 2026-05-14 by direct user request. Status remains `active` because this test spec is the relied-on proof-planning surface for M1 implementation.
+
+## Related spec and plan
+
+- Spec: [Stage Evidence Access Contracts for Cost-Bounded Rigor](stage-evidence-access-contracts-for-cost-bounded-rigor.md)
+- Plan: [Stage Evidence Access Contracts for Cost-Bounded Rigor](../docs/plans/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor.md)
+
+## Testing strategy
+
+Use focused static and lifecycle validation for this guidance-only change.
+
+- Static/unit: `scripts/test-skill-validator.py` covers stable wording and scope-boundary assertions when implementation adds or updates concept checks.
+- Contract/static: direct inspection of `docs/workflows.md` and selected skill text proves evidence-access sections, default/conditional guidance, bounded discovery, expansion reasons, full-file-read escape behavior, and M1/M2 validation separation.
+- Integration/selector: `scripts/select-validation.py --mode explicit` proves M1 path selection excludes deferred M2 surfaces.
+- Lifecycle: `scripts/validate-artifact-lifecycle.py`, `scripts/validate-change-metadata.py`, and `scripts/validate-review-artifacts.py` prove proposal/spec/plan/change-local state remains coherent.
+- Measurement: `scripts/measure-skill-tokens.py` records diagnostic static token impact after canonical skill changes.
+- Manual review: verifies migration rationale and optional `spec` no-change rationale when automation would require brittle semantic scoring.
+
+No runtime, e2e, browser, release, adapter, migration-data, or hosted observability tests are required because the approved spec changes repository guidance and skill contracts only.
+
+## Requirement coverage map
+
+| Requirement | Tests |
+|---|---|
+| R1 | T1, T6 |
+| R2 | T2, T6 |
+| R3 | T3, T7 |
+| R4 | T4, T7 |
+| R5 | T1 |
+| R6 | T1, T2 |
+| R7 | T1, T2 |
+| R8 | T1, T2, T5 |
+| R9 | T1, T5 |
+| R10 | T1, T5 |
+| R10a | T1, T5 |
+| R11 | T1, T5 |
+| R12 | T1, T5 |
+| R13 | T1, T2 |
+| R14 | T1, T2 |
+| R15 | T1, T2 |
+| R16 | T8 |
+| R17 | T8 |
+| R18 | T8 |
+| R19 | T2 |
+| R20 | T2 |
+| R21 | T2 |
+| R22 | T2 |
+| R23 | T3 |
+| R24 | T3 |
+| R25 | T4, T7 |
+| R26 | T4, T7 |
+| R27 | T7 |
+| R28 | T7 |
+| R29 | T7 |
+| R30 | T6 |
+| R31 | T6 |
+| R32 | T4, T9 |
+| R33 | T10 |
+| R34 | T9 |
+
+## Example coverage map
+
+| Example | Tests |
+|---|---|
+| E1 | T2 |
+| E2 | T5 |
+| E3 | T5 |
+| E4 | T8 |
+| E5 | T7 |
+
+## Edge case coverage
+
+| Edge case | Tests |
+|---|---|
+| 1. Line-number search is bounded discovery | T5 |
+| 2. Out-of-set ADR content read is expansion | T5 |
+| 3. `AGENTS.md` or `CONSTITUTION.md` input classification | T8 |
+| 4. M1 tries to edit `implement` | T4, T7 |
+| 5. M1 updates `spec` | T3, T7 |
+| 6. M2 runs later | T7 |
+| 7. Static checks are concept-based | T6 |
+| 8. Token measurement increase is diagnostic | T10 |
+| 9. Contradictory bounded evidence expands | T1 |
+| 10. Full file is review target | T1 |
+
+## Test cases
+
+### T1. Shared Workflow Evidence Model
+
+- Covers: R1, R5-R15, edge cases 1, 2, 9, 10
+- Level: static
+- Fixture/setup: changed `docs/workflows.md`
+- Steps:
+  1. Inspect the new stage evidence access model in `docs/workflows.md`.
+  2. Confirm it defines default evidence, conditional evidence, expansion evidence, and broad/full-file behavior.
+  3. Confirm it distinguishes bounded discovery from substantive out-of-set reads.
+  4. Confirm it preserves do-not-under-read and full-file-read escape behavior.
+- Expected result: `docs/workflows.md` contains the shared model and does not make bounded evidence a reason to under-read.
+- Failure proves: The central operational model is missing, incomplete, or unsafe.
+- Automation location: `scripts/test-skill-validator.py` if stable static checks are added; otherwise manual review plus artifact lifecycle validation.
+
+### T2. Proposal And Proposal-Review Local Evidence Guidance
+
+- Covers: R2, R6-R9, R13-R15, R19-R22, E1
+- Level: static
+- Fixture/setup: changed `skills/proposal/SKILL.md` and `skills/proposal-review/SKILL.md`
+- Steps:
+  1. Inspect `proposal` for default and conditional evidence guidance.
+  2. Inspect `proposal-review` for default and conditional evidence guidance.
+  3. Confirm both discourage broad authoritative-document searches for path/state discovery.
+  4. Confirm both preserve expansion and full-file-read escape behavior without copying excessive shared wording.
+- Expected result: both skills contain concise stage-local evidence-access guidance that matches their required default and conditional categories.
+- Failure proves: M1 did not implement proposal-side evidence guidance or duplicated the shared model excessively.
+- Automation location: `scripts/test-skill-validator.py` if stable concept checks are added; otherwise manual review.
+
+### T3. Optional Spec Skill Boundary
+
+- Covers: R3, R23, R24, edge case 5
+- Level: static
+- Fixture/setup: implementation decision on `skills/spec/SKILL.md`
+- Steps:
+  1. If `skills/spec/SKILL.md` changes, inspect it for accepted-proposal, latest proposal-review, review-resolution, and related-spec default evidence.
+  2. Confirm conditional architecture/ADR, workflow-doc, code, and constitution reads are trigger-based.
+  3. If `skills/spec/SKILL.md` does not change, inspect tracked implementation rationale for why immediate proposal-to-spec handoff did not need it.
+- Expected result: `spec` is either updated with scoped evidence guidance or explicitly left unchanged with rationale.
+- Failure proves: optional M1 `spec` scope was mishandled.
+- Automation location: manual review; selected validation includes `skills/spec/SKILL.md` only if changed.
+
+### T4. M1 Forbidden Surface Boundary
+
+- Covers: R4, R25, R26, R32, edge case 4
+- Level: integration
+- Fixture/setup: implementation diff
+- Steps:
+  1. Inspect changed paths.
+  2. Confirm M1 does not edit `skills/implement/SKILL.md`, `skills/code-review/SKILL.md`, or `skills/plan/SKILL.md`.
+  3. Confirm no runtime enforcement, semantic read auditing, hard token gates, lifecycle token summaries, release validation changes, adapter packaging changes, or generated-output source model changes appear in the diff.
+- Expected result: M1 changed paths stay within approved M1 scope.
+- Failure proves: M1 absorbed deferred or out-of-scope work.
+- Automation location: `git diff --name-only`, `scripts/select-validation.py --mode explicit`, and code-review.
+
+### T5. Evidence Expansion Boundary
+
+- Covers: R8-R12, E2, E3, edge cases 1, 2
+- Level: static
+- Fixture/setup: changed `docs/workflows.md` and selected skill text
+- Steps:
+  1. Confirm bounded discovery examples include path inventory, heading scan, line-number search, count query, targeted diff summary, and metadata lookup.
+  2. Confirm bounded discovery does not require an evidence-expansion record.
+  3. Confirm substantive out-of-set reads require a compact reason.
+  4. Confirm `Evidence expansion` output appears only when expansion occurred.
+- Expected result: the boundary is explicit and lightweight.
+- Failure proves: the model either under-records substantive expansion or over-logs harmless discovery.
+- Automation location: `scripts/test-skill-validator.py` if stable concept checks are added; otherwise manual review.
+
+### T6. Concept-Based Static Proof
+
+- Covers: R30, R31
+- Level: unit
+- Fixture/setup: `scripts/test-skill-validator.py`, if updated
+- Steps:
+  1. Inspect any new static checks.
+  2. Confirm checks use stable sections, concepts, or short phrases.
+  3. Confirm checks do not require exact long paragraphs or broad natural-language scoring.
+- Expected result: static proof is narrow and reviewable.
+- Failure proves: validation became brittle or semantic-scoring-based.
+- Automation location: `scripts/test-skill-validator.py`.
+
+### T7. M1 And M2 Validation Separation
+
+- Covers: R27-R29, E5, edge cases 4, 5, 6
+- Level: integration
+- Fixture/setup: changed M1 paths
+- Steps:
+  1. Run `python scripts/select-validation.py --mode explicit --path docs/workflows.md --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md`.
+  2. If `skills/spec/SKILL.md` changes, rerun with `--path skills/spec/SKILL.md` included.
+  3. Confirm M1 selected validation does not require `skills/implement/SKILL.md` or `skills/code-review/SKILL.md`.
+  4. Confirm the plan/test spec keep M2 validation separate for later `implement` and `code-review` paths.
+- Expected result: selected validation is scoped to M1 and excludes M2 skill paths.
+- Failure proves: validation scope reintroduces workflow amplification.
+- Automation location: `scripts/select-validation.py --mode explicit`.
+
+### T8. Input Contract Preservation
+
+- Covers: R16-R18, E4, edge case 3
+- Level: manual
+- Fixture/setup: changed skill inputs
+- Steps:
+  1. For each touched skill with input guidance removed, downgraded, or reclassified, inspect the migration table or equivalent review-visible note.
+  2. Confirm each changed input is classified as standing operating instructions, default task evidence, conditional task evidence, expansion evidence, or obsolete/duplicated guidance.
+  3. Confirm any removal or downgrade has rationale.
+- Expected result: no existing mandatory operating input is silently weakened.
+- Failure proves: cost reduction introduced unsafe under-reading.
+- Automation location: manual review in plan/code-review/explain-change evidence.
+
+### T9. Safety-Critical And Out-Of-Scope Behavior Preservation
+
+- Covers: R32, R34
+- Level: manual
+- Fixture/setup: implementation diff and changed artifacts
+- Steps:
+  1. Inspect changed artifacts for review, verify, PR, material-finding, source-of-truth, release, and adapter guidance changes.
+  2. Confirm any touched safety-critical guidance is preserved or explicitly outside the diff.
+  3. Confirm no release or generated-output source model changes are introduced.
+- Expected result: safety-critical workflow behavior remains intact.
+- Failure proves: M1 weakened or broadened protected workflow behavior.
+- Automation location: code-review and final verify.
+
+### T10. Static Token Measurement Is Diagnostic
+
+- Covers: R33, edge case 8
+- Level: smoke
+- Fixture/setup: canonical skill changes
+- Steps:
+  1. Run `python scripts/measure-skill-tokens.py` after canonical skill edits.
+  2. Record the result in validation notes or explain-change.
+  3. Confirm no hard token gate is introduced.
+- Expected result: token measurement evidence exists and remains warning-only.
+- Failure proves: token impact was not measured or became an unintended hard gate.
+- Automation location: `scripts/measure-skill-tokens.py`.
+
+### T11. Lifecycle And Review Evidence Coherence
+
+- Covers: R34 and artifact lifecycle requirements
+- Level: integration
+- Fixture/setup: lifecycle and change-local artifacts
+- Steps:
+  1. Run review-artifact validation for the change root.
+  2. Run change-metadata validation.
+  3. Run artifact lifecycle validation for proposal, spec, test spec, plan, plan index, and change metadata.
+  4. Run `git diff --check -- <changed paths>`.
+- Expected result: lifecycle artifacts remain coherent and review evidence remains closed.
+- Failure proves: implementation evidence cannot be trusted for downstream handoff.
+- Automation location:
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`
+  - `git diff --check -- <changed paths>`
+
+## Fixtures and data
+
+- Existing `docs/workflows.md`.
+- Existing canonical skills under `skills/proposal/`, `skills/proposal-review/`, and optionally `skills/spec/`.
+- Existing validation scripts:
+  - `scripts/test-skill-validator.py`
+  - `scripts/validate-skills.py`
+  - `scripts/select-validation.py`
+  - `scripts/measure-skill-tokens.py`
+  - `scripts/validate-artifact-lifecycle.py`
+  - `scripts/validate-review-artifacts.py`
+  - `scripts/validate-change-metadata.py`
+- Change root: `docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/`
+
+No generated adapter fixtures, release archives, runtime data, or external services are required.
+
+## Mocking/stubbing policy
+
+No mocks or stubs are required. This is a static repository-guidance change.
+
+## Migration or Compatibility Tests
+
+- Covered by T4, T8, T9, and T11.
+- No historical artifact backfill or data migration tests are required.
+
+## Observability verification
+
+- Covered by T11 and validation-note review.
+- No runtime logs, metrics, traces, or audit events are required.
+
+## Security/privacy verification
+
+- Covered by T9.
+- Review should confirm guidance prefers targeted excerpts and does not encourage dumping secrets, private logs, credentials, or irrelevant large excerpts.
+
+## Performance checks
+
+- Covered by T10.
+- Static token measurement is diagnostic only; no hard threshold is introduced.
+
+## Manual QA checklist
+
+- [ ] Confirm `docs/workflows.md` owns the shared model.
+- [ ] Confirm `proposal` and `proposal-review` guidance is concise and stage-local.
+- [ ] Confirm `spec` is updated only if needed, or has no-change rationale.
+- [ ] Confirm no M1 edits to `implement`, `code-review`, or `plan`.
+- [ ] Confirm input migration rationale exists for any removed, downgraded, or reclassified input guidance.
+- [ ] Confirm selected validation excludes M2 paths.
+- [ ] Confirm token measurement was run after canonical skill edits.
+
+## What not to test
+
+- Do not run release or adapter validation unless implementation touches release or adapter surfaces.
+- Do not run dynamic token benchmarks unless a later approved plan or test-spec revision requires them.
+- Do not test runtime enforcement or semantic read auditing; those are out of scope.
+- Do not test M2 `implement` or `code-review` evidence guidance in M1.
+- Do not require exact long wording matches across skills.
+
+## Uncovered gaps
+
+None.
+
+## Next artifacts
+
+```text
+implement
+code-review
+explain-change
+verify
+pr
+```
+
+## Follow-on artifacts
+
+None yet.
+
+## Readiness
+
+Active proof surface for implementation. The active plan `Current Handoff Summary` owns the next workflow action.

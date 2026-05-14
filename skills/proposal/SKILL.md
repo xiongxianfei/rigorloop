@@ -13,17 +13,36 @@ A proposal answers “why this change, why now, and why this approach?” It doe
 
 ## Inputs to read
 
-Read, if present:
+Read standing operating instructions when present, then use the evidence access rules below for task evidence.
 
 - `AGENTS.md`
-- `CONSTITUTION.md`
-- `docs/project-map.md`
-- relevant exploration artifact
-- relevant research artifact
-- related specs
-- related architecture docs or ADRs
-- related issues, incidents, or user feedback
-- root `VISION.md` when present
+- `CONSTITUTION.md` when governance, source-of-truth, workflow, or release-policy constraints matter
+- user request, relevant exploration or research artifact, related issues, incidents, or user feedback
+
+## Evidence access
+
+Use the smallest sufficient evidence set.
+
+Default evidence:
+
+- user request
+- `VISION.md` when proposal fit matters
+- `CONSTITUTION.md` for governance, source-of-truth, workflow, or release-policy changes
+- related proposal only when superseding or extending it
+
+Conditional evidence:
+
+- `docs/project-map.md` when architecture or repository orientation matters
+- existing specs or ADRs when the proposal changes their direction
+- `docs/workflows.md` when artifact placement or workflow routing matters
+- code only when current behavior is part of the decision
+- exploration, research, issues, incidents, or user feedback when the proposal relies on them
+
+Bounded discovery is not evidence expansion. Record a compact reason only when reading substantive evidence outside the default and triggered conditional set. Omit `Evidence expansion` when no expansion occurred.
+
+Do not broad-search authoritative documents just to discover paths or state. Use explicit paths, active metadata, `docs/workflows.md`, headings, stable IDs, counts, targeted excerpts, and diffs before broad reads.
+
+Use broader sections or full-file reads when bounded evidence is missing, stale, contradictory, or insufficient, or when the whole file is the target.
 
 ## Output path
 
