@@ -74,13 +74,13 @@ The goal is to make high-cost execution/review stages start from a smallest suff
 ## Current Handoff Summary
 
 - Current milestone: M2. Implement execution/review evidence guidance
-- Current milestone state: review-requested
-- Last reviewed milestone: planning
-- Review status: `plan-review-r1` approved with no material findings
-- Remaining in-scope implementation milestones: M2. Implement execution/review evidence guidance
-- Next stage: code-review
+- Current milestone state: closed
+- Last reviewed milestone: M2. Implement execution/review evidence guidance
+- Review status: `code-review-m2-r1` clean-with-notes with no material findings
+- Remaining in-scope implementation milestones: none
+- Next stage: explain-change
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2 implementation and targeted validation are complete and ready for code-review, but code-review, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M2 implementation and code-review are complete, but explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -256,7 +256,8 @@ The goal is to make high-cost execution/review stages start from a smallest suff
 - [x] 2026-05-14: added concise evidence-access sections to `skills/implement/SKILL.md` and `skills/code-review/SKILL.md`.
 - [x] 2026-05-14: recorded input classification and migration notes for both touched skills.
 - [x] M2 implementation completed.
-- [ ] M2 code-review completed.
+- [x] 2026-05-14: code-review M2 R1 completed clean-with-notes with no material findings.
+- [x] M2 code-review completed.
 - [ ] explain-change completed.
 - [ ] verify completed.
 - [ ] PR handoff completed.
@@ -316,6 +317,12 @@ No mandatory operating input was removed. The touched skills now separate standi
   - `python scripts/measure-skill-tokens.py`
   - `git diff --check -- skills/implement/SKILL.md skills/code-review/SKILL.md scripts/test-skill-validator.py specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md docs/plan.md docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review`
 - Static token measurement: 23 skills, 235521 bytes, 58868 estimated tokens. `implement` measured 4268 estimated tokens; `code-review` measured 5054 estimated tokens. Measurement is diagnostic only.
+- Code-review M2 R1 recorded `clean-with-notes` with no material findings in `docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/reviews/code-review-m2-r1.md`. No review-resolution is required.
+- Post-review recording validation passed:
+  - `python scripts/validate-review-artifacts.py docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md --path docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/change.yaml --path docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/review-log.md --path docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/reviews/code-review-m2-r1.md`
+  - `git diff --check -- docs/plan.md docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review`
 
 ## Outcome and Retrospective
 
