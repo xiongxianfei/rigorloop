@@ -760,6 +760,34 @@ raise SystemExit({exit_code})
         self.assertNotIn("review_artifacts.validate", selected_ids(payload))
         self.assertEqual(payload["selected_checks"], [])
 
+    def test_project_map_paths_are_living_reference_not_lifecycle(self) -> None:
+        cli_result = run_selector("--mode", "explicit", "--path", "docs/project-map.md")
+        self.assertEqual(cli_result.returncode, 0, cli_result.stdout + cli_result.stderr)
+        cli_payload = parse_stdout(cli_result)
+        self.assertIn(
+            {"path": "docs/project-map.md", "category": "living-reference/project-map"},
+            cli_payload["classified_paths"],
+        )
+        self.assertEqual(cli_payload["unclassified_paths"], [])
+        self.assertEqual(cli_payload["blocking_results"], [])
+
+        paths = ["docs/project-map.md", "docs/project-map/release.md"]
+        result = self.select(paths)
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertEqual(payload["unclassified_paths"], [])
+        self.assertEqual(payload["blocking_results"], [])
+        for path in paths:
+            with self.subTest(path=path):
+                self.assertIn(
+                    {"path": path, "category": "living-reference/project-map"},
+                    payload["classified_paths"],
+                )
+
+        self.assertNotIn("artifact_lifecycle.validate", selected_ids(payload))
+        self.assertEqual(payload["selected_checks"], [])
+
     def test_follow_up_register_path_selects_static_validation(self) -> None:
         path = "docs/follow-ups.md"
 

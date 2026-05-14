@@ -130,6 +130,48 @@ For broad or multi-part requests, include this section or an equivalent table:
 |---|---|---|
 | <goal> | in scope / out of scope / deferred follow-up / rejected option / open question | <section> |
 
+## Scope budget for broad proposals
+
+Use a scope budget when a proposal is broad or multi-workstream.
+Scope-budget applicability is proposal/proposal-review judgment in this first slice, not mechanical validator inference.
+
+A scope budget is expected when any of these are true:
+
+- the user request contains two or more independent work items;
+- the change touches more than one lifecycle family;
+- the change could reasonably require more than one spec or implementation plan;
+- the proposal includes release policy, workflow policy, generated output, public skill behavior, or validation policy;
+- `proposal-review` identifies silent narrowing, hidden follow-up risk, or multi-workstream scope.
+
+Small single-decision proposals may omit the scope budget.
+
+When triggered, add this proposal section or equivalent work-item classification:
+
+```md
+## Scope budget
+
+| Work item | Treatment | Reason |
+|---|---|---|
+| <work item> | <treatment> | <why> |
+```
+
+Allowed treatments:
+
+- `core to this proposal`: belongs to the current proposal direction.
+- `first-slice candidate`: belongs in the first implementation slice if the proposal is accepted.
+- `same-slice dependency`: must move with the current slice for the main change to pass.
+- `separate implementation slice`: belongs to a later implementation slice under the same accepted direction.
+- `deferable follow-up`: real future work, routed to an owner surface but not required now.
+- `separate proposal`: related work that needs its own direction decision.
+- `out of scope`: explicitly excluded from this change.
+
+Route deferred work through the follow-up ownership model rather than chat-only notes or `project-map` ownership.
+Preserve this boundary: workflow routes, `project-map` orients when present, action-owning artifacts track current work, and unowned cross-change follow-ups use the follow-up ownership surface.
+
+Use authored skill sources for skill truth.
+Do not search generated adapter output for authored skill truth.
+Do not add generated public adapter skill bodies back to tracked source.
+
 ## Decision quality checklist
 
 Before marking accepted or ready for review, verify:
