@@ -20,6 +20,7 @@ requirements:
   - Create an active M3 plan before plan-review.
   - Record clean plan-review before test-spec reliance.
   - Create an active M3 test spec before implementation.
+  - Record direct maintainer approval of the active M3 test spec before implementation.
 tests:
   - M2 plan lifecycle state validation.
   - M3 spec artifact lifecycle validation.
@@ -29,6 +30,7 @@ tests:
   - M3 plan artifact lifecycle validation.
   - Clean plan-review receipt and review-log validation.
   - Active M3 test spec artifact lifecycle validation.
+  - Direct M3 test-spec approval lifecycle sync.
 validation:
   - command: spec
     result: draft_m3_validation_budget_guidance_spec_created_ready_for_spec_review
@@ -90,6 +92,18 @@ validation:
     result: pass_selected_ci_after_test_spec_creation
   - command: git diff --check --
     result: pass_after_test_spec_creation
+  - command: test-spec approval
+    result: direct_maintainer_approval_recorded_ready_for_implementation
+  - command: python scripts/select-validation.py --mode explicit --path specs/cost-bounded-rigor-m3-validation-budget-guidance.test.md --path docs/plans/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance.md --path docs/plan.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml
+    result: pass_selected_artifact_lifecycle_and_change_metadata_checks_after_test_spec_approval
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/cost-bounded-rigor-m3-validation-budget-guidance.test.md --path docs/plans/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance.md --path docs/plan.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml
+    result: pass_after_test_spec_approval
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml
+    result: pass_after_test_spec_approval
+  - command: bash scripts/ci.sh --mode explicit --path specs/cost-bounded-rigor-m3-validation-budget-guidance.test.md --path docs/plans/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance.md --path docs/plan.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml
+    result: pass_selected_ci_after_test_spec_approval
+  - command: git diff --check --
+    result: pass_after_test_spec_approval
 changed_files:
   - docs/plan.md
   - docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md

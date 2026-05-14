@@ -15,6 +15,10 @@ active
 - Architecture: not required. The approved spec, spec-review, and plan-review scope this slice to validation-budget guidance, owner-surface decisions, and optional static proof.
 - Project map: [docs/project-map.md](../docs/project-map.md) exists as a living orientation reference. This test spec relies on the approved spec, reviewed plan, and touched files for proof.
 
+## Approval
+
+Maintainer-approved on 2026-05-14 by direct user request. Status remains `active` because this test spec is the relied-on proof-planning surface for M3 implementation.
+
 ## Testing strategy
 
 M3 is verified through contract, static, selected-integration, lifecycle, and manual review checks. It does not require runtime end-to-end tests, release validation, adapter packaging validation, lifecycle token-cost summary artifacts, hard token gates, dynamic benchmark comparison, or progressive-loading restructuring.
