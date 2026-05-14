@@ -64,7 +64,7 @@ The plan turns the approved spec into a small reviewable slice: add the shared o
 - Current milestone: M1. Proposal-side stage evidence access guidance
 - Current milestone state: closed
 - Last reviewed milestone: M1. Proposal-side stage evidence access guidance
-- Review status: `code-review-m1-r2` clean-with-notes with no open material findings
+- Review status: `code-review-m1-r3` clean-with-notes with no open material findings
 - Remaining in-scope implementation milestones: none
 - Next stage: explain-change
 - Final closeout readiness: not ready
