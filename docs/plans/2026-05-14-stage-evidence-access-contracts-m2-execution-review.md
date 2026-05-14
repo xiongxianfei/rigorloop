@@ -73,14 +73,14 @@ The goal is to make high-cost execution/review stages start from a smallest suff
 
 ## Current Handoff Summary
 
-- Current milestone: planning
+- Current milestone: M1. M2 test-spec alignment
 - Current milestone state: planned
-- Last reviewed milestone: none
-- Review status: plan not reviewed
+- Last reviewed milestone: planning
+- Review status: `plan-review-r1` approved with no material findings
 - Remaining in-scope implementation milestones: M1. M2 test-spec alignment; M2. Implement execution/review evidence guidance
-- Next stage: plan-review
+- Next stage: test-spec
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: the M2 plan is draft; plan-review, M2 test-spec alignment, implementation, code-review, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: plan-review is approved, but M2 test-spec alignment, implementation, code-review, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -247,7 +247,8 @@ The goal is to make high-cost execution/review stages start from a smallest suff
 
 - [x] 2026-05-14: M1 PR #59 merged; proposal-side evidence access guidance is complete.
 - [x] 2026-05-14: draft M2 plan created.
-- [ ] plan-review completed.
+- [x] 2026-05-14: plan-review R1 approved the M2 plan with no material findings.
+- [x] plan-review completed.
 - [ ] M2 test-spec alignment completed.
 - [ ] M2 implementation completed.
 - [ ] M2 code-review completed.
@@ -286,7 +287,10 @@ Expected classifications:
 
 ## Validation Notes
 
-- Planning validation pending.
+- Planning validation passed:
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md --path docs/plan.md --path specs/stage-evidence-access-contracts-for-cost-bounded-rigor.md`
+  - `git diff --check -- docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md docs/plan.md`
+- Plan-review R1 recorded no material findings in `docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/reviews/plan-review-r1.md`.
 
 ## Outcome and Retrospective
 

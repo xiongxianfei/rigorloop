@@ -1,0 +1,42 @@
+change_id: 2026-05-14-stage-evidence-access-contracts-m2-execution-review
+title: Stage evidence access contracts M2 execution/review evidence access
+classification: workflow-governance-plan
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor.md
+  spec: specs/stage-evidence-access-contracts-for-cost-bounded-rigor.md
+  test_spec: specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md
+  plan: docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md
+changed_files:
+  - docs/plan.md
+  - docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md
+  - docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/change.yaml
+  - docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/review-log.md
+  - docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/reviews/plan-review-r1.md
+requirements:
+  - Start the M2 execution/review evidence access plan after M1 PR #59 merged.
+  - Keep M2 focused on `implement` and `code-review` evidence access guidance.
+  - Preserve implementation safety, independent review rigor, validation, material-finding, and source-of-truth behavior.
+  - Add M2 test-spec alignment before skill implementation.
+  - Keep `plan`, `spec`, runtime enforcement, hard token gates, release, adapter, and generated-output source changes out of scope.
+tests:
+  - plan lifecycle validation
+  - plan-review-r1
+  - review artifact validation
+  - change metadata validation
+review:
+  status: clean
+  reviewed_artifact: docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md
+  review_log: docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/review-log.md
+  unresolved_items: 0
+validation:
+  - command: plan
+    result: active_m2_execution_review_evidence_access_plan_created_ready_for_plan_review
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md --path docs/plan.md --path specs/stage-evidence-access-contracts-for-cost-bounded-rigor.md
+    result: passed_after_plan_creation
+  - command: git diff --check -- docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md docs/plan.md
+    result: passed_after_plan_creation
+  - command: plan-review-r1
+    result: approved_no_material_findings_ready_for_test_spec
+  - command: plan-review state sync
+    result: active_plan_and_plan_index_updated_to_test_spec_next
