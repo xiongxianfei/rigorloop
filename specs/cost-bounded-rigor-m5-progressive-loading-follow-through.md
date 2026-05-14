@@ -2,7 +2,7 @@
 
 ## Status
 
-draft
+approved
 
 ## Related proposal
 
@@ -288,8 +288,9 @@ pr
 
 ## Follow-on artifacts
 
-None yet.
+- Spec-review approval: `docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/reviews/spec-review-r1.md`
+- Execution plan: `docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md`
 
 ## Readiness
 
-Ready for spec-review.
+Approved after clean spec-review. Active plan created; ready for plan-review.

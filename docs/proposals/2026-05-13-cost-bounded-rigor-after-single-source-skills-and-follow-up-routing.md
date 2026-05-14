@@ -640,6 +640,7 @@ pr
 - M4 lifecycle token-cost summary plan: `docs/plans/2026-05-14-cost-bounded-rigor-m4-lifecycle-token-cost-summary.md`
 - M4 lifecycle token-cost summary test spec: `specs/cost-bounded-rigor-m4-lifecycle-token-cost-summary.test.md`
 - M5 progressive-loading follow-through spec: `specs/cost-bounded-rigor-m5-progressive-loading-follow-through.md`
+- M5 progressive-loading follow-through plan: `docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md`
 - Plan-review approval: `docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/plan-review-r1.md`
 - Test spec: `specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.test.md`
 
