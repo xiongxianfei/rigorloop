@@ -18,7 +18,7 @@ active
 
 ## Approval
 
-Pending maintainer approval. Status is `active` because this is the current proof-planning surface, but implementation remains blocked until maintainer approval is recorded.
+Maintainer-approved on 2026-05-14 by direct user request. Status remains `active` because this test spec is the relied-on proof-planning surface for M5 implementation.
 
 ## Testing strategy
 
@@ -458,7 +458,6 @@ None. Every M5 `MUST` requirement maps to static proof, selected validation, man
 ## Next artifacts
 
 ```text
-maintainer approval
 implement
 code-review
 explain-change
@@ -472,4 +471,4 @@ None yet.
 
 ## Readiness
 
-Active proof-planning surface pending maintainer approval. Implementation is not ready until maintainer approval is recorded and lifecycle state is synchronized.
+This test spec is active and maintainer-approved. Implementation may start under the active M5 plan.
