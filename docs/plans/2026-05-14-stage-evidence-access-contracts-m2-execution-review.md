@@ -78,9 +78,9 @@ The goal is to make high-cost execution/review stages start from a smallest suff
 - Last reviewed milestone: M2. Implement execution/review evidence guidance
 - Review status: `code-review-m2-r1` clean-with-notes with no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
+- Next stage: hosted CI / merge follow-up
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2 implementation, code-review, explain-change, and final local verify are complete; PR handoff remains.
+- Reason final closeout is or is not ready: M2 implementation, code-review, explain-change, final local verify, and PR handoff are complete; PR #60 is open and hosted CI/merge follow-up remains.
 
 ## Milestones
 
@@ -262,7 +262,8 @@ The goal is to make high-cost execution/review stages start from a smallest suff
 - [x] explain-change completed.
 - [x] 2026-05-14: final local verify passed selector-backed validation and confirmed branch-ready local evidence. Hosted CI has not been observed yet and is not claimed as passed.
 - [x] verify completed.
-- [ ] PR handoff completed.
+- [x] 2026-05-14: PR #60 opened at `https://github.com/xiongxianfei/rigorloop/pull/60`. Hosted CI is pending and not claimed as passed.
+- [x] PR handoff completed.
 
 ## Decision Log
 
@@ -346,10 +347,13 @@ No mandatory operating input was removed. The touched skills now separate standi
 - Final selector selected `skills.validate`, `skills.regression`, `skills.generation_regression`, `skills.drift`, `adapters.drift`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`; `broad_smoke_required` was `false`.
 - CI workflow scope reviewed in `.github/workflows/ci.yml`. Hosted CI has not been observed in this local verify and is not claimed as passed.
 - No standalone `verify-report.md` was added. No required manual proof was used; automated proof is recorded in this plan, `change.yaml`, and `explain-change.md`.
+- PR handoff completed:
+  - PR #60 opened: `https://github.com/xiongxianfei/rigorloop/pull/60`
+  - Hosted CI is pending and not claimed as passed.
 
 ## Outcome and Retrospective
 
-- Pending completion.
+- PR #60 is open. The plan remains active until hosted CI and merge follow-up settle the final lifecycle state.
 
 ## Readiness
 
