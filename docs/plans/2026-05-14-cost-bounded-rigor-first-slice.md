@@ -92,9 +92,10 @@ Validation context:
 - Review status: code-review completed `clean-with-notes` in `code-review-r1` with no material findings
 - Test-spec status: active and maintainer-approved on 2026-05-14
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
+- Verify status: passed on tracked branch tip from a clean temporary worktree
+- Next stage: pr
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: final verify and PR handoff are still required.
+- Reason final closeout is or is not ready: PR handoff is still required.
 
 ## Milestones
 
@@ -216,12 +217,14 @@ Final verification before PR should include:
 - 2026-05-14: M1 implementation added focused static proof, proposal/proposal-review scope-budget guidance, and `docs/workflows.md` bounded-evidence/path-search guidance. Targeted validation passed; next stage is `code-review`.
 - 2026-05-14: `code-review-r1` reviewed M1 implementation commit `dc59864bdc4f36a248be573c551b553c501dd0d6` and returned `clean-with-notes` with no material findings. M1 is closed; next stage is `explain-change`.
 - 2026-05-14: `explain-change.md` recorded durable rationale for M1 scope, diff areas, validation evidence, review outcomes, rejected alternatives, and no-dynamic-benchmark rationale. Next stage is `verify`.
+- 2026-05-14: final verify passed against tracked branch tip `360ebe8` from clean temporary worktree `/tmp/rigorloop-verify-cost-bounded-360ebe8`. Branch-ready is satisfied for the tracked change pack; next stage is `pr`.
 
 ## Decision log
 
 - 2026-05-14: Use one implementation milestone for the first slice. Reason: the approved spec is intentionally narrow and the likely touched implementation surfaces are `skills/proposal`, `skills/proposal-review`, `docs/workflows.md`, and focused static proof.
 - 2026-05-14: Treat architecture as not required. Reason: spec-review found no runtime, data-flow, security-boundary, deployment, persistence, or hard-to-reverse design risk.
 - 2026-05-14: Do not require dynamic benchmark comparison. Reason: the approved spec changes proposal/evidence wording only and keeps dynamic benchmarks advisory unless a later plan or test spec requires them.
+- 2026-05-14: Do not add a standalone `verify-report.md`. Reason: no required manual proof exists; final verification evidence is automated and recorded in this plan, `change.yaml`, and `explain-change.md`.
 
 ## Surprises and discoveries
 
@@ -266,6 +269,13 @@ Final verification before PR should include:
   - `python scripts/test-change-metadata-validator.py`
   - `bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/explain-change.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/plan.md`
   - `git diff --check -- docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/explain-change.md docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md docs/plan.md`
+- 2026-05-14: final verify passed from clean temporary worktree `/tmp/rigorloop-verify-cost-bounded-360ebe8` to avoid unrelated dirty working-tree changes in `README.md`, `docs/workflows.md`, selector files, and `docs/project-map.md`:
+  - `python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/explain-change.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/review-log.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/review-resolution.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/code-review-r1.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/plan-review-r1.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r1.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r2.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r3.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/spec-review-r1.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/spec-review-r2.md --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path docs/workflows.md --path scripts/test-skill-validator.py --path skills/proposal-review/SKILL.md --path skills/proposal/SKILL.md --path specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.test.md`
+  - `bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/change.yaml --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/explain-change.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/review-log.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/review-resolution.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/code-review-r1.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/plan-review-r1.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r1.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r2.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/proposal-review-r3.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/spec-review-r1.md --path docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/spec-review-r2.md --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path docs/workflows.md --path scripts/test-skill-validator.py --path skills/proposal-review/SKILL.md --path skills/proposal/SKILL.md --path specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.test.md`
+  - `python scripts/measure-skill-tokens.py`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording`
+  - `git diff --check ef2f0b2..HEAD --`
+  - `git status --short`
 
 ## Outcome and retrospective
 
@@ -274,4 +284,4 @@ Final verification before PR should include:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- M1 implementation is closed after clean code-review and durable rationale is recorded; ready for `verify`.
+- M1 implementation is closed after clean code-review, durable rationale is recorded, and final verify passed against the tracked branch tip. Ready for `pr`.
