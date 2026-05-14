@@ -22,7 +22,7 @@ This plan keeps the implementation narrow. The intended first implementation mil
 
 - Proposal: [Cost-Bounded Rigor After Single-Source Skills and Follow-Up Routing](../proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md), accepted. The rollout names M3 as validation-budget guidance.
 - M3 spec: [Cost-Bounded Rigor M3 Validation-Budget Guidance](../../specs/cost-bounded-rigor-m3-validation-budget-guidance.md), approved after clean [spec-review-r1](../changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/reviews/spec-review-r1.md).
-- Current test spec: [Cost-Bounded Rigor M3 Validation-Budget Guidance Test Spec](../../specs/cost-bounded-rigor-m3-validation-budget-guidance.test.md), active proof-planning surface for implementation.
+- Current test spec: [Cost-Bounded Rigor M3 Validation-Budget Guidance Test Spec](../../specs/cost-bounded-rigor-m3-validation-budget-guidance.test.md), active and maintainer-approved by direct request on 2026-05-14.
 - Architecture: not required. `spec-review-r1` found no runtime architecture, persistence, external API, security-boundary, release packaging, adapter packaging, or hard-to-reverse design change.
 - Completed M2 plan: [Cost-Bounded Rigor M2 Selected Skill Reminders](2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md), done after merged PR #55.
 - Change-local pack: [docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance](../changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/) records M3 spec and review evidence.
@@ -229,6 +229,7 @@ Final closeout:
 - 2026-05-14: clean `spec-review-r1` recorded with no material findings.
 - 2026-05-14: M3 spec status normalized to `approved`; active M3 plan created; next stage is `plan-review`.
 - 2026-05-14: clean `plan-review-r1` recorded with no material findings; active M3 test spec created at `specs/cost-bounded-rigor-m3-validation-budget-guidance.test.md`; next stage is `implement`.
+- 2026-05-14: active M3 test spec maintainer-approved by direct user request; next stage remains `implement`.
 
 ## Decision log
 
@@ -245,6 +246,7 @@ Final closeout:
 
 - 2026-05-14: Plan creation validation passed after spec status settlement and plan-index update: `python scripts/select-validation.py --mode explicit ...`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance`, `python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml`, `bash scripts/ci.sh --mode explicit ...`, and `git diff --check --`.
 - 2026-05-14: Test-spec authoring validation passed after creating the active M3 test spec and syncing lifecycle state: selected validation, review-artifact closeout, change metadata validation, artifact lifecycle validation, selected CI, and `git diff --check --`.
+- 2026-05-14: Test-spec approval validation passed after recording direct maintainer approval and syncing lifecycle state: selected validation, artifact lifecycle validation, change metadata validation, selected CI, and `git diff --check --`.
 
 ## Outcome and retrospective
 
