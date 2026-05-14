@@ -74,13 +74,13 @@ The goal is to make high-cost execution/review stages start from a smallest suff
 ## Current Handoff Summary
 
 - Current milestone: M2. Implement execution/review evidence guidance
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: planning
 - Review status: `plan-review-r1` approved with no material findings
 - Remaining in-scope implementation milestones: M2. Implement execution/review evidence guidance
-- Next stage: implement
+- Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: plan-review and the M2 test-spec alignment are approved, but implementation, code-review, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M2 implementation and targeted validation are complete and ready for code-review, but code-review, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -177,11 +177,11 @@ The goal is to make high-cost execution/review stages start from a smallest suff
   - M2 validation covers `implement` and `code-review` without selecting unrelated `plan` or `spec` skill edits.
 - Commit message: `M2: add execution review evidence guidance`
 - Milestone closeout:
-  - [ ] validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - Skill wording grows too much.
   - Evidence-access guidance accidentally weakens implementation or review input obligations.
@@ -252,7 +252,10 @@ The goal is to make high-cost execution/review stages start from a smallest suff
 - [x] 2026-05-14: M2 test-spec alignment added direct proof cases for `implement`, `code-review`, and M2 selected validation/lifecycle coherence.
 - [x] 2026-05-14: maintainer approved the M2 test-spec alignment by direct user request.
 - [x] M2 test-spec alignment completed.
-- [ ] M2 implementation completed.
+- [x] 2026-05-14: added concept-level static checks for M2 `implement` and `code-review` evidence-access guidance.
+- [x] 2026-05-14: added concise evidence-access sections to `skills/implement/SKILL.md` and `skills/code-review/SKILL.md`.
+- [x] 2026-05-14: recorded input classification and migration notes for both touched skills.
+- [x] M2 implementation completed.
 - [ ] M2 code-review completed.
 - [ ] explain-change completed.
 - [ ] verify completed.
@@ -271,9 +274,7 @@ The goal is to make high-cost execution/review stages start from a smallest suff
 
 ## Input Classification and Migration Notes
 
-To be completed during M2 implementation before or alongside skill edits.
-
-Expected classifications:
+No mandatory operating input was removed. The touched skills now separate standing operating instructions from task evidence.
 
 | Skill | Existing input | Expected classification | Rationale |
 |---|---|---|---|
@@ -301,6 +302,20 @@ Expected classifications:
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/change.yaml`
   - `git diff --check -- specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md docs/plan.md docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review`
 - M2 test-spec alignment approval recorded in `specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md`.
+- Test-first proof:
+  - `python scripts/test-skill-validator.py` failed before M2 skill edits because the new `test_stage_evidence_access_m2_execution_review_skills` checks were not yet satisfied.
+- M2 implementation validation passed:
+  - `python scripts/select-validation.py --mode explicit --path skills/implement/SKILL.md --path skills/code-review/SKILL.md`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-build-skills.py`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path scripts/test-skill-validator.py --path specs/stage-evidence-access-contracts-for-cost-bounded-rigor.md --path specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md --path docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md --path docs/plan.md --path docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/change.yaml`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/change.yaml`
+  - `python scripts/measure-skill-tokens.py`
+  - `git diff --check -- skills/implement/SKILL.md skills/code-review/SKILL.md scripts/test-skill-validator.py specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md docs/plan.md docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review`
+- Static token measurement: 23 skills, 235521 bytes, 58868 estimated tokens. `implement` measured 4268 estimated tokens; `code-review` measured 5054 estimated tokens. Measurement is diagnostic only.
 
 ## Outcome and Retrospective
 
