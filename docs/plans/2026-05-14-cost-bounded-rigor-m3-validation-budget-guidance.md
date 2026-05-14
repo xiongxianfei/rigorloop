@@ -72,9 +72,9 @@ M3 should not turn this into a broad rewrite. Implementation should first audit 
 - Last reviewed milestone: M1. Owner-surface audit and minimal validation-budget guidance
 - Review status: `code-review-m1-r1` clean-with-notes, no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 implementation and code-review are complete, but explain-change, verify, and PR are not complete.
+- Reason final closeout is or is not ready: M1 implementation, code-review, and explain-change are complete, but verify and PR are not complete.
 
 ## Milestones
 
@@ -233,6 +233,7 @@ Final closeout:
 - 2026-05-14: M1 implementation started with static proof for validation owner-surface wording before editing `docs/workflows.md`.
 - 2026-05-14: M1 implementation added validation owner-surface guidance to `docs/workflows.md`, updated stable static proof in `scripts/test-select-validation.py`, recorded owner-surface rationale, and is ready for `code-review`.
 - 2026-05-14: clean `code-review-m1-r1` recorded with no material findings; M1 is closed and next stage is `explain-change`.
+- 2026-05-14: Explain-change recorded at `docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/explain-change.md`; next stage is `verify`.
 
 ## Decision log
 
@@ -272,6 +273,7 @@ Final closeout:
 - 2026-05-14: M1 selected validation passed for `docs/workflows.md`, `scripts/test-select-validation.py`, this plan, `docs/plan.md`, and change metadata. Selected checks were `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`; `broad_smoke_required` was false.
 - 2026-05-14: M1 code-review recorded `clean-with-notes` with no material findings. Final closeout validation remains pending for `explain-change` and `verify`.
 - 2026-05-14: M1 code-review recording validation passed: selected review-artifact/lifecycle/change-metadata checks, `python scripts/validate-review-artifacts.py --mode closeout ...`, change metadata validation, artifact lifecycle validation, selected CI, and `git diff --check --`.
+- 2026-05-14: Explain-change validation passed after creating the durable rationale artifact: selected lifecycle and change-metadata checks, selected CI, and `git diff --check --`.
 
 ## Outcome and retrospective
 
@@ -280,4 +282,4 @@ Final closeout:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `explain-change`, not ready for final closeout.
+- Ready for `verify`, not ready for final closeout.
