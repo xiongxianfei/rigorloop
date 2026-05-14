@@ -195,6 +195,19 @@ If this project customizes artifact locations, update this table. Skills use the
 | Reports | `docs/reports/` | release / verify / measurement workflows |
 | Adapter artifact metadata | `docs/reports/adapter-artifacts/releases/` | release workflow |
 
+## Lifecycle Token-Cost Summaries
+
+Lifecycle token-cost summaries are conditional diagnostic evidence, not a default artifact for every change.
+
+- Path: `docs/reports/token-cost/lifecycle/<change-id>.md`.
+- Required triggers: large workflow-governance change, release change, dynamic benchmark warning, broad-search incident, or explicit maintainer request.
+- Trigger ownership stays with the active plan, test spec, review-resolution, release metadata, maintainer request, or reviewer judgment. Validators may check a summary that exists, but must not infer that an ordinary change needed one.
+- Ordinary small feature, docs, proposal, and skill edits may omit the summary when no trigger applies.
+- Summaries are warning-only and not a hard token gate, hard release gate, or CI blocker based on token totals.
+- Before/after dynamic benchmark comparison and exact token telemetry are advisory unless a benchmark actually ran or a later accepted artifact requires them.
+- Use bounded evidence: summarize broad searches, large command outputs, full-skill reads, repeated file reads, generated-output reads, review rounds, and validation runs rather than pasting raw logs.
+- Route recommended follow-up through the active plan, review-resolution, learn, proposal, or the follow-up ownership surface.
+
 ## Change-Local Artifacts
 
 - Manual skill invocations may omit `docs/changes/<change-id>/` when they are not used to claim complete workflow delivery.
