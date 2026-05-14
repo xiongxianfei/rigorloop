@@ -81,14 +81,14 @@ M5 should not convert this audit into a broad skill rewrite. If current skills a
 
 ## Current Handoff Summary
 
-- Current milestone: M0. Plan creation and spec status settlement
-- Current milestone state: closed
+- Current milestone: M1. High-cost skill audit and minimal follow-through
+- Current milestone state: review-requested
 - Last reviewed milestone: M0. Plan creation and spec status settlement
-- Review status: `plan-review-r1` approved with no material findings
-- Remaining in-scope implementation milestones: M1. High-cost skill audit and minimal follow-through
-- Next stage: implement
+- Review status: M1 is not yet code-reviewed; latest completed review is `plan-review-r1` approved with no material findings
+- Remaining in-scope implementation milestones: M1. High-cost skill audit and minimal follow-through, review-requested
+- Next stage: code-review
 - Final closeout readiness: not-ready
-- Reason final closeout is or is not ready: M5 spec status is settled to approved, this active plan is created, clean plan-review is recorded, and the active test spec is maintainer-approved. Final closeout is not ready because implementation, code-review, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M5 spec status is settled to approved, this active plan is created, clean plan-review is recorded, the active test spec is maintainer-approved, and M1 implementation is ready for code-review. Final closeout is not ready because M1 code-review, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -139,7 +139,7 @@ M5 should not convert this audit into a broad skill rewrite. If current skills a
 
 ### M1. High-cost skill audit and minimal follow-through
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Audit `workflow`, `implement`, and `code-review` against M5, then record no-change rationale or make the smallest necessary skill/proof edits.
 - Requirements: `R1`-`R30`.
 - Files/components likely touched:
@@ -187,13 +187,14 @@ M5 should not convert this audit into a broad skill rewrite. If current skills a
   - `bash scripts/ci.sh --mode explicit --path skills/workflow/SKILL.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/plan.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml`
   - `git diff --check --`
 - Expected observable result: M5 high-cost skill follow-through is complete through audit evidence, no-change rationale or minimal diffs, focused proof, and no expansion into release, adapter, selector, benchmark-suite, generated-output, or hard-token-gate work.
+- Implementation result: audit complete. Existing `workflow`, `implement`, `code-review`, and `scripts/test-skill-validator.py` proof satisfy the M5 contract, so no skill or validator edits were made.
 - Commit message: `M1: complete M5 high-cost skill follow-through`
 - Milestone closeout:
-  - [ ] validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - audit could become a broad rewrite of all public skills;
   - static proof could become brittle exact-prose enforcement;
@@ -258,8 +259,8 @@ Before PR:
 - [x] Plan-review complete.
 - [x] Test spec created.
 - [x] Test spec maintainer-approved.
-- [ ] M1 implementation started.
-- [ ] M1 implemented.
+- [x] M1 implementation started.
+- [x] M1 implemented.
 - [ ] M1 code-review complete.
 - [ ] Explain-change recorded.
 - [ ] Verify complete.
@@ -278,6 +279,21 @@ Before PR:
 
 - Current `workflow`, `implement`, and `code-review` skills already contain quick operating guides, active-plan or handoff-state cues, bounded-evidence wording, and claim-boundary sections. M1 should audit before editing.
 - Existing skill-validator tests already include progressive-loading and bounded-evidence proof surfaces. M1 should prefer reusing existing proof unless the M5 test spec finds a focused gap.
+- M1 audit found no concrete M5 skill or proof gap. Existing progressive-loading checks passed for canonical high-cost skills, `implement` handoff-state behavior, and protected `code-review` contracts.
+
+## M1 audit and surface decisions
+
+| Surface | Decision | Evidence and rationale |
+|---|---|---|
+| `skills/workflow/SKILL.md` | unchanged with rationale | The skill already has a top `Quick operating guide`, reads the active plan `Current Handoff Summary` when present, routes without replacing specialized stage skills, preserves source-of-truth order and stop conditions, keeps stage-owned claim boundaries, and includes bounded-evidence plus broader-read escape guidance. Existing progressive-loading proof passed. |
+| `skills/implement/SKILL.md` | unchanged with rationale | The skill already has a top `Quick operating guide`, starts milestone readiness and handoff-state inspection from the active plan `Current Handoff Summary`, points to the current milestone section and validation notes, blocks missing state, avoids broad repository searches for milestone inference, and includes bounded-evidence plus broader-read escape guidance. Existing progressive-loading proof passed. |
+| `skills/code-review/SKILL.md` | unchanged with rationale | The skill already has a top `Quick operating guide`, independent-review mode, material-finding requirements, formal review recording, review-resolution routing, milestone-aware handoff, stop conditions, result boundaries, and bounded-evidence plus broader-read escape guidance. Existing progressive-loading proof passed. |
+| `scripts/test-skill-validator.py` | unchanged with rationale | Existing helper and canonical-skill tests cover quick guide shape, `implement` handoff-state behavior, protected `code-review` contracts, section-first reading, and bounded-evidence behavior. M1 did not find a stable-proof gap requiring new checks. |
+| `docs/workflows.md` | unchanged with rationale | It remains the full bounded-evidence, workflow-routing, artifact-location, and follow-up-routing guide. M5 did not require moving or duplicating that guide into high-cost skills. |
+| Canonical skill token measurement | not run with rationale | No canonical skill text changed, so M5 `T8` permits a no-run rationale instead of static token measurement. Existing static measurement behavior remains diagnostic and warning-only. |
+| Dynamic benchmark comparison | not run with rationale | M1 made no runtime behavior change and claims no runtime benchmark improvement, so M5 `T9` does not require dynamic benchmark comparison. |
+| Lifecycle token-cost summary | not created with rationale | No M4 trigger was observed during M1 implementation: no release change, dynamic benchmark warning, relevant broad-search incident, or explicit maintainer request. The active plan already classifies M5 as not requiring a summary by default. |
+| Release behavior, adapter packaging, generated adapter output, selector behavior, broad-smoke triggers, benchmark-suite scope, token-cost schemas, and hard token gates | unchanged with rationale | M1 did not touch these out-of-scope surfaces and found no blocker requiring scope expansion or a separate accepted artifact. |
 
 ## Validation notes
 
@@ -285,12 +301,16 @@ Before PR:
 - 2026-05-14: Clean `plan-review-r1` recorded with no material findings; M5 is ready for test-spec.
 - 2026-05-14: Test-spec authoring validation passed after creating the active M5 test spec and syncing lifecycle state: selected validation, review-artifact closeout, change metadata validation, artifact lifecycle validation, selected CI, and `git diff --check --`.
 - 2026-05-14: Direct maintainer approval recorded for the active M5 test spec; approval validation passed with selected validation, change metadata validation, artifact lifecycle validation, selected CI, and `git diff --check --`. Next stage is `implement`.
+- 2026-05-14: M1 implementation started with proof-first audit planned against `workflow`, `implement`, `code-review`, and existing `scripts/test-skill-validator.py` coverage.
+- 2026-05-14: M1 proof-first audit passed with `python scripts/test-skill-validator.py` (81 tests). No high-cost skill or validator edits were needed.
+- 2026-05-14: M1 selected validation passed for the unchanged high-cost skill proof surfaces plus this plan, `docs/plan.md`, and change metadata. Selected check IDs were `skills.validate`, `skills.regression`, `skills.generation_regression`, `skills.drift`, `adapters.drift`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`; `broad_smoke_required` was false.
+- 2026-05-14: M1 selected CI passed for the unchanged high-cost skill proof surfaces plus this plan, `docs/plan.md`, and change metadata. `git diff --check --` also passed.
 
 ## Outcome and retrospective
 
-- Not complete yet. M5 is planned, plan-review approved, and the active test spec is maintainer-approved; next stage is `implement`.
+- Not complete yet. M1 implementation is complete and ready for `code-review`; final closeout remains blocked on code-review, explain-change, verify, and PR handoff.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `implement`.
+- Ready for `code-review`.

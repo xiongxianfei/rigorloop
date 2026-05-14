@@ -23,6 +23,9 @@ requirements:
   - Create active M5 test spec before implementation.
   - Keep implementation blocked until maintainer approves the active M5 test spec.
   - Record maintainer approval of the active M5 test spec before implementation.
+  - Audit workflow, implement, and code-review before M5 skill or proof edits.
+  - Record no-change rationale for high-cost skills and unaffected out-of-scope surfaces when no M5 gap is found.
+  - Keep M1 implementation blocked from final closeout until code-review runs.
 tests:
   - M4 plan lifecycle state validation.
   - M5 spec artifact lifecycle validation.
@@ -35,6 +38,9 @@ tests:
   - Clean plan-review receipt and review-log validation.
   - M5 test spec artifact lifecycle validation.
   - M5 test spec approval validation.
+  - M1 high-cost skill audit and no-change rationale validation.
+  - Progressive-loading skill-validator proof.
+  - M1 selected validation and selected CI.
 validation:
   - command: spec
     result: draft_m5_progressive_loading_follow_through_spec_created_ready_for_spec_review
@@ -116,6 +122,20 @@ validation:
     result: pass_selected_ci_after_test_spec_approval
   - command: git diff --check --
     result: pass_after_test_spec_approval
+  - command: python scripts/test-skill-validator.py
+    result: pass_m1_proof_first_audit_81_tests_no_skill_or_validator_gap
+  - command: python scripts/select-validation.py --mode explicit --path skills/workflow/SKILL.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/plan.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
+    result: pass_m1_selected_skills_lifecycle_and_change_metadata_checks_broad_smoke_false
+  - command: bash scripts/ci.sh --mode explicit --path skills/workflow/SKILL.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/plan.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
+    result: pass_m1_selected_ci_skills_lifecycle_change_metadata_and_adapter_archive_smoke_broad_smoke_false
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
+    result: pass_after_m1_implementation
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through
+    result: pass_after_m1_implementation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.md --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.test.md --path docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/plan.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml --path skills/workflow/SKILL.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md
+    result: pass_after_m1_implementation
+  - command: git diff --check --
+    result: pass_after_m1_implementation
 changed_files:
   - docs/plan.md
   - docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md
