@@ -634,6 +634,9 @@ def _apply_path_selection(
     if category == "examples":
         return
 
+    if category == "living-reference/project-map":
+        return
+
     if category == "follow-up-register":
         _add_check(
             selected,
@@ -990,6 +993,10 @@ def _path_category(path: str) -> str | None:
         return "token-cost"
     if path.startswith("docs/examples/"):
         return "examples"
+    if path == "docs/project-map.md" or (
+        path.startswith("docs/project-map/") and path.endswith(".md")
+    ):
+        return "living-reference/project-map"
     if path == "docs/follow-ups.md":
         return "follow-up-register"
     if path == "docs/changes/0001-skill-validator/README.md":
