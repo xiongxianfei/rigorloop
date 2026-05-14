@@ -1,6 +1,6 @@
 # Cost-Bounded Rigor M4 Lifecycle Token-Cost Summary Plan
 
-- Status: active
+- Status: done
 - Owner: maintainers
 - Start date: 2026-05-14
 - Last updated: 2026-05-14
@@ -77,9 +77,9 @@ M4 should add lifecycle-summary support beside those existing report types. It s
 - Last reviewed milestone: M1. Lifecycle summary guidance, template, static proof, and first summary
 - Review status: `code-review-m1-r1` clean-with-notes with no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: hosted CI / PR review
-- Final closeout readiness: pr-open
-- Reason final closeout is or is not ready: M1 is closed after clean code-review, explain-change is recorded, final local verify passed, and PR #57 is open with the PR body updated. Hosted checks and review are tracked on the PR, and final lifecycle closeout remains pending PR integration.
+- Next stage: done
+- Final closeout readiness: done after merged PR #57
+- Reason final closeout is or is not ready: M1 is closed after clean code-review, explain-change is recorded, final local verify passed, PR #57 opened with the PR body updated, hosted CI passed, and PR #57 merged.
 
 ## Milestones
 
@@ -273,12 +273,13 @@ M4 should add lifecycle-summary support beside those existing report types. It s
 - 2026-05-14: Final verify support checks passed: `python scripts/test-token-cost-report-validation.py` (18 tests), review-artifact closeout validation, change metadata validation, artifact lifecycle validation for the full changed lifecycle set, selected CI, and `git diff --check --`. Hosted CI was not observed.
 - 2026-05-14: PR #57 opened for M4 and the PR body was updated with local validation evidence. Hosted CI was not observed at handoff time.
 - 2026-05-14: PR handoff state-sync validation passed for `docs/plan.md`, this plan, and change metadata: selected validation, change metadata validation, artifact lifecycle validation, selected CI, and `git diff --check --`.
+- 2026-05-14: PR #57 merged. M4 added conditional lifecycle token-cost summary guidance, a reusable template, the first M4 lifecycle summary, and stable static proof without changing hard token gates, release packaging, adapter packaging, generated-output tracking, benchmark suite behavior, or progressive-loading behavior.
 
 ## Outcome and retrospective
 
-- M1 implementation, code-review, explain-change, local final verify, and PR handoff are complete. Final lifecycle closeout remains pending hosted checks, PR review, and PR integration.
+- M1 implementation, code-review, explain-change, local final verify, PR handoff, hosted CI, and PR integration are complete.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- PR #57 is open with local branch-ready evidence. Hosted checks and review are tracked on the PR.
+- Done after merged PR #57.

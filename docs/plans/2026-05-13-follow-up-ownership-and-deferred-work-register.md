@@ -1,9 +1,9 @@
 # Follow-up Ownership and Deferred Work Register Plan
 
-- Status: active
+- Status: done
 - Owner: maintainers
 - Start date: 2026-05-13
-- Last updated: 2026-05-13
+- Last updated: 2026-05-14
 - Related PR: [#53](https://github.com/xiongxianfei/rigorloop/pull/53)
 - Supersedes: none
 
@@ -67,14 +67,14 @@ Validation and generated-output context:
 
 ## Current Handoff Summary
 
-- Current milestone: M2
-- Current milestone state: closed
+- Current milestone: final lifecycle closeout
+- Current milestone state: done
 - Last reviewed milestone: M2
 - Review status: M2 clean-with-notes
 - Remaining in-scope implementation milestones: none
-- Next stage: hosted CI / PR review
-- Final closeout readiness: ready
-- Reason final closeout is or is not ready: PR #53 is open; hosted CI and PR review remain downstream. On 2026-05-14, maintainers accepted one unowned cross-change follow-up and `docs/follow-ups.md` was created to record it.
+- Next stage: none
+- Final closeout readiness: done after merged PR #53
+- Reason final closeout is or is not ready: PR #53 merged on 2026-05-13 after hosted CI passed. On 2026-05-14, maintainers accepted one unowned cross-change follow-up and `docs/follow-ups.md` was created to record it.
 
 ## Milestones
 
@@ -227,6 +227,7 @@ Final verification before PR should include:
 - 2026-05-13: verify passed local validation and recorded `verify-report.md`; next stage is `pr`.
 - 2026-05-13: PR #53 opened for review; hosted CI not yet observed at handoff time.
 - 2026-05-14: Maintainer requested a deferred task for token-friendliness work on other skills; recorded as `FU-001` in `docs/follow-ups.md`.
+- 2026-05-14: Lifecycle index sync verified PR #53 merged on 2026-05-13 with hosted CI passed; plan marked done.
 
 ## Decision log
 
@@ -263,8 +264,9 @@ Final verification before PR should include:
 
 ## Outcome and retrospective
 
-- Pending implementation and final lifecycle closeout.
+- Completed. PR #53 merged after hosted CI passed. The accepted unowned cross-change follow-up is recorded as `FU-001` in `docs/follow-ups.md`.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
+- Done after merged PR #53.
