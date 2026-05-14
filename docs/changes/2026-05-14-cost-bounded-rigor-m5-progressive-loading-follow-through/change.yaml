@@ -1,0 +1,43 @@
+change_id: 2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through
+title: Cost-bounded rigor M5 progressive-loading follow-through
+classification: workflow-governance-spec
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md
+  spec: specs/cost-bounded-rigor-m5-progressive-loading-follow-through.md
+requirements:
+  - Record merged M4 plan state after PR #57.
+  - Create focused M5 progressive-loading follow-through spec before spec-review.
+  - Treat completed progressive-loading work as baseline instead of reopening the full optimization proposal.
+  - Keep M5 limited to audit, no-change rationale, and minimal alignment for workflow, implement, and code-review.
+  - Preserve safety-critical review, verification, material-finding, release, and milestone-handoff guidance.
+  - Preserve single-authored skill source, follow-up ownership, and docs/workflows.md ownership boundaries.
+  - Avoid release, adapter, generated-output, selector, broad-smoke, benchmark-suite, token-report-schema, dynamic-benchmark, and hard-token-gate expansion unless a later accepted artifact scopes it.
+tests:
+  - M4 plan lifecycle state validation.
+  - M5 spec artifact lifecycle validation.
+  - Change metadata validation.
+  - Accepted proposal follow-on artifact validation.
+  - Selected CI for changed lifecycle and spec paths.
+validation:
+  - command: spec
+    result: draft_m5_progressive_loading_follow_through_spec_created_ready_for_spec_review
+  - command: python scripts/select-validation.py --mode explicit --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-m4-lifecycle-token-cost-summary.md --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
+    result: pass_selected_artifact_lifecycle_and_change_metadata_checks
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-m4-lifecycle-token-cost-summary.md --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-m4-lifecycle-token-cost-summary.md --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
+    result: pass_selected_ci_artifact_lifecycle_and_change_metadata
+  - command: git diff --check --
+    result: pass
+changed_files:
+  - docs/plan.md
+  - docs/plans/2026-05-14-cost-bounded-rigor-m4-lifecycle-token-cost-summary.md
+  - docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md
+  - specs/cost-bounded-rigor-m5-progressive-loading-follow-through.md
+  - docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/change.yaml
+review:
+  status: pending
+  unresolved_items: 0
