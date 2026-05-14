@@ -1,10 +1,10 @@
 # Stage Evidence Access Contracts M2: Execution/Review Evidence Access
 
-- Status: active
+- Status: done
 - Owner: maintainers
 - Start date: 2026-05-14
-- Last updated: 2026-05-14
-- Related issue or PR: none yet
+- Last updated: 2026-05-15
+- Related issue or PR: PR #60
 - Supersedes: none
 
 ## Purpose / Big Picture
@@ -78,9 +78,9 @@ The goal is to make high-cost execution/review stages start from a smallest suff
 - Last reviewed milestone: M2. Implement execution/review evidence guidance
 - Review status: `code-review-m2-r1` clean-with-notes with no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: hosted CI / merge follow-up
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2 implementation, code-review, explain-change, final local verify, and PR handoff are complete; PR #60 is open and hosted CI/merge follow-up remains.
+- Next stage: none
+- Final closeout readiness: complete
+- Reason final closeout is or is not ready: PR #60 merged on 2026-05-14 with hosted CI passing; M2 lifecycle closeout is complete.
 
 ## Milestones
 
@@ -263,6 +263,7 @@ The goal is to make high-cost execution/review stages start from a smallest suff
 - [x] 2026-05-14: final local verify passed selector-backed validation and confirmed branch-ready local evidence. Hosted CI has not been observed yet and is not claimed as passed.
 - [x] verify completed.
 - [x] 2026-05-14: PR #60 opened at `https://github.com/xiongxianfei/rigorloop/pull/60`. Hosted CI is pending and not claimed as passed.
+- [x] 2026-05-15: PR #60 merge confirmed at `87101ec42582fde020cfe600193ebfea183669e0`; hosted CI passed.
 - [x] PR handoff completed.
 
 ## Decision Log
@@ -350,10 +351,13 @@ No mandatory operating input was removed. The touched skills now separate standi
 - PR handoff completed:
   - PR #60 opened: `https://github.com/xiongxianfei/rigorloop/pull/60`
   - Hosted CI is pending and not claimed as passed.
+- PR #60 merge closeout:
+  - PR #60 merged on 2026-05-14 at `87101ec42582fde020cfe600193ebfea183669e0`.
+  - Hosted CI `ci` completed successfully before merge.
 
 ## Outcome and Retrospective
 
-- PR #60 is open. The plan remains active until hosted CI and merge follow-up settle the final lifecycle state.
+- Done. PR #60 merged on 2026-05-14 after hosted CI passed. M2 added execution/review evidence access guidance to `implement` and `code-review`, concept-level static proof, durable review/explain/verify evidence, and PR handoff without updating `plan`, `spec`, runtime enforcement, hard token gates, release behavior, adapter packaging, generated-output source policy, or dynamic benchmarks.
 
 ## Readiness
 
