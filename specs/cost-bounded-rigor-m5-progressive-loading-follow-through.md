@@ -290,7 +290,9 @@ pr
 
 - Spec-review approval: `docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/reviews/spec-review-r1.md`
 - Execution plan: `docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md`
+- Plan-review approval: `docs/changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/reviews/plan-review-r1.md`
+- Test spec: `specs/cost-bounded-rigor-m5-progressive-loading-follow-through.test.md`
 
 ## Readiness
 
-Approved after clean spec-review. Active plan created; ready for plan-review.
+Approved after clean spec-review. The active M5 plan has clean plan-review approval, and the M5 test spec is active pending maintainer approval before implementation.

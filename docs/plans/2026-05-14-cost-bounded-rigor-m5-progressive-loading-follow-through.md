@@ -24,7 +24,7 @@ This plan keeps the implementation narrow. The intended implementation milestone
 
 - Proposal: [Cost-Bounded Rigor After Single-Source Skills and Follow-Up Routing](../proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md), accepted. The rollout names M5 as progressive-loading follow-through.
 - M5 spec: [Cost-Bounded Rigor M5 Progressive-Loading Follow-Through](../../specs/cost-bounded-rigor-m5-progressive-loading-follow-through.md), approved after clean [spec-review-r1](../changes/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through/reviews/spec-review-r1.md).
-- Current test spec: none yet. The next downstream authoring artifact after plan-review is the M5 test spec.
+- Current test spec: [Cost-Bounded Rigor M5 Progressive-Loading Follow-Through Test Spec](../../specs/cost-bounded-rigor-m5-progressive-loading-follow-through.test.md), active and pending maintainer approval.
 - Architecture: not required. `spec-review-r1` found no runtime architecture, persistence, external API, deployment, data-contract, security-boundary, release packaging, adapter packaging, or executable selector behavior change.
 - Completed progressive-loading baseline: [Progressive Loading for High-Cost Public Skills plan](2026-05-11-progressive-loading-high-cost-public-skills.md), done after PR #43.
 - Completed M4 plan: [Cost-Bounded Rigor M4 Lifecycle Token-Cost Summary](2026-05-14-cost-bounded-rigor-m4-lifecycle-token-cost-summary.md), done after merged PR #57.
@@ -86,9 +86,9 @@ M5 should not convert this audit into a broad skill rewrite. If current skills a
 - Last reviewed milestone: M0. Plan creation and spec status settlement
 - Review status: `plan-review-r1` approved with no material findings
 - Remaining in-scope implementation milestones: M1. High-cost skill audit and minimal follow-through
-- Next stage: test-spec
+- Next stage: maintainer approval of the active test spec
 - Final closeout readiness: not-ready
-- Reason final closeout is or is not ready: M5 spec status is settled to approved, this active plan is created, and clean plan-review is recorded. Final closeout is not ready because test-spec, implementation, code-review, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M5 spec status is settled to approved, this active plan is created, clean plan-review is recorded, and the active test spec is created. Final closeout is not ready because maintainer test-spec approval, implementation, code-review, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -256,7 +256,7 @@ Before PR:
 - [x] M5 plan created.
 - [x] M5 plan indexed in `docs/plan.md`.
 - [x] Plan-review complete.
-- [ ] Test spec created.
+- [x] Test spec created.
 - [ ] Test spec maintainer-approved.
 - [ ] M1 implementation started.
 - [ ] M1 implemented.
@@ -283,12 +283,13 @@ Before PR:
 
 - 2026-05-14: Plan creation validation passed after spec status settlement and plan-index update: selected validation, review-artifact closeout, change metadata validation, artifact lifecycle validation, selected CI, and `git diff --check --`.
 - 2026-05-14: Clean `plan-review-r1` recorded with no material findings; M5 is ready for test-spec.
+- 2026-05-14: Test-spec authoring validation passed after creating the active M5 test spec and syncing lifecycle state: selected validation, review-artifact closeout, change metadata validation, artifact lifecycle validation, selected CI, and `git diff --check --`.
 
 ## Outcome and retrospective
 
-- Not complete yet. M5 is planned and plan-review approved; next stage is `test-spec`.
+- Not complete yet. M5 is planned, plan-review approved, and the active test spec is created; next stage is maintainer approval of the test spec.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `test-spec`.
+- Ready for maintainer approval of the active test spec.
