@@ -72,14 +72,14 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
 
 ## Current Handoff Summary
 
-- Current milestone: M0. M3/M4 test-spec alignment
-- Current milestone state: approved
+- Current milestone: M3. Static validation audit and gap fill
+- Current milestone state: review-requested
 - Last reviewed milestone: Planning M3/M4 static validation and measurement
-- Review status: plan-review-r1 approved with no material findings
+- Review status: M3 implementation ready for code-review; plan-review-r1 approved with no material findings
 - Remaining in-scope implementation milestones: M3. Static validation audit and gap fill; M4. Measurement and size-delta recording
-- Next stage: implement M3. Static validation audit and gap fill
+- Next stage: code-review M3. Static validation audit and gap fill
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: plan-review and M3/M4 test-spec alignment are complete, but implementation, code-review, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M3 implementation is review-requested and M4 remains planned; code-review, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -131,7 +131,7 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
 
 ### M3. Static Validation Audit And Gap Fill
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Confirm existing stage evidence access static checks protect the M1/M2 evidence guidance and add only missing concept-level checks.
 - Requirements: `R30`-`R32`, `R34`, proposal M3.
 - Files/components likely touched:
@@ -161,11 +161,11 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
   - No brittle exact long paragraph checks are added.
 - Commit message: `M3: validate stage evidence access concepts`
 - Milestone closeout:
-  - [ ] validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - Checks can become brittle if they assert long prose.
   - Duplicated checks can increase maintenance cost without improving safety.
@@ -278,7 +278,8 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
 - [x] 2026-05-15: M3/M4 test-spec alignment added explicit M3 validator audit/gap-fill and M4 measurement/size-delta proof cases.
 - [x] 2026-05-15: M3/M4 test-spec alignment approved by maintainer.
 - [x] M0 test-spec alignment completed.
-- [ ] M3 static validation completed.
+- [x] 2026-05-15: M3 audit found current concept checks sufficient; no `scripts/test-skill-validator.py` changes needed.
+- [x] M3 static validation implementation completed and handed to code-review.
 - [ ] M4 measurement completed.
 - [ ] code-review completed.
 - [ ] explain-change completed.
@@ -292,10 +293,11 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
 - 2026-05-15: Treat existing static checks as candidates for no-change rationale before adding new tests. Reason: the proposal says to add static checks only if needed.
 - 2026-05-15: Update the existing active stage evidence access test spec instead of creating a separate M3/M4 test spec. Reason: the approved spec is unchanged and the existing test spec remains the active proof-planning surface for the same stage evidence access contract.
 - 2026-05-15: Maintainer approved the M3/M4 test-spec alignment by direct user request. Reason: the active proof surface is ready to support M3 static validation audit/gap-fill and M4 measurement implementation.
+- 2026-05-15: M3 did not change `scripts/test-skill-validator.py`. Reason: `test_stage_evidence_access_contract_guidance`, `test_stage_evidence_access_proposal_side_skills`, and `test_stage_evidence_access_m2_execution_review_skills` already cover `Evidence access`, default evidence, conditional evidence, reason recording, bounded discovery before broad reads, and full-file-read escape behavior.
 
 ## Surprises and Discoveries
 
-- None yet.
+- M3 audit found the M1/M2 static validator work already satisfies the M3 concept list, so adding new assertions would duplicate existing coverage without reducing risk.
 
 ## Validation Notes
 
@@ -312,6 +314,27 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
   - `python scripts/test-change-metadata-validator.py`
   - `git diff --check -- specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md docs/plan.md docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement`
 - M3/M4 test-spec alignment approved by maintainer on 2026-05-15.
+- M3 static validation audit and gap-fill validation passed:
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/select-validation.py --mode explicit --path scripts/test-skill-validator.py --path docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md --path docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/change.yaml`
+  - `python scripts/test-build-skills.py`
+  - `python scripts/test-change-metadata-validator.py`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path scripts/test-skill-validator.py --path specs/stage-evidence-access-contracts-for-cost-bounded-rigor.md --path specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md --path docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md --path docs/plan.md --path docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/change.yaml`
+  - `git diff --check -- scripts/test-skill-validator.py specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md docs/plan.md docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement`
+
+## M3 Static Validation Audit
+
+| Concept | Existing proof | Result |
+|---|---|---|
+| Evidence access section presence | `test_stage_evidence_access_proposal_side_skills` and `test_stage_evidence_access_m2_execution_review_skills` assert `## Evidence access` in each participating skill. | Covered |
+| Default evidence | The proposal-side and M2 skill tests assert `Default evidence:` plus required stage-local default categories. | Covered |
+| Conditional evidence | The proposal-side and M2 skill tests assert `Conditional evidence:` plus required trigger-based conditional categories. | Covered |
+| Reason recording | The proposal-side and M2 skill tests assert compact reason recording only for substantive out-of-set reads. | Covered |
+| Bounded discovery / bounded evidence before broad reads | `test_stage_evidence_access_contract_guidance` asserts bounded discovery examples and broad authoritative-document search limits; each participating skill asserts bounded discovery is not evidence expansion. | Covered |
+| Full-file-read escape behavior | `test_stage_evidence_access_contract_guidance` asserts full-file reads remain allowed; participating skill tests assert full-file language is present. | Covered |
+
+M3 no-change rationale: current concept checks are sufficient and passed. No `scripts/test-skill-validator.py` edits were made because additional checks would be duplicative or phrase-locking.
 
 ## Outcome and Retrospective
 
