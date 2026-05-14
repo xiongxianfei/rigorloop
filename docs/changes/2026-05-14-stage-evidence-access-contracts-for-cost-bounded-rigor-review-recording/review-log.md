@@ -70,3 +70,16 @@ Resolution: review-resolution.md#plan-review-r1
 Material findings: None
 Open findings: None
 Recording status: recorded
+
+### Review entry
+Review ID: code-review-m1-r1
+Stage: code-review
+Round: 1
+Reviewed artifact: commit 1ef3725
+Status: changes-requested
+Detailed record: reviews/code-review-m1-r1.md
+Record: reviews/code-review-m1-r1.md
+Resolution: review-resolution.md#code-review-m1-r1
+Material findings: SEA-M1-CR1-1
+Open findings: SEA-M1-CR1-1
+Recording status: recorded

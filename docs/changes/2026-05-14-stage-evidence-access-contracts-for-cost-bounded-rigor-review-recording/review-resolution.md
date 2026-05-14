@@ -4,7 +4,7 @@
 
 This record tracks material findings from formal proposal-review rounds for the stage evidence access contracts proposal.
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r3
 Review closeout: spec-review-r1
@@ -45,3 +45,20 @@ No material findings.
 ### plan-review-r1
 
 No material findings.
+
+### code-review-m1-r1
+
+Review closeout: open
+
+#### SEA-M1-CR1-1
+
+Finding ID: SEA-M1-CR1-1
+Disposition: accepted
+Owner: implementer
+Owning stage: implement M1
+Required outcome: The M1 implementation commit must not include an unrelated M5 lifecycle transition unless the synchronized M5 plan-body closeout is also intentionally in scope.
+Rationale: `docs/plan.md` moved the prior M5 plan to Done in the M1 commit while the committed M5 plan body still records active/PR-open state. The unrelated M5 plan-body closeout remains only as an unstaged local worktree change.
+Chosen action: Pending. Restore the M5 `docs/plan.md` entry to its pre-M1 location/state in the M1 diff, leave the unrelated M5 plan-body work outside M1, rerun validation, and rerun code-review.
+Safe resolution path: Restore the unrelated plan-index transition, rerun lifecycle and diff validation, then rerun code-review.
+Validation target: `docs/plan.md`, active plan, change metadata, review artifacts, and selected validation for changed M1 paths.
+Validation evidence: Pending.

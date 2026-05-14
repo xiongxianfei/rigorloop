@@ -21,6 +21,7 @@ changed_files:
   - docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/reviews/proposal-review-r3.md
   - docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/reviews/spec-review-r1.md
   - docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/reviews/plan-review-r1.md
+  - docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/reviews/code-review-m1-r1.md
   - docs/plan.md
   - docs/plans/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor.md
   - specs/stage-evidence-access-contracts-for-cost-bounded-rigor.md
@@ -46,6 +47,7 @@ tests:
   - selected M1 validation
   - generated skill mirror validation
   - adapter archive smoke for canonical skill edits
+  - code-review-m1-r1
   - review artifact validation
   - change metadata validation
   - artifact lifecycle validation for the accepted proposal, draft spec, and review evidence
@@ -91,3 +93,5 @@ validation:
     result: passed
   - command: python scripts/measure-skill-tokens.py
     result: passed_diagnostic_total_58252_estimated_tokens
+  - command: code-review-m1-r1
+    result: changes_requested_sea_m1_cr1_1_open
