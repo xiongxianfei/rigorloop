@@ -320,6 +320,17 @@ Use broad smoke only when an authoritative trigger requires it, such as selector
 bash scripts/ci.sh --mode broad-smoke
 ```
 
+Validation owner surfaces:
+
+- `docs/workflows.md` owns contributor-facing validation guidance.
+- Validation-selection scripts, selector tests, and the CI wrapper own executable check selection, selected-check behavior, command exit behavior, and failure detection.
+- Stage skills own concise local validation reminders when a stage directly needs one; they do not replace selected checks.
+- Active plans and test specs own change-specific validation requirements.
+- `review-resolution.md` owns finding-specific validation requirements.
+- Release metadata owns release-specific validation requirements.
+
+Guidance-only wording must not change selected check coverage, command exit behavior, failure detection, or required validation evidence.
+
 Run these structural checks before PR:
 
 - `python scripts/validate-skills.py`

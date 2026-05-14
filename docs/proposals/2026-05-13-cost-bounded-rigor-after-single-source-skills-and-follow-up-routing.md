@@ -633,6 +633,9 @@ pr
 - First-slice spec: `specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md`
 - Spec-review approval: `docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/spec-review-r2.md`
 - Execution plan: `docs/plans/2026-05-14-cost-bounded-rigor-first-slice.md`
+- M2 selected skill reminders spec: `specs/cost-bounded-rigor-m2-selected-skill-reminders.md`
+- M2 selected skill reminders plan: `docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md`
+- M3 validation-budget guidance spec: `specs/cost-bounded-rigor-m3-validation-budget-guidance.md`
 - Plan-review approval: `docs/changes/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing-review-recording/reviews/plan-review-r1.md`
 - Test spec: `specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.test.md`
 

@@ -1,0 +1,196 @@
+change_id: 2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance
+title: Cost-bounded rigor M3 validation-budget guidance
+classification: workflow-governance-spec
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md
+  spec: specs/cost-bounded-rigor-m3-validation-budget-guidance.md
+  test_spec: specs/cost-bounded-rigor-m3-validation-budget-guidance.test.md
+  plan: docs/plans/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance.md
+  explain_change: docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/explain-change.md
+requirements:
+  - Record merged M2 plan state after PR #55.
+  - Record M3 spec as a follow-on artifact of the accepted cost-bounded-rigor proposal.
+  - Author focused M3 validation-budget guidance spec before spec-review.
+  - Record clean spec-review before downstream plan reliance.
+  - Keep M3 separate from lifecycle token-cost summaries, release packaging, adapter packaging, dynamic benchmarks, hard token gates, and progressive-loading work.
+  - Preserve targeted validation as the first validation layer when changed paths are known and no authoritative broad-smoke trigger applies.
+  - Preserve broad-smoke, release, test-spec, review-resolution, active-plan, and selector triggers.
+  - Distinguish `docs/workflows.md` guidance, selector behavior, stage skill reminders, active plan/test-spec requirements, review-resolution requirements, and release metadata requirements.
+  - Normalize the approved M3 spec status before downstream plan reliance.
+  - Create an active M3 plan before plan-review.
+  - Record clean plan-review before test-spec reliance.
+  - Create an active M3 test spec before implementation.
+  - Record direct maintainer approval of the active M3 test spec before implementation.
+  - Implement M1 owner-surface audit and minimal validation-budget guidance.
+  - Record clean M1 code-review before final closeout.
+  - Record durable explain-change before verify.
+  - Run final local verify before PR handoff.
+  - Open PR for human review.
+tests:
+  - M2 plan lifecycle state validation.
+  - M3 spec artifact lifecycle validation.
+  - Clean spec-review receipt and review-log validation.
+  - Change metadata validation.
+  - Selected CI for changed lifecycle and spec paths.
+  - M3 plan artifact lifecycle validation.
+  - Clean plan-review receipt and review-log validation.
+  - Active M3 test spec artifact lifecycle validation.
+  - Direct M3 test-spec approval lifecycle sync.
+  - M1 validation owner-surface static proof and selected validation.
+  - Clean M1 code-review receipt and review-log validation.
+  - Explain-change artifact lifecycle and selected validation.
+  - Final local verify selected CI and branch-ready validation.
+  - PR creation and lifecycle handoff sync.
+validation:
+  - command: spec
+    result: draft_m3_validation_budget_guidance_spec_created_ready_for_spec_review
+  - command: python scripts/select-validation.py --mode explicit --path specs/cost-bounded-rigor-m3-validation-budget-guidance.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md
+    result: pass_selected_artifact_lifecycle_and_change_metadata_checks
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/cost-bounded-rigor-m3-validation-budget-guidance.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path specs/cost-bounded-rigor-m3-validation-budget-guidance.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md
+    result: pass_selected_ci_artifact_lifecycle_and_change_metadata
+  - command: git diff --check --
+    result: pass
+  - command: spec-review-r1
+    result: approved_no_material_findings_ready_for_spec_status_normalization
+  - command: python scripts/select-validation.py --mode explicit --path specs/cost-bounded-rigor-m3-validation-budget-guidance.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/reviews/spec-review-r1.md --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md
+    result: pass_selected_review_artifact_lifecycle_and_change_metadata_checks
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml
+    result: pass_after_spec_review_recording
+  - command: bash scripts/ci.sh --mode explicit --path specs/cost-bounded-rigor-m3-validation-budget-guidance.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/reviews/spec-review-r1.md --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md
+    result: pass_selected_ci_after_spec_review_recording
+  - command: plan
+    result: approved_spec_status_normalized_and_active_m3_plan_created_ready_for_plan_review
+  - command: python scripts/select-validation.py --mode explicit --path specs/cost-bounded-rigor-m3-validation-budget-guidance.md --path docs/plans/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance.md --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/reviews/spec-review-r1.md
+    result: pass_selected_review_artifact_lifecycle_and_change_metadata_checks_after_plan_creation
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance
+    result: pass_after_plan_creation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml
+    result: pass_after_plan_creation
+  - command: bash scripts/ci.sh --mode explicit --path specs/cost-bounded-rigor-m3-validation-budget-guidance.md --path docs/plans/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance.md --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/reviews/spec-review-r1.md
+    result: pass_selected_ci_after_plan_creation
+  - command: git diff --check --
+    result: pass_after_plan_creation
+  - command: plan-review-r1
+    result: approved_no_material_findings_ready_for_test_spec
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/reviews/plan-review-r1.md
+    result: pass_selected_review_artifact_lifecycle_and_change_metadata_checks_after_plan_review_recording
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance
+    result: pass_after_plan_review_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml
+    result: pass_after_plan_review_recording
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/reviews/plan-review-r1.md
+    result: pass_selected_ci_after_plan_review_recording
+  - command: git diff --check --
+    result: pass_after_plan_review_recording
+  - command: test-spec
+    result: active_m3_validation_budget_guidance_test_spec_created_ready_for_implementation
+  - command: python scripts/select-validation.py --mode explicit --path specs/cost-bounded-rigor-m3-validation-budget-guidance.md --path specs/cost-bounded-rigor-m3-validation-budget-guidance.test.md --path docs/plans/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance.md --path docs/plan.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml
+    result: pass_selected_artifact_lifecycle_and_change_metadata_checks_after_test_spec_creation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/cost-bounded-rigor-m3-validation-budget-guidance.md --path specs/cost-bounded-rigor-m3-validation-budget-guidance.test.md --path docs/plans/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance.md --path docs/plan.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml
+    result: pass_after_test_spec_creation
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance
+    result: pass_after_test_spec_creation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml
+    result: pass_after_test_spec_creation
+  - command: bash scripts/ci.sh --mode explicit --path specs/cost-bounded-rigor-m3-validation-budget-guidance.md --path specs/cost-bounded-rigor-m3-validation-budget-guidance.test.md --path docs/plans/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance.md --path docs/plan.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml
+    result: pass_selected_ci_after_test_spec_creation
+  - command: git diff --check --
+    result: pass_after_test_spec_creation
+  - command: test-spec approval
+    result: direct_maintainer_approval_recorded_ready_for_implementation
+  - command: python scripts/select-validation.py --mode explicit --path specs/cost-bounded-rigor-m3-validation-budget-guidance.test.md --path docs/plans/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance.md --path docs/plan.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml
+    result: pass_selected_artifact_lifecycle_and_change_metadata_checks_after_test_spec_approval
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/cost-bounded-rigor-m3-validation-budget-guidance.test.md --path docs/plans/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance.md --path docs/plan.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml
+    result: pass_after_test_spec_approval
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml
+    result: pass_after_test_spec_approval
+  - command: bash scripts/ci.sh --mode explicit --path specs/cost-bounded-rigor-m3-validation-budget-guidance.test.md --path docs/plans/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance.md --path docs/plan.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml
+    result: pass_selected_ci_after_test_spec_approval
+  - command: git diff --check --
+    result: pass_after_test_spec_approval
+  - command: python scripts/test-select-validation.py ValidationSelectionTests.test_workflow_guidance_aligns_with_validation_layering_contract
+    result: fail_before_docs_workflows_owner_surface_guidance
+  - command: python scripts/test-select-validation.py ValidationSelectionTests.test_workflow_guidance_aligns_with_validation_layering_contract
+    result: pass_after_docs_workflows_owner_surface_guidance
+  - command: python scripts/test-select-validation.py
+    result: pass_after_m1_guidance_and_static_proof
+  - command: python scripts/select-validation.py --mode explicit --path docs/workflows.md --path scripts/test-select-validation.py --path docs/plans/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance.md --path docs/plan.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml
+    result: pass_selected_artifact_lifecycle_change_metadata_and_selector_checks_after_m1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/cost-bounded-rigor-m3-validation-budget-guidance.md --path docs/plans/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance.md --path docs/plan.md --path docs/workflows.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml
+    result: pass_after_m1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml
+    result: pass_after_m1
+  - command: bash scripts/ci.sh --mode explicit --path docs/workflows.md --path scripts/test-select-validation.py --path docs/plans/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance.md --path docs/plan.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml
+    result: pass_selected_ci_after_m1
+  - command: git diff --check --
+    result: pass_after_m1
+  - command: code-review-m1-r1
+    result: clean_with_notes_no_material_findings_ready_for_explain_change
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/reviews/code-review-m1-r1.md --path docs/plans/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance.md --path docs/plan.md
+    result: pass_selected_review_artifact_lifecycle_and_change_metadata_checks_after_code_review_recording
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance
+    result: pass_after_code_review_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml
+    result: pass_after_code_review_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance.md --path docs/plan.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/reviews/code-review-m1-r1.md
+    result: pass_after_code_review_recording
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/reviews/code-review-m1-r1.md --path docs/plans/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance.md --path docs/plan.md
+    result: pass_selected_ci_after_code_review_recording
+  - command: git diff --check --
+    result: pass_after_code_review_recording
+  - command: explain-change
+    result: durable_explain_change_recorded_ready_for_verify
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/explain-change.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml --path docs/plans/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance.md --path docs/plan.md
+    result: pass_selected_lifecycle_and_change_metadata_checks_after_explain_change
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml
+    result: pass_after_explain_change
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/explain-change.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml --path docs/plans/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance.md --path docs/plan.md
+    result: pass_after_explain_change
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/explain-change.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml --path docs/plans/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance.md --path docs/plan.md
+    result: pass_selected_ci_after_explain_change
+  - command: git diff --check --
+    result: pass_after_explain_change
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/explain-change.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/reviews/code-review-m1-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/reviews/plan-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/reviews/spec-review-r1.md --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md --path docs/plans/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance.md --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path docs/workflows.md --path scripts/test-select-validation.py --path specs/cost-bounded-rigor-m3-validation-budget-guidance.md --path specs/cost-bounded-rigor-m3-validation-budget-guidance.test.md
+    result: pass_final_verify_selection_review_lifecycle_change_metadata_selector_no_broad_smoke
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/explain-change.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/reviews/code-review-m1-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/reviews/plan-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/reviews/spec-review-r1.md --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md --path docs/plans/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance.md --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path docs/workflows.md --path scripts/test-select-validation.py --path specs/cost-bounded-rigor-m3-validation-budget-guidance.md --path specs/cost-bounded-rigor-m3-validation-budget-guidance.test.md
+    result: pass_final_verify_selected_ci_review_lifecycle_change_metadata_selector
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance
+    result: pass_final_verify_closeout
+  - command: python scripts/test-select-validation.py
+    result: pass_final_verify_61_tests
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml
+    result: pass_final_verify
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/explain-change.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/review-log.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/reviews/code-review-m1-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/reviews/plan-review-r1.md --path docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/reviews/spec-review-r1.md --path docs/plan.md --path docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md --path docs/plans/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance.md --path docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path docs/workflows.md --path specs/cost-bounded-rigor-m3-validation-budget-guidance.md --path specs/cost-bounded-rigor-m3-validation-budget-guidance.test.md
+    result: pass_final_verify
+  - command: git diff --check --
+    result: pass_final_verify
+  - command: gh pr create --base main --head feat/cost-bounded-rigor-m3-validation-budget-spec --title "docs: add validation-budget owner guidance" --body-file /tmp/rigorloop-m3-validation-budget-pr-body.md
+    result: opened_pr_56_hosted_ci_in_progress
+changed_files:
+  - docs/plan.md
+  - docs/plans/2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md
+  - docs/plans/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance.md
+  - docs/workflows.md
+  - docs/proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md
+  - scripts/test-select-validation.py
+  - specs/cost-bounded-rigor-m3-validation-budget-guidance.test.md
+  - docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml
+  - docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/review-log.md
+  - docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/explain-change.md
+  - docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/reviews/code-review-m1-r1.md
+  - docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/reviews/plan-review-r1.md
+  - docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/reviews/spec-review-r1.md
+  - specs/cost-bounded-rigor-m3-validation-budget-guidance.md
+review:
+  status: clean
+  unresolved_items: 0
+  reviewed_artifact: M1 implementation commit 204849a88006a2af85b6b6cb348cbfd9b2b2c90f
+  review_log: docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/review-log.md
+  latest_review: docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/reviews/code-review-m1-r1.md
