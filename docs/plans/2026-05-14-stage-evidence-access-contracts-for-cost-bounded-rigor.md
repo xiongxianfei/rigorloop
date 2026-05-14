@@ -66,9 +66,9 @@ The plan turns the approved spec into a small reviewable slice: add the shared o
 - Last reviewed milestone: M1. Proposal-side stage evidence access guidance
 - Review status: `code-review-m1-r3` clean-with-notes with no open material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 is closed after clean code-review, closed review-resolution, and explain-change, but final verify has not run and PR handoff is not prepared.
+- Next stage: pr
+- Final closeout readiness: branch-ready
+- Reason final closeout is or is not ready: M1 is closed after clean code-review, closed review-resolution, explain-change, and final local verify; PR handoff is not prepared yet.
 
 ## Milestones
 
@@ -201,7 +201,8 @@ The plan turns the approved spec into a small reviewable slice: add the shared o
 - [x] M1 code-review completed.
 - [x] 2026-05-14: explain-change recorded durable rationale in `docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/explain-change.md`.
 - [x] explain-change completed.
-- [ ] verify completed.
+- [x] 2026-05-14: final local verify passed for the M1 changed surfaces and the already committed M5 plan closeout surface on this branch.
+- [x] verify completed.
 - [ ] PR handoff completed.
 
 ## Decision Log
@@ -257,10 +258,24 @@ No mandatory operating input was removed. The touched skills now separate standi
   - `python scripts/test-select-validation.py`
   - `python scripts/measure-skill-tokens.py`
 - Static token measurement: 23 skills, 233054 bytes, 58252 estimated tokens. `proposal` measured 3047 estimated tokens; `proposal-review` measured 3110 estimated tokens. Measurement is diagnostic only.
+- Final verify passed:
+  - `python scripts/select-validation.py --mode explicit --path docs/workflows.md --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path scripts/test-skill-validator.py --path docs/proposals/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor.md --path specs/stage-evidence-access-contracts-for-cost-bounded-rigor.md --path specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md --path docs/plans/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor.md --path docs/plan.md --path docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/change.yaml --path docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/review-log.md --path docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/review-resolution.md --path docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/explain-change.md --path docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/reviews/proposal-review-r1.md --path docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/reviews/proposal-review-r2.md --path docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/reviews/proposal-review-r3.md --path docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/reviews/spec-review-r1.md --path docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/reviews/plan-review-r1.md --path docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/reviews/code-review-m1-r1.md --path docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/reviews/code-review-m1-r2.md --path docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/reviews/code-review-m1-r3.md` passed and selected scoped deterministic checks with `broad_smoke_required: false`.
+  - `python scripts/validate-skills.py` passed.
+  - `python scripts/test-skill-validator.py` passed.
+  - `python scripts/test-build-skills.py` passed.
+  - `python scripts/build-skills.py --check` passed.
+  - `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives` passed.
+  - `python scripts/validate-review-artifacts.py docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/` passed.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...` passed for the accepted proposal, approved spec, active test spec, active plan, plan index, change metadata, review evidence, and explain-change.
+  - `python scripts/test-change-metadata-validator.py` passed.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/change.yaml` passed.
+  - `python scripts/test-select-validation.py` passed.
+  - `git diff --check -- ...` passed for the verified changed surfaces.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/plan.md` passed for the separately committed M5 plan closeout included on this branch.
 
 ## Outcome and Retrospective
 
-- M1 implementation, code-review, and explain-change are complete. Final lifecycle closeout remains blocked until verify and PR handoff complete.
+- M1 implementation, code-review, explain-change, and final local verify are complete. PR handoff remains.
 
 ## Readiness
 
