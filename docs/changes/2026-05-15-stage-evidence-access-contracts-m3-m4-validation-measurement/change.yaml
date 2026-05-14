@@ -12,6 +12,7 @@ changed_files:
   - docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md
   - docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/change.yaml
   - docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md
+  - specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md
   - docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/change.yaml
 requirements:
   - Close M2 lifecycle state after PR #60 merged with hosted CI success.
@@ -21,6 +22,7 @@ requirements:
   - Keep static token measurement diagnostic and warning-only.
   - Do not introduce runtime enforcement, semantic read auditing, hard token gates, lifecycle token-cost summaries, release validation changes, adapter packaging changes, generated-output source model changes, or dynamic benchmark requirements.
 tests:
+  - M3/M4 test-spec alignment
   - plan lifecycle validation
   - change metadata validation
   - diff whitespace validation
@@ -44,3 +46,15 @@ validation:
     result: approved_no_material_findings_ready_for_test_spec
   - command: plan-review state sync
     result: active_plan_and_plan_index_updated_to_test_spec_next
+  - command: test-spec
+    result: active_stage_evidence_access_test_spec_aligned_for_m3_m4_static_validation_and_measurement
+  - command: python scripts/select-validation.py --mode explicit --path specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md --path docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md --path docs/plan.md --path docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/change.yaml
+    result: passed_selected_artifact_lifecycle_and_change_metadata_checks_broad_smoke_false
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md --path docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md --path docs/plan.md --path docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/change.yaml
+    result: passed_after_test_spec_alignment
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/change.yaml
+    result: passed_after_test_spec_alignment
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_after_test_spec_alignment
+  - command: git diff --check -- specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md docs/plan.md docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement
+    result: passed_after_test_spec_alignment

@@ -73,13 +73,13 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
 ## Current Handoff Summary
 
 - Current milestone: M0. M3/M4 test-spec alignment
-- Current milestone state: ready
+- Current milestone state: awaiting maintainer approval
 - Last reviewed milestone: Planning M3/M4 static validation and measurement
 - Review status: plan-review-r1 approved with no material findings
 - Remaining in-scope implementation milestones: M0. M3/M4 test-spec alignment; M3. Static validation audit and gap fill; M4. Measurement and size-delta recording
-- Next stage: test-spec
+- Next stage: maintainer approval for M3/M4 test-spec alignment
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: plan-review is complete, but the plan still needs test-spec alignment, implementation, code-review, explain-change, verify, and PR handoff.
+- Reason final closeout is or is not ready: plan-review is complete and M3/M4 test-spec alignment is drafted, but maintainer approval, implementation, code-review, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -110,16 +110,17 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
   - `python scripts/select-validation.py --mode explicit --path specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md --path docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md --path docs/plan.md --path docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md --path docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md --path docs/plan.md --path docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/change.yaml`
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/change.yaml`
+  - `python scripts/test-change-metadata-validator.py`
   - `git diff --check -- specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md docs/plan.md docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement`
 - Expected observable result:
   - The active test spec names M3/M4 proof without relying on chat-only expectations.
   - M3/M4 remains scoped to validation and measurement.
 - Commit message: `M0: align stage evidence access M3 M4 test spec`
 - Milestone closeout:
-  - [ ] validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
+  - [x] validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
   - [ ] milestone committed
 - Risks:
   - Test-spec alignment may duplicate existing T6/T10 coverage.
@@ -272,7 +273,10 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
 
 - [x] 2026-05-15: PR #60 merge and hosted CI success confirmed for M2.
 - [x] 2026-05-15: draft M3/M4 plan created.
-- [ ] plan-review completed.
+- [x] 2026-05-15: plan-review R1 approved the M3/M4 plan with no material findings.
+- [x] plan-review completed.
+- [x] 2026-05-15: M3/M4 test-spec alignment added explicit M3 validator audit/gap-fill and M4 measurement/size-delta proof cases.
+- [ ] M3/M4 test-spec alignment approved by maintainer.
 - [ ] M0 test-spec alignment completed.
 - [ ] M3 static validation completed.
 - [ ] M4 measurement completed.
@@ -286,6 +290,7 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
 - 2026-05-15: Plan M3/M4 as a separate active plan instead of reopening M1 or M2. Reason: M1 and M2 are merged implementation slices; M3/M4 are narrower validation and measurement follow-through work.
 - 2026-05-15: Include M0 test-spec alignment before M3/M4 implementation. Reason: the current test spec names T6/T10 generally, but the active proof surface should explicitly route M3/M4 before implementation.
 - 2026-05-15: Treat existing static checks as candidates for no-change rationale before adding new tests. Reason: the proposal says to add static checks only if needed.
+- 2026-05-15: Update the existing active stage evidence access test spec instead of creating a separate M3/M4 test spec. Reason: the approved spec is unchanged and the existing test spec remains the active proof-planning surface for the same stage evidence access contract.
 
 ## Surprises and Discoveries
 
@@ -298,6 +303,13 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md --path docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md --path docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/change.yaml --path docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/change.yaml --path specs/stage-evidence-access-contracts-for-cost-bounded-rigor.md`
   - `git diff --check -- docs/plan.md docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/change.yaml docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/change.yaml`
+- Plan-review R1 recorded no material findings in `docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/reviews/plan-review-r1.md`.
+- M3/M4 test-spec alignment validation passed:
+  - `python scripts/select-validation.py --mode explicit --path specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md --path docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md --path docs/plan.md --path docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md --path docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md --path docs/plan.md --path docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/change.yaml`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/change.yaml`
+  - `python scripts/test-change-metadata-validator.py`
+  - `git diff --check -- specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md docs/plan.md docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement`
 
 ## Outcome and Retrospective
 
