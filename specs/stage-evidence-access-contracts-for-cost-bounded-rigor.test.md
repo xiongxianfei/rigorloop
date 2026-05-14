@@ -10,7 +10,7 @@ Maintainer-approved on 2026-05-14 by direct user request. Status remains `active
 
 M2 alignment approved on 2026-05-14 by direct user request after `M1: align stage evidence access M2 test spec`.
 
-M3/M4 alignment drafted on 2026-05-15 for the plan-review-approved static validation and measurement follow-through. Maintainer approval remains the handoff before implementation relies on the M3/M4 alignment.
+M3/M4 alignment approved on 2026-05-15 by direct user request after `M0: align stage evidence access M3 M4 test spec`.
 
 ## Related spec and plan
 
@@ -423,7 +423,6 @@ None.
 ## Next artifacts
 
 ```text
-maintainer approval for M3/M4 test-spec alignment
 implement M3. Static Validation Audit And Gap Fill
 implement M4. Measurement And Size-Delta Recording
 code-review
@@ -438,4 +437,4 @@ None yet.
 
 ## Readiness
 
-Active proof surface for M3/M4 implementation after maintainer approval. The active plan `Current Handoff Summary` owns the next workflow action.
+Active proof surface for M3/M4 implementation. The active plan `Current Handoff Summary` owns the next workflow action.

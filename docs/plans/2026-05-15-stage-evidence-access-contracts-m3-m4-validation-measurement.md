@@ -73,13 +73,13 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
 ## Current Handoff Summary
 
 - Current milestone: M0. M3/M4 test-spec alignment
-- Current milestone state: awaiting maintainer approval
+- Current milestone state: approved
 - Last reviewed milestone: Planning M3/M4 static validation and measurement
 - Review status: plan-review-r1 approved with no material findings
-- Remaining in-scope implementation milestones: M0. M3/M4 test-spec alignment; M3. Static validation audit and gap fill; M4. Measurement and size-delta recording
-- Next stage: maintainer approval for M3/M4 test-spec alignment
+- Remaining in-scope implementation milestones: M3. Static validation audit and gap fill; M4. Measurement and size-delta recording
+- Next stage: implement M3. Static validation audit and gap fill
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: plan-review is complete and M3/M4 test-spec alignment is drafted, but maintainer approval, implementation, code-review, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: plan-review and M3/M4 test-spec alignment are complete, but implementation, code-review, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -121,7 +121,7 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
   - [x] progress updated
   - [x] decision log updated if needed
   - [x] validation notes updated
-  - [ ] milestone committed
+  - [x] milestone committed
 - Risks:
   - Test-spec alignment may duplicate existing T6/T10 coverage.
   - M4 measurement expectations may accidentally become a hard gate.
@@ -276,8 +276,8 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
 - [x] 2026-05-15: plan-review R1 approved the M3/M4 plan with no material findings.
 - [x] plan-review completed.
 - [x] 2026-05-15: M3/M4 test-spec alignment added explicit M3 validator audit/gap-fill and M4 measurement/size-delta proof cases.
-- [ ] M3/M4 test-spec alignment approved by maintainer.
-- [ ] M0 test-spec alignment completed.
+- [x] 2026-05-15: M3/M4 test-spec alignment approved by maintainer.
+- [x] M0 test-spec alignment completed.
 - [ ] M3 static validation completed.
 - [ ] M4 measurement completed.
 - [ ] code-review completed.
@@ -291,6 +291,7 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
 - 2026-05-15: Include M0 test-spec alignment before M3/M4 implementation. Reason: the current test spec names T6/T10 generally, but the active proof surface should explicitly route M3/M4 before implementation.
 - 2026-05-15: Treat existing static checks as candidates for no-change rationale before adding new tests. Reason: the proposal says to add static checks only if needed.
 - 2026-05-15: Update the existing active stage evidence access test spec instead of creating a separate M3/M4 test spec. Reason: the approved spec is unchanged and the existing test spec remains the active proof-planning surface for the same stage evidence access contract.
+- 2026-05-15: Maintainer approved the M3/M4 test-spec alignment by direct user request. Reason: the active proof surface is ready to support M3 static validation audit/gap-fill and M4 measurement implementation.
 
 ## Surprises and Discoveries
 
@@ -310,6 +311,7 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/change.yaml`
   - `python scripts/test-change-metadata-validator.py`
   - `git diff --check -- specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md docs/plan.md docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement`
+- M3/M4 test-spec alignment approved by maintainer on 2026-05-15.
 
 ## Outcome and Retrospective
 
