@@ -23,6 +23,9 @@ requirements:
   - Do not introduce runtime enforcement, semantic read auditing, hard token gates, lifecycle token-cost summaries, release validation changes, adapter packaging changes, generated-output source model changes, or dynamic benchmark requirements.
 tests:
   - M3/M4 test-spec alignment
+  - M3 static validation audit no-change rationale
+  - stage evidence access static validator regression
+  - selected M3 validation
   - plan lifecycle validation
   - change metadata validation
   - diff whitespace validation
@@ -62,3 +65,19 @@ validation:
     result: approved_m3_m4_test_spec_alignment_by_direct_user_request
   - command: test-spec approval state sync
     result: active_plan_and_plan_index_updated_to_implement_m3_next
+  - command: M3 static validation audit
+    result: no_change_current_concept_checks_cover_evidence_access_default_conditional_reason_bounded_and_full_file_concepts
+  - command: python scripts/test-skill-validator.py
+    result: passed_m3_static_validation_audit
+  - command: python scripts/select-validation.py --mode explicit --path scripts/test-skill-validator.py --path docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md --path docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/change.yaml
+    result: passed_selected_skills_regression_generation_regression_lifecycle_and_change_metadata_checks_broad_smoke_false
+  - command: python scripts/test-build-skills.py
+    result: passed_m3_static_validation_audit
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_m3_static_validation_audit
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/change.yaml
+    result: passed_m3_static_validation_audit
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path scripts/test-skill-validator.py --path specs/stage-evidence-access-contracts-for-cost-bounded-rigor.md --path specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md --path docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md --path docs/plan.md --path docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/change.yaml
+    result: passed_m3_static_validation_audit
+  - command: git diff --check -- scripts/test-skill-validator.py specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md docs/plan.md docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement
+    result: passed_m3_static_validation_audit
