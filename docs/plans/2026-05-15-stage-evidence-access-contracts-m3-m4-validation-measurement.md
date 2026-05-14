@@ -72,14 +72,14 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
 
 ## Current Handoff Summary
 
-- Current milestone: Planning M3/M4 static validation and measurement
-- Current milestone state: planned
-- Last reviewed milestone: none for this M3/M4 plan
-- Review status: not reviewed
+- Current milestone: M0. M3/M4 test-spec alignment
+- Current milestone state: ready
+- Last reviewed milestone: Planning M3/M4 static validation and measurement
+- Review status: plan-review-r1 approved with no material findings
 - Remaining in-scope implementation milestones: M0. M3/M4 test-spec alignment; M3. Static validation audit and gap fill; M4. Measurement and size-delta recording
-- Next stage: plan-review
+- Next stage: test-spec
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: the plan is newly drafted and still needs plan-review, test-spec alignment, implementation, code-review, explain-change, verify, and PR handoff.
+- Reason final closeout is or is not ready: plan-review is complete, but the plan still needs test-spec alignment, implementation, code-review, explain-change, verify, and PR handoff.
 
 ## Milestones
 
