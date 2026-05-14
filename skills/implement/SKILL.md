@@ -66,6 +66,31 @@ Read before editing:
 - existing patterns in neighboring files
 - CI or validation commands relevant to the milestone
 
+## Evidence access
+
+Use the smallest sufficient evidence set for the milestone.
+
+Default evidence:
+
+- active plan `Current Handoff Summary`
+- current milestone section
+- approved spec
+- test spec
+- code and tests named by the milestone
+- validation commands for the milestone
+
+Conditional evidence:
+
+- architecture or ADR when the milestone touches architecture boundaries
+- review-resolution when implementing accepted review findings
+- `docs/workflows.md` when stage routing or artifact placement is ambiguous
+- `CONSTITUTION.md` when governance, source-of-truth, or safety constraints matter
+- neighboring files when needed to follow existing patterns
+
+Bounded discovery is not evidence expansion. Record a compact reason only when reading substantive evidence outside the default and triggered conditional set.
+
+Use bounded evidence first, but do not under-read. Expand beyond the milestone when bounded evidence is missing, stale, contradictory, or insufficient to implement the approved slice. Full-file reads remain allowed when the whole file is the target, relevant sections cannot be isolated safely, bounded evidence is contradictory or incomplete, or whole-file context can change the implementation decision.
+
 ## Outputs
 
 Produce tests or proof surfaces first where feasible, implementation changes, updated plan progress and validation notes, and a milestone handoff commit that sets the milestone to `review-requested`.

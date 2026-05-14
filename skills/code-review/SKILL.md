@@ -61,6 +61,31 @@ Read:
 
 Prefer a fresh session, separate reviewer, or separate agent when available. If not, intentionally reset assumptions before reading the diff.
 
+## Evidence access
+
+Use the smallest sufficient evidence set for the review surface.
+
+Default evidence:
+
+- actual diff or changed files
+- approved spec
+- test spec
+- current plan milestone
+- validation evidence
+- relevant tests
+
+Conditional evidence:
+
+- architecture or ADR when architecture is touched
+- review-resolution when reviewing fixes for findings
+- change metadata when lifecycle state or review closeout matters
+- `CONSTITUTION.md` when source-of-truth, governance, or safety boundaries matter
+- related code paths when the diff depends on them
+
+Bounded discovery is not evidence expansion. Record a compact reason only when reading substantive evidence outside the default and triggered conditional set.
+
+Use bounded evidence first, but do not under-read. Read broader specs, docs, historical reviews, generated outputs, or related code only when the diff, finding, validation result, or user request names them, or when bounded evidence is missing, stale, contradictory, or insufficient for the review conclusion. Full-file reads remain allowed when the whole file is the target, relevant sections cannot be isolated safely, bounded evidence is contradictory or incomplete, or whole-file context can change the review conclusion.
+
 ## Artifact placement
 
 Use the project workflow guide for artifact locations when placement matters.
