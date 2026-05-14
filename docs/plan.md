@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-15 Stage evidence access contracts M3/M4 static validation and measurement](plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md) - active execution plan for auditing/tightening concept-based static validation and recording diagnostic static skill token measurement after M1/M2 evidence-access guidance merged; M3 static validation audit is review-requested, and `code-review M3` is next.
+- [2026-05-15 Stage evidence access contracts M3/M4 static validation and measurement](plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md) - active execution plan for auditing/tightening concept-based static validation and recording diagnostic static skill token measurement after M1/M2 evidence-access guidance merged; M3 is closed after clean code-review, and `implement M4` is next.
 
 ## Blocked
 - none yet
