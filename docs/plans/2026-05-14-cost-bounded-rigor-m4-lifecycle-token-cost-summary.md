@@ -77,9 +77,9 @@ M4 should add lifecycle-summary support beside those existing report types. It s
 - Last reviewed milestone: M1. Lifecycle summary guidance, template, static proof, and first summary
 - Review status: `code-review-m1-r1` clean-with-notes with no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: hosted CI / PR review
-- Final closeout readiness: pr-open-hosted-ci-pending
-- Reason final closeout is or is not ready: M1 is closed after clean code-review, explain-change is recorded, final local verify passed, and PR #57 is open with the PR body updated. Hosted CI has not been observed yet.
+- Next stage: PR review / merge decision
+- Final closeout readiness: pr-open-hosted-ci-passed
+- Reason final closeout is or is not ready: M1 is closed after clean code-review, explain-change is recorded, final local verify passed, PR #57 is open with the PR body updated, and hosted CI passed. Final lifecycle closeout remains pending PR review / merge decision.
 
 ## Milestones
 
@@ -273,12 +273,14 @@ M4 should add lifecycle-summary support beside those existing report types. It s
 - 2026-05-14: Final verify support checks passed: `python scripts/test-token-cost-report-validation.py` (18 tests), review-artifact closeout validation, change metadata validation, artifact lifecycle validation for the full changed lifecycle set, selected CI, and `git diff --check --`. Hosted CI was not observed.
 - 2026-05-14: PR #57 opened for M4 and the PR body was updated with local validation evidence. Hosted CI was not observed at handoff time.
 - 2026-05-14: PR handoff state-sync validation passed for `docs/plan.md`, this plan, and change metadata: selected validation, change metadata validation, artifact lifecycle validation, selected CI, and `git diff --check --`.
+- 2026-05-14: Hosted PR CI passed on head `5edcfa6`; GitHub reported PR #57 mergeable state `clean`.
+- 2026-05-14: Hosted-CI state-sync validation passed for `docs/plan.md`, this plan, and change metadata: selected validation, change metadata validation, artifact lifecycle validation, selected CI, and `git diff --check --`.
 
 ## Outcome and retrospective
 
-- M1 implementation, code-review, explain-change, local final verify, and PR handoff are complete. Final lifecycle closeout remains pending hosted CI / PR review.
+- M1 implementation, code-review, explain-change, local final verify, PR handoff, and hosted CI are complete. Final lifecycle closeout remains pending PR review / merge decision.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- PR #57 is open. Branch-ready evidence is local; hosted CI has not been observed.
+- PR #57 is open and hosted CI passed. Ready for human PR review / merge decision.
