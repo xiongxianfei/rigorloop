@@ -55,6 +55,12 @@ Review closeout: closed
 
 No material findings.
 
+### code-review-m1-r4
+
+Review closeout: closed
+
+No material findings.
+
 ## Validation Evidence
 
 - `plan-review-r1` recorded no material findings.
@@ -63,6 +69,7 @@ No material findings.
 - `code-review-m1-r1` recorded no material findings.
 - `code-review-m1-r2` recorded `CBR-M2-CR2-1`.
 - `code-review-m1-r3` recorded no material findings after the targeted fix.
+- `code-review-m1-r4` recorded no material findings after the current-branch review.
 - `review-log.md` records no open findings.
 
 ## Closeout Checklist
