@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- none yet
+- [2026-05-14 Stage evidence access contracts M2 execution/review evidence access](plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md) - draft execution plan for adding M2 evidence-access guidance to `implement` and `code-review` after plan-review and M2 test-spec alignment.
 
 ## Blocked
 - none yet
