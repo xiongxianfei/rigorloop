@@ -124,6 +124,7 @@ The normative contract lives in [specs/rigorloop-workflow.md](specs/rigorloop-wo
 - one recommended standard workflow for complete AI-assisted delivery
 - isolated manual skill invocation for focused skill output
 - standing artifacts, living references, on-demand support, a per-change chain, and periodic learning as distinct lifecycle categories
+- a repository orientation map at `docs/project-map.md`
 - canonical workflow sources in `docs/`, `specs/`, `skills/`, `schemas/`, and `scripts/`
 - ignored local Codex runtime state in `.codex/skills/`
 - generated public adapter packages in `dist/adapters/`
@@ -176,6 +177,7 @@ Use `bash scripts/ci.sh` to run the same checks through the repository-owned CI 
 │   └── workflows/
 ├── docs/
 │   ├── plan.md
+│   ├── project-map.md
 │   ├── proposals/
 │   ├── roadmap.md
 │   ├── workflows.md

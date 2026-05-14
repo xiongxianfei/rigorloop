@@ -174,6 +174,7 @@ If this project customizes artifact locations, update this table. Skills use the
 | Artifact type | Default location | Owning skill |
 | --- | --- | --- |
 | Project vision | `VISION.md` | `vision` |
+| Project map | `docs/project-map.md` | `project-map` |
 | Workflow guide | `docs/workflows.md` | `workflow` |
 | Follow-up register | `docs/follow-ups.md` | `workflow` |
 | Examples | `docs/examples/` | none; examples are non-normative |
