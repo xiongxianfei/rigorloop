@@ -1,9 +1,9 @@
 # Stop tracking generated public adapter skill bodies for v0.1.3
 
-- Status: active
+- Status: done
 - Owner: maintainer
 - Start date: 2026-05-13
-- Last updated: 2026-05-13
+- Last updated: 2026-05-14
 - Related issue or PR: none yet
 - Supersedes: none
 
@@ -13,7 +13,7 @@ This plan turns the approved `v0.1.3` adapter untracking contract into reviewabl
 
 The release completes the compatibility-window migration started by `v0.1.2`: generated public adapter package bodies leave tracked Git state, release archives become the active public install surface, `dist/adapters/README.md` and `dist/adapters/manifest.yaml` remain the tracked support surface, and validation proves generated adapter output from temporary or release-output directories.
 
-Readiness is not Done. This plan remains active until implementation, milestone reviews, explain-change, verify, PR handoff, and the release publication handoff are complete.
+Readiness is Done. Implementation, milestone reviews, explain-change, verify, PR handoff, PR integration, and `v0.1.3` release publication are complete.
 
 ## Source artifacts
 
@@ -98,13 +98,13 @@ The token-cost `--skill-source` value must point to generated public adapter rel
 ## Current Handoff Summary
 
 - Current milestone: final closeout
-- Current milestone state: pr-open
+- Current milestone state: done
 - Last reviewed milestone: M4
 - Review status: code-review-m4-r1 completed clean-with-notes; M4 is closed
 - Remaining in-scope implementation milestones: none
-- Next stage: release publication after PR #52 is integrated and release authorization is granted
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: all implementation milestones are closed, explain-change and verify are recorded, PR #52 is open, and authorized release publication is still pending.
+- Next stage: none
+- Final closeout readiness: done after merged PR #52 and published `v0.1.3`
+- Reason final closeout is or is not ready: all implementation milestones are closed, explain-change and verify are recorded, PR #52 merged on 2026-05-13 after hosted CI passed, and `v0.1.3` was published on 2026-05-13.
 
 ## Milestones
 
@@ -352,7 +352,7 @@ Review result: `code-review-m4-r1` completed clean-with-notes; all implementatio
 - [x] explain-change recorded.
 - [x] verify passed.
 - [x] PR handoff completed.
-- [ ] release publication completed.
+- [x] release publication completed.
 
 ## Decision log
 
@@ -416,6 +416,7 @@ Review result: `code-review-m4-r1` completed clean-with-notes; all implementatio
 - 2026-05-13: `explain-change` recorded durable rationale at `docs/changes/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies/explain-change.md`; next stage is `verify`.
 - 2026-05-13: `verify` passed and recorded `docs/changes/2026-05-13-stop-tracking-generated-public-adapter-skill-bodies/verify-report.md`; tracked change pack is branch-ready and next stage is `pr`.
 - 2026-05-13: PR handoff completed with PR #52: https://github.com/xiongxianfei/rigorloop/pull/52. Authorized release publication remains the downstream completion event after PR integration.
+- 2026-05-14: Lifecycle index sync verified PR #52 merged on 2026-05-13 with hosted CI passed and `v0.1.3` published on 2026-05-13; plan marked done.
 - 2026-05-13: `python scripts/test-select-validation.py` passed: 59 tests.
 - 2026-05-13: `python scripts/select-validation.py --mode explicit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path dist/adapters/README.md --path dist/adapters/manifest.yaml` passed with status `ok` and selected adapter, lifecycle, and selector checks.
 - 2026-05-13: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path AGENTS.md --path CONSTITUTION.md --path docs/workflows.md` passed.
@@ -424,7 +425,7 @@ Review result: `code-review-m4-r1` completed clean-with-notes; all implementatio
 
 ## Outcome and retrospective
 
-- Not started. Fill this only after the implementation and downstream release handoff finish.
+- Completed. PR #52 merged after hosted CI passed, and `v0.1.3` was published with archive-based adapter install evidence.
 
 ## Readiness
 
@@ -432,5 +433,4 @@ Review result: `code-review-m4-r1` completed clean-with-notes; all implementatio
 
 ## Remaining completion gates
 
-- review-resolution if material findings are raised
-- release publication
+- none
