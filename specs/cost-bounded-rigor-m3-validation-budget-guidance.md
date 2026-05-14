@@ -242,7 +242,8 @@ pr
 
 - [Spec Review R1](../docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/reviews/spec-review-r1.md)
 - [Execution Plan](../docs/plans/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance.md)
+- [Test Spec](cost-bounded-rigor-m3-validation-budget-guidance.test.md)
 
 ## Readiness
 
-Approved after clean spec-review. Ready for plan-review of the focused M3 execution plan; not ready for test-spec or implementation until plan-review approves the plan state.
+Approved after clean spec-review. The focused M3 execution plan has clean plan-review, and the active M3 test spec is available for implementation proof.

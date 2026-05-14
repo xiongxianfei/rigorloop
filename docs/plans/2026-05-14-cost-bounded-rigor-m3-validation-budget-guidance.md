@@ -22,7 +22,7 @@ This plan keeps the implementation narrow. The intended first implementation mil
 
 - Proposal: [Cost-Bounded Rigor After Single-Source Skills and Follow-Up Routing](../proposals/2026-05-13-cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md), accepted. The rollout names M3 as validation-budget guidance.
 - M3 spec: [Cost-Bounded Rigor M3 Validation-Budget Guidance](../../specs/cost-bounded-rigor-m3-validation-budget-guidance.md), approved after clean [spec-review-r1](../changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/reviews/spec-review-r1.md).
-- Test spec: not created yet. `test-spec` is the next proof-planning stage after this plan is approved.
+- Current test spec: [Cost-Bounded Rigor M3 Validation-Budget Guidance Test Spec](../../specs/cost-bounded-rigor-m3-validation-budget-guidance.test.md), active proof-planning surface for implementation.
 - Architecture: not required. `spec-review-r1` found no runtime architecture, persistence, external API, security-boundary, release packaging, adapter packaging, or hard-to-reverse design change.
 - Completed M2 plan: [Cost-Bounded Rigor M2 Selected Skill Reminders](2026-05-14-cost-bounded-rigor-m2-selected-skill-reminders.md), done after merged PR #55.
 - Change-local pack: [docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance](../changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/) records M3 spec and review evidence.
@@ -69,12 +69,12 @@ M3 should not turn this into a broad rewrite. Implementation should first audit 
 
 - Current milestone: M0. Plan creation
 - Current milestone state: closed
-- Last reviewed milestone: none
-- Review status: not started
+- Last reviewed milestone: M0. Plan creation
+- Review status: plan-review-r1 approved with no material findings
 - Remaining in-scope implementation milestones: M1
-- Next stage: plan-review
+- Next stage: implement
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 has an approved spec and active plan, but plan-review, test-spec, implementation, code-review, explain-change, verify, and PR are not complete.
+- Reason final closeout is or is not ready: M3 has an approved spec, reviewed active plan, and active test spec, but implementation, code-review, explain-change, verify, and PR are not complete.
 
 ## Milestones
 
@@ -219,8 +219,8 @@ Final closeout:
 
 - PR #55 merged M2 selected skill reminders.
 - M3 spec approved by clean `spec-review-r1`.
-- Plan-review must approve this plan before test-spec.
-- Test-spec must exist before implementation.
+- Plan-review approved this plan in `plan-review-r1`.
+- Active test spec exists and must be followed during implementation.
 
 ## Progress
 
@@ -228,12 +228,14 @@ Final closeout:
 - 2026-05-14: M3 spec drafted at `specs/cost-bounded-rigor-m3-validation-budget-guidance.md`.
 - 2026-05-14: clean `spec-review-r1` recorded with no material findings.
 - 2026-05-14: M3 spec status normalized to `approved`; active M3 plan created; next stage is `plan-review`.
+- 2026-05-14: clean `plan-review-r1` recorded with no material findings; active M3 test spec created at `specs/cost-bounded-rigor-m3-validation-budget-guidance.test.md`; next stage is `implement`.
 
 ## Decision log
 
 - 2026-05-14: Keep M3 guidance-first and selector-preserving unless test-spec explicitly broadens scope. Reason: current selector behavior already supports targeted validation, broad-smoke source attribution, and trigger detection; unnecessary executable changes would increase risk.
 - 2026-05-14: Do not plan edits to `implement`, `code-review`, or `verify` in M1. Reason: current skills already contain targeted-validation and broad-smoke reminders, and M3 `R13` requires a specific plan-scoped gap before editing those skills.
 - 2026-05-14: Use `scripts/test-select-validation.py` as the likely static proof surface for workflow validation guidance. Reason: it already owns validation-layering and selector workflow-routing proof.
+- 2026-05-14: Do not require dynamic benchmark comparison or release/adapter validation for M3 test proof. Reason: the active test spec keeps this slice guidance/static-proof focused unless a later approved artifact broadens scope.
 
 ## Surprises and discoveries
 
@@ -242,6 +244,7 @@ Final closeout:
 ## Validation notes
 
 - 2026-05-14: Plan creation validation passed after spec status settlement and plan-index update: `python scripts/select-validation.py --mode explicit ...`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance`, `python scripts/validate-change-metadata.py docs/changes/2026-05-14-cost-bounded-rigor-m3-validation-budget-guidance/change.yaml`, `bash scripts/ci.sh --mode explicit ...`, and `git diff --check --`.
+- 2026-05-14: Test-spec authoring validation passed after creating the active M3 test spec and syncing lifecycle state: selected validation, review-artifact closeout, change metadata validation, artifact lifecycle validation, selected CI, and `git diff --check --`.
 
 ## Outcome and retrospective
 
@@ -250,4 +253,4 @@ Final closeout:
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `plan-review`, not ready for test-spec or implementation.
+- Ready for `implement`, not ready for code-review or final closeout.
