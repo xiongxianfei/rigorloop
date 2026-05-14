@@ -1,10 +1,10 @@
 # Stage Evidence Access Contracts for Cost-Bounded Rigor
 
-- Status: active
+- Status: done
 - Owner: maintainers
 - Start date: 2026-05-14
 - Last updated: 2026-05-14
-- Related issue or PR: none yet
+- Related issue or PR: PR #59
 - Supersedes: none
 
 ## Purpose / Big Picture
@@ -66,9 +66,9 @@ The plan turns the approved spec into a small reviewable slice: add the shared o
 - Last reviewed milestone: M1. Proposal-side stage evidence access guidance
 - Review status: `code-review-m1-r3` clean-with-notes with no open material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: branch-ready
-- Reason final closeout is or is not ready: M1 is closed after clean code-review, closed review-resolution, explain-change, and final local verify; PR handoff is not prepared yet.
+- Next stage: PR review
+- Final closeout readiness: PR #59 opened
+- Reason final closeout is or is not ready: M1 is closed after clean code-review, closed review-resolution, explain-change, final local verify, and PR #59 is open; hosted CI is pending and not claimed as passed.
 
 ## Milestones
 
@@ -203,7 +203,8 @@ The plan turns the approved spec into a small reviewable slice: add the shared o
 - [x] explain-change completed.
 - [x] 2026-05-14: final local verify passed for the M1 changed surfaces and the already committed M5 plan closeout surface on this branch.
 - [x] verify completed.
-- [ ] PR handoff completed.
+- [x] 2026-05-14: opened PR #59 for stage evidence access M1 and the separately committed M5 plan closeout update.
+- [x] PR handoff completed.
 
 ## Decision Log
 
@@ -275,8 +276,9 @@ No mandatory operating input was removed. The touched skills now separate standi
 
 ## Outcome and Retrospective
 
-- M1 implementation, code-review, explain-change, and final local verify are complete. PR handoff remains.
+- M1 implementation, code-review, explain-change, final local verify, and PR handoff are complete. PR #59 is open; hosted CI is pending and not claimed as passed.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
+- This plan is closed locally and handed off to PR #59 for review.

@@ -117,3 +117,5 @@ validation:
     result: passed_validate_skills_test_skill_validator_test_build_skills_build_skills_check_adapter_archive_smoke_review_artifacts_artifact_lifecycle_change_metadata_regression_change_metadata_validation_selector_regression_and_diff_check
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-14-cost-bounded-rigor-m5-progressive-loading-follow-through.md --path docs/plan.md
     result: passed_for_separately_committed_m5_plan_closeout_on_this_branch
+  - command: pr
+    result: opened_pr_59_hosted_ci_pending
