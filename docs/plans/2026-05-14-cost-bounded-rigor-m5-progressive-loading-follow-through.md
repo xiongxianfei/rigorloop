@@ -86,9 +86,9 @@ M5 should not convert this audit into a broad skill rewrite. If current skills a
 - Last reviewed milestone: M1. High-cost skill audit and minimal follow-through
 - Review status: `code-review-m1-r1` clean-with-notes with no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: not-ready
-- Reason final closeout is or is not ready: M1 is closed after clean code-review and no review-resolution is required. Final closeout is not ready because explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M1 is closed after clean code-review, no review-resolution is required, and explain-change is recorded. Final closeout is not ready because verify and PR handoff remain.
 
 ## Milestones
 
@@ -262,7 +262,7 @@ Before PR:
 - [x] M1 implementation started.
 - [x] M1 implemented.
 - [x] M1 code-review complete.
-- [ ] Explain-change recorded.
+- [x] Explain-change recorded.
 - [ ] Verify complete.
 - [ ] PR handoff complete.
 
@@ -307,12 +307,13 @@ Before PR:
 - 2026-05-14: M1 selected CI passed for the unchanged high-cost skill proof surfaces plus this plan, `docs/plan.md`, and change metadata. `git diff --check --` also passed.
 - 2026-05-14: `code-review-m1-r1` recorded `clean-with-notes` with no material findings. M1 is closed, no review-resolution is required, and the next stage is `explain-change`.
 - 2026-05-14: Code-review recording validation passed: selected validation, review-artifact closeout, change metadata validation, artifact lifecycle validation, selected CI, and `git diff --check --`.
+- 2026-05-14: Explain-change recorded for the M5 no-change high-cost skill audit, including affected/unaffected surfaces, static-token no-run rationale, dynamic-benchmark no-run rationale, and lifecycle-summary no-trigger rationale. Explain-change validation passed: selected validation, review-artifact closeout, change metadata validation, artifact lifecycle validation, selected CI, and `git diff --check --`. Next stage is `verify`.
 
 ## Outcome and retrospective
 
-- Not complete yet. M1 implementation and code-review are complete; final closeout remains blocked on explain-change, verify, and PR handoff.
+- Not complete yet. M1 implementation, code-review, and explain-change are complete; final closeout remains blocked on verify and PR handoff.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `explain-change`.
+- Ready for `verify`.
