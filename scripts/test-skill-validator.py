@@ -2459,6 +2459,55 @@ and result format.
             with self.subTest(skill=skill_name, term="full-file read"):
                 self.assertIn("full-file", body)
 
+    def test_stage_evidence_access_m2_execution_review_skills(self) -> None:
+        skill_terms = {
+            "implement": [
+                "## Evidence access",
+                "Default evidence:",
+                "active plan `Current Handoff Summary`",
+                "current milestone section",
+                "approved spec",
+                "test spec",
+                "code and tests named by the milestone",
+                "validation commands for the milestone",
+                "Conditional evidence:",
+                "architecture or ADR when the milestone touches architecture boundaries",
+                "review-resolution when implementing accepted review findings",
+                "`docs/workflows.md` when stage routing or artifact placement is ambiguous",
+                "`CONSTITUTION.md` when governance, source-of-truth, or safety constraints matter",
+                "neighboring files when needed to follow existing patterns",
+                "Record a compact reason only when reading substantive evidence outside the default and triggered conditional set.",
+            ],
+            "code-review": [
+                "## Evidence access",
+                "Default evidence:",
+                "actual diff or changed files",
+                "approved spec",
+                "test spec",
+                "current plan milestone",
+                "validation evidence",
+                "relevant tests",
+                "Conditional evidence:",
+                "architecture or ADR when architecture is touched",
+                "review-resolution when reviewing fixes for findings",
+                "change metadata when lifecycle state or review closeout matters",
+                "`CONSTITUTION.md` when source-of-truth, governance, or safety boundaries matter",
+                "related code paths when the diff depends on them",
+                "Record a compact reason only when reading substantive evidence outside the default and triggered conditional set.",
+            ],
+        }
+
+        for skill_name, required_terms in skill_terms.items():
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            for term in required_terms:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, body)
+
+            with self.subTest(skill=skill_name, term="bounded discovery"):
+                self.assertIn("Bounded discovery is not evidence expansion.", body)
+            with self.subTest(skill=skill_name, term="full-file read"):
+                self.assertIn("full-file", body)
+
     def test_cost_bounded_rigor_m2_selected_skill_reminders(self) -> None:
         selected_skills = {
             "proposal": (ROOT / "skills" / "proposal" / "SKILL.md").read_text(encoding="utf-8"),

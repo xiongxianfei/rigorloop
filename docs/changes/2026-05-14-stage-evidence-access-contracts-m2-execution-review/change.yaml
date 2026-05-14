@@ -11,6 +11,9 @@ changed_files:
   - docs/plan.md
   - docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md
   - specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md
+  - skills/implement/SKILL.md
+  - skills/code-review/SKILL.md
+  - scripts/test-skill-validator.py
   - docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/change.yaml
   - docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/review-log.md
   - docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/reviews/plan-review-r1.md
@@ -26,6 +29,9 @@ tests:
   - plan-review-r1
   - review artifact validation
   - change metadata validation
+  - stage evidence access M2 static concept checks
+  - selected M2 validation
+  - static skill token measurement
 review:
   status: clean
   reviewed_artifact: docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md
@@ -56,3 +62,21 @@ validation:
     result: passed_after_test_spec_alignment
   - command: maintainer approval
     result: approved_m2_test_spec_alignment_by_direct_user_request
+  - command: python scripts/test-skill-validator.py
+    result: failed_before_m2_skill_edits_then_passed_after_implementation
+  - command: python scripts/select-validation.py --mode explicit --path skills/implement/SKILL.md --path skills/code-review/SKILL.md
+    result: passed_selected_skills_validate_skills_regression_generation_regression_skills_drift_adapters_drift_and_artifact_lifecycle_checks
+  - command: python scripts/validate-skills.py
+    result: passed
+  - command: python scripts/test-build-skills.py
+    result: passed
+  - command: python scripts/build-skills.py --check
+    result: passed
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives
+    result: passed
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path scripts/test-skill-validator.py --path specs/stage-evidence-access-contracts-for-cost-bounded-rigor.md --path specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md --path docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md --path docs/plan.md --path docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/change.yaml
+    result: passed
+  - command: python scripts/measure-skill-tokens.py
+    result: passed_diagnostic_total_58868_estimated_tokens
+  - command: git diff --check -- skills/implement/SKILL.md skills/code-review/SKILL.md scripts/test-skill-validator.py specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md docs/plan.md docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review
+    result: passed
