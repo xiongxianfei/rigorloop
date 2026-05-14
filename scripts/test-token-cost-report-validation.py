@@ -20,6 +20,33 @@ OMITTED_ANALYSIS = (
     "tests/fixtures/token-cost/reports/valid-raw-omitted/proposal-short-run1.analysis.yaml"
 )
 OMITTED_SUMMARY = "tests/fixtures/token-cost/reports/valid-raw-omitted/sanitized-summary.yaml"
+LIFECYCLE_TEMPLATE = ROOT / "templates" / "lifecycle-token-cost-summary.md"
+M4_LIFECYCLE_SUMMARY = (
+    ROOT
+    / "docs"
+    / "reports"
+    / "token-cost"
+    / "lifecycle"
+    / "2026-05-14-cost-bounded-rigor-m4-lifecycle-token-cost-summary.md"
+)
+LIFECYCLE_REQUIRED_HEADINGS = [
+    "## Identity",
+    "## Trigger",
+    "## Scope",
+    "## Source Artifacts",
+    "## Observed Cost Drivers",
+    "## Largest Observed Event",
+    "## Result / Rationale",
+]
+LIFECYCLE_COST_DRIVER_TERMS = [
+    "broad searches",
+    "large command outputs",
+    "full-skill reads",
+    "repeated file reads",
+    "generated-output reads",
+    "review rounds",
+    "validation runs",
+]
 RC_REUSE_SURFACE_TEXT = (
     "No public skills, adapter output, workflow guide, benchmark prompts, "
     "analyzer scripts, fixtures, model/tool version, or release packaging changes since RC."
@@ -82,6 +109,28 @@ class TokenCostReportValidatorTests(unittest.TestCase):
         with handle:
             handle.write(text)
         return Path(handle.name)
+
+    def assertContainsAll(self, text: str, terms: list[str]) -> None:
+        lowered = text.lower()
+        missing = [term for term in terms if term.lower() not in lowered]
+        self.assertEqual(missing, [])
+
+    def assertLifecycleHeadingsPresent(self, text: str) -> None:
+        for heading in LIFECYCLE_REQUIRED_HEADINGS:
+            with self.subTest(heading=heading):
+                self.assertIn(heading, text)
+
+    def assertNoLifecycleHardGateCues(self, text: str) -> None:
+        lowered = text.lower()
+        forbidden = [
+            "hard_gate_recommendation:",
+            "threshold_regression_result:",
+            "release_may_proceed:",
+            "ci must block",
+            "release must block",
+        ]
+        present = [term for term in forbidden if term in lowered]
+        self.assertEqual(present, [])
 
     def v2_context_text(
         self,
@@ -377,6 +426,50 @@ release_gate:
         combined = f"{result.stdout}\n{result.stderr}"
         self.assertNotEqual(result.returncode, 0, "expected validator to fail")
         self.assertIn(expected_text, combined)
+
+    def test_lifecycle_summary_template_has_required_field_groups_and_warning_only_boundary(self) -> None:
+        template = LIFECYCLE_TEMPLATE.read_text(encoding="utf-8")
+        self.assertLifecycleHeadingsPresent(template)
+        self.assertContainsAll(
+            template,
+            [
+                "docs/reports/token-cost/lifecycle/<change-id>.md",
+                "large workflow-governance change",
+                "release change",
+                "dynamic benchmark warning",
+                "broad-search incident",
+                "explicit maintainer request",
+                "not observed",
+                "not measured",
+                "not applicable",
+                "warning-only",
+                "not a hard token gate",
+                "bounded evidence",
+            ],
+        )
+        self.assertContainsAll(template, LIFECYCLE_COST_DRIVER_TERMS)
+        self.assertNoLifecycleHardGateCues(template)
+
+    def test_m4_lifecycle_summary_has_required_shape_and_bounded_evidence_cues(self) -> None:
+        summary = M4_LIFECYCLE_SUMMARY.read_text(encoding="utf-8")
+        self.assertLifecycleHeadingsPresent(summary)
+        self.assertContainsAll(
+            summary,
+            [
+                "2026-05-14-cost-bounded-rigor-m4-lifecycle-token-cost-summary",
+                "large workflow-governance change",
+                "docs/plans/2026-05-14-cost-bounded-rigor-m4-lifecycle-token-cost-summary.md",
+                "specs/cost-bounded-rigor-m4-lifecycle-token-cost-summary.test.md",
+                "informational",
+                "not measured",
+                "not observed",
+                "bounded evidence",
+                "no hard token gate",
+                "follow-up routing",
+            ],
+        )
+        self.assertContainsAll(summary, LIFECYCLE_COST_DRIVER_TERMS)
+        self.assertNoLifecycleHardGateCues(summary)
 
     def test_markdown_report_must_name_yaml_metadata(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
