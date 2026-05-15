@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
 import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { inflateRawSync } from "node:zlib";
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -156,6 +158,7 @@ ${sourceLines.join("\n")}
 }
 
 function plannedLockfile(source) {
+  const artifact = source.artifact;
   return {
     schema_version: 1,
     tree_hash_algorithm: "rigorloop-tree-hash-v1",
@@ -165,9 +168,9 @@ function plannedLockfile(source) {
           adapter: ADAPTER,
           source: source.type,
           archive: source.type === "local-archive" ? basename(source.archive) : source.archive,
-          archive_sha256: "<planned>",
+          archive_sha256: artifact?.sha256 ?? "<planned>",
           installed_root: INSTALL_ROOT,
-          tree_sha256: "<planned-after-install>",
+          tree_sha256: artifact?.tree_sha256 ?? "<planned-after-install>",
         },
       ],
     },
@@ -191,6 +194,330 @@ function pathState(path) {
 
 function directoryKind(path) {
   return path === AGENTS_ROOT ? "codex-agent-root" : "codex-install-root";
+}
+
+function sha256(bytes) {
+  return createHash("sha256").update(bytes).digest("hex");
+}
+
+function normalizeText(bytes) {
+  let text = bytes.toString("utf8");
+  if (text.charCodeAt(0) === 0xfeff) {
+    text = text.slice(1);
+  }
+  return Buffer.from(text.replace(/\r\n?/g, "\n"), "utf8");
+}
+
+function releaseMetadataUrl(info) {
+  return (
+    process.env.RIGORLOOP_RELEASE_METADATA_URL ??
+    `https://github.com/xiongxianfei/rigorloop/releases/download/${releaseForPackage(info.version)}/adapter-artifacts-${releaseForPackage(
+      info.version,
+    )}.json`
+  );
+}
+
+function bundledMetadataPath(info) {
+  if (process.env.RIGORLOOP_METADATA_FILE) {
+    return process.env.RIGORLOOP_METADATA_FILE;
+  }
+  const here = dirname(fileURLToPath(import.meta.url));
+  return join(here, "..", "metadata", `adapter-artifacts-${releaseForPackage(info.version)}.json`);
+}
+
+function loadJsonFile(path) {
+  return JSON.parse(readFileSync(path, "utf8"));
+}
+
+async function fetchJson(url) {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}`);
+  }
+  return response.json();
+}
+
+async function fetchBytes(url) {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}`);
+  }
+  return Buffer.from(await response.arrayBuffer());
+}
+
+function metadataBlocker(code, message, path, nextAction = "Use a compatible verified Codex adapter archive.") {
+  return {
+    code,
+    message,
+    path,
+    next_action: nextAction,
+  };
+}
+
+function isNonEmptyString(value) {
+  return typeof value === "string" && value.length > 0;
+}
+
+function isSha256(value) {
+  return typeof value === "string" && /^[0-9a-f]{64}$/i.test(value);
+}
+
+function validateMetadata(metadata, info) {
+  const release = releaseForPackage(info.version);
+  if (!metadata || metadata.schema_version !== 1) {
+    return { blocker: metadataBlocker("metadata-invalid", "Adapter metadata schema_version must be 1.") };
+  }
+  if (metadata.release?.version !== release || metadata.release?.release_tag !== release) {
+    return {
+      blocker: metadataBlocker("release-version-incompatible", `Adapter metadata is not compatible with ${release}.`),
+    };
+  }
+  if (metadata.release?.source_repository !== "xiongxianfei/rigorloop") {
+    return { blocker: metadataBlocker("metadata-invalid", "Adapter metadata source repository is not trusted.") };
+  }
+  if (!isNonEmptyString(metadata.release?.source_commit) || !isNonEmptyString(metadata.release?.published_at)) {
+    return { blocker: metadataBlocker("metadata-invalid", "Adapter metadata release identity is incomplete.") };
+  }
+  if (!isNonEmptyString(metadata.metadata?.url) || !isSha256(metadata.metadata?.sha256)) {
+    return { blocker: metadataBlocker("metadata-invalid", "Adapter metadata URL or SHA-256 is missing or invalid.") };
+  }
+  if (metadata.validation?.result !== "pass") {
+    return { blocker: metadataBlocker("metadata-invalid", "Adapter metadata validation result is not pass.") };
+  }
+  if (!isNonEmptyString(metadata.validation?.command)) {
+    return { blocker: metadataBlocker("metadata-invalid", "Adapter metadata validation command is missing.") };
+  }
+  const artifact = metadata.artifacts?.find((entry) => entry.adapter === ADAPTER);
+  if (!artifact) {
+    return { blocker: metadataBlocker("adapter-unknown", "Adapter metadata does not include Codex.") };
+  }
+  if (
+    !isNonEmptyString(artifact.archive) ||
+    !isNonEmptyString(artifact.url) ||
+    !isSha256(artifact.sha256) ||
+    !Number.isInteger(artifact.size_bytes) ||
+    artifact.size_bytes < 0 ||
+    !isSha256(artifact.tree_sha256)
+  ) {
+    return { blocker: metadataBlocker("metadata-invalid", "Codex adapter artifact metadata is incomplete.") };
+  }
+  if ((artifact.install_root ?? "").replace(/\/$/, "") !== INSTALL_ROOT) {
+    return { blocker: metadataBlocker("metadata-invalid", "Codex adapter install root is not .agents/skills.") };
+  }
+  if (artifact.tree_hash_algorithm && artifact.tree_hash_algorithm !== "rigorloop-tree-hash-v1") {
+    return { blocker: metadataBlocker("metadata-invalid", "Unsupported tree hash algorithm in adapter metadata.") };
+  }
+  return { artifact };
+}
+
+function readUInt16(buffer, offset) {
+  return buffer.readUInt16LE(offset);
+}
+
+function readUInt32(buffer, offset) {
+  return buffer.readUInt32LE(offset);
+}
+
+function findEndOfCentralDirectory(buffer) {
+  for (let offset = buffer.length - 22; offset >= 0; offset -= 1) {
+    if (readUInt32(buffer, offset) === 0x06054b50) {
+      return offset;
+    }
+  }
+  throw Object.assign(new Error("Archive is not a valid ZIP file."), { code: "archive-invalid" });
+}
+
+function parseZipEntries(buffer) {
+  const eocd = findEndOfCentralDirectory(buffer);
+  const entryCount = readUInt16(buffer, eocd + 10);
+  const centralOffset = readUInt32(buffer, eocd + 16);
+  let offset = centralOffset;
+  const entries = [];
+
+  for (let index = 0; index < entryCount; index += 1) {
+    if (readUInt32(buffer, offset) !== 0x02014b50) {
+      throw Object.assign(new Error("Archive central directory is invalid."), { code: "archive-invalid" });
+    }
+    const method = readUInt16(buffer, offset + 10);
+    const compressedSize = readUInt32(buffer, offset + 20);
+    const uncompressedSize = readUInt32(buffer, offset + 24);
+    const nameLength = readUInt16(buffer, offset + 28);
+    const extraLength = readUInt16(buffer, offset + 30);
+    const commentLength = readUInt16(buffer, offset + 32);
+    const externalAttributes = readUInt32(buffer, offset + 38);
+    const localOffset = readUInt32(buffer, offset + 42);
+    const name = buffer.subarray(offset + 46, offset + 46 + nameLength).toString("utf8");
+
+    if (readUInt32(buffer, localOffset) !== 0x04034b50) {
+      throw Object.assign(new Error("Archive local header is invalid."), { code: "archive-invalid" });
+    }
+    const localNameLength = readUInt16(buffer, localOffset + 26);
+    const localExtraLength = readUInt16(buffer, localOffset + 28);
+    const dataStart = localOffset + 30 + localNameLength + localExtraLength;
+    const compressed = buffer.subarray(dataStart, dataStart + compressedSize);
+    let bytes;
+    if (method === 0) {
+      bytes = compressed;
+    } else if (method === 8) {
+      bytes = inflateRawSync(compressed);
+    } else {
+      throw Object.assign(new Error("Archive uses unsupported compression."), { code: "archive-unsupported-compression" });
+    }
+    if (bytes.length !== uncompressedSize) {
+      throw Object.assign(new Error("Archive entry size is invalid."), { code: "archive-invalid" });
+    }
+
+    const unixMode = (externalAttributes >>> 16) & 0xffff;
+    entries.push({
+      name,
+      bytes,
+      directory: name.endsWith("/"),
+      symlink: (unixMode & 0o170000) === 0o120000,
+    });
+    offset += 46 + nameLength + extraLength + commentLength;
+  }
+
+  return entries;
+}
+
+function unsafePathCode(name) {
+  if (!name || name.startsWith("/") || name.startsWith("\\") || /^[A-Za-z]:/.test(name) || name.includes("\\")) {
+    return "archive-path-traversal";
+  }
+  if (name.split("/").some((part) => part === ".." || part === "")) {
+    return "archive-path-traversal";
+  }
+  if (!name.startsWith(`${INSTALL_ROOT}/`)) {
+    return "archive-install-root-invalid";
+  }
+  return undefined;
+}
+
+function isArchiveSupportEntry(name) {
+  return name === "AGENTS.md";
+}
+
+function fileRowsForTree(entries) {
+  return entries
+    .filter((entry) => !entry.directory)
+    .map((entry) => {
+      const relativePath = entry.name.slice(`${INSTALL_ROOT}/`.length);
+      const bytes = relativePath.endsWith(".md") ? normalizeText(entry.bytes) : entry.bytes;
+      return [relativePath, sha256(bytes)];
+    })
+    .sort(([left], [right]) => left.localeCompare(right));
+}
+
+function treeHashForEntries(entries) {
+  const manifest = `rigorloop-tree-hash-v1\n${fileRowsForTree(entries)
+    .map(([path, hash]) => `${path}\t${hash}`)
+    .join("\n")}\n`;
+  return sha256(Buffer.from(manifest, "utf8"));
+}
+
+function inspectArchive(archiveBytes, artifact) {
+  if (artifact.size_bytes !== undefined && archiveBytes.length !== artifact.size_bytes) {
+    return { error: { code: "archive-size-mismatch", message: "Archive size does not match metadata." } };
+  }
+  const archiveHash = sha256(archiveBytes);
+  if (artifact.sha256 && archiveHash !== artifact.sha256) {
+    return { error: { code: "archive-sha-mismatch", message: "Archive SHA-256 does not match metadata." } };
+  }
+
+  let entries;
+  try {
+    entries = parseZipEntries(archiveBytes);
+  } catch (error) {
+    return { error: { code: error.code ?? "archive-invalid", message: error.message } };
+  }
+
+  const installEntries = [];
+  for (const entry of entries) {
+    if (isArchiveSupportEntry(entry.name)) {
+      continue;
+    }
+    const pathCode = unsafePathCode(entry.name);
+    if (pathCode) {
+      return { error: { code: pathCode, message: `Archive entry is not allowed: ${entry.name}`, path: entry.name } };
+    }
+    if (entry.symlink) {
+      return { error: { code: "archive-symlink-entry", message: `Archive symlink entry is not allowed: ${entry.name}`, path: entry.name } };
+    }
+    installEntries.push(entry);
+  }
+
+  const files = installEntries.filter((entry) => !entry.directory);
+  const treeHash = treeHashForEntries(files);
+  if (artifact.tree_sha256 && treeHash !== artifact.tree_sha256) {
+    return { error: { code: "tree-hash-mismatch", message: "Installed tree hash does not match metadata." } };
+  }
+  return { entries: files, archiveHash, treeHash };
+}
+
+function addArchiveActions(plan, entries) {
+  const directories = new Set();
+  for (const entry of entries) {
+    const parts = entry.name.split("/");
+    parts.pop();
+    while (parts.length > 2) {
+      directories.add(parts.join("/"));
+      parts.pop();
+    }
+  }
+  for (const directory of [...directories].sort()) {
+    const state = pathState(resolve(process.cwd(), directory));
+    plan.actions.push({
+      type: "create-dir",
+      path: directory,
+      status: state === "absent" ? "pending" : state === "directory" ? "skipped" : "blocked",
+      reason: state === "absent" ? `Create ${directory}.` : state === "directory" ? `${directory} already exists.` : `${directory} exists and is not a directory.`,
+    });
+    plan.artifacts.push({
+      path: directory,
+      kind: "adapter-directory",
+      status: state === "absent" ? "pending" : state === "directory" ? "existing" : "blocked",
+    });
+    if (state === "file") {
+      plan.blockers.push({
+        code: "overwrite-refused",
+        message: `${directory} exists and is not a directory.`,
+        path: directory,
+        next_action: "Move the existing file before running init.",
+      });
+    }
+  }
+  for (const entry of entries) {
+    const state = pathState(resolve(process.cwd(), entry.name));
+    plan.actions.push({
+      type: "copy",
+      path: entry.name,
+      status: state === "absent" ? "pending" : "blocked",
+      reason: state === "absent" ? "Install verified Codex adapter file." : `${entry.name} already exists.`,
+    });
+    plan.artifacts.push({
+      path: entry.name,
+      kind: "adapter-file",
+      status: state === "absent" ? "pending" : "blocked",
+    });
+    if (state !== "absent") {
+      plan.blockers.push({
+        code: "overwrite-refused",
+        message: `${entry.name} already exists.`,
+        path: entry.name,
+        next_action: "Move the existing file before running init.",
+      });
+    }
+  }
+}
+
+function writeArchiveEntries(entries) {
+  for (const entry of entries) {
+    const outputPath = resolve(process.cwd(), entry.name);
+    mkdirSync(dirname(outputPath), { recursive: true });
+    const relativePath = entry.name.slice(`${INSTALL_ROOT}/`.length);
+    const bytes = relativePath.endsWith(".md") ? normalizeText(entry.bytes) : entry.bytes;
+    writeFileSync(outputPath, bytes);
+  }
 }
 
 function planDirectoryActions(flags) {
@@ -257,9 +584,12 @@ function planDirectoryActions(flags) {
   return { actions, artifacts, blockers };
 }
 
-function buildInitPlan(flags) {
+function buildInitPlan(flags, artifact) {
   const info = packageInfo();
   const source = sourceForFlags(flags, info);
+  if (artifact) {
+    source.artifact = artifact;
+  }
   const manifestPath = "rigorloop.yaml";
   const manifestAbsolutePath = resolve(process.cwd(), manifestPath);
   const manifest = manifestContent(info, source);
@@ -401,7 +731,152 @@ function unsupportedAdapter(adapter, flags) {
   return exitCodeForResult({ ...result, exit_class: "blocked" });
 }
 
-function handleInit(flags) {
+function writeBlockedResult(flags, plan, summary, blockers, exitClass = "blocked") {
+  for (const action of plan.actions) {
+    if (action.status === "pending") {
+      action.status = "blocked";
+      action.reason = "Blocked before mutation.";
+    }
+  }
+  for (const artifact of plan.artifacts) {
+    if (artifact.status === "pending") {
+      artifact.status = "blocked";
+    }
+  }
+  const result = envelope("init", flags, {
+    status: "blocked",
+    summary,
+    actions: plan.actions,
+    artifacts: plan.artifacts,
+    blockers,
+    planned_manifest: {
+      path: "rigorloop.yaml",
+      content: plan.manifest,
+    },
+    planned_lockfile: plan.planned_lockfile,
+  });
+  if (flags.json) {
+    writeJson(result);
+  } else {
+    process.stderr.write(`${result.summary}\n${blockers[0]?.next_action ?? "Resolve the blocker before running init."}\n`);
+  }
+  return exitCodeForResult({ ...result, exit_class: exitClass });
+}
+
+function writeValidationErrorResult(flags, plan, error) {
+  for (const action of plan.actions) {
+    if (action.status === "pending") {
+      action.status = "blocked";
+      action.reason = "Blocked by archive verification failure.";
+    }
+  }
+  for (const artifact of plan.artifacts) {
+    if (artifact.status === "pending") {
+      artifact.status = "blocked";
+    }
+  }
+  const result = envelope("init", flags, {
+    status: "error",
+    summary: error.message,
+    actions: plan.actions,
+    artifacts: plan.artifacts,
+    errors: [error],
+    planned_manifest: {
+      path: "rigorloop.yaml",
+      content: plan.manifest,
+    },
+    planned_lockfile: plan.planned_lockfile,
+  });
+  if (flags.json) {
+    writeJson(result);
+  } else {
+    process.stderr.write(`${result.summary}\n`);
+  }
+  return exitCodeForResult({ ...result, exit_class: "validation_failed" });
+}
+
+async function archiveWorkForInit(flags, info) {
+  if (flags.dryRun) {
+    return {};
+  }
+
+  if (flags.fromArchiveProvided) {
+    let metadata;
+    try {
+      metadata = loadJsonFile(bundledMetadataPath(info));
+    } catch {
+      return {
+        blocker: metadataBlocker(
+          "metadata-unavailable",
+          "Bundled adapter metadata is unavailable for Codex v0.1.3.",
+          "adapter-artifacts-v0.1.3.json",
+          "Use a CLI package version that bundles metadata for this adapter release.",
+        ),
+      };
+    }
+    const validation = validateMetadata(metadata, info);
+    if (validation.blocker) {
+      return { blocker: validation.blocker };
+    }
+    const artifact = validation.artifact;
+    const archiveName = basename(flags.fromArchive);
+    if (archiveName !== artifact.archive || !archiveName.includes(metadata.release.version)) {
+      return {
+        blocker: metadataBlocker(
+          "release-version-incompatible",
+          `Local archive ${archiveName} is not compatible with ${metadata.release.version}.`,
+          flags.fromArchive,
+          "Use the Codex adapter archive matching the installed CLI package version.",
+        ),
+      };
+    }
+    const archiveBytes = readFileSync(resolve(process.cwd(), flags.fromArchive));
+    const inspected = inspectArchive(archiveBytes, artifact);
+    if (inspected.error) {
+      return { error: inspected.error, artifact };
+    }
+    return { artifact, entries: inspected.entries, archiveHash: inspected.archiveHash, treeHash: inspected.treeHash };
+  }
+
+  let metadata;
+  try {
+    metadata = await fetchJson(releaseMetadataUrl(info));
+  } catch {
+    return {
+      blocker: metadataBlocker(
+        "release-unavailable",
+        "Official Codex adapter release metadata is unavailable.",
+        releaseMetadataUrl(info),
+        "Retry later or use --from-archive with a compatible local archive.",
+      ),
+    };
+  }
+  const validation = validateMetadata(metadata, info);
+  if (validation.blocker) {
+    return { blocker: validation.blocker };
+  }
+  const artifact = validation.artifact;
+  let archiveBytes;
+  try {
+    archiveBytes = await fetchBytes(artifact.url);
+  } catch {
+    return {
+      blocker: metadataBlocker(
+        "release-unavailable",
+        "Official Codex adapter archive is unavailable.",
+        artifact.url,
+        "Retry later or use --from-archive with a compatible local archive.",
+      ),
+    };
+  }
+  const inspected = inspectArchive(archiveBytes, artifact);
+  if (inspected.error) {
+    return { error: inspected.error, artifact };
+  }
+  return { artifact, entries: inspected.entries, archiveHash: inspected.archiveHash, treeHash: inspected.treeHash };
+}
+
+async function handleInit(flags) {
   if (!flags.adapter) {
     return invalidUsage("Missing required option: --adapter codex.", flags, "init");
   }
@@ -415,6 +890,7 @@ function handleInit(flags) {
     return invalidArchivePath(`Local archive path does not exist: ${flags.fromArchive}`, flags);
   }
 
+  const info = packageInfo();
   const plan = buildInitPlan(flags);
   if (plan.errors.length > 0) {
     const result = envelope("init", flags, {
@@ -437,35 +913,26 @@ function handleInit(flags) {
     return exitCodeForResult({ ...result, exit_class: "invalid_usage" });
   }
   if (plan.blockers.length > 0) {
-    for (const action of plan.actions) {
-      if (action.status === "pending") {
-        action.status = "blocked";
-        action.reason = "Blocked by mutation conflict.";
-      }
-    }
-    for (const artifact of plan.artifacts) {
-      if (artifact.status === "pending") {
-        artifact.status = "blocked";
-      }
-    }
-    const result = envelope("init", flags, {
-      status: "blocked",
-      summary: plan.blockers[0].message,
-      actions: plan.actions,
-      artifacts: plan.artifacts,
-      blockers: plan.blockers,
-      planned_manifest: {
-        path: "rigorloop.yaml",
-        content: plan.manifest,
-      },
-      planned_lockfile: plan.planned_lockfile,
-    });
-    if (flags.json) {
-      writeJson(result);
-    } else {
-      process.stderr.write(`${result.summary}\n${plan.blockers[0].next_action}\n`);
-    }
-    return exitCodeForResult({ ...result, exit_class: "mutation_conflict" });
+    return writeBlockedResult(flags, plan, plan.blockers[0].message, plan.blockers, "mutation_conflict");
+  }
+
+  const archiveWork = await archiveWorkForInit(flags, info);
+  if (archiveWork.artifact) {
+    plan.source.artifact = archiveWork.artifact;
+    plan.planned_lockfile = plannedLockfile(plan.source);
+  }
+  if (archiveWork.entries) {
+    addArchiveActions(plan, archiveWork.entries);
+  }
+
+  if (archiveWork.blocker) {
+    return writeBlockedResult(flags, plan, archiveWork.blocker.message, [archiveWork.blocker]);
+  }
+  if (archiveWork.error) {
+    return writeValidationErrorResult(flags, plan, archiveWork.error);
+  }
+  if (plan.blockers.length > 0) {
+    return writeBlockedResult(flags, plan, plan.blockers[0].message, plan.blockers, "mutation_conflict");
   }
 
   if (!flags.dryRun) {
@@ -481,6 +948,40 @@ function handleInit(flags) {
       manifestAction.status = "done";
       plan.artifacts.find((artifact) => artifact.path === "rigorloop.yaml").status = "created";
     }
+    if (archiveWork.entries) {
+      try {
+        writeArchiveEntries(archiveWork.entries);
+        for (const action of plan.actions.filter((action) => action.type === "copy" && action.status === "pending")) {
+          action.status = "done";
+          plan.artifacts.find((artifact) => artifact.path === action.path).status = "created";
+        }
+      } catch (error) {
+        const result = envelope("init", flags, {
+          status: "error",
+          summary: "Adapter installation failed after scaffold writes.",
+          actions: plan.actions,
+          artifacts: plan.artifacts,
+          errors: [
+            {
+              code: "partial-installation-failed",
+              message: error.message,
+              partial_state: "scaffold files may have been written; adapter files may be incomplete.",
+            },
+          ],
+          planned_manifest: {
+            path: "rigorloop.yaml",
+            content: plan.manifest,
+          },
+          planned_lockfile: plan.planned_lockfile,
+        });
+        if (flags.json) {
+          writeJson(result);
+        } else {
+          process.stderr.write(`${result.summary}\n${error.message}\n`);
+        }
+        return exitCodeForResult({ ...result, exit_class: "internal" });
+      }
+    }
   }
 
   const warnings = flags.dryRun ? [] : [LOCKFILE_WARNING];
@@ -488,7 +989,9 @@ function handleInit(flags) {
     status: warnings.length > 0 ? "warning" : "success",
     summary: flags.dryRun
       ? "RigorLoop init dry run completed. No files were written."
-      : "RigorLoop initialized with Codex scaffold. Adapter archive installation is deferred to the archive verification milestone.",
+      : archiveWork.entries
+        ? "RigorLoop initialized with verified Codex adapter files."
+        : "RigorLoop initialized with Codex scaffold.",
     actions: plan.actions,
     artifacts: plan.artifacts,
     warnings,
@@ -513,7 +1016,7 @@ function handleInit(flags) {
   return exitCodeForResult({ ...result, exit_class: "success" });
 }
 
-function main() {
+async function main() {
   try {
     const { flags, positional } = parseFlags(process.argv.slice(2));
     const [command] = positional;
@@ -535,4 +1038,4 @@ function main() {
   }
 }
 
-process.exitCode = main();
+process.exitCode = await main();
