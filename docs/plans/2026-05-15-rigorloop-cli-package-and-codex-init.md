@@ -57,13 +57,13 @@ The plan intentionally does not implement the broader CLI roadmap. It keeps the 
 ## Current Handoff Summary
 
 - Current milestone: M3. Codex adapter metadata, archive verification, extraction, and tree hash
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M2. Init dry-run, write planning, and `rigorloop.yaml` scaffold
-- Review status: code-review-r5 clean-with-notes; M2 closed
+- Review status: M3 implementation completed; awaiting code-review
 - Remaining in-scope implementation milestones: M3
-- Next stage: implement M3
+- Next stage: code-review M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 has not started, and final explain-change, verify, and PR gates have not run.
+- Reason final closeout is or is not ready: M3 is implemented but not yet reviewed, and final explain-change, verify, and PR gates have not run.
 
 ## Milestones
 
@@ -130,7 +130,7 @@ The plan intentionally does not implement the broader CLI roadmap. It keeps the 
 
 ### M3. Codex adapter metadata, archive verification, extraction, and tree hash
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: complete verified Codex adapter installation from official release metadata or a local archive verified against bundled metadata.
 - Requirements: R24-R29a, R49-R61c, R68-R75
 - Files/components likely touched: `packages/rigorloop/src/adapters/**`, bundled metadata under the package, package tests and archive fixtures, possibly release metadata fixtures copied from existing release evidence
@@ -152,11 +152,11 @@ The plan intentionally does not implement the broader CLI roadmap. It keeps the 
 - Expected observable result: verified Codex archive install creates `rigorloop.yaml` and `.agents/skills/**`, refuses unsafe archives and user-file conflicts, emits planned lockfile content, and leaves `rigorloop.lock` untouched.
 - Commit message: `M3: install verified codex adapter archives`
 - Milestone closeout:
-  - validation passed
-  - progress updated
-  - decision log updated if needed
-  - validation notes updated
-  - milestone committed
+  - validation passed: yes
+  - progress updated: yes
+  - decision log updated if needed: yes
+  - validation notes updated: yes
+  - milestone committed: yes
 - Risks: network-dependent tests can become flaky; archive fixtures can become too large or accidental generated source.
 - Rollback/recovery: make network behavior mockable or fixture-backed in tests; keep archive fixtures minimal; if real install fails after scaffold writes, report partial state and require manual cleanup rather than deleting user files.
 
@@ -247,6 +247,11 @@ The plan intentionally does not implement the broader CLI roadmap. It keeps the 
 - [x] 2026-05-15: M2 handed back to code-review rerun.
 - [x] 2026-05-15: code-review-r5 closed M2 with no material findings.
 - [x] M2 implemented and reviewed.
+- [x] 2026-05-15: M3 implementation started.
+- [x] 2026-05-15: M3 tests were expanded before implementation and failed against the M2 scaffold-only CLI for missing archive metadata lookup, archive verification, extraction, tree-hash validation, and metadata failure handling.
+- [x] 2026-05-15: M3 implementation completed with package-bundled Codex metadata, network metadata/archive support, local archive verification without `--metadata`, ZIP path/symlink safety checks, SHA/size/tree-hash validation, adapter extraction, planned lockfile hashes, and no durable `rigorloop.lock` writes.
+- [x] 2026-05-15: M3 handed to code-review.
+- [x] 2026-05-15: M3 handoff commit prepared.
 - [ ] M3 implemented and reviewed.
 - [ ] Explain-change recorded.
 - [ ] Verify completed.
@@ -263,10 +268,13 @@ The plan intentionally does not implement the broader CLI roadmap. It keeps the 
 - 2026-05-15: resolve `CR1-F1` with a package-local command-result helper so exit codes are mapped from `exit_class`/failure kind instead of public status alone.
 - 2026-05-15: keep M2 actual init to scaffold creation only: it writes `rigorloop.yaml` and `.agents/skills`, reports planned lockfile content, and leaves archive metadata verification/extraction to M3.
 - 2026-05-15: accept `CR4-F1` from code-review-r4; the M2 write plan must list `.agents` and `.agents/skills` as separate directory actions, and actual init must only create planned pending directories.
+- 2026-05-15: use package-bundled JSON metadata for the v0.1.3 Codex local-archive path while keeping generated adapter archives outside the npm package.
+- 2026-05-15: allow the existing v0.1.3 Codex archive's top-level `AGENTS.md` support file to be ignored rather than extracted; every installed path still remains under `.agents/skills`, and every other outside-root entry remains a verification error.
 
 ## Surprises and discoveries
 
 - 2026-05-15: `packages/rigorloop` was initially unclassified by the validation selector. The active plan anticipated this risk; M1 added deterministic selector routing to run the package test command.
+- 2026-05-15: the existing `v0.1.3` Codex adapter archive includes a top-level `AGENTS.md` support document in addition to `.agents/skills/**`; M3 treats that exact support file as non-installed archive metadata so the command remains compatible with the published archive without mutating outside the install root.
 
 ## Validation notes
 
@@ -332,6 +340,13 @@ The plan intentionally does not implement the broader CLI roadmap. It keeps the 
 - 2026-05-15: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/change.yaml --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/review-log.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/review-resolution.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/reviews/code-review-r5.md --path docs/plan.md --path docs/plans/2026-05-15-rigorloop-cli-package-and-codex-init.md --path specs/rigorloop-cli-package-and-codex-init.test.md` passed after code-review-r5 recording.
 - 2026-05-15: `bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/change.yaml --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/review-log.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/review-resolution.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/reviews/code-review-r5.md --path docs/plans/2026-05-15-rigorloop-cli-package-and-codex-init.md --path docs/plan.md --path specs/rigorloop-cli-package-and-codex-init.test.md` passed after code-review-r5 recording.
 - 2026-05-15: `git diff --check --` passed after code-review-r5 recording.
+- 2026-05-15: `npm test --prefix packages/rigorloop` passed after M3 implementation.
+- 2026-05-15: temporary-project smoke for the real `v0.1.3` Codex archive with `node /home/xiongxianfei/data/20260419-rigorloop/packages/rigorloop/dist/bin/rigorloop.js init --adapter codex --from-archive ./rigorloop-adapter-codex-v0.1.3.zip --json` passed, installed verified adapter files, and left `rigorloop.lock` unwritten.
+- 2026-05-15: `python scripts/test-select-validation.py` passed after M3 implementation.
+- 2026-05-15: `python scripts/validate-change-metadata.py docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/change.yaml` passed after M3 implementation.
+- 2026-05-15: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path packages/rigorloop/dist/bin/rigorloop.js --path packages/rigorloop/test/cli.test.js --path packages/rigorloop/dist/metadata/adapter-artifacts-v0.1.3.json --path docs/plans/2026-05-15-rigorloop-cli-package-and-codex-init.md --path docs/plan.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/change.yaml --path specs/rigorloop-cli-package-and-codex-init.test.md` passed after M3 implementation.
+- 2026-05-15: `bash scripts/ci.sh --mode explicit --path packages/rigorloop --path docs/plans/2026-05-15-rigorloop-cli-package-and-codex-init.md --path docs/plan.md --path specs/rigorloop-cli-package-and-codex-init.test.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/change.yaml` passed after M3 implementation.
+- 2026-05-15: `git diff --check --` passed after M3 implementation.
 
 ## Outcome and retrospective
 
@@ -340,7 +355,7 @@ The plan intentionally does not implement the broader CLI roadmap. It keeps the 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for `implement M3`.
+- This plan is ready for `code-review M3`.
 - It is not ready for final closeout until M2-M3 are implemented, reviewed, and closed, and downstream explain-change, verify, and PR gates complete.
 
 ## Follow-ups
