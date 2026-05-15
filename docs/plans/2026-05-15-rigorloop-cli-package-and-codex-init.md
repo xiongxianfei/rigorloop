@@ -57,13 +57,13 @@ The plan intentionally does not implement the broader CLI roadmap. It keeps the 
 ## Current Handoff Summary
 
 - Current milestone: M3. Codex adapter metadata, archive verification, extraction, and tree hash
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Last reviewed milestone: M2. Init dry-run, write planning, and `rigorloop.yaml` scaffold
-- Review status: `CR7-F1` accepted and fixed; awaiting code-review rerun
+- Review status: `code-review-r8` requested changes for `CR8-F1`; review-resolution pending
 - Remaining in-scope implementation milestones: M3
-- Next stage: code-review M3 rerun
+- Next stage: review-resolution M3 for `CR8-F1`
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 accepted fix has not yet passed code-review rerun, and final explain-change, verify, and PR gates have not run.
+- Reason final closeout is or is not ready: M3 has unresolved code-review finding `CR8-F1`, and final explain-change, verify, and PR gates have not run.
 
 ## Milestones
 
@@ -130,7 +130,7 @@ The plan intentionally does not implement the broader CLI roadmap. It keeps the 
 
 ### M3. Codex adapter metadata, archive verification, extraction, and tree hash
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: complete verified Codex adapter installation from bundled official metadata, using either default network archive download or a local archive verified against that metadata.
 - Requirements: R24-R29a, R49-R61c, R68-R75
 - Files/components likely touched: `packages/rigorloop/src/adapters/**`, bundled metadata under the package, package tests and archive fixtures, possibly release metadata fixtures copied from existing release evidence
@@ -257,6 +257,7 @@ The plan intentionally does not implement the broader CLI roadmap. It keeps the 
 - [x] 2026-05-15: M3 handed back to code-review rerun.
 - [x] 2026-05-15: code-review-r7 requested changes for M3 finding `CR7-F1`.
 - [x] 2026-05-15: `CR7-F1` accepted and fixed by using package-bundled official adapter metadata as the trust root for default network install and local archive install.
+- [x] 2026-05-15: code-review-r8 requested changes for M3 finding `CR8-F1`.
 - [ ] M3 implemented and reviewed.
 - [ ] Explain-change recorded.
 - [ ] Verify completed.
@@ -280,6 +281,7 @@ The plan intentionally does not implement the broader CLI roadmap. It keeps the 
 - 2026-05-15: initially resolved `CR6-F2` with `dist/metadata/releases.json` as the package-bundled trust root for network metadata URL and SHA-256; `CR7-F1` then revised the first-slice model to use bundled metadata as the trust root for both install paths.
 - 2026-05-15: code-review-r7 found that the tracked bundled release index points at a `v0.1.3` metadata asset URL that currently returns 404, so M3 cannot close until the official metadata source exists or the approved network install contract is revised.
 - 2026-05-15: resolve `CR7-F1` by making bundled official adapter metadata the metadata trust root for both default network install and local archive install; default network install now downloads only the official archive URL named by trusted bundled metadata.
+- 2026-05-15: code-review-r8 found that default network install does not enforce that the archive URL named by bundled metadata is an official `xiongxianfei/rigorloop` GitHub release archive URL.
 
 ## Surprises and discoveries
 
@@ -393,7 +395,7 @@ The plan intentionally does not implement the broader CLI roadmap. It keeps the 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for `code-review M3` rerun.
+- This plan is ready for `review-resolution M3` for `CR8-F1`.
 - It is not ready for final closeout until M3 is reviewed and closed, and downstream explain-change, verify, and PR gates complete.
 
 ## Follow-ups
