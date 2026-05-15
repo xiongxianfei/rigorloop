@@ -208,33 +208,74 @@ function normalizeText(bytes) {
   return Buffer.from(text.replace(/\r\n?/g, "\n"), "utf8");
 }
 
-function releaseMetadataUrl(info) {
-  return (
-    process.env.RIGORLOOP_RELEASE_METADATA_URL ??
-    `https://github.com/xiongxianfei/rigorloop/releases/download/${releaseForPackage(info.version)}/adapter-artifacts-${releaseForPackage(
-      info.version,
-    )}.json`
-  );
+function metadataDirectory() {
+  const here = dirname(fileURLToPath(import.meta.url));
+  return join(here, "..", "metadata");
+}
+
+function releaseIndexPath() {
+  return join(metadataDirectory(), "releases.json");
+}
+
+function loadReleaseDescriptor(info) {
+  const release = releaseForPackage(info.version);
+  let index;
+  try {
+    index = loadJsonFile(releaseIndexPath());
+  } catch {
+    return {
+      blocker: metadataBlocker(
+        "metadata-trust-root-unavailable",
+        "Bundled release metadata index is unavailable.",
+        "releases.json",
+        "Use a CLI package version that bundles release metadata for this adapter release.",
+      ),
+    };
+  }
+
+  const descriptor = index?.schema_version === 1 ? index.releases?.[release] : undefined;
+  if (!descriptor || descriptor.source_repository !== "xiongxianfei/rigorloop" || !isNonEmptyString(descriptor.bundled_metadata)) {
+    return {
+      blocker: metadataBlocker(
+        "metadata-trust-root-unavailable",
+        `Bundled release metadata index does not define a trusted Codex metadata source for ${release}.`,
+        "releases.json",
+        "Use a CLI package version that bundles release metadata for this adapter release.",
+      ),
+    };
+  }
+  return { descriptor };
+}
+
+function loadNetworkReleaseDescriptor(info) {
+  const release = loadReleaseDescriptor(info);
+  if (release.blocker) {
+    return release;
+  }
+  const descriptor = release.descriptor;
+  if (!isNonEmptyString(descriptor.metadata_url) || !isSha256(descriptor.metadata_sha256)) {
+    return {
+      blocker: metadataBlocker(
+        "metadata-trust-root-unavailable",
+        "Bundled release metadata index is missing a trusted metadata URL or SHA-256.",
+        "releases.json",
+        "Use a CLI package version that bundles a trusted release metadata hash.",
+      ),
+    };
+  }
+  return { descriptor };
 }
 
 function bundledMetadataPath(info) {
-  if (process.env.RIGORLOOP_METADATA_FILE) {
-    return process.env.RIGORLOOP_METADATA_FILE;
+  const release = loadReleaseDescriptor(info);
+  if (release.blocker) {
+    return { blocker: release.blocker };
   }
-  const here = dirname(fileURLToPath(import.meta.url));
-  return join(here, "..", "metadata", `adapter-artifacts-${releaseForPackage(info.version)}.json`);
+  return { path: join(metadataDirectory(), release.descriptor.bundled_metadata) };
 }
 
 function loadJsonFile(path) {
   return JSON.parse(readFileSync(path, "utf8"));
-}
-
-async function fetchJson(url) {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status}`);
-  }
-  return response.json();
 }
 
 async function fetchBytes(url) {
@@ -243,6 +284,28 @@ async function fetchBytes(url) {
     throw new Error(`HTTP ${response.status}`);
   }
   return Buffer.from(await response.arrayBuffer());
+}
+
+function parseVerifiedMetadataBytes(bytes, expectedSha256) {
+  const actualSha256 = sha256(bytes);
+  if (actualSha256 !== expectedSha256) {
+    return {
+      error: {
+        code: "metadata-sha256-mismatch",
+        message: "Release metadata SHA-256 does not match the bundled release index.",
+      },
+    };
+  }
+  try {
+    return { metadata: JSON.parse(bytes.toString("utf8")) };
+  } catch (error) {
+    return {
+      error: {
+        code: "metadata-invalid",
+        message: `Release metadata JSON is invalid: ${error.message}`,
+      },
+    };
+  }
 }
 
 function metadataBlocker(code, message, path, nextAction = "Use a compatible verified Codex adapter archive.") {
@@ -802,8 +865,19 @@ async function archiveWorkForInit(flags, info) {
 
   if (flags.fromArchiveProvided) {
     let metadata;
+    const bundled = bundledMetadataPath(info);
+    if (bundled.blocker) {
+      return {
+        blocker: metadataBlocker(
+          "metadata-unavailable",
+          "Bundled adapter metadata is unavailable for Codex v0.1.3.",
+          "adapter-artifacts-v0.1.3.json",
+          "Use a CLI package version that bundles metadata for this adapter release.",
+        ),
+      };
+    }
     try {
-      metadata = loadJsonFile(bundledMetadataPath(info));
+      metadata = loadJsonFile(bundled.path);
     } catch {
       return {
         blocker: metadataBlocker(
@@ -838,19 +912,29 @@ async function archiveWorkForInit(flags, info) {
     return { artifact, entries: inspected.entries, archiveHash: inspected.archiveHash, treeHash: inspected.treeHash };
   }
 
-  let metadata;
+  const release = loadNetworkReleaseDescriptor(info);
+  if (release.blocker) {
+    return { blocker: release.blocker };
+  }
+  const descriptor = release.descriptor;
+  let metadataBytes;
   try {
-    metadata = await fetchJson(releaseMetadataUrl(info));
+    metadataBytes = await fetchBytes(descriptor.metadata_url);
   } catch {
     return {
       blocker: metadataBlocker(
         "release-unavailable",
         "Official Codex adapter release metadata is unavailable.",
-        releaseMetadataUrl(info),
+        descriptor.metadata_url,
         "Retry later or use --from-archive with a compatible local archive.",
       ),
     };
   }
+  const verifiedMetadata = parseVerifiedMetadataBytes(metadataBytes, descriptor.metadata_sha256);
+  if (verifiedMetadata.error) {
+    return { error: verifiedMetadata.error };
+  }
+  const metadata = verifiedMetadata.metadata;
   const validation = validateMetadata(metadata, info);
   if (validation.blocker) {
     return { blocker: validation.blocker };

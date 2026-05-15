@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { execFileSync, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { test } from "node:test";
@@ -14,7 +14,7 @@ const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf8"));
 const cliPath = join(packageRoot, packageJson.bin.rigorloop);
 
 function runCli(args, options = {}) {
-  return spawnSync(process.execPath, [cliPath, ...args], {
+  return spawnSync(process.execPath, [options.cliPath ?? cliPath, ...args], {
     cwd: options.cwd ?? packageRoot,
     env: { ...process.env, ...(options.env ?? {}) },
     encoding: "utf8",
@@ -189,6 +189,66 @@ function fixtureArchive(projectRoot, options = {}) {
   const metadataPath = join(projectRoot, "adapter-artifacts-v0.1.3.json");
   writeFileSync(metadataPath, JSON.stringify(finalMetadata, null, 2));
   return { archivePath, archiveName, metadataPath, metadata: finalMetadata, entries };
+}
+
+function fixturePackage(options = {}) {
+  const root = mkdtempSync(join(tmpdir(), "rigorloop-package-test-"));
+  mkdirSync(join(root, "dist", "bin"), { recursive: true });
+  mkdirSync(join(root, "dist", "lib"), { recursive: true });
+  mkdirSync(join(root, "dist", "metadata"), { recursive: true });
+  writeFileSync(
+    join(root, "package.json"),
+    JSON.stringify(
+      {
+        name: packageJson.name,
+        version: options.version ?? packageJson.version,
+        type: "module",
+        bin: packageJson.bin,
+      },
+      null,
+      2,
+    ),
+  );
+  copyFileSync(cliPath, join(root, "dist", "bin", "rigorloop.js"));
+  copyFileSync(join(packageRoot, "dist", "lib", "command-result.js"), join(root, "dist", "lib", "command-result.js"));
+
+  if (options.metadata !== false) {
+    const metadata = options.metadata ?? JSON.parse(readFileSync(join(packageRoot, "dist", "metadata", "adapter-artifacts-v0.1.3.json"), "utf8"));
+    writeFileSync(join(root, "dist", "metadata", "adapter-artifacts-v0.1.3.json"), JSON.stringify(metadata, null, 2));
+    const metadataBytes = Buffer.from(JSON.stringify(metadata, null, 2), "utf8");
+    const release = options.release ?? {
+      source_repository: "xiongxianfei/rigorloop",
+      metadata_url: `data:application/json;base64,${metadataBytes.toString("base64")}`,
+      metadata_sha256: sha256(metadataBytes),
+      bundled_metadata: "adapter-artifacts-v0.1.3.json",
+    };
+    writeFileSync(
+      join(root, "dist", "metadata", "releases.json"),
+      JSON.stringify(
+        {
+          schema_version: 1,
+          releases: {
+            "v0.1.3": release,
+          },
+        },
+        null,
+        2,
+      ),
+    );
+  } else if (options.releaseIndex) {
+    writeFileSync(join(root, "dist", "metadata", "releases.json"), JSON.stringify(options.releaseIndex, null, 2));
+  }
+
+  return { root, cliPath: join(root, "dist", "bin", "rigorloop.js") };
+}
+
+function runCliWithBundledMetadata(args, cwd, metadata, options = {}) {
+  const packageFixture = fixturePackage({ metadata, release: options.release });
+  return runCli(args, {
+    cwd,
+    cliPath: packageFixture.cliPath,
+    env: options.env,
+  });
 }
 
 test("T1 package metadata exposes one public binary and no archive files", () => {
@@ -418,9 +478,17 @@ test("T14 missing local archive path is invalid input", () => {
 
 test("T15 network mode blocks when official release metadata is unavailable", () => {
   const cwd = tempProject();
+  const packageFixture = fixturePackage({
+    release: {
+      source_repository: "xiongxianfei/rigorloop",
+      metadata_url: "http://127.0.0.1:9/adapter-artifacts-v0.1.3.json",
+      metadata_sha256: "0".repeat(64),
+      bundled_metadata: "adapter-artifacts-v0.1.3.json",
+    },
+  });
   const result = runCli(["init", "--adapter", "codex", "--json"], {
     cwd,
-    env: { RIGORLOOP_RELEASE_METADATA_URL: "http://127.0.0.1:9/adapter-artifacts-v0.1.3.json" },
+    cliPath: packageFixture.cliPath,
   });
 
   assert.equal(result.status, 2);
@@ -435,10 +503,19 @@ test("T16 network mode verifies release metadata and archive before install", ()
   const fixture = fixtureArchive(cwd);
   const archiveBytes = readFileSync(fixture.archivePath);
   fixture.metadata.artifacts[0].url = `data:application/octet-stream;base64,${archiveBytes.toString("base64")}`;
-  const metadataUrl = `data:application/json,${encodeURIComponent(JSON.stringify(fixture.metadata))}`;
+  const metadataBytes = Buffer.from(JSON.stringify(fixture.metadata, null, 2), "utf8");
+  const packageFixture = fixturePackage({
+    metadata: fixture.metadata,
+    release: {
+      source_repository: "xiongxianfei/rigorloop",
+      metadata_url: `data:application/json;base64,${metadataBytes.toString("base64")}`,
+      metadata_sha256: sha256(metadataBytes),
+      bundled_metadata: "adapter-artifacts-v0.1.3.json",
+    },
+  });
   const result = runCli(["init", "--adapter", "codex", "--json"], {
     cwd,
-    env: { RIGORLOOP_RELEASE_METADATA_URL: metadataUrl },
+    cliPath: packageFixture.cliPath,
   });
 
   assert.equal(result.status, 0, result.stderr);
@@ -449,13 +526,117 @@ test("T16 network mode verifies release metadata and archive before install", ()
   assert.equal(readProjectFile(cwd, ".agents/skills/proposal/SKILL.md"), "# Proposal\n\nUse proposal guidance.\n");
 });
 
+test("T16 network metadata hash verification uses the bundled release index", () => {
+  const cwd = tempProject();
+  const fixture = fixtureArchive(cwd);
+  const archiveBytes = readFileSync(fixture.archivePath);
+  fixture.metadata.artifacts[0].url = `data:application/octet-stream;base64,${archiveBytes.toString("base64")}`;
+  const metadataBytes = Buffer.from(JSON.stringify(fixture.metadata, null, 2), "utf8");
+  const packageFixture = fixturePackage({
+    metadata: fixture.metadata,
+    release: {
+      source_repository: "xiongxianfei/rigorloop",
+      metadata_url: `data:application/json;base64,${metadataBytes.toString("base64")}`,
+      metadata_sha256: "0".repeat(64),
+      bundled_metadata: "adapter-artifacts-v0.1.3.json",
+    },
+  });
+
+  const result = runCli(["init", "--adapter", "codex", "--json"], {
+    cwd,
+    cliPath: packageFixture.cliPath,
+  });
+
+  assert.equal(result.status, 3);
+  const output = JSON.parse(result.stdout);
+  assert.equal(output.status, "error");
+  assert.equal(output.errors[0].code, "metadata-sha256-mismatch");
+  assert.equal(existsSync(join(cwd, ".agents", "skills", "proposal", "SKILL.md")), false);
+});
+
+test("T16 metadata bytes are verified before parsing", () => {
+  const cwd = tempProject();
+  const packageFixture = fixturePackage({
+    metadata: false,
+    releaseIndex: {
+      schema_version: 1,
+      releases: {
+        "v0.1.3": {
+          source_repository: "xiongxianfei/rigorloop",
+          metadata_url: "data:application/json;base64,bm90LWpzb24=",
+          metadata_sha256: "0".repeat(64),
+          bundled_metadata: "adapter-artifacts-v0.1.3.json",
+        },
+      },
+    },
+  });
+
+  const result = runCli(["init", "--adapter", "codex", "--json"], {
+    cwd,
+    cliPath: packageFixture.cliPath,
+  });
+
+  assert.equal(result.status, 3);
+  assert.equal(JSON.parse(result.stdout).errors[0].code, "metadata-sha256-mismatch");
+});
+
+test("T16 missing metadata trust root blocks network install", () => {
+  const cwd = tempProject();
+  const packageFixture = fixturePackage({
+    metadata: false,
+    releaseIndex: {
+      schema_version: 1,
+      releases: {
+        "v0.1.3": {
+          source_repository: "xiongxianfei/rigorloop",
+          metadata_url: "data:application/json,%7B%7D",
+          bundled_metadata: "adapter-artifacts-v0.1.3.json",
+        },
+      },
+    },
+  });
+
+  const result = runCli(["init", "--adapter", "codex", "--json"], {
+    cwd,
+    cliPath: packageFixture.cliPath,
+  });
+
+  assert.equal(result.status, 2);
+  const output = JSON.parse(result.stdout);
+  assert.equal(output.status, "blocked");
+  assert.equal(output.blockers[0].code, "metadata-trust-root-unavailable");
+});
+
+test("T16 runtime release metadata environment override is ignored", () => {
+  const cwd = tempProject();
+  const fixture = fixtureArchive(cwd);
+  const archiveBytes = readFileSync(fixture.archivePath);
+  fixture.metadata.artifacts[0].url = `data:application/octet-stream;base64,${archiveBytes.toString("base64")}`;
+  const metadataBytes = Buffer.from(JSON.stringify(fixture.metadata, null, 2), "utf8");
+  const packageFixture = fixturePackage({
+    metadata: fixture.metadata,
+    release: {
+      source_repository: "xiongxianfei/rigorloop",
+      metadata_url: `data:application/json;base64,${metadataBytes.toString("base64")}`,
+      metadata_sha256: sha256(metadataBytes),
+      bundled_metadata: "adapter-artifacts-v0.1.3.json",
+    },
+  });
+
+  const result = runCli(["init", "--adapter", "codex", "--json"], {
+    cwd,
+    cliPath: packageFixture.cliPath,
+    env: { RIGORLOOP_RELEASE_METADATA_URL: "http://127.0.0.1:9/attacker.json" },
+  });
+
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(readProjectFile(cwd, ".agents/skills/proposal/SKILL.md"), "# Proposal\n\nUse proposal guidance.\n");
+});
+
 test("T17 incompatible local archive release is blocked", () => {
   const cwd = tempProject();
   const fixture = fixtureArchive(cwd, { archiveName: "rigorloop-adapter-codex-v0.1.2.zip" });
-  const result = runCli(["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"], {
-    cwd,
-    env: { RIGORLOOP_METADATA_FILE: fixture.metadataPath },
-  });
+  const result = runCliWithBundledMetadata(["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"], cwd, fixture.metadata);
 
   assert.equal(result.status, 2);
   const output = JSON.parse(result.stdout);
@@ -467,10 +648,7 @@ test("T17 incompatible local archive release is blocked", () => {
 test("T18 local archive mode uses bundled metadata and no metadata flag", () => {
   const cwd = tempProject();
   const fixture = fixtureArchive(cwd);
-  const result = runCli(["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"], {
-    cwd,
-    env: { RIGORLOOP_METADATA_FILE: fixture.metadataPath },
-  });
+  const result = runCliWithBundledMetadata(["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"], cwd, fixture.metadata);
 
   assert.equal(result.status, 0, result.stderr);
   const output = JSON.parse(result.stdout);
@@ -479,6 +657,29 @@ test("T18 local archive mode uses bundled metadata and no metadata flag", () => 
   assert.equal(output.planned_lockfile.generated.adapters[0].tree_sha256, fixture.metadata.artifacts[0].tree_sha256);
   assert.equal(readProjectFile(cwd, ".agents/skills/proposal/SKILL.md"), "# Proposal\n\nUse proposal guidance.\n");
   assert.doesNotMatch(result.stdout, /metadata/);
+});
+
+test("T18 runtime local metadata environment override is ignored", () => {
+  const cwd = tempProject();
+  const fixture = fixtureArchive(cwd);
+  const attackerMetadataPath = join(cwd, "attacker-metadata.json");
+  writeFileSync(
+    attackerMetadataPath,
+    JSON.stringify({
+      ...fixture.metadata,
+      artifacts: [{ ...fixture.metadata.artifacts[0], sha256: "0".repeat(64) }],
+    }),
+  );
+
+  const result = runCliWithBundledMetadata(
+    ["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"],
+    cwd,
+    fixture.metadata,
+    { env: { RIGORLOOP_METADATA_FILE: attackerMetadataPath } },
+  );
+
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(readProjectFile(cwd, ".agents/skills/proposal/SKILL.md"), "# Proposal\n\nUse proposal guidance.\n");
 });
 
 test("T19 missing bundled metadata blocks local archive install", () => {
@@ -490,9 +691,10 @@ test("T19 missing bundled metadata blocks local archive install", () => {
     },
   ]);
   writeFileSync(join(cwd, "rigorloop-adapter-codex-v0.1.3.zip"), archive);
+  const packageFixture = fixturePackage({ metadata: false });
   const result = runCli(["init", "--adapter", "codex", "--from-archive", "./rigorloop-adapter-codex-v0.1.3.zip", "--json"], {
     cwd,
-    env: { RIGORLOOP_METADATA_FILE: join(cwd, "missing-metadata.json") },
+    cliPath: packageFixture.cliPath,
   });
 
   assert.equal(result.status, 2);
@@ -505,10 +707,7 @@ test("T19 missing bundled metadata blocks local archive install", () => {
 test("T20 actual init writes minimum manifest and Codex install root without lockfile", () => {
   const cwd = tempProject();
   const fixture = fixtureArchive(cwd);
-  const result = runCli(["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"], {
-    cwd,
-    env: { RIGORLOOP_METADATA_FILE: fixture.metadataPath },
-  });
+  const result = runCliWithBundledMetadata(["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"], cwd, fixture.metadata);
 
   assert.equal(result.status, 0, result.stderr);
   assert.equal(result.stderr, "");
@@ -538,10 +737,11 @@ test("T24 write plan represents parent and leaf directory states before mutation
   const parentOnlyProject = tempProject();
   mkdirSync(join(parentOnlyProject, ".agents"));
   const parentOnlyFixture = fixtureArchive(parentOnlyProject);
-  const parentOnly = runCli(["init", "--adapter", "codex", "--from-archive", `./${parentOnlyFixture.archiveName}`, "--json"], {
-    cwd: parentOnlyProject,
-    env: { RIGORLOOP_METADATA_FILE: parentOnlyFixture.metadataPath },
-  });
+  const parentOnly = runCliWithBundledMetadata(
+    ["init", "--adapter", "codex", "--from-archive", `./${parentOnlyFixture.archiveName}`, "--json"],
+    parentOnlyProject,
+    parentOnlyFixture.metadata,
+  );
 
   assert.equal(parentOnly.status, 0, parentOnly.stderr);
   const parentOnlyOutput = JSON.parse(parentOnly.stdout);
@@ -551,10 +751,11 @@ test("T24 write plan represents parent and leaf directory states before mutation
   const existingDirsProject = tempProject();
   mkdirSync(join(existingDirsProject, ".agents", "skills"), { recursive: true });
   const existingDirsFixture = fixtureArchive(existingDirsProject);
-  const existingDirs = runCli(["init", "--adapter", "codex", "--from-archive", `./${existingDirsFixture.archiveName}`, "--json"], {
-    cwd: existingDirsProject,
-    env: { RIGORLOOP_METADATA_FILE: existingDirsFixture.metadataPath },
-  });
+  const existingDirs = runCliWithBundledMetadata(
+    ["init", "--adapter", "codex", "--from-archive", `./${existingDirsFixture.archiveName}`, "--json"],
+    existingDirsProject,
+    existingDirsFixture.metadata,
+  );
 
   assert.equal(existingDirs.status, 0, existingDirs.stderr);
   const existingDirsOutput = JSON.parse(existingDirs.stdout);
@@ -577,10 +778,11 @@ adapters:
 `;
   writeFileSync(join(validProject, "rigorloop.yaml"), existingManifest);
   const validFixture = fixtureArchive(validProject);
-  const validResult = runCli(["init", "--adapter", "codex", "--from-archive", `./${validFixture.archiveName}`, "--json"], {
-    cwd: validProject,
-    env: { RIGORLOOP_METADATA_FILE: validFixture.metadataPath },
-  });
+  const validResult = runCliWithBundledMetadata(
+    ["init", "--adapter", "codex", "--from-archive", `./${validFixture.archiveName}`, "--json"],
+    validProject,
+    validFixture.metadata,
+  );
 
   assert.equal(validResult.status, 0, validResult.stderr);
   assert.equal(readProjectFile(validProject, "rigorloop.yaml"), existingManifest);
@@ -614,10 +816,11 @@ test("T22 local archive mode plans local-archive manifest source", () => {
 
   const actualProject = tempProject();
   const actualFixture = fixtureArchive(actualProject);
-  const actual = runCli(["init", "--adapter", "codex", "--from-archive", "./rigorloop-adapter-codex-v0.1.3.zip"], {
-    cwd: actualProject,
-    env: { RIGORLOOP_METADATA_FILE: actualFixture.metadataPath },
-  });
+  const actual = runCliWithBundledMetadata(
+    ["init", "--adapter", "codex", "--from-archive", "./rigorloop-adapter-codex-v0.1.3.zip"],
+    actualProject,
+    actualFixture.metadata,
+  );
 
   assert.equal(actual.status, 0, actual.stderr);
   const manifest = readProjectFile(actualProject, "rigorloop.yaml");
@@ -628,10 +831,7 @@ test("T22 local archive mode plans local-archive manifest source", () => {
 test("T23 generated manifest avoids forbidden claims and validation commands", () => {
   const cwd = tempProject();
   const fixture = fixtureArchive(cwd);
-  const result = runCli(["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`], {
-    cwd,
-    env: { RIGORLOOP_METADATA_FILE: fixture.metadataPath },
-  });
+  const result = runCliWithBundledMetadata(["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`], cwd, fixture.metadata);
 
   assert.equal(result.status, 0, result.stderr);
   const manifest = readProjectFile(cwd, "rigorloop.yaml");
@@ -679,10 +879,11 @@ test("T26 adapter file overwrite conflicts are refused without replacing user fi
   const fixture = fixtureArchive(cwd);
   mkdirSync(join(cwd, ".agents", "skills", "proposal"), { recursive: true });
   writeFileSync(join(cwd, ".agents", "skills", "proposal", "SKILL.md"), "user file\n");
-  const result = runCli(["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json", "--force"], {
+  const result = runCliWithBundledMetadata(
+    ["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json", "--force"],
     cwd,
-    env: { RIGORLOOP_METADATA_FILE: fixture.metadataPath },
-  });
+    fixture.metadata,
+  );
 
   assert.equal(result.status, 5);
   assert.equal(readProjectFile(cwd, ".agents/skills/proposal/SKILL.md"), "user file\n");
@@ -700,10 +901,7 @@ test("T29 release metadata shape and validation result are validated", () => {
       return metadata;
     },
   });
-  const wrongRepoResult = runCli(["init", "--adapter", "codex", "--from-archive", `./${wrongRepo.archiveName}`, "--json"], {
-    cwd,
-    env: { RIGORLOOP_METADATA_FILE: wrongRepo.metadataPath },
-  });
+  const wrongRepoResult = runCliWithBundledMetadata(["init", "--adapter", "codex", "--from-archive", `./${wrongRepo.archiveName}`, "--json"], cwd, wrongRepo.metadata);
 
   assert.equal(wrongRepoResult.status, 2);
   assert.equal(JSON.parse(wrongRepoResult.stdout).blockers[0].code, "metadata-invalid");
@@ -715,10 +913,11 @@ test("T29 release metadata shape and validation result are validated", () => {
       return metadata;
     },
   });
-  const missingFieldResult = runCli(["init", "--adapter", "codex", "--from-archive", `./${missingField.archiveName}`, "--json"], {
-    cwd: missingFieldProject,
-    env: { RIGORLOOP_METADATA_FILE: missingField.metadataPath },
-  });
+  const missingFieldResult = runCliWithBundledMetadata(
+    ["init", "--adapter", "codex", "--from-archive", `./${missingField.archiveName}`, "--json"],
+    missingFieldProject,
+    missingField.metadata,
+  );
 
   assert.equal(missingFieldResult.status, 2);
   assert.equal(JSON.parse(missingFieldResult.stdout).blockers[0].code, "metadata-invalid");
@@ -730,10 +929,11 @@ test("T29 release metadata shape and validation result are validated", () => {
       return metadata;
     },
   });
-  const noCodexResult = runCli(["init", "--adapter", "codex", "--from-archive", `./${noCodex.archiveName}`, "--json"], {
-    cwd: noCodexProject,
-    env: { RIGORLOOP_METADATA_FILE: noCodex.metadataPath },
-  });
+  const noCodexResult = runCliWithBundledMetadata(
+    ["init", "--adapter", "codex", "--from-archive", `./${noCodex.archiveName}`, "--json"],
+    noCodexProject,
+    noCodex.metadata,
+  );
 
   assert.equal(noCodexResult.status, 2);
   assert.equal(JSON.parse(noCodexResult.stdout).blockers[0].code, "adapter-unknown");
@@ -745,10 +945,11 @@ test("T29 release metadata shape and validation result are validated", () => {
       return metadata;
     },
   });
-  const wrongRootResult = runCli(["init", "--adapter", "codex", "--from-archive", `./${wrongRoot.archiveName}`, "--json"], {
-    cwd: wrongRootProject,
-    env: { RIGORLOOP_METADATA_FILE: wrongRoot.metadataPath },
-  });
+  const wrongRootResult = runCliWithBundledMetadata(
+    ["init", "--adapter", "codex", "--from-archive", `./${wrongRoot.archiveName}`, "--json"],
+    wrongRootProject,
+    wrongRoot.metadata,
+  );
 
   assert.equal(wrongRootResult.status, 2);
   assert.equal(JSON.parse(wrongRootResult.stdout).blockers[0].code, "metadata-invalid");
@@ -760,12 +961,10 @@ test("T29 release metadata shape and validation result are validated", () => {
       return metadata;
     },
   });
-  const validationFailResult = runCli(
+  const validationFailResult = runCliWithBundledMetadata(
     ["init", "--adapter", "codex", "--from-archive", `./${validationFail.archiveName}`, "--json"],
-    {
-      cwd: validationFailProject,
-      env: { RIGORLOOP_METADATA_FILE: validationFail.metadataPath },
-    },
+    validationFailProject,
+    validationFail.metadata,
   );
 
   assert.equal(validationFailResult.status, 2);
@@ -777,10 +976,7 @@ test("T30 archive traversal paths are rejected", () => {
   const fixture = fixtureArchive(cwd, {
     entries: [{ name: "../escape.txt", bytes: Buffer.from("escape\n", "utf8") }],
   });
-  const result = runCli(["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"], {
-    cwd,
-    env: { RIGORLOOP_METADATA_FILE: fixture.metadataPath },
-  });
+  const result = runCliWithBundledMetadata(["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"], cwd, fixture.metadata);
 
   assert.equal(result.status, 3);
   assert.equal(JSON.parse(result.stdout).errors[0].code, "archive-path-traversal");
@@ -792,10 +988,7 @@ test("T31 archive entries must remain under .agents/skills", () => {
   const fixture = fixtureArchive(cwd, {
     entries: [{ name: "proposal/SKILL.md", bytes: Buffer.from("# Proposal\n", "utf8") }],
   });
-  const result = runCli(["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"], {
-    cwd,
-    env: { RIGORLOOP_METADATA_FILE: fixture.metadataPath },
-  });
+  const result = runCliWithBundledMetadata(["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"], cwd, fixture.metadata);
 
   assert.equal(result.status, 3);
   assert.equal(JSON.parse(result.stdout).errors[0].code, "archive-install-root-invalid");
@@ -813,10 +1006,11 @@ test("T31 archive entries must remain under .agents/skills", () => {
       },
     ],
   });
-  const supportResult = runCli(["init", "--adapter", "codex", "--from-archive", `./${supportFixture.archiveName}`, "--json"], {
-    cwd: supportProject,
-    env: { RIGORLOOP_METADATA_FILE: supportFixture.metadataPath },
-  });
+  const supportResult = runCliWithBundledMetadata(
+    ["init", "--adapter", "codex", "--from-archive", `./${supportFixture.archiveName}`, "--json"],
+    supportProject,
+    supportFixture.metadata,
+  );
 
   assert.equal(supportResult.status, 0, supportResult.stderr);
   assert.equal(existsSync(join(supportProject, "AGENTS.md")), false);
@@ -834,10 +1028,7 @@ test("T33 symlink archive entries are rejected", () => {
       },
     ],
   });
-  const result = runCli(["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"], {
-    cwd,
-    env: { RIGORLOOP_METADATA_FILE: fixture.metadataPath },
-  });
+  const result = runCliWithBundledMetadata(["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"], cwd, fixture.metadata);
 
   assert.equal(result.status, 3);
   assert.equal(JSON.parse(result.stdout).errors[0].code, "archive-symlink-entry");
@@ -851,10 +1042,11 @@ test("T34 archive verification failures use exit code 3", () => {
       return metadata;
     },
   });
-  const checksum = runCli(["init", "--adapter", "codex", "--from-archive", `./${checksumFixture.archiveName}`, "--json"], {
-    cwd: checksumProject,
-    env: { RIGORLOOP_METADATA_FILE: checksumFixture.metadataPath },
-  });
+  const checksum = runCliWithBundledMetadata(
+    ["init", "--adapter", "codex", "--from-archive", `./${checksumFixture.archiveName}`, "--json"],
+    checksumProject,
+    checksumFixture.metadata,
+  );
   assert.equal(checksum.status, 3);
   assert.equal(JSON.parse(checksum.stdout).errors[0].code, "archive-sha-mismatch");
 
@@ -865,10 +1057,11 @@ test("T34 archive verification failures use exit code 3", () => {
       return metadata;
     },
   });
-  const size = runCli(["init", "--adapter", "codex", "--from-archive", `./${sizeFixture.archiveName}`, "--json"], {
-    cwd: sizeProject,
-    env: { RIGORLOOP_METADATA_FILE: sizeFixture.metadataPath },
-  });
+  const size = runCliWithBundledMetadata(
+    ["init", "--adapter", "codex", "--from-archive", `./${sizeFixture.archiveName}`, "--json"],
+    sizeProject,
+    sizeFixture.metadata,
+  );
   assert.equal(size.status, 3);
   assert.equal(JSON.parse(size.stdout).errors[0].code, "archive-size-mismatch");
 
@@ -879,10 +1072,11 @@ test("T34 archive verification failures use exit code 3", () => {
       return metadata;
     },
   });
-  const tree = runCli(["init", "--adapter", "codex", "--from-archive", `./${treeFixture.archiveName}`, "--json"], {
-    cwd: treeProject,
-    env: { RIGORLOOP_METADATA_FILE: treeFixture.metadataPath },
-  });
+  const tree = runCliWithBundledMetadata(
+    ["init", "--adapter", "codex", "--from-archive", `./${treeFixture.archiveName}`, "--json"],
+    treeProject,
+    treeFixture.metadata,
+  );
   assert.equal(tree.status, 3);
   assert.equal(JSON.parse(tree.stdout).errors[0].code, "tree-hash-mismatch");
 });
@@ -898,10 +1092,11 @@ test("T41 lockfile is planned output only and never durably written", () => {
   const existingProject = tempProject();
   const fixture = fixtureArchive(existingProject);
   writeFileSync(join(existingProject, "rigorloop.lock"), "existing-lock\n");
-  const actual = runCli(["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"], {
-    cwd: existingProject,
-    env: { RIGORLOOP_METADATA_FILE: fixture.metadataPath },
-  });
+  const actual = runCliWithBundledMetadata(
+    ["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"],
+    existingProject,
+    fixture.metadata,
+  );
 
   assert.equal(actual.status, 0, actual.stderr);
   assert.equal(readProjectFile(existingProject, "rigorloop.lock"), "existing-lock\n");
