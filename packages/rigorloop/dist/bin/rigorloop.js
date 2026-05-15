@@ -7,6 +7,7 @@ import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { EXIT, exitCodeForResult } from "../lib/command-result.js";
+import { validateOfficialArchiveUrl } from "../lib/official-archive-url.js";
 
 const ADAPTER = "codex";
 const AGENTS_ROOT = ".agents";
@@ -909,6 +910,21 @@ async function archiveWorkForInit(flags, info) {
   }
 
   let archiveBytes;
+  const urlValidation = validateOfficialArchiveUrl({
+    url: artifact.url,
+    releaseTag: metadata.release.version,
+    archive: artifact.archive,
+  });
+  if (!urlValidation.ok) {
+    return {
+      error: {
+        code: urlValidation.code,
+        message: urlValidation.message,
+        path: urlValidation.path ?? "metadata.artifacts[codex].url",
+      },
+      artifact,
+    };
+  }
   try {
     archiveBytes = await fetchBytes(artifact.url);
   } catch {

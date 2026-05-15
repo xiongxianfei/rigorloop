@@ -57,13 +57,13 @@ The plan intentionally does not implement the broader CLI roadmap. It keeps the 
 ## Current Handoff Summary
 
 - Current milestone: M3. Codex adapter metadata, archive verification, extraction, and tree hash
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M2. Init dry-run, write planning, and `rigorloop.yaml` scaffold
-- Review status: `code-review-r8` requested changes for `CR8-F1`; review-resolution pending
+- Review status: `CR8-F1` accepted and fixed; awaiting code-review rerun
 - Remaining in-scope implementation milestones: M3
-- Next stage: review-resolution M3 for `CR8-F1`
+- Next stage: code-review M3 rerun
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 has unresolved code-review finding `CR8-F1`, and final explain-change, verify, and PR gates have not run.
+- Reason final closeout is or is not ready: M3 accepted fix has not yet passed code-review rerun, and final explain-change, verify, and PR gates have not run.
 
 ## Milestones
 
@@ -130,7 +130,7 @@ The plan intentionally does not implement the broader CLI roadmap. It keeps the 
 
 ### M3. Codex adapter metadata, archive verification, extraction, and tree hash
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: complete verified Codex adapter installation from bundled official metadata, using either default network archive download or a local archive verified against that metadata.
 - Requirements: R24-R29a, R49-R61c, R68-R75
 - Files/components likely touched: `packages/rigorloop/src/adapters/**`, bundled metadata under the package, package tests and archive fixtures, possibly release metadata fixtures copied from existing release evidence
@@ -258,6 +258,7 @@ The plan intentionally does not implement the broader CLI roadmap. It keeps the 
 - [x] 2026-05-15: code-review-r7 requested changes for M3 finding `CR7-F1`.
 - [x] 2026-05-15: `CR7-F1` accepted and fixed by using package-bundled official adapter metadata as the trust root for default network install and local archive install.
 - [x] 2026-05-15: code-review-r8 requested changes for M3 finding `CR8-F1`.
+- [x] 2026-05-15: `CR8-F1` accepted and fixed by validating that network install fetches only the exact official GitHub release archive URL.
 - [ ] M3 implemented and reviewed.
 - [ ] Explain-change recorded.
 - [ ] Verify completed.
@@ -282,6 +283,7 @@ The plan intentionally does not implement the broader CLI roadmap. It keeps the 
 - 2026-05-15: code-review-r7 found that the tracked bundled release index points at a `v0.1.3` metadata asset URL that currently returns 404, so M3 cannot close until the official metadata source exists or the approved network install contract is revised.
 - 2026-05-15: resolve `CR7-F1` by making bundled official adapter metadata the metadata trust root for both default network install and local archive install; default network install now downloads only the official archive URL named by trusted bundled metadata.
 - 2026-05-15: code-review-r8 found that default network install does not enforce that the archive URL named by bundled metadata is an official `xiongxianfei/rigorloop` GitHub release archive URL.
+- 2026-05-15: resolve `CR8-F1` by validating the exact official GitHub release archive URL before default network install fetches archive bytes.
 
 ## Surprises and discoveries
 
@@ -387,6 +389,16 @@ The plan intentionally does not implement the broader CLI roadmap. It keeps the 
 - 2026-05-15: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path packages/rigorloop/dist/bin/rigorloop.js --path packages/rigorloop/test/cli.test.js --path packages/rigorloop/dist/metadata/adapter-artifacts-v0.1.3.json --path packages/rigorloop/dist/metadata/releases.json --path specs/rigorloop-cli-package-and-codex-init.md --path specs/rigorloop-cli-package-and-codex-init.test.md --path docs/adr/ADR-20260515-rigorloop-cli-package-and-codex-init.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/context.mmd --path docs/plans/2026-05-15-rigorloop-cli-package-and-codex-init.md --path docs/plan.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/change.yaml --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/review-log.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/review-resolution.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/reviews/code-review-r7.md` passed after the `CR7-F1` fix.
 - 2026-05-15: `bash scripts/ci.sh --mode explicit --path packages/rigorloop --path specs/rigorloop-cli-package-and-codex-init.md --path specs/rigorloop-cli-package-and-codex-init.test.md --path docs/adr/ADR-20260515-rigorloop-cli-package-and-codex-init.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/context.mmd --path docs/plans/2026-05-15-rigorloop-cli-package-and-codex-init.md --path docs/plan.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/change.yaml --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/review-log.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/review-resolution.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/reviews/code-review-r7.md` passed after the `CR7-F1` fix.
 - 2026-05-15: `git diff --check --` passed after the `CR7-F1` fix.
+- 2026-05-15: `npm test --prefix packages/rigorloop` passed after the `CR8-F1` fix.
+- 2026-05-15: real default network install smoke with `node packages/rigorloop/dist/bin/rigorloop.js init --adapter codex --json` passed after the `CR8-F1` fix and installed verified Codex adapter files without writing `rigorloop.lock`.
+- 2026-05-15: real local archive smoke with `node packages/rigorloop/dist/bin/rigorloop.js init --adapter codex --from-archive ./rigorloop-adapter-codex-v0.1.3.zip --json` passed after the `CR8-F1` fix and installed verified Codex adapter files without writing `rigorloop.lock`.
+- 2026-05-15: `python scripts/test-select-validation.py` passed after the `CR8-F1` fix.
+- 2026-05-15: `python scripts/validate-review-artifacts.py docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow` passed after the `CR8-F1` fix.
+- 2026-05-15: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow` passed after the `CR8-F1` fix.
+- 2026-05-15: `python scripts/validate-change-metadata.py docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/change.yaml` passed after the `CR8-F1` fix.
+- 2026-05-15: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path packages/rigorloop/dist/bin/rigorloop.js --path packages/rigorloop/dist/lib/official-archive-url.js --path packages/rigorloop/test/cli.test.js --path packages/rigorloop/dist/metadata/adapter-artifacts-v0.1.3.json --path packages/rigorloop/dist/metadata/releases.json --path specs/rigorloop-cli-package-and-codex-init.md --path specs/rigorloop-cli-package-and-codex-init.test.md --path docs/adr/ADR-20260515-rigorloop-cli-package-and-codex-init.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/context.mmd --path docs/plans/2026-05-15-rigorloop-cli-package-and-codex-init.md --path docs/plan.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/change.yaml --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/review-log.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/review-resolution.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/reviews/code-review-r8.md` passed after the `CR8-F1` fix.
+- 2026-05-15: `bash scripts/ci.sh --mode explicit --path packages/rigorloop --path specs/rigorloop-cli-package-and-codex-init.md --path specs/rigorloop-cli-package-and-codex-init.test.md --path docs/adr/ADR-20260515-rigorloop-cli-package-and-codex-init.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/context.mmd --path docs/plans/2026-05-15-rigorloop-cli-package-and-codex-init.md --path docs/plan.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/change.yaml --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/review-log.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/review-resolution.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/reviews/code-review-r8.md` passed after the `CR8-F1` fix.
+- 2026-05-15: `git diff --check --` passed after the `CR8-F1` fix.
 
 ## Outcome and retrospective
 
@@ -395,7 +407,7 @@ The plan intentionally does not implement the broader CLI roadmap. It keeps the 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for `review-resolution M3` for `CR8-F1`.
+- This plan is ready for `code-review M3` rerun.
 - It is not ready for final closeout until M3 is reviewed and closed, and downstream explain-change, verify, and PR gates complete.
 
 ## Follow-ups

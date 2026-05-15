@@ -4,7 +4,7 @@
 
 This record resolves material findings from formal lifecycle reviews for the scaffolding CLI and machine-readable workflow change.
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: spec-review-r1
 Review closeout: spec-review-r2
@@ -18,11 +18,12 @@ Review closeout: code-review-r4
 Review closeout: code-review-r5
 Review closeout: code-review-r6
 Review closeout: code-review-r7
+Review closeout: code-review-r8
 
 - Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `code-review-r1`, `code-review-r2`, `code-review-r3`, `code-review-r4`, `code-review-r5`, `code-review-r6`, `code-review-r7`, `code-review-r8`
-- Findings resolved: 8
-- Unresolved findings: 1
-- Final result: spec-review findings have accepted dispositions and the same-stage `spec-review-r2` rerun approved the revised spec. `code-review-r1` finding `CR1-F1` has an accepted implementation fix, `code-review-r2` closed M1 with no material findings, direct `code-review-r3` found no material issues in the current tracked M1 resolution, `code-review-r4` finding `CR4-F1` has an accepted implementation fix, `code-review-r5` closed M2 with no material findings, `code-review-r6` findings `CR6-F1` and `CR6-F2` have accepted implementation fixes, and `code-review-r7` finding `CR7-F1` has an accepted implementation fix. `code-review-r8` finding `CR8-F1` is open pending review-resolution.
+- Findings resolved: 9
+- Unresolved findings: 0
+- Final result: spec-review findings have accepted dispositions and the same-stage `spec-review-r2` rerun approved the revised spec. `code-review-r1` finding `CR1-F1` has an accepted implementation fix, `code-review-r2` closed M1 with no material findings, direct `code-review-r3` found no material issues in the current tracked M1 resolution, `code-review-r4` finding `CR4-F1` has an accepted implementation fix, `code-review-r5` closed M2 with no material findings, `code-review-r6` findings `CR6-F1` and `CR6-F2` have accepted implementation fixes, `code-review-r7` finding `CR7-F1` has an accepted implementation fix, and `code-review-r8` finding `CR8-F1` has an accepted implementation fix pending same-stage code-review rerun.
 
 ## Resolution Overview
 
@@ -36,7 +37,7 @@ Review closeout: code-review-r7
 | CR6-F1 | accepted | resolved | Runtime metadata source overrides were removed from production metadata lookup; tests now use fixture package metadata. |
 | CR6-F2 | accepted | resolved | Adapter metadata is verified against a package-bundled release index hash before parsing, with metadata hash mismatch mapped to exit code `3`; `CR7-F1` revised the trust root to bundled metadata for both install paths. |
 | CR7-F1 | accepted | resolved | Default network install now uses bundled official adapter metadata as the trust root and fetches only the official archive URL named by that metadata. |
-| CR8-F1 | needs-decision | open | Network install does not enforce that bundled metadata names an official adapter archive URL. |
+| CR8-F1 | accepted | resolved | Network install now validates that bundled metadata names the exact official GitHub release archive URL before fetching bytes. |
 
 ## Common Resolution Metadata
 
@@ -188,15 +189,15 @@ Validation evidence: `packages/rigorloop/dist/metadata/releases.json` now record
 #### CR8-F1 - Network install does not enforce that bundled metadata names an official adapter archive URL
 
 Finding ID: CR8-F1
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: implementer
 Owning stage: implement
 Decision owner: maintainer
-Decision needed: Choose whether to enforce official GitHub release archive URL validation in the first-slice CLI, or revise the approved security boundary to permit arbitrary package-bundled archive URLs.
-Chosen action: pending review-resolution
-Rationale: The code-review rerun found that default network install fetches `artifact.url` from bundled metadata without checking that it is an official `xiongxianfei/rigorloop` GitHub release archive URL, even though the spec requires network access to be limited to official adapter archives.
-Validation target: Add URL validation and tests for non-official archive URL rejection, or revise the governing spec/security boundary before closing M3.
+Decision needed: None; maintainer accepted enforcing the approved official-archive URL boundary.
+Chosen action: Add package-local network archive URL validation. Default network install fetches only `https://github.com/xiongxianfei/rigorloop/releases/download/<release>/<archive>` where the release matches the package-compatible release and the archive matches the selected adapter artifact. Non-official URLs return `status: error`, exit code `3`.
+Rationale: Bundled metadata is trusted only within the approved security boundary. It must not expand network egress to arbitrary URLs. Tests may use a fetch seam, but production metadata must still name an official release archive URL.
+Validation target: Add negative tests for `data:` URLs, wrong host, wrong repo, wrong release, wrong archive, query/hash, and a positive test that uses an official URL with a mocked fetch response.
 Validation evidence: pending.
 
 ## Shared Validation Evidence
@@ -218,5 +219,5 @@ Validation evidence: pending.
 - [x] Validation evidence is recorded for `code-review-r1` finding.
 - [x] Validation evidence is recorded for `code-review-r4` finding.
 - [x] Validation evidence is recorded for `code-review-r7` finding.
-- [ ] Validation evidence is recorded for `code-review-r8` finding.
+- [x] Validation evidence is recorded for `code-review-r8` finding.
 - [x] Closeout status is correct.

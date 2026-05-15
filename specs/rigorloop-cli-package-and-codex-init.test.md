@@ -40,7 +40,7 @@ This is a public command, filesystem mutation, archive verification, package-bou
 | R30-R37c | T20, T21, T22, T23 |
 | R38-R45 | T24, T25, T26, T27 |
 | R46-R48 | T30, T31, T32, T33, T34 |
-| R49-R50d | T15, T18, T19, T29 |
+| R49-R50h | T15, T18, T19, T29 |
 | R51-R55 | T29, T35, T36, T37, T38 |
 | R56-R61c | T30, T31, T32, T33, T34, T39, T40 |
 | R62-R67 | T22, T23, T41 |
@@ -292,8 +292,9 @@ This is a public command, filesystem mutation, archive verification, package-bou
 - Fixture/setup: bundled metadata fixture whose Codex artifact URL points to an official or stubbed official archive URL
 - Steps:
   - Run `rigorloop init --adapter codex` without `--from-archive`.
-- Assert the command verifies bundled metadata against the bundled release index before using archive metadata.
+  - Assert the command verifies bundled metadata against the bundled release index before using archive metadata.
   - Assert the command downloads only the Codex archive URL named by the trusted bundled metadata.
+  - Assert non-official URLs such as `data:`, `file:`, `http:`, wrong host, wrong owner/repo, wrong release, wrong archive filename, query strings, and fragments are rejected before fetch.
   - Assert unavailable archive download produces status `blocked`, exit code `2`, and a next action such as retry or `--from-archive`.
 - Expected result: network mode uses bundled metadata as the metadata trust root and only fetches the official adapter archive.
 - Failure proves: network install can depend on a missing metadata asset or use an untrusted source.
