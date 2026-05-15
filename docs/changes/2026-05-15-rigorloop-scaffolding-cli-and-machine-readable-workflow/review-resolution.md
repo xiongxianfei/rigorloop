@@ -11,11 +11,13 @@ Review closeout: spec-review-r2
 Review closeout: architecture-review-r1
 Review closeout: proposal-review-r1
 Review closeout: plan-review-r1
+Review closeout: code-review-r1
+Review closeout: code-review-r2
 
-- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`
-- Findings resolved: 3
+- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `code-review-r1`, `code-review-r2`
+- Findings resolved: 4
 - Unresolved findings: 0
-- Final result: spec-review findings have accepted dispositions and the same-stage `spec-review-r2` rerun approved the revised spec.
+- Final result: spec-review findings have accepted dispositions and the same-stage `spec-review-r2` rerun approved the revised spec. `code-review-r1` finding `CR1-F1` has an accepted implementation fix and `code-review-r2` closed M1 with no material findings.
 
 ## Resolution Overview
 
@@ -24,13 +26,14 @@ Review closeout: plan-review-r1
 | SR1-F1 | accepted | resolved | `--from-archive` uses package-bundled official adapter metadata; no first-slice `--metadata` flag. |
 | SR1-F2 | accepted | resolved | The first-slice generated `rigorloop.yaml` minimum YAML shape is now defined. |
 | SR1-F3 | accepted | resolved | Expected archive verification failures now use status `error` and exit code `3`. |
+| CR1-F1 | accepted | resolved | M1 now maps exit codes from internal result class/failure kind and T11 covers every public exit-code class. |
 
 ## Common Resolution Metadata
 
 - Owner: spec author
 - Owning stage: spec
 - Validation target: revise `specs/rigorloop-cli-package-and-codex-init.md`, rerun `spec-review`, then run review artifact, change metadata, artifact lifecycle, and selected CI validation.
-- Validation evidence: spec revision completed; same-stage spec-review rerun pending.
+- Validation evidence: spec revision completed; same-stage spec-review rerun approved the revised spec. Code-review finding `CR1-F1` fix validation is recorded below.
 
 ## Finding Details
 
@@ -88,14 +91,32 @@ No material findings; no resolution entry required. The architecture-review appr
 
 No material findings; no resolution entry required. The plan-review approved the active execution plan for the first CLI package and Codex init slice.
 
+### code-review-r1
+
+#### CR1-F1 - Exit-code contract coverage is incomplete for expected error classes
+
+Finding ID: CR1-F1
+Disposition: accepted
+Status: resolved
+Owner: implementer
+Owning stage: implement
+Chosen action: Add a package-local command-result or exit-code helper that can be tested directly for every R12 exit-code class, update the CLI to use it for current M1 paths, and update the M1 T11 package test to cover exit codes `0`, `2`, `3`, `4`, `5`, and `1`.
+Rationale: M1 introduced the shared command-result surface. It must not encode expected future validation/archive failures as internal errors before M2/M3 build on it.
+Validation target: Run `npm test --prefix packages/rigorloop`, `python scripts/test-select-validation.py`, and selected CI for the package, selector, active plan, test spec, and change metadata.
+Validation evidence: `packages/rigorloop/dist/lib/command-result.js` now maps exit codes from `exit_class`/failure kind with status fallback only for compatibility; `packages/rigorloop/dist/bin/rigorloop.js` uses the helper for current M1 paths; `packages/rigorloop/test/cli.test.js` T11 covers success, warning, blocked, validation failure, invalid usage, mutation conflict, and internal failure classes. `npm test --prefix packages/rigorloop` passed after the fix.
+
+### code-review-r2
+
+No material findings; no resolution entry required. The code-review rerun closed `CR1-F1` and marked M1 clean with notes.
+
 ## Shared Validation Evidence
 
 | Validation area | Result | Notes |
 |---|---|---|
-| Review recording | pass | Review artifact validation passed after `spec-review-r2` was recorded. |
+| Review recording | pass | `python scripts/validate-review-artifacts.py docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow` and closeout mode both passed after `CR1-F1` resolution recording. |
 | Change metadata | pass | Change metadata validation passed after `spec-review-r2` was recorded. |
-| Artifact lifecycle | pass | Artifact lifecycle validation passed for the revised spec and review artifacts. |
-| Selected CI | pass | Selector-selected CI passed for the revised spec and review artifacts. |
+| Artifact lifecycle | pass | Artifact lifecycle validation passed for the revised spec, review artifacts, active plan, plan index, and M1 test spec. |
+| Selected CI | pass | Selector-selected CI passed for the package, selector, active plan, plan index, M1 test spec, change metadata, review log, review-resolution, and code-review record. |
 
 ## Closeout Checklist
 
@@ -104,5 +125,5 @@ No material findings; no resolution entry required. The plan-review approved the
 - [x] Every rejected finding has rationale.
 - [x] Every deferred finding has follow-up or explicit no-follow-up rationale.
 - [x] Every `needs-decision` finding is resolved or blocks closeout.
-- [x] Validation evidence is recorded.
+- [x] Validation evidence is recorded for `code-review-r1` finding.
 - [x] Closeout status is correct.

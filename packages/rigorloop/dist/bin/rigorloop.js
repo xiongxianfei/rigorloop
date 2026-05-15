@@ -4,22 +4,7 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const EXIT = {
-  success: 0,
-  warning: 0,
-  blocked: 2,
-  validationFailed: 3,
-  usage: 4,
-  overwriteRefused: 5,
-  internal: 1,
-};
-
-const STATUS_TO_EXIT = {
-  success: EXIT.success,
-  warning: EXIT.warning,
-  blocked: EXIT.blocked,
-  error: EXIT.internal,
-};
+import { EXIT, exitCodeForResult } from "../lib/command-result.js";
 
 function packageInfo() {
   const here = dirname(fileURLToPath(import.meta.url));
@@ -140,7 +125,7 @@ function invalidUsage(message, flags) {
   } else {
     process.stderr.write(`${message}\nRun rigorloop --help.\n`);
   }
-  return EXIT.usage;
+  return exitCodeForResult({ status: "error", exit_class: "invalid_usage" });
 }
 
 function unsupportedAdapter(adapter, flags) {
@@ -161,7 +146,7 @@ function unsupportedAdapter(adapter, flags) {
   } else {
     process.stderr.write(`${result.summary}\nUse --adapter codex.\n`);
   }
-  return STATUS_TO_EXIT[result.status];
+  return exitCodeForResult({ ...result, exit_class: "blocked" });
 }
 
 function handleInit(flags) {
@@ -185,7 +170,7 @@ function handleInit(flags) {
   } else {
     writeHuman("RigorLoop init dry run completed.\nNo files were written.\n", flags);
   }
-  return STATUS_TO_EXIT[result.status];
+  return exitCodeForResult({ ...result, exit_class: "success" });
 }
 
 function main() {
@@ -206,7 +191,7 @@ function main() {
     return invalidUsage(`Unknown command: ${command}`, flags);
   } catch (error) {
     process.stderr.write(`Unexpected error: ${error.message}\n`);
-    return EXIT.internal;
+    return exitCodeForResult({ status: "error", exit_class: "internal" });
   }
 }
 
