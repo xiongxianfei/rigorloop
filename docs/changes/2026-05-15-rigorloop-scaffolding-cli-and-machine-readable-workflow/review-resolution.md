@@ -4,7 +4,7 @@
 
 This record resolves material findings from formal lifecycle reviews for the scaffolding CLI and machine-readable workflow change.
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: spec-review-r1
 Review closeout: spec-review-r2
@@ -18,10 +18,10 @@ Review closeout: code-review-r4
 Review closeout: code-review-r5
 Review closeout: code-review-r6
 
-- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `code-review-r1`, `code-review-r2`, `code-review-r3`, `code-review-r4`, `code-review-r5`, `code-review-r6`
+- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `code-review-r1`, `code-review-r2`, `code-review-r3`, `code-review-r4`, `code-review-r5`, `code-review-r6`, `code-review-r7`
 - Findings resolved: 7
-- Unresolved findings: 0
-- Final result: spec-review findings have accepted dispositions and the same-stage `spec-review-r2` rerun approved the revised spec. `code-review-r1` finding `CR1-F1` has an accepted implementation fix, `code-review-r2` closed M1 with no material findings, direct `code-review-r3` found no material issues in the current tracked M1 resolution, `code-review-r4` finding `CR4-F1` has an accepted implementation fix, `code-review-r5` closed M2 with no material findings, and `code-review-r6` findings `CR6-F1` and `CR6-F2` have accepted implementation fixes pending same-stage code-review rerun.
+- Unresolved findings: 1
+- Final result: spec-review findings have accepted dispositions and the same-stage `spec-review-r2` rerun approved the revised spec. `code-review-r1` finding `CR1-F1` has an accepted implementation fix, `code-review-r2` closed M1 with no material findings, direct `code-review-r3` found no material issues in the current tracked M1 resolution, `code-review-r4` finding `CR4-F1` has an accepted implementation fix, `code-review-r5` closed M2 with no material findings, and `code-review-r6` findings `CR6-F1` and `CR6-F2` have accepted implementation fixes. `code-review-r7` finding `CR7-F1` is open pending review-resolution.
 
 ## Resolution Overview
 
@@ -34,6 +34,7 @@ Review closeout: code-review-r6
 | CR4-F1 | accepted | resolved | M2 now plans `.agents` and `.agents/skills` as first-class directory actions before mutation. |
 | CR6-F1 | accepted | resolved | Runtime metadata source overrides were removed from production metadata lookup; tests now use fixture package metadata. |
 | CR6-F2 | accepted | resolved | Network metadata is verified against a package-bundled release index hash before parsing, with metadata hash mismatch mapped to exit code `3`. |
+| CR7-F1 | needs-decision | open | The bundled release index points to an official metadata asset URL that currently returns 404. |
 
 ## Common Resolution Metadata
 
@@ -164,6 +165,22 @@ Rationale: The CLI must not trust fetched metadata before verifying it. Metadata
 Validation target: Add direct tests for metadata hash mismatch, valid metadata hash, missing trust root, and verification-before-parse behavior, then rerun package tests and selected CI.
 Validation evidence: `packages/rigorloop/dist/metadata/releases.json` now records the trusted metadata URL and SHA-256 for `v0.1.3`. `packages/rigorloop/dist/bin/rigorloop.js` verifies fetched metadata bytes before parsing. `packages/rigorloop/test/cli.test.js` covers valid metadata hash, metadata hash mismatch, malformed metadata with wrong hash, and missing trust root. `npm test --prefix packages/rigorloop` passed after the fix.
 
+### code-review-r7
+
+#### CR7-F1 - Bundled network metadata URL points to a release asset that does not exist
+
+Finding ID: CR7-F1
+Disposition: needs-decision
+Status: open
+Owner: implementer
+Owning stage: implement
+Decision owner: maintainer
+Decision needed: Choose whether to publish the missing official `adapter-artifacts-v0.1.3.json` release metadata asset, or revise the approved first-slice network install contract so it does not depend on that unavailable asset.
+Chosen action: needs decision on whether to add the missing official `v0.1.3` release metadata asset or revise the approved network install contract.
+Rationale: The code-review rerun found that the trusted bundled release index points to `adapter-artifacts-v0.1.3.json`, but the current `v0.1.3` GitHub release does not expose that metadata asset. The default network `init --adapter codex` path therefore cannot satisfy the approved network install contract.
+Validation target: Either add/publish the official metadata asset and prove the tracked URL/hash work, or revise the approved contract before changing the implementation path.
+Validation evidence: pending.
+
 ## Shared Validation Evidence
 
 | Validation area | Result | Notes |
@@ -182,4 +199,5 @@ Validation evidence: `packages/rigorloop/dist/metadata/releases.json` now record
 - [x] Every `needs-decision` finding is resolved or blocks closeout.
 - [x] Validation evidence is recorded for `code-review-r1` finding.
 - [x] Validation evidence is recorded for `code-review-r4` finding.
+- [ ] Validation evidence is recorded for `code-review-r7` finding.
 - [x] Closeout status is correct.
