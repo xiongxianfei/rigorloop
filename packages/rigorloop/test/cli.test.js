@@ -5,6 +5,8 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { test } from "node:test";
 
+import { exitCodeForResult } from "../dist/lib/command-result.js";
+
 const packageRoot = resolve(import.meta.dirname, "..");
 const packageJsonPath = join(packageRoot, "package.json");
 const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf8"));
@@ -171,7 +173,23 @@ test("T10 color is disabled by flag and environment", () => {
   assert.doesNotMatch(withEnv.stdout, ansiPattern);
 });
 
-test("T11 exit-code mapping is enforced for M1 command paths", () => {
+test("T11 exit-code mapping covers every public exit class", () => {
+  const cases = [
+    ["success", { status: "success", exit_class: "success" }, 0],
+    ["warning", { status: "warning", exit_class: "success" }, 0],
+    ["blocked", { status: "blocked", exit_class: "blocked" }, 2],
+    ["validation failed", { status: "error", exit_class: "validation_failed" }, 3],
+    ["invalid usage", { status: "error", exit_class: "invalid_usage" }, 4],
+    ["mutation conflict", { status: "blocked", exit_class: "mutation_conflict" }, 5],
+    ["internal", { status: "error", exit_class: "internal" }, 1],
+  ];
+
+  for (const [name, result, expected] of cases) {
+    assert.equal(exitCodeForResult(result), expected, name);
+  }
+});
+
+test("T12 exit-code mapping is enforced for M1 command paths", () => {
   const cwd = tempProject();
   const success = runCli(["init", "--adapter", "codex", "--dry-run", "--json"], { cwd });
   const blocked = runCli(["init", "--adapter", "claude", "--json"], { cwd });
