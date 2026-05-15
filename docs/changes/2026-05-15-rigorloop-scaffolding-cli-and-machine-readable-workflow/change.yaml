@@ -2,6 +2,7 @@ change_id: 2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow
 title: RigorLoop scaffolding CLI and machine-readable workflow
 classification: workflow
 risk: high
+pr: https://github.com/xiongxianfei/rigorloop/pull/62
 artifacts:
   proposal: docs/proposals/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow.md
   spec: specs/rigorloop-cli-package-and-codex-init.md
@@ -343,6 +344,8 @@ validation:
     result: passed_after_verify_report
   - command: git diff --check --
     result: passed_after_verify_report
+  - command: gh pr create --base main --head rigorloop-cli-codex-init --title "feat: add first RigorLoop CLI Codex init slice"
+    result: opened_PR_62
   - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow
     result: passed
   - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow

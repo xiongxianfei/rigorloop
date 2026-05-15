@@ -4,7 +4,7 @@
 - Owner: maintainers
 - Start date: 2026-05-15
 - Last updated: 2026-05-15
-- Related issue or PR: none yet
+- Related issue or PR: PR #62 (`https://github.com/xiongxianfei/rigorloop/pull/62`)
 - Supersedes: none
 
 ## Purpose / big picture
@@ -57,13 +57,13 @@ The plan intentionally does not implement the broader CLI roadmap. It keeps the 
 ## Current Handoff Summary
 
 - Current milestone: Lifecycle closeout
-- Current milestone state: verify-passed
+- Current milestone state: pr-opened
 - Last reviewed milestone: M3. Codex adapter metadata, archive verification, extraction, and tree hash
 - Review status: code-review-r9 clean-with-notes; `CR8-F1` closed
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
+- Next stage: hosted CI and review on PR #62
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation milestones are closed, explain-change is recorded, and verify passed, but PR handoff has not run.
+- Reason final closeout is or is not ready: implementation milestones are closed, explain-change is recorded, verify passed, and PR #62 is open; hosted CI and human review have not completed.
 
 ## Milestones
 
@@ -263,7 +263,7 @@ The plan intentionally does not implement the broader CLI roadmap. It keeps the 
 - [x] M3 implemented and reviewed.
 - [x] 2026-05-15: Explain-change recorded at `docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/explain-change.md`.
 - [x] 2026-05-15: Verify completed at `docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/verify-report.md`; branch-ready evidence recorded for PR handoff.
-- [ ] PR handoff completed.
+- [x] 2026-05-15: PR handoff completed by opening PR #62: `https://github.com/xiongxianfei/rigorloop/pull/62`.
 
 ## Decision log
 
@@ -417,13 +417,13 @@ The plan intentionally does not implement the broader CLI roadmap. It keeps the 
 
 ## Outcome and retrospective
 
-- Implementation milestones M1-M3 are complete and reviewed. Explain-change is recorded. Verify passed. PR handoff remains pending.
+- Implementation milestones M1-M3 are complete and reviewed. Explain-change is recorded. Verify passed. PR #62 is open; hosted CI and human review remain pending.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for PR handoff.
-- It is not complete until the PR gate runs.
+- This plan is ready for hosted CI and human review on PR #62.
+- It is not complete until PR review, hosted CI, and merge/closeout complete.
 
 ## Follow-ups
 
