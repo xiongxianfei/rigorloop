@@ -23,7 +23,7 @@ Review closeout: code-review-r8
 - Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `code-review-r1`, `code-review-r2`, `code-review-r3`, `code-review-r4`, `code-review-r5`, `code-review-r6`, `code-review-r7`, `code-review-r8`
 - Findings resolved: 9
 - Unresolved findings: 0
-- Final result: spec-review findings have accepted dispositions and the same-stage `spec-review-r2` rerun approved the revised spec. `code-review-r1` finding `CR1-F1` has an accepted implementation fix, `code-review-r2` closed M1 with no material findings, direct `code-review-r3` found no material issues in the current tracked M1 resolution, `code-review-r4` finding `CR4-F1` has an accepted implementation fix, `code-review-r5` closed M2 with no material findings, `code-review-r6` findings `CR6-F1` and `CR6-F2` have accepted implementation fixes, `code-review-r7` finding `CR7-F1` has an accepted implementation fix, and `code-review-r8` finding `CR8-F1` has an accepted implementation fix pending same-stage code-review rerun.
+- Final result: spec-review findings have accepted dispositions and the same-stage `spec-review-r2` rerun approved the revised spec. `code-review-r1` finding `CR1-F1` has an accepted implementation fix, `code-review-r2` closed M1 with no material findings, direct `code-review-r3` found no material issues in the current tracked M1 resolution, `code-review-r4` finding `CR4-F1` has an accepted implementation fix, `code-review-r5` closed M2 with no material findings, `code-review-r6` findings `CR6-F1` and `CR6-F2` have accepted implementation fixes, `code-review-r7` finding `CR7-F1` has an accepted implementation fix, `code-review-r8` finding `CR8-F1` has an accepted implementation fix, and `code-review-r9` closed M3 with no material findings.
 
 ## Resolution Overview
 
@@ -198,7 +198,11 @@ Decision needed: None; maintainer accepted enforcing the approved official-archi
 Chosen action: Add package-local network archive URL validation. Default network install fetches only `https://github.com/xiongxianfei/rigorloop/releases/download/<release>/<archive>` where the release matches the package-compatible release and the archive matches the selected adapter artifact. Non-official URLs return `status: error`, exit code `3`.
 Rationale: Bundled metadata is trusted only within the approved security boundary. It must not expand network egress to arbitrary URLs. Tests may use a fetch seam, but production metadata must still name an official release archive URL.
 Validation target: Add negative tests for `data:` URLs, wrong host, wrong repo, wrong release, wrong archive, query/hash, and a positive test that uses an official URL with a mocked fetch response.
-Validation evidence: pending.
+Validation evidence: `packages/rigorloop/dist/lib/official-archive-url.js` now defines and validates the exact official GitHub release archive URL. `packages/rigorloop/dist/bin/rigorloop.js` validates the URL before default network fetch. `packages/rigorloop/test/cli.test.js` covers the accepted official URL with a fetch seam and rejects `data:`, wrong host, wrong repo, wrong release, wrong archive, query, hash, `http:`, and `raw.githubusercontent.com` URLs. `npm test --prefix packages/rigorloop`, real default network install smoke, real local archive smoke, selected validation, and `git diff --check --` passed after the fix.
+
+### code-review-r9
+
+No material findings; no resolution entry required. The code-review rerun closed `CR8-F1` and marked M3 clean with notes.
 
 ## Shared Validation Evidence
 
