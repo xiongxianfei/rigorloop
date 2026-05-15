@@ -15,11 +15,12 @@ Review closeout: code-review-r1
 Review closeout: code-review-r2
 Review closeout: code-review-r3
 Review closeout: code-review-r4
+Review closeout: code-review-r5
 
-- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `code-review-r1`, `code-review-r2`, `code-review-r3`, `code-review-r4`
+- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `code-review-r1`, `code-review-r2`, `code-review-r3`, `code-review-r4`, `code-review-r5`
 - Findings resolved: 5
 - Unresolved findings: 0
-- Final result: spec-review findings have accepted dispositions and the same-stage `spec-review-r2` rerun approved the revised spec. `code-review-r1` finding `CR1-F1` has an accepted implementation fix, `code-review-r2` closed M1 with no material findings, direct `code-review-r3` found no material issues in the current tracked M1 resolution, and `code-review-r4` finding `CR4-F1` has an accepted implementation fix ready for code-review rerun.
+- Final result: spec-review findings have accepted dispositions and the same-stage `spec-review-r2` rerun approved the revised spec. `code-review-r1` finding `CR1-F1` has an accepted implementation fix, `code-review-r2` closed M1 with no material findings, direct `code-review-r3` found no material issues in the current tracked M1 resolution, `code-review-r4` finding `CR4-F1` has an accepted implementation fix, and `code-review-r5` closed M2 with no material findings.
 
 ## Resolution Overview
 
@@ -129,6 +130,10 @@ Chosen action: Add `.agents` as a first-class `create-dir` action/artifact in dr
 Rationale: The CLI write plan is a public safety surface. Users and agents must see every filesystem mutation before `init` writes, and recursive parent-directory creation must not hide mutations missing from JSON or human-readable output.
 Validation target: Update the M2 write plan and tests so `.agents` is represented whenever it will be created, skipped, or blocked, then rerun package tests, artifact lifecycle validation, change metadata validation, and selected CI for the package and lifecycle surfaces.
 Validation evidence: `packages/rigorloop/test/cli.test.js` now asserts `.agents`, `.agents/skills`, and `rigorloop.yaml` action ordering, empty-project dry-run and actual statuses, existing parent and leaf directory statuses, parent-file conflict, and leaf-file conflict. `packages/rigorloop/dist/bin/rigorloop.js` now builds explicit directory actions for `.agents` and `.agents/skills` and creates only pending planned directories. `npm test --prefix packages/rigorloop` passed after the fix.
+
+### code-review-r5
+
+No material findings; no resolution entry required. The code-review rerun closed `CR4-F1` and marked M2 clean with notes.
 
 ## Shared Validation Evidence
 
