@@ -10,11 +10,14 @@ Maintainer-approved on 2026-05-14 by direct user request. Status remains `active
 
 M2 alignment approved on 2026-05-14 by direct user request after `M1: align stage evidence access M2 test spec`.
 
+M3/M4 alignment approved on 2026-05-15 by direct user request after `M0: align stage evidence access M3 M4 test spec`.
+
 ## Related spec and plan
 
 - Spec: [Stage Evidence Access Contracts for Cost-Bounded Rigor](stage-evidence-access-contracts-for-cost-bounded-rigor.md)
 - M1 plan: [Stage Evidence Access Contracts for Cost-Bounded Rigor](../docs/plans/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor.md)
 - M2 plan: [Stage Evidence Access Contracts M2: Execution/Review Evidence Access](../docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md)
+- M3/M4 plan: [Stage Evidence Access Contracts M3/M4: Static Validation And Measurement](../docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md)
 
 ## Testing strategy
 
@@ -26,6 +29,7 @@ Use focused static and lifecycle validation for this guidance-only change.
 - Lifecycle: `scripts/validate-artifact-lifecycle.py`, `scripts/validate-change-metadata.py`, and `scripts/validate-review-artifacts.py` prove proposal/spec/plan/change-local state remains coherent.
 - Measurement: `scripts/measure-skill-tokens.py` records diagnostic static token impact after canonical skill changes.
 - Manual review: verifies migration rationale and optional `spec` no-change rationale when automation would require brittle semantic scoring.
+- M3/M4 follow-through: implementation first audits existing concept checks before adding assertions, then records static skill token measurement and size delta as diagnostic evidence only.
 
 No runtime, e2e, browser, release, adapter, migration-data, or hosted observability tests are required because the approved spec changes repository guidance and skill contracts only.
 
@@ -63,11 +67,11 @@ No runtime, e2e, browser, release, adapter, migration-data, or hosted observabil
 | R27 | T7 |
 | R28 | T7 |
 | R29 | T7, T14 |
-| R30 | T6, T12, T13 |
-| R31 | T6, T12, T13 |
-| R32 | T4, T9, T14 |
-| R33 | T10, T14 |
-| R34 | T9, T11, T12, T13, T14 |
+| R30 | T6, T12, T13, T15 |
+| R31 | T6, T12, T13, T15 |
+| R32 | T4, T9, T14, T15, T16 |
+| R33 | T10, T14, T16 |
+| R34 | T9, T11, T12, T13, T14, T15, T16 |
 
 ## Example coverage map
 
@@ -89,8 +93,8 @@ No runtime, e2e, browser, release, adapter, migration-data, or hosted observabil
 | 4. M1 tries to edit `implement` | T4, T7 |
 | 5. M1 updates `spec` | T3, T7 |
 | 6. M2 runs later | T7, T12, T13, T14 |
-| 7. Static checks are concept-based | T6 |
-| 8. Token measurement increase is diagnostic | T10 |
+| 7. Static checks are concept-based | T6, T15 |
+| 8. Token measurement increase is diagnostic | T10, T16 |
 | 9. Contradictory bounded evidence expands | T1, T12, T13 |
 | 10. Full file is review target | T1, T12, T13 |
 
@@ -302,6 +306,44 @@ No runtime, e2e, browser, release, adapter, migration-data, or hosted observabil
   - `python scripts/measure-skill-tokens.py`
   - lifecycle, review-artifact, change-metadata, and diff checks named by the active plan
 
+### T15. M3 Static Validation Audit And Gap Fill
+
+- Covers: R30-R32, R34, edge case 7
+- Level: unit
+- Fixture/setup: current `scripts/test-skill-validator.py`, existing stage evidence access checks, and M3 plan/change-local evidence
+- Steps:
+  1. Inspect `test_stage_evidence_access_contract_guidance`, `test_stage_evidence_access_proposal_side_skills`, and `test_stage_evidence_access_m2_execution_review_skills`.
+  2. Map existing coverage against the M3 concept list: `Evidence access`, default evidence, conditional evidence, reason recording, bounded evidence before broad reads, and full-file-read escape behavior.
+  3. If a concept is missing, add the smallest stable assertion needed to protect it.
+  4. If coverage is already sufficient, record a no-change rationale in the active plan and change metadata instead of adding duplicate checks.
+  5. Run `python scripts/test-skill-validator.py` and selected lifecycle validation for touched surfaces.
+- Expected result: M3 either adds focused concept-level static checks or records a reviewed no-change rationale that existing checks already protect the guidance.
+- Failure proves: static validation is missing required concept protection, became brittle, or added unnecessary duplicate checks.
+- Automation location:
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/select-validation.py --mode explicit --path scripts/test-skill-validator.py --path docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md --path docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/change.yaml`
+  - lifecycle, change-metadata, and diff checks named by the active M3/M4 plan
+
+### T16. M4 Static Measurement And Size-Delta Recording
+
+- Covers: R32-R34, edge case 8
+- Level: smoke
+- Fixture/setup: M2 merged baseline of 23 skills, 235521 bytes, and 58868 estimated tokens; current canonical skill set after M3
+- Steps:
+  1. Run `python scripts/measure-skill-tokens.py`.
+  2. Compare the result against the M2 merged baseline.
+  3. If M3 changed canonical skill text, record per-skill deltas for touched skills.
+  4. If M3 changed only validator or lifecycle artifacts, record that static skill size is expected to remain unchanged and verify the measurement result.
+  5. Record the measurement and increase/decrease/unchanged statement in plan validation notes and change metadata; summarize it later in explain-change.
+  6. Confirm no hard token threshold, runtime enforcement, dynamic benchmark requirement, release validation change, adapter packaging change, or generated-output source-model change was introduced.
+- Expected result: M4 records diagnostic static skill size evidence and size-delta interpretation without turning token totals into a release or implementation gate.
+- Failure proves: measurement was skipped, stale, misinterpreted as a hard gate, or broadened into excluded dynamic/release/adapter work.
+- Automation location:
+  - `python scripts/measure-skill-tokens.py`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/validate-skills.py`
+  - lifecycle, change-metadata, and diff checks named by the active M3/M4 plan
+
 ## Fixtures and data
 
 - Existing `docs/workflows.md`.
@@ -316,6 +358,8 @@ No runtime, e2e, browser, release, adapter, migration-data, or hosted observabil
   - `scripts/validate-change-metadata.py`
 - M1 change root: `docs/changes/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor-review-recording/`
 - M2 change root: `docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/`
+- M3/M4 change root: `docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/`
+- M3/M4 static measurement baseline: M2 merged result of 23 skills, 235521 bytes, and 58868 estimated tokens.
 
 No generated adapter fixtures, release archives, runtime data, or external services are required.
 
@@ -342,6 +386,7 @@ No mocks or stubs are required. This is a static repository-guidance change.
 
 - Covered by T10.
 - Static token measurement is diagnostic only; no hard threshold is introduced.
+- M4 size-delta recording is covered by T16 and remains diagnostic only.
 
 ## Manual QA checklist
 
@@ -355,6 +400,10 @@ No mocks or stubs are required. This is a static repository-guidance change.
 - [ ] Confirm `implement` includes M2 evidence guidance and preserves handoff inspection, first-pass completeness, validation layering, plan-update ownership, and milestone handoff behavior.
 - [ ] Confirm `code-review` includes M2 evidence guidance and preserves independent-review mode, actual-diff grounding, material-finding requirements, review-resolution handoff, checklist coverage, and milestone-aware routing.
 - [ ] Confirm M2 selected validation covers `skills/implement/SKILL.md` and `skills/code-review/SKILL.md` without requiring unrelated `plan` or `spec` skill edits.
+- [ ] Confirm M3 audits existing static concept coverage before adding checks.
+- [ ] Confirm any M3 no-change rationale is recorded in the active plan and change metadata.
+- [ ] Confirm M4 static measurement compares against the M2 merged baseline and records increase/decrease/unchanged.
+- [ ] Confirm M4 measurement remains diagnostic and does not introduce hard token gates or dynamic benchmarks.
 
 ## What not to test
 
@@ -363,6 +412,8 @@ No mocks or stubs are required. This is a static repository-guidance change.
 - Do not test runtime enforcement or semantic read auditing; those are out of scope.
 - Do not test M2 `implement` or `code-review` evidence guidance in M1.
 - Do not test or require `plan` evidence guidance in M2.
+- Do not add new skill evidence guidance solely for M3/M4.
+- Do not run release validation, adapter validation, or dynamic token benchmarks for M3/M4 unless later selected validation requires them because touched paths changed.
 - Do not require exact long wording matches across skills.
 
 ## Uncovered gaps
@@ -372,7 +423,8 @@ None.
 ## Next artifacts
 
 ```text
-implement M2. Implement Execution/Review Evidence Guidance
+implement M3. Static Validation Audit And Gap Fill
+implement M4. Measurement And Size-Delta Recording
 code-review
 explain-change
 verify
@@ -385,4 +437,4 @@ None yet.
 
 ## Readiness
 
-Active proof surface for implementation. The active plan `Current Handoff Summary` owns the next workflow action.
+Active proof surface for M3/M4 implementation. The active plan `Current Handoff Summary` owns the next workflow action.
