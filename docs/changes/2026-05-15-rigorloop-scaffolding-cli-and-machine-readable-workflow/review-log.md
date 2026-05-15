@@ -114,4 +114,4 @@ Status: changes-requested
 Detailed record: reviews/code-review-r6.md
 Resolution: review-resolution.md#code-review-r6
 Material findings: CR6-F1, CR6-F2
-Open findings: CR6-F1, CR6-F2
+Open findings: None

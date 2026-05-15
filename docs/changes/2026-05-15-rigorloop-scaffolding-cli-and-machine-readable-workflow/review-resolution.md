@@ -4,7 +4,7 @@
 
 This record resolves material findings from formal lifecycle reviews for the scaffolding CLI and machine-readable workflow change.
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: spec-review-r1
 Review closeout: spec-review-r2
@@ -16,11 +16,12 @@ Review closeout: code-review-r2
 Review closeout: code-review-r3
 Review closeout: code-review-r4
 Review closeout: code-review-r5
+Review closeout: code-review-r6
 
 - Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `code-review-r1`, `code-review-r2`, `code-review-r3`, `code-review-r4`, `code-review-r5`, `code-review-r6`
-- Findings resolved: 5
-- Unresolved findings: 2
-- Final result: spec-review findings have accepted dispositions and the same-stage `spec-review-r2` rerun approved the revised spec. `code-review-r1` finding `CR1-F1` has an accepted implementation fix, `code-review-r2` closed M1 with no material findings, direct `code-review-r3` found no material issues in the current tracked M1 resolution, `code-review-r4` finding `CR4-F1` has an accepted implementation fix, `code-review-r5` closed M2 with no material findings, and `code-review-r6` requested changes for M3 findings `CR6-F1` and `CR6-F2`.
+- Findings resolved: 7
+- Unresolved findings: 0
+- Final result: spec-review findings have accepted dispositions and the same-stage `spec-review-r2` rerun approved the revised spec. `code-review-r1` finding `CR1-F1` has an accepted implementation fix, `code-review-r2` closed M1 with no material findings, direct `code-review-r3` found no material issues in the current tracked M1 resolution, `code-review-r4` finding `CR4-F1` has an accepted implementation fix, `code-review-r5` closed M2 with no material findings, and `code-review-r6` findings `CR6-F1` and `CR6-F2` have accepted implementation fixes pending same-stage code-review rerun.
 
 ## Resolution Overview
 
@@ -31,8 +32,8 @@ Review closeout: code-review-r5
 | SR1-F3 | accepted | resolved | Expected archive verification failures now use status `error` and exit code `3`. |
 | CR1-F1 | accepted | resolved | M1 now maps exit codes from internal result class/failure kind and T11 covers every public exit-code class. |
 | CR4-F1 | accepted | resolved | M2 now plans `.agents` and `.agents/skills` as first-class directory actions before mutation. |
-| CR6-F1 | needs-decision | open | Runtime metadata source overrides bypass the official and bundled metadata trust boundary. |
-| CR6-F2 | needs-decision | open | Metadata-hash verification is not implemented or tested. |
+| CR6-F1 | accepted | resolved | Runtime metadata source overrides were removed from production metadata lookup; tests now use fixture package metadata. |
+| CR6-F2 | accepted | resolved | Network metadata is verified against a package-bundled release index hash before parsing, with metadata hash mismatch mapped to exit code `3`. |
 
 ## Common Resolution Metadata
 
@@ -142,24 +143,26 @@ No material findings; no resolution entry required. The code-review rerun closed
 #### CR6-F1 - Runtime metadata source overrides bypass the official and bundled metadata trust boundary
 
 Finding ID: CR6-F1
-Disposition: needs-decision
-Status: open
-Decision owner: implementer
-Decision needed: Accept the finding and remove or hide runtime metadata source overrides, or revise the spec/architecture if those overrides are intentionally part of the public command contract.
-Owning stage: review-resolution
-Stop state: M3 remains resolution-needed until this finding has a final disposition and the accepted action is validated.
-Expected proof: Package tests and selected CI prove ordinary runtime environment variables cannot redirect official network metadata or package-bundled local metadata trust.
+Disposition: accepted
+Status: resolved
+Owner: implementer
+Owning stage: implement
+Chosen action: Remove production use of `RIGORLOOP_RELEASE_METADATA_URL` and `RIGORLOOP_METADATA_FILE`. Network mode uses the package-bundled release index for the official metadata URL and expected hash. Local `--from-archive` mode uses package-bundled adapter metadata. Tests use temporary fixture package metadata instead of public runtime metadata overrides.
+Rationale: Runtime environment variables must not replace the metadata trust root. Archive verification is only meaningful when metadata authority is official or package-bundled, not user-supplied at runtime.
+Validation target: Add regression tests proving ordinary runtime environment variables cannot redirect network or local metadata trust, then rerun package tests and selected CI.
+Validation evidence: `packages/rigorloop/dist/bin/rigorloop.js` no longer reads `RIGORLOOP_RELEASE_METADATA_URL` or `RIGORLOOP_METADATA_FILE`. `packages/rigorloop/test/cli.test.js` now uses temporary fixture package metadata and includes tests proving those environment variables are ignored during normal CLI execution. `npm test --prefix packages/rigorloop` passed after the fix.
 
 #### CR6-F2 - Metadata-hash verification is not implemented or tested
 
 Finding ID: CR6-F2
-Disposition: needs-decision
-Status: open
-Decision owner: implementer
-Decision needed: Accept the finding and implement metadata-hash mismatch verification with exit code `3`, or revise the spec/architecture if the first slice cannot define a trusted expected metadata hash source.
-Owning stage: review-resolution
-Stop state: M3 remains resolution-needed until this finding has a final disposition and the accepted action is validated.
-Expected proof: Package tests include a direct metadata-hash mismatch case with status `error` and exit code `3`, plus selected CI for the package and lifecycle artifacts.
+Disposition: accepted
+Status: resolved
+Owner: implementer
+Owning stage: implement
+Chosen action: Add a package-bundled release index with trusted expected metadata SHA-256. Fetch network metadata as raw bytes, verify the bytes before parsing, and map metadata SHA-256 mismatch to status `error` with exit code `3`. Local archive mode continues to use bundled metadata for the installed package version.
+Rationale: The CLI must not trust fetched metadata before verifying it. Metadata-hash mismatch is an expected verification failure, not an internal error.
+Validation target: Add direct tests for metadata hash mismatch, valid metadata hash, missing trust root, and verification-before-parse behavior, then rerun package tests and selected CI.
+Validation evidence: `packages/rigorloop/dist/metadata/releases.json` now records the trusted metadata URL and SHA-256 for `v0.1.3`. `packages/rigorloop/dist/bin/rigorloop.js` verifies fetched metadata bytes before parsing. `packages/rigorloop/test/cli.test.js` covers valid metadata hash, metadata hash mismatch, malformed metadata with wrong hash, and missing trust root. `npm test --prefix packages/rigorloop` passed after the fix.
 
 ## Shared Validation Evidence
 
@@ -172,11 +175,11 @@ Expected proof: Package tests include a direct metadata-hash mismatch case with 
 
 ## Closeout Checklist
 
-- [ ] Every material finding has a final disposition.
+- [x] Every material finding has a final disposition.
 - [x] Every accepted finding has a chosen action.
 - [x] Every rejected finding has rationale.
 - [x] Every deferred finding has follow-up or explicit no-follow-up rationale.
-- [ ] Every `needs-decision` finding is resolved or blocks closeout.
+- [x] Every `needs-decision` finding is resolved or blocks closeout.
 - [x] Validation evidence is recorded for `code-review-r1` finding.
 - [x] Validation evidence is recorded for `code-review-r4` finding.
 - [x] Closeout status is correct.
