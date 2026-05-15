@@ -4,7 +4,7 @@
 
 This record resolves material findings from formal lifecycle reviews for the scaffolding CLI and machine-readable workflow change.
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: spec-review-r1
 Review closeout: spec-review-r2
@@ -17,9 +17,9 @@ Review closeout: code-review-r3
 Review closeout: code-review-r4
 
 - Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `code-review-r1`, `code-review-r2`, `code-review-r3`, `code-review-r4`
-- Findings resolved: 4
-- Unresolved findings: 1
-- Final result: spec-review findings have accepted dispositions and the same-stage `spec-review-r2` rerun approved the revised spec. `code-review-r1` finding `CR1-F1` has an accepted implementation fix, `code-review-r2` closed M1 with no material findings, direct `code-review-r3` found no material issues in the current tracked M1 resolution, and `code-review-r4` requested changes for M2 finding `CR4-F1`.
+- Findings resolved: 5
+- Unresolved findings: 0
+- Final result: spec-review findings have accepted dispositions and the same-stage `spec-review-r2` rerun approved the revised spec. `code-review-r1` finding `CR1-F1` has an accepted implementation fix, `code-review-r2` closed M1 with no material findings, direct `code-review-r3` found no material issues in the current tracked M1 resolution, and `code-review-r4` finding `CR4-F1` has an accepted implementation fix ready for code-review rerun.
 
 ## Resolution Overview
 
@@ -29,7 +29,7 @@ Review closeout: code-review-r4
 | SR1-F2 | accepted | resolved | The first-slice generated `rigorloop.yaml` minimum YAML shape is now defined. |
 | SR1-F3 | accepted | resolved | Expected archive verification failures now use status `error` and exit code `3`. |
 | CR1-F1 | accepted | resolved | M1 now maps exit codes from internal result class/failure kind and T11 covers every public exit-code class. |
-| CR4-F1 | needs-decision | open | M2 write plan omits the parent `.agents` directory that actual init creates. |
+| CR4-F1 | accepted | resolved | M2 now plans `.agents` and `.agents/skills` as first-class directory actions before mutation. |
 
 ## Common Resolution Metadata
 
@@ -121,22 +121,20 @@ No material findings; no resolution entry required. This direct isolated code-re
 #### CR4-F1 - Write plan omits the parent `.agents` directory that actual init creates
 
 Finding ID: CR4-F1
-Disposition: needs-decision
-Decision owner: implementer
-Decision needed: Decide whether to accept `CR4-F1` and update the M2 write plan/tests before M2 closeout.
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: implementer
 Owning stage: implement
-Chosen action: needs maintainer decision during review-resolution; recommended action is to accept and fix the M2 write plan before M2 closeout.
-Rationale: The finding blocks M2 closeout because the actual scaffold writes a directory that is absent from the pre-mutation write plan.
+Chosen action: Add `.agents` as a first-class `create-dir` action/artifact in dry-run and actual init output, keep `.agents/skills` as its own `create-dir` action/artifact, and apply only planned pending directory actions during actual init.
+Rationale: The CLI write plan is a public safety surface. Users and agents must see every filesystem mutation before `init` writes, and recursive parent-directory creation must not hide mutations missing from JSON or human-readable output.
 Validation target: Update the M2 write plan and tests so `.agents` is represented whenever it will be created, skipped, or blocked, then rerun package tests, artifact lifecycle validation, change metadata validation, and selected CI for the package and lifecycle surfaces.
-Validation evidence: pending
+Validation evidence: `packages/rigorloop/test/cli.test.js` now asserts `.agents`, `.agents/skills`, and `rigorloop.yaml` action ordering, empty-project dry-run and actual statuses, existing parent and leaf directory statuses, parent-file conflict, and leaf-file conflict. `packages/rigorloop/dist/bin/rigorloop.js` now builds explicit directory actions for `.agents` and `.agents/skills` and creates only pending planned directories. `npm test --prefix packages/rigorloop` passed after the fix.
 
 ## Shared Validation Evidence
 
 | Validation area | Result | Notes |
 |---|---|---|
-| Review recording | pass | `python scripts/validate-review-artifacts.py docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow` passed with `CR4-F1` open. Closeout mode is not applicable until the open finding is resolved. |
+| Review recording | pass | `python scripts/validate-review-artifacts.py docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow` and closeout mode passed after `CR4-F1` resolution recording. |
 | Change metadata | pass | Change metadata validation passed after `spec-review-r2` was recorded. |
 | Artifact lifecycle | pass | Artifact lifecycle validation passed for the revised spec, review artifacts, active plan, plan index, and M1 test spec. |
 | Selected CI | pass | Selector-selected CI passed for the package, selector, active plan, plan index, M1 test spec, change metadata, review log, review-resolution, and code-review record. |
@@ -149,4 +147,5 @@ Validation evidence: pending
 - [x] Every deferred finding has follow-up or explicit no-follow-up rationale.
 - [x] Every `needs-decision` finding is resolved or blocks closeout.
 - [x] Validation evidence is recorded for `code-review-r1` finding.
+- [x] Validation evidence is recorded for `code-review-r4` finding.
 - [x] Closeout status is correct.

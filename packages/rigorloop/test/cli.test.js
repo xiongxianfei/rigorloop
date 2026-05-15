@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { execFileSync, spawnSync } from "node:child_process";
-import { existsSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { test } from "node:test";
@@ -30,6 +30,10 @@ function listProject(root) {
 
 function readProjectFile(root, path) {
   return readFileSync(join(root, path), "utf8");
+}
+
+function actionFor(output, path) {
+  return output.actions.find((action) => action.path === path);
 }
 
 test("T1 package metadata exposes one public binary and no archive files", () => {
@@ -222,8 +226,12 @@ test("T12 dry-run init plans scaffold writes without mutating the project", () =
   assert.match(output.planned_manifest.content, /name: codex/);
   assert.match(output.planned_manifest.content, /install_root: ".agents\/skills"/);
   assert.equal(output.planned_lockfile.tree_hash_algorithm, "rigorloop-tree-hash-v1");
-  assert.ok(output.actions.some((action) => action.type === "write" && action.path === "rigorloop.yaml"));
-  assert.ok(output.actions.some((action) => action.type === "create-dir" && action.path === ".agents/skills"));
+  assert.deepEqual(output.actions.map((action) => action.path).slice(0, 3), [".agents", ".agents/skills", "rigorloop.yaml"]);
+  assert.equal(actionFor(output, ".agents")?.type, "create-dir");
+  assert.equal(actionFor(output, ".agents")?.status, "planned");
+  assert.equal(actionFor(output, ".agents/skills")?.type, "create-dir");
+  assert.equal(actionFor(output, ".agents/skills")?.status, "planned");
+  assert.equal(actionFor(output, "rigorloop.yaml")?.type, "write");
   assert.deepEqual(listProject(cwd), before);
 });
 
@@ -262,8 +270,11 @@ test("T20 actual init writes minimum manifest and Codex install root without loc
   const output = JSON.parse(result.stdout);
   assert.equal(output.status, "warning");
   assert.equal(output.warnings[0].code, "lockfile-spec-not-approved");
-  assert.ok(output.actions.some((action) => action.path === "rigorloop.yaml" && action.status === "done"));
-  assert.ok(output.actions.some((action) => action.path === ".agents/skills" && action.status === "done"));
+  assert.deepEqual(output.actions.map((action) => action.path).slice(0, 3), [".agents", ".agents/skills", "rigorloop.yaml"]);
+  assert.equal(actionFor(output, ".agents")?.status, "done");
+  assert.equal(actionFor(output, ".agents/skills")?.status, "done");
+  assert.equal(actionFor(output, "rigorloop.yaml")?.status, "done");
+  assert.equal(existsSync(join(cwd, ".agents")), true);
   assert.equal(existsSync(join(cwd, ".agents", "skills")), true);
   assert.equal(existsSync(join(cwd, "rigorloop.lock")), false);
 
@@ -275,6 +286,26 @@ test("T20 actual init writes minimum manifest and Codex install root without loc
   assert.match(manifest, /install_root: ".agents\/skills"/);
   assert.match(manifest, /type: release-archive/);
   assert.match(manifest, /release: "v0\.1\.3"/);
+});
+
+test("T24 write plan represents parent and leaf directory states before mutation", () => {
+  const parentOnlyProject = tempProject();
+  mkdirSync(join(parentOnlyProject, ".agents"));
+  const parentOnly = runCli(["init", "--adapter", "codex", "--json"], { cwd: parentOnlyProject });
+
+  assert.equal(parentOnly.status, 0, parentOnly.stderr);
+  const parentOnlyOutput = JSON.parse(parentOnly.stdout);
+  assert.equal(actionFor(parentOnlyOutput, ".agents")?.status, "skipped");
+  assert.equal(actionFor(parentOnlyOutput, ".agents/skills")?.status, "done");
+
+  const existingDirsProject = tempProject();
+  mkdirSync(join(existingDirsProject, ".agents", "skills"), { recursive: true });
+  const existingDirs = runCli(["init", "--adapter", "codex", "--json"], { cwd: existingDirsProject });
+
+  assert.equal(existingDirs.status, 0, existingDirs.stderr);
+  const existingDirsOutput = JSON.parse(existingDirs.stdout);
+  assert.equal(actionFor(existingDirsOutput, ".agents")?.status, "skipped");
+  assert.equal(actionFor(existingDirsOutput, ".agents/skills")?.status, "skipped");
 });
 
 test("T21 existing manifest handling is non-destructive", () => {
@@ -358,6 +389,26 @@ test("T26 overwrite conflicts are refused without replacing user files", () => {
   assert.equal(output.status, "blocked");
   assert.equal(output.blockers[0].code, "overwrite-refused");
   assert.equal(output.blockers[0].path, ".agents");
+  assert.equal(actionFor(output, ".agents")?.status, "blocked");
+  assert.equal(actionFor(output, ".agents/skills")?.status, "blocked");
+});
+
+test("T26 leaf install-root file conflict is refused without replacing user files", () => {
+  const cwd = tempProject();
+  mkdirSync(join(cwd, ".agents"));
+  writeFileSync(join(cwd, ".agents", "skills"), "user file\n");
+  const result = runCli(["init", "--adapter", "codex", "--json", "--force"], { cwd });
+
+  assert.equal(result.status, 5);
+  assert.equal(result.stderr, "");
+  assert.equal(readProjectFile(cwd, ".agents/skills"), "user file\n");
+  assert.equal(existsSync(join(cwd, "rigorloop.yaml")), false);
+  const output = JSON.parse(result.stdout);
+  assert.equal(output.status, "blocked");
+  assert.equal(output.blockers[0].code, "overwrite-refused");
+  assert.equal(output.blockers[0].path, ".agents/skills");
+  assert.equal(actionFor(output, ".agents")?.status, "skipped");
+  assert.equal(actionFor(output, ".agents/skills")?.status, "blocked");
 });
 
 test("T41 lockfile is planned output only and never durably written", () => {

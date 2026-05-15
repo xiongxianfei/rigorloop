@@ -66,6 +66,10 @@ This is a public command, filesystem mutation, archive verification, package-bou
 | Existing `rigorloop.yaml` is present and valid | T21 |
 | Existing `rigorloop.yaml` is incompatible | T21 |
 | `.agents/skills` exists but is empty | T20, T25 |
+| `.agents/` exists and `.agents/skills` is missing | T24 |
+| `.agents/` and `.agents/skills` both exist | T24 |
+| `.agents` exists as a file | T26 |
+| `.agents/skills` exists as a file | T26 |
 | `.agents/skills` contains unrelated files | T26, T27 |
 | Release metadata lists multiple adapters | T35 |
 | Bundled adapter metadata unavailable | T19 |
@@ -247,7 +251,7 @@ This is a public command, filesystem mutation, archive verification, package-bou
 - Steps:
   - Snapshot directory contents.
   - Run `rigorloop init --adapter codex --dry-run --json`.
-  - Assert planned actions include `rigorloop.yaml` and `.agents/skills`.
+  - Assert planned actions include `.agents`, `.agents/skills`, and `rigorloop.yaml` in deterministic order.
   - Assert `planned_lockfile` is present when metadata or install planning is available.
   - Assert the directory contents are unchanged.
 - Expected result: dry-run is a pure planning operation.
@@ -406,6 +410,8 @@ This is a public command, filesystem mutation, archive verification, package-bou
 - Steps:
   - Invoke init through a test seam that can observe planned writes before the writer runs.
   - Assert every created, skipped, blocked, or updated path appears in the plan.
+  - Assert `.agents` and `.agents/skills` are each first-class `create-dir` actions.
+  - Assert existing `.agents` and `.agents/skills` directories are reported as existing or skipped.
   - Assert JSON output includes the same planned or completed actions.
 - Expected result: mutation is planned and observable.
 - Failure proves: filesystem writes can happen outside the safety model.
@@ -433,6 +439,8 @@ This is a public command, filesystem mutation, archive verification, package-bou
   - Assert exit code `5`.
   - Assert blocker or error names the conflicting path.
   - Assert the existing file content is unchanged.
+  - Repeat with `.agents` as a file and assert `.agents/skills` is not created.
+  - Repeat with `.agents/skills` as a file and assert `.agents` is reported existing or skipped while `.agents/skills` is blocked.
 - Expected result: init refuses user-file overwrite.
 - Failure proves: adapter install can corrupt user files.
 - Automation location: package tests.

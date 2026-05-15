@@ -169,6 +169,26 @@ validation:
     result: passed
   - command: git diff --check --
     result: passed
+  - command: review-resolution CR4-F1
+    result: accepted_fix_implemented
+  - command: npm test --prefix packages/rigorloop
+    result: failed_before_CR4_F1_fix_missing_agents_parent_write_plan
+  - command: npm test --prefix packages/rigorloop
+    result: passed
+  - command: python scripts/test-select-validation.py
+    result: passed
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow
+    result: passed
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow
+    result: passed
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/change.yaml
+    result: passed
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path packages/rigorloop/dist/bin/rigorloop.js --path packages/rigorloop/test/cli.test.js --path docs/plans/2026-05-15-rigorloop-cli-package-and-codex-init.md --path docs/plan.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/change.yaml --path specs/rigorloop-cli-package-and-codex-init.test.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/review-log.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/review-resolution.md
+    result: passed
+  - command: bash scripts/ci.sh --mode explicit --path packages/rigorloop --path docs/plans/2026-05-15-rigorloop-cli-package-and-codex-init.md --path docs/plan.md --path specs/rigorloop-cli-package-and-codex-init.test.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/change.yaml --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/review-log.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/review-resolution.md
+    result: passed
+  - command: git diff --check --
+    result: passed
 changed_files:
   - docs/proposals/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow.md
   - docs/follow-ups.md
