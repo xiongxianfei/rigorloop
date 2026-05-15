@@ -5,13 +5,20 @@ flowchart LR
   repo["RigorLoop repository<br/>[Git-first workflow and adapter starter kit]"]:::system
   git["Git and PR review<br/>[Review platform]"]:::external
   execution["Local shell and GitHub Actions<br/>[Validation execution]"]:::external
+  package_runner["npm/npx package runner<br/>[CLI delivery surface]"]:::external
   package_surface["Generated adapter package consumers<br/>[External runtime surfaces]"]:::external
+  release_assets["GitHub release assets<br/>[Adapter archives and metadata]"]:::external
 
   contributor -->|uses the standard workflow or isolated manual skill invocations to author changes in| repo
+  contributor -->|runs the RigorLoop CLI from| package_runner
   reviewer -->|reviews selected architecture surface, C4 views, ADRs, and evidence in| repo
   repo -->|publishes reviewable branch and PR history through| git
   repo -->|validates lifecycle, metadata, drift, and diagram source through| execution
+  repo -->|packages the CLI candidate and bundled adapter metadata for| package_runner
+  repo -->|publishes verified adapter archives and official metadata as| release_assets
   repo -->|generates synchronized project-portable guidance for| package_surface
+  package_runner -->|executes init and verifies local archives against bundled metadata from| repo
+  package_runner -->|downloads verified Codex adapter archives from| release_assets
   adapter_user -->|installs or copies generated guidance from| package_surface
 
   classDef person fill:#08427b,stroke:#073b6f,color:#fff

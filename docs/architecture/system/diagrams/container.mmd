@@ -2,12 +2,14 @@ flowchart TB
   contributor["Contributor or agent"]:::person
   reviewer["Reviewer or maintainer"]:::person
   execution["Local shell and GitHub Actions<br/>[Validation execution]"]:::external
+  package_runner["npm/npx package runner<br/>[CLI delivery surface]"]:::external
   adapter_user["Codex, Claude Code, and opencode user"]:::person
 
   subgraph repo["RigorLoop repository<br/>[Git repository]"]
     governance["Governance and workflow guidance<br/>[Markdown]"]:::container
     lifecycle["Lifecycle artifacts and ADRs<br/>[Markdown and YAML]"]:::container
     token_bench["Token-cost benchmark fixtures and reports<br/>[Markdown, YAML, JSONL]"]:::container
+    cli["RigorLoop CLI package candidate<br/>[Node/npm package]"]:::container
     architecture["Canonical architecture package<br/>[Markdown and Mermaid]"]:::container
     changes["Change-local evidence<br/>[Markdown and YAML]"]:::container
     templates["Templates and diagram styles<br/>[Markdown and Mermaid]"]:::container
@@ -22,6 +24,7 @@ flowchart TB
   contributor -->|updates clear current architecture truth directly in| architecture
   contributor -->|uses for historical, review, validation, and exceptional evidence in| changes
   contributor -->|authors benchmark prompts, fixtures, reports, and metadata in| token_bench
+  contributor -->|runs help, version, and Codex init through| cli
   contributor -->|uses scaffolds from| templates
   contributor -->|edits canonical sources in| skills
   reviewer -->|reviews selected architecture surface and ADR need in| architecture
@@ -36,6 +39,9 @@ flowchart TB
   skills -->|are transformed by| scripts
   scripts -->|generate temp output, tracked adapter output, and release artifacts for| generated
   scripts -->|runs benchmarks, analyzes JSONL, and validates metadata for| token_bench
+  cli -->|uses bundled official adapter metadata and small scaffolds from| release
+  cli -->|writes safe project scaffolds and installs verified Codex adapter output from| generated
+  cli -->|is executed by| package_runner
   generated -->|provides public Codex skills for benchmark temp fixtures used by| token_bench
   scripts -->|validate lifecycle, metadata, review artifacts, release data, and drift for| lifecycle
   scripts -->|run in| execution

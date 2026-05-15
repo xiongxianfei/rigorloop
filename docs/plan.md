@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- none yet
+- [2026-05-15 RigorLoop CLI package and Codex init](plans/2026-05-15-rigorloop-cli-package-and-codex-init.md) - active execution plan for the first CLI slice: `@xiongxianfei/rigorloop`, one `rigorloop` binary, help/version, `init --adapter codex`, dry-run JSON, non-destructive `rigorloop.yaml` scaffolding, verified Codex release archive install, planned lockfile output only, and no public npm publication.
 
 ## Blocked
 - none yet
