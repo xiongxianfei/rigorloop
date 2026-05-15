@@ -7,6 +7,7 @@ import { join, resolve } from "node:path";
 import { test } from "node:test";
 
 import { exitCodeForResult } from "../dist/lib/command-result.js";
+import { expectedArchiveUrl, validateOfficialArchiveUrl } from "../dist/lib/official-archive-url.js";
 
 const packageRoot = resolve(import.meta.dirname, "..");
 const packageJsonPath = join(packageRoot, "package.json");
@@ -211,6 +212,7 @@ function fixturePackage(options = {}) {
   );
   copyFileSync(cliPath, join(root, "dist", "bin", "rigorloop.js"));
   copyFileSync(join(packageRoot, "dist", "lib", "command-result.js"), join(root, "dist", "lib", "command-result.js"));
+  copyFileSync(join(packageRoot, "dist", "lib", "official-archive-url.js"), join(root, "dist", "lib", "official-archive-url.js"));
 
   if (options.metadata !== false) {
     const metadata = options.metadata ?? JSON.parse(readFileSync(join(packageRoot, "dist", "metadata", "adapter-artifacts-v0.1.3.json"), "utf8"));
@@ -262,6 +264,30 @@ function runCliWithBundledMetadata(args, cwd, metadata, options = {}) {
     cliPath: packageFixture.cliPath,
     env: options.env,
   });
+}
+
+function mockFetchModule(archiveUrl, archiveBytes) {
+  const path = join(tempProject(), "mock-fetch.mjs");
+  writeFileSync(
+    path,
+    `const archiveUrl = ${JSON.stringify(archiveUrl)};
+const archiveBytes = Buffer.from(${JSON.stringify(archiveBytes.toString("base64"))}, "base64");
+globalThis.fetch = async function fetch(url) {
+  if (String(url) !== archiveUrl) {
+    throw new Error("Unexpected fetch URL: " + String(url));
+  }
+  return {
+    ok: true,
+    status: 200,
+    async arrayBuffer() {
+      return archiveBytes.buffer.slice(archiveBytes.byteOffset, archiveBytes.byteOffset + archiveBytes.byteLength);
+    }
+  };
+};
+`,
+    "utf8",
+  );
+  return path;
 }
 
 test("T1 package metadata exposes one public binary and no archive files", () => {
@@ -493,7 +519,8 @@ test("T15 network mode uses bundled metadata before downloading the official arc
   const cwd = tempProject();
   const fixture = fixtureArchive(cwd);
   const archiveBytes = readFileSync(fixture.archivePath);
-  fixture.metadata.artifacts[0].url = `data:application/octet-stream;base64,${archiveBytes.toString("base64")}`;
+  const officialUrl = expectedArchiveUrl({ releaseTag: "v0.1.3", archive: fixture.archiveName });
+  fixture.metadata.artifacts[0].url = officialUrl;
   const packageFixture = fixturePackage({
     metadata: fixture.metadata,
     release: {
@@ -501,13 +528,12 @@ test("T15 network mode uses bundled metadata before downloading the official arc
       release_tag: "v0.1.3",
       bundled_metadata: "adapter-artifacts-v0.1.3.json",
       bundled_metadata_sha256: sha256(Buffer.from(JSON.stringify(fixture.metadata, null, 2), "utf8")),
-      metadata_url: "http://127.0.0.1:9/should-not-be-used.json",
-      metadata_sha256: "0".repeat(64),
     },
   });
   const result = runCli(["init", "--adapter", "codex", "--json"], {
     cwd,
     cliPath: packageFixture.cliPath,
+    env: { NODE_OPTIONS: `--import ${mockFetchModule(officialUrl, archiveBytes)}` },
   });
 
   assert.equal(result.status, 0, result.stderr);
@@ -516,6 +542,49 @@ test("T15 network mode uses bundled metadata before downloading the official arc
   assert.equal(output.planned_lockfile.generated.adapters[0].source, "release-archive");
   assert.equal(output.planned_lockfile.generated.adapters[0].archive_sha256, fixture.metadata.artifacts[0].sha256);
   assert.equal(readProjectFile(cwd, ".agents/skills/proposal/SKILL.md"), "# Proposal\n\nUse proposal guidance.\n");
+});
+
+test("T15 network mode rejects non-official archive URLs before fetch", () => {
+  const cases = [
+    ["data URL", "data:application/octet-stream;base64,AAAA"],
+    ["wrong host", "https://example.com/rigorloop-adapter-codex-v0.1.3.zip"],
+    ["wrong owner", "https://github.com/other/rigorloop/releases/download/v0.1.3/rigorloop-adapter-codex-v0.1.3.zip"],
+    ["wrong release", "https://github.com/xiongxianfei/rigorloop/releases/download/v0.1.2/rigorloop-adapter-codex-v0.1.3.zip"],
+    ["wrong archive", "https://github.com/xiongxianfei/rigorloop/releases/download/v0.1.3/other.zip"],
+    ["query", "https://github.com/xiongxianfei/rigorloop/releases/download/v0.1.3/rigorloop-adapter-codex-v0.1.3.zip?download=1"],
+    ["hash", "https://github.com/xiongxianfei/rigorloop/releases/download/v0.1.3/rigorloop-adapter-codex-v0.1.3.zip#fragment"],
+    ["http", "http://github.com/xiongxianfei/rigorloop/releases/download/v0.1.3/rigorloop-adapter-codex-v0.1.3.zip"],
+    ["raw", "https://raw.githubusercontent.com/xiongxianfei/rigorloop/v0.1.3/rigorloop-adapter-codex-v0.1.3.zip"],
+  ];
+
+  for (const [name, url] of cases) {
+    const cwd = tempProject();
+    const fixture = fixtureArchive(cwd);
+    fixture.metadata.artifacts[0].url = url;
+    const result = runCliWithBundledMetadata(["init", "--adapter", "codex", "--json"], cwd, fixture.metadata);
+    assert.equal(result.status, 3, name);
+    const output = JSON.parse(result.stdout);
+    assert.equal(output.status, "error", name);
+    assert.equal(output.errors[0].code, "non-official-archive-url", name);
+    assert.equal(output.errors[0].path, "metadata.artifacts[codex].url", name);
+    assert.equal(existsSync(join(cwd, ".agents", "skills", "proposal", "SKILL.md")), false, name);
+  }
+});
+
+test("T15 official archive URL helper accepts only exact release archive URLs", () => {
+  const releaseTag = "v0.1.3";
+  const archive = "rigorloop-adapter-codex-v0.1.3.zip";
+  const officialUrl = expectedArchiveUrl({ releaseTag, archive });
+  assert.equal(officialUrl, "https://github.com/xiongxianfei/rigorloop/releases/download/v0.1.3/rigorloop-adapter-codex-v0.1.3.zip");
+  assert.deepEqual(validateOfficialArchiveUrl({ url: officialUrl, releaseTag, archive }), { ok: true });
+  assert.equal(
+    validateOfficialArchiveUrl({
+      url: "https://github.com/xiongxianfei/rigorloop/releases/download/v0.1.3/rigorloop-adapter-codex-v0.1.3.zip?download=1",
+      releaseTag,
+      archive,
+    }).code,
+    "non-official-archive-url",
+  );
 });
 
 test("T16 bundled metadata hash verification uses the bundled release index", () => {
@@ -596,7 +665,8 @@ test("T16 runtime release metadata environment override is ignored", () => {
   const cwd = tempProject();
   const fixture = fixtureArchive(cwd);
   const archiveBytes = readFileSync(fixture.archivePath);
-  fixture.metadata.artifacts[0].url = `data:application/octet-stream;base64,${archiveBytes.toString("base64")}`;
+  const officialUrl = expectedArchiveUrl({ releaseTag: "v0.1.3", archive: fixture.archiveName });
+  fixture.metadata.artifacts[0].url = officialUrl;
   const packageFixture = fixturePackage({
     metadata: fixture.metadata,
     release: {
@@ -610,7 +680,10 @@ test("T16 runtime release metadata environment override is ignored", () => {
   const result = runCli(["init", "--adapter", "codex", "--json"], {
     cwd,
     cliPath: packageFixture.cliPath,
-    env: { RIGORLOOP_RELEASE_METADATA_URL: "http://127.0.0.1:9/attacker.json" },
+    env: {
+      NODE_OPTIONS: `--import ${mockFetchModule(officialUrl, archiveBytes)}`,
+      RIGORLOOP_RELEASE_METADATA_URL: "http://127.0.0.1:9/attacker.json",
+    },
   });
 
   assert.equal(result.status, 0, result.stderr);

@@ -268,6 +268,10 @@ R50e. The bundled release index MUST record the bundled adapter metadata filenam
 
 R50f. The CLI MUST verify bundled adapter metadata bytes against the bundled release index SHA-256 before parsing metadata for either network or local archive installation.
 
+R50g. Network-mode adapter installation MUST validate that the selected artifact URL exactly matches the official RigorLoop GitHub release archive URL for the package-compatible release and selected archive filename before fetching bytes.
+
+R50h. A non-official network archive URL MUST return status `error`, exit code `3`, and error code `non-official-archive-url`.
+
 R51. Release metadata MUST include:
 
 ```yaml
@@ -311,7 +315,7 @@ R58. The command MUST compute the installed Codex adapter tree hash after extrac
 
 R59. The command MUST compare the computed tree hash with metadata `tree_sha256` when metadata provides it.
 
-R60. Checksum mismatch, size mismatch, tree-hash mismatch, invalid metadata hash, invalid metadata schema, or path traversal MUST produce status `error`.
+R60. Checksum mismatch, size mismatch, tree-hash mismatch, invalid metadata hash, invalid metadata schema, non-official archive URL, or path traversal MUST produce status `error`.
 
 R61. Missing bundled metadata, unknown adapter, incompatible release version, or unavailable official archive source MUST produce status `blocked` unless the failure is an unexpected internal error.
 
@@ -319,7 +323,7 @@ R61a. Metadata unavailable for a requested local archive adapter or release MUST
 
 R61b. Adapter unknown MUST produce status `blocked`, exit code `2`, and blocker code `adapter-unknown`.
 
-R61c. Archive SHA mismatch, archive size mismatch, installed tree-hash mismatch, metadata-hash mismatch, and archive path traversal MUST produce status `error` and exit code `3`.
+R61c. Archive SHA mismatch, archive size mismatch, installed tree-hash mismatch, metadata-hash mismatch, non-official archive URL, and archive path traversal MUST produce status `error` and exit code `3`.
 
 ### Planned lockfile output
 
@@ -408,7 +412,7 @@ Outputs:
 - Missing bundled metadata exits `2` with status `blocked`.
 - Unknown adapter metadata exits `2` with status `blocked`.
 - Release version mismatch exits `2` with status `blocked`.
-- Checksum, size, tree-hash, metadata-hash, metadata schema, or archive traversal failures exit `3` with status `error`.
+- Checksum, size, tree-hash, metadata-hash, metadata schema, non-official archive URL, or archive traversal failures exit `3` with status `error`.
 - Existing user-file overwrite conflicts exit `5`.
 - Permission failures while writing files exit `1` unless they can be classified as overwrite refusal.
 - Network failure while fetching the official adapter archive exits `2` with status `blocked` when retrying later or using `--from-archive` is a valid next action.
