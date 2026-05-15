@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { execFileSync, spawnSync } from "node:child_process";
-import { mkdtempSync, readFileSync, readdirSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { test } from "node:test";
@@ -26,6 +26,10 @@ function tempProject() {
 
 function listProject(root) {
   return readdirSync(root, { recursive: true }).sort();
+}
+
+function readProjectFile(root, path) {
+  return readFileSync(join(root, path), "utf8");
 }
 
 test("T1 package metadata exposes one public binary and no archive files", () => {
@@ -84,7 +88,7 @@ test("T6 JSON envelope is stable and stdout contains JSON only", () => {
   assert.equal(result.status, 0, result.stderr);
   assert.equal(result.stderr, "");
   const output = JSON.parse(result.stdout);
-  assert.deepEqual(Object.keys(output), [
+  for (const key of [
     "schema_version",
     "command",
     "package",
@@ -97,7 +101,9 @@ test("T6 JSON envelope is stable and stdout contains JSON only", () => {
     "warnings",
     "errors",
     "diagnostics",
-  ]);
+  ]) {
+    assert.ok(Object.hasOwn(output, key), key);
+  }
   assert.equal(output.schema_version, 1);
   assert.equal(output.command, "init");
   assert.equal(output.package.name, "@xiongxianfei/rigorloop");
@@ -145,7 +151,7 @@ test("T9 debug mode preserves stable top-level JSON fields", () => {
 
   assert.equal(result.status, 0, result.stderr);
   const output = JSON.parse(result.stdout);
-  assert.deepEqual(Object.keys(output), [
+  for (const key of [
     "schema_version",
     "command",
     "package",
@@ -158,7 +164,9 @@ test("T9 debug mode preserves stable top-level JSON fields", () => {
     "warnings",
     "errors",
     "diagnostics",
-  ]);
+  ]) {
+    assert.ok(Object.hasOwn(output, key), key);
+  }
   assert.equal(output.diagnostics.debug, true);
 });
 
@@ -189,7 +197,7 @@ test("T11 exit-code mapping covers every public exit class", () => {
   }
 });
 
-test("T12 exit-code mapping is enforced for M1 command paths", () => {
+test("T11 command-path exit-code mapping is enforced for M1 command paths", () => {
   const cwd = tempProject();
   const success = runCli(["init", "--adapter", "codex", "--dry-run", "--json"], { cwd });
   const blocked = runCli(["init", "--adapter", "claude", "--json"], { cwd });
@@ -198,4 +206,175 @@ test("T12 exit-code mapping is enforced for M1 command paths", () => {
   assert.equal(success.status, 0);
   assert.equal(blocked.status, 2);
   assert.equal(usage.status, 4);
+});
+
+test("T12 dry-run init plans scaffold writes without mutating the project", () => {
+  const cwd = tempProject();
+  const before = listProject(cwd);
+  const result = runCli(["init", "--adapter", "codex", "--dry-run", "--json"], { cwd });
+
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(result.stderr, "");
+  const output = JSON.parse(result.stdout);
+  assert.equal(output.status, "success");
+  assert.equal(output.planned_manifest.path, "rigorloop.yaml");
+  assert.match(output.planned_manifest.content, /schema_version: 1/);
+  assert.match(output.planned_manifest.content, /name: codex/);
+  assert.match(output.planned_manifest.content, /install_root: ".agents\/skills"/);
+  assert.equal(output.planned_lockfile.tree_hash_algorithm, "rigorloop-tree-hash-v1");
+  assert.ok(output.actions.some((action) => action.type === "write" && action.path === "rigorloop.yaml"));
+  assert.ok(output.actions.some((action) => action.type === "create-dir" && action.path === ".agents/skills"));
+  assert.deepEqual(listProject(cwd), before);
+});
+
+test("T13 init requires --adapter codex", () => {
+  const cwd = tempProject();
+  const result = runCli(["init"], { cwd });
+
+  assert.equal(result.status, 4);
+  assert.match(`${result.stdout}${result.stderr}`, /--adapter codex/);
+  assert.deepEqual(listProject(cwd), []);
+});
+
+test("T14 missing local archive path is invalid input", () => {
+  const cwd = tempProject();
+  const result = runCli(["init", "--adapter", "codex", "--from-archive", "./missing.zip", "--json"], { cwd });
+
+  assert.equal(result.status, 4);
+  assert.equal(result.stderr, "");
+  const output = JSON.parse(result.stdout);
+  assert.equal(output.status, "error");
+  assert.equal(output.errors[0].code, "invalid-archive-path");
+  assert.deepEqual(listProject(cwd), []);
+
+  const missingValue = runCli(["init", "--adapter", "codex", "--from-archive", "--json"], { cwd });
+  assert.equal(missingValue.status, 4);
+  assert.equal(JSON.parse(missingValue.stdout).errors[0].code, "invalid-archive-path");
+  assert.deepEqual(listProject(cwd), []);
+});
+
+test("T20 actual init writes minimum manifest and Codex install root without lockfile", () => {
+  const cwd = tempProject();
+  const result = runCli(["init", "--adapter", "codex", "--json"], { cwd });
+
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(result.stderr, "");
+  const output = JSON.parse(result.stdout);
+  assert.equal(output.status, "warning");
+  assert.equal(output.warnings[0].code, "lockfile-spec-not-approved");
+  assert.ok(output.actions.some((action) => action.path === "rigorloop.yaml" && action.status === "done"));
+  assert.ok(output.actions.some((action) => action.path === ".agents/skills" && action.status === "done"));
+  assert.equal(existsSync(join(cwd, ".agents", "skills")), true);
+  assert.equal(existsSync(join(cwd, "rigorloop.lock")), false);
+
+  const manifest = readProjectFile(cwd, "rigorloop.yaml");
+  assert.match(manifest, /schema_version: 1/);
+  assert.match(manifest, /package: "@xiongxianfei\/rigorloop"/);
+  assert.match(manifest, /package_version: "0\.1\.3"/);
+  assert.match(manifest, /name: codex/);
+  assert.match(manifest, /install_root: ".agents\/skills"/);
+  assert.match(manifest, /type: release-archive/);
+  assert.match(manifest, /release: "v0\.1\.3"/);
+});
+
+test("T21 existing manifest handling is non-destructive", () => {
+  const validProject = tempProject();
+  const existingManifest = `schema_version: 1
+rigorloop:
+  package: "@xiongxianfei/rigorloop"
+  package_version: "0.1.3"
+adapters:
+  - name: codex
+    install_root: ".agents/skills"
+    source:
+      type: release-archive
+      release: "v0.1.3"
+`;
+  writeFileSync(join(validProject, "rigorloop.yaml"), existingManifest);
+  const validResult = runCli(["init", "--adapter", "codex", "--json"], { cwd: validProject });
+
+  assert.equal(validResult.status, 0, validResult.stderr);
+  assert.equal(readProjectFile(validProject, "rigorloop.yaml"), existingManifest);
+  assert.ok(JSON.parse(validResult.stdout).actions.some((action) => action.path === "rigorloop.yaml" && action.status === "skipped"));
+
+  const invalidProject = tempProject();
+  writeFileSync(join(invalidProject, "rigorloop.yaml"), "schema_version: 99\n");
+  const invalidResult = runCli(["init", "--adapter", "codex", "--json"], { cwd: invalidProject });
+
+  assert.equal(invalidResult.status, 4);
+  assert.equal(readProjectFile(invalidProject, "rigorloop.yaml"), "schema_version: 99\n");
+  const output = JSON.parse(invalidResult.stdout);
+  assert.equal(output.status, "error");
+  assert.equal(output.errors[0].code, "invalid-config");
+});
+
+test("T22 local archive mode plans local-archive manifest source", () => {
+  const cwd = tempProject();
+  writeFileSync(join(cwd, "rigorloop-adapter-codex-v0.1.3.zip"), "placeholder archive fixture\n");
+  const result = runCli(["init", "--adapter", "codex", "--from-archive", "./rigorloop-adapter-codex-v0.1.3.zip", "--dry-run", "--json"], {
+    cwd,
+  });
+
+  assert.equal(result.status, 0, result.stderr);
+  const output = JSON.parse(result.stdout);
+  assert.match(output.planned_manifest.content, /type: local-archive/);
+  assert.match(output.planned_manifest.content, /archive: "\.\/rigorloop-adapter-codex-v0\.1\.3\.zip"/);
+  assert.equal(output.planned_lockfile.generated.adapters[0].source, "local-archive");
+  assert.equal(output.planned_lockfile.generated.adapters[0].archive, "rigorloop-adapter-codex-v0.1.3.zip");
+  assert.deepEqual(listProject(cwd), ["rigorloop-adapter-codex-v0.1.3.zip"]);
+
+  const actualProject = tempProject();
+  writeFileSync(join(actualProject, "rigorloop-adapter-codex-v0.1.3.zip"), "placeholder archive fixture\n");
+  const actual = runCli(["init", "--adapter", "codex", "--from-archive", "./rigorloop-adapter-codex-v0.1.3.zip"], {
+    cwd: actualProject,
+  });
+
+  assert.equal(actual.status, 0, actual.stderr);
+  const manifest = readProjectFile(actualProject, "rigorloop.yaml");
+  assert.match(manifest, /type: local-archive/);
+  assert.match(manifest, /archive: "\.\/rigorloop-adapter-codex-v0\.1\.3\.zip"/);
+});
+
+test("T23 generated manifest avoids forbidden claims and validation commands", () => {
+  const cwd = tempProject();
+  const result = runCli(["init", "--adapter", "codex"], { cwd });
+
+  assert.equal(result.status, 0, result.stderr);
+  const manifest = readProjectFile(cwd, "rigorloop.yaml");
+  assert.doesNotMatch(manifest, /branch-ready|pr-ready|pr-body-ready|pr-open-ready|workflow-accepted|validation-success|lockfile-authority/);
+  assert.doesNotMatch(manifest, /validation:\s*\n\s*commands:/);
+});
+
+test("T26 overwrite conflicts are refused without replacing user files", () => {
+  const cwd = tempProject();
+  writeFileSync(join(cwd, ".agents"), "user file\n");
+  const result = runCli(["init", "--adapter", "codex", "--json", "--force"], { cwd });
+
+  assert.equal(result.status, 5);
+  assert.equal(result.stderr, "");
+  assert.equal(readProjectFile(cwd, ".agents"), "user file\n");
+  assert.equal(existsSync(join(cwd, "rigorloop.yaml")), false);
+  const output = JSON.parse(result.stdout);
+  assert.equal(output.status, "blocked");
+  assert.equal(output.blockers[0].code, "overwrite-refused");
+  assert.equal(output.blockers[0].path, ".agents");
+});
+
+test("T41 lockfile is planned output only and never durably written", () => {
+  const newProject = tempProject();
+  const dryRun = runCli(["init", "--adapter", "codex", "--dry-run", "--json"], { cwd: newProject });
+
+  assert.equal(dryRun.status, 0, dryRun.stderr);
+  assert.equal(JSON.parse(dryRun.stdout).planned_lockfile.tree_hash_algorithm, "rigorloop-tree-hash-v1");
+  assert.equal(existsSync(join(newProject, "rigorloop.lock")), false);
+
+  const existingProject = tempProject();
+  writeFileSync(join(existingProject, "rigorloop.lock"), "existing-lock\n");
+  const actual = runCli(["init", "--adapter", "codex", "--json"], { cwd: existingProject });
+
+  assert.equal(actual.status, 0, actual.stderr);
+  assert.equal(readProjectFile(existingProject, "rigorloop.lock"), "existing-lock\n");
+  const output = JSON.parse(actual.stdout);
+  assert.equal(output.planned_lockfile.tree_hash_algorithm, "rigorloop-tree-hash-v1");
+  assert.ok(output.warnings.some((warning) => warning.code === "lockfile-spec-not-approved"));
 });
