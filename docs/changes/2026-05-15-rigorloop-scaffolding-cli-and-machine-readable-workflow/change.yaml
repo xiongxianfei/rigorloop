@@ -267,6 +267,8 @@ validation:
     result: passed_after_CR7_fix
   - command: git diff --check --
     result: passed_after_CR7_fix
+  - command: code-review r8
+    result: changes_requested_CR8-F1
   - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow
     result: passed
   - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow
@@ -312,5 +314,6 @@ changed_files:
   - docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/reviews/code-review-r5.md
   - docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/reviews/code-review-r6.md
   - docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/reviews/code-review-r7.md
+  - docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/reviews/code-review-r8.md
   - docs/plans/2026-05-15-rigorloop-cli-package-and-codex-init.md
   - docs/plan.md

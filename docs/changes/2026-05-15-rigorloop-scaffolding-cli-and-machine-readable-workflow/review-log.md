@@ -125,3 +125,13 @@ Detailed record: reviews/code-review-r7.md
 Resolution: review-resolution.md#code-review-r7
 Material findings: CR7-F1
 Open findings: None
+
+### Review entry
+Review ID: code-review-r8
+Stage: code-review
+Round: 8
+Status: changes-requested
+Detailed record: reviews/code-review-r8.md
+Resolution: review-resolution.md#code-review-r8
+Material findings: CR8-F1
+Open findings: CR8-F1
