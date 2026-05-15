@@ -4,7 +4,7 @@
 
 This record resolves material findings from formal lifecycle reviews for the scaffolding CLI and machine-readable workflow change.
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: spec-review-r1
 Review closeout: spec-review-r2
@@ -14,11 +14,12 @@ Review closeout: plan-review-r1
 Review closeout: code-review-r1
 Review closeout: code-review-r2
 Review closeout: code-review-r3
+Review closeout: code-review-r4
 
-- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `code-review-r1`, `code-review-r2`, `code-review-r3`
+- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `code-review-r1`, `code-review-r2`, `code-review-r3`, `code-review-r4`
 - Findings resolved: 4
-- Unresolved findings: 0
-- Final result: spec-review findings have accepted dispositions and the same-stage `spec-review-r2` rerun approved the revised spec. `code-review-r1` finding `CR1-F1` has an accepted implementation fix, `code-review-r2` closed M1 with no material findings, and direct `code-review-r3` found no material issues in the current tracked M1 resolution.
+- Unresolved findings: 1
+- Final result: spec-review findings have accepted dispositions and the same-stage `spec-review-r2` rerun approved the revised spec. `code-review-r1` finding `CR1-F1` has an accepted implementation fix, `code-review-r2` closed M1 with no material findings, direct `code-review-r3` found no material issues in the current tracked M1 resolution, and `code-review-r4` requested changes for M2 finding `CR4-F1`.
 
 ## Resolution Overview
 
@@ -28,6 +29,7 @@ Review closeout: code-review-r3
 | SR1-F2 | accepted | resolved | The first-slice generated `rigorloop.yaml` minimum YAML shape is now defined. |
 | SR1-F3 | accepted | resolved | Expected archive verification failures now use status `error` and exit code `3`. |
 | CR1-F1 | accepted | resolved | M1 now maps exit codes from internal result class/failure kind and T11 covers every public exit-code class. |
+| CR4-F1 | needs-decision | open | M2 write plan omits the parent `.agents` directory that actual init creates. |
 
 ## Common Resolution Metadata
 
@@ -114,11 +116,27 @@ No material findings; no resolution entry required. The code-review rerun closed
 
 No material findings; no resolution entry required. This direct isolated code-review found no material issues in commit `071df77`.
 
+### code-review-r4
+
+#### CR4-F1 - Write plan omits the parent `.agents` directory that actual init creates
+
+Finding ID: CR4-F1
+Disposition: needs-decision
+Decision owner: implementer
+Decision needed: Decide whether to accept `CR4-F1` and update the M2 write plan/tests before M2 closeout.
+Status: open
+Owner: implementer
+Owning stage: implement
+Chosen action: needs maintainer decision during review-resolution; recommended action is to accept and fix the M2 write plan before M2 closeout.
+Rationale: The finding blocks M2 closeout because the actual scaffold writes a directory that is absent from the pre-mutation write plan.
+Validation target: Update the M2 write plan and tests so `.agents` is represented whenever it will be created, skipped, or blocked, then rerun package tests, artifact lifecycle validation, change metadata validation, and selected CI for the package and lifecycle surfaces.
+Validation evidence: pending
+
 ## Shared Validation Evidence
 
 | Validation area | Result | Notes |
 |---|---|---|
-| Review recording | pass | `python scripts/validate-review-artifacts.py docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow` and closeout mode both passed after `CR1-F1` resolution recording. |
+| Review recording | pass | `python scripts/validate-review-artifacts.py docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow` passed with `CR4-F1` open. Closeout mode is not applicable until the open finding is resolved. |
 | Change metadata | pass | Change metadata validation passed after `spec-review-r2` was recorded. |
 | Artifact lifecycle | pass | Artifact lifecycle validation passed for the revised spec, review artifacts, active plan, plan index, and M1 test spec. |
 | Selected CI | pass | Selector-selected CI passed for the package, selector, active plan, plan index, M1 test spec, change metadata, review log, review-resolution, and code-review record. |
