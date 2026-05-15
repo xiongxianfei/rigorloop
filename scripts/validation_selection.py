@@ -140,6 +140,11 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped",
         "broad-smoke",
     ),
+    "rigorloop_cli.test": CheckCatalogEntry(
+        "rigorloop_cli.test",
+        "npm test --prefix packages/rigorloop",
+        "rigorloop-cli",
+    ),
 }
 
 
@@ -805,6 +810,14 @@ def _apply_path_selection(
         )
         return
 
+    if category == "rigorloop-cli":
+        _add_check(
+            selected,
+            "rigorloop_cli.test",
+            "Changed RigorLoop CLI package requires package test validation.",
+        )
+        return
+
     blocking_results.append(
         {
             "code": "manual-routing-required",
@@ -987,6 +1000,8 @@ def _path_category(path: str) -> str | None:
         return "token-cost"
     if path.startswith("docs/reports/token-cost/"):
         return "token-cost"
+    if path == "packages/rigorloop" or path.startswith("packages/rigorloop/"):
+        return "rigorloop-cli"
     if path.startswith("docs/reports/adapter-artifacts/releases/") and path.endswith(".yaml"):
         return "adapter-artifact-metadata"
     if path.startswith("tests/fixtures/token-cost/"):
