@@ -4,7 +4,7 @@
 - Owner: maintainers
 - Start date: 2026-05-15
 - Last updated: 2026-05-15
-- Related issue or PR: none yet
+- Related issue or PR: PR #61
 - Supersedes: none
 
 ## Purpose / Big Picture
@@ -73,13 +73,13 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
 ## Current Handoff Summary
 
 - Current milestone: Lifecycle closeout
-- Current milestone state: branch-ready after local verify
+- Current milestone state: PR #61 opened; hosted CI in progress
 - Last reviewed milestone: M4. Measurement and size-delta recording
 - Review status: code-review-m4-r1 clean-with-notes; no material findings; no review-resolution required
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
+- Next stage: PR review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: all implementation milestones are closed, explain-change is recorded, and local verify passed, but PR handoff remains.
+- Reason final closeout is or is not ready: PR #61 is open and hosted CI is in progress; final closeout waits for PR review, hosted CI completion, and merge confirmation.
 
 ## Milestones
 
@@ -289,7 +289,8 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
 - [x] explain-change completed.
 - [x] 2026-05-15: final local verify passed and branch-ready evidence recorded in `docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/verify-report.md`.
 - [x] verify completed.
-- [ ] PR handoff completed.
+- [x] 2026-05-15: PR #61 opened at `https://github.com/xiongxianfei/rigorloop/pull/61`; hosted CI is in progress and not claimed as passed.
+- [x] PR handoff completed.
 
 ## Decision Log
 
@@ -304,6 +305,7 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
 - 2026-05-15: Close M4 after clean code-review and hand off to explain-change. Reason: `code-review-m4-r1` recorded no material findings, no review-resolution is required, and no implementation milestones remain.
 - 2026-05-15: Record explain-change and hand off to verify. Reason: all implementation milestones have clean code-review evidence and no review-resolution is required.
 - 2026-05-15: Record final local verify and hand off to PR. Reason: selected validation, lifecycle validation, review-artifact validation, skill validation, generated-skill checks, static measurement, and diff whitespace checks passed.
+- 2026-05-15: Open PR #61 and keep the plan active until hosted CI and merge closeout are observed. Reason: PR handoff is complete, but hosted CI is still in progress and final lifecycle Done is not yet true.
 
 ## Surprises and Discoveries
 
@@ -388,11 +390,14 @@ M4 measurement interpretation: unchanged. M3 did not edit canonical skill text, 
   - `python scripts/test-change-metadata-validator.py`
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/change.yaml docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/change.yaml`
   - `git diff --check -- docs/plan.md docs/plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md docs/changes/2026-05-14-stage-evidence-access-contracts-m2-execution-review/change.yaml docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement`
+- PR handoff completed:
+  - PR #61 opened: `https://github.com/xiongxianfei/rigorloop/pull/61`
+  - Hosted CI status at handoff: `ci` in progress; not claimed as passed.
 
 ## Outcome and Retrospective
 
-- Local branch content is branch-ready and handed off to `pr`.
-- Hosted CI for this branch has not run yet; PR handoff owns PR-body and PR-open readiness.
+- Local branch content is branch-ready and PR #61 is open for review.
+- Hosted CI for this branch is in progress and not claimed as passed.
 
 ## Readiness
 
