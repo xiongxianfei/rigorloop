@@ -57,13 +57,13 @@ The plan intentionally does not implement the broader CLI roadmap. It keeps the 
 ## Current Handoff Summary
 
 - Current milestone: M2. Init dry-run, write planning, and `rigorloop.yaml` scaffold
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M2. Init dry-run, write planning, and `rigorloop.yaml` scaffold
-- Review status: code-review-r4 changes-requested
+- Review status: `CR4-F1` accepted and fixed; M2 ready for code-review rerun
 - Remaining in-scope implementation milestones: M2, M3
-- Next stage: review-resolution M2
+- Next stage: code-review M2 rerun
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2 has an unresolved code-review finding, M3 has not started, and final explain-change, verify, and PR gates have not run.
+- Reason final closeout is or is not ready: M2 fix is awaiting code-review rerun, M3 has not started, and final explain-change, verify, and PR gates have not run.
 
 ## Milestones
 
@@ -99,7 +99,7 @@ The plan intentionally does not implement the broader CLI roadmap. It keeps the 
 
 ### M2. Init dry-run, write planning, and `rigorloop.yaml` scaffold
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: implement non-destructive `init --adapter codex` planning and first-slice manifest generation before adapter extraction.
 - Requirements: R21-R48, R62-R67
 - Files/components likely touched: `packages/rigorloop/src/init/**`, scaffold/template files under the package, CLI tests and fixtures
@@ -243,6 +243,8 @@ The plan intentionally does not implement the broader CLI roadmap. It keeps the 
 - [x] 2026-05-15: M2 handed to code-review.
 - [x] 2026-05-15: M2 handoff commit prepared.
 - [x] 2026-05-15: code-review-r4 requested changes for M2 finding `CR4-F1`.
+- [x] 2026-05-15: `CR4-F1` accepted and fixed by making `.agents` and `.agents/skills` first-class planned directory actions before mutation.
+- [x] 2026-05-15: M2 handed back to code-review rerun.
 - [ ] M2 implemented and reviewed.
 - [ ] M3 implemented and reviewed.
 - [ ] Explain-change recorded.
@@ -259,7 +261,7 @@ The plan intentionally does not implement the broader CLI roadmap. It keeps the 
 - 2026-05-15: accept `CR1-F1` for M1; the shared exit-code layer must be fixed before M1 can close.
 - 2026-05-15: resolve `CR1-F1` with a package-local command-result helper so exit codes are mapped from `exit_class`/failure kind instead of public status alone.
 - 2026-05-15: keep M2 actual init to scaffold creation only: it writes `rigorloop.yaml` and `.agents/skills`, reports planned lockfile content, and leaves archive metadata verification/extraction to M3.
-- 2026-05-15: accept code-review-r4 as the M2 review gate; M2 cannot close until `CR4-F1` is resolved and rerun code-review passes.
+- 2026-05-15: accept `CR4-F1` from code-review-r4; the M2 write plan must list `.agents` and `.agents/skills` as separate directory actions, and actual init must only create planned pending directories.
 
 ## Surprises and discoveries
 
@@ -313,6 +315,15 @@ The plan intentionally does not implement the broader CLI roadmap. It keeps the 
 - 2026-05-15: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/change.yaml --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/review-log.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/review-resolution.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/reviews/code-review-r4.md --path docs/plan.md --path docs/plans/2026-05-15-rigorloop-cli-package-and-codex-init.md --path specs/rigorloop-cli-package-and-codex-init.test.md` passed after code-review-r4 recording.
 - 2026-05-15: `bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/change.yaml --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/review-log.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/review-resolution.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/reviews/code-review-r4.md --path docs/plans/2026-05-15-rigorloop-cli-package-and-codex-init.md --path docs/plan.md --path specs/rigorloop-cli-package-and-codex-init.test.md` passed after code-review-r4 recording.
 - 2026-05-15: `git diff --check --` passed after code-review-r4 recording.
+- 2026-05-15: `npm test --prefix packages/rigorloop` failed after adding `CR4-F1` regression tests because the M2 planner omitted `.agents` and listed `rigorloop.yaml` before directory actions.
+- 2026-05-15: `npm test --prefix packages/rigorloop` passed after the `CR4-F1` fix.
+- 2026-05-15: `python scripts/test-select-validation.py` passed after the `CR4-F1` fix.
+- 2026-05-15: `python scripts/validate-review-artifacts.py docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow` passed after `CR4-F1` resolution recording.
+- 2026-05-15: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow` passed after `CR4-F1` resolution recording.
+- 2026-05-15: `python scripts/validate-change-metadata.py docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/change.yaml` passed after the `CR4-F1` fix.
+- 2026-05-15: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path packages/rigorloop/dist/bin/rigorloop.js --path packages/rigorloop/test/cli.test.js --path docs/plans/2026-05-15-rigorloop-cli-package-and-codex-init.md --path docs/plan.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/change.yaml --path specs/rigorloop-cli-package-and-codex-init.test.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/review-log.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/review-resolution.md` passed after the `CR4-F1` fix.
+- 2026-05-15: `bash scripts/ci.sh --mode explicit --path packages/rigorloop --path docs/plans/2026-05-15-rigorloop-cli-package-and-codex-init.md --path docs/plan.md --path specs/rigorloop-cli-package-and-codex-init.test.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/change.yaml --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/review-log.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/review-resolution.md` passed after the `CR4-F1` fix.
+- 2026-05-15: `git diff --check --` passed after the `CR4-F1` fix.
 
 ## Outcome and retrospective
 
@@ -321,7 +332,7 @@ The plan intentionally does not implement the broader CLI roadmap. It keeps the 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for `review-resolution M2`.
+- This plan is ready for `code-review M2 rerun`.
 - It is not ready for final closeout until M2-M3 are implemented, reviewed, and closed, and downstream explain-change, verify, and PR gates complete.
 
 ## Follow-ups

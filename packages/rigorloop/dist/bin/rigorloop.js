@@ -7,7 +7,9 @@ import { fileURLToPath } from "node:url";
 import { EXIT, exitCodeForResult } from "../lib/command-result.js";
 
 const ADAPTER = "codex";
+const AGENTS_ROOT = ".agents";
 const INSTALL_ROOT = ".agents/skills";
+const DIRECTORY_PLAN = [AGENTS_ROOT, INSTALL_ROOT];
 const LOCKFILE_WARNING = {
   code: "lockfile-spec-not-approved",
   message: "rigorloop.lock was not written because the durable lockfile contract is not approved.",
@@ -187,12 +189,79 @@ function pathState(path) {
   return statSync(path).isDirectory() ? "directory" : "file";
 }
 
+function directoryKind(path) {
+  return path === AGENTS_ROOT ? "codex-agent-root" : "codex-install-root";
+}
+
+function planDirectoryActions(flags) {
+  const actions = [];
+  const artifacts = [];
+  const blockers = [];
+  let parentBlocked = false;
+
+  for (const relativePath of DIRECTORY_PLAN) {
+    const state = parentBlocked ? "blocked-by-parent" : pathState(resolve(process.cwd(), relativePath));
+    if (state === "absent") {
+      actions.push({
+        type: "create-dir",
+        path: relativePath,
+        status: flags.dryRun ? "planned" : "pending",
+        reason: `Create ${relativePath}.`,
+      });
+      artifacts.push({
+        path: relativePath,
+        kind: directoryKind(relativePath),
+        status: flags.dryRun ? "planned" : "pending",
+      });
+    } else if (state === "directory") {
+      actions.push({
+        type: "create-dir",
+        path: relativePath,
+        status: "skipped",
+        reason: `${relativePath} already exists.`,
+      });
+      artifacts.push({
+        path: relativePath,
+        kind: directoryKind(relativePath),
+        status: "existing",
+      });
+    } else {
+      actions.push({
+        type: "create-dir",
+        path: relativePath,
+        status: "blocked",
+        reason:
+          state === "blocked-by-parent"
+            ? `${relativePath} cannot be created because ${AGENTS_ROOT} is not a directory.`
+            : `${relativePath} exists and is not a directory.`,
+      });
+      artifacts.push({
+        path: relativePath,
+        kind: directoryKind(relativePath),
+        status: "blocked",
+      });
+      if (state !== "blocked-by-parent") {
+        blockers.push({
+          code: "overwrite-refused",
+          message: `${relativePath} exists and is not a directory.`,
+          path: relativePath,
+          next_action: `Move the existing file before running init.`,
+        });
+      }
+      if (relativePath === AGENTS_ROOT) {
+        parentBlocked = true;
+      }
+    }
+  }
+
+  return { actions, artifacts, blockers };
+}
+
 function buildInitPlan(flags) {
   const info = packageInfo();
   const source = sourceForFlags(flags, info);
   const manifestPath = "rigorloop.yaml";
   const manifestAbsolutePath = resolve(process.cwd(), manifestPath);
-  const installRootAbsolutePath = resolve(process.cwd(), INSTALL_ROOT);
   const manifest = manifestContent(info, source);
   const actions = [];
   const artifacts = [];
@@ -214,6 +283,11 @@ function buildInitPlan(flags) {
       next_action: "Provide an existing Codex adapter archive path or omit --from-archive.",
     });
   }
+
+  const directoryPlan = planDirectoryActions(flags);
+  actions.push(...directoryPlan.actions);
+  artifacts.push(...directoryPlan.artifacts);
+  blockers.push(...directoryPlan.blockers);
 
   if (existsSync(manifestAbsolutePath)) {
     const existingManifest = readFileSync(manifestAbsolutePath, "utf8");
@@ -248,58 +322,6 @@ function buildInitPlan(flags) {
       path: manifestPath,
       kind: "project-manifest",
       status: flags.dryRun ? "planned" : "pending",
-    });
-  }
-
-  const agentsState = pathState(resolve(process.cwd(), ".agents"));
-  const installRootState = pathState(installRootAbsolutePath);
-  if (agentsState === "file") {
-    actions.push({
-      type: "create-dir",
-      path: INSTALL_ROOT,
-      status: "blocked",
-      reason: ".agents exists and is not a directory.",
-    });
-    artifacts.push({
-      path: INSTALL_ROOT,
-      kind: "codex-install-root",
-      status: "blocked",
-    });
-    blockers.push({
-      code: "overwrite-refused",
-      message: ".agents exists and is not a directory.",
-      path: ".agents",
-      next_action: "Move the existing file before running init.",
-    });
-  } else if (installRootState === "file") {
-    actions.push({
-      type: "create-dir",
-      path: INSTALL_ROOT,
-      status: "blocked",
-      reason: `${INSTALL_ROOT} exists and is not a directory.`,
-    });
-    artifacts.push({
-      path: INSTALL_ROOT,
-      kind: "codex-install-root",
-      status: "blocked",
-    });
-    blockers.push({
-      code: "overwrite-refused",
-      message: `${INSTALL_ROOT} exists and is not a directory.`,
-      path: INSTALL_ROOT,
-      next_action: "Move the existing file before running init.",
-    });
-  } else {
-    actions.push({
-      type: "create-dir",
-      path: INSTALL_ROOT,
-      status: flags.dryRun ? "planned" : installRootState === "directory" ? "skipped" : "pending",
-      reason: installRootState === "directory" ? "Codex install root already exists." : "Create Codex install root.",
-    });
-    artifacts.push({
-      path: INSTALL_ROOT,
-      kind: "codex-install-root",
-      status: installRootState === "directory" ? "existing" : flags.dryRun ? "planned" : "pending",
     });
   }
 
@@ -448,16 +470,16 @@ function handleInit(flags) {
 
   if (!flags.dryRun) {
     const manifestAction = plan.actions.find((action) => action.path === "rigorloop.yaml");
-    const installRootAction = plan.actions.find((action) => action.path === INSTALL_ROOT);
+    const directoryActions = plan.actions.filter((action) => action.type === "create-dir" && action.status === "pending");
+    for (const directoryAction of directoryActions) {
+      mkdirSync(resolve(process.cwd(), directoryAction.path));
+      directoryAction.status = "done";
+      plan.artifacts.find((artifact) => artifact.path === directoryAction.path).status = "created";
+    }
     if (manifestAction?.status === "pending") {
       writeFileSync(resolve(process.cwd(), "rigorloop.yaml"), plan.manifest, "utf8");
       manifestAction.status = "done";
       plan.artifacts.find((artifact) => artifact.path === "rigorloop.yaml").status = "created";
-    }
-    if (installRootAction?.status === "pending") {
-      mkdirSync(resolve(process.cwd(), INSTALL_ROOT), { recursive: true });
-      installRootAction.status = "done";
-      plan.artifacts.find((artifact) => artifact.path === INSTALL_ROOT).status = "created";
     }
   }
 
