@@ -285,17 +285,18 @@ This is a public command, filesystem mutation, archive verification, package-bou
 - Failure proves: local archive mode can proceed without an input artifact.
 - Automation location: package tests.
 
-### T15. Network mode uses official release metadata
+### T15. Network mode uses bundled metadata and official archive URL
 
-- Covers: R25, R26, R28, R49, R61
+- Covers: R25, R26, R28, R49, R50e, R50f, R61
 - Level: integration, contract
-- Fixture/setup: stubbed release client for `https://github.com/xiongxianfei/rigorloop`
+- Fixture/setup: bundled metadata fixture whose Codex artifact URL points to an official or stubbed official archive URL
 - Steps:
   - Run `rigorloop init --adapter codex` without `--from-archive`.
-  - Assert the release client requests official metadata for the concrete package version's compatible release.
-  - Assert unavailable metadata produces status `blocked`, exit code `2`, and a next action such as retry or `--from-archive`.
-- Expected result: network mode uses only the official release source and blocks cleanly when unavailable.
-- Failure proves: network install can use an untrusted source or fail as an internal error.
+- Assert the command verifies bundled metadata against the bundled release index before using archive metadata.
+  - Assert the command downloads only the Codex archive URL named by the trusted bundled metadata.
+  - Assert unavailable archive download produces status `blocked`, exit code `2`, and a next action such as retry or `--from-archive`.
+- Expected result: network mode uses bundled metadata as the metadata trust root and only fetches the official adapter archive.
+- Failure proves: network install can depend on a missing metadata asset or use an untrusted source.
 - Automation location: package tests with stubbed client.
 
 ### T16. Pinned and prerelease package versions map to matching release tags
@@ -541,7 +542,7 @@ This is a public command, filesystem mutation, archive verification, package-bou
 
 - Covers: R60, R61c, AC8
 - Level: integration
-- Fixture/setup: archive fixtures for checksum mismatch, size mismatch, metadata-hash mismatch, tree-hash mismatch, and path traversal
+- Fixture/setup: archive fixtures for checksum mismatch, size mismatch, bundled metadata-hash mismatch, metadata schema invalid, tree-hash mismatch, and path traversal
 - Steps:
   - Run init for each fixture.
   - Assert status `error` and exit code `3`.
@@ -616,7 +617,7 @@ This is a public command, filesystem mutation, archive verification, package-bou
 
 - Covers: R61, R61a, R61b, AC7
 - Level: integration
-- Fixture/setup: missing network metadata, metadata without Codex artifact, unsupported adapter command
+- Fixture/setup: missing bundled metadata, metadata without Codex artifact, unsupported adapter command
 - Steps:
   - Run each command path.
   - Assert status `blocked` and exit code `2`.
@@ -747,7 +748,7 @@ This is a public command, filesystem mutation, archive verification, package-bou
 ## Security/privacy verification
 
 - Archive extraction must reject traversal, absolute paths, drive-letter paths, empty paths, symlink entries, and paths outside `.agents/skills`.
-- Network mode must fetch only official release metadata and adapter archives for the requested Codex adapter.
+- Network mode must use bundled official metadata and fetch only official adapter archives for the requested Codex adapter.
 - The command must not require secrets or credentials.
 - The command must not print environment secrets or config secrets.
 - The command must not send project file contents over the network.

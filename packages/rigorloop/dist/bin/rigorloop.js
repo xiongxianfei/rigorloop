@@ -234,7 +234,12 @@ function loadReleaseDescriptor(info) {
   }
 
   const descriptor = index?.schema_version === 1 ? index.releases?.[release] : undefined;
-  if (!descriptor || descriptor.source_repository !== "xiongxianfei/rigorloop" || !isNonEmptyString(descriptor.bundled_metadata)) {
+  if (
+    !descriptor ||
+    descriptor.source_repository !== "xiongxianfei/rigorloop" ||
+    descriptor.release_tag !== release ||
+    !isNonEmptyString(descriptor.bundled_metadata)
+  ) {
     return {
       blocker: metadataBlocker(
         "metadata-trust-root-unavailable",
@@ -247,31 +252,40 @@ function loadReleaseDescriptor(info) {
   return { descriptor };
 }
 
-function loadNetworkReleaseDescriptor(info) {
+function loadVerifiedBundledMetadata(info) {
   const release = loadReleaseDescriptor(info);
   if (release.blocker) {
     return release;
   }
   const descriptor = release.descriptor;
-  if (!isNonEmptyString(descriptor.metadata_url) || !isSha256(descriptor.metadata_sha256)) {
+  if (!isSha256(descriptor.bundled_metadata_sha256)) {
     return {
       blocker: metadataBlocker(
         "metadata-trust-root-unavailable",
-        "Bundled release metadata index is missing a trusted metadata URL or SHA-256.",
+        "Bundled release metadata index is missing a trusted bundled metadata SHA-256.",
         "releases.json",
-        "Use a CLI package version that bundles a trusted release metadata hash.",
+        "Use a CLI package version that bundles a trusted adapter metadata hash.",
       ),
     };
   }
-  return { descriptor };
-}
-
-function bundledMetadataPath(info) {
-  const release = loadReleaseDescriptor(info);
-  if (release.blocker) {
-    return { blocker: release.blocker };
+  let metadataBytes;
+  try {
+    metadataBytes = readFileSync(join(metadataDirectory(), descriptor.bundled_metadata));
+  } catch {
+    return {
+      blocker: metadataBlocker(
+        "metadata-unavailable",
+        "Bundled adapter metadata is unavailable for Codex v0.1.3.",
+        descriptor.bundled_metadata,
+        "Use a CLI package version that bundles metadata for this adapter release.",
+      ),
+    };
   }
-  return { path: join(metadataDirectory(), release.descriptor.bundled_metadata) };
+  const verifiedMetadata = parseVerifiedMetadataBytes(metadataBytes, descriptor.bundled_metadata_sha256);
+  if (verifiedMetadata.error) {
+    return { error: verifiedMetadata.error };
+  }
+  return { metadata: verifiedMetadata.metadata, descriptor };
 }
 
 function loadJsonFile(path) {
@@ -292,7 +306,7 @@ function parseVerifiedMetadataBytes(bytes, expectedSha256) {
     return {
       error: {
         code: "metadata-sha256-mismatch",
-        message: "Release metadata SHA-256 does not match the bundled release index.",
+        message: "Bundled adapter metadata SHA-256 does not match the bundled release index.",
       },
     };
   }
@@ -328,7 +342,7 @@ function isSha256(value) {
 function validateMetadata(metadata, info) {
   const release = releaseForPackage(info.version);
   if (!metadata || metadata.schema_version !== 1) {
-    return { blocker: metadataBlocker("metadata-invalid", "Adapter metadata schema_version must be 1.") };
+    return { error: { code: "metadata-invalid", message: "Adapter metadata schema_version must be 1." } };
   }
   if (metadata.release?.version !== release || metadata.release?.release_tag !== release) {
     return {
@@ -336,19 +350,19 @@ function validateMetadata(metadata, info) {
     };
   }
   if (metadata.release?.source_repository !== "xiongxianfei/rigorloop") {
-    return { blocker: metadataBlocker("metadata-invalid", "Adapter metadata source repository is not trusted.") };
+    return { error: { code: "metadata-invalid", message: "Adapter metadata source repository is not trusted." } };
   }
   if (!isNonEmptyString(metadata.release?.source_commit) || !isNonEmptyString(metadata.release?.published_at)) {
-    return { blocker: metadataBlocker("metadata-invalid", "Adapter metadata release identity is incomplete.") };
+    return { error: { code: "metadata-invalid", message: "Adapter metadata release identity is incomplete." } };
   }
   if (!isNonEmptyString(metadata.metadata?.url) || !isSha256(metadata.metadata?.sha256)) {
-    return { blocker: metadataBlocker("metadata-invalid", "Adapter metadata URL or SHA-256 is missing or invalid.") };
+    return { error: { code: "metadata-invalid", message: "Adapter metadata URL or SHA-256 is missing or invalid." } };
   }
   if (metadata.validation?.result !== "pass") {
-    return { blocker: metadataBlocker("metadata-invalid", "Adapter metadata validation result is not pass.") };
+    return { error: { code: "metadata-invalid", message: "Adapter metadata validation result is not pass." } };
   }
   if (!isNonEmptyString(metadata.validation?.command)) {
-    return { blocker: metadataBlocker("metadata-invalid", "Adapter metadata validation command is missing.") };
+    return { error: { code: "metadata-invalid", message: "Adapter metadata validation command is missing." } };
   }
   const artifact = metadata.artifacts?.find((entry) => entry.adapter === ADAPTER);
   if (!artifact) {
@@ -362,13 +376,13 @@ function validateMetadata(metadata, info) {
     artifact.size_bytes < 0 ||
     !isSha256(artifact.tree_sha256)
   ) {
-    return { blocker: metadataBlocker("metadata-invalid", "Codex adapter artifact metadata is incomplete.") };
+    return { error: { code: "metadata-invalid", message: "Codex adapter artifact metadata is incomplete." } };
   }
   if ((artifact.install_root ?? "").replace(/\/$/, "") !== INSTALL_ROOT) {
-    return { blocker: metadataBlocker("metadata-invalid", "Codex adapter install root is not .agents/skills.") };
+    return { error: { code: "metadata-invalid", message: "Codex adapter install root is not .agents/skills." } };
   }
   if (artifact.tree_hash_algorithm && artifact.tree_hash_algorithm !== "rigorloop-tree-hash-v1") {
-    return { blocker: metadataBlocker("metadata-invalid", "Unsupported tree hash algorithm in adapter metadata.") };
+    return { error: { code: "metadata-invalid", message: "Unsupported tree hash algorithm in adapter metadata." } };
   }
   return { artifact };
 }
@@ -863,36 +877,18 @@ async function archiveWorkForInit(flags, info) {
     return {};
   }
 
+  const bundledMetadata = loadVerifiedBundledMetadata(info);
+  if (bundledMetadata.blocker || bundledMetadata.error) {
+    return bundledMetadata;
+  }
+  const metadata = bundledMetadata.metadata;
+  const validation = validateMetadata(metadata, info);
+  if (validation.blocker || validation.error) {
+    return validation;
+  }
+  const artifact = validation.artifact;
+
   if (flags.fromArchiveProvided) {
-    let metadata;
-    const bundled = bundledMetadataPath(info);
-    if (bundled.blocker) {
-      return {
-        blocker: metadataBlocker(
-          "metadata-unavailable",
-          "Bundled adapter metadata is unavailable for Codex v0.1.3.",
-          "adapter-artifacts-v0.1.3.json",
-          "Use a CLI package version that bundles metadata for this adapter release.",
-        ),
-      };
-    }
-    try {
-      metadata = loadJsonFile(bundled.path);
-    } catch {
-      return {
-        blocker: metadataBlocker(
-          "metadata-unavailable",
-          "Bundled adapter metadata is unavailable for Codex v0.1.3.",
-          "adapter-artifacts-v0.1.3.json",
-          "Use a CLI package version that bundles metadata for this adapter release.",
-        ),
-      };
-    }
-    const validation = validateMetadata(metadata, info);
-    if (validation.blocker) {
-      return { blocker: validation.blocker };
-    }
-    const artifact = validation.artifact;
     const archiveName = basename(flags.fromArchive);
     if (archiveName !== artifact.archive || !archiveName.includes(metadata.release.version)) {
       return {
@@ -912,34 +908,6 @@ async function archiveWorkForInit(flags, info) {
     return { artifact, entries: inspected.entries, archiveHash: inspected.archiveHash, treeHash: inspected.treeHash };
   }
 
-  const release = loadNetworkReleaseDescriptor(info);
-  if (release.blocker) {
-    return { blocker: release.blocker };
-  }
-  const descriptor = release.descriptor;
-  let metadataBytes;
-  try {
-    metadataBytes = await fetchBytes(descriptor.metadata_url);
-  } catch {
-    return {
-      blocker: metadataBlocker(
-        "release-unavailable",
-        "Official Codex adapter release metadata is unavailable.",
-        descriptor.metadata_url,
-        "Retry later or use --from-archive with a compatible local archive.",
-      ),
-    };
-  }
-  const verifiedMetadata = parseVerifiedMetadataBytes(metadataBytes, descriptor.metadata_sha256);
-  if (verifiedMetadata.error) {
-    return { error: verifiedMetadata.error };
-  }
-  const metadata = verifiedMetadata.metadata;
-  const validation = validateMetadata(metadata, info);
-  if (validation.blocker) {
-    return { blocker: validation.blocker };
-  }
-  const artifact = validation.artifact;
   let archiveBytes;
   try {
     archiveBytes = await fetchBytes(artifact.url);

@@ -28,8 +28,8 @@ The first CLI slice is a scaffold and adapter installer, not a new source of tru
 
 `rigorloop init --adapter codex` installs Codex adapter output from verified release archives:
 
-- network mode fetches release metadata and archives from the official GitHub release source;
-- local mode uses `--from-archive <path>` and verifies the archive against bundled adapter metadata shipped with the installed CLI package version;
+- network mode uses bundled official adapter metadata shipped with the installed CLI package version, then fetches the official archive URL named by that metadata;
+- local mode uses `--from-archive <path>` and verifies the archive against the same bundled adapter metadata;
 - both modes verify filename, size, SHA-256, install root, archive traversal safety, and installed tree hash before claiming success;
 - both modes install only under `.agents/skills` for the Codex adapter.
 
@@ -62,7 +62,7 @@ Rejected because a lockfile is durable source-of-truth state. The first slice ma
 ## Consequences
 
 - The repository gains a Node/package boundary for the CLI candidate while canonical workflow sources stay in repository-owned paths.
-- The CLI package needs bundled adapter metadata that is generated or copied from official release metadata for the matching compatible adapter release.
+- The CLI package needs bundled adapter metadata that is generated or copied from official release evidence for the matching compatible adapter release, plus a bundled release index hash so the metadata is verified before use.
 - Local archive installation can remain offline and simple for users while retaining strong verification.
 - Adapter archive verification becomes a security-sensitive command path requiring archive traversal checks, install-root confinement, checksums, size checks, and tree-hash validation.
 - The CLI package can be tested from local package artifacts before public npm publication.
