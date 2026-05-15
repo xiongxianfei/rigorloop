@@ -72,14 +72,14 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
 
 ## Current Handoff Summary
 
-- Current milestone: M4. Measurement and size-delta recording
-- Current milestone state: closed
-- Last reviewed milestone: M3. Static validation audit and gap fill
+- Current milestone: Lifecycle closeout
+- Current milestone state: explain-change recorded
+- Last reviewed milestone: M4. Measurement and size-delta recording
 - Review status: code-review-m4-r1 clean-with-notes; no material findings; no review-resolution required
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: all implementation milestones are closed, but explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: all implementation milestones are closed and explain-change is recorded, but verify and PR handoff remain.
 
 ## Milestones
 
@@ -285,7 +285,8 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
 - [x] M4 measurement implementation completed and handed to code-review.
 - [x] 2026-05-15: code-review M4 R1 recorded clean-with-notes with no material findings.
 - [x] code-review completed for all implementation milestones.
-- [ ] explain-change completed.
+- [x] 2026-05-15: explain-change recorded in `docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/explain-change.md`.
+- [x] explain-change completed.
 - [ ] verify completed.
 - [ ] PR handoff completed.
 
@@ -300,6 +301,7 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
 - 2026-05-15: Close M3 after clean code-review and hand off to M4. Reason: `code-review-m3-r1` recorded no material findings, no review-resolution is required, and M4 is the only remaining implementation milestone.
 - 2026-05-15: M4 measurement is unchanged from the M2 merged baseline. Reason: M3 changed only validator/lifecycle evidence and did not change canonical skill text.
 - 2026-05-15: Close M4 after clean code-review and hand off to explain-change. Reason: `code-review-m4-r1` recorded no material findings, no review-resolution is required, and no implementation milestones remain.
+- 2026-05-15: Record explain-change and hand off to verify. Reason: all implementation milestones have clean code-review evidence and no review-resolution is required.
 
 ## Surprises and Discoveries
 
@@ -362,6 +364,15 @@ M3 no-change rationale: current concept checks are sufficient and passed. No `sc
 
 M4 measurement interpretation: unchanged. M3 did not edit canonical skill text, so static skill size was expected to remain unchanged. This measurement is diagnostic and warning-only; it does not introduce a hard token gate, dynamic benchmark requirement, release validation change, adapter packaging change, or generated-output source-model change.
 - Code-review M4 R1 recorded clean-with-notes with no material findings in `docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/reviews/code-review-m4-r1.md`.
+- Explain-change recorded in `docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/explain-change.md`.
+- Explain-change validation passed:
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/change.yaml`
+  - `python scripts/validate-review-artifacts.py docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/`
+  - `python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/explain-change.md --path docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md --path docs/plan.md --path docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/change.yaml`
+  - `python scripts/test-change-metadata-validator.py`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/change.yaml --path docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/explain-change.md --path docs/plan.md --path docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/stage-evidence-access-contracts-for-cost-bounded-rigor.md --path specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md --path docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md --path docs/plan.md --path docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/change.yaml --path docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/explain-change.md --path docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/review-log.md --path docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/reviews/code-review-m3-r1.md --path docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/reviews/code-review-m4-r1.md`
+  - `git diff --check -- docs/plan.md docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement`
 
 ## Outcome and Retrospective
 

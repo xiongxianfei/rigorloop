@@ -14,6 +14,11 @@ changed_files:
   - docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md
   - specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md
   - docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/change.yaml
+  - docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/review-log.md
+  - docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/reviews/plan-review-r1.md
+  - docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/reviews/code-review-m3-r1.md
+  - docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/reviews/code-review-m4-r1.md
+  - docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/explain-change.md
 requirements:
   - Close M2 lifecycle state after PR #60 merged with hosted CI success.
   - Plan M3 static validation for stage evidence access contract guidance.
@@ -30,6 +35,7 @@ tests:
   - M4 static skill token measurement
   - M4 size-delta recording
   - code-review-m4-r1
+  - explain-change
   - plan lifecycle validation
   - change metadata validation
   - diff whitespace validation
@@ -111,3 +117,19 @@ validation:
     result: clean_with_notes_no_material_findings_m4_closed_explain_change_next
   - command: code-review-m4-r1 state sync
     result: active_plan_and_plan_index_updated_to_explain_change_next
+  - command: explain-change
+    result: durable_change_rationale_recorded_and_active_plan_updated_to_verify_next
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/change.yaml
+    result: passed_after_explain_change
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/
+    result: passed_after_explain_change
+  - command: python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/explain-change.md --path docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md --path docs/plan.md --path docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/change.yaml
+    result: passed_selected_artifact_lifecycle_and_change_metadata_checks_broad_smoke_false
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_after_explain_change
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/change.yaml --path docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/explain-change.md --path docs/plan.md --path docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md
+    result: passed_after_explain_change
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/stage-evidence-access-contracts-for-cost-bounded-rigor.md --path specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md --path docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md --path docs/plan.md --path docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/change.yaml --path docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/explain-change.md --path docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/review-log.md --path docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/reviews/code-review-m3-r1.md --path docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/reviews/code-review-m4-r1.md
+    result: passed_after_explain_change
+  - command: git diff --check -- docs/plan.md docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement
+    result: passed_after_explain_change
