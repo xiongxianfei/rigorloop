@@ -89,6 +89,20 @@ validation:
     result: accepted_fix_implemented
   - command: code-review r2
     result: clean_with_notes
+  - command: code-review r3
+    result: clean_with_notes
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow
+    result: passed
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow
+    result: passed
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/change.yaml
+    result: passed
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/change.yaml --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/review-log.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/review-resolution.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/reviews/code-review-r3.md --path docs/plan.md --path docs/plans/2026-05-15-rigorloop-cli-package-and-codex-init.md
+    result: passed
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/change.yaml --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/review-log.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/review-resolution.md --path docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/reviews/code-review-r3.md
+    result: passed
+  - command: git diff --check --
+    result: passed
   - command: npm test --prefix packages/rigorloop
     result: passed
   - command: python scripts/test-select-validation.py
@@ -143,5 +157,6 @@ changed_files:
   - docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/reviews/plan-review-r1.md
   - docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/reviews/code-review-r1.md
   - docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/reviews/code-review-r2.md
+  - docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/reviews/code-review-r3.md
   - docs/plans/2026-05-15-rigorloop-cli-package-and-codex-init.md
   - docs/plan.md

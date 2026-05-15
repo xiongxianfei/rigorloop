@@ -13,11 +13,12 @@ Review closeout: proposal-review-r1
 Review closeout: plan-review-r1
 Review closeout: code-review-r1
 Review closeout: code-review-r2
+Review closeout: code-review-r3
 
-- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `code-review-r1`, `code-review-r2`
+- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `code-review-r1`, `code-review-r2`, `code-review-r3`
 - Findings resolved: 4
 - Unresolved findings: 0
-- Final result: spec-review findings have accepted dispositions and the same-stage `spec-review-r2` rerun approved the revised spec. `code-review-r1` finding `CR1-F1` has an accepted implementation fix and `code-review-r2` closed M1 with no material findings.
+- Final result: spec-review findings have accepted dispositions and the same-stage `spec-review-r2` rerun approved the revised spec. `code-review-r1` finding `CR1-F1` has an accepted implementation fix, `code-review-r2` closed M1 with no material findings, and direct `code-review-r3` found no material issues in the current tracked M1 resolution.
 
 ## Resolution Overview
 
@@ -108,6 +109,10 @@ Validation evidence: `packages/rigorloop/dist/lib/command-result.js` now maps ex
 ### code-review-r2
 
 No material findings; no resolution entry required. The code-review rerun closed `CR1-F1` and marked M1 clean with notes.
+
+### code-review-r3
+
+No material findings; no resolution entry required. This direct isolated code-review found no material issues in commit `071df77`.
 
 ## Shared Validation Evidence
 
