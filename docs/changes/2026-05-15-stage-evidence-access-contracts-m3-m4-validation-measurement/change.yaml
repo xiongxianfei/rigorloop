@@ -20,6 +20,7 @@ changed_files:
   - docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/reviews/code-review-m4-r1.md
   - docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/explain-change.md
   - docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/verify-report.md
+  - docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/pr.md
 requirements:
   - Close M2 lifecycle state after PR #60 merged with hosted CI success.
   - Plan M3 static validation for stage evidence access contract guidance.
@@ -38,6 +39,7 @@ tests:
   - code-review-m4-r1
   - explain-change
   - verify
+  - pr
   - plan lifecycle validation
   - change metadata validation
   - diff whitespace validation
@@ -159,3 +161,5 @@ validation:
     result: passed_verify
   - command: verify
     result: branch_ready_local_pr_next_hosted_ci_not_observed_for_this_branch
+  - command: pr-body
+    result: pr_body_prepared_from_actual_diff_and_verify_evidence_hosted_ci_pending
