@@ -73,13 +73,13 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
 ## Current Handoff Summary
 
 - Current milestone: M4. Measurement and size-delta recording
-- Current milestone state: ready
+- Current milestone state: review-requested
 - Last reviewed milestone: M3. Static validation audit and gap fill
-- Review status: code-review-m3-r1 clean-with-notes; no material findings; no review-resolution required
+- Review status: M4 implementation ready for code-review; code-review-m3-r1 clean-with-notes
 - Remaining in-scope implementation milestones: M4. Measurement and size-delta recording
-- Next stage: implement M4. Measurement and size-delta recording
+- Next stage: code-review M4. Measurement and size-delta recording
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 is closed after clean code-review, but M4 remains open; explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M4 implementation is review-requested; code-review M4, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -175,7 +175,7 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
 
 ### M4. Measurement And Size-Delta Recording
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Run static skill token measurement and record whether skill size increased, decreased, or stayed unchanged relative to the current M2 merged baseline.
 - Requirements: `R33`, `R34`, proposal M4.
 - Files/components likely touched:
@@ -207,11 +207,11 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
   - No hard token threshold or dynamic benchmark requirement is introduced.
 - Commit message: `M4: measure stage evidence access skill size`
 - Milestone closeout:
-  - [ ] validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] milestone committed
+  - [x] validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] milestone committed
 - Risks:
   - Measurement may be mistaken for a release gate.
   - Dynamic benchmark work may creep into this slice.
@@ -281,7 +281,8 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
 - [x] 2026-05-15: M3 audit found current concept checks sufficient; no `scripts/test-skill-validator.py` changes needed.
 - [x] M3 static validation implementation completed and handed to code-review.
 - [x] 2026-05-15: code-review M3 R1 recorded clean-with-notes with no material findings.
-- [ ] M4 measurement completed.
+- [x] 2026-05-15: M4 static measurement recorded 23 skills, 235521 bytes, and 58868 estimated tokens, unchanged from the M2 merged baseline.
+- [x] M4 measurement implementation completed and handed to code-review.
 - [ ] code-review completed for all implementation milestones.
 - [ ] explain-change completed.
 - [ ] verify completed.
@@ -296,6 +297,7 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
 - 2026-05-15: Maintainer approved the M3/M4 test-spec alignment by direct user request. Reason: the active proof surface is ready to support M3 static validation audit/gap-fill and M4 measurement implementation.
 - 2026-05-15: M3 did not change `scripts/test-skill-validator.py`. Reason: `test_stage_evidence_access_contract_guidance`, `test_stage_evidence_access_proposal_side_skills`, and `test_stage_evidence_access_m2_execution_review_skills` already cover `Evidence access`, default evidence, conditional evidence, reason recording, bounded discovery before broad reads, and full-file-read escape behavior.
 - 2026-05-15: Close M3 after clean code-review and hand off to M4. Reason: `code-review-m3-r1` recorded no material findings, no review-resolution is required, and M4 is the only remaining implementation milestone.
+- 2026-05-15: M4 measurement is unchanged from the M2 merged baseline. Reason: M3 changed only validator/lifecycle evidence and did not change canonical skill text.
 
 ## Surprises and Discoveries
 
@@ -338,6 +340,25 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
 
 M3 no-change rationale: current concept checks are sufficient and passed. No `scripts/test-skill-validator.py` edits were made because additional checks would be duplicative or phrase-locking.
 - Code-review M3 R1 recorded clean-with-notes with no material findings in `docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/reviews/code-review-m3-r1.md`.
+- M4 static measurement validation passed:
+  - `python scripts/measure-skill-tokens.py` recorded 23 skills, 235521 bytes, and 58868 estimated tokens.
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/validate-skills.py`
+  - `python scripts/select-validation.py --mode explicit --path docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md --path docs/plan.md --path docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/change.yaml`
+  - `python scripts/test-change-metadata-validator.py`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/stage-evidence-access-contracts-for-cost-bounded-rigor.md --path specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md --path docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md --path docs/plan.md --path docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/change.yaml`
+  - `git diff --check -- scripts/test-skill-validator.py specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md docs/plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md docs/plan.md docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement`
+
+## M4 Static Measurement
+
+| Measurement | M2 merged baseline | M4 result | Delta |
+|---|---:|---:|---:|
+| Skills measured | 23 | 23 | 0 |
+| Total bytes | 235521 | 235521 | 0 |
+| Estimated tokens | 58868 | 58868 | 0 |
+
+M4 measurement interpretation: unchanged. M3 did not edit canonical skill text, so static skill size was expected to remain unchanged. This measurement is diagnostic and warning-only; it does not introduce a hard token gate, dynamic benchmark requirement, release validation change, adapter packaging change, or generated-output source-model change.
 
 ## Outcome and Retrospective
 
