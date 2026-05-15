@@ -1,6 +1,6 @@
 # RigorLoop CLI package and Codex init
 
-- Status: active
+- Status: done
 - Owner: maintainers
 - Start date: 2026-05-15
 - Last updated: 2026-05-15
@@ -57,13 +57,13 @@ The plan intentionally does not implement the broader CLI roadmap. It keeps the 
 ## Current Handoff Summary
 
 - Current milestone: Lifecycle closeout
-- Current milestone state: pr-opened
+- Current milestone state: completed
 - Last reviewed milestone: M3. Codex adapter metadata, archive verification, extraction, and tree hash
 - Review status: code-review-r9 clean-with-notes; `CR8-F1` closed
 - Remaining in-scope implementation milestones: none
-- Next stage: hosted CI and review on PR #62
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation milestones are closed, explain-change is recorded, verify passed, and PR #62 is open; hosted CI and human review have not completed.
+- Next stage: none
+- Final closeout readiness: complete
+- Reason final closeout is or is not ready: implementation milestones closed, explain-change recorded, verify passed, PR #62 opened, hosted CI passed, and PR #62 merged.
 
 ## Milestones
 
@@ -414,16 +414,16 @@ The plan intentionally does not implement the broader CLI roadmap. It keeps the 
 - 2026-05-15: `git diff --check --` passed after explain-change recording.
 - 2026-05-15: final verify passed with `npm test --prefix packages/rigorloop`, `python scripts/test-select-validation.py`, real default network install smoke, real local archive install smoke, change metadata validation, review artifact validation and closeout validation, explicit-path artifact lifecycle validation, selected CI, and `git diff --check --`.
 - 2026-05-15: post-verify-report validation passed with change metadata validation, review artifact validation and closeout validation, explicit-path artifact lifecycle validation including `verify-report.md`, selected CI including `skills.regression`, `selector.regression`, and `rigorloop_cli.test`, and `git diff --check --`.
+- 2026-05-15: PR #62 hosted `ci` check passed and PR #62 merged as commit `157f0dbc2183bd18ff437cb40867c446877dc3f9`.
 
 ## Outcome and retrospective
 
-- Implementation milestones M1-M3 are complete and reviewed. Explain-change is recorded. Verify passed. PR #62 is open; hosted CI and human review remain pending.
+- Completed first CLI slice through proposal, spec, architecture, plan, test-spec, implementation, code-review, review-resolution, explain-change, verify, PR #62, hosted CI, and merge.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for hosted CI and human review on PR #62.
-- It is not complete until PR review, hosted CI, and merge/closeout complete.
+- This plan is complete.
 
 ## Follow-ups
 

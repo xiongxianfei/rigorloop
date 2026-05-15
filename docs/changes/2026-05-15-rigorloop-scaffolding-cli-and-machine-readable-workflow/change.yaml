@@ -346,6 +346,8 @@ validation:
     result: passed_after_verify_report
   - command: gh pr create --base main --head rigorloop-cli-codex-init --title "feat: add first RigorLoop CLI Codex init slice"
     result: opened_PR_62
+  - command: gh pr view 62 --json url,state,mergedAt,mergeCommit,statusCheckRollup
+    result: merged_PR_62_hosted_CI_success
   - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow
     result: passed
   - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow

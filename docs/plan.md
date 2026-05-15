@@ -3,12 +3,13 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-15 RigorLoop CLI package and Codex init](plans/2026-05-15-rigorloop-cli-package-and-codex-init.md) - active execution plan for the first CLI slice: `@xiongxianfei/rigorloop`, one `rigorloop` binary, help/version, `init --adapter codex`, dry-run JSON, non-destructive `rigorloop.yaml` scaffolding, verified Codex release archive install, planned lockfile output only, no public npm publication, implementation milestones closed, explain-change recorded, verify passed, and PR #62 open with hosted CI/review pending.
+- none yet
 
 ## Blocked
 - none yet
 
 ## Done
+- [2026-05-15 RigorLoop CLI package and Codex init](plans/2026-05-15-rigorloop-cli-package-and-codex-init.md) - completed execution plan for the first CLI slice: `@xiongxianfei/rigorloop`, one `rigorloop` binary, help/version, `init --adapter codex`, dry-run JSON, non-destructive `rigorloop.yaml` scaffolding, verified Codex release archive install, planned lockfile output only, no public npm publication, implementation milestones closed, explain-change recorded, verify passed, opening PR #62, passing hosted CI, and merging PR #62.
 - [2026-05-15 Stage evidence access contracts M3/M4 static validation and measurement](plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md) - completed execution plan for auditing existing stage evidence access concept checks, recording no-change rationale for M3 static validation, recording unchanged diagnostic M4 static skill token measurement, aligning the test spec, recording clean plan-review and code-review evidence, explaining the change, passing final local verify, opening PR #61, fixing selector routing for the PR body surface, passing hosted CI, and merging PR #61.
 - [2026-05-14 Stage evidence access contracts M2 execution/review evidence access](plans/2026-05-14-stage-evidence-access-contracts-m2-execution-review.md) - completed execution plan for adding M2 evidence-access guidance to `implement` and `code-review`, aligning the active test spec, adding concept-level static proof, recording clean plan-review and code-review evidence, explaining the change, passing final local verify, opening PR #60, passing hosted CI, and merging PR #60.
 - [2026-05-14 Stage evidence access contracts for cost-bounded rigor](plans/2026-05-14-stage-evidence-access-contracts-for-cost-bounded-rigor.md) - completed execution plan for adding M1 proposal-side stage evidence access guidance to `docs/workflows.md`, `proposal`, and `proposal-review`, adding concept-level static proof, recording formal review evidence and explain-change, passing final local verify, opening PR #59, and keeping `spec`, `plan`, `implement`, and `code-review` skill edits deferred.
