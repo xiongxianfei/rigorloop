@@ -393,6 +393,9 @@ M4 measurement interpretation: unchanged. M3 did not edit canonical skill text, 
 - PR handoff completed:
   - PR #61 opened: `https://github.com/xiongxianfei/rigorloop/pull/61`
   - Hosted CI status at handoff: `ci` in progress; not claimed as passed.
+- CI follow-up:
+  - PR #61 hosted CI failed because `docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/pr.md` was classified as `change-local-unsupported`.
+  - The unsupported tracked PR body artifact was removed; the GitHub PR body remains the PR review surface.
 
 ## Outcome and Retrospective
 
