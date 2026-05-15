@@ -58,7 +58,7 @@ And no files are written.
 ### Example E4: pinned package version installs matching Codex archive
 
 Given the CLI is executed as `npx @xiongxianfei/rigorloop@0.1.3 init --adapter codex`
-When official release metadata for `v0.1.3` identifies a Codex adapter archive with matching checksum, size, install root, tree hash, and validation result `pass`
+When bundled official adapter metadata for `v0.1.3` identifies a Codex adapter archive with matching checksum, size, install root, tree hash, and validation result `pass`
 Then the command creates or updates only allowed scaffold and generated adapter files
 And it does not write `rigorloop.lock`
 And it exits with status `success` or `warning`.
@@ -252,7 +252,7 @@ R48. Partial installation failure MUST leave a JSON or human-visible error that 
 
 ### Codex adapter release metadata and archive verification
 
-R49. Networked adapter installation MUST fetch release metadata from the official release source.
+R49. Networked adapter installation MUST use bundled official adapter metadata for the installed CLI package version, then download the official adapter archive URL named by that metadata.
 
 R50. Local archive installation MUST verify the archive against bundled adapter metadata before extraction.
 
@@ -263,6 +263,10 @@ R50b. The CLI package MUST include bundled adapter metadata for the package's de
 R50c. For package version `0.1.3`, the default compatible adapter release MUST be `v0.1.3`.
 
 R50d. If bundled adapter metadata for the requested adapter and release is unavailable, the command MUST return status `blocked`, exit code `2`, and blocker code `metadata-unavailable`.
+
+R50e. The bundled release index MUST record the bundled adapter metadata filename and SHA-256 for the package's default compatible Codex adapter release.
+
+R50f. The CLI MUST verify bundled adapter metadata bytes against the bundled release index SHA-256 before parsing metadata for either network or local archive installation.
 
 R51. Release metadata MUST include:
 
@@ -307,9 +311,9 @@ R58. The command MUST compute the installed Codex adapter tree hash after extrac
 
 R59. The command MUST compare the computed tree hash with metadata `tree_sha256` when metadata provides it.
 
-R60. Checksum mismatch, size mismatch, tree-hash mismatch, invalid metadata hash, or path traversal MUST produce status `error`.
+R60. Checksum mismatch, size mismatch, tree-hash mismatch, invalid metadata hash, invalid metadata schema, or path traversal MUST produce status `error`.
 
-R61. Missing metadata, unknown adapter, incompatible release version, or unavailable official release source MUST produce status `blocked` unless the failure is an unexpected internal error.
+R61. Missing bundled metadata, unknown adapter, incompatible release version, or unavailable official archive source MUST produce status `blocked` unless the failure is an unexpected internal error.
 
 R61a. Metadata unavailable for a requested local archive adapter or release MUST produce status `blocked`, exit code `2`, and blocker code `metadata-unavailable`.
 
@@ -373,8 +377,8 @@ Inputs:
 - command-line arguments for `rigorloop --help`, `rigorloop version`, and `rigorloop init --adapter codex`;
 - current working directory or explicit target directory if implemented;
 - package name and version;
-- official GitHub release metadata for `xiongxianfei/rigorloop`;
 - bundled adapter metadata shipped with the installed CLI package;
+- official GitHub release archive URLs named by the bundled adapter metadata;
 - optional local Codex adapter archive path from `--from-archive`;
 - existing project files, including `rigorloop.yaml` and `.agents/skills/**` when present.
 
@@ -401,13 +405,13 @@ Outputs:
 
 - Invalid command syntax exits `4`.
 - Unsupported adapter values exit `2` with status `blocked`.
-- Missing official release metadata exits `2` with status `blocked`.
+- Missing bundled metadata exits `2` with status `blocked`.
 - Unknown adapter metadata exits `2` with status `blocked`.
 - Release version mismatch exits `2` with status `blocked`.
-- Checksum, size, tree-hash, metadata-hash, or archive traversal failures exit `3` with status `error`.
+- Checksum, size, tree-hash, metadata-hash, metadata schema, or archive traversal failures exit `3` with status `error`.
 - Existing user-file overwrite conflicts exit `5`.
 - Permission failures while writing files exit `1` unless they can be classified as overwrite refusal.
-- Network failure while fetching release metadata exits `2` with status `blocked` when retrying later or using `--from-archive` is a valid next action.
+- Network failure while fetching the official adapter archive exits `2` with status `blocked` when retrying later or using `--from-archive` is a valid next action.
 - Dry-run failures must not leave filesystem changes.
 - Actual init failures must not silently ignore partial writes.
 
@@ -436,7 +440,7 @@ Rollback after a later publication is outside this spec and must be defined by t
 - The command MUST NOT require secrets or credentials for normal public release-archive installation.
 - The command MUST NOT print secrets from environment variables or config files.
 - The command MUST NOT send project file contents over the network.
-- Network access, when used, MUST be limited to fetching official release metadata and adapter archives for the requested adapter.
+- Network access, when used, MUST be limited to fetching official adapter archives for the requested adapter.
 - Archive extraction MUST defend against path traversal and symlink writes.
 - The command SHOULD use minimal runtime dependencies; dependency policy is finalized by the release hardening slice before publication.
 
@@ -448,7 +452,7 @@ Human CLI output MUST be readable without color. Errors MUST include a concise r
 
 ## Performance expectations
 
-Dry-run planning for an empty target project SHOULD complete without downloading an adapter archive when release metadata alone is enough to report planned actions.
+Dry-run planning for an empty target project SHOULD complete without downloading an adapter archive when bundled adapter metadata is enough to report planned actions.
 
 Actual init SHOULD avoid reading or hashing files outside the target scaffold paths and selected archive extraction root.
 

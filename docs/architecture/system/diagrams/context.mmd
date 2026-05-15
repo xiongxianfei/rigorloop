@@ -15,9 +15,9 @@ flowchart LR
   repo -->|publishes reviewable branch and PR history through| git
   repo -->|validates lifecycle, metadata, drift, and diagram source through| execution
   repo -->|packages the CLI candidate and bundled adapter metadata for| package_runner
-  repo -->|publishes verified adapter archives and official metadata as| release_assets
+  repo -->|publishes verified adapter archives as| release_assets
   repo -->|generates synchronized project-portable guidance for| package_surface
-  package_runner -->|executes init and verifies local archives against bundled metadata from| repo
+  package_runner -->|executes init and verifies archives against bundled metadata from| repo
   package_runner -->|downloads verified Codex adapter archives from| release_assets
   adapter_user -->|installs or copies generated guidance from| package_surface
 

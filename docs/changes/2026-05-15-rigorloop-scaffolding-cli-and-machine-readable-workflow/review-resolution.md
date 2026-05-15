@@ -4,7 +4,7 @@
 
 This record resolves material findings from formal lifecycle reviews for the scaffolding CLI and machine-readable workflow change.
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: spec-review-r1
 Review closeout: spec-review-r2
@@ -17,11 +17,12 @@ Review closeout: code-review-r3
 Review closeout: code-review-r4
 Review closeout: code-review-r5
 Review closeout: code-review-r6
+Review closeout: code-review-r7
 
 - Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `plan-review-r1`, `code-review-r1`, `code-review-r2`, `code-review-r3`, `code-review-r4`, `code-review-r5`, `code-review-r6`, `code-review-r7`
-- Findings resolved: 7
-- Unresolved findings: 1
-- Final result: spec-review findings have accepted dispositions and the same-stage `spec-review-r2` rerun approved the revised spec. `code-review-r1` finding `CR1-F1` has an accepted implementation fix, `code-review-r2` closed M1 with no material findings, direct `code-review-r3` found no material issues in the current tracked M1 resolution, `code-review-r4` finding `CR4-F1` has an accepted implementation fix, `code-review-r5` closed M2 with no material findings, and `code-review-r6` findings `CR6-F1` and `CR6-F2` have accepted implementation fixes. `code-review-r7` finding `CR7-F1` is open pending review-resolution.
+- Findings resolved: 8
+- Unresolved findings: 0
+- Final result: spec-review findings have accepted dispositions and the same-stage `spec-review-r2` rerun approved the revised spec. `code-review-r1` finding `CR1-F1` has an accepted implementation fix, `code-review-r2` closed M1 with no material findings, direct `code-review-r3` found no material issues in the current tracked M1 resolution, `code-review-r4` finding `CR4-F1` has an accepted implementation fix, `code-review-r5` closed M2 with no material findings, `code-review-r6` findings `CR6-F1` and `CR6-F2` have accepted implementation fixes, and `code-review-r7` finding `CR7-F1` has an accepted implementation fix pending same-stage code-review rerun.
 
 ## Resolution Overview
 
@@ -33,8 +34,8 @@ Review closeout: code-review-r6
 | CR1-F1 | accepted | resolved | M1 now maps exit codes from internal result class/failure kind and T11 covers every public exit-code class. |
 | CR4-F1 | accepted | resolved | M2 now plans `.agents` and `.agents/skills` as first-class directory actions before mutation. |
 | CR6-F1 | accepted | resolved | Runtime metadata source overrides were removed from production metadata lookup; tests now use fixture package metadata. |
-| CR6-F2 | accepted | resolved | Network metadata is verified against a package-bundled release index hash before parsing, with metadata hash mismatch mapped to exit code `3`. |
-| CR7-F1 | needs-decision | open | The bundled release index points to an official metadata asset URL that currently returns 404. |
+| CR6-F2 | accepted | resolved | Adapter metadata is verified against a package-bundled release index hash before parsing, with metadata hash mismatch mapped to exit code `3`; `CR7-F1` revised the trust root to bundled metadata for both install paths. |
+| CR7-F1 | accepted | resolved | Default network install now uses bundled official adapter metadata as the trust root and fetches only the official archive URL named by that metadata. |
 
 ## Common Resolution Metadata
 
@@ -160,26 +161,26 @@ Disposition: accepted
 Status: resolved
 Owner: implementer
 Owning stage: implement
-Chosen action: Add a package-bundled release index with trusted expected metadata SHA-256. Fetch network metadata as raw bytes, verify the bytes before parsing, and map metadata SHA-256 mismatch to status `error` with exit code `3`. Local archive mode continues to use bundled metadata for the installed package version.
+Chosen action: Add a package-bundled release index with trusted expected metadata SHA-256. Verify adapter metadata bytes before parsing, and map metadata SHA-256 mismatch to status `error` with exit code `3`. The later `CR7-F1` resolution changed the first-slice trust root so both default network install and local archive mode use bundled adapter metadata for the installed package version.
 Rationale: The CLI must not trust fetched metadata before verifying it. Metadata-hash mismatch is an expected verification failure, not an internal error.
 Validation target: Add direct tests for metadata hash mismatch, valid metadata hash, missing trust root, and verification-before-parse behavior, then rerun package tests and selected CI.
-Validation evidence: `packages/rigorloop/dist/metadata/releases.json` now records the trusted metadata URL and SHA-256 for `v0.1.3`. `packages/rigorloop/dist/bin/rigorloop.js` verifies fetched metadata bytes before parsing. `packages/rigorloop/test/cli.test.js` covers valid metadata hash, metadata hash mismatch, malformed metadata with wrong hash, and missing trust root. `npm test --prefix packages/rigorloop` passed after the fix.
+Validation evidence: `packages/rigorloop/dist/metadata/releases.json` records the trusted bundled metadata SHA-256 for `v0.1.3`. `packages/rigorloop/dist/bin/rigorloop.js` verifies adapter metadata bytes before parsing. `packages/rigorloop/test/cli.test.js` covers valid metadata hash, metadata hash mismatch, malformed metadata with wrong hash, and missing trust root. `npm test --prefix packages/rigorloop` passed after the fix.
 
 ### code-review-r7
 
 #### CR7-F1 - Bundled network metadata URL points to a release asset that does not exist
 
 Finding ID: CR7-F1
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: implementer
 Owning stage: implement
 Decision owner: maintainer
-Decision needed: Choose whether to publish the missing official `adapter-artifacts-v0.1.3.json` release metadata asset, or revise the approved first-slice network install contract so it does not depend on that unavailable asset.
-Chosen action: needs decision on whether to add the missing official `v0.1.3` release metadata asset or revise the approved network install contract.
-Rationale: The code-review rerun found that the trusted bundled release index points to `adapter-artifacts-v0.1.3.json`, but the current `v0.1.3` GitHub release does not expose that metadata asset. The default network `init --adapter codex` path therefore cannot satisfy the approved network install contract.
-Validation target: Either add/publish the official metadata asset and prove the tracked URL/hash work, or revise the approved contract before changing the implementation path.
-Validation evidence: pending.
+Decision needed: None; maintainer accepted the bundled-metadata trust-root model for the first CLI slice.
+Chosen action: Revise the first-slice install contract so default network install uses package-bundled official adapter metadata for the installed CLI package version, then downloads and verifies the official adapter archive. Remove the missing release metadata URL as a required trust source for first-slice install.
+Rationale: The trusted metadata URL pointed to a non-existent release asset, so the public default install path would block. Bundled official metadata keeps the user command simple, avoids an extra metadata flag or release asset dependency, and still verifies archive SHA, size, install root, and tree hash before writing files.
+Validation target: Add tests proving default install uses bundled metadata, bundled metadata hash mismatch exits `3`, missing bundled metadata blocks with exit `2`, and real Codex archive installation succeeds through bundled metadata.
+Validation evidence: `packages/rigorloop/dist/metadata/releases.json` now records `bundled_metadata` and `bundled_metadata_sha256` without a required network metadata URL. `packages/rigorloop/dist/bin/rigorloop.js` verifies bundled metadata bytes before parsing for both default and local archive installs. `packages/rigorloop/test/cli.test.js` proves default install ignores legacy metadata URL fields and uses bundled metadata before archive download, bundled metadata hash mismatch exits `3`, missing trust root blocks, and local archive mode still uses bundled metadata. `npm test --prefix packages/rigorloop` passed after the fix. Real default network install and local archive smoke tests both passed with the official `v0.1.3` Codex archive.
 
 ## Shared Validation Evidence
 
@@ -199,5 +200,5 @@ Validation evidence: pending.
 - [x] Every `needs-decision` finding is resolved or blocks closeout.
 - [x] Validation evidence is recorded for `code-review-r1` finding.
 - [x] Validation evidence is recorded for `code-review-r4` finding.
-- [ ] Validation evidence is recorded for `code-review-r7` finding.
+- [x] Validation evidence is recorded for `code-review-r7` finding.
 - [x] Closeout status is correct.

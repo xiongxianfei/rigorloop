@@ -124,4 +124,4 @@ Status: changes-requested
 Detailed record: reviews/code-review-r7.md
 Resolution: review-resolution.md#code-review-r7
 Material findings: CR7-F1
-Open findings: CR7-F1
+Open findings: None

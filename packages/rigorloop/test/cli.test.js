@@ -214,13 +214,14 @@ function fixturePackage(options = {}) {
 
   if (options.metadata !== false) {
     const metadata = options.metadata ?? JSON.parse(readFileSync(join(packageRoot, "dist", "metadata", "adapter-artifacts-v0.1.3.json"), "utf8"));
-    writeFileSync(join(root, "dist", "metadata", "adapter-artifacts-v0.1.3.json"), JSON.stringify(metadata, null, 2));
-    const metadataBytes = Buffer.from(JSON.stringify(metadata, null, 2), "utf8");
+    const metadataContent = typeof metadata === "string" ? metadata : JSON.stringify(metadata, null, 2);
+    writeFileSync(join(root, "dist", "metadata", "adapter-artifacts-v0.1.3.json"), metadataContent);
+    const metadataBytes = Buffer.from(metadataContent, "utf8");
     const release = options.release ?? {
       source_repository: "xiongxianfei/rigorloop",
-      metadata_url: `data:application/json;base64,${metadataBytes.toString("base64")}`,
-      metadata_sha256: sha256(metadataBytes),
+      release_tag: "v0.1.3",
       bundled_metadata: "adapter-artifacts-v0.1.3.json",
+      bundled_metadata_sha256: sha256(metadataBytes),
     };
     writeFileSync(
       join(root, "dist", "metadata", "releases.json"),
@@ -235,8 +236,20 @@ function fixturePackage(options = {}) {
         2,
       ),
     );
-  } else if (options.releaseIndex) {
-    writeFileSync(join(root, "dist", "metadata", "releases.json"), JSON.stringify(options.releaseIndex, null, 2));
+  } else {
+    const releaseIndex =
+      options.releaseIndex ?? {
+        schema_version: 1,
+        releases: {
+          "v0.1.3": {
+            source_repository: "xiongxianfei/rigorloop",
+            release_tag: "v0.1.3",
+            bundled_metadata: "adapter-artifacts-v0.1.3.json",
+            bundled_metadata_sha256: "0".repeat(64),
+          },
+        },
+      };
+    writeFileSync(join(root, "dist", "metadata", "releases.json"), JSON.stringify(releaseIndex, null, 2));
   }
 
   return { root, cliPath: join(root, "dist", "bin", "rigorloop.js") };
@@ -476,41 +489,20 @@ test("T14 missing local archive path is invalid input", () => {
   assert.deepEqual(listProject(cwd), []);
 });
 
-test("T15 network mode blocks when official release metadata is unavailable", () => {
-  const cwd = tempProject();
-  const packageFixture = fixturePackage({
-    release: {
-      source_repository: "xiongxianfei/rigorloop",
-      metadata_url: "http://127.0.0.1:9/adapter-artifacts-v0.1.3.json",
-      metadata_sha256: "0".repeat(64),
-      bundled_metadata: "adapter-artifacts-v0.1.3.json",
-    },
-  });
-  const result = runCli(["init", "--adapter", "codex", "--json"], {
-    cwd,
-    cliPath: packageFixture.cliPath,
-  });
-
-  assert.equal(result.status, 2);
-  const output = JSON.parse(result.stdout);
-  assert.equal(output.status, "blocked");
-  assert.equal(output.blockers[0].code, "release-unavailable");
-  assert.deepEqual(listProject(cwd), []);
-});
-
-test("T16 network mode verifies release metadata and archive before install", () => {
+test("T15 network mode uses bundled metadata before downloading the official archive", () => {
   const cwd = tempProject();
   const fixture = fixtureArchive(cwd);
   const archiveBytes = readFileSync(fixture.archivePath);
   fixture.metadata.artifacts[0].url = `data:application/octet-stream;base64,${archiveBytes.toString("base64")}`;
-  const metadataBytes = Buffer.from(JSON.stringify(fixture.metadata, null, 2), "utf8");
   const packageFixture = fixturePackage({
     metadata: fixture.metadata,
     release: {
       source_repository: "xiongxianfei/rigorloop",
-      metadata_url: `data:application/json;base64,${metadataBytes.toString("base64")}`,
-      metadata_sha256: sha256(metadataBytes),
+      release_tag: "v0.1.3",
       bundled_metadata: "adapter-artifacts-v0.1.3.json",
+      bundled_metadata_sha256: sha256(Buffer.from(JSON.stringify(fixture.metadata, null, 2), "utf8")),
+      metadata_url: "http://127.0.0.1:9/should-not-be-used.json",
+      metadata_sha256: "0".repeat(64),
     },
   });
   const result = runCli(["init", "--adapter", "codex", "--json"], {
@@ -526,19 +518,18 @@ test("T16 network mode verifies release metadata and archive before install", ()
   assert.equal(readProjectFile(cwd, ".agents/skills/proposal/SKILL.md"), "# Proposal\n\nUse proposal guidance.\n");
 });
 
-test("T16 network metadata hash verification uses the bundled release index", () => {
+test("T16 bundled metadata hash verification uses the bundled release index", () => {
   const cwd = tempProject();
   const fixture = fixtureArchive(cwd);
   const archiveBytes = readFileSync(fixture.archivePath);
   fixture.metadata.artifacts[0].url = `data:application/octet-stream;base64,${archiveBytes.toString("base64")}`;
-  const metadataBytes = Buffer.from(JSON.stringify(fixture.metadata, null, 2), "utf8");
   const packageFixture = fixturePackage({
     metadata: fixture.metadata,
     release: {
       source_repository: "xiongxianfei/rigorloop",
-      metadata_url: `data:application/json;base64,${metadataBytes.toString("base64")}`,
-      metadata_sha256: "0".repeat(64),
+      release_tag: "v0.1.3",
       bundled_metadata: "adapter-artifacts-v0.1.3.json",
+      bundled_metadata_sha256: "0".repeat(64),
     },
   });
 
@@ -554,20 +545,15 @@ test("T16 network metadata hash verification uses the bundled release index", ()
   assert.equal(existsSync(join(cwd, ".agents", "skills", "proposal", "SKILL.md")), false);
 });
 
-test("T16 metadata bytes are verified before parsing", () => {
+test("T16 bundled metadata bytes are verified before parsing", () => {
   const cwd = tempProject();
   const packageFixture = fixturePackage({
-    metadata: false,
-    releaseIndex: {
-      schema_version: 1,
-      releases: {
-        "v0.1.3": {
-          source_repository: "xiongxianfei/rigorloop",
-          metadata_url: "data:application/json;base64,bm90LWpzb24=",
-          metadata_sha256: "0".repeat(64),
-          bundled_metadata: "adapter-artifacts-v0.1.3.json",
-        },
-      },
+    metadata: "not-json",
+    release: {
+      source_repository: "xiongxianfei/rigorloop",
+      release_tag: "v0.1.3",
+      bundled_metadata: "adapter-artifacts-v0.1.3.json",
+      bundled_metadata_sha256: "0".repeat(64),
     },
   });
 
@@ -589,7 +575,6 @@ test("T16 missing metadata trust root blocks network install", () => {
       releases: {
         "v0.1.3": {
           source_repository: "xiongxianfei/rigorloop",
-          metadata_url: "data:application/json,%7B%7D",
           bundled_metadata: "adapter-artifacts-v0.1.3.json",
         },
       },
@@ -612,14 +597,13 @@ test("T16 runtime release metadata environment override is ignored", () => {
   const fixture = fixtureArchive(cwd);
   const archiveBytes = readFileSync(fixture.archivePath);
   fixture.metadata.artifacts[0].url = `data:application/octet-stream;base64,${archiveBytes.toString("base64")}`;
-  const metadataBytes = Buffer.from(JSON.stringify(fixture.metadata, null, 2), "utf8");
   const packageFixture = fixturePackage({
     metadata: fixture.metadata,
     release: {
       source_repository: "xiongxianfei/rigorloop",
-      metadata_url: `data:application/json;base64,${metadataBytes.toString("base64")}`,
-      metadata_sha256: sha256(metadataBytes),
+      release_tag: "v0.1.3",
       bundled_metadata: "adapter-artifacts-v0.1.3.json",
+      bundled_metadata_sha256: sha256(Buffer.from(JSON.stringify(fixture.metadata, null, 2), "utf8")),
     },
   });
 
@@ -903,8 +887,8 @@ test("T29 release metadata shape and validation result are validated", () => {
   });
   const wrongRepoResult = runCliWithBundledMetadata(["init", "--adapter", "codex", "--from-archive", `./${wrongRepo.archiveName}`, "--json"], cwd, wrongRepo.metadata);
 
-  assert.equal(wrongRepoResult.status, 2);
-  assert.equal(JSON.parse(wrongRepoResult.stdout).blockers[0].code, "metadata-invalid");
+  assert.equal(wrongRepoResult.status, 3);
+  assert.equal(JSON.parse(wrongRepoResult.stdout).errors[0].code, "metadata-invalid");
 
   const missingFieldProject = tempProject();
   const missingField = fixtureArchive(missingFieldProject, {
@@ -919,8 +903,8 @@ test("T29 release metadata shape and validation result are validated", () => {
     missingField.metadata,
   );
 
-  assert.equal(missingFieldResult.status, 2);
-  assert.equal(JSON.parse(missingFieldResult.stdout).blockers[0].code, "metadata-invalid");
+  assert.equal(missingFieldResult.status, 3);
+  assert.equal(JSON.parse(missingFieldResult.stdout).errors[0].code, "metadata-invalid");
 
   const noCodexProject = tempProject();
   const noCodex = fixtureArchive(noCodexProject, {
@@ -951,8 +935,8 @@ test("T29 release metadata shape and validation result are validated", () => {
     wrongRoot.metadata,
   );
 
-  assert.equal(wrongRootResult.status, 2);
-  assert.equal(JSON.parse(wrongRootResult.stdout).blockers[0].code, "metadata-invalid");
+  assert.equal(wrongRootResult.status, 3);
+  assert.equal(JSON.parse(wrongRootResult.stdout).errors[0].code, "metadata-invalid");
 
   const validationFailProject = tempProject();
   const validationFail = fixtureArchive(validationFailProject, {
@@ -967,8 +951,8 @@ test("T29 release metadata shape and validation result are validated", () => {
     validationFail.metadata,
   );
 
-  assert.equal(validationFailResult.status, 2);
-  assert.equal(JSON.parse(validationFailResult.stdout).blockers[0].code, "metadata-invalid");
+  assert.equal(validationFailResult.status, 3);
+  assert.equal(JSON.parse(validationFailResult.stdout).errors[0].code, "metadata-invalid");
 });
 
 test("T30 archive traversal paths are rejected", () => {

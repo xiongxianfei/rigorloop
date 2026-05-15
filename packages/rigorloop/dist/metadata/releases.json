@@ -3,9 +3,9 @@
   "releases": {
     "v0.1.3": {
       "source_repository": "xiongxianfei/rigorloop",
-      "metadata_url": "https://github.com/xiongxianfei/rigorloop/releases/download/v0.1.3/adapter-artifacts-v0.1.3.json",
-      "metadata_sha256": "6d042464e7a3eef25a7c30a6ea74662bc8ee58b1b79f2b3917c3655c49d565a4",
-      "bundled_metadata": "adapter-artifacts-v0.1.3.json"
+      "release_tag": "v0.1.3",
+      "bundled_metadata": "adapter-artifacts-v0.1.3.json",
+      "bundled_metadata_sha256": "6d042464e7a3eef25a7c30a6ea74662bc8ee58b1b79f2b3917c3655c49d565a4"
     }
   }
 }
