@@ -1,6 +1,6 @@
 # Stage Evidence Access Contracts M3/M4: Static Validation And Measurement
 
-- Status: active
+- Status: done
 - Owner: maintainers
 - Start date: 2026-05-15
 - Last updated: 2026-05-15
@@ -73,13 +73,13 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
 ## Current Handoff Summary
 
 - Current milestone: Lifecycle closeout
-- Current milestone state: PR #61 opened; hosted CI in progress
+- Current milestone state: closed
 - Last reviewed milestone: M4. Measurement and size-delta recording
 - Review status: code-review-m4-r1 clean-with-notes; no material findings; no review-resolution required
 - Remaining in-scope implementation milestones: none
-- Next stage: PR review
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: PR #61 is open and hosted CI is in progress; final closeout waits for PR review, hosted CI completion, and merge confirmation.
+- Next stage: none
+- Final closeout readiness: complete
+- Reason final closeout is or is not ready: PR #61 merged on 2026-05-15 at `3ab098924cd30aabed93146e5032480cffd795b0` after hosted CI passed.
 
 ## Milestones
 
@@ -290,6 +290,8 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
 - [x] 2026-05-15: final local verify passed and branch-ready evidence recorded in `docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/verify-report.md`.
 - [x] verify completed.
 - [x] 2026-05-15: PR #61 opened at `https://github.com/xiongxianfei/rigorloop/pull/61`; hosted CI is in progress and not claimed as passed.
+- [x] 2026-05-15: PR #61 hosted CI passed after removing unsupported tracked `pr.md`.
+- [x] 2026-05-15: PR #61 merged at `3ab098924cd30aabed93146e5032480cffd795b0`.
 - [x] PR handoff completed.
 
 ## Decision Log
@@ -306,6 +308,7 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
 - 2026-05-15: Record explain-change and hand off to verify. Reason: all implementation milestones have clean code-review evidence and no review-resolution is required.
 - 2026-05-15: Record final local verify and hand off to PR. Reason: selected validation, lifecycle validation, review-artifact validation, skill validation, generated-skill checks, static measurement, and diff whitespace checks passed.
 - 2026-05-15: Open PR #61 and keep the plan active until hosted CI and merge closeout are observed. Reason: PR handoff is complete, but hosted CI is still in progress and final lifecycle Done is not yet true.
+- 2026-05-15: Close M3/M4 lifecycle after PR #61 merged. Reason: hosted CI passed, PR #61 merged, and no downstream lifecycle gate remains.
 
 ## Surprises and Discoveries
 
@@ -396,11 +399,13 @@ M4 measurement interpretation: unchanged. M3 did not edit canonical skill text, 
 - CI follow-up:
   - PR #61 hosted CI failed because `docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/pr.md` was classified as `change-local-unsupported`.
   - The unsupported tracked PR body artifact was removed; the GitHub PR body remains the PR review surface.
+- PR #61 merge closeout:
+  - PR #61 hosted CI passed after the selector-routing fix.
+  - PR #61 merged on 2026-05-15 at `3ab098924cd30aabed93146e5032480cffd795b0`.
 
 ## Outcome and Retrospective
 
-- Local branch content is branch-ready and PR #61 is open for review.
-- Hosted CI for this branch is in progress and not claimed as passed.
+- Done. PR #61 merged on 2026-05-15 after hosted CI passed. M3/M4 recorded concept-check sufficiency, unchanged diagnostic static skill token measurement, durable review/explain/verify evidence, and PR handoff without changing runtime enforcement, hard token gates, release behavior, adapter packaging, generated-output source policy, or dynamic benchmarks.
 
 ## Readiness
 

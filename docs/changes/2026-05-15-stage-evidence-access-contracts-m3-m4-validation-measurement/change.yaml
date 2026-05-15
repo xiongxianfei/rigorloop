@@ -170,3 +170,7 @@ validation:
     result: ci_failed_selector_blocked_unsupported_change_local_pr_md
   - command: remove unsupported tracked PR body artifact
     result: deleted_docs_changes_m3_m4_pr_md_github_pr_body_remains_authoritative_pr_surface
+  - command: python scripts/select-validation.py --mode pr --base 87101ec42582fde020cfe600193ebfea183669e0 --head HEAD
+    result: passed_after_pr_body_artifact_removal_broad_smoke_false
+  - command: gh pr view 61 --json state,mergedAt,mergeCommit,url,statusCheckRollup
+    result: merged_pr_61_at_3ab098924cd30aabed93146e5032480cffd795b0_hosted_ci_success
