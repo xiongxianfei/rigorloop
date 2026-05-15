@@ -73,13 +73,13 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
 ## Current Handoff Summary
 
 - Current milestone: M4. Measurement and size-delta recording
-- Current milestone state: review-requested
+- Current milestone state: closed
 - Last reviewed milestone: M3. Static validation audit and gap fill
-- Review status: M4 implementation ready for code-review; code-review-m3-r1 clean-with-notes
-- Remaining in-scope implementation milestones: M4. Measurement and size-delta recording
-- Next stage: code-review M4. Measurement and size-delta recording
+- Review status: code-review-m4-r1 clean-with-notes; no material findings; no review-resolution required
+- Remaining in-scope implementation milestones: none
+- Next stage: explain-change
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M4 implementation is review-requested; code-review M4, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: all implementation milestones are closed, but explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -175,7 +175,7 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
 
 ### M4. Measurement And Size-Delta Recording
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Run static skill token measurement and record whether skill size increased, decreased, or stayed unchanged relative to the current M2 merged baseline.
 - Requirements: `R33`, `R34`, proposal M4.
 - Files/components likely touched:
@@ -283,7 +283,8 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
 - [x] 2026-05-15: code-review M3 R1 recorded clean-with-notes with no material findings.
 - [x] 2026-05-15: M4 static measurement recorded 23 skills, 235521 bytes, and 58868 estimated tokens, unchanged from the M2 merged baseline.
 - [x] M4 measurement implementation completed and handed to code-review.
-- [ ] code-review completed for all implementation milestones.
+- [x] 2026-05-15: code-review M4 R1 recorded clean-with-notes with no material findings.
+- [x] code-review completed for all implementation milestones.
 - [ ] explain-change completed.
 - [ ] verify completed.
 - [ ] PR handoff completed.
@@ -298,6 +299,7 @@ The work is intentionally narrow. M3/M4 should not reopen the evidence-access mo
 - 2026-05-15: M3 did not change `scripts/test-skill-validator.py`. Reason: `test_stage_evidence_access_contract_guidance`, `test_stage_evidence_access_proposal_side_skills`, and `test_stage_evidence_access_m2_execution_review_skills` already cover `Evidence access`, default evidence, conditional evidence, reason recording, bounded discovery before broad reads, and full-file-read escape behavior.
 - 2026-05-15: Close M3 after clean code-review and hand off to M4. Reason: `code-review-m3-r1` recorded no material findings, no review-resolution is required, and M4 is the only remaining implementation milestone.
 - 2026-05-15: M4 measurement is unchanged from the M2 merged baseline. Reason: M3 changed only validator/lifecycle evidence and did not change canonical skill text.
+- 2026-05-15: Close M4 after clean code-review and hand off to explain-change. Reason: `code-review-m4-r1` recorded no material findings, no review-resolution is required, and no implementation milestones remain.
 
 ## Surprises and Discoveries
 
@@ -359,6 +361,7 @@ M3 no-change rationale: current concept checks are sufficient and passed. No `sc
 | Estimated tokens | 58868 | 58868 | 0 |
 
 M4 measurement interpretation: unchanged. M3 did not edit canonical skill text, so static skill size was expected to remain unchanged. This measurement is diagnostic and warning-only; it does not introduce a hard token gate, dynamic benchmark requirement, release validation change, adapter packaging change, or generated-output source-model change.
+- Code-review M4 R1 recorded clean-with-notes with no material findings in `docs/changes/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement/reviews/code-review-m4-r1.md`.
 
 ## Outcome and Retrospective
 
