@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "release": {
+    "version": "v0.1.5",
+    "source_repository": "xiongxianfei/rigorloop",
+    "source_commit": "5315a6d08b9d79e52d3276fd532b02f97c727e55",
+    "release_tag": "v0.1.5",
+    "published_at": "2026-05-16"
+  },
+  "metadata": {
+    "url": "https://github.com/xiongxianfei/rigorloop/releases/download/v0.1.5/adapter-artifacts-v0.1.5.json",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "artifacts": [
+    {
+      "adapter": "codex",
+      "archive": "rigorloop-adapter-codex-v0.1.5.zip",
+      "url": "https://github.com/xiongxianfei/rigorloop/releases/download/v0.1.5/rigorloop-adapter-codex-v0.1.5.zip",
+      "sha256": "97991ad31b0926ea3bcf8ab98d6aa0f93511ab25a51157d9fa701c1e822a32fd",
+      "size_bytes": 91928,
+      "install_root": ".agents/skills",
+      "tree_hash_algorithm": "rigorloop-tree-hash-v1",
+      "tree_sha256": "af477470c492a1b68303b462824a055b72a0ede0912616c1c641053f923d5bd4"
+    }
+  ],
+  "validation": {
+    "command": "python scripts/validate-adapters.py --root <release-output-dir> --version v0.1.5",
+    "result": "pass"
+  }
+}
