@@ -75,14 +75,14 @@ Publication evidence must be recorded at `docs/releases/v0.1.4/npm-publication.m
 ## Current Handoff Summary
 
 - Current milestone: M6b. Publication Execution And Evidence Closeout
-- Current milestone state: planned
+- Current milestone state: blocked
 - Last reviewed milestone: M5. Documentation, Follow-Up State, And Final Local Readiness
 - Review status: M6a repository-local readiness proof reviewed clean; no material findings
 - Remaining in-scope implementation milestones: none
 - Lifecycle-closeout milestones: M6a, M6b
-- Next stage: create `v0.1.4` tag from merged commit `8221134e08674040b05145241b20fbfcf0c530cf`, then run selected publication mode
+- Next stage: maintainer npm authentication, then bootstrap publish the verified `xiongxianfei-rigorloop-0.1.4.tgz` tarball
 - Final closeout readiness: not ready
-- Reason final closeout is not ready: M6b is not complete, npm publication has not happened, and FU-010 cannot close without public publication evidence plus real Codex adapter install proof.
+- Reason final closeout is not ready: M6b is blocked on npm authentication, npm publication has not happened, and FU-010 cannot close without public publication evidence plus real Codex adapter install proof.
 
 ## Milestones
 
@@ -395,7 +395,7 @@ M6a notes:
 
 ### M6b. Publication Execution And Evidence Closeout
 
-- Milestone state: planned
+- Milestone state: blocked
 - Type: lifecycle-closeout
 - Goal: publish the package, prove the real public install path, commit final evidence, and close FU-010 only after tracked validation passes.
 - Requirements: R36-R61d, R69a-R69m, R77-R85, EB9-EB14.
@@ -440,6 +440,12 @@ M6a notes:
 - Rollback/recovery:
   - Publish a fixed patch version and document/deprecate the bad version.
   - If official assets are temporarily unavailable, record the ordering gap and keep FU-010 open.
+
+M6b notes:
+
+- 2026-05-16: `v0.1.4` tag was pushed from merged PR #65 commit `8221134e08674040b05145241b20fbfcf0c530cf`. GitHub Actions release run `25971083444` passed and published the three adapter archives.
+- 2026-05-16: Public npm registry check still returns `E404` for `@xiongxianfei/rigorloop@0.1.4`, and `npm whoami` returns `ENEEDAUTH`; npm publication is blocked until a maintainer authenticates this machine or publishes the verified tarball.
+- 2026-05-16: Exact bootstrap tarball was packed from the `v0.1.4` tag and validated. Tarball filename: `xiongxianfei-rigorloop-0.1.4.tgz`; SHA-256: `c6e683f26c9f6c15d27c880178843e0a53047f90b6773682c720e0294898637b`.
 
 ## Validation Plan
 
@@ -559,6 +565,8 @@ npx @xiongxianfei/rigorloop@0.1.4 init --adapter codex --json
 - [x] M6a verify completed.
 - [x] M6a PR handoff completed by opening PR #65.
 - [x] M6a pre-publication PR and merge readiness completed.
+- [x] `v0.1.4` tag created and GitHub release assets published.
+- [ ] npm authentication available for bootstrap publication.
 - [ ] M6b publication execution and evidence closeout completed.
 
 ## Decision Log
@@ -710,6 +718,14 @@ npx @xiongxianfei/rigorloop@0.1.4 init --adapter codex --json
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/plan.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path docs/releases/v0.1.4/npm-publication.md --path docs/follow-ups.md`
   - `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/plan.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path docs/releases/v0.1.4/npm-publication.md --path docs/follow-ups.md`
   - `git diff --check -- docs/plans/2026-05-16-rigorloop-npm-publication.md docs/changes/2026-05-16-first-public-npm-release/change.yaml`
+- 2026-05-16: M6b publication preflight:
+  - `npm view @xiongxianfei/rigorloop@0.1.4 version --registry=https://registry.npmjs.org` returned `E404`, confirming the package is not yet published.
+  - `npm whoami --registry=https://registry.npmjs.org` returned `ENEEDAUTH`; npm publication cannot proceed from this machine until maintainer authentication is available.
+  - `bash scripts/release-verify.sh v0.1.4` passed before tag creation.
+  - `git tag -a v0.1.4 8221134e08674040b05145241b20fbfcf0c530cf -m "v0.1.4" && git push origin v0.1.4` created the release tag.
+  - `gh run watch 25971083444 --exit-status` passed for the `v0.1.4` release workflow.
+  - `gh release view v0.1.4 --json url,tagName,targetCommitish,isDraft,isPrerelease,assets` confirmed the public GitHub release and the three adapter ZIP assets.
+  - `npm pack --prefix <v0.1.4 worktree>/packages/rigorloop --pack-destination <temp>/pack <v0.1.4 worktree>/packages/rigorloop`, `sha256sum`, and `python scripts/validate-npm-package.py --package-root <v0.1.4 worktree>/packages/rigorloop --tarball <temp>/pack/xiongxianfei-rigorloop-0.1.4.tgz` passed. Tarball SHA-256: `c6e683f26c9f6c15d27c880178843e0a53047f90b6773682c720e0294898637b`.
 
 ## Outcome And Retrospective
 
@@ -717,7 +733,7 @@ npx @xiongxianfei/rigorloop@0.1.4 init --adapter codex --json
 
 ## Readiness
 
-- Ready for M6b publication execution from merged commit `8221134e08674040b05145241b20fbfcf0c530cf`.
+- Blocked on maintainer npm authentication for bootstrap publication.
 - Not ready for final FU-010 closeout or post-publication evidence closeout until M6b publication evidence and actual install smoke pass.
 
 ## Follow-Ups

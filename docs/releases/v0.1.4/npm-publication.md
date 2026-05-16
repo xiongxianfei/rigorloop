@@ -19,7 +19,7 @@ workflow:
 
 tarball:
   filename: "xiongxianfei-rigorloop-0.1.4.tgz"
-  sha256: "pending"
+  sha256: "c6e683f26c9f6c15d27c880178843e0a53047f90b6773682c720e0294898637b"
   pack_command: "npm pack --prefix packages/rigorloop"
   content_check: "pass"
   smoke_result: "pass"
@@ -49,6 +49,6 @@ adapter_install_smoke:
   archive_sha256_verified: false
   tree_hash_verified: false
   result: "pending"
-  ordering_gap: "npm package not yet published; official release assets not yet externally observable"
+  ordering_gap: "GitHub release assets are externally observable; npm publication is blocked until maintainer npm authentication is available"
   fu_010_closeout_blocked: true
 ```
