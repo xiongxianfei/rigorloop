@@ -60,6 +60,7 @@ EXPECTED_CATALOG = {
     "token_cost.report_validate": "python scripts/validate-token-cost-report.py <report-yaml>...",
     "broad_smoke.repo": "bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped",
     "rigorloop_cli.test": "npm test --prefix packages/rigorloop",
+    "npm_package_publication.test": "python scripts/test-npm-package-publication.py",
 }
 
 
@@ -692,7 +693,13 @@ raise SystemExit({exit_code})
                 "path": "packages/rigorloop/package.json",
                 "category": "rigorloop-cli",
                 "status": "ok",
-                "checks": {"rigorloop_cli.test"},
+                "checks": {"rigorloop_cli.test", "npm_package_publication.test"},
+            },
+            {
+                "path": "scripts/test-npm-package-publication.py",
+                "category": "rigorloop-cli",
+                "status": "ok",
+                "checks": {"rigorloop_cli.test", "npm_package_publication.test"},
             },
             {
                 "path": "tests/fixtures/token-cost/sample-codex-session.jsonl",

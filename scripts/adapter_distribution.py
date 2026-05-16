@@ -246,6 +246,7 @@ RELEASE_TARGETS = {
     "v0.1.1": ("final", "0.1.1"),
     "v0.1.2": ("final", "0.1.1"),
     "v0.1.3": ("final", "v0.1.3"),
+    "v0.1.4": ("final", "v0.1.4"),
 }
 REQUIRED_RELEASE_VALIDATION_KEYS = (
     "generated_sync",
@@ -254,8 +255,9 @@ REQUIRED_RELEASE_VALIDATION_KEYS = (
     "security",
 )
 TOKEN_COST_REPORT_REQUIRED_RELEASES = frozenset({"v0.1.1"})
-ADAPTER_ARTIFACT_METADATA_REQUIRED_RELEASES = frozenset({"v0.1.2", "v0.1.3"})
-UNTRACKED_PUBLIC_ADAPTER_RELEASES = frozenset({"v0.1.3"})
+ADAPTER_ARTIFACT_METADATA_REQUIRED_RELEASES = frozenset({"v0.1.2", "v0.1.3", "v0.1.4"})
+UNTRACKED_PUBLIC_ADAPTER_RELEASES = frozenset({"v0.1.3", "v0.1.4"})
+NPM_PUBLICATION_EVIDENCE_REQUIRED_RELEASES = frozenset({"v0.1.4"})
 TOKEN_COST_RUNTIME_V2 = "skill-token-runtime-v2"
 PLACEHOLDER_RELEASE_PATTERNS = (
     "Replace this script with repository-specific release checks",
@@ -2175,6 +2177,53 @@ def _release_notes_consistency_errors(
     if first_heading != f"# RigorLoop {version}":
         errors.append(f"release notes version mismatch: expected '# RigorLoop {version}'")
 
+    if version in NPM_PUBLICATION_EVIDENCE_REQUIRED_RELEASES:
+        for adapter in SUPPORTED_ADAPTERS:
+            archive = adapter_archive_name(adapter, version)
+            if archive not in notes_text:
+                errors.append(f"{version} release notes must list adapter archive: {archive}")
+        required_phrases = {
+            "npx @xiongxianfei/rigorloop@latest init --adapter codex": (
+                f"{version} release notes must include latest npm quick-start command"
+            ),
+            "npx @xiongxianfei/rigorloop@0.1.4 init --adapter codex": (
+                f"{version} release notes must include pinned npm command"
+            ),
+            "npm install -D @xiongxianfei/rigorloop": (
+                f"{version} release notes must include local install command"
+            ),
+            "npx rigorloop init --adapter codex": (
+                f"{version} release notes must include local rigorloop command"
+            ),
+            "npm is the CLI delivery channel": (
+                f"{version} release notes must state npm is delivery only"
+            ),
+            "not the canonical source for workflow rules, skills, schemas, templates, or adapter definitions": (
+                f"{version} release notes must state canonical source boundaries"
+            ),
+            "Adapter archives remain GitHub release artifacts verified by the CLI": (
+                f"{version} release notes must describe adapter archives as verified GitHub release artifacts"
+            ),
+            "not bundled in the npm package": (
+                f"{version} release notes must state adapter archives are not bundled in npm"
+            ),
+            f"docs/reports/adapter-artifacts/releases/{version}.yaml": (
+                f"{version} release notes must identify adapter artifact metadata"
+            ),
+            f"bash scripts/release-verify.sh {version}": (
+                f"{version} release notes must name the release verification command"
+            ),
+        }
+        lowered_notes = notes_text.lower()
+        for phrase, error in required_phrases.items():
+            if phrase.lower() not in lowered_notes:
+                errors.append(error)
+        if "tracked `dist/adapters/**/skills` remain available" in notes_text:
+            errors.append(
+                f"{version} release notes must not present tracked dist/adapters skill bodies as active"
+            )
+        return errors
+
     if version in UNTRACKED_PUBLIC_ADAPTER_RELEASES:
         for adapter in SUPPORTED_ADAPTERS:
             archive = adapter_archive_name(adapter, version)
@@ -2270,6 +2319,235 @@ def _release_notes_consistency_errors(
                 "release notes must include the smoke-tested OpenCode one-shot command form"
             )
 
+    return errors
+
+
+def _extract_first_yaml_block(text: str, path: Path) -> str:
+    lines = text.splitlines()
+    in_yaml = False
+    block: list[str] = []
+    for line in lines:
+        stripped = line.strip()
+        if not in_yaml:
+            if stripped == "```yaml":
+                in_yaml = True
+            continue
+        if stripped == "```":
+            return "\n".join(block)
+        block.append(line)
+    raise ValueError(f"{path}: missing fenced yaml evidence block")
+
+
+def _publication_evidence_status(text: str) -> str:
+    for line in text.splitlines():
+        if line.startswith("Status:"):
+            return line.split(":", 1)[1].strip()
+    return ""
+
+
+def _expect_mapping(value: Any, path: Path, key: str) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        raise ValueError(f"{path}: publication evidence {key}: expected mapping")
+    return value
+
+
+def _evidence_bool(value: Any) -> bool | None:
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        if value.lower() == "true":
+            return True
+        if value.lower() == "false":
+            return False
+    return None
+
+
+def _validate_bootstrap_tarball_identity(
+    *,
+    path: Path,
+    tarball: dict[str, Any],
+    npm_tarball_root: Path | None,
+) -> list[str]:
+    errors: list[str] = []
+    filename = str(tarball.get("filename", ""))
+    recorded_sha = str(tarball.get("sha256", ""))
+
+    if not re.fullmatch(r"[0-9a-f]{64}", recorded_sha):
+        errors.append(f"{path}: bootstrap publication evidence must record tarball sha256")
+        return errors
+
+    if npm_tarball_root is None:
+        return errors
+
+    tarball_path = npm_tarball_root / filename
+    if not tarball_path.is_file():
+        errors.append(f"{path}: bootstrap tarball not found for SHA validation: {filename}")
+        return errors
+
+    actual_sha = _sha256_file(tarball_path)
+    if actual_sha != recorded_sha:
+        errors.append(
+            f"{path}: tarball.sha256 does not match packed tarball bytes for {filename}: "
+            f"recorded {recorded_sha}, actual {actual_sha}"
+        )
+    return errors
+
+
+def _validate_npm_publication_evidence(
+    version: str,
+    release_dir: Path,
+    *,
+    npm_tarball_root: Path | None = None,
+) -> list[str]:
+    path = release_dir / "npm-publication.md"
+    if not path.is_file():
+        return [f"missing npm publication evidence: {path}"]
+
+    text = path.read_text(encoding="utf-8")
+    errors: list[str] = []
+    status = _publication_evidence_status(text)
+    if status not in {"pending-publication", "published"}:
+        errors.append(f"{path}: Status must be pending-publication or published")
+    try:
+        data = _parse_simple_yaml(_extract_first_yaml_block(text, path), path)
+    except ValueError as exc:
+        return [str(exc)]
+    if not isinstance(data, dict):
+        return [f"{path}: publication evidence yaml must be a mapping"]
+
+    try:
+        publication = _expect_mapping(data.get("publication"), path, "publication")
+        workflow = _expect_mapping(data.get("workflow"), path, "workflow")
+        tarball = _expect_mapping(data.get("tarball"), path, "tarball")
+        trusted = _expect_mapping(data.get("trusted_publishing"), path, "trusted_publishing")
+        bootstrap = _expect_mapping(data.get("bootstrap"), path, "bootstrap")
+        npm = _expect_mapping(data.get("npm"), path, "npm")
+        adapter_smoke = _expect_mapping(data.get("adapter_install_smoke"), path, "adapter_install_smoke")
+    except ValueError as exc:
+        return [str(exc)]
+
+    expected_version = version[1:]
+    expected_archive_url = (
+        f"https://github.com/xiongxianfei/rigorloop/releases/download/{version}/"
+        f"rigorloop-adapter-codex-{version}.zip"
+    )
+    required_values = {
+        "publication.package": (publication.get("package"), "@xiongxianfei/rigorloop"),
+        "publication.version": (publication.get("version"), expected_version),
+        "publication.release_tag": (publication.get("release_tag"), version),
+        "workflow.release_workflow": (workflow.get("release_workflow"), ".github/workflows/release.yml"),
+        "tarball.filename": (tarball.get("filename"), f"xiongxianfei-rigorloop-{expected_version}.tgz"),
+        "tarball.pack_command": (tarball.get("pack_command"), "npm pack --prefix packages/rigorloop"),
+        "trusted_publishing.workflow": (trusted.get("workflow"), ".github/workflows/release.yml"),
+        "adapter_install_smoke.command": (
+            adapter_smoke.get("command"),
+            f"npx @xiongxianfei/rigorloop@{expected_version} init --adapter codex --json",
+        ),
+        "adapter_install_smoke.adapter": (adapter_smoke.get("adapter"), "codex"),
+        "adapter_install_smoke.official_archive_url": (
+            adapter_smoke.get("official_archive_url"),
+            expected_archive_url,
+        ),
+    }
+    for key, (actual, expected) in required_values.items():
+        if actual != expected:
+            errors.append(f"{path}: {key}: expected {expected}, found {actual}")
+
+    mode = publication.get("mode")
+    if mode not in {"trusted-publishing", "bootstrap"}:
+        errors.append(f"{path}: publication.mode must be trusted-publishing or bootstrap")
+    published_by_workflow = _evidence_bool(workflow.get("published_by_workflow"))
+    unsupported_tags_rejected = _evidence_bool(workflow.get("unsupported_tags_rejected"))
+    npm_published = _evidence_bool(npm.get("published"))
+    fu_closeout_blocked = _evidence_bool(adapter_smoke.get("fu_010_closeout_blocked"))
+    archive_sha256_verified = _evidence_bool(adapter_smoke.get("archive_sha256_verified"))
+    tree_hash_verified = _evidence_bool(adapter_smoke.get("tree_hash_verified"))
+    bootstrap_used = _evidence_bool(bootstrap.get("used"))
+
+    if mode == "trusted-publishing" and published_by_workflow is not True:
+        errors.append(f"{path}: trusted-publishing mode requires workflow.published_by_workflow: true")
+    if mode == "bootstrap" and published_by_workflow is not False:
+        errors.append(f"{path}: bootstrap mode requires workflow.published_by_workflow: false")
+
+    if unsupported_tags_rejected is not True:
+        errors.append(f"{path}: workflow.unsupported_tags_rejected must be true")
+    if tarball.get("content_check") not in {"pass", "pending"}:
+        errors.append(f"{path}: tarball.content_check must be pass or pending")
+    if tarball.get("smoke_result") not in {"pass", "pending"}:
+        errors.append(f"{path}: tarball.smoke_result must be pass or pending")
+
+    adapter_result = adapter_smoke.get("result")
+    if status == "pending-publication":
+        if npm_published is not False:
+            errors.append(f"{path}: pending publication evidence must record npm.published: false")
+        if adapter_result != "pending":
+            errors.append(f"{path}: pending publication evidence must record adapter_install_smoke.result: pending")
+        if fu_closeout_blocked is not True:
+            errors.append(f"{path}: pending adapter install smoke must block FU-010 closeout")
+    if status == "published":
+        if npm_published is not True:
+            errors.append(f"{path}: published evidence must record npm.published: true")
+        if not str(npm.get("package_url", "")).startswith("https://www.npmjs.com/package/@xiongxianfei/rigorloop"):
+            errors.append(f"{path}: published evidence must record npm package URL")
+        if adapter_result != "pass":
+            errors.append(f"{path}: published evidence must record adapter_install_smoke.result: pass")
+        if archive_sha256_verified is not True:
+            errors.append(f"{path}: published evidence must record archive_sha256_verified: true")
+        if tree_hash_verified is not True:
+            errors.append(f"{path}: published evidence must record tree_hash_verified: true")
+        if mode == "bootstrap":
+            errors.extend(
+                _validate_bootstrap_tarball_identity(
+                    path=path,
+                    tarball=tarball,
+                    npm_tarball_root=npm_tarball_root,
+                )
+            )
+            if bootstrap_used is not True:
+                errors.append(f"{path}: bootstrap publication evidence must record bootstrap.used: true")
+            if not bootstrap.get("approving_maintainer") or bootstrap.get("approving_maintainer") == "pending":
+                errors.append(f"{path}: bootstrap publication evidence must record approving maintainer")
+            if not bootstrap.get("publish_command") or bootstrap.get("publish_command") == "pending":
+                errors.append(f"{path}: bootstrap publication evidence must record publish command")
+
+    return _dedupe_errors(errors)
+
+
+def _validate_v0_1_4_release_metadata_text(release_path: Path, release_text: str) -> list[str]:
+    try:
+        data = _parse_simple_yaml(release_text, release_path)
+    except ValueError as exc:
+        return [str(exc)]
+    if not isinstance(data, dict):
+        return [f"{release_path}: expected top-level mapping"]
+    errors: list[str] = []
+    npm = data.get("npm_package")
+    adapter_release = data.get("adapter_release")
+    if not isinstance(npm, dict):
+        errors.append(f"{release_path}: npm_package: expected mapping")
+    else:
+        expected = {
+            "name": "@xiongxianfei/rigorloop",
+            "version": "0.1.4",
+            "release_tag": "v0.1.4",
+        }
+        for key, expected_value in expected.items():
+            if npm.get(key) != expected_value:
+                errors.append(
+                    f"{release_path}: npm_package.{key}: expected {expected_value}, found {npm.get(key)}"
+                )
+    if not isinstance(adapter_release, dict):
+        errors.append(f"{release_path}: adapter_release: expected mapping")
+    else:
+        expected = {
+            "tag": "v0.1.4",
+            "bundled_metadata": "adapter-artifacts-v0.1.4.json",
+        }
+        for key, expected_value in expected.items():
+            if adapter_release.get(key) != expected_value:
+                errors.append(
+                    f"{release_path}: adapter_release.{key}: expected {expected_value}, found {adapter_release.get(key)}"
+                )
     return errors
 
 
@@ -2741,6 +3019,7 @@ def validate_release_output(
     release_root: Path = RELEASE_ROOT,
     adapter_artifact_report_root: Path = ADAPTER_ARTIFACT_REPORT_ROOT,
     release_commit: str | None = None,
+    npm_tarball_root: Path | None = None,
     token_cost_report_root: Path = TOKEN_COST_REPORT_ROOT,
     token_cost_validator: Path = TOKEN_COST_VALIDATOR,
     changed_paths: Iterable[str | Path] | None = None,
@@ -2764,7 +3043,8 @@ def validate_release_output(
         return [f"missing release notes: {notes_path}"]
 
     try:
-        metadata = parse_release_yaml(release_path.read_text(encoding="utf-8"), release_path)
+        release_text = release_path.read_text(encoding="utf-8")
+        metadata = parse_release_yaml(release_text, release_path)
     except ValueError as exc:
         return [str(exc)]
 
@@ -2817,9 +3097,12 @@ def validate_release_output(
 
     token_cost_required = version in TOKEN_COST_REPORT_REQUIRED_RELEASES
     adapter_artifacts_required = version in ADAPTER_ARTIFACT_METADATA_REQUIRED_RELEASES
+    npm_publication_evidence_required = version in NPM_PUBLICATION_EVIDENCE_REQUIRED_RELEASES
     required_validation_keys = list(REQUIRED_RELEASE_VALIDATION_KEYS)
     if adapter_artifacts_required:
         required_validation_keys.extend(("adapter_archives", "adapter_artifact_metadata"))
+    if npm_publication_evidence_required:
+        required_validation_keys.append("npm_publication_evidence")
     if token_cost_required:
         required_validation_keys.append("token_cost_report")
 
@@ -2878,6 +3161,12 @@ def validate_release_output(
         else ["release notes consistency could not be checked without manifest"]
     )
     errors.extend(release_notes_errors)
+    release_metadata_text_errors = (
+        _validate_v0_1_4_release_metadata_text(release_path, release_text)
+        if npm_publication_evidence_required
+        else []
+    )
+    errors.extend(release_metadata_text_errors)
 
     security_errors = scan_security_paths((release_path, notes_path))
     errors.extend(security_errors)
@@ -2896,6 +3185,7 @@ def validate_release_output(
 
     adapter_archive_errors: list[str] = []
     adapter_artifact_metadata_errors: list[str] = []
+    npm_publication_evidence_errors: list[str] = []
     if adapter_artifacts_required:
         if release_output_dir is None:
             adapter_archive_errors.append(
@@ -2919,6 +3209,13 @@ def validate_release_output(
             )
         errors.extend(adapter_archive_errors)
         errors.extend(adapter_artifact_metadata_errors)
+    if npm_publication_evidence_required:
+        npm_publication_evidence_errors = _validate_npm_publication_evidence(
+            version,
+            release_dir,
+            npm_tarball_root=npm_tarball_root,
+        )
+        errors.extend(npm_publication_evidence_errors)
 
     actual_validation = {
         "generated_sync": "fail"
@@ -2932,6 +3229,10 @@ def validate_release_output(
         actual_validation["adapter_archives"] = "fail" if adapter_archive_errors else "pass"
         actual_validation["adapter_artifact_metadata"] = (
             "fail" if adapter_artifact_metadata_errors else "pass"
+        )
+    if npm_publication_evidence_required:
+        actual_validation["npm_publication_evidence"] = (
+            "fail" if npm_publication_evidence_errors or release_metadata_text_errors else "pass"
         )
     if token_cost_required:
         actual_validation["token_cost_report"] = "fail" if token_cost_errors else "pass"
