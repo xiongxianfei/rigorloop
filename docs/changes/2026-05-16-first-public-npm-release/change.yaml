@@ -1,0 +1,372 @@
+change_id: 2026-05-16-first-public-npm-release
+title: First public npm release proposal review
+classification: proposal-review
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-16-first-public-npm-release.md
+  spec: specs/rigorloop-npm-publication.md
+  architecture: docs/architecture/system/architecture.md
+  adr: docs/adr/ADR-20260516-rigorloop-npm-publication.md
+  plan: docs/plans/2026-05-16-rigorloop-npm-publication.md
+  test_spec: specs/rigorloop-npm-publication.test.md
+  explain_change: docs/changes/2026-05-16-first-public-npm-release/explain-change.md
+  review_resolution: docs/changes/2026-05-16-first-public-npm-release/review-resolution.md
+requirements:
+  - Review the first public npm release proposal before specification or planning.
+  - Confirm publication scope stays limited to release hardening and first public package publication.
+  - Confirm FU-006 through FU-009 remain deferred while FU-010 owns npm release hardening.
+  - Confirm first-publication trust, package-content, version mapping, and evidence boundaries are ready for spec.
+tests:
+  - Formal proposal-review evidence for `docs/proposals/2026-05-16-first-public-npm-release.md`.
+  - Review artifact validation for the proposal-review receipt.
+  - Artifact lifecycle validation for the reviewed proposal and review evidence.
+  - code-review-r1
+  - code-review-r2
+  - code-review-r3
+  - code-review-r4
+  - code-review-r5
+  - code-review-r6
+  - code-review-r7
+  - code-review-r8
+validation:
+  - command: proposal-review r1
+    result: approved_no_material_findings
+  - command: maintainer decision
+    result: proposal_accepted_with_v0_1_4_release_yml_bootstrap_and_license_decisions
+  - command: spec
+    result: completed_pending_spec_review
+  - command: spec-review r1
+    result: changes_requested_SR1-F1_SR1-F2
+  - command: spec revision
+    result: addressed_SR1-F1_SR1-F2_pending_spec_review_rerun
+  - command: spec-review r2
+    result: changes_requested_SR2-F1
+  - command: spec revision
+    result: addressed_SR2-F1_pending_spec_review_rerun
+  - command: spec-review r3
+    result: approved_no_material_findings
+  - command: architecture
+    result: completed_pending_architecture_review
+  - command: architecture-review r1
+    result: approved_no_material_findings
+  - command: plan
+    result: completed_pending_plan_review
+  - command: plan-review r1
+    result: changes_requested_PR1-F1
+  - command: plan revision
+    result: addressed_PR1-F1_pending_plan_review_rerun
+  - command: plan-review r2
+    result: approved_no_material_findings
+  - command: test-spec
+    result: completed_pending_test_spec_review_or_approval
+  - command: maintainer approval
+    result: test_spec_approved
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/plan.md --path specs/rigorloop-npm-publication.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260516-rigorloop-npm-publication.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/plan.md --path specs/rigorloop-npm-publication.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260516-rigorloop-npm-publication.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass
+  - command: git diff --check -- docs/plans/2026-05-16-rigorloop-npm-publication.md docs/plan.md docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-16-first-public-npm-release
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-16-first-public-npm-release/reviews/plan-review-r1.md --path docs/changes/2026-05-16-first-public-npm-release/review-log.md --path docs/changes/2026-05-16-first-public-npm-release/review-resolution.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path docs/plans/2026-05-16-rigorloop-npm-publication.md
+    result: pass
+  - command: git diff --check -- docs/changes/2026-05-16-first-public-npm-release/reviews/plan-review-r1.md docs/changes/2026-05-16-first-public-npm-release/review-log.md docs/changes/2026-05-16-first-public-npm-release/review-resolution.md docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/changes/2026-05-16-first-public-npm-release/review-resolution.md --path docs/changes/2026-05-16-first-public-npm-release/review-log.md --path docs/changes/2026-05-16-first-public-npm-release/reviews/plan-review-r1.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/changes/2026-05-16-first-public-npm-release/review-resolution.md --path docs/changes/2026-05-16-first-public-npm-release/review-log.md --path docs/changes/2026-05-16-first-public-npm-release/reviews/plan-review-r1.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass
+  - command: git diff --check -- docs/plans/2026-05-16-rigorloop-npm-publication.md docs/changes/2026-05-16-first-public-npm-release/review-resolution.md docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-16-first-public-npm-release/reviews/plan-review-r2.md --path docs/changes/2026-05-16-first-public-npm-release/review-log.md --path docs/changes/2026-05-16-first-public-npm-release/review-resolution.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path docs/plans/2026-05-16-rigorloop-npm-publication.md
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-16-first-public-npm-release/reviews/plan-review-r2.md --path docs/changes/2026-05-16-first-public-npm-release/review-log.md --path docs/changes/2026-05-16-first-public-npm-release/review-resolution.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path docs/plans/2026-05-16-rigorloop-npm-publication.md
+    result: pass
+  - command: git diff --check -- docs/changes/2026-05-16-first-public-npm-release/reviews/plan-review-r2.md docs/changes/2026-05-16-first-public-npm-release/review-log.md docs/changes/2026-05-16-first-public-npm-release/review-resolution.md docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/rigorloop-npm-publication.test.md --path specs/rigorloop-npm-publication.md --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path specs/rigorloop-npm-publication.test.md --path specs/rigorloop-npm-publication.md --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass
+  - command: git diff --check -- specs/rigorloop-npm-publication.test.md docs/plans/2026-05-16-rigorloop-npm-publication.md docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass
+  - command: npm test --prefix packages/rigorloop -- --test-name-pattern "T1 package metadata|TNP-005"
+    result: failed_expected_before_M1_implementation_then_passed_after_package_metadata_changes
+  - command: npm test --prefix packages/rigorloop
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path packages/rigorloop/package.json --path packages/rigorloop/README.md --path packages/rigorloop/LICENSE --path packages/rigorloop/dist/bin/rigorloop.js --path packages/rigorloop/dist/metadata/releases.json --path packages/rigorloop/dist/metadata/adapter-artifacts-v0.1.4.json --path packages/rigorloop/test/cli.test.js --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path specs/rigorloop-npm-publication.md --path specs/rigorloop-npm-publication.test.md
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path packages/rigorloop --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path specs/rigorloop-npm-publication.md --path specs/rigorloop-npm-publication.test.md
+    result: pass
+  - command: git diff --check -- packages/rigorloop
+    result: pass
+  - command: code-review r1
+    result: clean_with_notes_no_material_findings
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-16-first-public-npm-release
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-16-first-public-npm-release/reviews/code-review-r1.md --path docs/changes/2026-05-16-first-public-npm-release/review-log.md --path docs/changes/2026-05-16-first-public-npm-release/review-resolution.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path packages/rigorloop/package.json --path packages/rigorloop/test/cli.test.js --path packages/rigorloop/dist/metadata/releases.json --path packages/rigorloop/dist/metadata/adapter-artifacts-v0.1.4.json
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path packages/rigorloop --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path docs/changes/2026-05-16-first-public-npm-release/review-log.md --path docs/changes/2026-05-16-first-public-npm-release/review-resolution.md --path docs/changes/2026-05-16-first-public-npm-release/reviews/code-review-r1.md --path specs/rigorloop-npm-publication.md --path specs/rigorloop-npm-publication.test.md
+    result: pass
+  - command: git diff --check -- packages/rigorloop docs/plans/2026-05-16-rigorloop-npm-publication.md docs/changes/2026-05-16-first-public-npm-release
+    result: pass
+  - command: python scripts/test-npm-package-publication.py
+    result: failed_expected_before_M2_validator_then_passed_after_package_publication_validation_changes
+  - command: tmp=$(mktemp -d); npm pack --dry-run --prefix packages/rigorloop ./packages/rigorloop --json > "$tmp/dry-run.json"; npm pack --prefix packages/rigorloop --pack-destination "$tmp" ./packages/rigorloop; python scripts/validate-npm-package.py --package-root packages/rigorloop --tarball "$tmp/xiongxianfei-rigorloop-0.1.4.tgz"
+    result: pass
+  - command: npm test --prefix packages/rigorloop
+    result: pass
+  - command: python scripts/test-select-validation.py
+    result: pass
+  - command: python scripts/test-npm-package-publication.py
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path scripts/npm_package_validation.py --path scripts/validate-npm-package.py --path scripts/test-npm-package-publication.py --path scripts/validation_selection.py --path scripts/test-select-validation.py --path packages/rigorloop/package.json --path packages/rigorloop/README.md --path packages/rigorloop/LICENSE --path packages/rigorloop/dist/bin/rigorloop.js --path packages/rigorloop/dist/metadata/releases.json --path packages/rigorloop/dist/metadata/adapter-artifacts-v0.1.4.json --path packages/rigorloop/test/cli.test.js --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path specs/rigorloop-npm-publication.md --path specs/rigorloop-npm-publication.test.md
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path packages/rigorloop --path scripts/npm_package_validation.py --path scripts/validate-npm-package.py --path scripts/test-npm-package-publication.py --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path specs/rigorloop-npm-publication.md --path specs/rigorloop-npm-publication.test.md
+    result: pass
+  - command: git diff --check -- packages/rigorloop scripts docs/plans/2026-05-16-rigorloop-npm-publication.md docs/changes/2026-05-16-first-public-npm-release
+    result: pass
+  - command: code-review r2
+    result: changes_requested_CR2-F1
+  - command: CR2-F1 review-resolution
+    result: accepted_and_fixed
+  - command: python scripts/test-npm-package-publication.py
+    result: pass_after_CR2-F1_fix
+  - command: code-review r3
+    result: clean_with_notes_no_material_findings
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-16-first-public-npm-release
+    result: pass_after_code_review_r3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass_after_code_review_r3
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-16-first-public-npm-release/reviews/code-review-r3.md --path docs/changes/2026-05-16-first-public-npm-release/review-log.md --path docs/changes/2026-05-16-first-public-npm-release/review-resolution.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path scripts/npm_package_validation.py --path scripts/test-npm-package-publication.py
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path packages/rigorloop --path scripts/npm_package_validation.py --path scripts/validate-npm-package.py --path scripts/test-npm-package-publication.py --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path docs/changes/2026-05-16-first-public-npm-release/review-log.md --path docs/changes/2026-05-16-first-public-npm-release/review-resolution.md --path docs/changes/2026-05-16-first-public-npm-release/reviews/code-review-r3.md --path specs/rigorloop-npm-publication.md --path specs/rigorloop-npm-publication.test.md
+    result: pass
+  - command: git diff --check -- packages/rigorloop scripts docs/plans/2026-05-16-rigorloop-npm-publication.md docs/changes/2026-05-16-first-public-npm-release specs/rigorloop-npm-publication.md specs/rigorloop-npm-publication.test.md
+    result: pass
+  - command: python scripts/test-adapter-distribution.py
+    result: failed_expected_before_M3_release_target_and_publication_evidence_then_passed
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_v0_1_3_release_validation_uses_release_output_not_tracked_adapter_tree AdapterDistributionTests.test_v0_1_4_release_validation_accepts_pending_publication_evidence AdapterDistributionTests.test_v0_1_4_release_validation_requires_publication_evidence_and_closeout_blocker AdapterDistributionTests.test_release_verify_script_supports_v0_1_4_npm_publication_gate
+    result: pass
+  - command: bash scripts/release-verify.sh v0.1.4
+    result: failed_expected_until_dist_adapter_manifest_updated_then_passed
+  - command: npm test --prefix packages/rigorloop
+    result: pass_after_M3
+  - command: python scripts/test-npm-package-publication.py
+    result: pass_after_M3
+  - command: python scripts/test-select-validation.py
+    result: pass_after_M3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass_after_M3
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path scripts/adapter_distribution.py --path scripts/release-verify.sh --path scripts/test-adapter-distribution.py --path docs/releases/v0.1.4/release.yaml --path docs/releases/v0.1.4/release-notes.md --path docs/releases/v0.1.4/npm-publication.md --path docs/reports/adapter-artifacts/releases/v0.1.4.yaml --path packages/rigorloop/dist/metadata/adapter-artifacts-v0.1.4.json --path packages/rigorloop/dist/metadata/releases.json --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path scripts/adapter_distribution.py --path scripts/release-verify.sh --path scripts/test-adapter-distribution.py --path scripts/validate-release.py --path docs/releases/v0.1.4/release.yaml --path docs/releases/v0.1.4/release-notes.md --path docs/releases/v0.1.4/npm-publication.md --path docs/reports/adapter-artifacts/releases/v0.1.4.yaml --path packages/rigorloop/dist/metadata/adapter-artifacts-v0.1.4.json --path packages/rigorloop/dist/metadata/releases.json --path dist/adapters/manifest.yaml --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path specs/rigorloop-npm-publication.md --path specs/rigorloop-npm-publication.test.md
+    result: pass
+  - command: code-review r4
+    result: clean_with_notes_no_material_findings
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-16-first-public-npm-release
+    result: pass_after_code_review_r4
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass_after_code_review_r4
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-16-first-public-npm-release/reviews/code-review-r4.md --path docs/changes/2026-05-16-first-public-npm-release/review-log.md --path docs/changes/2026-05-16-first-public-npm-release/review-resolution.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path docs/plans/2026-05-16-rigorloop-npm-publication.md
+    result: pass_after_code_review_r4
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-16-first-public-npm-release/reviews/code-review-r4.md --path docs/changes/2026-05-16-first-public-npm-release/review-log.md --path docs/changes/2026-05-16-first-public-npm-release/review-resolution.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path specs/rigorloop-npm-publication.md --path specs/rigorloop-npm-publication.test.md
+    result: pass
+  - command: git diff --check -- docs/changes/2026-05-16-first-public-npm-release docs/plans/2026-05-16-rigorloop-npm-publication.md
+    result: pass_after_code_review_r4
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_release_workflow_gates_npm_publication_modes AdapterDistributionTests.test_v0_1_4_release_validation_rejects_incomplete_published_bootstrap_identity AdapterDistributionTests.test_v0_1_4_release_validation_accepts_complete_published_bootstrap_identity
+    result: failed_expected_before_M4_workflow_and_bootstrap_identity_changes_then_passed
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_after_M4
+  - command: python scripts/test-select-validation.py
+    result: pass_after_M4
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass_after_M4
+  - command: bash scripts/release-verify.sh v0.1.4
+    result: pass_after_M4
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path .github/workflows/release.yml --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass_after_M4
+  - command: bash scripts/ci.sh --mode explicit --path .github/workflows/release.yml --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path scripts/release-verify.sh --path scripts/validate-release.py --path docs/releases/v0.1.4/npm-publication.md --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path specs/rigorloop-npm-publication.md --path specs/rigorloop-npm-publication.test.md
+    result: pass
+  - command: git diff --check -- .github/workflows/release.yml scripts/adapter_distribution.py scripts/test-adapter-distribution.py docs/plans/2026-05-16-rigorloop-npm-publication.md docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass_after_M4
+  - command: code-review r5
+    result: changes_requested_CR5-F1
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-16-first-public-npm-release
+    result: pass_after_code_review_r5
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass_after_code_review_r5
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-16-first-public-npm-release/reviews/code-review-r5.md --path docs/changes/2026-05-16-first-public-npm-release/review-log.md --path docs/changes/2026-05-16-first-public-npm-release/review-resolution.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path docs/plans/2026-05-16-rigorloop-npm-publication.md
+    result: pass_after_code_review_r5
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-16-first-public-npm-release/reviews/code-review-r5.md --path docs/changes/2026-05-16-first-public-npm-release/review-log.md --path docs/changes/2026-05-16-first-public-npm-release/review-resolution.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path .github/workflows/release.yml --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path specs/rigorloop-npm-publication.md --path specs/rigorloop-npm-publication.test.md
+    result: pass
+  - command: git diff --check -- docs/changes/2026-05-16-first-public-npm-release docs/plans/2026-05-16-rigorloop-npm-publication.md
+    result: pass_after_code_review_r5
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_validate_release_cli_passes_changed_surface_inputs AdapterDistributionTests.test_v0_1_4_release_validation_rejects_incomplete_published_bootstrap_identity AdapterDistributionTests.test_v0_1_4_release_validation_rejects_mismatched_bootstrap_tarball_sha AdapterDistributionTests.test_v0_1_4_release_validation_rejects_missing_bootstrap_tarball_file AdapterDistributionTests.test_v0_1_4_release_validation_accepts_complete_published_bootstrap_identity
+    result: pass_after_CR5-F1_fix
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_after_CR5-F1_fix
+  - command: python scripts/test-select-validation.py
+    result: pass_after_CR5-F1_fix
+  - command: bash scripts/release-verify.sh v0.1.4
+    result: pass_after_CR5-F1_fix
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass_after_CR5-F1_fix
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path .github/workflows/release.yml --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path scripts/validate-release.py --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path docs/changes/2026-05-16-first-public-npm-release/review-resolution.md
+    result: pass_after_CR5-F1_fix
+  - command: bash scripts/ci.sh --mode explicit --path .github/workflows/release.yml --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path scripts/validate-release.py --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path docs/changes/2026-05-16-first-public-npm-release/review-resolution.md --path specs/rigorloop-npm-publication.md --path specs/rigorloop-npm-publication.test.md
+    result: pass_after_CR5-F1_fix
+  - command: code-review r6
+    result: clean_with_notes_no_material_findings
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-16-first-public-npm-release
+    result: pass_after_code_review_r6
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass_after_code_review_r6
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-16-first-public-npm-release/reviews/code-review-r6.md --path docs/changes/2026-05-16-first-public-npm-release/review-log.md --path docs/changes/2026-05-16-first-public-npm-release/review-resolution.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path docs/plans/2026-05-16-rigorloop-npm-publication.md
+    result: pass_after_code_review_r6
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-16-first-public-npm-release/reviews/code-review-r6.md --path docs/changes/2026-05-16-first-public-npm-release/review-log.md --path docs/changes/2026-05-16-first-public-npm-release/review-resolution.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path .github/workflows/release.yml --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path scripts/validate-release.py --path specs/rigorloop-npm-publication.md --path specs/rigorloop-npm-publication.test.md
+    result: pass_after_code_review_r6
+  - command: git diff --check -- docs/changes/2026-05-16-first-public-npm-release docs/plans/2026-05-16-rigorloop-npm-publication.md scripts/adapter_distribution.py scripts/validate-release.py scripts/test-adapter-distribution.py
+    result: pass_after_code_review_r6
+  - command: npm test --prefix packages/rigorloop
+    result: pass_after_M5
+  - command: bash scripts/release-verify.sh v0.1.4
+    result: pass_after_M5
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass_after_M5
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-16-first-public-npm-release
+    result: pass_after_M5
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/releases/v0.1.4/release.yaml --path docs/releases/v0.1.4/release-notes.md --path docs/releases/v0.1.4/npm-publication.md --path docs/follow-ups.md --path docs/plan.md --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path docs/changes/2026-05-16-first-public-npm-release/explain-change.md
+    result: pass_after_M5
+  - command: bash scripts/ci.sh --mode explicit --path packages/rigorloop --path scripts/release-verify.sh --path scripts/validate-release.py --path .github/workflows/release.yml --path docs/releases/v0.1.4 --path docs/follow-ups.md --path specs/rigorloop-npm-publication.md --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/plan.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: blocked_release_version_required_for_directory_path
+  - command: bash scripts/ci.sh --mode explicit --path packages/rigorloop --path scripts/release-verify.sh --path scripts/validate-release.py --path .github/workflows/release.yml --path docs/releases/v0.1.4/release.yaml --path docs/releases/v0.1.4/release-notes.md --path docs/releases/v0.1.4/npm-publication.md --path docs/follow-ups.md --path specs/rigorloop-npm-publication.md --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/plan.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass_after_M5
+  - command: git diff --check -- packages/rigorloop scripts .github docs/releases/v0.1.4 docs/follow-ups.md docs/plans/2026-05-16-rigorloop-npm-publication.md docs/plan.md docs/changes/2026-05-16-first-public-npm-release
+    result: pass_after_M5
+  - command: code-review r7
+    result: clean_with_notes_no_material_findings
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-16-first-public-npm-release
+    result: pass_after_code_review_r7
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass_after_code_review_r7
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-16-first-public-npm-release/reviews/code-review-r7.md --path docs/changes/2026-05-16-first-public-npm-release/review-log.md --path docs/changes/2026-05-16-first-public-npm-release/review-resolution.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/changes/2026-05-16-first-public-npm-release/explain-change.md --path docs/follow-ups.md
+    result: pass_after_code_review_r7
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-16-first-public-npm-release/reviews/code-review-r7.md --path docs/changes/2026-05-16-first-public-npm-release/review-log.md --path docs/changes/2026-05-16-first-public-npm-release/review-resolution.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path docs/changes/2026-05-16-first-public-npm-release/explain-change.md --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/follow-ups.md --path specs/rigorloop-npm-publication.md --path specs/rigorloop-npm-publication.test.md
+    result: pass_after_code_review_r7
+  - command: git diff --check -- docs/changes/2026-05-16-first-public-npm-release docs/plans/2026-05-16-rigorloop-npm-publication.md docs/follow-ups.md
+    result: pass_after_code_review_r7
+  - command: npm test --prefix packages/rigorloop
+    result: pass_for_M6a_repository_local_readiness
+  - command: bash scripts/release-verify.sh v0.1.4
+    result: pass_for_M6a_repository_local_readiness
+  - command: tmp=$(mktemp -d); npm pack --dry-run --prefix packages/rigorloop ./packages/rigorloop --json > "$tmp/dry-run.json"; npm pack --prefix packages/rigorloop --pack-destination "$tmp" ./packages/rigorloop; python scripts/validate-npm-package.py --package-root packages/rigorloop --tarball "$tmp/xiongxianfei-rigorloop-0.1.4.tgz"
+    result: pass_for_M6a_repository_local_readiness
+  - command: bash scripts/ci.sh --mode explicit --path packages/rigorloop --path scripts/release-verify.sh --path scripts/validate-release.py --path .github/workflows/release.yml --path docs/releases/v0.1.4/release.yaml --path docs/releases/v0.1.4/release-notes.md --path docs/releases/v0.1.4/npm-publication.md --path docs/follow-ups.md --path specs/rigorloop-npm-publication.md --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/plan.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass_for_M6a_repository_local_readiness
+  - command: git diff --check -- packages/rigorloop scripts .github docs/releases/v0.1.4 docs/follow-ups.md docs/plans/2026-05-16-rigorloop-npm-publication.md docs/plan.md docs/changes/2026-05-16-first-public-npm-release
+    result: pass_for_M6a_repository_local_readiness
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass_after_M6a_plan_update
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/plan.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path docs/changes/2026-05-16-first-public-npm-release/explain-change.md --path docs/releases/v0.1.4/npm-publication.md --path docs/follow-ups.md
+    result: pass_after_M6a_plan_update
+  - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/plan.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path docs/changes/2026-05-16-first-public-npm-release/explain-change.md --path docs/releases/v0.1.4/npm-publication.md --path docs/follow-ups.md --path specs/rigorloop-npm-publication.md
+    result: pass_after_M6a_plan_update
+  - command: git diff --check -- packages/rigorloop scripts .github docs/releases/v0.1.4 docs/follow-ups.md docs/plans/2026-05-16-rigorloop-npm-publication.md docs/plan.md docs/changes/2026-05-16-first-public-npm-release
+    result: pass_after_M6a_plan_update
+  - command: code-review r8
+    result: clean_with_notes_no_material_findings
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-16-first-public-npm-release
+    result: pass_after_code_review_r8
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass_after_code_review_r8
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-16-first-public-npm-release/reviews/code-review-r8.md --path docs/changes/2026-05-16-first-public-npm-release/review-log.md --path docs/changes/2026-05-16-first-public-npm-release/review-resolution.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/changes/2026-05-16-first-public-npm-release/explain-change.md --path docs/follow-ups.md
+    result: pass_after_code_review_r8
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-16-first-public-npm-release/reviews/code-review-r8.md --path docs/changes/2026-05-16-first-public-npm-release/review-log.md --path docs/changes/2026-05-16-first-public-npm-release/review-resolution.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path docs/changes/2026-05-16-first-public-npm-release/explain-change.md --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/follow-ups.md --path specs/rigorloop-npm-publication.md
+    result: pass_after_code_review_r8
+  - command: git diff --check -- docs/changes/2026-05-16-first-public-npm-release docs/plans/2026-05-16-rigorloop-npm-publication.md docs/follow-ups.md
+    result: pass_after_code_review_r8
+  - command: verify
+    result: branch_ready_for_PR_handoff_M6a_publication_not_ready
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-16-first-public-npm-release
+    result: pass_during_M6a_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass_during_M6a_verify
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/plan.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path docs/changes/2026-05-16-first-public-npm-release/explain-change.md --path docs/changes/2026-05-16-first-public-npm-release/review-log.md --path docs/changes/2026-05-16-first-public-npm-release/review-resolution.md --path docs/releases/v0.1.4/release.yaml --path docs/releases/v0.1.4/release-notes.md --path docs/releases/v0.1.4/npm-publication.md --path docs/follow-ups.md
+    result: pass_during_M6a_verify
+  - command: bash scripts/ci.sh --mode explicit --path packages/rigorloop --path scripts/release-verify.sh --path scripts/validate-release.py --path .github/workflows/release.yml --path docs/releases/v0.1.4/release.yaml --path docs/releases/v0.1.4/release-notes.md --path docs/releases/v0.1.4/npm-publication.md --path docs/follow-ups.md --path specs/rigorloop-npm-publication.md --path specs/rigorloop-npm-publication.test.md --path docs/adr/ADR-20260516-rigorloop-npm-publication.md --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/plan.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass_during_M6a_verify
+  - command: bash scripts/release-verify.sh v0.1.4
+    result: pass_during_M6a_verify
+  - command: git diff --check -- packages/rigorloop scripts .github docs/releases/v0.1.4 docs/follow-ups.md docs/plans/2026-05-16-rigorloop-npm-publication.md docs/plan.md docs/changes/2026-05-16-first-public-npm-release specs/rigorloop-npm-publication.md specs/rigorloop-npm-publication.test.md docs/adr/ADR-20260516-rigorloop-npm-publication.md
+    result: pass_during_M6a_verify
+  - command: gh pr create --base main --head first-public-npm-release
+    result: opened_PR_65
+review:
+  status: clean
+  unresolved_items: 0
+  reviewed_artifact: docs/plans/2026-05-16-rigorloop-npm-publication.md
+  review_log: docs/changes/2026-05-16-first-public-npm-release/review-log.md
+  review_resolution: docs/changes/2026-05-16-first-public-npm-release/review-resolution.md
+changed_files:
+  - docs/proposals/2026-05-16-first-public-npm-release.md
+  - specs/rigorloop-npm-publication.md
+  - specs/rigorloop-npm-publication.test.md
+  - docs/architecture/system/architecture.md
+  - docs/architecture/system/diagrams/context.mmd
+  - docs/architecture/system/diagrams/container.mmd
+  - docs/adr/ADR-20260516-rigorloop-npm-publication.md
+  - docs/plans/2026-05-16-rigorloop-npm-publication.md
+  - docs/plan.md
+  - docs/follow-ups.md
+  - docs/changes/2026-05-16-first-public-npm-release/change.yaml
+  - docs/changes/2026-05-16-first-public-npm-release/explain-change.md
+  - docs/changes/2026-05-16-first-public-npm-release/review-log.md
+  - docs/changes/2026-05-16-first-public-npm-release/review-resolution.md
+  - docs/changes/2026-05-16-first-public-npm-release/reviews/proposal-review-r1.md
+  - docs/changes/2026-05-16-first-public-npm-release/reviews/spec-review-r1.md
+  - docs/changes/2026-05-16-first-public-npm-release/reviews/spec-review-r2.md
+  - docs/changes/2026-05-16-first-public-npm-release/reviews/spec-review-r3.md
+  - docs/changes/2026-05-16-first-public-npm-release/reviews/architecture-review-r1.md
+  - docs/changes/2026-05-16-first-public-npm-release/reviews/plan-review-r1.md
+  - docs/changes/2026-05-16-first-public-npm-release/reviews/plan-review-r2.md
+  - docs/changes/2026-05-16-first-public-npm-release/reviews/code-review-r1.md
+  - docs/changes/2026-05-16-first-public-npm-release/reviews/code-review-r2.md
+  - docs/changes/2026-05-16-first-public-npm-release/reviews/code-review-r3.md
+  - docs/changes/2026-05-16-first-public-npm-release/reviews/code-review-r4.md
+  - docs/changes/2026-05-16-first-public-npm-release/reviews/code-review-r5.md
+  - docs/changes/2026-05-16-first-public-npm-release/reviews/code-review-r6.md
+  - docs/changes/2026-05-16-first-public-npm-release/reviews/code-review-r7.md
+  - docs/changes/2026-05-16-first-public-npm-release/reviews/code-review-r8.md
+  - docs/releases/v0.1.4/release.yaml
+  - docs/releases/v0.1.4/release-notes.md
+  - docs/releases/v0.1.4/npm-publication.md
+  - docs/reports/adapter-artifacts/releases/v0.1.4.yaml
+  - .github/workflows/release.yml
+  - dist/adapters/manifest.yaml
+  - scripts/adapter_distribution.py
+  - scripts/release-verify.sh
+  - scripts/test-adapter-distribution.py
+  - scripts/validate-release.py
+  - packages/rigorloop/package.json
+  - packages/rigorloop/README.md
+  - packages/rigorloop/LICENSE
+  - packages/rigorloop/dist/bin/rigorloop.js
+  - packages/rigorloop/dist/metadata/releases.json
+  - packages/rigorloop/dist/metadata/adapter-artifacts-v0.1.4.json
+  - packages/rigorloop/dist/metadata/adapter-artifacts-v0.1.3.json
+  - packages/rigorloop/test/cli.test.js
+  - scripts/npm_package_validation.py
+  - scripts/validate-npm-package.py
+  - scripts/test-npm-package-publication.py
+  - scripts/validation_selection.py
+  - scripts/test-select-validation.py

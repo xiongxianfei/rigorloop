@@ -42,3 +42,42 @@ jobs:
             args+=(release-output/*)
           fi
           gh release create "${args[@]}"
+
+  publish-npm-trusted:
+    needs: release
+    if: github.ref_type == 'tag' && github.ref_name != 'v0.1.4' && !contains(github.ref_name, '-')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node for npm trusted publishing
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+
+      - name: Validate npm trusted publication context
+        run: |
+          tag="${GITHUB_REF_NAME}"
+          if [[ ! "$tag" =~ ^[v][0-9]+[.][0-9]+[.][0-9]+$ ]]; then
+            echo "npm publication requires a stable semver tag, got: ${tag}" >&2
+            exit 1
+          fi
+          expected_version="${tag#v}"
+          package_version="$(node -p "require('./packages/rigorloop/package.json').version")"
+          if [[ "$package_version" != "$expected_version" ]]; then
+            echo "packages/rigorloop/package.json version ${package_version} does not match ${tag}" >&2
+            exit 1
+          fi
+          bash scripts/release-verify.sh "$tag"
+
+      - name: Publish npm package through trusted publishing
+        run: npm publish --provenance --access public ./packages/rigorloop

@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
   "releases": {
-    "v0.1.3": {
+    "v0.1.4": {
       "source_repository": "xiongxianfei/rigorloop",
-      "release_tag": "v0.1.3",
-      "bundled_metadata": "adapter-artifacts-v0.1.3.json",
-      "bundled_metadata_sha256": "6d042464e7a3eef25a7c30a6ea74662bc8ee58b1b79f2b3917c3655c49d565a4"
+      "release_tag": "v0.1.4",
+      "bundled_metadata": "adapter-artifacts-v0.1.4.json",
+      "bundled_metadata_sha256": "da4505ff2edbbb298aae10a4a147a617e0f8cd73b7805ea285a65ecb18824563"
     }
   }
 }

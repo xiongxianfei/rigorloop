@@ -145,6 +145,11 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "npm test --prefix packages/rigorloop",
         "rigorloop-cli",
     ),
+    "npm_package_publication.test": CheckCatalogEntry(
+        "npm_package_publication.test",
+        "python scripts/test-npm-package-publication.py",
+        "rigorloop-cli",
+    ),
 }
 
 
@@ -816,6 +821,11 @@ def _apply_path_selection(
             "rigorloop_cli.test",
             "Changed RigorLoop CLI package requires package test validation.",
         )
+        _add_check(
+            selected,
+            "npm_package_publication.test",
+            "Changed RigorLoop npm package surface requires package publication validation.",
+        )
         return
 
     blocking_results.append(
@@ -1001,6 +1011,12 @@ def _path_category(path: str) -> str | None:
     if path.startswith("docs/reports/token-cost/"):
         return "token-cost"
     if path == "packages/rigorloop" or path.startswith("packages/rigorloop/"):
+        return "rigorloop-cli"
+    if path in {
+        "scripts/npm_package_validation.py",
+        "scripts/validate-npm-package.py",
+        "scripts/test-npm-package-publication.py",
+    }:
         return "rigorloop-cli"
     if path.startswith("docs/reports/adapter-artifacts/releases/") and path.endswith(".yaml"):
         return "adapter-artifact-metadata"
