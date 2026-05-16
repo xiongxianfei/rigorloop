@@ -56,6 +56,27 @@ class ChangeMetadataValidatorFixtureTests(unittest.TestCase):
     def test_shipped_0001_example_passes(self) -> None:
         self.assertPathPasses(SKILL_VALIDATOR_EXAMPLE)
 
+    def test_inline_empty_collections_pass(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="change-metadata-inline-empty-") as temp_dir:
+            target = Path(temp_dir) / "change.yaml"
+            target.write_text(
+                """change_id: "inline-empty"
+title: "Inline empty collections"
+classification: "test"
+risk: "low"
+artifacts: {}
+requirements: []
+tests: []
+validation: []
+changed_files: []
+review:
+  status: "pending"
+  unresolved_items: 0
+""",
+                encoding="utf-8",
+            )
+            self.assertPathPasses(target)
+
     def test_noncanonical_artifact_key_fails(self) -> None:
         self.assertPathFails(
             FIXTURES / "bad-artifact-key" / "change.yaml",

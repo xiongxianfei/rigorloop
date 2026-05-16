@@ -8,6 +8,8 @@ import { fileURLToPath } from "node:url";
 
 import { EXIT, exitCodeForResult } from "../lib/command-result.js";
 import { parseLockfile, serializeLockfile, sha256NormalizedText } from "../lib/lockfile.js";
+import { buildNewChangeDraft, parseNewChangeArgs } from "../lib/new-change.js";
+import { runNewChangePlan } from "../lib/new-change-filesystem.js";
 import { validateOfficialArchiveUrl } from "../lib/official-archive-url.js";
 
 const ADAPTER = "codex";
@@ -112,10 +114,12 @@ Usage:
   rigorloop --help
   rigorloop version
   rigorloop init --adapter codex [--dry-run] [--json]
+  rigorloop new-change <change-id> --title <title> [--dry-run] [--json]
 
 Commands:
   version                 Print package name and version.
   init --adapter codex    Initialize the first-slice Codex adapter plan.
+  new-change              Plan a change metadata scaffold.
 `;
 }
 
@@ -1058,6 +1062,49 @@ function invalidUsage(message, flags, command = "unknown") {
   });
 }
 
+function newChangeUsageError(error, flags) {
+  return commandError("new-change", error.message, flags, {
+    code: error.code,
+    message: error.message,
+    next_action: "Run rigorloop new-change <change-id> --title <title>.",
+  });
+}
+
+function handleNewChange(rawArgs) {
+  const parsed = parseNewChangeArgs(rawArgs, process.env);
+  if (parsed.error) {
+    return newChangeUsageError(parsed.error, parsed.flags);
+  }
+
+  const draft = buildNewChangeDraft(parsed.value);
+  const execution = runNewChangePlan({
+    cwd: process.cwd(),
+    draft,
+    flags: parsed.flags,
+    profile: parsed.value.profile,
+  });
+  const result = envelope("new-change", parsed.flags, {
+    ...execution.result,
+  });
+
+  if (parsed.flags.json) {
+    writeJson(result);
+  } else if (result.status === "blocked") {
+    process.stderr.write(`${result.summary}\n${result.blockers[0].message}\n`);
+  } else if (result.status === "error") {
+    process.stderr.write(`${result.summary}\n${result.errors[0].message}\n`);
+  } else if (parsed.flags.dryRun) {
+    writeHuman(`RigorLoop new-change dry run completed.\n${draft.planned_change_metadata.path}\n`, parsed.flags);
+  } else {
+    writeHuman(`RigorLoop change metadata scaffold created.\n${draft.change.root}\n${draft.change.metadata_path}\n`, parsed.flags);
+  }
+
+  return exitCodeForResult({
+    status: result.status,
+    exit_class: execution.exit_class,
+  });
+}
+
 function invalidArchivePath(message, flags) {
   return commandError("init", message, flags, {
     code: "invalid-archive-path",
@@ -1420,7 +1467,12 @@ async function handleInit(flags) {
 
 async function main() {
   try {
-    const { flags, positional } = parseFlags(process.argv.slice(2));
+    const rawArgs = process.argv.slice(2);
+    if (rawArgs[0] === "new-change") {
+      return handleNewChange(rawArgs.slice(1));
+    }
+
+    const { flags, positional } = parseFlags(rawArgs);
     const [command] = positional;
 
     if (!command || command === "--help" || command === "-h") {
@@ -1431,6 +1483,9 @@ async function main() {
     }
     if (command === "init") {
       return handleInit(flags);
+    }
+    if (command === "new-change") {
+      return handleNewChange(rawArgs.slice(rawArgs.indexOf("new-change") + 1));
     }
 
     return invalidUsage(`Unknown command: ${command}`, flags);
