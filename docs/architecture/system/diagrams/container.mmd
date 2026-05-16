@@ -3,6 +3,7 @@ flowchart TB
   reviewer["Reviewer or maintainer"]:::person
   execution["Local shell and GitHub Actions<br/>[Validation execution]"]:::external
   package_runner["npm/npx package runner<br/>[CLI delivery surface]"]:::external
+  npm_registry["npm registry<br/>[Public package registry]"]:::external
   adapter_user["Codex, Claude Code, and opencode user"]:::person
 
   subgraph repo["RigorLoop repository<br/>[Git repository]"]
@@ -42,6 +43,8 @@ flowchart TB
   cli -->|uses bundled official adapter metadata and small scaffolds from| release
   cli -->|writes safe project/change scaffolds, records lockfile state, and installs verified Codex adapter output from| generated
   cli -->|is executed by| package_runner
+  cli -->|is published after package-content, smoke, and publication-mode checks to| npm_registry
+  npm_registry -->|delivers the published package to| package_runner
   generated -->|provides public Codex skills for benchmark temp fixtures used by| token_bench
   scripts -->|validate lifecycle, metadata, review artifacts, release data, and drift for| lifecycle
   scripts -->|run in| execution

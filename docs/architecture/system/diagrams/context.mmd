@@ -6,6 +6,7 @@ flowchart LR
   git["Git and PR review<br/>[Review platform]"]:::external
   execution["Local shell and GitHub Actions<br/>[Validation execution]"]:::external
   package_runner["npm/npx package runner<br/>[CLI delivery surface]"]:::external
+  npm_registry["npm registry<br/>[Public CLI package registry]"]:::external
   package_surface["Generated adapter package consumers<br/>[External runtime surfaces]"]:::external
   release_assets["GitHub release assets<br/>[Adapter archives and metadata]"]:::external
 
@@ -15,6 +16,8 @@ flowchart LR
   repo -->|publishes reviewable branch and PR history through| git
   repo -->|validates lifecycle, metadata, drift, and diagram source through| execution
   repo -->|packages the CLI candidate and bundled adapter metadata for| package_runner
+  repo -->|publishes the verified CLI package to| npm_registry
+  npm_registry -->|serves @xiongxianfei/rigorloop to| package_runner
   repo -->|publishes verified adapter archives as| release_assets
   repo -->|generates synchronized project-portable guidance for| package_surface
   package_runner -->|executes init and verifies archives against bundled metadata from| repo

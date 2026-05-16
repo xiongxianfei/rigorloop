@@ -1,8 +1,7 @@
 {
   "name": "@xiongxianfei/rigorloop",
-  "version": "0.1.3",
-  "private": true,
-  "description": "RigorLoop CLI package candidate.",
+  "version": "0.1.4",
+  "description": "RigorLoop CLI.",
   "type": "module",
   "bin": {
     "rigorloop": "dist/bin/rigorloop.js"
@@ -10,7 +9,8 @@
   "files": [
     "dist/",
     "package.json",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "test": "node --test"

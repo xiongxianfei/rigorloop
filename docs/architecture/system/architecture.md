@@ -47,6 +47,10 @@
 - RigorLoop CLI Lockfile change metadata: `docs/changes/2026-05-15-rigorloop-cli-lockfile/change.yaml`
 - RigorLoop CLI New Change spec: `specs/rigorloop-cli-new-change.md`
 - RigorLoop CLI New Change change metadata: `docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml`
+- RigorLoop npm Publication proposal: `docs/proposals/2026-05-16-first-public-npm-release.md`
+- RigorLoop npm Publication spec: `specs/rigorloop-npm-publication.md`
+- RigorLoop npm Publication ADR: `docs/adr/ADR-20260516-rigorloop-npm-publication.md`
+- RigorLoop npm Publication change metadata: `docs/changes/2026-05-16-first-public-npm-release/change.yaml`
 - Record Every Formal Review proposal: `docs/proposals/2026-05-12-record-every-formal-review.md`
 - Formal Review Recording spec: `specs/formal-review-recording.md`
 - Record Every Formal Review change metadata: `docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml`
@@ -72,6 +76,7 @@ The goals are:
 - add a small CLI package boundary that scaffolds projects and installs verified Codex release archives without becoming a second source of truth;
 - let the CLI record verified generated Codex adapter output in a downstream `rigorloop.lock` without making the lockfile canonical workflow, skill, schema, release, or adapter metadata;
 - let the CLI scaffold a draft change-local artifact pack for `docs/changes/<change-id>/change.yaml` without claiming lifecycle stage completion or creating durable-looking placeholder artifacts;
+- publish the first public `@xiongxianfei/rigorloop` npm package only through a reviewable release-hardening boundary that preserves npm as delivery, not source of truth;
 - make public release skill token-friendliness measurable through release reports, structured metadata, and fixture-backed runtime benchmarks;
 - make dynamic token-friendliness coverage visible across the core delivery workflow without requiring every optional skill benchmark for every release;
 - keep first adoption and package-quality refinement review-based until real package usage proves which checks are worth automating.
@@ -101,7 +106,8 @@ The goals are:
 - `rigorloop init` may write durable `rigorloop.lock` only for the approved Codex lockfile-writing surface after archive verification, extraction safety checks, generated-output mutation, installed-tree verification, and lockfile shape validation have succeeded.
 - `rigorloop.lock` records verified generated Codex adapter output state in a downstream project. It is not canonical workflow content, canonical skill content, release metadata, adapter metadata, or validation authority.
 - The first lockfile schema is strict: unknown top-level sections, unknown fields, unsupported schemas, unsupported adapters, unsupported source values, and unsupported tree hash algorithms block before mutation.
-- Public npm publication of `@xiongxianfei/rigorloop` is blocked until a later release-policy slice accepts package contents, trusted publishing, provenance, workflow controls, dependency policy, lifecycle-script policy, versioning, and rollback behavior.
+- Public npm publication of `@xiongxianfei/rigorloop@0.1.4` is allowed only through the approved npm publication slice: package-content allowlist, lifecycle-script and dependency policy, exactly one publication mode, publication evidence, packed-package smoke, and real Codex adapter install proof.
+- Normal npm publication uses trusted publishing through `.github/workflows/release.yml`. One-time bootstrap publication may be used only for `@xiongxianfei/rigorloop@0.1.4` if trusted publishing cannot be configured before package creation, and it may publish only the exact verified tarball recorded in publication evidence.
 - After the `v0.1.3` adapter untracking migration, the tracked default adapter support surface under `dist/adapters/` is limited to `README.md` and `manifest.yaml` unless a later approved spec explicitly names more tracked metadata or templates.
 - `docs/releases/<version>/release.yaml` and `docs/releases/<version>/release-notes.md` are authored release evidence, not generated release-note substitutes.
 - First implementation remains review-based for architecture package completeness; required package-shape, C4-file, and ADR-presence enforcement automation is deferred.
@@ -150,14 +156,14 @@ The repository system is composed of authored guidance, lifecycle artifacts, val
 | Governance and workflow guidance | Defines source-of-truth order, repository defaults, workflow routing, and contributor expectations | Markdown in `CONSTITUTION.md`, `AGENTS.md`, `docs/workflows.md` |
 | Lifecycle artifacts and ADRs | Carry proposal, spec, architecture, ADR, plan, test-spec, and change metadata states | Markdown/YAML in `docs/proposals/`, `specs/`, `docs/architecture/`, `docs/adr/`, `docs/plans/`, `docs/changes/` |
 | Token-cost benchmark fixtures and reports | Carry executable benchmark prompts, clean downstream fixtures, raw or sanitized run evidence, analyzer summaries, and longitudinal token-friendliness reports | Markdown/YAML/JSONL under `benchmarks/token-cost/` and `docs/reports/token-cost/` |
-| RigorLoop CLI package candidate | Provides the `rigorloop` binary, project scaffolding, change metadata scaffolding, stable human/JSON command envelopes, bundled Codex adapter metadata, verified Codex adapter archive installation, and first-slice durable lockfile writes for verified Codex output | Node/npm package under the repository package boundary, published later as `@xiongxianfei/rigorloop` only after release hardening |
+| RigorLoop CLI package | Provides the `rigorloop` binary, project scaffolding, change metadata scaffolding, stable human/JSON command envelopes, bundled Codex adapter metadata, verified Codex adapter archive installation, and first-slice durable lockfile writes for verified Codex output | Node/npm package under `packages/rigorloop`, published as `@xiongxianfei/rigorloop` only through the approved npm publication boundary |
 | Canonical architecture package | Long-lived current architecture source of truth, including arc42 prose and C4 diagram source | Markdown and Mermaid in `docs/architecture/system/` |
 | Change-local evidence | Historical architecture evidence, explicit exceptional architecture evidence, change metadata, explanation, review resolution, and verification evidence | Markdown/YAML in `docs/changes/<change-id>/` |
 | Templates and diagram styles | Canonical scaffolding for architecture, ADRs, and shared Mermaid C4 role styling | Markdown/Mermaid under `templates/` |
 | Canonical skills and adapter templates | Source instructions for workflow stages and thin adapter entrypoints | Markdown in `skills/`, templates in `scripts/adapter_templates/` |
 | Validation and generation scripts | Select checks, validate artifacts, refresh generated output, and prove drift status | Python and shell under `scripts/` |
 | Generated runtime state and adapters | Derived local Codex runtime state and public adapter packages for supported agent tools; local runtime state and public adapter packages are generated from canonical sources and are not authored sources | Ignored local files under `.codex/skills/`, tracked adapter support metadata under `dist/adapters/`, generated temporary or release-output package directories, and release asset archives |
-| Release evidence | Authored release contract, notes, adapter artifact metadata, checksums, and maintainer smoke evidence | YAML/Markdown under `docs/releases/<version>/` and `docs/reports/adapter-artifacts/releases/` |
+| Release evidence | Authored release contract, notes, adapter artifact metadata, package publication evidence, checksums, and maintainer smoke evidence | YAML/Markdown under `docs/releases/<version>/` and `docs/reports/adapter-artifacts/releases/` |
 | Legacy architecture archive | Historical architecture records retained after accepted current content is merged here | Archived Markdown under `docs/architecture/*.md` |
 
 ### Level 2 White-Box: Validation and Generation Scripts
@@ -275,6 +281,18 @@ This decomposition is prose-only for now. A component diagram should be added wh
 8. Generated `change.yaml` is deterministic UTF-8/LF YAML with the first-release required fields, empty `artifacts`, empty traceability arrays, and `review.status: pending`.
 9. The command does not run validation, create durable Markdown reasoning placeholders, install adapters, mutate `rigorloop.yaml`, write `rigorloop.lock`, inspect Git or PR state, or claim lifecycle stage completion.
 
+### Public npm publication flow
+
+1. A maintainer prepares repository tag `v0.1.4` and release evidence for `@xiongxianfei/rigorloop@0.1.4`.
+2. The release gate `bash scripts/release-verify.sh v0.1.4` owns release readiness and delegates to repository-owned checks.
+3. Package-content validation inspects the packed npm tarball allowlist and forbidden paths before publication.
+4. Packed-package smoke installs the generated `.tgz` into a temporary project and runs the installed `rigorloop` binary, not repository-local scripts.
+5. Publication evidence selects exactly one mode: `trusted-publishing` or `bootstrap`.
+6. In trusted-publishing mode, `.github/workflows/release.yml` publishes through npm trusted publishing/OIDC after release verification, package-content validation, and packed-package smoke.
+7. In bootstrap mode, used only if trusted publishing cannot claim the unpublished package, `release.yml` or `release-verify.sh` still owns readiness but a maintainer manually publishes the exact tarball whose filename, SHA-256, source commit, pack command, package-content result, and smoke result are recorded.
+8. The publication process records npm package URL, source commit, selected mode, trusted publishing or bootstrap details, provenance status when available, and rollback/deprecation notes.
+9. FU-010 remains open until actual non-dry-run `init --adapter codex --json` succeeds from the packed or published package against the official `v0.1.4` Codex adapter archive. Dry-run smoke is not enough.
+
 ## Deployment View
 
 RigorLoop has no deployed service, database, or runtime infrastructure for this architecture method. The deployment boundary is repository packaging and publication.
@@ -285,6 +303,7 @@ The main execution and publication boundaries are:
 
 - local contributor shell: runs selector, CI wrapper, validation, generation, and drift checks;
 - CLI package execution: runs the additive `rigorloop` command from a local package artifact, local/global install, or future npm package; the package is a delivery mechanism and not a canonical workflow source;
+- npm registry: public delivery boundary for `@xiongxianfei/rigorloop`; the registry serves the CLI package, but canonical workflow content, skills, schemas, templates, adapter definitions, and release evidence remain repository-owned;
 - downstream change metadata scaffold: `docs/changes/<change-id>/change.yaml` created by `rigorloop new-change`; it is draft traceability state and not proof that proposal, review, verification, or PR stages are complete;
 - GitHub Actions: runs the same repository-owned scripts in hosted CI when configured;
 - local Codex runtime state: `.codex/skills/`, ignored by Git and installed locally from public Codex adapter output when contributors need local Codex use;
@@ -299,10 +318,11 @@ The main execution and publication boundaries are:
 - token-cost temporary runs: isolated directories under system temp or `$RUNNER_TEMP`, disposable and not durable release evidence;
 - token-cost release evidence: `docs/reports/token-cost/releases/<version>.md`, `docs/reports/token-cost/releases/<version>.yaml`, and tracked raw or sanitized run summaries under `docs/reports/token-cost/runs/<version>/`;
 - release evidence: tracked `docs/releases/<version>/release.yaml`, release notes, and maintainer smoke evidence used by release verification.
+- npm publication evidence: `docs/releases/v0.1.4/npm-publication.md`, recording selected publication mode, tarball identity, package-content checks, packed-package smoke, trusted publishing or bootstrap details, npm package URL, and real Codex install smoke.
 
 Rollback before public adapter skill-copy untracking keeps `dist/adapters/**/skills` tracked and defers archive publication or fixes archive metadata, install docs, and validation before release. Rollback before `v0.1.3` publication may regenerate and restore tracked adapter output from `skills/` if the release cannot validate generated packages or archives. Rollback after public adapter skill-copy untracking preserves generation from `skills/` and either republishes release artifacts from last known good generated output or uses a later approved recovery release. No runtime data migration is required.
 
-Rollback before public CLI publication removes or disables the package candidate and leaves existing release-archive install guidance and repository scripts unchanged. Rollback after public CLI publication is intentionally outside the first-slice architecture and must be defined by the npm release hardening follow-up before publication occurs.
+Rollback before public CLI publication removes or disables the package candidate and leaves existing release-archive install guidance and repository scripts unchanged. Rollback after public CLI publication uses a fixed patch release plus documentation or deprecation of the bad version; published npm versions are not mutated in place.
 
 ## Crosscutting Concepts
 
@@ -365,7 +385,15 @@ The CLI updates only the fields it owns: `rigorloop.version`, `manifest.sha256`,
 
 Local archive mode keeps the user command to one archive path and moves metadata responsibility into the CLI package. This creates a package-content obligation: each package version that supports Codex local archive install must include official adapter metadata for its compatible adapter release. If that metadata is absent, local archive init blocks instead of falling back to unverified extraction.
 
-Public npm publication is not a deployment fact for the first architecture slice. The package may be built and tested locally or from a packed artifact. Public npm publication requires a later hardening slice that defines provenance, trusted publishing, release workflow controls, dependency and lifecycle-script policy, versioning, and rollback.
+Public npm publication is an approved deployment boundary for `@xiongxianfei/rigorloop@0.1.4` only when the npm publication spec is satisfied. The package may still be built and tested locally or from a packed artifact, but FU-010 closes only after public publication evidence and real Codex install proof exist.
+
+### Public npm package boundary
+
+The npm package is a delivery artifact for the CLI. It can include runtime CLI code, package metadata, package-local README and license files, and bundled official adapter metadata for the compatible Codex adapter release. It must not include adapter archives, generated public adapter skill bodies, repository lifecycle artifacts, tests, local fixtures, secrets, `.codex`, `.agents`, or generated adapter package trees.
+
+Publication has one selected mode. Trusted-publishing mode uses `.github/workflows/release.yml` and npm OIDC. Bootstrap mode is a one-time manual publication path for `@xiongxianfei/rigorloop@0.1.4` only when trusted publishing cannot be configured before package creation. Bootstrap mode separates release readiness ownership from npm publish execution: `release.yml` or `release-verify.sh` owns readiness, and the maintainer publishes only the exact verified tarball recorded in publication evidence.
+
+The npm package does not replace GitHub release assets for adapter archives. `rigorloop init --adapter codex` still installs generated Codex adapter output from official GitHub release archives verified against package-bundled metadata.
 
 ### Release token-friendliness evidence
 
@@ -407,6 +435,7 @@ The legacy normalization follow-on inventoried every current `docs/architecture/
 - `docs/adr/ADR-20260513-v0-1-3-adapter-release-archive-install-surface.md`: `v0.1.3` public adapter archive install surface and tracked adapter package retirement.
 - `docs/adr/ADR-20260515-rigorloop-cli-package-and-codex-init.md`: one-package CLI boundary, bundled metadata for local Codex archive verification, planned lockfile-only behavior, and npm publication block.
 - `docs/adr/ADR-20260516-rigorloop-cli-lockfile.md`: CLI-owned durable lockfile boundary, strict schema handling, generated-output drift comparison, and partial-failure write ordering for Codex init.
+- `docs/adr/ADR-20260516-rigorloop-npm-publication.md`: first public npm publication boundary, trusted-publishing/bootstrap modes, package-content proof, and real install closeout proof.
 
 No additional ADR is required for the 2026-04-29 package-quality refinement because it sharpens the accepted method without changing the durable architecture decision.
 
@@ -433,6 +462,7 @@ No additional ADR is required for the `v0.1.1` single-authored-source transition
 | Local archive verification | A user runs `rigorloop init --adapter codex --from-archive <path>`. | The CLI verifies the archive against bundled official metadata for the installed package's compatible adapter release and blocks with `metadata-unavailable` if metadata is absent. |
 | Lockfile determinism | A user reruns `rigorloop init --adapter codex` after a verified install with unchanged generated output. | The CLI computes the same normalized manifest hash and `rigorloop-tree-hash-v1`, preserves supported unrelated entries, and produces byte-identical lockfile content for identical state. |
 | Lockfile drift safety | A user reruns `rigorloop init --adapter codex` after generated files under `.agents/skills` were modified. | The CLI reports drift with expected and actual tree hashes when available and blocks destructive replacement by default. |
+| npm publication safety | A maintainer publishes `@xiongxianfei/rigorloop@0.1.4`. | Publication evidence records exactly one publication mode, package-content validation, packed-package smoke, trusted-publishing or bootstrap identity, npm package URL, and real Codex install smoke before FU-010 closes. |
 | Measurement usefulness | A contributor optimizes skill token cost. | Static skill measurement, JSONL analysis, and baseline reports identify measured cost drivers before hard token-budget gates are introduced. |
 | Release token-friendliness | A maintainer prepares a public release. | Markdown and YAML token-friendliness reports exist under `docs/reports/token-cost/releases/`, Codex benchmark evidence or a valid waiver is recorded, portability passes, and release validation delegates to the token-cost report validator. |
 | Dynamic benchmark coverage | A maintainer prepares a public release with `skill-token-runtime-v2`. | The report records required core coverage, transition carryover coverage when applicable, changed-skill-required coverage, claimed optional coverage, optional warnings, and per-run result-quality evidence. |
@@ -457,7 +487,10 @@ No additional ADR is required for the `v0.1.1` single-authored-source transition
 | Root guidance could preserve the retired repository-tree install model | The `v0.1.3` spec requires `CONSTITUTION.md`, `AGENTS.md`, and `docs/workflows.md` to be updated or explicitly recorded as unaffected, with ordinary contributors pointed to `dist/adapters/README.md` as the install-contract surface. |
 | Partial tracked adapter package fragments could look installable | The `v0.1.3` architecture keeps only `dist/adapters/README.md` and `manifest.yaml` tracked by default; complete adapter packages are generated in temporary or release-output directories and attached as release archives. |
 | CLI package contents could be mistaken for canonical workflow source | The CLI package is limited to command code, scaffolds, and bundled metadata. Canonical workflow content stays in repository-authored paths, and adapter archives remain release artifacts. |
-| Bundled adapter metadata could drift from official release metadata | The first-slice package must include official metadata for the package's compatible adapter release, and tests should verify matching archive name, size, SHA-256, install root, tree hash, and validation result. Public publication remains blocked until release hardening specifies package-content checks. |
+| Bundled adapter metadata could drift from official release metadata | The first-slice package must include official metadata for the package's compatible adapter release, and tests should verify matching archive name, size, SHA-256, install root, tree hash, and validation result. Public publication requires package-content checks and real Codex install smoke. |
+| npm package tarball could include unintended repository internals | The npm publication spec requires a package-content allowlist, forbidden-path checks, package-local license, no adapter archives, no generated adapter skill bodies, no lifecycle artifacts, and no secrets before publication. |
+| Bootstrap publication could become a shadow release path | Bootstrap mode is limited to the first `0.1.4` publication when trusted publishing cannot be configured before package creation. It publishes only the exact verified tarball recorded in evidence, and trusted publishing must be configured before the next npm publication. |
+| Dry-run smoke could hide a broken real adapter install | FU-010 closeout requires actual non-dry-run `init --adapter codex --json` from the packed or published package against the official `v0.1.4` Codex archive. |
 | Local archive extraction could overwrite or escape project boundaries | The CLI write plan refuses user-file overwrites by default, rejects absolute paths, parent traversal, symlinks, drive-letter paths, and paths outside `.agents/skills`, and maps expected verification failures to exit code `3`. |
 | Lockfile could be mistaken for canonical source or release metadata | The lockfile records downstream generated-output state only. Canonical workflow, skill, schema, adapter metadata, and release evidence stay in repository-authored or release-evidence surfaces. |
 | Unknown future lockfile shape could be silently erased by older CLIs | The first lockfile schema blocks on unknown top-level sections, unknown fields, unsupported schema versions, unsupported adapters, unsupported source values, and unsupported tree hash algorithms before mutation. |
@@ -492,7 +525,9 @@ No additional ADR is required for the `v0.1.1` single-authored-source transition
 - non-enforcement lifecycle routing: selector-selected validation that checks artifact lifecycle compatibility without proving C4 sufficiency, arc42 completeness, ADR need, or architecture package shape.
 - report: durable authored evidence under `docs/reports/` used for longitudinal comparison, such as token-cost baselines.
 - review artifact: authored change-local review evidence such as `reviews/*.md`, `review-log.md`, or `review-resolution.md`.
-- CLI package candidate: the repository package boundary intended to publish `@xiongxianfei/rigorloop` and expose the `rigorloop` binary after release hardening.
+- CLI package: the repository package boundary published as `@xiongxianfei/rigorloop` and exposing the `rigorloop` binary through local, packed, or npm delivery.
+- publication mode: the selected public npm publication path, either `trusted-publishing` through `release.yml` and npm OIDC or one-time `bootstrap` manual publication of an exact verified tarball.
+- publication evidence: durable release evidence under `docs/releases/<version>/npm-publication.md` recording package identity, selected publication mode, tarball identity, smoke results, npm URL, trusted publishing or bootstrap details, and real Codex install proof.
 - bundled adapter metadata: official adapter artifact metadata included in the CLI package for the package's compatible adapter release.
 - planned lockfile content: lockfile-shaped command output that previews generated-output hashes without writing durable `rigorloop.lock`.
 - durable lockfile: downstream project `rigorloop.lock` written by the CLI after verified Codex adapter install to record generated-output state.
@@ -501,7 +536,7 @@ No additional ADR is required for the `v0.1.1` single-authored-source transition
 
 ## Next artifacts
 
-- Implementation of the RigorLoop CLI New Change milestones through the active plan.
+- Architecture-review for the RigorLoop npm publication architecture update.
 
 ## Follow-on artifacts
 
@@ -525,9 +560,10 @@ No additional ADR is required for the `v0.1.1` single-authored-source transition
 - Architecture-review for the RigorLoop CLI Lockfile architecture update: approved in `docs/changes/2026-05-15-rigorloop-cli-lockfile/reviews/architecture-review-r1.md` with no material findings.
 - RigorLoop CLI New Change: approved spec defines `rigorloop new-change <change-id>` as a change metadata scaffolding command that creates only `docs/changes/<change-id>/change.yaml`, preserves lifecycle claim boundaries, validates public option domains, reports complete write plans, blocks symlinks and overwrites, and exposes partial write failures.
 - Architecture-review for the RigorLoop CLI New Change architecture update: approved in `docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/architecture-review-r1.md` with no material findings.
+- RigorLoop npm Publication: accepted proposal and approved spec define the first public `@xiongxianfei/rigorloop@0.1.4` npm release, package-content allowlist, dependency and lifecycle-script policy, trusted-publishing and bootstrap modes, publication evidence, packed-package smoke, real Codex install smoke, and FU-010 closeout boundary.
 
 ## Readiness
 
-This canonical package revision records the current repository architecture for generated skill output, adapter release artifact migration, the `v0.1.1` single-authored-source transition release, the `v0.1.3` public adapter untracking release, the first RigorLoop CLI package plus Codex init slice, the durable lockfile extension for verified Codex init, and the `new-change` metadata scaffolding slice.
+This canonical package revision records the current repository architecture for generated skill output, adapter release artifact migration, the `v0.1.1` single-authored-source transition release, the `v0.1.3` public adapter untracking release, the first RigorLoop CLI package plus Codex init slice, the durable lockfile extension for verified Codex init, the `new-change` metadata scaffolding slice, and the first public npm publication boundary for `@xiongxianfei/rigorloop@0.1.4`.
 
-ADR `docs/adr/ADR-20260512-generated-skill-output-release-artifacts.md` records the durable decision to move generated local and public skill copies out of ordinary authored Git state through staged temp-output and release-artifact validation. ADR `docs/adr/ADR-20260513-v0-1-3-adapter-release-archive-install-surface.md` records the durable `v0.1.3` decision to make release archives the active public adapter install surface and retire tracked generated adapter package fragments. ADR `docs/adr/ADR-20260515-rigorloop-cli-package-and-codex-init.md` records the first CLI package boundary, bundled local-archive metadata decision, planned-lockfile boundary, and publication block. ADR `docs/adr/ADR-20260516-rigorloop-cli-lockfile.md` records the durable lockfile boundary, strict schema handling, drift comparison, and partial-failure write ordering for Codex init. No additional ADR is required for `rigorloop new-change` because it is an additive command inside the existing CLI package boundary and does not introduce a new durable source-of-truth, packaging, release, validation, or persistence decision. No change-local architecture delta is produced because the canonical package carries the intended durable guidance directly.
+ADR `docs/adr/ADR-20260512-generated-skill-output-release-artifacts.md` records the durable decision to move generated local and public skill copies out of ordinary authored Git state through staged temp-output and release-artifact validation. ADR `docs/adr/ADR-20260513-v0-1-3-adapter-release-archive-install-surface.md` records the durable `v0.1.3` decision to make release archives the active public adapter install surface and retire tracked generated adapter package fragments. ADR `docs/adr/ADR-20260515-rigorloop-cli-package-and-codex-init.md` records the first CLI package boundary, bundled local-archive metadata decision, planned-lockfile boundary, and original publication block. ADR `docs/adr/ADR-20260516-rigorloop-cli-lockfile.md` records the durable lockfile boundary, strict schema handling, drift comparison, and partial-failure write ordering for Codex init. ADR `docs/adr/ADR-20260516-rigorloop-npm-publication.md` records the first public npm publication boundary, package-content and publication-mode decisions, and real install closeout proof. No additional ADR is required for `rigorloop new-change` because it is an additive command inside the existing CLI package boundary and does not introduce a new durable source-of-truth, packaging, release, validation, or persistence decision. No change-local architecture delta is produced because the canonical package carries the intended durable guidance directly.

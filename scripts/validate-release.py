@@ -83,6 +83,10 @@ def build_parser() -> argparse.ArgumentParser:
             "Defaults to the current Git HEAD."
         ),
     )
+    parser.add_argument(
+        "--npm-tarball-root",
+        help="Directory containing the packed npm tarball named by bootstrap publication evidence.",
+    )
     return parser
 
 
@@ -91,12 +95,14 @@ def main(argv: list[str] | None = None) -> int:
     changed_paths = merge_changed_paths(args.changed_path, args.changed_paths_file)
     changed_paths_arg = changed_paths if args.changed_path or args.changed_paths_file else ()
     release_output_dir = Path(args.release_output_dir) if args.release_output_dir else None
+    npm_tarball_root = Path(args.npm_tarball_root) if args.npm_tarball_root else None
     release_commit = args.release_commit or current_git_commit()
     errors = validate_release_output(
         args.version,
         changed_paths=changed_paths_arg,
         release_output_dir=release_output_dir,
         release_commit=release_commit,
+        npm_tarball_root=npm_tarball_root,
     )
     if errors:
         for error in errors:
