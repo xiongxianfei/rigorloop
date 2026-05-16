@@ -2,6 +2,10 @@
   "name": "@xiongxianfei/rigorloop",
   "version": "0.1.5",
   "description": "RigorLoop CLI.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xiongxianfei/rigorloop"
+  },
   "type": "module",
   "bin": {
     "rigorloop": "dist/bin/rigorloop.js"
