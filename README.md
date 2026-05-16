@@ -70,17 +70,37 @@ It exposes one binary:
 rigorloop
 ```
 
-Use `@latest` for quick manual trials:
+### Run directly with `npx`
+
+You do not need to install RigorLoop before trying it:
 
 ```bash
+npx @xiongxianfei/rigorloop@latest --help
 npx @xiongxianfei/rigorloop@latest version
+npx @xiongxianfei/rigorloop@latest init --adapter codex
 npx @xiongxianfei/rigorloop@latest init --adapter codex --dry-run --json
 ```
 
-Use a pinned version for automation, CI, onboarding docs, and repeatable agent setup:
+Use `@latest` for quick manual trials. Use a pinned version for automation, CI, onboarding docs, and repeatable agent setup:
 
 ```bash
 npx @xiongxianfei/rigorloop@0.1.5 init --adapter codex --json
+```
+
+### Run after project-local install
+
+```bash
+npm install --save-dev @xiongxianfei/rigorloop
+npx rigorloop --help
+npx rigorloop init --adapter codex
+```
+
+### Run after global install
+
+```bash
+npm install --global @xiongxianfei/rigorloop
+rigorloop --help
+rigorloop init --adapter codex
 ```
 
 The first public npm package supports:
