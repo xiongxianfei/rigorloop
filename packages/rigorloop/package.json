@@ -1,6 +1,6 @@
 {
   "name": "@xiongxianfei/rigorloop",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "RigorLoop CLI.",
   "type": "module",
   "bin": {

@@ -247,6 +247,7 @@ RELEASE_TARGETS = {
     "v0.1.2": ("final", "0.1.1"),
     "v0.1.3": ("final", "v0.1.3"),
     "v0.1.4": ("final", "v0.1.4"),
+    "v0.1.5": ("final", "v0.1.5"),
 }
 REQUIRED_RELEASE_VALIDATION_KEYS = (
     "generated_sync",
@@ -255,9 +256,9 @@ REQUIRED_RELEASE_VALIDATION_KEYS = (
     "security",
 )
 TOKEN_COST_REPORT_REQUIRED_RELEASES = frozenset({"v0.1.1"})
-ADAPTER_ARTIFACT_METADATA_REQUIRED_RELEASES = frozenset({"v0.1.2", "v0.1.3", "v0.1.4"})
-UNTRACKED_PUBLIC_ADAPTER_RELEASES = frozenset({"v0.1.3", "v0.1.4"})
-NPM_PUBLICATION_EVIDENCE_REQUIRED_RELEASES = frozenset({"v0.1.4"})
+ADAPTER_ARTIFACT_METADATA_REQUIRED_RELEASES = frozenset({"v0.1.2", "v0.1.3", "v0.1.4", "v0.1.5"})
+UNTRACKED_PUBLIC_ADAPTER_RELEASES = frozenset({"v0.1.3", "v0.1.4", "v0.1.5"})
+NPM_PUBLICATION_EVIDENCE_REQUIRED_RELEASES = frozenset({"v0.1.4", "v0.1.5"})
 TOKEN_COST_RUNTIME_V2 = "skill-token-runtime-v2"
 PLACEHOLDER_RELEASE_PATTERNS = (
     "Replace this script with repository-specific release checks",
@@ -2186,7 +2187,7 @@ def _release_notes_consistency_errors(
             "npx @xiongxianfei/rigorloop@latest init --adapter codex": (
                 f"{version} release notes must include latest npm quick-start command"
             ),
-            "npx @xiongxianfei/rigorloop@0.1.4 init --adapter codex": (
+            f"npx @xiongxianfei/rigorloop@{version.removeprefix('v')} init --adapter codex": (
                 f"{version} release notes must include pinned npm command"
             ),
             "npm install -D @xiongxianfei/rigorloop": (
@@ -2513,7 +2514,7 @@ def _validate_npm_publication_evidence(
     return _dedupe_errors(errors)
 
 
-def _validate_v0_1_4_release_metadata_text(release_path: Path, release_text: str) -> list[str]:
+def _validate_npm_release_metadata_text(version: str, release_path: Path, release_text: str) -> list[str]:
     try:
         data = _parse_simple_yaml(release_text, release_path)
     except ValueError as exc:
@@ -2528,8 +2529,8 @@ def _validate_v0_1_4_release_metadata_text(release_path: Path, release_text: str
     else:
         expected = {
             "name": "@xiongxianfei/rigorloop",
-            "version": "0.1.4",
-            "release_tag": "v0.1.4",
+            "version": version.removeprefix("v"),
+            "release_tag": version,
         }
         for key, expected_value in expected.items():
             if npm.get(key) != expected_value:
@@ -2540,8 +2541,8 @@ def _validate_v0_1_4_release_metadata_text(release_path: Path, release_text: str
         errors.append(f"{release_path}: adapter_release: expected mapping")
     else:
         expected = {
-            "tag": "v0.1.4",
-            "bundled_metadata": "adapter-artifacts-v0.1.4.json",
+            "tag": version,
+            "bundled_metadata": f"adapter-artifacts-{version}.json",
         }
         for key, expected_value in expected.items():
             if adapter_release.get(key) != expected_value:
@@ -3162,7 +3163,7 @@ def validate_release_output(
     )
     errors.extend(release_notes_errors)
     release_metadata_text_errors = (
-        _validate_v0_1_4_release_metadata_text(release_path, release_text)
+        _validate_npm_release_metadata_text(version, release_path, release_text)
         if npm_publication_evidence_required
         else []
     )
