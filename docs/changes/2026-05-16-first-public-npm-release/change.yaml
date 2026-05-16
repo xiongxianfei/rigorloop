@@ -337,6 +337,28 @@ validation:
     result: pass_release_assets_visible
   - command: npm pack --prefix <v0.1.4 worktree>/packages/rigorloop --pack-destination <temp>/pack <v0.1.4 worktree>/packages/rigorloop && sha256sum <temp>/pack/xiongxianfei-rigorloop-0.1.4.tgz && python scripts/validate-npm-package.py --package-root <v0.1.4 worktree>/packages/rigorloop --tarball <temp>/pack/xiongxianfei-rigorloop-0.1.4.tgz
     result: pass_tarball_sha256_c6e683f26c9f6c15d27c880178843e0a53047f90b6773682c720e0294898637b
+  - command: npm view @xiongxianfei/rigorloop@0.1.4 --json --registry=https://registry.npmjs.org
+    result: pass_published_latest_0_1_4
+  - command: npm whoami --registry=https://registry.npmjs.org
+    result: pass_flyingbear
+  - command: npx @xiongxianfei/rigorloop@0.1.4 --help
+    result: pass_post_publication_smoke
+  - command: npx @xiongxianfei/rigorloop@0.1.4 version
+    result: pass_post_publication_smoke
+  - command: npx @xiongxianfei/rigorloop@0.1.4 init --adapter codex --dry-run --json
+    result: pass_post_publication_smoke
+  - command: tmp=$(mktemp -d); cd "$tmp" && npx @xiongxianfei/rigorloop@0.1.4 init --adapter codex --json
+    result: pass_real_codex_install_archive_sha_tree_hash_and_23_files_verified
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass_after_publication_evidence_update
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/releases/v0.1.4/release.yaml --path docs/releases/v0.1.4/release-notes.md --path docs/releases/v0.1.4/npm-publication.md --path docs/follow-ups.md --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/plan.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass_after_publication_evidence_update
+  - command: bash scripts/release-verify.sh v0.1.4
+    result: pass_after_publication_evidence_update
+  - command: bash scripts/ci.sh --mode explicit --path docs/releases/v0.1.4/npm-publication.md --path docs/follow-ups.md --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/plan.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass_after_publication_evidence_update
+  - command: git diff --check -- docs/releases/v0.1.4/npm-publication.md docs/follow-ups.md docs/plans/2026-05-16-rigorloop-npm-publication.md docs/plan.md docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass_after_publication_evidence_update
 review:
   status: clean
   unresolved_items: 0

@@ -3,12 +3,13 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-16 RigorLoop npm publication](plans/2026-05-16-rigorloop-npm-publication.md) - active execution plan for publishing the first public `@xiongxianfei/rigorloop@0.1.4` npm package from tag `v0.1.4`, with package metadata hardening, package-content validation, packed-package smoke, release verification, publication-mode gating, release evidence, and real Codex adapter install proof before FU-010 closeout.
+- none yet
 
 ## Blocked
 - none yet
 
 ## Done
+- [2026-05-16 RigorLoop npm publication](plans/2026-05-16-rigorloop-npm-publication.md) - completed execution plan for publishing the first public `@xiongxianfei/rigorloop@0.1.4` npm package from tag `v0.1.4`, with package metadata hardening, package-content validation, packed-package smoke, release verification, bootstrap publication evidence, post-publication npx smoke, actual Codex adapter install proof, FU-010 closeout, and FU-006 through FU-009 left open.
 - [2026-05-16 RigorLoop CLI new-change](plans/2026-05-16-rigorloop-cli-new-change.md) - completed execution plan for implementing `rigorloop new-change <change-id>` as a safe change metadata scaffolding command, with approved spec, architecture-review, plan-review, test spec, implementation milestones, code-review, explain-change, final local verify, PR #64, hosted CI, human review, and merge completed.
 - [2026-05-16 RigorLoop CLI durable lockfile](plans/2026-05-16-rigorloop-cli-lockfile.md) - completed execution plan for adding durable `rigorloop.lock` writes to verified Codex init, with strict schema handling, deterministic serialization, verified network/local source recording, generated-output tree hashing, drift blocking, no public npm publication, final local verify, PR #63, hosted CI, human review, and merge completed.
 - [2026-05-15 RigorLoop CLI package and Codex init](plans/2026-05-15-rigorloop-cli-package-and-codex-init.md) - completed execution plan for the first CLI slice: `@xiongxianfei/rigorloop`, one `rigorloop` binary, help/version, `init --adapter codex`, dry-run JSON, non-destructive `rigorloop.yaml` scaffolding, verified Codex release archive install, planned lockfile output only, no public npm publication, implementation milestones closed, explain-change recorded, verify passed, opening PR #62, passing hosted CI, and merging PR #62.
