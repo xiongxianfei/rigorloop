@@ -311,6 +311,18 @@ validation:
     result: pass_during_M6a_verify
   - command: gh pr create --base main --head first-public-npm-release
     result: opened_PR_65
+  - command: gh pr view 65 --json state,mergedAt,mergeCommit,url,headRefName,baseRefName,statusCheckRollup
+    result: merged_PR_65_hosted_ci_success_merge_commit_8221134e08674040b05145241b20fbfcf0c530cf
+  - command: git switch main && git pull --ff-only
+    result: fast_forwarded_main_to_PR_65_merge_commit
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass_after_PR_65_merge_state_update
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/plan.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path docs/releases/v0.1.4/npm-publication.md --path docs/follow-ups.md
+    result: pass_after_PR_65_merge_state_update
+  - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/plan.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path docs/releases/v0.1.4/npm-publication.md --path docs/follow-ups.md
+    result: pass_after_PR_65_merge_state_update
+  - command: git diff --check -- docs/plans/2026-05-16-rigorloop-npm-publication.md docs/changes/2026-05-16-first-public-npm-release/change.yaml
+    result: pass_after_PR_65_merge_state_update
 review:
   status: clean
   unresolved_items: 0
