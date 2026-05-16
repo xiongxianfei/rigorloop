@@ -4,7 +4,7 @@
 - Owner: maintainers
 - Start date: 2026-05-16
 - Last updated: 2026-05-16
-- Related issue or PR: none yet
+- Related issue or PR: PR #64
 - Supersedes: none
 
 ## Purpose / big picture
@@ -65,13 +65,13 @@ The package currently has no source/build split. Implementation work should edit
 ## Current Handoff Summary
 
 - Current milestone: Lifecycle closeout
-- Current milestone state: branch-ready
+- Current milestone state: pr-opened
 - Last reviewed milestone: M3
 - Review status: code-review-m3-r1 clean-with-notes; M3 closed
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
+- Next stage: hosted CI and human review for PR #64
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation milestones are closed, explain-change is recorded, and final local verify passed; PR handoff has not run.
+- Reason final closeout is or is not ready: implementation milestones are closed, explain-change is recorded, final local verify passed, and PR #64 is open; hosted CI, human review, and merge remain pending.
 
 ## Milestones
 
@@ -323,7 +323,7 @@ During implementation, each milestone runs `npm test --prefix packages/rigorloop
 - [x] 2026-05-16: M3 code-review closed with `clean-with-notes`.
 - [x] 2026-05-16: Explain-change recorded.
 - [x] 2026-05-16: Verify passed; branch-ready for PR handoff.
-- [ ] PR handoff prepared.
+- [x] 2026-05-16: PR #64 opened for review.
 
 ## Decision log
 
@@ -432,6 +432,7 @@ During implementation, each milestone runs `npm test --prefix packages/rigorloop
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path packages/rigorloop --path scripts/validate-change-metadata.py --path scripts/test-change-metadata-validator.py --path specs/rigorloop-cli-new-change.md --path specs/rigorloop-cli-new-change.test.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/container.mmd --path docs/follow-ups.md --path docs/plan.md --path docs/plans/2026-05-16-rigorloop-cli-lockfile.md --path docs/plans/2026-05-16-rigorloop-cli-new-change.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml --path docs/changes/2026-05-16-rigorloop-cli-new-change/explain-change.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r2.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/architecture-review-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/plan-review-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m1-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m1-r2.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m2-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m2-r2.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m3-r1.md`
   - `bash scripts/ci.sh --mode explicit --path packages/rigorloop --path scripts/validate-change-metadata.py --path scripts/test-change-metadata-validator.py --path specs/rigorloop-cli-new-change.md --path specs/rigorloop-cli-new-change.test.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/container.mmd --path docs/follow-ups.md --path docs/plan.md --path docs/plans/2026-05-16-rigorloop-cli-lockfile.md --path docs/plans/2026-05-16-rigorloop-cli-new-change.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml --path docs/changes/2026-05-16-rigorloop-cli-new-change/explain-change.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r2.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/architecture-review-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/plan-review-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m1-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m1-r2.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m2-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m2-r2.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m3-r1.md --broad-smoke`
   - `git diff --check -- packages/rigorloop scripts/validate-change-metadata.py scripts/test-change-metadata-validator.py specs/rigorloop-cli-new-change.md specs/rigorloop-cli-new-change.test.md docs/architecture/system/architecture.md docs/architecture/system/diagrams/container.mmd docs/follow-ups.md docs/plan.md docs/plans/2026-05-16-rigorloop-cli-lockfile.md docs/plans/2026-05-16-rigorloop-cli-new-change.md docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml docs/changes/2026-05-16-rigorloop-cli-new-change/explain-change.md docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r1.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r2.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/architecture-review-r1.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/plan-review-r1.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m1-r1.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m1-r2.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m2-r1.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m2-r2.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m3-r1.md`
+- 2026-05-16: PR #64 opened for review; hosted CI and human review are pending.
 - 2026-05-16: M2 code-review recorded `code-review-m2-r1` with `CR2-F1`; review recording validation passed:
   - `python scripts/validate-review-artifacts.py docs/changes/2026-05-16-rigorloop-cli-new-change`
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml`
@@ -448,9 +449,9 @@ During implementation, each milestone runs `npm test --prefix packages/rigorloop
 
 ## Outcome and retrospective
 
-- Implementation milestones are closed, durable change rationale is recorded, and final local verify passed. PR handoff remains pending.
+- Implementation milestones are closed, durable change rationale is recorded, final local verify passed, and PR #64 is open. Hosted CI, human review, and merge remain pending.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is active with implementation milestones closed, final local verify passed, and `pr` next. It is not final closeout until PR handoff is prepared.
+- This plan is active with PR #64 open. It is not final closeout until hosted CI, human review, and merge complete.
