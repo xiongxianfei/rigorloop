@@ -1,6 +1,6 @@
 # RigorLoop CLI New Change
 
-- Status: active
+- Status: done
 - Owner: maintainers
 - Start date: 2026-05-16
 - Last updated: 2026-05-16
@@ -65,13 +65,13 @@ The package currently has no source/build split. Implementation work should edit
 ## Current Handoff Summary
 
 - Current milestone: Lifecycle closeout
-- Current milestone state: pr-opened
+- Current milestone state: completed
 - Last reviewed milestone: M3
 - Review status: code-review-m3-r1 clean-with-notes; M3 closed
 - Remaining in-scope implementation milestones: none
-- Next stage: hosted CI and human review for PR #64
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation milestones are closed, explain-change is recorded, final local verify passed, and PR #64 is open; hosted CI, human review, and merge remain pending.
+- Next stage: none
+- Final closeout readiness: completed
+- Reason final closeout is or is not ready: implementation milestones are closed, explain-change is recorded, final local verify passed, and PR #64 passed hosted CI, received human review, and merged.
 
 ## Milestones
 
@@ -243,7 +243,7 @@ Code-review handoff:
 
 ### Lifecycle closeout
 
-- Milestone state: in-progress
+- Milestone state: closed
 - Goal: Complete downstream non-implementation gates after all implementation milestones close.
 - Requirements: all requirements named above, plus workflow closeout requirements.
 - Files/components likely touched:
@@ -268,9 +268,9 @@ Code-review handoff:
 - Milestone closeout:
   - [x] final validation passed
   - [x] plan state synchronized
+  - [x] PR handoff prepared
   - [x] explain-change recorded
   - [x] verify evidence recorded
-  - [ ] PR handoff prepared
 - Risks:
   - Plan state could be marked done before downstream gates complete.
 - Rollback/recovery:
@@ -324,6 +324,7 @@ During implementation, each milestone runs `npm test --prefix packages/rigorloop
 - [x] 2026-05-16: Explain-change recorded.
 - [x] 2026-05-16: Verify passed; branch-ready for PR handoff.
 - [x] 2026-05-16: PR #64 opened for review.
+- [x] 2026-05-16: PR #64 passed hosted CI, merged, and closed FU-005.
 
 ## Decision log
 
@@ -345,6 +346,9 @@ During implementation, each milestone runs `npm test --prefix packages/rigorloop
 
 ## Validation notes
 
+- 2026-05-16: PR #64 hosted CI passed and PR merged:
+  - `gh pr view 64 --json state,mergedAt,mergeCommit,url,title,statusCheckRollup`
+  - Hosted check: `ci` success at `https://github.com/xiongxianfei/rigorloop/actions/runs/25962268654/job/76319540485`.
 - 2026-05-16: Plan authoring validation passed:
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml`
   - `python scripts/validate-review-artifacts.py docs/changes/2026-05-16-rigorloop-cli-new-change`
@@ -449,9 +453,9 @@ During implementation, each milestone runs `npm test --prefix packages/rigorloop
 
 ## Outcome and retrospective
 
-- Implementation milestones are closed, durable change rationale is recorded, final local verify passed, and PR #64 is open. Hosted CI, human review, and merge remain pending.
+- Implementation milestones are closed, durable change rationale is recorded, final local verify passed, PR #64 passed hosted CI and human review, and PR #64 merged on 2026-05-16. FU-005 is closed.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is active with PR #64 open. It is not final closeout until hosted CI, human review, and merge complete.
+- Completed.

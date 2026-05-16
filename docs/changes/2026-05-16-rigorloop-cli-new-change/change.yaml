@@ -265,6 +265,10 @@ validation:
     result: passed_verify
   - command: pr
     result: opened_PR_64_pending_hosted_CI_and_review
+  - command: gh pr view 64 --json state,mergedAt,mergeCommit,url,title,statusCheckRollup
+    result: merged_PR_64_hosted_ci_passed
+  - command: lifecycle closeout after PR #64 merge
+    result: completed
 changed_files:
   - packages/rigorloop/dist/bin/rigorloop.js
   - packages/rigorloop/dist/lib/new-change-filesystem.js
