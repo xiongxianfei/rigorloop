@@ -4,7 +4,7 @@
 - Owner: maintainer
 - Start date: 2026-05-16
 - Last updated: 2026-05-16
-- Related issue or PR: none yet
+- Related issue or PR: PR #65 (`https://github.com/xiongxianfei/rigorloop/pull/65`)
 - Supersedes: none
 
 ## Goal
@@ -75,12 +75,12 @@ Publication evidence must be recorded at `docs/releases/v0.1.4/npm-publication.m
 ## Current Handoff Summary
 
 - Current milestone: M6a. Pre-Publication PR And Merge Readiness
-- Current milestone state: implementing
+- Current milestone state: pr-open
 - Last reviewed milestone: M5. Documentation, Follow-Up State, And Final Local Readiness
 - Review status: M6a repository-local readiness proof reviewed clean; no material findings
 - Remaining in-scope implementation milestones: none
 - Lifecycle-closeout milestones: M6a, M6b
-- Next stage: PR handoff for repository implementation changes
+- Next stage: hosted CI and human review for PR #65, then implementation PR merge
 - Final closeout readiness: not ready
 - Reason final closeout is not ready: M6a and M6b are not complete, npm publication has not happened, and FU-010 cannot close without public publication evidence plus real Codex adapter install proof.
 
@@ -375,7 +375,7 @@ Implementation notes:
   - [x] M1-M5 closed
   - [x] explain-change completed
   - [x] verify completed
-  - [ ] PR handoff completed
+  - [x] PR handoff completed
   - [ ] implementation PR merged
   - [ ] `v0.1.4` tag authorized only from the merged commit
 - Risks:
@@ -390,6 +390,7 @@ M6a notes:
 - 2026-05-16: Repository-local M6a readiness proof passed: package tests, release verification, explicit npm pack/package validation, selected CI, and diff check. M6a remains open because verify, PR handoff, and implementation PR merge are separate closeout steps.
 - 2026-05-16: M6a repository-local readiness proof code-review completed clean with no material findings in `docs/changes/2026-05-16-first-public-npm-release/reviews/code-review-r8.md`. M6a remains open for verify, PR handoff, implementation PR merge, and tag authorization.
 - 2026-05-16: M6a verify completed for repository implementation changes. Branch-ready local verification passed, and M6a remains open for PR handoff, implementation PR merge, and tag authorization.
+- 2026-05-16: PR handoff completed by opening PR #65: `https://github.com/xiongxianfei/rigorloop/pull/65`. M6a remains open for hosted CI/human review, implementation PR merge, and tag authorization from the merged commit.
 
 ### M6b. Publication Execution And Evidence Closeout
 
@@ -555,6 +556,7 @@ npx @xiongxianfei/rigorloop@0.1.4 init --adapter codex --json
 - [x] M6a repository-local validation completed.
 - [x] M6a repository-local readiness proof reviewed clean.
 - [x] M6a verify completed.
+- [x] M6a PR handoff completed by opening PR #65.
 - [ ] M6a pre-publication PR and merge readiness completed.
 - [ ] M6b publication execution and evidence closeout completed.
 
@@ -698,6 +700,7 @@ npx @xiongxianfei/rigorloop@0.1.4 init --adapter codex --json
   - `bash scripts/ci.sh --mode explicit --path packages/rigorloop --path scripts/release-verify.sh --path scripts/validate-release.py --path .github/workflows/release.yml --path docs/releases/v0.1.4/release.yaml --path docs/releases/v0.1.4/release-notes.md --path docs/releases/v0.1.4/npm-publication.md --path docs/follow-ups.md --path specs/rigorloop-npm-publication.md --path specs/rigorloop-npm-publication.test.md --path docs/adr/ADR-20260516-rigorloop-npm-publication.md --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/plan.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml`
   - `bash scripts/release-verify.sh v0.1.4`
   - `git diff --check -- packages/rigorloop scripts .github docs/releases/v0.1.4 docs/follow-ups.md docs/plans/2026-05-16-rigorloop-npm-publication.md docs/plan.md docs/changes/2026-05-16-first-public-npm-release specs/rigorloop-npm-publication.md specs/rigorloop-npm-publication.test.md docs/adr/ADR-20260516-rigorloop-npm-publication.md`
+- 2026-05-16: PR #65 opened at `https://github.com/xiongxianfei/rigorloop/pull/65`. Hosted CI is pending and is not claimed as passed.
 
 ## Outcome And Retrospective
 
@@ -705,7 +708,7 @@ npx @xiongxianfei/rigorloop@0.1.4 init --adapter codex --json
 
 ## Readiness
 
-- Branch-ready for PR handoff of repository implementation changes.
+- PR #65 is open for hosted CI and human review.
 - Not ready for publication execution, final FU-010 closeout, or post-publication evidence closeout until M6a and M6b complete.
 
 ## Follow-Ups
