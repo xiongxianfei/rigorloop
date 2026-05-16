@@ -3,12 +3,13 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-16 RigorLoop CLI new-change](plans/2026-05-16-rigorloop-cli-new-change.md) - active execution plan for implementing `rigorloop new-change <change-id>` as a safe change metadata scaffolding command after approved spec, architecture-review, plan-review, and active test spec; implementation milestones are closed, explain-change is recorded, final local verify passed, PR #64 is open, and hosted CI plus human review are pending.
+- none yet
 
 ## Blocked
 - none yet
 
 ## Done
+- [2026-05-16 RigorLoop CLI new-change](plans/2026-05-16-rigorloop-cli-new-change.md) - completed execution plan for implementing `rigorloop new-change <change-id>` as a safe change metadata scaffolding command, with approved spec, architecture-review, plan-review, test spec, implementation milestones, code-review, explain-change, final local verify, PR #64, hosted CI, human review, and merge completed.
 - [2026-05-16 RigorLoop CLI durable lockfile](plans/2026-05-16-rigorloop-cli-lockfile.md) - completed execution plan for adding durable `rigorloop.lock` writes to verified Codex init, with strict schema handling, deterministic serialization, verified network/local source recording, generated-output tree hashing, drift blocking, no public npm publication, final local verify, PR #63, hosted CI, human review, and merge completed.
 - [2026-05-15 RigorLoop CLI package and Codex init](plans/2026-05-15-rigorloop-cli-package-and-codex-init.md) - completed execution plan for the first CLI slice: `@xiongxianfei/rigorloop`, one `rigorloop` binary, help/version, `init --adapter codex`, dry-run JSON, non-destructive `rigorloop.yaml` scaffolding, verified Codex release archive install, planned lockfile output only, no public npm publication, implementation milestones closed, explain-change recorded, verify passed, opening PR #62, passing hosted CI, and merging PR #62.
 - [2026-05-15 Stage evidence access contracts M3/M4 static validation and measurement](plans/2026-05-15-stage-evidence-access-contracts-m3-m4-validation-measurement.md) - completed execution plan for auditing existing stage evidence access concept checks, recording no-change rationale for M3 static validation, recording unchanged diagnostic M4 static skill token measurement, aligning the test spec, recording clean plan-review and code-review evidence, explaining the change, passing final local verify, opening PR #61, fixing selector routing for the PR body surface, passing hosted CI, and merging PR #61.
