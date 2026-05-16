@@ -74,15 +74,15 @@ Publication evidence must be recorded at `docs/releases/v0.1.4/npm-publication.m
 
 ## Current Handoff Summary
 
-- Current milestone: M6a. Pre-Publication PR And Merge Readiness
-- Current milestone state: pr-open
+- Current milestone: M6b. Publication Execution And Evidence Closeout
+- Current milestone state: planned
 - Last reviewed milestone: M5. Documentation, Follow-Up State, And Final Local Readiness
 - Review status: M6a repository-local readiness proof reviewed clean; no material findings
 - Remaining in-scope implementation milestones: none
 - Lifecycle-closeout milestones: M6a, M6b
-- Next stage: hosted CI and human review for PR #65, then implementation PR merge
+- Next stage: create `v0.1.4` tag from merged commit `8221134e08674040b05145241b20fbfcf0c530cf`, then run selected publication mode
 - Final closeout readiness: not ready
-- Reason final closeout is not ready: M6a and M6b are not complete, npm publication has not happened, and FU-010 cannot close without public publication evidence plus real Codex adapter install proof.
+- Reason final closeout is not ready: M6b is not complete, npm publication has not happened, and FU-010 cannot close without public publication evidence plus real Codex adapter install proof.
 
 ## Milestones
 
@@ -341,7 +341,7 @@ Implementation notes:
 
 ### M6a. Pre-Publication PR And Merge Readiness
 
-- Milestone state: implementing
+- Milestone state: closed
 - Type: lifecycle-closeout
 - Goal: close the repository implementation PR and make the `v0.1.4` release tag safe to create from the merged commit.
 - Requirements: R35-R80, EB1-EB12.
@@ -376,8 +376,8 @@ Implementation notes:
   - [x] explain-change completed
   - [x] verify completed
   - [x] PR handoff completed
-  - [ ] implementation PR merged
-  - [ ] `v0.1.4` tag authorized only from the merged commit
+  - [x] implementation PR merged
+  - [x] `v0.1.4` tag authorized only from the merged commit
 - Risks:
   - A tag created before merge could run stale release automation.
   - Pending publication evidence could be mistaken for final FU-010 closeout evidence.
@@ -391,6 +391,7 @@ M6a notes:
 - 2026-05-16: M6a repository-local readiness proof code-review completed clean with no material findings in `docs/changes/2026-05-16-first-public-npm-release/reviews/code-review-r8.md`. M6a remains open for verify, PR handoff, implementation PR merge, and tag authorization.
 - 2026-05-16: M6a verify completed for repository implementation changes. Branch-ready local verification passed, and M6a remains open for PR handoff, implementation PR merge, and tag authorization.
 - 2026-05-16: PR handoff completed by opening PR #65: `https://github.com/xiongxianfei/rigorloop/pull/65`. M6a remains open for hosted CI/human review, implementation PR merge, and tag authorization from the merged commit.
+- 2026-05-16: PR #65 passed hosted `ci` and merged at 2026-05-16T19:34:06Z with merge commit `8221134e08674040b05145241b20fbfcf0c530cf`. M6a is closed. Maintainers may create `v0.1.4` from the merged commit and proceed to M6b publication execution.
 
 ### M6b. Publication Execution And Evidence Closeout
 
@@ -557,7 +558,7 @@ npx @xiongxianfei/rigorloop@0.1.4 init --adapter codex --json
 - [x] M6a repository-local readiness proof reviewed clean.
 - [x] M6a verify completed.
 - [x] M6a PR handoff completed by opening PR #65.
-- [ ] M6a pre-publication PR and merge readiness completed.
+- [x] M6a pre-publication PR and merge readiness completed.
 - [ ] M6b publication execution and evidence closeout completed.
 
 ## Decision Log
@@ -701,6 +702,14 @@ npx @xiongxianfei/rigorloop@0.1.4 init --adapter codex --json
   - `bash scripts/release-verify.sh v0.1.4`
   - `git diff --check -- packages/rigorloop scripts .github docs/releases/v0.1.4 docs/follow-ups.md docs/plans/2026-05-16-rigorloop-npm-publication.md docs/plan.md docs/changes/2026-05-16-first-public-npm-release specs/rigorloop-npm-publication.md specs/rigorloop-npm-publication.test.md docs/adr/ADR-20260516-rigorloop-npm-publication.md`
 - 2026-05-16: PR #65 opened at `https://github.com/xiongxianfei/rigorloop/pull/65`. Hosted CI is pending and is not claimed as passed.
+- 2026-05-16: M6a PR #65 merge state confirmed:
+  - `gh pr view 65 --json state,mergedAt,mergeCommit,url,headRefName,baseRefName,statusCheckRollup` reported `state: MERGED`, merge commit `8221134e08674040b05145241b20fbfcf0c530cf`, and hosted `ci` conclusion `SUCCESS`.
+  - `git switch main && git pull --ff-only` fast-forwarded local `main` to `8221134e08674040b05145241b20fbfcf0c530cf`.
+- 2026-05-16: M6a merge-state lifecycle validation passed:
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-16-first-public-npm-release/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/plan.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path docs/releases/v0.1.4/npm-publication.md --path docs/follow-ups.md`
+  - `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-16-rigorloop-npm-publication.md --path docs/plan.md --path docs/changes/2026-05-16-first-public-npm-release/change.yaml --path docs/releases/v0.1.4/npm-publication.md --path docs/follow-ups.md`
+  - `git diff --check -- docs/plans/2026-05-16-rigorloop-npm-publication.md docs/changes/2026-05-16-first-public-npm-release/change.yaml`
 
 ## Outcome And Retrospective
 
@@ -708,8 +717,8 @@ npx @xiongxianfei/rigorloop@0.1.4 init --adapter codex --json
 
 ## Readiness
 
-- PR #65 is open for hosted CI and human review.
-- Not ready for publication execution, final FU-010 closeout, or post-publication evidence closeout until M6a and M6b complete.
+- Ready for M6b publication execution from merged commit `8221134e08674040b05145241b20fbfcf0c530cf`.
+- Not ready for final FU-010 closeout or post-publication evidence closeout until M6b publication evidence and actual install smoke pass.
 
 ## Follow-Ups
 
