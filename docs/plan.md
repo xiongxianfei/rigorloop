@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- none yet
+- [2026-05-16 RigorLoop CLI durable lockfile](plans/2026-05-16-rigorloop-cli-lockfile.md) - active execution plan for adding durable `rigorloop.lock` writes to verified Codex init, with strict schema handling, deterministic serialization, verified network/local source recording, generated-output tree hashing, drift blocking, no public npm publication, final local verify passed, and PR #63 open.
 
 ## Blocked
 - none yet

@@ -40,7 +40,7 @@ flowchart TB
   scripts -->|generate temp output, tracked adapter output, and release artifacts for| generated
   scripts -->|runs benchmarks, analyzes JSONL, and validates metadata for| token_bench
   cli -->|uses bundled official adapter metadata and small scaffolds from| release
-  cli -->|writes safe project scaffolds and installs verified Codex adapter output from| generated
+  cli -->|writes safe project scaffolds, records lockfile state, and installs verified Codex adapter output from| generated
   cli -->|is executed by| package_runner
   generated -->|provides public Codex skills for benchmark temp fixtures used by| token_bench
   scripts -->|validate lifecycle, metadata, review artifacts, release data, and drift for| lifecycle

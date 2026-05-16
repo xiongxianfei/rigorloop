@@ -1,22 +1,20 @@
 #!/usr/bin/env node
 
-import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { inflateRawSync } from "node:zlib";
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { EXIT, exitCodeForResult } from "../lib/command-result.js";
+import { parseLockfile, serializeLockfile, sha256NormalizedText } from "../lib/lockfile.js";
 import { validateOfficialArchiveUrl } from "../lib/official-archive-url.js";
 
 const ADAPTER = "codex";
 const AGENTS_ROOT = ".agents";
 const INSTALL_ROOT = ".agents/skills";
+const LOCKFILE_PATH = "rigorloop.lock";
 const DIRECTORY_PLAN = [AGENTS_ROOT, INSTALL_ROOT];
-const LOCKFILE_WARNING = {
-  code: "lockfile-spec-not-approved",
-  message: "rigorloop.lock was not written because the durable lockfile contract is not approved.",
-};
 
 function packageInfo() {
   const here = dirname(fileURLToPath(import.meta.url));
@@ -158,20 +156,59 @@ ${sourceLines.join("\n")}
 `;
 }
 
-function plannedLockfile(source) {
+function plannedLockfile(info, source, manifest) {
   const artifact = source.artifact;
   return {
     schema_version: 1,
-    tree_hash_algorithm: "rigorloop-tree-hash-v1",
+    rigorloop: {
+      package: info.name,
+      version: info.version,
+    },
+    manifest: {
+      path: "rigorloop.yaml",
+      sha256: sha256NormalizedText(manifest),
+    },
     generated: {
       adapters: [
         {
           adapter: ADAPTER,
+          release: releaseForPackage(info.version),
           source: source.type,
           archive: source.type === "local-archive" ? basename(source.archive) : source.archive,
           archive_sha256: artifact?.sha256 ?? "<planned>",
           installed_root: INSTALL_ROOT,
+          tree_hash_algorithm: "rigorloop-tree-hash-v1",
           tree_sha256: artifact?.tree_sha256 ?? "<planned-after-install>",
+          file_count: "<planned-after-install>",
+        },
+      ],
+    },
+  };
+}
+
+function lockfileForVerifiedInstall(info, source, manifest, artifact, treeHash, fileCount) {
+  return {
+    schema_version: 1,
+    rigorloop: {
+      package: info.name,
+      version: info.version,
+    },
+    manifest: {
+      path: "rigorloop.yaml",
+      sha256: sha256NormalizedText(manifest),
+    },
+    generated: {
+      adapters: [
+        {
+          adapter: ADAPTER,
+          release: releaseForPackage(info.version),
+          source: source.type,
+          archive: source.type === "local-archive" ? basename(source.archive) : source.archive,
+          archive_sha256: artifact.sha256,
+          installed_root: INSTALL_ROOT,
+          tree_hash_algorithm: "rigorloop-tree-hash-v1",
+          tree_sha256: treeHash,
+          file_count: fileCount,
         },
       ],
     },
@@ -487,10 +524,170 @@ function fileRowsForTree(entries) {
 }
 
 function treeHashForEntries(entries) {
-  const manifest = `rigorloop-tree-hash-v1\n${fileRowsForTree(entries)
-    .map(([path, hash]) => `${path}\t${hash}`)
-    .join("\n")}\n`;
+  return treeHashForRows(fileRowsForTree(entries));
+}
+
+function treeHashForRows(rows) {
+  const manifest = `rigorloop-tree-hash-v1\n${rows.map(([path, hash]) => `${path}\t${hash}`).join("\n")}\n`;
   return sha256(Buffer.from(manifest, "utf8"));
+}
+
+function rowsEqual(left, right) {
+  if (left.length !== right.length) {
+    return false;
+  }
+  return left.every(([path, hash], index) => path === right[index][0] && hash === right[index][1]);
+}
+
+function fileRowsForFilesystem(root) {
+  const rows = [];
+  function visit(relativeDirectory) {
+    const absoluteDirectory = resolve(process.cwd(), root, relativeDirectory);
+    for (const name of readdirSync(absoluteDirectory).sort()) {
+      const relativePath = relativeDirectory ? `${relativeDirectory}/${name}` : name;
+      const absolutePath = resolve(process.cwd(), root, relativePath);
+      const stat = statSync(absolutePath);
+      if (stat.isDirectory()) {
+        visit(relativePath);
+      } else if (stat.isFile()) {
+        const bytes = relativePath.endsWith(".md") ? normalizeText(readFileSync(absolutePath)) : readFileSync(absolutePath);
+        rows.push([relativePath, sha256(bytes)]);
+      }
+    }
+  }
+  visit("");
+  return rows.sort(([left], [right]) => left.localeCompare(right));
+}
+
+function treeHashForFilesystem(root) {
+  const rows = fileRowsForFilesystem(root);
+  return {
+    rows,
+    treeHash: treeHashForRows(rows),
+    fileCount: rows.length,
+  };
+}
+
+function currentCodexLockfileEntry() {
+  const lockfileAbsolutePath = resolve(process.cwd(), LOCKFILE_PATH);
+  if (!existsSync(lockfileAbsolutePath)) {
+    return undefined;
+  }
+  const parsed = parseLockfile(readFileSync(lockfileAbsolutePath, "utf8"));
+  if (!parsed.ok) {
+    return undefined;
+  }
+  return parsed.lockfile.generated.adapters.find((entry) => entry.adapter === ADAPTER && entry.installed_root === INSTALL_ROOT);
+}
+
+function installedTreeMismatchError(actualTree, expectedTreeHash, expectedFileCount) {
+  return {
+    code: "installed-tree-mismatch",
+    message: "Installed Codex adapter tree does not match trusted metadata.",
+    expected_tree_sha256: expectedTreeHash,
+    actual_tree_sha256: actualTree.treeHash,
+    expected_file_count: expectedFileCount,
+    actual_file_count: actualTree.fileCount,
+  };
+}
+
+function verifyInstalledTree(entries, artifact, { allowMissingOrEmpty = false } = {}) {
+  const expectedRows = fileRowsForTree(entries);
+  const expectedTreeHash = artifact.tree_sha256;
+  const expectedFileCount = expectedRows.length;
+
+  if (!existsSync(resolve(process.cwd(), INSTALL_ROOT))) {
+    return allowMissingOrEmpty ? { ok: true, expectedRows, expectedFileCount } : { error: installedTreeMismatchError({ treeHash: "<missing>", fileCount: 0 }, expectedTreeHash, expectedFileCount) };
+  }
+
+  const actualTree = treeHashForFilesystem(INSTALL_ROOT);
+  if (allowMissingOrEmpty && actualTree.fileCount === 0) {
+    return { ok: true, expectedRows, expectedFileCount };
+  }
+  if (!rowsEqual(actualTree.rows, expectedRows) || actualTree.treeHash !== expectedTreeHash) {
+    return { error: installedTreeMismatchError(actualTree, expectedTreeHash, expectedFileCount) };
+  }
+  return { ok: true, expectedRows, expectedFileCount, treeHash: actualTree.treeHash };
+}
+
+function generatedOutputConflictBlocker(entries) {
+  const directories = new Set();
+  for (const entry of entries) {
+    const parts = entry.name.split("/");
+    parts.pop();
+    while (parts.length > 2) {
+      directories.add(parts.join("/"));
+      parts.pop();
+    }
+  }
+
+  for (const directory of [...directories].sort()) {
+    if (pathState(resolve(process.cwd(), directory)) === "file") {
+      return {
+        code: "overwrite-refused",
+        message: `${directory} exists and is not a directory.`,
+        path: directory,
+        next_action: "Move the existing file before running init.",
+      };
+    }
+  }
+
+  for (const entry of entries) {
+    if (pathState(resolve(process.cwd(), entry.name)) === "directory") {
+      return {
+        code: "overwrite-refused",
+        message: `${entry.name} exists and is not a file.`,
+        path: entry.name,
+        next_action: "Move the existing directory before running init.",
+      };
+    }
+  }
+
+  return undefined;
+}
+
+function lockfileDriftBlocker(lockfileEntry) {
+  if (!lockfileEntry) {
+    return undefined;
+  }
+
+  const rootState = pathState(resolve(process.cwd(), lockfileEntry.installed_root));
+  if (rootState === "absent") {
+    return {
+      code: "generated-output-missing",
+      message: "Codex generated output recorded in rigorloop.lock is missing.",
+      adapter: lockfileEntry.adapter,
+      installed_root: lockfileEntry.installed_root,
+      expected_tree_sha256: lockfileEntry.tree_sha256,
+      actual_tree_sha256: null,
+      next_action: "Restore the recorded generated output or resolve drift before running init.",
+    };
+  }
+  if (rootState !== "directory") {
+    return {
+      code: "overwrite-refused",
+      message: `${lockfileEntry.installed_root} exists and is not a directory.`,
+      path: lockfileEntry.installed_root,
+      next_action: "Move the existing file before running init.",
+    };
+  }
+
+  const actualTree = treeHashForFilesystem(lockfileEntry.installed_root);
+  if (actualTree.treeHash !== lockfileEntry.tree_sha256 || actualTree.fileCount !== lockfileEntry.file_count) {
+    return {
+      code: "generated-output-drift",
+      message: "Codex generated output differs from rigorloop.lock.",
+      adapter: lockfileEntry.adapter,
+      installed_root: lockfileEntry.installed_root,
+      expected_tree_sha256: lockfileEntry.tree_sha256,
+      actual_tree_sha256: actualTree.treeHash,
+      expected_file_count: lockfileEntry.file_count,
+      actual_file_count: actualTree.fileCount,
+      next_action: "Resolve generated output drift before running init.",
+    };
+  }
+
+  return undefined;
 }
 
 function inspectArchive(archiveBytes, artifact) {
@@ -529,7 +726,7 @@ function inspectArchive(archiveBytes, artifact) {
   if (artifact.tree_sha256 && treeHash !== artifact.tree_sha256) {
     return { error: { code: "tree-hash-mismatch", message: "Installed tree hash does not match metadata." } };
   }
-  return { entries: files, archiveHash, treeHash };
+  return { entries: files, archiveHash, treeHash, fileCount: files.length };
 }
 
 function addArchiveActions(plan, entries) {
@@ -566,18 +763,32 @@ function addArchiveActions(plan, entries) {
   }
   for (const entry of entries) {
     const state = pathState(resolve(process.cwd(), entry.name));
+    let existingMatches = false;
+    if (state === "file") {
+      const relativePath = entry.name.slice(`${INSTALL_ROOT}/`.length);
+      const existingBytes = relativePath.endsWith(".md")
+        ? normalizeText(readFileSync(resolve(process.cwd(), entry.name)))
+        : readFileSync(resolve(process.cwd(), entry.name));
+      const entryBytes = relativePath.endsWith(".md") ? normalizeText(entry.bytes) : entry.bytes;
+      existingMatches = Buffer.compare(existingBytes, entryBytes) === 0;
+    }
     plan.actions.push({
       type: "copy",
       path: entry.name,
-      status: state === "absent" ? "pending" : "blocked",
-      reason: state === "absent" ? "Install verified Codex adapter file." : `${entry.name} already exists.`,
+      status: state === "absent" ? "pending" : existingMatches ? "skipped" : "blocked",
+      reason:
+        state === "absent"
+          ? "Install verified Codex adapter file."
+          : existingMatches
+            ? `${entry.name} already matches verified Codex adapter content.`
+            : `${entry.name} already exists.`,
     });
     plan.artifacts.push({
       path: entry.name,
       kind: "adapter-file",
-      status: state === "absent" ? "pending" : "blocked",
+      status: state === "absent" ? "pending" : existingMatches ? "existing" : "blocked",
     });
-    if (state !== "absent") {
+    if (state !== "absent" && !existingMatches) {
       plan.blockers.push({
         code: "overwrite-refused",
         message: `${entry.name} already exists.`,
@@ -662,6 +873,72 @@ function planDirectoryActions(flags) {
   return { actions, artifacts, blockers };
 }
 
+function addLockfilePlan(flags, actions, artifacts, blockers, errors) {
+  const lockfileAbsolutePath = resolve(process.cwd(), LOCKFILE_PATH);
+  if (!existsSync(lockfileAbsolutePath)) {
+    actions.push({
+      type: "write",
+      path: LOCKFILE_PATH,
+      status: flags.dryRun ? "planned" : "pending",
+      reason: flags.dryRun
+        ? "Plan durable lockfile content."
+        : "Write durable lockfile after verified Codex adapter install.",
+    });
+    artifacts.push({
+      path: LOCKFILE_PATH,
+      kind: "project-lockfile",
+      status: flags.dryRun ? "planned" : "pending",
+    });
+    return;
+  }
+
+  const parsed = parseLockfile(readFileSync(lockfileAbsolutePath, "utf8"));
+  if (parsed.ok) {
+    actions.push({
+      type: "write",
+      path: LOCKFILE_PATH,
+      status: flags.dryRun ? "planned" : "pending",
+      reason: flags.dryRun
+        ? "Plan update to supported rigorloop.lock."
+        : "Update supported rigorloop.lock after verified Codex adapter install.",
+    });
+    artifacts.push({
+      path: LOCKFILE_PATH,
+      kind: "project-lockfile",
+      status: flags.dryRun ? "planned" : "pending",
+    });
+    return;
+  }
+
+  actions.push({
+    type: "write",
+    path: LOCKFILE_PATH,
+    status: "blocked",
+    reason: parsed.message,
+  });
+  artifacts.push({
+    path: LOCKFILE_PATH,
+    kind: "project-lockfile",
+    status: "blocked",
+  });
+
+  if (parsed.kind === "unsupported") {
+    blockers.push({
+      code: parsed.code,
+      message: parsed.message,
+      path: LOCKFILE_PATH,
+      next_action: "Use a compatible CLI version or resolve the unsupported lockfile shape.",
+    });
+  } else {
+    errors.push({
+      code: parsed.code,
+      message: parsed.message,
+      path: LOCKFILE_PATH,
+      next_action: "Repair or move rigorloop.lock before running init.",
+    });
+  }
+}
+
 function buildInitPlan(flags, artifact) {
   const info = packageInfo();
   const source = sourceForFlags(flags, info);
@@ -733,6 +1010,8 @@ function buildInitPlan(flags, artifact) {
     });
   }
 
+  addLockfilePlan(flags, actions, artifacts, blockers, errors);
+
   return {
     info,
     source,
@@ -741,7 +1020,7 @@ function buildInitPlan(flags, artifact) {
     artifacts,
     blockers,
     errors,
-    planned_lockfile: plannedLockfile(source),
+    planned_lockfile: plannedLockfile(info, source, manifest),
   };
 }
 
@@ -839,6 +1118,10 @@ function writeBlockedResult(flags, plan, summary, blockers, exitClass = "blocked
     process.stderr.write(`${result.summary}\n${blockers[0]?.next_action ?? "Resolve the blocker before running init."}\n`);
   }
   return exitCodeForResult({ ...result, exit_class: exitClass });
+}
+
+function exitClassForBlockers(blockers) {
+  return blockers.some((blocker) => blocker.code === "overwrite-refused") ? "mutation_conflict" : "blocked";
 }
 
 function writeValidationErrorResult(flags, plan, error) {
@@ -981,15 +1264,33 @@ async function handleInit(flags) {
     return exitCodeForResult({ ...result, exit_class: "invalid_usage" });
   }
   if (plan.blockers.length > 0) {
-    return writeBlockedResult(flags, plan, plan.blockers[0].message, plan.blockers, "mutation_conflict");
+    return writeBlockedResult(flags, plan, plan.blockers[0].message, plan.blockers, exitClassForBlockers(plan.blockers));
   }
 
   const archiveWork = await archiveWorkForInit(flags, info);
   if (archiveWork.artifact) {
     plan.source.artifact = archiveWork.artifact;
-    plan.planned_lockfile = plannedLockfile(plan.source);
+    plan.planned_lockfile = plannedLockfile(plan.info, plan.source, plan.manifest);
   }
   if (archiveWork.entries) {
+    const conflict = generatedOutputConflictBlocker(archiveWork.entries);
+    if (conflict) {
+      return writeBlockedResult(flags, plan, conflict.message, [conflict], "mutation_conflict");
+    }
+    const drift = lockfileDriftBlocker(currentCodexLockfileEntry());
+    if (drift) {
+      return writeBlockedResult(
+        flags,
+        plan,
+        drift.message,
+        [drift],
+        drift.code === "overwrite-refused" ? "mutation_conflict" : "blocked",
+      );
+    }
+    const installedTree = verifyInstalledTree(archiveWork.entries, archiveWork.artifact, { allowMissingOrEmpty: true });
+    if (installedTree.error) {
+      return writeValidationErrorResult(flags, plan, installedTree.error);
+    }
     addArchiveActions(plan, archiveWork.entries);
   }
 
@@ -1000,7 +1301,7 @@ async function handleInit(flags) {
     return writeValidationErrorResult(flags, plan, archiveWork.error);
   }
   if (plan.blockers.length > 0) {
-    return writeBlockedResult(flags, plan, plan.blockers[0].message, plan.blockers, "mutation_conflict");
+    return writeBlockedResult(flags, plan, plan.blockers[0].message, plan.blockers, exitClassForBlockers(plan.blockers));
   }
 
   if (!flags.dryRun) {
@@ -1018,7 +1319,10 @@ async function handleInit(flags) {
     }
     if (archiveWork.entries) {
       try {
-        writeArchiveEntries(archiveWork.entries);
+        const pendingCopyPaths = new Set(
+          plan.actions.filter((action) => action.type === "copy" && action.status === "pending").map((action) => action.path),
+        );
+        writeArchiveEntries(archiveWork.entries.filter((entry) => pendingCopyPaths.has(entry.name)));
         for (const action of plan.actions.filter((action) => action.type === "copy" && action.status === "pending")) {
           action.status = "done";
           plan.artifacts.find((artifact) => artifact.path === action.path).status = "created";
@@ -1050,9 +1354,37 @@ async function handleInit(flags) {
         return exitCodeForResult({ ...result, exit_class: "internal" });
       }
     }
+    if (archiveWork.entries) {
+      const lockfileAction = plan.actions.find((action) => action.path === LOCKFILE_PATH);
+      const lockfileArtifact = plan.artifacts.find((artifact) => artifact.path === LOCKFILE_PATH);
+      if (lockfileAction?.status === "pending") {
+        const lockfilePreviouslyExists = existsSync(resolve(process.cwd(), LOCKFILE_PATH));
+        const verifiedInstalledTree = verifyInstalledTree(archiveWork.entries, archiveWork.artifact);
+        if (verifiedInstalledTree.error) {
+          return writeValidationErrorResult(flags, plan, verifiedInstalledTree.error);
+        }
+        const lockfile = lockfileForVerifiedInstall(
+          plan.info,
+          plan.source,
+          plan.manifest,
+          archiveWork.artifact,
+          archiveWork.artifact.tree_sha256,
+          verifiedInstalledTree.expectedFileCount,
+        );
+        writeFileSync(resolve(process.cwd(), LOCKFILE_PATH), serializeLockfile(lockfile), "utf8");
+        plan.planned_lockfile = lockfile;
+        lockfileAction.status = "done";
+        lockfileAction.reason = lockfilePreviouslyExists
+          ? "Updated durable lockfile for verified Codex adapter install."
+          : "Wrote durable lockfile for verified Codex adapter install.";
+        if (lockfileArtifact) {
+          lockfileArtifact.status = lockfilePreviouslyExists ? "updated" : "created";
+        }
+      }
+    }
   }
 
-  const warnings = flags.dryRun ? [] : [LOCKFILE_WARNING];
+  const warnings = [];
   const result = envelope("init", flags, {
     status: warnings.length > 0 ? "warning" : "success",
     summary: flags.dryRun
@@ -1076,8 +1408,10 @@ async function handleInit(flags) {
     const lines = flags.dryRun
       ? ["RigorLoop init dry run completed.", "No files were written."]
       : [
-          "RigorLoop initialized with Codex scaffold.",
-          "rigorloop.lock was not written because the durable lockfile contract is not approved.",
+          archiveWork.entries
+            ? "RigorLoop initialized with verified Codex adapter files."
+            : "RigorLoop initialized with Codex scaffold.",
+          archiveWork.entries ? "rigorloop.lock was written." : "No adapter files were installed.",
         ];
     writeHuman(`${lines.join("\n")}\n`, flags);
   }
