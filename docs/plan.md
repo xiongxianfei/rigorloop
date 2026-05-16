@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-16 RigorLoop CLI new-change](plans/2026-05-16-rigorloop-cli-new-change.md) - active execution plan for implementing `rigorloop new-change <change-id>` as a safe change metadata scaffolding command after approved spec, architecture-review, plan-review, and active test spec; implementation milestones are closed, explain-change is recorded, final local verify passed, and PR handoff is next.
+- [2026-05-16 RigorLoop CLI new-change](plans/2026-05-16-rigorloop-cli-new-change.md) - active execution plan for implementing `rigorloop new-change <change-id>` as a safe change metadata scaffolding command after approved spec, architecture-review, plan-review, and active test spec; implementation milestones are closed, explain-change is recorded, final local verify passed, PR #64 is open, and hosted CI plus human review are pending.
 
 ## Blocked
 - none yet

@@ -263,6 +263,8 @@ validation:
     result: passed_verify
   - command: git diff --check -- packages/rigorloop scripts/validate-change-metadata.py scripts/test-change-metadata-validator.py specs/rigorloop-cli-new-change.md specs/rigorloop-cli-new-change.test.md docs/architecture/system/architecture.md docs/architecture/system/diagrams/container.mmd docs/follow-ups.md docs/plan.md docs/plans/2026-05-16-rigorloop-cli-lockfile.md docs/plans/2026-05-16-rigorloop-cli-new-change.md docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml docs/changes/2026-05-16-rigorloop-cli-new-change/explain-change.md docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r1.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r2.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/architecture-review-r1.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/plan-review-r1.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m1-r1.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m1-r2.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m2-r1.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m2-r2.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m3-r1.md
     result: passed_verify
+  - command: pr
+    result: opened_PR_64_pending_hosted_CI_and_review
 changed_files:
   - packages/rigorloop/dist/bin/rigorloop.js
   - packages/rigorloop/dist/lib/new-change-filesystem.js
