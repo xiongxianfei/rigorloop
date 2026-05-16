@@ -1,0 +1,298 @@
+change_id: 2026-05-16-rigorloop-cli-new-change
+title: RigorLoop CLI new-change scaffolding contract
+classification: workflow
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow.md
+  spec: specs/rigorloop-cli-new-change.md
+  test_spec: specs/rigorloop-cli-new-change.test.md
+  architecture: docs/architecture/system/architecture.md
+  plan: docs/plans/2026-05-16-rigorloop-cli-new-change.md
+  review_resolution: docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md
+  explain_change: docs/changes/2026-05-16-rigorloop-cli-new-change/explain-change.md
+requirements:
+  - Define only the next active follow-up slice from `docs/follow-ups.md`, not every remaining CLI follow-up.
+  - Specify `rigorloop new-change` artifact pack scaffolding before architecture, planning, test-spec, or implementation.
+  - Preserve workflow claim boundaries so scaffolded files do not imply proposal acceptance, review completion, verification, or PR readiness.
+  - Keep `FU-004` closed after PR #63 merged and route `FU-005` to spec-review.
+tests:
+  - Formal spec-review evidence for `specs/rigorloop-cli-new-change.md`.
+  - Traceable test spec coverage for every first-slice `new-change` requirement.
+  - Artifact lifecycle validation for the draft spec, follow-up register, plan index, and change metadata.
+  - Selected CI for touched lifecycle and spec artifacts.
+validation:
+  - command: spec
+    result: completed_pending_spec_review
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml
+    result: passed_spec_authoring
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/rigorloop-cli-new-change.md --path docs/follow-ups.md --path docs/plan.md --path docs/plans/2026-05-16-rigorloop-cli-lockfile.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml
+    result: passed_spec_authoring
+  - command: bash scripts/ci.sh --mode explicit --path specs/rigorloop-cli-new-change.md --path docs/follow-ups.md --path docs/plan.md --path docs/plans/2026-05-16-rigorloop-cli-lockfile.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml
+    result: passed_spec_authoring
+  - command: git diff --check -- specs/rigorloop-cli-new-change.md docs/follow-ups.md docs/plan.md docs/plans/2026-05-16-rigorloop-cli-lockfile.md docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml
+    result: passed_spec_authoring
+  - command: spec-review r1
+    result: changes_requested_SR1-F1_SR1-F2_SR1-F3
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-16-rigorloop-cli-new-change
+    result: passed_spec_review_r1_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml
+    result: passed_spec_review_r1_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/rigorloop-cli-new-change.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r1.md
+    result: passed_spec_review_r1_recording
+  - command: bash scripts/ci.sh --mode explicit --path specs/rigorloop-cli-new-change.md --path docs/follow-ups.md --path docs/plan.md --path docs/plans/2026-05-16-rigorloop-cli-lockfile.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r1.md
+    result: passed_spec_review_r1_recording
+  - command: git diff --check -- specs/rigorloop-cli-new-change.md docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r1.md
+    result: passed_spec_review_r1_recording
+  - command: spec revision for SR1-F1 SR1-F2 SR1-F3 plus reviewer concerns
+    result: completed_pending_spec_review_rerun
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-16-rigorloop-cli-new-change
+    result: passed_spec_revision
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml
+    result: passed_spec_revision
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/rigorloop-cli-new-change.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r1.md
+    result: passed_spec_revision
+  - command: bash scripts/ci.sh --mode explicit --path specs/rigorloop-cli-new-change.md --path docs/follow-ups.md --path docs/plan.md --path docs/plans/2026-05-16-rigorloop-cli-lockfile.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r1.md
+    result: passed_spec_revision
+  - command: git diff --check -- specs/rigorloop-cli-new-change.md docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r1.md
+    result: passed_spec_revision
+  - command: spec-review r2
+    result: approved_no_material_findings
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-16-rigorloop-cli-new-change
+    result: passed_spec_review_r2_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml
+    result: passed_spec_review_r2_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/rigorloop-cli-new-change.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r2.md
+    result: passed_spec_review_r2_recording
+  - command: bash scripts/ci.sh --mode explicit --path specs/rigorloop-cli-new-change.md --path docs/follow-ups.md --path docs/plan.md --path docs/plans/2026-05-16-rigorloop-cli-lockfile.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r2.md
+    result: passed_spec_review_r2_recording
+  - command: git diff --check -- specs/rigorloop-cli-new-change.md docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r1.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r2.md
+    result: passed_spec_review_r2_recording
+  - command: architecture
+    result: completed_pending_architecture_review
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml
+    result: passed_architecture
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-16-rigorloop-cli-new-change
+    result: passed_architecture
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/rigorloop-cli-new-change.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/container.mmd --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r2.md
+    result: passed_architecture
+  - command: bash scripts/ci.sh --mode explicit --path specs/rigorloop-cli-new-change.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/container.mmd --path docs/follow-ups.md --path docs/plan.md --path docs/plans/2026-05-16-rigorloop-cli-lockfile.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r2.md
+    result: passed_architecture
+  - command: git diff --check -- specs/rigorloop-cli-new-change.md docs/architecture/system/architecture.md docs/architecture/system/diagrams/container.mmd docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r1.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r2.md
+    result: passed_architecture
+  - command: architecture-review r1
+    result: approved_no_material_findings
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-16-rigorloop-cli-new-change
+    result: passed_architecture_review_r1_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml
+    result: passed_architecture_review_r1_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/rigorloop-cli-new-change.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/container.mmd --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r2.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/architecture-review-r1.md
+    result: passed_architecture_review_r1_recording
+  - command: bash scripts/ci.sh --mode explicit --path specs/rigorloop-cli-new-change.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/container.mmd --path docs/follow-ups.md --path docs/plan.md --path docs/plans/2026-05-16-rigorloop-cli-lockfile.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r2.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/architecture-review-r1.md
+    result: passed_architecture_review_r1_recording
+  - command: git diff --check -- specs/rigorloop-cli-new-change.md docs/architecture/system/architecture.md docs/architecture/system/diagrams/container.mmd docs/follow-ups.md docs/plan.md docs/plans/2026-05-16-rigorloop-cli-lockfile.md docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r1.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r2.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/architecture-review-r1.md
+    result: passed_architecture_review_r1_recording
+  - command: plan
+    result: completed_pending_plan_review
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml
+    result: passed_plan_authoring
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-16-rigorloop-cli-new-change
+    result: passed_plan_authoring
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/rigorloop-cli-new-change.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/container.mmd --path docs/plans/2026-05-16-rigorloop-cli-new-change.md --path docs/plan.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r2.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/architecture-review-r1.md
+    result: passed_plan_authoring
+  - command: bash scripts/ci.sh --mode explicit --path specs/rigorloop-cli-new-change.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/container.mmd --path docs/follow-ups.md --path docs/plan.md --path docs/plans/2026-05-16-rigorloop-cli-lockfile.md --path docs/plans/2026-05-16-rigorloop-cli-new-change.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r2.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/architecture-review-r1.md
+    result: passed_plan_authoring
+  - command: git diff --check -- specs/rigorloop-cli-new-change.md docs/architecture/system/architecture.md docs/architecture/system/diagrams/container.mmd docs/follow-ups.md docs/plan.md docs/plans/2026-05-16-rigorloop-cli-lockfile.md docs/plans/2026-05-16-rigorloop-cli-new-change.md docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r1.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r2.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/architecture-review-r1.md
+    result: passed_plan_authoring
+  - command: plan-review r1
+    result: approved_no_material_findings
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-16-rigorloop-cli-new-change
+    result: passed_plan_review_r1_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml
+    result: passed_plan_review_r1_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/rigorloop-cli-new-change.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/container.mmd --path docs/plans/2026-05-16-rigorloop-cli-new-change.md --path docs/plan.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r2.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/architecture-review-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/plan-review-r1.md
+    result: passed_plan_review_r1_recording
+  - command: bash scripts/ci.sh --mode explicit --path specs/rigorloop-cli-new-change.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/container.mmd --path docs/follow-ups.md --path docs/plan.md --path docs/plans/2026-05-16-rigorloop-cli-lockfile.md --path docs/plans/2026-05-16-rigorloop-cli-new-change.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r2.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/architecture-review-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/plan-review-r1.md
+    result: passed_plan_review_r1_recording
+  - command: git diff --check -- specs/rigorloop-cli-new-change.md docs/architecture/system/architecture.md docs/architecture/system/diagrams/container.mmd docs/follow-ups.md docs/plan.md docs/plans/2026-05-16-rigorloop-cli-lockfile.md docs/plans/2026-05-16-rigorloop-cli-new-change.md docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r1.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r2.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/architecture-review-r1.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/plan-review-r1.md
+    result: passed_plan_review_r1_recording
+  - command: test-spec
+    result: active_pending_implementation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml
+    result: passed_test_spec_authoring
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-16-rigorloop-cli-new-change
+    result: passed_test_spec_authoring
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/rigorloop-cli-new-change.md --path specs/rigorloop-cli-new-change.test.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/container.mmd --path docs/plans/2026-05-16-rigorloop-cli-new-change.md --path docs/plan.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r2.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/architecture-review-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/plan-review-r1.md
+    result: passed_test_spec_authoring
+  - command: bash scripts/ci.sh --mode explicit --path specs/rigorloop-cli-new-change.md --path specs/rigorloop-cli-new-change.test.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/container.mmd --path docs/follow-ups.md --path docs/plan.md --path docs/plans/2026-05-16-rigorloop-cli-lockfile.md --path docs/plans/2026-05-16-rigorloop-cli-new-change.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r2.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/architecture-review-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/plan-review-r1.md
+    result: passed_test_spec_authoring
+  - command: git diff --check -- specs/rigorloop-cli-new-change.md specs/rigorloop-cli-new-change.test.md docs/architecture/system/architecture.md docs/architecture/system/diagrams/container.mmd docs/follow-ups.md docs/plan.md docs/plans/2026-05-16-rigorloop-cli-lockfile.md docs/plans/2026-05-16-rigorloop-cli-new-change.md docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r1.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r2.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/architecture-review-r1.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/plan-review-r1.md
+    result: passed_test_spec_authoring
+  - command: npm test --prefix packages/rigorloop -- --test-name-pattern 'TNC|T2'
+    result: failed_expected_missing_new_change_helper
+  - command: npm test --prefix packages/rigorloop -- --test-name-pattern 'TNC-00|T2 help'
+    result: passed_m1_targeted
+  - command: npm test --prefix packages/rigorloop
+    result: passed_m1_package
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml
+    result: passed_m1_implementation
+  - command: bash scripts/ci.sh --mode explicit --path packages/rigorloop --path specs/rigorloop-cli-new-change.md --path specs/rigorloop-cli-new-change.test.md --path docs/plans/2026-05-16-rigorloop-cli-new-change.md --path docs/plan.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml
+    result: passed_m1_implementation
+  - command: git diff --check -- packages/rigorloop specs/rigorloop-cli-new-change.test.md docs/plans/2026-05-16-rigorloop-cli-new-change.md docs/plan.md docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml
+    result: passed_m1_implementation
+  - command: code-review-m1-r1
+    result: changes_requested_CR1-F1
+  - command: npm test --prefix packages/rigorloop -- --test-name-pattern 'TNC-006'
+    result: failed_expected_before_CR1-F1_fix
+  - command: npm test --prefix packages/rigorloop -- --test-name-pattern 'TNC-006'
+    result: passed_after_CR1-F1_fix
+  - command: npm test --prefix packages/rigorloop
+    result: passed_CR1-F1_fix
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-16-rigorloop-cli-new-change
+    result: passed_CR1-F1_fix
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml
+    result: passed_CR1-F1_fix
+  - command: bash scripts/ci.sh --mode explicit --path packages/rigorloop --path specs/rigorloop-cli-new-change.md --path specs/rigorloop-cli-new-change.test.md --path docs/plans/2026-05-16-rigorloop-cli-new-change.md --path docs/plan.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml
+    result: passed_CR1-F1_fix
+  - command: git diff --check -- packages/rigorloop specs/rigorloop-cli-new-change.test.md docs/plans/2026-05-16-rigorloop-cli-new-change.md docs/plan.md docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml
+    result: passed_CR1-F1_fix
+  - command: code-review-m1-r2
+    result: clean_with_notes
+  - command: npm test --prefix packages/rigorloop -- --test-name-pattern 'TNC-009|TNC-010|TNC-011|TNC-012|TNC-013|TNC-014|TNC-015|TNC-016|TNC-020|TNC-021'
+    result: failed_expected_before_M2_implementation
+  - command: python scripts/test-change-metadata-validator.py
+    result: failed_expected_before_inline_empty_collection_parser_fix
+  - command: npm test --prefix packages/rigorloop -- --test-name-pattern 'TNC-009|TNC-010|TNC-011|TNC-012|TNC-013|TNC-014|TNC-015|TNC-016|TNC-020|TNC-021'
+    result: passed_M2_targeted
+  - command: npm test --prefix packages/rigorloop
+    result: passed_M2_package
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_M2_validator_regression
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml
+    result: passed_M2
+  - command: bash scripts/ci.sh --mode explicit --path packages/rigorloop --path scripts/validate-change-metadata.py --path scripts/test-change-metadata-validator.py --path specs/rigorloop-cli-new-change.md --path specs/rigorloop-cli-new-change.test.md --path docs/plans/2026-05-16-rigorloop-cli-new-change.md --path docs/plan.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml
+    result: passed_M2
+  - command: git diff --check -- packages/rigorloop scripts/validate-change-metadata.py scripts/test-change-metadata-validator.py specs/rigorloop-cli-new-change.test.md docs/plans/2026-05-16-rigorloop-cli-new-change.md docs/plan.md docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml
+    result: passed_M2
+  - command: code-review-m2-r1
+    result: changes_requested_CR2-F1
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-16-rigorloop-cli-new-change
+    result: passed_code_review_m2_r1_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml
+    result: passed_code_review_m2_r1_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path packages/rigorloop --path scripts/validate-change-metadata.py --path scripts/test-change-metadata-validator.py --path specs/rigorloop-cli-new-change.md --path specs/rigorloop-cli-new-change.test.md --path docs/plans/2026-05-16-rigorloop-cli-new-change.md --path docs/plan.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m2-r1.md
+    result: passed_code_review_m2_r1_recording
+  - command: bash scripts/ci.sh --mode explicit --path packages/rigorloop --path scripts/validate-change-metadata.py --path scripts/test-change-metadata-validator.py --path specs/rigorloop-cli-new-change.md --path specs/rigorloop-cli-new-change.test.md --path docs/plans/2026-05-16-rigorloop-cli-new-change.md --path docs/plan.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m2-r1.md
+    result: passed_code_review_m2_r1_recording
+  - command: git diff --check -- packages/rigorloop scripts/validate-change-metadata.py scripts/test-change-metadata-validator.py specs/rigorloop-cli-new-change.test.md docs/plans/2026-05-16-rigorloop-cli-new-change.md docs/plan.md docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m2-r1.md
+    result: passed_code_review_m2_r1_recording
+  - command: npm test --prefix packages/rigorloop -- --test-name-pattern 'TNC-012|TNC-014'
+    result: passed_CR2-F1_fix
+  - command: npm test --prefix packages/rigorloop
+    result: passed_CR2-F1_fix
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-16-rigorloop-cli-new-change
+    result: passed_CR2-F1_fix
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml
+    result: passed_CR2-F1_fix
+  - command: bash scripts/ci.sh --mode explicit --path packages/rigorloop --path scripts/validate-change-metadata.py --path scripts/test-change-metadata-validator.py --path specs/rigorloop-cli-new-change.md --path specs/rigorloop-cli-new-change.test.md --path docs/plans/2026-05-16-rigorloop-cli-new-change.md --path docs/plan.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml
+    result: passed_CR2-F1_fix
+  - command: git diff --check -- packages/rigorloop scripts/validate-change-metadata.py scripts/test-change-metadata-validator.py specs/rigorloop-cli-new-change.test.md docs/plans/2026-05-16-rigorloop-cli-new-change.md docs/plan.md docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml
+    result: passed_CR2-F1_fix
+  - command: bash scripts/ci.sh --mode explicit --path packages/rigorloop --path scripts/validate-change-metadata.py --path scripts/test-change-metadata-validator.py --path specs/rigorloop-cli-new-change.md --path specs/rigorloop-cli-new-change.test.md --path docs/plans/2026-05-16-rigorloop-cli-new-change.md --path docs/plan.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m2-r1.md
+    result: passed_CR2-F1_final_recording
+  - command: code-review-m2-r2
+    result: clean_with_notes
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-16-rigorloop-cli-new-change
+    result: passed_code_review_m2_r2_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml
+    result: passed_code_review_m2_r2_recording
+  - command: bash scripts/ci.sh --mode explicit --path packages/rigorloop --path scripts/validate-change-metadata.py --path scripts/test-change-metadata-validator.py --path specs/rigorloop-cli-new-change.md --path specs/rigorloop-cli-new-change.test.md --path docs/plans/2026-05-16-rigorloop-cli-new-change.md --path docs/plan.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m2-r2.md
+    result: passed_code_review_m2_r2_recording
+  - command: npm test --prefix packages/rigorloop -- --test-name-pattern 'TNC-017|TNC-018|TNC-019'
+    result: failed_expected_before_M3_implementation
+  - command: npm test --prefix packages/rigorloop -- --test-name-pattern 'TNC-017|TNC-018|TNC-019'
+    result: passed_M3_targeted
+  - command: npm test --prefix packages/rigorloop
+    result: passed_M3_package
+  - command: python scripts/test-select-validation.py
+    result: passed_M3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml
+    result: passed_M3
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path packages/rigorloop --path specs/rigorloop-cli-new-change.md --path specs/rigorloop-cli-new-change.test.md --path docs/plans/2026-05-16-rigorloop-cli-new-change.md --path docs/plan.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml
+    result: passed_M3
+  - command: bash scripts/ci.sh --mode explicit --path packages/rigorloop --path specs/rigorloop-cli-new-change.md --path specs/rigorloop-cli-new-change.test.md --path docs/plans/2026-05-16-rigorloop-cli-new-change.md --path docs/plan.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml
+    result: passed_M3
+  - command: git diff --check -- packages/rigorloop specs/rigorloop-cli-new-change.test.md docs/plans/2026-05-16-rigorloop-cli-new-change.md docs/plan.md docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml
+    result: passed_M3
+  - command: code-review-m3-r1
+    result: clean_with_notes
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-16-rigorloop-cli-new-change
+    result: passed_code_review_m3_r1_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml
+    result: passed_code_review_m3_r1_recording
+  - command: bash scripts/ci.sh --mode explicit --path packages/rigorloop --path specs/rigorloop-cli-new-change.md --path specs/rigorloop-cli-new-change.test.md --path docs/plans/2026-05-16-rigorloop-cli-new-change.md --path docs/plan.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m3-r1.md
+    result: passed_code_review_m3_r1_recording
+  - command: git diff --check -- packages/rigorloop specs/rigorloop-cli-new-change.test.md docs/plans/2026-05-16-rigorloop-cli-new-change.md docs/plan.md docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m3-r1.md
+    result: passed_code_review_m3_r1_recording
+  - command: explain-change
+    result: completed_pending_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml
+    result: passed_explain_change_recording
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-16-rigorloop-cli-new-change
+    result: passed_explain_change_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path packages/rigorloop --path specs/rigorloop-cli-new-change.md --path specs/rigorloop-cli-new-change.test.md --path docs/follow-ups.md --path docs/plans/2026-05-16-rigorloop-cli-new-change.md --path docs/plan.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml --path docs/changes/2026-05-16-rigorloop-cli-new-change/explain-change.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m3-r1.md
+    result: passed_explain_change_recording
+  - command: bash scripts/ci.sh --mode explicit --path packages/rigorloop --path scripts/validate-change-metadata.py --path scripts/test-change-metadata-validator.py --path specs/rigorloop-cli-new-change.md --path specs/rigorloop-cli-new-change.test.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/container.mmd --path docs/follow-ups.md --path docs/plan.md --path docs/plans/2026-05-16-rigorloop-cli-lockfile.md --path docs/plans/2026-05-16-rigorloop-cli-new-change.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml --path docs/changes/2026-05-16-rigorloop-cli-new-change/explain-change.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m3-r1.md
+    result: passed_explain_change_recording
+  - command: git diff --check -- packages/rigorloop scripts/validate-change-metadata.py scripts/test-change-metadata-validator.py specs/rigorloop-cli-new-change.md specs/rigorloop-cli-new-change.test.md docs/architecture/system/architecture.md docs/architecture/system/diagrams/container.mmd docs/follow-ups.md docs/plan.md docs/plans/2026-05-16-rigorloop-cli-lockfile.md docs/plans/2026-05-16-rigorloop-cli-new-change.md docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml docs/changes/2026-05-16-rigorloop-cli-new-change/explain-change.md docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m3-r1.md
+    result: passed_explain_change_recording
+  - command: verify
+    result: branch_ready_pending_pr_handoff
+  - command: npm test --prefix packages/rigorloop
+    result: passed_verify
+  - command: python scripts/test-select-validation.py
+    result: passed_verify
+  - command: python scripts/test-change-metadata-validator.py
+    result: passed_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml
+    result: passed_verify
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-16-rigorloop-cli-new-change
+    result: passed_verify
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path packages/rigorloop --path scripts/validate-change-metadata.py --path scripts/test-change-metadata-validator.py --path specs/rigorloop-cli-new-change.md --path specs/rigorloop-cli-new-change.test.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/container.mmd --path docs/follow-ups.md --path docs/plan.md --path docs/plans/2026-05-16-rigorloop-cli-lockfile.md --path docs/plans/2026-05-16-rigorloop-cli-new-change.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml --path docs/changes/2026-05-16-rigorloop-cli-new-change/explain-change.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r2.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/architecture-review-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/plan-review-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m1-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m1-r2.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m2-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m2-r2.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m3-r1.md
+    result: passed_verify
+  - command: bash scripts/ci.sh --mode explicit --path packages/rigorloop --path scripts/validate-change-metadata.py --path scripts/test-change-metadata-validator.py --path specs/rigorloop-cli-new-change.md --path specs/rigorloop-cli-new-change.test.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/container.mmd --path docs/follow-ups.md --path docs/plan.md --path docs/plans/2026-05-16-rigorloop-cli-lockfile.md --path docs/plans/2026-05-16-rigorloop-cli-new-change.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml --path docs/changes/2026-05-16-rigorloop-cli-new-change/explain-change.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r2.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/architecture-review-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/plan-review-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m1-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m1-r2.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m2-r1.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m2-r2.md --path docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m3-r1.md --broad-smoke
+    result: passed_verify
+  - command: git diff --check -- packages/rigorloop scripts/validate-change-metadata.py scripts/test-change-metadata-validator.py specs/rigorloop-cli-new-change.md specs/rigorloop-cli-new-change.test.md docs/architecture/system/architecture.md docs/architecture/system/diagrams/container.mmd docs/follow-ups.md docs/plan.md docs/plans/2026-05-16-rigorloop-cli-lockfile.md docs/plans/2026-05-16-rigorloop-cli-new-change.md docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml docs/changes/2026-05-16-rigorloop-cli-new-change/explain-change.md docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r1.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r2.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/architecture-review-r1.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/plan-review-r1.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m1-r1.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m1-r2.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m2-r1.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m2-r2.md docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m3-r1.md
+    result: passed_verify
+changed_files:
+  - packages/rigorloop/dist/bin/rigorloop.js
+  - packages/rigorloop/dist/lib/new-change-filesystem.js
+  - packages/rigorloop/dist/lib/new-change.js
+  - packages/rigorloop/test/cli.test.js
+  - scripts/validate-change-metadata.py
+  - scripts/test-change-metadata-validator.py
+  - specs/rigorloop-cli-new-change.md
+  - specs/rigorloop-cli-new-change.test.md
+  - docs/architecture/system/architecture.md
+  - docs/architecture/system/diagrams/container.mmd
+  - docs/follow-ups.md
+  - docs/plan.md
+  - docs/plans/2026-05-16-rigorloop-cli-lockfile.md
+  - docs/plans/2026-05-16-rigorloop-cli-new-change.md
+  - docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml
+  - docs/changes/2026-05-16-rigorloop-cli-new-change/explain-change.md
+  - docs/changes/2026-05-16-rigorloop-cli-new-change/review-log.md
+  - docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md
+  - docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/architecture-review-r1.md
+  - docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m1-r1.md
+  - docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m1-r2.md
+  - docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m2-r1.md
+  - docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m2-r2.md
+  - docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/code-review-m3-r1.md
+  - docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/plan-review-r1.md
+  - docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r1.md
+  - docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/spec-review-r2.md
+review:
+  status: closed
+  unresolved_items: 0
+  reviewed_artifact: specs/rigorloop-cli-new-change.md
+  review_resolution: docs/changes/2026-05-16-rigorloop-cli-new-change/review-resolution.md
