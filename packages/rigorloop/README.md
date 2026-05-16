@@ -6,10 +6,12 @@ This package exposes the `rigorloop` binary for approved CLI workflows such as C
 
 ## Quick Start
 
-Try the latest published CLI:
+Run directly with `npx`; no install step is required:
 
 ```bash
 npx @xiongxianfei/rigorloop@latest --help
+npx @xiongxianfei/rigorloop@latest version
+npx @xiongxianfei/rigorloop@latest init --adapter codex
 ```
 
 Use a pinned version when you want reproducible setup:
@@ -23,6 +25,15 @@ Install as a project-local development dependency:
 ```bash
 npm install --save-dev @xiongxianfei/rigorloop
 npx rigorloop --help
+npx rigorloop init --adapter codex
+```
+
+Install globally only if you want a machine-wide `rigorloop` command:
+
+```bash
+npm install --global @xiongxianfei/rigorloop
+rigorloop --help
+rigorloop init --adapter codex
 ```
 
 ## Commands
