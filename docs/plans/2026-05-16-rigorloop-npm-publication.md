@@ -1,6 +1,6 @@
 # RigorLoop npm publication
 
-- Status: active
+- Status: done
 - Owner: maintainer
 - Start date: 2026-05-16
 - Last updated: 2026-05-16
@@ -75,14 +75,14 @@ Publication evidence must be recorded at `docs/releases/v0.1.4/npm-publication.m
 ## Current Handoff Summary
 
 - Current milestone: M6b. Publication Execution And Evidence Closeout
-- Current milestone state: blocked
+- Current milestone state: closed
 - Last reviewed milestone: M5. Documentation, Follow-Up State, And Final Local Readiness
 - Review status: M6a repository-local readiness proof reviewed clean; no material findings
 - Remaining in-scope implementation milestones: none
 - Lifecycle-closeout milestones: M6a, M6b
-- Next stage: maintainer npm authentication, then bootstrap publish the verified `xiongxianfei-rigorloop-0.1.4.tgz` tarball
-- Final closeout readiness: not ready
-- Reason final closeout is not ready: M6b is blocked on npm authentication, npm publication has not happened, and FU-010 cannot close without public publication evidence plus real Codex adapter install proof.
+- Next stage: complete
+- Final closeout readiness: complete
+- Reason final closeout is complete: `@xiongxianfei/rigorloop@0.1.4` is published on npm, post-publication npx smoke passed, actual non-dry-run Codex adapter install proof passed from the published package, final evidence is recorded in `docs/releases/v0.1.4/npm-publication.md`, and FU-010 is closed.
 
 ## Milestones
 
@@ -395,7 +395,7 @@ M6a notes:
 
 ### M6b. Publication Execution And Evidence Closeout
 
-- Milestone state: blocked
+- Milestone state: closed
 - Type: lifecycle-closeout
 - Goal: publish the package, prove the real public install path, commit final evidence, and close FU-010 only after tracked validation passes.
 - Requirements: R36-R61d, R69a-R69m, R77-R85, EB9-EB14.
@@ -427,12 +427,12 @@ M6a notes:
   - `git diff --check -- docs/releases/v0.1.4/npm-publication.md docs/follow-ups.md docs/plans/2026-05-16-rigorloop-npm-publication.md docs/plan.md docs/changes/2026-05-16-first-public-npm-release/change.yaml`
 - Expected observable result: `@xiongxianfei/rigorloop@0.1.4` is public, executable through npm/npx, proven to install the official Codex adapter archive, and FU-010 closes only after final evidence is tracked and validated.
 - Closeout checklist:
-  - [ ] publication mode evidence complete
-  - [ ] public npm package visible
-  - [ ] post-publication npm smoke passed or documented under the spec's allowed limits
-  - [ ] actual Codex adapter install smoke passed
-  - [ ] final evidence committed through the post-publication evidence PR or explicitly approved tracked commit path
-  - [ ] FU-010 closed; FU-006 through FU-009 remain open
+  - [x] publication mode evidence complete
+  - [x] public npm package visible
+  - [x] post-publication npm smoke passed
+  - [x] actual Codex adapter install smoke passed
+  - [x] final evidence committed through tracked repository evidence update
+  - [x] FU-010 closed; FU-006 through FU-009 remain open
 - Risks:
   - npm registry propagation can delay `npx` or `npm view` checks.
   - A bad package version cannot be overwritten.
@@ -446,6 +446,9 @@ M6b notes:
 - 2026-05-16: `v0.1.4` tag was pushed from merged PR #65 commit `8221134e08674040b05145241b20fbfcf0c530cf`. GitHub Actions release run `25971083444` passed and published the three adapter archives.
 - 2026-05-16: Public npm registry check still returns `E404` for `@xiongxianfei/rigorloop@0.1.4`, and `npm whoami` returns `ENEEDAUTH`; npm publication is blocked until a maintainer authenticates this machine or publishes the verified tarball.
 - 2026-05-16: Exact bootstrap tarball was packed from the `v0.1.4` tag and validated. Tarball filename: `xiongxianfei-rigorloop-0.1.4.tgz`; SHA-256: `c6e683f26c9f6c15d27c880178843e0a53047f90b6773682c720e0294898637b`.
+- 2026-05-16: Maintainer bootstrap publication completed. `npm view @xiongxianfei/rigorloop@0.1.4 --json --registry=https://registry.npmjs.org` confirmed the public package, `latest: 0.1.4`, publication timestamp `2026-05-16T20:11:25.210Z`, and maintainer `flyingbear`.
+- 2026-05-16: Post-publication npx smoke passed for `--help`, `version`, and `init --adapter codex --dry-run --json`.
+- 2026-05-16: Actual non-dry-run Codex install smoke passed from the published package in a temporary project. The command installed the official `v0.1.4` Codex archive, verified archive SHA-256 `6c44d186c28507d44573666453b76b6d1568fa49f4f152d10151feafe04858b1`, verified tree hash `af477470c492a1b68303b462824a055b72a0ede0912616c1c641053f923d5bd4`, and wrote 23 adapter files under `.agents/skills`.
 
 ## Validation Plan
 
@@ -566,8 +569,11 @@ npx @xiongxianfei/rigorloop@0.1.4 init --adapter codex --json
 - [x] M6a PR handoff completed by opening PR #65.
 - [x] M6a pre-publication PR and merge readiness completed.
 - [x] `v0.1.4` tag created and GitHub release assets published.
-- [ ] npm authentication available for bootstrap publication.
-- [ ] M6b publication execution and evidence closeout completed.
+- [x] npm authentication available for bootstrap publication.
+- [x] `@xiongxianfei/rigorloop@0.1.4` published on npm.
+- [x] post-publication npx smoke passed.
+- [x] actual non-dry-run Codex adapter install proof passed.
+- [x] M6b publication execution and evidence closeout completed.
 
 ## Decision Log
 
@@ -577,6 +583,7 @@ npx @xiongxianfei/rigorloop@0.1.4 init --adapter codex --json
 - 2026-05-16: Allow one-time bootstrap only for the first `0.1.4` package claim when trusted publishing cannot be configured before the package exists.
 - 2026-05-16: Treat actual non-dry-run Codex adapter install proof as required for FU-010 closeout, not replaceable by dry-run smoke.
 - 2026-05-16: Use `release.yml` for future trusted npm publishing, but skip npm workflow publication for `v0.1.4` because the selected first-publication evidence mode is bootstrap.
+- 2026-05-16: Close FU-010 after bootstrap publication evidence and actual Codex install proof from the published npm package passed. Keep FU-006 through FU-009 open for later proposals/specs.
 
 ## Surprises And Discoveries
 
@@ -726,17 +733,23 @@ npx @xiongxianfei/rigorloop@0.1.4 init --adapter codex --json
   - `gh run watch 25971083444 --exit-status` passed for the `v0.1.4` release workflow.
   - `gh release view v0.1.4 --json url,tagName,targetCommitish,isDraft,isPrerelease,assets` confirmed the public GitHub release and the three adapter ZIP assets.
   - `npm pack --prefix <v0.1.4 worktree>/packages/rigorloop --pack-destination <temp>/pack <v0.1.4 worktree>/packages/rigorloop`, `sha256sum`, and `python scripts/validate-npm-package.py --package-root <v0.1.4 worktree>/packages/rigorloop --tarball <temp>/pack/xiongxianfei-rigorloop-0.1.4.tgz` passed. Tarball SHA-256: `c6e683f26c9f6c15d27c880178843e0a53047f90b6773682c720e0294898637b`.
+- 2026-05-16: Post-publication smoke and actual install proof passed:
+  - `npm view @xiongxianfei/rigorloop@0.1.4 --json --registry=https://registry.npmjs.org`
+  - `npm whoami --registry=https://registry.npmjs.org`
+  - `npx @xiongxianfei/rigorloop@0.1.4 --help`
+  - `npx @xiongxianfei/rigorloop@0.1.4 version`
+  - `npx @xiongxianfei/rigorloop@0.1.4 init --adapter codex --dry-run --json`
+  - `tmp=$(mktemp -d); cd "$tmp" && npx @xiongxianfei/rigorloop@0.1.4 init --adapter codex --json`
 
 ## Outcome And Retrospective
 
-- Not yet complete. This plan remains active until implementation milestones, publication execution, FU-010 closeout evidence, final verification, and PR handoff are complete.
+- Complete. The first public `@xiongxianfei/rigorloop@0.1.4` npm package is published, executable through npx, and proven to perform the real verified Codex adapter install path.
 
 ## Readiness
 
-- Blocked on maintainer npm authentication for bootstrap publication.
-- Not ready for final FU-010 closeout or post-publication evidence closeout until M6b publication evidence and actual install smoke pass.
+- Complete. M6b publication evidence is recorded and FU-010 is closed.
 
 ## Follow-Ups
 
-- FU-010 remains active until publication evidence and actual install smoke pass.
+- FU-010 is closed by `docs/releases/v0.1.4/npm-publication.md`.
 - FU-006 `rigorloop status`, FU-007 `rigorloop validate`, FU-008 workflow YAML, and FU-009 generated workflow docs remain deferred.
