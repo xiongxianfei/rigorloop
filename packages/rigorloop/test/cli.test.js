@@ -1,12 +1,17 @@
 import assert from "node:assert/strict";
 import { execFileSync, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { test } from "node:test";
 
 import { exitCodeForResult } from "../dist/lib/command-result.js";
+import {
+  parseLockfile,
+  serializeLockfile,
+  sha256NormalizedText,
+} from "../dist/lib/lockfile.js";
 import { expectedArchiveUrl, validateOfficialArchiveUrl } from "../dist/lib/official-archive-url.js";
 
 const packageRoot = resolve(import.meta.dirname, "..");
@@ -212,6 +217,7 @@ function fixturePackage(options = {}) {
   );
   copyFileSync(cliPath, join(root, "dist", "bin", "rigorloop.js"));
   copyFileSync(join(packageRoot, "dist", "lib", "command-result.js"), join(root, "dist", "lib", "command-result.js"));
+  copyFileSync(join(packageRoot, "dist", "lib", "lockfile.js"), join(root, "dist", "lib", "lockfile.js"));
   copyFileSync(join(packageRoot, "dist", "lib", "official-archive-url.js"), join(root, "dist", "lib", "official-archive-url.js"));
 
   if (options.metadata !== false) {
@@ -255,6 +261,51 @@ function fixturePackage(options = {}) {
   }
 
   return { root, cliPath: join(root, "dist", "bin", "rigorloop.js") };
+}
+
+function validLockfile(overrides = {}) {
+  const source = overrides.source ?? "release-archive";
+  const adapter = overrides.adapter ?? "codex";
+  const schemaVersion = overrides.schemaVersion ?? 1;
+  const treeHashAlgorithm = overrides.treeHashAlgorithm ?? "rigorloop-tree-hash-v1";
+  return `schema_version: ${schemaVersion}
+
+rigorloop:
+  package: "@xiongxianfei/rigorloop"
+  version: "0.1.3"
+
+manifest:
+  path: "rigorloop.yaml"
+  sha256: "1111111111111111111111111111111111111111111111111111111111111111"
+
+generated:
+  adapters:
+    - adapter: ${adapter}
+      release: "v0.1.3"
+      source: ${source}
+      archive: "rigorloop-adapter-codex-v0.1.3.zip"
+      archive_sha256: "2222222222222222222222222222222222222222222222222222222222222222"
+      installed_root: ".agents/skills"
+      tree_hash_algorithm: ${treeHashAlgorithm}
+      tree_sha256: "3333333333333333333333333333333333333333333333333333333333333333"
+      file_count: 23
+`;
+}
+
+function lockfileWithUnknownMapping(section) {
+  if (section === "rigorloop") {
+    return validLockfile().replace("  version: \"0.1.3\"\n", "  version: \"0.1.3\"\n  future:\n    value: true\n");
+  }
+  if (section === "manifest") {
+    return validLockfile().replace('  sha256: "1111111111111111111111111111111111111111111111111111111111111111"\n', '  sha256: "1111111111111111111111111111111111111111111111111111111111111111"\n  future:\n    value: true\n');
+  }
+  if (section === "generated") {
+    return validLockfile().replace("  adapters:\n", "  future:\n    value: true\n  adapters:\n");
+  }
+  if (section === "adapter") {
+    return validLockfile().replace("      file_count: 23\n", "      file_count: 23\n      future:\n        value: true\n");
+  }
+  throw new Error(`Unknown lockfile section fixture: ${section}`);
 }
 
 function runCliWithBundledMetadata(args, cwd, metadata, options = {}) {
@@ -479,7 +530,7 @@ test("T12 dry-run init plans scaffold writes without mutating the project", () =
   assert.match(output.planned_manifest.content, /schema_version: 1/);
   assert.match(output.planned_manifest.content, /name: codex/);
   assert.match(output.planned_manifest.content, /install_root: ".agents\/skills"/);
-  assert.equal(output.planned_lockfile.tree_hash_algorithm, "rigorloop-tree-hash-v1");
+  assert.equal(output.planned_lockfile.generated.adapters[0].tree_hash_algorithm, "rigorloop-tree-hash-v1");
   assert.deepEqual(output.actions.map((action) => action.path).slice(0, 3), [".agents", ".agents/skills", "rigorloop.yaml"]);
   assert.equal(actionFor(output, ".agents")?.type, "create-dir");
   assert.equal(actionFor(output, ".agents")?.status, "planned");
@@ -538,7 +589,7 @@ test("T15 network mode uses bundled metadata before downloading the official arc
 
   assert.equal(result.status, 0, result.stderr);
   const output = JSON.parse(result.stdout);
-  assert.equal(output.status, "warning");
+  assert.equal(output.status, "success");
   assert.equal(output.planned_lockfile.generated.adapters[0].source, "release-archive");
   assert.equal(output.planned_lockfile.generated.adapters[0].archive_sha256, fixture.metadata.artifacts[0].sha256);
   assert.equal(readProjectFile(cwd, ".agents/skills/proposal/SKILL.md"), "# Proposal\n\nUse proposal guidance.\n");
@@ -709,7 +760,7 @@ test("T18 local archive mode uses bundled metadata and no metadata flag", () => 
 
   assert.equal(result.status, 0, result.stderr);
   const output = JSON.parse(result.stdout);
-  assert.equal(output.status, "warning");
+  assert.equal(output.status, "success");
   assert.equal(output.planned_lockfile.generated.adapters[0].archive_sha256, fixture.metadata.artifacts[0].sha256);
   assert.equal(output.planned_lockfile.generated.adapters[0].tree_sha256, fixture.metadata.artifacts[0].tree_sha256);
   assert.equal(readProjectFile(cwd, ".agents/skills/proposal/SKILL.md"), "# Proposal\n\nUse proposal guidance.\n");
@@ -761,7 +812,7 @@ test("T19 missing bundled metadata blocks local archive install", () => {
   assert.equal(existsSync(join(cwd, ".agents", "skills", "proposal", "SKILL.md")), false);
 });
 
-test("T20 actual init writes minimum manifest and Codex install root without lockfile", () => {
+test("T20 actual init writes minimum manifest, Codex install root, and lockfile", () => {
   const cwd = tempProject();
   const fixture = fixtureArchive(cwd);
   const result = runCliWithBundledMetadata(["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"], cwd, fixture.metadata);
@@ -769,16 +820,17 @@ test("T20 actual init writes minimum manifest and Codex install root without loc
   assert.equal(result.status, 0, result.stderr);
   assert.equal(result.stderr, "");
   const output = JSON.parse(result.stdout);
-  assert.equal(output.status, "warning");
-  assert.equal(output.warnings[0].code, "lockfile-spec-not-approved");
-  assert.deepEqual(output.actions.map((action) => action.path).slice(0, 3), [".agents", ".agents/skills", "rigorloop.yaml"]);
+  assert.equal(output.status, "success");
+  assert.equal(output.warnings.some((warning) => warning.code === "lockfile-spec-not-approved"), false);
+  assert.deepEqual(output.actions.map((action) => action.path).slice(0, 4), [".agents", ".agents/skills", "rigorloop.yaml", "rigorloop.lock"]);
   assert.equal(actionFor(output, ".agents")?.status, "done");
   assert.equal(actionFor(output, ".agents/skills")?.status, "done");
   assert.equal(actionFor(output, "rigorloop.yaml")?.status, "done");
+  assert.equal(actionFor(output, "rigorloop.lock")?.status, "done");
   assert.equal(existsSync(join(cwd, ".agents")), true);
   assert.equal(existsSync(join(cwd, ".agents", "skills")), true);
   assert.equal(existsSync(join(cwd, ".agents", "skills", "proposal", "SKILL.md")), true);
-  assert.equal(existsSync(join(cwd, "rigorloop.lock")), false);
+  assert.equal(existsSync(join(cwd, "rigorloop.lock")), true);
 
   const manifest = readProjectFile(cwd, "rigorloop.yaml");
   assert.match(manifest, /schema_version: 1/);
@@ -931,7 +983,7 @@ test("T26 leaf install-root file conflict is refused without replacing user file
   assert.equal(actionFor(output, ".agents/skills")?.status, "blocked");
 });
 
-test("T26 adapter file overwrite conflicts are refused without replacing user files", () => {
+test("T26 adapter file content conflicts fail installed-tree verification without replacing user files", () => {
   const cwd = tempProject();
   const fixture = fixtureArchive(cwd);
   mkdirSync(join(cwd, ".agents", "skills", "proposal"), { recursive: true });
@@ -942,12 +994,12 @@ test("T26 adapter file overwrite conflicts are refused without replacing user fi
     fixture.metadata,
   );
 
-  assert.equal(result.status, 5);
+  assert.equal(result.status, 3);
   assert.equal(readProjectFile(cwd, ".agents/skills/proposal/SKILL.md"), "user file\n");
   const output = JSON.parse(result.stdout);
-  assert.equal(output.status, "blocked");
-  assert.equal(output.blockers[0].code, "overwrite-refused");
-  assert.equal(output.blockers[0].path, ".agents/skills/proposal/SKILL.md");
+  assert.equal(output.status, "error");
+  assert.equal(output.errors[0].code, "installed-tree-mismatch");
+  assert.equal(existsSync(join(cwd, "rigorloop.lock")), false);
 });
 
 test("T29 release metadata shape and validation result are validated", () => {
@@ -1138,17 +1190,176 @@ test("T34 archive verification failures use exit code 3", () => {
   assert.equal(JSON.parse(tree.stdout).errors[0].code, "tree-hash-mismatch");
 });
 
-test("T41 lockfile is planned output only and never durably written", () => {
+test("T41 dry-run lockfile output is planned only and never durably written", () => {
   const newProject = tempProject();
   const dryRun = runCli(["init", "--adapter", "codex", "--dry-run", "--json"], { cwd: newProject });
 
   assert.equal(dryRun.status, 0, dryRun.stderr);
-  assert.equal(JSON.parse(dryRun.stdout).planned_lockfile.tree_hash_algorithm, "rigorloop-tree-hash-v1");
+  assert.equal(JSON.parse(dryRun.stdout).planned_lockfile.generated.adapters[0].tree_hash_algorithm, "rigorloop-tree-hash-v1");
   assert.equal(existsSync(join(newProject, "rigorloop.lock")), false);
+});
 
+test("TLF-012 network install writes a complete lockfile after verification", () => {
+  const cwd = tempProject();
+  const fixture = fixtureArchive(cwd);
+  const archiveBytes = readFileSync(fixture.archivePath);
+  const officialUrl = expectedArchiveUrl({ releaseTag: "v0.1.3", archive: fixture.archiveName });
+  fixture.metadata.artifacts[0].url = officialUrl;
+  const packageFixture = fixturePackage({ metadata: fixture.metadata });
+  const result = runCli(["init", "--adapter", "codex", "--json"], {
+    cwd,
+    cliPath: packageFixture.cliPath,
+    env: { NODE_OPTIONS: `--import ${mockFetchModule(officialUrl, archiveBytes)}` },
+  });
+
+  assert.equal(result.status, 0, result.stderr);
+  const output = JSON.parse(result.stdout);
+  assert.equal(output.status, "success");
+  assert.equal(output.warnings.some((warning) => warning.code === "lockfile-spec-not-approved"), false);
+  assert.equal(actionFor(output, "rigorloop.lock")?.status, "done");
+  assert.equal(output.artifacts.find((artifact) => artifact.path === "rigorloop.lock")?.status, "created");
+  const parsed = parseLockfile(readProjectFile(cwd, "rigorloop.lock"));
+  assert.equal(parsed.ok, true);
+  const entry = parsed.lockfile.generated.adapters[0];
+  assert.equal(parsed.lockfile.rigorloop.package, "@xiongxianfei/rigorloop");
+  assert.equal(parsed.lockfile.rigorloop.version, "0.1.3");
+  assert.equal(parsed.lockfile.manifest.path, "rigorloop.yaml");
+  assert.equal(parsed.lockfile.manifest.sha256, sha256NormalizedText(readProjectFile(cwd, "rigorloop.yaml")));
+  assert.equal(entry.release, "v0.1.3");
+  assert.equal(entry.source, "release-archive");
+  assert.equal(entry.archive, fixture.archiveName);
+  assert.equal(entry.archive_sha256, fixture.metadata.artifacts[0].sha256);
+  assert.equal(entry.installed_root, ".agents/skills");
+  assert.equal(entry.tree_hash_algorithm, "rigorloop-tree-hash-v1");
+  assert.equal(entry.tree_sha256, fixture.metadata.artifacts[0].tree_sha256);
+  assert.equal(entry.file_count, 2);
+});
+
+test("TLF-013 and TLF-014 local archive install writes portable local-archive lockfile", () => {
+  const cwd = tempProject();
+  const fixture = fixtureArchive(cwd);
+  const absoluteArchivePath = fixture.archivePath;
+  const result = runCliWithBundledMetadata(["init", "--adapter", "codex", "--from-archive", absoluteArchivePath, "--json"], cwd, fixture.metadata);
+
+  assert.equal(result.status, 0, result.stderr);
+  const output = JSON.parse(result.stdout);
+  assert.equal(output.status, "success");
+  assert.equal(output.warnings.some((warning) => warning.code === "lockfile-spec-not-approved"), false);
+  const lockfile = readProjectFile(cwd, "rigorloop.lock");
+  const parsed = parseLockfile(lockfile);
+  assert.equal(parsed.ok, true);
+  const entry = parsed.lockfile.generated.adapters[0];
+  assert.equal(entry.source, "local-archive");
+  assert.equal(entry.release, "v0.1.3");
+  assert.equal(entry.archive, fixture.archiveName);
+  assert.equal(entry.archive_sha256, fixture.metadata.artifacts[0].sha256);
+  assert.doesNotMatch(lockfile, new RegExp(absoluteArchivePath.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.doesNotMatch(lockfile, /\/tmp|\\\\|TOKEN|SECRET|hostname|username/);
+});
+
+test("TLF-013 failed verification does not create or update rigorloop.lock", () => {
+  const cwd = tempProject();
+  const fixture = fixtureArchive(cwd, {
+    metadata(metadata) {
+      metadata.artifacts[0].sha256 = "0".repeat(64);
+      return metadata;
+    },
+  });
+  const result = runCliWithBundledMetadata(["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"], cwd, fixture.metadata);
+
+  assert.equal(result.status, 3);
+  assert.equal(existsSync(join(cwd, "rigorloop.lock")), false);
+  assert.equal(JSON.parse(result.stdout).errors[0].code, "archive-sha-mismatch");
+});
+
+test("CR3-F1 pre-existing extra installed file fails tree verification before lockfile write", () => {
+  const cwd = tempProject();
+  const fixture = fixtureArchive(cwd);
+  mkdirSync(join(cwd, ".agents", "skills", "custom"), { recursive: true });
+  writeFileSync(join(cwd, ".agents", "skills", "custom", "NOTE.md"), "user file\n");
+
+  const result = runCliWithBundledMetadata(["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"], cwd, fixture.metadata);
+
+  assert.equal(result.status, 3, result.stderr);
+  const output = JSON.parse(result.stdout);
+  assert.equal(output.status, "error");
+  assert.equal(output.errors[0].code, "installed-tree-mismatch");
+  assert.equal(existsSync(join(cwd, "rigorloop.lock")), false);
+  assert.equal(readProjectFile(cwd, ".agents/skills/custom/NOTE.md"), "user file\n");
+});
+
+test("CR3-F1 pre-existing modified or partial installed tree fails before lockfile write", () => {
+  const modifiedProject = tempProject();
+  const modifiedFixture = fixtureArchive(modifiedProject);
+  mkdirSync(join(modifiedProject, ".agents", "skills", "proposal"), { recursive: true });
+  mkdirSync(join(modifiedProject, ".agents", "skills", "verify"), { recursive: true });
+  writeFileSync(join(modifiedProject, ".agents", "skills", "proposal", "SKILL.md"), "modified\n");
+  writeFileSync(join(modifiedProject, ".agents", "skills", "verify", "SKILL.md"), "# Verify\n\nUse verify guidance.\n");
+
+  const modified = runCliWithBundledMetadata(
+    ["init", "--adapter", "codex", "--from-archive", `./${modifiedFixture.archiveName}`, "--json"],
+    modifiedProject,
+    modifiedFixture.metadata,
+  );
+
+  assert.equal(modified.status, 3, modified.stderr);
+  assert.equal(JSON.parse(modified.stdout).errors[0].code, "installed-tree-mismatch");
+  assert.equal(existsSync(join(modifiedProject, "rigorloop.lock")), false);
+  assert.equal(readProjectFile(modifiedProject, ".agents/skills/proposal/SKILL.md"), "modified\n");
+
+  const partialProject = tempProject();
+  const partialFixture = fixtureArchive(partialProject);
+  mkdirSync(join(partialProject, ".agents", "skills", "proposal"), { recursive: true });
+  writeFileSync(join(partialProject, ".agents", "skills", "proposal", "SKILL.md"), "# Proposal\n\nUse proposal guidance.\n");
+
+  const partial = runCliWithBundledMetadata(
+    ["init", "--adapter", "codex", "--from-archive", `./${partialFixture.archiveName}`, "--json"],
+    partialProject,
+    partialFixture.metadata,
+  );
+
+  assert.equal(partial.status, 3, partial.stderr);
+  assert.equal(JSON.parse(partial.stdout).errors[0].code, "installed-tree-mismatch");
+  assert.equal(existsSync(join(partialProject, "rigorloop.lock")), false);
+});
+
+test("CR3-F1 exact existing installed tree may create lockfile with trusted metadata tree", () => {
+  const cwd = tempProject();
+  const fixture = fixtureArchive(cwd);
+  mkdirSync(join(cwd, ".agents", "skills", "proposal"), { recursive: true });
+  mkdirSync(join(cwd, ".agents", "skills", "verify"), { recursive: true });
+  writeFileSync(join(cwd, ".agents", "skills", "proposal", "SKILL.md"), "# Proposal\n\nUse proposal guidance.\n");
+  writeFileSync(join(cwd, ".agents", "skills", "verify", "SKILL.md"), "# Verify\n\nUse verify guidance.\n");
+
+  const result = runCliWithBundledMetadata(["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"], cwd, fixture.metadata);
+
+  assert.equal(result.status, 0, result.stderr);
+  const parsed = parseLockfile(readProjectFile(cwd, "rigorloop.lock"));
+  assert.equal(parsed.ok, true);
+  const entry = parsed.lockfile.generated.adapters[0];
+  assert.equal(entry.tree_sha256, fixture.metadata.artifacts[0].tree_sha256);
+  assert.equal(entry.file_count, 2);
+});
+
+test("CR3-F1 installed-tree mismatch leaves existing lockfile unchanged", () => {
+  const cwd = tempProject();
+  const fixture = fixtureArchive(cwd);
+  const first = runCliWithBundledMetadata(["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"], cwd, fixture.metadata);
+  assert.equal(first.status, 0, first.stderr);
+  const before = readProjectFile(cwd, "rigorloop.lock");
+
+  mkdirSync(join(cwd, ".agents", "skills", "custom"), { recursive: true });
+  writeFileSync(join(cwd, ".agents", "skills", "custom", "NOTE.md"), "user file\n");
+  const rerun = runCliWithBundledMetadata(["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"], cwd, fixture.metadata);
+
+  assert.equal(rerun.status, 2, rerun.stderr);
+  assert.equal(JSON.parse(rerun.stdout).blockers[0].code, "generated-output-drift");
+  assert.equal(readProjectFile(cwd, "rigorloop.lock"), before);
+});
+
+test("TLF-015 reinstall through a different source mode updates the Codex lockfile entry", () => {
   const existingProject = tempProject();
   const fixture = fixtureArchive(existingProject);
-  writeFileSync(join(existingProject, "rigorloop.lock"), "existing-lock\n");
   const actual = runCliWithBundledMetadata(
     ["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"],
     existingProject,
@@ -1156,8 +1367,232 @@ test("T41 lockfile is planned output only and never durably written", () => {
   );
 
   assert.equal(actual.status, 0, actual.stderr);
-  assert.equal(readProjectFile(existingProject, "rigorloop.lock"), "existing-lock\n");
-  const output = JSON.parse(actual.stdout);
-  assert.equal(output.planned_lockfile.tree_hash_algorithm, "rigorloop-tree-hash-v1");
-  assert.ok(output.warnings.some((warning) => warning.code === "lockfile-spec-not-approved"));
+  const firstLockfile = readProjectFile(existingProject, "rigorloop.lock");
+  const archiveBytes = readFileSync(fixture.archivePath);
+  const officialUrl = expectedArchiveUrl({ releaseTag: "v0.1.3", archive: fixture.archiveName });
+  fixture.metadata.artifacts[0].url = officialUrl;
+  const packageFixture = fixturePackage({ metadata: fixture.metadata });
+  const rerun = runCli(["init", "--adapter", "codex", "--json"], {
+    cwd: existingProject,
+    cliPath: packageFixture.cliPath,
+    env: { NODE_OPTIONS: `--import ${mockFetchModule(officialUrl, archiveBytes)}` },
+  });
+
+  assert.equal(rerun.status, 0, rerun.stderr);
+  const first = parseLockfile(firstLockfile).lockfile;
+  const second = parseLockfile(readProjectFile(existingProject, "rigorloop.lock")).lockfile;
+  assert.equal(first.generated.adapters.length, 1);
+  assert.equal(second.generated.adapters.length, 1);
+  assert.equal(first.generated.adapters[0].source, "local-archive");
+  assert.equal(second.generated.adapters[0].source, "release-archive");
+  assert.equal(first.generated.adapters[0].tree_sha256, second.generated.adapters[0].tree_sha256);
+});
+
+test("TLF-023 and TLF-024 drifted generated file blocks before replacement", () => {
+  const cwd = tempProject();
+  const fixture = fixtureArchive(cwd);
+  const first = runCliWithBundledMetadata(["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"], cwd, fixture.metadata);
+  assert.equal(first.status, 0, first.stderr);
+  const lockfileBefore = readProjectFile(cwd, "rigorloop.lock");
+  const modifiedPath = ".agents/skills/proposal/SKILL.md";
+  writeFileSync(join(cwd, modifiedPath), "modified generated output\n");
+
+  const rerun = runCliWithBundledMetadata(["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"], cwd, fixture.metadata);
+
+  assert.equal(rerun.status, 2, rerun.stderr);
+  const output = JSON.parse(rerun.stdout);
+  assert.equal(output.status, "blocked");
+  assert.equal(output.blockers[0].code, "generated-output-drift");
+  assert.equal(output.blockers[0].adapter, "codex");
+  assert.equal(output.blockers[0].installed_root, ".agents/skills");
+  assert.equal(output.blockers[0].expected_tree_sha256, parseLockfile(lockfileBefore).lockfile.generated.adapters[0].tree_sha256);
+  assert.match(output.blockers[0].actual_tree_sha256, /^[0-9a-f]{64}$/);
+  assert.equal(readProjectFile(cwd, modifiedPath), "modified generated output\n");
+  assert.equal(readProjectFile(cwd, "rigorloop.lock"), lockfileBefore);
+});
+
+test("TLF-025 missing generated output root represented in lockfile blocks before replacement", () => {
+  const cwd = tempProject();
+  const fixture = fixtureArchive(cwd);
+  const first = runCliWithBundledMetadata(["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"], cwd, fixture.metadata);
+  assert.equal(first.status, 0, first.stderr);
+  const lockfileBefore = readProjectFile(cwd, "rigorloop.lock");
+  rmSync(join(cwd, ".agents", "skills"), { recursive: true, force: true });
+
+  const rerun = runCliWithBundledMetadata(["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"], cwd, fixture.metadata);
+
+  assert.equal(rerun.status, 2, rerun.stderr);
+  const output = JSON.parse(rerun.stdout);
+  assert.equal(output.status, "blocked");
+  assert.equal(output.blockers[0].code, "generated-output-missing");
+  assert.equal(output.blockers[0].adapter, "codex");
+  assert.equal(output.blockers[0].installed_root, ".agents/skills");
+  assert.equal(output.blockers[0].expected_tree_sha256, parseLockfile(lockfileBefore).lockfile.generated.adapters[0].tree_sha256);
+  assert.equal(existsSync(join(cwd, ".agents", "skills")), false);
+  assert.equal(readProjectFile(cwd, "rigorloop.lock"), lockfileBefore);
+});
+
+test("TLF-026 generated output root as file exits 5 with existing lockfile", () => {
+  const cwd = tempProject();
+  const fixture = fixtureArchive(cwd);
+  const first = runCliWithBundledMetadata(["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"], cwd, fixture.metadata);
+  assert.equal(first.status, 0, first.stderr);
+  const lockfileBefore = readProjectFile(cwd, "rigorloop.lock");
+  rmSync(join(cwd, ".agents", "skills"), { recursive: true, force: true });
+  writeFileSync(join(cwd, ".agents", "skills"), "not a directory\n");
+
+  const rerun = runCliWithBundledMetadata(["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"], cwd, fixture.metadata);
+
+  assert.equal(rerun.status, 5, rerun.stderr);
+  const output = JSON.parse(rerun.stdout);
+  assert.equal(output.status, "blocked");
+  assert.equal(output.blockers[0].code, "overwrite-refused");
+  assert.equal(output.blockers[0].path, ".agents/skills");
+  assert.equal(readProjectFile(cwd, ".agents/skills"), "not a directory\n");
+  assert.equal(readProjectFile(cwd, "rigorloop.lock"), lockfileBefore);
+});
+
+test("TLF-027 generated file path as directory exits 5 without lockfile update", () => {
+  const cwd = tempProject();
+  const fixture = fixtureArchive(cwd);
+  const first = runCliWithBundledMetadata(["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"], cwd, fixture.metadata);
+  assert.equal(first.status, 0, first.stderr);
+  const lockfileBefore = readProjectFile(cwd, "rigorloop.lock");
+  rmSync(join(cwd, ".agents", "skills", "proposal", "SKILL.md"), { force: true });
+  mkdirSync(join(cwd, ".agents", "skills", "proposal", "SKILL.md"));
+
+  const rerun = runCliWithBundledMetadata(["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"], cwd, fixture.metadata);
+
+  assert.equal(rerun.status, 5, rerun.stderr);
+  const output = JSON.parse(rerun.stdout);
+  assert.equal(output.status, "blocked");
+  assert.equal(output.blockers[0].code, "overwrite-refused");
+  assert.equal(output.blockers[0].path, ".agents/skills/proposal/SKILL.md");
+  assert.equal(readProjectFile(cwd, "rigorloop.lock"), lockfileBefore);
+});
+
+test("TLF-001 valid lockfile fixture parses and serializes deterministically", () => {
+  const parsed = parseLockfile(validLockfile());
+
+  assert.equal(parsed.ok, true);
+  assert.equal(parsed.lockfile.schema_version, 1);
+  assert.equal(parsed.lockfile.rigorloop.package, "@xiongxianfei/rigorloop");
+  assert.equal(parsed.lockfile.rigorloop.version, "0.1.3");
+  assert.equal(parsed.lockfile.manifest.path, "rigorloop.yaml");
+  assert.equal(parsed.lockfile.generated.adapters[0].adapter, "codex");
+  assert.equal(parsed.lockfile.generated.adapters[0].tree_hash_algorithm, "rigorloop-tree-hash-v1");
+
+  const first = serializeLockfile(parsed.lockfile);
+  const second = serializeLockfile(parsed.lockfile);
+  assert.equal(first, second);
+  assert.doesNotMatch(first, /\/tmp|\\\\|generatedAt|username|hostname|TOKEN|SECRET/);
+});
+
+test("TLF-007 missing required lockfile fields are invalid config", () => {
+  const missingPackage = validLockfile().replace('  package: "@xiongxianfei/rigorloop"\n', "");
+  const parsed = parseLockfile(missingPackage);
+
+  assert.equal(parsed.ok, false);
+  assert.equal(parsed.kind, "invalid");
+  assert.equal(parsed.code, "invalid-lockfile");
+});
+
+test("TLF-005 and TLF-006 unsupported lockfile shape blocks before mutation", () => {
+  const cases = [
+    ["unknown top-level", `${validLockfile()}\nfuture:\n  value: true\n`],
+    ["unknown nested", validLockfile().replace("  version: \"0.1.3\"\n", "  version: \"0.1.3\"\n  future: true\n")],
+    ["unknown rigorloop mapping", lockfileWithUnknownMapping("rigorloop")],
+    ["unknown manifest mapping", lockfileWithUnknownMapping("manifest")],
+    ["unknown generated mapping", lockfileWithUnknownMapping("generated")],
+    ["unknown adapter mapping", lockfileWithUnknownMapping("adapter")],
+    ["unsupported schema", validLockfile({ schemaVersion: 2 })],
+    ["unsupported adapter", validLockfile({ adapter: "claude" })],
+    ["unsupported source", validLockfile({ source: "mirror" })],
+    ["unsupported tree hash", validLockfile({ treeHashAlgorithm: "other-tree-hash" })],
+  ];
+
+  for (const [name, text] of cases) {
+    const parsed = parseLockfile(text);
+    assert.equal(parsed.ok, false, name);
+    assert.equal(parsed.kind, "unsupported", name);
+    assert.equal(parsed.code, "unsupported-lockfile-shape", name);
+  }
+});
+
+test("TLF-003 dry-run write plan includes rigorloop.lock and writes nothing", () => {
+  const cwd = tempProject();
+  const result = runCli(["init", "--adapter", "codex", "--dry-run", "--json"], { cwd });
+
+  assert.equal(result.status, 0, result.stderr);
+  const output = JSON.parse(result.stdout);
+  assert.equal(actionFor(output, "rigorloop.lock")?.type, "write");
+  assert.equal(actionFor(output, "rigorloop.lock")?.status, "planned");
+  assert.equal(output.artifacts.find((artifact) => artifact.path === "rigorloop.lock")?.status, "planned");
+  assert.equal(existsSync(join(cwd, "rigorloop.lock")), false);
+});
+
+test("TLF-004 malformed existing lockfile blocks before mutation with exit 4", () => {
+  const cwd = tempProject();
+  const fixture = fixtureArchive(cwd);
+  writeFileSync(join(cwd, "rigorloop.lock"), "not: [valid\n");
+  const result = runCliWithBundledMetadata(
+    ["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"],
+    cwd,
+    fixture.metadata,
+  );
+
+  assert.equal(result.status, 4, result.stderr);
+  const output = JSON.parse(result.stdout);
+  assert.equal(output.status, "error");
+  assert.equal(output.errors[0].code, "invalid-lockfile");
+  assert.equal(actionFor(output, "rigorloop.lock")?.status, "blocked");
+  assert.equal(existsSync(join(cwd, ".agents", "skills", "proposal", "SKILL.md")), false);
+});
+
+test("TLF-005 existing lockfile with unknown fields blocks before mutation with exit 2", () => {
+  const cwd = tempProject();
+  const fixture = fixtureArchive(cwd);
+  writeFileSync(join(cwd, "rigorloop.lock"), `${validLockfile()}\nfuture:\n  value: true\n`);
+  const result = runCliWithBundledMetadata(
+    ["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"],
+    cwd,
+    fixture.metadata,
+  );
+
+  assert.equal(result.status, 2, result.stderr);
+  const output = JSON.parse(result.stdout);
+  assert.equal(output.status, "blocked");
+  assert.equal(output.blockers[0].code, "unsupported-lockfile-shape");
+  assert.equal(actionFor(output, "rigorloop.lock")?.status, "blocked");
+  assert.equal(existsSync(join(cwd, ".agents", "skills", "proposal", "SKILL.md")), false);
+});
+
+test("TLF-005 existing lockfile with unknown nested mapping blocks before mutation with exit 2", () => {
+  for (const [name, lockfile] of [
+    ["rigorloop", lockfileWithUnknownMapping("rigorloop")],
+    ["adapter", lockfileWithUnknownMapping("adapter")],
+  ]) {
+    const cwd = tempProject();
+    const fixture = fixtureArchive(cwd);
+    writeFileSync(join(cwd, "rigorloop.lock"), lockfile);
+    const result = runCliWithBundledMetadata(
+      ["init", "--adapter", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"],
+      cwd,
+      fixture.metadata,
+    );
+
+    assert.equal(result.status, 2, name);
+    const output = JSON.parse(result.stdout);
+    assert.equal(output.status, "blocked", name);
+    assert.equal(output.blockers[0].code, "unsupported-lockfile-shape", name);
+    assert.equal(actionFor(output, "rigorloop.lock")?.status, "blocked", name);
+    assert.equal(existsSync(join(cwd, ".agents", "skills", "proposal", "SKILL.md")), false, name);
+  }
+});
+
+test("TLF-008 manifest normalization hash is stable", () => {
+  const withCrLf = 'schema_version: 1\r\nrigorloop:\r\n  package: "@xiongxianfei/rigorloop"\r\n';
+  const withLf = 'schema_version: 1\nrigorloop:\n  package: "@xiongxianfei/rigorloop"\n';
+
+  assert.equal(sha256NormalizedText(Buffer.from(withCrLf, "utf8")), sha256NormalizedText(Buffer.from(withLf, "utf8")));
 });
