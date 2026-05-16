@@ -52,6 +52,10 @@ def parse_scalar(text: str) -> Any:
         return value == "true"
     if value == "null":
         return None
+    if value == "{}":
+        return {}
+    if value == "[]":
+        return []
     if re.fullmatch(r"-?[0-9]+", value):
         return int(value)
     return value

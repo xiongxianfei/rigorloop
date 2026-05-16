@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { execFileSync, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { test } from "node:test";
@@ -12,6 +12,15 @@ import {
   serializeLockfile,
   sha256NormalizedText,
 } from "../dist/lib/lockfile.js";
+import {
+  buildNewChangeDraft,
+  renderChangeMetadata,
+  validateChangeId,
+  validateClassification,
+  validateProfile,
+  validateRisk,
+} from "../dist/lib/new-change.js";
+import { runNewChangePlan } from "../dist/lib/new-change-filesystem.js";
 import { expectedArchiveUrl, validateOfficialArchiveUrl } from "../dist/lib/official-archive-url.js";
 
 const packageRoot = resolve(import.meta.dirname, "..");
@@ -41,6 +50,11 @@ function readProjectFile(root, path) {
 
 function actionFor(output, path) {
   return output.actions.find((action) => action.path === path);
+}
+
+function parseJsonResult(result) {
+  assert.equal(result.stderr, "");
+  return JSON.parse(result.stdout);
 }
 
 function sha256(bytes) {
@@ -218,6 +232,8 @@ function fixturePackage(options = {}) {
   copyFileSync(cliPath, join(root, "dist", "bin", "rigorloop.js"));
   copyFileSync(join(packageRoot, "dist", "lib", "command-result.js"), join(root, "dist", "lib", "command-result.js"));
   copyFileSync(join(packageRoot, "dist", "lib", "lockfile.js"), join(root, "dist", "lib", "lockfile.js"));
+  copyFileSync(join(packageRoot, "dist", "lib", "new-change.js"), join(root, "dist", "lib", "new-change.js"));
+  copyFileSync(join(packageRoot, "dist", "lib", "new-change-filesystem.js"), join(root, "dist", "lib", "new-change-filesystem.js"));
   copyFileSync(join(packageRoot, "dist", "lib", "official-archive-url.js"), join(root, "dist", "lib", "official-archive-url.js"));
 
   if (options.metadata !== false) {
@@ -357,9 +373,509 @@ test("T2 help output shows only the implemented command surface", () => {
   assert.match(result.stdout, /rigorloop\b/);
   assert.match(result.stdout, /rigorloop version/);
   assert.match(result.stdout, /rigorloop init --adapter codex/);
-  assert.doesNotMatch(result.stdout, /\bnew-change\b/);
+  assert.match(result.stdout, /rigorloop new-change <change-id>/);
   assert.doesNotMatch(result.stdout, /\bstatus\b/);
   assert.doesNotMatch(result.stdout, /\bvalidate\b/);
+});
+
+test("TNC-002 new-change requires a change id, title, and option values", () => {
+  const cwd = tempProject();
+  const cases = [
+    [["new-change", "--title", "Missing id", "--json"], "missing-change-id"],
+    [["new-change", "docs-only", "--json"], "missing-title"],
+    [["new-change", "docs-only", "--title", "--json"], "missing-title"],
+    [["new-change", "docs-only", "--title", "Docs", "--type", "--json"], "invalid-classification"],
+    [["new-change", "docs-only", "--title", "Docs", "--risk", "--json"], "invalid-risk"],
+    [["new-change", "docs-only", "--title", "Docs", "--profile", "--json"], "unsupported-profile"],
+  ];
+
+  for (const [args, expectedCode] of cases) {
+    const result = runCli(args, { cwd });
+
+    assert.equal(result.status, 4, args.join(" "));
+    assert.equal(result.stderr, "");
+    const output = JSON.parse(result.stdout);
+    assert.equal(output.status, "error");
+    assert.equal(output.errors[0].code, expectedCode);
+    assert.deepEqual(listProject(cwd), []);
+  }
+});
+
+test("TNC-003 change id validation accepts one safe path segment only", () => {
+  for (const id of ["a", "docs-typo", "feature123"]) {
+    assert.deepEqual(validateChangeId(id), { ok: true });
+  }
+
+  for (const id of [
+    "../outside",
+    "a/b",
+    "a\\b",
+    ".hidden",
+    "-bad",
+    "bad-",
+    "bad id",
+    "bad%2Fid",
+    "bad%5Cid",
+    "a:b",
+    "bad\nid",
+  ]) {
+    const result = validateChangeId(id);
+    assert.equal(result.ok, false, id);
+    assert.equal(result.code, "invalid-change-id");
+  }
+});
+
+test("TNC-004 classification token validation is exact", () => {
+  const longValid = "a".repeat(64);
+  for (const value of ["docs", "workflow", "cli-123", longValid]) {
+    assert.deepEqual(validateClassification(value), { ok: true });
+  }
+
+  for (const value of [
+    "",
+    "High",
+    "security review",
+    "../x",
+    "medium/high",
+    "bad%2Fx",
+    "bad\\x",
+    "bad\nx",
+    "1bad",
+    "a".repeat(65),
+  ]) {
+    const result = validateClassification(value);
+    assert.equal(result.ok, false, value);
+    assert.equal(result.code, "invalid-classification");
+  }
+});
+
+test("TNC-005 risk and profile validation are exact", () => {
+  for (const risk of ["low", "medium", "high"]) {
+    assert.deepEqual(validateRisk(risk), { ok: true });
+  }
+  for (const risk of ["", "High", "critical", "medium/high"]) {
+    const result = validateRisk(risk);
+    assert.equal(result.ok, false, risk);
+    assert.equal(result.code, "invalid-risk");
+  }
+
+  for (const profile of ["standard", "minimal"]) {
+    assert.deepEqual(validateProfile(profile), { ok: true });
+  }
+  for (const profile of ["", "Standard", "full", "minimal/fast"]) {
+    const result = validateProfile(profile);
+    assert.equal(result.ok, false, profile);
+    assert.equal(result.code, "unsupported-profile");
+  }
+});
+
+test("TNC-006 generated change metadata defaults and field order are deterministic", () => {
+  const metadata = renderChangeMetadata({
+    changeId: "docs-typo",
+    title: "Fix docs typo",
+    classification: "default",
+    risk: "medium",
+  });
+
+  assert.equal(metadata, renderChangeMetadata({
+    changeId: "docs-typo",
+    title: "Fix docs typo",
+    classification: "default",
+    risk: "medium",
+  }));
+  assert.deepEqual(
+    metadata
+      .split("\n")
+      .filter((line) => /^[a-z_]+:/.test(line))
+      .map((line) => line.split(":")[0]),
+    [
+      "change_id",
+      "title",
+      "classification",
+      "risk",
+      "artifacts",
+      "requirements",
+      "tests",
+      "validation",
+      "changed_files",
+      "review",
+    ],
+  );
+  assert.match(metadata, /^change_id: "docs-typo"\n/);
+  assert.match(metadata, /\nclassification: "default"\n/);
+  assert.match(metadata, /\nrisk: "medium"\n/);
+  assert.match(metadata, /\nartifacts: \{\}\n/);
+  assert.match(metadata, /\nrequirements: \[\]\n/);
+  assert.match(metadata, /\nchanged_files: \[\]\nreview:\n  status: "pending"\n  unresolved_items: 0\n/);
+});
+
+test("TNC-007 YAML scalar escaping preserves shape and omits local details", () => {
+  const metadata = renderChangeMetadata({
+    changeId: "yaml-case",
+    title: '  Title: "quoted" # hash [brackets]  ',
+    classification: "docs",
+    risk: "high",
+  });
+
+  assert.match(metadata, /title: "  Title: \\"quoted\\" # hash \[brackets\]  "/);
+  assert.doesNotMatch(metadata, new RegExp(tmpdir().replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.doesNotMatch(metadata, /TOKEN|SECRET|username|hostname|process\.env/);
+});
+
+test("TNC-008 new-change dry-run JSON envelope and change object are stable", () => {
+  const cwd = tempProject();
+  const result = runCli(["new-change", "json-case", "--title", "JSON Case", "--dry-run", "--json"], { cwd });
+
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(result.stderr, "");
+  const output = JSON.parse(result.stdout);
+  for (const key of [
+    "schema_version",
+    "command",
+    "package",
+    "cwd",
+    "status",
+    "summary",
+    "actions",
+    "artifacts",
+    "blockers",
+    "warnings",
+    "errors",
+    "diagnostics",
+  ]) {
+    assert.ok(Object.hasOwn(output, key), key);
+  }
+  assert.equal(output.command, "new-change");
+  assert.equal(output.status, "success");
+  assert.deepEqual(output.change, {
+    change_id: "json-case",
+    root: "docs/changes/json-case",
+    metadata_path: "docs/changes/json-case/change.yaml",
+    profile: "standard",
+  });
+  assert.equal(output.planned_change_metadata.path, "docs/changes/json-case/change.yaml");
+  assert.match(output.planned_change_metadata.content, /title: "JSON Case"/);
+  assert.deepEqual(listProject(cwd), []);
+});
+
+test("TNC-009 standard profile creates only change.yaml", () => {
+  const cwd = tempProject();
+  const result = runCli(["new-change", "adapter-install-cli", "--title", "Adapter install CLI", "--type", "workflow"], { cwd });
+
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /docs\/changes\/adapter-install-cli/);
+  assert.ok(existsSync(join(cwd, "docs/changes/adapter-install-cli/change.yaml")));
+  assert.ok(!existsSync(join(cwd, "docs/changes/adapter-install-cli/explain-change.md")));
+  assert.ok(!existsSync(join(cwd, "rigorloop.yaml")));
+  assert.ok(!existsSync(join(cwd, "rigorloop.lock")));
+  assert.deepEqual(listProject(join(cwd, "docs/changes/adapter-install-cli")), ["change.yaml"]);
+
+  const metadata = readProjectFile(cwd, "docs/changes/adapter-install-cli/change.yaml");
+  assert.match(metadata, /classification: "workflow"/);
+  assert.doesNotMatch(metadata, /implementation-complete|review-complete|verification-complete|pr-ready|proposal-accepted/);
+});
+
+test("TNC-010 minimal profile creates only metadata and returns durable-reasoning warning", () => {
+  const cwd = tempProject();
+  const result = runCli(["new-change", "docs-typo", "--title", "Fix docs typo", "--type", "docs", "--profile", "minimal", "--json"], { cwd });
+
+  assert.equal(result.status, 0, result.stderr);
+  const output = parseJsonResult(result);
+  assert.equal(output.status, "warning");
+  assert.equal(output.warnings[0].code, "durable-reasoning-not-scaffolded");
+  assert.ok(existsSync(join(cwd, "docs/changes/docs-typo/change.yaml")));
+  assert.ok(!existsSync(join(cwd, "docs/changes/docs-typo/explain-change.md")));
+  assert.deepEqual(output.planned_change_metadata.content.includes("artifacts: {}"), true);
+  assert.deepEqual(listProject(join(cwd, "docs/changes/docs-typo")), ["change.yaml"]);
+});
+
+test("TNC-011 dry-run JSON reports every planned mutation and writes nothing", () => {
+  const cwd = tempProject();
+  const before = listProject(cwd);
+  const result = runCli(["new-change", "new-feature", "--title", "New feature", "--dry-run", "--json"], { cwd });
+
+  assert.equal(result.status, 0, result.stderr);
+  const output = parseJsonResult(result);
+  assert.equal(output.status, "success");
+  assert.deepEqual(output.actions.map((action) => action.path), [
+    "docs",
+    "docs/changes",
+    "docs/changes/new-feature",
+    "docs/changes/new-feature/change.yaml",
+  ]);
+  for (const path of ["docs", "docs/changes", "docs/changes/new-feature"]) {
+    assert.equal(actionFor(output, path)?.type, "create-dir");
+    assert.equal(actionFor(output, path)?.status, "planned");
+    assert.equal(typeof actionFor(output, path)?.reason, "string");
+  }
+  assert.equal(actionFor(output, "docs/changes/new-feature/change.yaml")?.type, "write");
+  assert.equal(actionFor(output, "docs/changes/new-feature/change.yaml")?.status, "planned");
+  assert.deepEqual(listProject(cwd), before);
+});
+
+test("TNC-012 existing safe directories and unrelated files are preserved", () => {
+  const cwd = tempProject();
+  mkdirSync(join(cwd, "docs/changes/existing-root"), { recursive: true });
+  writeFileSync(join(cwd, "docs/changes/existing-root/notes.md"), "keep me\n");
+  const before = listProject(cwd);
+
+  const dryRun = runCli(["new-change", "existing-root", "--title", "Existing Root", "--dry-run", "--json"], { cwd });
+
+  assert.equal(dryRun.status, 0, dryRun.stderr);
+  const dryRunOutput = parseJsonResult(dryRun);
+  assert.equal(dryRunOutput.status, "success");
+  assert.equal(actionFor(dryRunOutput, "docs")?.status, "existing");
+  assert.equal(actionFor(dryRunOutput, "docs/changes")?.status, "existing");
+  assert.equal(actionFor(dryRunOutput, "docs/changes/existing-root")?.status, "existing");
+  assert.equal(actionFor(dryRunOutput, "docs/changes/existing-root/change.yaml")?.status, "planned");
+  assert.deepEqual(listProject(cwd), before);
+  assert.equal(readProjectFile(cwd, "docs/changes/existing-root/notes.md"), "keep me\n");
+  assert.ok(!existsSync(join(cwd, "docs/changes/existing-root/change.yaml")));
+
+  const actual = runCli(["new-change", "existing-root", "--title", "Existing Root", "--json"], { cwd });
+
+  assert.equal(actual.status, 0, actual.stderr);
+  const output = parseJsonResult(actual);
+  assert.equal(actionFor(output, "docs")?.status, "existing");
+  assert.equal(actionFor(output, "docs/changes")?.status, "existing");
+  assert.equal(actionFor(output, "docs/changes/existing-root")?.status, "existing");
+  assert.equal(actionFor(output, "docs/changes/existing-root/change.yaml")?.status, "done");
+  assert.equal(readProjectFile(cwd, "docs/changes/existing-root/notes.md"), "keep me\n");
+  assert.ok(existsSync(join(cwd, "docs/changes/existing-root/change.yaml")));
+});
+
+test("TNC-013 directory path conflicts block before mutation", () => {
+  const cases = [
+    ["docs", (cwd) => writeFileSync(join(cwd, "docs"), "file\n")],
+    ["docs/changes", (cwd) => {
+      mkdirSync(join(cwd, "docs"));
+      writeFileSync(join(cwd, "docs/changes"), "file\n");
+    }],
+    ["docs/changes/conflict-root", (cwd) => {
+      mkdirSync(join(cwd, "docs/changes"), { recursive: true });
+      writeFileSync(join(cwd, "docs/changes/conflict-root"), "file\n");
+    }],
+  ];
+
+  for (const [conflictPath, setup] of cases) {
+    const cwd = tempProject();
+    setup(cwd);
+    const before = listProject(cwd);
+    const result = runCli(["new-change", "conflict-root", "--title", "Conflict", "--json"], { cwd });
+
+    assert.equal(result.status, 5, conflictPath);
+    const output = parseJsonResult(result);
+    assert.equal(output.status, "blocked");
+    assert.equal(output.blockers[0].code, "path-not-directory");
+    assert.equal(output.blockers[0].path, conflictPath);
+    assert.equal(actionFor(output, conflictPath)?.status, "blocked");
+    assert.deepEqual(listProject(cwd), before);
+  }
+});
+
+test("TNC-014 symlink path conflicts block before mutation", (t) => {
+  const cases = [
+    ["docs", (cwd) => {}],
+    ["docs/changes", (cwd) => mkdirSync(join(cwd, "docs"))],
+    ["docs/changes/symlink-case", (cwd) => mkdirSync(join(cwd, "docs/changes"), { recursive: true })],
+  ];
+
+  for (const [conflictPath, setup] of cases) {
+    const cwd = tempProject();
+    const target = join(cwd, `outside-target-${conflictPath.replaceAll("/", "-")}`);
+    setup(cwd);
+    mkdirSync(target);
+    try {
+      symlinkSync(target, join(cwd, conflictPath), "dir");
+    } catch (error) {
+      t.skip(`symlink unavailable: ${error.message}`);
+      return;
+    }
+
+    const result = runCli(["new-change", "symlink-case", "--title", "Symlink Case", "--json"], { cwd });
+
+    assert.equal(result.status, 5, conflictPath);
+    const output = parseJsonResult(result);
+    assert.equal(output.status, "blocked", conflictPath);
+    assert.equal(output.blockers[0].code, "path-not-directory", conflictPath);
+    assert.equal(output.blockers[0].path, conflictPath);
+    assert.equal(actionFor(output, conflictPath)?.status, "blocked");
+    assert.ok(!existsSync(join(target, "change.yaml")));
+    assert.ok(!existsSync(join(target, "explain-change.md")));
+    assert.deepEqual(listProject(target), []);
+  }
+});
+
+test("TNC-015 forbidden artifacts, network-adjacent files, and project files are not touched", () => {
+  const cwd = tempProject();
+  mkdirSync(join(cwd, "docs/changes/scope-case"), { recursive: true });
+  writeFileSync(join(cwd, "docs/changes/scope-case/explain-change.md"), "existing draft\n");
+  writeFileSync(join(cwd, "rigorloop.yaml"), "existing manifest\n");
+  writeFileSync(join(cwd, "rigorloop.lock"), "existing lock\n");
+
+  const result = runCli(["new-change", "scope-case", "--title", "Scope Case", "--json"], { cwd });
+
+  assert.equal(result.status, 0, result.stderr);
+  const output = parseJsonResult(result);
+  assert.equal(output.status, "success");
+  assert.equal(readProjectFile(cwd, "rigorloop.yaml"), "existing manifest\n");
+  assert.equal(readProjectFile(cwd, "rigorloop.lock"), "existing lock\n");
+  assert.equal(readProjectFile(cwd, "docs/changes/scope-case/explain-change.md"), "existing draft\n");
+  assert.ok(!existsSync(join(cwd, ".agents")));
+  assert.ok(!existsSync(join(cwd, ".claude")));
+  assert.ok(!existsSync(join(cwd, ".opencode")));
+  assert.deepEqual(output.artifacts, [
+    {
+      path: "docs/changes/scope-case/change.yaml",
+      kind: "change-metadata",
+      status: "created",
+    },
+  ]);
+});
+
+test("TNC-016 existing change.yaml is not overwritten", () => {
+  const cwd = tempProject();
+  mkdirSync(join(cwd, "docs/changes/new-feature"), { recursive: true });
+  writeFileSync(join(cwd, "docs/changes/new-feature/change.yaml"), "existing: true\n");
+  writeFileSync(join(cwd, "docs/changes/new-feature/explain-change.md"), "keep\n");
+  const before = listProject(cwd);
+
+  const result = runCli(["new-change", "new-feature", "--title", "New feature", "--json"], { cwd });
+
+  assert.equal(result.status, 5);
+  const output = parseJsonResult(result);
+  assert.equal(output.status, "blocked");
+  assert.equal(output.blockers[0].code, "path-exists");
+  assert.equal(output.blockers[0].path, "docs/changes/new-feature/change.yaml");
+  assert.equal(readProjectFile(cwd, "docs/changes/new-feature/change.yaml"), "existing: true\n");
+  assert.deepEqual(listProject(cwd), before);
+});
+
+test("TNC-017 partial write failure reports done and failed actions", () => {
+  const cwd = tempProject();
+  const draft = buildNewChangeDraft({
+    changeId: "partial-failure",
+    title: "Partial Failure",
+    classification: "default",
+    risk: "medium",
+    profile: "standard",
+  });
+  const fsOps = {
+    lstatSync,
+    mkdirSync,
+    writeFileSync() {
+      throw new Error("simulated write failure");
+    },
+  };
+
+  const execution = runNewChangePlan({
+    cwd,
+    draft,
+    flags: { dryRun: false },
+    profile: "standard",
+    fsOps,
+  });
+
+  assert.equal(execution.result.status, "error");
+  assert.equal(exitCodeForResult({ status: execution.result.status, exit_class: execution.exit_class }), 1);
+  assert.equal(execution.result.summary, "RigorLoop new-change failed while writing files.");
+  for (const path of ["docs", "docs/changes", "docs/changes/partial-failure"]) {
+    assert.equal(actionFor(execution.result, path)?.status, "done");
+  }
+  assert.equal(actionFor(execution.result, "docs/changes/partial-failure/change.yaml")?.status, "failed");
+  assert.equal(execution.result.errors[0].code, "write-failed");
+  assert.equal(execution.result.errors[0].path, "docs/changes/partial-failure/change.yaml");
+  assert.deepEqual(execution.result.artifacts, [
+    {
+      path: "docs/changes/partial-failure/change.yaml",
+      kind: "change-metadata",
+      status: "failed",
+    },
+  ]);
+  assert.ok(existsSync(join(cwd, "docs/changes/partial-failure")));
+  assert.ok(!existsSync(join(cwd, "docs/changes/partial-failure/change.yaml")));
+});
+
+test("TNC-018 new-change output modes follow shared CLI rules", () => {
+  const humanCwd = tempProject();
+  const human = runCli(["new-change", "human-case", "--title", "Human Case"], { cwd: humanCwd });
+
+  assert.equal(human.status, 0, human.stderr);
+  assert.equal(human.stderr, "");
+  assert.match(human.stdout, /docs\/changes\/human-case/);
+  assert.doesNotMatch(human.stdout, /^\s*\{/);
+
+  const quietCwd = tempProject();
+  const quietJson = runCli(["new-change", "quiet-case", "--title", "Quiet Case", "--json", "--quiet"], { cwd: quietCwd });
+
+  assert.equal(quietJson.status, 0, quietJson.stderr);
+  assert.equal(parseJsonResult(quietJson).status, "success");
+
+  const debugCwd = tempProject();
+  const debugJson = runCli(["new-change", "debug-case", "--title", "Debug Case", "--json", "--debug"], { cwd: debugCwd });
+  const debugOutput = parseJsonResult(debugJson);
+
+  assert.equal(debugJson.status, 0);
+  assert.equal(debugOutput.schema_version, 1);
+  assert.equal(debugOutput.command, "new-change");
+  assert.deepEqual(debugOutput.diagnostics, { debug: true });
+
+  const noColorCwd = tempProject();
+  const noColor = runCli(["new-change", "no-color-case", "--title", "No Color Case", "--no-color"], {
+    cwd: noColorCwd,
+    env: { NO_COLOR: "1" },
+  });
+
+  assert.equal(noColor.status, 0, noColor.stderr);
+  assert.doesNotMatch(noColor.stdout, /\u001b\[[0-9;]*m/);
+
+  const invalidCwd = tempProject();
+  const before = listProject(invalidCwd);
+  const invalid = runCli(["new-change", "invalid-option", "--title", "Invalid Option", "--bad", "--json"], { cwd: invalidCwd });
+
+  assert.equal(invalid.status, 4);
+  assert.equal(parseJsonResult(invalid).errors[0].code, "invalid-usage");
+  assert.deepEqual(listProject(invalidCwd), before);
+});
+
+test("TNC-019 new-change is additive and local-only", () => {
+  const cwd = tempProject();
+  const result = runCli(["new-change", "non-git-project", "--title", "Non Git Project", "--json"], { cwd });
+
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(parseJsonResult(result).status, "success");
+  assert.ok(!existsSync(join(cwd, ".git")));
+  assert.ok(existsSync(join(cwd, "docs/changes/non-git-project/change.yaml")));
+});
+
+test("TNC-020 generated metadata validates with repository schema", () => {
+  const cwd = tempProject();
+  const standard = runCli(["new-change", "schema-standard", "--title", "Schema Standard"], { cwd });
+  const minimal = runCli(["new-change", "schema-minimal", "--title", "Schema Minimal", "--profile", "minimal"], { cwd });
+
+  assert.equal(standard.status, 0, standard.stderr);
+  assert.equal(minimal.status, 0, minimal.stderr);
+  const validator = resolve(packageRoot, "..", "..", "scripts", "validate-change-metadata.py");
+  execFileSync("python", [validator, join(cwd, "docs/changes/schema-standard/change.yaml")], { encoding: "utf8" });
+  execFileSync("python", [validator, join(cwd, "docs/changes/schema-minimal/change.yaml")], { encoding: "utf8" });
+});
+
+test("TNC-021 command scope is proportional to scaffolded paths", () => {
+  const cwd = tempProject();
+  mkdirSync(join(cwd, "unrelated/deep/tree"), { recursive: true });
+  writeFileSync(join(cwd, "unrelated/deep/tree/file.txt"), "untouched\n");
+
+  const result = runCli(["new-change", "scoped", "--title", "Scoped", "--dry-run", "--json"], { cwd });
+
+  assert.equal(result.status, 0, result.stderr);
+  const output = parseJsonResult(result);
+  assert.deepEqual(output.actions.map((action) => action.path), [
+    "docs",
+    "docs/changes",
+    "docs/changes/scoped",
+    "docs/changes/scoped/change.yaml",
+  ]);
+  assert.equal(readProjectFile(cwd, "unrelated/deep/tree/file.txt"), "untouched\n");
 });
 
 test("T3 version output reports package identity", () => {

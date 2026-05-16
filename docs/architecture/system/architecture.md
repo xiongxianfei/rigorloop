@@ -45,6 +45,8 @@
 - RigorLoop CLI Lockfile spec: `specs/rigorloop-cli-lockfile.md`
 - RigorLoop CLI Lockfile ADR: `docs/adr/ADR-20260516-rigorloop-cli-lockfile.md`
 - RigorLoop CLI Lockfile change metadata: `docs/changes/2026-05-15-rigorloop-cli-lockfile/change.yaml`
+- RigorLoop CLI New Change spec: `specs/rigorloop-cli-new-change.md`
+- RigorLoop CLI New Change change metadata: `docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml`
 - Record Every Formal Review proposal: `docs/proposals/2026-05-12-record-every-formal-review.md`
 - Formal Review Recording spec: `specs/formal-review-recording.md`
 - Record Every Formal Review change metadata: `docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml`
@@ -69,6 +71,7 @@ The goals are:
 - keep `skills/` as the only authored skill source while moving local and public generated skill copies out of ordinary authored Git state in staged releases;
 - add a small CLI package boundary that scaffolds projects and installs verified Codex release archives without becoming a second source of truth;
 - let the CLI record verified generated Codex adapter output in a downstream `rigorloop.lock` without making the lockfile canonical workflow, skill, schema, release, or adapter metadata;
+- let the CLI scaffold a draft change-local artifact pack for `docs/changes/<change-id>/change.yaml` without claiming lifecycle stage completion or creating durable-looking placeholder artifacts;
 - make public release skill token-friendliness measurable through release reports, structured metadata, and fixture-backed runtime benchmarks;
 - make dynamic token-friendliness coverage visible across the core delivery workflow without requiring every optional skill benchmark for every release;
 - keep first adoption and package-quality refinement review-based until real package usage proves which checks are worth automating.
@@ -92,6 +95,7 @@ The goals are:
 - For `v0.1.3` and later, release archives are the active public adapter install surface. Generated adapter skill bodies, generated adapter instruction entrypoints, and generated opencode command wrappers are release or temporary output, not tracked package fragments under `dist/adapters/<adapter>/`.
 - The first RigorLoop CLI package candidate is `@xiongxianfei/rigorloop` with one public binary, `rigorloop`.
 - The completed first CLI slice was limited to help, version, and `init --adapter codex` with dry-run JSON, safe `rigorloop.yaml` generation, verified Codex adapter archive installation, and planned lockfile output only.
+- The next CLI scaffolding slice adds `rigorloop new-change <change-id>` to create `docs/changes/<change-id>/change.yaml` only. It must not create `explain-change.md`, review artifacts, plans, specs, proposals, lockfiles, adapters, or any lifecycle artifact that would imply a later stage has completed.
 - The CLI package may contain CLI code, small scaffolds, and bundled official adapter metadata for the package's compatible Codex adapter release. It must not contain adapter archives as authored npm source or generated adapter skill bodies as canonical source.
 - `rigorloop init --adapter codex --from-archive <path>` verifies local archives against bundled adapter metadata shipped with the installed CLI package version and does not require a separate user metadata path in the first slice.
 - `rigorloop init` may write durable `rigorloop.lock` only for the approved Codex lockfile-writing surface after archive verification, extraction safety checks, generated-output mutation, installed-tree verification, and lockfile shape validation have succeeded.
@@ -146,7 +150,7 @@ The repository system is composed of authored guidance, lifecycle artifacts, val
 | Governance and workflow guidance | Defines source-of-truth order, repository defaults, workflow routing, and contributor expectations | Markdown in `CONSTITUTION.md`, `AGENTS.md`, `docs/workflows.md` |
 | Lifecycle artifacts and ADRs | Carry proposal, spec, architecture, ADR, plan, test-spec, and change metadata states | Markdown/YAML in `docs/proposals/`, `specs/`, `docs/architecture/`, `docs/adr/`, `docs/plans/`, `docs/changes/` |
 | Token-cost benchmark fixtures and reports | Carry executable benchmark prompts, clean downstream fixtures, raw or sanitized run evidence, analyzer summaries, and longitudinal token-friendliness reports | Markdown/YAML/JSONL under `benchmarks/token-cost/` and `docs/reports/token-cost/` |
-| RigorLoop CLI package candidate | Provides the `rigorloop` binary, project scaffolding, stable human/JSON command envelopes, bundled Codex adapter metadata, verified Codex adapter archive installation, and first-slice durable lockfile writes for verified Codex output | Node/npm package under the repository package boundary, published later as `@xiongxianfei/rigorloop` only after release hardening |
+| RigorLoop CLI package candidate | Provides the `rigorloop` binary, project scaffolding, change metadata scaffolding, stable human/JSON command envelopes, bundled Codex adapter metadata, verified Codex adapter archive installation, and first-slice durable lockfile writes for verified Codex output | Node/npm package under the repository package boundary, published later as `@xiongxianfei/rigorloop` only after release hardening |
 | Canonical architecture package | Long-lived current architecture source of truth, including arc42 prose and C4 diagram source | Markdown and Mermaid in `docs/architecture/system/` |
 | Change-local evidence | Historical architecture evidence, explicit exceptional architecture evidence, change metadata, explanation, review resolution, and verification evidence | Markdown/YAML in `docs/changes/<change-id>/` |
 | Templates and diagram styles | Canonical scaffolding for architecture, ADRs, and shared Mermaid C4 role styling | Markdown/Mermaid under `templates/` |
@@ -259,6 +263,18 @@ This decomposition is prose-only for now. A component diagram should be added wh
 12. If lockfile writing fails after adapter installation, the CLI reports that lockfile state was not recorded and must not claim durable lockfile success.
 13. The CLI reports success, warning, blocked, or error using the stable JSON envelope and exit-code contract from the approved spec.
 
+### CLI new-change flow
+
+1. A user runs `rigorloop new-change <change-id> --title <title>` from the same `@xiongxianfei/rigorloop` CLI package boundary.
+2. The CLI validates public option values before planning filesystem writes: `<change-id>` must be a single safe path segment, `--type` must be a lowercase classification token when supplied, `--risk` must be `low`, `medium`, or `high`, and unsupported profiles or missing required inputs fail as invalid usage.
+3. The CLI builds a non-destructive write plan for `docs`, `docs/changes`, `docs/changes/<change-id>`, and `docs/changes/<change-id>/change.yaml`.
+4. The write plan reports existing directories, planned directories, planned files, and blockers. It blocks before mutation on existing planned files, directory paths occupied by files or other non-directories, and symlinks at planned directory paths.
+5. In dry-run mode, the CLI reports the plan using the stable JSON or human output contract and writes nothing.
+6. In actual mode, the CLI creates directories before writing files and writes only `change.yaml` for this first slice.
+7. If a mutation fails after earlier mutations, the CLI reports completed actions as `done`, the failed action as `failed`, names the failed path, does not claim artifact-pack creation success, and does not promise atomic rollback.
+8. Generated `change.yaml` is deterministic UTF-8/LF YAML with the first-release required fields, empty `artifacts`, empty traceability arrays, and `review.status: pending`.
+9. The command does not run validation, create durable Markdown reasoning placeholders, install adapters, mutate `rigorloop.yaml`, write `rigorloop.lock`, inspect Git or PR state, or claim lifecycle stage completion.
+
 ## Deployment View
 
 RigorLoop has no deployed service, database, or runtime infrastructure for this architecture method. The deployment boundary is repository packaging and publication.
@@ -269,6 +285,7 @@ The main execution and publication boundaries are:
 
 - local contributor shell: runs selector, CI wrapper, validation, generation, and drift checks;
 - CLI package execution: runs the additive `rigorloop` command from a local package artifact, local/global install, or future npm package; the package is a delivery mechanism and not a canonical workflow source;
+- downstream change metadata scaffold: `docs/changes/<change-id>/change.yaml` created by `rigorloop new-change`; it is draft traceability state and not proof that proposal, review, verification, or PR stages are complete;
 - GitHub Actions: runs the same repository-owned scripts in hosted CI when configured;
 - local Codex runtime state: `.codex/skills/`, ignored by Git and installed locally from public Codex adapter output when contributors need local Codex use;
 - public adapter packages: tracked `dist/adapters/` output during the compatibility window through `v0.1.2`, then generated temporary or release-output packages and release archives for `v0.1.3` and later;
@@ -336,6 +353,10 @@ The CLI package is an additive delivery surface. It can carry executable command
 
 The first generated project manifest is `rigorloop.yaml`. It records the selected Codex adapter, install root, package identity, package version, and release or local archive source. It does not claim validation success, workflow readiness, branch readiness, PR readiness, or lockfile authority.
 
+`rigorloop new-change` is also a scaffold command, but it scaffolds change-local traceability rather than project installation state. It creates only `docs/changes/<change-id>/change.yaml` in the first slice, with empty `artifacts`, `requirements`, `tests`, `validation`, and `changed_files` until later workflow stages produce real evidence. It deliberately omits `explain-change.md` and `artifacts.explain_change` so a placeholder file cannot be mistaken for durable reasoning.
+
+The `new-change` mutation boundary is local and non-networked. It validates option domains and safe path segments before planning writes, blocks on symlinks and overwrite conflicts before mutation, reports every planned directory and file action, and uses the shared CLI JSON status and exit-code contract. Partial write failures are observable rather than atomic: already-completed actions are reported, the failed path is reported, and the command does not claim success.
+
 `rigorloop.lock` is machine-owned downstream project state. It records verified generated Codex adapter output after a successful `init --adapter codex` operation. It is written only by the CLI, uses strict `schema_version: 1` YAML, and records the CLI package version, normalized manifest hash, adapter release, delivery source, archive hash, install root, `rigorloop-tree-hash-v1`, tree hash, and file count.
 
 Lockfile write ordering is intentionally one-way: planned writes are reported first, existing lockfiles are parsed and validated before mutation, drift is checked before destructive replacement, archive and generated-output verification happen before a success entry is written, and partial installation failures must not create lockfile claims.
@@ -389,6 +410,8 @@ The legacy normalization follow-on inventoried every current `docs/architecture/
 
 No additional ADR is required for the 2026-04-29 package-quality refinement because it sharpens the accepted method without changing the durable architecture decision.
 
+No additional ADR is required for `rigorloop new-change` because it is an additive command inside the existing CLI package boundary and does not introduce a new durable source-of-truth, packaging, release, validation, or persistence decision.
+
 No additional ADR is required for the 2026-05-12 record-every-formal-review amendment because it refines the existing review artifact and workflow evidence architecture under the approved formal review recording spec. The durable rule is carried by `specs/formal-review-recording.md`, and this canonical package records the affected runtime and crosscutting architecture.
 
 No additional ADR is required for the `v0.1.1` single-authored-source transition release because ADR-20260512 already records the durable generated-output and adapter release artifact migration. This package revision records the release-specific validation and packaging architecture for the transition window.
@@ -405,6 +428,8 @@ No additional ADR is required for the `v0.1.1` single-authored-source transition
 | Transition release compatibility | A maintainer prepares `v0.1.1`. | `release-verify.sh` delegates structured checks to `validate-release.py`; release validation proves canonical skills and tracked public adapter output are current, release notes and adapter docs describe the transition, token-cost metadata uses public adapter output, and `.codex/skills/` is only checked for ignored/untracked state. |
 | Public adapter untracking | A maintainer prepares `v0.1.3`. | Release validation proves no tracked generated adapter skill bodies remain, `dist/adapters/README.md` and `manifest.yaml` remain tracked, generated temporary or release-output packages validate, release archives validate, metadata and checksums validate, and root guidance no longer advertises retired repository-tree adapter skill bodies as the active install model. |
 | CLI init safety | A user runs `rigorloop init --adapter codex` in a project with existing files. | The CLI builds a write plan, refuses user-file overwrites by default, verifies bundled metadata and archive contents before extraction, writes durable lockfile state only after generated output is verified, and reports success/block/error through the stable command contract. |
+| CLI new-change safety | A user runs `rigorloop new-change <change-id> --title <title>` in a project with existing or missing `docs/changes/` paths. | The CLI validates the option domains, builds a write plan naming every affected path, blocks on unsafe change IDs, symlinks, existing planned files, and path-type conflicts, writes only `change.yaml`, and reports partial write failures without claiming success. |
+| Lifecycle claim boundary | A user sees `docs/changes/<change-id>/change.yaml` created by `new-change`. | The generated metadata has empty artifact and evidence arrays, `review.status: pending`, and no `explain_change` artifact; file existence does not imply proposal acceptance, review completion, verification, or PR readiness. |
 | Local archive verification | A user runs `rigorloop init --adapter codex --from-archive <path>`. | The CLI verifies the archive against bundled official metadata for the installed package's compatible adapter release and blocks with `metadata-unavailable` if metadata is absent. |
 | Lockfile determinism | A user reruns `rigorloop init --adapter codex` after a verified install with unchanged generated output. | The CLI computes the same normalized manifest hash and `rigorloop-tree-hash-v1`, preserves supported unrelated entries, and produces byte-identical lockfile content for identical state. |
 | Lockfile drift safety | A user reruns `rigorloop init --adapter codex` after generated files under `.agents/skills` were modified. | The CLI reports drift with expected and actual tree hashes when available and blocks destructive replacement by default. |
@@ -438,6 +463,8 @@ No additional ADR is required for the `v0.1.1` single-authored-source transition
 | Unknown future lockfile shape could be silently erased by older CLIs | The first lockfile schema blocks on unknown top-level sections, unknown fields, unsupported schema versions, unsupported adapters, unsupported source values, and unsupported tree hash algorithms before mutation. |
 | Adapter installation could succeed while lockfile writing fails | The CLI reports lockfile failure explicitly and must not claim durable lockfile state was recorded; later recovery or repair commands require a separate spec. |
 | Users could rely on `latest` for reproducible setup | The public command model allows `latest` for quick starts but pinned package versions are the reproducible path. `latest` with incompatible local archives blocks unless a compatibility rule exists. |
+| `new-change` scaffolds could be mistaken for completed workflow evidence | The first `new-change` slice writes only `change.yaml`, leaves `artifacts` and evidence arrays empty, sets review state to pending, and avoids durable-looking Markdown placeholders. Later status or validate commands must inspect actual artifacts rather than assuming scaffolded metadata means readiness. |
+| Partial `new-change` filesystem writes could confuse users | The command preflights path conflicts, creates directories before files, reports completed and failed actions, and does not claim artifact-pack success after partial failure. It does not promise atomic rollback in the first slice. |
 | Release validation could keep treating `.codex/skills/` as a privileged internal release path | The `v0.1.1` transition release gate validates public adapter output and only confirms `.codex/skills/` ignored/untracked state; optional local Codex smoke installs from the public Codex adapter path and stays outside required release evidence. |
 | Generated adapter archives could create binary churn in Git | Generated archives are release assets by default; Git tracks artifact metadata and checksums instead of archive files. |
 | Warning-only token budgets could be mistaken for CI gates | The first measurement slice treats budget thresholds as report warnings; hard gates require a later accepted proposal and spec. |
@@ -470,10 +497,11 @@ No additional ADR is required for the `v0.1.1` single-authored-source transition
 - planned lockfile content: lockfile-shaped command output that previews generated-output hashes without writing durable `rigorloop.lock`.
 - durable lockfile: downstream project `rigorloop.lock` written by the CLI after verified Codex adapter install to record generated-output state.
 - `rigorloop-tree-hash-v1`: normalized tree-hash algorithm for generated adapter output, based on sorted relative file paths and normalized file hashes.
+- change metadata scaffold: draft `docs/changes/<change-id>/change.yaml` produced by `rigorloop new-change` before downstream workflow stages fill in real requirements, tests, validation, changed files, reviews, and durable reasoning artifacts.
 
 ## Next artifacts
 
-- `plan` for the RigorLoop CLI durable lockfile implementation slice.
+- Implementation of the RigorLoop CLI New Change milestones through the active plan.
 
 ## Follow-on artifacts
 
@@ -495,9 +523,11 @@ No additional ADR is required for the `v0.1.1` single-authored-source transition
 - RigorLoop CLI Package and Codex Init: accepted proposal and approved spec define the first CLI slice: one package candidate, one `rigorloop` binary, help/version, `init --adapter codex`, dry-run JSON, non-destructive write planning, generated `rigorloop.yaml`, bundled metadata for Codex archive verification in both default and local archive modes, planned lockfile output only, and no public npm publication until release hardening.
 - RigorLoop CLI Lockfile: approved spec and accepted ADR define durable `rigorloop.lock` writes for verified Codex init, strict lockfile shape handling, `rigorloop-tree-hash-v1`, drift blocking, local and network source recording, and partial-failure write ordering.
 - Architecture-review for the RigorLoop CLI Lockfile architecture update: approved in `docs/changes/2026-05-15-rigorloop-cli-lockfile/reviews/architecture-review-r1.md` with no material findings.
+- RigorLoop CLI New Change: approved spec defines `rigorloop new-change <change-id>` as a change metadata scaffolding command that creates only `docs/changes/<change-id>/change.yaml`, preserves lifecycle claim boundaries, validates public option domains, reports complete write plans, blocks symlinks and overwrites, and exposes partial write failures.
+- Architecture-review for the RigorLoop CLI New Change architecture update: approved in `docs/changes/2026-05-16-rigorloop-cli-new-change/reviews/architecture-review-r1.md` with no material findings.
 
 ## Readiness
 
-This canonical package revision records the current repository architecture for generated skill output, adapter release artifact migration, the `v0.1.1` single-authored-source transition release, the `v0.1.3` public adapter untracking release, the first RigorLoop CLI package plus Codex init slice, and the durable lockfile extension for verified Codex init.
+This canonical package revision records the current repository architecture for generated skill output, adapter release artifact migration, the `v0.1.1` single-authored-source transition release, the `v0.1.3` public adapter untracking release, the first RigorLoop CLI package plus Codex init slice, the durable lockfile extension for verified Codex init, and the `new-change` metadata scaffolding slice.
 
-ADR `docs/adr/ADR-20260512-generated-skill-output-release-artifacts.md` records the durable decision to move generated local and public skill copies out of ordinary authored Git state through staged temp-output and release-artifact validation. ADR `docs/adr/ADR-20260513-v0-1-3-adapter-release-archive-install-surface.md` records the durable `v0.1.3` decision to make release archives the active public adapter install surface and retire tracked generated adapter package fragments. ADR `docs/adr/ADR-20260515-rigorloop-cli-package-and-codex-init.md` records the first CLI package boundary, bundled local-archive metadata decision, planned-lockfile boundary, and publication block. ADR `docs/adr/ADR-20260516-rigorloop-cli-lockfile.md` records the durable lockfile boundary, strict schema handling, drift comparison, and partial-failure write ordering for Codex init. No change-local architecture delta is produced because the canonical package carries the intended durable guidance directly.
+ADR `docs/adr/ADR-20260512-generated-skill-output-release-artifacts.md` records the durable decision to move generated local and public skill copies out of ordinary authored Git state through staged temp-output and release-artifact validation. ADR `docs/adr/ADR-20260513-v0-1-3-adapter-release-archive-install-surface.md` records the durable `v0.1.3` decision to make release archives the active public adapter install surface and retire tracked generated adapter package fragments. ADR `docs/adr/ADR-20260515-rigorloop-cli-package-and-codex-init.md` records the first CLI package boundary, bundled local-archive metadata decision, planned-lockfile boundary, and publication block. ADR `docs/adr/ADR-20260516-rigorloop-cli-lockfile.md` records the durable lockfile boundary, strict schema handling, drift comparison, and partial-failure write ordering for Codex init. No additional ADR is required for `rigorloop new-change` because it is an additive command inside the existing CLI package boundary and does not introduce a new durable source-of-truth, packaging, release, validation, or persistence decision. No change-local architecture delta is produced because the canonical package carries the intended durable guidance directly.

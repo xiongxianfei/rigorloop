@@ -1,10 +1,10 @@
 # RigorLoop CLI durable lockfile
 
-- Status: active
+- Status: done
 - Owner: maintainers
 - Start date: 2026-05-16
 - Last updated: 2026-05-16
-- Related issue or PR: none yet
+- Related issue or PR: PR #63
 - Supersedes: none
 
 ## Purpose / big picture
@@ -59,13 +59,13 @@ The first CLI slice installed the verified Codex adapter and emitted planned loc
 ## Current Handoff Summary
 
 - Current milestone: Lifecycle closeout
-- Current milestone state: pr-opened
+- Current milestone state: completed
 - Last reviewed milestone: M3
 - Review status: code-review-r5 approved M3 with no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: hosted CI and human review for PR #63
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1, M2, and M3 are closed, explain-change is recorded, final local verify passed, and PR #63 is open; hosted CI, human review, and merge remain pending.
+- Next stage: none
+- Final closeout readiness: completed
+- Reason final closeout is or is not ready: M1, M2, and M3 are closed, explain-change is recorded, final local verify passed, PR #63 passed hosted CI and human review, and PR #63 is merged.
 
 ## Milestones
 
@@ -182,7 +182,7 @@ The first CLI slice installed the verified Codex adapter and emitted planned loc
 
 ### Lifecycle closeout
 
-- Milestone state: planned
+- Milestone state: closed
 - Goal: complete downstream evidence after all implementation milestones are closed.
 - Requirements: all acceptance criteria AC1-AC13
 - Files/components likely touched: active plan, change-local explain-change/verify artifacts, PR handoff text
@@ -200,11 +200,11 @@ The first CLI slice installed the verified Codex adapter and emitted planned loc
 - Expected observable result: final closeout evidence exists and plan/index lifecycle state is synchronized before PR handoff.
 - Commit message: `Close out rigorloop CLI lockfile`
 - Milestone closeout:
-  - validation passed
-  - progress updated
-  - decision log updated if needed
-  - validation notes updated
-  - milestone committed if needed
+  - validation passed: yes
+  - progress updated: yes
+  - decision log updated if needed: yes
+  - validation notes updated: yes
+  - milestone committed if needed: PR #63 merged
 - Risks: final validation may expose selector coverage gaps for the new package path or lockfile test cases.
 - Rollback/recovery: add selector coverage or explicitly route package validation in the test spec and plan before claiming final readiness.
 
@@ -259,6 +259,7 @@ The first CLI slice installed the verified Codex adapter and emitted planned loc
 - 2026-05-16: explain-change recorded the durable rationale for the lockfile implementation. The next stage is verify.
 - 2026-05-16: final local verify passed for the durable lockfile change; branch-ready evidence is recorded and the next stage is PR handoff.
 - 2026-05-16: PR #63 opened for the durable lockfile change; hosted CI and human review are pending.
+- 2026-05-16: PR #63 merged. The durable lockfile plan is complete, and `FU-004` is closed.
 
 ## Decision log
 
@@ -325,8 +326,8 @@ The first CLI slice installed the verified Codex adapter and emitted planned loc
 
 ## Outcome and retrospective
 
-- Final local verify passed on 2026-05-16. PR #63 is open; hosted CI, human review, merge, and follow-up closeout remain open.
+- Final local verify passed on 2026-05-16. PR #63 passed hosted CI and human review, merged on 2026-05-16, and closed `FU-004`.
 
 ## Readiness
 
-- See `Current Handoff Summary`.
+- Completed.

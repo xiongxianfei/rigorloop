@@ -24,7 +24,7 @@ flowchart TB
   contributor -->|updates clear current architecture truth directly in| architecture
   contributor -->|uses for historical, review, validation, and exceptional evidence in| changes
   contributor -->|authors benchmark prompts, fixtures, reports, and metadata in| token_bench
-  contributor -->|runs help, version, and Codex init through| cli
+  contributor -->|runs help, version, Codex init, and new-change through| cli
   contributor -->|uses scaffolds from| templates
   contributor -->|edits canonical sources in| skills
   reviewer -->|reviews selected architecture surface and ADR need in| architecture
@@ -40,7 +40,7 @@ flowchart TB
   scripts -->|generate temp output, tracked adapter output, and release artifacts for| generated
   scripts -->|runs benchmarks, analyzes JSONL, and validates metadata for| token_bench
   cli -->|uses bundled official adapter metadata and small scaffolds from| release
-  cli -->|writes safe project scaffolds, records lockfile state, and installs verified Codex adapter output from| generated
+  cli -->|writes safe project/change scaffolds, records lockfile state, and installs verified Codex adapter output from| generated
   cli -->|is executed by| package_runner
   generated -->|provides public Codex skills for benchmark temp fixtures used by| token_bench
   scripts -->|validate lifecycle, metadata, review artifacts, release data, and drift for| lifecycle
