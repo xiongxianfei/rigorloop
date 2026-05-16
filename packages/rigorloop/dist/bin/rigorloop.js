@@ -296,6 +296,7 @@ function loadReleaseDescriptor(info) {
 
 function loadVerifiedBundledMetadata(info) {
   const release = loadReleaseDescriptor(info);
+  const releaseTag = releaseForPackage(info.version);
   if (release.blocker) {
     return release;
   }
@@ -317,7 +318,7 @@ function loadVerifiedBundledMetadata(info) {
     return {
       blocker: metadataBlocker(
         "metadata-unavailable",
-        "Bundled adapter metadata is unavailable for Codex v0.1.3.",
+        `Bundled adapter metadata is unavailable for Codex ${releaseTag}.`,
         descriptor.bundled_metadata,
         "Use a CLI package version that bundles metadata for this adapter release.",
       ),

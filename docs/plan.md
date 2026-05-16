@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- none yet
+- [2026-05-16 RigorLoop npm publication](plans/2026-05-16-rigorloop-npm-publication.md) - active execution plan for publishing the first public `@xiongxianfei/rigorloop@0.1.4` npm package from tag `v0.1.4`, with package metadata hardening, package-content validation, packed-package smoke, release verification, publication-mode gating, release evidence, and real Codex adapter install proof before FU-010 closeout.
 
 ## Blocked
 - none yet

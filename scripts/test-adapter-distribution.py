@@ -97,6 +97,7 @@ class AdapterDistributionTests(unittest.TestCase):
         validation_overrides: dict[str, str] | None = None,
         notes_tools: tuple[str, ...] = SUPPORTED_ADAPTERS,
         notes_extra: str = "",
+        release_extra: str = "",
     ) -> Path:
         release_dir = root / "docs" / "releases" / version
         release_dir.mkdir(parents=True, exist_ok=True)
@@ -146,6 +147,8 @@ class AdapterDistributionTests(unittest.TestCase):
             )
         lines.append("validation:")
         lines.extend(f"  {key}: {value}" for key, value in validation.items())
+        if release_extra:
+            lines.extend(["", release_extra])
         lines.append("")
         (release_dir / "release.yaml").write_text("\n".join(lines), encoding="utf-8")
 
@@ -275,8 +278,136 @@ class AdapterDistributionTests(unittest.TestCase):
             ]
         )
 
-    def write_v0_1_3_adapter_support_surface(self, output_root: Path) -> None:
-        sync_adapter_output("v0.1.3", output_root=output_root)
+    def v0_1_4_notes_extra(self) -> str:
+        return "\n".join(
+            [
+                "## npm Package",
+                "",
+                "Install the CLI through npm:",
+                "",
+                "```bash",
+                "npx @xiongxianfei/rigorloop@latest init --adapter codex",
+                "npx @xiongxianfei/rigorloop@0.1.4 init --adapter codex",
+                "npm install -D @xiongxianfei/rigorloop",
+                "npx rigorloop init --adapter codex",
+                "```",
+                "",
+                "npm is the CLI delivery channel, not the canonical source for workflow rules, skills, schemas, templates, or adapter definitions.",
+                "Adapter archives remain GitHub release artifacts verified by the CLI and are not bundled in the npm package.",
+                "",
+                "## Adapter Archives",
+                "",
+                "Release archives are the active public adapter install path for `v0.1.4`:",
+                "",
+                "- `rigorloop-adapter-codex-v0.1.4.zip` installs to `.agents/skills/`.",
+                "- `rigorloop-adapter-claude-v0.1.4.zip` installs to `.claude/skills/`.",
+                "- `rigorloop-adapter-opencode-v0.1.4.zip` installs to `.opencode/skills/`.",
+                "",
+                "Checksums and adapter artifact metadata are recorded in `docs/reports/adapter-artifacts/releases/v0.1.4.yaml`.",
+                "",
+                "The repository-owned release gate is `bash scripts/release-verify.sh v0.1.4`.",
+            ]
+        )
+
+    def v0_1_4_release_extra(self) -> str:
+        return "\n".join(
+            [
+                "npm_package:",
+                "  name: \"@xiongxianfei/rigorloop\"",
+                "  version: \"0.1.4\"",
+                "  release_tag: v0.1.4",
+                "",
+                "adapter_release:",
+                "  tag: v0.1.4",
+                "  bundled_metadata: adapter-artifacts-v0.1.4.json",
+            ]
+        )
+
+    def write_npm_publication_evidence(
+        self,
+        release_dir: Path,
+        *,
+        status: str = "pending-publication",
+        mode: str = "bootstrap",
+        published_by_workflow: str = "false",
+        tarball_sha256: str = "pending",
+        bootstrap_used: str = "false",
+        approving_maintainer: str = "pending",
+        publish_command: str = "pending",
+        npm_published: str = "false",
+        npm_package_url: str = "pending",
+        adapter_result: str = "pending",
+        archive_sha256_verified: str = "false",
+        tree_hash_verified: str = "false",
+        fu_blocked: str = "true",
+    ) -> Path:
+        evidence = release_dir / "npm-publication.md"
+        evidence.write_text(
+            f"""# npm publication evidence for v0.1.4
+
+Status: {status}
+
+```yaml
+publication:
+  package: "@xiongxianfei/rigorloop"
+  version: "0.1.4"
+  release_tag: "v0.1.4"
+  source_commit: "0123456789abcdef0123456789abcdef01234567"
+  mode: "{mode}"
+
+workflow:
+  release_workflow: ".github/workflows/release.yml"
+  published_by_workflow: {published_by_workflow}
+  unsupported_tags_rejected: true
+
+tarball:
+  filename: "xiongxianfei-rigorloop-0.1.4.tgz"
+  sha256: "{tarball_sha256}"
+  pack_command: "npm pack --prefix packages/rigorloop"
+  content_check: "pass"
+  smoke_result: "pass"
+
+trusted_publishing:
+  configured: false
+  workflow: ".github/workflows/release.yml"
+  id_token_write: false
+
+bootstrap:
+  used: {bootstrap_used}
+  approving_maintainer: "{approving_maintainer}"
+  publish_command: "{publish_command}"
+
+npm:
+  published: {npm_published}
+  package_url: "{npm_package_url}"
+
+adapter_install_smoke:
+  required_before_fu_close: true
+  required_before_publish: "when official release assets are externally observable"
+  command: "npx @xiongxianfei/rigorloop@0.1.4 init --adapter codex --json"
+  temp_project: "pending"
+  package_source: "packed-tarball"
+  adapter: "codex"
+  official_archive_url: "https://github.com/xiongxianfei/rigorloop/releases/download/v0.1.4/rigorloop-adapter-codex-v0.1.4.zip"
+  archive_sha256_verified: {archive_sha256_verified}
+  tree_hash_verified: {tree_hash_verified}
+  result: "{adapter_result}"
+  ordering_gap: "npm package not yet published; official release assets not yet externally observable"
+  fu_010_closeout_blocked: {fu_blocked}
+```
+""",
+            encoding="utf-8",
+        )
+        return evidence
+
+    def write_fake_npm_tarball(self, tarball_root: Path, *, content: bytes = b"fake npm tarball") -> str:
+        tarball_root.mkdir(parents=True, exist_ok=True)
+        tarball_path = tarball_root / "xiongxianfei-rigorloop-0.1.4.tgz"
+        tarball_path.write_bytes(content)
+        return hashlib.sha256(content).hexdigest()
+
+    def write_v0_1_3_adapter_support_surface(self, output_root: Path, *, version: str = "v0.1.3") -> None:
+        sync_adapter_output(version, output_root=output_root)
         for adapter in SUPPORTED_ADAPTERS:
             shutil.rmtree(output_root / adapter)
         (output_root / "README.md").write_text(
@@ -286,12 +417,12 @@ class AdapterDistributionTests(unittest.TestCase):
                     "",
                     "`skills/` is the canonical authored source.",
                     "`dist/adapters/manifest.yaml` is the tracked adapter support matrix.",
-                    "For `v0.1.3` and later, public adapter installation uses GitHub release archives.",
-                    "Generated public adapter skill bodies are not tracked source after `v0.1.3`.",
+                    f"For `{version}` and later, public adapter installation uses GitHub release archives.",
+                    f"Generated public adapter skill bodies are not tracked source after `{version}`.",
                     "",
-                    "- `rigorloop-adapter-codex-v0.1.3.zip` installs to `.agents/skills/`.",
-                    "- `rigorloop-adapter-claude-v0.1.3.zip` installs to `.claude/skills/`.",
-                    "- `rigorloop-adapter-opencode-v0.1.3.zip` installs to `.opencode/skills/`.",
+                    f"- `rigorloop-adapter-codex-{version}.zip` installs to `.agents/skills/`.",
+                    f"- `rigorloop-adapter-claude-{version}.zip` installs to `.claude/skills/`.",
+                    f"- `rigorloop-adapter-opencode-{version}.zip` installs to `.opencode/skills/`.",
                     "",
                     "Checksums and metadata are recorded under `docs/reports/adapter-artifacts/releases/`.",
                     "",
@@ -821,7 +952,7 @@ release_gate:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             output_root = root / "dist" / "adapters"
-            self.write_v0_1_3_adapter_support_surface(output_root)
+            self.write_v0_1_3_adapter_support_surface(output_root, version="v0.1.4")
             release_output_dir = root / "release-output"
             build_adapter_archives("v0.1.3", release_output_dir)
             adapter_artifact_root = self.write_adapter_artifact_metadata(
@@ -2393,11 +2524,13 @@ release_gate:
                 changed_paths=(),
                 release_output_dir=None,
                 release_commit=None,
+                npm_tarball_root=None,
             ):
                 captured["version"] = version
                 captured["changed_paths"] = changed_paths
                 captured["release_output_dir"] = release_output_dir
                 captured["release_commit"] = release_commit
+                captured["npm_tarball_root"] = npm_tarball_root
                 return [
                     "token-cost report validation failed: dynamic_runtime.runs: "
                     "missing required benchmark architecture-review"
@@ -2431,6 +2564,7 @@ release_gate:
         )
         self.assertEqual(Path("release-output"), captured["release_output_dir"])
         self.assertEqual("0123456789abcdef0123456789abcdef01234567", captured["release_commit"])
+        self.assertIsNone(captured["npm_tarball_root"])
 
     def test_generated_adapter_changed_path_requires_missing_benchmark_through_release_validation(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -2859,6 +2993,36 @@ release_gate:
             default_result.stdout,
         )
 
+    def test_release_verify_script_supports_v0_1_4_npm_publication_gate(self) -> None:
+        result = subprocess.run(
+            ["bash", str(ROOT / "scripts" / "release-verify.sh"), "v0.1.4"],
+            capture_output=True,
+            text=True,
+            cwd=ROOT,
+            env={
+                "RELEASE_VERIFY_DRY_RUN": "1",
+                "RELEASE_OUTPUT_DIR": "release-output",
+                "RELEASE_COMMIT": "0123456789abcdef0123456789abcdef01234567",
+            },
+        )
+
+        self.assertEqual(
+            result.returncode,
+            0,
+            msg=f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+        )
+        self.assertIn("python scripts/test-npm-package-publication.py", result.stdout)
+        self.assertIn(
+            "python scripts/build-adapters.py --version v0.1.4 --output-dir release-output",
+            result.stdout,
+        )
+        self.assertIn(
+            "python scripts/validate-release.py --version v0.1.4 --release-output-dir release-output --release-commit 0123456789abcdef0123456789abcdef01234567",
+            result.stdout,
+        )
+        self.assertNotIn("python scripts/build-adapters.py --version v0.1.4 --check", result.stdout)
+        self.assertNotIn("python scripts/validate-adapters.py --version v0.1.4", result.stdout)
+
     def test_release_verify_script_accepts_github_ref_name(self) -> None:
         result = subprocess.run(
             ["bash", str(ROOT / "scripts" / "release-verify.sh")],
@@ -2886,6 +3050,25 @@ release_gate:
         self.assertIn('args+=(release-output/*)', workflow_text)
         self.assertIn("--notes-file", workflow_text)
         self.assertNotIn("--generate-notes", workflow_text)
+
+    def test_release_workflow_gates_npm_publication_modes(self) -> None:
+        workflow_root = ROOT / ".github" / "workflows"
+        workflow_files = sorted(path.name for path in workflow_root.glob("*.yml"))
+        workflow_text = (workflow_root / "release.yml").read_text(encoding="utf-8")
+
+        self.assertNotIn("npm.yml", workflow_files)
+        self.assertNotIn("publish-npm.yml", workflow_files)
+        self.assertIn("publish-npm-trusted", workflow_text)
+        self.assertIn("needs: release", workflow_text)
+        self.assertIn("id-token: write", workflow_text)
+        self.assertIn("registry-url: https://registry.npmjs.org", workflow_text)
+        self.assertIn("npm publish --provenance --access public", workflow_text)
+        self.assertIn("github.ref_name != 'v0.1.4'", workflow_text)
+        self.assertIn("^[v][0-9]+[.][0-9]+[.][0-9]+$", workflow_text)
+        self.assertIn("expected_version=\"${tag#v}\"", workflow_text)
+        self.assertIn("packages/rigorloop/package.json", workflow_text)
+        self.assertNotIn("workflow_dispatch", workflow_text)
+        self.assertNotIn("release-output/*.tgz", workflow_text)
 
     def test_claude_entrypoint_documents_native_skill_invocation(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -3067,6 +3250,336 @@ release_gate:
 
         self.assertTrue(any("v0.1.2 release notes must list adapter archive" in error for error in errors), errors)
         self.assertTrue(any("v0.1.2 release notes must describe retained dist/adapters compatibility" in error for error in errors), errors)
+
+    def test_v0_1_4_release_validation_accepts_pending_publication_evidence(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root = root / "skills"
+            shutil.copytree(ROOT / "skills", skills_root)
+            output_root = root / "dist" / "adapters"
+            self.write_v0_1_3_adapter_support_surface(output_root, version="v0.1.4")
+            release_output_dir = root / "release-output"
+            build_adapter_archives("v0.1.4", release_output_dir, skills_root=skills_root)
+            adapter_artifact_root = self.write_adapter_artifact_metadata(
+                root,
+                release_output_dir,
+                version="v0.1.4",
+            ).parent
+            release_root = root / "docs" / "releases"
+            release_dir = self.write_release_artifacts(
+                root,
+                version="v0.1.4",
+                release_type="final",
+                manifest_version="v0.1.4",
+                smoke_overrides=self.v0_1_1_smoke_overrides(),
+                validation_overrides={
+                    "adapter_archives": "pass",
+                    "adapter_artifact_metadata": "pass",
+                    "npm_publication_evidence": "pass",
+                },
+                notes_extra=self.v0_1_4_notes_extra(),
+                release_extra=self.v0_1_4_release_extra(),
+            )
+            self.write_npm_publication_evidence(release_dir)
+
+            errors = validate_release_output(
+                "v0.1.4",
+                skills_root=skills_root,
+                output_root=output_root,
+                release_root=release_root,
+                release_output_dir=release_output_dir,
+                adapter_artifact_report_root=adapter_artifact_root,
+                release_commit="0123456789abcdef0123456789abcdef01234567",
+            )
+
+        self.assertEqual([], errors)
+
+    def test_v0_1_4_release_validation_requires_publication_evidence_and_closeout_blocker(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root = root / "skills"
+            shutil.copytree(ROOT / "skills", skills_root)
+            output_root = root / "dist" / "adapters"
+            self.write_v0_1_3_adapter_support_surface(output_root, version="v0.1.4")
+            release_output_dir = root / "release-output"
+            build_adapter_archives("v0.1.4", release_output_dir, skills_root=skills_root)
+            adapter_artifact_root = self.write_adapter_artifact_metadata(
+                root,
+                release_output_dir,
+                version="v0.1.4",
+            ).parent
+            release_root = root / "docs" / "releases"
+            release_dir = self.write_release_artifacts(
+                root,
+                version="v0.1.4",
+                release_type="final",
+                manifest_version="v0.1.4",
+                smoke_overrides=self.v0_1_1_smoke_overrides(),
+                validation_overrides={
+                    "adapter_archives": "pass",
+                    "adapter_artifact_metadata": "pass",
+                    "npm_publication_evidence": "pass",
+                },
+                notes_extra=self.v0_1_4_notes_extra(),
+                release_extra=self.v0_1_4_release_extra(),
+            )
+
+            errors = validate_release_output(
+                "v0.1.4",
+                skills_root=skills_root,
+                output_root=output_root,
+                release_root=release_root,
+                release_output_dir=release_output_dir,
+                adapter_artifact_report_root=adapter_artifact_root,
+                release_commit="0123456789abcdef0123456789abcdef01234567",
+            )
+            self.assertTrue(any("missing npm publication evidence" in error for error in errors), errors)
+
+            self.write_npm_publication_evidence(release_dir, fu_blocked="false")
+            errors = validate_release_output(
+                "v0.1.4",
+                skills_root=skills_root,
+                output_root=output_root,
+                release_root=release_root,
+                release_output_dir=release_output_dir,
+                adapter_artifact_report_root=adapter_artifact_root,
+                release_commit="0123456789abcdef0123456789abcdef01234567",
+            )
+
+        self.assertTrue(any("pending adapter install smoke must block FU-010 closeout" in error for error in errors), errors)
+
+    def test_v0_1_4_release_validation_rejects_incomplete_published_bootstrap_identity(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root = root / "skills"
+            shutil.copytree(ROOT / "skills", skills_root)
+            output_root = root / "dist" / "adapters"
+            self.write_v0_1_3_adapter_support_surface(output_root, version="v0.1.4")
+            release_output_dir = root / "release-output"
+            build_adapter_archives("v0.1.4", release_output_dir, skills_root=skills_root)
+            adapter_artifact_root = self.write_adapter_artifact_metadata(
+                root,
+                release_output_dir,
+                version="v0.1.4",
+            ).parent
+            release_root = root / "docs" / "releases"
+            release_dir = self.write_release_artifacts(
+                root,
+                version="v0.1.4",
+                release_type="final",
+                manifest_version="v0.1.4",
+                smoke_overrides=self.v0_1_1_smoke_overrides(),
+                validation_overrides={
+                    "adapter_archives": "pass",
+                    "adapter_artifact_metadata": "pass",
+                    "npm_publication_evidence": "pass",
+                },
+                notes_extra=self.v0_1_4_notes_extra(),
+                release_extra=self.v0_1_4_release_extra(),
+            )
+
+            self.write_npm_publication_evidence(
+                release_dir,
+                status="published",
+                bootstrap_used="true",
+                npm_published="true",
+                npm_package_url="https://www.npmjs.com/package/@xiongxianfei/rigorloop/v/0.1.4",
+                adapter_result="pass",
+                archive_sha256_verified="true",
+                tree_hash_verified="true",
+                fu_blocked="false",
+            )
+            errors = validate_release_output(
+                "v0.1.4",
+                skills_root=skills_root,
+                output_root=output_root,
+                release_root=release_root,
+                release_output_dir=release_output_dir,
+                adapter_artifact_report_root=adapter_artifact_root,
+                release_commit="0123456789abcdef0123456789abcdef01234567",
+            )
+
+        self.assertTrue(any("bootstrap publication evidence must record tarball sha256" in error for error in errors), errors)
+        self.assertTrue(any("bootstrap publication evidence must record approving maintainer" in error for error in errors), errors)
+        self.assertTrue(any("bootstrap publication evidence must record publish command" in error for error in errors), errors)
+
+    def test_v0_1_4_release_validation_rejects_mismatched_bootstrap_tarball_sha(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root = root / "skills"
+            shutil.copytree(ROOT / "skills", skills_root)
+            output_root = root / "dist" / "adapters"
+            self.write_v0_1_3_adapter_support_surface(output_root, version="v0.1.4")
+            release_output_dir = root / "release-output"
+            build_adapter_archives("v0.1.4", release_output_dir, skills_root=skills_root)
+            adapter_artifact_root = self.write_adapter_artifact_metadata(
+                root,
+                release_output_dir,
+                version="v0.1.4",
+            ).parent
+            release_root = root / "docs" / "releases"
+            release_dir = self.write_release_artifacts(
+                root,
+                version="v0.1.4",
+                release_type="final",
+                manifest_version="v0.1.4",
+                smoke_overrides=self.v0_1_1_smoke_overrides(),
+                validation_overrides={
+                    "adapter_archives": "pass",
+                    "adapter_artifact_metadata": "pass",
+                    "npm_publication_evidence": "pass",
+                },
+                notes_extra=self.v0_1_4_notes_extra(),
+                release_extra=self.v0_1_4_release_extra(),
+            )
+            tarball_root = root / "npm-tarballs"
+            self.write_fake_npm_tarball(tarball_root, content=b"actual tarball bytes")
+            recorded_sha = hashlib.sha256(b"different tarball bytes").hexdigest()
+            self.write_npm_publication_evidence(
+                release_dir,
+                status="published",
+                tarball_sha256=recorded_sha,
+                bootstrap_used="true",
+                approving_maintainer="maintainer",
+                publish_command="npm publish xiongxianfei-rigorloop-0.1.4.tgz",
+                npm_published="true",
+                npm_package_url="https://www.npmjs.com/package/@xiongxianfei/rigorloop/v/0.1.4",
+                adapter_result="pass",
+                archive_sha256_verified="true",
+                tree_hash_verified="true",
+                fu_blocked="false",
+            )
+
+            errors = validate_release_output(
+                "v0.1.4",
+                skills_root=skills_root,
+                output_root=output_root,
+                release_root=release_root,
+                release_output_dir=release_output_dir,
+                adapter_artifact_report_root=adapter_artifact_root,
+                release_commit="0123456789abcdef0123456789abcdef01234567",
+                npm_tarball_root=tarball_root,
+            )
+
+        self.assertTrue(any("tarball.sha256 does not match packed tarball bytes" in error for error in errors), errors)
+
+    def test_v0_1_4_release_validation_rejects_missing_bootstrap_tarball_file(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root = root / "skills"
+            shutil.copytree(ROOT / "skills", skills_root)
+            output_root = root / "dist" / "adapters"
+            self.write_v0_1_3_adapter_support_surface(output_root, version="v0.1.4")
+            release_output_dir = root / "release-output"
+            build_adapter_archives("v0.1.4", release_output_dir, skills_root=skills_root)
+            adapter_artifact_root = self.write_adapter_artifact_metadata(
+                root,
+                release_output_dir,
+                version="v0.1.4",
+            ).parent
+            release_root = root / "docs" / "releases"
+            release_dir = self.write_release_artifacts(
+                root,
+                version="v0.1.4",
+                release_type="final",
+                manifest_version="v0.1.4",
+                smoke_overrides=self.v0_1_1_smoke_overrides(),
+                validation_overrides={
+                    "adapter_archives": "pass",
+                    "adapter_artifact_metadata": "pass",
+                    "npm_publication_evidence": "pass",
+                },
+                notes_extra=self.v0_1_4_notes_extra(),
+                release_extra=self.v0_1_4_release_extra(),
+            )
+            tarball_root = root / "npm-tarballs"
+            tarball_root.mkdir()
+            self.write_npm_publication_evidence(
+                release_dir,
+                status="published",
+                tarball_sha256="a" * 64,
+                bootstrap_used="true",
+                approving_maintainer="maintainer",
+                publish_command="npm publish xiongxianfei-rigorloop-0.1.4.tgz",
+                npm_published="true",
+                npm_package_url="https://www.npmjs.com/package/@xiongxianfei/rigorloop/v/0.1.4",
+                adapter_result="pass",
+                archive_sha256_verified="true",
+                tree_hash_verified="true",
+                fu_blocked="false",
+            )
+
+            errors = validate_release_output(
+                "v0.1.4",
+                skills_root=skills_root,
+                output_root=output_root,
+                release_root=release_root,
+                release_output_dir=release_output_dir,
+                adapter_artifact_report_root=adapter_artifact_root,
+                release_commit="0123456789abcdef0123456789abcdef01234567",
+                npm_tarball_root=tarball_root,
+            )
+
+        self.assertTrue(any("bootstrap tarball not found for SHA validation" in error for error in errors), errors)
+
+    def test_v0_1_4_release_validation_accepts_complete_published_bootstrap_identity(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root = root / "skills"
+            shutil.copytree(ROOT / "skills", skills_root)
+            output_root = root / "dist" / "adapters"
+            self.write_v0_1_3_adapter_support_surface(output_root, version="v0.1.4")
+            release_output_dir = root / "release-output"
+            build_adapter_archives("v0.1.4", release_output_dir, skills_root=skills_root)
+            adapter_artifact_root = self.write_adapter_artifact_metadata(
+                root,
+                release_output_dir,
+                version="v0.1.4",
+            ).parent
+            release_root = root / "docs" / "releases"
+            release_dir = self.write_release_artifacts(
+                root,
+                version="v0.1.4",
+                release_type="final",
+                manifest_version="v0.1.4",
+                smoke_overrides=self.v0_1_1_smoke_overrides(),
+                validation_overrides={
+                    "adapter_archives": "pass",
+                    "adapter_artifact_metadata": "pass",
+                    "npm_publication_evidence": "pass",
+                },
+                notes_extra=self.v0_1_4_notes_extra(),
+                release_extra=self.v0_1_4_release_extra(),
+            )
+            tarball_root = root / "npm-tarballs"
+            tarball_sha256 = self.write_fake_npm_tarball(tarball_root)
+            self.write_npm_publication_evidence(
+                release_dir,
+                status="published",
+                tarball_sha256=tarball_sha256,
+                bootstrap_used="true",
+                approving_maintainer="maintainer",
+                publish_command="npm publish xiongxianfei-rigorloop-0.1.4.tgz",
+                npm_published="true",
+                npm_package_url="https://www.npmjs.com/package/@xiongxianfei/rigorloop/v/0.1.4",
+                adapter_result="pass",
+                archive_sha256_verified="true",
+                tree_hash_verified="true",
+                fu_blocked="false",
+            )
+
+            errors = validate_release_output(
+                "v0.1.4",
+                skills_root=skills_root,
+                output_root=output_root,
+                release_root=release_root,
+                release_output_dir=release_output_dir,
+                adapter_artifact_report_root=adapter_artifact_root,
+                release_commit="0123456789abcdef0123456789abcdef01234567",
+                npm_tarball_root=tarball_root,
+            )
+
+        self.assertEqual([], errors)
 
     def test_workflows_records_adapter_artifact_metadata_location(self) -> None:
         text = (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8")
