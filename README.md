@@ -30,10 +30,91 @@ Do not use RigorLoop when:
 
 ## Quick Start
 
+Install and run the public CLI from npm:
+
+```bash
+npx @xiongxianfei/rigorloop@latest --help
+```
+
+For reproducible setup, pin the published version:
+
+```bash
+npx @xiongxianfei/rigorloop@0.1.5 init --adapter codex
+```
+
+For a project-local dev dependency:
+
+```bash
+npm install --save-dev @xiongxianfei/rigorloop
+npx rigorloop --help
+```
+
+Then use the repository workflow docs when you want to understand or customize the lifecycle:
+
 1. Read the [short workflow summary](docs/workflows.md).
 2. Read the [normative workflow contract](specs/rigorloop-workflow.md).
 3. Inspect the [shipped proof-of-value example](docs/changes/0001-skill-validator/).
 4. If the approach fits, start from the lifecycle artifacts under [docs/](docs/), [specs/](specs/), and [skills/](skills/).
+
+## npm Usage
+
+The npm package is:
+
+```text
+@xiongxianfei/rigorloop
+```
+
+It exposes one binary:
+
+```text
+rigorloop
+```
+
+### Run directly with `npx`
+
+You do not need to install RigorLoop before trying it:
+
+```bash
+npx @xiongxianfei/rigorloop@latest --help
+npx @xiongxianfei/rigorloop@latest version
+npx @xiongxianfei/rigorloop@latest init --adapter codex
+npx @xiongxianfei/rigorloop@latest init --adapter codex --dry-run --json
+```
+
+Use `@latest` for quick manual trials. Use a pinned version for automation, CI, onboarding docs, and repeatable agent setup:
+
+```bash
+npx @xiongxianfei/rigorloop@0.1.5 init --adapter codex --json
+```
+
+### Run after project-local install
+
+```bash
+npm install --save-dev @xiongxianfei/rigorloop
+npx rigorloop --help
+npx rigorloop init --adapter codex
+```
+
+### Run after global install
+
+```bash
+npm install --global @xiongxianfei/rigorloop
+rigorloop --help
+rigorloop init --adapter codex
+```
+
+The first public npm package supports:
+
+- `rigorloop --help`
+- `rigorloop version`
+- `rigorloop init --adapter codex [--dry-run] [--json]`
+- `rigorloop new-change <change-id> --title <title> [--dry-run] [--json]`
+
+`init --adapter codex` installs the Codex adapter into `.agents/skills/`. The CLI uses package-bundled official metadata, downloads the official GitHub release archive, verifies archive SHA-256 and installed tree hash, and then writes project files.
+
+`new-change` scaffolds `docs/changes/<change-id>/change.yaml` for a new RigorLoop change. It does not replace proposal, spec, review, verification, or PR judgment.
+
+The npm package is a delivery channel for the CLI. It is not the canonical source for workflow rules, skills, schemas, templates, or adapter archives. Canonical source remains in this repository, and adapter archives remain verified GitHub release artifacts.
 
 ## Vision and README Ownership
 
