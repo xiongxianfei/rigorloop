@@ -66,11 +66,11 @@ The current CLI implementation is Codex-specific: it uses `ADAPTER = "codex"`, `
 - Current milestone: M5. Documentation, package proof, and final integration
 - Current milestone state: review-requested
 - Last reviewed milestone: M4. Network download diagnostics and output envelope
-- Review status: M5 implementation completed; code-review requested
+- Review status: M5 review-resolution completed for `CR-M5-R1-F1`; code-review rerun requested
 - Remaining in-scope implementation milestones: M5
-- Next stage: code-review M5
+- Next stage: code-review M5 rerun
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M5 code-review, review-resolution if triggered, explain-change, verify, and PR handoff remain incomplete.
+- Reason final closeout is or is not ready: M5 code-review rerun, explain-change, verify, and PR handoff remain incomplete.
 
 ## Milestones
 
@@ -256,6 +256,8 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 - [x] M4 closed.
 - [x] 2026-05-18: M5 implementation started.
 - [x] 2026-05-18: M5 package documentation proof and validation completed; handoff requested for code-review.
+- [x] 2026-05-18: M5 code-review completed with `CR-M5-R1-F1`; review-resolution required.
+- [x] 2026-05-18: M5 review-resolution completed for `CR-M5-R1-F1`; handoff requested for code-review rerun.
 - [ ] M5 closed.
 - [ ] final code-review, explain-change, verify, and PR handoff completed.
 
@@ -286,7 +288,9 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 - M4 code-review found that diagnostics do not detect the actual Node `--use-env-proxy` runtime flag through `process.execArgv`.
 - M4 review-resolution detects `--use-env-proxy` through `process.execArgv` and isolates inherited proxy env vars in the direct CLI proof.
 - M4 final code-review found no remaining material issues in proxy-safe download diagnostics.
-- M5 found the package README still described Codex-only init even though the CLI help and implementation supported `codex|claude|opencode`; the package README is now covered by `TMAI-033`.
+- M5 found the package README still described Codex-only init even though the CLI help and implementation supported `codex|claude|opencode`; the package README is now covered by `M5-DOC-001`.
+- M5 code-review found that the package README assertion reused the already-approved `TMAI-033` ID for a different proof, weakening requirement-to-test traceability.
+- M5 review-resolution renamed the package README proof to `M5-DOC-001`, leaving approved `TMAI-033` output-mode preservation unchanged.
 
 ## Validation notes
 
@@ -320,12 +324,18 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 - 2026-05-18: `npm test --prefix packages/rigorloop` failed as expected after adding direct `node --use-env-proxy` coverage; the CLI still reported `node_env_proxy_status: disabled` before the fix.
 - 2026-05-18: `npm test --prefix packages/rigorloop` passed after resolving `CR-M4-R1-F1`; package tests include `CR-M4-R1-F1 node_env_proxy_status reports enabled with --use-env-proxy`.
 - 2026-05-18: `code-review-m4-r2` completed with status `clean-with-notes`; M4 closed and M5 is the next implementation stage.
-- 2026-05-18: `npm test --prefix packages/rigorloop` failed as expected after adding `TMAI-033`; the package README still documented Codex-only init and lacked multi-adapter roots, local archive fallback, and Node env-proxy guidance.
+- 2026-05-18: `npm test --prefix packages/rigorloop` failed as expected after adding `M5-DOC-001`; the package README still documented Codex-only init and lacked multi-adapter roots, local archive fallback, and Node env-proxy guidance.
 - 2026-05-18: `npm test --prefix packages/rigorloop` passed after updating the package README for `codex|claude|opencode`, `.agents/skills`, `.claude/skills`, `.opencode/skills`, `.opencode/commands`, `--from-archive`, and Node env-proxy fallback guidance.
 - 2026-05-18: `python scripts/validate-change-metadata.py docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml` passed after M5 package documentation evidence updates.
 - 2026-05-18: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/multi-adapter-init-and-proxy-aware-download.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260518-multi-adapter-init-and-proxy-download.md --path docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md --path docs/plan.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml` passed after M5 state sync.
 - 2026-05-18: `git diff --check -- packages/rigorloop/README.md packages/rigorloop/test/cli.test.js docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md docs/plan.md docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml` passed.
 - 2026-05-18: `bash scripts/ci.sh --mode explicit --path packages/rigorloop/dist/bin/rigorloop.js --path packages/rigorloop/dist/lib/lockfile.js --path packages/rigorloop/dist/lib/official-archive-url.js --path packages/rigorloop/dist/metadata/adapter-artifacts-v0.1.5.json --path packages/rigorloop/dist/metadata/releases.json --path packages/rigorloop/test/cli.test.js --path packages/rigorloop/README.md --path docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md --path docs/plan.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml` passed selected checks: `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `rigorloop_cli.test`, and `npm_package_publication.test`.
+- 2026-05-18: `npm test --prefix packages/rigorloop` passed after resolving `CR-M5-R1-F1`; package README proof now uses `M5-DOC-001` and leaves `TMAI-033` to output-mode preservation.
+- 2026-05-18: `python scripts/validate-review-artifacts.py docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download` passed after resolving `CR-M5-R1-F1`.
+- 2026-05-18: `python scripts/validate-change-metadata.py docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml` passed after resolving `CR-M5-R1-F1`.
+- 2026-05-18: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md --path docs/plan.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-log.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-resolution.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/code-review-m5-r1.md` passed after resolving `CR-M5-R1-F1`.
+- 2026-05-18: `git diff --check -- packages/rigorloop/test/cli.test.js docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md docs/plan.md` passed after resolving `CR-M5-R1-F1`.
+- 2026-05-18: `bash scripts/ci.sh --mode explicit --path packages/rigorloop/test/cli.test.js --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-log.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-resolution.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/code-review-m5-r1.md --path docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md --path docs/plan.md` passed selected checks: `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `rigorloop_cli.test`, and `npm_package_publication.test`.
 
 ## Outcome and retrospective
 

@@ -535,7 +535,8 @@ test("TNP-005 package version maps to bundled v0.1.5 adapter metadata", () => {
   );
 });
 
-test("TMAI-033 package README documents multi-adapter init and fallback boundaries", () => {
+// M5-DOC-001: Package README coverage for multi-adapter init, runtime roots, local archive fallback, and proxy guidance.
+test("M5-DOC-001 package README documents multi-adapter init and fallback boundaries", () => {
   const readme = readFileSync(join(packageRoot, "README.md"), "utf8");
 
   assert.match(readme, /rigorloop init --adapter codex\|claude\|opencode/);

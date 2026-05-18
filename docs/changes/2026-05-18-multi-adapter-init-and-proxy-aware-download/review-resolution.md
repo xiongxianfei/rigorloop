@@ -21,11 +21,12 @@ Review closeout: code-review-m3-r2
 Review closeout: code-review-m3-r3
 Review closeout: code-review-m4-r1
 Review closeout: code-review-m4-r2
+Review closeout: code-review-m5-r1
 
-- Reviews covered: `proposal-review`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `spec-review-r3`, `plan-review-r1`, `code-review-m1-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m4-r1`, `code-review-m4-r2`
-- Findings resolved: 14
+- Reviews covered: `proposal-review`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `spec-review-r3`, `plan-review-r1`, `code-review-m1-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m5-r1`
+- Findings resolved: 15
 - Unresolved findings: 0
-- Final result: `FID-01`, `FID-02`, `FID-03`, `FID-04`, and `FID-05` are accepted and resolved in the proposal. `SR1-F1`, `SR1-F2`, `SR1-F3`, and `SR1-F4` are accepted and closed by `spec-review-r2`. `CR-M2-R1-F1`, `CR-M2-R2-F1`, `CR-M3-R1-F1`, `CR-M3-R2-F1`, and `CR-M4-R1-F1` are accepted and resolved.
+- Final result: `FID-01`, `FID-02`, `FID-03`, `FID-04`, and `FID-05` are accepted and resolved in the proposal. `SR1-F1`, `SR1-F2`, `SR1-F3`, and `SR1-F4` are accepted and closed by `spec-review-r2`. `CR-M2-R1-F1`, `CR-M2-R2-F1`, `CR-M3-R1-F1`, `CR-M3-R2-F1`, `CR-M4-R1-F1`, and `CR-M5-R1-F1` are accepted and resolved.
 
 ## Resolution Overview
 
@@ -45,6 +46,7 @@ Review closeout: code-review-m4-r2
 | CR-M3-R1-F1 | accepted | resolved | M3 now requires an explicit trusted metadata `skills_only_compatibility.releases` marker before permitting opencode skills-only installs. |
 | CR-M3-R2-F1 | accepted | resolved | M3 now blocks opencode commands-root metadata unless `command_aliases.opencode` is declared and valid. |
 | CR-M4-R1-F1 | accepted | resolved | M4 now detects `--use-env-proxy` through `process.execArgv` and proves it with a fixture-backed CLI test. |
+| CR-M5-R1-F1 | accepted | resolved | M5 README proof now uses distinct ID `M5-DOC-001`, leaving `TMAI-033` tied to output-mode preservation. |
 
 ## Common Resolution Metadata
 
@@ -318,6 +320,24 @@ Required outcome: `node_env_proxy_status` must report `enabled` when Node env-pr
 Safe resolution path: Update `nodeEnvProxyStatus()` to include runtime exec arguments such as `process.execArgv.includes("--use-env-proxy")` in the enabled check. Add a fixture-backed CLI test that launches the package fixture with `node --use-env-proxy <cli> init --adapter codex --json` when the current Node runtime supports the flag, and asserts `diagnostics.node_env_proxy_status === "enabled"` on a mocked fetch failure.
 Validation target: `packages/rigorloop/dist/bin/rigorloop.js` and `packages/rigorloop/test/cli.test.js`.
 Validation evidence: `npm test --prefix packages/rigorloop` passed with `CR-M4-R1-F1 node_env_proxy_status reports enabled with --use-env-proxy`.
+
+### code-review-m5-r1
+
+Finding closeout for `code-review-m5-r1`.
+
+### CR-M5-R1-F1 - Package README proof reuses existing `TMAI-033` ID
+
+Finding ID: CR-M5-R1-F1
+Disposition: accepted
+Status: resolved
+Owner: implementer
+Owning stage: review-resolution
+Chosen action: Renamed the package README proof from `TMAI-033` to `M5-DOC-001`, added an inline traceability comment, and updated plan/change metadata references so README coverage no longer collides with the approved `TMAI-033` output-mode test.
+Rationale: The package README assertion is useful M5 proof, but using `TMAI-033` conflicts with the approved test spec's existing output-mode preservation test and weakens traceability.
+Required outcome: The README proof must use a distinct proof identifier or the approved test spec must be revised so that each `TMAI-*` ID remains single-purpose and traceable.
+Safe resolution path: Rename the package README test to a non-conflicting proof ID such as `M5-DOC-001`, update the M5 plan and change metadata wording to reference the package README assertion without claiming it is `TMAI-033`, and keep the approved `TMAI-033` output-mode meaning unchanged unless a formal test-spec revision intentionally changes it.
+Validation target: `packages/rigorloop/test/cli.test.js`, `docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md`, and `docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml`.
+Validation evidence: `npm test --prefix packages/rigorloop` passed after the proof ID rename.
 
 ### code-review-m4-r2
 

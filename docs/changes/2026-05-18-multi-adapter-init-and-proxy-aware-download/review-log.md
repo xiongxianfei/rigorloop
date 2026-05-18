@@ -227,6 +227,19 @@ Material findings: None
 Open findings: None
 Recording status: recorded
 
+### Review entry
+Review ID: code-review-m5-r1
+Stage: code-review
+Round: 1
+Reviewed artifact: commit 38ca5af
+Status: changes-requested
+Detailed record: reviews/code-review-m5-r1.md
+Record: reviews/code-review-m5-r1.md
+Resolution: review-resolution.md#code-review-m5-r1
+Material findings: CR-M5-R1-F1
+Open findings: None
+Recording status: recorded
+
 ## Open Findings
 
 None.
@@ -249,3 +262,4 @@ None.
 | CR-M3-R1-F1 | code-review-m3-r1 | major | Older skills-only opencode install is allowed only when bundled trusted metadata explicitly marks the selected release or artifact as compatible with skills-only opencode installation. |
 | CR-M3-R2-F1 | code-review-m3-r2 | major | Opencode metadata that declares `.opencode/commands` must include valid `command_aliases.opencode`; otherwise it must block before extraction and mutation. |
 | CR-M4-R1-F1 | code-review-m4-r1 | major | `node_env_proxy_status` must report `enabled` when Node env-proxy support is enabled through the actual `--use-env-proxy` runtime flag, with direct fixture-backed proof. |
+| CR-M5-R1-F1 | code-review-m5-r1 | major | The README proof must use a distinct proof identifier or the approved test spec must be revised so that each `TMAI-*` ID remains single-purpose and traceable. |
