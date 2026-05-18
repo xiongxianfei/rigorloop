@@ -64,11 +64,11 @@ The current CLI implementation is Codex-specific: it uses `ADAPTER = "codex"`, `
 ## Current Handoff Summary
 
 - Current milestone: M4. Network download diagnostics and output envelope
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M3. Multi-root archive extraction and local archive fallback
-- Review status: M3 code-review rerun completed with no material findings
+- Review status: M4 implementation completed; code-review requested
 - Remaining in-scope implementation milestones: M4, M5
-- Next stage: implement M4
+- Next stage: code-review M4
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: all implementation milestones, code-review, review-resolution if triggered, explain-change, verify, and PR handoff remain incomplete.
 
@@ -147,7 +147,7 @@ The current CLI implementation is Codex-specific: it uses `ADAPTER = "codex"`, `
 
 ### M4. Network download diagnostics and output envelope
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Add hermetic network-download tests and proxy-safe failure diagnostics without adding programmatic Undici dispatcher support.
 - Requirements: MAI-R77 through MAI-R91, AC14, AC15.
 - Files/components likely touched: `packages/rigorloop/dist/bin/rigorloop.js`, `packages/rigorloop/test/cli.test.js`.
@@ -248,6 +248,8 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 - [x] 2026-05-18: M3 review-resolution completed for `CR-M3-R2-F1`; handoff requested for code-review rerun.
 - [x] 2026-05-18: M3 code-review rerun completed with no material findings.
 - [x] M3 closed.
+- [x] 2026-05-18: M4 implementation started.
+- [x] 2026-05-18: M4 tests and implementation completed; handoff requested for code-review.
 - [ ] M4 closed.
 - [ ] M5 closed.
 - [ ] final code-review, explain-change, verify, and PR handoff completed.
@@ -258,6 +260,7 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 - 2026-05-18: Treat `packages/rigorloop/test/cli.test.js` as the first implementation proof surface because the existing CLI package is small and already uses fixture-backed archive and fetch helpers.
 - 2026-05-18: Add a small package-local adapter descriptor module for M1 instead of keeping descriptor data embedded in the CLI entrypoint. This keeps adapter identity, roots, and archive naming testable before later schema and extraction milestones.
 - 2026-05-18: Keep M2 schema parsing and serialization package-local in `packages/rigorloop/dist/lib/lockfile.js`, while leaving proxy diagnostics and older opencode warning behavior to later milestones.
+- 2026-05-18: Keep M4 proxy support diagnostics-first and use bounded helper functions in the CLI entrypoint instead of adding Undici dispatcher support or a new dependency.
 
 ## Surprises and discoveries
 
@@ -272,6 +275,8 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 - M3 code-review rerun found that opencode metadata can still declare `.opencode/commands` without `command_aliases.opencode`, bypassing both skills-only warning behavior and declared-alias validation.
 - M3 review-resolution now treats opencode commands-root metadata without `command_aliases.opencode` as a blocker in both dry-run and non-dry-run local archive paths.
 - M3 final code-review found no remaining material issues in the opencode commands-root metadata guard.
+- M4 found that existing mocked fetch success covered Codex only, so M4 added the same network mode proof for Claude and opencode before adding failure diagnostics.
+- M4 keeps archive verification failures on the existing validation error path; proxy diagnostics are added only when fetch itself fails.
 
 ## Validation notes
 
@@ -299,6 +304,8 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 - 2026-05-18: `npm test --prefix packages/rigorloop` failed as expected after adding opencode commands-root-without-alias metadata tests; dry-run and non-dry-run still accepted invalid metadata before the fix.
 - 2026-05-18: `npm test --prefix packages/rigorloop` passed after resolving `CR-M3-R2-F1`; package tests include dry-run and non-dry-run blockers for opencode commands-root metadata without `command_aliases.opencode`.
 - 2026-05-18: `code-review-m3-r3` completed with status `clean-with-notes`; M3 closed and M4 is the next implementation stage.
+- 2026-05-18: Added failing M4 tests first; `npm test --prefix packages/rigorloop` failed as expected because network fetch failures still returned the generic `release-unavailable` blocker without bounded proxy diagnostics or actionable human output.
+- 2026-05-18: `npm test --prefix packages/rigorloop` passed after adding bounded network download diagnostics, proxy env-var name detection, failure classification, fallback guidance, human redaction, and verification-failure preservation.
 
 ## Outcome and retrospective
 

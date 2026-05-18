@@ -450,9 +450,74 @@ function loadJsonFile(path) {
 async function fetchBytes(url) {
   const response = await fetch(url);
   if (!response.ok) {
-    throw new Error(`HTTP ${response.status}`);
+    throw Object.assign(new Error(`HTTP ${response.status}`), { downloadFailureClass: "http-status" });
   }
   return Buffer.from(await response.arrayBuffer());
+}
+
+const PROXY_ENV_VAR_ALLOWLIST = ["HTTP_PROXY", "HTTPS_PROXY", "NO_PROXY", "http_proxy", "https_proxy", "no_proxy"];
+const DOWNLOAD_FAILURE_CLASSES = new Set(["dns", "tls", "timeout", "http-status", "proxy", "network", "unknown"]);
+
+function detectedProxyEnvVars(env = process.env) {
+  return PROXY_ENV_VAR_ALLOWLIST.filter((name) => Object.prototype.hasOwnProperty.call(env, name) && env[name]);
+}
+
+function nodeEnvProxyStatus(env = process.env) {
+  const nodeOptions = String(env.NODE_OPTIONS ?? "");
+  const useEnvProxy = String(env.NODE_USE_ENV_PROXY ?? "").toLowerCase();
+  if (nodeOptions.includes("--use-env-proxy") || ["1", "true", "yes"].includes(useEnvProxy)) {
+    return "enabled";
+  }
+  if (detectedProxyEnvVars(env).length > 0) {
+    return "disabled";
+  }
+  return "unknown";
+}
+
+function downloadFailureClass(error) {
+  if (DOWNLOAD_FAILURE_CLASSES.has(error?.downloadFailureClass)) {
+    return error.downloadFailureClass;
+  }
+  const code = String(error?.code ?? error?.cause?.code ?? "").toUpperCase();
+  const message = String(error?.message ?? "").toLowerCase();
+  if (["ENOTFOUND", "EAI_AGAIN"].includes(code)) {
+    return "dns";
+  }
+  if (code.includes("CERT") || code.includes("TLS") || message.includes("certificate") || message.includes("tls")) {
+    return "tls";
+  }
+  if (code.includes("TIMEOUT") || code === "ABORT_ERR" || message.includes("timeout") || message.includes("timed out")) {
+    return "timeout";
+  }
+  if (code.includes("PROXY") || message.includes("proxy")) {
+    return "proxy";
+  }
+  if (["ECONNRESET", "ECONNREFUSED", "EHOSTUNREACH", "ENETUNREACH"].includes(code) || message.includes("fetch failed")) {
+    return "network";
+  }
+  return "unknown";
+}
+
+function downloadFailureDiagnostics(error, artifact, descriptor, metadata) {
+  return {
+    adapter: descriptor.name,
+    release: metadata.release.version,
+    archive_url: artifact.url,
+    download_failure_class: downloadFailureClass(error),
+    node_env_proxy_status: nodeEnvProxyStatus(),
+    proxy_env_vars_detected: detectedProxyEnvVars(),
+  };
+}
+
+function downloadFailureBlocker(error, artifact, descriptor, metadata) {
+  const diagnostics = downloadFailureDiagnostics(error, artifact, descriptor, metadata);
+  return {
+    code: "release-download-failed",
+    message: `Network download failed for adapter ${descriptor.name} release ${metadata.release.version} (failure class ${diagnostics.download_failure_class}).`,
+    path: artifact.url,
+    next_action: `Download ${artifact.url} and rerun with --from-archive ./${artifact.archive}.`,
+    diagnostics,
+  };
 }
 
 function parseVerifiedMetadataBytes(bytes, expectedSha256) {
@@ -1459,6 +1524,9 @@ function writeBlockedResult(flags, plan, summary, blockers, exitClass = "blocked
     },
     planned_lockfile: plan.planned_lockfile,
   });
+  if (blockers[0]?.diagnostics) {
+    result.diagnostics = { ...result.diagnostics, ...blockers[0].diagnostics };
+  }
   if (flags.json) {
     writeJson(result);
   } else {
@@ -1580,14 +1648,9 @@ async function archiveWorkForInit(flags, info, descriptor) {
   }
   try {
     archiveBytes = await fetchBytes(artifact.url);
-  } catch {
+  } catch (error) {
     return {
-      blocker: metadataBlocker(
-        "release-unavailable",
-        `Official ${descriptor.displayName} adapter archive is unavailable.`,
-        artifact.url,
-        "Retry later or use --from-archive with a compatible local archive.",
-      ),
+      blocker: downloadFailureBlocker(error, artifact, descriptor, metadata),
     };
   }
   const inspected = inspectArchive(archiveBytes, artifact, descriptor);
