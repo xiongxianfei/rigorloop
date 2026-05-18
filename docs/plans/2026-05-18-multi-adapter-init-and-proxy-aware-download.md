@@ -68,9 +68,9 @@ The current CLI implementation is Codex-specific: it uses `ADAPTER = "codex"`, `
 - Last reviewed milestone: M4. Network download diagnostics and output envelope
 - Review status: M5 code-review rerun completed with no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: ready for final closeout
-- Reason final closeout is or is not ready: all implementation milestones and required review-resolution are closed; explain-change, verify, and PR handoff remain incomplete.
+- Reason final closeout is or is not ready: all implementation milestones, required review-resolution, and explain-change are closed; verify and PR handoff remain incomplete.
 
 ## Milestones
 
@@ -260,7 +260,8 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 - [x] 2026-05-18: M5 review-resolution completed for `CR-M5-R1-F1`; handoff requested for code-review rerun.
 - [x] 2026-05-18: M5 code-review rerun completed with no material findings.
 - [x] M5 closed.
-- [ ] final code-review, explain-change, verify, and PR handoff completed.
+- [x] 2026-05-18: explain-change completed and recorded at `docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/explain-change.md`.
+- [ ] verify and PR handoff completed.
 
 ## Decision log
 
@@ -338,6 +339,11 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 - 2026-05-18: `git diff --check -- packages/rigorloop/test/cli.test.js docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md docs/plan.md` passed after resolving `CR-M5-R1-F1`.
 - 2026-05-18: `bash scripts/ci.sh --mode explicit --path packages/rigorloop/test/cli.test.js --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-log.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-resolution.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/code-review-m5-r1.md --path docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md --path docs/plan.md` passed selected checks: `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `rigorloop_cli.test`, and `npm_package_publication.test`.
 - 2026-05-18: `code-review-m5-r2` completed with status `clean-with-notes`; M5 closed and explain-change is the next stage.
+- 2026-05-18: `explain-change` completed; durable rationale records problem, decision trail, file-by-file rationale, tests, validation evidence, review-resolution summary, rejected alternatives, scope control, and remaining risks.
+- 2026-05-18: `python scripts/validate-change-metadata.py docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml` passed after explain-change.
+- 2026-05-18: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/explain-change.md --path docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md --path docs/plan.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-resolution.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-log.md` passed after explain-change.
+- 2026-05-18: `git diff --check -- docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/explain-change.md docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md docs/plan.md` passed after explain-change.
+- 2026-05-18: `bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/explain-change.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml --path docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md --path docs/plan.md` passed selected checks: `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
 
 ## Outcome and retrospective
 
