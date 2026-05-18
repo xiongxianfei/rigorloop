@@ -4,3 +4,4 @@ __pycache__/
 
 # Generated local Codex runtime mirror
 .codex/skills/
+.agents/
