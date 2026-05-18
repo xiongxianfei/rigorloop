@@ -462,10 +462,11 @@ function detectedProxyEnvVars(env = process.env) {
   return PROXY_ENV_VAR_ALLOWLIST.filter((name) => Object.prototype.hasOwnProperty.call(env, name) && env[name]);
 }
 
-function nodeEnvProxyStatus(env = process.env) {
+function nodeEnvProxyStatus(env = process.env, execArgv = process.execArgv) {
   const nodeOptions = String(env.NODE_OPTIONS ?? "");
   const useEnvProxy = String(env.NODE_USE_ENV_PROXY ?? "").toLowerCase();
-  if (nodeOptions.includes("--use-env-proxy") || ["1", "true", "yes"].includes(useEnvProxy)) {
+  // CR-M4-R1-F1: Node can enable fetch env-proxy via env vars or the runtime flag.
+  if (nodeOptions.includes("--use-env-proxy") || execArgv.includes("--use-env-proxy") || ["1", "true", "yes"].includes(useEnvProxy)) {
     return "enabled";
   }
   if (detectedProxyEnvVars(env).length > 0) {

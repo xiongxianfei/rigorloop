@@ -1456,6 +1456,47 @@ test("TMAI-030 proxy diagnostic enums and env-var allowlist are stable", () => {
   assert.equal(JSON.stringify(output).includes("not-allowed.example.invalid"), false);
 });
 
+test("CR-M4-R1-F1 node_env_proxy_status reports enabled with --use-env-proxy", () => {
+  const cwd = tempProject();
+  const fixture = fixtureArchive(cwd);
+  const officialUrl = expectedArchiveUrl({ releaseTag: "v0.1.5", archive: fixture.archiveName });
+  fixture.metadata.artifacts[0].url = officialUrl;
+  const packageFixture = fixturePackage({ metadata: fixture.metadata });
+  const result = spawnSync(
+    process.execPath,
+    [
+      "--use-env-proxy",
+      "--import",
+      mockFetchFailureModule(officialUrl, { message: "proxy connection failed", code: "ERR_PROXY_CONNECTION_FAILED" }),
+      packageFixture.cliPath,
+      "init",
+      "--adapter",
+      "codex",
+      "--json",
+    ],
+    {
+      cwd,
+      env: {
+        ...process.env,
+        HTTP_PROXY: "http://proxy.example.invalid:8080",
+        HTTPS_PROXY: "",
+        NO_PROXY: "",
+        http_proxy: "",
+        https_proxy: "",
+        no_proxy: "",
+      },
+      encoding: "utf8",
+    },
+  );
+
+  assert.equal(result.status, 2, result.stderr);
+  const output = JSON.parse(result.stdout);
+  assert.equal(output.status, "blocked");
+  assert.equal(output.diagnostics.node_env_proxy_status, "enabled");
+  assert.equal(output.diagnostics.download_failure_class, "proxy");
+  assert.deepEqual(output.diagnostics.proxy_env_vars_detected, ["HTTP_PROXY"]);
+});
+
 test("TMAI-031 human proxy failure output is actionable and redacted", () => {
   const cwd = tempProject();
   const fixture = fixtureArchive(cwd);

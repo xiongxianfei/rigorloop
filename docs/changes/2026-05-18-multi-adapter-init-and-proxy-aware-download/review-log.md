@@ -211,14 +211,12 @@ Detailed record: reviews/code-review-m4-r1.md
 Record: reviews/code-review-m4-r1.md
 Resolution: review-resolution.md#code-review-m4-r1
 Material findings: CR-M4-R1-F1
-Open findings: CR-M4-R1-F1
+Open findings: None
 Recording status: recorded
 
 ## Open Findings
 
-| Finding ID | Review | Severity | Required outcome |
-|---|---|---|---|
-| CR-M4-R1-F1 | code-review-m4-r1 | major | `node_env_proxy_status` must report `enabled` when Node env-proxy support is enabled through the actual `--use-env-proxy` runtime flag, with direct fixture-backed proof. |
+None.
 
 ## Closed Findings
 
@@ -237,3 +235,4 @@ Recording status: recorded
 | CR-M2-R2-F1 | code-review-m2-r2 | major | Older opencode skills-only dry-run planning must omit `.opencode/commands` from planned directory actions, planned manifest content, and planned lockfile content. |
 | CR-M3-R1-F1 | code-review-m3-r1 | major | Older skills-only opencode install is allowed only when bundled trusted metadata explicitly marks the selected release or artifact as compatible with skills-only opencode installation. |
 | CR-M3-R2-F1 | code-review-m3-r2 | major | Opencode metadata that declares `.opencode/commands` must include valid `command_aliases.opencode`; otherwise it must block before extraction and mutation. |
+| CR-M4-R1-F1 | code-review-m4-r1 | major | `node_env_proxy_status` must report `enabled` when Node env-proxy support is enabled through the actual `--use-env-proxy` runtime flag, with direct fixture-backed proof. |
