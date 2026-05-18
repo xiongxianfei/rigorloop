@@ -4,7 +4,7 @@
 
 This record tracks material finding closeout for proposal review and spec review of the multi-adapter init and proxy-aware adapter download change.
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review
 Review closeout: spec-review-r1
@@ -19,9 +19,9 @@ Review closeout: code-review-m2-r3
 Review closeout: code-review-m3-r1
 
 - Reviews covered: `proposal-review`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `spec-review-r3`, `plan-review-r1`, `code-review-m1-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`
-- Findings resolved: 11
-- Unresolved findings: 1
-- Final result: `FID-01`, `FID-02`, `FID-03`, `FID-04`, and `FID-05` are accepted and resolved in the proposal. `SR1-F1`, `SR1-F2`, `SR1-F3`, and `SR1-F4` are accepted and closed by `spec-review-r2`. `CR-M2-R1-F1` and `CR-M2-R2-F1` are accepted and resolved. `CR-M3-R1-F1` remains open pending review-resolution.
+- Findings resolved: 12
+- Unresolved findings: 0
+- Final result: `FID-01`, `FID-02`, `FID-03`, `FID-04`, and `FID-05` are accepted and resolved in the proposal. `SR1-F1`, `SR1-F2`, `SR1-F3`, and `SR1-F4` are accepted and closed by `spec-review-r2`. `CR-M2-R1-F1`, `CR-M2-R2-F1`, and `CR-M3-R1-F1` are accepted and resolved.
 
 ## Resolution Overview
 
@@ -38,7 +38,7 @@ Review closeout: code-review-m3-r1
 | SR1-F4 | accepted | resolved | Spec now defines bounded proxy diagnostic fields and allowed values. |
 | CR-M2-R1-F1 | accepted | resolved | M2 implementation derives opencode installed roots from trusted metadata so older skills-only archives omit `.opencode/commands` in planned directories and `rigorloop.yaml`. |
 | CR-M2-R2-F1 | accepted | resolved | Local-archive dry-run planning now uses validated trusted metadata roots when available, so older skills-only opencode archives omit `.opencode/commands` from planned actions, manifest, and lockfile content. |
-| CR-M3-R1-F1 | accepted | open | Skills-only opencode compatibility must be explicit in bundled trusted metadata before the CLI permits skills-only install. |
+| CR-M3-R1-F1 | accepted | resolved | M3 now requires an explicit trusted metadata `skills_only_compatibility.releases` marker before permitting opencode skills-only installs. |
 
 ## Common Resolution Metadata
 
@@ -261,20 +261,20 @@ Finding closeout for `code-review-m3-r1`.
 
 Finding ID: CR-M3-R1-F1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implementer
 Owning stage: review-resolution
-Chosen action: Pending review-resolution.
+Chosen action: Added explicit `skills_only_compatibility.releases` validation for opencode skills-only artifacts, marked positive skills-only fixtures as compatible, and added a negative fixture-backed test that blocks unmarked skills-only metadata before mutation.
 Rationale: The approved spec permits older opencode skills-only installs only when bundled trusted metadata explicitly lists the selected release or artifact as compatible with skills-only opencode installation. The M3 implementation currently infers compatibility from absent `command_aliases.opencode` metadata and an absent commands root.
 Required outcome: Older skills-only opencode installation must be allowed only when bundled trusted metadata explicitly marks the selected release or artifact as compatible with skills-only opencode installation. Unmarked opencode metadata lacking `command_aliases.opencode` must block before extraction, manifest writes, or lockfile writes.
 Safe resolution path: Add a minimal trusted-metadata compatibility marker or release-range field for older skills-only opencode artifacts, validate it in `validateMetadata()` before returning the artifact, update positive skills-only fixtures to include the marker, and add a negative fixture-backed test proving unmarked skills-only opencode metadata fails before mutation.
 Validation target: `packages/rigorloop/dist/bin/rigorloop.js` and `packages/rigorloop/test/cli.test.js`.
-Validation evidence: Pending review-resolution.
+Validation evidence: `npm test --prefix packages/rigorloop` passed with `TMAI-017 unmarked skills-only opencode metadata blocks before mutation`.
 
 ## Closeout Checklist
 
 - [x] Every material finding has a disposition.
 - [x] Every accepted finding has action and rationale.
-- [ ] Validation evidence is recorded for each resolved finding.
-- [ ] `review-log.md` lists no open findings.
+- [x] Validation evidence is recorded for each resolved finding.
+- [x] `review-log.md` lists no open findings.
 - [x] Closeout status is correct.

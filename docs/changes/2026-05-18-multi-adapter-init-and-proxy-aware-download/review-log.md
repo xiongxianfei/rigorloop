@@ -172,12 +172,12 @@ Detailed record: reviews/code-review-m3-r1.md
 Record: reviews/code-review-m3-r1.md
 Resolution: review-resolution.md#code-review-m3-r1
 Material findings: CR-M3-R1-F1
-Open findings: CR-M3-R1-F1
+Open findings: None
 Recording status: recorded
 
 ## Open Findings
 
-- CR-M3-R1-F1
+None.
 
 ## Closed Findings
 
@@ -194,9 +194,4 @@ Recording status: recorded
 | SR1-F4 | spec-review-r1 | major | Define stable proxy diagnostic fields and allowed values. |
 | CR-M2-R1-F1 | code-review-m2-r1 | major | Skills-only older opencode installs must omit `.opencode/commands` from planned directories and `rigorloop.yaml`, and must record only installed roots declared by trusted metadata. |
 | CR-M2-R2-F1 | code-review-m2-r2 | major | Older opencode skills-only dry-run planning must omit `.opencode/commands` from planned directory actions, planned manifest content, and planned lockfile content. |
-
-## Open Finding Details
-
-| Finding ID | Review | Severity | Required outcome |
-|---|---|---|---|
 | CR-M3-R1-F1 | code-review-m3-r1 | major | Older skills-only opencode install is allowed only when bundled trusted metadata explicitly marks the selected release or artifact as compatible with skills-only opencode installation. |

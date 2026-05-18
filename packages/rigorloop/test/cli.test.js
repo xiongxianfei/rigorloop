@@ -223,6 +223,9 @@ function fixtureArchive(projectRoot, options = {}) {
   if (options.commandAliases) {
     artifact.command_aliases = options.commandAliases;
   }
+  if (options.skillsOnlyCompatibility) {
+    artifact.skills_only_compatibility = options.skillsOnlyCompatibility;
+  }
 
   const metadata = {
     schema_version: 1,
@@ -2128,6 +2131,9 @@ test("TMAI-017 skills-only opencode archive omits commands root from plan and ma
   const fixture = fixtureArchive(cwd, {
     adapter: "opencode",
     installRoot: ".opencode/skills",
+    skillsOnlyCompatibility: {
+      releases: ["v0.1.5"],
+    },
   });
 
   const result = runCliWithBundledMetadata(
@@ -2163,6 +2169,9 @@ test("TMAI-016 human older opencode warning does not imply command aliases are a
   const fixture = fixtureArchive(cwd, {
     adapter: "opencode",
     installRoot: ".opencode/skills",
+    skillsOnlyCompatibility: {
+      releases: ["v0.1.5"],
+    },
   });
 
   const result = runCliWithBundledMetadata(["init", "--adapter", "opencode", "--from-archive", `./${fixture.archiveName}`], cwd, fixture.metadata);
@@ -2179,6 +2188,9 @@ test("TMAI-011 skills-only opencode metadata rejects unexpected commands root en
   const fixture = fixtureArchive(cwd, {
     adapter: "opencode",
     installRoot: ".opencode/skills",
+    skillsOnlyCompatibility: {
+      releases: ["v0.1.5"],
+    },
     entries: [
       {
         name: ".opencode/skills/proposal/SKILL.md",
@@ -2206,11 +2218,36 @@ test("TMAI-011 skills-only opencode metadata rejects unexpected commands root en
   assert.equal(existsSync(join(cwd, "rigorloop.lock")), false);
 });
 
+test("TMAI-017 unmarked skills-only opencode metadata blocks before mutation", () => {
+  const cwd = tempProject();
+  const fixture = fixtureArchive(cwd, {
+    adapter: "opencode",
+    installRoot: ".opencode/skills",
+  });
+
+  const result = runCliWithBundledMetadata(
+    ["init", "--adapter", "opencode", "--from-archive", `./${fixture.archiveName}`, "--json"],
+    cwd,
+    fixture.metadata,
+  );
+
+  assert.equal(result.status, 2, result.stderr);
+  const output = JSON.parse(result.stdout);
+  assert.equal(output.status, "blocked");
+  assert.equal(output.blockers[0].code, "opencode-skills-only-compatibility-unmarked");
+  assert.equal(existsSync(join(cwd, ".opencode")), false);
+  assert.equal(existsSync(join(cwd, "rigorloop.yaml")), false);
+  assert.equal(existsSync(join(cwd, "rigorloop.lock")), false);
+});
+
 test("TMAI-020 dry-run skills-only opencode archive omits commands root without mutation", () => {
   const cwd = tempProject();
   const fixture = fixtureArchive(cwd, {
     adapter: "opencode",
     installRoot: ".opencode/skills",
+    skillsOnlyCompatibility: {
+      releases: ["v0.1.5"],
+    },
   });
 
   const result = runCliWithBundledMetadata(
