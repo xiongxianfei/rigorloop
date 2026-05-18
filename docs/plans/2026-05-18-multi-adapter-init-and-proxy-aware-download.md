@@ -63,12 +63,12 @@ The current CLI implementation is Codex-specific: it uses `ADAPTER = "codex"`, `
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Manifest and lockfile schema v2
-- Current milestone state: review-requested
-- Last reviewed milestone: M1. Adapter descriptors and trusted metadata selection
-- Review status: M2 review-resolution complete; code-review rerun pending
-- Remaining in-scope implementation milestones: M2, M3, M4, M5
-- Next stage: code-review M2 rerun
+- Current milestone: M3. Multi-root archive extraction and local archive fallback
+- Current milestone state: planned
+- Last reviewed milestone: M2. Manifest and lockfile schema v2
+- Review status: M2 code-review rerun clean-with-notes; no review-resolution required
+- Remaining in-scope implementation milestones: M3, M4, M5
+- Next stage: implement M3
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: all implementation milestones, code-review, review-resolution if triggered, explain-change, verify, and PR handoff remain incomplete.
 
@@ -99,7 +99,7 @@ The current CLI implementation is Codex-specific: it uses `ADAPTER = "codex"`, `
 
 ### M2. Manifest and lockfile schema v2
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Implement `rigorloop.yaml` single-root and multi-root serialization plus `rigorloop.lock` schema v2 parsing, serialization, sorting, and schema v1 Codex compatibility.
 - Requirements: MAI-R47 through MAI-R76, AC9, AC10, AC11, AC12, AC13.
 - Files/components likely touched: `packages/rigorloop/dist/lib/lockfile.js`, `packages/rigorloop/dist/bin/rigorloop.js`, `packages/rigorloop/test/cli.test.js`.
@@ -238,7 +238,8 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 - [x] 2026-05-18: M2 review-resolution completed for `CR-M2-R1-F1`; handoff requested for code-review rerun.
 - [x] 2026-05-18: M2 code-review rerun completed with `CR-M2-R2-F1`; review-resolution required.
 - [x] 2026-05-18: M2 review-resolution completed for `CR-M2-R2-F1`; handoff requested for code-review rerun.
-- [ ] M2 closed.
+- [x] 2026-05-18: M2 code-review rerun completed with no material findings.
+- [x] M2 closed.
 - [ ] M3 closed.
 - [ ] M4 closed.
 - [ ] M5 closed.
@@ -272,6 +273,7 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 - 2026-05-18: `npm test --prefix packages/rigorloop` passed after resolving `CR-M2-R1-F1`; package tests include `TMAI-017 skills-only opencode archive omits commands root from plan and manifest`.
 - 2026-05-18: `code-review-m2-r2` recorded `CR-M2-R2-F1`; dry-run older opencode skills-only planning remains open for review-resolution.
 - 2026-05-18: `npm test --prefix packages/rigorloop` passed after resolving `CR-M2-R2-F1`; package tests include `TMAI-020 dry-run skills-only opencode archive omits commands root without mutation`.
+- 2026-05-18: `code-review-m2-r3` completed with status `clean-with-notes`; M2 closed and M3 is the next implementation stage.
 
 ## Outcome and retrospective
 
