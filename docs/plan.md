@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-18 Multi-adapter init and proxy-aware adapter download](plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md) - active execution plan for implementing descriptor-driven `rigorloop init --adapter codex|claude|opencode`, schema v2 mixed-root lockfiles, verified local/network adapter archives, opencode command alias handling, and proxy-safe download diagnostics. Current next stage: code-review M4.
+- [2026-05-18 Multi-adapter init and proxy-aware adapter download](plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md) - active execution plan for implementing descriptor-driven `rigorloop init --adapter codex|claude|opencode`, schema v2 mixed-root lockfiles, verified local/network adapter archives, opencode command alias handling, and proxy-safe download diagnostics. Current next stage: review-resolution for M4.
 
 ## Blocked
 - none yet
