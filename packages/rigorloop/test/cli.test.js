@@ -7,6 +7,7 @@ import { join, resolve } from "node:path";
 import { test } from "node:test";
 
 import { exitCodeForResult } from "../dist/lib/command-result.js";
+import { adapterDescriptor, supportedAdapterNames } from "../dist/lib/adapters.js";
 import {
   parseLockfile,
   serializeLockfile,
@@ -234,6 +235,7 @@ function fixturePackage(options = {}) {
     ),
   );
   copyFileSync(cliPath, join(root, "dist", "bin", "rigorloop.js"));
+  copyFileSync(join(packageRoot, "dist", "lib", "adapters.js"), join(root, "dist", "lib", "adapters.js"));
   copyFileSync(join(packageRoot, "dist", "lib", "command-result.js"), join(root, "dist", "lib", "command-result.js"));
   copyFileSync(join(packageRoot, "dist", "lib", "lockfile.js"), join(root, "dist", "lib", "lockfile.js"));
   copyFileSync(join(packageRoot, "dist", "lib", "new-change.js"), join(root, "dist", "lib", "new-change.js"));
@@ -407,6 +409,20 @@ test("TNP-005 package version maps to bundled v0.1.5 adapter metadata", () => {
   );
 });
 
+test("TMAI-001 descriptor registry defines the exact supported adapter set", () => {
+  assert.deepEqual(supportedAdapterNames(), ["codex", "claude", "opencode"]);
+  assert.deepEqual(adapterDescriptor("codex").installRoots, { skills: ".agents/skills" });
+  assert.deepEqual(adapterDescriptor("claude").installRoots, { skills: ".claude/skills" });
+  assert.deepEqual(adapterDescriptor("opencode").installRoots, {
+    skills: ".opencode/skills",
+    commands: ".opencode/commands",
+  });
+  assert.equal(adapterDescriptor("codex").archiveName("v0.1.5"), "rigorloop-adapter-codex-v0.1.5.zip");
+  assert.equal(adapterDescriptor("claude").archiveName("v0.1.5"), "rigorloop-adapter-claude-v0.1.5.zip");
+  assert.equal(adapterDescriptor("opencode").archiveName("v0.1.5"), "rigorloop-adapter-opencode-v0.1.5.zip");
+  assert.equal(adapterDescriptor("cursor"), undefined);
+});
+
 test("T2 help output shows only the implemented command surface", () => {
   const result = runCli(["--help"]);
 
@@ -414,9 +430,11 @@ test("T2 help output shows only the implemented command surface", () => {
   assert.match(result.stdout, /rigorloop\b/);
   assert.match(result.stdout, /rigorloop version/);
   assert.match(result.stdout, /rigorloop init --adapter codex/);
+  assert.match(result.stdout, /--adapter codex\|claude\|opencode/);
   assert.match(result.stdout, /rigorloop new-change <change-id>/);
   assert.doesNotMatch(result.stdout, /\bstatus\b/);
   assert.doesNotMatch(result.stdout, /\bvalidate\b/);
+  assert.doesNotMatch(result.stdout, /Undici|dispatcher|workflow YAML|generated workflow docs/i);
 });
 
 test("TNC-002 new-change requires a change id, title, and option values", () => {
@@ -935,16 +953,39 @@ test("T4 unknown commands return usage errors", () => {
   assert.match(`${result.stdout}${result.stderr}`, /rigorloop --help/);
 });
 
-test("T5 unsupported adapters are blocked and do not write files", () => {
+test("TMAI-003 unsupported adapters are blocked and do not write files", () => {
   const cwd = tempProject();
-  const result = runCli(["init", "--adapter", "claude", "--json"], { cwd });
+  const result = runCli(["init", "--adapter", "cursor", "--json"], { cwd });
 
   assert.equal(result.status, 2);
   assert.equal(result.stderr, "");
   const output = JSON.parse(result.stdout);
   assert.equal(output.status, "blocked");
-  assert.equal(output.blockers[0].code, "adapter-unsupported");
+  assert.equal(output.blockers[0].code, "adapter-unknown");
   assert.deepEqual(listProject(cwd), []);
+});
+
+test("TMAI-001 dry-run selects descriptors for all supported adapters", () => {
+  const cases = [
+    ["codex", ".agents/skills", "rigorloop-adapter-codex-v0.1.5.zip"],
+    ["claude", ".claude/skills", "rigorloop-adapter-claude-v0.1.5.zip"],
+    ["opencode", ".opencode/skills", "rigorloop-adapter-opencode-v0.1.5.zip"],
+  ];
+
+  for (const [adapter, root, archive] of cases) {
+    const cwd = tempProject();
+    const result = runCli(["init", "--adapter", adapter, "--dry-run", "--json"], { cwd });
+
+    assert.equal(result.status, 0, `${adapter}: ${result.stderr}`);
+    const output = JSON.parse(result.stdout);
+    assert.equal(output.status, "success", adapter);
+    assert.match(output.planned_manifest.content, new RegExp(`name: ${adapter}`), adapter);
+    assert.match(output.planned_manifest.content, new RegExp(root.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), adapter);
+    assert.equal(output.planned_lockfile.generated.adapters[0].adapter, adapter);
+    assert.equal(output.planned_lockfile.generated.adapters[0].archive, archive);
+    assert.equal(output.planned_lockfile.generated.adapters[0].installed_root, root);
+    assert.deepEqual(listProject(cwd), [], adapter);
+  }
 });
 
 test("T6 JSON envelope is stable and stdout contains JSON only", () => {
@@ -1066,7 +1107,7 @@ test("T11 exit-code mapping covers every public exit class", () => {
 test("T11 command-path exit-code mapping is enforced for M1 command paths", () => {
   const cwd = tempProject();
   const success = runCli(["init", "--adapter", "codex", "--dry-run", "--json"], { cwd });
-  const blocked = runCli(["init", "--adapter", "claude", "--json"], { cwd });
+  const blocked = runCli(["init", "--adapter", "cursor", "--json"], { cwd });
   const usage = runCli(["unknown-command"], { cwd });
 
   assert.equal(success.status, 0);
@@ -1121,6 +1162,30 @@ test("T14 missing local archive path is invalid input", () => {
   assert.equal(missingValue.status, 4);
   assert.equal(JSON.parse(missingValue.stdout).errors[0].code, "invalid-archive-path");
   assert.deepEqual(listProject(cwd), []);
+});
+
+test("TMAI-009 wrong local archive for selected adapter fails before extraction", () => {
+  const cwd = tempProject();
+  const fixture = fixtureArchive(cwd);
+  fixture.metadata.artifacts.push({
+    ...fixture.metadata.artifacts[0],
+    adapter: "claude",
+    archive: "rigorloop-adapter-claude-v0.1.5.zip",
+    url: expectedArchiveUrl({ releaseTag: "v0.1.5", archive: "rigorloop-adapter-claude-v0.1.5.zip" }),
+    install_root: ".claude/skills",
+  });
+  const result = runCliWithBundledMetadata(
+    ["init", "--adapter", "claude", "--from-archive", `./${fixture.archiveName}`, "--json"],
+    cwd,
+    fixture.metadata,
+  );
+
+  assert.equal(result.status, 3);
+  const output = JSON.parse(result.stdout);
+  assert.equal(output.status, "error");
+  assert.equal(output.errors[0].code, "adapter-archive-mismatch");
+  assert.equal(existsSync(join(cwd, ".claude")), false);
+  assert.equal(existsSync(join(cwd, "rigorloop.lock")), false);
 });
 
 test("T15 network mode uses bundled metadata before downloading the official archive", () => {
@@ -1181,10 +1246,13 @@ test("T15 network mode rejects non-official archive URLs before fetch", () => {
 
 test("T15 official archive URL helper accepts only exact release archive URLs", () => {
   const releaseTag = "v0.1.5";
+  for (const adapter of supportedAdapterNames()) {
+    const archive = adapterDescriptor(adapter).archiveName(releaseTag);
+    const officialUrl = expectedArchiveUrl({ releaseTag, archive });
+    assert.equal(officialUrl, `https://github.com/xiongxianfei/rigorloop/releases/download/v0.1.5/${archive}`);
+    assert.deepEqual(validateOfficialArchiveUrl({ url: officialUrl, releaseTag, archive }), { ok: true });
+  }
   const archive = "rigorloop-adapter-codex-v0.1.5.zip";
-  const officialUrl = expectedArchiveUrl({ releaseTag, archive });
-  assert.equal(officialUrl, "https://github.com/xiongxianfei/rigorloop/releases/download/v0.1.5/rigorloop-adapter-codex-v0.1.5.zip");
-  assert.deepEqual(validateOfficialArchiveUrl({ url: officialUrl, releaseTag, archive }), { ok: true });
   assert.equal(
     validateOfficialArchiveUrl({
       url: "https://github.com/xiongxianfei/rigorloop/releases/download/v0.1.5/rigorloop-adapter-codex-v0.1.5.zip?download=1",
@@ -1602,7 +1670,7 @@ test("T29 release metadata shape and validation result are validated", () => {
   );
 
   assert.equal(noCodexResult.status, 2);
-  assert.equal(JSON.parse(noCodexResult.stdout).blockers[0].code, "adapter-unknown");
+  assert.equal(JSON.parse(noCodexResult.stdout).blockers[0].code, "metadata-unavailable");
 
   const wrongRootProject = tempProject();
   const wrongRoot = fixtureArchive(wrongRootProject, {

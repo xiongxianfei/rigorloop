@@ -1,0 +1,172 @@
+change_id: 2026-05-18-multi-adapter-init-and-proxy-aware-download
+title: Multi-adapter init and proxy-aware adapter download
+classification: spec
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-18-multi-adapter-init-and-proxy-aware-download.md
+  spec: specs/multi-adapter-init-and-proxy-aware-download.md
+  test_spec: specs/multi-adapter-init-and-proxy-aware-download.test.md
+  architecture: docs/architecture/system/architecture.md
+  adr: docs/adr/ADR-20260518-multi-adapter-init-and-proxy-download.md
+  plan: docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md
+  review_resolution: docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-resolution.md
+requirements:
+  - Define CLI init support for Codex, Claude Code, and opencode before implementation.
+  - Preserve Codex installation under .agents/skills.
+  - Define schema_version 2 lockfile behavior for mixed single-root and multi-root adapter entries.
+  - Define proxy-safe diagnostics while deferring programmatic Undici proxy dispatcher support.
+  - Preserve verified release archive and local archive trust boundaries.
+  - Record adapter descriptor ownership, lockfile schema v2 serialization boundaries, and proxy diagnostic ownership in architecture before planning.
+tests:
+  - Formal proposal-review evidence for the accepted proposal.
+  - Spec-review for specs/multi-adapter-init-and-proxy-aware-download.md.
+  - Test spec mapping each requirement to CLI package tests and validation commands.
+validation:
+  - command: proposal-review r3
+    result: approved_no_material_findings
+  - command: spec
+    result: completed_pending_spec_review
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-18-multi-adapter-init-and-proxy-aware-download.md --path specs/multi-adapter-init-and-proxy-aware-download.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-log.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-resolution.md
+    result: pass
+  - command: git diff --check -- docs/proposals/2026-05-18-multi-adapter-init-and-proxy-aware-download.md specs/multi-adapter-init-and-proxy-aware-download.md docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download
+    result: pass
+  - command: spec-review r1
+    result: changes_requested_SR1-F1_SR1-F2_SR1-F3_SR1-F4
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml
+    result: pass_after_spec_review_r1_recording
+  - command: git diff --check -- docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download
+    result: pass_after_spec_review_r1_recording
+  - command: spec revision for SR1-F1 SR1-F2 SR1-F3 SR1-F4
+    result: completed_pending_spec_review_rerun
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download
+    result: pass_after_spec_revision_resolution_update
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml
+    result: pass_after_spec_revision_resolution_update
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/multi-adapter-init-and-proxy-aware-download.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/spec-review-r1.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-log.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-resolution.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml
+    result: pass_after_spec_revision_resolution_update
+  - command: git diff --check -- specs/multi-adapter-init-and-proxy-aware-download.md docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download
+    result: pass_after_spec_revision_resolution_update
+  - command: spec-review r2
+    result: approved_no_material_findings
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download
+    result: pass_after_spec_review_r2_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml
+    result: pass_after_spec_review_r2_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/multi-adapter-init-and-proxy-aware-download.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/spec-review-r2.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-log.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-resolution.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml
+    result: pass_after_spec_review_r2_recording
+  - command: git diff --check -- specs/multi-adapter-init-and-proxy-aware-download.md docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download
+    result: pass_after_spec_review_r2_recording
+  - command: architecture
+    result: completed_pending_architecture_review
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml
+    result: pass_after_architecture
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/multi-adapter-init-and-proxy-aware-download.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/context.mmd --path docs/architecture/system/diagrams/container.mmd --path docs/adr/ADR-20260518-multi-adapter-init-and-proxy-download.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-log.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-resolution.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/spec-review-r2.md
+    result: pass_after_architecture
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download
+    result: pass_after_architecture
+  - command: git diff --check -- specs/multi-adapter-init-and-proxy-aware-download.md docs/architecture/system/architecture.md docs/architecture/system/diagrams/context.mmd docs/architecture/system/diagrams/container.mmd docs/adr/ADR-20260518-multi-adapter-init-and-proxy-download.md docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download
+    result: pass_after_architecture
+  - command: bash scripts/ci.sh --mode explicit --path specs/multi-adapter-init-and-proxy-aware-download.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/context.mmd --path docs/architecture/system/diagrams/container.mmd --path docs/adr/ADR-20260518-multi-adapter-init-and-proxy-download.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-log.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-resolution.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/spec-review-r2.md
+    result: pass_after_architecture
+  - command: architecture-review r1
+    result: approved_no_material_findings
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download
+    result: pass_after_architecture_review_r1_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml
+    result: pass_after_architecture_review_r1_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/multi-adapter-init-and-proxy-aware-download.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/context.mmd --path docs/architecture/system/diagrams/container.mmd --path docs/adr/ADR-20260518-multi-adapter-init-and-proxy-download.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-log.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-resolution.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/spec-review-r2.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/architecture-review-r1.md
+    result: pass_after_architecture_review_r1_recording
+  - command: git diff --check -- specs/multi-adapter-init-and-proxy-aware-download.md docs/architecture/system/architecture.md docs/architecture/system/diagrams/context.mmd docs/architecture/system/diagrams/container.mmd docs/adr/ADR-20260518-multi-adapter-init-and-proxy-download.md docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download
+    result: pass_after_architecture_review_r1_recording
+  - command: bash scripts/ci.sh --mode explicit --path specs/multi-adapter-init-and-proxy-aware-download.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/context.mmd --path docs/architecture/system/diagrams/container.mmd --path docs/adr/ADR-20260518-multi-adapter-init-and-proxy-download.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-log.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-resolution.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/spec-review-r2.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/architecture-review-r1.md
+    result: pass_after_architecture_review_r1_recording
+  - command: spec-review r3
+    result: approved_no_material_findings
+  - command: plan
+    result: completed_pending_plan_review
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml
+    result: pass_after_plan
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/multi-adapter-init-and-proxy-aware-download.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260518-multi-adapter-init-and-proxy-download.md --path docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md --path docs/plan.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml
+    result: pass_after_plan
+  - command: git diff --check -- docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md docs/plan.md docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml
+    result: pass_after_plan
+  - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md --path docs/plan.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml
+    result: pass_after_plan
+  - command: plan-review r1
+    result: approved_no_material_findings
+  - command: test-spec
+    result: completed_ready_for_implement_M1
+  - command: user approval of test spec
+    result: approved_ready_for_implement_M1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml
+    result: pass_after_test_spec
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/multi-adapter-init-and-proxy-aware-download.md --path specs/multi-adapter-init-and-proxy-aware-download.test.md --path docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md --path docs/plan.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml
+    result: pass_after_test_spec
+  - command: git diff --check -- specs/multi-adapter-init-and-proxy-aware-download.test.md docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md docs/plan.md docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml
+    result: pass_after_test_spec
+  - command: bash scripts/ci.sh --mode explicit --path specs/multi-adapter-init-and-proxy-aware-download.test.md --path docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md --path docs/plan.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml
+    result: pass_after_test_spec
+  - command: npm test --prefix packages/rigorloop
+    result: fail_expected_missing_adapters_module_before_M1_implementation
+  - command: npm test --prefix packages/rigorloop
+    result: pass_after_M1_implementation
+  - command: bash scripts/ci.sh --mode explicit --path packages/rigorloop/dist/bin/rigorloop.js --path packages/rigorloop/dist/lib/adapters.js --path packages/rigorloop/dist/lib/official-archive-url.js --path packages/rigorloop/dist/metadata/adapter-artifacts-v0.1.5.json --path packages/rigorloop/test/cli.test.js --path docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md --path docs/plan.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml
+    result: pass_after_M1_implementation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml
+    result: pass_after_M1_handoff_update
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md --path docs/plan.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml
+    result: pass_after_M1_handoff_update
+  - command: git diff --check -- packages/rigorloop/dist/bin/rigorloop.js packages/rigorloop/dist/lib/adapters.js packages/rigorloop/test/cli.test.js docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md docs/plan.md docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml
+    result: pass_after_M1_handoff_update
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download
+    result: pass_after_plan_review_r1_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml
+    result: pass_after_plan_review_r1_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md --path docs/plan.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-log.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-resolution.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/plan-review-r1.md
+    result: pass_after_plan_review_r1_recording
+  - command: git diff --check -- docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download
+    result: pass_after_plan_review_r1_recording
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-log.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-resolution.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/plan-review-r1.md
+    result: pass_after_plan_review_r1_recording
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download
+    result: pass_after_spec_review_r3_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml
+    result: pass_after_spec_review_r3_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/multi-adapter-init-and-proxy-aware-download.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/context.mmd --path docs/architecture/system/diagrams/container.mmd --path docs/adr/ADR-20260518-multi-adapter-init-and-proxy-download.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-log.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-resolution.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/spec-review-r2.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/architecture-review-r1.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/spec-review-r3.md
+    result: pass_after_spec_review_r3_recording
+  - command: git diff --check -- specs/multi-adapter-init-and-proxy-aware-download.md docs/architecture/system/architecture.md docs/architecture/system/diagrams/context.mmd docs/architecture/system/diagrams/container.mmd docs/adr/ADR-20260518-multi-adapter-init-and-proxy-download.md docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download
+    result: pass_after_spec_review_r3_recording
+  - command: bash scripts/ci.sh --mode explicit --path specs/multi-adapter-init-and-proxy-aware-download.md --path docs/architecture/system/architecture.md --path docs/architecture/system/diagrams/context.mmd --path docs/architecture/system/diagrams/container.mmd --path docs/adr/ADR-20260518-multi-adapter-init-and-proxy-download.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-log.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-resolution.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/spec-review-r2.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/architecture-review-r1.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/spec-review-r3.md
+    result: pass_after_spec_review_r3_recording
+changed_files:
+  - docs/adr/ADR-20260518-multi-adapter-init-and-proxy-download.md
+  - docs/architecture/system/architecture.md
+  - docs/architecture/system/diagrams/container.mmd
+  - docs/architecture/system/diagrams/context.mmd
+  - docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml
+  - docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-log.md
+  - docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-resolution.md
+  - docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/proposal-review.md
+  - docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/proposal-review-r2.md
+  - docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/proposal-review-r3.md
+  - docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/architecture-review-r1.md
+  - docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/spec-review-r1.md
+  - docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/spec-review-r2.md
+  - docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/spec-review-r3.md
+  - docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/plan-review-r1.md
+  - docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md
+  - docs/plan.md
+  - packages/rigorloop/dist/bin/rigorloop.js
+  - packages/rigorloop/dist/lib/adapters.js
+  - packages/rigorloop/test/cli.test.js
+  - docs/proposals/2026-05-18-multi-adapter-init-and-proxy-aware-download.md
+  - specs/multi-adapter-init-and-proxy-aware-download.md
+  - specs/multi-adapter-init-and-proxy-aware-download.test.md
+review:
+  status: approved
+  unresolved_items: 0
+  location: specs/multi-adapter-init-and-proxy-aware-download.md

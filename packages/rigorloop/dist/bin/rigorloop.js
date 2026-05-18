@@ -7,16 +7,13 @@ import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { EXIT, exitCodeForResult } from "../lib/command-result.js";
+import { adapterDescriptor, supportedAdapterNames } from "../lib/adapters.js";
 import { parseLockfile, serializeLockfile, sha256NormalizedText } from "../lib/lockfile.js";
 import { buildNewChangeDraft, parseNewChangeArgs } from "../lib/new-change.js";
 import { runNewChangePlan } from "../lib/new-change-filesystem.js";
 import { validateOfficialArchiveUrl } from "../lib/official-archive-url.js";
 
-const ADAPTER = "codex";
-const AGENTS_ROOT = ".agents";
-const INSTALL_ROOT = ".agents/skills";
 const LOCKFILE_PATH = "rigorloop.lock";
-const DIRECTORY_PLAN = [AGENTS_ROOT, INSTALL_ROOT];
 
 function packageInfo() {
   const here = dirname(fileURLToPath(import.meta.url));
@@ -113,12 +110,13 @@ function usage() {
 Usage:
   rigorloop --help
   rigorloop version
-  rigorloop init --adapter codex [--dry-run] [--json]
+  rigorloop init --adapter codex|claude|opencode [--dry-run] [--json]
   rigorloop new-change <change-id> --title <title> [--dry-run] [--json]
 
 Commands:
   version                 Print package name and version.
-  init --adapter codex    Initialize the first-slice Codex adapter plan.
+  init --adapter codex|claude|opencode
+                          Initialize a verified adapter install plan.
   new-change              Plan a change metadata scaffold.
 `;
 }
@@ -127,7 +125,7 @@ function releaseForPackage(version) {
   return `v${version}`;
 }
 
-function sourceForFlags(flags, info) {
+function sourceForFlags(flags, info, descriptor) {
   if (flags.fromArchiveProvided) {
     return {
       type: "local-archive",
@@ -138,29 +136,36 @@ function sourceForFlags(flags, info) {
   return {
     type: "release-archive",
     release: releaseForPackage(info.version),
-    archive: `rigorloop-adapter-codex-${releaseForPackage(info.version)}.zip`,
+    archive: descriptor.archiveName(releaseForPackage(info.version)),
   };
 }
 
-function manifestContent(info, source) {
+function manifestContent(info, source, descriptor) {
   const sourceLines =
     source.type === "local-archive"
       ? [`      type: local-archive`, `      archive: "${source.archive}"`]
       : [`      type: release-archive`, `      release: "${source.release}"`];
+  const rootLines =
+    Object.keys(descriptor.installRoots).length === 1
+      ? [`    install_root: "${descriptor.primaryInstallRoot()}"`]
+      : [
+          `    install_roots:`,
+          ...Object.entries(descriptor.installRoots).map(([role, root]) => `      ${role}: "${root}"`),
+        ];
 
   return `schema_version: 1
 rigorloop:
   package: "${info.name}"
   package_version: "${info.version}"
 adapters:
-  - name: codex
-    install_root: "${INSTALL_ROOT}"
+  - name: ${descriptor.name}
+${rootLines.join("\n")}
     source:
 ${sourceLines.join("\n")}
 `;
 }
 
-function plannedLockfile(info, source, manifest) {
+function plannedLockfile(info, source, manifest, descriptor) {
   const artifact = source.artifact;
   return {
     schema_version: 1,
@@ -175,12 +180,12 @@ function plannedLockfile(info, source, manifest) {
     generated: {
       adapters: [
         {
-          adapter: ADAPTER,
+          adapter: descriptor.name,
           release: releaseForPackage(info.version),
           source: source.type,
           archive: source.type === "local-archive" ? basename(source.archive) : source.archive,
           archive_sha256: artifact?.sha256 ?? "<planned>",
-          installed_root: INSTALL_ROOT,
+          installed_root: descriptor.primaryInstallRoot(),
           tree_hash_algorithm: "rigorloop-tree-hash-v1",
           tree_sha256: artifact?.tree_sha256 ?? "<planned-after-install>",
           file_count: "<planned-after-install>",
@@ -190,7 +195,7 @@ function plannedLockfile(info, source, manifest) {
   };
 }
 
-function lockfileForVerifiedInstall(info, source, manifest, artifact, treeHash, fileCount) {
+function lockfileForVerifiedInstall(info, source, manifest, artifact, treeHash, fileCount, descriptor) {
   return {
     schema_version: 1,
     rigorloop: {
@@ -204,12 +209,12 @@ function lockfileForVerifiedInstall(info, source, manifest, artifact, treeHash, 
     generated: {
       adapters: [
         {
-          adapter: ADAPTER,
+          adapter: descriptor.name,
           release: releaseForPackage(info.version),
           source: source.type,
           archive: source.type === "local-archive" ? basename(source.archive) : source.archive,
           archive_sha256: artifact.sha256,
-          installed_root: INSTALL_ROOT,
+          installed_root: descriptor.primaryInstallRoot(),
           tree_hash_algorithm: "rigorloop-tree-hash-v1",
           tree_sha256: treeHash,
           file_count: fileCount,
@@ -219,11 +224,11 @@ function lockfileForVerifiedInstall(info, source, manifest, artifact, treeHash, 
   };
 }
 
-function compatibleManifest(content) {
+function compatibleManifest(content, descriptor) {
   return (
     content.includes("schema_version: 1") &&
-    content.includes("name: codex") &&
-    content.includes(`install_root: "${INSTALL_ROOT}"`)
+    content.includes(`name: ${descriptor.name}`) &&
+    content.includes(`"${descriptor.primaryInstallRoot()}"`)
   );
 }
 
@@ -234,8 +239,11 @@ function pathState(path) {
   return statSync(path).isDirectory() ? "directory" : "file";
 }
 
-function directoryKind(path) {
-  return path === AGENTS_ROOT ? "codex-agent-root" : "codex-install-root";
+function directoryKind(path, descriptor) {
+  if (path === descriptor.primaryInstallRoot()) {
+    return `${descriptor.name}-install-root`;
+  }
+  return `${descriptor.name}-adapter-root`;
 }
 
 function sha256(bytes) {
@@ -382,7 +390,7 @@ function isSha256(value) {
   return typeof value === "string" && /^[0-9a-f]{64}$/i.test(value);
 }
 
-function validateMetadata(metadata, info) {
+function validateMetadata(metadata, info, descriptor) {
   const release = releaseForPackage(info.version);
   if (!metadata || metadata.schema_version !== 1) {
     return { error: { code: "metadata-invalid", message: "Adapter metadata schema_version must be 1." } };
@@ -407,9 +415,9 @@ function validateMetadata(metadata, info) {
   if (!isNonEmptyString(metadata.validation?.command)) {
     return { error: { code: "metadata-invalid", message: "Adapter metadata validation command is missing." } };
   }
-  const artifact = metadata.artifacts?.find((entry) => entry.adapter === ADAPTER);
+  const artifact = metadata.artifacts?.find((entry) => entry.adapter === descriptor.name);
   if (!artifact) {
-    return { blocker: metadataBlocker("adapter-unknown", "Adapter metadata does not include Codex.") };
+    return { blocker: metadataBlocker("metadata-unavailable", `Adapter metadata does not include ${descriptor.displayName}.`) };
   }
   if (
     !isNonEmptyString(artifact.archive) ||
@@ -419,10 +427,10 @@ function validateMetadata(metadata, info) {
     artifact.size_bytes < 0 ||
     !isSha256(artifact.tree_sha256)
   ) {
-    return { error: { code: "metadata-invalid", message: "Codex adapter artifact metadata is incomplete." } };
+    return { error: { code: "metadata-invalid", message: `${descriptor.displayName} adapter artifact metadata is incomplete.` } };
   }
-  if ((artifact.install_root ?? "").replace(/\/$/, "") !== INSTALL_ROOT) {
-    return { error: { code: "metadata-invalid", message: "Codex adapter install root is not .agents/skills." } };
+  if ((artifact.install_root ?? "").replace(/\/$/, "") !== descriptor.primaryInstallRoot()) {
+    return { error: { code: "metadata-invalid", message: `${descriptor.displayName} adapter install root is not ${descriptor.primaryInstallRoot()}.` } };
   }
   if (artifact.tree_hash_algorithm && artifact.tree_hash_algorithm !== "rigorloop-tree-hash-v1") {
     return { error: { code: "metadata-invalid", message: "Unsupported tree hash algorithm in adapter metadata." } };
@@ -500,14 +508,15 @@ function parseZipEntries(buffer) {
   return entries;
 }
 
-function unsafePathCode(name) {
+function unsafePathCode(name, descriptor) {
   if (!name || name.startsWith("/") || name.startsWith("\\") || /^[A-Za-z]:/.test(name) || name.includes("\\")) {
     return "archive-path-traversal";
   }
   if (name.split("/").some((part) => part === ".." || part === "")) {
     return "archive-path-traversal";
   }
-  if (!name.startsWith(`${INSTALL_ROOT}/`)) {
+  const allowedRoots = Object.values(descriptor.installRoots);
+  if (!allowedRoots.some((root) => name.startsWith(`${root}/`))) {
     return "archive-install-root-invalid";
   }
   return undefined;
@@ -517,19 +526,20 @@ function isArchiveSupportEntry(name) {
   return name === "AGENTS.md";
 }
 
-function fileRowsForTree(entries) {
+function fileRowsForTree(entries, descriptor) {
+  const installRoot = descriptor.primaryInstallRoot();
   return entries
     .filter((entry) => !entry.directory)
     .map((entry) => {
-      const relativePath = entry.name.slice(`${INSTALL_ROOT}/`.length);
+      const relativePath = entry.name.slice(`${installRoot}/`.length);
       const bytes = relativePath.endsWith(".md") ? normalizeText(entry.bytes) : entry.bytes;
       return [relativePath, sha256(bytes)];
     })
     .sort(([left], [right]) => left.localeCompare(right));
 }
 
-function treeHashForEntries(entries) {
-  return treeHashForRows(fileRowsForTree(entries));
+function treeHashForEntries(entries, descriptor) {
+  return treeHashForRows(fileRowsForTree(entries, descriptor));
 }
 
 function treeHashForRows(rows) {
@@ -573,7 +583,7 @@ function treeHashForFilesystem(root) {
   };
 }
 
-function currentCodexLockfileEntry() {
+function currentLockfileEntry(descriptor) {
   const lockfileAbsolutePath = resolve(process.cwd(), LOCKFILE_PATH);
   if (!existsSync(lockfileAbsolutePath)) {
     return undefined;
@@ -582,7 +592,9 @@ function currentCodexLockfileEntry() {
   if (!parsed.ok) {
     return undefined;
   }
-  return parsed.lockfile.generated.adapters.find((entry) => entry.adapter === ADAPTER && entry.installed_root === INSTALL_ROOT);
+  return parsed.lockfile.generated.adapters.find(
+    (entry) => entry.adapter === descriptor.name && entry.installed_root === descriptor.primaryInstallRoot(),
+  );
 }
 
 function installedTreeMismatchError(actualTree, expectedTreeHash, expectedFileCount) {
@@ -596,16 +608,17 @@ function installedTreeMismatchError(actualTree, expectedTreeHash, expectedFileCo
   };
 }
 
-function verifyInstalledTree(entries, artifact, { allowMissingOrEmpty = false } = {}) {
-  const expectedRows = fileRowsForTree(entries);
+function verifyInstalledTree(entries, artifact, descriptor, { allowMissingOrEmpty = false } = {}) {
+  const expectedRows = fileRowsForTree(entries, descriptor);
   const expectedTreeHash = artifact.tree_sha256;
   const expectedFileCount = expectedRows.length;
+  const installRoot = descriptor.primaryInstallRoot();
 
-  if (!existsSync(resolve(process.cwd(), INSTALL_ROOT))) {
+  if (!existsSync(resolve(process.cwd(), installRoot))) {
     return allowMissingOrEmpty ? { ok: true, expectedRows, expectedFileCount } : { error: installedTreeMismatchError({ treeHash: "<missing>", fileCount: 0 }, expectedTreeHash, expectedFileCount) };
   }
 
-  const actualTree = treeHashForFilesystem(INSTALL_ROOT);
+  const actualTree = treeHashForFilesystem(installRoot);
   if (allowMissingOrEmpty && actualTree.fileCount === 0) {
     return { ok: true, expectedRows, expectedFileCount };
   }
@@ -695,7 +708,7 @@ function lockfileDriftBlocker(lockfileEntry) {
   return undefined;
 }
 
-function inspectArchive(archiveBytes, artifact) {
+function inspectArchive(archiveBytes, artifact, descriptor) {
   if (artifact.size_bytes !== undefined && archiveBytes.length !== artifact.size_bytes) {
     return { error: { code: "archive-size-mismatch", message: "Archive size does not match metadata." } };
   }
@@ -716,7 +729,7 @@ function inspectArchive(archiveBytes, artifact) {
     if (isArchiveSupportEntry(entry.name)) {
       continue;
     }
-    const pathCode = unsafePathCode(entry.name);
+    const pathCode = unsafePathCode(entry.name, descriptor);
     if (pathCode) {
       return { error: { code: pathCode, message: `Archive entry is not allowed: ${entry.name}`, path: entry.name } };
     }
@@ -727,14 +740,15 @@ function inspectArchive(archiveBytes, artifact) {
   }
 
   const files = installEntries.filter((entry) => !entry.directory);
-  const treeHash = treeHashForEntries(files);
+  const treeHash = treeHashForEntries(files, descriptor);
   if (artifact.tree_sha256 && treeHash !== artifact.tree_sha256) {
     return { error: { code: "tree-hash-mismatch", message: "Installed tree hash does not match metadata." } };
   }
   return { entries: files, archiveHash, treeHash, fileCount: files.length };
 }
 
-function addArchiveActions(plan, entries) {
+function addArchiveActions(plan, entries, descriptor) {
+  const installRoot = descriptor.primaryInstallRoot();
   const directories = new Set();
   for (const entry of entries) {
     const parts = entry.name.split("/");
@@ -770,7 +784,7 @@ function addArchiveActions(plan, entries) {
     const state = pathState(resolve(process.cwd(), entry.name));
     let existingMatches = false;
     if (state === "file") {
-      const relativePath = entry.name.slice(`${INSTALL_ROOT}/`.length);
+      const relativePath = entry.name.slice(`${installRoot}/`.length);
       const existingBytes = relativePath.endsWith(".md")
         ? normalizeText(readFileSync(resolve(process.cwd(), entry.name)))
         : readFileSync(resolve(process.cwd(), entry.name));
@@ -783,9 +797,9 @@ function addArchiveActions(plan, entries) {
       status: state === "absent" ? "pending" : existingMatches ? "skipped" : "blocked",
       reason:
         state === "absent"
-          ? "Install verified Codex adapter file."
+          ? `Install verified ${descriptor.displayName} adapter file.`
           : existingMatches
-            ? `${entry.name} already matches verified Codex adapter content.`
+            ? `${entry.name} already matches verified ${descriptor.displayName} adapter content.`
             : `${entry.name} already exists.`,
     });
     plan.artifacts.push({
@@ -804,23 +818,25 @@ function addArchiveActions(plan, entries) {
   }
 }
 
-function writeArchiveEntries(entries) {
+function writeArchiveEntries(entries, descriptor) {
+  const installRoot = descriptor.primaryInstallRoot();
   for (const entry of entries) {
     const outputPath = resolve(process.cwd(), entry.name);
     mkdirSync(dirname(outputPath), { recursive: true });
-    const relativePath = entry.name.slice(`${INSTALL_ROOT}/`.length);
+    const relativePath = entry.name.slice(`${installRoot}/`.length);
     const bytes = relativePath.endsWith(".md") ? normalizeText(entry.bytes) : entry.bytes;
     writeFileSync(outputPath, bytes);
   }
 }
 
-function planDirectoryActions(flags) {
+function planDirectoryActions(flags, descriptor) {
   const actions = [];
   const artifacts = [];
   const blockers = [];
   let parentBlocked = false;
 
-  for (const relativePath of DIRECTORY_PLAN) {
+  const rootParent = descriptor.directoryPlan[0];
+  for (const relativePath of descriptor.directoryPlan) {
     const state = parentBlocked ? "blocked-by-parent" : pathState(resolve(process.cwd(), relativePath));
     if (state === "absent") {
       actions.push({
@@ -831,7 +847,7 @@ function planDirectoryActions(flags) {
       });
       artifacts.push({
         path: relativePath,
-        kind: directoryKind(relativePath),
+        kind: directoryKind(relativePath, descriptor),
         status: flags.dryRun ? "planned" : "pending",
       });
     } else if (state === "directory") {
@@ -843,7 +859,7 @@ function planDirectoryActions(flags) {
       });
       artifacts.push({
         path: relativePath,
-        kind: directoryKind(relativePath),
+        kind: directoryKind(relativePath, descriptor),
         status: "existing",
       });
     } else {
@@ -853,12 +869,12 @@ function planDirectoryActions(flags) {
         status: "blocked",
         reason:
           state === "blocked-by-parent"
-            ? `${relativePath} cannot be created because ${AGENTS_ROOT} is not a directory.`
+            ? `${relativePath} cannot be created because ${rootParent} is not a directory.`
             : `${relativePath} exists and is not a directory.`,
       });
       artifacts.push({
         path: relativePath,
-        kind: directoryKind(relativePath),
+        kind: directoryKind(relativePath, descriptor),
         status: "blocked",
       });
       if (state !== "blocked-by-parent") {
@@ -869,7 +885,7 @@ function planDirectoryActions(flags) {
           next_action: `Move the existing file before running init.`,
         });
       }
-      if (relativePath === AGENTS_ROOT) {
+      if (relativePath === rootParent) {
         parentBlocked = true;
       }
     }
@@ -944,15 +960,15 @@ function addLockfilePlan(flags, actions, artifacts, blockers, errors) {
   }
 }
 
-function buildInitPlan(flags, artifact) {
+function buildInitPlan(flags, descriptor, artifact) {
   const info = packageInfo();
-  const source = sourceForFlags(flags, info);
+  const source = sourceForFlags(flags, info, descriptor);
   if (artifact) {
     source.artifact = artifact;
   }
   const manifestPath = "rigorloop.yaml";
   const manifestAbsolutePath = resolve(process.cwd(), manifestPath);
-  const manifest = manifestContent(info, source);
+  const manifest = manifestContent(info, source, descriptor);
   const actions = [];
   const artifacts = [];
   const blockers = [];
@@ -963,25 +979,25 @@ function buildInitPlan(flags, artifact) {
       code: "invalid-archive-path",
       message: "Missing required value for --from-archive.",
       path: "--from-archive",
-      next_action: "Provide an existing Codex adapter archive path or omit --from-archive.",
+      next_action: `Provide an existing ${descriptor.displayName} adapter archive path or omit --from-archive.`,
     });
   } else if (flags.fromArchiveProvided && !existsSync(resolve(process.cwd(), flags.fromArchive))) {
     errors.push({
       code: "invalid-archive-path",
       message: `Local archive path does not exist: ${flags.fromArchive}`,
       path: flags.fromArchive,
-      next_action: "Provide an existing Codex adapter archive path or omit --from-archive.",
+      next_action: `Provide an existing ${descriptor.displayName} adapter archive path or omit --from-archive.`,
     });
   }
 
-  const directoryPlan = planDirectoryActions(flags);
+  const directoryPlan = planDirectoryActions(flags, descriptor);
   actions.push(...directoryPlan.actions);
   artifacts.push(...directoryPlan.artifacts);
   blockers.push(...directoryPlan.blockers);
 
   if (existsSync(manifestAbsolutePath)) {
     const existingManifest = readFileSync(manifestAbsolutePath, "utf8");
-    if (compatibleManifest(existingManifest)) {
+    if (compatibleManifest(existingManifest, descriptor)) {
       actions.push({
         type: "write",
         path: manifestPath,
@@ -996,7 +1012,7 @@ function buildInitPlan(flags, artifact) {
     } else {
       errors.push({
         code: "invalid-config",
-        message: "Existing rigorloop.yaml is not compatible with the first-slice Codex init contract.",
+        message: `Existing rigorloop.yaml is not compatible with the ${descriptor.displayName} init contract.`,
         path: manifestPath,
         next_action: "Review or move the existing file before running init.",
       });
@@ -1025,7 +1041,7 @@ function buildInitPlan(flags, artifact) {
     artifacts,
     blockers,
     errors,
-    planned_lockfile: plannedLockfile(info, source, manifest),
+    planned_lockfile: plannedLockfile(info, source, manifest, descriptor),
   };
 }
 
@@ -1111,19 +1127,19 @@ function invalidArchivePath(message, flags) {
     code: "invalid-archive-path",
     message,
     path: flags.fromArchive,
-    next_action: "Provide an existing Codex adapter archive path or omit --from-archive.",
+    next_action: "Provide an existing supported adapter archive path or omit --from-archive.",
   });
 }
 
 function unsupportedAdapter(adapter, flags) {
   const result = envelope("init", flags, {
     status: "blocked",
-    summary: `Adapter '${adapter}' is not supported in this slice.`,
+    summary: `Adapter '${adapter}' is not supported.`,
     blockers: [
       {
-        code: "adapter-unsupported",
-        message: `Adapter '${adapter}' is not supported in this slice.`,
-        next_action: "Use --adapter codex.",
+        code: "adapter-unknown",
+        message: `Adapter '${adapter}' is not supported.`,
+        next_action: `Use one of: ${supportedAdapterNames().join(", ")}.`,
       },
     ],
   });
@@ -1131,7 +1147,7 @@ function unsupportedAdapter(adapter, flags) {
   if (flags.json) {
     writeJson(result);
   } else {
-    process.stderr.write(`${result.summary}\nUse --adapter codex.\n`);
+    process.stderr.write(`${result.summary}\nUse one of: ${supportedAdapterNames().join(", ")}.\n`);
   }
   return exitCodeForResult({ ...result, exit_class: "blocked" });
 }
@@ -1204,7 +1220,7 @@ function writeValidationErrorResult(flags, plan, error) {
   return exitCodeForResult({ ...result, exit_class: "validation_failed" });
 }
 
-async function archiveWorkForInit(flags, info) {
+async function archiveWorkForInit(flags, info, descriptor) {
   if (flags.dryRun) {
     return {};
   }
@@ -1214,7 +1230,7 @@ async function archiveWorkForInit(flags, info) {
     return bundledMetadata;
   }
   const metadata = bundledMetadata.metadata;
-  const validation = validateMetadata(metadata, info);
+  const validation = validateMetadata(metadata, info, descriptor);
   if (validation.blocker || validation.error) {
     return validation;
   }
@@ -1223,17 +1239,27 @@ async function archiveWorkForInit(flags, info) {
   if (flags.fromArchiveProvided) {
     const archiveName = basename(flags.fromArchive);
     if (archiveName !== artifact.archive || !archiveName.includes(metadata.release.version)) {
+      if (!archiveName.startsWith(`rigorloop-adapter-${descriptor.name}-`)) {
+        return {
+          error: {
+            code: "adapter-archive-mismatch",
+            message: `Local archive ${archiveName} is not a ${descriptor.displayName} adapter archive.`,
+            path: flags.fromArchive,
+          },
+          artifact,
+        };
+      }
       return {
         blocker: metadataBlocker(
           "release-version-incompatible",
           `Local archive ${archiveName} is not compatible with ${metadata.release.version}.`,
           flags.fromArchive,
-          "Use the Codex adapter archive matching the installed CLI package version.",
+          `Use the ${descriptor.displayName} adapter archive matching the installed CLI package version.`,
         ),
       };
     }
     const archiveBytes = readFileSync(resolve(process.cwd(), flags.fromArchive));
-    const inspected = inspectArchive(archiveBytes, artifact);
+    const inspected = inspectArchive(archiveBytes, artifact, descriptor);
     if (inspected.error) {
       return { error: inspected.error, artifact };
     }
@@ -1262,13 +1288,13 @@ async function archiveWorkForInit(flags, info) {
     return {
       blocker: metadataBlocker(
         "release-unavailable",
-        "Official Codex adapter archive is unavailable.",
+        `Official ${descriptor.displayName} adapter archive is unavailable.`,
         artifact.url,
         "Retry later or use --from-archive with a compatible local archive.",
       ),
     };
   }
-  const inspected = inspectArchive(archiveBytes, artifact);
+  const inspected = inspectArchive(archiveBytes, artifact, descriptor);
   if (inspected.error) {
     return { error: inspected.error, artifact };
   }
@@ -1277,9 +1303,10 @@ async function archiveWorkForInit(flags, info) {
 
 async function handleInit(flags) {
   if (!flags.adapter) {
-    return invalidUsage("Missing required option: --adapter codex.", flags, "init");
+    return invalidUsage("Missing required option: --adapter codex|claude|opencode.", flags, "init");
   }
-  if (flags.adapter !== "codex") {
+  const descriptor = adapterDescriptor(flags.adapter);
+  if (!descriptor) {
     return unsupportedAdapter(flags.adapter, flags);
   }
   if (flags.fromArchiveProvided && (!flags.fromArchive || flags.fromArchive.startsWith("--"))) {
@@ -1290,7 +1317,7 @@ async function handleInit(flags) {
   }
 
   const info = packageInfo();
-  const plan = buildInitPlan(flags);
+  const plan = buildInitPlan(flags, descriptor);
   if (plan.errors.length > 0) {
     const result = envelope("init", flags, {
       status: "error",
@@ -1315,17 +1342,17 @@ async function handleInit(flags) {
     return writeBlockedResult(flags, plan, plan.blockers[0].message, plan.blockers, exitClassForBlockers(plan.blockers));
   }
 
-  const archiveWork = await archiveWorkForInit(flags, info);
+  const archiveWork = await archiveWorkForInit(flags, info, descriptor);
   if (archiveWork.artifact) {
     plan.source.artifact = archiveWork.artifact;
-    plan.planned_lockfile = plannedLockfile(plan.info, plan.source, plan.manifest);
+    plan.planned_lockfile = plannedLockfile(plan.info, plan.source, plan.manifest, descriptor);
   }
   if (archiveWork.entries) {
     const conflict = generatedOutputConflictBlocker(archiveWork.entries);
     if (conflict) {
       return writeBlockedResult(flags, plan, conflict.message, [conflict], "mutation_conflict");
     }
-    const drift = lockfileDriftBlocker(currentCodexLockfileEntry());
+    const drift = lockfileDriftBlocker(currentLockfileEntry(descriptor));
     if (drift) {
       return writeBlockedResult(
         flags,
@@ -1335,11 +1362,11 @@ async function handleInit(flags) {
         drift.code === "overwrite-refused" ? "mutation_conflict" : "blocked",
       );
     }
-    const installedTree = verifyInstalledTree(archiveWork.entries, archiveWork.artifact, { allowMissingOrEmpty: true });
+    const installedTree = verifyInstalledTree(archiveWork.entries, archiveWork.artifact, descriptor, { allowMissingOrEmpty: true });
     if (installedTree.error) {
       return writeValidationErrorResult(flags, plan, installedTree.error);
     }
-    addArchiveActions(plan, archiveWork.entries);
+    addArchiveActions(plan, archiveWork.entries, descriptor);
   }
 
   if (archiveWork.blocker) {
@@ -1370,7 +1397,7 @@ async function handleInit(flags) {
         const pendingCopyPaths = new Set(
           plan.actions.filter((action) => action.type === "copy" && action.status === "pending").map((action) => action.path),
         );
-        writeArchiveEntries(archiveWork.entries.filter((entry) => pendingCopyPaths.has(entry.name)));
+        writeArchiveEntries(archiveWork.entries.filter((entry) => pendingCopyPaths.has(entry.name)), descriptor);
         for (const action of plan.actions.filter((action) => action.type === "copy" && action.status === "pending")) {
           action.status = "done";
           plan.artifacts.find((artifact) => artifact.path === action.path).status = "created";
@@ -1407,7 +1434,7 @@ async function handleInit(flags) {
       const lockfileArtifact = plan.artifacts.find((artifact) => artifact.path === LOCKFILE_PATH);
       if (lockfileAction?.status === "pending") {
         const lockfilePreviouslyExists = existsSync(resolve(process.cwd(), LOCKFILE_PATH));
-        const verifiedInstalledTree = verifyInstalledTree(archiveWork.entries, archiveWork.artifact);
+        const verifiedInstalledTree = verifyInstalledTree(archiveWork.entries, archiveWork.artifact, descriptor);
         if (verifiedInstalledTree.error) {
           return writeValidationErrorResult(flags, plan, verifiedInstalledTree.error);
         }
@@ -1418,13 +1445,14 @@ async function handleInit(flags) {
           archiveWork.artifact,
           archiveWork.artifact.tree_sha256,
           verifiedInstalledTree.expectedFileCount,
+          descriptor,
         );
         writeFileSync(resolve(process.cwd(), LOCKFILE_PATH), serializeLockfile(lockfile), "utf8");
         plan.planned_lockfile = lockfile;
         lockfileAction.status = "done";
         lockfileAction.reason = lockfilePreviouslyExists
-          ? "Updated durable lockfile for verified Codex adapter install."
-          : "Wrote durable lockfile for verified Codex adapter install.";
+          ? `Updated durable lockfile for verified ${descriptor.displayName} adapter install.`
+          : `Wrote durable lockfile for verified ${descriptor.displayName} adapter install.`;
         if (lockfileArtifact) {
           lockfileArtifact.status = lockfilePreviouslyExists ? "updated" : "created";
         }
@@ -1438,8 +1466,8 @@ async function handleInit(flags) {
     summary: flags.dryRun
       ? "RigorLoop init dry run completed. No files were written."
       : archiveWork.entries
-        ? "RigorLoop initialized with verified Codex adapter files."
-        : "RigorLoop initialized with Codex scaffold.",
+        ? `RigorLoop initialized with verified ${descriptor.displayName} adapter files.`
+        : `RigorLoop initialized with ${descriptor.displayName} scaffold.`,
     actions: plan.actions,
     artifacts: plan.artifacts,
     warnings,
@@ -1457,8 +1485,8 @@ async function handleInit(flags) {
       ? ["RigorLoop init dry run completed.", "No files were written."]
       : [
           archiveWork.entries
-            ? "RigorLoop initialized with verified Codex adapter files."
-            : "RigorLoop initialized with Codex scaffold.",
+            ? `RigorLoop initialized with verified ${descriptor.displayName} adapter files.`
+            : `RigorLoop initialized with ${descriptor.displayName} scaffold.`,
           archiveWork.entries ? "rigorloop.lock was written." : "No adapter files were installed.",
         ];
     writeHuman(`${lines.join("\n")}\n`, flags);
