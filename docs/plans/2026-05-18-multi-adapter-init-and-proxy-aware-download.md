@@ -68,9 +68,9 @@ The current CLI implementation is Codex-specific: it uses `ADAPTER = "codex"`, `
 - Last reviewed milestone: M4. Network download diagnostics and output envelope
 - Review status: M5 code-review rerun completed with no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
-- Final closeout readiness: ready for final closeout
-- Reason final closeout is or is not ready: all implementation milestones, required review-resolution, and explain-change are closed; verify and PR handoff remain incomplete.
+- Next stage: pr
+- Final closeout readiness: branch-ready for PR handoff
+- Reason final closeout is or is not ready: all implementation milestones, required review-resolution, explain-change, and final local verify are closed; PR handoff remains incomplete.
 
 ## Milestones
 
@@ -261,7 +261,8 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 - [x] 2026-05-18: M5 code-review rerun completed with no material findings.
 - [x] M5 closed.
 - [x] 2026-05-18: explain-change completed and recorded at `docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/explain-change.md`.
-- [ ] verify and PR handoff completed.
+- [x] 2026-05-18: final verify passed with package tests, adapter archive generation validation, review artifact validation, lifecycle validation, change metadata validation, whitespace checks, and selected CI.
+- [ ] PR handoff completed.
 
 ## Decision log
 
@@ -344,12 +345,21 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 - 2026-05-18: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/explain-change.md --path docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md --path docs/plan.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-resolution.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-log.md` passed after explain-change.
 - 2026-05-18: `git diff --check -- docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/explain-change.md docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md docs/plan.md` passed after explain-change.
 - 2026-05-18: `bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/explain-change.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml --path docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md --path docs/plan.md` passed selected checks: `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+- 2026-05-18: `npm test --prefix packages/rigorloop` passed in final verify with 107 passing tests.
+- 2026-05-18: `python scripts/build-adapters.py --version 0.1.5 --output-dir /tmp/rigorloop-adapter-final-verify` passed and produced Codex, Claude, and opencode adapter archives.
+- 2026-05-18: `python scripts/validate-adapters.py --version 0.1.5 --root /tmp/rigorloop-adapter-final-verify` passed for generated adapter archives.
+- 2026-05-18: `python scripts/validate-review-artifacts.py docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download` passed in final verify with 19 reviews, 15 findings, 19 log entries, and 15 resolution entries.
+- 2026-05-18: `python scripts/validate-change-metadata.py docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml` passed in final verify.
+- 2026-05-18: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/multi-adapter-init-and-proxy-aware-download.md --path specs/multi-adapter-init-and-proxy-aware-download.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260518-multi-adapter-init-and-proxy-download.md --path docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md --path docs/plan.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/explain-change.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-log.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-resolution.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/code-review-m5-r2.md` passed in final verify.
+- 2026-05-18: `git diff --check -- .gitignore packages/rigorloop/dist/bin/rigorloop.js packages/rigorloop/dist/lib/adapters.js packages/rigorloop/dist/lib/lockfile.js packages/rigorloop/dist/lib/official-archive-url.js packages/rigorloop/dist/metadata/adapter-artifacts-v0.1.5.json packages/rigorloop/dist/metadata/releases.json packages/rigorloop/test/cli.test.js packages/rigorloop/README.md specs/multi-adapter-init-and-proxy-aware-download.md specs/multi-adapter-init-and-proxy-aware-download.test.md docs/architecture/system/architecture.md docs/adr/ADR-20260518-multi-adapter-init-and-proxy-download.md docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md docs/plan.md docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download` passed in final verify.
+- 2026-05-18: `bash scripts/ci.sh --mode explicit --path .gitignore --path packages/rigorloop/dist/bin/rigorloop.js --path packages/rigorloop/dist/lib/adapters.js --path packages/rigorloop/dist/lib/lockfile.js --path packages/rigorloop/dist/lib/official-archive-url.js --path packages/rigorloop/dist/metadata/adapter-artifacts-v0.1.5.json --path packages/rigorloop/dist/metadata/releases.json --path packages/rigorloop/test/cli.test.js --path packages/rigorloop/README.md --path specs/multi-adapter-init-and-proxy-aware-download.md --path specs/multi-adapter-init-and-proxy-aware-download.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260518-multi-adapter-init-and-proxy-download.md --path docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md --path docs/plan.md --path docs/learn/sessions/2026-05-18-adapter-init-and-proxy-fetch.md --path docs/learn/sessions/2026-05-18-opencode-metadata-truth-table.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/explain-change.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-log.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-resolution.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/code-review-m5-r2.md` passed selected checks: `skills.generation_regression`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `rigorloop_cli.test`, and `npm_package_publication.test`.
 
 ## Outcome and retrospective
 
-- Not complete. Fill this only after all implementation milestones and downstream lifecycle gates close.
+- Branch-ready for PR handoff after final local verify. The implementation, tests, lifecycle artifacts, review-resolution, explain-change, and selected CI proof agree with the approved multi-adapter init and proxy-aware download contract.
+- Hosted CI has not been observed yet; PR handoff owns PR body readiness and any hosted CI follow-through.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Not ready for final closeout until all implementation milestones and downstream gates are complete.
+- Ready for `pr`.
