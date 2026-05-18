@@ -494,6 +494,14 @@ function isSha256(value) {
   return typeof value === "string" && /^[0-9a-f]{64}$/i.test(value);
 }
 
+function releaseListedForSkillsOnlyCompatibility(marker, release) {
+  if (!marker) {
+    return false;
+  }
+  const releases = Array.isArray(marker) ? marker : marker.releases;
+  return Array.isArray(releases) && releases.includes(release);
+}
+
 function validateMetadata(metadata, info, descriptor) {
   const release = releaseForPackage(info.version);
   if (!metadata || metadata.schema_version !== 1) {
@@ -562,6 +570,20 @@ function validateMetadata(metadata, info, descriptor) {
       aliasPaths.some((aliasPath) => !isNonEmptyString(aliasPath) || !aliasPath.startsWith(`${descriptor.installRoots.commands}/`))
     ) {
       return { error: { code: "metadata-invalid", message: "opencode command alias metadata is incomplete." } };
+    }
+  }
+  // CR-M3-R1-F1: skills-only opencode compatibility must be explicit in trusted metadata.
+  if (descriptor.name === "opencode" && !artifact.command_aliases?.opencode && !rootsForArtifact(descriptor, artifact).commands) {
+    const marker = artifact.skills_only_compatibility ?? metadata.compatibility?.opencode_skills_only;
+    if (!releaseListedForSkillsOnlyCompatibility(marker, release)) {
+      return {
+        blocker: metadataBlocker(
+          "opencode-skills-only-compatibility-unmarked",
+          "Opencode skills-only archive metadata is not explicitly marked compatible.",
+          artifact.archive,
+          "Use an opencode archive with command alias metadata or bundled trusted skills-only compatibility metadata.",
+        ),
+      };
     }
   }
   return { artifact };

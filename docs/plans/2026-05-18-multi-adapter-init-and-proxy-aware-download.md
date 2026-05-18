@@ -64,11 +64,11 @@ The current CLI implementation is Codex-specific: it uses `ADAPTER = "codex"`, `
 ## Current Handoff Summary
 
 - Current milestone: M3. Multi-root archive extraction and local archive fallback
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M2. Manifest and lockfile schema v2
-- Review status: M3 code-review changes-requested; CR-M3-R1-F1 open
+- Review status: M3 review-resolution completed for CR-M3-R1-F1; code-review rerun pending
 - Remaining in-scope implementation milestones: M3, M4, M5
-- Next stage: review-resolution for M3
+- Next stage: code-review M3 rerun
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: all implementation milestones, code-review, review-resolution if triggered, explain-change, verify, and PR handoff remain incomplete.
 
@@ -122,7 +122,7 @@ The current CLI implementation is Codex-specific: it uses `ADAPTER = "codex"`, `
 
 ### M3. Multi-root archive extraction and local archive fallback
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Generalize archive verification, path safety, extraction, installed tree hashing, and local archive mode across all supported adapters and opencode root combinations.
 - Requirements: MAI-R17 through MAI-R46c, MAI-R92 through MAI-R95, AC4, AC7, AC8, AC16.
 - Files/components likely touched: `packages/rigorloop/dist/bin/rigorloop.js`, `packages/rigorloop/dist/metadata/*.json`, `packages/rigorloop/test/cli.test.js`, adapter validation fixtures if needed.
@@ -243,6 +243,7 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 - [x] 2026-05-18: M3 implementation started.
 - [x] 2026-05-18: M3 tests and implementation completed; handoff requested for code-review.
 - [x] 2026-05-18: M3 code-review completed with `CR-M3-R1-F1`; review-resolution required.
+- [x] 2026-05-18: M3 review-resolution completed for `CR-M3-R1-F1`; handoff requested for code-review rerun.
 - [ ] M3 closed.
 - [ ] M4 closed.
 - [ ] M5 closed.
@@ -264,6 +265,7 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 - M2 code-review rerun found that the non-dry-run plan rebuild fixed real installs, but dry-run still returns before trusted metadata validation and reports the descriptor `commands` root for older skills-only opencode metadata.
 - M3 found that archive path allowlisting also needs trusted artifact roots, not descriptor possible roots, so older skills-only opencode archives cannot smuggle `.opencode/commands` files into extraction.
 - M3 code-review found that older opencode skills-only compatibility is inferred from missing command alias metadata, but `MAI-R21f` requires an explicit bundled trusted-metadata compatibility boundary.
+- M3 review-resolution uses `skills_only_compatibility.releases` as the explicit trusted artifact metadata marker for older opencode skills-only compatibility.
 
 ## Validation notes
 
@@ -285,6 +287,8 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 - 2026-05-18: `python scripts/build-adapters.py --version 0.1.5 --output-dir /tmp/rigorloop-adapter-plan-check` passed and produced Codex, Claude, and opencode adapter archives.
 - 2026-05-18: `python scripts/validate-adapters.py --version 0.1.5 --root /tmp/rigorloop-adapter-plan-check` passed for generated adapter archives.
 - 2026-05-18: `code-review-m3-r1` recorded `CR-M3-R1-F1`; M3 remains open for review-resolution.
+- 2026-05-18: `npm test --prefix packages/rigorloop` failed as expected after adding `TMAI-017 unmarked skills-only opencode metadata blocks before mutation`; the CLI still accepted unmarked skills-only metadata before the fix.
+- 2026-05-18: `npm test --prefix packages/rigorloop` passed after resolving `CR-M3-R1-F1`; package tests include the positive marked skills-only opencode path and the negative unmarked metadata blocker.
 
 ## Outcome and retrospective
 
