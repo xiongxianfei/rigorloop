@@ -3,12 +3,13 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-18 Multi-adapter init and proxy-aware adapter download](plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md) - active execution plan for implementing descriptor-driven `rigorloop init --adapter codex|claude|opencode`, schema v2 mixed-root lockfiles, verified local/network adapter archives, opencode command alias handling, and proxy-safe download diagnostics. Current next stage: pr.
+- none yet
 
 ## Blocked
 - none yet
 
 ## Done
+- [2026-05-18 Multi-adapter init and proxy-aware adapter download](plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md) - completed execution plan for implementing descriptor-driven `rigorloop init --adapter codex|claude|opencode`, schema v2 mixed-root lockfiles, verified local/network adapter archives, opencode command alias handling, proxy-safe download diagnostics, review-resolution closeout, final local verify, and opening PR #68.
 - [2026-05-18 Customer-portable public skills](plans/2026-05-18-customer-portable-public-skills.md) - completed execution plan for making audited public skills customer-portable, adding focused static validation, recording static and live customer-fixture dynamic token evidence, validating generated adapters from canonical skills, closing `CPS-M3-CR1`, passing final local verify with explicit selected CI proof, and opening PR #67.
 - [2026-05-16 RigorLoop npm publication](plans/2026-05-16-rigorloop-npm-publication.md) - completed execution plan for publishing the first public `@xiongxianfei/rigorloop@0.1.4` npm package from tag `v0.1.4`, with package metadata hardening, package-content validation, packed-package smoke, release verification, bootstrap publication evidence, post-publication npx smoke, actual Codex adapter install proof, FU-010 closeout, and FU-006 through FU-009 left open.
 - [2026-05-16 RigorLoop CLI new-change](plans/2026-05-16-rigorloop-cli-new-change.md) - completed execution plan for implementing `rigorloop new-change <change-id>` as a safe change metadata scaffolding command, with approved spec, architecture-review, plan-review, test spec, implementation milestones, code-review, explain-change, final local verify, PR #64, hosted CI, human review, and merge completed.

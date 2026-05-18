@@ -1,10 +1,10 @@
 # Multi-adapter init and proxy-aware adapter download
 
-- Status: active
+- Status: done
 - Owner: maintainer
 - Start date: 2026-05-18
 - Last updated: 2026-05-18
-- Related issue or PR: none yet
+- Related issue or PR: PR #68
 - Supersedes: none
 
 ## Purpose / big picture
@@ -68,9 +68,9 @@ The current CLI implementation is Codex-specific: it uses `ADAPTER = "codex"`, `
 - Last reviewed milestone: M4. Network download diagnostics and output envelope
 - Review status: M5 code-review rerun completed with no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: branch-ready for PR handoff
-- Reason final closeout is or is not ready: all implementation milestones, required review-resolution, explain-change, and final local verify are closed; PR handoff remains incomplete.
+- Next stage: none
+- Final closeout readiness: completed
+- Reason final closeout is or is not ready: all implementation milestones, required review-resolution, explain-change, final local verify, and PR #68 handoff are complete for this branch. Hosted CI and human review remain external PR-review outcomes and are not claimed here.
 
 ## Milestones
 
@@ -262,7 +262,7 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 - [x] M5 closed.
 - [x] 2026-05-18: explain-change completed and recorded at `docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/explain-change.md`.
 - [x] 2026-05-18: final verify passed with package tests, adapter archive generation validation, review artifact validation, lifecycle validation, change metadata validation, whitespace checks, and selected CI.
-- [ ] PR handoff completed.
+- [x] 2026-05-18: PR #68 opened for review: `https://github.com/xiongxianfei/rigorloop/pull/68`.
 
 ## Decision log
 
@@ -356,10 +356,10 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 
 ## Outcome and retrospective
 
-- Branch-ready for PR handoff after final local verify. The implementation, tests, lifecycle artifacts, review-resolution, explain-change, and selected CI proof agree with the approved multi-adapter init and proxy-aware download contract.
+- Complete. Implementation milestones, review-resolution, explain-change, final local verify, and PR #68 handoff are closed for this branch.
 - Hosted CI has not been observed yet; PR handoff owns PR body readiness and any hosted CI follow-through.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `pr`.
+- Ready for human PR review. Hosted CI and reviewer decisions are not claimed until observed on the opened PR.
