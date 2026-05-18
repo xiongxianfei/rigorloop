@@ -44,6 +44,14 @@ Next stage:
 
 Implement one approved milestone as the smallest scope-complete, test-driven slice and prepare it for `code-review` without claiming downstream review or verification outcomes.
 
+## Project-local evidence
+
+Public skills operate in customer-project mode by default.
+
+Use project-local artifacts when present and relevant, including `AGENTS.md`, `CONSTITUTION.md`, the active plan, approved specs, test specs, architecture records, ADRs, review-resolution evidence, `docs/workflows.md`, source files, tests, neighboring files, and CI or validation commands.
+
+Do not require RigorLoop repository-internal specs, docs, reports, follow-up files, or governance files in customer projects. Use portable defaults where safe, and block on ambiguity when no safe local guidance or default exists.
+
 ## When to use
 
 Use this skill after the relevant spec, architecture, plan, plan-review, and test-spec are ready, or when the user explicitly requests isolated implementation output with clear scope and validation evidence.

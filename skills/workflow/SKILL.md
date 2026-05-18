@@ -140,6 +140,12 @@ State-sync checks update affected owners before downstream readiness is claimed.
 
 The workflow skill creates or refreshes the project workflow guide and artifact-location map. The guide tells users where artifacts go; the owning stage skill still authors its own artifact content.
 
+## Customer-project workflow guide
+
+In customer projects, create or refresh the project-local `docs/workflows.md` when RigorLoop is being adopted, artifact locations are missing, or routing depends on local workflow guidance.
+
+Do not require RigorLoop repository-internal specs or docs to be present. Use project-local guidance when available; otherwise use portable defaults and block on ambiguity.
+
 Create or refresh the guide when:
 
 - RigorLoop is adopted in a project and no workflow guide exists;

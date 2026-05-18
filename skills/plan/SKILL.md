@@ -15,6 +15,14 @@ Planning happens after the spec defines behavior and architecture defines the de
 
 Create or revise a concrete execution plan that turns approved artifacts into reviewable implementation milestones, validation commands, recovery paths, and lifecycle readiness.
 
+## Project-local evidence
+
+Public skills operate in customer-project mode by default.
+
+Use project-local artifacts when present and relevant, including `AGENTS.md`, `CONSTITUTION.md`, `docs/plan.md`, accepted proposals, approved specs, test specs, architecture records, ADRs, review findings, `docs/project-map.md`, `docs/workflows.md`, source files, tests, CI, and workflow files.
+
+Do not require RigorLoop repository-internal specs, docs, reports, follow-up files, or governance files in customer projects. Use portable defaults where safe, and block on ambiguity when no safe local guidance or default exists.
+
 ## When to use
 
 Use this skill after proposal, spec, and architecture are stable enough to sequence implementation, especially for multi-file, risky, milestone-based, migration-heavy, or cross-component work.

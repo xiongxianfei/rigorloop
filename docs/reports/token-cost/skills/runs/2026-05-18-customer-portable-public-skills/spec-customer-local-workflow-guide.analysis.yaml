@@ -1,0 +1,44 @@
+schema_version: 1
+
+run:
+  id: spec-customer-local-workflow-guide
+  raw_jsonl_tracked: true
+  jsonl: docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/spec-customer-local-workflow-guide.jsonl
+  sanitized_source: ""
+  sanitized_summary: ""
+  raw_omission_reason: ""
+
+usage:
+  cached_input_tokens: 26880
+  input_tokens: 32881
+  output_tokens: 447
+  reasoning_output_tokens: 147
+
+tool_output:
+  total_estimated_tokens: 146
+  largest_event:
+    kind: command_execution
+    command: "/bin/bash -lc \"if [ -f docs/workflows.md ]; then sed -n '1,180p' docs/workflows.md; else printf 'MISSING docs/workflows.md\\\\n'; fi\""
+    path: docs/workflows.md
+    lines: 19
+    estimated_tokens: 146
+
+signals:
+  full_file_read_count: 0
+  broad_search_count: 0
+  generated_output_read_count: 0
+  repeated_file_read_count: 0
+
+full_file_read:
+  result: none
+  justification: ""
+  signals: []
+  justified_reads: []
+  confirmed_reads: []
+  suspected_reads: []
+  repeated_file_reads: []
+
+verdict:
+  result: pass
+  warnings: []
+  blockers: []

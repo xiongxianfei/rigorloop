@@ -141,6 +141,58 @@ PROGRESSIVE_LOADING_CODE_REVIEW_PROTECTED_TERMS = [
     "stop conditions",
     "result format",
 ]
+CUSTOMER_PORTABLE_FIRST_SLICE_SKILLS = [
+    "proposal",
+    "proposal-review",
+    "spec",
+    "plan",
+    "implement",
+    "workflow",
+    "verify",
+    "pr",
+    "project-map",
+]
+CUSTOMER_PORTABLE_M2_SKILLS = [
+    "proposal",
+    "proposal-review",
+    "spec",
+    "plan",
+    "implement",
+    "verify",
+    "pr",
+]
+CUSTOMER_PORTABLE_REQUIRED_INTERNAL_DEPENDENCY_PATTERNS = {
+    "required RigorLoop specs": re.compile(
+        r"\b(?:must|must first|required|require|required:|read)\b.{0,80}\bRigorLoop\b.{0,80}\bspecs/",
+        re.IGNORECASE,
+    ),
+    "required RigorLoop constitution": re.compile(
+        r"\b(?:must|must first|required|require|required:|read)\b.{0,80}\bRigorLoop\b.{0,80}\bCONSTITUTION\.md\b",
+        re.IGNORECASE,
+    ),
+    "required RigorLoop agents": re.compile(
+        r"\b(?:must|must first|required|require|required:|read)\b.{0,80}\bRigorLoop\b.{0,80}\bAGENTS\.md\b",
+        re.IGNORECASE,
+    ),
+    "required RigorLoop workflow spec": re.compile(
+        r"\bread the RigorLoop workflow spec before proceeding\b",
+        re.IGNORECASE,
+    ),
+    "required RigorLoop reports": re.compile(
+        r"\brequired:\s*docs/reports/token-cost/",
+        re.IGNORECASE,
+    ),
+}
+CUSTOMER_PORTABLE_ALLOWED_GUARD_TERMS = [
+    "project-local",
+    "if present",
+    "when present",
+    "when operating inside the RigorLoop repository",
+    "when this file is the review target",
+    "when the user provided this path",
+    "when governing project docs exist",
+    "direct target",
+]
 SKILL_CONTRACT_FORBIDDEN_NEW_SKILLS = [
     "ci-maintenance",
     "review-resolution",
@@ -422,6 +474,11 @@ def iter_published_skill_surfaces_for(skill_name: str) -> list[Path]:
         for path in iter_published_skill_text_surfaces()
         if path.parent.name == skill_name
     ]
+
+
+def has_customer_portable_guard(text: str) -> bool:
+    normalized = text.lower()
+    return any(term.lower() in normalized for term in CUSTOMER_PORTABLE_ALLOWED_GUARD_TERMS)
 
 
 def run_validator(target: Path) -> subprocess.CompletedProcess[str]:
@@ -1029,6 +1086,129 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                 self.assertIn(term, verify)
         self.assertNotIn("next required or default downstream stage", verify)
         self.assertNotIn("downstream stage is `ci`", verify)
+
+    def test_customer_project_portability_workflow_guide(self) -> None:
+        workflow_guide = (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8")
+        block = extract_markdown_block(workflow_guide, "Customer-project portability")
+
+        required_terms = [
+            "Public skills operate in customer-project mode by default.",
+            "Use project-local artifacts when present",
+            "`docs/workflows.md`",
+            "`rigorloop.yaml`",
+            "`rigorloop.lock`",
+            "`docs/changes/<change-id>/change.yaml`",
+            "Do not require RigorLoop repository-internal `specs/`, `docs/`, `CONSTITUTION.md`, `AGENTS.md`, reports, or follow-up files in a customer project.",
+            "portable defaults where safe",
+            "block on ambiguity",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, block)
+
+        self.assertNotIn("must read RigorLoop", block)
+        self.assertNotIn("required precondition for every task", block)
+
+    def test_workflow_skill_customer_project_guide_caveat(self) -> None:
+        workflow = (ROOT / "skills" / "workflow" / "SKILL.md").read_text(encoding="utf-8")
+        block = extract_markdown_block(workflow, "Customer-project workflow guide")
+
+        required_terms = [
+            "create or refresh the project-local `docs/workflows.md`",
+            "RigorLoop is being adopted",
+            "artifact locations are missing",
+            "routing depends on local workflow guidance",
+            "Do not require RigorLoop repository-internal specs or docs to be present.",
+            "Use project-local guidance when available",
+            "portable defaults",
+            "block on ambiguity",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, block)
+
+    def test_customer_portable_public_skills_define_project_local_evidence_contract(self) -> None:
+        for skill_name in CUSTOMER_PORTABLE_M2_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            block = extract_markdown_block(body, "Project-local evidence")
+
+            required_terms = [
+                "customer-project mode by default",
+                "project-local",
+                "RigorLoop repository-internal",
+                "portable defaults",
+                "block on ambiguity",
+                "`docs/workflows.md`",
+            ]
+            for term in required_terms:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, block)
+
+    def test_project_map_treats_local_orientation_inputs_as_optional(self) -> None:
+        project_map = (ROOT / "skills" / "project-map" / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        block = extract_markdown_block(project_map, "Customer-project orientation")
+
+        required_terms = [
+            "customer-project mode by default",
+            "optional project-local orientation inputs",
+            "absence is normal",
+            "Do not search for RigorLoop originals",
+            "`AGENTS.md`",
+            "`CONSTITUTION.md`",
+            "`docs/`",
+            "`specs/`",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, block)
+
+    def test_customer_portable_required_internal_dependency_detector_examples(self) -> None:
+        forbidden_examples = [
+            "must read RigorLoop specs/ before drafting",
+            "required: read RigorLoop CONSTITUTION.md",
+            "must first read RigorLoop AGENTS.md",
+            "read the RigorLoop workflow spec before proceeding",
+            "required: docs/reports/token-cost/releases/latest.md",
+        ]
+        for example in forbidden_examples:
+            with self.subTest(example=example):
+                self.assertTrue(
+                    any(
+                        pattern.search(example)
+                        for pattern in CUSTOMER_PORTABLE_REQUIRED_INTERNAL_DEPENDENCY_PATTERNS.values()
+                    )
+                )
+                self.assertFalse(has_customer_portable_guard(example))
+
+        allowed_examples = [
+            "Read local specs/ if present and relevant.",
+            "Use project-local `CONSTITUTION.md` when governing project docs exist.",
+            "Use RigorLoop repository docs when operating inside the RigorLoop repository.",
+            "Read `AGENTS.md` when this file is the review target.",
+            "Use `docs/workflows.md` when the user provided this path.",
+            "Use RigorLoop specs/ only when the file is the direct target.",
+        ]
+        for example in allowed_examples:
+            with self.subTest(example=example):
+                matched = any(
+                    pattern.search(example)
+                    for pattern in CUSTOMER_PORTABLE_REQUIRED_INTERNAL_DEPENDENCY_PATTERNS.values()
+                )
+                self.assertFalse(matched and not has_customer_portable_guard(example))
+
+    def test_published_skill_surfaces_block_required_rigorloop_internal_dependencies(self) -> None:
+        for path in iter_published_skill_text_surfaces():
+            body = path.read_text(encoding="utf-8")
+            relative_path = path.relative_to(ROOT)
+            for label, pattern in CUSTOMER_PORTABLE_REQUIRED_INTERNAL_DEPENDENCY_PATTERNS.items():
+                for match in pattern.finditer(body):
+                    start = max(match.start() - 160, 0)
+                    end = min(match.end() + 160, len(body))
+                    surrounding = body[start:end]
+                    with self.subTest(path=str(relative_path), forbidden=label):
+                        self.assertTrue(has_customer_portable_guard(surrounding))
 
     def test_learn_skill_final_artifact_model_and_bounded_process(self) -> None:
         skill_body = (ROOT / "skills" / "learn" / "SKILL.md").read_text(encoding="utf-8")
