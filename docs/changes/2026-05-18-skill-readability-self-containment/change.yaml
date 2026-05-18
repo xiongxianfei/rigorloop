@@ -1,0 +1,108 @@
+change_id: 2026-05-18-skill-readability-self-containment
+title: Skill readability and self-containment proposal review
+classification: proposal-review
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-18-skill-readability-self-containment.md
+  spec: specs/skill-readability-contract.md
+  test_spec: specs/skill-readability-contract.test.md
+  plan: docs/plans/2026-05-18-skill-readability-self-containment.md
+  change_summary: docs/changes/2026-05-18-skill-readability-self-containment/implementation-notes.md
+requirements:
+  - Review the skill readability and self-containment proposal before specification.
+  - Confirm the proposal preserves the priority order of output quality, clarity, then token cost.
+  - Confirm the proposal declares its relationship to the accepted customer-portable public skills proposal.
+  - Confirm scope preservation, Vision fit, standing artifact gates, and readiness for focused specification.
+  - Settle accepted proposal status before downstream spec reliance.
+  - Create the focused skill readability and self-containment spec.
+  - Settle approved spec status before downstream plan reliance.
+  - Create the execution plan and update docs/plan.md.
+  - Create the active test spec before implementation starts.
+  - Add opt-in static validation for the skill readability contract.
+  - Record baseline token evidence for the pilot pair before skill rewrites.
+tests:
+  - Formal proposal-review evidence for docs/proposals/2026-05-18-skill-readability-self-containment.md.
+  - Review artifact validation for the proposal-review record.
+  - Artifact lifecycle validation for the reviewed proposal.
+  - Artifact lifecycle validation for the new spec.
+  - Artifact lifecycle validation for the active plan and plan index.
+  - Artifact lifecycle validation for the active test spec.
+  - Focused skill validator tests for the opt-in readability checks.
+  - Canonical skill validation remains green before the pilot skill rewrite.
+  - Static skill token baseline for `proposal` and `proposal-review`.
+review:
+  status: clean
+  unresolved_items: 0
+  reviewed_artifact: docs/plans/2026-05-18-skill-readability-self-containment.md
+  review_log: docs/changes/2026-05-18-skill-readability-self-containment/review-log.md
+  location: docs/changes/2026-05-18-skill-readability-self-containment/review-resolution.md
+validation:
+  - command: proposal-review r2
+    result: approved_no_material_findings
+  - command: proposal-review r3
+    result: approved_no_material_findings_after_format_reflow
+  - command: upstream status settlement
+    result: proposal_status_accepted_follow_on_spec_recorded
+  - command: spec authoring
+    result: created_specs/skill-readability-contract.md_ready_for_spec_review
+  - command: spec-review r1
+    result: approved_no_material_findings
+  - command: upstream status settlement
+    result: spec_status_approved_follow_on_plan_recorded
+  - command: plan
+    result: created_docs/plans/2026-05-18-skill-readability-self-containment.md_and_updated_docs/plan.md_ready_for_plan_review
+  - command: plan-review r1
+    result: changes_requested_srsc_plan_1
+  - command: plan revision
+    result: resolved_srsc_plan_1_by_reframing_test_spec_as_lifecycle_handoff
+  - command: plan-review r2
+    result: approved_no_material_findings
+  - command: plan-review r3
+    result: approved_no_material_findings
+  - command: test-spec
+    result: created_specs/skill-readability-contract.test.md_active_and_ready_for_m1_implementation
+  - command: user approval
+    result: active_test_spec_approved_for_m1_implementation
+  - command: python scripts/test-skill-validator.py
+    result: fail_expected_before_readability_validator_implementation
+  - command: python scripts/test-skill-validator.py
+    result: pass_96_tests_after_m1_readability_validator_foundation
+  - command: python scripts/validate-skills.py
+    result: pass_23_skill_files_after_m1_readability_validator_foundation
+  - command: python scripts/measure-skill-tokens.py
+    result: pass_baseline_proposal_3189_proposal_review_3255_estimated_tokens
+  - command: python scripts/build-skills.py --check
+    result: pass_temporary_generated_output_after_m1_readability_validator_foundation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/skill-readability-contract.md --path specs/skill-readability-contract.test.md --path docs/plans/2026-05-18-skill-readability-self-containment.md --path docs/plan.md --path docs/changes/2026-05-18-skill-readability-self-containment/change.yaml --path docs/changes/2026-05-18-skill-readability-self-containment/review-log.md --path docs/changes/2026-05-18-skill-readability-self-containment/review-resolution.md
+    result: pass_after_m1_handoff
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-18-skill-readability-self-containment/change.yaml
+    result: pass_after_m1_handoff
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-18-skill-readability-self-containment
+    result: pass_after_m1_handoff
+  - command: git diff --check --
+    result: pass_after_m1_handoff
+changed_files:
+  - docs/proposals/2026-05-18-skill-readability-self-containment.md
+  - specs/skill-readability-contract.md
+  - specs/skill-readability-contract.test.md
+  - docs/plans/2026-05-18-skill-readability-self-containment.md
+  - docs/plan.md
+  - scripts/skill_validation.py
+  - scripts/test-skill-validator.py
+  - tests/fixtures/skills/skill-readability/valid-pilot/SKILL.md
+  - tests/fixtures/skills/skill-readability/missing-workflow-role/SKILL.md
+  - tests/fixtures/skills/skill-readability/invalid-stage/SKILL.md
+  - tests/fixtures/skills/skill-readability/missing-output-skeleton/SKILL.md
+  - tests/fixtures/skills/skill-readability/required-internal-reference/SKILL.md
+  - tests/fixtures/skills/skill-readability/duplicate-closed-enum/SKILL.md
+  - docs/reports/token-cost/skills/2026-05-18-skill-readability-self-containment.md
+  - docs/changes/2026-05-18-skill-readability-self-containment/implementation-notes.md
+  - docs/changes/2026-05-18-skill-readability-self-containment/change.yaml
+  - docs/changes/2026-05-18-skill-readability-self-containment/review-log.md
+  - docs/changes/2026-05-18-skill-readability-self-containment/reviews/proposal-review-r2.md
+  - docs/changes/2026-05-18-skill-readability-self-containment/reviews/proposal-review-r3.md
+  - docs/changes/2026-05-18-skill-readability-self-containment/reviews/spec-review-r1.md
+  - docs/changes/2026-05-18-skill-readability-self-containment/reviews/plan-review-r1.md
+  - docs/changes/2026-05-18-skill-readability-self-containment/reviews/plan-review-r2.md
+  - docs/changes/2026-05-18-skill-readability-self-containment/reviews/plan-review-r3.md
+  - docs/changes/2026-05-18-skill-readability-self-containment/review-resolution.md
