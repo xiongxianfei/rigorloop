@@ -63,12 +63,12 @@ The current CLI implementation is Codex-specific: it uses `ADAPTER = "codex"`, `
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Adapter descriptors and trusted metadata selection
+- Current milestone: M2. Manifest and lockfile schema v2
 - Current milestone state: review-requested
-- Last reviewed milestone: none
-- Review status: M1 implementation complete; code-review pending
-- Remaining in-scope implementation milestones: M1, M2, M3, M4, M5
-- Next stage: code-review M1
+- Last reviewed milestone: M1. Adapter descriptors and trusted metadata selection
+- Review status: M2 implementation complete; code-review pending
+- Remaining in-scope implementation milestones: M2, M3, M4, M5
+- Next stage: code-review M2
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: all implementation milestones, code-review, review-resolution if triggered, explain-change, verify, and PR handoff remain incomplete.
 
@@ -76,7 +76,7 @@ The current CLI implementation is Codex-specific: it uses `ADAPTER = "codex"`, `
 
 ### M1. Adapter descriptors and trusted metadata selection
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Replace Codex-only selection with a descriptor registry for `codex`, `claude`, and `opencode`, including package-compatible metadata lookup and official archive URL selection.
 - Requirements: MAI-R1 through MAI-R28, AC1, AC2, AC3, AC5, AC6, AC7.
 - Files/components likely touched: `packages/rigorloop/dist/bin/rigorloop.js`, `packages/rigorloop/dist/lib/official-archive-url.js`, `packages/rigorloop/dist/metadata/*.json`, `packages/rigorloop/test/cli.test.js`.
@@ -99,7 +99,7 @@ The current CLI implementation is Codex-specific: it uses `ADAPTER = "codex"`, `
 
 ### M2. Manifest and lockfile schema v2
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Implement `rigorloop.yaml` single-root and multi-root serialization plus `rigorloop.lock` schema v2 parsing, serialization, sorting, and schema v1 Codex compatibility.
 - Requirements: MAI-R47 through MAI-R76, AC9, AC10, AC11, AC12, AC13.
 - Files/components likely touched: `packages/rigorloop/dist/lib/lockfile.js`, `packages/rigorloop/dist/bin/rigorloop.js`, `packages/rigorloop/test/cli.test.js`.
@@ -230,7 +230,10 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 - [x] 2026-05-18: test-spec created and approved by user.
 - [x] 2026-05-18: M1 implementation started.
 - [x] 2026-05-18: M1 tests and implementation completed; handoff requested for code-review.
-- [ ] M1 closed.
+- [x] 2026-05-18: M1 code-review completed with no material findings.
+- [x] M1 closed.
+- [x] 2026-05-18: M2 implementation started.
+- [x] 2026-05-18: M2 tests and implementation completed; handoff requested for code-review.
 - [ ] M2 closed.
 - [ ] M3 closed.
 - [ ] M4 closed.
@@ -242,16 +245,22 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 - 2026-05-18: Use five implementation milestones so descriptor selection, lockfile schema, extraction/local archive behavior, proxy diagnostics, and final documentation/proof can be reviewed independently.
 - 2026-05-18: Treat `packages/rigorloop/test/cli.test.js` as the first implementation proof surface because the existing CLI package is small and already uses fixture-backed archive and fetch helpers.
 - 2026-05-18: Add a small package-local adapter descriptor module for M1 instead of keeping descriptor data embedded in the CLI entrypoint. This keeps adapter identity, roots, and archive naming testable before later schema and extraction milestones.
+- 2026-05-18: Keep M2 schema parsing and serialization package-local in `packages/rigorloop/dist/lib/lockfile.js`, while leaving proxy diagnostics and older opencode warning behavior to later milestones.
 
 ## Surprises and discoveries
 
 - M1 could prove descriptor and trusted metadata selection without completing multi-root extraction or lockfile schema v2; those remain scoped to M2 and M3.
+- M2 tests initially failed as expected because the CLI still wrote schema v1 lockfiles, rejected schema v2 parsing, and rejected opencode multi-root trusted metadata.
 
 ## Validation notes
 
 - 2026-05-18: Added failing M1 tests first; initial `npm test --prefix packages/rigorloop` failed with missing `packages/rigorloop/dist/lib/adapters.js`.
 - 2026-05-18: `npm test --prefix packages/rigorloop` passed after adding descriptor support and metadata selection behavior.
 - 2026-05-18: `bash scripts/ci.sh --mode explicit --path packages/rigorloop/dist/bin/rigorloop.js --path packages/rigorloop/dist/lib/adapters.js --path packages/rigorloop/dist/lib/official-archive-url.js --path packages/rigorloop/dist/metadata/adapter-artifacts-v0.1.5.json --path packages/rigorloop/test/cli.test.js --path docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml` passed selected checks: `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `rigorloop_cli.test`, and `npm_package_publication.test`.
+- 2026-05-18: `code-review-m1-r1` completed with status `clean-with-notes`; M1 closed and M2 is the next implementation stage.
+- 2026-05-18: Added M2 tests first; `npm test --prefix packages/rigorloop` failed as expected for schema v2 lockfile parsing/writing and opencode multi-root metadata.
+- 2026-05-18: `npm test --prefix packages/rigorloop` passed after adding schema v2 lockfile parsing/serialization, additive manifest updates, schema v1 Codex upgrade checks, and multi-root opencode lockfile support.
+- 2026-05-18: `bash scripts/ci.sh --mode explicit --path packages/rigorloop/dist/lib/lockfile.js --path packages/rigorloop/dist/bin/rigorloop.js --path packages/rigorloop/test/cli.test.js` passed selected checks: `rigorloop_cli.test` and `npm_package_publication.test`.
 
 ## Outcome and retrospective
 

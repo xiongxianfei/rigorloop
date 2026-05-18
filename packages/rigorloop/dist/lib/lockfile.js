@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 
 const SHA256_PATTERN = /^[0-9a-f]{64}$/i;
 const SUPPORTED_SOURCES = new Set(["release-archive", "local-archive"]);
+const SUPPORTED_ADAPTERS = new Set(["codex", "claude", "opencode"]);
 const TOP_LEVEL_FIELDS = ["schema_version", "rigorloop", "manifest", "generated"];
 const RIGORLOOP_FIELDS = ["package", "version"];
 const MANIFEST_FIELDS = ["path", "sha256"];
@@ -13,10 +14,20 @@ const ADAPTER_FIELDS = [
   "archive",
   "archive_sha256",
   "installed_root",
+  "installed_roots",
   "tree_hash_algorithm",
   "tree_sha256",
   "file_count",
+  "root_hashes",
 ];
+const SINGLE_ROOTS = {
+  codex: ".agents/skills",
+  claude: ".claude/skills",
+};
+const OPENCODE_ROOTS = {
+  skills: ".opencode/skills",
+  commands: ".opencode/commands",
+};
 
 function failure(kind, code, message, path = "rigorloop.lock") {
   return { ok: false, kind, code, message, path };
@@ -36,6 +47,11 @@ function parseScalar(value) {
 
 function isSha256(value) {
   return typeof value === "string" && SHA256_PATTERN.test(value);
+}
+
+function isNonNegativeInteger(value) {
+  const text = String(value);
+  return /^\d+$/.test(text) && Number.isInteger(Number.parseInt(text, 10));
 }
 
 function parseTopLevel(lines) {
@@ -62,6 +78,10 @@ function parseSection(lines, sectionName, allowedFields) {
     }
     if (line.trim() === "") {
       continue;
+    }
+    const nestedMatch = line.match(/^  ([A-Za-z_][A-Za-z0-9_-]*):\s*$/);
+    if (nestedMatch) {
+      return failure("unsupported", "unsupported-lockfile-shape", `Unsupported nested field ${sectionName}.${nestedMatch[1]}`);
     }
     const match = line.match(/^  ([A-Za-z_][A-Za-z0-9_-]*):(?:\s*(.*))?$/);
     if (!match) {
@@ -112,6 +132,18 @@ function parseAdapters(lines) {
 
   const adapters = [];
   let current;
+  let nested;
+  let rootHashRole;
+
+  function pushCurrent() {
+    if (current) {
+      adapters.push(current);
+    }
+    current = undefined;
+    nested = undefined;
+    rootHashRole = undefined;
+  }
+
   for (let index = adaptersStart + 1; index < lines.length; index += 1) {
     const line = lines[index];
     if (/^[A-Za-z_][A-Za-z0-9_-]*:/.test(line)) {
@@ -124,11 +156,10 @@ function parseAdapters(lines) {
     if (generatedFieldMatch) {
       return failure("unsupported", "unsupported-lockfile-shape", `Unsupported field generated.${generatedFieldMatch[1]}`);
     }
+
     const startMatch = line.match(/^    - ([A-Za-z_][A-Za-z0-9_-]*):(?:\s*(.*))?$/);
     if (startMatch) {
-      if (current) {
-        adapters.push(current);
-      }
+      pushCurrent();
       current = {};
       const [, key, value] = startMatch;
       if (!ADAPTER_FIELDS.includes(key)) {
@@ -147,26 +178,146 @@ function parseAdapters(lines) {
       if (!ADAPTER_FIELDS.includes(key)) {
         return failure("unsupported", "unsupported-lockfile-shape", `Unsupported field generated.adapters[${adapters.length}].${key}`);
       }
+      if (key === "installed_roots" || key === "root_hashes") {
+        if (value !== undefined && value !== "") {
+          return failure("invalid", "invalid-lockfile", `Expected mapping for generated.adapters[${adapters.length}].${key}`);
+        }
+        current[key] = {};
+        nested = key;
+        rootHashRole = undefined;
+        continue;
+      }
       if (value === undefined || value === "") {
         return failure("invalid", "invalid-lockfile", `Missing scalar value for generated.adapters[${adapters.length}].${key}`);
       }
       current[key] = parseScalar(value);
+      nested = undefined;
+      rootHashRole = undefined;
+      continue;
+    }
+
+    const installedRootMatch = line.match(/^        ([A-Za-z_][A-Za-z0-9_-]*):\s*(.*)$/);
+    if (installedRootMatch && current && nested === "installed_roots") {
+      current.installed_roots[installedRootMatch[1]] = parseScalar(installedRootMatch[2]);
+      continue;
+    }
+
+    const rootHashRoleMatch = line.match(/^        ([A-Za-z_][A-Za-z0-9_-]*):\s*$/);
+    if (rootHashRoleMatch && current && nested === "root_hashes") {
+      rootHashRole = rootHashRoleMatch[1];
+      current.root_hashes[rootHashRole] = {};
+      continue;
+    }
+
+    const rootHashFieldMatch = line.match(/^          ([A-Za-z_][A-Za-z0-9_-]*):\s*(.*)$/);
+    if (rootHashFieldMatch && current && nested === "root_hashes" && rootHashRole) {
+      const [, key, value] = rootHashFieldMatch;
+      if (!["tree_sha256", "file_count"].includes(key)) {
+        return failure("unsupported", "unsupported-lockfile-shape", `Unsupported field generated.adapters[${adapters.length}].root_hashes.${rootHashRole}.${key}`);
+      }
+      current.root_hashes[rootHashRole][key] = key === "file_count" ? Number.parseInt(parseScalar(value), 10) : parseScalar(value);
+      continue;
+    }
+
+    if (line.startsWith("      ") && current) {
+      return failure("unsupported", "unsupported-lockfile-shape", `Unsupported lockfile adapter mapping near: ${line.trim()}`);
     }
   }
-  if (current) {
-    adapters.push(current);
-  }
+  pushCurrent();
   return { adapters };
 }
 
-function validateAdapter(adapter) {
-  for (const field of ADAPTER_FIELDS) {
+function unexpectedFields(adapter, allowed) {
+  return Object.keys(adapter).filter((field) => !allowed.includes(field));
+}
+
+function validateSingleRootAdapter(adapter, schemaVersion) {
+  const allowed = [
+    "adapter",
+    "release",
+    "source",
+    "archive",
+    "archive_sha256",
+    "installed_root",
+    "tree_hash_algorithm",
+    "tree_sha256",
+    "file_count",
+  ];
+  const unexpected = unexpectedFields(adapter, allowed);
+  if (unexpected.length) {
+    return failure("unsupported", "unsupported-lockfile-shape", `Unsupported field generated.adapters[].${unexpected[0]}`);
+  }
+  for (const field of allowed) {
     if (adapter[field] === undefined) {
       return failure("invalid", "invalid-lockfile", `Missing adapter field: ${field}`);
     }
   }
-  if (adapter.adapter !== "codex") {
-    return failure("unsupported", "unsupported-lockfile-shape", "Only codex lockfile entries are supported in this slice.");
+  if (adapter.adapter === "opencode") {
+    return failure("unsupported", "unsupported-lockfile-shape", "opencode lockfile entries must use installed_roots.");
+  }
+  if (schemaVersion === 1 && adapter.adapter !== "codex") {
+    return failure("unsupported", "unsupported-lockfile-shape", "schema_version 1 supports only Codex lockfile entries.");
+  }
+  if (adapter.installed_root !== SINGLE_ROOTS[adapter.adapter]) {
+    return failure("unsupported", "unsupported-lockfile-shape", "Unsupported installed root.");
+  }
+  if (!isSha256(adapter.tree_sha256)) {
+    return failure("invalid", "invalid-lockfile", "Adapter tree hash must be a SHA-256 value.");
+  }
+  if (!isNonNegativeInteger(adapter.file_count)) {
+    return failure("invalid", "invalid-lockfile", "Adapter file_count must be a non-negative integer.");
+  }
+  adapter.file_count = Number.parseInt(adapter.file_count, 10);
+  return undefined;
+}
+
+function validateMultiRootAdapter(adapter) {
+  const allowed = [
+    "adapter",
+    "release",
+    "source",
+    "archive",
+    "archive_sha256",
+    "tree_hash_algorithm",
+    "installed_roots",
+    "root_hashes",
+  ];
+  const unexpected = unexpectedFields(adapter, allowed);
+  if (unexpected.length) {
+    return failure("unsupported", "unsupported-lockfile-shape", `Unsupported field generated.adapters[].${unexpected[0]}`);
+  }
+  for (const field of allowed) {
+    if (adapter[field] === undefined) {
+      return failure("invalid", "invalid-lockfile", `Missing adapter field: ${field}`);
+    }
+  }
+  if (adapter.adapter !== "opencode") {
+    return failure("unsupported", "unsupported-lockfile-shape", "Only opencode supports multi-root lockfile entries.");
+  }
+  const rootRoles = Object.keys(adapter.installed_roots).sort();
+  const hashRoles = Object.keys(adapter.root_hashes).sort();
+  if (!rootRoles.length || rootRoles.join("\n") !== hashRoles.join("\n")) {
+    return failure("invalid", "invalid-lockfile", "installed_roots and root_hashes roles must match.");
+  }
+  for (const role of rootRoles) {
+    if (!Object.hasOwn(OPENCODE_ROOTS, role) || adapter.installed_roots[role] !== OPENCODE_ROOTS[role]) {
+      return failure("unsupported", "unsupported-lockfile-shape", "Unsupported opencode installed root.");
+    }
+    const hash = adapter.root_hashes[role];
+    if (!hash || !isSha256(hash.tree_sha256)) {
+      return failure("invalid", "invalid-lockfile", "Adapter root hash must be a SHA-256 value.");
+    }
+    if (!isNonNegativeInteger(hash.file_count)) {
+      return failure("invalid", "invalid-lockfile", "Adapter root file_count must be a non-negative integer.");
+    }
+    hash.file_count = Number.parseInt(hash.file_count, 10);
+  }
+  return undefined;
+}
+
+function validateAdapter(adapter, schemaVersion) {
+  if (!SUPPORTED_ADAPTERS.has(adapter.adapter)) {
+    return failure("unsupported", "unsupported-lockfile-shape", "Unsupported lockfile adapter.");
   }
   if (!SUPPORTED_SOURCES.has(adapter.source)) {
     return failure("unsupported", "unsupported-lockfile-shape", "Unsupported lockfile adapter source.");
@@ -174,18 +325,16 @@ function validateAdapter(adapter) {
   if (adapter.tree_hash_algorithm !== "rigorloop-tree-hash-v1") {
     return failure("unsupported", "unsupported-lockfile-shape", "Unsupported tree hash algorithm.");
   }
-  if (adapter.installed_root !== ".agents/skills") {
-    return failure("unsupported", "unsupported-lockfile-shape", "Unsupported installed root.");
+  if (!isSha256(adapter.archive_sha256)) {
+    return failure("invalid", "invalid-lockfile", "Adapter archive hash must be a SHA-256 value.");
   }
-  if (!isSha256(adapter.archive_sha256) || !isSha256(adapter.tree_sha256)) {
-    return failure("invalid", "invalid-lockfile", "Adapter hashes must be SHA-256 values.");
+  if (adapter.installed_roots !== undefined || adapter.root_hashes !== undefined) {
+    if (schemaVersion !== 2) {
+      return failure("unsupported", "unsupported-lockfile-shape", "Multi-root lockfile entries require schema_version 2.");
+    }
+    return validateMultiRootAdapter(adapter);
   }
-  const fileCount = Number.parseInt(adapter.file_count, 10);
-  if (!/^\d+$/.test(String(adapter.file_count)) || !Number.isInteger(fileCount) || fileCount < 0) {
-    return failure("invalid", "invalid-lockfile", "Adapter file_count must be a non-negative integer.");
-  }
-  adapter.file_count = fileCount;
-  return undefined;
+  return validateSingleRootAdapter(adapter, schemaVersion);
 }
 
 export function parseLockfile(text) {
@@ -193,7 +342,7 @@ export function parseLockfile(text) {
     return failure("invalid", "invalid-lockfile", "rigorloop.lock is empty or not text.");
   }
   if (/[\[\]{}]/.test(text)) {
-    return failure("invalid", "invalid-lockfile", "rigorloop.lock is not valid strict schema_version 1 YAML.");
+    return failure("invalid", "invalid-lockfile", "rigorloop.lock is not valid strict YAML.");
   }
 
   const lines = text.replace(/\r\n?/g, "\n").split("\n");
@@ -209,7 +358,8 @@ export function parseLockfile(text) {
     }
   }
   const schemaVersion = parseScalar(top.get("schema_version"));
-  if (!/^\d+$/.test(schemaVersion) || Number.parseInt(schemaVersion, 10) !== 1) {
+  const parsedSchemaVersion = Number.parseInt(schemaVersion, 10);
+  if (!/^\d+$/.test(schemaVersion) || ![1, 2].includes(parsedSchemaVersion)) {
     return failure("unsupported", "unsupported-lockfile-shape", "Unsupported lockfile schema_version.");
   }
 
@@ -243,7 +393,7 @@ export function parseLockfile(text) {
     return failure("invalid", "invalid-lockfile", "generated.adapters must contain at least one adapter entry.");
   }
   for (const adapter of adapterResult.adapters) {
-    const adapterError = validateAdapter(adapter);
+    const adapterError = validateAdapter(adapter, parsedSchemaVersion);
     if (adapterError) {
       return adapterError;
     }
@@ -252,7 +402,7 @@ export function parseLockfile(text) {
   return {
     ok: true,
     lockfile: {
-      schema_version: 1,
+      schema_version: parsedSchemaVersion,
       rigorloop: rigorloop.fields,
       manifest: manifest.fields,
       generated: {
@@ -265,7 +415,7 @@ export function parseLockfile(text) {
 export function serializeLockfile(lockfile) {
   const adapters = [...lockfile.generated.adapters].sort((left, right) => left.adapter.localeCompare(right.adapter));
   const lines = [
-    "schema_version: 1",
+    `schema_version: ${lockfile.schema_version ?? 2}`,
     "",
     "rigorloop:",
     `  package: "${lockfile.rigorloop.package}"`,
@@ -285,11 +435,28 @@ export function serializeLockfile(lockfile) {
       `      source: ${adapter.source}`,
       `      archive: "${adapter.archive}"`,
       `      archive_sha256: "${adapter.archive_sha256}"`,
-      `      installed_root: "${adapter.installed_root}"`,
-      `      tree_hash_algorithm: ${adapter.tree_hash_algorithm}`,
-      `      tree_sha256: "${adapter.tree_sha256}"`,
-      `      file_count: ${adapter.file_count}`,
     );
+    if (adapter.installed_roots) {
+      lines.push(`      tree_hash_algorithm: ${adapter.tree_hash_algorithm}`, "      installed_roots:");
+      for (const [role, root] of Object.entries(adapter.installed_roots)) {
+        lines.push(`        ${role}: "${root}"`);
+      }
+      lines.push("      root_hashes:");
+      for (const [role, hash] of Object.entries(adapter.root_hashes)) {
+        lines.push(
+          `        ${role}:`,
+          `          tree_sha256: "${hash.tree_sha256}"`,
+          `          file_count: ${hash.file_count}`,
+        );
+      }
+    } else {
+      lines.push(
+        `      installed_root: "${adapter.installed_root}"`,
+        `      tree_hash_algorithm: ${adapter.tree_hash_algorithm}`,
+        `      tree_sha256: "${adapter.tree_sha256}"`,
+        `      file_count: ${adapter.file_count}`,
+      );
+    }
   }
   return `${lines.join("\n")}\n`;
 }
