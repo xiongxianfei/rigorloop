@@ -380,6 +380,18 @@ validation:
     result: pass_after_code_review_m4_r2_recording
   - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-log.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-resolution.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/code-review-m4-r2.md --path docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md --path docs/plan.md
     result: pass_after_code_review_m4_r2_recording
+  - command: npm test --prefix packages/rigorloop
+    result: fail_expected_package_README_multi_adapter_docs_before_M5_documentation_update
+  - command: npm test --prefix packages/rigorloop
+    result: pass_after_M5_package_README_update
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml
+    result: pass_after_M5_package_documentation_update
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/multi-adapter-init-and-proxy-aware-download.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260518-multi-adapter-init-and-proxy-download.md --path docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md --path docs/plan.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml
+    result: pass_after_M5_state_sync
+  - command: git diff --check -- packages/rigorloop/README.md packages/rigorloop/test/cli.test.js docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md docs/plan.md docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml
+    result: pass_after_M5_state_sync
+  - command: bash scripts/ci.sh --mode explicit --path packages/rigorloop/dist/bin/rigorloop.js --path packages/rigorloop/dist/lib/lockfile.js --path packages/rigorloop/dist/lib/official-archive-url.js --path packages/rigorloop/dist/metadata/adapter-artifacts-v0.1.5.json --path packages/rigorloop/dist/metadata/releases.json --path packages/rigorloop/test/cli.test.js --path packages/rigorloop/README.md --path docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md --path docs/plan.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml
+    result: pass_after_M5_state_sync
 changed_files:
   - docs/adr/ADR-20260518-multi-adapter-init-and-proxy-download.md
   - docs/architecture/system/architecture.md
@@ -410,6 +422,7 @@ changed_files:
   - packages/rigorloop/dist/bin/rigorloop.js
   - packages/rigorloop/dist/lib/adapters.js
   - packages/rigorloop/dist/lib/lockfile.js
+  - packages/rigorloop/README.md
   - packages/rigorloop/test/cli.test.js
   - docs/proposals/2026-05-18-multi-adapter-init-and-proxy-aware-download.md
   - specs/multi-adapter-init-and-proxy-aware-download.md

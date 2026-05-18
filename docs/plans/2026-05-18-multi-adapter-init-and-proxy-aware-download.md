@@ -64,13 +64,13 @@ The current CLI implementation is Codex-specific: it uses `ADAPTER = "codex"`, `
 ## Current Handoff Summary
 
 - Current milestone: M5. Documentation, package proof, and final integration
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M4. Network download diagnostics and output envelope
-- Review status: M4 code-review rerun completed with no material findings
+- Review status: M5 implementation completed; code-review requested
 - Remaining in-scope implementation milestones: M5
-- Next stage: implement M5
+- Next stage: code-review M5
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: all implementation milestones, code-review, review-resolution if triggered, explain-change, verify, and PR handoff remain incomplete.
+- Reason final closeout is or is not ready: M5 code-review, review-resolution if triggered, explain-change, verify, and PR handoff remain incomplete.
 
 ## Milestones
 
@@ -170,7 +170,7 @@ The current CLI implementation is Codex-specific: it uses `ADAPTER = "codex"`, `
 
 ### M5. Documentation, package proof, and final integration
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Align package docs, change metadata, and final validation evidence with the implemented multi-adapter contract.
 - Requirements: all requirements; AC1 through AC16.
 - Files/components likely touched: `packages/rigorloop/README.md`, `packages/rigorloop/package.json` only if needed, `docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml`, active plan validation notes, possibly release evidence if the implementation changes release metadata surfaces.
@@ -254,6 +254,8 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 - [x] 2026-05-18: M4 review-resolution completed for `CR-M4-R1-F1`; handoff requested for code-review rerun.
 - [x] 2026-05-18: M4 code-review rerun completed with no material findings.
 - [x] M4 closed.
+- [x] 2026-05-18: M5 implementation started.
+- [x] 2026-05-18: M5 package documentation proof and validation completed; handoff requested for code-review.
 - [ ] M5 closed.
 - [ ] final code-review, explain-change, verify, and PR handoff completed.
 
@@ -264,6 +266,7 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 - 2026-05-18: Add a small package-local adapter descriptor module for M1 instead of keeping descriptor data embedded in the CLI entrypoint. This keeps adapter identity, roots, and archive naming testable before later schema and extraction milestones.
 - 2026-05-18: Keep M2 schema parsing and serialization package-local in `packages/rigorloop/dist/lib/lockfile.js`, while leaving proxy diagnostics and older opencode warning behavior to later milestones.
 - 2026-05-18: Keep M4 proxy support diagnostics-first and use bounded helper functions in the CLI entrypoint instead of adding Undici dispatcher support or a new dependency.
+- 2026-05-18: Treat the package README as the M5 package-facing documentation surface; `package.json` remains unchanged because package shape, file allowlist, version, binary, dependency, and lifecycle-script policy did not change.
 
 ## Surprises and discoveries
 
@@ -283,6 +286,7 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 - M4 code-review found that diagnostics do not detect the actual Node `--use-env-proxy` runtime flag through `process.execArgv`.
 - M4 review-resolution detects `--use-env-proxy` through `process.execArgv` and isolates inherited proxy env vars in the direct CLI proof.
 - M4 final code-review found no remaining material issues in proxy-safe download diagnostics.
+- M5 found the package README still described Codex-only init even though the CLI help and implementation supported `codex|claude|opencode`; the package README is now covered by `TMAI-033`.
 
 ## Validation notes
 
@@ -316,6 +320,12 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 - 2026-05-18: `npm test --prefix packages/rigorloop` failed as expected after adding direct `node --use-env-proxy` coverage; the CLI still reported `node_env_proxy_status: disabled` before the fix.
 - 2026-05-18: `npm test --prefix packages/rigorloop` passed after resolving `CR-M4-R1-F1`; package tests include `CR-M4-R1-F1 node_env_proxy_status reports enabled with --use-env-proxy`.
 - 2026-05-18: `code-review-m4-r2` completed with status `clean-with-notes`; M4 closed and M5 is the next implementation stage.
+- 2026-05-18: `npm test --prefix packages/rigorloop` failed as expected after adding `TMAI-033`; the package README still documented Codex-only init and lacked multi-adapter roots, local archive fallback, and Node env-proxy guidance.
+- 2026-05-18: `npm test --prefix packages/rigorloop` passed after updating the package README for `codex|claude|opencode`, `.agents/skills`, `.claude/skills`, `.opencode/skills`, `.opencode/commands`, `--from-archive`, and Node env-proxy fallback guidance.
+- 2026-05-18: `python scripts/validate-change-metadata.py docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml` passed after M5 package documentation evidence updates.
+- 2026-05-18: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/multi-adapter-init-and-proxy-aware-download.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260518-multi-adapter-init-and-proxy-download.md --path docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md --path docs/plan.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml` passed after M5 state sync.
+- 2026-05-18: `git diff --check -- packages/rigorloop/README.md packages/rigorloop/test/cli.test.js docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md docs/plan.md docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml` passed.
+- 2026-05-18: `bash scripts/ci.sh --mode explicit --path packages/rigorloop/dist/bin/rigorloop.js --path packages/rigorloop/dist/lib/lockfile.js --path packages/rigorloop/dist/lib/official-archive-url.js --path packages/rigorloop/dist/metadata/adapter-artifacts-v0.1.5.json --path packages/rigorloop/dist/metadata/releases.json --path packages/rigorloop/test/cli.test.js --path packages/rigorloop/README.md --path docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md --path docs/plan.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml` passed selected checks: `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `rigorloop_cli.test`, and `npm_package_publication.test`.
 
 ## Outcome and retrospective
 
