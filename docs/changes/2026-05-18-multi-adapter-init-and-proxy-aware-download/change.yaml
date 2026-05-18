@@ -10,6 +10,7 @@ artifacts:
   adr: docs/adr/ADR-20260518-multi-adapter-init-and-proxy-download.md
   plan: docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md
   review_resolution: docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-resolution.md
+  explain_change: docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/explain-change.md
 requirements:
   - Define CLI init support for Codex, Claude Code, and opencode before implementation.
   - Preserve Codex installation under .agents/skills.
@@ -408,6 +409,16 @@ validation:
     result: pass_after_CR-M5-R1-F1_resolution
   - command: code-review-m5-r2
     result: clean_with_notes_no_material_findings
+  - command: explain-change
+    result: completed_ready_for_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml
+    result: pass_after_explain_change
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/explain-change.md --path docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md --path docs/plan.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-resolution.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-log.md
+    result: pass_after_explain_change
+  - command: git diff --check -- docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/explain-change.md docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md docs/plan.md
+    result: pass_after_explain_change
+  - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/explain-change.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml --path docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md --path docs/plan.md
+    result: pass_after_explain_change
 changed_files:
   - docs/adr/ADR-20260518-multi-adapter-init-and-proxy-download.md
   - docs/architecture/system/architecture.md
@@ -416,6 +427,7 @@ changed_files:
   - docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml
   - docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-log.md
   - docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-resolution.md
+  - docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/explain-change.md
   - docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/proposal-review.md
   - docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/proposal-review-r2.md
   - docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/proposal-review-r3.md
