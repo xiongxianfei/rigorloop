@@ -563,6 +563,39 @@ class SkillValidatorFixtureTests(unittest.TestCase):
     def test_placeholder_text_fails(self) -> None:
         self.assertFixtureFails("placeholder-text", "placeholder text is not allowed")
 
+    def test_skill_readability_valid_fixture_passes(self) -> None:
+        self.assertFixturePasses("skill-readability/valid-pilot")
+
+    def test_skill_readability_missing_workflow_role_fails(self) -> None:
+        self.assertFixtureFails(
+            "skill-readability/missing-workflow-role",
+            "missing required '## Workflow role' section",
+        )
+
+    def test_skill_readability_invalid_stage_fails(self) -> None:
+        self.assertFixtureFails(
+            "skill-readability/invalid-stage",
+            "workflow role stage must be one of",
+        )
+
+    def test_skill_readability_missing_output_skeleton_fails(self) -> None:
+        self.assertFixtureFails(
+            "skill-readability/missing-output-skeleton",
+            "missing required '## Output skeleton' section",
+        )
+
+    def test_skill_readability_required_internal_reference_fails(self) -> None:
+        self.assertFixtureFails(
+            "skill-readability/required-internal-reference",
+            "required unavailable internal reference",
+        )
+
+    def test_skill_readability_duplicate_closed_enum_fails(self) -> None:
+        self.assertFixtureFails(
+            "skill-readability/duplicate-closed-enum",
+            "duplicate closed enum block",
+        )
+
     def test_generated_output_path_is_rejected(self) -> None:
         result = run_validator(ROOT / ".codex" / "skills")
         combined_output = f"{result.stdout}\n{result.stderr}"
