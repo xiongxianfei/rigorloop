@@ -2105,6 +2105,39 @@ test("TMAI-017 skills-only opencode archive omits commands root from plan and ma
   assert.deepEqual(Object.keys(entry.root_hashes), ["skills"]);
 });
 
+test("TMAI-020 dry-run skills-only opencode archive omits commands root without mutation", () => {
+  const cwd = tempProject();
+  const fixture = fixtureArchive(cwd, {
+    adapter: "opencode",
+    installRoot: ".opencode/skills",
+  });
+
+  const result = runCliWithBundledMetadata(
+    ["init", "--adapter", "opencode", "--from-archive", `./${fixture.archiveName}`, "--dry-run", "--json"],
+    cwd,
+    fixture.metadata,
+  );
+
+  assert.equal(result.status, 0, result.stderr);
+  const output = JSON.parse(result.stdout);
+  assert.equal(output.status, "success");
+  assert.ok(output.actions.some((action) => action.path === ".opencode/skills"));
+  assert.equal(output.actions.some((action) => action.path === ".opencode/commands"), false);
+  assert.match(output.planned_manifest.content, /name: opencode/);
+  assert.match(output.planned_manifest.content, /install_roots:\n      skills: ".opencode\/skills"/);
+  assert.doesNotMatch(output.planned_manifest.content, /commands: ".opencode\/commands"/);
+
+  const entry = output.planned_lockfile.generated.adapters[0];
+  assert.equal(entry.adapter, "opencode");
+  assert.equal(entry.source, "local-archive");
+  assert.deepEqual(entry.installed_roots, { skills: ".opencode/skills" });
+  assert.deepEqual(Object.keys(entry.root_hashes), ["skills"]);
+  assert.deepEqual(listProject(cwd), ["adapter-artifacts-v0.1.5.json", fixture.archiveName]);
+  assert.equal(existsSync(join(cwd, ".opencode")), false);
+  assert.equal(existsSync(join(cwd, "rigorloop.yaml")), false);
+  assert.equal(existsSync(join(cwd, "rigorloop.lock")), false);
+});
+
 test("TMAI-025 valid schema v1 Codex lockfile upgrades to schema v2 after drift check", () => {
   const cwd = tempProject();
   const codexFixture = fixtureArchive(cwd);

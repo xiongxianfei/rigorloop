@@ -236,6 +236,8 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 - [x] 2026-05-18: M2 tests and implementation completed; handoff requested for code-review.
 - [x] 2026-05-18: M2 code-review completed with `CR-M2-R1-F1`; review-resolution required.
 - [x] 2026-05-18: M2 review-resolution completed for `CR-M2-R1-F1`; handoff requested for code-review rerun.
+- [x] 2026-05-18: M2 code-review rerun completed with `CR-M2-R2-F1`; review-resolution required.
+- [x] 2026-05-18: M2 review-resolution completed for `CR-M2-R2-F1`; handoff requested for code-review rerun.
 - [ ] M2 closed.
 - [ ] M3 closed.
 - [ ] M4 closed.
@@ -255,6 +257,7 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 - M2 tests initially failed as expected because the CLI still wrote schema v1 lockfiles, rejected schema v2 parsing, and rejected opencode multi-root trusted metadata.
 - M2 review found that skills-only older opencode behavior must be fixed in M2 because manifest and directory planning still use descriptor roots before trusted metadata narrows required roots.
 - M2 review-resolution keeps opencode descriptor roots as possible roots while using trusted metadata roots for durable manifest and directory actions.
+- M2 code-review rerun found that the non-dry-run plan rebuild fixed real installs, but dry-run still returns before trusted metadata validation and reports the descriptor `commands` root for older skills-only opencode metadata.
 
 ## Validation notes
 
@@ -267,6 +270,8 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 - 2026-05-18: `bash scripts/ci.sh --mode explicit --path packages/rigorloop/dist/lib/lockfile.js --path packages/rigorloop/dist/bin/rigorloop.js --path packages/rigorloop/test/cli.test.js` passed selected checks: `rigorloop_cli.test` and `npm_package_publication.test`.
 - 2026-05-18: `code-review-m2-r1` recorded `CR-M2-R1-F1`; M2 remains open for review-resolution.
 - 2026-05-18: `npm test --prefix packages/rigorloop` passed after resolving `CR-M2-R1-F1`; package tests include `TMAI-017 skills-only opencode archive omits commands root from plan and manifest`.
+- 2026-05-18: `code-review-m2-r2` recorded `CR-M2-R2-F1`; dry-run older opencode skills-only planning remains open for review-resolution.
+- 2026-05-18: `npm test --prefix packages/rigorloop` passed after resolving `CR-M2-R2-F1`; package tests include `TMAI-020 dry-run skills-only opencode archive omits commands root without mutation`.
 
 ## Outcome and retrospective
 
