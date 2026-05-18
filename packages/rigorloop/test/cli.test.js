@@ -535,6 +535,20 @@ test("TNP-005 package version maps to bundled v0.1.5 adapter metadata", () => {
   );
 });
 
+test("TMAI-033 package README documents multi-adapter init and fallback boundaries", () => {
+  const readme = readFileSync(join(packageRoot, "README.md"), "utf8");
+
+  assert.match(readme, /rigorloop init --adapter codex\|claude\|opencode/);
+  assert.match(readme, /\.agents\/skills/);
+  assert.match(readme, /\.claude\/skills/);
+  assert.match(readme, /\.opencode\/skills/);
+  assert.match(readme, /\.opencode\/commands/);
+  assert.match(readme, /--from-archive/);
+  assert.match(readme, /NODE_USE_ENV_PROXY|--use-env-proxy/);
+  assert.doesNotMatch(readme, /\.codex\/skills/);
+  assert.doesNotMatch(readme, /Undici|dispatcher/);
+});
+
 test("TMAI-001 descriptor registry defines the exact supported adapter set", () => {
   assert.deepEqual(supportedAdapterNames(), ["codex", "claude", "opencode"]);
   assert.deepEqual(adapterDescriptor("codex").installRoots, { skills: ".agents/skills" });
