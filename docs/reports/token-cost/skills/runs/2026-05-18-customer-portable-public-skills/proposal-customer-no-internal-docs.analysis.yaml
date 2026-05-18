@@ -1,0 +1,54 @@
+schema_version: 1
+
+run:
+  id: proposal-customer-no-internal-docs
+  raw_jsonl_tracked: true
+  jsonl: docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/proposal-customer-no-internal-docs.jsonl
+  sanitized_source: ""
+  sanitized_summary: ""
+  raw_omission_reason: ""
+
+usage:
+  cached_input_tokens: 40576
+  input_tokens: 52705
+  output_tokens: 1279
+  reasoning_output_tokens: 541
+
+tool_output:
+  total_estimated_tokens: 255
+  largest_event:
+    kind: command_execution
+    command: "/bin/bash -lc \"test -f docs/workflows.md && sed -n '1,200p' docs/workflows.md || true\""
+    path: docs/workflows.md
+    lines: 19
+    estimated_tokens: 146
+
+signals:
+  full_file_read_count: 0
+  broad_search_count: 0
+  generated_output_read_count: 0
+  repeated_file_read_count: 0
+
+full_file_read:
+  result: suspected
+  justification: ""
+  signals:
+    - large_leading_range_read
+  justified_reads: []
+  confirmed_reads: []
+  suspected_reads:
+    - path: docs/workflows.md
+      lines: 19
+      estimated_tokens: 146
+    - path: src/app.js
+      lines: 3
+      estimated_tokens: 16
+    - path: tests/app.test.js
+      lines: 4
+      estimated_tokens: 35
+  repeated_file_reads: []
+
+verdict:
+  result: pass
+  warnings: []
+  blockers: []

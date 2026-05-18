@@ -1,0 +1,67 @@
+schema_version: 1
+
+run:
+  id: verify-customer-final-pack
+  raw_jsonl_tracked: true
+  jsonl: docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/verify-customer-final-pack.jsonl
+  sanitized_source: ""
+  sanitized_summary: ""
+  raw_omission_reason: ""
+
+usage:
+  cached_input_tokens: 53760
+  input_tokens: 73941
+  output_tokens: 1390
+  reasoning_output_tokens: 419
+
+tool_output:
+  total_estimated_tokens: 679
+  largest_event:
+    kind: command_execution
+    command: "/bin/bash -lc \"sed -n '1,220p' docs/workflows.md\""
+    path: docs/workflows.md
+    lines: 19
+    estimated_tokens: 146
+
+signals:
+  full_file_read_count: 0
+  broad_search_count: 1
+  generated_output_read_count: 0
+  repeated_file_read_count: 0
+
+full_file_read:
+  result: suspected
+  justification: ""
+  signals:
+    - large_leading_range_read
+  justified_reads: []
+  confirmed_reads: []
+  suspected_reads:
+    - path: docs/workflows.md
+      lines: 19
+      estimated_tokens: 146
+    - path: docs/changes/example-change/change.yaml
+      lines: 21
+      estimated_tokens: 140
+    - path: specs/customer-feature.md
+      lines: 20
+      estimated_tokens: 109
+    - path: docs/changes/example-change/explain-change.md
+      lines: 3
+      estimated_tokens: 44
+    - path: docs/plans/customer-plan.md
+      lines: 16
+      estimated_tokens: 105
+    - path: src/app.js
+      lines: 3
+      estimated_tokens: 16
+    - path: tests/app.test.js
+      lines: 4
+      estimated_tokens: 35
+  repeated_file_reads: []
+
+verdict:
+  result: warning
+  warnings:
+    - "broad search observed"
+  blockers: []

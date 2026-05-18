@@ -186,6 +186,16 @@ An explicit user-provided path or change ID does not override a higher-priority 
 
 If a conflict is discovered between this guide and a higher-priority source, the higher-priority source wins. Refresh this guide or report the stale artifact-location map before downstream reliance.
 
+## Customer-project portability
+
+Public skills operate in customer-project mode by default.
+
+Use project-local artifacts when present and relevant, such as `docs/workflows.md`, `rigorloop.yaml`, `rigorloop.lock`, `docs/changes/<change-id>/change.yaml`, local specs, local plans, local governance files, and local architecture records.
+
+Do not require RigorLoop repository-internal `specs/`, `docs/`, `CONSTITUTION.md`, `AGENTS.md`, reports, or follow-up files in a customer project.
+
+When local guidance is absent, use portable defaults where safe and block on ambiguity where no safe default exists.
+
 ## Artifact locations
 
 The table defines default locations and owning skills.

@@ -24,6 +24,14 @@ Run final verification after durable change rationale exists and before PR hando
 
 Final verification is scoped evidence and must not own the active plan's current next stage. Use the active plan `Current Handoff Summary` to assess current planned-initiative state.
 
+## Project-local evidence
+
+Public skills operate in customer-project mode by default.
+
+Use project-local artifacts when present and relevant, including feature specs, test specs, architecture records, ADRs, touched lifecycle artifacts, plans, validation notes, actual diff, local test output, CI status, code-review findings, review-resolution evidence, `AGENTS.md`, `CONSTITUTION.md`, `docs/workflows.md`, release metadata, and CI workflow definitions.
+
+Do not require RigorLoop repository-internal specs, docs, reports, follow-up files, or governance files in customer projects. Use portable defaults where safe, and block on ambiguity when no safe local guidance or default exists. Missing validation evidence must not be reported as passed.
+
 ## When to use
 
 Use this skill after all in-scope implementation milestones are closed, code-review/review-resolution obligations are complete, `ci-maintenance` is complete when triggered, and `explain-change` exists and is current. Use it directly only when a user explicitly asks for an isolated verification gate.
