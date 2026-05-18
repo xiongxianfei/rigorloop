@@ -11,6 +11,14 @@ You are writing the behavioral contract for the change.
 
 The spec defines **what the system must do** and **how the behavior will be observed**. It should avoid unnecessary internal implementation detail.
 
+## Project-local evidence
+
+Public skills operate in customer-project mode by default.
+
+Use project-local artifacts when present and relevant, including `AGENTS.md`, `CONSTITUTION.md`, accepted proposals, issues, exploration and research artifacts, `docs/project-map.md`, `docs/workflows.md`, related local specs, architecture records, ADRs, interfaces, schemas, APIs, UI flows, config, and data contracts.
+
+Do not require RigorLoop repository-internal specs, docs, reports, follow-up files, or governance files in customer projects. Use portable defaults where safe, and block on ambiguity when no safe local guidance or default exists.
+
 ## Inputs to read
 
 Read, if present:

@@ -1,0 +1,264 @@
+change_id: 2026-05-18-customer-portable-public-skills
+title: Customer-portable public skills proposal review
+classification: proposal-review
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-18-customer-portable-public-skills-and-token-friendly-local-guidance.md
+  spec: specs/customer-portable-public-skill-evidence.md
+  test_spec: specs/customer-portable-public-skill-evidence.test.md
+  plan: docs/plans/2026-05-18-customer-portable-public-skills.md
+  review_resolution: docs/changes/2026-05-18-customer-portable-public-skills/review-resolution.md
+requirements:
+  - Review the customer-portable public skills proposal before specification or planning.
+  - Confirm public skills do not depend on RigorLoop repository-internal artifacts in customer projects.
+  - Confirm the first implementation slice is audit-first and scoped to high-risk skill wording.
+  - Record the accepted first-slice audit result and targeted dynamic benchmark scenarios in the proposal.
+  - Record workflow ownership for local `docs/workflows.md` creation or refresh and keep `code-review` out unless direct risk is found.
+  - Implement M1 customer-project workflow guidance, audit evidence, static validator proof, and baseline token measurement.
+  - Settle the approved proposal status before downstream spec reliance.
+  - Create the focused customer-portable public skill evidence spec.
+  - Settle the approved spec status before downstream plan reliance.
+  - Create the execution plan and update the plan index.
+  - Create the matching test spec before implementation.
+  - Confirm review evidence is recorded for the formal proposal-review request.
+  - Implement M2 project-local evidence wording for audited risky public skills while leaving code-review unchanged.
+  - Add focused static validation for forbidden required RigorLoop-internal dependency wording and allowed project-local or guarded references.
+  - Record M2 safety-preservation notes for each touched skill.
+  - Record after-change static token measurement and compare it to the M1 baseline.
+  - Record targeted customer-fixture benchmark evidence for first-slice public skill portability.
+  - Validate generated public adapter output from canonical skills without hand-editing generated bodies.
+tests:
+  - Formal proposal-review evidence for `docs/proposals/2026-05-18-customer-portable-public-skills-and-token-friendly-local-guidance.md`.
+  - Review artifact validation for the proposal-review record.
+  - Change metadata validation for the review recording root.
+  - Formal spec-review evidence for `specs/customer-portable-public-skill-evidence.md`.
+  - Artifact lifecycle validation for the active execution plan and plan index.
+  - Formal plan-review evidence for `docs/plans/2026-05-18-customer-portable-public-skills.md`.
+  - Requirement-to-test coverage for `specs/customer-portable-public-skill-evidence.md`.
+  - Static validator proof for customer-project workflow guidance and workflow skill caveat.
+  - Static validator proof for M2 public skill project-local evidence wording.
+  - Static validator proof for precise forbidden and allowed RigorLoop-internal dependency wording examples.
+  - Baseline static token measurement before public skill wording changes.
+  - After-change static token measurement and before/after comparison report.
+  - Targeted customer-fixture benchmark evidence and fixture exclusion check.
+  - Generated public adapter build and validation from temporary output.
+validation:
+  - command: proposal-review r1
+    result: changes_requested_CPS-PR1
+  - command: proposal revision
+    result: addressed_CPS-PR1_pending_proposal_review_rerun
+  - command: proposal audit-scope revision
+    result: recorded_touched_skills_watchlist_and_dynamic_benchmark_scenarios
+  - command: proposal workflow-owner revision
+    result: recorded_workflow_local_guide_ownership_and_code_review_no_edit_decision
+  - command: proposal-review r2
+    result: approved_no_material_findings
+  - command: upstream status settlement
+    result: proposal_status_accepted_follow_on_spec_recorded
+  - command: spec authoring
+    result: created_specs/customer-portable-public-skill-evidence.md_ready_for_spec_review
+  - command: spec-review r1
+    result: approved_no_material_findings
+  - command: upstream status settlement
+    result: spec_status_approved_follow_on_plan_recorded
+  - command: plan
+    result: created_docs/plans/2026-05-18-customer-portable-public-skills.md_and_updated_docs/plan.md_ready_for_plan_review
+  - command: plan-review r1
+    result: changes_requested_CPS-PLAN-1
+  - command: plan revision
+    result: addressed_CPS-PLAN-1_pending_plan_review_rerun
+  - command: plan-review r2
+    result: approved_no_material_findings
+  - command: test-spec authoring
+    result: created_specs/customer-portable-public-skill-evidence.test.md_ready_for_implementation
+  - command: test-spec approval
+    result: maintainer_approved_active_test_spec
+  - command: python scripts/test-skill-validator.py
+    result: failed_before_M1_wording_missing_customer_portability_headings
+  - command: python scripts/measure-skill-tokens.py
+    result: baseline_recorded_23_skills_58868_estimated_tokens
+  - command: python scripts/test-skill-validator.py
+    result: passed_after_M1_wording
+  - command: python scripts/validate-skills.py
+    result: passed_23_skill_files
+  - command: python scripts/build-skills.py --check
+    result: passed_temporary_generated_output
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-18-customer-portable-public-skills/change.yaml
+    result: passed
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-18-customer-portable-public-skills
+    result: passed
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths
+    result: passed_for_M1_lifecycle_artifacts
+  - command: git diff --check -- docs/workflows.md skills/workflow/SKILL.md scripts/test-skill-validator.py docs/reports/token-cost/skills/2026-05-18-customer-portable-public-skills.md docs/plans/2026-05-18-customer-portable-public-skills.md docs/changes/2026-05-18-customer-portable-public-skills specs/customer-portable-public-skill-evidence.test.md
+    result: passed
+  - command: code-review r1
+    result: clean_with_notes_no_material_findings_M1
+  - command: python scripts/test-skill-validator.py
+    result: failed_before_M2_skill_wording_missing_project_local_contracts
+  - command: python scripts/test-skill-validator.py
+    result: passed_after_M2_skill_wording_and_static_dependency_checks
+  - command: python scripts/validate-skills.py
+    result: passed_23_skill_files_after_M2
+  - command: python scripts/build-skills.py --check
+    result: passed_temporary_generated_output_after_M2
+  - command: git diff -- skills/code-review/SKILL.md
+    result: no_diff_code_review_unchanged_for_M2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-18-customer-portable-public-skills/change.yaml
+    result: passed_after_M2
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-18-customer-portable-public-skills
+    result: passed_after_M2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths
+    result: passed_for_M2_lifecycle_artifacts
+  - command: git diff --check -- skills scripts docs/changes/2026-05-18-customer-portable-public-skills docs/plans/2026-05-18-customer-portable-public-skills.md docs/reports/token-cost/skills/2026-05-18-customer-portable-public-skills.md
+    result: passed_after_M2
+  - command: code-review r2
+    result: clean_with_notes_no_material_findings_M2
+  - command: python scripts/measure-skill-tokens.py
+    result: after_change_recorded_23_skills_60235_estimated_tokens
+  - command: customer fixture exclusion check
+    result: passed_no_root_agents_no_root_constitution_no_followups_no_project_map
+  - command: python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-adapters-m3-BxELAV
+    result: passed_built_codex_claude_opencode_archives
+  - command: python scripts/validate-adapters.py --root /tmp/rigorloop-adapters-m3-BxELAV --version v0.1.5
+    result: passed_generated_adapter_archives
+  - command: python scripts/test-skill-validator.py
+    result: passed_after_M3
+  - command: python scripts/validate-skills.py
+    result: passed_23_skill_files_after_M3
+  - command: python scripts/build-skills.py --check
+    result: passed_temporary_generated_output_after_M3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-18-customer-portable-public-skills/change.yaml
+    result: passed_after_M3
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-18-customer-portable-public-skills
+    result: passed_after_M3
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths
+    result: passed_for_M3_lifecycle_artifacts
+  - command: git diff --check --
+    result: passed_after_M3
+  - command: code-review r3
+    result: changes_requested_CPS-M3-CR1
+  - command: live customer fixture setup
+    result: generated_codex_adapter_skills_installed_root_agents_removed
+  - command: live customer fixture exclusion check
+    result: passed_no_root_agents_no_root_constitution_no_followups_no_project_map
+  - command: codex exec targeted customer-fixture scenarios
+    result: passed_recorded_jsonl_for_proposal_proposal_review_spec_plan_implement_workflow_project_map_verify_pr
+  - command: python scripts/analyze-codex-jsonl.py targeted customer-fixture scenarios
+    result: passed_recorded_analysis_yaml_for_required_scenarios
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-18-customer-portable-public-skills/change.yaml
+    result: passed_after_CPS_M3_CR1_live_benchmark_fix
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-18-customer-portable-public-skills
+    result: passed_after_CPS_M3_CR1_live_benchmark_fix
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths
+    result: passed_after_CPS_M3_CR1_live_benchmark_fix
+  - command: git diff --check --
+    result: passed_after_CPS_M3_CR1_live_benchmark_fix
+  - command: python scripts/test-skill-validator.py
+    result: passed_after_CPS_M3_CR1_live_benchmark_fix
+  - command: python scripts/validate-skills.py
+    result: passed_23_skill_files_after_CPS_M3_CR1_live_benchmark_fix
+  - command: python scripts/build-skills.py --check
+    result: passed_temporary_generated_output_after_CPS_M3_CR1_live_benchmark_fix
+  - command: code-review r4
+    result: clean_with_notes_no_material_findings_M3_CPS_M3_CR1_closed
+  - command: explain-change
+    result: recorded_problem_to_diff_rationale_and_ready_for_verify
+  - command: python scripts/measure-skill-tokens.py
+    result: passed_verify_23_skills_60235_estimated_tokens
+  - command: python scripts/test-skill-validator.py
+    result: passed_verify_90_tests
+  - command: python scripts/validate-skills.py
+    result: passed_verify_23_skill_files
+  - command: python scripts/build-skills.py --check
+    result: passed_verify_temporary_generated_output
+  - command: python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-adapters-verify
+    result: passed_verify_built_codex_claude_opencode_archives
+  - command: python scripts/validate-adapters.py --root /tmp/rigorloop-adapters-verify --version v0.1.5
+    result: passed_verify_generated_adapter_archives
+  - command: customer fixture exclusion check
+    result: passed_verify_no_agents_no_constitution_no_followups_no_project_map
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-18-customer-portable-public-skills/change.yaml
+    result: passed_verify
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-18-customer-portable-public-skills
+    result: passed_verify
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths
+    result: passed_verify_for_explicit_related_artifacts
+  - command: git diff --check --
+    result: passed_verify
+  - command: bash scripts/ci.sh --mode explicit --path ...
+    result: passed_verify_selected_checks
+  - command: bash scripts/ci.sh
+    result: failed_verify_warning_legacy_broad_smoke_expanded_to_unrelated_historical_lifecycle_debt
+  - command: pr handoff
+    result: opened_PR_67_and_plan_index_moved_to_done
+review:
+  status: clean-with-notes
+  unresolved_items: 0
+changed_files:
+  - docs/proposals/2026-05-18-customer-portable-public-skills-and-token-friendly-local-guidance.md
+  - specs/customer-portable-public-skill-evidence.md
+  - specs/customer-portable-public-skill-evidence.test.md
+  - docs/plan.md
+  - docs/plans/2026-05-18-customer-portable-public-skills.md
+  - docs/workflows.md
+  - skills/workflow/SKILL.md
+  - skills/proposal/SKILL.md
+  - skills/proposal-review/SKILL.md
+  - skills/spec/SKILL.md
+  - skills/plan/SKILL.md
+  - skills/implement/SKILL.md
+  - skills/verify/SKILL.md
+  - skills/pr/SKILL.md
+  - skills/project-map/SKILL.md
+  - scripts/test-skill-validator.py
+  - docs/reports/token-cost/skills/2026-05-18-customer-portable-public-skills.md
+  - docs/reports/token-cost/skills/2026-05-18-customer-portable-public-skills-dynamic-benchmark.md
+  - docs/reports/token-cost/skills/fixtures/customer-portable-public-skills/rigorloop.yaml
+  - docs/reports/token-cost/skills/fixtures/customer-portable-public-skills/rigorloop.lock
+  - docs/reports/token-cost/skills/fixtures/customer-portable-public-skills/docs/workflows.md
+  - docs/reports/token-cost/skills/fixtures/customer-portable-public-skills/docs/changes/example-change/change.yaml
+  - docs/reports/token-cost/skills/fixtures/customer-portable-public-skills/docs/changes/example-change/explain-change.md
+  - docs/reports/token-cost/skills/fixtures/customer-portable-public-skills/specs/customer-feature.md
+  - docs/reports/token-cost/skills/fixtures/customer-portable-public-skills/docs/plans/customer-plan.md
+  - docs/reports/token-cost/skills/fixtures/customer-portable-public-skills/src/app.js
+  - docs/reports/token-cost/skills/fixtures/customer-portable-public-skills/tests/app.test.js
+  - docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/prompts/proposal-customer-no-internal-docs.md
+  - docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/prompts/proposal-review-customer-local-artifacts.md
+  - docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/prompts/spec-customer-local-workflow-guide.md
+  - docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/prompts/plan-customer-local-spec-and-code.md
+  - docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/prompts/implement-customer-plan-handoff.md
+  - docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/prompts/workflow-customer-route-no-internal-docs.md
+  - docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/prompts/project-map-customer-repo-orientation.md
+  - docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/prompts/verify-customer-final-pack.md
+  - docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/prompts/pr-customer-ready-handoff.md
+  - docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/proposal-customer-no-internal-docs.jsonl
+  - docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/proposal-customer-no-internal-docs.analysis.yaml
+  - docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/proposal-review-customer-local-artifacts.jsonl
+  - docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/proposal-review-customer-local-artifacts.analysis.yaml
+  - docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/spec-customer-local-workflow-guide.jsonl
+  - docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/spec-customer-local-workflow-guide.analysis.yaml
+  - docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/plan-customer-local-spec-and-code.jsonl
+  - docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/plan-customer-local-spec-and-code.analysis.yaml
+  - docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/implement-customer-plan-handoff.jsonl
+  - docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/implement-customer-plan-handoff.analysis.yaml
+  - docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/workflow-customer-route-no-internal-docs.jsonl
+  - docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/workflow-customer-route-no-internal-docs.analysis.yaml
+  - docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/project-map-customer-repo-orientation.jsonl
+  - docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/project-map-customer-repo-orientation.analysis.yaml
+  - docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/verify-customer-final-pack.jsonl
+  - docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/verify-customer-final-pack.analysis.yaml
+  - docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/pr-customer-ready-handoff.jsonl
+  - docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/pr-customer-ready-handoff.analysis.yaml
+  - docs/changes/2026-05-18-customer-portable-public-skills/explain-change.md
+  - docs/changes/2026-05-18-customer-portable-public-skills/change.yaml
+  - docs/changes/2026-05-18-customer-portable-public-skills/review-log.md
+  - docs/changes/2026-05-18-customer-portable-public-skills/review-resolution.md
+  - docs/changes/2026-05-18-customer-portable-public-skills/reviews/proposal-review-r1.md
+  - docs/changes/2026-05-18-customer-portable-public-skills/reviews/proposal-review-r2.md
+  - docs/changes/2026-05-18-customer-portable-public-skills/reviews/spec-review-r1.md
+  - docs/changes/2026-05-18-customer-portable-public-skills/reviews/plan-review-r1.md
+  - docs/changes/2026-05-18-customer-portable-public-skills/reviews/plan-review-r2.md
+  - docs/changes/2026-05-18-customer-portable-public-skills/reviews/code-review-r1.md
+  - docs/changes/2026-05-18-customer-portable-public-skills/reviews/code-review-r2.md
+  - docs/changes/2026-05-18-customer-portable-public-skills/reviews/code-review-r3.md
+  - docs/changes/2026-05-18-customer-portable-public-skills/reviews/code-review-r4.md
