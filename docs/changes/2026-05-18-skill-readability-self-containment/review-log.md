@@ -90,3 +90,15 @@ Resolution: review-resolution.md#code-review-m1-r1
 Material findings: None
 Open findings: None
 Recording status: recorded
+
+### Review entry
+Review ID: code-review-m2-r1
+Stage: code-review
+Round: 1
+Reviewed artifact: M2. Pilot skill rewrite and generated-output proof
+Status: clean-with-notes
+Detailed record: reviews/code-review-m2-r1.md
+Resolution: review-resolution.md#code-review-m2-r1
+Material findings: None
+Open findings: None
+Recording status: recorded

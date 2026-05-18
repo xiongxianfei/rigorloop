@@ -36,6 +36,7 @@ tests:
   - Clean code-review evidence for M1.
   - Pilot pair opts into schema-version skill-readability-v1 and passes focused static validation.
   - Generated adapter archives validate from canonical skill source for the current adapter manifest version.
+  - Clean code-review evidence for M2.
 review:
   status: clean
   unresolved_items: 0
@@ -117,6 +118,16 @@ validation:
     result: pass_after_m2_handoff
   - command: git diff --check --
     result: pass_after_m2_handoff
+  - command: code-review M2
+    result: clean_with_notes_no_material_findings
+  - command: python scripts/test-skill-validator.py
+    result: pass_97_tests_during_m2_code_review
+  - command: python scripts/validate-skills.py
+    result: pass_23_skill_files_during_m2_code_review
+  - command: python scripts/build-skills.py --check
+    result: pass_during_m2_code_review
+  - command: python scripts/validate-adapters.py --root /tmp/rigorloop-skill-readability-adapters --version v0.1.5
+    result: pass_during_m2_code_review
 changed_files:
   - docs/proposals/2026-05-18-skill-readability-self-containment.md
   - specs/skill-readability-contract.md
@@ -144,4 +155,5 @@ changed_files:
   - docs/changes/2026-05-18-skill-readability-self-containment/reviews/plan-review-r2.md
   - docs/changes/2026-05-18-skill-readability-self-containment/reviews/plan-review-r3.md
   - docs/changes/2026-05-18-skill-readability-self-containment/reviews/code-review-m1-r1.md
+  - docs/changes/2026-05-18-skill-readability-self-containment/reviews/code-review-m2-r1.md
   - docs/changes/2026-05-18-skill-readability-self-containment/review-resolution.md

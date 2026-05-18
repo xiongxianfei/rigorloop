@@ -67,13 +67,13 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Pilot skill rewrite and generated-output proof
-- Current milestone state: review-requested
-- Last reviewed milestone: M1. Static validator foundations and baseline evidence
-- Review status: clean-with-notes by `code-review-m1-r1`
-- Remaining in-scope implementation milestones: M2, M3
-- Next stage: code-review for M2
-- Next lifecycle stage after M2 implementation: code-review for M2
+- Current milestone: M3. Cold-read, behavior parity, token comparison, and rollout handoff
+- Current milestone state: planned
+- Last reviewed milestone: M2. Pilot skill rewrite and generated-output proof
+- Review status: clean-with-notes by `code-review-m2-r1`
+- Remaining in-scope implementation milestones: M3
+- Next stage: implement M3
+- Next lifecycle stage after M3 implementation: code-review for M3
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation milestones, code-review, review-resolution closeout if triggered, explain-change, verify, and PR handoff remain incomplete.
 
@@ -121,7 +121,7 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 
 ### M2. Pilot skill rewrite and generated-output proof
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Rewrite `proposal` and `proposal-review` to satisfy the readability contract while preserving normative behavior and generated-output boundaries.
 - Requirements: R1-R35, R54-R60
 - Files/components likely touched: `skills/proposal/SKILL.md`, `skills/proposal-review/SKILL.md`, validation fixtures if needed, change-local implementation notes.
@@ -222,6 +222,7 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - 2026-05-18: implemented M1 static validator foundations and baseline evidence; next stage is code-review for M1.
 - 2026-05-18: `code-review-m1-r1` found no material findings and closed M1; next stage is implementation M2.
 - 2026-05-18: implemented M2 pilot rewrite for `proposal` and `proposal-review`; next stage is code-review for M2.
+- 2026-05-18: `code-review-m2-r1` found no material findings and closed M2; next stage is implementation M3.
 
 ## Decision log
 
@@ -253,6 +254,7 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - 2026-05-18: M2 test-first run `python scripts/test-skill-validator.py -k skill_readability_pilot_pair_opts_into_contract` failed before the pilot rewrite because `proposal` and `proposal-review` lacked `schema-version: skill-readability-v1`, `## Workflow role`, and `## Output skeleton`.
 - 2026-05-18: M2 validation passed after the rewrite: `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, `python scripts/build-skills.py --check`, `python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-skill-readability-adapters`, `python scripts/validate-adapters.py --root /tmp/rigorloop-skill-readability-adapters --version v0.1.5`, and `python scripts/validate-change-metadata.py docs/changes/2026-05-18-skill-readability-self-containment/change.yaml`.
 - 2026-05-18: M2 handoff validation passed after plan and change-metadata updates: artifact lifecycle explicit paths, review artifact closeout, and `git diff --check --`.
+- 2026-05-18: M2 code-review validation passed: `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, `python scripts/build-skills.py --check`, and `python scripts/validate-adapters.py --root /tmp/rigorloop-skill-readability-adapters --version v0.1.5`.
 
 ## Outcome and retrospective
 
