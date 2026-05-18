@@ -136,6 +136,19 @@ Material findings: CR-M2-R1-F1
 Open findings: None
 Recording status: recorded
 
+### Review entry
+Review ID: code-review-m2-r2
+Stage: code-review
+Round: 2
+Reviewed artifact: commit 7858e9b
+Status: changes-requested
+Detailed record: reviews/code-review-m2-r2.md
+Record: reviews/code-review-m2-r2.md
+Resolution: review-resolution.md#code-review-m2-r2
+Material findings: CR-M2-R2-F1
+Open findings: None
+Recording status: recorded
+
 ## Open Findings
 
 None.
@@ -154,3 +167,4 @@ None.
 | SR1-F3 | spec-review-r1 | major | Define exact trusted metadata fields for multi-root verification. |
 | SR1-F4 | spec-review-r1 | major | Define stable proxy diagnostic fields and allowed values. |
 | CR-M2-R1-F1 | code-review-m2-r1 | major | Skills-only older opencode installs must omit `.opencode/commands` from planned directories and `rigorloop.yaml`, and must record only installed roots declared by trusted metadata. |
+| CR-M2-R2-F1 | code-review-m2-r2 | major | Older opencode skills-only dry-run planning must omit `.opencode/commands` from planned directory actions, planned manifest content, and planned lockfile content. |

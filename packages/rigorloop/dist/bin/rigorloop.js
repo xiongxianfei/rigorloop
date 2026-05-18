@@ -1413,17 +1413,23 @@ function writeValidationErrorResult(flags, plan, error) {
 }
 
 async function archiveWorkForInit(flags, info, descriptor) {
-  if (flags.dryRun) {
+  if (flags.dryRun && !flags.fromArchiveProvided) {
     return {};
   }
 
   const bundledMetadata = loadVerifiedBundledMetadata(info);
   if (bundledMetadata.blocker || bundledMetadata.error) {
+    if (flags.dryRun) {
+      return {};
+    }
     return bundledMetadata;
   }
   const metadata = bundledMetadata.metadata;
   const validation = validateMetadata(metadata, info, descriptor);
   if (validation.blocker || validation.error) {
+    if (flags.dryRun) {
+      return {};
+    }
     return validation;
   }
   const artifact = validation.artifact;
@@ -1449,6 +1455,10 @@ async function archiveWorkForInit(flags, info, descriptor) {
           `Use the ${descriptor.displayName} adapter archive matching the installed CLI package version.`,
         ),
       };
+    }
+    // CR-M2-R2-F1: dry-run planning must use trusted metadata roots without reading or extracting archive bytes.
+    if (flags.dryRun) {
+      return { artifact };
     }
     const archiveBytes = readFileSync(resolve(process.cwd(), flags.fromArchive));
     const inspected = inspectArchive(archiveBytes, artifact, descriptor);
@@ -1532,7 +1542,6 @@ async function handleInit(flags) {
   }
   const deferrableRootBlockers =
     descriptor.name === "opencode" &&
-    !flags.dryRun &&
     plan.blockers.length > 0 &&
     plan.blockers.every((blocker) => String(blocker.path ?? "").startsWith(".opencode/commands"));
   if (plan.blockers.length > 0 && !deferrableRootBlockers) {

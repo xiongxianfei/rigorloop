@@ -14,11 +14,12 @@ Review closeout: spec-review-r3
 Review closeout: plan-review-r1
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m2-r1
+Review closeout: code-review-m2-r2
 
-- Reviews covered: `proposal-review`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `spec-review-r3`, `plan-review-r1`, `code-review-m1-r1`, `code-review-m2-r1`
-- Findings resolved: 10
+- Reviews covered: `proposal-review`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `spec-review-r3`, `plan-review-r1`, `code-review-m1-r1`, `code-review-m2-r1`, `code-review-m2-r2`
+- Findings resolved: 11
 - Unresolved findings: 0
-- Final result: `FID-01`, `FID-02`, `FID-03`, `FID-04`, and `FID-05` are accepted and resolved in the proposal. `SR1-F1`, `SR1-F2`, `SR1-F3`, and `SR1-F4` are accepted and closed by `spec-review-r2`. `CR-M2-R1-F1` is accepted and resolved.
+- Final result: `FID-01`, `FID-02`, `FID-03`, `FID-04`, and `FID-05` are accepted and resolved in the proposal. `SR1-F1`, `SR1-F2`, `SR1-F3`, and `SR1-F4` are accepted and closed by `spec-review-r2`. `CR-M2-R1-F1` and `CR-M2-R2-F1` are accepted and resolved.
 
 ## Resolution Overview
 
@@ -34,6 +35,7 @@ Review closeout: code-review-m2-r1
 | SR1-F3 | accepted | resolved | Spec now defines trusted metadata fields for single-root adapters, multi-root adapters, and opencode command aliases. |
 | SR1-F4 | accepted | resolved | Spec now defines bounded proxy diagnostic fields and allowed values. |
 | CR-M2-R1-F1 | accepted | resolved | M2 implementation derives opencode installed roots from trusted metadata so older skills-only archives omit `.opencode/commands` in planned directories and `rigorloop.yaml`. |
+| CR-M2-R2-F1 | accepted | resolved | Local-archive dry-run planning now uses validated trusted metadata roots when available, so older skills-only opencode archives omit `.opencode/commands` from planned actions, manifest, and lockfile content. |
 
 ## Common Resolution Metadata
 
@@ -225,6 +227,24 @@ Required outcome: Skills-only older opencode installs omit `.opencode/commands` 
 Safe resolution path: Recompute selected manifest and directory actions from the validated artifact roots after metadata validation, or defer root-specific manifest/directory planning until trusted metadata is available. Add fixture-backed skills-only opencode coverage for `TMAI-017`/`TMAI-020`.
 Validation target: `packages/rigorloop/dist/bin/rigorloop.js` and `packages/rigorloop/test/cli.test.js`.
 Validation evidence: `npm test --prefix packages/rigorloop` passed with `TMAI-017 skills-only opencode archive omits commands root from plan and manifest`.
+
+### code-review-m2-r2
+
+Finding closeout for `code-review-m2-r2`.
+
+### CR-M2-R2-F1 - Dry-run skills-only opencode still plans commands root
+
+Finding ID: CR-M2-R2-F1
+Disposition: accepted
+Status: resolved
+Owner: implementer
+Owning stage: review-resolution
+Chosen action: Updated local-archive dry-run planning to load and validate trusted metadata when available, rebuild the plan from artifact roots, and avoid reading or extracting archive bytes. Added fixture-backed `TMAI-020` coverage for older opencode skills-only dry-run behavior.
+Rationale: The approved spec requires dry-run planned roots and planned lockfile content to match trusted metadata. Returning before metadata validation makes older skills-only opencode dry-run output claim `.opencode/commands`, even though the selected metadata declares only `.opencode/skills`.
+Required outcome: Older opencode skills-only dry-run planning omits `.opencode/commands` from planned directory actions, planned manifest content, and planned lockfile content while remaining non-mutating.
+Safe resolution path: Load and validate bundled trusted metadata during dry-run root planning, rebuild the dry-run plan from artifact roots, and add fixture-backed dry-run coverage for older opencode skills-only metadata.
+Validation target: `packages/rigorloop/dist/bin/rigorloop.js` and `packages/rigorloop/test/cli.test.js`.
+Validation evidence: `npm test --prefix packages/rigorloop` passed with `TMAI-020 dry-run skills-only opencode archive omits commands root without mutation`.
 
 ## Closeout Checklist
 
