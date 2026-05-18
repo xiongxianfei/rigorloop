@@ -141,17 +141,18 @@ function sourceForFlags(flags, info, descriptor) {
   };
 }
 
-function manifestAdapterBlock(source, descriptor) {
+function manifestAdapterBlock(source, descriptor, artifact) {
   const sourceLines =
     source.type === "local-archive"
       ? [`      type: local-archive`, `      archive: "${source.archive}"`]
       : [`      type: release-archive`, `      release: "${source.release}"`];
+  const installRoots = rootsForArtifact(descriptor, artifact);
   const rootLines =
-    Object.keys(descriptor.installRoots).length === 1
-      ? [`    install_root: "${descriptor.primaryInstallRoot()}"`]
+    descriptor.name !== "opencode" && Object.keys(installRoots).length === 1
+      ? [`    install_root: "${Object.values(installRoots)[0]}"`]
       : [
           `    install_roots:`,
-          ...Object.entries(descriptor.installRoots).map(([role, root]) => `      ${role}: "${root}"`),
+          ...Object.entries(installRoots).map(([role, root]) => `      ${role}: "${root}"`),
         ];
 
   return `  - name: ${descriptor.name}
@@ -196,7 +197,7 @@ function parseManifestAdapterBlocks(content) {
 }
 
 function manifestContent(info, source, descriptor, existingContent) {
-  const selectedBlock = manifestAdapterBlock(source, descriptor);
+  const selectedBlock = manifestAdapterBlock(source, descriptor, source.artifact);
   if (existingContent) {
     const parsed = parseManifestAdapterBlocks(existingContent);
     if (!parsed.error) {
@@ -324,11 +325,14 @@ function lockfileForVerifiedInstall(info, source, manifest, artifact, rootHashes
   };
 }
 
-function compatibleManifest(content, descriptor) {
+function compatibleManifest(content, descriptor, artifact) {
+  if (descriptor.name === "opencode" && !rootsForArtifact(descriptor, artifact).commands && content.includes(".opencode/commands")) {
+    return false;
+  }
   return (
     content.includes("schema_version: 1") &&
     content.includes(`name: ${descriptor.name}`) &&
-    content.includes(`"${descriptor.primaryInstallRoot()}"`)
+    content.includes(`"${Object.values(rootsForArtifact(descriptor, artifact))[0]}"`)
   );
 }
 
@@ -339,8 +343,8 @@ function pathState(path) {
   return statSync(path).isDirectory() ? "directory" : "file";
 }
 
-function directoryKind(path, descriptor) {
-  if (path === descriptor.primaryInstallRoot()) {
+function directoryKind(path, descriptor, artifact) {
+  if (Object.values(rootsForArtifact(descriptor, artifact)).includes(path)) {
     return `${descriptor.name}-install-root`;
   }
   return `${descriptor.name}-adapter-root`;
@@ -992,14 +996,19 @@ function writeArchiveEntries(entries, descriptor) {
   }
 }
 
-function planDirectoryActions(flags, descriptor) {
+function directoryPlanForRoots(roots) {
+  return [...new Set(Object.values(roots).flatMap((root) => [root.split("/").slice(0, -1).join("/"), root]).filter(Boolean))];
+}
+
+function planDirectoryActions(flags, descriptor, artifact) {
   const actions = [];
   const artifacts = [];
   const blockers = [];
   let parentBlocked = false;
 
-  const rootParent = descriptor.directoryPlan[0];
-  for (const relativePath of descriptor.directoryPlan) {
+  const directoryPlan = directoryPlanForRoots(rootsForArtifact(descriptor, artifact));
+  const rootParent = directoryPlan[0];
+  for (const relativePath of directoryPlan) {
     const state = parentBlocked ? "blocked-by-parent" : pathState(resolve(process.cwd(), relativePath));
     if (state === "absent") {
       actions.push({
@@ -1010,7 +1019,7 @@ function planDirectoryActions(flags, descriptor) {
       });
       artifacts.push({
         path: relativePath,
-        kind: directoryKind(relativePath, descriptor),
+        kind: directoryKind(relativePath, descriptor, artifact),
         status: flags.dryRun ? "planned" : "pending",
       });
     } else if (state === "directory") {
@@ -1022,7 +1031,7 @@ function planDirectoryActions(flags, descriptor) {
       });
       artifacts.push({
         path: relativePath,
-        kind: directoryKind(relativePath, descriptor),
+        kind: directoryKind(relativePath, descriptor, artifact),
         status: "existing",
       });
     } else {
@@ -1037,7 +1046,7 @@ function planDirectoryActions(flags, descriptor) {
       });
       artifacts.push({
         path: relativePath,
-        kind: directoryKind(relativePath, descriptor),
+        kind: directoryKind(relativePath, descriptor, artifact),
         status: "blocked",
       });
       if (state !== "blocked-by-parent") {
@@ -1154,7 +1163,7 @@ function buildInitPlan(flags, descriptor, artifact) {
     });
   }
 
-  const directoryPlan = planDirectoryActions(flags, descriptor);
+  const directoryPlan = planDirectoryActions(flags, descriptor, artifact);
   actions.push(...directoryPlan.actions);
   artifacts.push(...directoryPlan.artifacts);
   blockers.push(...directoryPlan.blockers);
@@ -1175,7 +1184,7 @@ function buildInitPlan(flags, descriptor, artifact) {
         path: manifestPath,
         next_action: "Remove duplicate adapter entries before running init.",
       });
-    } else if (compatibleManifest(existingManifest, descriptor)) {
+    } else if (compatibleManifest(existingManifest, descriptor, artifact)) {
       actions.push({
         type: "write",
         path: manifestPath,
@@ -1500,7 +1509,7 @@ async function handleInit(flags) {
   }
 
   const info = packageInfo();
-  const plan = buildInitPlan(flags, descriptor);
+  let plan = buildInitPlan(flags, descriptor);
   if (plan.errors.length > 0) {
     const result = envelope("init", flags, {
       status: "error",
@@ -1521,14 +1530,24 @@ async function handleInit(flags) {
     }
     return exitCodeForResult({ ...result, exit_class: "invalid_usage" });
   }
-  if (plan.blockers.length > 0) {
+  const deferrableRootBlockers =
+    descriptor.name === "opencode" &&
+    !flags.dryRun &&
+    plan.blockers.length > 0 &&
+    plan.blockers.every((blocker) => String(blocker.path ?? "").startsWith(".opencode/commands"));
+  if (plan.blockers.length > 0 && !deferrableRootBlockers) {
     return writeBlockedResult(flags, plan, plan.blockers[0].message, plan.blockers, exitClassForBlockers(plan.blockers));
   }
 
   const archiveWork = await archiveWorkForInit(flags, info, descriptor);
-  if (archiveWork.artifact) {
-    plan.source.artifact = archiveWork.artifact;
-    plan.planned_lockfile = plannedLockfile(plan.info, plan.source, plan.manifest, descriptor);
+  if (archiveWork.artifact && !archiveWork.blocker && !archiveWork.error) {
+    plan = buildInitPlan(flags, descriptor, archiveWork.artifact);
+    if (plan.errors.length > 0) {
+      return writeValidationErrorResult(flags, plan, plan.errors[0]);
+    }
+    if (plan.blockers.length > 0) {
+      return writeBlockedResult(flags, plan, plan.blockers[0].message, plan.blockers, exitClassForBlockers(plan.blockers));
+    }
   }
   if (archiveWork.entries) {
     const conflict = generatedOutputConflictBlocker(archiveWork.entries);

@@ -66,9 +66,9 @@ The current CLI implementation is Codex-specific: it uses `ADAPTER = "codex"`, `
 - Current milestone: M2. Manifest and lockfile schema v2
 - Current milestone state: review-requested
 - Last reviewed milestone: M1. Adapter descriptors and trusted metadata selection
-- Review status: M2 implementation complete; code-review pending
+- Review status: M2 review-resolution complete; code-review rerun pending
 - Remaining in-scope implementation milestones: M2, M3, M4, M5
-- Next stage: code-review M2
+- Next stage: code-review M2 rerun
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: all implementation milestones, code-review, review-resolution if triggered, explain-change, verify, and PR handoff remain incomplete.
 
@@ -234,6 +234,8 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 - [x] M1 closed.
 - [x] 2026-05-18: M2 implementation started.
 - [x] 2026-05-18: M2 tests and implementation completed; handoff requested for code-review.
+- [x] 2026-05-18: M2 code-review completed with `CR-M2-R1-F1`; review-resolution required.
+- [x] 2026-05-18: M2 review-resolution completed for `CR-M2-R1-F1`; handoff requested for code-review rerun.
 - [ ] M2 closed.
 - [ ] M3 closed.
 - [ ] M4 closed.
@@ -251,6 +253,8 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 
 - M1 could prove descriptor and trusted metadata selection without completing multi-root extraction or lockfile schema v2; those remain scoped to M2 and M3.
 - M2 tests initially failed as expected because the CLI still wrote schema v1 lockfiles, rejected schema v2 parsing, and rejected opencode multi-root trusted metadata.
+- M2 review found that skills-only older opencode behavior must be fixed in M2 because manifest and directory planning still use descriptor roots before trusted metadata narrows required roots.
+- M2 review-resolution keeps opencode descriptor roots as possible roots while using trusted metadata roots for durable manifest and directory actions.
 
 ## Validation notes
 
@@ -261,6 +265,8 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 - 2026-05-18: Added M2 tests first; `npm test --prefix packages/rigorloop` failed as expected for schema v2 lockfile parsing/writing and opencode multi-root metadata.
 - 2026-05-18: `npm test --prefix packages/rigorloop` passed after adding schema v2 lockfile parsing/serialization, additive manifest updates, schema v1 Codex upgrade checks, and multi-root opencode lockfile support.
 - 2026-05-18: `bash scripts/ci.sh --mode explicit --path packages/rigorloop/dist/lib/lockfile.js --path packages/rigorloop/dist/bin/rigorloop.js --path packages/rigorloop/test/cli.test.js` passed selected checks: `rigorloop_cli.test` and `npm_package_publication.test`.
+- 2026-05-18: `code-review-m2-r1` recorded `CR-M2-R1-F1`; M2 remains open for review-resolution.
+- 2026-05-18: `npm test --prefix packages/rigorloop` passed after resolving `CR-M2-R1-F1`; package tests include `TMAI-017 skills-only opencode archive omits commands root from plan and manifest`.
 
 ## Outcome and retrospective
 
