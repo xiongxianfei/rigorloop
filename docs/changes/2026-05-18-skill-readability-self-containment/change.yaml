@@ -20,6 +20,7 @@ requirements:
   - Create the active test spec before implementation starts.
   - Add opt-in static validation for the skill readability contract.
   - Record baseline token evidence for the pilot pair before skill rewrites.
+  - Review and close M1 before starting M2.
 tests:
   - Formal proposal-review evidence for docs/proposals/2026-05-18-skill-readability-self-containment.md.
   - Review artifact validation for the proposal-review record.
@@ -30,6 +31,7 @@ tests:
   - Focused skill validator tests for the opt-in readability checks.
   - Canonical skill validation remains green before the pilot skill rewrite.
   - Static skill token baseline for `proposal` and `proposal-review`.
+  - Clean code-review evidence for M1.
 review:
   status: clean
   unresolved_items: 0
@@ -81,6 +83,16 @@ validation:
     result: pass_after_m1_handoff
   - command: git diff --check --
     result: pass_after_m1_handoff
+  - command: code-review M1
+    result: clean_with_notes_no_material_findings
+  - command: python scripts/test-skill-validator.py
+    result: pass_96_tests_during_m1_code_review
+  - command: python scripts/validate-skills.py
+    result: pass_23_skill_files_during_m1_code_review
+  - command: python scripts/build-skills.py --check
+    result: pass_during_m1_code_review
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-18-skill-readability-self-containment/change.yaml
+    result: pass_during_m1_code_review
 changed_files:
   - docs/proposals/2026-05-18-skill-readability-self-containment.md
   - specs/skill-readability-contract.md
@@ -105,4 +117,5 @@ changed_files:
   - docs/changes/2026-05-18-skill-readability-self-containment/reviews/plan-review-r1.md
   - docs/changes/2026-05-18-skill-readability-self-containment/reviews/plan-review-r2.md
   - docs/changes/2026-05-18-skill-readability-self-containment/reviews/plan-review-r3.md
+  - docs/changes/2026-05-18-skill-readability-self-containment/reviews/code-review-m1-r1.md
   - docs/changes/2026-05-18-skill-readability-self-containment/review-resolution.md

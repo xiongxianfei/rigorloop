@@ -67,13 +67,13 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Static validator foundations and baseline evidence
-- Current milestone state: review-requested
-- Last reviewed milestone: none
-- Review status: approved by `plan-review-r3`
-- Remaining in-scope implementation milestones: M1, M2, M3
-- Next stage: code-review for M1
-- Next lifecycle stage after clean M1 code-review: M2 implementation
+- Current milestone: M2. Pilot skill rewrite and generated-output proof
+- Current milestone state: planned
+- Last reviewed milestone: M1. Static validator foundations and baseline evidence
+- Review status: clean-with-notes by `code-review-m1-r1`
+- Remaining in-scope implementation milestones: M2, M3
+- Next stage: implement M2
+- Next lifecycle stage after M2 implementation: code-review for M2
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation milestones, code-review, review-resolution closeout if triggered, explain-change, verify, and PR handoff remain incomplete.
 
@@ -98,7 +98,7 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 
 ### M1. Static validator foundations and baseline evidence
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Add focused static checks and baseline evidence before rewriting the pilot skill bodies.
 - Requirements: R16-R28, R32-R40, R48-R53
 - Files/components likely touched: `scripts/test-skill-validator.py`, `scripts/validate-skills.py` or helper modules, baseline token report under `docs/reports/token-cost/skills/2026-05-18-skill-readability-self-containment.md`, optional fixture files chosen by the test spec.
@@ -114,7 +114,7 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
   - [x] decision log updated if needed
   - [x] validation notes updated
   - [x] hand off to code-review for M1
-  - [ ] material findings resolved or explicitly dispositioned
+  - [x] material findings resolved or explicitly dispositioned
   - [x] milestone committed
 - Risks: static checks may become semantic prose scoring or accidentally apply to all skills before rollout.
 - Rollback/recovery: narrow checks to explicit headings, fields, fenced blocks, known enum markers, and path phrases; defer non-pilot enforcement to follow-on rollout.
@@ -220,6 +220,7 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - 2026-05-18: created active test spec at `specs/skill-readability-contract.test.md`; next stage is implementation M1.
 - 2026-05-18: user approved the active test spec; next stage remains implementation M1.
 - 2026-05-18: implemented M1 static validator foundations and baseline evidence; next stage is code-review for M1.
+- 2026-05-18: `code-review-m1-r1` found no material findings and closed M1; next stage is implementation M2.
 
 ## Decision log
 
@@ -244,6 +245,7 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - 2026-05-18: `python scripts/measure-skill-tokens.py` passed and established baseline token counts: `proposal` 3189 estimated tokens, `proposal-review` 3255 estimated tokens.
 - 2026-05-18: `python scripts/build-skills.py --check` passed using temporary generated output.
 - 2026-05-18: M1 handoff validation passed: artifact lifecycle explicit paths, change metadata, review artifact closeout, and `git diff --check --`.
+- 2026-05-18: M1 code-review validation passed: `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, `python scripts/build-skills.py --check`, and `python scripts/validate-change-metadata.py docs/changes/2026-05-18-skill-readability-self-containment/change.yaml`.
 
 ## Outcome and retrospective
 
