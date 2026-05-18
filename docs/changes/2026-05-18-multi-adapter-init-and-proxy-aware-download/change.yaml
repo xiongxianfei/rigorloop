@@ -437,7 +437,20 @@ validation:
     result: pass_final_verify_selected_checks_skills_generation_review_artifacts_artifact_lifecycle_change_metadata_rigorloop_cli_npm_package_publication
   - command: gh pr create --base main --head feat/multi-adapter-init-proxy-download
     result: opened_PR_68
+  - command: gh run view 26061599547 --log-failed
+    result: failed_hosted_ci_default_node_rejected_use_env_proxy
+  - command: npm test --prefix packages/rigorloop
+    result: pass_after_ci_node_24_workflow_fix
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml
+    result: pass_after_ci_node_24_workflow_fix
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md --path docs/plan.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml
+    result: pass_after_ci_node_24_workflow_fix
+  - command: git diff --check -- .github/workflows/ci.yml docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml
+    result: pass_after_ci_node_24_workflow_fix
+  - command: bash scripts/ci.sh --mode explicit --path .github/workflows/ci.yml --path packages/rigorloop/test/cli.test.js --path packages/rigorloop/dist/bin/rigorloop.js --path docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml
+    result: pass_after_ci_node_24_workflow_fix_selected_checks_artifact_lifecycle_change_metadata_selector_rigorloop_cli_npm_package_publication
 changed_files:
+  - .github/workflows/ci.yml
   - .gitignore
   - docs/adr/ADR-20260518-multi-adapter-init-and-proxy-download.md
   - docs/architecture/system/architecture.md
