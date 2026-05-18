@@ -4,7 +4,7 @@
 - Owner: maintainers
 - Start date: 2026-05-18
 - Last updated: 2026-05-18
-- Related issue or PR: this PR
+- Related issue or PR: PR #67
 - Supersedes: none
 
 ## Purpose / big picture
@@ -77,7 +77,7 @@ Likely touched surfaces:
 - Remaining in-scope implementation milestones: none
 - Next stage: none
 - Final closeout readiness: completed
-- Reason final closeout is or is not ready: M1, M2, M3, review-resolution, explain-change, verify, and PR handoff are complete for this branch. Hosted CI and human review remain external PR-review outcomes and are not claimed here.
+- Reason final closeout is or is not ready: M1, M2, M3, review-resolution, explain-change, verify, and PR #67 handoff are complete for this branch. Hosted CI and human review remain external PR-review outcomes and are not claimed here.
 
 ## Milestones
 
@@ -322,7 +322,7 @@ python scripts/validate-adapters.py --root <tmp-output> --version <current-or-ne
 - [x] 2026-05-18: M3 reviewed cleanly by code-review R4.
 - [x] 2026-05-18: explain-change recorded.
 - [x] 2026-05-18: verify passed locally with explicit selected CI proof; legacy no-argument broad smoke exposed unrelated baseline lifecycle debt and is recorded as a warning.
-- [x] 2026-05-18: PR handoff prepared.
+- [x] 2026-05-18: PR #67 opened for review.
 
 ## Decision log
 
@@ -383,11 +383,11 @@ python scripts/validate-adapters.py --root <tmp-output> --version <current-or-ne
 - 2026-05-18: explain-change recorded the problem-to-diff rationale, review-resolution summary, validation evidence, alternatives rejected, and remaining verify-stage risks.
 - 2026-05-18: final verify passed targeted repository-owned validation: skill validator, canonical skill validation, static token measurement, generated skill check, adapter archive build/validation, fixture exclusion check, change metadata validation, review artifact validation, explicit lifecycle validation, diff whitespace check, and `bash scripts/ci.sh --mode explicit ...` selected checks.
 - 2026-05-18: final verify broad-smoke warning: legacy no-argument `bash scripts/ci.sh` exited 1 because diff-scoped broad smoke expanded through `docs/plan.md` into unrelated historical lifecycle debt. The changed-surface explicit CI wrapper passed.
-- 2026-05-18: PR handoff prepared after moving this plan from `Active` to `Done` in `docs/plan.md`.
+- 2026-05-18: PR #67 opened after moving this plan from `Active` to `Done` in `docs/plan.md`.
 
 ## Outcome and retrospective
 
-- Complete. Implementation milestones, review-resolution, explain-change, final local verify, and PR handoff are closed for this branch.
+- Complete. Implementation milestones, review-resolution, explain-change, final local verify, and PR #67 handoff are closed for this branch.
 
 ## Readiness
 
