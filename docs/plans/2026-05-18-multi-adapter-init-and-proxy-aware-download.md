@@ -64,11 +64,11 @@ The current CLI implementation is Codex-specific: it uses `ADAPTER = "codex"`, `
 ## Current Handoff Summary
 
 - Current milestone: M4. Network download diagnostics and output envelope
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Last reviewed milestone: M3. Multi-root archive extraction and local archive fallback
-- Review status: M4 implementation completed; code-review requested
+- Review status: M4 code-review completed with `CR-M4-R1-F1`; review-resolution required
 - Remaining in-scope implementation milestones: M4, M5
-- Next stage: code-review M4
+- Next stage: review-resolution for M4
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: all implementation milestones, code-review, review-resolution if triggered, explain-change, verify, and PR handoff remain incomplete.
 
@@ -147,7 +147,7 @@ The current CLI implementation is Codex-specific: it uses `ADAPTER = "codex"`, `
 
 ### M4. Network download diagnostics and output envelope
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Add hermetic network-download tests and proxy-safe failure diagnostics without adding programmatic Undici dispatcher support.
 - Requirements: MAI-R77 through MAI-R91, AC14, AC15.
 - Files/components likely touched: `packages/rigorloop/dist/bin/rigorloop.js`, `packages/rigorloop/test/cli.test.js`.
@@ -250,6 +250,7 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 - [x] M3 closed.
 - [x] 2026-05-18: M4 implementation started.
 - [x] 2026-05-18: M4 tests and implementation completed; handoff requested for code-review.
+- [x] 2026-05-18: M4 code-review completed with `CR-M4-R1-F1`; review-resolution required.
 - [ ] M4 closed.
 - [ ] M5 closed.
 - [ ] final code-review, explain-change, verify, and PR handoff completed.
@@ -277,6 +278,7 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 - M3 final code-review found no remaining material issues in the opencode commands-root metadata guard.
 - M4 found that existing mocked fetch success covered Codex only, so M4 added the same network mode proof for Claude and opencode before adding failure diagnostics.
 - M4 keeps archive verification failures on the existing validation error path; proxy diagnostics are added only when fetch itself fails.
+- M4 code-review found that diagnostics do not detect the actual Node `--use-env-proxy` runtime flag through `process.execArgv`.
 
 ## Validation notes
 
@@ -306,6 +308,7 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 - 2026-05-18: `code-review-m3-r3` completed with status `clean-with-notes`; M3 closed and M4 is the next implementation stage.
 - 2026-05-18: Added failing M4 tests first; `npm test --prefix packages/rigorloop` failed as expected because network fetch failures still returned the generic `release-unavailable` blocker without bounded proxy diagnostics or actionable human output.
 - 2026-05-18: `npm test --prefix packages/rigorloop` passed after adding bounded network download diagnostics, proxy env-var name detection, failure classification, fallback guidance, human redaction, and verification-failure preservation.
+- 2026-05-18: `code-review-m4-r1` recorded `CR-M4-R1-F1`; M4 remains open for review-resolution.
 
 ## Outcome and retrospective
 

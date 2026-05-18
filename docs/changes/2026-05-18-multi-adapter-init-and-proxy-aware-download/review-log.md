@@ -201,9 +201,24 @@ Material findings: None
 Open findings: None
 Recording status: recorded
 
+### Review entry
+Review ID: code-review-m4-r1
+Stage: code-review
+Round: 1
+Reviewed artifact: commit 2c4c18f
+Status: changes-requested
+Detailed record: reviews/code-review-m4-r1.md
+Record: reviews/code-review-m4-r1.md
+Resolution: review-resolution.md#code-review-m4-r1
+Material findings: CR-M4-R1-F1
+Open findings: CR-M4-R1-F1
+Recording status: recorded
+
 ## Open Findings
 
-None.
+| Finding ID | Review | Severity | Required outcome |
+|---|---|---|---|
+| CR-M4-R1-F1 | code-review-m4-r1 | major | `node_env_proxy_status` must report `enabled` when Node env-proxy support is enabled through the actual `--use-env-proxy` runtime flag, with direct fixture-backed proof. |
 
 ## Closed Findings
 
