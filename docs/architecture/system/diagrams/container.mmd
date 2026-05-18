@@ -10,7 +10,7 @@ flowchart TB
     governance["Governance and workflow guidance<br/>[Markdown]"]:::container
     lifecycle["Lifecycle artifacts and ADRs<br/>[Markdown and YAML]"]:::container
     token_bench["Token-cost benchmark fixtures and reports<br/>[Markdown, YAML, JSONL]"]:::container
-    cli["RigorLoop CLI package candidate<br/>[Node/npm package]"]:::container
+    cli["RigorLoop CLI package<br/>[Node/npm package]"]:::container
     architecture["Canonical architecture package<br/>[Markdown and Mermaid]"]:::container
     changes["Change-local evidence<br/>[Markdown and YAML]"]:::container
     templates["Templates and diagram styles<br/>[Markdown and Mermaid]"]:::container
@@ -25,7 +25,7 @@ flowchart TB
   contributor -->|updates clear current architecture truth directly in| architecture
   contributor -->|uses for historical, review, validation, and exceptional evidence in| changes
   contributor -->|authors benchmark prompts, fixtures, reports, and metadata in| token_bench
-  contributor -->|runs help, version, Codex init, and new-change through| cli
+  contributor -->|runs help, version, multi-adapter init, and new-change through| cli
   contributor -->|uses scaffolds from| templates
   contributor -->|edits canonical sources in| skills
   reviewer -->|reviews selected architecture surface and ADR need in| architecture
@@ -40,8 +40,8 @@ flowchart TB
   skills -->|are transformed by| scripts
   scripts -->|generate temp output, tracked adapter output, and release artifacts for| generated
   scripts -->|runs benchmarks, analyzes JSONL, and validates metadata for| token_bench
-  cli -->|uses bundled official adapter metadata and small scaffolds from| release
-  cli -->|writes safe project/change scaffolds, records lockfile state, and installs verified Codex adapter output from| generated
+  cli -->|uses bundled official adapter metadata, adapter descriptors, and small scaffolds from| release
+  cli -->|writes safe project/change scaffolds, records schema v2 lockfile state, and installs verified adapter output from| generated
   cli -->|is executed by| package_runner
   cli -->|is published after package-content, smoke, and publication-mode checks to| npm_registry
   npm_registry -->|delivers the published package to| package_runner
