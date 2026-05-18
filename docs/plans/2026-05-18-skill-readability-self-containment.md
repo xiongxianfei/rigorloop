@@ -68,11 +68,11 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 ## Current Handoff Summary
 
 - Current milestone: M2. Pilot skill rewrite and generated-output proof
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M1. Static validator foundations and baseline evidence
 - Review status: clean-with-notes by `code-review-m1-r1`
 - Remaining in-scope implementation milestones: M2, M3
-- Next stage: implement M2
+- Next stage: code-review for M2
 - Next lifecycle stage after M2 implementation: code-review for M2
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation milestones, code-review, review-resolution closeout if triggered, explain-change, verify, and PR handoff remain incomplete.
@@ -121,7 +121,7 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 
 ### M2. Pilot skill rewrite and generated-output proof
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Rewrite `proposal` and `proposal-review` to satisfy the readability contract while preserving normative behavior and generated-output boundaries.
 - Requirements: R1-R35, R54-R60
 - Files/components likely touched: `skills/proposal/SKILL.md`, `skills/proposal-review/SKILL.md`, validation fixtures if needed, change-local implementation notes.
@@ -132,13 +132,13 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - Expected observable result: the pilot pair satisfies static readability checks, generated output validates from canonical source, and no generated adapter body is hand-edited.
 - Commit message: `M2: rewrite proposal skills for readability`
 - Milestone closeout:
-  - [ ] validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] hand off to code-review for M2
-  - [ ] material findings resolved or explicitly dispositioned
-  - [ ] milestone committed
+  - [x] validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] hand off to code-review for M2
+  - [x] material findings resolved or explicitly dispositioned
+  - [x] milestone committed
 - Risks: editorial rewrite changes normative proposal or review behavior; front matter fields break a consumer; generated adapter validation version is ambiguous.
 - Rollback/recovery: revert only the affected pilot skill body or front matter field; if adapter validation version is ambiguous, block and record the required version decision before continuing.
 
@@ -221,6 +221,7 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - 2026-05-18: user approved the active test spec; next stage remains implementation M1.
 - 2026-05-18: implemented M1 static validator foundations and baseline evidence; next stage is code-review for M1.
 - 2026-05-18: `code-review-m1-r1` found no material findings and closed M1; next stage is implementation M2.
+- 2026-05-18: implemented M2 pilot rewrite for `proposal` and `proposal-review`; next stage is code-review for M2.
 
 ## Decision log
 
@@ -230,10 +231,13 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - 2026-05-18: architecture stage is not required -> spec-review found no runtime architecture or adapter package format change.
 - 2026-05-18: test-spec authoring is a lifecycle handoff, not an implementation milestone -> preserves the repository stage sequence `plan-review -> test-spec -> implementation milestone 1`.
 - 2026-05-18: M1 readability validation is opt-in on `schema-version: skill-readability-v1` -> lets fixture tests prove the contract before M2 rewrites the pilot skills and prevents current canonical skills from failing before they are in scope.
+- 2026-05-18: M2 uses skill front matter `version: "1.0.0"` consistently across the pilot pair -> records the first readability-contract shape version independently from adapter release archive version.
+- 2026-05-18: M2 temporary adapter validation uses `v0.1.5` -> matches the tracked `dist/adapters/manifest.yaml` release-support surface after PR #68 merged.
 
 ## Surprises and discoveries
 
 - 2026-05-18: existing top-level title validation counted `# ` headings inside fenced output skeletons. M1 adjusted title counting to ignore fenced code blocks so fillable Markdown skeletons can contain headings in later rewrites.
+- 2026-05-18: M2 preserved exact prior static-contract phrases in `proposal` and `proposal-review` while moving their operational shape into tables and fenced enum blocks, because existing regression tests still assert those phrases.
 
 ## Validation notes
 
@@ -246,6 +250,9 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - 2026-05-18: `python scripts/build-skills.py --check` passed using temporary generated output.
 - 2026-05-18: M1 handoff validation passed: artifact lifecycle explicit paths, change metadata, review artifact closeout, and `git diff --check --`.
 - 2026-05-18: M1 code-review validation passed: `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, `python scripts/build-skills.py --check`, and `python scripts/validate-change-metadata.py docs/changes/2026-05-18-skill-readability-self-containment/change.yaml`.
+- 2026-05-18: M2 test-first run `python scripts/test-skill-validator.py -k skill_readability_pilot_pair_opts_into_contract` failed before the pilot rewrite because `proposal` and `proposal-review` lacked `schema-version: skill-readability-v1`, `## Workflow role`, and `## Output skeleton`.
+- 2026-05-18: M2 validation passed after the rewrite: `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, `python scripts/build-skills.py --check`, `python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-skill-readability-adapters`, `python scripts/validate-adapters.py --root /tmp/rigorloop-skill-readability-adapters --version v0.1.5`, and `python scripts/validate-change-metadata.py docs/changes/2026-05-18-skill-readability-self-containment/change.yaml`.
+- 2026-05-18: M2 handoff validation passed after plan and change-metadata updates: artifact lifecycle explicit paths, review artifact closeout, and `git diff --check --`.
 
 ## Outcome and retrospective
 
