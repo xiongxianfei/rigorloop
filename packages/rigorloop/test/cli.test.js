@@ -440,6 +440,55 @@ globalThis.fetch = async function fetch(url) {
   return path;
 }
 
+function mockFetchFailureModule(archiveUrl, options = {}) {
+  const path = join(tempProject(), "mock-fetch-failure.mjs");
+  writeFileSync(
+    path,
+    `const archiveUrl = ${JSON.stringify(archiveUrl)};
+globalThis.fetch = async function fetch(url) {
+  if (String(url) !== archiveUrl) {
+    throw new Error("Unexpected fetch URL: " + String(url));
+  }
+  const error = new Error(${JSON.stringify(options.message ?? "mocked fetch failure")});
+  ${options.code ? `error.code = ${JSON.stringify(options.code)};` : ""}
+  ${options.causeCode ? `error.cause = { code: ${JSON.stringify(options.causeCode)} };` : ""}
+  throw error;
+};
+`,
+    "utf8",
+  );
+  return path;
+}
+
+function sensitiveProxyEnv() {
+  return {
+    HTTP_PROXY: "http://user:pass@private.proxy.internal:8080",
+    HTTPS_PROXY: "https://token-secret@secure.proxy.internal:8443",
+    NO_PROXY: "internal.service.local,localhost",
+    http_proxy: "http://lower-user:lower-pass@lower.proxy.internal:8080",
+    https_proxy: "",
+    no_proxy: "",
+    RIGORLOOP_PROXY_TOKEN: "do-not-report-token",
+  };
+}
+
+function assertRedacted(text) {
+  for (const forbidden of [
+    "user:pass",
+    "token-secret",
+    "lower-user:lower-pass",
+    "private.proxy.internal",
+    "secure.proxy.internal",
+    "lower.proxy.internal",
+    "internal.service.local",
+    "do-not-report-token",
+    "http://user:pass@private.proxy.internal:8080",
+    "https://token-secret@secure.proxy.internal:8443",
+  ]) {
+    assert.equal(text.includes(forbidden), false, forbidden);
+  }
+}
+
 test("T1 package metadata exposes one public binary and publishable runtime policy", () => {
   assert.equal(packageJson.name, "@xiongxianfei/rigorloop");
   assert.equal(packageJson.version, publicPackageVersion);
@@ -1296,6 +1345,166 @@ test("T15 network mode uses bundled metadata before downloading the official arc
   assert.equal(output.planned_lockfile.generated.adapters[0].source, "release-archive");
   assert.equal(output.planned_lockfile.generated.adapters[0].archive_sha256, fixture.metadata.artifacts[0].sha256);
   assert.equal(readProjectFile(cwd, ".agents/skills/proposal/SKILL.md"), "# Proposal\n\nUse proposal guidance.\n");
+});
+
+test("TMAI-029 network mode downloads official archives for every supported adapter", () => {
+  for (const adapter of supportedAdapterNames()) {
+    const cwd = tempProject();
+    const descriptor = adapterDescriptor(adapter);
+    const options =
+      adapter === "opencode"
+        ? {
+            adapter,
+            installRoot: ".opencode/skills",
+            installRoots: { skills: ".opencode/skills", commands: ".opencode/commands" },
+            entries: [
+              { name: ".opencode/skills/proposal/SKILL.md", bytes: Buffer.from("# Proposal\n", "utf8") },
+              { name: ".opencode/commands/proposal.md", bytes: Buffer.from("# Proposal command\n", "utf8") },
+            ],
+            commandAliases: { opencode: { count: 1, paths: [".opencode/commands/proposal.md"] } },
+          }
+        : {
+            adapter,
+            installRoot: descriptor.primaryInstallRoot(),
+          };
+    const fixture = fixtureArchive(cwd, options);
+    const archiveBytes = readFileSync(fixture.archivePath);
+    const officialUrl = expectedArchiveUrl({ releaseTag: "v0.1.5", archive: fixture.archiveName });
+    fixture.metadata.artifacts[0].url = officialUrl;
+    const packageFixture = fixturePackage({ metadata: fixture.metadata });
+    const result = runCli(["init", "--adapter", adapter, "--json"], {
+      cwd,
+      cliPath: packageFixture.cliPath,
+      env: { NODE_OPTIONS: `--import ${mockFetchModule(officialUrl, archiveBytes)}` },
+    });
+
+    assert.equal(result.status, 0, adapter);
+    const output = JSON.parse(result.stdout);
+    assert.equal(output.status, "success", adapter);
+    assert.equal(output.planned_lockfile.generated.adapters[0].adapter, adapter);
+    assert.equal(output.planned_lockfile.generated.adapters[0].source, "release-archive");
+  }
+});
+
+test("TMAI-029 network failure reports bounded proxy diagnostics in JSON", () => {
+  const cwd = tempProject();
+  const fixture = fixtureArchive(cwd);
+  const officialUrl = expectedArchiveUrl({ releaseTag: "v0.1.5", archive: fixture.archiveName });
+  fixture.metadata.artifacts[0].url = officialUrl;
+  const packageFixture = fixturePackage({ metadata: fixture.metadata });
+  const result = runCli(["init", "--adapter", "codex", "--json"], {
+    cwd,
+    cliPath: packageFixture.cliPath,
+    env: {
+      ...sensitiveProxyEnv(),
+      NODE_OPTIONS: `--import ${mockFetchFailureModule(officialUrl, {
+        message: "getaddrinfo ENOTFOUND private.proxy.internal",
+        code: "ENOTFOUND",
+      })}`,
+    },
+  });
+
+  assert.equal(result.status, 2, result.stderr);
+  const output = JSON.parse(result.stdout);
+  assert.equal(output.status, "blocked");
+  assert.equal(output.blockers[0].code, "release-download-failed");
+  assert.equal(output.diagnostics.adapter, "codex");
+  assert.equal(output.diagnostics.release, "v0.1.5");
+  assert.equal(output.diagnostics.archive_url, officialUrl);
+  assert.equal(output.diagnostics.download_failure_class, "dns");
+  assert.match(output.diagnostics.node_env_proxy_status, /^(enabled|disabled|unsupported|unknown)$/);
+  assert.deepEqual(output.diagnostics.proxy_env_vars_detected, ["HTTP_PROXY", "HTTPS_PROXY", "NO_PROXY", "http_proxy"]);
+  assert.match(output.blockers[0].next_action, /--from-archive/);
+  assertRedacted(JSON.stringify(output));
+  assert.equal(existsSync(join(cwd, "rigorloop.lock")), false);
+});
+
+test("TMAI-030 proxy diagnostic enums and env-var allowlist are stable", () => {
+  const cwd = tempProject();
+  const fixture = fixtureArchive(cwd);
+  const officialUrl = expectedArchiveUrl({ releaseTag: "v0.1.5", archive: fixture.archiveName });
+  fixture.metadata.artifacts[0].url = officialUrl;
+  const packageFixture = fixturePackage({ metadata: fixture.metadata });
+  const result = runCli(["init", "--adapter", "codex", "--json"], {
+    cwd,
+    cliPath: packageFixture.cliPath,
+    env: {
+      HTTP_PROXY: "http://proxy.example.invalid:8080",
+      HTTPS_PROXY: "http://secure.example.invalid:8080",
+      NO_PROXY: "localhost",
+      http_proxy: "http://lower.example.invalid:8080",
+      https_proxy: "http://lower-secure.example.invalid:8080",
+      no_proxy: "127.0.0.1",
+      ALL_PROXY: "http://not-allowed.example.invalid:8080",
+      NODE_OPTIONS: `--import ${mockFetchFailureModule(officialUrl, { message: "proxy connection failed", code: "ERR_PROXY_CONNECTION_FAILED" })}`,
+    },
+  });
+
+  assert.equal(result.status, 2, result.stderr);
+  const output = JSON.parse(result.stdout);
+  assert.deepEqual(output.diagnostics.proxy_env_vars_detected, [
+    "HTTP_PROXY",
+    "HTTPS_PROXY",
+    "NO_PROXY",
+    "http_proxy",
+    "https_proxy",
+    "no_proxy",
+  ]);
+  assert.match(output.diagnostics.node_env_proxy_status, /^(enabled|disabled|unsupported|unknown)$/);
+  assert.match(output.diagnostics.download_failure_class, /^(dns|tls|timeout|http-status|proxy|network|unknown)$/);
+  assert.equal(JSON.stringify(output).includes("ALL_PROXY"), false);
+  assert.equal(JSON.stringify(output).includes("not-allowed.example.invalid"), false);
+});
+
+test("TMAI-031 human proxy failure output is actionable and redacted", () => {
+  const cwd = tempProject();
+  const fixture = fixtureArchive(cwd);
+  const officialUrl = expectedArchiveUrl({ releaseTag: "v0.1.5", archive: fixture.archiveName });
+  fixture.metadata.artifacts[0].url = officialUrl;
+  const packageFixture = fixturePackage({ metadata: fixture.metadata });
+  const result = runCli(["init", "--adapter", "codex"], {
+    cwd,
+    cliPath: packageFixture.cliPath,
+    env: {
+      ...sensitiveProxyEnv(),
+      NODE_OPTIONS: `--import ${mockFetchFailureModule(officialUrl, { message: "proxy refused private.proxy.internal", code: "ERR_PROXY_CONNECTION_FAILED" })}`,
+    },
+  });
+
+  assert.equal(result.status, 2);
+  assert.equal(result.stdout, "");
+  assert.match(result.stderr, /adapter codex/);
+  assert.match(result.stderr, /release v0\.1\.5/);
+  assert.match(result.stderr, /failure class proxy/);
+  assert.match(result.stderr, new RegExp(officialUrl.replaceAll(".", "\\.")));
+  assert.match(result.stderr, /--from-archive/);
+  assertRedacted(result.stderr);
+});
+
+test("TMAI-032 proxy diagnostics do not mask archive verification failures", () => {
+  const cwd = tempProject();
+  const fixture = fixtureArchive(cwd);
+  const wrongArchiveBytes = Buffer.from(readFileSync(fixture.archivePath));
+  wrongArchiveBytes[wrongArchiveBytes.length - 1] = wrongArchiveBytes[wrongArchiveBytes.length - 1] ^ 0xff;
+  const officialUrl = expectedArchiveUrl({ releaseTag: "v0.1.5", archive: fixture.archiveName });
+  fixture.metadata.artifacts[0].url = officialUrl;
+  const packageFixture = fixturePackage({ metadata: fixture.metadata });
+  const result = runCli(["init", "--adapter", "codex", "--json"], {
+    cwd,
+    cliPath: packageFixture.cliPath,
+    env: {
+      ...sensitiveProxyEnv(),
+      NODE_OPTIONS: `--import ${mockFetchModule(officialUrl, wrongArchiveBytes)}`,
+    },
+  });
+
+  assert.equal(result.status, 3, result.stderr);
+  const output = JSON.parse(result.stdout);
+  assert.equal(output.status, "error");
+  assert.equal(output.errors[0].code, "archive-sha-mismatch");
+  assert.equal(output.blockers.length, 0);
+  assert.equal(output.diagnostics.download_failure_class, undefined);
+  assert.equal(existsSync(join(cwd, "rigorloop.lock")), false);
 });
 
 test("T15 network mode rejects non-official archive URLs before fetch", () => {
