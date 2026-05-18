@@ -22,8 +22,9 @@ Review closeout: code-review-m3-r3
 Review closeout: code-review-m4-r1
 Review closeout: code-review-m4-r2
 Review closeout: code-review-m5-r1
+Review closeout: code-review-m5-r2
 
-- Reviews covered: `proposal-review`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `spec-review-r3`, `plan-review-r1`, `code-review-m1-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m5-r1`
+- Reviews covered: `proposal-review`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `spec-review-r3`, `plan-review-r1`, `code-review-m1-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m5-r1`, `code-review-m5-r2`
 - Findings resolved: 15
 - Unresolved findings: 0
 - Final result: `FID-01`, `FID-02`, `FID-03`, `FID-04`, and `FID-05` are accepted and resolved in the proposal. `SR1-F1`, `SR1-F2`, `SR1-F3`, and `SR1-F4` are accepted and closed by `spec-review-r2`. `CR-M2-R1-F1`, `CR-M2-R2-F1`, `CR-M3-R1-F1`, `CR-M3-R2-F1`, `CR-M4-R1-F1`, and `CR-M5-R1-F1` are accepted and resolved.
@@ -342,6 +343,10 @@ Validation evidence: `npm test --prefix packages/rigorloop` passed after the pro
 ### code-review-m4-r2
 
 No material findings. Clean formal review closed M4 and handed off to implementation M5. No review-resolution work is required for this review.
+
+### code-review-m5-r2
+
+No material findings. Clean formal review closed M5 and handed off to explain-change. No review-resolution work is required for this review.
 
 ## Closeout Checklist
 

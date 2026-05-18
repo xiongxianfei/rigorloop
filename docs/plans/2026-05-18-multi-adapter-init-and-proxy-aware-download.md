@@ -64,13 +64,13 @@ The current CLI implementation is Codex-specific: it uses `ADAPTER = "codex"`, `
 ## Current Handoff Summary
 
 - Current milestone: M5. Documentation, package proof, and final integration
-- Current milestone state: review-requested
+- Current milestone state: closed
 - Last reviewed milestone: M4. Network download diagnostics and output envelope
-- Review status: M5 review-resolution completed for `CR-M5-R1-F1`; code-review rerun requested
-- Remaining in-scope implementation milestones: M5
-- Next stage: code-review M5 rerun
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M5 code-review rerun, explain-change, verify, and PR handoff remain incomplete.
+- Review status: M5 code-review rerun completed with no material findings
+- Remaining in-scope implementation milestones: none
+- Next stage: explain-change
+- Final closeout readiness: ready for final closeout
+- Reason final closeout is or is not ready: all implementation milestones and required review-resolution are closed; explain-change, verify, and PR handoff remain incomplete.
 
 ## Milestones
 
@@ -170,7 +170,7 @@ The current CLI implementation is Codex-specific: it uses `ADAPTER = "codex"`, `
 
 ### M5. Documentation, package proof, and final integration
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Align package docs, change metadata, and final validation evidence with the implemented multi-adapter contract.
 - Requirements: all requirements; AC1 through AC16.
 - Files/components likely touched: `packages/rigorloop/README.md`, `packages/rigorloop/package.json` only if needed, `docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml`, active plan validation notes, possibly release evidence if the implementation changes release metadata surfaces.
@@ -258,7 +258,8 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 - [x] 2026-05-18: M5 package documentation proof and validation completed; handoff requested for code-review.
 - [x] 2026-05-18: M5 code-review completed with `CR-M5-R1-F1`; review-resolution required.
 - [x] 2026-05-18: M5 review-resolution completed for `CR-M5-R1-F1`; handoff requested for code-review rerun.
-- [ ] M5 closed.
+- [x] 2026-05-18: M5 code-review rerun completed with no material findings.
+- [x] M5 closed.
 - [ ] final code-review, explain-change, verify, and PR handoff completed.
 
 ## Decision log
@@ -336,6 +337,7 @@ Implementation-stage validation is listed inside each milestone. Final verificat
 - 2026-05-18: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md --path docs/plan.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-log.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-resolution.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/code-review-m5-r1.md` passed after resolving `CR-M5-R1-F1`.
 - 2026-05-18: `git diff --check -- packages/rigorloop/test/cli.test.js docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md docs/plan.md` passed after resolving `CR-M5-R1-F1`.
 - 2026-05-18: `bash scripts/ci.sh --mode explicit --path packages/rigorloop/test/cli.test.js --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/change.yaml --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-log.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/review-resolution.md --path docs/changes/2026-05-18-multi-adapter-init-and-proxy-aware-download/reviews/code-review-m5-r1.md --path docs/plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md --path docs/plan.md` passed selected checks: `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, `rigorloop_cli.test`, and `npm_package_publication.test`.
+- 2026-05-18: `code-review-m5-r2` completed with status `clean-with-notes`; M5 closed and explain-change is the next stage.
 
 ## Outcome and retrospective
 
