@@ -27,3 +27,31 @@ The first run of `python scripts/test-skill-validator.py` failed on the new read
 ### Scope boundary
 
 M1 did not rewrite `skills/proposal/SKILL.md` or `skills/proposal-review/SKILL.md`. M2 owns the pilot skill text rewrite and generated adapter validation.
+
+## M2. Pilot skill rewrite and generated-output proof
+
+M2 rewrites only the pilot pair, `proposal` and `proposal-review`, to opt into the readability contract and prove generated output remains derived from canonical skill source.
+
+### Tests first
+
+Added `test_skill_readability_pilot_pair_opts_into_contract` before editing the pilot skills. The focused test failed as expected because the canonical pilot pair did not yet declare `schema-version: skill-readability-v1`, `## Workflow role`, or `## Output skeleton`.
+
+### Implementation
+
+- Added `version: "1.0.0"` and `schema-version: skill-readability-v1` to both pilot skill front matter.
+- Added `## Workflow role` blocks with required role fields.
+- Reworked long proposal and review contracts into tables where the content has named fields, required sections, review dimensions, or classifications.
+- Added authoritative `Closed enum:` blocks for proposal status, Vision fit, scope treatment, review statuses, review dimension results, and recording-related values.
+- Added fenced output skeletons near the bottom of both skills.
+- Labeled workflow-wide and skill-local rules where the distinction affects user behavior.
+- Preserved existing regression-tested wording for artifact placement, stage evidence access, scope preservation, Vision fit, and formal review recording.
+
+### Generated-output proof
+
+Generated skill validation passed from canonical `skills/` source. Temporary adapter archives were built and validated with `v0.1.5`, matching `dist/adapters/manifest.yaml` after PR #68 merged:
+
+- `/tmp/rigorloop-skill-readability-adapters/rigorloop-adapter-codex-v0.1.5.zip`
+- `/tmp/rigorloop-skill-readability-adapters/rigorloop-adapter-claude-v0.1.5.zip`
+- `/tmp/rigorloop-skill-readability-adapters/rigorloop-adapter-opencode-v0.1.5.zip`
+
+No generated adapter body was hand-edited.
