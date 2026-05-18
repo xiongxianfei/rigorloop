@@ -190,7 +190,7 @@ validation:
   - command: bash scripts/ci.sh
     result: failed_verify_warning_legacy_broad_smoke_expanded_to_unrelated_historical_lifecycle_debt
   - command: pr handoff
-    result: prepared_plan_index_moved_to_done_pending_pr_open
+    result: opened_PR_67_and_plan_index_moved_to_done
 review:
   status: clean-with-notes
   unresolved_items: 0
