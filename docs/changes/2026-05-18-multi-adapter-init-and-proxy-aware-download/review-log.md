@@ -149,6 +149,19 @@ Material findings: CR-M2-R2-F1
 Open findings: None
 Recording status: recorded
 
+### Review entry
+Review ID: code-review-m2-r3
+Stage: code-review
+Round: 3
+Reviewed artifact: commit f131a85
+Status: clean-with-notes
+Detailed record: reviews/code-review-m2-r3.md
+Record: reviews/code-review-m2-r3.md
+Resolution: review-resolution.md#code-review-m2-r3
+Material findings: None
+Open findings: None
+Recording status: recorded
+
 ## Open Findings
 
 None.

@@ -15,8 +15,9 @@ Review closeout: plan-review-r1
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m2-r1
 Review closeout: code-review-m2-r2
+Review closeout: code-review-m2-r3
 
-- Reviews covered: `proposal-review`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `spec-review-r3`, `plan-review-r1`, `code-review-m1-r1`, `code-review-m2-r1`, `code-review-m2-r2`
+- Reviews covered: `proposal-review`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `spec-review-r3`, `plan-review-r1`, `code-review-m1-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`
 - Findings resolved: 11
 - Unresolved findings: 0
 - Final result: `FID-01`, `FID-02`, `FID-03`, `FID-04`, and `FID-05` are accepted and resolved in the proposal. `SR1-F1`, `SR1-F2`, `SR1-F3`, and `SR1-F4` are accepted and closed by `spec-review-r2`. `CR-M2-R1-F1` and `CR-M2-R2-F1` are accepted and resolved.
@@ -245,6 +246,10 @@ Required outcome: Older opencode skills-only dry-run planning omits `.opencode/c
 Safe resolution path: Load and validate bundled trusted metadata during dry-run root planning, rebuild the dry-run plan from artifact roots, and add fixture-backed dry-run coverage for older opencode skills-only metadata.
 Validation target: `packages/rigorloop/dist/bin/rigorloop.js` and `packages/rigorloop/test/cli.test.js`.
 Validation evidence: `npm test --prefix packages/rigorloop` passed with `TMAI-020 dry-run skills-only opencode archive omits commands root without mutation`.
+
+### code-review-m2-r3
+
+No material findings. Clean formal review closed M2 and handed off to implementation M3. No review-resolution work is required for this review.
 
 ## Closeout Checklist
 
