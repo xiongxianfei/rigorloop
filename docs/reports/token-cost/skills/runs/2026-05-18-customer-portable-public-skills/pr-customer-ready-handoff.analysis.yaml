@@ -1,0 +1,60 @@
+schema_version: 1
+
+run:
+  id: pr-customer-ready-handoff
+  raw_jsonl_tracked: true
+  jsonl: docs/reports/token-cost/skills/runs/2026-05-18-customer-portable-public-skills/pr-customer-ready-handoff.jsonl
+  sanitized_source: ""
+  sanitized_summary: ""
+  raw_omission_reason: ""
+
+usage:
+  cached_input_tokens: 69632
+  input_tokens: 79827
+  output_tokens: 1261
+  reasoning_output_tokens: 211
+
+tool_output:
+  total_estimated_tokens: 2559
+  largest_event:
+    kind: command_execution
+    command: "/bin/bash -lc 'git diff --stat'"
+    path: ""
+    lines: 130
+    estimated_tokens: 1840
+
+signals:
+  full_file_read_count: 0
+  broad_search_count: 0
+  generated_output_read_count: 0
+  repeated_file_read_count: 0
+
+full_file_read:
+  result: suspected
+  justification: ""
+  signals:
+    - large_leading_range_read
+  justified_reads: []
+  confirmed_reads: []
+  suspected_reads:
+    - path: docs/workflows.md
+      lines: 19
+      estimated_tokens: 146
+    - path: docs/changes/example-change/explain-change.md
+      lines: 3
+      estimated_tokens: 44
+    - path: docs/changes/example-change/change.yaml
+      lines: 21
+      estimated_tokens: 140
+    - path: docs/plans/customer-plan.md
+      lines: 16
+      estimated_tokens: 105
+    - path: specs/customer-feature.md
+      lines: 20
+      estimated_tokens: 109
+  repeated_file_reads: []
+
+verdict:
+  result: pass
+  warnings: []
+  blockers: []

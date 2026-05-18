@@ -11,6 +11,14 @@ You are turning exploration into a concrete, reviewable direction.
 
 A proposal answers “why this change, why now, and why this approach?” It does not define every requirement and it does not prescribe every implementation task.
 
+## Project-local evidence
+
+Public skills operate in customer-project mode by default.
+
+Use project-local artifacts when present and relevant, including `AGENTS.md`, `CONSTITUTION.md`, `VISION.md`, `docs/project-map.md`, `docs/workflows.md`, local specs, local ADRs, related proposals, source files, issues, incidents, and user feedback.
+
+Do not require RigorLoop repository-internal specs, docs, reports, follow-up files, or governance files in customer projects. Use portable defaults where safe, and block on ambiguity when no safe local guidance or default exists.
+
 ## Inputs to read
 
 Read standing operating instructions when present, then use the evidence access rules below for task evidence.

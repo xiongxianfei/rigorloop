@@ -1,0 +1,21 @@
+change_id: example-change
+title: Customer fixture change
+classification: implementation
+risk: low
+artifacts:
+  spec: specs/customer-feature.md
+  plan: docs/plans/customer-plan.md
+  explain_change: docs/changes/example-change/explain-change.md
+requirements:
+  - Demonstrate local workflow artifacts without RigorLoop repository internals.
+tests:
+  - Synthetic fixture test evidence.
+validation:
+  - command: npm test
+    result: not-run-synthetic-fixture
+review:
+  status: not-reviewed
+  unresolved_items: 0
+changed_files:
+  - src/app.js
+  - tests/app.test.js

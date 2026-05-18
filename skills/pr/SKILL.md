@@ -17,6 +17,14 @@ In this repository, `pr` is a submit/open stage when readiness passes. Do not tr
 
 Prepare and, when readiness passes, open a pull request grounded in the actual diff, verification evidence, lifecycle artifacts, risks, and reviewer needs.
 
+## Project-local evidence
+
+Public skills operate in customer-project mode by default.
+
+Use project-local artifacts when present and relevant, including actual diff, git status, proposals, specs, test specs, architecture records, ADRs, plans, validation notes, explain-change artifacts, review-resolution evidence, verification reports, CI status, `AGENTS.md`, `CONSTITUTION.md`, `docs/workflows.md`, and change-local artifacts.
+
+Do not require RigorLoop repository-internal specs, docs, reports, follow-up files, or governance files in customer projects. Use portable defaults where safe, and block on ambiguity when no safe local guidance or default exists. Do not claim validation, branch readiness, PR body readiness, or PR open readiness without owning evidence.
+
 ## When to use
 
 Use this skill after `verify` has established branch readiness, or when the user directly invokes `pr` and the branch is ready or nearly ready for review.

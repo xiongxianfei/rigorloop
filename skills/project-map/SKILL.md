@@ -11,6 +11,14 @@ You are creating architecture visibility for humans and agents before detailed d
 
 This skill is for orientation. It should describe what exists today, not invent a future design.
 
+## Customer-project orientation
+
+Public skills operate in customer-project mode by default.
+
+`project-map` reads project-local repository artifacts for orientation. Treat `AGENTS.md`, `CONSTITUTION.md`, `docs/`, and `specs/` as optional project-local orientation inputs whose absence is normal. Do not search for RigorLoop originals in customer projects.
+
+Use `docs/workflows.md` and other project-local guidance when present and relevant. Use portable defaults where safe, and block on ambiguity when no safe local guidance or default exists.
+
 ## Follow-up boundary
 
 `project-map` may record risks and open questions for orientation.
