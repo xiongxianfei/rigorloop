@@ -123,6 +123,19 @@ Material findings: None
 Open findings: None
 Recording status: recorded
 
+### Review entry
+Review ID: code-review-m2-r1
+Stage: code-review
+Round: 1
+Reviewed artifact: commit 0fc24f7
+Status: changes-requested
+Detailed record: reviews/code-review-m2-r1.md
+Record: reviews/code-review-m2-r1.md
+Resolution: review-resolution.md#code-review-m2-r1
+Material findings: CR-M2-R1-F1
+Open findings: None
+Recording status: recorded
+
 ## Open Findings
 
 None.
@@ -140,3 +153,4 @@ None.
 | SR1-F2 | spec-review-r1 | major | Define `rigorloop.yaml` shape, merge, and conflict behavior. |
 | SR1-F3 | spec-review-r1 | major | Define exact trusted metadata fields for multi-root verification. |
 | SR1-F4 | spec-review-r1 | major | Define stable proxy diagnostic fields and allowed values. |
+| CR-M2-R1-F1 | code-review-m2-r1 | major | Skills-only older opencode installs must omit `.opencode/commands` from planned directories and `rigorloop.yaml`, and must record only installed roots declared by trusted metadata. |

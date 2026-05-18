@@ -12,11 +12,13 @@ Review closeout: spec-review-r2
 Review closeout: architecture-review-r1
 Review closeout: spec-review-r3
 Review closeout: plan-review-r1
+Review closeout: code-review-m1-r1
+Review closeout: code-review-m2-r1
 
-- Reviews covered: `proposal-review`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `spec-review-r3`, `plan-review-r1`
-- Findings resolved: 9
+- Reviews covered: `proposal-review`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `spec-review-r3`, `plan-review-r1`, `code-review-m1-r1`, `code-review-m2-r1`
+- Findings resolved: 10
 - Unresolved findings: 0
-- Final result: `FID-01`, `FID-02`, `FID-03`, `FID-04`, and `FID-05` are accepted and resolved in the proposal. `SR1-F1`, `SR1-F2`, `SR1-F3`, and `SR1-F4` are accepted and closed by `spec-review-r2`.
+- Final result: `FID-01`, `FID-02`, `FID-03`, `FID-04`, and `FID-05` are accepted and resolved in the proposal. `SR1-F1`, `SR1-F2`, `SR1-F3`, and `SR1-F4` are accepted and closed by `spec-review-r2`. `CR-M2-R1-F1` is accepted and resolved.
 
 ## Resolution Overview
 
@@ -31,6 +33,7 @@ Review closeout: plan-review-r1
 | SR1-F2 | accepted | resolved | Spec now defines `rigorloop.yaml` single-root and multi-root shapes plus merge and conflict behavior. |
 | SR1-F3 | accepted | resolved | Spec now defines trusted metadata fields for single-root adapters, multi-root adapters, and opencode command aliases. |
 | SR1-F4 | accepted | resolved | Spec now defines bounded proxy diagnostic fields and allowed values. |
+| CR-M2-R1-F1 | accepted | resolved | M2 implementation derives opencode installed roots from trusted metadata so older skills-only archives omit `.opencode/commands` in planned directories and `rigorloop.yaml`. |
 
 ## Common Resolution Metadata
 
@@ -204,6 +207,24 @@ No material findings. Clean formal review approved the active execution plan for
 ### code-review-m1-r1
 
 No material findings. Clean formal review closed M1 and handed off to implementation M2. No review-resolution work is required for this review.
+
+### code-review-m2-r1
+
+Finding closeout for `code-review-m2-r1`.
+
+### CR-M2-R1-F1 - Skills-only opencode still records and creates commands root
+
+Finding ID: CR-M2-R1-F1
+Disposition: accepted
+Status: resolved
+Owner: implementer
+Owning stage: review-resolution
+Chosen action: Updated manifest and directory planning to use trusted artifact roots when metadata is available, and added fixture-backed skills-only opencode coverage.
+Rationale: The approved spec treats opencode descriptor roots as possible roots, but trusted metadata determines required roots. Older skills-only opencode archives must not silently claim or create command aliases.
+Required outcome: Skills-only older opencode installs omit `.opencode/commands` from planned directories and `rigorloop.yaml`, and record only installed roots declared by trusted metadata.
+Safe resolution path: Recompute selected manifest and directory actions from the validated artifact roots after metadata validation, or defer root-specific manifest/directory planning until trusted metadata is available. Add fixture-backed skills-only opencode coverage for `TMAI-017`/`TMAI-020`.
+Validation target: `packages/rigorloop/dist/bin/rigorloop.js` and `packages/rigorloop/test/cli.test.js`.
+Validation evidence: `npm test --prefix packages/rigorloop` passed with `TMAI-017 skills-only opencode archive omits commands root from plan and manifest`.
 
 ## Closeout Checklist
 
