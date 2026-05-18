@@ -20,8 +20,9 @@ Review closeout: code-review-m3-r1
 Review closeout: code-review-m3-r2
 Review closeout: code-review-m3-r3
 Review closeout: code-review-m4-r1
+Review closeout: code-review-m4-r2
 
-- Reviews covered: `proposal-review`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `spec-review-r3`, `plan-review-r1`, `code-review-m1-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m4-r1`
+- Reviews covered: `proposal-review`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `spec-review-r3`, `plan-review-r1`, `code-review-m1-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m4-r1`, `code-review-m4-r2`
 - Findings resolved: 14
 - Unresolved findings: 0
 - Final result: `FID-01`, `FID-02`, `FID-03`, `FID-04`, and `FID-05` are accepted and resolved in the proposal. `SR1-F1`, `SR1-F2`, `SR1-F3`, and `SR1-F4` are accepted and closed by `spec-review-r2`. `CR-M2-R1-F1`, `CR-M2-R2-F1`, `CR-M3-R1-F1`, `CR-M3-R2-F1`, and `CR-M4-R1-F1` are accepted and resolved.
@@ -317,6 +318,10 @@ Required outcome: `node_env_proxy_status` must report `enabled` when Node env-pr
 Safe resolution path: Update `nodeEnvProxyStatus()` to include runtime exec arguments such as `process.execArgv.includes("--use-env-proxy")` in the enabled check. Add a fixture-backed CLI test that launches the package fixture with `node --use-env-proxy <cli> init --adapter codex --json` when the current Node runtime supports the flag, and asserts `diagnostics.node_env_proxy_status === "enabled"` on a mocked fetch failure.
 Validation target: `packages/rigorloop/dist/bin/rigorloop.js` and `packages/rigorloop/test/cli.test.js`.
 Validation evidence: `npm test --prefix packages/rigorloop` passed with `CR-M4-R1-F1 node_env_proxy_status reports enabled with --use-env-proxy`.
+
+### code-review-m4-r2
+
+No material findings. Clean formal review closed M4 and handed off to implementation M5. No review-resolution work is required for this review.
 
 ## Closeout Checklist
 
