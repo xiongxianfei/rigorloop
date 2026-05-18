@@ -550,6 +550,20 @@ function validateMetadata(metadata, info, descriptor) {
       return { error: { code: "metadata-invalid", message: `${descriptor.displayName} adapter install root is not ${descriptor.primaryInstallRoot()}.` } };
     }
   }
+  if (artifact.command_aliases?.opencode) {
+    if (descriptor.name !== "opencode" || !artifact.install_roots?.commands) {
+      return { error: { code: "metadata-invalid", message: "opencode command alias metadata requires the opencode commands root." } };
+    }
+    const aliasPaths = opencodeCommandAliasPaths(artifact);
+    if (
+      !Number.isInteger(artifact.command_aliases.opencode.count) ||
+      !Array.isArray(aliasPaths) ||
+      artifact.command_aliases.opencode.count !== aliasPaths.length ||
+      aliasPaths.some((aliasPath) => !isNonEmptyString(aliasPath) || !aliasPath.startsWith(`${descriptor.installRoots.commands}/`))
+    ) {
+      return { error: { code: "metadata-invalid", message: "opencode command alias metadata is incomplete." } };
+    }
+  }
   return { artifact };
 }
 
@@ -623,14 +637,14 @@ function parseZipEntries(buffer) {
   return entries;
 }
 
-function unsafePathCode(name, descriptor) {
+function unsafePathCode(name, descriptor, artifact) {
   if (!name || name.startsWith("/") || name.startsWith("\\") || /^[A-Za-z]:/.test(name) || name.includes("\\")) {
     return "archive-path-traversal";
   }
   if (name.split("/").some((part) => part === ".." || part === "")) {
     return "archive-path-traversal";
   }
-  const allowedRoots = Object.values(descriptor.installRoots);
+  const allowedRoots = Object.values(rootsForArtifact(descriptor, artifact));
   if (!allowedRoots.some((root) => name.startsWith(`${root}/`))) {
     return "archive-install-root-invalid";
   }
@@ -650,6 +664,20 @@ function fileRowsForTreeRoot(entries, installRoot) {
       return [relativePath, sha256(bytes)];
     })
     .sort(([left], [right]) => left.localeCompare(right));
+}
+
+function opencodeCommandAliasPaths(artifact) {
+  const aliases = artifact?.command_aliases?.opencode;
+  if (!aliases) {
+    return undefined;
+  }
+  if (Array.isArray(aliases.paths)) {
+    return aliases.paths;
+  }
+  if (aliases.aliases && typeof aliases.aliases === "object") {
+    return Object.values(aliases.aliases);
+  }
+  return [];
 }
 
 function treeHashForEntries(entries, descriptor) {
@@ -890,7 +918,7 @@ function inspectArchive(archiveBytes, artifact, descriptor) {
     if (isArchiveSupportEntry(entry.name)) {
       continue;
     }
-    const pathCode = unsafePathCode(entry.name, descriptor);
+    const pathCode = unsafePathCode(entry.name, descriptor, artifact);
     if (pathCode) {
       return { error: { code: pathCode, message: `Archive entry is not allowed: ${entry.name}`, path: entry.name } };
     }
@@ -909,6 +937,19 @@ function inspectArchive(archiveBytes, artifact, descriptor) {
     }
     if (expected.file_count !== undefined && hash.file_count !== expected.file_count) {
       return { error: { code: "tree-hash-mismatch", message: "Installed tree file count does not match metadata." } };
+    }
+  }
+  if (descriptor.name === "opencode") {
+    for (const aliasPath of opencodeCommandAliasPaths(artifact) ?? []) {
+      if (!files.some((entry) => entry.name === aliasPath)) {
+        return {
+          error: {
+            code: "opencode-command-alias-missing",
+            message: "Declared opencode command alias is missing from archive.",
+            path: aliasPath,
+          },
+        };
+      }
     }
   }
   return { entries: files, archiveHash, rootHashes, treeHash: rootHashes.skills?.tree_sha256, fileCount: rootHashes.skills?.file_count ?? files.length };
@@ -994,6 +1035,23 @@ function writeArchiveEntries(entries, descriptor) {
     const bytes = relativePath.endsWith(".md") ? normalizeText(entry.bytes) : entry.bytes;
     writeFileSync(outputPath, bytes);
   }
+}
+
+function initWarnings(descriptor, artifact) {
+  if (
+    descriptor.name === "opencode" &&
+    artifact &&
+    !artifact.command_aliases?.opencode &&
+    !rootsForArtifact(descriptor, artifact).commands
+  ) {
+    return [
+      {
+        code: "opencode-command-aliases-not-declared",
+        message: "Selected opencode archive metadata does not declare command aliases; only skills were installed.",
+      },
+    ];
+  }
+  return [];
 }
 
 function directoryPlanForRoots(roots) {
@@ -1670,7 +1728,7 @@ async function handleInit(flags) {
     }
   }
 
-  const warnings = [];
+  const warnings = initWarnings(descriptor, archiveWork.artifact);
   const result = envelope("init", flags, {
     status: warnings.length > 0 ? "warning" : "success",
     summary: flags.dryRun
@@ -1699,6 +1757,9 @@ async function handleInit(flags) {
             : `RigorLoop initialized with ${descriptor.displayName} scaffold.`,
           archiveWork.entries ? "rigorloop.lock was written." : "No adapter files were installed.",
         ];
+    for (const warning of warnings) {
+      lines.push(`warning ${warning.code}: ${warning.message}`);
+    }
     writeHuman(`${lines.join("\n")}\n`, flags);
   }
   return exitCodeForResult({ ...result, exit_class: "success" });

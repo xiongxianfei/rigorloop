@@ -2016,6 +2016,10 @@ test("TMAI-021 successful Claude install writes schema v2 single-root lockfile e
   );
 
   assert.equal(result.status, 0, result.stderr);
+  assert.equal(readProjectFile(cwd, ".claude/skills/proposal/SKILL.md"), "# Proposal\n\nUse proposal guidance.\n");
+  assert.equal(readProjectFile(cwd, ".claude/skills/verify/SKILL.md"), "# Verify\n\nUse verify guidance.\n");
+  assert.equal(existsSync(join(cwd, ".agents")), false);
+  assert.equal(existsSync(join(cwd, ".opencode")), false);
   const parsed = parseLockfile(readProjectFile(cwd, "rigorloop.lock"));
   assert.equal(parsed.ok, true);
   assert.equal(parsed.lockfile.schema_version, 2);
@@ -2060,6 +2064,11 @@ test("TMAI-022 opencode schema v2 lockfile uses per-root hashes", () => {
   );
 
   assert.equal(result.status, 0, result.stderr);
+  const output = JSON.parse(result.stdout);
+  assert.ok(output.actions.some((action) => action.path === ".opencode/skills"));
+  assert.ok(output.actions.some((action) => action.path === ".opencode/commands"));
+  assert.equal(readProjectFile(cwd, ".opencode/skills/proposal/SKILL.md"), "# Proposal\n\nUse proposal guidance.\n");
+  assert.equal(readProjectFile(cwd, ".opencode/commands/proposal.md"), "---\ndescription: Proposal\n---\n\nUse proposal.\n");
   const parsed = parseLockfile(readProjectFile(cwd, "rigorloop.lock"));
   assert.equal(parsed.ok, true);
   const entry = parsed.lockfile.generated.adapters[0];
@@ -2071,6 +2080,47 @@ test("TMAI-022 opencode schema v2 lockfile uses per-root hashes", () => {
   assert.deepEqual(entry.root_hashes, fixture.metadata.artifacts[0].root_hashes);
   assert.equal(Object.hasOwn(entry, "tree_sha256"), false);
   assert.equal(Object.hasOwn(entry, "file_count"), false);
+});
+
+test("TMAI-014 missing declared opencode command alias fails verification", () => {
+  const cwd = tempProject();
+  const fixture = fixtureArchive(cwd, {
+    adapter: "opencode",
+    entries: [
+      {
+        name: ".opencode/skills/proposal/SKILL.md",
+        bytes: Buffer.from("# Proposal\n\nUse proposal guidance.\n", "utf8"),
+      },
+      {
+        name: ".opencode/commands/proposal.md",
+        bytes: Buffer.from("---\ndescription: Proposal\n---\n\nUse proposal.\n", "utf8"),
+      },
+    ],
+    installRoots: {
+      skills: ".opencode/skills",
+      commands: ".opencode/commands",
+    },
+    commandAliases: {
+      opencode: {
+        count: 2,
+        paths: [".opencode/commands/proposal.md", ".opencode/commands/verify.md"],
+      },
+    },
+  });
+
+  const result = runCliWithBundledMetadata(
+    ["init", "--adapter", "opencode", "--from-archive", `./${fixture.archiveName}`, "--json"],
+    cwd,
+    fixture.metadata,
+  );
+
+  assert.equal(result.status, 3, result.stderr);
+  const output = JSON.parse(result.stdout);
+  assert.equal(output.status, "error");
+  assert.equal(output.errors[0].code, "opencode-command-alias-missing");
+  assert.equal(output.errors[0].path, ".opencode/commands/verify.md");
+  assert.equal(existsSync(join(cwd, ".opencode", "commands", "proposal.md")), false);
+  assert.equal(existsSync(join(cwd, "rigorloop.lock")), false);
 });
 
 test("TMAI-017 skills-only opencode archive omits commands root from plan and manifest", () => {
@@ -2088,6 +2138,9 @@ test("TMAI-017 skills-only opencode archive omits commands root from plan and ma
 
   assert.equal(result.status, 0, result.stderr);
   const output = JSON.parse(result.stdout);
+  assert.equal(output.status, "warning");
+  assert.equal(output.warnings[0].code, "opencode-command-aliases-not-declared");
+  assert.doesNotMatch(output.warnings[0].message, /slash commands|command aliases were installed/i);
   assert.ok(output.actions.some((action) => action.path === ".opencode/skills"));
   assert.equal(output.actions.some((action) => action.path === ".opencode/commands"), false);
   assert.equal(existsSync(join(cwd, ".opencode", "skills")), true);
@@ -2105,6 +2158,54 @@ test("TMAI-017 skills-only opencode archive omits commands root from plan and ma
   assert.deepEqual(Object.keys(entry.root_hashes), ["skills"]);
 });
 
+test("TMAI-016 human older opencode warning does not imply command aliases are available", () => {
+  const cwd = tempProject();
+  const fixture = fixtureArchive(cwd, {
+    adapter: "opencode",
+    installRoot: ".opencode/skills",
+  });
+
+  const result = runCliWithBundledMetadata(["init", "--adapter", "opencode", "--from-archive", `./${fixture.archiveName}`], cwd, fixture.metadata);
+
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /opencode-command-aliases-not-declared/);
+  assert.doesNotMatch(result.stdout, /slash commands/i);
+  assert.doesNotMatch(result.stdout, /command aliases were installed/i);
+  assert.equal(existsSync(join(cwd, ".opencode", "commands")), false);
+});
+
+test("TMAI-011 skills-only opencode metadata rejects unexpected commands root entries", () => {
+  const cwd = tempProject();
+  const fixture = fixtureArchive(cwd, {
+    adapter: "opencode",
+    installRoot: ".opencode/skills",
+    entries: [
+      {
+        name: ".opencode/skills/proposal/SKILL.md",
+        bytes: Buffer.from("# Proposal\n\nUse proposal guidance.\n", "utf8"),
+      },
+      {
+        name: ".opencode/commands/proposal.md",
+        bytes: Buffer.from("---\ndescription: Proposal\n---\n\nUse proposal.\n", "utf8"),
+      },
+    ],
+  });
+
+  const result = runCliWithBundledMetadata(
+    ["init", "--adapter", "opencode", "--from-archive", `./${fixture.archiveName}`, "--json"],
+    cwd,
+    fixture.metadata,
+  );
+
+  assert.equal(result.status, 3, result.stderr);
+  const output = JSON.parse(result.stdout);
+  assert.equal(output.status, "error");
+  assert.equal(output.errors[0].code, "archive-install-root-invalid");
+  assert.equal(output.errors[0].path, ".opencode/commands/proposal.md");
+  assert.equal(existsSync(join(cwd, ".opencode", "commands")), false);
+  assert.equal(existsSync(join(cwd, "rigorloop.lock")), false);
+});
+
 test("TMAI-020 dry-run skills-only opencode archive omits commands root without mutation", () => {
   const cwd = tempProject();
   const fixture = fixtureArchive(cwd, {
@@ -2120,7 +2221,8 @@ test("TMAI-020 dry-run skills-only opencode archive omits commands root without 
 
   assert.equal(result.status, 0, result.stderr);
   const output = JSON.parse(result.stdout);
-  assert.equal(output.status, "success");
+  assert.equal(output.status, "warning");
+  assert.equal(output.warnings[0].code, "opencode-command-aliases-not-declared");
   assert.ok(output.actions.some((action) => action.path === ".opencode/skills"));
   assert.equal(output.actions.some((action) => action.path === ".opencode/commands"), false);
   assert.match(output.planned_manifest.content, /name: opencode/);
