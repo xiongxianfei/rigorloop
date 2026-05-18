@@ -572,6 +572,17 @@ function validateMetadata(metadata, info, descriptor) {
       return { error: { code: "metadata-invalid", message: "opencode command alias metadata is incomplete." } };
     }
   }
+  // CR-M3-R2-F1: opencode commands root is valid only with declared command aliases.
+  if (descriptor.name === "opencode" && artifact.install_roots?.commands && !artifact.command_aliases?.opencode) {
+    return {
+      blocker: metadataBlocker(
+        "opencode-command-aliases-missing",
+        "Opencode commands root metadata requires command_aliases.opencode.",
+        artifact.archive,
+        "Use opencode metadata that declares command aliases, or use explicitly compatible skills-only metadata without the commands root.",
+      ),
+    };
+  }
   // CR-M3-R1-F1: skills-only opencode compatibility must be explicit in trusted metadata.
   if (descriptor.name === "opencode" && !artifact.command_aliases?.opencode && !rootsForArtifact(descriptor, artifact).commands) {
     const marker = artifact.skills_only_compatibility ?? metadata.compatibility?.opencode_skills_only;
@@ -1507,7 +1518,10 @@ async function archiveWorkForInit(flags, info, descriptor) {
   const metadata = bundledMetadata.metadata;
   const validation = validateMetadata(metadata, info, descriptor);
   if (validation.blocker || validation.error) {
-    if (flags.dryRun) {
+    if (
+      flags.dryRun &&
+      !["opencode-command-aliases-missing", "opencode-skills-only-compatibility-unmarked"].includes(validation.blocker?.code)
+    ) {
       return {};
     }
     return validation;

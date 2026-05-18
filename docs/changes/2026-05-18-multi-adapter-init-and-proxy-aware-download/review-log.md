@@ -190,7 +190,7 @@ Recording status: recorded
 
 ## Open Findings
 
-- CR-M3-R2-F1
+None.
 
 ## Closed Findings
 
@@ -208,9 +208,4 @@ Recording status: recorded
 | CR-M2-R1-F1 | code-review-m2-r1 | major | Skills-only older opencode installs must omit `.opencode/commands` from planned directories and `rigorloop.yaml`, and must record only installed roots declared by trusted metadata. |
 | CR-M2-R2-F1 | code-review-m2-r2 | major | Older opencode skills-only dry-run planning must omit `.opencode/commands` from planned directory actions, planned manifest content, and planned lockfile content. |
 | CR-M3-R1-F1 | code-review-m3-r1 | major | Older skills-only opencode install is allowed only when bundled trusted metadata explicitly marks the selected release or artifact as compatible with skills-only opencode installation. |
-
-## Open Finding Details
-
-| Finding ID | Review | Severity | Required outcome |
-|---|---|---|---|
 | CR-M3-R2-F1 | code-review-m3-r2 | major | Opencode metadata that declares `.opencode/commands` must include valid `command_aliases.opencode`; otherwise it must block before extraction and mutation. |

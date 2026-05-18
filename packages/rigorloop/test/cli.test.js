@@ -2126,6 +2126,74 @@ test("TMAI-014 missing declared opencode command alias fails verification", () =
   assert.equal(existsSync(join(cwd, "rigorloop.lock")), false);
 });
 
+test("TMAI-014 opencode commands root without alias metadata blocks before mutation", () => {
+  const cwd = tempProject();
+  const fixture = fixtureArchive(cwd, {
+    adapter: "opencode",
+    entries: [
+      {
+        name: ".opencode/skills/proposal/SKILL.md",
+        bytes: Buffer.from("# Proposal\n\nUse proposal guidance.\n", "utf8"),
+      },
+      {
+        name: ".opencode/commands/proposal.md",
+        bytes: Buffer.from("---\ndescription: Proposal\n---\n\nUse proposal.\n", "utf8"),
+      },
+    ],
+    installRoots: {
+      skills: ".opencode/skills",
+      commands: ".opencode/commands",
+    },
+  });
+
+  const result = runCliWithBundledMetadata(
+    ["init", "--adapter", "opencode", "--from-archive", `./${fixture.archiveName}`, "--json"],
+    cwd,
+    fixture.metadata,
+  );
+
+  assert.equal(result.status, 2, result.stderr);
+  const output = JSON.parse(result.stdout);
+  assert.equal(output.status, "blocked");
+  assert.equal(output.blockers[0].code, "opencode-command-aliases-missing");
+  assert.equal(existsSync(join(cwd, ".opencode")), false);
+  assert.equal(existsSync(join(cwd, "rigorloop.yaml")), false);
+  assert.equal(existsSync(join(cwd, "rigorloop.lock")), false);
+});
+
+test("TMAI-020 dry-run opencode commands root without alias metadata blocks without mutation", () => {
+  const cwd = tempProject();
+  const fixture = fixtureArchive(cwd, {
+    adapter: "opencode",
+    entries: [
+      {
+        name: ".opencode/skills/proposal/SKILL.md",
+        bytes: Buffer.from("# Proposal\n\nUse proposal guidance.\n", "utf8"),
+      },
+      {
+        name: ".opencode/commands/proposal.md",
+        bytes: Buffer.from("---\ndescription: Proposal\n---\n\nUse proposal.\n", "utf8"),
+      },
+    ],
+    installRoots: {
+      skills: ".opencode/skills",
+      commands: ".opencode/commands",
+    },
+  });
+
+  const result = runCliWithBundledMetadata(
+    ["init", "--adapter", "opencode", "--from-archive", `./${fixture.archiveName}`, "--dry-run", "--json"],
+    cwd,
+    fixture.metadata,
+  );
+
+  assert.equal(result.status, 2, result.stderr);
+  const output = JSON.parse(result.stdout);
+  assert.equal(output.status, "blocked");
+  assert.equal(output.blockers[0].code, "opencode-command-aliases-missing");
+  assert.deepEqual(listProject(cwd), ["adapter-artifacts-v0.1.5.json", fixture.archiveName]);
+});
+
 test("TMAI-017 skills-only opencode archive omits commands root from plan and manifest", () => {
   const cwd = tempProject();
   const fixture = fixtureArchive(cwd, {
