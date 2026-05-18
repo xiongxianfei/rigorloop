@@ -74,17 +74,29 @@ function normalizeText(bytes) {
   return Buffer.from(text.replace(/\r\n?/g, "\n"), "utf8");
 }
 
-function treeHashForEntries(entries) {
+function treeRowsForEntries(entries, installRoot = ".agents/skills") {
   const rows = entries
-    .filter((entry) => !entry.directory && entry.name.startsWith(".agents/skills/"))
+    .filter((entry) => !entry.directory && entry.name.startsWith(`${installRoot}/`))
     .map((entry) => {
-      const relativePath = entry.name.slice(".agents/skills/".length);
+      const relativePath = entry.name.slice(`${installRoot}/`.length);
       const bytes = relativePath.endsWith(".md") ? normalizeText(entry.bytes) : entry.bytes;
       return [relativePath, sha256(bytes)];
     })
     .sort(([left], [right]) => left.localeCompare(right));
+  return rows;
+}
+
+function treeHashForRows(rows) {
   const manifest = `rigorloop-tree-hash-v1\n${rows.map(([path, hash]) => `${path}\t${hash}`).join("\n")}\n`;
   return sha256(Buffer.from(manifest, "utf8"));
+}
+
+function treeHashForEntries(entries, installRoot = ".agents/skills") {
+  return treeHashForRows(treeRowsForEntries(entries, installRoot));
+}
+
+function fileCountForEntries(entries, installRoot = ".agents/skills") {
+  return treeRowsForEntries(entries, installRoot).length;
 }
 
 function uint16(value) {
@@ -164,21 +176,53 @@ function createZip(entries) {
 }
 
 function fixtureArchive(projectRoot, options = {}) {
-  const archiveName = options.archiveName ?? "rigorloop-adapter-codex-v0.1.5.zip";
+  const adapter = options.adapter ?? "codex";
+  const archiveName = options.archiveName ?? `rigorloop-adapter-${adapter}-v0.1.5.zip`;
+  const installRoot = options.installRoot ?? ".agents/skills";
   const entries =
     options.entries ?? [
       {
-        name: ".agents/skills/proposal/SKILL.md",
+        name: `${installRoot}/proposal/SKILL.md`,
         bytes: Buffer.from("# Proposal\n\nUse proposal guidance.\r\n", "utf8"),
       },
       {
-        name: ".agents/skills/verify/SKILL.md",
+        name: `${installRoot}/verify/SKILL.md`,
         bytes: Buffer.from("# Verify\n\nUse verify guidance.\n", "utf8"),
       },
     ];
   const archiveBytes = options.archiveBytes ?? createZip(entries);
   const archivePath = join(projectRoot, archiveName);
   writeFileSync(archivePath, archiveBytes);
+
+  const artifact = {
+    adapter,
+    archive: archiveName,
+    url: `https://github.com/xiongxianfei/rigorloop/releases/download/v0.1.5/${archiveName}`,
+    sha256: sha256(archiveBytes),
+    size_bytes: archiveBytes.length,
+    install_root: installRoot,
+    tree_hash_algorithm: "rigorloop-tree-hash-v1",
+    tree_sha256: treeHashForEntries(entries, installRoot),
+    file_count: fileCountForEntries(entries, installRoot),
+  };
+  if (options.installRoots) {
+    delete artifact.install_root;
+    delete artifact.tree_sha256;
+    delete artifact.file_count;
+    artifact.install_roots = options.installRoots;
+    artifact.root_hashes = Object.fromEntries(
+      Object.entries(options.installRoots).map(([role, root]) => [
+        role,
+        {
+          tree_sha256: treeHashForEntries(entries, root),
+          file_count: fileCountForEntries(entries, root),
+        },
+      ]),
+    );
+  }
+  if (options.commandAliases) {
+    artifact.command_aliases = options.commandAliases;
+  }
 
   const metadata = {
     schema_version: 1,
@@ -193,18 +237,7 @@ function fixtureArchive(projectRoot, options = {}) {
       url: "https://github.com/xiongxianfei/rigorloop/releases/download/v0.1.5/adapter-artifacts-v0.1.5.json",
       sha256: sha256(Buffer.from("fixture metadata\n", "utf8")),
     },
-    artifacts: [
-      {
-        adapter: "codex",
-        archive: archiveName,
-        url: `https://github.com/xiongxianfei/rigorloop/releases/download/v0.1.5/${archiveName}`,
-        sha256: sha256(archiveBytes),
-        size_bytes: archiveBytes.length,
-        install_root: ".agents/skills",
-        tree_hash_algorithm: "rigorloop-tree-hash-v1",
-        tree_sha256: treeHashForEntries(entries),
-      },
-    ],
+    artifacts: [artifact],
     validation: {
       command: "python scripts/validate-adapters.py --root <release-output-dir> --version v0.1.5",
       result: "pass",
@@ -310,6 +343,47 @@ generated:
       installed_root: ".agents/skills"
       tree_hash_algorithm: ${treeHashAlgorithm}
       tree_sha256: "3333333333333333333333333333333333333333333333333333333333333333"
+      file_count: 23
+`;
+}
+
+function validV2Lockfile() {
+  return `schema_version: 2
+
+rigorloop:
+  package: "@xiongxianfei/rigorloop"
+  version: "0.1.5"
+
+manifest:
+  path: "rigorloop.yaml"
+  sha256: "1111111111111111111111111111111111111111111111111111111111111111"
+
+generated:
+  adapters:
+    - adapter: opencode
+      release: "v0.1.5"
+      source: release-archive
+      archive: "rigorloop-adapter-opencode-v0.1.5.zip"
+      archive_sha256: "2222222222222222222222222222222222222222222222222222222222222222"
+      tree_hash_algorithm: rigorloop-tree-hash-v1
+      installed_roots:
+        skills: ".opencode/skills"
+        commands: ".opencode/commands"
+      root_hashes:
+        skills:
+          tree_sha256: "3333333333333333333333333333333333333333333333333333333333333333"
+          file_count: 23
+        commands:
+          tree_sha256: "4444444444444444444444444444444444444444444444444444444444444444"
+          file_count: 5
+    - adapter: codex
+      release: "v0.1.5"
+      source: release-archive
+      archive: "rigorloop-adapter-codex-v0.1.5.zip"
+      archive_sha256: "5555555555555555555555555555555555555555555555555555555555555555"
+      installed_root: ".agents/skills"
+      tree_hash_algorithm: rigorloop-tree-hash-v1
+      tree_sha256: "6666666666666666666666666666666666666666666666666666666666666666"
       file_count: 23
 `;
 }
@@ -983,7 +1057,11 @@ test("TMAI-001 dry-run selects descriptors for all supported adapters", () => {
     assert.match(output.planned_manifest.content, new RegExp(root.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), adapter);
     assert.equal(output.planned_lockfile.generated.adapters[0].adapter, adapter);
     assert.equal(output.planned_lockfile.generated.adapters[0].archive, archive);
-    assert.equal(output.planned_lockfile.generated.adapters[0].installed_root, root);
+    if (adapter === "opencode") {
+      assert.equal(output.planned_lockfile.generated.adapters[0].installed_roots.skills, root);
+    } else {
+      assert.equal(output.planned_lockfile.generated.adapters[0].installed_root, root);
+    }
     assert.deepEqual(listProject(cwd), [], adapter);
   }
 });
@@ -1464,7 +1542,7 @@ test("T20 actual init writes minimum manifest, Codex install root, and lockfile"
   assert.match(manifest, /name: codex/);
   assert.match(manifest, /install_root: ".agents\/skills"/);
   assert.match(manifest, /type: local-archive/);
-  assert.match(manifest, /archive: "\.\/rigorloop-adapter-codex-v0\.1\.5\.zip"/);
+  assert.match(manifest, /archive: "rigorloop-adapter-codex-v0\.1\.5\.zip"/);
 });
 
 test("T24 write plan represents parent and leaf directory states before mutation", () => {
@@ -1533,6 +1611,72 @@ adapters:
   assert.equal(output.errors[0].code, "invalid-config");
 });
 
+test("TMAI-018 adding an adapter preserves existing valid manifest entries", () => {
+  const cwd = tempProject();
+  const existingManifest = `schema_version: 1
+rigorloop:
+  package: "@xiongxianfei/rigorloop"
+  package_version: "0.1.5"
+adapters:
+  - name: codex
+    install_root: ".agents/skills"
+    source:
+      type: local-archive
+      archive: "rigorloop-adapter-codex-v0.1.5.zip"
+`;
+  writeFileSync(join(cwd, "rigorloop.yaml"), existingManifest);
+  const fixture = fixtureArchive(cwd, { adapter: "claude", installRoot: ".claude/skills" });
+
+  const result = runCliWithBundledMetadata(
+    ["init", "--adapter", "claude", "--from-archive", `./${fixture.archiveName}`, "--json"],
+    cwd,
+    fixture.metadata,
+  );
+
+  assert.equal(result.status, 0, result.stderr);
+  const manifest = readProjectFile(cwd, "rigorloop.yaml");
+  assert.match(manifest, /name: codex/);
+  assert.match(manifest, /install_root: ".agents\/skills"/);
+  assert.match(manifest, /name: claude/);
+  assert.match(manifest, /install_root: ".claude\/skills"/);
+});
+
+test("TMAI-019 duplicate selected manifest entries block before mutation", () => {
+  const cwd = tempProject();
+  writeFileSync(
+    join(cwd, "rigorloop.yaml"),
+    `schema_version: 1
+rigorloop:
+  package: "@xiongxianfei/rigorloop"
+  package_version: "0.1.5"
+adapters:
+  - name: claude
+    install_root: ".claude/skills"
+    source:
+      type: release-archive
+      release: "v0.1.5"
+  - name: claude
+    install_root: ".claude/skills"
+    source:
+      type: release-archive
+      release: "v0.1.5"
+`,
+  );
+  const fixture = fixtureArchive(cwd, { adapter: "claude", installRoot: ".claude/skills" });
+
+  const result = runCliWithBundledMetadata(
+    ["init", "--adapter", "claude", "--from-archive", `./${fixture.archiveName}`, "--json"],
+    cwd,
+    fixture.metadata,
+  );
+
+  assert.equal(result.status, 2, result.stderr);
+  const output = JSON.parse(result.stdout);
+  assert.equal(output.blockers[0].code, "duplicate-adapter-entry");
+  assert.equal(existsSync(join(cwd, ".claude", "skills", "proposal", "SKILL.md")), false);
+  assert.equal(existsSync(join(cwd, "rigorloop.lock")), false);
+});
+
 test("T22 local archive mode plans local-archive manifest source", () => {
   const cwd = tempProject();
   writeFileSync(join(cwd, "rigorloop-adapter-codex-v0.1.5.zip"), "placeholder archive fixture\n");
@@ -1543,7 +1687,7 @@ test("T22 local archive mode plans local-archive manifest source", () => {
   assert.equal(result.status, 0, result.stderr);
   const output = JSON.parse(result.stdout);
   assert.match(output.planned_manifest.content, /type: local-archive/);
-  assert.match(output.planned_manifest.content, /archive: "\.\/rigorloop-adapter-codex-v0\.1\.5\.zip"/);
+  assert.match(output.planned_manifest.content, /archive: "rigorloop-adapter-codex-v0\.1\.5\.zip"/);
   assert.equal(output.planned_lockfile.generated.adapters[0].source, "local-archive");
   assert.equal(output.planned_lockfile.generated.adapters[0].archive, "rigorloop-adapter-codex-v0.1.5.zip");
   assert.deepEqual(listProject(cwd), ["rigorloop-adapter-codex-v0.1.5.zip"]);
@@ -1559,7 +1703,7 @@ test("T22 local archive mode plans local-archive manifest source", () => {
   assert.equal(actual.status, 0, actual.stderr);
   const manifest = readProjectFile(actualProject, "rigorloop.yaml");
   assert.match(manifest, /type: local-archive/);
-  assert.match(manifest, /archive: "\.\/rigorloop-adapter-codex-v0\.1\.5\.zip"/);
+  assert.match(manifest, /archive: "rigorloop-adapter-codex-v0\.1\.5\.zip"/);
 });
 
 test("T23 generated manifest avoids forbidden claims and validation commands", () => {
@@ -1845,6 +1989,7 @@ test("TLF-012 network install writes a complete lockfile after verification", ()
   assert.equal(output.artifacts.find((artifact) => artifact.path === "rigorloop.lock")?.status, "created");
   const parsed = parseLockfile(readProjectFile(cwd, "rigorloop.lock"));
   assert.equal(parsed.ok, true);
+  assert.equal(parsed.lockfile.schema_version, 2);
   const entry = parsed.lockfile.generated.adapters[0];
   assert.equal(parsed.lockfile.rigorloop.package, "@xiongxianfei/rigorloop");
   assert.equal(parsed.lockfile.rigorloop.version, "0.1.5");
@@ -1860,6 +2005,130 @@ test("TLF-012 network install writes a complete lockfile after verification", ()
   assert.equal(entry.file_count, 2);
 });
 
+test("TMAI-021 successful Claude install writes schema v2 single-root lockfile entry", () => {
+  const cwd = tempProject();
+  const fixture = fixtureArchive(cwd, { adapter: "claude", installRoot: ".claude/skills" });
+
+  const result = runCliWithBundledMetadata(
+    ["init", "--adapter", "claude", "--from-archive", `./${fixture.archiveName}`, "--json"],
+    cwd,
+    fixture.metadata,
+  );
+
+  assert.equal(result.status, 0, result.stderr);
+  const parsed = parseLockfile(readProjectFile(cwd, "rigorloop.lock"));
+  assert.equal(parsed.ok, true);
+  assert.equal(parsed.lockfile.schema_version, 2);
+  const entry = parsed.lockfile.generated.adapters[0];
+  assert.equal(entry.adapter, "claude");
+  assert.equal(entry.installed_root, ".claude/skills");
+  assert.equal(entry.tree_sha256, fixture.metadata.artifacts[0].tree_sha256);
+  assert.equal(entry.file_count, 2);
+});
+
+test("TMAI-022 opencode schema v2 lockfile uses per-root hashes", () => {
+  const cwd = tempProject();
+  const entries = [
+    {
+      name: ".opencode/skills/proposal/SKILL.md",
+      bytes: Buffer.from("# Proposal\n\nUse proposal guidance.\n", "utf8"),
+    },
+    {
+      name: ".opencode/commands/proposal.md",
+      bytes: Buffer.from("---\ndescription: Proposal\n---\n\nUse proposal.\n", "utf8"),
+    },
+  ];
+  const fixture = fixtureArchive(cwd, {
+    adapter: "opencode",
+    entries,
+    installRoots: {
+      skills: ".opencode/skills",
+      commands: ".opencode/commands",
+    },
+    commandAliases: {
+      opencode: {
+        count: 1,
+        paths: [".opencode/commands/proposal.md"],
+      },
+    },
+  });
+
+  const result = runCliWithBundledMetadata(
+    ["init", "--adapter", "opencode", "--from-archive", `./${fixture.archiveName}`, "--json"],
+    cwd,
+    fixture.metadata,
+  );
+
+  assert.equal(result.status, 0, result.stderr);
+  const parsed = parseLockfile(readProjectFile(cwd, "rigorloop.lock"));
+  assert.equal(parsed.ok, true);
+  const entry = parsed.lockfile.generated.adapters[0];
+  assert.equal(entry.adapter, "opencode");
+  assert.deepEqual(entry.installed_roots, {
+    skills: ".opencode/skills",
+    commands: ".opencode/commands",
+  });
+  assert.deepEqual(entry.root_hashes, fixture.metadata.artifacts[0].root_hashes);
+  assert.equal(Object.hasOwn(entry, "tree_sha256"), false);
+  assert.equal(Object.hasOwn(entry, "file_count"), false);
+});
+
+test("TMAI-025 valid schema v1 Codex lockfile upgrades to schema v2 after drift check", () => {
+  const cwd = tempProject();
+  const codexFixture = fixtureArchive(cwd);
+  const codex = runCliWithBundledMetadata(
+    ["init", "--adapter", "codex", "--from-archive", `./${codexFixture.archiveName}`, "--json"],
+    cwd,
+    codexFixture.metadata,
+  );
+  assert.equal(codex.status, 0, codex.stderr);
+  const v2 = parseLockfile(readProjectFile(cwd, "rigorloop.lock")).lockfile;
+  writeFileSync(join(cwd, "rigorloop.lock"), serializeLockfile({ ...v2, schema_version: 1 }));
+  const claudeFixture = fixtureArchive(cwd, { adapter: "claude", installRoot: ".claude/skills" });
+
+  const claude = runCliWithBundledMetadata(
+    ["init", "--adapter", "claude", "--from-archive", `./${claudeFixture.archiveName}`, "--json"],
+    cwd,
+    claudeFixture.metadata,
+  );
+
+  assert.equal(claude.status, 0, claude.stderr);
+  const parsed = parseLockfile(readProjectFile(cwd, "rigorloop.lock"));
+  assert.equal(parsed.ok, true);
+  assert.equal(parsed.lockfile.schema_version, 2);
+  assert.deepEqual(
+    parsed.lockfile.generated.adapters.map((entry) => entry.adapter),
+    ["claude", "codex"],
+  );
+});
+
+test("TMAI-026 drifted schema v1 Codex lockfile blocks unrelated adapter addition", () => {
+  const cwd = tempProject();
+  const codexFixture = fixtureArchive(cwd);
+  const codex = runCliWithBundledMetadata(
+    ["init", "--adapter", "codex", "--from-archive", `./${codexFixture.archiveName}`, "--json"],
+    cwd,
+    codexFixture.metadata,
+  );
+  assert.equal(codex.status, 0, codex.stderr);
+  const v2 = parseLockfile(readProjectFile(cwd, "rigorloop.lock")).lockfile;
+  writeFileSync(join(cwd, "rigorloop.lock"), serializeLockfile({ ...v2, schema_version: 1 }));
+  writeFileSync(join(cwd, ".agents", "skills", "proposal", "SKILL.md"), "drift\n");
+  const claudeFixture = fixtureArchive(cwd, { adapter: "claude", installRoot: ".claude/skills" });
+
+  const claude = runCliWithBundledMetadata(
+    ["init", "--adapter", "claude", "--from-archive", `./${claudeFixture.archiveName}`, "--json"],
+    cwd,
+    claudeFixture.metadata,
+  );
+
+  assert.equal(claude.status, 2, claude.stderr);
+  const output = JSON.parse(claude.stdout);
+  assert.equal(output.blockers[0].code, "generated-output-drift");
+  assert.equal(existsSync(join(cwd, ".claude", "skills", "proposal", "SKILL.md")), false);
+  assert.equal(parseLockfile(readProjectFile(cwd, "rigorloop.lock")).lockfile.schema_version, 1);
+});
+
 test("TLF-013 and TLF-014 local archive install writes portable local-archive lockfile", () => {
   const cwd = tempProject();
   const fixture = fixtureArchive(cwd);
@@ -1873,6 +2142,7 @@ test("TLF-013 and TLF-014 local archive install writes portable local-archive lo
   const lockfile = readProjectFile(cwd, "rigorloop.lock");
   const parsed = parseLockfile(lockfile);
   assert.equal(parsed.ok, true);
+  assert.equal(parsed.lockfile.schema_version, 2);
   const entry = parsed.lockfile.generated.adapters[0];
   assert.equal(entry.source, "local-archive");
   assert.equal(entry.release, "v0.1.5");
@@ -1880,6 +2150,7 @@ test("TLF-013 and TLF-014 local archive install writes portable local-archive lo
   assert.equal(entry.archive_sha256, fixture.metadata.artifacts[0].sha256);
   assert.doesNotMatch(lockfile, new RegExp(absoluteArchivePath.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.doesNotMatch(lockfile, /\/tmp|\\\\|TOKEN|SECRET|hostname|username/);
+  assert.doesNotMatch(readProjectFile(cwd, "rigorloop.yaml"), new RegExp(absoluteArchivePath.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
 });
 
 test("TLF-013 failed verification does not create or update rigorloop.lock", () => {
@@ -2113,6 +2384,40 @@ test("TLF-001 valid lockfile fixture parses and serializes deterministically", (
   assert.doesNotMatch(first, /\/tmp|\\\\|generatedAt|username|hostname|TOKEN|SECRET/);
 });
 
+test("TMAI-024 schema v2 lockfile parses and serializes sorted single-root and multi-root entries", () => {
+  const parsed = parseLockfile(validV2Lockfile());
+
+  assert.equal(parsed.ok, true);
+  assert.equal(parsed.lockfile.schema_version, 2);
+  assert.deepEqual(
+    parsed.lockfile.generated.adapters.map((entry) => entry.adapter),
+    ["opencode", "codex"],
+  );
+  const opencode = parsed.lockfile.generated.adapters.find((entry) => entry.adapter === "opencode");
+  assert.deepEqual(opencode.installed_roots, {
+    skills: ".opencode/skills",
+    commands: ".opencode/commands",
+  });
+  assert.equal(opencode.root_hashes.skills.file_count, 23);
+  assert.equal(opencode.root_hashes.commands.file_count, 5);
+
+  const serialized = serializeLockfile(parsed.lockfile);
+  assert.match(serialized, /schema_version: 2/);
+  assert.ok(serialized.indexOf("adapter: codex") < serialized.indexOf("adapter: opencode"));
+  assert.equal(serializeLockfile(parseLockfile(serialized).lockfile), serialized);
+});
+
+test("TMAI-024 schema v2 rejects unknown adapter fields and unsupported multi-root hashes", () => {
+  const unknown = validV2Lockfile().replace("      file_count: 23\n", "      file_count: 23\n      future: true\n");
+  const invalidMultiRoot = validV2Lockfile().replace(
+    "      root_hashes:\n",
+    '      tree_sha256: "3333333333333333333333333333333333333333333333333333333333333333"\n      root_hashes:\n',
+  );
+
+  assert.equal(parseLockfile(unknown).code, "unsupported-lockfile-shape");
+  assert.equal(parseLockfile(invalidMultiRoot).code, "unsupported-lockfile-shape");
+});
+
 test("TLF-007 missing required lockfile fields are invalid config", () => {
   const missingPackage = validLockfile().replace('  package: "@xiongxianfei/rigorloop"\n', "");
   const parsed = parseLockfile(missingPackage);
@@ -2130,8 +2435,8 @@ test("TLF-005 and TLF-006 unsupported lockfile shape blocks before mutation", ()
     ["unknown manifest mapping", lockfileWithUnknownMapping("manifest")],
     ["unknown generated mapping", lockfileWithUnknownMapping("generated")],
     ["unknown adapter mapping", lockfileWithUnknownMapping("adapter")],
-    ["unsupported schema", validLockfile({ schemaVersion: 2 })],
-    ["unsupported adapter", validLockfile({ adapter: "claude" })],
+    ["unsupported schema", validLockfile({ schemaVersion: 999 })],
+    ["unsupported adapter", validLockfile({ adapter: "cursor" })],
     ["unsupported source", validLockfile({ source: "mirror" })],
     ["unsupported tree hash", validLockfile({ treeHashAlgorithm: "other-tree-hash" })],
   ];

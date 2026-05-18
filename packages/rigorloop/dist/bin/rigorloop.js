@@ -129,7 +129,8 @@ function sourceForFlags(flags, info, descriptor) {
   if (flags.fromArchiveProvided) {
     return {
       type: "local-archive",
-      archive: flags.fromArchive,
+      archive: basename(flags.fromArchive),
+      inputPath: flags.fromArchive,
     };
   }
 
@@ -140,7 +141,7 @@ function sourceForFlags(flags, info, descriptor) {
   };
 }
 
-function manifestContent(info, source, descriptor) {
+function manifestAdapterBlock(source, descriptor) {
   const sourceLines =
     source.type === "local-archive"
       ? [`      type: local-archive`, `      archive: "${source.archive}"`]
@@ -153,22 +154,129 @@ function manifestContent(info, source, descriptor) {
           ...Object.entries(descriptor.installRoots).map(([role, root]) => `      ${role}: "${root}"`),
         ];
 
+  return `  - name: ${descriptor.name}
+${rootLines.join("\n")}
+    source:
+${sourceLines.join("\n")}`;
+}
+
+function parseManifestAdapterBlocks(content) {
+  if (!content.includes("schema_version: 1") || !content.includes("adapters:")) {
+    return { error: { code: "invalid-config", message: "Existing rigorloop.yaml is not compatible with the init contract." } };
+  }
+  const lines = content.replace(/\r\n?/g, "\n").split("\n");
+  const adapterStart = lines.findIndex((line) => line === "adapters:");
+  const blocks = [];
+  let current = [];
+  for (const line of lines.slice(adapterStart + 1)) {
+    if (line.startsWith("  - name: ")) {
+      if (current.length) {
+        blocks.push(current);
+      }
+      current = [line];
+    } else if (current.length) {
+      current.push(line);
+    } else if (line.trim() !== "") {
+      return { error: { code: "invalid-config", message: "Existing rigorloop.yaml has malformed adapter entries." } };
+    }
+  }
+  if (current.length) {
+    blocks.push(current);
+  }
+  const adapters = [];
+  for (const block of blocks) {
+    const name = block[0].slice("  - name: ".length).trim();
+    const descriptor = adapterDescriptor(name);
+    if (!descriptor) {
+      return { error: { code: "invalid-config", message: `Existing rigorloop.yaml includes unsupported adapter ${name}.` } };
+    }
+    adapters.push({ name, block: block.join("\n").replace(/\n+$/, "") });
+  }
+  return { adapters };
+}
+
+function manifestContent(info, source, descriptor, existingContent) {
+  const selectedBlock = manifestAdapterBlock(source, descriptor);
+  if (existingContent) {
+    const parsed = parseManifestAdapterBlocks(existingContent);
+    if (!parsed.error) {
+      const preserved = parsed.adapters.filter((entry) => entry.name !== descriptor.name).map((entry) => entry.block);
+      return `schema_version: 1
+rigorloop:
+  package: "${info.name}"
+  package_version: "${info.version}"
+adapters:
+${[...preserved, selectedBlock].join("\n")}
+`;
+    }
+  }
   return `schema_version: 1
 rigorloop:
   package: "${info.name}"
   package_version: "${info.version}"
 adapters:
-  - name: ${descriptor.name}
-${rootLines.join("\n")}
-    source:
-${sourceLines.join("\n")}
+${selectedBlock}
 `;
+}
+
+function rootsForArtifact(descriptor, artifact) {
+  if (artifact?.install_roots) {
+    return artifact.install_roots;
+  }
+  if (artifact?.install_root) {
+    return { skills: artifact.install_root };
+  }
+  return descriptor.installRoots;
+}
+
+function rootHashesForArtifact(descriptor, artifact) {
+  if (artifact?.root_hashes) {
+    return artifact.root_hashes;
+  }
+  return Object.fromEntries(
+    Object.keys(rootsForArtifact(descriptor, artifact)).map((role) => [
+      role,
+      {
+        tree_sha256: artifact?.tree_sha256 ?? "<planned-after-install>",
+        file_count: artifact?.file_count ?? "<planned-after-install>",
+      },
+    ]),
+  );
+}
+
+function usesMultiRootLockfile(descriptor, artifact) {
+  return descriptor.name === "opencode" || Object.keys(rootsForArtifact(descriptor, artifact)).length > 1;
+}
+
+function lockfileEntryForAdapter(info, source, artifact, descriptor, rootHashes = rootHashesForArtifact(descriptor, artifact)) {
+  const entry = {
+    adapter: descriptor.name,
+    release: releaseForPackage(info.version),
+    source: source.type,
+    archive: source.archive,
+    archive_sha256: artifact?.sha256 ?? "<planned>",
+    tree_hash_algorithm: "rigorloop-tree-hash-v1",
+  };
+  if (usesMultiRootLockfile(descriptor, artifact)) {
+    return {
+      ...entry,
+      installed_roots: rootsForArtifact(descriptor, artifact),
+      root_hashes: rootHashes,
+    };
+  }
+  const [role] = Object.keys(rootsForArtifact(descriptor, artifact));
+  return {
+    ...entry,
+    installed_root: rootsForArtifact(descriptor, artifact)[role],
+    tree_sha256: rootHashes[role].tree_sha256,
+    file_count: rootHashes[role].file_count,
+  };
 }
 
 function plannedLockfile(info, source, manifest, descriptor) {
   const artifact = source.artifact;
   return {
-    schema_version: 1,
+    schema_version: 2,
     rigorloop: {
       package: info.name,
       version: info.version,
@@ -178,26 +286,30 @@ function plannedLockfile(info, source, manifest, descriptor) {
       sha256: sha256NormalizedText(manifest),
     },
     generated: {
-      adapters: [
-        {
-          adapter: descriptor.name,
-          release: releaseForPackage(info.version),
-          source: source.type,
-          archive: source.type === "local-archive" ? basename(source.archive) : source.archive,
-          archive_sha256: artifact?.sha256 ?? "<planned>",
-          installed_root: descriptor.primaryInstallRoot(),
-          tree_hash_algorithm: "rigorloop-tree-hash-v1",
-          tree_sha256: artifact?.tree_sha256 ?? "<planned-after-install>",
-          file_count: "<planned-after-install>",
-        },
-      ],
+      adapters: [lockfileEntryForAdapter(info, source, artifact, descriptor)],
     },
   };
 }
 
-function lockfileForVerifiedInstall(info, source, manifest, artifact, treeHash, fileCount, descriptor) {
+function existingLockfileEntries(selectedAdapter) {
+  const lockfileAbsolutePath = resolve(process.cwd(), LOCKFILE_PATH);
+  if (!existsSync(lockfileAbsolutePath)) {
+    return [];
+  }
+  const parsed = parseLockfile(readFileSync(lockfileAbsolutePath, "utf8"));
+  if (!parsed.ok) {
+    return [];
+  }
+  return parsed.lockfile.generated.adapters.filter((entry) => entry.adapter !== selectedAdapter);
+}
+
+function lockfileForVerifiedInstall(info, source, manifest, artifact, rootHashes, descriptor) {
+  const adapters = [
+    ...existingLockfileEntries(descriptor.name),
+    lockfileEntryForAdapter(info, source, artifact, descriptor, rootHashes),
+  ];
   return {
-    schema_version: 1,
+    schema_version: 2,
     rigorloop: {
       package: info.name,
       version: info.version,
@@ -207,19 +319,7 @@ function lockfileForVerifiedInstall(info, source, manifest, artifact, treeHash, 
       sha256: sha256NormalizedText(manifest),
     },
     generated: {
-      adapters: [
-        {
-          adapter: descriptor.name,
-          release: releaseForPackage(info.version),
-          source: source.type,
-          archive: source.type === "local-archive" ? basename(source.archive) : source.archive,
-          archive_sha256: artifact.sha256,
-          installed_root: descriptor.primaryInstallRoot(),
-          tree_hash_algorithm: "rigorloop-tree-hash-v1",
-          tree_sha256: treeHash,
-          file_count: fileCount,
-        },
-      ],
+      adapters,
     },
   };
 }
@@ -419,21 +519,32 @@ function validateMetadata(metadata, info, descriptor) {
   if (!artifact) {
     return { blocker: metadataBlocker("metadata-unavailable", `Adapter metadata does not include ${descriptor.displayName}.`) };
   }
-  if (
-    !isNonEmptyString(artifact.archive) ||
-    !isNonEmptyString(artifact.url) ||
-    !isSha256(artifact.sha256) ||
-    !Number.isInteger(artifact.size_bytes) ||
-    artifact.size_bytes < 0 ||
-    !isSha256(artifact.tree_sha256)
-  ) {
+  if (!isNonEmptyString(artifact.archive) || !isNonEmptyString(artifact.url) || !isSha256(artifact.sha256) || !Number.isInteger(artifact.size_bytes) || artifact.size_bytes < 0) {
     return { error: { code: "metadata-invalid", message: `${descriptor.displayName} adapter artifact metadata is incomplete.` } };
-  }
-  if ((artifact.install_root ?? "").replace(/\/$/, "") !== descriptor.primaryInstallRoot()) {
-    return { error: { code: "metadata-invalid", message: `${descriptor.displayName} adapter install root is not ${descriptor.primaryInstallRoot()}.` } };
   }
   if (artifact.tree_hash_algorithm && artifact.tree_hash_algorithm !== "rigorloop-tree-hash-v1") {
     return { error: { code: "metadata-invalid", message: "Unsupported tree hash algorithm in adapter metadata." } };
+  }
+  if (artifact.install_roots || artifact.root_hashes) {
+    if (!artifact.install_roots || !artifact.root_hashes) {
+      return { error: { code: "metadata-invalid", message: `${descriptor.displayName} multi-root metadata is incomplete.` } };
+    }
+    for (const [role, root] of Object.entries(artifact.install_roots)) {
+      if (descriptor.installRoots[role] !== root) {
+        return { error: { code: "metadata-invalid", message: `${descriptor.displayName} adapter install root for ${role} is not supported.` } };
+      }
+      const rootHash = artifact.root_hashes[role];
+      if (!rootHash || !isSha256(rootHash.tree_sha256) || !Number.isInteger(rootHash.file_count) || rootHash.file_count < 0) {
+        return { error: { code: "metadata-invalid", message: `${descriptor.displayName} root hash metadata is incomplete.` } };
+      }
+    }
+  } else {
+    if (!isSha256(artifact.tree_sha256) || !Number.isInteger(artifact.file_count) || artifact.file_count < 0) {
+      return { error: { code: "metadata-invalid", message: `${descriptor.displayName} adapter single-root metadata is incomplete.` } };
+    }
+    if ((artifact.install_root ?? "").replace(/\/$/, "") !== descriptor.primaryInstallRoot()) {
+      return { error: { code: "metadata-invalid", message: `${descriptor.displayName} adapter install root is not ${descriptor.primaryInstallRoot()}.` } };
+    }
   }
   return { artifact };
 }
@@ -526,10 +637,9 @@ function isArchiveSupportEntry(name) {
   return name === "AGENTS.md";
 }
 
-function fileRowsForTree(entries, descriptor) {
-  const installRoot = descriptor.primaryInstallRoot();
+function fileRowsForTreeRoot(entries, installRoot) {
   return entries
-    .filter((entry) => !entry.directory)
+    .filter((entry) => !entry.directory && entry.name.startsWith(`${installRoot}/`))
     .map((entry) => {
       const relativePath = entry.name.slice(`${installRoot}/`.length);
       const bytes = relativePath.endsWith(".md") ? normalizeText(entry.bytes) : entry.bytes;
@@ -539,7 +649,22 @@ function fileRowsForTree(entries, descriptor) {
 }
 
 function treeHashForEntries(entries, descriptor) {
-  return treeHashForRows(fileRowsForTree(entries, descriptor));
+  return treeHashForRows(fileRowsForTreeRoot(entries, descriptor.primaryInstallRoot()));
+}
+
+function rootHashesForEntries(entries, descriptor, artifact) {
+  return Object.fromEntries(
+    Object.entries(rootsForArtifact(descriptor, artifact)).map(([role, root]) => {
+      const rows = fileRowsForTreeRoot(entries, root);
+      return [
+        role,
+        {
+          tree_sha256: treeHashForRows(rows),
+          file_count: rows.length,
+        },
+      ];
+    }),
+  );
 }
 
 function treeHashForRows(rows) {
@@ -583,24 +708,26 @@ function treeHashForFilesystem(root) {
   };
 }
 
-function currentLockfileEntry(descriptor) {
+function currentLockfileEntries() {
   const lockfileAbsolutePath = resolve(process.cwd(), LOCKFILE_PATH);
   if (!existsSync(lockfileAbsolutePath)) {
-    return undefined;
+    return [];
   }
   const parsed = parseLockfile(readFileSync(lockfileAbsolutePath, "utf8"));
   if (!parsed.ok) {
-    return undefined;
+    return [];
   }
-  return parsed.lockfile.generated.adapters.find(
-    (entry) => entry.adapter === descriptor.name && entry.installed_root === descriptor.primaryInstallRoot(),
-  );
+  return parsed.lockfile.generated.adapters;
+}
+
+function currentLockfileEntry(descriptor) {
+  return currentLockfileEntries().find((entry) => entry.adapter === descriptor.name);
 }
 
 function installedTreeMismatchError(actualTree, expectedTreeHash, expectedFileCount) {
   return {
     code: "installed-tree-mismatch",
-    message: "Installed Codex adapter tree does not match trusted metadata.",
+    message: "Installed adapter tree does not match trusted metadata.",
     expected_tree_sha256: expectedTreeHash,
     actual_tree_sha256: actualTree.treeHash,
     expected_file_count: expectedFileCount,
@@ -609,23 +736,28 @@ function installedTreeMismatchError(actualTree, expectedTreeHash, expectedFileCo
 }
 
 function verifyInstalledTree(entries, artifact, descriptor, { allowMissingOrEmpty = false } = {}) {
-  const expectedRows = fileRowsForTree(entries, descriptor);
-  const expectedTreeHash = artifact.tree_sha256;
-  const expectedFileCount = expectedRows.length;
-  const installRoot = descriptor.primaryInstallRoot();
+  const expectedRootHashes = rootHashesForEntries(entries, descriptor, artifact);
+  for (const [role, root] of Object.entries(rootsForArtifact(descriptor, artifact))) {
+    const expectedRows = fileRowsForTreeRoot(entries, root);
+    const expectedTreeHash = artifact.root_hashes?.[role]?.tree_sha256 ?? artifact.tree_sha256;
+    const expectedFileCount = artifact.root_hashes?.[role]?.file_count ?? expectedRows.length;
 
-  if (!existsSync(resolve(process.cwd(), installRoot))) {
-    return allowMissingOrEmpty ? { ok: true, expectedRows, expectedFileCount } : { error: installedTreeMismatchError({ treeHash: "<missing>", fileCount: 0 }, expectedTreeHash, expectedFileCount) };
-  }
+    if (!existsSync(resolve(process.cwd(), root))) {
+      if (allowMissingOrEmpty) {
+        continue;
+      }
+      return { error: installedTreeMismatchError({ treeHash: "<missing>", fileCount: 0 }, expectedTreeHash, expectedFileCount) };
+    }
 
-  const actualTree = treeHashForFilesystem(installRoot);
-  if (allowMissingOrEmpty && actualTree.fileCount === 0) {
-    return { ok: true, expectedRows, expectedFileCount };
+    const actualTree = treeHashForFilesystem(root);
+    if (allowMissingOrEmpty && actualTree.fileCount === 0) {
+      continue;
+    }
+    if (!rowsEqual(actualTree.rows, expectedRows) || actualTree.treeHash !== expectedTreeHash || actualTree.fileCount !== expectedFileCount) {
+      return { error: installedTreeMismatchError(actualTree, expectedTreeHash, expectedFileCount) };
+    }
   }
-  if (!rowsEqual(actualTree.rows, expectedRows) || actualTree.treeHash !== expectedTreeHash) {
-    return { error: installedTreeMismatchError(actualTree, expectedTreeHash, expectedFileCount) };
-  }
-  return { ok: true, expectedRows, expectedFileCount, treeHash: actualTree.treeHash };
+  return { ok: true, rootHashes: expectedRootHashes, expectedFileCount: expectedRootHashes.skills?.file_count ?? 0, treeHash: expectedRootHashes.skills?.tree_sha256 };
 }
 
 function generatedOutputConflictBlocker(entries) {
@@ -668,6 +800,21 @@ function lockfileDriftBlocker(lockfileEntry) {
   if (!lockfileEntry) {
     return undefined;
   }
+  if (lockfileEntry.installed_roots) {
+    for (const [role, root] of Object.entries(lockfileEntry.installed_roots)) {
+      const rootHash = lockfileEntry.root_hashes[role];
+      const blocker = lockfileDriftBlocker({
+        adapter: lockfileEntry.adapter,
+        installed_root: root,
+        tree_sha256: rootHash.tree_sha256,
+        file_count: rootHash.file_count,
+      });
+      if (blocker) {
+        return blocker;
+      }
+    }
+    return undefined;
+  }
 
   const rootState = pathState(resolve(process.cwd(), lockfileEntry.installed_root));
   if (rootState === "absent") {
@@ -708,6 +855,16 @@ function lockfileDriftBlocker(lockfileEntry) {
   return undefined;
 }
 
+function firstLockfileDriftBlocker() {
+  for (const entry of currentLockfileEntries()) {
+    const blocker = lockfileDriftBlocker(entry);
+    if (blocker) {
+      return blocker;
+    }
+  }
+  return undefined;
+}
+
 function inspectArchive(archiveBytes, artifact, descriptor) {
   if (artifact.size_bytes !== undefined && archiveBytes.length !== artifact.size_bytes) {
     return { error: { code: "archive-size-mismatch", message: "Archive size does not match metadata." } };
@@ -740,11 +897,17 @@ function inspectArchive(archiveBytes, artifact, descriptor) {
   }
 
   const files = installEntries.filter((entry) => !entry.directory);
-  const treeHash = treeHashForEntries(files, descriptor);
-  if (artifact.tree_sha256 && treeHash !== artifact.tree_sha256) {
-    return { error: { code: "tree-hash-mismatch", message: "Installed tree hash does not match metadata." } };
+  const rootHashes = rootHashesForEntries(files, descriptor, artifact);
+  for (const [role, hash] of Object.entries(rootHashes)) {
+    const expected = artifact.root_hashes?.[role] ?? { tree_sha256: artifact.tree_sha256, file_count: artifact.file_count };
+    if (expected.tree_sha256 && hash.tree_sha256 !== expected.tree_sha256) {
+      return { error: { code: "tree-hash-mismatch", message: "Installed tree hash does not match metadata." } };
+    }
+    if (expected.file_count !== undefined && hash.file_count !== expected.file_count) {
+      return { error: { code: "tree-hash-mismatch", message: "Installed tree file count does not match metadata." } };
+    }
   }
-  return { entries: files, archiveHash, treeHash, fileCount: files.length };
+  return { entries: files, archiveHash, rootHashes, treeHash: rootHashes.skills?.tree_sha256, fileCount: rootHashes.skills?.file_count ?? files.length };
 }
 
 function addArchiveActions(plan, entries, descriptor) {
@@ -968,7 +1131,8 @@ function buildInitPlan(flags, descriptor, artifact) {
   }
   const manifestPath = "rigorloop.yaml";
   const manifestAbsolutePath = resolve(process.cwd(), manifestPath);
-  const manifest = manifestContent(info, source, descriptor);
+  const existingManifest = existsSync(manifestAbsolutePath) ? readFileSync(manifestAbsolutePath, "utf8") : undefined;
+  const manifest = manifestContent(info, source, descriptor, existingManifest);
   const actions = [];
   const artifacts = [];
   const blockers = [];
@@ -995,9 +1159,23 @@ function buildInitPlan(flags, descriptor, artifact) {
   artifacts.push(...directoryPlan.artifacts);
   blockers.push(...directoryPlan.blockers);
 
-  if (existsSync(manifestAbsolutePath)) {
-    const existingManifest = readFileSync(manifestAbsolutePath, "utf8");
-    if (compatibleManifest(existingManifest, descriptor)) {
+  if (existingManifest !== undefined) {
+    const parsedManifest = parseManifestAdapterBlocks(existingManifest);
+    if (parsedManifest.error) {
+      errors.push({
+        code: parsedManifest.error.code,
+        message: parsedManifest.error.message,
+        path: manifestPath,
+        next_action: "Review or move the existing file before running init.",
+      });
+    } else if (parsedManifest.adapters.filter((entry) => entry.name === descriptor.name).length > 1) {
+      blockers.push({
+        code: "duplicate-adapter-entry",
+        message: `Existing rigorloop.yaml contains duplicate ${descriptor.displayName} adapter entries.`,
+        path: manifestPath,
+        next_action: "Remove duplicate adapter entries before running init.",
+      });
+    } else if (compatibleManifest(existingManifest, descriptor)) {
       actions.push({
         type: "write",
         path: manifestPath,
@@ -1010,11 +1188,16 @@ function buildInitPlan(flags, descriptor, artifact) {
         status: "existing",
       });
     } else {
-      errors.push({
-        code: "invalid-config",
-        message: `Existing rigorloop.yaml is not compatible with the ${descriptor.displayName} init contract.`,
+      actions.push({
+        type: "write",
         path: manifestPath,
-        next_action: "Review or move the existing file before running init.",
+        status: flags.dryRun ? "planned" : "pending",
+        reason: `Update rigorloop.yaml for ${descriptor.displayName} adapter.`,
+      });
+      artifacts.push({
+        path: manifestPath,
+        kind: "project-manifest",
+        status: flags.dryRun ? "planned" : "pending",
       });
     }
   } else {
@@ -1352,7 +1535,7 @@ async function handleInit(flags) {
     if (conflict) {
       return writeBlockedResult(flags, plan, conflict.message, [conflict], "mutation_conflict");
     }
-    const drift = lockfileDriftBlocker(currentLockfileEntry(descriptor));
+    const drift = firstLockfileDriftBlocker();
     if (drift) {
       return writeBlockedResult(
         flags,
@@ -1443,8 +1626,7 @@ async function handleInit(flags) {
           plan.source,
           plan.manifest,
           archiveWork.artifact,
-          archiveWork.artifact.tree_sha256,
-          verifiedInstalledTree.expectedFileCount,
+          verifiedInstalledTree.rootHashes,
           descriptor,
         );
         writeFileSync(resolve(process.cwd(), LOCKFILE_PATH), serializeLockfile(lockfile), "utf8");
