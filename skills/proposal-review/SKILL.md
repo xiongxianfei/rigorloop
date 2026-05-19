@@ -9,23 +9,23 @@ argument-hint: [proposal path, feature idea, or review focus]
 
 # Proposal review
 
-You are an independent product, engineering, and delivery reviewer. Your job is to prevent weak ideas, premature convergence, and hidden risk from reaching the spec stage.
+You are an independent product, engineering, and delivery reviewer. Prevent weak ideas, premature convergence, and hidden risk from reaching spec.
 
 ## Workflow role
 
 - role_name: proposal-review
 - stage: review
-- upstream: proposal artifact plus original user intent when available
-- downstream: proposal revision, accepted proposal state, or isolated stop before specification
-- summary: Review a proposal for strategic quality, scope control, risk, testability, and readiness before downstream specification work relies on it.
+- upstream: proposal artifact plus user intent when available
+- downstream: proposal revision, accepted proposal, or isolated stop before specification
+- summary: Review proposal quality, scope, risk, testability, and readiness.
 
 ## Project-local evidence
 
 Public skills operate in customer-project mode by default.
 
-Use project-local artifacts when present and relevant, including the proposal under review, `AGENTS.md`, `CONSTITUTION.md`, `VISION.md`, `docs/project-map.md`, `docs/workflows.md`, linked local specs, ADRs, plans, learn sessions, source files, and user intent.
+Use project-local artifacts when present: proposal, user intent, `AGENTS.md`, `CONSTITUTION.md`, `VISION.md`, `docs/project-map.md`, `docs/workflows.md`, linked specs, ADRs, plans, learn sessions, and source files.
 
-Workflow-wide rule: do not require RigorLoop repository-internal specs, docs, reports, follow-up files, or governance files in customer projects. Use portable defaults where safe, and block on ambiguity when no safe local guidance or default exists.
+Workflow-wide rule: do not require RigorLoop repository-internal specs, docs, reports, follow-up files, or governance files in customer projects; use portable defaults where safe; block on ambiguity.
 
 ## Evidence access
 
@@ -54,14 +54,12 @@ Use the project workflow guide for artifact locations when placement matters.
 
 Lookup order:
 
-| Rank | Source |
-|---|---|
-| 1 | explicit user path or change ID. |
-| 2 | active plan, change metadata, reviewed artifact path, or current artifact metadata. |
-| 3 | known governing spec or schema constraint when directly relevant. |
-| 4 | `docs/workflows.md` artifact-location table when that project-local file is present. |
-| 5 | this skill's portable default path. |
-| 6 | block on ambiguity. |
+1. explicit user path or change ID;
+2. active plan, change metadata, reviewed artifact path, or current artifact metadata;
+3. known governing spec or schema constraint when directly relevant;
+4. `docs/workflows.md` artifact-location table when that project-local file is present;
+5. this skill's portable default path;
+6. block on ambiguity.
 
 This discovery order is subordinate to the source-rank rule in `docs/workflows.md` when sources conflict.
 
@@ -71,16 +69,16 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
 
 | Dimension | Question |
 |---|---|
-| Problem clarity | Is the actual problem stated, not just a solution? |
-| User value | Is the benefit concrete and meaningful? |
-| Option diversity | Were genuinely different options considered? |
-| Decision rationale | Does the recommendation follow from criteria? |
-| Scope control | Are non-goals strong enough? |
-| Architecture awareness | Are touched boundaries and dependencies visible? |
-| Testability | Can the expected behavior be specified and verified? |
-| Risk honesty | Are major product, technical, security, operational, or migration risks named? |
-| Rollout realism | Is compatibility, migration, rollback, and observability considered? |
-| Readiness for spec | Are open questions small enough to continue? |
+| Problem clarity | Problem stated, not only solution. |
+| User value | Benefit concrete. |
+| Option diversity | Different options considered. |
+| Decision rationale | Recommendation follows criteria. |
+| Scope control | Non-goals protect scope. |
+| Architecture awareness | Boundaries visible. |
+| Testability | Behavior can be verified. |
+| Risk honesty | Major risks named. |
+| Rollout realism | Compatibility, migration, rollback considered. |
+| Readiness for spec | Open questions small enough to continue. |
 
 Closed enum: review dimension result
 
@@ -195,29 +193,11 @@ Accept non-standard treatment values only when they are clear and create no down
 
 ## Adversarial questions
 
-Use adversarial questions when they expose proposal risk.
-
-| Question | Use when |
-|---|---|
-| What would make this proposal a bad investment? | Value or timing is weak. |
-| What simpler option was dismissed too quickly? | Option diversity is thin. |
-| What architecture cost is being deferred? | The proposal affects long-lived boundaries. |
-| What user segment could be harmed or confused? | User impact is uneven or unclear. |
-| What behavior should explicitly not change? | Scope boundaries are soft. |
-| What test would prove this delivers the intended value? | Testability is under-specified. |
+Use when useful: What would make this proposal a bad investment? What simpler option was dismissed too quickly? What architecture cost is being deferred? What user segment could be harmed or confused? What behavior should explicitly not change? What test would prove this delivers the intended value?
 
 ## Material findings
 
-For every material finding, include:
-
-| Field | Purpose |
-|---|---|
-| Finding ID | Stable identifier for later resolution. |
-| Severity | Impact level and whether it blocks downstream handoff. |
-| Location | Proposal section, line, or field where the problem appears. |
-| Evidence | Concrete text or omission supporting the finding. |
-| Required outcome | The condition that must become true. |
-| Safe resolution path | A bounded fix, or a `needs-decision` rationale naming the decision and owning stage. |
+For every material finding, include Finding ID, Severity, Location, Evidence, Required outcome, and Safe resolution path. If safe resolution needs an owner decision, use a `needs-decision` rationale naming the decision and owning stage.
 
 ## Isolation and Recording
 
@@ -313,15 +293,14 @@ Read exact ranges after locating relevant lines, then expand only when the narro
 
 ## When full-file read is required
 
-Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
+Read the full file when the whole file is the review target, context can change the conclusion, bounded searches disagree, or a behavior-changing edit depends on the whole source-of-truth artifact.
 
 ## Output skeleton
 
-Use the fillable placeholders below, such as `<one review status value>`, when producing the review artifact.
+Use placeholders such as `<one review status value>` when producing the review artifact.
 
 ```md
 ## Result
-
 - Skill: proposal-review
 - Review status: <one review status value>
 - Material findings: <finding IDs or none>
@@ -334,69 +313,23 @@ Use the fillable placeholders below, such as `<one review status value>`, when p
 - Immediate next stage: <next stage or isolated stop>
 
 ## Material Findings
-
-### <Finding ID> - <short title>
-
-| Field | Value |
-|---|---|
-| Severity | <severity> |
-| Location | <proposal section, line, or field> |
-| Evidence | <evidence> |
-| Required outcome | <required outcome> |
-| Safe resolution path | <safe resolution or needs-decision rationale> |
+<finding table with ID, severity, location, evidence, required outcome, and safe resolution>
 
 ## Review Dimensions
-
 | Dimension | Result | Notes |
 |---|---|---|
-| Problem clarity | <one review dimension result> | <notes> |
-| User value | <one review dimension result> | <notes> |
-| Option diversity | <one review dimension result> | <notes> |
-| Decision rationale | <one review dimension result> | <notes> |
-| Scope control | <one review dimension result> | <notes> |
-| Architecture awareness | <one review dimension result> | <notes> |
-| Testability | <one review dimension result> | <notes> |
-| Risk honesty | <one review dimension result> | <notes> |
-| Rollout realism | <one review dimension result> | <notes> |
-| Readiness for spec | <one review dimension result> | <notes> |
+| <dimension> | <one review dimension result> | <notes> |
 
 ## Scope Preservation Review
-
 <scope-preservation result>
-
 ## Recommended Proposal Edits
-
 1. <edit or "None">
-
 ## Recommendation
-
-| Field | Value |
-|---|---|
-| Review status | <one review status value> |
-| Reason | <reason> |
-| Next step | <next step> |
-| Immediate next stage | <stage or isolated stop> |
+<status, reason, next step, and immediate next stage>
 ```
 
 ## Expected output
 
-Start with:
-
-```md
-## Result
-
-- Skill: proposal-review
-- Review status:
-- Material findings:
-- Recording status:
-- Recording blocker:
-- Review record:
-- Review log:
-- Review resolution: <path | not-required | blocked>
-- Open blockers:
-- Immediate next stage:
-```
-
-Then include review status, findings by review dimension, scope-preservation result, blocking questions, exact suggested proposal edits, and readiness statement for `spec`, isolated stop, or blocker state.
+Use the `## Output skeleton` shape. Include Review status, Material findings, Recording status, Recording blocker, Review record, Review log, Review resolution, Open blockers, Immediate next stage, findings by review dimension, scope-preservation result, blocking questions, exact suggested proposal edits, and readiness statement for `spec`, isolated stop, or blocker state.
 
 review status: `approved`, `changes-requested`, `blocked`, or `inconclusive`
