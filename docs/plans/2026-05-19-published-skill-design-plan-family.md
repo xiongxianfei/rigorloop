@@ -68,13 +68,13 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 ## Current Handoff Summary
 
 - Current milestone: M3. Plan And Plan-Review Skill Rewrite
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M2. Plan Family Validator And Fixture Support
 - Review status: code-review-m2-r1 clean-with-notes; no material findings
 - Remaining in-scope implementation milestones: M3
-- Next stage: implement M3
+- Next stage: code-review for M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2 is closed after clean code-review, but M3, explain-change, verify, and PR handoff remain open.
+- Reason final closeout is or is not ready: M3 is implemented and ready for code-review, but M3 review, explain-change, verify, and PR handoff remain open.
 
 ## Milestones
 
@@ -165,7 +165,7 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 
 ### M3. Plan And Plan-Review Skill Rewrite
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: update only `plan` and `plan-review` to the published-skill design contract.
 - Requirements: R27-R35 and M1 preservation/parity evidence.
 - Files/components likely touched:
@@ -188,6 +188,13 @@ This plan keeps the rollout incremental. The planning pair owns active execution
   - Record behavior-preservation and behavior-parity results.
   - Record after-change static token estimates and compare against baseline.
   - Validate generated skills and temporary adapter archives from canonical skills.
+- Implementation result:
+  - Updated `skills/plan/SKILL.md` and `skills/plan-review/SKILL.md` with `schema-version: skill-readability-v1`, routing-focused descriptions, workflow-role blocks, and compact output skeletons.
+  - Preserved `plan` ownership of concrete plan bodies, `docs/plan.md` indexing, current handoff summaries, milestone states, upstream status settlement, readiness-vs-Done boundaries, and downstream claim boundaries.
+  - Preserved `plan-review` ownership of formal plan critique, material finding shape, recording obligations, clean receipt behavior, downstream-blocking semantics, and no-implementation/no-verification claim boundaries.
+  - Added focused plan-family readability regression coverage in `scripts/test-skill-validator.py`.
+  - Updated routing coverage, behavior-preservation, and behavior-parity evidence with M3 final results.
+  - Measured final token estimates: `plan` 3862 tokens (+9.78%) and `plan-review` 1794 tokens (+9.99%), both within the +10% hard cap.
 - Validation commands:
   - `python scripts/validate-skills.py`
   - `python scripts/test-skill-validator.py`
@@ -249,7 +256,8 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 - [x] Test-spec amendment approved.
 - [x] M1 implemented and reviewed.
 - [x] M2 implemented and reviewed.
-- [ ] M3 implemented and reviewed.
+- [x] M3 implemented.
+- [ ] M3 reviewed.
 - [ ] Explain-change recorded.
 - [ ] Final verify completed.
 - [ ] PR handoff completed.
@@ -263,12 +271,14 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 | 2026-05-19 | Keep the test spec amendment before implementation. | The skill-contract test spec currently names the completed spec-family rollout; this plan-family slice needs its own traceable test coverage before skill-body rewrites begin. |
 | 2026-05-19 | Treat M2 production validator changes as conditional after M1. | The M1 audit found evidence-scaffold and future test needs, but no production validator gap that must be fixed before M3. |
 | 2026-05-19 | Implement M2 in the regression harness only. | The deterministic need is proving the plan-family evidence shape and no-runtime-selection boundary; production validation already covers the reusable skill constraints. |
+| 2026-05-19 | Keep M3 within the +10% token hard cap per changed skill. | The first M3 draft exceeded the cap for `plan-review`; compaction preserved the review contract while keeping final deltas under the approved budget. |
 
 ## Surprises and discoveries
 
 - M1 found both `plan` and `plan-review` need explicit `Workflow role` blocks in M3, but both already have compact result skeletons and portable project-local path handling.
 - M1 found no merge, retire, rename, ownership-change, or mandatory production-validator-change candidate for this slice.
 - M2 initially failed on brittle line-wrap-sensitive assertions in the new plan-family tests; the tests now check stable phrases that preserve the intended deterministic proof without depending on Markdown wrapping.
+- M3 initially exceeded the token budget for `plan-review`; compacting duplicated output and review-dimension prose brought both changed skills within the +10% hard cap.
 
 ## Validation notes
 
@@ -296,6 +306,18 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 - 2026-05-19 M2 validation: `git diff --check -- scripts/test-skill-validator.py docs/plans/2026-05-19-published-skill-design-plan-family.md docs/plan.md docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml` passed.
 - 2026-05-19 M2 selected CI: `bash scripts/ci.sh --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-plan-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml` passed selected skills regression, skill generation regression, artifact-lifecycle, change-metadata regression, and change-metadata checks.
 - 2026-05-19 code-review M2: `code-review-m2-r1` clean-with-notes; no material findings; M2 closed and next stage is `implement M3`.
+- 2026-05-19 M3 TDD: `python scripts/test-skill-validator.py -k plan_family` failed before `plan` and `plan-review` opted into the readability contract, then passed after skill-body edits and evidence updates.
+- 2026-05-19 M3 validation: `python scripts/test-skill-validator.py` passed 115 tests.
+- 2026-05-19 M3 validation: `python scripts/validate-skills.py` passed 23 skills.
+- 2026-05-19 M3 validation: `python scripts/measure-skill-tokens.py --skills-root skills` measured `plan` 3862 tokens and `plan-review` 1794 tokens, both within the +10% hard cap.
+- 2026-05-19 M3 validation: `python scripts/build-skills.py --check` passed.
+- 2026-05-19 M3 validation: `python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-plan-family-adapters-m3` built Codex, Claude, and opencode adapter archives.
+- 2026-05-19 M3 validation: `python scripts/validate-adapters.py --root /tmp/rigorloop-plan-family-adapters-m3 --version v0.1.5` passed.
+- 2026-05-19 M3 lifecycle validation: `python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml` passed.
+- 2026-05-19 M3 lifecycle validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-plan-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-plan-family/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-plan-family/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-plan-family/behavior-parity.md` passed.
+- 2026-05-19 M3 validation: `git diff --check -- skills/plan/SKILL.md skills/plan-review/SKILL.md scripts/test-skill-validator.py specs/skill-contract.test.md docs/plans/2026-05-19-published-skill-design-plan-family.md docs/plan.md docs/changes/2026-05-19-published-skill-design-plan-family` passed.
+- 2026-05-19 M3 review-artifact validation: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-19-published-skill-design-plan-family` passed.
+- 2026-05-19 M3 selected CI: `bash scripts/ci.sh --mode explicit --path skills/plan/SKILL.md --path skills/plan-review/SKILL.md --path scripts/test-skill-validator.py --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-plan-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-plan-family/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-plan-family/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-plan-family/behavior-parity.md` passed selected skills, generated skill, adapter, artifact-lifecycle, and change-metadata checks.
 
 ## Outcome and retrospective
 
@@ -303,6 +325,6 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 
 ## Readiness
 
-Ready for `implement M3`.
+Ready for `code-review` for M3.
 
-Remaining completion gates: M3 implementation and code-review, explain-change, verify, PR handoff, hosted CI observation if a PR is opened, merge, and final lifecycle closeout when no downstream gate remains.
+Remaining completion gates: M3 code-review, explain-change, verify, PR handoff, hosted CI observation if a PR is opened, merge, and final lifecycle closeout when no downstream gate remains.

@@ -858,6 +858,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             with self.subTest(skill=skill):
                 self.assertIn(f"| {skill} |", preservation)
                 self.assertIn(skill, parity)
+                self.assertNotIn(f"| {skill} | pending", parity)
         for required_rule in (
             "Current Handoff Summary",
             "Upstream status settlement",
@@ -881,9 +882,11 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         ):
             with self.subTest(case_id=case_id):
                 self.assertIn(case_id, parity)
-        self.assertIn("| `plan` | 14070 | 303 | 3518 | pending |", parity)
-        self.assertIn("| `plan-review` | 6529 | 165 | 1631 | pending |", parity)
-        self.assertIn("No final parity\nclaim is made in M1", parity)
+        self.assertIn("| `plan` | 14070 | 303 | 3518 | 15447 | 317 | 3862 | +344 | +9.78% | within +10% hard cap |", parity)
+        self.assertIn("| `plan-review` | 6529 | 165 | 1631 | 7183 | 157 | 1794 | +163 | +9.99% | within +10% hard cap |", parity)
+        self.assertIn("## M3 Preservation Result", preservation)
+        self.assertIn("## M3 Final Parity Statement", parity)
+        self.assertIn("No lifecycle behavior weakening was found", parity)
 
     def test_skill_readability_pilot_pair_opts_into_contract(self) -> None:
         for skill_name in ("proposal", "proposal-review"):
@@ -923,6 +926,24 @@ class SkillValidatorFixtureTests(unittest.TestCase):
 
     def test_skill_readability_execution_review_opts_into_contract(self) -> None:
         for skill_name in ("implement", "code-review"):
+            skill_path = ROOT / "skills" / skill_name / "SKILL.md"
+            result = run_validator(skill_path)
+            with self.subTest(skill=skill_name):
+                self.assertEqual(
+                    result.returncode,
+                    0,
+                    msg=(
+                        f"expected {skill_name} to satisfy the readability contract\n"
+                        f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}"
+                    ),
+                )
+                body = skill_path.read_text(encoding="utf-8")
+                self.assertIn("schema-version: skill-readability-v1", body)
+                self.assertIn("## Workflow role", body)
+                self.assertIn("## Output skeleton", body)
+
+    def test_skill_readability_plan_family_opts_into_contract(self) -> None:
+        for skill_name in ("plan", "plan-review"):
             skill_path = ROOT / "skills" / skill_name / "SKILL.md"
             result = run_validator(skill_path)
             with self.subTest(skill=skill_name):

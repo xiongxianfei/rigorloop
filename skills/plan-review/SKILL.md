@@ -1,7 +1,9 @@
 ---
 name: plan-review
+version: "1.0.0"
+schema-version: skill-readability-v1
 description: >
-  Review a concrete execution plan before implementation. Use to challenge self-contained context, milestone sequencing, scope, dependencies, validation, recovery, architecture alignment, and readiness for test-driven implementation.
+  Review a concrete execution plan before implementation. Use to challenge self-contained context, source alignment, milestone sequencing, scope, dependencies, validation, recovery, architecture alignment, risk coverage, maintainability, and readiness for test-driven implementation. Use plan to create plans; use proposal-review, spec-review, architecture-review, code-review, verify, or pr for those stages. Do not use for implementation fixes, code diffs, final verification, or PR readiness.
 argument-hint: [plan path or feature name]
 ---
 
@@ -11,17 +13,18 @@ You are an independent implementation-planning reviewer.
 
 Your job is to make sure the plan is safe, complete, sequenced, and verifiable before any code is changed.
 
+## Workflow role
+
+- role_name: plan-review
+- stage: review
+- upstream: concrete execution plan, upstream artifacts, test-spec when present, and project-local workflow evidence
+- downstream: test-spec, plan revision, or review-resolution when triggered
+- summary: Review the execution plan as a lifecycle gate and record approval, changes requested, blockers, or inconclusive state.
+- must_not_claim: implementation completion, code-review results, verification, branch readiness, PR readiness, or final lifecycle completion.
+
 ## Inputs to read
 
-Read:
-
-- the concrete plan file, not just an index;
-- `AGENTS.md` and `CONSTITUTION.md` if present;
-- accepted proposal;
-- feature spec and spec-review findings;
-- architecture doc and ADRs;
-- test spec if already created;
-- `docs/project-map.md` and `docs/workflows.md` when relevant.
+Read the concrete plan file first, not just an index. Then read project-local instructions, accepted proposal, feature spec and review findings, architecture or ADRs when relevant, test spec when present, and project map or workflow guide when needed.
 
 ## Artifact placement
 
@@ -38,23 +41,11 @@ Lookup order:
 
 This discovery order is subordinate to the source-rank rule in `docs/workflows.md` when sources conflict.
 
-Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
+Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index when project-local and present, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
 
 ## Review dimensions
 
-Evaluate each with `pass`, `concern`, or `block`:
-
-1. **Self-contained context**: a new contributor can follow it.
-2. **Source alignment**: milestones trace to proposal, spec, and architecture.
-3. **Milestone size**: each slice is reviewable and not too broad.
-4. **Sequencing**: dependencies and migration order are correct.
-5. **Scope discipline**: non-goals are protected.
-6. **Validation quality**: commands and expected observations are explicit.
-7. **TDD readiness**: tests to add or update are identified.
-8. **Risk coverage**: rollout, rollback, recovery, idempotence, and blast radius are covered.
-9. **Architecture alignment**: plan follows design decisions and ADRs.
-10. **Operational readiness**: observability, CI, release, and support impacts are covered.
-11. **Plan maintainability**: progress, decisions, surprises, and validation notes are ready to update.
+Evaluate each with `pass`, `concern`, or `block`: self-contained context, source alignment, milestone size, sequencing, scope discipline, validation quality, TDD readiness, risk coverage, architecture alignment, operational readiness, and plan maintainability.
 
 ## Material findings
 
@@ -138,28 +129,29 @@ Read the full file when the whole file is the review target, the relevant sectio
 
 ## Expected output
 
-Start with:
+Use the `## Output skeleton` shape. Include verdict details, findings by review dimension, missing milestones or dependencies, exact suggested edits, immediate next stage for `test-spec` or plan revision, and implementation-readiness notes only when clearly downstream.
+
+## Output skeleton
+
+Fill `<placeholders>` with the actual review result.
 
 ```md
 ## Result
-
 - Skill: plan-review
-- Review status:
-- Material findings:
-- Recording status:
-- Recording blocker:
-- Review record:
-- Review log:
+- Review status: <approved | changes-requested | blocked | inconclusive>
+- Material findings: <IDs or none>
+- Recording status: <recorded | blocked>
+- Recording blocker: <blocker or none>
+- Review record: <path | blocked>
+- Review log: <path | blocked>
 - Review resolution: <path | not-required | blocked>
-- Open blockers:
-- Immediate next stage:
+- Open blockers: <blockers or none>
+- Immediate next stage: <test-spec | plan revision | blocked>
+## Findings
+### <Finding ID> - <summary>
+- Severity: <blocker | major | minor>
+- Location: <plan section or artifact>
+- Evidence: <evidence>
+- Required outcome: <required correction>
+- Safe resolution path: <safe fix or needs-decision rationale>
 ```
-
-Then include:
-
-- verdict details using approve, revise, or rethink;
-- findings by review dimension;
-- missing milestones or dependencies;
-- exact suggested edits;
-- explicit immediate-next-stage statement for `test-spec`;
-- downstream implementation-readiness statement only when useful and clearly distinct from the immediate `test-spec` handoff.
