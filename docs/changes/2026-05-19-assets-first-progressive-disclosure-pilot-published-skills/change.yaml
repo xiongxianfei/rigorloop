@@ -203,6 +203,34 @@ validation:
     result: pass_after_explain_change
   - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/explain-change.md
     result: pass_after_explain_change
+  - command: verify
+    result: branch_ready_for_pr_handoff_hosted_ci_not_observed
+  - command: python scripts/validate-skills.py
+    result: pass_after_verify_23_skills
+  - command: python scripts/test-skill-validator.py
+    result: pass_after_verify_128_tests
+  - command: python scripts/build-skills.py --check
+    result: pass_after_verify
+  - command: python scripts/measure-skill-tokens.py --skills-root skills
+    result: pass_after_verify_plan_3281_total_61914
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_after_verify_101_tests_stdout_token_cost_diagnostic_exit_0
+  - command: python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-assets-pilot-verify-adapters
+    result: pass_after_verify
+  - command: python scripts/validate-adapters.py --root /tmp/rigorloop-assets-pilot-verify-adapters --version v0.1.5
+    result: pass_after_verify
+  - command: direct archive inspection for plan assets under /tmp/rigorloop-assets-pilot-verify-adapters
+    result: pass_all_four_plan_assets_present_in_codex_claude_opencode_archives
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml
+    result: pass_after_verify
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills
+    result: pass_after_verify
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path specs/skill-contract.md --path specs/skill-contract.test.md --path skills/plan/SKILL.md --path skills/plan/assets --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path tests/fixtures/skills/published-design --path tests/fixtures/adapters/portable-with-assets --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/explain-change.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/behavior-preservation.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/behavior-parity.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/historical-coverage.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/adapter-packaging.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/token-cost.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-log.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-resolution.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/reviews/code-review-m3-r1.md
+    result: pass_after_verify
+  - command: git diff --check -- skills/plan scripts tests specs docs/proposals/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md docs/plan.md
+    result: pass_after_verify
+  - command: bash scripts/ci.sh --mode explicit --path skills/plan/SKILL.md --path skills/plan/assets --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path tests/fixtures/skills/published-design --path tests/fixtures/adapters/portable-with-assets --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/proposals/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/explain-change.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-log.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-resolution.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/reviews/code-review-m3-r1.md
+    result: pass_after_verify
 changed_files:
   - docs/proposals/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md
   - specs/skill-contract.md
