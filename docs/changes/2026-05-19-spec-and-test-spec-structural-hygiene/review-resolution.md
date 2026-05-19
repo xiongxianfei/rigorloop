@@ -15,7 +15,7 @@ Review closeout: code-review-m1-r2
 - Reviews covered: `proposal-review-r1`, `spec-review-r1`, `plan-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`
 - Findings resolved: 1
 - Unresolved findings: 0
-- Final result: `proposal-review-r1` approved the proposal with no material findings. `spec-review-r1` approved the draft spec amendment with no material findings. `plan-review-r1` approved the execution plan with no material findings. `code-review-m1-r1` requested changes for `CR-M1-001`; the accepted finding has been resolved and M1 is ready for re-review.
+- Final result: `proposal-review-r1` approved the proposal with no material findings. `spec-review-r1` approved the draft spec amendment with no material findings. `plan-review-r1` approved the execution plan with no material findings. `code-review-m1-r1` requested changes for `CR-M1-001`; the accepted finding was resolved, and `code-review-m1-r2` closed M1 with no material findings.
 
 ## Resolution Overview
 

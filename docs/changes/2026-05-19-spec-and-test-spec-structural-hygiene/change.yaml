@@ -7,6 +7,7 @@ artifacts:
   spec: specs/skill-contract.md
   plan: docs/plans/2026-05-19-spec-and-test-spec-structural-hygiene.md
   review_resolution: docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/review-resolution.md
+  explain_change: docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/explain-change.md
 requirements:
   - Preserve every skill-contract R-clause ID, clause text, and clause order while adding navigation structure.
   - Preserve every acceptance criterion text and position within its slice.
@@ -115,6 +116,16 @@ validation:
     result: pass_after_resolution
   - command: code-review M1 R2
     result: clean_with_notes_no_material_findings
+  - command: explain-change
+    result: completed_pending_verify
+  - command: git diff --check -- docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/explain-change.md docs/plans/2026-05-19-spec-and-test-spec-structural-hygiene.md docs/plan.md docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/change.yaml docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/review-resolution.md
+    result: pass_after_explain_change
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-19-spec-and-test-spec-structural-hygiene.md --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/plans/2026-05-19-spec-and-test-spec-structural-hygiene.md --path docs/plan.md --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/change.yaml --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/review-log.md --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/review-resolution.md --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/explain-change.md
+    result: pass_after_explain_change
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/change.yaml
+    result: pass_after_explain_change
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene
+    result: pass_after_explain_change
 changed_files:
   - docs/proposals/2026-05-19-spec-and-test-spec-structural-hygiene.md
   - specs/skill-contract.md
@@ -124,6 +135,7 @@ changed_files:
   - docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/change.yaml
   - docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/review-log.md
   - docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/review-resolution.md
+  - docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/explain-change.md
   - docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/proposal-review-r1.md
   - docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/spec-review-r1.md
   - docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/plan-review-r1.md

@@ -53,9 +53,9 @@ Implement the approved structural-hygiene contract for the skill contract and it
 - Last reviewed milestone: M1 code-review R2 clean-with-notes
 - Review status: clean; no material findings open
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: explain-change, verify, and PR handoff remain open.
+- Reason final closeout is or is not ready: verify and PR handoff remain open.
 
 ## Milestones
 
@@ -140,7 +140,7 @@ Implement the approved structural-hygiene contract for the skill contract and it
 - [x] 2026-05-19: M1 implementation completed and handed to code-review.
 - [x] Resolve `CR-M1-001`.
 - [x] Code-review.
-- [ ] Explain-change.
+- [x] Explain-change.
 - [ ] Verify.
 - [ ] PR handoff.
 
@@ -169,6 +169,8 @@ Implement the approved structural-hygiene contract for the skill contract and it
 - 2026-05-19 post-resolution preservation checks passed for sorted spec acceptance-criterion text, test-spec Requirement coverage rows, test-spec Acceptance criteria coverage rows, normalized test-case heading text, and non-heading nonblank test-case body lines.
 - 2026-05-19 post-resolution validation passed `git diff --check`, `validate-artifact-lifecycle`, `validate-change-metadata`, and `validate-review-artifacts --mode closeout`.
 - 2026-05-19 code-review M1 R2 passed with no material findings and closed M1.
+- 2026-05-19 explain-change recorded at `docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/explain-change.md`.
+- 2026-05-19 explain-change-stage validation passed `git diff --check`, `validate-artifact-lifecycle`, `validate-change-metadata`, and `validate-review-artifacts --mode closeout`.
 
 ## Outcome and retrospective
 
