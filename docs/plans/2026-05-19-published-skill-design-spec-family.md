@@ -62,13 +62,13 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 ## Current Handoff Summary
 
 - Current milestone: M2. Spec Family Validator And Fixture Support
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M1. Spec Family Audit And Evidence Scaffold
-- Review status: code-review-m2-r1 changes-requested; material finding SF-M2-CR1 open
-- Remaining in-scope implementation milestones: M2 resolution, M3
-- Next stage: review-resolution for M2
+- Review status: code-review-m2-r1 changes-requested; SF-M2-CR1 resolved in review-resolution; rerun code-review required
+- Remaining in-scope implementation milestones: M2 rerun code-review, M3
+- Next stage: code-review for M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2 has an open code-review finding; M3, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M2 rerun code-review, M3, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -108,7 +108,7 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 
 ### M2. Spec Family Validator And Fixture Support
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: make any deterministic checks needed for `spec` and `spec-review` enforceable without broad semantic scoring.
 - Requirements: R29, R32-R33, R35.
 - Files/components likely touched:
@@ -224,7 +224,7 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 - [x] Plan-review completed.
 - [x] Test-spec amendment completed and approved.
 - [x] M1 implemented and reviewed.
-- [x] M2 implemented; code-review returned changes-requested with SF-M2-CR1 open.
+- [x] M2 implemented; code-review returned changes-requested and SF-M2-CR1 was resolved; rerun code-review pending.
 - [ ] M3 implemented and reviewed.
 - [ ] Explain-change recorded.
 - [ ] Final verify passed.
@@ -240,6 +240,7 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 - 2026-05-19: keep M1 as evidence-only. Rationale: the audit found workflow-role and output-skeleton gaps in `spec` and `spec-review`, but those skill-body changes belong to M3 after deterministic validator scope is settled.
 - 2026-05-19: do not change production validator logic in M2. Rationale: existing published-design checks already cover description length, optional `when_to_use`, packaged resources, and repository-root self-containment; the spec-family gap is deterministic evidence coverage, now locked by focused regression tests.
 - 2026-05-19: record M2 code-review finding SF-M2-CR1 before applying fixes. Rationale: direct code-review remains isolated, but formal material findings still require durable review evidence and review-resolution before rerun review.
+- 2026-05-19: resolve SF-M2-CR1 by synchronizing the active plan handoff back to `code-review for M2`. Rationale: M2 had already been implemented and needed rerun review, not another implementation pass.
 
 ## Surprises and discoveries
 
@@ -279,6 +280,12 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 - 2026-05-19 M2 validation: `git diff --check -- scripts/test-skill-validator.py docs/plans/2026-05-19-published-skill-design-spec-family.md docs/plan.md docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml` passed.
 - 2026-05-19 M2 selected CI: `bash scripts/ci.sh --mode explicit --path scripts/test-skill-validator.py --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml` passed selected skill regression, skill generation regression, artifact-lifecycle, change-metadata regression, and change-metadata checks.
 - 2026-05-19 M2 code-review: `code-review-m2-r1` returned changes-requested with material finding SF-M2-CR1; review-resolution is required before rerun code-review.
+- 2026-05-19 M2 review-resolution: SF-M2-CR1 resolved by updating Current Handoff Summary to `Next stage: code-review for M2`.
+- 2026-05-19 M2 review-resolution validation: `python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml` passed.
+- 2026-05-19 M2 review-resolution validation: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-19-published-skill-design-spec-family` passed.
+- 2026-05-19 M2 review-resolution validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-spec-family/review-log.md --path docs/changes/2026-05-19-published-skill-design-spec-family/review-resolution.md` passed.
+- 2026-05-19 M2 review-resolution validation: `git diff --check -- docs/plans/2026-05-19-published-skill-design-spec-family.md docs/plan.md docs/changes/2026-05-19-published-skill-design-spec-family` passed.
+- 2026-05-19 M2 review-resolution selected CI: `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-spec-family/review-log.md --path docs/changes/2026-05-19-published-skill-design-spec-family/review-resolution.md` passed selected review-artifacts, artifact-lifecycle, change-metadata regression, and change-metadata checks.
 
 ## Outcome and retrospective
 
@@ -291,7 +298,7 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 
 ## Remaining completion gates
 
-- M2 review-resolution and rerun code-review
+- M2 rerun code-review
 - M3 implementation and code-review
 - `explain-change`
 - `verify`
