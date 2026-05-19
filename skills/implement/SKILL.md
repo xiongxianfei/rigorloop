@@ -1,7 +1,9 @@
 ---
 name: implement
+version: "1.0.0"
+schema-version: skill-readability-v1
 description: >
-  Implement a reviewed milestone using strict test-driven development. Use after spec, architecture, plan, and test-spec are ready, or when the user explicitly requests an isolated implementation task with clear scope and validation evidence.
+  Implement one approved milestone or isolated implementation request with tests or proof first, then hand it to code-review with validation evidence and plan state updated. Use when requirements, scope, and validation commands are clear enough to code. Use bugfix for defect reproduction/fix loops, code-review to review implementation, verify for final readiness, and pr for PR handoff.
 argument-hint: [plan path, milestone ID, feature name, or implementation request]
 ---
 
@@ -12,6 +14,15 @@ You are implementing the smallest scope-complete change for the approved slice w
 Do not expand scope. Do not silently alter the spec. Do not declare success without verification evidence.
 
 For planned initiatives, `implement` owns keeping the active plan body current during execution. Update the plan body's progress, decisions, discoveries, and validation notes as work advances instead of leaving those details to later stages.
+
+## Workflow role
+
+- role_name: implement
+- stage: execution
+- upstream: approved spec, active plan, accepted review-resolution finding, bugfix request, or isolated implementation request with clear scope
+- downstream: code-review
+- summary: Implement the smallest scope-complete slice with tests or proof first, record validation, update plan state, and hand the milestone to code-review.
+- must_not_claim: review passed, clean review, branch readiness, PR readiness, final verification, final closeout readiness, or derived artifact currency without owning proof.
 
 ## Quick operating guide
 
@@ -55,6 +66,8 @@ Do not require RigorLoop repository-internal specs, docs, reports, follow-up fil
 ## When to use
 
 Use this skill after the relevant spec, architecture, plan, plan-review, and test-spec are ready, or when the user explicitly requests isolated implementation output with clear scope and validation evidence.
+
+This skill is for implementation, tests, proof, and handoff. Use `bugfix` for defect repair, `code-review` for review, `verify` for final readiness, and `pr` for pull request handoff.
 
 ## When not to use
 
@@ -294,7 +307,37 @@ Read exact ranges after locating relevant lines, then expand only when the narro
 
 Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
 
+## Output skeleton
+
+Fill placeholders such as `<paths or none>` with concrete milestone evidence.
+
+```md
+## Result
+
+- Skill: implement
+- Status: implemented | blocked
+- Artifacts changed: <paths or none>
+- Open blockers: <blockers or none>
+- Next stage: code-review | blocked
+- Milestone: <milestone ID or isolated request>
+- Milestone state: review-requested | blocked
+- Tests or proof updated first:
+- Validation:
+- Plan updates:
+
+## Implementation summary
+<scope-complete change, same-slice coverage, and important decisions>
+
+## Validation evidence
+<commands and pass/fail results>
+
+## Handoff
+<review-requested milestone state, commit, or blocker>
+```
+
 ## Expected output
+
+Use the `## Output skeleton` shape.
 
 Start with:
 
@@ -302,20 +345,12 @@ Start with:
 ## Result
 
 - Skill: implement
-- Status:
-- Artifacts changed:
-- Open blockers:
-- Next stage:
-- Validation:
-- Milestone state:
+- Status: <implemented | blocked>
+- Artifacts changed: <paths or none>
+- Open blockers: <blockers or none>
+- Next stage: <code-review | blocked>
+- Validation: <commands and results>
+- Milestone state: <review-requested | blocked>
 ```
 
-Then include:
-
-- milestone implemented;
-- tests added or updated first;
-- validation commands and results;
-- files changed;
-- plan updates made;
-- blockers or spec gaps;
-- readiness statement for `code-review`, blocker/pause state, or next milestone, without implying review findings or `branch-ready`.
+Then include the milestone implemented, tests or proof added first, validation results, plan updates, blockers or spec gaps, and readiness for `code-review` or a clear blocked state. Do not imply review findings, final verification, final closeout readiness, or `branch-ready`.

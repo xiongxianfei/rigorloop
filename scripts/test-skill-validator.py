@@ -823,6 +823,24 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                 self.assertIn("## Workflow role", body)
                 self.assertIn("## Output skeleton", body)
 
+    def test_skill_readability_execution_review_opts_into_contract(self) -> None:
+        for skill_name in ("implement", "code-review"):
+            skill_path = ROOT / "skills" / skill_name / "SKILL.md"
+            result = run_validator(skill_path)
+            with self.subTest(skill=skill_name):
+                self.assertEqual(
+                    result.returncode,
+                    0,
+                    msg=(
+                        f"expected {skill_name} to satisfy the readability contract\n"
+                        f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}"
+                    ),
+                )
+                body = skill_path.read_text(encoding="utf-8")
+                self.assertIn("schema-version: skill-readability-v1", body)
+                self.assertIn("## Workflow role", body)
+                self.assertIn("## Output skeleton", body)
+
     def test_generated_output_path_is_rejected(self) -> None:
         result = run_validator(ROOT / ".codex" / "skills")
         combined_output = f"{result.stdout}\n{result.stderr}"
