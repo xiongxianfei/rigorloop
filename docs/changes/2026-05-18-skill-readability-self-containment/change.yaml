@@ -181,14 +181,26 @@ validation:
     result: clean_with_notes_no_material_findings
   - command: explain-change
     result: recorded_docs/changes/2026-05-18-skill-readability-self-containment/explain-change.md_next_stage_verify
+  - command: python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_generation_drops_transformed_frontmatter_for_non_codex AdapterDistributionTests.test_opencode_generation_creates_curated_command_aliases_for_0_1_1 AdapterDistributionTests.test_build_adapters_cli_supports_verbose_check_only AdapterDistributionTests.test_changed_skill_with_complete_v2_metadata_passes_release_validation
+    result: pass_after_verify_frontmatter_transform_fix
+  - command: python scripts/test-select-validation.py ValidationSelectionTests.test_pr_mode_routes_adapter_fixture_to_adapter_checks
+    result: pass_after_classifying_adapter_fixture_paths
+  - command: bash scripts/ci.sh --mode explicit --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path scripts/test-skill-validator.py --path scripts/validate-skills.py --path scripts/validation_selection.py --path scripts/test-select-validation.py --path tests/fixtures/adapters/transformable-frontmatter/SKILL.md --path specs/skill-readability-contract.md --path specs/skill-readability-contract.test.md --path docs/plans/2026-05-18-skill-readability-self-containment.md --path docs/plan.md --path docs/changes/2026-05-18-skill-readability-self-containment/change.yaml --path docs/changes/2026-05-18-skill-readability-self-containment/review-log.md --path docs/changes/2026-05-18-skill-readability-self-containment/review-resolution.md --path docs/changes/2026-05-18-skill-readability-self-containment/explain-change.md
+    result: pass_selected_ci_after_verify_stage_fix
+  - command: bash scripts/ci.sh --mode broad-smoke
+    result: pass_after_verify_stage_fix_with_origin_main_matching_non_fatal_token_cost_message
 changed_files:
   - docs/proposals/2026-05-18-skill-readability-self-containment.md
   - specs/skill-readability-contract.md
   - specs/skill-readability-contract.test.md
   - docs/plans/2026-05-18-skill-readability-self-containment.md
   - docs/plan.md
+  - scripts/adapter_distribution.py
   - scripts/skill_validation.py
+  - scripts/test-adapter-distribution.py
+  - scripts/test-select-validation.py
   - scripts/test-skill-validator.py
+  - scripts/validation_selection.py
   - skills/proposal/SKILL.md
   - skills/proposal-review/SKILL.md
   - tests/fixtures/skills/skill-readability/valid-pilot/SKILL.md
@@ -197,6 +209,7 @@ changed_files:
   - tests/fixtures/skills/skill-readability/missing-output-skeleton/SKILL.md
   - tests/fixtures/skills/skill-readability/required-internal-reference/SKILL.md
   - tests/fixtures/skills/skill-readability/duplicate-closed-enum/SKILL.md
+  - tests/fixtures/adapters/transformable-frontmatter/SKILL.md
   - docs/reports/token-cost/skills/2026-05-18-skill-readability-self-containment.md
   - docs/changes/2026-05-18-skill-readability-self-containment/cold-read-report.md
   - docs/changes/2026-05-18-skill-readability-self-containment/behavior-parity-report.md

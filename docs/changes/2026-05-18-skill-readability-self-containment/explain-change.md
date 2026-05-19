@@ -43,6 +43,9 @@ No architecture or ADR artifact was required. The approved plan records that thi
 | `skills/proposal-review/SKILL.md` | Added the same readability contract shape while preserving review result and recording obligations; removed duplicated enum restatements after review. | Preserve review rigor while making the installed review contract easier to scan and fill. | R11-R28, R32-R34, R54 | `test-skill-validator.py`; `validate-skills.py`; cold-read report; behavior-parity report; `code-review-m3-r2` |
 | `scripts/skill_validation.py` | Added opt-in `skill-readability-v1` validation for workflow role blocks, output skeletons, forbidden required internal references, and known closed enum placement. | Enforce the pilot contract without forcing untouched skills into the new structure. | R36-R40, R53 | `test-skill-validator.py`; `validate-skills.py` |
 | `scripts/test-skill-validator.py` | Added positive and negative fixture tests and pilot opt-in coverage; updated assertions after SRSC-M3-CR1 to check enum references instead of duplicated values. | Prove validator behavior before and after pilot skill adoption. | Test spec T2, T3, T5, T8, T10 | 97-test validator run passes |
+| `scripts/adapter_distribution.py` | Treats `version` and `schema-version` as transformable front matter for non-Codex adapters. | Preserve adapter portability after the pilot skills add readability-contract front matter; Codex keeps the fields, Claude/OpenCode generated skill bodies drop them like `argument-hint`. | R32-R35; R54 | `test-adapter-distribution.py`; selected CI; broad smoke rerun |
+| `scripts/test-adapter-distribution.py` and `tests/fixtures/adapters/transformable-frontmatter/SKILL.md` | Extended the transformable-frontmatter fixture and assertion coverage to include `version` and `schema-version`. | Prevent regressions where readability front matter makes otherwise portable skills Codex-only. | R35; T10 | Targeted adapter distribution tests |
+| `scripts/validation_selection.py` and `scripts/test-select-validation.py` | Classified adapter fixture paths under `tests/fixtures/adapters/` as adapter validation inputs. | Keep PR-mode CI from blocking on a fixture touched by the adapter compatibility regression test. | R35; T10 | `test-select-validation.py`; selected CI |
 | `tests/fixtures/skills/skill-readability/` | Added fixtures for valid pilot shape, missing workflow role, invalid stage, missing output skeleton, required internal reference, and duplicate closed enum. | Keep validation focused on explicit contract shape instead of broad semantic prose scoring. | T2, T3, T5, T8 | `test-skill-validator.py` |
 | `specs/skill-readability-contract.md` | Added the approved contract for workflow role blocks, enum placement, skeletons, cold-read, behavior parity, token thresholds, and rollout scope. | Convert the accepted proposal into implementation requirements. | Proposal; spec-review-r1 | Artifact lifecycle validation; spec-review-r1 |
 | `specs/skill-readability-contract.test.md` | Added traceable test cases T1-T16 mapping requirements to static validation, manual review, generated-output checks, cold-read, parity, and token evidence. | Define proof obligations before implementation. | Plan; R1-R60 | Artifact lifecycle validation; user approval |
@@ -82,6 +85,8 @@ python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05
 git diff --check --
 ```
 
+During final `verify`, broad smoke exposed a branch-specific compatibility gap: `version` and `schema-version` front matter made `proposal` and `proposal-review` appear non-portable to the adapter distributor. The fix updates adapter front-matter transformation so those fields are kept for Codex and dropped from Claude/OpenCode generated skill bodies. The selector was also updated so adapter fixture changes route to adapter validation instead of becoming unclassified PR paths.
+
 The latest recorded post-resolution token counts are:
 
 | Skill | Baseline | Final | Delta | Status |
@@ -119,6 +124,7 @@ The change-local `review-resolution.md` is closed.
 | Rewrite the full R30 skill set in this change | The approved plan uses a pilot-first rollout to keep quality, review, and token evidence manageable. |
 | Hand-edit generated adapter output | Repository rules make `skills/` the authored source; generated adapter output must be produced by scripts. |
 | Accept duplicate enum values for readability | The spec requires each closed enum to appear exactly once per skill; references to authoritative enum blocks preserve readability without drift. |
+| Mark the pilot skills Codex-only after adding new front matter | R35 requires existing consumers to tolerate the new fields; adapter transformation preserves portability instead. |
 
 ## Scope Control
 
@@ -138,4 +144,3 @@ The pilot rewrites only `proposal` and `proposal-review`. Remaining R30 skills a
 ## Readiness
 
 `explain-change` is recorded. The next lifecycle stage is `verify`.
-

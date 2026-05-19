@@ -1226,6 +1226,37 @@ raise SystemExit({exit_code})
         )
         self.assertFalse(payload["blocking_results"])
 
+    def test_pr_mode_routes_adapter_fixture_to_adapter_checks(self) -> None:
+        repo = self.make_git_repo()
+        base = self.git_output(repo, "rev-parse", "HEAD")
+        fixture = repo / "tests" / "fixtures" / "adapters" / "example" / "SKILL.md"
+        fixture.parent.mkdir(parents=True)
+        fixture.write_text("# Adapter fixture\n", encoding="utf-8")
+        subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True, text=True)
+        subprocess.run(
+            ["git", "commit", "-m", "add adapter fixture"],
+            cwd=repo,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        head = self.git_output(repo, "rev-parse", "HEAD")
+
+        result = run_selector("--mode", "pr", "--base", base, "--head", head, cwd=repo)
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        payload = parse_stdout(result)
+
+        self.assertEqual(payload["status"], "ok")
+        self.assertEqual(payload["changed_paths"], ["tests/fixtures/adapters/example/SKILL.md"])
+        self.assertIn(
+            {"path": "tests/fixtures/adapters/example/SKILL.md", "category": "adapters"},
+            payload["classified_paths"],
+        )
+        self.assertTrue(
+            {"adapters.regression", "adapters.drift", "adapters.validate"}.issubset(selected_ids(payload))
+        )
+        self.assertFalse(payload["blocking_results"])
+
     def test_pr_mode_routes_readme_without_unclassified_block(self) -> None:
         repo = self.make_git_repo()
         base = self.git_output(repo, "rev-parse", "HEAD")

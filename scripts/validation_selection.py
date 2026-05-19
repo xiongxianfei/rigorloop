@@ -946,6 +946,8 @@ def _path_category(path: str) -> str | None:
         return "artifact-lifecycle-fixtures"
     if path.startswith("tests/fixtures/review-artifacts/"):
         return "review-artifact-fixtures"
+    if path.startswith("tests/fixtures/adapters/"):
+        return "adapters"
     if path.startswith("skills/"):
         return "skills"
     if path.startswith(".codex/skills/"):

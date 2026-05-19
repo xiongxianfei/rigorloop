@@ -72,10 +72,10 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - Last reviewed milestone: M3. Cold-read, behavior parity, token comparison, and rollout handoff
 - Review status: clean-with-notes by `code-review-m3-r2`
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
-- Next lifecycle stage after M3 implementation: verify
+- Next stage: code-review
+- Next lifecycle stage after M3 implementation: code-review for verify-stage adapter compatibility fix
 - Final closeout readiness: ready to start lifecycle closeout
-- Reason final closeout is or is not ready: all implementation milestones are closed, review-resolution is closed, and explain-change is recorded; verify and PR handoff remain incomplete.
+- Reason final closeout is or is not ready: all implementation milestones are closed, review-resolution is closed, and explain-change is recorded; verify found and fixed a branch-specific adapter front-matter compatibility regression, so code-review must cover the post-review implementation change before verify can claim branch-ready.
 
 ## Completed lifecycle handoffs
 
@@ -174,7 +174,7 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - Dependencies: active test spec exists; M1-M3 closed; all code-review findings resolved; no open review-resolution findings.
 - Tests to add/update: no new feature tests; run selected final validation from touched paths.
 - Implementation steps: record explain-change; run final verify; update plan and plan index lifecycle state when ready; prepare PR handoff.
-- Validation commands: `bash scripts/ci.sh --mode explicit --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path scripts/test-skill-validator.py --path scripts/validate-skills.py --path specs/skill-readability-contract.md --path specs/skill-readability-contract.test.md --path docs/plans/2026-05-18-skill-readability-self-containment.md --path docs/plan.md --path docs/changes/2026-05-18-skill-readability-self-containment`; `python scripts/validate-review-artifacts.py docs/changes/2026-05-18-skill-readability-self-containment`; `git diff --check --`
+- Validation commands: `bash scripts/ci.sh --mode explicit --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path scripts/test-skill-validator.py --path scripts/validate-skills.py --path specs/skill-readability-contract.md --path specs/skill-readability-contract.test.md --path docs/plans/2026-05-18-skill-readability-self-containment.md --path docs/plan.md --path docs/changes/2026-05-18-skill-readability-self-containment/change.yaml --path docs/changes/2026-05-18-skill-readability-self-containment/review-log.md --path docs/changes/2026-05-18-skill-readability-self-containment/review-resolution.md --path docs/changes/2026-05-18-skill-readability-self-containment/explain-change.md`; `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-18-skill-readability-self-containment`; `git diff --check --`
 - Expected observable result: final lifecycle evidence is coherent, plan state is synchronized with `docs/plan.md`, and the branch is ready for PR only after verify passes.
 - Commit message: `Close skill readability pilot lifecycle`
 - Milestone closeout:
@@ -228,6 +228,10 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - 2026-05-19: accepted and fixed SRSC-M3-CR1 by replacing duplicate enum value lists with authoritative enum references; next stage is rerun code-review for M3.
 - 2026-05-19: `code-review-m3-r2` found no material findings and closed M3; all implementation milestones are closed and next stage is `explain-change`.
 - 2026-05-19: recorded explain-change at `docs/changes/2026-05-18-skill-readability-self-containment/explain-change.md`; next stage is `verify`.
+- 2026-05-19: final verify found that the plan's selected CI command used an unclassified change-local directory path; corrected the final validation command to use concrete change-local files.
+- 2026-05-19: final verify broad smoke found a branch-specific adapter portability regression from the new `version` and `schema-version` front matter; fixed adapter distribution to drop those fields for non-Codex generated skill bodies while preserving them for Codex.
+- 2026-05-19: final verify found the touched adapter fixture path was unclassified by the validation selector; classified `tests/fixtures/adapters/` as adapter validation input and added selector regression coverage.
+- 2026-05-19: final verify selected CI and broad smoke passed after the adapter front-matter and selector fixes; branch-ready is still blocked until code-review covers the post-review implementation change.
 
 ## Decision log
 
@@ -274,6 +278,10 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - 2026-05-19: SRSC-M3-CR1 fix validation passed: `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, `python scripts/build-skills.py --check`, `python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-skill-readability-adapters`, `python scripts/validate-adapters.py --root /tmp/rigorloop-skill-readability-adapters --version v0.1.5`, and `python scripts/measure-skill-tokens.py`; token counts are `proposal` 3300 and `proposal-review` 3405 estimated tokens.
 - 2026-05-19: M3 rerun code-review completed clean-with-notes; review-resolution is closed and final lifecycle closeout can start with `explain-change`.
 - 2026-05-19: explain-change recorded from the actual branch diff, approved artifacts, review-resolution, and validation evidence; final `verify` has not run yet.
+- 2026-05-19: targeted adapter compatibility validation passed after the verify-stage front-matter transform fix: `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_generation_drops_transformed_frontmatter_for_non_codex AdapterDistributionTests.test_opencode_generation_creates_curated_command_aliases_for_0_1_1 AdapterDistributionTests.test_build_adapters_cli_supports_verbose_check_only AdapterDistributionTests.test_changed_skill_with_complete_v2_metadata_passes_release_validation`.
+- 2026-05-19: targeted selector regression passed after classifying adapter fixtures: `python scripts/test-select-validation.py ValidationSelectionTests.test_pr_mode_routes_adapter_fixture_to_adapter_checks`.
+- 2026-05-19: selected CI passed for touched skills, adapter distribution, selector, specs, plan, and change-local artifacts after the verify-stage fix.
+- 2026-05-19: broad smoke passed after the verify-stage fix. The output still prints the known non-fatal token-cost report validation message `dynamic_runtime.runs: missing required benchmark architecture-review`, which also appears on `origin/main`; the command exits 0.
 
 ## Outcome and retrospective
 
