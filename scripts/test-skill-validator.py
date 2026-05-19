@@ -752,6 +752,41 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         self.assertIn("| `spec` | 9164 | 192 | 2288 |", parity)
         self.assertIn("| `spec-review` | 7968 | 183 | 1992 |", parity)
 
+    def test_published_design_execution_review_evidence_is_scaffolded(self) -> None:
+        change_root = (
+            ROOT
+            / "docs"
+            / "changes"
+            / "2026-05-19-published-skill-design-implement-code-review"
+        )
+        audit = (change_root / "skill-audit.md").read_text(encoding="utf-8")
+        routing = (change_root / "routing-coverage.md").read_text(encoding="utf-8")
+        preservation = (change_root / "behavior-preservation.md").read_text(encoding="utf-8")
+        parity = (change_root / "behavior-parity.md").read_text(encoding="utf-8")
+
+        for skill in ("`implement`", "`code-review`"):
+            with self.subTest(skill=skill):
+                self.assertIn(f"| {skill} | yes |", audit)
+                self.assertIn(f"## {skill}", routing)
+                self.assertIn(f"| {skill} |", preservation)
+                self.assertIn(skill, parity)
+        for fixture_type in (
+            "Obvious positive",
+            "Casual positive",
+            "Edge positive",
+            "Near negative",
+            "Competing skill",
+            "Should not trigger",
+        ):
+            with self.subTest(fixture_type=fixture_type):
+                self.assertIn(fixture_type, routing)
+        self.assertIn("They do not claim runtime model auto-selection in CI.", routing)
+        self.assertIn("No merge or retire candidate is approved in this slice.", audit)
+        self.assertIn("| `implement` | 4421 |", audit)
+        self.assertIn("| `code-review` | 5054 |", audit)
+        self.assertIn("M3 must fill final evidence", preservation)
+        self.assertIn("M3 must confirm the rewrite preserves these outcomes", parity)
+
     def test_skill_readability_pilot_pair_opts_into_contract(self) -> None:
         for skill_name in ("proposal", "proposal-review"):
             skill_path = ROOT / "skills" / skill_name / "SKILL.md"
@@ -772,6 +807,24 @@ class SkillValidatorFixtureTests(unittest.TestCase):
 
     def test_skill_readability_spec_family_opts_into_contract(self) -> None:
         for skill_name in ("spec", "spec-review"):
+            skill_path = ROOT / "skills" / skill_name / "SKILL.md"
+            result = run_validator(skill_path)
+            with self.subTest(skill=skill_name):
+                self.assertEqual(
+                    result.returncode,
+                    0,
+                    msg=(
+                        f"expected {skill_name} to satisfy the readability contract\n"
+                        f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}"
+                    ),
+                )
+                body = skill_path.read_text(encoding="utf-8")
+                self.assertIn("schema-version: skill-readability-v1", body)
+                self.assertIn("## Workflow role", body)
+                self.assertIn("## Output skeleton", body)
+
+    def test_skill_readability_execution_review_opts_into_contract(self) -> None:
+        for skill_name in ("implement", "code-review"):
             skill_path = ROOT / "skills" / skill_name / "SKILL.md"
             result = run_validator(skill_path)
             with self.subTest(skill=skill_name):

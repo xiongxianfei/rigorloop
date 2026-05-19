@@ -1,0 +1,167 @@
+change_id: 2026-05-19-published-skill-design-implement-code-review
+title: Published skill design implement and code-review rollout
+classification: planned
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-19-rigorloop-published-skill-design-contract.md
+  spec: specs/skill-contract.md
+  test_spec: specs/skill-contract.test.md
+  plan: docs/plans/2026-05-19-published-skill-design-implement-code-review.md
+requirements:
+  - Continue the merged published-skill design rollout with the next execution/review lifecycle pair.
+  - Keep the next rollout scoped to skills/implement/SKILL.md and skills/code-review/SKILL.md unless a reviewed plan revision changes scope.
+  - Preserve the published-skill design contract covering description routing, workflow role, execution body, resource-map conditions, self-containment, output skeletons, routing coverage, behavior preservation, behavior parity, and token-cost discipline.
+  - Preserve implement first-pass completeness, milestone-aware handoff, plan update ownership, validation evidence, and no-review-claim boundaries.
+  - Preserve code-review independent-review mode, material finding recording, direct-proof expectations, review-resolution routing, and no-PR-readiness claim boundaries.
+  - Do not merge, retire, rename, remove, or change ownership of skills in this slice.
+  - Do not introduce broad semantic scoring or runtime skill auto-selection claims.
+  - Amend the test spec for this execution/review slice before implementation starts.
+tests:
+  - Plan-review evidence for docs/plans/2026-05-19-published-skill-design-implement-code-review.md.
+  - Test-spec amendment for execution/review routing, preservation, parity, and validation evidence.
+  - Skill audit and routing coverage evidence under docs/changes/2026-05-19-published-skill-design-implement-code-review/.
+  - Focused skill validator tests when deterministic checks are added or extended.
+  - Canonical skill validation for skills/implement/SKILL.md and skills/code-review/SKILL.md.
+  - Generated skill and temporary adapter archive validation from canonical skills.
+  - Behavior-preservation and behavior-parity evidence for implement and code-review.
+validation:
+  - command: plan
+    result: created_ready_for_plan_review
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml
+    result: pass_after_plan
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml
+    result: pass_after_plan
+  - command: git diff --check -- docs/plans/2026-05-19-published-skill-design-implement-code-review.md docs/plan.md docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml
+    result: pass_after_plan
+  - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml
+    result: pass_after_plan
+  - command: plan-review
+    result: approved_no_material_findings_recorded
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-19-published-skill-design-implement-code-review
+    result: pass_after_plan_review
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml
+    result: pass_after_plan_review
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml --path docs/changes/2026-05-19-published-skill-design-implement-code-review/review-log.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/reviews/plan-review-r1.md
+    result: pass_after_plan_review
+  - command: git diff --check -- docs/plans/2026-05-19-published-skill-design-implement-code-review.md docs/plan.md docs/changes/2026-05-19-published-skill-design-implement-code-review
+    result: pass_after_plan_review
+  - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml --path docs/changes/2026-05-19-published-skill-design-implement-code-review/review-log.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/reviews/plan-review-r1.md
+    result: pass_after_plan_review
+  - command: test-spec
+    result: amended_skill_contract_test_spec_for_execution_review_rollout
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml
+    result: pass_after_test_spec
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml
+    result: pass_after_test_spec
+  - command: git diff --check -- specs/skill-contract.test.md docs/plans/2026-05-19-published-skill-design-implement-code-review.md docs/plan.md docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml
+    result: pass_after_test_spec
+  - command: bash scripts/ci.sh --mode explicit --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml
+    result: pass_after_test_spec
+  - command: implement M1
+    result: evidence_scaffold_created_ready_for_code_review
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml
+    result: pass_after_m1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml --path docs/changes/2026-05-19-published-skill-design-implement-code-review/skill-audit.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-parity.md --path docs/plan.md
+    result: pass_after_m1
+  - command: git diff --check -- docs/plans/2026-05-19-published-skill-design-implement-code-review.md docs/plan.md docs/changes/2026-05-19-published-skill-design-implement-code-review
+    result: pass_after_m1
+  - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml --path docs/changes/2026-05-19-published-skill-design-implement-code-review/skill-audit.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-parity.md
+    result: pass_after_m1
+  - command: code-review M1
+    result: clean_with_notes_recorded_m1_closed
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-19-published-skill-design-implement-code-review
+    result: pass_after_code_review_m1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml
+    result: pass_after_code_review_m1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml --path docs/changes/2026-05-19-published-skill-design-implement-code-review/review-log.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/reviews/code-review-m1-r1.md
+    result: pass_after_code_review_m1
+  - command: git diff --check -- docs/plans/2026-05-19-published-skill-design-implement-code-review.md docs/plan.md docs/changes/2026-05-19-published-skill-design-implement-code-review
+    result: pass_after_code_review_m1
+  - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml --path docs/changes/2026-05-19-published-skill-design-implement-code-review/review-log.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/reviews/code-review-m1-r1.md
+    result: pass_after_code_review_m1
+  - command: implement M2
+    result: deterministic_execution_review_evidence_test_added_ready_for_code_review
+  - command: python scripts/test-skill-validator.py
+    result: pass_after_m2
+  - command: python scripts/validate-skills.py
+    result: pass_after_m2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml
+    result: pass_after_m2
+  - command: git diff --check -- scripts/test-skill-validator.py specs/skill-contract.test.md docs/plans/2026-05-19-published-skill-design-implement-code-review.md docs/plan.md docs/changes/2026-05-19-published-skill-design-implement-code-review
+    result: pass_after_m2
+  - command: bash scripts/ci.sh --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path specs/skill-contract.test.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml
+    result: pass_after_m2
+  - command: code-review M2
+    result: clean_with_notes_recorded_m2_closed
+  - command: implement M3
+    result: implement_and_code_review_skills_rewritten_ready_for_code_review
+  - command: python scripts/validate-skills.py
+    result: pass_after_m3
+  - command: python scripts/test-skill-validator.py
+    result: pass_after_m3
+  - command: python scripts/measure-skill-tokens.py --skills-root skills
+    result: pass_after_m3_implement_4860_code_review_5554
+  - command: python scripts/build-skills.py --check
+    result: pass_after_m3
+  - command: tmpdir=$(mktemp -d) && python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmpdir" && python scripts/validate-adapters.py --root "$tmpdir" --version v0.1.5 && rm -rf "$tmpdir"
+    result: pass_after_m3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml
+    result: pass_after_m3
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml --path docs/changes/2026-05-19-published-skill-design-implement-code-review/skill-audit.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-parity.md
+    result: pass_after_m3
+  - command: git diff --check -- skills/implement/SKILL.md skills/code-review/SKILL.md scripts/test-skill-validator.py specs/skill-contract.test.md docs/plans/2026-05-19-published-skill-design-implement-code-review.md docs/plan.md docs/changes/2026-05-19-published-skill-design-implement-code-review
+    result: pass_after_m3
+  - command: bash scripts/ci.sh --mode explicit --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path scripts/test-skill-validator.py --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml --path docs/changes/2026-05-19-published-skill-design-implement-code-review/skill-audit.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-parity.md
+    result: pass_after_m3
+  - command: code-review M3
+    result: clean_with_notes_recorded_m3_closed
+  - command: explain-change
+    result: recorded_ready_for_verify
+  - command: verify
+    result: branch_ready_for_pr_handoff
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-19-published-skill-design-implement-code-review
+    result: pass_final_verify
+  - command: python scripts/validate-skills.py
+    result: pass_final_verify
+  - command: python scripts/test-skill-validator.py
+    result: pass_final_verify
+  - command: python scripts/build-skills.py --check
+    result: pass_final_verify
+  - command: python scripts/measure-skill-tokens.py --skills-root skills
+    result: pass_final_verify_implement_4860_code_review_5554
+  - command: tmpdir=$(mktemp -d) && python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmpdir" && python scripts/validate-adapters.py --root "$tmpdir" --version v0.1.5 && rm -rf "$tmpdir"
+    result: pass_final_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml
+    result: pass_final_verify
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml --path docs/changes/2026-05-19-published-skill-design-implement-code-review/review-log.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/explain-change.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/skill-audit.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-parity.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path scripts/test-skill-validator.py
+    result: pass_final_verify
+  - command: git diff --check -- .
+    result: pass_final_verify
+  - command: bash scripts/ci.sh --mode explicit --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path scripts/test-skill-validator.py --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml --path docs/changes/2026-05-19-published-skill-design-implement-code-review/review-log.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/explain-change.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/skill-audit.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-parity.md
+    result: pass_final_verify
+  - command: gh pr create --base main --head published-skill-design-implement-code-review
+    result: opened_pr_73
+changed_files:
+  - scripts/test-skill-validator.py
+  - skills/implement/SKILL.md
+  - skills/code-review/SKILL.md
+  - specs/skill-contract.test.md
+  - docs/plans/2026-05-19-published-skill-design-implement-code-review.md
+  - docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml
+  - docs/changes/2026-05-19-published-skill-design-implement-code-review/review-log.md
+  - docs/changes/2026-05-19-published-skill-design-implement-code-review/reviews/plan-review-r1.md
+  - docs/changes/2026-05-19-published-skill-design-implement-code-review/reviews/code-review-m1-r1.md
+  - docs/changes/2026-05-19-published-skill-design-implement-code-review/reviews/code-review-m2-r1.md
+  - docs/changes/2026-05-19-published-skill-design-implement-code-review/reviews/code-review-m3-r1.md
+  - docs/changes/2026-05-19-published-skill-design-implement-code-review/explain-change.md
+  - docs/changes/2026-05-19-published-skill-design-implement-code-review/skill-audit.md
+  - docs/changes/2026-05-19-published-skill-design-implement-code-review/routing-coverage.md
+  - docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-preservation.md
+  - docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-parity.md
+  - docs/plan.md
+review:
+  status: clean
+  unresolved_items: 0
+  reviewed_artifact: commit 84b7363 M3: roll out published skill design to execution-review skills
+  review_log: docs/changes/2026-05-19-published-skill-design-implement-code-review/review-log.md
+  location: docs/changes/2026-05-19-published-skill-design-implement-code-review/reviews/code-review-m3-r1.md
