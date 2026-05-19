@@ -62,7 +62,7 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 ## Current Handoff Summary
 
 - Current milestone: M2. Spec Family Validator And Fixture Support
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M1. Spec Family Audit And Evidence Scaffold
 - Review status: code-review-m1-r1 clean-with-notes; no material findings
 - Remaining in-scope implementation milestones: M2, M3
@@ -108,7 +108,7 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 
 ### M2. Spec Family Validator And Fixture Support
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: make any deterministic checks needed for `spec` and `spec-review` enforceable without broad semantic scoring.
 - Requirements: R29, R32-R33, R35.
 - Files/components likely touched:
@@ -126,6 +126,9 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
   - Extend existing published-design checks only where the spec pair needs deterministic coverage.
   - Avoid adding runtime skill-selection claims.
   - Keep checks phrase/path/table based.
+- Implementation result:
+  - Added deterministic regression checks in `scripts/test-skill-validator.py` for the spec-family routing coverage, audit classifications, preservation scaffold, parity scaffold, and baseline token evidence.
+  - Left `scripts/skill_validation.py` unchanged because M1 did not expose a new production validator gap beyond evidence coverage and already-existing published-design checks.
 - Validation commands:
   - `python scripts/test-skill-validator.py`
   - `python scripts/validate-skills.py`
@@ -221,7 +224,7 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 - [x] Plan-review completed.
 - [x] Test-spec amendment completed and approved.
 - [x] M1 implemented and reviewed.
-- [ ] M2 implemented and reviewed.
+- [x] M2 implemented; code-review pending.
 - [ ] M3 implemented and reviewed.
 - [ ] Explain-change recorded.
 - [ ] Final verify passed.
@@ -235,6 +238,7 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 - 2026-05-19: approve the plan with no material findings. Rationale: the plan keeps the next slice scoped to `spec` and `spec-review`, preserves lifecycle sequencing, and requires test-spec amendment before implementation.
 - 2026-05-19: amend `specs/skill-contract.test.md` with spec-family proof cases before implementation. Rationale: `T21`-`T24` make audit, deterministic validation, behavior preservation, generated-output, and adapter proof concrete for `spec` and `spec-review`.
 - 2026-05-19: keep M1 as evidence-only. Rationale: the audit found workflow-role and output-skeleton gaps in `spec` and `spec-review`, but those skill-body changes belong to M3 after deterministic validator scope is settled.
+- 2026-05-19: do not change production validator logic in M2. Rationale: existing published-design checks already cover description length, optional `when_to_use`, packaged resources, and repository-root self-containment; the spec-family gap is deterministic evidence coverage, now locked by focused regression tests.
 
 ## Surprises and discoveries
 
@@ -268,6 +272,11 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 - 2026-05-19 M1 code-review validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-spec-family/review-log.md --path docs/changes/2026-05-19-published-skill-design-spec-family/reviews/code-review-m1-r1.md` passed.
 - 2026-05-19 M1 code-review validation: `git diff --check -- docs/plans/2026-05-19-published-skill-design-spec-family.md docs/plan.md docs/changes/2026-05-19-published-skill-design-spec-family` passed.
 - 2026-05-19 M1 code-review selected CI: `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-spec-family/review-log.md --path docs/changes/2026-05-19-published-skill-design-spec-family/reviews/code-review-m1-r1.md` passed selected review-artifacts, artifact-lifecycle, change-metadata regression, and change-metadata checks.
+- 2026-05-19 M2 validation: `python scripts/test-skill-validator.py` passed 110 tests.
+- 2026-05-19 M2 validation: `python scripts/validate-skills.py` passed for 23 canonical skills.
+- 2026-05-19 M2 validation: `python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml` passed.
+- 2026-05-19 M2 validation: `git diff --check -- scripts/test-skill-validator.py docs/plans/2026-05-19-published-skill-design-spec-family.md docs/plan.md docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml` passed.
+- 2026-05-19 M2 selected CI: `bash scripts/ci.sh --mode explicit --path scripts/test-skill-validator.py --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml` passed selected skill regression, skill generation regression, artifact-lifecycle, change-metadata regression, and change-metadata checks.
 
 ## Outcome and retrospective
 
@@ -276,7 +285,7 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for `implement M2`, not final closeout or PR readiness.
+- This plan is ready for `code-review` of M2, not final closeout or PR readiness.
 
 ## Remaining completion gates
 

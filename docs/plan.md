@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-19 Published Skill Design Spec Family Rollout](plans/2026-05-19-published-skill-design-spec-family.md) - active execution plan for continuing the merged published-skill design pilot with the next scoped pair, `spec` and `spec-review`; M1 is closed and the current next stage is implement M2.
+- [2026-05-19 Published Skill Design Spec Family Rollout](plans/2026-05-19-published-skill-design-spec-family.md) - active execution plan for continuing the merged published-skill design pilot with the next scoped pair, `spec` and `spec-review`; M2 validator evidence is implemented and the current next stage is code-review for M2.
 
 ## Blocked
 - none yet
