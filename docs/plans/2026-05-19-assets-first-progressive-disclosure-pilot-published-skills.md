@@ -69,14 +69,14 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Plan Skill Asset Split
-- Current milestone state: closed
+- Current milestone: M3. Adapter, Token, And Behavior-Parity Proof
+- Current milestone state: review-requested
 - Last reviewed milestone: M2. Plan Skill Asset Split
-- Review status: clean-with-notes
+- Review status: ready for M3 code-review
 - Remaining in-scope implementation milestones: M3
-- Next stage: implement M3
+- Next stage: code-review M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 remains unimplemented, and explain-change, verify, and PR handoff have not run.
+- Reason final closeout is or is not ready: M3 is implemented but not reviewed, and explain-change, verify, and PR handoff have not run.
 
 ## Pre-implementation prerequisites
 
@@ -184,7 +184,7 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 
 ### M3. Adapter, Token, And Behavior-Parity Proof
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: prove the asset split ships through adapters, improves the common path, preserves behavior, and handles historical coverage.
 - Requirements: R43-R45.
 - Files/components likely touched:
@@ -222,7 +222,7 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
   - `python scripts/test-skill-validator.py`
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml`
   - `git diff --check -- skills/plan scripts tests specs docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md docs/plan.md`
-  - `bash scripts/ci.sh --mode explicit --path skills/plan/SKILL.md --path skills/plan/assets --path scripts --path tests --path specs/skill-contract.test.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md`
+  - `bash scripts/ci.sh --mode explicit --path skills/plan/SKILL.md --path skills/plan/assets --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path tests/fixtures/adapters/portable-with-assets --path specs/skill-contract.test.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md`
 - Expected observable result: generated adapter archives contain the assets, the common-path body shrinks by at least 15 percent, behavior parity is preserved, and historical coverage gaps are explicit.
 - Commit message: `M3: prove plan asset packaging and parity`
 - Milestone closeout:
@@ -280,6 +280,7 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 - 2026-05-19: code-review-m1-r2 returned clean-with-notes; M1 closed and the next stage is implement M2.
 - 2026-05-19: M2 split the `plan` skill output structure into four normative packaged assets, kept lifecycle rules in `SKILL.md`, recorded behavior-preservation and token-cost evidence, and passed M2 validation; ready for M2 code-review.
 - 2026-05-19: code-review-m2-r1 returned clean-with-notes; M2 closed and the next stage is implement M3.
+- 2026-05-19: M3 added adapter archive asset packaging support and proof, recorded behavior-parity and historical coverage evidence, updated token-cost evidence after the skeleton handoff-section correction, and passed M3 validation; ready for M3 code-review.
 
 ## Decision log
 
@@ -288,11 +289,13 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 - 2026-05-19: implemented assets-first validation as a scoped `plan` plus `assets/` contract -> keeps flat skills valid while allowing M2 to introduce the real packaged assets.
 - 2026-05-19: structural fingerprints normalize asset body text after removing metadata comments and normalizing visible placeholders -> catches template drift without treating the metadata header itself as template content.
 - 2026-05-19: `plan-skeleton.md` owns the full plan section layout while `SKILL.md` keeps compact output expectations and the resource map -> proves the assets pattern without duplicating the full skeleton in two files.
+- 2026-05-19: packaged skill resources are copied into adapter archives alongside `SKILL.md` for each included adapter -> preserves installed skill self-containment without changing adapter roots.
 
 ## Surprises and discoveries
 
 - Initial placeholder validation counted HTML metadata comments as placeholders; the validator now checks asset body text after metadata comments are removed.
 - The common-path reduction gate left little margin after preserving existing plan lifecycle rules, so M2 trimmed only common-path wording and kept behavior-sensitive state, settlement, and claim-boundary rules in `SKILL.md`.
+- M3 behavior-parity review found `Current Handoff Summary` needed to be explicit in `plan-skeleton.md`, so the skeleton and resource-map section set were corrected while keeping common-path tokens below the 15 percent reduction threshold.
 
 ## Validation notes
 
@@ -320,6 +323,24 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 - `bash scripts/ci.sh --mode explicit --path skills/plan/SKILL.md --path skills/plan/assets --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/behavior-preservation.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/token-cost.md --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md` blocked because `token-cost.md` has no deterministic v1 selector check.
 - `bash scripts/ci.sh --mode explicit --path skills/plan/SKILL.md --path skills/plan/assets --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md` passed for supported paths with selected checks `skills.validate`, `skills.regression`, `skills.generation_regression`, `skills.drift`, `adapters.drift`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
 - code-review-m2-r1 returned clean-with-notes and recorded no material findings.
+- `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_archives_include_packaged_skill_assets` failed before adapter packaging support because `.agents/skills/portable-with-assets/assets/template.md` was missing from the generated codex archive.
+- `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_archives_include_packaged_skill_assets` passed after adding packaged-resource archive support.
+- `python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_archives_include_packaged_skill_assets AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives` passed.
+- `python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-m3-adapters` built codex, claude, and opencode archives.
+- `python scripts/validate-adapters.py --root /tmp/rigorloop-m3-adapters --version v0.1.5` passed.
+- Direct archive inspection confirmed all four `plan` assets are present in codex, claude, and opencode archives.
+- `python scripts/validate-skills.py` passed after the M3 skeleton correction.
+- `python scripts/measure-skill-tokens.py --skills-root skills` measured `skills/plan/SKILL.md` at 13124 bytes and 3281 estimated tokens after the M3 skeleton correction, a 15.04 percent common-path reduction; total measured skills were 247705 bytes and 61914 estimated tokens.
+- `python scripts/test-skill-validator.py` passed with 128 tests after the M3 skeleton correction.
+- `python scripts/test-adapter-distribution.py` passed with 101 tests. It emitted the existing stdout diagnostic `token-cost report validation failed: dynamic_runtime.runs: missing required benchmark architecture-review` while exiting 0.
+- `python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-m3-adapters-final` built codex, claude, and opencode archives for the final M3 validation pass.
+- `python scripts/validate-adapters.py --root /tmp/rigorloop-m3-adapters-final --version v0.1.5` passed.
+- Direct archive inspection under `/tmp/rigorloop-m3-adapters-final` confirmed all four `plan` assets are present in codex, claude, and opencode archives.
+- `python scripts/build-skills.py --check` passed after the final M3 recording updates.
+- `python scripts/validate-change-metadata.py docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml` passed after the final M3 recording updates.
+- `git diff --check -- skills/plan scripts tests specs docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md docs/plan.md` passed after the final M3 recording updates.
+- `bash scripts/ci.sh --mode explicit --path skills/plan/SKILL.md --path skills/plan/assets --path scripts --path tests --path specs/skill-contract.test.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md` blocked because broad `scripts` and `tests` roots are not classified by the v1 selector.
+- `bash scripts/ci.sh --mode explicit --path skills/plan/SKILL.md --path skills/plan/assets --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path tests/fixtures/adapters/portable-with-assets --path specs/skill-contract.test.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md` passed with selected checks `skills.validate`, `skills.regression`, `skills.generation_regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
 
 ## Outcome and retrospective
 
@@ -328,4 +349,4 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for M3 implementation. Readiness is not Done; all remaining implementation and downstream gates remain open.
+- Ready for M3 code-review. Readiness is not Done; downstream explain-change, verify, and PR gates remain open.

@@ -9,7 +9,7 @@ argument-hint: [feature name, spec path, architecture path, or implementation go
 
 # Living execution plan
 
-Turn approved behavior and architecture into a safe, reviewable implementation path. Do not use this skill to decide product direction.
+Sequence approved behavior and architecture into reviewable implementation. Do not decide product direction.
 
 ## Purpose
 
@@ -36,7 +36,7 @@ Do not require RigorLoop repository-internal specs, docs, reports, follow-up fil
 
 - COPY `assets/plan-skeleton.md` when creating a new plan or replacing the full plan structure.
   Fill: sections and placeholders.
-  Sections: Status; Purpose / big picture; Source artifacts; Context and orientation; Non-goals; Requirements covered; Milestones; Validation plan; Risks and recovery; Dependencies; Progress; Decision log; Surprises and discoveries; Validation notes; Outcome and retrospective; Readiness.
+  Sections: Status; Purpose / big picture; Source artifacts; Context and orientation; Non-goals; Requirements covered; Current Handoff Summary; Milestones; Validation plan; Risks and recovery; Dependencies; Progress; Decision log; Surprises and discoveries; Validation notes; Outcome and retrospective; Readiness.
   Do not emit unfilled placeholders.
 - COPY `assets/milestone.md` when adding each reviewable implementation milestone.
   Fill: ID, state, goal, requirements, files, tests, steps, validation, result, risks, rollback.

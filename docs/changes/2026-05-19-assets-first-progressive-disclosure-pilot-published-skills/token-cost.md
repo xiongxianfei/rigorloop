@@ -14,21 +14,21 @@
 
 - Measurement date: 2026-05-19
 - After-change command: `python scripts/measure-skill-tokens.py --skills-root skills`
-- After-change `skills/plan/SKILL.md` bytes: 13126
-- After-change `skills/plan/SKILL.md` estimated tokens: 3282
-- Common-path token delta: -580 tokens
-- Common-path token reduction: 15.02 percent
+- After-change `skills/plan/SKILL.md` bytes: 13124
+- After-change `skills/plan/SKILL.md` estimated tokens: 3281
+- Common-path token delta: -581 tokens
+- Common-path token reduction: 15.04 percent
 - Common-path gate: pass; at least 15 percent reduction required
-- After-change asset bytes: 3408
-- After-change estimated asset tokens: 852
-- After-change estimated `SKILL.md` plus assets tokens: 4134
-- Total packaged-content delta from baseline body: +272 estimated tokens
-- Total packaged-content change: +7.04 percent
+- After-change asset bytes: 3478
+- After-change estimated asset tokens: 870
+- After-change estimated `SKILL.md` plus assets tokens: 4151
+- Total packaged-content delta from baseline body: +289 estimated tokens
+- Total packaged-content change: +7.48 percent
 - Total packaged-content budget: within +10 percent hard cap; above +5 percent rationale tolerance because the full plan layout now ships as on-demand packaged assets instead of common-path body.
-- After-change total measured skill bytes: 247707
-- After-change total measured skill estimated tokens: 61915
+- After-change total measured skill bytes: 247705
+- After-change total measured skill estimated tokens: 61914
 
 ## Notes
 
 - `plan-skeleton.md` owns the full plan section order, so total packaged content grows while common-path `SKILL.md` shrinks.
-- M3 still owns adapter packaging proof, behavior-parity evidence, historical coverage, and final token-budget closeout.
+- M3 records adapter packaging proof, behavior-parity evidence, historical coverage, and final token-budget closeout.
