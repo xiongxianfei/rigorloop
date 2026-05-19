@@ -144,6 +144,8 @@ validation:
     result: pass_final_verify_selected_checks_include_broad_smoke
   - command: bash scripts/ci.sh --mode pr --base 8d0ddecee8450b3730533df3b3802a75150ca45a --head HEAD --broad-smoke
     result: pass_final_verify_selected_ci_and_broad_smoke
+  - command: pr readiness checks
+    result: pass_pending_pr_open
 changed_files:
   - docs/proposals/2026-05-19-spec-and-test-spec-structural-hygiene.md
   - specs/skill-contract.md

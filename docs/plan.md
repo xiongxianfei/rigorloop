@@ -3,12 +3,13 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-19 Spec and Test-Spec Structural Hygiene](plans/2026-05-19-spec-and-test-spec-structural-hygiene.md) - active execution plan for grouping the skill-contract test spec by slice after the approved navigation-only spec amendment; current next stage is pr after final local verify, with PR handoff still open.
+- none yet
 
 ## Blocked
 - none yet
 
 ## Done
+- [2026-05-19 Spec and Test-Spec Structural Hygiene](plans/2026-05-19-spec-and-test-spec-structural-hygiene.md) - completed execution plan for grouping the skill-contract spec and test spec by slice, adding navigation and growth-strategy structure, preserving clause/criterion/test content, resolving `CR-M1-001`, passing final local verify with PR-mode selected CI and broad smoke, and recording PR handoff readiness.
 - [2026-05-19 Assets-First Progressive Disclosure Pilot](plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md) - completed execution plan for the assets-first `plan` packaged-resource pilot, adding the four packaged plan assets, deterministic validator and adapter archive proof, behavior/token/parity evidence, selector routing for change-local evidence, final local verify, PR #75, and passing hosted CI.
 - [2026-05-19 Published Skill Design Plan Family Rollout](plans/2026-05-19-published-skill-design-plan-family.md) - completed execution plan for continuing the published-skill design rollout with the `plan` and `plan-review` pair, preserving plan state ownership and review recording, passing final verify, opening PR #74, passing hosted CI, and merging PR #74.
 - [2026-05-19 Published Skill Design Implement And Code-Review Rollout](plans/2026-05-19-published-skill-design-implement-code-review.md) - completed execution plan for continuing the merged published-skill design rollout with the `implement` and `code-review` pair, adding execution/review evidence, focused deterministic proof, behavior preservation and parity evidence, passing final verify, opening PR #73, passing hosted CI, and merging PR #73.
