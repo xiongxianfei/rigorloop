@@ -11,11 +11,12 @@ Review closeout: proposal-review-r2
 Review closeout: spec-review-r1
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
+Review closeout: code-review-m1-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `plan-review-r1`, `plan-review-r2`
-- Findings resolved: 5
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-m1-r1`
+- Findings resolved: 6
 - Unresolved findings: 0
-- Final result: `APD-PR1`, `APD-PR2`, `APD-PR3`, and `APD-PR4` are accepted and resolved for proposal-revision purposes. `APD-PLR1` is accepted and resolved for plan-revision purposes.
+- Final result: `APD-PR1`, `APD-PR2`, `APD-PR3`, and `APD-PR4` are accepted and resolved for proposal-revision purposes. `APD-PLR1` is accepted and resolved for plan-revision purposes. `APD-CR1` is accepted and resolved for M1 review-resolution purposes.
 
 ## Resolution Overview
 
@@ -26,6 +27,7 @@ Review closeout: plan-review-r2
 | APD-PR3 | accepted | resolved | Added the output skeleton boundary for `assets/plan-skeleton.md` as a reviewed equivalent template with compact `SKILL.md` summary. |
 | APD-PR4 | accepted | resolved | Added deterministic static validation boundaries and routed qualitative checks to bounded heuristics, fixtures, or code review. |
 | APD-PLR1 | accepted | resolved | Revised the plan so test-spec authoring stays in the `test-spec` stage and M1 implements the approved test-spec amendment. |
+| APD-CR1 | accepted | resolved | Added direct plan-asset fixture proof for a missing resource-map entry. |
 
 ## Common Resolution Metadata
 
@@ -55,6 +57,10 @@ Finding closeout for `plan-review-r1` is closed for plan-revision purposes. Imme
 ### plan-review-r2
 
 No material findings. Clean formal review approved the revised plan for plan-stage purposes. Immediate next stage is `test-spec`. No disposition entries required.
+
+### code-review-m1-r1
+
+Finding closeout for `code-review-m1-r1` is closed for M1 review-resolution purposes. Immediate next stage is M1 code-review rerun.
 
 ### APD-PR1 - Proposal needs explicit dependency on existing skill-contract slice
 
@@ -115,3 +121,15 @@ Chosen action: Revise the plan to keep `test-spec` authoring after plan-review a
 Rationale: The lifecycle order is `plan -> plan-review -> test-spec -> implement`; authoring the test spec inside M1 would blur the stage boundary and weaken test-driven sequencing.
 Validation target: Confirm the revised plan separates the test-spec stage from M1 implementation and keeps the immediate next stage as `test-spec` after a clean plan-review.
 Validation evidence: Plan revision added `Pre-implementation prerequisites`, removed `specs/skill-contract.test.md` from M1 implementation-owned files, replaced test-spec authoring with implementation of approved test-spec-defined tests, and kept current handoff at follow-up plan-review before `test-spec`.
+
+### APD-CR1 - Missing direct fixture proof for plan asset resource-map omissions
+
+Finding ID: APD-CR1
+Disposition: accepted
+Status: resolved
+Owner: implementation
+Owning stage: review-resolution
+Chosen action: Added `tests/fixtures/skills/published-design/plan-assets-missing-resource-map-entry/` with the approved four `plan` assets while omitting `assets/decision-log-row.md` from `SKILL.md`'s `Resource map`, and added `test_published_design_plan_asset_resource_map_requires_every_asset`.
+Rationale: T34 and the M1 plan require direct fixture proof for missing resource-map entries in the assets-first plan pilot, and the reviewed implementation does not add that plan-asset-specific omission fixture.
+Validation target: Add direct plan-asset missing resource-map-entry fixture/test coverage and rerun the M1 validation commands.
+Validation evidence: `python scripts/test-skill-validator.py` passed with 128 tests, including the new plan-asset missing resource-map-entry test. `python scripts/validate-skills.py` passed after the fixture addition.

@@ -69,6 +69,24 @@ validation:
     result: pass_after_M1_validator_implementation
   - command: bash scripts/ci.sh --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path tests/fixtures/skills/published-design --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md
     result: pass_after_M1_validator_implementation
+  - command: code-review-m1-r1
+    result: changes_requested_APD-CR1
+  - command: APD-CR1 review-resolution
+    result: added_plan_asset_missing_resource_map_entry_fixture
+  - command: python scripts/test-skill-validator.py
+    result: pass_after_APD-CR1_resolution
+  - command: python scripts/validate-skills.py
+    result: pass_after_APD-CR1_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml
+    result: pass_after_APD-CR1_resolution
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills
+    result: pass_after_APD-CR1_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-log.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-resolution.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/reviews/code-review-m1-r1.md
+    result: pass_after_APD-CR1_resolution
+  - command: git diff --check --
+    result: pass_after_APD-CR1_resolution
+  - command: bash scripts/ci.sh --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path tests/fixtures/skills/published-design --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md
+    result: pass_after_APD-CR1_resolution
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-log.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-resolution.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/reviews/plan-review-r2.md
     result: pass_after_test_spec
   - command: bash scripts/ci.sh --mode explicit --path specs/skill-contract.test.md --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml
@@ -126,6 +144,7 @@ changed_files:
   - docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/reviews/spec-review-r1.md
   - docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/reviews/plan-review-r1.md
   - docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/reviews/plan-review-r2.md
+  - docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/reviews/code-review-m1-r1.md
 review:
-  status: approved
+  status: changes_requested
   unresolved_items: 0

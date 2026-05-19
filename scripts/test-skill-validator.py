@@ -677,6 +677,12 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "Resource map entry for 'assets/milestone.md' must name fields or structures to fill",
         )
 
+    def test_published_design_plan_asset_resource_map_requires_every_asset(self) -> None:
+        self.assertFixtureFails(
+            "published-design/plan-assets-missing-resource-map-entry",
+            "Resource map must name packaged resource 'assets/decision-log-row.md'",
+        )
+
     def test_published_design_plan_asset_placeholders_required(self) -> None:
         self.assertFixtureFails(
             "published-design/plan-assets-missing-placeholder",
