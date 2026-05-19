@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- none yet
+- [2026-05-19 Spec and Test-Spec Structural Hygiene](plans/2026-05-19-spec-and-test-spec-structural-hygiene.md) - active execution plan for grouping the skill-contract test spec by slice after the approved navigation-only spec amendment; current next stage is code-review for M1 after implementation-stage preservation and lifecycle validation passed, with code-review, explain-change, verify, and PR gates still open.
 
 ## Blocked
 - none yet
