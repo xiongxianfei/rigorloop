@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-18 Skill readability and self-containment](plans/2026-05-18-skill-readability-self-containment.md) - active execution plan for piloting quality-first installed skill readability on `proposal` and `proposal-review`, adding focused validation, cold-read proof, behavior-parity proof, token-cost comparison, and follow-on rollout ownership. Current next stage: review-resolution for SRSC-M3-CR1, then implement M3 fix.
+- [2026-05-18 Skill readability and self-containment](plans/2026-05-18-skill-readability-self-containment.md) - active execution plan for piloting quality-first installed skill readability on `proposal` and `proposal-review`, adding focused validation, cold-read proof, behavior-parity proof, token-cost comparison, and follow-on rollout ownership. Current next stage: code-review for M3 rerun.
 
 ## Blocked
 - none yet

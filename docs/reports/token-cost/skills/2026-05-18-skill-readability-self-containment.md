@@ -46,11 +46,11 @@ Measurement date: 2026-05-18
 
 | Skill | Baseline estimated tokens | After-change estimated tokens | Delta | Delta % | +5% tolerance | +10% hard cap |
 |---|---:|---:|---:|---:|---|---|
-| proposal | 3189 | 3345 | +156 | +4.89% | within ceiling 3348 | below hard cap 3508 |
-| proposal-review | 3255 | 3417 | +162 | +4.98% | within ceiling 3417 | below hard cap 3580 |
+| proposal | 3189 | 3300 | +111 | +3.48% | within ceiling 3348 | below hard cap 3508 |
+| proposal-review | 3255 | 3405 | +150 | +4.61% | within ceiling 3417 | below hard cap 3580 |
 
 ## M3 status
 
-The pilot pair remains within the accepted +5% tolerance and below the +10% hard cap. The accepted increases are tied to readability and self-containment gains: workflow role blocks, fenced closed enums, tabulated contracts, labeled workflow-wide rules, and fenced output skeletons are now present in the installed skill text.
+The pilot pair remains within the accepted +5% tolerance and below the +10% hard cap. The accepted increases are tied to readability and self-containment gains: workflow role blocks, fenced closed enums, tabulated contracts, labeled workflow-wide rules, and fenced output skeletons are now present in the installed skill text. The SRSC-M3-CR1 fix reduced the after-change counts by removing repeated closed enum values and updating tests to rely on the authoritative fenced enum blocks.
 
 Behavior-parity and cold-read evidence in the change-local pack records no quality or clarity regression. Token cost remains subordinate to output quality and clarity under the approved spec.
