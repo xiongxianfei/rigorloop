@@ -14,6 +14,43 @@ CANONICAL_SKILLS_DIR = ROOT / "skills"
 GENERATED_SKILLS_DIR = ROOT / ".codex" / "skills"
 SKILL_SCHEMA_PATH = ROOT / "schemas" / "skill.schema.json"
 PLACEHOLDER_PATTERN = re.compile(r"\b(TODO|TBD)\b")
+READABILITY_SCHEMA_VERSION = "skill-readability-v1"
+READABILITY_STAGE_VALUES = {
+    "authoring",
+    "review",
+    "execution",
+    "verification",
+    "handoff",
+    "support",
+    "periodic",
+}
+READABILITY_REQUIRED_ROLE_FIELDS = {
+    "role_name",
+    "stage",
+    "upstream",
+    "downstream",
+    "summary",
+}
+READABILITY_INTERNAL_PATH_PATTERN = re.compile(
+    r"\b(?:specs/|schemas/|docs/workflows\.md|docs/reports/|docs/changes/|CONSTITUTION\.md|AGENTS\.md)\b"
+)
+READABILITY_REQUIRED_CONTEXT_PATTERN = re.compile(
+    r"\b(?:must|must first|required|require|requires|read|open|consult|before proceeding)\b",
+    re.IGNORECASE,
+)
+READABILITY_ALLOWED_PROJECT_LOCAL_TERMS = [
+    "project-local",
+    "if present",
+    "when present",
+    "when available",
+    "when operating inside the RigorLoop repository",
+    "when this file is the review target",
+    "when the user provided this path",
+    "when governing project docs exist",
+    "direct target",
+    "maintainer-only",
+    "unavailable to adopters",
+]
 
 
 @dataclass(frozen=True)
@@ -109,6 +146,176 @@ def load_skill_schema() -> dict:
     return json.loads(SKILL_SCHEMA_PATH.read_text(encoding="utf-8"))
 
 
+def _iter_lines_outside_fences(text: str) -> list[str]:
+    lines: list[str] = []
+    in_fence = False
+    for line in text.splitlines():
+        if line.strip().startswith("```"):
+            in_fence = not in_fence
+            continue
+        if not in_fence:
+            lines.append(line)
+    return lines
+
+
+def _extract_markdown_section(body: str, heading: str) -> str | None:
+    marker = f"## {heading}"
+    lines = body.splitlines()
+    start_index = None
+    for index, line in enumerate(lines):
+        if line.strip() == marker:
+            start_index = index
+            break
+    if start_index is None:
+        return None
+
+    section_lines: list[str] = []
+    for line in lines[start_index + 1 :]:
+        if line.startswith("## "):
+            break
+        section_lines.append(line)
+    return "\n".join(section_lines).strip()
+
+
+def _parse_colon_fields(section: str) -> dict[str, str]:
+    fields: dict[str, str] = {}
+    for raw_line in section.splitlines():
+        line = raw_line.strip()
+        if line.startswith("- "):
+            line = line[2:].strip()
+        if not line or ":" not in line:
+            continue
+        key, value = line.split(":", 1)
+        key = key.strip().strip("`")
+        if key:
+            fields[key] = value.strip()
+    return fields
+
+
+def _contains_fenced_block(section: str) -> bool:
+    return any(line.strip().startswith("```") for line in section.splitlines())
+
+
+def _validate_readability_workflow_role(
+    path: Path,
+    metadata: dict[str, str],
+    body: str,
+) -> list[str]:
+    section = _extract_markdown_section(body, "Workflow role")
+    if section is None:
+        return [f"{path}: missing required '## Workflow role' section"]
+
+    errors: list[str] = []
+    fields = _parse_colon_fields(section)
+    missing_fields = sorted(READABILITY_REQUIRED_ROLE_FIELDS - fields.keys())
+    for field in missing_fields:
+        errors.append(f"{path}: Workflow role missing required field '{field}'")
+
+    role_name = fields.get("role_name")
+    expected_name = metadata.get("name")
+    if role_name and expected_name and role_name != expected_name:
+        errors.append(
+            f"{path}: workflow role role_name must match skill name '{expected_name}'"
+        )
+
+    stage = fields.get("stage")
+    if stage and stage not in READABILITY_STAGE_VALUES:
+        allowed = ", ".join(sorted(READABILITY_STAGE_VALUES))
+        errors.append(f"{path}: workflow role stage must be one of {allowed}")
+
+    summary = fields.get("summary")
+    if summary is not None and summary.count("\n") >= 2:
+        errors.append(f"{path}: workflow role summary must be no more than two lines")
+
+    return errors
+
+
+def _validate_readability_output_skeleton(path: Path, body: str) -> list[str]:
+    section = _extract_markdown_section(body, "Output skeleton")
+    if section is None:
+        return [f"{path}: missing required '## Output skeleton' section"]
+    errors: list[str] = []
+    if not _contains_fenced_block(section):
+        errors.append(f"{path}: Output skeleton must include a fenced block")
+    if "<" not in section or ">" not in section:
+        errors.append(f"{path}: Output skeleton must include fillable placeholders")
+    return errors
+
+
+def _validate_readability_internal_references(path: Path, body: str) -> list[str]:
+    errors: list[str] = []
+    for line_number, line in enumerate(_iter_lines_outside_fences(body), start=1):
+        if not READABILITY_INTERNAL_PATH_PATTERN.search(line):
+            continue
+        if not READABILITY_REQUIRED_CONTEXT_PATTERN.search(line):
+            continue
+        normalized = line.lower()
+        if any(term.lower() in normalized for term in READABILITY_ALLOWED_PROJECT_LOCAL_TERMS):
+            continue
+        errors.append(
+            f"{path}:{line_number}: required unavailable internal reference: {line.strip()}"
+        )
+    return errors
+
+
+def _validate_readability_closed_enums(path: Path, body: str) -> list[str]:
+    errors: list[str] = []
+    enum_names: dict[str, int] = {}
+    lines = body.splitlines()
+    for index, line in enumerate(lines):
+        match = re.match(r"^\s*Closed enum:\s*(?P<name>.+?)\s*$", line, re.IGNORECASE)
+        if not match:
+            continue
+        name = match.group("name").strip().lower()
+        if name in enum_names:
+            errors.append(
+                f"{path}:{index + 1}: duplicate closed enum block '{name}'"
+            )
+            continue
+        enum_names[name] = index + 1
+
+        following_lines: list[str] = []
+        for following in lines[index + 1 :]:
+            if re.match(r"^\s*Closed enum:\s*", following, re.IGNORECASE):
+                break
+            if following.startswith("## "):
+                break
+            following_lines.append(following)
+        block = "\n".join(following_lines)
+        has_fence = _contains_fenced_block(block)
+        has_table = any(line.strip().startswith("|") for line in following_lines)
+        if not has_fence and not has_table:
+            errors.append(
+                f"{path}:{index + 1}: closed enum '{name}' must use a fenced block or table"
+            )
+    return errors
+
+
+def validate_readability_contract(
+    path: Path,
+    metadata: dict[str, str],
+    body: str,
+) -> list[str]:
+    schema_version = metadata.get("schema-version")
+    if schema_version is None:
+        return []
+
+    errors: list[str] = []
+    if schema_version != READABILITY_SCHEMA_VERSION:
+        errors.append(
+            f"{path}: schema-version must be '{READABILITY_SCHEMA_VERSION}'"
+        )
+        return errors
+    if not metadata.get("version"):
+        errors.append(f"{path}: version: missing required readability contract field")
+
+    errors.extend(_validate_readability_workflow_role(path, metadata, body))
+    errors.extend(_validate_readability_output_skeleton(path, body))
+    errors.extend(_validate_readability_internal_references(path, body))
+    errors.extend(_validate_readability_closed_enums(path, body))
+    return errors
+
+
 def _has_ancestor_skill_dir(directory: Path, target: Path) -> bool:
     current = directory.parent
     while True:
@@ -178,7 +385,7 @@ def validate_skill_file(path: Path, schema: dict) -> tuple[list[str], str | None
 
     errors.extend(validate_metadata_against_schema(metadata, schema, path))
 
-    title_count = sum(1 for line in body.splitlines() if line.startswith("# "))
+    title_count = sum(1 for line in _iter_lines_outside_fences(body) if line.startswith("# "))
     if title_count != 1:
         errors.append(f"{path}: expected exactly one top-level # title, found {title_count}")
 
@@ -195,6 +402,8 @@ def validate_skill_file(path: Path, schema: dict) -> tuple[list[str], str | None
     description = metadata.get("description")
     if isinstance(description, str) and not description.strip():
         errors.append(f"{path}: description: must be at least 1 characters")
+
+    errors.extend(validate_readability_contract(path, metadata, body))
 
     return errors, name.strip() if isinstance(name, str) and name.strip() else None
 

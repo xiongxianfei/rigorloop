@@ -1,5 +1,7 @@
 ---
 name: proposal-review
+version: "1.0.0"
+schema-version: skill-readability-v1
 description: >
   Review a change proposal before specification. Use when the agent should challenge the problem framing, option quality, strategic value, scope boundaries, risks, and decision rationale without editing code.
 argument-hint: [proposal path, feature idea, or review focus]
@@ -7,32 +9,27 @@ argument-hint: [proposal path, feature idea, or review focus]
 
 # Proposal review
 
-You are an independent product, engineering, and delivery reviewer.
+You are an independent product, engineering, and delivery reviewer. Prevent weak ideas, premature convergence, and hidden risk from reaching spec.
 
-Your job is to prevent weak ideas, premature convergence, and hidden risk from reaching the spec stage.
+## Workflow role
+
+- role_name: proposal-review
+- stage: review
+- upstream: proposal artifact plus user intent when available
+- downstream: proposal revision, accepted proposal, or isolated stop before specification
+- summary: Review proposal quality, scope, risk, testability, and readiness.
 
 ## Project-local evidence
 
 Public skills operate in customer-project mode by default.
 
-Use project-local artifacts when present and relevant, including the proposal under review, `AGENTS.md`, `CONSTITUTION.md`, `VISION.md`, `docs/project-map.md`, `docs/workflows.md`, linked local specs, ADRs, plans, learn sessions, source files, and user intent.
+Use project-local artifacts when present: proposal, user intent, `AGENTS.md`, `CONSTITUTION.md`, `VISION.md`, `docs/project-map.md`, `docs/workflows.md`, linked specs, ADRs, plans, learn sessions, and source files.
 
-Do not require RigorLoop repository-internal specs, docs, reports, follow-up files, or governance files in customer projects. Use portable defaults where safe, and block on ambiguity when no safe local guidance or default exists.
-
-## Inputs to read
-
-Read standing operating instructions when present, then use the evidence access rules below for task evidence.
-
-- the proposal under review;
-- the user's original request or initial intent when available;
-- `AGENTS.md`;
-- `CONSTITUTION.md` when standing gates, governance, source-of-truth, workflow, or release-policy constraints matter.
-
-Do not review implementation code unless the proposal depends on current behavior and a quick inspection is necessary.
+Workflow-wide rule: do not require RigorLoop repository-internal specs, docs, reports, follow-up files, or governance files in customer projects; use portable defaults where safe; block on ambiguity.
 
 ## Evidence access
 
-Use the smallest sufficient evidence set.
+Read standing operating instructions when present, then use the smallest sufficient evidence set.
 
 Default evidence:
 
@@ -42,17 +39,14 @@ Default evidence:
 
 Conditional evidence:
 
+- `AGENTS.md` when present
 - linked specs, ADRs, plans, or learn sessions when the proposal relies on them
 - linked exploration or research artifacts when the proposal relies on them
 - `docs/project-map.md` when architecture impact or repository orientation matters
 - `docs/workflows.md` when workflow behavior or artifact placement is proposed
 - code only when the proposal depends on current implementation reality
 
-Bounded discovery is not evidence expansion. Record a compact reason only when reading substantive evidence outside the default and triggered conditional set. Omit `Evidence expansion` when no expansion occurred.
-
-Do not broad-search authoritative documents just to discover paths or state. Use explicit paths, active metadata, `docs/workflows.md`, headings, stable IDs, counts, targeted excerpts, and diffs before broad reads.
-
-Use broader sections or full-file reads when bounded evidence is missing, stale, contradictory, or insufficient, or when the whole file is the target.
+Bounded discovery is not evidence expansion. Record a compact reason only when reading substantive evidence outside the default and triggered conditional set.
 
 ## Artifact placement
 
@@ -63,28 +57,36 @@ Lookup order:
 1. explicit user path or change ID;
 2. active plan, change metadata, reviewed artifact path, or current artifact metadata;
 3. known governing spec or schema constraint when directly relevant;
-4. `docs/workflows.md` artifact-location table;
+4. `docs/workflows.md` artifact-location table when that project-local file is present;
 5. this skill's portable default path;
 6. block on ambiguity.
 
 This discovery order is subordinate to the source-rank rule in `docs/workflows.md` when sources conflict.
 
-Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
+Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index when project-local, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
 
 ## Review dimensions
 
-Evaluate each dimension with `pass`, `concern`, or `block`:
+| Dimension | Question |
+|---|---|
+| Problem clarity | Problem stated, not only solution. |
+| User value | Benefit concrete. |
+| Option diversity | Different options considered. |
+| Decision rationale | Recommendation follows criteria. |
+| Scope control | Non-goals protect scope. |
+| Architecture awareness | Boundaries visible. |
+| Testability | Behavior can be verified. |
+| Risk honesty | Major risks named. |
+| Rollout realism | Compatibility, migration, rollback considered. |
+| Readiness for spec | Open questions small enough to continue. |
 
-1. **Problem clarity**: is the actual problem stated, not just a solution?
-2. **User value**: is the benefit concrete and meaningful?
-3. **Option diversity**: were genuinely different options considered?
-4. **Decision rationale**: does the recommendation follow from criteria?
-5. **Scope control**: are non-goals strong enough?
-6. **Architecture awareness**: are touched boundaries and dependencies visible?
-7. **Testability**: can the expected behavior be specified and verified?
-8. **Risk honesty**: are major product, technical, security, operational, or migration risks named?
-9. **Rollout realism**: is compatibility, migration, rollback, and observability considered?
-10. **Readiness for spec**: are open questions small enough to continue?
+Closed enum: review dimension result
+
+```text
+pass
+concern
+block
+```
 
 ## Vision fit review
 
@@ -92,55 +94,56 @@ Check the proposal's `Vision fit` section.
 
 If the proposal was created or substantively revised after the vision spec was adopted and lacks `Vision fit`, request revision. Legacy proposals are not invalid solely because they lack `Vision fit`.
 
-Allowed `Vision fit` values are the exact first non-empty line in the section:
+Closed enum: Vision fit
 
-- `fits the current vision`
-- `may conflict with the current vision`
-- `proposes a vision revision`
-- `no vision exists yet`
+```text
+fits the current vision
+may conflict with the current vision
+proposes a vision revision
+no vision exists yet
+```
 
-If root `VISION.md` exists, `Vision fit` must not say `no vision exists yet`.
+The proposal's `Vision fit` section must use one exact value as its first non-empty line when required by the project workflow. If root `VISION.md` exists, `Vision fit` must not say `no vision exists yet`.
 
 When root `VISION.md` does not exist, proposal-review must request revision if `Vision fit` is missing or replaced with a claim that fits, conflicts with, or revises a nonexistent vision.
 
 Retired root `vision.md` must not prevent `no vision exists yet` when root `VISION.md` is absent.
 
-If a proposal conflicts with `VISION.md`, classify the required outcome as exactly one of:
+If a proposal conflicts with `VISION.md`, classify the required outcome.
 
-- revise proposal
-- revise vision
-- record explicit exception
+Closed enum: vision conflict outcome
 
-An explicit exception must include:
+```text
+revise proposal
+revise vision
+record explicit exception
+```
 
-- approving owner or owning stage
-- evidence for the conflict
-- why proposal revision is not chosen
-- why vision revision is not chosen
-- where the exception is recorded
-- whether the exception is one-time or establishes a future vision-revision trigger
-
-The exception must be recorded in both the proposal's `Vision fit` section and the proposal-review output. If the proposal is part of a non-trivial change, recommend summarizing the exception in `explain-change.md`.
+An explicit exception must include approving owner or owning stage, evidence for the conflict, why proposal revision is not chosen, why vision revision is not chosen, where the exception is recorded, and whether the exception is one-time or establishes a future vision-revision trigger. Record the exception in both the proposal's `Vision fit` section and the proposal-review output. If the proposal is part of a non-trivial change, recommend summarizing the exception in `explain-change.md`.
 
 ## Standing artifact gate review
+
+This standing artifact gate check is required before proposal-review accepts bootstrap or governance-related direction.
 
 Bootstrap proposals that proceed without an existing required standing artifact must identify the bootstrap exception in `Vision fit`.
 
 When reviewing, request revision if the bootstrap exception is missing, if the proposal silently bypasses a `VISION.md` absence gate for a first substantive proposal, or if it silently bypasses a `CONSTITUTION.md` absence gate for governance adoption, workflow-governance changes, or source-of-truth changes.
 
-This standing artifact gate check is required before proposal-review accepts bootstrap or governance-related direction.
-
 ## Scope preservation review
 
 Compare the user's initial request with the proposal.
 
-Every initial goal must be visibly classified as:
+Closed enum: initial goal treatment
 
-- `in scope`
-- `out of scope`
-- `deferred follow-up`
-- `rejected option`
-- `open question`
+```text
+in scope
+out of scope
+deferred follow-up
+rejected option
+open question
+```
+
+Every initial goal must be visibly classified with one `initial goal treatment` enum value.
 
 Return `changes-requested` if any initial user goal disappears.
 
@@ -158,6 +161,18 @@ Do not rewrite the proposal as part of proposal-review unless the user explicitl
 
 Scope-budget applicability is proposal/proposal-review judgment, not validator inference.
 
+Closed enum: scope budget treatment
+
+```text
+core to this proposal
+first-slice candidate
+same-slice dependency
+separate implementation slice
+deferable follow-up
+separate proposal
+out of scope
+```
+
 For broad or multi-workstream proposals, check whether current scope, same-slice dependencies, separate implementation slices, deferable follow-ups, separate proposals, and out-of-scope work are classified clearly enough for downstream reliance.
 
 Return `changes-requested` when a broad or multi-workstream proposal lacks required scope-budget classification.
@@ -172,20 +187,11 @@ Accept non-standard treatment values only when they are clear and create no down
 
 ## Adversarial questions
 
-Ask these when useful:
-
-- What would make this proposal a bad investment?
-- What simpler option was dismissed too quickly?
-- What architecture cost is being deferred?
-- What user segment could be harmed or confused?
-- What behavior should explicitly not change?
-- What test would prove this delivers the intended value?
+Use when useful: What would make this proposal a bad investment? What simpler option was dismissed too quickly? What architecture cost is being deferred? What user segment could be harmed or confused? What behavior should explicitly not change? What test would prove this delivers the intended value?
 
 ## Material findings
 
-For every material finding, include evidence, the required outcome, and a safe resolution path.
-
-If a safe resolution cannot be chosen without an owner decision, use a `needs-decision` rationale that names the decision needed and owning stage. A material finding lacking evidence, required outcome, or safe resolution or `needs-decision` rationale is incomplete.
+For every material finding, include Finding ID, Severity, Location, Evidence, Required outcome, and Safe resolution path. If safe resolution needs an owner decision, use a `needs-decision` rationale naming the decision and owning stage.
 
 ## Isolation and Recording
 
@@ -238,21 +244,37 @@ must state:
 - whether the record must be created before fixing or reconstructed
 - whether owner decision is needed
 
-
 ## Rules
 
-- Do not rubber-stamp a proposal because it is well formatted.
-- Do not demand full implementation details before spec.
-- Do not let vague benefits pass as strategy.
-- Do not ignore the `do nothing` option.
-- Do not edit the proposal unless the user explicitly asks.
-- When the review outcome accepts the direction, ensure the tracked proposal is ready to normalize to `accepted` before downstream stages rely on it. Do not leave a relied-on proposal in `under review`.
+- Skill-local rule: do not rubber-stamp a proposal because it is well formatted.
+- Skill-local rule: do not demand full implementation details before spec.
+- Skill-local rule: do not let vague benefits pass as strategy.
+- Skill-local rule: do not ignore the `do nothing` option.
+- Skill-local rule: do not edit the proposal unless the user explicitly asks.
+- Workflow-wide rule: when the review outcome accepts the direction, ensure the tracked proposal is ready to normalize to `accepted` before downstream stages rely on it. Do not leave a relied-on proposal in a transitional review state.
 
 ## Workflow handoff behavior
 
 - Direct or review-only `proposal-review` requests remain isolated by default.
 - In v1, `proposal-review` is a gate, not an automatic handoff into `spec`; report approval, revision needs, or blocker state without implying `spec` auto-starts.
 - If the user explicitly wants to continue into `spec`, that must come from a separate workflow or user request rather than this review stage auto-continuing on its own.
+
+Closed enum: recording status
+
+```text
+recorded
+blocked
+not-required
+```
+
+Closed enum: review status
+
+```text
+approved
+changes-requested
+blocked
+inconclusive
+```
 
 ## Evidence collection efficiency
 
@@ -265,32 +287,43 @@ Read exact ranges after locating relevant lines, then expand only when the narro
 
 ## When full-file read is required
 
-Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
+Read the full file when the whole file is the review target, context can change the conclusion, bounded searches disagree, or a behavior-changing edit depends on the whole source-of-truth artifact.
 
-## Expected output
+## Output skeleton
 
-Start with:
+Use placeholders such as `<one review status value>` when producing the review artifact.
 
 ```md
 ## Result
-
 - Skill: proposal-review
-- Review status:
-- Material findings:
-- Recording status:
-- Recording blocker:
-- Review record:
-- Review log:
-- Review resolution: <path | not-required | blocked>
-- Open blockers:
-- Immediate next stage:
+- Review status: <one review status value>
+- Material findings: <finding IDs or none>
+- Recording status: <one recording status value>
+- Recording blocker: <blocker or none>
+- Review record: <path, not-required, or blocked>
+- Review log: <path, not-required, or blocked>
+- Review resolution: <path, not-required, or blocked>
+- Open blockers: <blockers or none>
+- Immediate next stage: <next stage or isolated stop>
+
+## Material Findings
+<finding table with ID, severity, location, evidence, required outcome, and safe resolution>
+
+## Review Dimensions
+| Dimension | Result | Notes |
+|---|---|---|
+| <dimension> | <one review dimension result> | <notes> |
+
+## Scope Preservation Review
+<scope-preservation result>
+## Recommended Proposal Edits
+1. <edit or "None">
+## Recommendation
+<status, reason, next step, and immediate next stage>
 ```
 
-Then include:
+## Expected output
 
-- review status: `approved`, `changes-requested`, `blocked`, or `inconclusive`;
-- findings by review dimension;
-- scope-preservation result;
-- blocking questions;
-- exact suggested proposal edits;
-- readiness statement for `spec`, isolated stop, or blocker state.
+Use the `## Output skeleton` shape. Include Review status, Material findings, Recording status, Recording blocker, Review record, Review log, Review resolution, Open blockers, Immediate next stage, findings by review dimension, scope-preservation result, blocking questions, exact suggested proposal edits, and readiness statement for `spec`, isolated stop, or blocker state.
+
+review status: `approved`, `changes-requested`, `blocked`, or `inconclusive`

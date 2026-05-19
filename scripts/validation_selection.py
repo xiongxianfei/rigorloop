@@ -946,6 +946,10 @@ def _path_category(path: str) -> str | None:
         return "artifact-lifecycle-fixtures"
     if path.startswith("tests/fixtures/review-artifacts/"):
         return "review-artifact-fixtures"
+    if path.startswith("tests/fixtures/adapters/"):
+        return "adapters"
+    if path.startswith("tests/fixtures/skills/"):
+        return "validator-skills"
     if path.startswith("skills/"):
         return "skills"
     if path.startswith(".codex/skills/"):
@@ -1037,7 +1041,14 @@ def _path_category(path: str) -> str | None:
             return "change-metadata"
         if parts[3] in {"review-log.md", "review-resolution.md"} or parts[3] == "reviews":
             return "review-artifacts"
-        if parts[3] in {"explain-change.md", "architecture.md", "verify-report.md"} or parts[3] == "diagrams":
+        if parts[3] in {
+            "explain-change.md",
+            "architecture.md",
+            "verify-report.md",
+            "implementation-notes.md",
+            "cold-read-report.md",
+            "behavior-parity-report.md",
+        } or parts[3] == "diagrams":
             return "change-local-lifecycle"
         return "change-local-unsupported"
     if path == "docs/plan.md":

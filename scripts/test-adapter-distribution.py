@@ -1026,10 +1026,15 @@ release_gate:
 
         self.assertTrue(report.portable)
         self.assertEqual(report.included_adapters, ("codex", "claude", "opencode"))
-        self.assertEqual(report.adapter_decision("claude").transforms, ("drop frontmatter: argument-hint",))
+        expected_transforms = (
+            "drop frontmatter: argument-hint",
+            "drop frontmatter: schema-version",
+            "drop frontmatter: version",
+        )
+        self.assertEqual(report.adapter_decision("claude").transforms, expected_transforms)
         self.assertEqual(
             report.adapter_decision("opencode").transforms,
-            ("drop frontmatter: argument-hint",),
+            expected_transforms,
         )
 
     def test_codex_only_assumptions_exclude_non_codex_adapters(self) -> None:
@@ -1202,8 +1207,14 @@ release_gate:
             ).read_text(encoding="utf-8")
 
             self.assertIn("argument-hint:", codex_skill)
+            self.assertIn("schema-version:", codex_skill)
+            self.assertIn("version:", codex_skill)
             self.assertNotIn("argument-hint:", claude_skill)
+            self.assertNotIn("schema-version:", claude_skill)
+            self.assertNotIn("version:", claude_skill)
             self.assertNotIn("argument-hint:", opencode_skill)
+            self.assertNotIn("schema-version:", opencode_skill)
+            self.assertNotIn("version:", opencode_skill)
 
     def test_opencode_generation_creates_curated_command_aliases_for_0_1_1(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

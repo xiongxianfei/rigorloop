@@ -563,6 +563,57 @@ class SkillValidatorFixtureTests(unittest.TestCase):
     def test_placeholder_text_fails(self) -> None:
         self.assertFixtureFails("placeholder-text", "placeholder text is not allowed")
 
+    def test_skill_readability_valid_fixture_passes(self) -> None:
+        self.assertFixturePasses("skill-readability/valid-pilot")
+
+    def test_skill_readability_missing_workflow_role_fails(self) -> None:
+        self.assertFixtureFails(
+            "skill-readability/missing-workflow-role",
+            "missing required '## Workflow role' section",
+        )
+
+    def test_skill_readability_invalid_stage_fails(self) -> None:
+        self.assertFixtureFails(
+            "skill-readability/invalid-stage",
+            "workflow role stage must be one of",
+        )
+
+    def test_skill_readability_missing_output_skeleton_fails(self) -> None:
+        self.assertFixtureFails(
+            "skill-readability/missing-output-skeleton",
+            "missing required '## Output skeleton' section",
+        )
+
+    def test_skill_readability_required_internal_reference_fails(self) -> None:
+        self.assertFixtureFails(
+            "skill-readability/required-internal-reference",
+            "required unavailable internal reference",
+        )
+
+    def test_skill_readability_duplicate_closed_enum_fails(self) -> None:
+        self.assertFixtureFails(
+            "skill-readability/duplicate-closed-enum",
+            "duplicate closed enum block",
+        )
+
+    def test_skill_readability_pilot_pair_opts_into_contract(self) -> None:
+        for skill_name in ("proposal", "proposal-review"):
+            skill_path = ROOT / "skills" / skill_name / "SKILL.md"
+            result = run_validator(skill_path)
+            with self.subTest(skill=skill_name):
+                self.assertEqual(
+                    result.returncode,
+                    0,
+                    msg=(
+                        f"expected {skill_name} to satisfy the readability contract\n"
+                        f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}"
+                    ),
+                )
+                body = skill_path.read_text(encoding="utf-8")
+                self.assertIn("schema-version: skill-readability-v1", body)
+                self.assertIn("## Workflow role", body)
+                self.assertIn("## Output skeleton", body)
+
     def test_generated_output_path_is_rejected(self) -> None:
         result = run_validator(ROOT / ".codex" / "skills")
         combined_output = f"{result.stdout}\n{result.stderr}"
@@ -2466,12 +2517,8 @@ and result format.
         proposal_terms = [
             "## Scope preservation",
             "Before drafting or materially revising a proposal, extract the user's initial goals, concerns, constraints, and requested outcomes.",
-            "Every initial user goal must be visible in the proposal as one of:",
-            "`in scope`",
-            "`out of scope`",
-            "`deferred follow-up`",
-            "`rejected option`",
-            "`open question`",
+            "Every initial user goal must be visible in the proposal as one `initial goal treatment` enum value.",
+            "Closed enum: initial goal treatment",
             "## Initial intent preservation",
             "| Initial user goal | Proposal treatment | Where recorded |",
             "Do not silently drop a user goal when narrowing a proposal.",
@@ -2484,7 +2531,7 @@ and result format.
         proposal_review_terms = [
             "## Scope preservation review",
             "Compare the user's initial request with the proposal.",
-            "Every initial goal must be visibly classified as:",
+            "Every initial goal must be visibly classified with one `initial goal treatment` enum value.",
             "Return `changes-requested` if any initial user goal disappears.",
             "Return `changes-requested` if a deferred goal has no follow-up.",
             "Return `changes-requested` if a rejected goal has no rationale.",
@@ -2511,13 +2558,8 @@ and result format.
             "`proposal-review` identifies silent narrowing, hidden follow-up risk, or multi-workstream scope",
             "Small single-decision proposals may omit the scope budget.",
             "| Work item | Treatment | Reason |",
-            "`core to this proposal`",
-            "`first-slice candidate`",
-            "`same-slice dependency`",
-            "`separate implementation slice`",
-            "`deferable follow-up`",
-            "`separate proposal`",
-            "`out of scope`",
+            "Closed enum: scope budget treatment",
+            "Use the `scope budget treatment` enum above for allowed treatment values.",
             "Route deferred work through the follow-up ownership model rather than chat-only notes or `project-map` ownership.",
             "workflow routes, `project-map` orients when present, action-owning artifacts track current work, and unowned cross-change follow-ups use the follow-up ownership surface.",
             "Do not search generated adapter output for authored skill truth.",
