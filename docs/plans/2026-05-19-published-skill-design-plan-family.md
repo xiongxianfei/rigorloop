@@ -67,20 +67,20 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 
 ## Current Handoff Summary
 
-- Current milestone: test-spec amendment
-- Current milestone state: not-applicable
+- Current milestone: M1. Plan Family Audit And Evidence Scaffold
+- Current milestone state: review-requested
 - Last reviewed milestone: none
 - Review status: plan-review-r1 approved with no material findings
 - Remaining in-scope implementation milestones: M1, M2, M3
-- Next stage: owner approval for test-spec amendment, then implement M1
+- Next stage: code-review for M1
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: plan-review is complete and the test-spec amendment is drafted, but owner approval, implementation milestones, code-review, explain-change, verify, and PR handoff remain open.
+- Reason final closeout is or is not ready: M1 evidence is implemented and ready for code-review, but M1 review, M2, M3, explain-change, verify, and PR handoff remain open.
 
 ## Milestones
 
 ### M1. Plan Family Audit And Evidence Scaffold
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: create the change-local evidence structure for `plan` and `plan-review` before changing validators or skill bodies.
 - Requirements: R27-R31, R34-R35, R36 audit/preservation/parity discipline.
 - Files/components likely touched:
@@ -98,6 +98,13 @@ This plan keeps the rollout incremental. The planning pair owns active execution
   - Record behavior-preservation notes for behavior-significant wording that might be rewritten.
   - Define representative plan and plan-review artifacts for behavior parity, including milestone handoff state and material finding outcomes.
   - Record baseline static token estimates for `plan` and `plan-review`.
+- Implementation result:
+  - Created `skill-audit.md`, `routing-coverage.md`, `behavior-preservation.md`, and `behavior-parity.md` under the plan-family change root.
+  - Recorded that both skills earn their existence and neither is a merge/retire candidate in this slice.
+  - Recorded routing tables and prompt fixture expectations for `plan` and `plan-review`.
+  - Recorded behavior-preservation targets for plan state ownership, upstream status settlement, readiness-vs-Done, review recording, material finding shape, and handoff boundaries.
+  - Recorded baseline token estimates: `plan` 3518 and `plan-review` 1631.
+  - Found no production validator gap that must be fixed before M3; M2 remains conditional and should add only deterministic evidence checks if needed.
 - Validation commands:
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-published-skill-design-plan-family.md --path docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml --path docs/plan.md`
@@ -235,8 +242,9 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 - [x] 2026-05-19: new plan-family rollout plan created.
 - [x] Plan-review completed.
 - [x] Test-spec amendment completed.
-- [ ] Test-spec amendment approved.
-- [ ] M1 implemented and reviewed.
+- [x] Test-spec amendment approved.
+- [x] M1 implemented.
+- [ ] M1 reviewed.
 - [ ] M2 implemented and reviewed.
 - [ ] M3 implemented and reviewed.
 - [ ] Explain-change recorded.
@@ -250,10 +258,12 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 | 2026-05-19 | Continue with `plan` and `plan-review` before `implement` and `code-review`. | The planning pair is the next lifecycle pair after spec review and has enough stage ownership to benefit from a dedicated slice. `implement` and `code-review` are higher-risk and should follow separately. |
 | 2026-05-19 | Keep validator changes conditional in M2. | The previous rollout found some proof gaps belonged in test scaffolding rather than production validation; this slice should only add deterministic checks when the audit identifies a concrete need. |
 | 2026-05-19 | Keep the test spec amendment before implementation. | The skill-contract test spec currently names the completed spec-family rollout; this plan-family slice needs its own traceable test coverage before skill-body rewrites begin. |
+| 2026-05-19 | Treat M2 production validator changes as conditional after M1. | The M1 audit found evidence-scaffold and future test needs, but no production validator gap that must be fixed before M3. |
 
 ## Surprises and discoveries
 
-- None yet.
+- M1 found both `plan` and `plan-review` need explicit `Workflow role` blocks in M3, but both already have compact result skeletons and portable project-local path handling.
+- M1 found no merge, retire, rename, ownership-change, or mandatory production-validator-change candidate for this slice.
 
 ## Validation notes
 
@@ -267,6 +277,12 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 - 2026-05-19 test-spec validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-plan-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml` passed.
 - 2026-05-19 test-spec validation: `git diff --check -- specs/skill-contract.test.md docs/plans/2026-05-19-published-skill-design-plan-family.md docs/plan.md docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml` passed.
 - 2026-05-19 test-spec selected CI: `bash scripts/ci.sh --mode explicit --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-plan-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml` passed selected artifact-lifecycle, change-metadata regression, and change-metadata checks.
+- 2026-05-19 test-spec approval: user approved the plan-family test-spec amendment before implementation.
+- 2026-05-19 M1 evidence: created `skill-audit.md`, `routing-coverage.md`, `behavior-preservation.md`, and `behavior-parity.md` for the plan-family rollout.
+- 2026-05-19 M1 validation: `python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml` passed.
+- 2026-05-19 M1 validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-published-skill-design-plan-family.md --path docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-plan-family/skill-audit.md --path docs/changes/2026-05-19-published-skill-design-plan-family/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-plan-family/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-plan-family/behavior-parity.md --path docs/plan.md` passed.
+- 2026-05-19 M1 validation: `git diff --check -- docs/plans/2026-05-19-published-skill-design-plan-family.md docs/plan.md docs/changes/2026-05-19-published-skill-design-plan-family` passed.
+- 2026-05-19 M1 selected CI: `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-published-skill-design-plan-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-plan-family/skill-audit.md --path docs/changes/2026-05-19-published-skill-design-plan-family/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-plan-family/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-plan-family/behavior-parity.md` passed selected artifact-lifecycle, change-metadata regression, and change-metadata checks.
 
 ## Outcome and retrospective
 
@@ -274,6 +290,6 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 
 ## Readiness
 
-Ready for owner approval of the test-spec amendment, then `implement M1`.
+Ready for `code-review` for M1.
 
-Remaining completion gates: test-spec amendment approval, M1 through M3 implementation and code-review, explain-change, verify, PR handoff, hosted CI observation if a PR is opened, merge, and final lifecycle closeout when no downstream gate remains.
+Remaining completion gates: M1 code-review, M2 and M3 implementation and code-review, explain-change, verify, PR handoff, hosted CI observation if a PR is opened, merge, and final lifecycle closeout when no downstream gate remains.
