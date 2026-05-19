@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- none yet
+- [2026-05-19 Published Skill Design Plan Family Rollout](plans/2026-05-19-published-skill-design-plan-family.md) - active execution plan for continuing the published-skill design rollout with the next scoped pair, `plan` and `plan-review`, preserving plan state ownership, review recording, routing coverage, behavior preservation, behavior parity, token discipline, and deterministic validation boundaries before the later `implement` / `code-review` slice.
 
 ## Blocked
 - none yet
