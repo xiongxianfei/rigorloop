@@ -1,6 +1,6 @@
 # Assets-First Progressive Disclosure Pilot Execution Plan
 
-- Status: active
+- Status: done
 - Owner: maintainers
 - Start date: 2026-05-19
 - Last updated: 2026-05-19
@@ -10,7 +10,7 @@
 - Related proposal-review: [proposal-review-r2](../changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/reviews/proposal-review-r2.md)
 - Related spec-review: [spec-review-r1](../changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/reviews/spec-review-r1.md)
 - Change root: [docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills](../changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml)
-- Related issue or PR: none yet
+- Related issue or PR: PR #75
 - Supersedes: none
 
 ## Purpose / big picture
@@ -74,9 +74,9 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 - Last reviewed milestone: M3. Adapter, Token, And Behavior-Parity Proof
 - Review status: code-review-m3-r1 clean-with-notes
 - Remaining in-scope implementation milestones: none
-- Next stage: hosted CI rerun for PR #75 after selector maintenance
-- Final closeout readiness: blocked on hosted CI rerun
-- Reason final closeout is or is not ready: all implementation milestones are closed, explain-change is recorded, final local verify passed, and PR #75 is open. Hosted CI initially failed because three deterministic change-local evidence files were not classified by the PR selector; selector maintenance is implemented and local PR-mode CI passes, but the pushed hosted rerun has not passed yet.
+- Next stage: human review / merge outside agent final closeout
+- Final closeout readiness: done for agent-owned lifecycle closeout
+- Reason final closeout is or is not ready: all implementation milestones are closed, explain-change is recorded, final local verify passed, PR #75 is open, selector maintenance resolved the hosted CI routing blocker, and hosted CI passed on the pushed branch.
 
 ## Pre-implementation prerequisites
 
@@ -284,7 +284,7 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 - 2026-05-19: code-review-m3-r1 returned clean-with-notes; M3 closed and all implementation milestones are closed. Next stage is final closeout, starting with explain-change unless ci-maintenance is separately triggered.
 - 2026-05-19: explain-change recorded the durable change rationale; no ci-maintenance trigger was found because no hosted workflow or platform configuration changed. Next stage is verify.
 - 2026-05-19: final local verify passed after explain-change; branch-ready for PR handoff is established locally, with hosted CI not observed yet.
-- 2026-05-19: PR #75 opened; hosted CI failed because `adapter-packaging.md`, `historical-coverage.md`, and `token-cost.md` were deterministic change-local evidence files without PR selector routing. Selector maintenance now classifies those files as `change-local-lifecycle`, and local PR-mode CI passes. Next stage is push and observe hosted CI rerun.
+- 2026-05-19: PR #75 opened; hosted CI failed because `adapter-packaging.md`, `historical-coverage.md`, and `token-cost.md` were deterministic change-local evidence files without PR selector routing. Selector maintenance now classifies those files as `change-local-lifecycle`, local PR-mode CI passed, and hosted CI passed after push.
 
 ## Decision log
 
@@ -364,12 +364,13 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 - Hosted CI for PR #75 initially failed with `manual-routing-required` for `docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/adapter-packaging.md`, `historical-coverage.md`, and `token-cost.md`.
 - `python scripts/test-select-validation.py` passed after classifying those evidence files as `change-local-lifecycle`.
 - `bash scripts/ci.sh --mode pr --base 9d1487500b4ea62909c98975e694611f71139b04 --head HEAD` passed locally after selector maintenance with selected checks `skills.validate`, `skills.regression`, `skills.generation_regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+- `gh pr checks 75 --watch` observed hosted CI pass on PR #75 after selector maintenance.
 
 ## Outcome and retrospective
 
-- All implementation milestones are closed. PR #75 is open. Final closeout is pending hosted CI rerun after selector maintenance.
+- All implementation milestones are closed. PR #75 is open. Final local verify passed, hosted CI passed, and agent-owned final closeout is complete.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- PR #75 is open. Readiness is not Done; hosted CI rerun remains open.
+- Done for agent-owned final closeout. Human review and merge remain outside this plan's agent-owned closeout.
