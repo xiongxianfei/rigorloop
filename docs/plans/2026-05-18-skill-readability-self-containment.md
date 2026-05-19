@@ -70,12 +70,12 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - Current milestone: M3. Cold-read, behavior parity, token comparison, and rollout handoff
 - Current milestone state: closed
 - Last reviewed milestone: M3. Cold-read, behavior parity, token comparison, and rollout handoff
-- Review status: changes-requested by `code-review-verify-fix-r1`
+- Review status: resolution-closed for `code-review-verify-fix-r1`
 - Remaining in-scope implementation milestones: none
-- Next stage: review-resolution
-- Next lifecycle stage after M3 implementation: review-resolution for SRSC-VERIFY-CR1
+- Next stage: code-review
+- Next lifecycle stage after M3 implementation: rerun code-review for verify-stage adapter compatibility fix
 - Final closeout readiness: ready to start lifecycle closeout
-- Reason final closeout is or is not ready: all implementation milestones are closed and explain-change is recorded, but review-resolution is open for SRSC-VERIFY-CR1; verify cannot claim branch-ready until the finding is resolved and code-review reruns cleanly.
+- Reason final closeout is or is not ready: all implementation milestones are closed, explain-change is recorded, and review-resolution is closed; verify cannot claim branch-ready until code-review reruns cleanly on the verify-stage fix.
 
 ## Completed lifecycle handoffs
 
@@ -233,6 +233,7 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - 2026-05-19: final verify found the touched adapter fixture path was unclassified by the validation selector; classified `tests/fixtures/adapters/` as adapter validation input and added selector regression coverage.
 - 2026-05-19: final verify selected CI and broad smoke passed after the adapter front-matter and selector fixes; branch-ready is still blocked until code-review covers the post-review implementation change.
 - 2026-05-19: `code-review-verify-fix-r1` found SRSC-VERIFY-CR1; next stage is review-resolution.
+- 2026-05-19: accepted and fixed SRSC-VERIFY-CR1 by rewording stale `explain-change.md` readiness/risk text; next stage is rerun code-review for the verify-stage fix.
 
 ## Decision log
 
@@ -283,6 +284,7 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - 2026-05-19: targeted selector regression passed after classifying adapter fixtures: `python scripts/test-select-validation.py ValidationSelectionTests.test_pr_mode_routes_adapter_fixture_to_adapter_checks`.
 - 2026-05-19: selected CI passed for touched skills, adapter distribution, selector, specs, plan, and change-local artifacts after the verify-stage fix.
 - 2026-05-19: broad smoke passed after the verify-stage fix. The output still prints the known non-fatal token-cost report validation message `dynamic_runtime.runs: missing required benchmark architecture-review`, which also appears on `origin/main`; the command exits 0.
+- 2026-05-19: SRSC-VERIFY-CR1 resolution validation passed: artifact lifecycle explicit paths, change metadata validation, review artifact structure validation, and `git diff --check --`.
 
 ## Outcome and retrospective
 
