@@ -93,6 +93,26 @@ validation:
     result: pass_after_implementation
   - command: code-review M1 R1
     result: changes_requested_CR-M1-001
+  - command: review-resolution CR-M1-001
+    result: accepted_resolved_pending_code_review_rerun
+  - command: acceptance-criterion text preservation check
+    result: pass_existing_spec_acceptance_criterion_text_unchanged_after_resolution
+  - command: Requirement coverage row preservation check
+    result: pass_existing_test_spec_requirement_coverage_rows_unchanged_after_resolution
+  - command: Acceptance criteria coverage row preservation check
+    result: pass_existing_test_spec_acceptance_coverage_rows_unchanged_after_resolution
+  - command: Test-case heading preservation check
+    result: pass_existing_test_case_heading_text_unchanged_after_resolution
+  - command: Test-case body preservation check
+    result: pass_existing_nonheading_nonblank_test_case_body_lines_unchanged_after_resolution
+  - command: git diff --check
+    result: pass_after_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths
+    result: pass_after_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/change.yaml
+    result: pass_after_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene
+    result: pass_after_resolution
 changed_files:
   - docs/proposals/2026-05-19-spec-and-test-spec-structural-hygiene.md
   - specs/skill-contract.md
@@ -107,5 +127,5 @@ changed_files:
   - docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/plan-review-r1.md
   - docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/code-review-m1-r1.md
 review:
-  status: changes_requested
-  unresolved_items: 1
+  status: pending_code_review_rerun
+  unresolved_items: 0

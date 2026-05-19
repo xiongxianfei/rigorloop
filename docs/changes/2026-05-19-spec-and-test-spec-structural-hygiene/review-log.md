@@ -55,5 +55,5 @@ Detailed record: reviews/code-review-m1-r1.md
 Record: reviews/code-review-m1-r1.md
 Resolution: review-resolution.md#code-review-m1-r1
 Material findings: CR-M1-001
-Open findings: CR-M1-001
+Open findings: None
 Recording status: recorded
