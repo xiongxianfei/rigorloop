@@ -74,9 +74,9 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 - Last reviewed milestone: M3. Adapter, Token, And Behavior-Parity Proof
 - Review status: code-review-m3-r1 clean-with-notes
 - Remaining in-scope implementation milestones: none
-- Next stage: final closeout; explain-change is the next closeout gate unless ci-maintenance is separately triggered
+- Next stage: verify
 - Final closeout readiness: ready to start final closeout sequence
-- Reason final closeout is or is not ready: all implementation milestones are closed; explain-change, verify, and PR handoff have not run, so the change is not Done.
+- Reason final closeout is or is not ready: all implementation milestones are closed and explain-change is recorded; verify and PR handoff have not run, so the change is not Done.
 
 ## Pre-implementation prerequisites
 
@@ -282,6 +282,7 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 - 2026-05-19: code-review-m2-r1 returned clean-with-notes; M2 closed and the next stage is implement M3.
 - 2026-05-19: M3 added adapter archive asset packaging support and proof, recorded behavior-parity and historical coverage evidence, updated token-cost evidence after the skeleton handoff-section correction, and passed M3 validation; ready for M3 code-review.
 - 2026-05-19: code-review-m3-r1 returned clean-with-notes; M3 closed and all implementation milestones are closed. Next stage is final closeout, starting with explain-change unless ci-maintenance is separately triggered.
+- 2026-05-19: explain-change recorded the durable change rationale; no ci-maintenance trigger was found because no hosted workflow or platform configuration changed. Next stage is verify.
 
 ## Decision log
 
@@ -343,6 +344,7 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 - `bash scripts/ci.sh --mode explicit --path skills/plan/SKILL.md --path skills/plan/assets --path scripts --path tests --path specs/skill-contract.test.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md` blocked because broad `scripts` and `tests` roots are not classified by the v1 selector.
 - `bash scripts/ci.sh --mode explicit --path skills/plan/SKILL.md --path skills/plan/assets --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path tests/fixtures/adapters/portable-with-assets --path specs/skill-contract.test.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md` passed with selected checks `skills.validate`, `skills.regression`, `skills.generation_regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
 - code-review-m3-r1 returned clean-with-notes and recorded no material findings.
+- explain-change recorded `docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/explain-change.md`; ready for verify.
 
 ## Outcome and retrospective
 
@@ -351,4 +353,4 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for final closeout. Readiness is not Done; downstream explain-change, verify, and PR gates remain open.
+- Ready for verify. Readiness is not Done; downstream verify and PR gates remain open.

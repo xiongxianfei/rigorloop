@@ -191,6 +191,18 @@ validation:
     result: pass_after_code_review_m3_recording
   - command: bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-log.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-resolution.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/reviews/code-review-m3-r1.md --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md
     result: pass_after_code_review_m3_recording
+  - command: explain-change
+    result: recorded_ready_for_verify_no_ci_maintenance_trigger
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml
+    result: pass_after_explain_change
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/explain-change.md
+    result: pass_after_explain_change
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills
+    result: pass_after_explain_change
+  - command: git diff --check -- docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md docs/plan.md docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/explain-change.md
+    result: pass_after_explain_change
+  - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/explain-change.md
+    result: pass_after_explain_change
 changed_files:
   - docs/proposals/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md
   - specs/skill-contract.md
@@ -214,6 +226,7 @@ changed_files:
   - docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/behavior-parity.md
   - docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/historical-coverage.md
   - docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/token-cost.md
+  - docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/explain-change.md
   - docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-log.md
   - docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-resolution.md
   - docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/reviews/proposal-review-r1.md
