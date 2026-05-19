@@ -162,6 +162,20 @@ validation:
     result: pass_after_m3_handoff
   - command: code-review M3
     result: changes_requested_srsc_m3_cr1
+  - command: review-resolution SRSC-M3-CR1
+    result: accepted_and_fixed_duplicate_closed_enum_restatements
+  - command: python scripts/test-skill-validator.py
+    result: pass_97_tests_after_srsc_m3_cr1_fix
+  - command: python scripts/validate-skills.py
+    result: pass_23_skill_files_after_srsc_m3_cr1_fix
+  - command: python scripts/build-skills.py --check
+    result: pass_temporary_generated_output_after_srsc_m3_cr1_fix
+  - command: python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-skill-readability-adapters
+    result: pass_rebuilt_adapter_archives_after_srsc_m3_cr1_fix
+  - command: python scripts/validate-adapters.py --root /tmp/rigorloop-skill-readability-adapters --version v0.1.5
+    result: pass_generated_adapter_archives_after_srsc_m3_cr1_fix
+  - command: python scripts/measure-skill-tokens.py
+    result: pass_after_srsc_m3_cr1_fix_proposal_3300_proposal_review_3405_estimated_tokens
 changed_files:
   - docs/proposals/2026-05-18-skill-readability-self-containment.md
   - specs/skill-readability-contract.md

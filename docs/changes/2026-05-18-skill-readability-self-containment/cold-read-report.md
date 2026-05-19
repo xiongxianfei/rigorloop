@@ -16,6 +16,8 @@ Installed skill files inspected:
 
 The archive was extracted with Python `zipfile` because `unzip` is not available in the local environment.
 
+The adapter archives were rebuilt and the Codex archive was re-extracted on 2026-05-19 after the `SRSC-M3-CR1` fix, so the inspected installed paths reflect the duplicate-enum resolution.
+
 ## Method
 
 I inspected the installed adapter output directly, without using repository `specs/`, `schemas/`, or internal docs as runtime context. Static validation also ran against canonical source to catch unqualified required internal references before the installed-output read.

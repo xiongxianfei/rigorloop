@@ -73,3 +73,7 @@ M3 records the pilot proof needed before extending the readability contract beyo
 - Classified behavior differences for the pilot pair as `equivalent` or `improvement`; no `regression` remains.
 - Reduced the pilot skill text until after-change token counts stayed within the +5% tolerance and below the +10% hard cap.
 - Kept the remaining R30 skills as follow-on rollout work under the accepted contract, with no exclusions recorded in this milestone.
+
+### Review-resolution fix
+
+Accepted `SRSC-M3-CR1` and removed repeated closed enum value lists after the authoritative fenced enum blocks in `proposal` and `proposal-review`. Updated the stale validator assertions so they check the authoritative enum/reference pattern instead of requiring duplicated backticked prose values.

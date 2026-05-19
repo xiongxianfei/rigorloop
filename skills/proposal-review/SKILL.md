@@ -143,13 +143,7 @@ rejected option
 open question
 ```
 
-Every initial goal must be visibly classified as:
-
-- `in scope`
-- `out of scope`
-- `deferred follow-up`
-- `rejected option`
-- `open question`
+Every initial goal must be visibly classified with one `initial goal treatment` enum value.
 
 Return `changes-requested` if any initial user goal disappears.
 

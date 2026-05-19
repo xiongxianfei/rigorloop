@@ -4,7 +4,7 @@
 
 This record tracks material finding disposition for formal lifecycle reviews of the skill readability and self-containment change.
 
-Closeout status: open
+Closeout status: closed
 
 ## Resolution Entries
 
@@ -63,15 +63,15 @@ Review closeout: open
 #### SRSC-M3-CR1
 
 Finding ID: SRSC-M3-CR1
-Disposition: needs-decision
+Disposition: accepted
 Owner: implementer
 Owning stage: review-resolution / implement M3
 Decision owner: implementer
-Decision needed: Accept the finding and remove the duplicated closed enum value restatements, or reject it with evidence that the repeated lists are not closed enum restatements under R16/R17.
+Decision needed: resolved; finding accepted.
 Required outcome: Each affected closed enum value set appears exactly once per skill. Subsequent instructions reference the authoritative enum by name or placeholder wording without restating every value.
 Rationale: `proposal` and `proposal-review` still repeat `initial goal treatment` values after their authoritative fenced blocks, and `proposal` repeats `scope budget treatment` values after its authoritative fenced block. This contradicts R16/R17 and blocks clean M3 closeout.
-Chosen action: pending.
+Chosen action: Replaced repeated enum value lists with references to the authoritative `initial goal treatment` and `scope budget treatment` fenced enum blocks. Updated stale validator assertions that previously required duplicate backticked enum values in prose.
 Safe resolution path: Replace repeated lists in `skills/proposal/SKILL.md` and `skills/proposal-review/SKILL.md` with references to the authoritative enum blocks, then rerun targeted validation and M3 code-review.
-Stop state: M3 remains `resolution-needed`.
+Stop state: cleared; M3 returned to `review-requested` for rerun code-review.
 Validation target: rerun targeted validation and `code-review-m3-r2` after resolution.
-Validation evidence: pending.
+Validation evidence: `python scripts/test-skill-validator.py` passed; `python scripts/validate-skills.py` passed; `python scripts/build-skills.py --check` passed; `python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-skill-readability-adapters` passed; `python scripts/validate-adapters.py --root /tmp/rigorloop-skill-readability-adapters --version v0.1.5` passed; `python scripts/measure-skill-tokens.py` reported `proposal` 3300 estimated tokens and `proposal-review` 3405 estimated tokens, both within +5% tolerance; duplicate backticked enum value scan found only the new enum-reference lines.

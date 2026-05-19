@@ -157,13 +157,7 @@ rejected option
 open question
 ```
 
-Every initial user goal must be visible in the proposal as one of:
-
-- `in scope`
-- `out of scope`
-- `deferred follow-up`
-- `rejected option`
-- `open question`
+Every initial user goal must be visible in the proposal as one `initial goal treatment` enum value.
 
 Do not silently drop a user goal when narrowing a proposal.
 
@@ -214,15 +208,7 @@ When triggered, add:
 | <work item> | <one scope budget treatment value> | <why> |
 ```
 
-Allowed treatments:
-
-- `core to this proposal`
-- `first-slice candidate`
-- `same-slice dependency`
-- `separate implementation slice`
-- `deferable follow-up`
-- `separate proposal`
-- `out of scope`
+Use the `scope budget treatment` enum above for allowed treatment values.
 
 Small single-decision proposals may omit the scope budget.
 
