@@ -126,6 +126,24 @@ validation:
     result: pass_after_explain_change
   - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene
     result: pass_after_explain_change
+  - command: final verify preservation checks
+    result: pass_R_clauses_acceptance_criteria_examples_test_spec_rows_headings_and_bodies_preserved
+  - command: git diff --check
+    result: pass_final_verify
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-19-spec-and-test-spec-structural-hygiene.md --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/plans/2026-05-19-spec-and-test-spec-structural-hygiene.md --path docs/plan.md --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/change.yaml --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/review-log.md --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/review-resolution.md --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/explain-change.md --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/proposal-review-r1.md --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/spec-review-r1.md --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/plan-review-r1.md --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/code-review-m1-r1.md --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/code-review-m1-r2.md
+    result: pass_final_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/change.yaml
+    result: pass_final_verify
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene
+    result: pass_final_verify
+  - command: python scripts/validate-skills.py
+    result: pass_final_verify
+  - command: python scripts/test-skill-validator.py
+    result: pass_final_verify_128_tests
+  - command: python scripts/select-validation.py --mode pr --base 8d0ddecee8450b3730533df3b3802a75150ca45a --head HEAD --broad-smoke
+    result: pass_final_verify_selected_checks_include_broad_smoke
+  - command: bash scripts/ci.sh --mode pr --base 8d0ddecee8450b3730533df3b3802a75150ca45a --head HEAD --broad-smoke
+    result: pass_final_verify_selected_ci_and_broad_smoke
 changed_files:
   - docs/proposals/2026-05-19-spec-and-test-spec-structural-hygiene.md
   - specs/skill-contract.md
