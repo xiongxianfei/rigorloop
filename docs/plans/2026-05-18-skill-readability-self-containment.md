@@ -68,14 +68,14 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 ## Current Handoff Summary
 
 - Current milestone: M3. Cold-read, behavior parity, token comparison, and rollout handoff
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M2. Pilot skill rewrite and generated-output proof
 - Review status: clean-with-notes by `code-review-m2-r1`
 - Remaining in-scope implementation milestones: M3
-- Next stage: implement M3
+- Next stage: code-review for M3
 - Next lifecycle stage after M3 implementation: code-review for M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation milestones, code-review, review-resolution closeout if triggered, explain-change, verify, and PR handoff remain incomplete.
+- Reason final closeout is or is not ready: M3 code-review, review-resolution closeout if triggered, explain-change, verify, and PR handoff remain incomplete.
 
 ## Completed lifecycle handoffs
 
@@ -144,7 +144,7 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 
 ### M3. Cold-read, behavior parity, token comparison, and rollout handoff
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Prove the pilot pair preserves quality and clarity, record token-cost comparison, and prepare follow-on rollout guidance for the remaining R30 skills.
 - Requirements: R30-R31, R41-R53, R57-R60
 - Files/components likely touched: behavior-parity fixtures and reports, cold-read evidence report, token-cost report, this plan, `docs/changes/2026-05-18-skill-readability-self-containment/change.yaml`, optional `docs/follow-ups.md` only if an unowned cross-change follow-up is needed.
@@ -155,13 +155,13 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - Expected observable result: no behavior-parity regressions, cold-read evidence passes for the pilot pair, token comparison is within spec thresholds or has recorded allowed rationale, and follow-on rollout ownership is visible.
 - Commit message: `M3: record skill readability pilot evidence`
 - Milestone closeout:
-  - [ ] validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] hand off to code-review for M3
-  - [ ] material findings resolved or explicitly dispositioned
-  - [ ] milestone committed
+  - [x] validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] hand off to code-review for M3
+  - [x] material findings resolved or explicitly dispositioned
+  - [x] milestone committed
 - Risks: behavior-parity comparison is too subjective; token increase exceeds the hard cap; cold-read finds a dangling internal reference after skill rewrite.
 - Rollback/recovery: treat any `regression` as blocking; revise the affected skill and rerun M2/M3 checks; if token hard cap is exceeded, reduce text without breaching quality or revise the spec before rollout.
 
@@ -223,6 +223,7 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - 2026-05-18: `code-review-m1-r1` found no material findings and closed M1; next stage is implementation M2.
 - 2026-05-18: implemented M2 pilot rewrite for `proposal` and `proposal-review`; next stage is code-review for M2.
 - 2026-05-18: `code-review-m2-r1` found no material findings and closed M2; next stage is implementation M3.
+- 2026-05-18: implemented M3 cold-read evidence, behavior-parity evidence, token comparison, and follow-on rollout ownership; next stage is code-review for M3.
 
 ## Decision log
 
@@ -234,11 +235,15 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - 2026-05-18: M1 readability validation is opt-in on `schema-version: skill-readability-v1` -> lets fixture tests prove the contract before M2 rewrites the pilot skills and prevents current canonical skills from failing before they are in scope.
 - 2026-05-18: M2 uses skill front matter `version: "1.0.0"` consistently across the pilot pair -> records the first readability-contract shape version independently from adapter release archive version.
 - 2026-05-18: M2 temporary adapter validation uses `v0.1.5` -> matches the tracked `dist/adapters/manifest.yaml` release-support surface after PR #68 merged.
+- 2026-05-18: M3 reduced pilot skill text until both token deltas were within the +5% tolerance instead of accepting a larger readability-cost increase -> preserves token cost as a tertiary constraint beneath quality and clarity.
+- 2026-05-18: remaining R30 skills stay owned as follow-on rollout work under the accepted contract, with no exclusions recorded in M3 -> preserves the full rollout contract without broadening the pilot diff.
 
 ## Surprises and discoveries
 
 - 2026-05-18: existing top-level title validation counted `# ` headings inside fenced output skeletons. M1 adjusted title counting to ignore fenced code blocks so fillable Markdown skeletons can contain headings in later rewrites.
 - 2026-05-18: M2 preserved exact prior static-contract phrases in `proposal` and `proposal-review` while moving their operational shape into tables and fenced enum blocks, because existing regression tests still assert those phrases.
+- 2026-05-18: `unzip` is not installed in the local environment, so M3 used Python `zipfile` to extract the generated Codex adapter archive for cold-read inspection.
+- 2026-05-18: initial after-change token measurement exceeded the approved thresholds; M3 reduced pilot wording while preserving the shared evidence block and static readability contracts.
 
 ## Validation notes
 
@@ -255,6 +260,12 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - 2026-05-18: M2 validation passed after the rewrite: `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, `python scripts/build-skills.py --check`, `python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-skill-readability-adapters`, `python scripts/validate-adapters.py --root /tmp/rigorloop-skill-readability-adapters --version v0.1.5`, and `python scripts/validate-change-metadata.py docs/changes/2026-05-18-skill-readability-self-containment/change.yaml`.
 - 2026-05-18: M2 handoff validation passed after plan and change-metadata updates: artifact lifecycle explicit paths, review artifact closeout, and `git diff --check --`.
 - 2026-05-18: M2 code-review validation passed: `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, `python scripts/build-skills.py --check`, and `python scripts/validate-adapters.py --root /tmp/rigorloop-skill-readability-adapters --version v0.1.5`.
+- 2026-05-18: M3 static validation passed before evidence recording: `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, and `python scripts/build-skills.py --check`.
+- 2026-05-18: M3 adapter validation passed after rebuilding temporary archives: `python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-skill-readability-adapters` and `python scripts/validate-adapters.py --root /tmp/rigorloop-skill-readability-adapters --version v0.1.5`.
+- 2026-05-18: M3 token measurement passed with `proposal` at 3345 estimated tokens (+4.89%) and `proposal-review` at 3417 estimated tokens (+4.98%), both within +5% tolerance and below the +10% hard cap.
+- 2026-05-18: M3 cold-read report passed for installed Codex adapter output under `/tmp/rigorloop-skill-readability-cold-read/codex/.agents/skills/`.
+- 2026-05-18: M3 behavior-parity report classified pilot differences as `equivalent` or `improvement`; no `regression` remains.
+- 2026-05-18: M3 handoff validation passed: `python scripts/validate-change-metadata.py docs/changes/2026-05-18-skill-readability-self-containment/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-18-skill-readability-self-containment.md --path docs/plan.md --path specs/skill-readability-contract.md --path specs/skill-readability-contract.test.md --path docs/changes/2026-05-18-skill-readability-self-containment/change.yaml --path docs/changes/2026-05-18-skill-readability-self-containment/review-log.md --path docs/changes/2026-05-18-skill-readability-self-containment/review-resolution.md`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-18-skill-readability-self-containment`, and `git diff --check --`.
 
 ## Outcome and retrospective
 

@@ -23,6 +23,10 @@ requirements:
   - Review and close M1 before starting M2.
   - Rewrite the pilot `proposal` and `proposal-review` skills for the readability contract.
   - Validate generated skill and adapter output from canonical skill source after the M2 rewrite.
+  - Record cold-read evidence against installed adapter output for the pilot pair.
+  - Record behavior-parity evidence with `equivalent`, `improvement`, or `regression` classifications.
+  - Record after-change token comparison against the M1 baseline and approved thresholds.
+  - Preserve follow-on rollout ownership for the remaining R30 skills with no silent exclusions.
 tests:
   - Formal proposal-review evidence for docs/proposals/2026-05-18-skill-readability-self-containment.md.
   - Review artifact validation for the proposal-review record.
@@ -37,6 +41,10 @@ tests:
   - Pilot pair opts into schema-version skill-readability-v1 and passes focused static validation.
   - Generated adapter archives validate from canonical skill source for the current adapter manifest version.
   - Clean code-review evidence for M2.
+  - Installed adapter cold-read evidence passes for the pilot pair.
+  - Behavior-parity comparison records no `regression` classifications.
+  - Token comparison remains within the approved +5% tolerance and below the +10% hard cap.
+  - Follow-on rollout ownership for non-pilot R30 skills remains recorded in the active plan.
 review:
   status: clean
   unresolved_items: 0
@@ -128,6 +136,30 @@ validation:
     result: pass_during_m2_code_review
   - command: python scripts/validate-adapters.py --root /tmp/rigorloop-skill-readability-adapters --version v0.1.5
     result: pass_during_m2_code_review
+  - command: python scripts/test-skill-validator.py
+    result: pass_97_tests_during_m3_implementation
+  - command: python scripts/validate-skills.py
+    result: pass_23_skill_files_during_m3_implementation
+  - command: python scripts/build-skills.py --check
+    result: pass_temporary_generated_output_during_m3_implementation
+  - command: python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-skill-readability-adapters
+    result: pass_rebuilt_codex_claude_opencode_adapter_archives_during_m3_implementation
+  - command: python scripts/validate-adapters.py --root /tmp/rigorloop-skill-readability-adapters --version v0.1.5
+    result: pass_generated_adapter_archives_during_m3_implementation
+  - command: python scripts/measure-skill-tokens.py
+    result: pass_after_change_proposal_3345_plus_4_89_percent_proposal_review_3417_plus_4_98_percent
+  - command: cold-read installed Codex adapter output
+    result: pass_no_unresolved_references_missing_skeletons_or_rule_scope_blockers
+  - command: behavior-parity manual contract comparison
+    result: pass_no_regression_classifications
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-18-skill-readability-self-containment/change.yaml
+    result: pass_after_m3_handoff
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-18-skill-readability-self-containment.md --path docs/plan.md --path specs/skill-readability-contract.md --path specs/skill-readability-contract.test.md --path docs/changes/2026-05-18-skill-readability-self-containment/change.yaml --path docs/changes/2026-05-18-skill-readability-self-containment/review-log.md --path docs/changes/2026-05-18-skill-readability-self-containment/review-resolution.md
+    result: pass_after_m3_handoff
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-18-skill-readability-self-containment
+    result: pass_after_m3_handoff
+  - command: git diff --check --
+    result: pass_after_m3_handoff
 changed_files:
   - docs/proposals/2026-05-18-skill-readability-self-containment.md
   - specs/skill-readability-contract.md
@@ -145,6 +177,8 @@ changed_files:
   - tests/fixtures/skills/skill-readability/required-internal-reference/SKILL.md
   - tests/fixtures/skills/skill-readability/duplicate-closed-enum/SKILL.md
   - docs/reports/token-cost/skills/2026-05-18-skill-readability-self-containment.md
+  - docs/changes/2026-05-18-skill-readability-self-containment/cold-read-report.md
+  - docs/changes/2026-05-18-skill-readability-self-containment/behavior-parity-report.md
   - docs/changes/2026-05-18-skill-readability-self-containment/implementation-notes.md
   - docs/changes/2026-05-18-skill-readability-self-containment/change.yaml
   - docs/changes/2026-05-18-skill-readability-self-containment/review-log.md

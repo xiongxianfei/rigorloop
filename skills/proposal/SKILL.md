@@ -9,23 +9,23 @@ argument-hint: [feature idea, selected option, problem statement, or issue numbe
 
 # Change proposal
 
-You are turning exploration into a concrete, reviewable direction. A proposal answers why this change, why now, and why this approach. It does not define every requirement and it does not prescribe every implementation task.
+You turn exploration into a reviewable direction. A proposal answers why this change, why now, and why this approach. It does not define every requirement or implementation task.
 
 ## Workflow role
 
 - role_name: proposal
 - stage: authoring
-- upstream: user request, exploration, research, issue, incident, or owner direction
+- upstream: user request, exploration, research, issue, or incident
 - downstream: proposal-review
-- summary: Author the decision artifact that records problem, options, recommendation, scope, risks, and next-stage readiness before specification work begins.
+- summary: Author the proposal artifact recording problem, options, recommendation, scope, risks, and readiness.
 
 ## Project-local evidence
 
 Public skills operate in customer-project mode by default.
 
-Use project-local artifacts when present and relevant, including `AGENTS.md`, `CONSTITUTION.md`, `VISION.md`, `docs/project-map.md`, `docs/workflows.md`, local specs, local ADRs, related proposals, source files, issues, incidents, and user feedback.
+Use project-local artifacts when present: `AGENTS.md`, `CONSTITUTION.md`, `VISION.md`, `docs/project-map.md`, `docs/workflows.md`, local specs or ADRs, related proposals, code, issues, incidents, and user feedback.
 
-Workflow-wide rule: do not require RigorLoop repository-internal specs, docs, reports, follow-up files, or governance files in customer projects. Use portable defaults where safe, and block on ambiguity when no safe local guidance or default exists.
+Workflow-wide rule: do not require RigorLoop repository-internal specs, docs, reports, follow-up files, or governance files in customer projects; use portable defaults where safe; block on ambiguity.
 
 ## Evidence access
 
@@ -63,14 +63,12 @@ Use the project workflow guide for artifact locations when placement matters.
 
 Lookup order:
 
-| Rank | Source |
-|---|---|
-| 1 | explicit user path or change ID. |
-| 2 | active plan, change metadata, reviewed artifact path, or current artifact metadata. |
-| 3 | known governing spec or schema constraint when directly relevant. |
-| 4 | `docs/workflows.md` artifact-location table when that project-local file is present. |
-| 5 | this skill's portable default path. |
-| 6 | block on ambiguity. |
+1. explicit user path or change ID;
+2. active plan, change metadata, reviewed artifact path, or current artifact metadata;
+3. known governing spec or schema constraint when directly relevant;
+4. `docs/workflows.md` artifact-location table when that project-local file is present;
+5. this skill's portable default path;
+6. block on ambiguity.
 
 This discovery order is subordinate to the source-rank rule in `docs/workflows.md` when sources conflict.
 
@@ -274,103 +272,48 @@ Read exact ranges after locating relevant lines, then expand only when the narro
 
 ## When full-file read is required
 
-Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
+Read the full file when the whole file is the review target, context can change the conclusion, bounded searches disagree, or a behavior-changing edit depends on the whole source-of-truth artifact.
 
 ## Output skeleton
 
 ```md
 # <Proposal title>
-
 ## Status
-
 <one proposal status value>
-
 ## Problem
-
-<problem statement>
-
+<problem>
 ## Goals
-
-- <goal>
-
+<goals>
 ## Non-goals
-
-- <non-goal>
-
+<non-goals>
 ## Vision fit
-
-<one Vision fit value>
-
-<brief rationale>
-
+<one Vision fit value and rationale>
 ## Context
-
-<relevant background>
-
+<context>
 ## Options Considered
-
-### Option 1: <name>
-
-- Pros: <pros>
-- Cons: <cons>
-
-### Option 2: <name>
-
-- Pros: <pros>
-- Cons: <cons>
-
-### Option 3: <name>
-
-- Pros: <pros>
-- Cons: <cons>
-
+<at least three options or exploration link>
 ## Recommended Direction
-
-<selected approach and rationale>
-
+<direction and rationale>
 ## Expected Behavior Changes
-
-- <observable behavior change>
-
+<observable changes>
 ## Architecture Impact
-
-<components, boundaries, and data flow touched>
-
+<impact>
 ## Testing and Verification Strategy
-
-<test and validation approach>
-
+<strategy>
 ## Rollout and Rollback
-
-<rollout and rollback approach>
-
+<rollout and rollback>
 ## Risks and Mitigations
-
-| Risk | Mitigation |
-|---|---|
-| <risk> | <mitigation> |
-
+<risks and mitigations>
 ## Open Questions
-
-- <question or "None">
-
+<questions or None>
 ## Decision Log
-
-| Date | Decision | Reason | Alternatives Rejected |
-|---|---|---|---|
-| <YYYY-MM-DD> | <decision> | <reason> | <alternatives> |
-
+<decisions>
 ## Next Artifacts
-
-- <planned downstream artifact>
-
+<planned artifacts>
 ## Follow-on Artifacts
-
 None yet
-
 ## Readiness
-
-<truthful next-stage status>
+<next-stage status>
 ```
 
 ## Expected output

@@ -55,3 +55,21 @@ Generated skill validation passed from canonical `skills/` source. Temporary ada
 - `/tmp/rigorloop-skill-readability-adapters/rigorloop-adapter-opencode-v0.1.5.zip`
 
 No generated adapter body was hand-edited.
+
+## M3. Cold-read, behavior parity, token comparison, and rollout handoff
+
+M3 records the pilot proof needed before extending the readability contract beyond `proposal` and `proposal-review`.
+
+### Evidence
+
+- Cold-read evidence: `docs/changes/2026-05-18-skill-readability-self-containment/cold-read-report.md`
+- Behavior-parity evidence: `docs/changes/2026-05-18-skill-readability-self-containment/behavior-parity-report.md`
+- Token comparison: `docs/reports/token-cost/skills/2026-05-18-skill-readability-self-containment.md`
+
+### Result
+
+- Built and validated temporary `v0.1.5` adapter archives from canonical source.
+- Inspected installed Codex adapter skill output under `/tmp/rigorloop-skill-readability-cold-read/codex/.agents/skills/`.
+- Classified behavior differences for the pilot pair as `equivalent` or `improvement`; no `regression` remains.
+- Reduced the pilot skill text until after-change token counts stayed within the +5% tolerance and below the +10% hard cap.
+- Kept the remaining R30 skills as follow-on rollout work under the accepted contract, with no exclusions recorded in this milestone.
