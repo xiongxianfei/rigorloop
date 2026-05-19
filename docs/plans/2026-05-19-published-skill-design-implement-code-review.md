@@ -62,14 +62,14 @@ This slice is intentionally narrow. It should make the implementation and review
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Deterministic validator and fixture support
-- Current milestone state: review-requested
-- Last reviewed milestone: M1. Execution/review evidence scaffold
-- Review status: M2 implementation complete; code-review pending
-- Remaining in-scope implementation milestones: M2. Deterministic validator and fixture support; M3. Implement and code-review skill rewrite
-- Next stage: code-review M2
+- Current milestone: M3. Implement and code-review skill rewrite
+- Current milestone state: planned
+- Last reviewed milestone: M2. Deterministic validator and fixture support
+- Review status: code-review-m2-r1 clean-with-notes; no material findings
+- Remaining in-scope implementation milestones: M3. Implement and code-review skill rewrite
+- Next stage: implement M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2 is awaiting code-review; M3 implementation, M3 code-review, explain-change, verify, PR handoff, hosted CI, human review, and merge remain.
+- Reason final closeout is or is not ready: M3 implementation, M3 code-review, explain-change, verify, PR handoff, hosted CI, human review, and merge remain.
 
 ## Milestones
 
@@ -141,7 +141,7 @@ This slice is intentionally narrow. It should make the implementation and review
 
 ### M2. Deterministic validator and fixture support
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: make any deterministic checks needed for `implement` and `code-review` enforceable without broad semantic scoring.
 - Requirements: R29, R32-R33, R35.
 - Files/components likely touched:
@@ -257,7 +257,7 @@ This slice is intentionally narrow. It should make the implementation and review
 - [x] Plan-review completed.
 - [x] Test-spec amendment completed and approved.
 - [x] M1 implemented and reviewed.
-- [ ] M2 implemented and reviewed. Implementation is complete and awaiting code-review.
+- [x] M2 implemented and reviewed.
 - [ ] M3 implemented and reviewed.
 - [ ] Explain-change recorded.
 - [ ] Final verify passed.
@@ -310,6 +310,7 @@ This slice is intentionally narrow. It should make the implementation and review
 - 2026-05-19 M2 validation: `python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml` passed.
 - 2026-05-19 M2 validation: `git diff --check -- scripts/test-skill-validator.py specs/skill-contract.test.md docs/plans/2026-05-19-published-skill-design-implement-code-review.md docs/plan.md docs/changes/2026-05-19-published-skill-design-implement-code-review` passed.
 - 2026-05-19 M2 selected CI: `bash scripts/ci.sh --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path specs/skill-contract.test.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml` passed selected `skills.regression`, `skills.generation_regression`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+- 2026-05-19 M2 code-review: `code-review-m2-r1` returned `clean-with-notes` with no material findings; M2 closed.
 
 ## Outcome and retrospective
 
