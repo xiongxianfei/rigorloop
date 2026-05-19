@@ -528,6 +528,12 @@ raise SystemExit({exit_code})
                 "checks": {"skills.regression", "skills.generation_regression"},
             },
             {
+                "path": "tests/fixtures/skills/skill-readability/valid-pilot/SKILL.md",
+                "category": "validator-skills",
+                "status": "ok",
+                "checks": {"skills.regression", "skills.generation_regression"},
+            },
+            {
                 "path": "scripts/validate-release.py",
                 "category": "release-script",
                 "status": "ok",
@@ -577,6 +583,24 @@ raise SystemExit({exit_code})
             },
             {
                 "path": "docs/changes/2026-04-25-example/verify-report.md",
+                "category": "change-local-lifecycle",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/implementation-notes.md",
+                "category": "change-local-lifecycle",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/cold-read-report.md",
+                "category": "change-local-lifecycle",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/behavior-parity-report.md",
                 "category": "change-local-lifecycle",
                 "status": "ok",
                 "checks": {"artifact_lifecycle.validate"},
