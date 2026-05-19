@@ -1,6 +1,6 @@
 # Spec and Test-Spec Structural Hygiene Execution Plan
 
-- Status: active
+- Status: done
 - Owner: maintainers
 - Start date: 2026-05-19
 - Last updated: 2026-05-19
@@ -53,9 +53,9 @@ Implement the approved structural-hygiene contract for the skill contract and it
 - Last reviewed milestone: M1 code-review R2 clean-with-notes
 - Review status: clean; no material findings open
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: branch-ready after final local verify; PR handoff remains open.
+- Next stage: PR review
+- Final closeout readiness: ready for PR handoff
+- Reason final closeout is or is not ready: branch-ready after final local verify; PR handoff is being recorded before the PR opens for review.
 
 ## Milestones
 
@@ -142,7 +142,7 @@ Implement the approved structural-hygiene contract for the skill contract and it
 - [x] Code-review.
 - [x] Explain-change.
 - [x] Verify.
-- [ ] PR handoff.
+- [x] PR handoff.
 
 ## Decision log
 
@@ -173,10 +173,11 @@ Implement the approved structural-hygiene contract for the skill contract and it
 - 2026-05-19 explain-change-stage validation passed `git diff --check`, `validate-artifact-lifecycle`, `validate-change-metadata`, and `validate-review-artifacts --mode closeout`.
 - 2026-05-19 final verify passed preservation checks for R-clause text, acceptance-criterion text, example IDs, test-spec requirement coverage rows, test-spec acceptance-criteria coverage rows, test-case headings, and test-case bodies.
 - 2026-05-19 final verify passed `git diff --check`, explicit artifact lifecycle validation, change metadata validation, review artifact closeout validation, `validate-skills.py`, `test-skill-validator.py`, selector dry-run for PR mode with broad smoke, and `bash scripts/ci.sh --mode pr --base 8d0ddecee8450b3730533df3b3802a75150ca45a --head HEAD --broad-smoke`.
+- 2026-05-19 PR handoff readiness recorded after confirming a clean working tree, scoped commits, closed review-resolution, branch-ready verify evidence, and GitHub PR tooling/auth availability.
 
 ## Outcome and retrospective
 
-- Pending.
+- Completed through final local verify and PR handoff readiness. Human PR review and hosted CI remain downstream of the opened PR.
 
 ## Readiness
 
