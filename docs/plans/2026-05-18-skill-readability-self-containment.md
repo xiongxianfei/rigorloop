@@ -70,12 +70,12 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - Current milestone: M3. Cold-read, behavior parity, token comparison, and rollout handoff
 - Current milestone state: closed
 - Last reviewed milestone: M3. Cold-read, behavior parity, token comparison, and rollout handoff
-- Review status: resolution-closed for `code-review-verify-fix-r1`
+- Review status: clean-with-notes by `code-review-verify-fix-r2`
 - Remaining in-scope implementation milestones: none
-- Next stage: code-review
-- Next lifecycle stage after M3 implementation: rerun code-review for verify-stage adapter compatibility fix
+- Next stage: verify
+- Next lifecycle stage after M3 implementation: verify
 - Final closeout readiness: ready to start lifecycle closeout
-- Reason final closeout is or is not ready: all implementation milestones are closed, explain-change is recorded, and review-resolution is closed; verify cannot claim branch-ready until code-review reruns cleanly on the verify-stage fix.
+- Reason final closeout is or is not ready: all implementation milestones are closed, explain-change is recorded, review-resolution is closed, and rerun code-review is clean; final verify and PR handoff remain incomplete.
 
 ## Completed lifecycle handoffs
 
@@ -234,6 +234,7 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - 2026-05-19: final verify selected CI and broad smoke passed after the adapter front-matter and selector fixes; branch-ready is still blocked until code-review covers the post-review implementation change.
 - 2026-05-19: `code-review-verify-fix-r1` found SRSC-VERIFY-CR1; next stage is review-resolution.
 - 2026-05-19: accepted and fixed SRSC-VERIFY-CR1 by rewording stale `explain-change.md` readiness/risk text; next stage is rerun code-review for the verify-stage fix.
+- 2026-05-19: `code-review-verify-fix-r2` found no material findings; next stage is final verify.
 
 ## Decision log
 
