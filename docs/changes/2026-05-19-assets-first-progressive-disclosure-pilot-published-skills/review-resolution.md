@@ -13,8 +13,9 @@ Review closeout: plan-review-r1
 Review closeout: plan-review-r2
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
+Review closeout: code-review-m2-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `plan-review-r1`, `plan-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`
 - Findings resolved: 6
 - Unresolved findings: 0
 - Final result: `APD-PR1`, `APD-PR2`, `APD-PR3`, and `APD-PR4` are accepted and resolved for proposal-revision purposes. `APD-PLR1` is accepted and resolved for plan-revision purposes. `APD-CR1` is accepted and resolved for M1 review-resolution purposes.
@@ -66,6 +67,10 @@ Finding closeout for `code-review-m1-r1` is closed for M1 review-resolution purp
 ### code-review-m1-r2
 
 No material findings. Clean formal review closed M1. Immediate next stage is `implement M2`. No disposition entries required.
+
+### code-review-m2-r1
+
+No material findings. Clean formal review closed M2. Immediate next stage is `implement M3`. No disposition entries required.
 
 ### APD-PR1 - Proposal needs explicit dependency on existing skill-contract slice
 

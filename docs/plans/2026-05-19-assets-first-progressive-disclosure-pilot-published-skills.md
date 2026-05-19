@@ -70,13 +70,13 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 ## Current Handoff Summary
 
 - Current milestone: M2. Plan Skill Asset Split
-- Current milestone state: review-requested
-- Last reviewed milestone: M1. Asset Contract Validation And Test Spec Support
-- Review status: ready for M2 code-review
-- Remaining in-scope implementation milestones: M2, M3
-- Next stage: code-review M2
+- Current milestone state: closed
+- Last reviewed milestone: M2. Plan Skill Asset Split
+- Review status: clean-with-notes
+- Remaining in-scope implementation milestones: M3
+- Next stage: implement M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2 is implemented but not reviewed, M3 remains unimplemented, and explain-change, verify, and PR handoff have not run.
+- Reason final closeout is or is not ready: M3 remains unimplemented, and explain-change, verify, and PR handoff have not run.
 
 ## Pre-implementation prerequisites
 
@@ -132,7 +132,7 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 
 ### M2. Plan Skill Asset Split
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: move the plan output structure into exactly four normative assets while preserving `SKILL.md` execution rules and common-path readability.
 - Requirements: R37-R42, R44.
 - Files/components likely touched:
@@ -279,6 +279,7 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 - 2026-05-19: APD-CR1 review-resolution added direct missing resource-map-entry fixture coverage for the `plan` asset pilot; ready for M1 code-review rerun.
 - 2026-05-19: code-review-m1-r2 returned clean-with-notes; M1 closed and the next stage is implement M2.
 - 2026-05-19: M2 split the `plan` skill output structure into four normative packaged assets, kept lifecycle rules in `SKILL.md`, recorded behavior-preservation and token-cost evidence, and passed M2 validation; ready for M2 code-review.
+- 2026-05-19: code-review-m2-r1 returned clean-with-notes; M2 closed and the next stage is implement M3.
 
 ## Decision log
 
@@ -318,6 +319,7 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-log.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-resolution.md` passed after the M2 handoff update.
 - `bash scripts/ci.sh --mode explicit --path skills/plan/SKILL.md --path skills/plan/assets --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/behavior-preservation.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/token-cost.md --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md` blocked because `token-cost.md` has no deterministic v1 selector check.
 - `bash scripts/ci.sh --mode explicit --path skills/plan/SKILL.md --path skills/plan/assets --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md` passed for supported paths with selected checks `skills.validate`, `skills.regression`, `skills.generation_regression`, `skills.drift`, `adapters.drift`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+- code-review-m2-r1 returned clean-with-notes and recorded no material findings.
 
 ## Outcome and retrospective
 
@@ -326,4 +328,4 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for M2 code-review. Readiness is not Done; all remaining implementation and downstream gates remain open.
+- Ready for M3 implementation. Readiness is not Done; all remaining implementation and downstream gates remain open.
