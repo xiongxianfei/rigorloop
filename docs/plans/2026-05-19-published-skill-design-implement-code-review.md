@@ -63,13 +63,13 @@ This slice is intentionally narrow. It should make the implementation and review
 ## Current Handoff Summary
 
 - Current milestone: M2. Deterministic validator and fixture support
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M1. Execution/review evidence scaffold
-- Review status: code-review-m1-r1 clean-with-notes; no material findings
+- Review status: M2 implementation complete; code-review pending
 - Remaining in-scope implementation milestones: M2. Deterministic validator and fixture support; M3. Implement and code-review skill rewrite
-- Next stage: implement M2
+- Next stage: code-review M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation milestones have not started; implementation, code-review, explain-change, verify, PR handoff, hosted CI, human review, and merge remain.
+- Reason final closeout is or is not ready: M2 is awaiting code-review; M3 implementation, M3 code-review, explain-change, verify, PR handoff, hosted CI, human review, and merge remain.
 
 ## Milestones
 
@@ -141,7 +141,7 @@ This slice is intentionally narrow. It should make the implementation and review
 
 ### M2. Deterministic validator and fixture support
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: make any deterministic checks needed for `implement` and `code-review` enforceable without broad semantic scoring.
 - Requirements: R29, R32-R33, R35.
 - Files/components likely touched:
@@ -257,7 +257,7 @@ This slice is intentionally narrow. It should make the implementation and review
 - [x] Plan-review completed.
 - [x] Test-spec amendment completed and approved.
 - [x] M1 implemented and reviewed.
-- [ ] M2 implemented and reviewed.
+- [ ] M2 implemented and reviewed. Implementation is complete and awaiting code-review.
 - [ ] M3 implemented and reviewed.
 - [ ] Explain-change recorded.
 - [ ] Final verify passed.
@@ -271,6 +271,7 @@ This slice is intentionally narrow. It should make the implementation and review
 - 2026-05-19: approve the plan with no material findings. Rationale: the plan keeps the next slice scoped to `implement` and `code-review`, preserves lifecycle sequencing, and requires test-spec amendment before implementation.
 - 2026-05-19: amend `specs/skill-contract.test.md` with execution/review proof cases before implementation. Rationale: `T25`-`T28` make audit, deterministic validation, behavior preservation, generated-output, and adapter proof concrete for `implement` and `code-review`.
 - 2026-05-19: keep M1 as evidence-only. Rationale: the audit found workflow-role and output-skeleton gaps in `implement` and `code-review`, but those skill-body changes belong to M3 after deterministic validator scope is settled.
+- 2026-05-19: keep M2 limited to regression proof for the execution/review evidence scaffold. Rationale: existing production validators already cover the deterministic contract classes in scope, so M2 only needed a fixture test proving the new change-local evidence remains present and bounded.
 
 ## Surprises and discoveries
 
@@ -304,6 +305,11 @@ This slice is intentionally narrow. It should make the implementation and review
 - 2026-05-19 M1 code-review validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml --path docs/changes/2026-05-19-published-skill-design-implement-code-review/review-log.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/reviews/code-review-m1-r1.md` passed.
 - 2026-05-19 M1 code-review validation: `git diff --check -- docs/plans/2026-05-19-published-skill-design-implement-code-review.md docs/plan.md docs/changes/2026-05-19-published-skill-design-implement-code-review` passed.
 - 2026-05-19 M1 code-review selected CI: `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml --path docs/changes/2026-05-19-published-skill-design-implement-code-review/review-log.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/reviews/code-review-m1-r1.md` passed selected `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+- 2026-05-19 M2 validation: `python scripts/test-skill-validator.py` passed.
+- 2026-05-19 M2 validation: `python scripts/validate-skills.py` passed.
+- 2026-05-19 M2 validation: `python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml` passed.
+- 2026-05-19 M2 validation: `git diff --check -- scripts/test-skill-validator.py specs/skill-contract.test.md docs/plans/2026-05-19-published-skill-design-implement-code-review.md docs/plan.md docs/changes/2026-05-19-published-skill-design-implement-code-review` passed.
+- 2026-05-19 M2 selected CI: `bash scripts/ci.sh --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path specs/skill-contract.test.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml` passed selected `skills.regression`, `skills.generation_regression`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
 
 ## Outcome and retrospective
 
