@@ -13,8 +13,8 @@ M1 records the preservation template and baseline protected behavior. M3 must fi
 
 | Skill | Removed or rewritten wording | Why safe | Essential rule preserved where |
 | --- | --- | --- | --- |
-| `spec` | pending M3 | pending M3 | pending M3 |
-| `spec-review` | pending M3 | pending M3 | pending M3 |
+| `spec` | Description routing was rewritten; project-local evidence and inputs were compacted; required section descriptions, workflow handoff wording, and expected output prose were compressed; an output skeleton was added. | Safe because the rewrite moves routing into frontmatter, adds workflow-role claim boundaries, keeps all required section names, keeps upstream settlement/output-path/artifact-placement/rules/evidence behavior, and adds a compact normative skeleton without deleting required behavior. | `skills/spec/SKILL.md` frontmatter `description`, `## Workflow role`, `## Project-local evidence`, `## Required sections`, `## Workflow handoff behavior`, `## Output skeleton`, and `## Expected output`. |
+| `spec-review` | Description routing was rewritten; input and review-dimension prose was compacted; workflow role and output skeleton were added; expected-output prose was compressed. | Safe because the rewrite preserves the review gate, finding severity, material finding requirements, isolation/recording block, rules, workflow handoff boundaries, and expected result fields while adding portable routing and explicit claim boundaries. | `skills/spec-review/SKILL.md` frontmatter `description`, `## Workflow role`, `## Review dimensions`, `## Finding severity`, `## Material findings`, `## Isolation and Recording`, `## Rules`, `## Workflow handoff behavior`, `## Output skeleton`, and `## Expected output`. |
 
 ## `spec` Protected Behavior
 
@@ -59,3 +59,10 @@ Closeout evidence must show:
 - why the change is safe;
 - where the essential rule now lives;
 - behavior-parity evidence did not weaken lifecycle rules.
+
+## M3 Preservation Result
+
+M3 changed behavior-significant wording, so closeout relies on the preservation
+table above plus behavior-parity evidence. The rewrite did not remove protected
+rules; it compressed duplicate prose, moved routing into `description`, added
+workflow-role blocks, and added compact fenced output skeletons.

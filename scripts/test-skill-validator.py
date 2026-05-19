@@ -739,18 +739,39 @@ class SkillValidatorFixtureTests(unittest.TestCase):
 
         for skill in ("`spec`", "`spec-review`"):
             with self.subTest(skill=skill):
-                self.assertIn(f"| {skill} | pending M3 | pending M3 | pending M3 |", preservation)
+                self.assertIn(f"| {skill} |", preservation)
+                self.assertNotIn(f"| {skill} | pending M3 | pending M3 | pending M3 |", preservation)
                 self.assertIn(skill, parity)
         for artifact_id in ("`SF-PARITY-1`", "`SF-PARITY-2`", "`SF-PARITY-3`"):
             with self.subTest(artifact_id=artifact_id):
                 self.assertIn(artifact_id, parity)
         self.assertIn("M3 must not close on structural validation alone", preservation)
         self.assertIn("M3 must not claim behavior parity from structural validation alone", parity)
+        self.assertIn("## M3 Preservation Result", preservation)
+        self.assertIn("## M3 Final Parity Statement", parity)
         self.assertIn("| `spec` | 9164 | 192 | 2288 |", parity)
         self.assertIn("| `spec-review` | 7968 | 183 | 1992 |", parity)
 
     def test_skill_readability_pilot_pair_opts_into_contract(self) -> None:
         for skill_name in ("proposal", "proposal-review"):
+            skill_path = ROOT / "skills" / skill_name / "SKILL.md"
+            result = run_validator(skill_path)
+            with self.subTest(skill=skill_name):
+                self.assertEqual(
+                    result.returncode,
+                    0,
+                    msg=(
+                        f"expected {skill_name} to satisfy the readability contract\n"
+                        f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}"
+                    ),
+                )
+                body = skill_path.read_text(encoding="utf-8")
+                self.assertIn("schema-version: skill-readability-v1", body)
+                self.assertIn("## Workflow role", body)
+                self.assertIn("## Output skeleton", body)
+
+    def test_skill_readability_spec_family_opts_into_contract(self) -> None:
+        for skill_name in ("spec", "spec-review"):
             skill_path = ROOT / "skills" / skill_name / "SKILL.md"
             result = run_validator(skill_path)
             with self.subTest(skill=skill_name):

@@ -1,7 +1,9 @@
 ---
 name: spec
+version: "1.0.0"
+schema-version: skill-readability-v1
 description: >
-  Write a contract-level feature specification before execution planning or implementation. Use for changes that affect externally observable behavior, APIs, UI, config, data contracts, error behavior, compatibility, security, or safety-sensitive logic.
+  Write or amend a contract-level feature spec before architecture, planning, test planning, or implementation. Use when accepted direction or requested behavior must become requirements for observable behavior, APIs, UI, config, data contracts, errors, compatibility, security, privacy, accessibility, performance, or safety-sensitive logic. Use spec-review to review a spec; use proposal, architecture, plan, test-spec, implement, verify, or pr for those stages.
 argument-hint: [proposal path, feature name, behavior request, or issue number]
 ---
 
@@ -11,26 +13,26 @@ You are writing the behavioral contract for the change.
 
 The spec defines **what the system must do** and **how the behavior will be observed**. It should avoid unnecessary internal implementation detail.
 
+## Workflow role
+
+- role_name: spec
+- stage: authoring
+- upstream: accepted proposal, approved direction, behavior request, issue, exploration, or research
+- downstream: spec-review
+- summary: Author or amend the feature spec recording observable behavior, requirements, examples, edge cases, acceptance criteria, and readiness.
+- must_not_claim: spec-review approval, architecture readiness, plan readiness, implementation readiness, verification, branch readiness, or PR readiness.
+
 ## Project-local evidence
 
 Public skills operate in customer-project mode by default.
 
-Use project-local artifacts when present and relevant, including `AGENTS.md`, `CONSTITUTION.md`, accepted proposals, issues, exploration and research artifacts, `docs/project-map.md`, `docs/workflows.md`, related local specs, architecture records, ADRs, interfaces, schemas, APIs, UI flows, config, and data contracts.
+Use project-local artifacts when present and relevant: `AGENTS.md`, `CONSTITUTION.md`, accepted proposals, issues, exploration or research, `docs/project-map.md`, `docs/workflows.md`, related local specs, architecture records, ADRs, interfaces, schemas, APIs, UI flows, config, and data contracts.
 
 Do not require RigorLoop repository-internal specs, docs, reports, follow-up files, or governance files in customer projects. Use portable defaults where safe, and block on ambiguity when no safe local guidance or default exists.
 
 ## Inputs to read
 
-Read, if present:
-
-- `AGENTS.md`
-- `CONSTITUTION.md`
-- accepted proposal or issue
-- exploration and research artifacts
-- `docs/project-map.md`
-- related specs
-- related architecture docs or ADRs
-- existing interfaces, schemas, APIs, UI flows, config, or data contracts
+Read the smallest relevant set from project-local instructions, accepted proposal or issue, exploration or research, project map, related specs, architecture docs or ADRs, and existing interfaces, schemas, APIs, UI flows, config, or data contracts.
 
 A concrete execution plan is not required before writing the spec. In this workflow, the spec normally comes before the execution plan.
 
@@ -101,35 +103,17 @@ Lookup order:
 
 This discovery order is subordinate to the source-rank rule in `docs/workflows.md` when sources conflict.
 
-Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
+Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index when project-local, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
 
 ## Required sections
 
-1. **Status**: draft, approved, abandoned, superseded, archived.
-2. **Related proposal**: link to proposal or issue.
-3. **Goal and context**: what behavior is being defined and why.
-4. **Glossary**: domain terms that affect interpretation.
-5. **Examples first**: concrete before abstract.
-6. **Requirements**: stable IDs with normative language.
-7. **Inputs and outputs**: user input, API input, config, data, events, responses.
-8. **State and invariants**: what must remain true.
-9. **Error and boundary behavior**: invalid input, partial failure, timeouts, permissions, empty states.
-10. **Compatibility and migration**: old clients, old data, flags, deprecation, rollback.
-11. **Observability**: logs, metrics, traces, audit events, user-visible status.
-12. **Security and privacy**: auth, authorization, secrets, data exposure, abuse cases.
-13. **Accessibility and UX** when UI is involved.
-14. **Performance expectations** when user or system behavior depends on them.
-15. **Edge cases**: explicit, numbered cases.
-16. **Non-goals**: behaviors intentionally not covered.
-17. **Acceptance criteria**: observable outcomes that can be verified.
-18. **Open questions**: only if they do not invalidate the spec.
-19. **Next artifacts**: planned next steps while the spec is active.
-20. **Follow-on artifacts**: actual downstream artifacts or terminal disposition. If present before any real follow-ons exist, say `None yet`.
-21. **Readiness**: truthful next-stage or settled-state wording.
+Include these sections: Status; Related proposal; Goal and context; Glossary; Examples first; Requirements; Inputs and outputs; State and invariants; Error and boundary behavior; Compatibility and migration; Observability; Security and privacy; Accessibility and UX; Performance expectations; Edge cases; Non-goals; Acceptance criteria; Open questions; Next artifacts; Follow-on artifacts; Readiness.
+
+Use `None`, `not applicable`, or a short rationale for sections that do not apply. `Follow-on artifacts`, when present before real follow-ons exist, says `None yet`.
 
 ## Requirement format
 
-Use stable requirement IDs:
+Use stable, testable requirement IDs:
 
 ```text
 R1. The system MUST ...
@@ -165,9 +149,7 @@ Then ...
 
 ## Workflow handoff behavior
 
-- In a workflow-managed flow, successful `spec` completion hands off to `spec-review` when that review is the next mandatory or triggered downstream stage.
-- If the spec still has blockers that prevent review-quality contract writing, stop and report the blocker instead of implying `spec-review` can proceed.
-- This v1 contract does not imply `spec-review -> architecture` or `spec-review -> test-spec`; review-to-next-authoring transitions remain outside the autoprogression boundary unless a later approved change adds them.
+In a workflow-managed flow, successful `spec` completion hands off to `spec-review` when that review is next. If blockers prevent review-quality contract writing, stop and report them. This v1 contract does not imply `spec-review -> architecture` or `spec-review -> test-spec`; review-to-next-authoring transitions remain out of scope unless later approved.
 
 ## Evidence collection efficiency
 
@@ -182,11 +164,57 @@ Read exact ranges after locating relevant lines, then expand only when the narro
 
 Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
 
+## Output skeleton
+
+```md
+# <Spec title>
+## Status
+<draft | approved | abandoned | superseded | archived>
+## Related proposal
+<proposal, issue, or upstream artifact>
+## Goal and context
+<behavior and rationale>
+## Glossary
+<terms or None>
+## Examples first
+Example E1: <name>
+Given <context>
+When <action>
+Then <observable outcome>
+## Requirements
+R1. The system MUST <testable behavior>.
+## Inputs and outputs
+<inputs, outputs, events, responses, config, data>
+## State and invariants
+<invariants>
+## Error and boundary behavior
+<errors, permissions, empty states, partial failures>
+## Compatibility and migration
+<old clients, old data, rollout, rollback>
+## Observability
+<logs, metrics, traces, audit events, user-visible status>
+## Security and privacy
+<auth, authorization, secrets, data exposure, abuse cases>
+## Accessibility and UX
+<UI accessibility or not applicable>
+## Performance expectations
+<performance contract or not applicable>
+## Edge cases
+EC1. <edge case>
+## Non-goals
+<out of scope>
+## Acceptance criteria
+AC1. <observable acceptance outcome>
+## Open questions
+<questions that do not invalidate the spec, or None>
+## Next artifacts
+<planned next artifacts>
+## Follow-on artifacts
+None yet
+## Readiness
+<ready for spec-review | blocked with reason>
+```
+
 ## Expected output
 
-- spec file path;
-- examples first;
-- requirement IDs with normative language;
-- explicit edge cases, non-goals, and acceptance criteria;
-- uncovered ambiguities;
-- readiness statement for `spec-review` or blocker state.
+Use the `## Output skeleton` shape. Include the spec path, examples first, requirement IDs, edge cases, non-goals, acceptance criteria, ambiguities, and readiness for `spec-review` or blocker state.
