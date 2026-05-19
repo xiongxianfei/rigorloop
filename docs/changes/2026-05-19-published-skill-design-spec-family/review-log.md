@@ -13,6 +13,7 @@ spec-family rollout.
 | `code-review-m1-r1` | `code-review` | `1` | `commit 9b6a750 M1: scaffold published skill design spec-family evidence` | `reviews/code-review-m1-r1.md` | `clean-with-notes` | `0` | `recorded` |
 | `code-review-m2-r2` | `code-review` | `2` | `commits 6ce542b, b49e448, 5a02a5a` | `reviews/code-review-m2-r2.md` | `clean-with-notes` | `0` | `recorded` |
 | `code-review-m3-r1` | `code-review` | `1` | `commit ab58a37 M3: roll out published skill design to spec family` | `reviews/code-review-m3-r1.md` | `clean-with-notes` | `0` | `recorded` |
+| `code-review-closeout-r1` | `code-review` | `1` | `commit f73f197 Close published skill design spec-family lifecycle` | `reviews/code-review-closeout-r1.md` | `clean-with-notes` | `0` | `recorded` |
 
 ## Review Entries
 
