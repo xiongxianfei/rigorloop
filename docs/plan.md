@@ -3,12 +3,13 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-19 Published Skill Design Plan Family Rollout](plans/2026-05-19-published-skill-design-plan-family.md) - active execution plan for continuing the published-skill design rollout with the next scoped pair, `plan` and `plan-review`, preserving plan state ownership, review recording, routing coverage, behavior preservation, behavior parity, token discipline, and deterministic validation boundaries before the later `implement` / `code-review` slice.
+- none yet
 
 ## Blocked
 - none yet
 
 ## Done
+- [2026-05-19 Published Skill Design Plan Family Rollout](plans/2026-05-19-published-skill-design-plan-family.md) - completed execution plan for continuing the published-skill design rollout with the `plan` and `plan-review` pair, preserving plan state ownership and review recording, passing final verify, opening PR #74, passing hosted CI, and merging PR #74.
 - [2026-05-19 Published Skill Design Implement And Code-Review Rollout](plans/2026-05-19-published-skill-design-implement-code-review.md) - completed execution plan for continuing the merged published-skill design rollout with the `implement` and `code-review` pair, adding execution/review evidence, focused deterministic proof, behavior preservation and parity evidence, passing final verify, opening PR #73, passing hosted CI, and merging PR #73.
 - [2026-05-19 Published Skill Design Spec Family Rollout](plans/2026-05-19-published-skill-design-spec-family.md) - completed execution plan for continuing the merged published-skill design pilot with the `spec` and `spec-review` pair, adding deterministic spec-family evidence checks, preserving behavior/routing/token evidence, passing final verify, opening PR #72, passing hosted CI, and merging PR #72.
 - [2026-05-19 RigorLoop Published Skill Design Contract](plans/2026-05-19-rigorloop-published-skill-design-contract.md) - completed execution plan for the audit-first published-skill design pilot on `proposal` and `proposal-review`, adding deterministic validator and selector support, recording audit/routing/preservation/parity/token evidence, passing final verify, opening PR #71, passing hosted CI after selector routing fix, and merging PR #71.

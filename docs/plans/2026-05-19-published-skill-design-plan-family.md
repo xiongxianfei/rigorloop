@@ -1,6 +1,6 @@
 # Published Skill Design Plan Family Rollout Plan
 
-- Status: active
+- Status: done
 - Owner: maintainers
 - Start date: 2026-05-19
 - Last updated: 2026-05-19
@@ -9,6 +9,7 @@
 - Related test spec: [Skill Contract Test Spec](../../specs/skill-contract.test.md)
 - Related prior rollout: [Published Skill Design Spec Family Rollout](2026-05-19-published-skill-design-spec-family.md)
 - Change root: [docs/changes/2026-05-19-published-skill-design-plan-family](../changes/2026-05-19-published-skill-design-plan-family/change.yaml)
+- Related issue or PR: PR #74, merged 2026-05-19, merge commit `018ed23685611dc1b984baa9ec5bdf45476ad417`
 - Supersedes: none
 
 ## Purpose / big picture
@@ -68,13 +69,13 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 ## Current Handoff Summary
 
 - Current milestone: lifecycle closeout
-- Current milestone state: planned
+- Current milestone state: closed
 - Last reviewed milestone: M3. Plan And Plan-Review Skill Rewrite
-- Review status: code-review-m3-r1 clean-with-notes; no material findings
+- Review status: PR #74 merged after hosted CI passed
 - Remaining in-scope implementation milestones: none
-- Next stage: hosted PR CI and human review
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: PR #74 is open after final local verification; hosted CI observation, human review, merge, and final lifecycle closeout remain open.
+- Next stage: none
+- Final closeout readiness: complete
+- Reason final closeout is or is not ready: PR #74 passed hosted `ci`, was merged on 2026-05-19, and merge commit `018ed23685611dc1b984baa9ec5bdf45476ad417` is on `origin/main`.
 
 ## Milestones
 
@@ -260,6 +261,8 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 - [x] Explain-change recorded.
 - [x] Final verify completed.
 - [x] PR handoff completed.
+- [x] Hosted PR CI passed and human review completed.
+- [x] PR #74 merged and final lifecycle closeout recorded.
 
 ## Decision log
 
@@ -271,6 +274,7 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 | 2026-05-19 | Treat M2 production validator changes as conditional after M1. | The M1 audit found evidence-scaffold and future test needs, but no production validator gap that must be fixed before M3. |
 | 2026-05-19 | Implement M2 in the regression harness only. | The deterministic need is proving the plan-family evidence shape and no-runtime-selection boundary; production validation already covers the reusable skill constraints. |
 | 2026-05-19 | Keep M3 within the +10% token hard cap per changed skill. | The first M3 draft exceeded the cap for `plan-review`; compaction preserved the review contract while keeping final deltas under the approved budget. |
+| 2026-05-19 | Close the lifecycle after PR #74 merged. | Hosted CI passed and the PR merged into `main`, so no downstream lifecycle gate remains for this slice. |
 
 ## Surprises and discoveries
 
@@ -332,13 +336,15 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 - 2026-05-19 verify validation: `git diff --check -- skills/plan/SKILL.md skills/plan-review/SKILL.md scripts/test-skill-validator.py specs/skill-contract.test.md docs/plans/2026-05-19-published-skill-design-plan-family.md docs/plan.md docs/changes/2026-05-19-published-skill-design-plan-family` passed.
 - 2026-05-19 verify selected CI: `bash scripts/ci.sh --mode explicit --path skills/plan/SKILL.md --path skills/plan-review/SKILL.md --path scripts/test-skill-validator.py --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-plan-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-plan-family/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-plan-family/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-plan-family/behavior-parity.md --path docs/changes/2026-05-19-published-skill-design-plan-family/explain-change.md --path docs/changes/2026-05-19-published-skill-design-plan-family/review-log.md --path docs/changes/2026-05-19-published-skill-design-plan-family/reviews/code-review-m3-r1.md` passed selected skills, generated skill, adapter, review-artifact, artifact-lifecycle, and change-metadata checks.
 - 2026-05-19 PR handoff: opened PR #74 at `https://github.com/xiongxianfei/rigorloop/pull/74`.
+- 2026-05-19 lifecycle closeout: observed PR #74 merged with merge commit `018ed23685611dc1b984baa9ec5bdf45476ad417`.
+- 2026-05-19 lifecycle closeout: hosted GitHub Actions `ci` completed with conclusion `SUCCESS` at `2026-05-19T15:31:29Z`.
 
 ## Outcome and retrospective
 
-- Pending completion.
+- PR #74 merged. The plan-family published-skill design rollout lifecycle is complete.
 
 ## Readiness
 
-Ready for hosted PR CI and human review.
+Complete. No downstream lifecycle stage remains for this rollout.
 
-Remaining completion gates: hosted CI observation, human review, merge, and final lifecycle closeout when no downstream gate remains.
+Remaining completion gates: none.
