@@ -231,6 +231,12 @@ validation:
     result: pass_after_verify
   - command: bash scripts/ci.sh --mode explicit --path skills/plan/SKILL.md --path skills/plan/assets --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path tests/fixtures/skills/published-design --path tests/fixtures/adapters/portable-with-assets --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/proposals/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/explain-change.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-log.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-resolution.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/reviews/code-review-m3-r1.md
     result: pass_after_verify
+  - command: gh pr view 75 --json statusCheckRollup
+    result: hosted_ci_failed_manual_routing_required_for_adapter_packaging_historical_coverage_and_token_cost_evidence
+  - command: python scripts/test-select-validation.py
+    result: pass_after_change_local_evidence_selector_maintenance
+  - command: bash scripts/ci.sh --mode pr --base 9d1487500b4ea62909c98975e694611f71139b04 --head HEAD
+    result: pass_after_change_local_evidence_selector_maintenance
 changed_files:
   - docs/proposals/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md
   - specs/skill-contract.md
@@ -239,6 +245,8 @@ changed_files:
   - scripts/test-skill-validator.py
   - scripts/adapter_distribution.py
   - scripts/test-adapter-distribution.py
+  - scripts/validation_selection.py
+  - scripts/test-select-validation.py
   - tests/fixtures/skills/published-design
   - tests/fixtures/adapters/portable-with-assets
   - skills/plan/SKILL.md

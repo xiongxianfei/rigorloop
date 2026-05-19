@@ -2,7 +2,7 @@
 
 Change: `2026-05-19-assets-first-progressive-disclosure-pilot-published-skills`
 Date: 2026-05-19
-Status: ready for verify
+Status: ready for hosted CI rerun
 
 ## Summary
 
@@ -13,8 +13,9 @@ four packaged `assets/` templates while keeping execution rules in
 
 It adds deterministic validator fixtures, rewrites only the approved `plan`
 skill surface, updates adapter archive packaging so skill-local resources ship
-with generated adapters, records behavior and token evidence, and closes all
-three implementation milestones through clean code review.
+with generated adapters, records behavior and token evidence, closes all three
+implementation milestones through clean code review, and routes the resulting
+deterministic change-local evidence through PR-mode selected CI.
 
 ## Problem
 
@@ -64,6 +65,7 @@ deployment boundaries, or hard-to-reverse data flow.
 | `skills/plan/assets/*.md` | Added four normative structural templates with metadata, fingerprints, and placeholders. | Assets are copied/fillable structures, not hidden workflow policy. | R38, R40-R42. | Asset fixtures, validator checks, behavior preservation. |
 | `scripts/adapter_distribution.py` | Included skill-local `assets/`, `references/`, and `scripts/` files in expected adapter archive output when present. | Adapter archives must preserve installed-skill self-containment for packaged resources. | R43a, T36. | Adapter fixture test and archive validation. |
 | `scripts/test-adapter-distribution.py` and `tests/fixtures/adapters/portable-with-assets/*` | Added a regression test proving a packaged asset appears in codex, claude, and opencode archives and is validated by archive drift checks. | M3 needed direct adapter packaging proof for non-empty skill-local resources. | T36. | Failing-before-passing adapter test. |
+| `scripts/validation_selection.py` and `scripts/test-select-validation.py` | Classified `adapter-packaging.md`, `historical-coverage.md`, and `token-cost.md` as deterministic change-local lifecycle evidence. | PR #75 hosted CI initially blocked on manual routing for these evidence files even though they are validated through `artifact_lifecycle.validate`. | Final closeout CI-maintenance. | `python scripts/test-select-validation.py`; PR-mode selected CI. |
 | `docs/changes/.../behavior-preservation.md` | Recorded behavior-sensitive `plan` rules and preserved locations. | Moving structure to assets must not move lifecycle policy. | R41, R44a. | Code-review M2/M3. |
 | `docs/changes/.../behavior-parity.md` | Recorded strict reference-corpus parity and milestone asset reuse. | No-regression evidence must cover plan sections, handoff, decision log, validation, claim boundaries, and recording discipline. | R44a, R44e, R45a-R45b. | M3 review and recorded reference corpus. |
 | `docs/changes/.../historical-coverage.md` | Recorded historical corpus coverage separately from strict parity. | Older plans are coverage evidence, not current-contract structural references. | R45c-R45d. | M3 review. |
@@ -138,9 +140,17 @@ token-cost report validation failed: dynamic_runtime.runs: missing required benc
 ```
 
 That diagnostic is recorded as residual noise, not a failing M3 validation.
-Hosted CI has not been observed for this local branch yet. This explanation
-does not claim final verification, branch readiness, PR readiness, or hosted CI
-success.
+Final local verify passed, then PR #75 hosted CI exposed a selector-maintenance
+gap for three deterministic change-local evidence files. The selector fix
+passed:
+
+```bash
+python scripts/test-select-validation.py
+bash scripts/ci.sh --mode pr --base 9d1487500b4ea62909c98975e694611f71139b04 --head HEAD
+```
+
+Hosted CI rerun has not passed yet. This explanation does not claim Done or
+hosted CI success.
 
 ## Review Resolution Summary
 
@@ -196,14 +206,13 @@ Preserved non-goals:
 Remaining risks are closeout and follow-on risks, not known implementation
 defects:
 
-- final `verify` must rerun the required proof set after this explanation;
-- PR handoff must not claim hosted CI until observed;
+- hosted CI rerun must pass before final Done closeout is recorded;
 - the existing token-cost diagnostic in `test-adapter-distribution.py` remains
   visible stdout noise despite exit 0;
 - future packaged-resource proposals should choose patterns by skill type:
   constructive skills primarily use `assets/`, while deliberative skills
   should usually consider `references/` first.
 
-After this explanation, the active plan should move to final `verify`.
-This explanation does not claim branch readiness, PR readiness, final
-verification, or Done.
+After this explanation update, the active plan should push the selector
+maintenance and observe hosted CI for PR #75. This explanation does not claim
+Done.
