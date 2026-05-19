@@ -3,12 +3,13 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-19 Published Skill Design Implement And Code-Review Rollout](plans/2026-05-19-published-skill-design-implement-code-review.md) - active execution plan for continuing the merged published-skill design rollout with the `implement` and `code-review` pair; PR #73 is open; current next stage: hosted PR CI and human review.
+- none yet
 
 ## Blocked
 - none yet
 
 ## Done
+- [2026-05-19 Published Skill Design Implement And Code-Review Rollout](plans/2026-05-19-published-skill-design-implement-code-review.md) - completed execution plan for continuing the merged published-skill design rollout with the `implement` and `code-review` pair, adding execution/review evidence, focused deterministic proof, behavior preservation and parity evidence, passing final verify, opening PR #73, passing hosted CI, and merging PR #73.
 - [2026-05-19 Published Skill Design Spec Family Rollout](plans/2026-05-19-published-skill-design-spec-family.md) - completed execution plan for continuing the merged published-skill design pilot with the `spec` and `spec-review` pair, adding deterministic spec-family evidence checks, preserving behavior/routing/token evidence, passing final verify, opening PR #72, passing hosted CI, and merging PR #72.
 - [2026-05-19 RigorLoop Published Skill Design Contract](plans/2026-05-19-rigorloop-published-skill-design-contract.md) - completed execution plan for the audit-first published-skill design pilot on `proposal` and `proposal-review`, adding deterministic validator and selector support, recording audit/routing/preservation/parity/token evidence, passing final verify, opening PR #71, passing hosted CI after selector routing fix, and merging PR #71.
 - [2026-05-18 Skill readability and self-containment](plans/2026-05-18-skill-readability-self-containment.md) - completed execution plan for piloting quality-first installed skill readability on `proposal` and `proposal-review`, adding focused validation, cold-read proof, behavior-parity proof, token-cost comparison, preserving follow-on rollout ownership for remaining R30 skills, passing hosted CI, and merging PR #69.

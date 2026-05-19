@@ -1,6 +1,6 @@
 # Published Skill Design Implement And Code-Review Rollout Plan
 
-- Status: active
+- Status: done
 - Owner: maintainers
 - Start date: 2026-05-19
 - Last updated: 2026-05-19
@@ -67,9 +67,9 @@ This slice is intentionally narrow. It should make the implementation and review
 - Last reviewed milestone: M3. Implement and code-review skill rewrite
 - Review status: code-review-m3-r1 clean-with-notes; no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: hosted PR CI and human review
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: PR #73 is open, but hosted CI, human review, and merge remain.
+- Next stage: none
+- Final closeout readiness: complete
+- Reason final closeout is or is not ready: PR #73 passed hosted `ci`, was merged on 2026-05-19, and merge commit `dcc1d87cb07b09355a92969cd86cb206b749cf93` is on `origin/main`.
 
 ## Milestones
 
@@ -262,6 +262,8 @@ This slice is intentionally narrow. It should make the implementation and review
 - [x] Explain-change recorded.
 - [x] Final verify passed.
 - [x] PR handoff completed.
+- [x] Hosted PR CI passed and human review completed.
+- [x] PR #73 merged and final lifecycle closeout recorded.
 
 ## Decision log
 
@@ -335,22 +337,21 @@ This slice is intentionally narrow. It should make the implementation and review
 - 2026-05-19 final verify: `git diff --check -- .` passed.
 - 2026-05-19 final verify selected CI: `bash scripts/ci.sh --mode explicit --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path scripts/test-skill-validator.py --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml --path docs/changes/2026-05-19-published-skill-design-implement-code-review/review-log.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/explain-change.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/skill-audit.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-parity.md` passed selected `skills.validate`, `skills.regression`, `skills.generation_regression`, `skills.drift`, `adapters.drift`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
 - 2026-05-19 PR handoff: opened PR #73, `https://github.com/xiongxianfei/rigorloop/pull/73`.
+- 2026-05-19 lifecycle closeout: observed PR #73 merged with merge commit `dcc1d87cb07b09355a92969cd86cb206b749cf93`.
+- 2026-05-19 lifecycle closeout: `gh pr checks 73` reported hosted `ci` passed.
+- 2026-05-19 lifecycle closeout validation: `python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml` passed.
+- 2026-05-19 lifecycle closeout validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml` passed.
+- 2026-05-19 lifecycle closeout validation: `git diff --check -- docs/plans/2026-05-19-published-skill-design-implement-code-review.md docs/plan.md docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml` passed.
+- 2026-05-19 lifecycle closeout selected CI: `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml` passed selected `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
 
 ## Outcome and retrospective
 
-- Pending. Do not use this section for current handoff state while the plan is active; see `Current Handoff Summary`.
+- PR #73 merged. The execution/review published-skill design rollout lifecycle is complete.
 
 ## Readiness
 
-- See `Current Handoff Summary`.
+- Complete. No downstream lifecycle stage remains for this rollout.
 
 ## Remaining completion gates
 
-- Plan-review.
-- Test-spec amendment.
-- M1 through M3 implementation and code-review loops.
-- Explain-change.
-- Verify.
-- PR handoff.
-- Hosted PR CI and human review.
-- Merge and final plan closeout.
+- None.
