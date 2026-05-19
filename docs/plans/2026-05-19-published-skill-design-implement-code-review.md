@@ -67,9 +67,9 @@ This slice is intentionally narrow. It should make the implementation and review
 - Last reviewed milestone: M3. Implement and code-review skill rewrite
 - Review status: code-review-m3-r1 clean-with-notes; no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
+- Next stage: pr
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: all implementation milestones are closed and explain-change is recorded, but verify, PR handoff, hosted CI, human review, and merge remain.
+- Reason final closeout is or is not ready: local verify passed and branch-ready is supported for PR handoff, but PR handoff, hosted CI, human review, and merge remain.
 
 ## Milestones
 
@@ -260,7 +260,7 @@ This slice is intentionally narrow. It should make the implementation and review
 - [x] M2 implemented and reviewed.
 - [x] M3 implemented and reviewed.
 - [x] Explain-change recorded.
-- [ ] Final verify passed.
+- [x] Final verify passed.
 - [ ] PR handoff completed.
 
 ## Decision log
@@ -324,6 +324,16 @@ This slice is intentionally narrow. It should make the implementation and review
 - 2026-05-19 M3 selected CI: `bash scripts/ci.sh --mode explicit --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path scripts/test-skill-validator.py --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml --path docs/changes/2026-05-19-published-skill-design-implement-code-review/skill-audit.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-parity.md` passed selected `skills.validate`, `skills.regression`, `skills.generation_regression`, `skills.drift`, `adapters.drift`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
 - 2026-05-19 M3 code-review: `code-review-m3-r1` returned `clean-with-notes` with no material findings; M3 closed.
 - 2026-05-19 explain-change: recorded `docs/changes/2026-05-19-published-skill-design-implement-code-review/explain-change.md`.
+- 2026-05-19 final verify: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-19-published-skill-design-implement-code-review` passed.
+- 2026-05-19 final verify: `python scripts/validate-skills.py` passed.
+- 2026-05-19 final verify: `python scripts/test-skill-validator.py` passed.
+- 2026-05-19 final verify: `python scripts/build-skills.py --check` passed.
+- 2026-05-19 final verify: `python scripts/measure-skill-tokens.py --skills-root skills` passed with `implement` 4860 estimated tokens and `code-review` 5554 estimated tokens.
+- 2026-05-19 final verify: `tmpdir=$(mktemp -d) && python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmpdir" && python scripts/validate-adapters.py --root "$tmpdir" --version v0.1.5 && rm -rf "$tmpdir"` passed.
+- 2026-05-19 final verify: `python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml` passed.
+- 2026-05-19 final verify: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml --path docs/changes/2026-05-19-published-skill-design-implement-code-review/review-log.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/explain-change.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/skill-audit.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-parity.md --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path scripts/test-skill-validator.py` passed.
+- 2026-05-19 final verify: `git diff --check -- .` passed.
+- 2026-05-19 final verify selected CI: `bash scripts/ci.sh --mode explicit --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path scripts/test-skill-validator.py --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml --path docs/changes/2026-05-19-published-skill-design-implement-code-review/review-log.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/explain-change.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/skill-audit.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-parity.md` passed selected `skills.validate`, `skills.regression`, `skills.generation_regression`, `skills.drift`, `adapters.drift`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
 
 ## Outcome and retrospective
 
