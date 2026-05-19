@@ -62,13 +62,13 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 ## Current Handoff Summary
 
 - Current milestone: planning
-- Current milestone state: reviewed
+- Current milestone state: test-spec completed
 - Last reviewed milestone: planning
 - Review status: plan-review-r1 approved; no material findings
 - Remaining in-scope implementation milestones: M1, M2, M3
-- Next stage: test-spec
+- Next stage: implement M1
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: test-spec amendment, implementation milestones, code-review, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: implementation milestones, code-review, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -219,7 +219,7 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 - [x] 2026-05-19: PR #71 merge confirmed; prior pilot plan closed as done.
 - [x] 2026-05-19: new spec-family rollout plan created.
 - [x] Plan-review completed.
-- [ ] Test-spec amendment completed and approved.
+- [x] Test-spec amendment completed and approved.
 - [ ] M1 implemented and reviewed.
 - [ ] M2 implemented and reviewed.
 - [ ] M3 implemented and reviewed.
@@ -233,6 +233,7 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 - 2026-05-19: keep all other skills out of scope for this slice. Rationale: small reviewable diffs matter more than broad simultaneous normalization.
 - 2026-05-19: require test-spec amendment before implementation. Rationale: the existing test spec is pilot-focused and should operationalize this new spec-family slice before code or skill-body changes.
 - 2026-05-19: approve the plan with no material findings. Rationale: the plan keeps the next slice scoped to `spec` and `spec-review`, preserves lifecycle sequencing, and requires test-spec amendment before implementation.
+- 2026-05-19: amend `specs/skill-contract.test.md` with spec-family proof cases before implementation. Rationale: `T21`-`T24` make audit, deterministic validation, behavior preservation, generated-output, and adapter proof concrete for `spec` and `spec-review`.
 
 ## Surprises and discoveries
 
@@ -250,6 +251,11 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 - 2026-05-19 plan-review validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-spec-family/review-log.md --path docs/changes/2026-05-19-published-skill-design-spec-family/reviews/plan-review-r1.md` passed.
 - 2026-05-19 plan-review validation: `git diff --check -- docs/plans/2026-05-19-published-skill-design-spec-family.md docs/plan.md docs/changes/2026-05-19-published-skill-design-spec-family` passed.
 - 2026-05-19 plan-review selected CI: `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-spec-family/review-log.md --path docs/changes/2026-05-19-published-skill-design-spec-family/reviews/plan-review-r1.md` passed selected review-artifacts, artifact-lifecycle, change-metadata regression, and change-metadata checks.
+- 2026-05-19 test-spec: amended `specs/skill-contract.test.md` with spec-family rollout cases `T21`-`T24`.
+- 2026-05-19 test-spec validation: `python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml` passed.
+- 2026-05-19 test-spec validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml` passed.
+- 2026-05-19 test-spec validation: `git diff --check -- specs/skill-contract.test.md docs/plans/2026-05-19-published-skill-design-spec-family.md docs/plan.md docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml` passed.
+- 2026-05-19 test-spec selected CI: `bash scripts/ci.sh --mode explicit --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml` passed selected artifact-lifecycle, change-metadata regression, and change-metadata checks.
 
 ## Outcome and retrospective
 
@@ -258,11 +264,10 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for `test-spec`, not implementation, final closeout, or PR readiness.
+- This plan is ready for `implement M1`, not final closeout or PR readiness.
 
 ## Remaining completion gates
 
-- `test-spec`
 - M1 implementation and code-review
 - M2 implementation and code-review
 - M3 implementation and code-review
