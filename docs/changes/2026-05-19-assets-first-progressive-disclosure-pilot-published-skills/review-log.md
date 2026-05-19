@@ -83,3 +83,16 @@ Resolution: review-resolution.md#code-review-m1-r1
 Material findings: APD-CR1
 Open findings: None
 Recording status: recorded
+
+### Review entry
+Review ID: code-review-m1-r2
+Stage: code-review
+Round: 2
+Reviewed artifact: commits e70545d6c3e75cd33d8b0d5437f9ca88d0363a85 and 7e36d2805ab3db800f84db40c1d0906c54282fc6
+Status: clean-with-notes
+Detailed record: reviews/code-review-m1-r2.md
+Record: reviews/code-review-m1-r2.md
+Resolution: review-resolution.md#code-review-m1-r2
+Material findings: None
+Open findings: None
+Recording status: recorded

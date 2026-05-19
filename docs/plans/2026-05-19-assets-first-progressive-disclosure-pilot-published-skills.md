@@ -70,13 +70,13 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 ## Current Handoff Summary
 
 - Current milestone: M1. Asset Contract Validation And Test Spec Support
-- Current milestone state: review-requested
+- Current milestone state: closed
 - Last reviewed milestone: M1. Asset Contract Validation And Test Spec Support
-- Review status: APD-CR1 resolved; ready for M1 code-review rerun
-- Remaining in-scope implementation milestones: M1, M2, M3
-- Next stage: code-review for M1
+- Review status: clean-with-notes
+- Remaining in-scope implementation milestones: M2, M3
+- Next stage: implement M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 code-review rerun, remaining implementation milestones, code-review loops, explain-change, verify, and PR handoff have not run.
+- Reason final closeout is or is not ready: M2 and M3 remain unimplemented, and explain-change, verify, and PR handoff have not run.
 
 ## Pre-implementation prerequisites
 
@@ -89,7 +89,7 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 
 ### M1. Asset Contract Validation And Test Spec Support
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: make R37-R45 testable before changing the `plan` skill body or adding assets.
 - Requirements: R37-R39, R42-R43, R45.
 - Files/components likely touched:
@@ -277,6 +277,7 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 - 2026-05-19: owner approved the active R37-R45 test-spec amendment; M1 implementation prerequisite is satisfied.
 - 2026-05-19: M1 implemented deterministic plan asset-pilot validator support and fixtures; validation passed; ready for M1 code-review.
 - 2026-05-19: APD-CR1 review-resolution added direct missing resource-map-entry fixture coverage for the `plan` asset pilot; ready for M1 code-review rerun.
+- 2026-05-19: code-review-m1-r2 returned clean-with-notes; M1 closed and the next stage is implement M2.
 
 ## Decision log
 
@@ -312,4 +313,4 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for M1 code-review rerun. Readiness is not Done; all remaining implementation and downstream gates remain open.
+- Ready for M2 implementation. Readiness is not Done; all remaining implementation and downstream gates remain open.
