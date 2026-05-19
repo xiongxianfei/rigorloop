@@ -147,6 +147,36 @@ validation:
     result: pass_after_m1
   - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml
     result: pass_after_m1
+  - command: code-review-m1-r1
+    result: clean_with_notes_no_material_findings
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-19-rigorloop-published-skill-design-contract
+    result: pass_after_code_review_m1_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml
+    result: pass_after_code_review_m1_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md --path docs/plan.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/review-log.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/review-resolution.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/reviews/code-review-m1-r1.md
+    result: pass_after_code_review_m1_r1
+  - command: git diff --check -- docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md docs/plan.md docs/changes/2026-05-19-rigorloop-published-skill-design-contract
+    result: pass_after_code_review_m1_r1
+  - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md --path docs/plan.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/review-log.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/review-resolution.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/reviews/code-review-m1-r1.md
+    result: pass_after_code_review_m1_r1
+  - command: implement M2
+    result: completed_ready_for_code_review_m2
+  - command: targeted new published-design fixture tests before implementation
+    result: failed_expected_before_validator_changes
+  - command: targeted new published-design fixture tests after implementation
+    result: pass_after_m2
+  - command: python scripts/validate-skills.py
+    result: pass_after_m2
+  - command: python scripts/test-skill-validator.py
+    result: pass_after_m2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml
+    result: pass_after_m2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md --path docs/plan.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml
+    result: pass_after_m2
+  - command: git diff --check -- scripts tests specs docs/changes/2026-05-19-rigorloop-published-skill-design-contract docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md docs/plan.md
+    result: pass_after_m2
+  - command: bash scripts/ci.sh --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path tests/fixtures/skills/published-design/description-too-long/SKILL.md --path tests/fixtures/skills/published-design/when-to-use-replaces-description/SKILL.md --path tests/fixtures/skills/published-design/missing-resource-map/SKILL.md --path tests/fixtures/skills/published-design/missing-resource-map/references/detail.md --path tests/fixtures/skills/published-design/resource-map-missing-resource/SKILL.md --path tests/fixtures/skills/published-design/resource-map-missing-resource/references/detail.md --path tests/fixtures/skills/published-design/packaged-script-valid/SKILL.md --path tests/fixtures/skills/published-design/packaged-script-valid/scripts/check.py --path tests/fixtures/skills/published-design/packaged-script-missing-failure/SKILL.md --path tests/fixtures/skills/published-design/packaged-script-missing-failure/scripts/check.py --path tests/fixtures/skills/published-design/required-root-script/SKILL.md --path docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md --path docs/plan.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml
+    result: pass_after_m2
 changed_files:
   - docs/proposals/2026-05-19-rigorloop-published-skill-design-contract.md
   - specs/skill-contract.md
@@ -167,7 +197,21 @@ changed_files:
   - docs/changes/2026-05-19-rigorloop-published-skill-design-contract/routing-coverage.md
   - docs/changes/2026-05-19-rigorloop-published-skill-design-contract/behavior-preservation.md
   - docs/changes/2026-05-19-rigorloop-published-skill-design-contract/behavior-parity.md
+  - docs/changes/2026-05-19-rigorloop-published-skill-design-contract/reviews/code-review-m1-r1.md
+  - scripts/skill_validation.py
+  - scripts/test-skill-validator.py
+  - tests/fixtures/skills/published-design/description-too-long/SKILL.md
+  - tests/fixtures/skills/published-design/when-to-use-replaces-description/SKILL.md
+  - tests/fixtures/skills/published-design/missing-resource-map/SKILL.md
+  - tests/fixtures/skills/published-design/missing-resource-map/references/detail.md
+  - tests/fixtures/skills/published-design/resource-map-missing-resource/SKILL.md
+  - tests/fixtures/skills/published-design/resource-map-missing-resource/references/detail.md
+  - tests/fixtures/skills/published-design/packaged-script-valid/SKILL.md
+  - tests/fixtures/skills/published-design/packaged-script-valid/scripts/check.py
+  - tests/fixtures/skills/published-design/packaged-script-missing-failure/SKILL.md
+  - tests/fixtures/skills/published-design/packaged-script-missing-failure/scripts/check.py
+  - tests/fixtures/skills/published-design/required-root-script/SKILL.md
 review:
-  status: m1_ready_for_code_review
+  status: m2_ready_for_code_review
   unresolved_items: 0
   location: docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md

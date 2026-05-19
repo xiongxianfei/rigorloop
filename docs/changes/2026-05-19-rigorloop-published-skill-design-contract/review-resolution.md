@@ -12,8 +12,9 @@ Review closeout: spec-review-r1
 Review closeout: spec-review-r2
 Review closeout: spec-review-r3
 Review closeout: plan-review-r1
+Review closeout: code-review-m1-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `plan-review-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `plan-review-r1`, `code-review-m1-r1`
 - Findings resolved: 8
 - Unresolved findings: 0
 - Final result: `RLSDC-PR1`, `RLSDC-PR2`, `RLSDC-PR3`, `RLSDC-PR4`, `SKC-PR1`, `SKC-PR2`, `SKC-PR3`, and `SKC-PR4` are accepted and resolved.
@@ -63,6 +64,10 @@ No material findings. Clean formal review approved the revised `specs/skill-cont
 ### plan-review-r1
 
 No material findings. Clean formal review approved the execution plan for plan-stage purposes. Immediate next stage is `test-spec`. No disposition entries required.
+
+### code-review-m1-r1
+
+No material findings. Clean formal review closed M1 for code-review purposes. Immediate next stage is `implement M2`. No disposition entries required.
 
 ### RLSDC-PR1 - Next spec path may create a competing skill-contract source
 
