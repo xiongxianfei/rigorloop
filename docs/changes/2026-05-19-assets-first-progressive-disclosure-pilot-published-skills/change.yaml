@@ -1,0 +1,131 @@
+change_id: 2026-05-19-assets-first-progressive-disclosure-pilot-published-skills
+title: Assets-first progressive disclosure pilot for published skills
+classification: proposal
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md
+  spec: specs/skill-contract.md
+  test_spec: specs/skill-contract.test.md
+  plan: docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md
+  review_resolution: docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-resolution.md
+requirements:
+  - Record the assets-first progressive-disclosure pilot proposal as a draft proposal artifact.
+  - Preserve the pilot as a follow-on asset pilot unless specs/skill-contract.md is explicitly amended and approved.
+  - Keep lifecycle-sensitive handoff rules in SKILL.md or governing workflow artifacts, not hidden in assets.
+  - Define whether the plan skeleton asset is the reviewed equivalent output template or only a substructure helper.
+  - Bound asset validation oracles to deterministic checks, declared heuristics, fixture evidence, or code-review judgment.
+  - Record spec input answers for token budget, exact asset count, normative asset status, resource-map verb, and asset metadata policy.
+  - Record spec input answers for improvement proof, structural drift detection, follow-on pattern selection, and behavior-parity corpus selection.
+  - Amend specs/skill-contract.md with the assets-first plan pilot contract before planning or implementation.
+  - Create an execution plan that sequences R37 through R45 into reviewable implementation milestones.
+  - Amend specs/skill-contract.test.md so R37 through R45 map to concrete tests before implementation.
+  - Keep docs/plan.md synchronized with the active plan body when the initiative starts.
+tests:
+  - Proposal lifecycle validation for the draft proposal artifact.
+  - Formal proposal-review recording validation for APD-PR1 through APD-PR4.
+  - Spec lifecycle validation for the draft specs/skill-contract.md amendment.
+  - Test-spec coverage for R37 through R45 assets-first plan pilot requirements.
+  - M1 validator fixtures for valid and invalid assets-first plan pilot resources.
+  - Plan lifecycle validation for the active plan and plan index.
+  - Whitespace validation for the proposal and change-local artifacts.
+validation:
+  - command: proposal-review r1
+    result: changes_requested_APD-PR1_APD-PR2_APD-PR3_APD-PR4
+  - command: proposal open-question answers
+    result: recorded_as_spec_input_decisions
+  - command: proposal adversarial question answers
+    result: recorded_as_additional_spec_input_decisions
+  - command: proposal-review r2
+    result: approved_no_material_findings
+  - command: upstream status settlement
+    result: proposal_status_accepted
+  - command: spec
+    result: completed_pending_spec_review
+  - command: spec-review r1
+    result: approved_no_material_findings
+  - command: upstream status settlement
+    result: spec_status_approved
+  - command: plan
+    result: completed_pending_plan_review
+  - command: plan-review r1
+    result: changes_requested_APD-PLR1
+  - command: plan revision for APD-PLR1
+    result: resolved_test_spec_stage_boundary
+  - command: plan-review r2
+    result: approved_no_material_findings
+  - command: test-spec
+    result: amended_skill_contract_test_spec_T33_T36_for_R37_R45
+  - command: test-spec owner approval
+    result: approved_for_M1_implementation
+  - command: python scripts/test-skill-validator.py
+    result: fail_before_M1_validator_implementation
+  - command: python scripts/test-skill-validator.py
+    result: pass_after_M1_validator_implementation
+  - command: python scripts/validate-skills.py
+    result: pass_after_M1_validator_implementation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml
+    result: pass_after_M1_validator_implementation
+  - command: git diff --check -- scripts tests docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md docs/plan.md
+    result: pass_after_M1_validator_implementation
+  - command: bash scripts/ci.sh --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path tests/fixtures/skills/published-design --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md
+    result: pass_after_M1_validator_implementation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-log.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-resolution.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/reviews/plan-review-r2.md
+    result: pass_after_test_spec
+  - command: bash scripts/ci.sh --mode explicit --path specs/skill-contract.test.md --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml
+    result: pass_after_test_spec
+  - command: git diff --check -- specs/skill-contract.test.md docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md docs/plan.md docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills
+    result: pass_after_test_spec
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml
+    result: pass_after_plan_review_r2
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills
+    result: pass_after_plan_review_r2
+  - command: git diff --check -- docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills
+    result: pass_after_plan_review_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml
+    result: pass_after_APD-PLR1_plan_revision
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills
+    result: pass_after_APD-PLR1_plan_revision
+  - command: git diff --check -- docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills
+    result: pass_after_APD-PLR1_plan_revision
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills
+    result: pass_after_plan_review_r1_structure
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path specs/skill-contract.md --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-log.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-resolution.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/reviews/plan-review-r1.md
+    result: pass_after_plan_review_r1_open_finding_recorded
+  - command: git diff --check -- docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills
+    result: pass_after_plan_review_r1_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml
+    result: pass_after_plan
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills
+    result: pass_after_plan
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path specs/skill-contract.md --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-log.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-resolution.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/reviews/spec-review-r1.md
+    result: pass_after_plan
+  - command: git diff --check -- docs/proposals/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md specs/skill-contract.md docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md docs/plan.md docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills
+    result: pass_after_plan
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml
+    result: pass_after_spec
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills
+    result: pass_after_spec
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path specs/skill-contract.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-log.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-resolution.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/reviews/proposal-review-r2.md
+    result: pass_after_spec
+  - command: git diff --check -- docs/proposals/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md specs/skill-contract.md docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills
+    result: pass_after_spec
+changed_files:
+  - docs/proposals/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md
+  - specs/skill-contract.md
+  - specs/skill-contract.test.md
+  - scripts/skill_validation.py
+  - scripts/test-skill-validator.py
+  - tests/fixtures/skills/published-design
+  - docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md
+  - docs/plan.md
+  - docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml
+  - docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-log.md
+  - docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-resolution.md
+  - docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/reviews/proposal-review-r1.md
+  - docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/reviews/proposal-review-r2.md
+  - docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/reviews/spec-review-r1.md
+  - docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/reviews/plan-review-r1.md
+  - docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/reviews/plan-review-r2.md
+review:
+  status: approved
+  unresolved_items: 0
