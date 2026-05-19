@@ -47,7 +47,18 @@ validation:
     result: pass_after_plan_review
   - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml --path docs/changes/2026-05-19-published-skill-design-implement-code-review/review-log.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/reviews/plan-review-r1.md
     result: pass_after_plan_review
+  - command: test-spec
+    result: amended_skill_contract_test_spec_for_execution_review_rollout
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml
+    result: pass_after_test_spec
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml
+    result: pass_after_test_spec
+  - command: git diff --check -- specs/skill-contract.test.md docs/plans/2026-05-19-published-skill-design-implement-code-review.md docs/plan.md docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml
+    result: pass_after_test_spec
+  - command: bash scripts/ci.sh --mode explicit --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml
+    result: pass_after_test_spec
 changed_files:
+  - specs/skill-contract.test.md
   - docs/plans/2026-05-19-published-skill-design-implement-code-review.md
   - docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml
   - docs/changes/2026-05-19-published-skill-design-implement-code-review/review-log.md
