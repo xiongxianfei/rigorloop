@@ -74,9 +74,9 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 - Last reviewed milestone: M3. Adapter, Token, And Behavior-Parity Proof
 - Review status: code-review-m3-r1 clean-with-notes
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
+- Next stage: pr
 - Final closeout readiness: ready to start final closeout sequence
-- Reason final closeout is or is not ready: all implementation milestones are closed and explain-change is recorded; verify and PR handoff have not run, so the change is not Done.
+- Reason final closeout is or is not ready: all implementation milestones are closed, explain-change is recorded, and final local verify passed; PR handoff has not run, so the change is not Done.
 
 ## Pre-implementation prerequisites
 
@@ -283,6 +283,7 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 - 2026-05-19: M3 added adapter archive asset packaging support and proof, recorded behavior-parity and historical coverage evidence, updated token-cost evidence after the skeleton handoff-section correction, and passed M3 validation; ready for M3 code-review.
 - 2026-05-19: code-review-m3-r1 returned clean-with-notes; M3 closed and all implementation milestones are closed. Next stage is final closeout, starting with explain-change unless ci-maintenance is separately triggered.
 - 2026-05-19: explain-change recorded the durable change rationale; no ci-maintenance trigger was found because no hosted workflow or platform configuration changed. Next stage is verify.
+- 2026-05-19: final local verify passed after explain-change; branch-ready for PR handoff is established locally, with hosted CI not observed yet.
 
 ## Decision log
 
@@ -345,6 +346,19 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 - `bash scripts/ci.sh --mode explicit --path skills/plan/SKILL.md --path skills/plan/assets --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path tests/fixtures/adapters/portable-with-assets --path specs/skill-contract.test.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md` passed with selected checks `skills.validate`, `skills.regression`, `skills.generation_regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
 - code-review-m3-r1 returned clean-with-notes and recorded no material findings.
 - explain-change recorded `docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/explain-change.md`; ready for verify.
+- `python scripts/validate-skills.py` passed during final verify.
+- `python scripts/test-skill-validator.py` passed with 128 tests during final verify.
+- `python scripts/build-skills.py --check` passed during final verify.
+- `python scripts/measure-skill-tokens.py --skills-root skills` passed during final verify, measuring `skills/plan/SKILL.md` at 3281 estimated tokens and total measured skills at 61914 estimated tokens.
+- `python scripts/test-adapter-distribution.py` passed with 101 tests during final verify. It emitted the existing stdout diagnostic `token-cost report validation failed: dynamic_runtime.runs: missing required benchmark architecture-review` while exiting 0.
+- `python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-assets-pilot-verify-adapters` built codex, claude, and opencode archives during final verify.
+- `python scripts/validate-adapters.py --root /tmp/rigorloop-assets-pilot-verify-adapters --version v0.1.5` passed during final verify.
+- Direct archive inspection under `/tmp/rigorloop-assets-pilot-verify-adapters` confirmed all four `plan` assets are present in codex, claude, and opencode archives.
+- `python scripts/validate-change-metadata.py docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml` passed during final verify.
+- `python scripts/validate-review-artifacts.py docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills` passed during final verify.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...` passed during final verify for the proposal, spec, test spec, `plan` skill/assets, validator scripts, fixtures, active plan, plan index, and change-local evidence.
+- `git diff --check -- skills/plan scripts tests specs docs/proposals/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md docs/plan.md` passed during final verify.
+- `bash scripts/ci.sh --mode explicit --path skills/plan/SKILL.md --path skills/plan/assets --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path tests/fixtures/skills/published-design --path tests/fixtures/adapters/portable-with-assets --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/proposals/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/explain-change.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-log.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-resolution.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/reviews/code-review-m3-r1.md` passed during final verify with selected checks `skills.validate`, `skills.regression`, `skills.generation_regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
 
 ## Outcome and retrospective
 
@@ -353,4 +367,4 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for verify. Readiness is not Done; downstream verify and PR gates remain open.
+- Ready for PR handoff. Readiness is not Done; PR handoff and hosted CI observation remain open.
