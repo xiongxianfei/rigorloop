@@ -310,6 +310,8 @@ validation:
     result: pass_after_verify_handoff_recording
   - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md --path docs/plan.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/review-log.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/review-resolution.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/explain-change.md
     result: pass_after_verify_handoff_recording
+  - command: gh pr create --base main --head proposal/2026-05-19-rigorloop-published-skill-design-contract
+    result: opened_PR_71_https_github_com_xiongxianfei_rigorloop_pull_71
 changed_files:
   - docs/proposals/2026-05-19-rigorloop-published-skill-design-contract.md
   - specs/skill-contract.md
@@ -354,6 +356,6 @@ changed_files:
   - docs/changes/2026-05-19-rigorloop-published-skill-design-contract/reviews/code-review-m3-r1.md
   - docs/changes/2026-05-19-rigorloop-published-skill-design-contract/explain-change.md
 review:
-  status: verified_branch_ready_ready_for_pr_handoff
+  status: pr_71_open_hosted_ci_and_human_review_pending
   unresolved_items: 0
   location: docs/changes/2026-05-19-rigorloop-published-skill-design-contract/reviews/code-review-m3-r1.md
