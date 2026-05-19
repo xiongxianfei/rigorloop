@@ -237,6 +237,7 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - 2026-05-19: `code-review-verify-fix-r2` found no material findings; next stage is final verify.
 - 2026-05-19: final verify passed selected CI, broad smoke, review closeout, metadata validation, lifecycle validation, and diff check; branch-ready is established and next stage is `pr`.
 - 2026-05-19: PR-stage readiness check refreshed stale `explain-change.md` wording to reflect the completed final verify; next stage remains `pr`.
+- 2026-05-19: hosted CI for PR #69 failed because PR-mode selector routing missed change-local evidence reports and skill readability fixtures; patched selector classifications and reproduced PR-mode CI locally.
 
 ## Decision log
 
@@ -292,6 +293,7 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - 2026-05-19: final broad smoke passed. It still prints unrelated baseline artifact lifecycle warnings for old proposal files and the known non-fatal token-cost report validation message `dynamic_runtime.runs: missing required benchmark architecture-review`; the command exits 0.
 - 2026-05-19: final closeout validation passed: review artifact closeout, change metadata validation, explicit-path artifact lifecycle validation, and `git diff --check --`.
 - 2026-05-19: PR-stage `explain-change.md` refresh validation passed: review artifact closeout, change metadata validation, explicit-path artifact lifecycle validation, `git diff --check --`, and selected CI for lifecycle/change-local surfaces.
+- 2026-05-19: hosted CI selector-routing fix validation passed locally with `bash scripts/ci.sh --mode pr --base 9814706e5ed605c1d63c5b63f88f507a454aab7b --head HEAD`.
 
 ## Outcome and retrospective
 

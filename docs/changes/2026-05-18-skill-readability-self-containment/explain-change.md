@@ -45,7 +45,7 @@ No architecture or ADR artifact was required. The approved plan records that thi
 | `scripts/test-skill-validator.py` | Added positive and negative fixture tests and pilot opt-in coverage; updated assertions after SRSC-M3-CR1 to check enum references instead of duplicated values. | Prove validator behavior before and after pilot skill adoption. | Test spec T2, T3, T5, T8, T10 | 97-test validator run passes |
 | `scripts/adapter_distribution.py` | Treats `version` and `schema-version` as transformable front matter for non-Codex adapters. | Preserve adapter portability after the pilot skills add readability-contract front matter; Codex keeps the fields, Claude/OpenCode generated skill bodies drop them like `argument-hint`. | R32-R35; R54 | `test-adapter-distribution.py`; selected CI; broad smoke rerun |
 | `scripts/test-adapter-distribution.py` and `tests/fixtures/adapters/transformable-frontmatter/SKILL.md` | Extended the transformable-frontmatter fixture and assertion coverage to include `version` and `schema-version`. | Prevent regressions where readability front matter makes otherwise portable skills Codex-only. | R35; T10 | Targeted adapter distribution tests |
-| `scripts/validation_selection.py` and `scripts/test-select-validation.py` | Classified adapter fixture paths under `tests/fixtures/adapters/` as adapter validation inputs. | Keep PR-mode CI from blocking on a fixture touched by the adapter compatibility regression test. | R35; T10 | `test-select-validation.py`; selected CI |
+| `scripts/validation_selection.py` and `scripts/test-select-validation.py` | Classified adapter fixture paths, skill validator fixture paths, and change-local evidence reports used by this pilot. | Keep PR-mode CI from blocking on fixtures and durable evidence files that are intentionally part of this change. | R35, R41-R47 | `test-select-validation.py`; PR-mode CI reproduction |
 | `tests/fixtures/skills/skill-readability/` | Added fixtures for valid pilot shape, missing workflow role, invalid stage, missing output skeleton, required internal reference, and duplicate closed enum. | Keep validation focused on explicit contract shape instead of broad semantic prose scoring. | T2, T3, T5, T8 | `test-skill-validator.py` |
 | `specs/skill-readability-contract.md` | Added the approved contract for workflow role blocks, enum placement, skeletons, cold-read, behavior parity, token thresholds, and rollout scope. | Convert the accepted proposal into implementation requirements. | Proposal; spec-review-r1 | Artifact lifecycle validation; spec-review-r1 |
 | `specs/skill-readability-contract.test.md` | Added traceable test cases T1-T16 mapping requirements to static validation, manual review, generated-output checks, cold-read, parity, and token evidence. | Define proof obligations before implementation. | Plan; R1-R60 | Artifact lifecycle validation; user approval |
@@ -85,7 +85,9 @@ python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05
 git diff --check --
 ```
 
-During final `verify`, broad smoke exposed a branch-specific compatibility gap: `version` and `schema-version` front matter made `proposal` and `proposal-review` appear non-portable to the adapter distributor. The fix updates adapter front-matter transformation so those fields are kept for Codex and dropped from Claude/OpenCode generated skill bodies. The selector was also updated so adapter fixture changes route to adapter validation instead of becoming unclassified PR paths.
+During final `verify`, broad smoke exposed a branch-specific compatibility gap: `version` and `schema-version` front matter made `proposal` and `proposal-review` appear non-portable to the adapter distributor. The fix updates adapter front-matter transformation so those fields are kept for Codex and dropped from Claude/OpenCode generated skill bodies.
+
+After PR #69 opened, hosted CI exposed selector routing gaps for the full PR diff: three change-local evidence reports and the `tests/fixtures/skills/skill-readability/` fixtures were unclassified in PR mode. The selector now routes those evidence reports through artifact lifecycle validation and the skill fixtures through skill regression checks.
 
 The latest recorded post-resolution token counts are:
 
@@ -94,7 +96,7 @@ The latest recorded post-resolution token counts are:
 | `proposal` | 3189 | 3300 | +3.48% | within +5% tolerance; below +10% hard cap |
 | `proposal-review` | 3255 | 3405 | +4.61% | within +5% tolerance; below +10% hard cap |
 
-Final `verify` passed after the verify-stage compatibility fix and rerun code-review. It recorded selected CI, broad smoke, review artifact closeout, change metadata validation, artifact lifecycle validation, and diff check evidence in the active plan and change metadata. Hosted CI final status is not claimed by this artifact.
+Final `verify` passed after the verify-stage compatibility fix and rerun code-review. It recorded selected CI, broad smoke, review artifact closeout, change metadata validation, artifact lifecycle validation, and diff check evidence in the active plan and change metadata. The later hosted CI selector-routing fix was locally reproduced with PR-mode CI and pushed for hosted rerun.
 
 ## Review Resolution Summary
 
@@ -137,10 +139,11 @@ The pilot rewrites only `proposal` and `proposal-review`. Remaining R30 skills a
 | Risk or follow-up | Current handling |
 |---|---|
 | Verify-stage compatibility fix changed implementation after explain-change was first recorded. | Verify ran, found and fixed adapter front-matter compatibility drift, SRSC-VERIFY-CR1 was resolved, rerun code-review was clean, and final verify passed. |
+| Hosted CI failed after PR open because PR-mode selector routing missed new evidence and fixture paths. | Classified the missing path families and reproduced the hosted PR-mode CI command locally. |
 | Full R30 rollout remains incomplete after the pilot. | Follow-on rollout ownership is recorded in the active plan. |
 | Manual behavior-parity proof is less exhaustive than live LLM execution. | The test spec allowed manual contract comparison for this pilot; no regression classifications remain. |
 | Token increases are accepted for readability. | Both increases are within +5%, justified by cold-read and behavior-parity evidence, and below the hard cap. |
 
 ## Readiness
 
-`explain-change` is recorded and updated for the verify-stage adapter compatibility fix. SRSC-VERIFY-CR1 is resolved, rerun code-review is clean, final verify passed, and the active-plan handoff is `pr`.
+`explain-change` is recorded and updated for the verify-stage adapter compatibility fix and the PR-mode selector-routing fix. SRSC-VERIFY-CR1 is resolved, rerun code-review is clean, final verify passed, and the active-plan handoff remains `pr`.
