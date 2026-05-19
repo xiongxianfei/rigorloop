@@ -175,6 +175,8 @@ validation:
     result: pass_after_verify
   - command: gh pr create --base main --head published-skill-design-plan-family
     result: opened_pr_74
+  - command: gh pr view 74 --json number,state,mergedAt,mergeCommit,statusCheckRollup,url,headRefName,baseRefName,title
+    result: pr_74_merged_at_2026-05-19T15:33:04Z_ci_success_merge_018ed23685611dc1b984baa9ec5bdf45476ad417
 changed_files:
   - scripts/test-skill-validator.py
   - skills/plan/SKILL.md
