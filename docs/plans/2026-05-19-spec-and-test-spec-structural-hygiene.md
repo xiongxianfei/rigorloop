@@ -53,9 +53,9 @@ Implement the approved structural-hygiene contract for the skill contract and it
 - Last reviewed milestone: M1 code-review R2 clean-with-notes
 - Review status: clean; no material findings open
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
+- Next stage: pr
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: verify and PR handoff remain open.
+- Reason final closeout is or is not ready: branch-ready after final local verify; PR handoff remains open.
 
 ## Milestones
 
@@ -141,7 +141,7 @@ Implement the approved structural-hygiene contract for the skill contract and it
 - [x] Resolve `CR-M1-001`.
 - [x] Code-review.
 - [x] Explain-change.
-- [ ] Verify.
+- [x] Verify.
 - [ ] PR handoff.
 
 ## Decision log
@@ -171,6 +171,8 @@ Implement the approved structural-hygiene contract for the skill contract and it
 - 2026-05-19 code-review M1 R2 passed with no material findings and closed M1.
 - 2026-05-19 explain-change recorded at `docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/explain-change.md`.
 - 2026-05-19 explain-change-stage validation passed `git diff --check`, `validate-artifact-lifecycle`, `validate-change-metadata`, and `validate-review-artifacts --mode closeout`.
+- 2026-05-19 final verify passed preservation checks for R-clause text, acceptance-criterion text, example IDs, test-spec requirement coverage rows, test-spec acceptance-criteria coverage rows, test-case headings, and test-case bodies.
+- 2026-05-19 final verify passed `git diff --check`, explicit artifact lifecycle validation, change metadata validation, review artifact closeout validation, `validate-skills.py`, `test-skill-validator.py`, selector dry-run for PR mode with broad smoke, and `bash scripts/ci.sh --mode pr --base 8d0ddecee8450b3730533df3b3802a75150ca45a --head HEAD --broad-smoke`.
 
 ## Outcome and retrospective
 
