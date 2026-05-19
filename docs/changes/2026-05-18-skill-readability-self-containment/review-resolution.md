@@ -4,7 +4,7 @@
 
 This record tracks material finding disposition for formal lifecycle reviews of the skill readability and self-containment change.
 
-Closeout status: closed
+Closeout status: open
 
 ## Resolution Entries
 
@@ -79,3 +79,23 @@ Validation evidence: `python scripts/test-skill-validator.py` passed; `python sc
 ### code-review-m3-r2
 
 No material findings. M3 is closed and final closeout can start with `explain-change`.
+
+### code-review-verify-fix-r1
+
+Review closeout: open
+
+#### SRSC-VERIFY-CR1
+
+Finding ID: SRSC-VERIFY-CR1
+Disposition: accepted
+Owner: implementer
+Owning stage: review-resolution / verify-stage fix
+Decision owner: implementer
+Decision needed: resolved; finding accepted.
+Required outcome: Update `explain-change.md` so its readiness and risk language no longer claims the next lifecycle stage is `verify` or that final verify has simply not run. It should state that verify ran, found and fixed a compatibility issue, and the current active-plan handoff is code-review/review-resolution until the finding is resolved and verify reruns.
+Rationale: `explain-change.md` is a touched durable reasoning artifact. Its readiness lines still point to `verify`, while the active plan correctly points to code-review/review-resolution for the verify-stage adapter compatibility fix.
+Chosen action: pending.
+Safe resolution path: Reword the stale readiness/risk rows in `explain-change.md`, then rerun artifact lifecycle validation, change metadata validation, review artifact validation, and `git diff --check --`.
+Stop state: review-resolution required; rerun code-review after resolution.
+Validation target: artifact lifecycle validation, change metadata validation, review artifact validation, diff check, and rerun code-review.
+Validation evidence: pending.

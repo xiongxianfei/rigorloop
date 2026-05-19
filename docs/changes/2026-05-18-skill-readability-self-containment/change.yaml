@@ -189,6 +189,8 @@ validation:
     result: pass_selected_ci_after_verify_stage_fix
   - command: bash scripts/ci.sh --mode broad-smoke
     result: pass_after_verify_stage_fix_with_origin_main_matching_non_fatal_token_cost_message
+  - command: code-review verify-stage fix
+    result: changes_requested_srsc_verify_cr1
 changed_files:
   - docs/proposals/2026-05-18-skill-readability-self-containment.md
   - specs/skill-readability-contract.md
@@ -227,4 +229,5 @@ changed_files:
   - docs/changes/2026-05-18-skill-readability-self-containment/reviews/code-review-m2-r1.md
   - docs/changes/2026-05-18-skill-readability-self-containment/reviews/code-review-m3-r1.md
   - docs/changes/2026-05-18-skill-readability-self-containment/reviews/code-review-m3-r2.md
+  - docs/changes/2026-05-18-skill-readability-self-containment/reviews/code-review-verify-fix-r1.md
   - docs/changes/2026-05-18-skill-readability-self-containment/review-resolution.md
