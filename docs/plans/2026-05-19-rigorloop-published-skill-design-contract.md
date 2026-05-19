@@ -55,20 +55,20 @@ Implement the approved published-skill design contract as an audit-first, pilot-
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Audit and evidence scaffold
+- Current milestone: M2. Validator and fixture support
 - Current milestone state: review-requested
-- Last reviewed milestone: none
-- Review status: plan-review approved; test-spec active; M1 ready for code-review
-- Remaining in-scope implementation milestones: M1, M2, M3
-- Next stage: code-review M1
+- Last reviewed milestone: M1. Audit and evidence scaffold
+- Review status: M1 code-review clean-with-notes; M2 ready for code-review
+- Remaining in-scope implementation milestones: M2, M3
+- Next stage: code-review M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 is awaiting code-review, M2 and M3 are not implemented or reviewed, explain-change is absent, final verification has not run, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M2 and M3 are not implemented or reviewed, explain-change is absent, final verification has not run, and PR handoff is not prepared.
 
 ## Milestones
 
 ### M1. Audit and evidence scaffold
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: create the change-local evidence structure for the published-skill design pilot before changing validators or skill bodies.
 - Requirements: R27, R28, R35e-R35g, R36a, R36d, R36e, R36g-R36j.
 - Files/components likely touched:
@@ -102,7 +102,7 @@ Implement the approved published-skill design contract as an audit-first, pilot-
 
 ### M2. Validator and fixture support
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: make the deterministic parts of R27-R36 checkable without adding broad semantic scoring.
 - Requirements: R29, R32, R33, R35, R36f.
 - Files/components likely touched:
@@ -132,11 +132,11 @@ Implement the approved published-skill design contract as an audit-first, pilot-
 - Expected observable result: static validation catches deterministic contract violations and does not claim runtime model routing proof.
 - Commit message: `M2: validate published skill design contract checks`
 - Milestone closeout:
-  - [ ] targeted validation passed
-  - [ ] progress updated
-  - [ ] decision log updated if needed
-  - [ ] validation notes updated
-  - [ ] hand off to code-review for M2
+  - [x] targeted validation passed
+  - [x] progress updated
+  - [x] decision log updated if needed
+  - [x] validation notes updated
+  - [x] hand off to code-review for M2
 - Risks: phrase checks could become brittle or accidentally semantic.
 - Rollback/recovery: revert validator and fixture changes for M2 while preserving M1 evidence.
 
@@ -215,16 +215,22 @@ Implement the approved published-skill design contract as an audit-first, pilot-
 - 2026-05-19: owner approved `specs/skill-contract.test.md`; next stage remains `implement M1`.
 - 2026-05-19: M1 implementation started; evidence scaffold in progress.
 - 2026-05-19: M1 evidence scaffold created and targeted validation passed; M1 moved to `review-requested`.
+- 2026-05-19: code-review-m1-r1 returned `clean-with-notes`; M1 closed; next stage is `implement M2`.
+- 2026-05-19: M2 implementation started; validator fixtures and narrow published-skill design checks in progress.
+- 2026-05-19: M2 validator and fixture support completed; targeted validation passed; M2 moved to `review-requested`.
 
 ## Decision log
 
 - 2026-05-19: use a three-milestone plan: audit/evidence scaffold, validator/fixture support, and pilot skill rewrite with generated-output validation. This keeps evidence decisions visible before validator and skill-body changes.
 - 2026-05-19: keep architecture out of scope because the approved change affects Markdown contracts, validation scripts, fixtures, and canonical skills without introducing new runtime architecture.
 - 2026-05-19: keep M1 evidence files as change-local Markdown linked from `change.yaml` changed files rather than `artifacts` keys. Rationale: the change metadata schema accepts only known artifact keys, while M1 evidence files are supporting proof surfaces.
+- 2026-05-19: implement M2 deterministic checks in `scripts/skill_validation.py` and fixture tests rather than broad natural-language scoring. Rationale: R35 allows table presence and bounded phrase coverage, while runtime model routing and broad semantic quality remain out of scope.
+- 2026-05-19: keep repository-root dependency validation tied to the opted-in published pilot/readability contract for now. Rationale: canonical non-pilot skills remain valid until their approved slice, while M3 will rewrite the pilot pair under the stricter published-skill contract.
 
 ## Surprises and discoveries
 
 - 2026-05-19: `bash scripts/ci.sh --mode explicit` blocks arbitrary change-local support Markdown such as `skill-audit.md`, `routing-coverage.md`, `behavior-preservation.md`, and `behavior-parity.md` with `manual-routing-required`. M1 therefore uses direct change metadata, artifact lifecycle, and whitespace validation for those evidence files, plus selected CI on the supported plan and change metadata paths.
+- 2026-05-19: M2 fixture tests failed before implementation for the new description-length, `when_to_use`, resource-map, packaged-script, and repository-root dependency cases, then passed after validator changes.
 
 ## Validation notes
 
@@ -243,6 +249,19 @@ Implement the approved published-skill design contract as an audit-first, pilot-
 - 2026-05-19 M1 validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml` passed.
 - 2026-05-19 M1 validation: `git diff --check -- docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md docs/changes/2026-05-19-rigorloop-published-skill-design-contract` passed.
 - 2026-05-19 M1 validation: `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml` passed selected artifact-lifecycle, change-metadata regression, and change-metadata checks.
+- 2026-05-19 M1 code-review recording validation: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-19-rigorloop-published-skill-design-contract` passed.
+- 2026-05-19 M1 code-review recording validation: `python scripts/validate-change-metadata.py docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml` passed.
+- 2026-05-19 M1 code-review recording validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md --path docs/plan.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/review-log.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/review-resolution.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/reviews/code-review-m1-r1.md` passed.
+- 2026-05-19 M1 code-review recording validation: `git diff --check -- docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md docs/plan.md docs/changes/2026-05-19-rigorloop-published-skill-design-contract` passed.
+- 2026-05-19 M1 code-review recording validation: `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md --path docs/plan.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/review-log.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/review-resolution.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/reviews/code-review-m1-r1.md` passed selected review-artifact, artifact-lifecycle, change-metadata regression, and change-metadata checks.
+- 2026-05-19 M2 test-first validation: targeted new published-design fixture tests failed before implementation for expected reasons.
+- 2026-05-19 M2 validation: targeted new published-design fixture tests passed.
+- 2026-05-19 M2 validation: `python scripts/validate-skills.py` passed.
+- 2026-05-19 M2 validation: `python scripts/test-skill-validator.py` passed.
+- 2026-05-19 M2 validation: `python scripts/validate-change-metadata.py docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml` passed.
+- 2026-05-19 M2 validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md --path docs/plan.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml` passed.
+- 2026-05-19 M2 validation: `git diff --check -- scripts tests specs docs/changes/2026-05-19-rigorloop-published-skill-design-contract docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md docs/plan.md` passed.
+- 2026-05-19 M2 validation: `bash scripts/ci.sh --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path tests/fixtures/skills/published-design/description-too-long/SKILL.md --path tests/fixtures/skills/published-design/when-to-use-replaces-description/SKILL.md --path tests/fixtures/skills/published-design/missing-resource-map/SKILL.md --path tests/fixtures/skills/published-design/missing-resource-map/references/detail.md --path tests/fixtures/skills/published-design/resource-map-missing-resource/SKILL.md --path tests/fixtures/skills/published-design/resource-map-missing-resource/references/detail.md --path tests/fixtures/skills/published-design/packaged-script-valid/SKILL.md --path tests/fixtures/skills/published-design/packaged-script-valid/scripts/check.py --path tests/fixtures/skills/published-design/packaged-script-missing-failure/SKILL.md --path tests/fixtures/skills/published-design/packaged-script-missing-failure/scripts/check.py --path tests/fixtures/skills/published-design/required-root-script/SKILL.md --path docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md --path docs/plan.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml` passed selected skills regression, skill generation regression, artifact-lifecycle, change-metadata regression, and change-metadata checks.
 
 ## Outcome and retrospective
 
@@ -251,7 +270,7 @@ Implement the approved published-skill design contract as an audit-first, pilot-
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for `code-review M1`, not final verification, branch readiness, or PR readiness.
+- This plan is ready for `code-review M2`, not final verification, branch readiness, or PR readiness.
 
 ## Risks and follow-ups
 

@@ -51,6 +51,36 @@ READABILITY_ALLOWED_PROJECT_LOCAL_TERMS = [
     "maintainer-only",
     "unavailable to adopters",
 ]
+DESCRIPTION_MAX_CHARS = 1024
+ROUTING_HINT_PATTERN = re.compile(
+    r"\b(use|when|ask|asks|create|write|review|implement|verify|prepare|generate|capture|produce|update|fix|route)\b",
+    re.IGNORECASE,
+)
+PACKAGED_RESOURCE_DIRS = ("references", "scripts", "assets")
+RESOURCE_LOAD_CONDITION_PATTERN = re.compile(
+    r"\b(when|if|only|use|read|run|load)\b",
+    re.IGNORECASE,
+)
+SCRIPT_INPUT_PATTERN = re.compile(r"\b(input|expects?)\b", re.IGNORECASE)
+SCRIPT_OUTPUT_PATTERN = re.compile(r"\b(output|exit code|exit-code|returns?)\b", re.IGNORECASE)
+SCRIPT_FAILURE_PATTERN = re.compile(r"\b(fail|failure|nonzero|non-zero|error)\b", re.IGNORECASE)
+PUBLISHED_INTERNAL_PATH_PATTERN = re.compile(
+    r"`?(?:specs/|schemas/|docs/reports/|docs/changes/|benchmarks/|scripts/|dist/)`?"
+)
+PUBLISHED_ALLOWED_PROJECT_LOCAL_TERMS = [
+    "project-local",
+    "when present",
+    "if present",
+    "when available",
+    "when relevant",
+    "when operating inside the RigorLoop repository",
+    "when those paths are the target",
+    "when this repository is the target",
+    "when supplied by the user",
+    "user-provided",
+    "direct target",
+    "packaged",
+]
 
 
 @dataclass(frozen=True)
@@ -196,6 +226,25 @@ def _contains_fenced_block(section: str) -> bool:
     return any(line.strip().startswith("```") for line in section.splitlines())
 
 
+def _resource_files(skill_dir: Path) -> list[Path]:
+    resources: list[Path] = []
+    for directory_name in PACKAGED_RESOURCE_DIRS:
+        resource_dir = skill_dir / directory_name
+        if not resource_dir.is_dir():
+            continue
+        for path in sorted(resource_dir.rglob("*")):
+            if path.is_file() and path.name != ".gitkeep":
+                resources.append(path)
+    return resources
+
+
+def _resource_entry_line(section: str, relative_resource: str) -> str | None:
+    for line in section.splitlines():
+        if relative_resource in line:
+            return line.strip()
+    return None
+
+
 def _validate_readability_workflow_role(
     path: Path,
     metadata: dict[str, str],
@@ -254,6 +303,81 @@ def _validate_readability_internal_references(path: Path, body: str) -> list[str
             continue
         errors.append(
             f"{path}:{line_number}: required unavailable internal reference: {line.strip()}"
+        )
+    return errors
+
+
+def _validate_published_description(path: Path, metadata: dict[str, str]) -> list[str]:
+    errors: list[str] = []
+    description = metadata.get("description")
+    if isinstance(description, str) and len(description) > DESCRIPTION_MAX_CHARS:
+        errors.append(
+            f"{path}: description must be {DESCRIPTION_MAX_CHARS} characters or fewer"
+        )
+
+    when_to_use = metadata.get("when_to_use")
+    if isinstance(when_to_use, str) and when_to_use.strip():
+        description_text = description or ""
+        if len(description_text.strip()) < 20 or not ROUTING_HINT_PATTERN.search(description_text):
+            errors.append(
+                f"{path}: when_to_use must not replace description as the routing source"
+            )
+    return errors
+
+
+def _validate_resource_map(path: Path, body: str) -> list[str]:
+    resources = _resource_files(path.parent)
+    if not resources:
+        return []
+
+    section = _extract_markdown_section(body, "Resource map")
+    if section is None:
+        return [f"{path}: packaged resources require a '## Resource map' section"]
+
+    errors: list[str] = []
+    for resource in resources:
+        relative_resource = resource.relative_to(path.parent).as_posix()
+        entry = _resource_entry_line(section, relative_resource)
+        if entry is None:
+            errors.append(
+                f"{path}: Resource map must name packaged resource '{relative_resource}'"
+            )
+            continue
+        if not RESOURCE_LOAD_CONDITION_PATTERN.search(entry):
+            errors.append(
+                f"{path}: Resource map entry for '{relative_resource}' must include a load condition"
+            )
+        if relative_resource.startswith("scripts/"):
+            if not SCRIPT_INPUT_PATTERN.search(entry):
+                errors.append(
+                    f"{path}: packaged script '{relative_resource}' map entry must describe input"
+                )
+            if not SCRIPT_OUTPUT_PATTERN.search(entry):
+                errors.append(
+                    f"{path}: packaged script '{relative_resource}' map entry must describe output or exit code"
+                )
+            if not SCRIPT_FAILURE_PATTERN.search(entry):
+                errors.append(
+                    f"{path}: packaged script '{relative_resource}' map entry must describe failure behavior"
+                )
+    return errors
+
+
+def _validate_published_self_containment(path: Path, metadata: dict[str, str], body: str) -> list[str]:
+    if metadata.get("schema-version") != READABILITY_SCHEMA_VERSION:
+        return []
+
+    errors: list[str] = []
+    for line_number, line in enumerate(_iter_lines_outside_fences(body), start=1):
+        if not PUBLISHED_INTERNAL_PATH_PATTERN.search(line):
+            continue
+        if not READABILITY_REQUIRED_CONTEXT_PATTERN.search(line):
+            continue
+        normalized = line.lower()
+        if any(term.lower() in normalized for term in PUBLISHED_ALLOWED_PROJECT_LOCAL_TERMS):
+            continue
+        errors.append(
+            f"{path}:{line_number}: required unavailable repository-root dependency: {line.strip()}"
         )
     return errors
 
@@ -403,6 +527,9 @@ def validate_skill_file(path: Path, schema: dict) -> tuple[list[str], str | None
     if isinstance(description, str) and not description.strip():
         errors.append(f"{path}: description: must be at least 1 characters")
 
+    errors.extend(_validate_published_description(path, metadata))
+    errors.extend(_validate_resource_map(path, body))
+    errors.extend(_validate_published_self_containment(path, metadata, body))
     errors.extend(validate_readability_contract(path, metadata, body))
 
     return errors, name.strip() if isinstance(name, str) and name.strip() else None
