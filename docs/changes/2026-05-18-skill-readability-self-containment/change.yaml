@@ -176,6 +176,8 @@ validation:
     result: pass_generated_adapter_archives_after_srsc_m3_cr1_fix
   - command: python scripts/measure-skill-tokens.py
     result: pass_after_srsc_m3_cr1_fix_proposal_3300_proposal_review_3405_estimated_tokens
+  - command: code-review M3 rerun
+    result: clean_with_notes_no_material_findings
 changed_files:
   - docs/proposals/2026-05-18-skill-readability-self-containment.md
   - specs/skill-readability-contract.md
@@ -207,4 +209,5 @@ changed_files:
   - docs/changes/2026-05-18-skill-readability-self-containment/reviews/code-review-m1-r1.md
   - docs/changes/2026-05-18-skill-readability-self-containment/reviews/code-review-m2-r1.md
   - docs/changes/2026-05-18-skill-readability-self-containment/reviews/code-review-m3-r1.md
+  - docs/changes/2026-05-18-skill-readability-self-containment/reviews/code-review-m3-r2.md
   - docs/changes/2026-05-18-skill-readability-self-containment/review-resolution.md

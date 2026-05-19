@@ -58,7 +58,7 @@ No material findings.
 
 ### code-review-m3-r1
 
-Review closeout: open
+Review closeout: closed
 
 #### SRSC-M3-CR1
 
@@ -75,3 +75,7 @@ Safe resolution path: Replace repeated lists in `skills/proposal/SKILL.md` and `
 Stop state: cleared; M3 returned to `review-requested` for rerun code-review.
 Validation target: rerun targeted validation and `code-review-m3-r2` after resolution.
 Validation evidence: `python scripts/test-skill-validator.py` passed; `python scripts/validate-skills.py` passed; `python scripts/build-skills.py --check` passed; `python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-skill-readability-adapters` passed; `python scripts/validate-adapters.py --root /tmp/rigorloop-skill-readability-adapters --version v0.1.5` passed; `python scripts/measure-skill-tokens.py` reported `proposal` 3300 estimated tokens and `proposal-review` 3405 estimated tokens, both within +5% tolerance; duplicate backticked enum value scan found only the new enum-reference lines.
+
+### code-review-m3-r2
+
+No material findings. M3 is closed and final closeout can start with `explain-change`.

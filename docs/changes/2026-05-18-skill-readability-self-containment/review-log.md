@@ -114,3 +114,15 @@ Resolution: review-resolution.md#code-review-m3-r1
 Material findings: SRSC-M3-CR1
 Open findings: None
 Recording status: recorded
+
+### Review entry
+Review ID: code-review-m3-r2
+Stage: code-review
+Round: 2
+Reviewed artifact: M3. Cold-read, behavior parity, token comparison, and rollout handoff
+Status: clean-with-notes
+Detailed record: reviews/code-review-m3-r2.md
+Resolution: review-resolution.md#code-review-m3-r2
+Material findings: None
+Open findings: None
+Recording status: recorded
