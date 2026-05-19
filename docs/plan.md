@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-19 Assets-First Progressive Disclosure Pilot](plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md) - active execution plan for the assets-first `plan` packaged-resource pilot; current next stage is PR handoff after clean M3 code-review, explain-change, and final local verify, with hosted CI not yet observed.
+- [2026-05-19 Assets-First Progressive Disclosure Pilot](plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md) - active execution plan for the assets-first `plan` packaged-resource pilot; PR #75 is open, hosted CI initially failed on selector routing for deterministic change-local evidence files, and current next stage is hosted CI rerun after selector maintenance.
 
 ## Blocked
 - none yet

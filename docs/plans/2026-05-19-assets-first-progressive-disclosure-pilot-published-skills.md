@@ -74,9 +74,9 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 - Last reviewed milestone: M3. Adapter, Token, And Behavior-Parity Proof
 - Review status: code-review-m3-r1 clean-with-notes
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: ready to start final closeout sequence
-- Reason final closeout is or is not ready: all implementation milestones are closed, explain-change is recorded, and final local verify passed; PR handoff has not run, so the change is not Done.
+- Next stage: hosted CI rerun for PR #75 after selector maintenance
+- Final closeout readiness: blocked on hosted CI rerun
+- Reason final closeout is or is not ready: all implementation milestones are closed, explain-change is recorded, final local verify passed, and PR #75 is open. Hosted CI initially failed because three deterministic change-local evidence files were not classified by the PR selector; selector maintenance is implemented and local PR-mode CI passes, but the pushed hosted rerun has not passed yet.
 
 ## Pre-implementation prerequisites
 
@@ -284,6 +284,7 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 - 2026-05-19: code-review-m3-r1 returned clean-with-notes; M3 closed and all implementation milestones are closed. Next stage is final closeout, starting with explain-change unless ci-maintenance is separately triggered.
 - 2026-05-19: explain-change recorded the durable change rationale; no ci-maintenance trigger was found because no hosted workflow or platform configuration changed. Next stage is verify.
 - 2026-05-19: final local verify passed after explain-change; branch-ready for PR handoff is established locally, with hosted CI not observed yet.
+- 2026-05-19: PR #75 opened; hosted CI failed because `adapter-packaging.md`, `historical-coverage.md`, and `token-cost.md` were deterministic change-local evidence files without PR selector routing. Selector maintenance now classifies those files as `change-local-lifecycle`, and local PR-mode CI passes. Next stage is push and observe hosted CI rerun.
 
 ## Decision log
 
@@ -293,6 +294,7 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 - 2026-05-19: structural fingerprints normalize asset body text after removing metadata comments and normalizing visible placeholders -> catches template drift without treating the metadata header itself as template content.
 - 2026-05-19: `plan-skeleton.md` owns the full plan section layout while `SKILL.md` keeps compact output expectations and the resource map -> proves the assets pattern without duplicating the full skeleton in two files.
 - 2026-05-19: packaged skill resources are copied into adapter archives alongside `SKILL.md` for each included adapter -> preserves installed skill self-containment without changing adapter roots.
+- 2026-05-19: `adapter-packaging.md`, `historical-coverage.md`, and `token-cost.md` are deterministic change-local lifecycle evidence surfaces -> route them through `artifact_lifecycle.validate` instead of blocking PR-mode CI on manual routing.
 
 ## Surprises and discoveries
 
@@ -359,12 +361,15 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...` passed during final verify for the proposal, spec, test spec, `plan` skill/assets, validator scripts, fixtures, active plan, plan index, and change-local evidence.
 - `git diff --check -- skills/plan scripts tests specs docs/proposals/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md docs/plan.md` passed during final verify.
 - `bash scripts/ci.sh --mode explicit --path skills/plan/SKILL.md --path skills/plan/assets --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path tests/fixtures/skills/published-design --path tests/fixtures/adapters/portable-with-assets --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/proposals/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/explain-change.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-log.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-resolution.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/reviews/code-review-m3-r1.md` passed during final verify with selected checks `skills.validate`, `skills.regression`, `skills.generation_regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+- Hosted CI for PR #75 initially failed with `manual-routing-required` for `docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/adapter-packaging.md`, `historical-coverage.md`, and `token-cost.md`.
+- `python scripts/test-select-validation.py` passed after classifying those evidence files as `change-local-lifecycle`.
+- `bash scripts/ci.sh --mode pr --base 9d1487500b4ea62909c98975e694611f71139b04 --head HEAD` passed locally after selector maintenance with selected checks `skills.validate`, `skills.regression`, `skills.generation_regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
 
 ## Outcome and retrospective
 
-- All implementation milestones are closed. Pending final closeout.
+- All implementation milestones are closed. PR #75 is open. Final closeout is pending hosted CI rerun after selector maintenance.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for PR handoff. Readiness is not Done; PR handoff and hosted CI observation remain open.
+- PR #75 is open. Readiness is not Done; hosted CI rerun remains open.
