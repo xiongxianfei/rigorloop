@@ -63,11 +63,11 @@ This slice is intentionally narrow. It should make the implementation and review
 ## Current Handoff Summary
 
 - Current milestone: M1. Execution/review evidence scaffold
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M0. Plan and change metadata
-- Review status: plan-review-r1 approved with no material findings; test-spec amendment completed
+- Review status: M1 implementation complete; code-review pending
 - Remaining in-scope implementation milestones: M1. Execution/review evidence scaffold; M2. Deterministic validator and fixture support; M3. Implement and code-review skill rewrite
-- Next stage: implement M1
+- Next stage: code-review for M1
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation milestones have not started; implementation, code-review, explain-change, verify, PR handoff, hosted CI, human review, and merge remain.
 
@@ -106,7 +106,7 @@ This slice is intentionally narrow. It should make the implementation and review
 
 ### M1. Execution/review evidence scaffold
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: create the evidence structure for `implement` and `code-review` before changing validators or skill bodies.
 - Requirements: R27-R31, R34-R35, R36 audit/preservation/parity discipline.
 - Files/components likely touched:
@@ -256,7 +256,7 @@ This slice is intentionally narrow. It should make the implementation and review
 - [x] 2026-05-19: new execution/review rollout plan created.
 - [x] Plan-review completed.
 - [x] Test-spec amendment completed and approved.
-- [ ] M1 implemented and reviewed.
+- [x] M1 implemented; code-review pending.
 - [ ] M2 implemented and reviewed.
 - [ ] M3 implemented and reviewed.
 - [ ] Explain-change recorded.
@@ -270,6 +270,7 @@ This slice is intentionally narrow. It should make the implementation and review
 - 2026-05-19: require test-spec amendment before implementation. Rationale: the current test spec is pilot/spec-family focused and should operationalize this new execution/review slice before skill-body changes.
 - 2026-05-19: approve the plan with no material findings. Rationale: the plan keeps the next slice scoped to `implement` and `code-review`, preserves lifecycle sequencing, and requires test-spec amendment before implementation.
 - 2026-05-19: amend `specs/skill-contract.test.md` with execution/review proof cases before implementation. Rationale: `T25`-`T28` make audit, deterministic validation, behavior preservation, generated-output, and adapter proof concrete for `implement` and `code-review`.
+- 2026-05-19: keep M1 as evidence-only. Rationale: the audit found workflow-role and output-skeleton gaps in `implement` and `code-review`, but those skill-body changes belong to M3 after deterministic validator scope is settled.
 
 ## Surprises and discoveries
 
@@ -292,6 +293,11 @@ This slice is intentionally narrow. It should make the implementation and review
 - 2026-05-19 test-spec validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml` passed.
 - 2026-05-19 test-spec validation: `git diff --check -- specs/skill-contract.test.md docs/plans/2026-05-19-published-skill-design-implement-code-review.md docs/plan.md docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml` passed.
 - 2026-05-19 test-spec selected CI: `bash scripts/ci.sh --mode explicit --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml` passed selected `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+- 2026-05-19 M1 evidence: created `skill-audit.md`, `routing-coverage.md`, `behavior-preservation.md`, and `behavior-parity.md` for the execution/review rollout.
+- 2026-05-19 M1 validation: `python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml` passed.
+- 2026-05-19 M1 validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml --path docs/changes/2026-05-19-published-skill-design-implement-code-review/skill-audit.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-parity.md --path docs/plan.md` passed.
+- 2026-05-19 M1 validation: `git diff --check -- docs/plans/2026-05-19-published-skill-design-implement-code-review.md docs/plan.md docs/changes/2026-05-19-published-skill-design-implement-code-review` passed.
+- 2026-05-19 M1 selected CI: `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml --path docs/changes/2026-05-19-published-skill-design-implement-code-review/skill-audit.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-parity.md` passed selected `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
 
 ## Outcome and retrospective
 
