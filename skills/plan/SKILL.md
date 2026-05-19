@@ -1,7 +1,9 @@
 ---
 name: plan
+version: "1.0.0"
+schema-version: skill-readability-v1
 description: >
-  Create or revise a living execution plan after proposal, spec, and architecture are stable enough to implement. Use for multi-file, multi-component, risky, or milestone-based work that should be split into reviewable milestone slices.
+  Create or revise a living execution plan after proposal, spec, and architecture are stable enough to implement. Use for multi-file, multi-component, risky, migration-heavy, or milestone-based work that needs reviewable implementation slices, validation commands, recovery paths, dependencies, and current handoff state. Use spec, test-spec, implement, code-review, verify, or pr for those stages; do not use plan to choose product direction, write code, review diffs, verify branch readiness, or open PRs.
 argument-hint: [feature name, spec path, architecture path, or implementation goal]
 ---
 
@@ -10,6 +12,15 @@ argument-hint: [feature name, spec path, architecture path, or implementation go
 You are turning approved behavior and architecture into a safe, reviewable implementation path.
 
 Planning happens after the spec defines behavior and architecture defines the design direction. Do not use this skill to decide what the product should be.
+
+## Workflow role
+
+- role_name: plan
+- stage: authoring
+- upstream: accepted proposal, approved or reviewed spec, architecture records or ADRs when relevant, test-spec when already present, and project-local workflow evidence
+- downstream: plan-review
+- summary: Create or revise the execution plan artifact, milestone sequence, validation strategy, recovery path, current handoff summary, and lifecycle readiness.
+- must_not_claim: implementation completion, review approval, verification, branch readiness, PR readiness, final closeout readiness, or Done while downstream gates remain.
 
 ## Purpose
 
@@ -118,7 +129,7 @@ Lookup order:
 
 This discovery order is subordinate to the source-rank rule in `docs/workflows.md` when sources conflict.
 
-Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
+Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index when project-local and present, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
 
 ## Outputs
 
@@ -281,23 +292,26 @@ Read the full file when the whole file is the review target, the relevant sectio
 
 ## Expected output
 
-Start with:
+Use the `## Output skeleton` shape. Include the concrete plan path, `docs/plan.md` index update when applicable, milestone sequence, validation and recovery strategy, and readiness for `plan-review` or blocker state.
+
+## Output skeleton
+
+Fill `<placeholders>` with the actual plan result.
 
 ```md
 ## Result
 
 - Skill: plan
-- Status:
-- Artifacts changed:
-- Open blockers:
-- Next stage:
-- Readiness:
+- Status: <created | updated | blocked>
+- Artifacts changed: <paths or none>
+- Open blockers: <blockers or none>
+- Next stage: <plan-review | test-spec after plan-review | blocked>
+- Readiness: <ready for plan-review | blocked with reason>
+
+## Plan
+
+- Plan file: <docs/plans/YYYY-MM-DD-slug.md>
+- Plan index: <docs/plan.md updated | not-needed with rationale>
+- Current milestone: <milestone or not-started>
+- Remaining completion gates: <gates>
 ```
-
-Then include:
-
-- concrete plan file path;
-- updated `docs/plan.md` index when applicable;
-- milestone-by-milestone plan;
-- validation and recovery strategy;
-- readiness statement for `plan-review` and `test-spec`.
