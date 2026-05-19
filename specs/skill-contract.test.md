@@ -15,7 +15,7 @@
 - Completed amendment plan: [RigorLoop Published Skill Design Contract Execution Plan](../docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md), completed after PR #71 merged.
 - Completed rollout plan: [Published Skill Design Spec Family Rollout](../docs/plans/2026-05-19-published-skill-design-spec-family.md), completed after PR #72 merged.
 - Completed rollout plan: [Published Skill Design Implement And Code-Review Rollout](../docs/plans/2026-05-19-published-skill-design-implement-code-review.md), completed after PR #73 merged.
-- Current rollout plan: [Published Skill Design Plan Family Rollout](../docs/plans/2026-05-19-published-skill-design-plan-family.md), active after clean plan-review R1.
+- Current rollout plan: [Published Skill Design Plan Family Rollout](../docs/plans/2026-05-19-published-skill-design-plan-family.md), active in final closeout after clean M3 code-review and explain-change.
 - Architecture: not required. The approved slices change workflow-governance Markdown, canonical skill guidance, shared text blocks, static validation, generated skill mirrors, public adapter validation, and pilot skill wording. They do not add runtime components, storage, API boundaries, deployment boundaries, or a new validation architecture.
 - Project map: `docs/project-map.md` is present and was read for repository orientation. This test spec relies on the approved spec, active plan, workflow specs, stage skills, shared templates, generator scripts, existing validator patterns, and change-local pilot evidence.
 - Related proof surfaces:
@@ -1154,7 +1154,7 @@
 
 ## Next artifacts
 
-- Current rollout: owner approval for this test-spec amendment, then `implement M1` under [Published Skill Design Plan Family Rollout](../docs/plans/2026-05-19-published-skill-design-plan-family.md).
+- Current rollout: final `verify`, then `pr` handoff under [Published Skill Design Plan Family Rollout](../docs/plans/2026-05-19-published-skill-design-plan-family.md).
 - Historical carried context: the merged spec-family rollout used `T21`-`T24` for `spec` and `spec-review`.
 - Historical carried context: the merged execution/review rollout used `T25`-`T28` for `implement` and `code-review`.
 - Historical carried context: the merged published-skill design pilot used `T16`-`T20` for `proposal` and `proposal-review`.
@@ -1165,4 +1165,4 @@
 
 ## Readiness
 
-Active proof-planning surface for public skill portability, claim-boundary checks, the merged published-skill design pilot, the completed spec-family rollout, the completed execution/review rollout, and the plan-family rollout. The Published Skill Design Plan Family Rollout plan owns the current execution handoff to owner approval for this amendment, then `implement M1`.
+Active proof-planning surface for public skill portability, claim-boundary checks, the merged published-skill design pilot, the completed spec-family rollout, the completed execution/review rollout, and the plan-family rollout. The Published Skill Design Plan Family Rollout plan owns the current execution handoff through final `verify`, then `pr`.
