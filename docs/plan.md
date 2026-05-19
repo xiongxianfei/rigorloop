@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- none yet
+- [2026-05-19 Published Skill Design Implement And Code-Review Rollout](plans/2026-05-19-published-skill-design-implement-code-review.md) - active execution plan for continuing the merged published-skill design rollout with the `implement` and `code-review` pair; current next stage: plan-review.
 
 ## Blocked
 - none yet
