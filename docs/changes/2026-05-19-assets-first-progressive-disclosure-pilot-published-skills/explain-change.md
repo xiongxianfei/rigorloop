@@ -2,7 +2,7 @@
 
 Change: `2026-05-19-assets-first-progressive-disclosure-pilot-published-skills`
 Date: 2026-05-19
-Status: ready for hosted CI rerun
+Status: final closeout recorded
 
 ## Summary
 
@@ -149,8 +149,9 @@ python scripts/test-select-validation.py
 bash scripts/ci.sh --mode pr --base 9d1487500b4ea62909c98975e694611f71139b04 --head HEAD
 ```
 
-Hosted CI rerun has not passed yet. This explanation does not claim Done or
-hosted CI success.
+Hosted CI passed on PR #75 after the selector maintenance was pushed. The
+agent-owned final closeout is recorded; human review and merge remain outside
+this plan's agent-owned closeout.
 
 ## Review Resolution Summary
 
@@ -206,13 +207,12 @@ Preserved non-goals:
 Remaining risks are closeout and follow-on risks, not known implementation
 defects:
 
-- hosted CI rerun must pass before final Done closeout is recorded;
+- human review and merge remain outside this plan's agent-owned closeout;
 - the existing token-cost diagnostic in `test-adapter-distribution.py` remains
   visible stdout noise despite exit 0;
 - future packaged-resource proposals should choose patterns by skill type:
   constructive skills primarily use `assets/`, while deliberative skills
   should usually consider `references/` first.
 
-After this explanation update, the active plan should push the selector
-maintenance and observe hosted CI for PR #75. This explanation does not claim
-Done.
+The active plan is closed as done for agent-owned final closeout after PR #75
+and hosted CI success.
