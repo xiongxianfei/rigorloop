@@ -138,3 +138,15 @@ Resolution: review-resolution.md#code-review-verify-fix-r1
 Material findings: SRSC-VERIFY-CR1
 Open findings: None
 Recording status: recorded
+
+### Review entry
+Review ID: code-review-verify-fix-r2
+Stage: code-review
+Round: 2
+Reviewed artifact: verify-stage adapter compatibility fix
+Status: clean-with-notes
+Detailed record: reviews/code-review-verify-fix-r2.md
+Resolution: review-resolution.md#code-review-verify-fix-r2
+Material findings: None
+Open findings: None
+Recording status: recorded

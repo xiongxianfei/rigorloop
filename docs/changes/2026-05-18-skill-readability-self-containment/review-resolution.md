@@ -99,3 +99,7 @@ Safe resolution path: Reword the stale readiness/risk rows in `explain-change.md
 Stop state: cleared; rerun code-review for the verify-stage fix.
 Validation target: artifact lifecycle validation, change metadata validation, review artifact validation, diff check, and rerun code-review.
 Validation evidence: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-18-skill-readability-self-containment.md --path docs/plan.md --path specs/skill-readability-contract.md --path specs/skill-readability-contract.test.md --path docs/changes/2026-05-18-skill-readability-self-containment/change.yaml --path docs/changes/2026-05-18-skill-readability-self-containment/review-log.md --path docs/changes/2026-05-18-skill-readability-self-containment/review-resolution.md --path docs/changes/2026-05-18-skill-readability-self-containment/explain-change.md` passed; `python scripts/validate-change-metadata.py docs/changes/2026-05-18-skill-readability-self-containment/change.yaml` passed; `python scripts/validate-review-artifacts.py docs/changes/2026-05-18-skill-readability-self-containment` passed in structure mode; `git diff --check --` passed.
+
+### code-review-verify-fix-r2
+
+No material findings. The verify-stage adapter compatibility fix is closed and final verify can rerun.

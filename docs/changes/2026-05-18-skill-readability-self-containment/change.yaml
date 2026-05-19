@@ -201,6 +201,8 @@ validation:
     result: pass_structure_after_srsc_verify_cr1_fix
   - command: git diff --check --
     result: pass_after_srsc_verify_cr1_fix
+  - command: code-review verify-stage fix rerun
+    result: clean_with_notes_no_material_findings
 changed_files:
   - docs/proposals/2026-05-18-skill-readability-self-containment.md
   - specs/skill-readability-contract.md
@@ -240,4 +242,5 @@ changed_files:
   - docs/changes/2026-05-18-skill-readability-self-containment/reviews/code-review-m3-r1.md
   - docs/changes/2026-05-18-skill-readability-self-containment/reviews/code-review-m3-r2.md
   - docs/changes/2026-05-18-skill-readability-self-containment/reviews/code-review-verify-fix-r1.md
+  - docs/changes/2026-05-18-skill-readability-self-containment/reviews/code-review-verify-fix-r2.md
   - docs/changes/2026-05-18-skill-readability-self-containment/review-resolution.md
