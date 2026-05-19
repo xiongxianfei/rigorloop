@@ -628,8 +628,8 @@
 - Automation location:
   - `python scripts/measure-skill-tokens.py --skills-root skills`
   - `python scripts/build-skills.py --check`
-  - `python scripts/build-adapters.py --check`
-  - `python scripts/validate-adapters.py --version 0.1.4`
+  - `python scripts/build-adapters.py --version v0.1.5 --output-dir <tmp-output>`
+  - `python scripts/validate-adapters.py --root <tmp-output> --version v0.1.5`
   - `scripts/test-skill-validator.py`
   - manual behavior-parity review during M3
 

@@ -13,8 +13,8 @@ M1 records the preservation template and baseline protected behavior. M3 must fi
 
 | Skill | Removed or rewritten wording | Why safe | Essential rule preserved where |
 | --- | --- | --- | --- |
-| `proposal` | Pending M3 | Pending M3 | Pending M3 |
-| `proposal-review` | Pending M3 | Pending M3 | Pending M3 |
+| `proposal` | Frontmatter description was rewritten from a general proposal-authoring description into capability, trigger-context, and near-miss routing wording. `Workflow role` gained an explicit `must_not_claim` line. | Safe because the normal proposal procedure, required sections, artifact placement, evidence access, gates, scope preservation, handoff behavior, and output skeleton were not removed. The description now carries routing context that was previously split between the description and body. | Routing: frontmatter `description`. Claim boundary: `Workflow role` `must_not_claim` plus `Workflow handoff behavior`, `Rules`, and `Expected output`. Proposal artifact shape: `Required proposal sections` and `Output skeleton`. |
+| `proposal-review` | Frontmatter description was rewritten from a general review description into capability, trigger-context, and near-miss routing wording. `Workflow role` gained an explicit `must_not_claim` line. | Safe because the review dimensions, vision and standing-gate checks, scope review, material finding contract, recording obligations, isolation behavior, closed enums, and output skeleton were not removed. The description now carries routing context that was previously implied by body sections. | Routing: frontmatter `description`. Claim boundary: `Workflow role` `must_not_claim` plus `Workflow handoff behavior`, `Isolation and Recording`, and `Rules`. Review result shape: `Material findings`, closed enums, and `Output skeleton`. |
 
 ## `proposal` Protected Behavior
 
