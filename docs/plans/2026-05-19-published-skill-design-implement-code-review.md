@@ -62,14 +62,14 @@ This slice is intentionally narrow. It should make the implementation and review
 
 ## Current Handoff Summary
 
-- Current milestone: test-spec amendment for execution/review rollout
-- Current milestone state: not an implementation milestone
+- Current milestone: M1. Execution/review evidence scaffold
+- Current milestone state: planned
 - Last reviewed milestone: M0. Plan and change metadata
-- Review status: plan-review-r1 approved with no material findings
+- Review status: plan-review-r1 approved with no material findings; test-spec amendment completed
 - Remaining in-scope implementation milestones: M1. Execution/review evidence scaffold; M2. Deterministic validator and fixture support; M3. Implement and code-review skill rewrite
-- Next stage: test-spec
+- Next stage: implement M1
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation milestones have not started; test-spec amendment, implementation, code-review, explain-change, verify, PR handoff, hosted CI, human review, and merge remain.
+- Reason final closeout is or is not ready: implementation milestones have not started; implementation, code-review, explain-change, verify, PR handoff, hosted CI, human review, and merge remain.
 
 ## Milestones
 
@@ -255,7 +255,7 @@ This slice is intentionally narrow. It should make the implementation and review
 - [x] 2026-05-19: PR #72 merge confirmed and prior spec-family rollout closed as done.
 - [x] 2026-05-19: new execution/review rollout plan created.
 - [x] Plan-review completed.
-- [ ] Test-spec amendment completed and approved.
+- [x] Test-spec amendment completed and approved.
 - [ ] M1 implemented and reviewed.
 - [ ] M2 implemented and reviewed.
 - [ ] M3 implemented and reviewed.
@@ -269,6 +269,7 @@ This slice is intentionally narrow. It should make the implementation and review
 - 2026-05-19: keep all other skills out of scope for this slice. Rationale: small reviewable diffs matter more than broad simultaneous normalization.
 - 2026-05-19: require test-spec amendment before implementation. Rationale: the current test spec is pilot/spec-family focused and should operationalize this new execution/review slice before skill-body changes.
 - 2026-05-19: approve the plan with no material findings. Rationale: the plan keeps the next slice scoped to `implement` and `code-review`, preserves lifecycle sequencing, and requires test-spec amendment before implementation.
+- 2026-05-19: amend `specs/skill-contract.test.md` with execution/review proof cases before implementation. Rationale: `T25`-`T28` make audit, deterministic validation, behavior preservation, generated-output, and adapter proof concrete for `implement` and `code-review`.
 
 ## Surprises and discoveries
 
@@ -286,6 +287,11 @@ This slice is intentionally narrow. It should make the implementation and review
 - 2026-05-19 plan-review validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml --path docs/changes/2026-05-19-published-skill-design-implement-code-review/review-log.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/reviews/plan-review-r1.md` passed.
 - 2026-05-19 plan-review validation: `git diff --check -- docs/plans/2026-05-19-published-skill-design-implement-code-review.md docs/plan.md docs/changes/2026-05-19-published-skill-design-implement-code-review` passed.
 - 2026-05-19 plan-review selected CI: `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml --path docs/changes/2026-05-19-published-skill-design-implement-code-review/review-log.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/reviews/plan-review-r1.md` passed selected `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+- 2026-05-19 test-spec: amended `specs/skill-contract.test.md` with execution/review rollout cases `T25`-`T28`.
+- 2026-05-19 test-spec validation: `python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml` passed.
+- 2026-05-19 test-spec validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml` passed.
+- 2026-05-19 test-spec validation: `git diff --check -- specs/skill-contract.test.md docs/plans/2026-05-19-published-skill-design-implement-code-review.md docs/plan.md docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml` passed.
+- 2026-05-19 test-spec selected CI: `bash scripts/ci.sh --mode explicit --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml` passed selected `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
 
 ## Outcome and retrospective
 
