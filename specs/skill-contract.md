@@ -8,6 +8,7 @@
 
 - [Skill Contract Optimization](../docs/proposals/2026-05-08-skill-contract-optimization.md)
 - [Single Workflow Lane, Explain-Change Before Verify, and Public Skill Surface Boundary](../docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md)
+- [RigorLoop Published Skill Design Contract](../docs/proposals/2026-05-19-rigorloop-published-skill-design-contract.md)
 
 ## Goal and context
 
@@ -22,6 +23,8 @@ This spec owns skill-contract behavior. `specs/rigorloop-workflow.md` continues 
 This amendment tightens the published skill portability contract with exact allowed project-portable surfaces, blocked RigorLoop repository-internal surfaces, and static-check scope.
 
 This amendment also tightens token-cost discipline for normalized skills. Token-cost discipline is part of normalized skill behavior. It teaches agents to select the smallest evidence surface that can answer the current question while preserving correctness, validation coverage, review obligations, artifact obligations, and workflow gates.
+
+This amendment defines the published-skill design contract for portable operating documentation. It makes `description` the routing source, distinguishes repository-root internals from packaged skill-local resources, requires resource maps when packaged resources exist, defines published-skill design pilot routing-test evidence, and constrains the published-skill design pilot to an audit plus a `proposal` and `proposal-review` pilot.
 
 ## Glossary
 
@@ -45,22 +48,36 @@ This amendment also tightens token-cost discipline for normalized skills. Token-
 - `bounded evidence`: a small evidence surface such as a changed-path list, inventory, heading list, stable ID, count, matching line number, or targeted excerpt.
 - `high-volume surface`: a file set, artifact, log, generated output tree, or historical record set likely to produce large output.
 - `output cap`: a tool or command setting that truncates returned text. Output caps are safety rails, not evidence-selection strategy.
+- `routing description`: the frontmatter `description` field that must contain portable skill-selection guidance.
+- `workflow role`: a short section that states a lifecycle skill's stage role, received input, produced output, and downstream claim boundary.
+- `packaged skill resource`: a file shipped inside the installed skill package, such as `<skill>/references/`, `<skill>/scripts/`, or `<skill>/assets/`.
+- `repository-root internal path`: a RigorLoop maintainer-only path such as root `specs/`, root `schemas/`, root `scripts/`, root `dist/`, root `benchmarks/`, or maintainer-only docs.
+- `routing fixture`: a representative prompt used to evaluate description coverage and transcript behavior without claiming deterministic model auto-selection.
+
+## Slice terminology
+
+This spec uses two rollout labels:
+
+- `baseline normalization first slice`: the historical skill-contract optimization slice covering `workflow`, `plan`, `implement`, `code-review`, `verify`, `pr`, and `learn`.
+- `published-skill design pilot`: the R27 through R36 amendment slice covering `proposal`, `proposal-review`, validator changes needed for the pilot, and generated adapter validation for changed skills.
+
+Do not use the unqualified phrase `first implementation slice` when the intended slice could be ambiguous.
 
 ## Examples first
 
-### Example E1: first-slice execution skill avoids review overclaim
+### Example E1: baseline normalization execution skill avoids review overclaim
 
-Given `skills/implement/SKILL.md` is normalized in the first implementation slice
+Given `skills/implement/SKILL.md` is normalized in the baseline normalization first slice
 When the skill reports successful implementation for a milestone
 Then its output may state implementation work and targeted validation are complete
 And it may state the next stage is `code-review`
 But it must not claim review passed, branch-ready, PR-ready, or ready-for-final-closeout.
 
-### Example E2: non-first-slice skill is not blocked immediately
+### Example E2: non-baseline-slice skill is not blocked immediately
 
 Given `skills/proposal/SKILL.md` has not yet been normalized
-When the first implementation slice normalizes `workflow`, `plan`, `implement`, `code-review`, `verify`, `pr`, and `learn`
-Then the first slice remains valid
+When the baseline normalization first slice normalizes `workflow`, `plan`, `implement`, `code-review`, `verify`, `pr`, and `learn`
+Then the baseline normalization first slice remains valid
 And `proposal` is normalized in the later core-lifecycle wave.
 
 ### Example E3: shared block is copied and checked
@@ -78,9 +95,9 @@ Then `.codex/skills/code-review/SKILL.md` and affected `dist/adapters/**/code-re
 And contributors do not hand-edit those generated copies
 But the published `code-review` skill text does not expose repository-local generation paths, selector path constraints, or shared-block implementation details.
 
-### Example E5: validator uses narrow overclaim checks
+### Example E5: baseline validator uses narrow overclaim checks
 
-Given the first validation slice adds checks for `skills/verify/SKILL.md`
+Given the baseline normalization first slice adds validation checks for `skills/verify/SKILL.md`
 When the validator checks overclaim wording
 Then it prefers required positive wording such as `branch-ready`
 And it blocks narrow historically dangerous PR-readiness claims
@@ -98,6 +115,40 @@ Given the workflow stage label is `ci-maintenance`
 When contributors invoke the current skill entrypoint
 Then they use the existing `ci` skill for CI infrastructure maintenance
 And the spec does not require a `skills/ci-maintenance/SKILL.md` path.
+
+### Example E8: description carries portable routing
+
+Given a published `proposal-review` skill
+When an adapter lists available skills before loading skill bodies
+Then the `description` contains the review capability, trigger contexts, and important near-miss boundaries
+And no required routing logic exists only in `SKILL.md` or optional `when_to_use` metadata.
+
+### Example E9: packaged scripts are allowed when mapped
+
+Given a skill ships `scripts/validate_review_artifact.py` inside the skill package
+When `SKILL.md` includes a `Resource map`
+Then the resource map states when to run the script, what input it expects, how to interpret output or exit code, and what to do on failure
+And the published-skill portability check does not reject the packaged script merely because its path contains `scripts/`.
+
+### Example E10: repository-root scripts are not customer dependencies
+
+Given a published skill tells a customer project to run root `scripts/build-adapters.py`
+When that script is not packaged with the skill and is not project-local
+Then published-skill portability validation fails because the skill requires a RigorLoop repository-root internal path.
+
+### Example E11: published-skill design pilot routing fixtures are not model-selection proof
+
+Given a pilot skill includes positive, casual positive, edge positive, near negative, competing-skill, and should-not-trigger prompts
+When the published-skill design pilot validates those fixtures
+Then validation may prove fixture coverage and support transcript review
+But it must not claim deterministic runtime skill auto-selection unless an approved routing harness exists.
+
+### Example E12: audit records but does not retire skills
+
+Given the published-skill design pilot audit identifies a weak skill candidate
+When the audit records the candidate
+Then it records the skill name, reason, affected artifacts or gates, likely owner, and whether separate approval is required
+But it does not merge, retire, rename, remove, or change ownership of that skill in the published-skill design pilot.
 
 ## Requirements
 
@@ -181,6 +232,12 @@ R3k. Internal RigorLoop repository details MAY remain in specs, tests, plans, ma
 
 R3l. Static validation for published skill portability MUST be narrow and phrase- or path-based. It MUST fail on unqualified references to RigorLoop repository-internal paths or commands in published skill text, while allowing the project-portable surfaces listed in `R3f`.
 
+R3m. Body `When to use` and `When not to use` sections MUST NOT replace frontmatter `description` as the portable routing source.
+
+R3n. Body `When to use` and `When not to use` sections MAY summarize invocation scope, local stop conditions, or competing RigorLoop skills after the skill has loaded, but required selection logic MUST remain present in `description`.
+
+R3o. Validators SHOULD check that `description` is independently sufficient for routing and SHOULD NOT require body sections to restate every trigger.
+
 R4. Normalized authoring skills MUST define the artifact they produce or update and the required artifact sections or quality checklist that make the output reviewable.
 
 R4a. Authoring skills include `proposal`, `spec`, `architecture`, `plan`, `test-spec`, `explain-change`, and other skills that create or revise durable authoring artifacts.
@@ -203,7 +260,7 @@ R7. Normalized periodic, on-demand, or support skills MUST define trigger, outpu
 
 R7a. Periodic, on-demand, and support skills include `learn`, `explore`, `research`, `vision`, `project-map`, and `bugfix` when those skills are normalized.
 
-R8. The first implementation slice MUST normalize only these canonical skills:
+R8. The baseline normalization first slice MUST normalize only these canonical skills:
 - `skills/workflow/SKILL.md`
 - `skills/plan/SKILL.md`
 - `skills/implement/SKILL.md`
@@ -212,21 +269,21 @@ R8. The first implementation slice MUST normalize only these canonical skills:
 - `skills/pr/SKILL.md`
 - `skills/learn/SKILL.md`
 
-R8a. The first implementation slice MUST add or align required core sections where missing.
+R8a. The baseline normalization first slice MUST add or align required core sections where missing.
 
-R8b. The first implementation slice MUST add or align do-not-overclaim guidance.
+R8b. The baseline normalization first slice MUST add or align do-not-overclaim guidance.
 
-R8c. The first implementation slice MUST add or align compact result output expectations.
+R8c. The baseline normalization first slice MUST add or align compact result output expectations.
 
-R8d. The first implementation slice MUST align milestone, progress, readiness, and closeout wording where relevant.
+R8d. The baseline normalization first slice MUST align milestone, progress, readiness, and closeout wording where relevant.
 
-R8e. The first implementation slice MUST add or align targeted evidence-reading guidance.
+R8e. The baseline normalization first slice MUST add or align targeted evidence-reading guidance.
 
-R8f. The first implementation slice MUST include generated-output drift checks when canonical skill changes produce generated output changes.
+R8f. The baseline normalization first slice MUST include generated-output drift checks when canonical skill changes produce generated output changes.
 
-R8g. The first implementation slice MUST NOT normalize every skill.
+R8g. The baseline normalization first slice MUST NOT normalize every skill.
 
-R8h. The first implementation slice MUST keep repository-maintainer generated-output handling out of published skill text.
+R8h. The baseline normalization first slice MUST keep repository-maintainer generated-output handling out of published skill text.
 
 R9. Later-phase normalization MUST proceed in the order approved by the proposal unless a later approved proposal changes the order.
 
@@ -307,7 +364,7 @@ R14c. `scripts/test-skill-validator.py` or another repo-owned validation script 
 
 R14d. Shared blocks MUST NOT replace or outrank the workflow spec or this skill-contract spec.
 
-R14e. Shared-block generation into skills MUST NOT be added in the first implementation slice.
+R14e. Shared-block generation into skills MUST NOT be added in the baseline normalization first slice.
 
 R15. The first published-skill shared-block set MUST include only stable rules approved for v1:
 - `review-isolation-and-recording`
@@ -342,7 +399,7 @@ R18a. Validators SHOULD prefer positive required wording checks over forbidden p
 
 R18b. Validators MAY check a small list of historically dangerous phrases for `implement`, `code-review`, `verify`, `pr`, `plan`, and `learn`.
 
-R18c. Validators MUST NOT perform broad semantic quality scoring in the first validation slice.
+R18c. Validators MUST NOT perform broad semantic quality scoring in the baseline normalization first slice.
 
 R18d. Forbidden phrase checks MUST avoid blocking explicit negative guidance such as "Do not set Ready for final closeout from implement."
 
@@ -404,6 +461,112 @@ R26a. A process-defect finding MUST identify the noisy evidence surface and the 
 
 R26b. A process-defect finding MUST NOT require reducing correctness checks, skipping required artifacts, or ignoring full-file-read escape conditions.
 
+R27. Published skills MUST be portable operating documentation for capable agents.
+
+R27a. A published skill MUST teach a specialized workflow, artifact contract, quality gate, validation behavior, tool sequence, or trust boundary that the base model would not reliably perform unaided.
+
+R27b. A published skill MUST NOT rely on maintainers having this repository's internal specs, schemas, scripts, reports, change-local proof packs, or generated adapter output unless those resources are packaged with the skill, supplied by the user, present as project-local artifacts, or the RigorLoop repository itself is the target.
+
+R27c. A published skill MUST NOT hide side effects or authority beyond its name and `description`.
+
+R28. Skill names SHOULD be short, concrete, lowercase, hyphenated, and action- or artifact-oriented.
+
+R28a. A new or retained skill SHOULD be justified by at least one of: repeatable lifecycle procedure, durable artifact contract, domain-specific risk judgment, tool or command sequence, deterministic helper script, output shape the model often gets wrong, or safety or trust boundary.
+
+R28b. Contributors SHOULD reject, merge, or keep out of skill form candidates that are only generic summarization, generic writing advice, generic code help, simple Q&A, one-step tasks, or preferences better handled by project instructions.
+
+R29. The frontmatter `description` MUST be the portable routing source.
+
+R29a. `description` MUST state the skill capability and trigger contexts.
+
+R29b. `description` MUST include important near-miss boundaries when competing skills or common false positives exist.
+
+R29c. `description` MUST NOT be a synonym dump.
+
+R29d. `description` MUST be `<= 1024` characters.
+
+R29e. Optional adapter-specific metadata such as `when_to_use` MAY exist, but required routing logic MUST still be present in `description`.
+
+R29f. Validators MUST evaluate routing coverage against `description`, not require `when_to_use`.
+
+R30. A lifecycle skill MUST include `Workflow role` when it produces or closes a lifecycle artifact, gates a stage, participates in stage handoff, or claims downstream readiness.
+
+R30a. `Workflow role` MUST state the lifecycle role, received input, produced output or status, and downstream claims the skill must not make.
+
+R30b. Non-lifecycle skills MAY omit `Workflow role` when they do not produce or close lifecycle artifacts, gate stages, participate in handoff, or claim downstream readiness.
+
+R31. A skill's body MUST contain execution guidance for the normal workflow path.
+
+R31a. A skill body MUST NOT rely on essential trigger logic that is absent from `description`.
+
+R31b. A skill body SHOULD use imperative instructions for procedure, resource routing, stop conditions, output expectations, and validation.
+
+R31c. A skill body SHOULD explain the rationale for judgment-affecting rules when the rationale helps prevent over-application or under-application.
+
+R31d. Hard-constraint language SHOULD be reserved for security boundaries, privacy constraints, destructive actions, required output formats, claim ownership, formal review recording, schema requirements, and validation requirements.
+
+R32. A skill that ships packaged `references/`, `scripts/`, or `assets/` resources MUST include a `Resource map`.
+
+R32a. The `Resource map` MUST name every packaged resource and state the condition under which the agent should load or use it.
+
+R32b. A skill that ships no packaged resources MUST NOT include a required "No bundled resources" line solely to state absence.
+
+R32c. A skill that references a packaged script MUST state when to run it, what input it expects, what output or exit code means, and what to do on failure.
+
+R32d. Packaged skill-local `<skill>/scripts/` resources MUST NOT be treated as forbidden repository-root `scripts/` dependencies.
+
+R33. Published-skill self-containment validation MUST distinguish repository-root internal paths from packaged skill-local resources.
+
+R33a. Published skills MUST NOT require unavailable repository-root internal paths such as root `specs/`, root `schemas/`, maintainer-only root `docs/`, root `benchmarks/`, root `scripts/`, or root `dist/` as normal customer-project dependencies.
+
+R33b. Published skills MAY use project-local docs when present and relevant, user-provided paths, packaged skill resources, and internal RigorLoop paths when operating inside the RigorLoop repository or when those paths are the target artifact.
+
+R33c. Validators MUST NOT use a blunt path deny-list that rejects every mention of `scripts/`; they MUST distinguish packaged skill scripts from repository-root internal scripts.
+
+R34. Artifact-producing skills MUST include a compact fenced output skeleton or a reviewed equivalent template.
+
+R34a. Examples and counterexamples MAY clarify behavior, but examples MUST NOT replace normative output skeletons.
+
+R34b. Long examples SHOULD live in packaged references, assets, or other appropriate artifacts instead of the common-path `SKILL.md` body.
+
+R35. First-slice routing tests MUST be prompt fixtures and transcript-review inputs unless a dedicated routing harness is approved.
+
+R35a. First-slice routing fixture sets SHOULD include obvious positives, casual positives, edge positives, near negatives, competing-skill prompts, and should-not-trigger prompts for each changed skill.
+
+R35b. Published-skill design pilot routing evidence MAY prove description trigger coverage, near-miss coverage, fixture coverage, and transcript observations about under-triggering, over-triggering, or unnecessary resource loading.
+
+R35c. First-slice routing tests MUST NOT claim deterministic runtime skill auto-selection in CI unless a dedicated, approved routing harness defines that oracle.
+
+R35d. Published-skill design pilot routing validation MUST NOT add broad semantic scoring of skill prose as a required CI gate.
+
+R35e. For each changed published-skill design pilot skill, the implementation MUST provide a routing coverage table in the plan, test spec, or fixture file.
+
+R35f. The routing coverage table MUST identify positive triggers, near misses when relevant, competing skills when relevant, and should-not-trigger prompt classes.
+
+R35g. Static checks MAY validate routing coverage table presence and bounded phrase coverage, but MUST NOT use broad semantic scoring unless a later approved routing harness defines that oracle.
+
+R36. The published-skill design pilot MUST be audit-first and pilot-scoped.
+
+R36a. The published-skill design pilot MUST audit current RigorLoop skills and classify findings such as description routing gaps, missing near-miss boundaries, hidden trigger logic, missing workflow role, missing output template, unavailable internal dependency, missing resource map, validation over-application, under-specified validation, generic skill candidate, script candidate, reference split candidate, example or counterexample candidate, and token-cost risk.
+
+R36b. The published-skill design pilot MUST limit skill body changes to `skills/proposal/SKILL.md`, `skills/proposal-review/SKILL.md`, validator changes needed for the pilot, and generated adapter validation for changed skills.
+
+R36c. The published-skill design pilot MUST NOT rewrite all skills.
+
+R36d. The published-skill design pilot audit MAY record merge or retire candidates but MUST NOT merge, retire, rename, remove, or change ownership of any skill.
+
+R36e. Each merge or retire candidate recorded by the audit MUST include skill name, reason it may not earn its existence, affected artifacts or gates, likely owner, and whether a separate proposal or spec amendment is required.
+
+R36f. The pilot token-cost budget target is zero token regression for `proposal` and `proposal-review`; up to `+5%` is tolerated only with recorded rationale, and above `+10%` blocks the pilot unless this spec is revised.
+
+R36g. For each changed published-skill design pilot skill, implementation MUST record a behavior-preservation note.
+
+R36h. The behavior-preservation note MUST identify removed or rewritten behavior-significant wording, why the change is safe, and where the essential rule is preserved.
+
+R36i. The published-skill design pilot MUST include behavior-parity evidence for representative proposal and proposal-review artifacts showing that material review status, finding format, recording obligations, stop conditions, validation obligations, and claim boundaries were not weakened.
+
+R36j. A structural validation pass alone is insufficient to close the published-skill design pilot when a touched skill changed behavior-significant wording.
+
 ## Inputs and outputs
 
 Inputs:
@@ -421,10 +584,14 @@ Outputs:
 
 - `specs/skill-contract.md`;
 - normalized canonical skill source for the in-scope slice;
+- a skill existence audit for the pilot pair and recorded follow-ons for any merge or retire candidates;
+- a routing coverage table for each changed published-skill design pilot skill;
+- a behavior-preservation note for each changed published-skill design pilot skill;
+- behavior-parity evidence for representative proposal and proposal-review artifacts;
 - copied shared policy blocks where adopted;
 - regenerated `.codex/skills/` output when canonical skills change;
 - regenerated `dist/adapters/` output when canonical skills change;
-- validator checks for required sections, shared-block drift, generated-output drift, and narrow overclaim assertions;
+- validator checks for required sections, description length and routing coverage, resource-map coverage, self-containment, shared-block drift, generated-output drift, and narrow overclaim assertions;
 - contributor summary updates when root or workflow guidance is affected.
 
 ## State and invariants
@@ -438,8 +605,12 @@ Outputs:
 - Public shared blocks are copied and checked in v1, not generated into skills.
 - Published skill text does not expose repository-local source paths, generated mirror paths, adapter package paths, selector path constraints, drift-check mechanics, shared-block implementation details, or RigorLoop-local examples.
 - Published skill portability checks apply only to shipped skill text and generated public skill copies, not internal maintainer surfaces.
-- The first implementation slice is limited to seven canonical skills.
+- The baseline normalization first slice is limited to seven canonical skills.
 - The `ci` skill remains the entrypoint for the `ci-maintenance` stage label.
+- `description` remains the portable routing source for published skills.
+- Packaged skill-local resources are allowed only when included in adapter output and mapped in `SKILL.md`.
+- Repository-root internal paths are not normal customer-project dependencies.
+- The published-skill design pilot does not merge, retire, rename, remove, or change ownership of skills.
 
 ## Error and boundary behavior
 
@@ -450,15 +621,27 @@ Outputs:
 - If a proposed forbidden phrase check blocks explicit negative guidance, the check MUST be narrowed before it is relied on.
 - If the workflow stage label `ci-maintenance` is used in a normalization list, spec and plan authors MUST map it to the existing `ci` skill entrypoint unless a later approved spec renames the skill path.
 - If a new optional skill does not yet exist or lacks approved artifact or gate ownership, it MUST NOT be included in implementation scope solely because it is named as a Phase 4 candidate.
+- If `description` exceeds 1024 characters, validation MUST fail.
+- If a skill ships packaged resources without a `Resource map`, validation MUST fail for that skill.
+- If a published skill requires an unavailable repository-root internal path as a customer-project dependency, portability validation MUST fail.
+- If a validator cannot distinguish repository-root `scripts/` from packaged skill-local scripts, the validator MUST be narrowed before it is relied on.
+- If routing fixtures are used without an approved routing harness, review output MUST NOT claim deterministic model auto-selection.
+- If the published-skill design pilot audit identifies a merge or retire candidate, implementation MUST record it as a follow-on instead of acting on it.
+- If a changed published-skill design pilot skill lacks a routing coverage table, the pilot MUST NOT claim routing coverage validation is complete.
+- If a changed published-skill design pilot skill lacks a behavior-preservation note, the pilot MUST NOT claim behavior-significant wording was safely preserved.
+- If behavior-parity evidence shows weakened material review status, finding format, recording obligations, stop conditions, validation obligations, or claim boundaries, the pilot MUST stop for revision before closeout.
 
 ## Compatibility and migration
 
 - Existing unnormalized skills remain valid until their approved normalization phase.
-- The first implementation slice does not require all skills to adopt the required core sections at once.
+- The baseline normalization first slice does not require all skills to adopt the required core sections at once.
 - Existing contributor generated-output policy remains unchanged: edit canonical skill source, regenerate generated output, and validate drift. That policy is contributor-maintenance guidance and is not copied into published skill text.
 - Existing `skills/ci/` path remains valid for `ci-maintenance`.
 - Existing formal review recording rules remain authoritative for review records; this spec only defines how shared review guidance is copied and checked in skills.
 - Rollback for wording-only skill changes may revert the affected canonical skills, shared blocks, validator checks, and generated output together.
+- Existing skills are not invalid solely because their `description` exceeds 1024 characters or lacks the new routing structure until the approved implementation slice brings them into scope.
+- Optional `when_to_use` metadata remains compatible when an adapter supports it, but it is not required and does not replace `description`.
+- Existing packaged skill resources may remain until their owning skill is in scope, but once the skill is changed for this contract, resource-map coverage applies to packaged resources in that skill.
 
 ## Observability
 
@@ -466,12 +649,14 @@ Outputs:
 - Selector-selected validation SHOULD classify touched spec, skill, template, generated, adapter, change-local, and review-artifact paths without unclassified paths.
 - Review and verification artifacts SHOULD cite validation commands and results rather than generic success claims.
 - No runtime logs, metrics, traces, or audit events are required because this is repository guidance behavior, not runtime product behavior.
+- Validation output SHOULD identify description-length failures, missing trigger contexts, missing near-miss boundaries, missing resource-map entries, unavailable repository-root dependencies, and routing fixture coverage gaps by stable check ID when those checks are implemented.
 
 ## Security and privacy
 
 - Skill normalization MUST NOT require committing secrets, credentials, tokens, private keys, machine-local paths, or private user data.
 - Generated output refreshes MUST preserve the existing security boundary that derived adapter packages do not become independent sources of truth.
 - Evidence-reading guidance MUST NOT encourage pasting sensitive logs or secrets into skill output.
+- Published skills MUST NOT instruct users to expose secrets, credentials, proxy URLs, private hostnames, tokens, private keys, or raw environment values while using packaged resources or scripts.
 
 ## Accessibility and UX
 
@@ -479,11 +664,15 @@ This change has no user-interface surface. The relevant user experience is contr
 
 ## Performance expectations
 
-- Skill validation SHOULD remain static and repository-local in the first implementation slice.
-- The first validation slice MUST NOT add broad natural-language quality scoring.
+- Skill validation SHOULD remain static and repository-local in the baseline normalization first slice and published-skill design pilot.
+- The baseline normalization first slice and published-skill design pilot MUST NOT add broad natural-language quality scoring.
 - Evidence-reading guidance SHOULD reduce unnecessary broad reads by preferring targeted summaries, IDs, headings, line citations, and path lists first.
 - Generated-output checks SHOULD use existing build and adapter validation paths unless the approved plan names a narrower or broader proof scope.
 - Token-cost static validation MUST stay narrow, phrase-based, and reviewable rather than scoring prose quality.
+- `description` length validation MUST be deterministic.
+- Routing fixture validation MUST remain deterministic unless a dedicated routing harness defines a stable oracle.
+- The pilot token-cost budget MUST be measured for `proposal` and `proposal-review` before rollout expands.
+- Behavior-parity evidence for the published-skill design pilot MUST be concrete enough for review without running broad natural-language scoring.
 
 ## Edge cases
 
@@ -495,12 +684,20 @@ This change has no user-interface surface. The relevant user experience is contr
 6. If a generated adapter path changes because adapter packaging changes, the active plan or validation command must list the concrete changed generated paths instead of relying on an unclassified directory path.
 7. If `ready for final closeout` appears inside a negative instruction, validators must not treat that occurrence as an implementation overclaim.
 8. If a contributor proposes a new optional skill named in Phase 4, that proposal still must prove artifact or gate ownership before the skill is added.
+9. If a skill has no packaged resources, it does not need a `Resource map` or "No bundled resources" statement.
+10. If a skill ships a packaged script but the script is rarely used, the `Resource map` still must name the script and its load condition.
+11. If a project-local `docs/workflows.md` exists in a customer project, a published skill may consult it when relevant; that does not authorize requiring this repository's maintainer-only workflow docs in customer projects.
+12. If a prompt fixture suggests a competing skill, the expected evidence is that the changed skill's `description` contains a near-miss boundary or that transcript review records the routing issue; it is not automatic CI proof of model selection.
+13. If the published-skill design pilot audit finds a candidate for retirement, it is a follow-on decision and does not change adapter contents in the pilot.
+14. If a body `When to use` section is useful after a skill has loaded, it may summarize scope or competing skills, but missing routing details in `description` remain a defect.
+15. If routing coverage depends on a phrase table, static validation may check table and phrase presence, but transcript review still owns qualitative under-trigger or over-trigger observations.
+16. If a touched pilot skill removes wording because the rule moved to another section, the behavior-preservation note must cite the destination section.
 
 ## Non-goals
 
 - Do not change lifecycle stage order.
 - Do not replace `specs/rigorloop-workflow.md`.
-- Do not normalize every skill in the first implementation slice.
+- Do not normalize every skill in the baseline normalization first slice.
 - Do not add a standalone `review-resolution` skill.
 - Do not add a standalone `token-budget` skill.
 - Do not add a `skills/ci-maintenance/SKILL.md` path in this slice.
@@ -509,24 +706,42 @@ This change has no user-interface surface. The relevant user experience is contr
 - Do not hand-edit generated `.codex/skills/` or `dist/adapters/` output.
 - Do not expose repository-maintainer source, generation, adapter, selector-path, shared-block implementation details, or RigorLoop-local examples in published skill text.
 - Do not replace proposal, spec, architecture, plan, review, verification, explain-change, or PR artifacts with skill prose.
+- Do not require `when_to_use` frontmatter.
+- Do not require a `Resource map` when a skill ships no packaged resources.
+- Do not claim published-skill design pilot routing fixtures prove deterministic model auto-selection.
+- Do not merge, retire, rename, remove, or change ownership of skills in the published-skill design pilot.
+- Do not let body `When to use` or `When not to use` sections become the primary routing source.
+- Do not close the published-skill design pilot on structural validation alone when behavior-significant skill wording changed.
 
 ## Acceptance criteria
 
 - A reviewer can identify `specs/skill-contract.md` as the normative skill-contract source.
 - A reviewer can distinguish skill-contract behavior from workflow-routing behavior owned by `specs/rigorloop-workflow.md`.
 - A contributor can identify the required core sections for a normalized skill.
-- A contributor can identify which skills belong to the first implementation slice.
+- A contributor can identify which skills belong to the baseline normalization first slice.
 - A contributor can identify the later normalization phases without guessing.
 - A contributor can see that `ci` is the skill entrypoint for `ci-maintenance`.
 - A reviewer can confirm that normalized skills include local do-not-overclaim guidance.
 - A reviewer can confirm that skill outputs are summary-first and include the common result fields or an approved equivalent.
 - A reviewer can confirm that shared blocks adopted in v1 are copied from `templates/shared/` and checked for drift.
 - A reviewer can confirm that generated `.codex/skills/` and `dist/adapters/` output are regenerated rather than hand-edited.
-- A reviewer can confirm that published first-slice skills do not expose repository-maintainer generated-output handling, internal workflow spec paths, adapter package paths, selector path constraints, or shared-block implementation details.
+- A reviewer can confirm that published baseline normalization first-slice skills do not expose repository-maintainer generated-output handling, internal workflow spec paths, adapter package paths, selector path constraints, or shared-block implementation details.
 - A reviewer can identify the exact published-skill allowlist and blocklist for project-portable wording.
 - A reviewer can confirm that public skill portability checks apply to shipped skill text and generated public copies, not internal specs, plans, tests, generator scripts, maintainer docs, or repository-only contributor docs.
 - A reviewer can confirm that validator checks are positive-first, narrow, and not broad semantic scoring.
 - A contributor can determine when a new skill is justified and when an existing skill or template should be updated instead.
+- A reviewer can confirm that `description` is the required portable routing source and is capped at 1024 characters.
+- A reviewer can confirm that optional `when_to_use` metadata is not required and does not replace `description`.
+- A reviewer can confirm that lifecycle skills with handoff, gate, artifact closeout, or downstream readiness responsibilities require `Workflow role`.
+- A reviewer can confirm that skills with packaged resources include a resource map naming every packaged resource with a load condition.
+- A reviewer can confirm that packaged skill-local scripts are distinguished from forbidden repository-root scripts.
+- A reviewer can confirm that published-skill design pilot routing tests are bounded fixture and transcript evidence unless an approved harness exists.
+- A reviewer can confirm that the published-skill design pilot audit results do not directly merge, retire, rename, remove, or change ownership of skills.
+- A reviewer can confirm that pilot token-cost measurement uses the zero target, `+5%` rationale tolerance, and `+10%` hard cap.
+- A reviewer can confirm that body `When to use` and `When not to use` sections do not replace `description` as the portable routing source.
+- A reviewer can inspect a routing coverage table for each changed published-skill design pilot skill.
+- A reviewer can inspect a behavior-preservation note for each changed published-skill design pilot skill.
+- A reviewer can confirm behavior-parity evidence shows no weakening of material review status, finding format, recording obligations, stop conditions, validation obligations, or claim boundaries.
 
 ## Open questions
 
@@ -534,9 +749,11 @@ This change has no user-interface surface. The relevant user experience is contr
 
 ## Next artifacts
 
-- `code-review M2` under [Single Workflow Lane, Explain-Change Before Verify Execution Plan](../docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md) after M2 implementation handoff.
-- `implement M3` consumes the public skill portability proof.
-- `code-review M3` after M3 implementation handoff.
+- Current amendment: plan for the audit-first `proposal` and `proposal-review` pilot.
+- After plan: `plan-review`.
+- Historical carried context: `code-review M2` under [Single Workflow Lane, Explain-Change Before Verify Execution Plan](../docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md) after M2 implementation handoff.
+- Historical carried context: `implement M3` consumes the public skill portability proof.
+- Historical carried context: `code-review M3` after M3 implementation handoff.
 
 ## Follow-on artifacts
 
@@ -547,7 +764,11 @@ This change has no user-interface surface. The relevant user experience is contr
 - Spec-review: approved in [spec-review-r5](../docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/spec-review-r5.md).
 - Plan: [Single Workflow Lane, Explain-Change Before Verify Execution Plan](../docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md).
 - Current amendment: public skill surface boundary allow/block policy approved in this spec.
+- Current amendment proposal: [RigorLoop Published Skill Design Contract](../docs/proposals/2026-05-19-rigorloop-published-skill-design-contract.md).
+- Current amendment proposal-review: [proposal-review-r2](../docs/changes/2026-05-19-rigorloop-published-skill-design-contract/reviews/proposal-review-r2.md).
+- Current amendment spec-review: [spec-review-r3](../docs/changes/2026-05-19-rigorloop-published-skill-design-contract/reviews/spec-review-r3.md).
+- Current amendment plan: [RigorLoop Published Skill Design Contract Execution Plan](../docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md).
 
 ## Readiness
 
-Approved public skill surface boundary tightening. The active execution plan may rely on this approved spec; M3 owns the canonical and generated public skill portability implementation proof.
+Approved published-skill design contract amendment with execution planning created. Existing approved historical content remains the carried baseline, and the active plan owns the current live handoff after clean `spec-review-r3`.
