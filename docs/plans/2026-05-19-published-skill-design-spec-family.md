@@ -61,20 +61,20 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 
 ## Current Handoff Summary
 
-- Current milestone: planning
-- Current milestone state: test-spec completed
+- Current milestone: M1. Spec Family Audit And Evidence Scaffold
+- Current milestone state: review-requested
 - Last reviewed milestone: planning
 - Review status: plan-review-r1 approved; no material findings
-- Remaining in-scope implementation milestones: M1, M2, M3
-- Next stage: implement M1
+- Remaining in-scope implementation milestones: M1 code-review, M2, M3
+- Next stage: code-review for M1
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation milestones, code-review, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M1 code-review, later implementation milestones, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
 ### M1. Spec Family Audit And Evidence Scaffold
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: create the change-local evidence structure for `spec` and `spec-review` before changing validators or skill bodies.
 - Requirements: R27-R31, R34-R35, R36 audit/preservation/parity discipline.
 - Files/components likely touched:
@@ -100,7 +100,7 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 - Milestone closeout:
   - validation passed
   - progress updated
-  - decision log updated if needed
+  - decision log updated
   - validation notes updated
   - milestone committed
 - Risks: audit scope could expand into broad all-skill rewrite.
@@ -220,7 +220,7 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 - [x] 2026-05-19: new spec-family rollout plan created.
 - [x] Plan-review completed.
 - [x] Test-spec amendment completed and approved.
-- [ ] M1 implemented and reviewed.
+- [x] M1 implemented; code-review pending.
 - [ ] M2 implemented and reviewed.
 - [ ] M3 implemented and reviewed.
 - [ ] Explain-change recorded.
@@ -234,6 +234,7 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 - 2026-05-19: require test-spec amendment before implementation. Rationale: the existing test spec is pilot-focused and should operationalize this new spec-family slice before code or skill-body changes.
 - 2026-05-19: approve the plan with no material findings. Rationale: the plan keeps the next slice scoped to `spec` and `spec-review`, preserves lifecycle sequencing, and requires test-spec amendment before implementation.
 - 2026-05-19: amend `specs/skill-contract.test.md` with spec-family proof cases before implementation. Rationale: `T21`-`T24` make audit, deterministic validation, behavior preservation, generated-output, and adapter proof concrete for `spec` and `spec-review`.
+- 2026-05-19: keep M1 as evidence-only. Rationale: the audit found workflow-role and output-skeleton gaps in `spec` and `spec-review`, but those skill-body changes belong to M3 after deterministic validator scope is settled.
 
 ## Surprises and discoveries
 
@@ -256,6 +257,11 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 - 2026-05-19 test-spec validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml` passed.
 - 2026-05-19 test-spec validation: `git diff --check -- specs/skill-contract.test.md docs/plans/2026-05-19-published-skill-design-spec-family.md docs/plan.md docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml` passed.
 - 2026-05-19 test-spec selected CI: `bash scripts/ci.sh --mode explicit --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml` passed selected artifact-lifecycle, change-metadata regression, and change-metadata checks.
+- 2026-05-19 M1 evidence: created `skill-audit.md`, `routing-coverage.md`, `behavior-preservation.md`, and `behavior-parity.md` for the spec-family rollout.
+- 2026-05-19 M1 validation: `python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml` passed.
+- 2026-05-19 M1 validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-spec-family/skill-audit.md --path docs/changes/2026-05-19-published-skill-design-spec-family/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-spec-family/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-spec-family/behavior-parity.md --path docs/plan.md` passed.
+- 2026-05-19 M1 validation: `git diff --check -- docs/plans/2026-05-19-published-skill-design-spec-family.md docs/plan.md docs/changes/2026-05-19-published-skill-design-spec-family` passed.
+- 2026-05-19 M1 selected CI: `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-spec-family/skill-audit.md --path docs/changes/2026-05-19-published-skill-design-spec-family/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-spec-family/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-spec-family/behavior-parity.md` passed selected artifact-lifecycle, change-metadata regression, and change-metadata checks.
 
 ## Outcome and retrospective
 
@@ -264,7 +270,7 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for `implement M1`, not final closeout or PR readiness.
+- This plan is ready for `code-review` of M1, not final closeout or PR readiness.
 
 ## Remaining completion gates
 

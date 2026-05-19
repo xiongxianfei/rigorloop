@@ -55,12 +55,26 @@ validation:
     result: pass_after_test_spec
   - command: bash scripts/ci.sh --mode explicit --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml
     result: pass_after_test_spec
+  - command: implement M1
+    result: evidence_scaffold_created_ready_for_code_review
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml
+    result: pass_after_m1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-spec-family/skill-audit.md --path docs/changes/2026-05-19-published-skill-design-spec-family/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-spec-family/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-spec-family/behavior-parity.md --path docs/plan.md
+    result: pass_after_m1
+  - command: git diff --check -- docs/plans/2026-05-19-published-skill-design-spec-family.md docs/plan.md docs/changes/2026-05-19-published-skill-design-spec-family
+    result: pass_after_m1
+  - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-spec-family/skill-audit.md --path docs/changes/2026-05-19-published-skill-design-spec-family/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-spec-family/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-spec-family/behavior-parity.md
+    result: pass_after_m1
 changed_files:
   - specs/skill-contract.test.md
   - docs/plans/2026-05-19-published-skill-design-spec-family.md
   - docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml
   - docs/changes/2026-05-19-published-skill-design-spec-family/review-log.md
   - docs/changes/2026-05-19-published-skill-design-spec-family/reviews/plan-review-r1.md
+  - docs/changes/2026-05-19-published-skill-design-spec-family/skill-audit.md
+  - docs/changes/2026-05-19-published-skill-design-spec-family/routing-coverage.md
+  - docs/changes/2026-05-19-published-skill-design-spec-family/behavior-preservation.md
+  - docs/changes/2026-05-19-published-skill-design-spec-family/behavior-parity.md
   - docs/plan.md
   - docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md
   - docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml
