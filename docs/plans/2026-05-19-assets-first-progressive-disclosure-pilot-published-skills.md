@@ -71,12 +71,12 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 
 - Current milestone: M1. Asset Contract Validation And Test Spec Support
 - Current milestone state: review-requested
-- Last reviewed milestone: none
-- Review status: ready for M1 code-review
+- Last reviewed milestone: M1. Asset Contract Validation And Test Spec Support
+- Review status: APD-CR1 resolved; ready for M1 code-review rerun
 - Remaining in-scope implementation milestones: M1, M2, M3
 - Next stage: code-review for M1
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 code-review, remaining implementation milestones, code-review loops, explain-change, verify, and PR handoff have not run.
+- Reason final closeout is or is not ready: M1 code-review rerun, remaining implementation milestones, code-review loops, explain-change, verify, and PR handoff have not run.
 
 ## Pre-implementation prerequisites
 
@@ -276,6 +276,7 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 - 2026-05-19: plan-review-r2 approved the revised plan; `specs/skill-contract.test.md` amended with T33-T36 for R37-R45; ready for M1 implementation.
 - 2026-05-19: owner approved the active R37-R45 test-spec amendment; M1 implementation prerequisite is satisfied.
 - 2026-05-19: M1 implemented deterministic plan asset-pilot validator support and fixtures; validation passed; ready for M1 code-review.
+- 2026-05-19: APD-CR1 review-resolution added direct missing resource-map-entry fixture coverage for the `plan` asset pilot; ready for M1 code-review rerun.
 
 ## Decision log
 
@@ -293,6 +294,13 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 - M1 tests were written before validator implementation. Initial `python scripts/test-skill-validator.py` failed for the new negative plan asset fixtures because the generic packaged-resource validator accepted malformed assets.
 - `python scripts/test-skill-validator.py` passed after adding scoped plan asset-pilot validation.
 - `python scripts/validate-skills.py` passed.
+- `python scripts/test-skill-validator.py` passed with 128 tests after adding the APD-CR1 missing resource-map-entry fixture.
+- `python scripts/validate-skills.py` passed after the APD-CR1 fixture addition.
+- `python scripts/validate-change-metadata.py docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml` passed after APD-CR1 resolution.
+- `python scripts/validate-review-artifacts.py docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills` passed after APD-CR1 resolution.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-log.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-resolution.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/reviews/code-review-m1-r1.md` passed after APD-CR1 resolution.
+- `git diff --check --` passed after APD-CR1 resolution.
+- `bash scripts/ci.sh --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path tests/fixtures/skills/published-design --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md` passed after APD-CR1 resolution with selected checks `skills.regression`, `skills.generation_regression`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
 - `python scripts/validate-change-metadata.py docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml` passed.
 - `git diff --check -- scripts tests docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md docs/plan.md` passed.
 - `bash scripts/ci.sh --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path tests/fixtures/skills/published-design --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md` passed with selected checks `skills.regression`, `skills.generation_regression`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
@@ -304,4 +312,4 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for M1 code-review. Readiness is not Done; all remaining implementation and downstream gates remain open.
+- Ready for M1 code-review rerun. Readiness is not Done; all remaining implementation and downstream gates remain open.
