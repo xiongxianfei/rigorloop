@@ -70,12 +70,12 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - Current milestone: M3. Cold-read, behavior parity, token comparison, and rollout handoff
 - Current milestone state: closed
 - Last reviewed milestone: M3. Cold-read, behavior parity, token comparison, and rollout handoff
-- Review status: clean-with-notes by `code-review-verify-fix-r2`
+- Review status: branch-ready by final `verify`; latest code-review clean-with-notes by `code-review-verify-fix-r2`
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
-- Next lifecycle stage after M3 implementation: verify
-- Final closeout readiness: ready to start lifecycle closeout
-- Reason final closeout is or is not ready: all implementation milestones are closed, explain-change is recorded, review-resolution is closed, and rerun code-review is clean; final verify and PR handoff remain incomplete.
+- Next stage: pr
+- Next lifecycle stage after M3 implementation: pr
+- Final closeout readiness: branch-ready; PR handoff remains incomplete.
+- Reason final closeout is or is not ready: all implementation milestones are closed, explain-change is recorded, review-resolution is closed, rerun code-review is clean, selected CI and broad smoke passed, and final lifecycle validation passed; PR handoff remains incomplete.
 
 ## Completed lifecycle handoffs
 
@@ -174,12 +174,12 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - Dependencies: active test spec exists; M1-M3 closed; all code-review findings resolved; no open review-resolution findings.
 - Tests to add/update: no new feature tests; run selected final validation from touched paths.
 - Implementation steps: record explain-change; run final verify; update plan and plan index lifecycle state when ready; prepare PR handoff.
-- Validation commands: `bash scripts/ci.sh --mode explicit --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path scripts/test-skill-validator.py --path scripts/validate-skills.py --path specs/skill-readability-contract.md --path specs/skill-readability-contract.test.md --path docs/plans/2026-05-18-skill-readability-self-containment.md --path docs/plan.md --path docs/changes/2026-05-18-skill-readability-self-containment/change.yaml --path docs/changes/2026-05-18-skill-readability-self-containment/review-log.md --path docs/changes/2026-05-18-skill-readability-self-containment/review-resolution.md --path docs/changes/2026-05-18-skill-readability-self-containment/explain-change.md`; `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-18-skill-readability-self-containment`; `git diff --check --`
+- Validation commands: `bash scripts/ci.sh --mode explicit --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path scripts/test-skill-validator.py --path scripts/validate-skills.py --path scripts/validation_selection.py --path scripts/test-select-validation.py --path tests/fixtures/adapters/transformable-frontmatter/SKILL.md --path specs/skill-readability-contract.md --path specs/skill-readability-contract.test.md --path docs/plans/2026-05-18-skill-readability-self-containment.md --path docs/plan.md --path docs/changes/2026-05-18-skill-readability-self-containment/change.yaml --path docs/changes/2026-05-18-skill-readability-self-containment/review-log.md --path docs/changes/2026-05-18-skill-readability-self-containment/review-resolution.md --path docs/changes/2026-05-18-skill-readability-self-containment/explain-change.md --path docs/changes/2026-05-18-skill-readability-self-containment/reviews/code-review-verify-fix-r2.md`; `bash scripts/ci.sh --mode broad-smoke`; `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-18-skill-readability-self-containment`; `python scripts/validate-change-metadata.py docs/changes/2026-05-18-skill-readability-self-containment/change.yaml`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-18-skill-readability-self-containment.md --path docs/plan.md --path specs/skill-readability-contract.md --path specs/skill-readability-contract.test.md --path docs/changes/2026-05-18-skill-readability-self-containment/change.yaml --path docs/changes/2026-05-18-skill-readability-self-containment/review-log.md --path docs/changes/2026-05-18-skill-readability-self-containment/review-resolution.md --path docs/changes/2026-05-18-skill-readability-self-containment/explain-change.md --path docs/changes/2026-05-18-skill-readability-self-containment/reviews/code-review-verify-fix-r2.md`; `git diff --check --`
 - Expected observable result: final lifecycle evidence is coherent, plan state is synchronized with `docs/plan.md`, and the branch is ready for PR only after verify passes.
 - Commit message: `Close skill readability pilot lifecycle`
 - Milestone closeout:
   - [x] explain-change recorded
-  - [ ] final verify passed
+  - [x] final verify passed
   - [x] plan state synchronized with `docs/plan.md`
   - [ ] PR handoff prepared
 - Risks: lifecycle state drifts between plan body and index; final selected CI scope misses a touched validation surface.
@@ -235,6 +235,7 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - 2026-05-19: `code-review-verify-fix-r1` found SRSC-VERIFY-CR1; next stage is review-resolution.
 - 2026-05-19: accepted and fixed SRSC-VERIFY-CR1 by rewording stale `explain-change.md` readiness/risk text; next stage is rerun code-review for the verify-stage fix.
 - 2026-05-19: `code-review-verify-fix-r2` found no material findings; next stage is final verify.
+- 2026-05-19: final verify passed selected CI, broad smoke, review closeout, metadata validation, lifecycle validation, and diff check; branch-ready is established and next stage is `pr`.
 
 ## Decision log
 
@@ -286,10 +287,13 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - 2026-05-19: selected CI passed for touched skills, adapter distribution, selector, specs, plan, and change-local artifacts after the verify-stage fix.
 - 2026-05-19: broad smoke passed after the verify-stage fix. The output still prints the known non-fatal token-cost report validation message `dynamic_runtime.runs: missing required benchmark architecture-review`, which also appears on `origin/main`; the command exits 0.
 - 2026-05-19: SRSC-VERIFY-CR1 resolution validation passed: artifact lifecycle explicit paths, change metadata validation, review artifact structure validation, and `git diff --check --`.
+- 2026-05-19: final selected CI passed for touched skills, adapter distribution, selector, specs, plan, and change-local artifacts including `code-review-verify-fix-r2`.
+- 2026-05-19: final broad smoke passed. It still prints unrelated baseline artifact lifecycle warnings for old proposal files and the known non-fatal token-cost report validation message `dynamic_runtime.runs: missing required benchmark architecture-review`; the command exits 0.
+- 2026-05-19: final closeout validation passed: review artifact closeout, change metadata validation, explicit-path artifact lifecycle validation, and `git diff --check --`.
 
 ## Outcome and retrospective
 
-- Test spec is active. Keep implementation state in `Current Handoff Summary` until final closeout.
+- Final verify passed. The branch is ready for PR handoff; PR body/open readiness is owned by the `pr` stage.
 
 ## Readiness
 
