@@ -72,9 +72,9 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 - Last reviewed milestone: M3. Plan And Plan-Review Skill Rewrite
 - Review status: code-review-m3-r1 clean-with-notes; no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: ready for final closeout sequence
-- Reason final closeout is or is not ready: all in-scope implementation milestones are closed after clean code-review; explain-change, verify, and PR handoff remain open.
+- Reason final closeout is or is not ready: all in-scope implementation milestones are closed after clean code-review and explain-change is recorded; verify and PR handoff remain open.
 
 ## Milestones
 
@@ -257,7 +257,7 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 - [x] M1 implemented and reviewed.
 - [x] M2 implemented and reviewed.
 - [x] M3 implemented and reviewed.
-- [ ] Explain-change recorded.
+- [x] Explain-change recorded.
 - [ ] Final verify completed.
 - [ ] PR handoff completed.
 
@@ -318,6 +318,7 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 - 2026-05-19 M3 review-artifact validation: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-19-published-skill-design-plan-family` passed.
 - 2026-05-19 M3 selected CI: `bash scripts/ci.sh --mode explicit --path skills/plan/SKILL.md --path skills/plan-review/SKILL.md --path scripts/test-skill-validator.py --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-plan-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-plan-family/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-plan-family/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-plan-family/behavior-parity.md` passed selected skills, generated skill, adapter, artifact-lifecycle, and change-metadata checks.
 - 2026-05-19 code-review M3: `code-review-m3-r1` clean-with-notes; no material findings; all implementation milestones are closed and next stage is `explain-change`.
+- 2026-05-19 explain-change: recorded `docs/changes/2026-05-19-published-skill-design-plan-family/explain-change.md`; next stage is `verify`.
 
 ## Outcome and retrospective
 
@@ -325,6 +326,6 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 
 ## Readiness
 
-Ready for `explain-change`.
+Ready for `verify`.
 
-Remaining completion gates: explain-change, verify, PR handoff, hosted CI observation if a PR is opened, merge, and final lifecycle closeout when no downstream gate remains.
+Remaining completion gates: verify, PR handoff, hosted CI observation if a PR is opened, merge, and final lifecycle closeout when no downstream gate remains.
