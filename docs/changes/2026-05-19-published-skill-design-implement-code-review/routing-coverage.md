@@ -33,3 +33,5 @@ These tables are deterministic review evidence. They do not claim runtime model 
 - Both descriptions should route from frontmatter `description`, not body-only `When to use` sections.
 - Body routing sections may clarify local stop conditions and competing skills after the skill loads.
 - Future transcript evidence can add under-triggering or over-triggering observations, but no transcript is required for M1 closeout.
+- M3 descriptions route `implement` from approved milestone or isolated implementation requests and name `bugfix`, `code-review`, `verify`, and `pr` as near-miss skills.
+- M3 descriptions route `code-review` from implementation diff/review requests and name `plan-review`, `spec-review`, `architecture-review`, `verify`, and `pr` as near-miss skills.

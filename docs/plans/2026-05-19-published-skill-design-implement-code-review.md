@@ -63,13 +63,13 @@ This slice is intentionally narrow. It should make the implementation and review
 ## Current Handoff Summary
 
 - Current milestone: M3. Implement and code-review skill rewrite
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M2. Deterministic validator and fixture support
-- Review status: code-review-m2-r1 clean-with-notes; no material findings
+- Review status: M3 implementation complete; code-review pending
 - Remaining in-scope implementation milestones: M3. Implement and code-review skill rewrite
-- Next stage: implement M3
+- Next stage: code-review M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 implementation, M3 code-review, explain-change, verify, PR handoff, hosted CI, human review, and merge remain.
+- Reason final closeout is or is not ready: M3 is awaiting code-review; explain-change, verify, PR handoff, hosted CI, human review, and merge remain.
 
 ## Milestones
 
@@ -178,7 +178,7 @@ This slice is intentionally narrow. It should make the implementation and review
 
 ### M3. Implement and code-review skill rewrite
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: update only `implement` and `code-review` to the published-skill design contract.
 - Requirements: R27-R35 and M1 preservation/parity evidence.
 - Files/components likely touched:
@@ -258,7 +258,7 @@ This slice is intentionally narrow. It should make the implementation and review
 - [x] Test-spec amendment completed and approved.
 - [x] M1 implemented and reviewed.
 - [x] M2 implemented and reviewed.
-- [ ] M3 implemented and reviewed.
+- [ ] M3 implemented and reviewed. Implementation is complete and awaiting code-review.
 - [ ] Explain-change recorded.
 - [ ] Final verify passed.
 - [ ] PR handoff completed.
@@ -272,6 +272,7 @@ This slice is intentionally narrow. It should make the implementation and review
 - 2026-05-19: amend `specs/skill-contract.test.md` with execution/review proof cases before implementation. Rationale: `T25`-`T28` make audit, deterministic validation, behavior preservation, generated-output, and adapter proof concrete for `implement` and `code-review`.
 - 2026-05-19: keep M1 as evidence-only. Rationale: the audit found workflow-role and output-skeleton gaps in `implement` and `code-review`, but those skill-body changes belong to M3 after deterministic validator scope is settled.
 - 2026-05-19: keep M2 limited to regression proof for the execution/review evidence scaffold. Rationale: existing production validators already cover the deterministic contract classes in scope, so M2 only needed a fixture test proving the new change-local evidence remains present and bounded.
+- 2026-05-19: keep M3 token increases under the `+10%` hard cap. Rationale: the first rewrite exceeded the cap; trimming duplicated output prose brought `implement` to 4860 estimated tokens and `code-review` to 5554 while preserving the new workflow-role and output-skeleton fields.
 
 ## Surprises and discoveries
 
@@ -311,6 +312,16 @@ This slice is intentionally narrow. It should make the implementation and review
 - 2026-05-19 M2 validation: `git diff --check -- scripts/test-skill-validator.py specs/skill-contract.test.md docs/plans/2026-05-19-published-skill-design-implement-code-review.md docs/plan.md docs/changes/2026-05-19-published-skill-design-implement-code-review` passed.
 - 2026-05-19 M2 selected CI: `bash scripts/ci.sh --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path specs/skill-contract.test.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml` passed selected `skills.regression`, `skills.generation_regression`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
 - 2026-05-19 M2 code-review: `code-review-m2-r1` returned `clean-with-notes` with no material findings; M2 closed.
+- 2026-05-19 M3 test-first proof: added `test_skill_readability_execution_review_opts_into_contract`; the targeted test failed before skill edits because `implement` and `code-review` lacked `schema-version: skill-readability-v1`, `## Workflow role`, and `## Output skeleton`.
+- 2026-05-19 M3 validation: `python scripts/validate-skills.py` passed.
+- 2026-05-19 M3 validation: `python scripts/test-skill-validator.py` passed.
+- 2026-05-19 M3 validation: `python scripts/measure-skill-tokens.py --skills-root skills` passed with `implement` 4860 estimated tokens and `code-review` 5554 estimated tokens.
+- 2026-05-19 M3 validation: `python scripts/build-skills.py --check` passed.
+- 2026-05-19 M3 validation: `tmpdir=$(mktemp -d) && python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmpdir" && python scripts/validate-adapters.py --root "$tmpdir" --version v0.1.5 && rm -rf "$tmpdir"` passed.
+- 2026-05-19 M3 validation: `python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml` passed.
+- 2026-05-19 M3 validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml --path docs/changes/2026-05-19-published-skill-design-implement-code-review/skill-audit.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-parity.md` passed.
+- 2026-05-19 M3 validation: `git diff --check -- skills/implement/SKILL.md skills/code-review/SKILL.md scripts/test-skill-validator.py specs/skill-contract.test.md docs/plans/2026-05-19-published-skill-design-implement-code-review.md docs/plan.md docs/changes/2026-05-19-published-skill-design-implement-code-review` passed.
+- 2026-05-19 M3 selected CI: `bash scripts/ci.sh --mode explicit --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path scripts/test-skill-validator.py --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml --path docs/changes/2026-05-19-published-skill-design-implement-code-review/skill-audit.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-parity.md` passed selected `skills.validate`, `skills.regression`, `skills.generation_regression`, `skills.drift`, `adapters.drift`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
 
 ## Outcome and retrospective
 

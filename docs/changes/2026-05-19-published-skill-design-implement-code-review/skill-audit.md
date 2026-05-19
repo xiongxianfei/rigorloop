@@ -69,3 +69,14 @@ Command: `python scripts/measure-skill-tokens.py --skills-root skills`
 | `code-review` | 5054 | Highest-token review skill in this slice because it includes material finding recording and checklist rules. |
 
 M3 should target no material regression. Any increase above `+5%` needs rationale, and any increase above `+10%` blocks the rewrite unless the spec changes.
+
+## M3 Audit Result
+
+| Skill | M3 estimated tokens | Result |
+|---|---:|---|
+| `implement` | 4860 | Opted into `skill-readability-v1`, added workflow role and output skeleton, preserved implementation guardrails, and stayed under the `+10%` hard cap. |
+| `code-review` | 5554 | Opted into `skill-readability-v1`, added workflow role and output skeleton, preserved independent-review/recording guardrails, and stayed under the `+10%` hard cap. |
+
+The token increase is concentrated in explicit published-skill contract fields
+and needs code-review attention because both skills exceed the `+5%` rationale
+threshold, but neither exceeds the hard cap.

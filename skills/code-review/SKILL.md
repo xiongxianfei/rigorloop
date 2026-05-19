@@ -1,7 +1,9 @@
 ---
 name: code-review
+version: "1.0.0"
+schema-version: skill-readability-v1
 description: >
-  Perform an independent implementation review against the spec, architecture, plan, test spec, actual diff, and validation evidence. Use after implementation or before PR readiness decisions.
+  Review an implementation slice against the actual diff, governing artifacts, tests, and validation evidence, then record findings or a clean first-pass review. Use after implement hands off a milestone or when implementation review is requested. Use plan-review, spec-review, architecture-review, verify, or pr for those gates instead.
 argument-hint: [branch, diff, plan path, spec path, or feature name]
 ---
 
@@ -10,6 +12,15 @@ argument-hint: [branch, diff, plan path, spec path, or feature name]
 You are reviewing in independent-review mode with fresh eyes.
 
 Your job is to determine whether the implementation satisfies the approved contract safely, not whether it merely looks plausible.
+
+## Workflow role
+
+- role_name: code-review
+- stage: review
+- upstream: implementation diff, review-requested milestone, governing artifacts, tests, and validation evidence
+- downstream: review-resolution, next implementation milestone, or final closeout sequence
+- summary: Perform independent implementation review, record first-pass status and findings, close clean milestones, or route findings to review-resolution.
+- must_not_claim: branch readiness, PR readiness, final verification, CI success, implementation fixes, or derived artifact currency without separate owned evidence.
 
 ## Quick operating guide
 
@@ -101,7 +112,7 @@ Lookup order:
 
 This discovery order is subordinate to the source-rank rule in `docs/workflows.md` when sources conflict.
 
-Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
+Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index when present in the project-local workflow guide, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
 
 ## Outputs
 
@@ -358,9 +369,37 @@ Read exact ranges after locating relevant lines, then expand only when the narro
 
 Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
 
+## Output skeleton
+
+Fill placeholders such as `<review record paths or none>` with concrete review evidence.
+
+```md
+## Result
+
+- Skill: code-review
+- Status: completed | blocked | inconclusive
+- Artifacts changed: <review record paths or none>
+- Open blockers: <blockers or none>
+- Next stage: <review-resolution | implement next milestone | final closeout | blocked>
+- Review status: clean-with-notes | changes-requested | blocked | inconclusive
+- Material findings: <IDs or none>
+- Recording status: recorded | blocked
+- Recording blocker:
+- Review record:
+- Review log:
+- Review resolution: <path | not-required | blocked>
+- Reviewed milestone:
+- Milestone closeout:
+- Remaining implementation milestones:
+- Required review-resolution:
+
+## Review record
+<inputs, diff summary, findings, checklist coverage, no-finding rationale, and handoff>
+```
+
 ## Expected output
 
-Use this result format.
+Use the `## Output skeleton` shape and result format.
 
 Start with:
 
@@ -368,35 +407,23 @@ Start with:
 ## Result
 
 - Skill: code-review
-- Status:
-- Review status:
-- Material findings:
-- Recording status:
-- Recording blocker:
-- Review record:
-- Review log:
+- Status: <completed | blocked | inconclusive>
+- Artifacts changed: <review record paths or none>
+- Open blockers: <blockers or none>
+- Next stage: <review-resolution | implement next milestone | final closeout | blocked>
+- Review status: <clean-with-notes | changes-requested | blocked | inconclusive>
+- Material findings: <IDs or none>
+- Recording status: <recorded | blocked>
+- Recording blocker: <blocker or none>
+- Review record: <path | blocked>
+- Review log: <path | blocked>
 - Review resolution: <path | not-required | blocked>
-- Artifacts changed:
-- Open blockers:
-- Next stage:
-- Reviewed milestone:
-- Review status:
-- Milestone closeout:
-- Remaining implementation milestones:
-- Required review-resolution:
-- Finding IDs:
-- Verify readiness:
+- Reviewed milestone: <milestone or none>
+- Milestone closeout: <closed | resolution-needed | blocked | not-applicable>
+- Remaining implementation milestones: <milestones or none>
+- Required review-resolution: <yes | no>
+- Finding IDs: <IDs or none>
+- Verify readiness: <not-claimed>
 ```
 
-Then include:
-
-- first-pass review record with:
-  - review status using `clean-with-notes`, `changes-requested`, `blocked`, or `inconclusive`;
-  - review inputs;
-  - diff summary;
-- findings with exact file/path references;
-- checklist coverage;
-- no-finding rationale when applicable;
-- any missing tracked governing artifacts or direct-proof gaps that affected the result;
-- optional positive notes only when they add specific evidence-backed value; and
-- recommended next stage or stop reason.
+Then include review inputs, diff summary, findings with exact file/path references, checklist coverage, no-finding rationale when applicable, direct-proof gaps, milestone handoff state, and next stage or stop reason. Do not claim branch readiness, PR readiness, final verification, CI success, or implementation fixes without separately owned evidence.

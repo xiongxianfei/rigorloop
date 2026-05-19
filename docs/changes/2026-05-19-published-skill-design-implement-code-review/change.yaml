@@ -93,8 +93,30 @@ validation:
     result: pass_after_m2
   - command: code-review M2
     result: clean_with_notes_recorded_m2_closed
+  - command: implement M3
+    result: implement_and_code_review_skills_rewritten_ready_for_code_review
+  - command: python scripts/validate-skills.py
+    result: pass_after_m3
+  - command: python scripts/test-skill-validator.py
+    result: pass_after_m3
+  - command: python scripts/measure-skill-tokens.py --skills-root skills
+    result: pass_after_m3_implement_4860_code_review_5554
+  - command: python scripts/build-skills.py --check
+    result: pass_after_m3
+  - command: tmpdir=$(mktemp -d) && python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmpdir" && python scripts/validate-adapters.py --root "$tmpdir" --version v0.1.5 && rm -rf "$tmpdir"
+    result: pass_after_m3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml
+    result: pass_after_m3
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml --path docs/changes/2026-05-19-published-skill-design-implement-code-review/skill-audit.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-parity.md
+    result: pass_after_m3
+  - command: git diff --check -- skills/implement/SKILL.md skills/code-review/SKILL.md scripts/test-skill-validator.py specs/skill-contract.test.md docs/plans/2026-05-19-published-skill-design-implement-code-review.md docs/plan.md docs/changes/2026-05-19-published-skill-design-implement-code-review
+    result: pass_after_m3
+  - command: bash scripts/ci.sh --mode explicit --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path scripts/test-skill-validator.py --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml --path docs/changes/2026-05-19-published-skill-design-implement-code-review/skill-audit.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-parity.md
+    result: pass_after_m3
 changed_files:
   - scripts/test-skill-validator.py
+  - skills/implement/SKILL.md
+  - skills/code-review/SKILL.md
   - specs/skill-contract.test.md
   - docs/plans/2026-05-19-published-skill-design-implement-code-review.md
   - docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml
