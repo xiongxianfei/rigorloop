@@ -236,6 +236,7 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - 2026-05-19: accepted and fixed SRSC-VERIFY-CR1 by rewording stale `explain-change.md` readiness/risk text; next stage is rerun code-review for the verify-stage fix.
 - 2026-05-19: `code-review-verify-fix-r2` found no material findings; next stage is final verify.
 - 2026-05-19: final verify passed selected CI, broad smoke, review closeout, metadata validation, lifecycle validation, and diff check; branch-ready is established and next stage is `pr`.
+- 2026-05-19: PR-stage readiness check refreshed stale `explain-change.md` wording to reflect the completed final verify; next stage remains `pr`.
 
 ## Decision log
 
@@ -290,6 +291,7 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - 2026-05-19: final selected CI passed for touched skills, adapter distribution, selector, specs, plan, and change-local artifacts including `code-review-verify-fix-r2`.
 - 2026-05-19: final broad smoke passed. It still prints unrelated baseline artifact lifecycle warnings for old proposal files and the known non-fatal token-cost report validation message `dynamic_runtime.runs: missing required benchmark architecture-review`; the command exits 0.
 - 2026-05-19: final closeout validation passed: review artifact closeout, change metadata validation, explicit-path artifact lifecycle validation, and `git diff --check --`.
+- 2026-05-19: PR-stage `explain-change.md` refresh validation passed: review artifact closeout, change metadata validation, explicit-path artifact lifecycle validation, `git diff --check --`, and selected CI for lifecycle/change-local surfaces.
 
 ## Outcome and retrospective
 

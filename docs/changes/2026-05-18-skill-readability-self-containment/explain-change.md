@@ -68,7 +68,7 @@ The temporary adapter archives under `/tmp/rigorloop-skill-readability-adapters`
 | Behavior-parity report | Pilot rewrites preserve required output behavior and classify differences as `equivalent` or `improvement`, with no `regression`. | Manual contract comparison is allowed by the test spec for quality-preservation checks. |
 | Token report | Final pilot token counts remain within the approved thresholds. | The repository already has a token measurement script and report surface. |
 
-## Validation Evidence Available Before Final Verify
+## Validation Evidence
 
 Validation already recorded in the change pack includes:
 
@@ -94,7 +94,7 @@ The latest recorded post-resolution token counts are:
 | `proposal` | 3189 | 3300 | +3.48% | within +5% tolerance; below +10% hard cap |
 | `proposal-review` | 3255 | 3405 | +4.61% | within +5% tolerance; below +10% hard cap |
 
-Final `verify` has not run yet. Hosted CI final status is not claimed by this artifact.
+Final `verify` passed after the verify-stage compatibility fix and rerun code-review. It recorded selected CI, broad smoke, review artifact closeout, change metadata validation, artifact lifecycle validation, and diff check evidence in the active plan and change metadata. Hosted CI final status is not claimed by this artifact.
 
 ## Review Resolution Summary
 
@@ -136,11 +136,11 @@ The pilot rewrites only `proposal` and `proposal-review`. Remaining R30 skills a
 
 | Risk or follow-up | Current handling |
 |---|---|
-| Verify-stage compatibility fix changed implementation after explain-change was first recorded. | Verify ran, found and fixed adapter front-matter compatibility drift, SRSC-VERIFY-CR1 was resolved, and final verify must rerun before branch-ready is claimed. |
+| Verify-stage compatibility fix changed implementation after explain-change was first recorded. | Verify ran, found and fixed adapter front-matter compatibility drift, SRSC-VERIFY-CR1 was resolved, rerun code-review was clean, and final verify passed. |
 | Full R30 rollout remains incomplete after the pilot. | Follow-on rollout ownership is recorded in the active plan. |
 | Manual behavior-parity proof is less exhaustive than live LLM execution. | The test spec allowed manual contract comparison for this pilot; no regression classifications remain. |
 | Token increases are accepted for readability. | Both increases are within +5%, justified by cold-read and behavior-parity evidence, and below the hard cap. |
 
 ## Readiness
 
-`explain-change` is recorded and updated for the verify-stage adapter compatibility fix. SRSC-VERIFY-CR1 is resolved and rerun code-review is clean; the active-plan handoff is final `verify`.
+`explain-change` is recorded and updated for the verify-stage adapter compatibility fix. SRSC-VERIFY-CR1 is resolved, rerun code-review is clean, final verify passed, and the active-plan handoff is `pr`.
