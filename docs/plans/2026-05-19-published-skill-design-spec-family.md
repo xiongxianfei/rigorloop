@@ -61,20 +61,20 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Spec Family Audit And Evidence Scaffold
-- Current milestone state: review-requested
-- Last reviewed milestone: planning
-- Review status: plan-review-r1 approved; no material findings
-- Remaining in-scope implementation milestones: M1 code-review, M2, M3
-- Next stage: code-review for M1
+- Current milestone: M2. Spec Family Validator And Fixture Support
+- Current milestone state: planned
+- Last reviewed milestone: M1. Spec Family Audit And Evidence Scaffold
+- Review status: code-review-m1-r1 clean-with-notes; no material findings
+- Remaining in-scope implementation milestones: M2, M3
+- Next stage: implement M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 code-review, later implementation milestones, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: M2 and M3, explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
 ### M1. Spec Family Audit And Evidence Scaffold
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: create the change-local evidence structure for `spec` and `spec-review` before changing validators or skill bodies.
 - Requirements: R27-R31, R34-R35, R36 audit/preservation/parity discipline.
 - Files/components likely touched:
@@ -220,7 +220,7 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 - [x] 2026-05-19: new spec-family rollout plan created.
 - [x] Plan-review completed.
 - [x] Test-spec amendment completed and approved.
-- [x] M1 implemented; code-review pending.
+- [x] M1 implemented and reviewed.
 - [ ] M2 implemented and reviewed.
 - [ ] M3 implemented and reviewed.
 - [ ] Explain-change recorded.
@@ -262,6 +262,12 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 - 2026-05-19 M1 validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-spec-family/skill-audit.md --path docs/changes/2026-05-19-published-skill-design-spec-family/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-spec-family/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-spec-family/behavior-parity.md --path docs/plan.md` passed.
 - 2026-05-19 M1 validation: `git diff --check -- docs/plans/2026-05-19-published-skill-design-spec-family.md docs/plan.md docs/changes/2026-05-19-published-skill-design-spec-family` passed.
 - 2026-05-19 M1 selected CI: `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-spec-family/skill-audit.md --path docs/changes/2026-05-19-published-skill-design-spec-family/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-spec-family/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-spec-family/behavior-parity.md` passed selected artifact-lifecycle, change-metadata regression, and change-metadata checks.
+- 2026-05-19 M1 code-review: `code-review-m1-r1` returned `clean-with-notes` with no material findings; M1 closed.
+- 2026-05-19 M1 code-review validation: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-19-published-skill-design-spec-family` passed.
+- 2026-05-19 M1 code-review validation: `python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml` passed.
+- 2026-05-19 M1 code-review validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-spec-family/review-log.md --path docs/changes/2026-05-19-published-skill-design-spec-family/reviews/code-review-m1-r1.md` passed.
+- 2026-05-19 M1 code-review validation: `git diff --check -- docs/plans/2026-05-19-published-skill-design-spec-family.md docs/plan.md docs/changes/2026-05-19-published-skill-design-spec-family` passed.
+- 2026-05-19 M1 code-review selected CI: `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-spec-family/review-log.md --path docs/changes/2026-05-19-published-skill-design-spec-family/reviews/code-review-m1-r1.md` passed selected review-artifacts, artifact-lifecycle, change-metadata regression, and change-metadata checks.
 
 ## Outcome and retrospective
 
@@ -270,11 +276,10 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for `code-review` of M1, not final closeout or PR readiness.
+- This plan is ready for `implement M2`, not final closeout or PR readiness.
 
 ## Remaining completion gates
 
-- M1 implementation and code-review
 - M2 implementation and code-review
 - M3 implementation and code-review
 - `explain-change`
