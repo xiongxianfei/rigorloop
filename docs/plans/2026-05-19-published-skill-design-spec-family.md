@@ -66,9 +66,9 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 - Last reviewed milestone: M3. Spec And Spec-Review Skill Rewrite
 - Review status: code-review-m3-r1 clean-with-notes; no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
+- Next stage: hosted PR CI / human review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: PR handoff remains.
+- Reason final closeout is or is not ready: PR #72 is open; hosted CI, human review, and merge remain.
 
 ## Milestones
 
@@ -229,7 +229,7 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 - [x] M3 implemented and reviewed.
 - [x] Explain-change recorded.
 - [x] Final verify passed.
-- [ ] PR handoff completed.
+- [x] PR handoff completed.
 
 ## Decision log
 
@@ -248,6 +248,7 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 - 2026-05-19: close M3 after clean code-review. Rationale: `code-review-m3-r1` found no material findings, and all in-scope implementation milestones are closed.
 - 2026-05-19: record explain-change before verify. Rationale: the workflow requires durable rationale before final verification and PR handoff.
 - 2026-05-19: final verify records evidence in the plan and `change.yaml` without a standalone `verify-report.md`. Rationale: no required manual proof exists, and automated validation, review closeout, lifecycle checks, temporary adapter archive proof, selected CI, and explain-change provide sufficient durable branch-ready evidence before PR handoff.
+- 2026-05-19: open PR #72 after branch-ready verification. Rationale: `pr` owns PR body/open readiness after `verify` establishes branch readiness.
 
 ## Surprises and discoveries
 
@@ -343,6 +344,7 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 - 2026-05-19 final verify: `git diff --check -- $(git diff --name-only origin/main...HEAD)` passed.
 - 2026-05-19 final verify selected CI: `bash scripts/ci.sh --mode explicit $(git diff --name-only origin/main...HEAD | sed 's#^#--path #')` passed selected skills.validate, skills.regression, skills.generation_regression, skills.drift, adapters.drift, review_artifacts.validate, artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate checks.
 - 2026-05-19 final verify: branch-ready is established by local validation evidence; hosted PR CI has not been observed and is not claimed.
+- 2026-05-19 PR handoff: opened PR #72 at `https://github.com/xiongxianfei/rigorloop/pull/72`.
 
 ## Outcome and retrospective
 
@@ -351,8 +353,10 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is branch-ready and ready for `pr`; PR body/open readiness is not claimed until the `pr` stage.
+- PR #72 is open. Hosted CI and human review are pending; final lifecycle closeout is not yet complete.
 
 ## Remaining completion gates
 
-- `pr`
+- Hosted PR CI
+- Human review
+- Merge and final plan closeout

@@ -217,6 +217,10 @@ validation:
     result: pass_final_verify
   - command: verify
     result: branch_ready_local_validation_ready_for_pr
+  - command: pr
+    result: opened_pr_72
+  - command: gh pr create --base main --head published-skill-design-spec-family --title "docs: roll out published skill design to spec family"
+    result: https://github.com/xiongxianfei/rigorloop/pull/72
 changed_files:
   - skills/spec/SKILL.md
   - skills/spec-review/SKILL.md
