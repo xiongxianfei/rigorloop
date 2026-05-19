@@ -1,10 +1,10 @@
 # Skill Readability and Self-Containment Execution Plan
 
-- Status: active
+- Status: done
 - Owner: maintainer
 - Start date: 2026-05-18
 - Last updated: 2026-05-19
-- Related issue or PR: none yet
+- Related issue or PR: PR #69, merged 2026-05-19, merge commit `00752aa0fe2f4bb32e744b84729cdaa78c0d2902`
 - Supersedes: none
 
 ## Purpose / big picture
@@ -70,12 +70,12 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - Current milestone: M3. Cold-read, behavior parity, token comparison, and rollout handoff
 - Current milestone state: closed
 - Last reviewed milestone: M3. Cold-read, behavior parity, token comparison, and rollout handoff
-- Review status: branch-ready by final `verify`; latest code-review clean-with-notes by `code-review-verify-fix-r2`
+- Review status: PR #69 merged after hosted CI passed
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Next lifecycle stage after M3 implementation: pr
-- Final closeout readiness: branch-ready; PR handoff remains incomplete.
-- Reason final closeout is or is not ready: all implementation milestones are closed, explain-change is recorded, review-resolution is closed, rerun code-review is clean, selected CI and broad smoke passed, and final lifecycle validation passed; PR handoff remains incomplete.
+- Next stage: none; lifecycle complete
+- Next lifecycle stage after M3 implementation: none; PR #69 merged
+- Final closeout readiness: complete
+- Reason final closeout is or is not ready: all implementation milestones are closed, explain-change is recorded, review-resolution is closed, rerun code-review is clean, selected CI and broad smoke passed, final lifecycle validation passed, PR #69 opened, hosted CI passed, and PR #69 merged into `main`.
 
 ## Completed lifecycle handoffs
 
@@ -238,6 +238,7 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - 2026-05-19: final verify passed selected CI, broad smoke, review closeout, metadata validation, lifecycle validation, and diff check; branch-ready is established and next stage is `pr`.
 - 2026-05-19: PR-stage readiness check refreshed stale `explain-change.md` wording to reflect the completed final verify; next stage remains `pr`.
 - 2026-05-19: hosted CI for PR #69 failed because PR-mode selector routing missed change-local evidence reports and skill readability fixtures; patched selector classifications and reproduced PR-mode CI locally.
+- 2026-05-19: PR #69 hosted CI passed and PR #69 merged into `main` at `00752aa0fe2f4bb32e744b84729cdaa78c0d2902`; lifecycle state is complete.
 
 ## Decision log
 
@@ -294,14 +295,15 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - 2026-05-19: final closeout validation passed: review artifact closeout, change metadata validation, explicit-path artifact lifecycle validation, and `git diff --check --`.
 - 2026-05-19: PR-stage `explain-change.md` refresh validation passed: review artifact closeout, change metadata validation, explicit-path artifact lifecycle validation, `git diff --check --`, and selected CI for lifecycle/change-local surfaces.
 - 2026-05-19: hosted CI selector-routing fix validation passed locally with `bash scripts/ci.sh --mode pr --base 9814706e5ed605c1d63c5b63f88f507a454aab7b --head HEAD`.
+- 2026-05-19: lifecycle closeout validation passed after recording PR #69 merge state: artifact lifecycle explicit paths and `git diff --check --`.
 
 ## Outcome and retrospective
 
-- Final verify passed. The branch is ready for PR handoff; PR body/open readiness is owned by the `pr` stage.
+- PR #69 merged. The pilot lifecycle is complete.
 
 ## Readiness
 
-- See `Current Handoff Summary`.
+- Complete. No downstream lifecycle stage remains for this pilot.
 
 ## Risks and follow-ups
 

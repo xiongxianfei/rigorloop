@@ -3,12 +3,13 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-18 Skill readability and self-containment](plans/2026-05-18-skill-readability-self-containment.md) - active execution plan for piloting quality-first installed skill readability on `proposal` and `proposal-review`, adding focused validation, cold-read proof, behavior-parity proof, token-cost comparison, and follow-on rollout ownership. Current next stage: pr.
+- none yet
 
 ## Blocked
 - none yet
 
 ## Done
+- [2026-05-18 Skill readability and self-containment](plans/2026-05-18-skill-readability-self-containment.md) - completed execution plan for piloting quality-first installed skill readability on `proposal` and `proposal-review`, adding focused validation, cold-read proof, behavior-parity proof, token-cost comparison, preserving follow-on rollout ownership for remaining R30 skills, passing hosted CI, and merging PR #69.
 - [2026-05-18 Multi-adapter init and proxy-aware adapter download](plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md) - completed execution plan for implementing descriptor-driven `rigorloop init --adapter codex|claude|opencode`, schema v2 mixed-root lockfiles, verified local/network adapter archives, opencode command alias handling, proxy-safe download diagnostics, review-resolution closeout, final local verify, and opening PR #68.
 - [2026-05-18 Customer-portable public skills](plans/2026-05-18-customer-portable-public-skills.md) - completed execution plan for making audited public skills customer-portable, adding focused static validation, recording static and live customer-fixture dynamic token evidence, validating generated adapters from canonical skills, closing `CPS-M3-CR1`, passing final local verify with explicit selected CI proof, and opening PR #67.
 - [2026-05-16 RigorLoop npm publication](plans/2026-05-16-rigorloop-npm-publication.md) - completed execution plan for publishing the first public `@xiongxianfei/rigorloop@0.1.4` npm package from tag `v0.1.4`, with package metadata hardening, package-content validation, packed-package smoke, release verification, bootstrap publication evidence, post-publication npx smoke, actual Codex adapter install proof, FU-010 closeout, and FU-006 through FU-009 left open.
