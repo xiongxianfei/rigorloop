@@ -10,6 +10,7 @@ implement and code-review rollout.
 | Review ID | Stage | Round | Reviewed artifact | Record | Status | Material findings | Recording |
 |---|---:|---:|---|---|---|---:|---|
 | `plan-review-r1` | `plan-review` | `1` | `docs/plans/2026-05-19-published-skill-design-implement-code-review.md` | `reviews/plan-review-r1.md` | `approved` | `0` | `recorded` |
+| `code-review-m1-r1` | `code-review` | `1` | `commit a8692d7 M1: scaffold published skill design execution-review evidence` | `reviews/code-review-m1-r1.md` | `clean-with-notes` | `0` | `recorded` |
 
 ## Review Entries
 
