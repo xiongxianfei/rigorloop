@@ -59,11 +59,11 @@ Implement the approved published-skill design contract as an audit-first, pilot-
 - Current milestone: M3. Pilot skill rewrite and generated-output validation
 - Current milestone state: closed
 - Last reviewed milestone: M3. Pilot skill rewrite and generated-output validation
-- Review status: PR #71 opened; hosted CI and human review pending
+- Review status: PR #71 CI selector fix pushed; hosted CI rerun pending
 - Remaining in-scope implementation milestones: none
 - Next stage: PR review
-- Final closeout readiness: PR opened; hosted CI and human review pending
-- Reason final closeout is or is not ready: all in-scope implementation milestones are closed, review-resolution has no open findings, explain-change is recorded, final local verification passed, and PR #71 is open. Hosted CI and human review are pending external PR-review outcomes.
+- Final closeout readiness: PR opened; hosted CI rerun and human review pending
+- Reason final closeout is or is not ready: all in-scope implementation milestones are closed, review-resolution has no open findings, explain-change is recorded, final local verification passed, and PR #71 is open. A PR-stage selector fix was pushed after hosted CI initially failed on change-local evidence routing; hosted CI rerun and human review are pending external PR-review outcomes.
 
 ## Milestones
 
@@ -227,6 +227,7 @@ Implement the approved published-skill design contract as an audit-first, pilot-
 - 2026-05-19: explain-change recorded durable change rationale; next stage is `verify`.
 - 2026-05-19: final local verify passed selected skill, generated-skill, adapter archive, review closeout, metadata, lifecycle, whitespace, and selected CI checks; branch-ready evidence is recorded; next stage is `pr`.
 - 2026-05-19: PR #71 opened for review: `https://github.com/xiongxianfei/rigorloop/pull/71`.
+- 2026-05-19: PR #71 hosted CI failed before running checks because PR-mode validation selector blocked change-local pilot evidence files (`skill-audit.md`, `routing-coverage.md`, `behavior-preservation.md`, and `behavior-parity.md`) as unsupported. Classified those evidence files as change-local lifecycle artifacts, added selector regression coverage, and pushed a rerun fix.
 
 ## Decision log
 
@@ -337,6 +338,10 @@ Implement the approved published-skill design contract as an audit-first, pilot-
 - 2026-05-19 verify handoff recording validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md --path docs/plan.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/review-log.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/review-resolution.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/explain-change.md` passed.
 - 2026-05-19 verify handoff recording validation: `git diff --check -- docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md docs/plan.md docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml` passed.
 - 2026-05-19 verify handoff recording validation: `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md --path docs/plan.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/review-log.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/review-resolution.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/explain-change.md` passed selected review-artifact, artifact-lifecycle, change-metadata regression, and change-metadata checks.
+- 2026-05-19 PR-stage CI fix validation: `python scripts/test-select-validation.py` passed.
+- 2026-05-19 PR-stage CI fix validation: `python scripts/select-validation.py --mode explicit --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/behavior-parity.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/behavior-preservation.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/routing-coverage.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/skill-audit.md` passed and selected `artifact_lifecycle.validate` with no blocking results.
+- 2026-05-19 PR-stage CI fix validation: `bash scripts/ci.sh --mode explicit --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/behavior-parity.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/behavior-preservation.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/routing-coverage.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/skill-audit.md --path docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md --path docs/plan.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml` passed selected artifact-lifecycle, change-metadata regression, change-metadata, and selector-regression checks.
+- 2026-05-19 PR-stage CI fix validation: `bash scripts/ci.sh --mode pr --base origin/main --head HEAD` passed locally, reproducing the PR-mode selector shape with the full PR changed-path set.
 
 ## Outcome and retrospective
 
@@ -345,7 +350,7 @@ Implement the approved published-skill design contract as an audit-first, pilot-
 ## Readiness
 
 - See `Current Handoff Summary`.
-- PR #71 is open for review. Hosted CI and human review are pending.
+- PR #71 is open for review. A selector fix for the initial hosted CI failure has been pushed; hosted CI rerun and human review are pending.
 
 ## Risks and follow-ups
 

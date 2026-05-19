@@ -1048,6 +1048,10 @@ def _path_category(path: str) -> str | None:
             "implementation-notes.md",
             "cold-read-report.md",
             "behavior-parity-report.md",
+            "behavior-parity.md",
+            "behavior-preservation.md",
+            "routing-coverage.md",
+            "skill-audit.md",
         } or parts[3] == "diagrams":
             return "change-local-lifecycle"
         return "change-local-unsupported"
