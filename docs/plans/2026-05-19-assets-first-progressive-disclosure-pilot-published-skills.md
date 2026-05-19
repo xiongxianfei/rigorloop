@@ -70,13 +70,13 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 ## Current Handoff Summary
 
 - Current milestone: M3. Adapter, Token, And Behavior-Parity Proof
-- Current milestone state: review-requested
-- Last reviewed milestone: M2. Plan Skill Asset Split
-- Review status: ready for M3 code-review
-- Remaining in-scope implementation milestones: M3
-- Next stage: code-review M3
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 is implemented but not reviewed, and explain-change, verify, and PR handoff have not run.
+- Current milestone state: closed
+- Last reviewed milestone: M3. Adapter, Token, And Behavior-Parity Proof
+- Review status: code-review-m3-r1 clean-with-notes
+- Remaining in-scope implementation milestones: none
+- Next stage: final closeout; explain-change is the next closeout gate unless ci-maintenance is separately triggered
+- Final closeout readiness: ready to start final closeout sequence
+- Reason final closeout is or is not ready: all implementation milestones are closed; explain-change, verify, and PR handoff have not run, so the change is not Done.
 
 ## Pre-implementation prerequisites
 
@@ -184,7 +184,7 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 
 ### M3. Adapter, Token, And Behavior-Parity Proof
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: prove the asset split ships through adapters, improves the common path, preserves behavior, and handles historical coverage.
 - Requirements: R43-R45.
 - Files/components likely touched:
@@ -281,6 +281,7 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 - 2026-05-19: M2 split the `plan` skill output structure into four normative packaged assets, kept lifecycle rules in `SKILL.md`, recorded behavior-preservation and token-cost evidence, and passed M2 validation; ready for M2 code-review.
 - 2026-05-19: code-review-m2-r1 returned clean-with-notes; M2 closed and the next stage is implement M3.
 - 2026-05-19: M3 added adapter archive asset packaging support and proof, recorded behavior-parity and historical coverage evidence, updated token-cost evidence after the skeleton handoff-section correction, and passed M3 validation; ready for M3 code-review.
+- 2026-05-19: code-review-m3-r1 returned clean-with-notes; M3 closed and all implementation milestones are closed. Next stage is final closeout, starting with explain-change unless ci-maintenance is separately triggered.
 
 ## Decision log
 
@@ -341,12 +342,13 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 - `git diff --check -- skills/plan scripts tests specs docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md docs/plan.md` passed after the final M3 recording updates.
 - `bash scripts/ci.sh --mode explicit --path skills/plan/SKILL.md --path skills/plan/assets --path scripts --path tests --path specs/skill-contract.test.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md` blocked because broad `scripts` and `tests` roots are not classified by the v1 selector.
 - `bash scripts/ci.sh --mode explicit --path skills/plan/SKILL.md --path skills/plan/assets --path scripts/adapter_distribution.py --path scripts/test-adapter-distribution.py --path tests/fixtures/adapters/portable-with-assets --path specs/skill-contract.test.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md` passed with selected checks `skills.validate`, `skills.regression`, `skills.generation_regression`, `skills.drift`, `adapters.regression`, `adapters.drift`, `adapters.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+- code-review-m3-r1 returned clean-with-notes and recorded no material findings.
 
 ## Outcome and retrospective
 
-- Pending downstream implementation and final closeout.
+- All implementation milestones are closed. Pending final closeout.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for M3 code-review. Readiness is not Done; downstream explain-change, verify, and PR gates remain open.
+- Ready for final closeout. Readiness is not Done; downstream explain-change, verify, and PR gates remain open.
