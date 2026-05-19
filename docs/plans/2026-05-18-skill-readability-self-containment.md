@@ -68,14 +68,14 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 ## Current Handoff Summary
 
 - Current milestone: M3. Cold-read, behavior parity, token comparison, and rollout handoff
-- Current milestone state: review-requested
+- Current milestone state: closed
 - Last reviewed milestone: M2. Pilot skill rewrite and generated-output proof
-- Review status: SRSC-M3-CR1 accepted and fixed; awaiting rerun `code-review-m3-r2`
-- Remaining in-scope implementation milestones: M3
-- Next stage: code-review for M3 rerun
-- Next lifecycle stage after M3 implementation: code-review for M3
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 rerun code-review, explain-change, verify, and PR handoff remain incomplete.
+- Review status: clean-with-notes by `code-review-m3-r2`
+- Remaining in-scope implementation milestones: none
+- Next stage: explain-change
+- Next lifecycle stage after M3 implementation: explain-change
+- Final closeout readiness: ready to start lifecycle closeout
+- Reason final closeout is or is not ready: all implementation milestones are closed and review-resolution is closed; explain-change, verify, and PR handoff remain incomplete.
 
 ## Completed lifecycle handoffs
 
@@ -144,7 +144,7 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 
 ### M3. Cold-read, behavior parity, token comparison, and rollout handoff
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Prove the pilot pair preserves quality and clarity, record token-cost comparison, and prepare follow-on rollout guidance for the remaining R30 skills.
 - Requirements: R30-R31, R41-R53, R57-R60
 - Files/components likely touched: behavior-parity fixtures and reports, cold-read evidence report, token-cost report, this plan, `docs/changes/2026-05-18-skill-readability-self-containment/change.yaml`, optional `docs/follow-ups.md` only if an unowned cross-change follow-up is needed.
@@ -226,6 +226,7 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - 2026-05-18: implemented M3 cold-read evidence, behavior-parity evidence, token comparison, and follow-on rollout ownership; next stage is code-review for M3.
 - 2026-05-18: `code-review-m3-r1` found SRSC-M3-CR1; M3 remains in `resolution-needed`.
 - 2026-05-19: accepted and fixed SRSC-M3-CR1 by replacing duplicate enum value lists with authoritative enum references; next stage is rerun code-review for M3.
+- 2026-05-19: `code-review-m3-r2` found no material findings and closed M3; all implementation milestones are closed and next stage is `explain-change`.
 
 ## Decision log
 
@@ -270,6 +271,7 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - 2026-05-18: M3 handoff validation passed: `python scripts/validate-change-metadata.py docs/changes/2026-05-18-skill-readability-self-containment/change.yaml`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-18-skill-readability-self-containment.md --path docs/plan.md --path specs/skill-readability-contract.md --path specs/skill-readability-contract.test.md --path docs/changes/2026-05-18-skill-readability-self-containment/change.yaml --path docs/changes/2026-05-18-skill-readability-self-containment/review-log.md --path docs/changes/2026-05-18-skill-readability-self-containment/review-resolution.md`, `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-18-skill-readability-self-containment`, and `git diff --check --`.
 - 2026-05-18: M3 code-review reran `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, `python scripts/measure-skill-tokens.py`, change metadata validation, artifact lifecycle validation, review artifact validation, and `git diff --check --`; commands passed, but manual contract review found SRSC-M3-CR1.
 - 2026-05-19: SRSC-M3-CR1 fix validation passed: `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, `python scripts/build-skills.py --check`, `python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-skill-readability-adapters`, `python scripts/validate-adapters.py --root /tmp/rigorloop-skill-readability-adapters --version v0.1.5`, and `python scripts/measure-skill-tokens.py`; token counts are `proposal` 3300 and `proposal-review` 3405 estimated tokens.
+- 2026-05-19: M3 rerun code-review completed clean-with-notes; review-resolution is closed and final lifecycle closeout can start with `explain-change`.
 
 ## Outcome and retrospective
 
