@@ -4,6 +4,7 @@
 - Owner: maintainers
 - Start date: 2026-05-19
 - Last updated: 2026-05-19
+- Related issue or PR: PR #71
 - Related proposal: [RigorLoop Published Skill Design Contract](../proposals/2026-05-19-rigorloop-published-skill-design-contract.md)
 - Related spec: [Skill Contract](../../specs/skill-contract.md)
 - Change root: [docs/changes/2026-05-19-rigorloop-published-skill-design-contract](../changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml)
@@ -58,11 +59,11 @@ Implement the approved published-skill design contract as an audit-first, pilot-
 - Current milestone: M3. Pilot skill rewrite and generated-output validation
 - Current milestone state: closed
 - Last reviewed milestone: M3. Pilot skill rewrite and generated-output validation
-- Review status: M3 code-review clean-with-notes; all implementation milestones closed
+- Review status: PR #71 opened; hosted CI and human review pending
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: branch-ready; ready for PR handoff
-- Reason final closeout is or is not ready: all in-scope implementation milestones are closed, review-resolution has no open findings, explain-change is recorded, and final local verification passed. PR body and PR-open readiness remain owned by the `pr` stage.
+- Next stage: PR review
+- Final closeout readiness: PR opened; hosted CI and human review pending
+- Reason final closeout is or is not ready: all in-scope implementation milestones are closed, review-resolution has no open findings, explain-change is recorded, final local verification passed, and PR #71 is open. Hosted CI and human review are pending external PR-review outcomes.
 
 ## Milestones
 
@@ -225,6 +226,7 @@ Implement the approved published-skill design contract as an audit-first, pilot-
 - 2026-05-19: code-review-m3-r1 returned `clean-with-notes`; M3 closed; all implementation milestones are closed; next stage is `explain-change`.
 - 2026-05-19: explain-change recorded durable change rationale; next stage is `verify`.
 - 2026-05-19: final local verify passed selected skill, generated-skill, adapter archive, review closeout, metadata, lifecycle, whitespace, and selected CI checks; branch-ready evidence is recorded; next stage is `pr`.
+- 2026-05-19: PR #71 opened for review: `https://github.com/xiongxianfei/rigorloop/pull/71`.
 
 ## Decision log
 
@@ -343,7 +345,7 @@ Implement the approved published-skill design contract as an audit-first, pilot-
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is branch-ready and ready for `pr` handoff. PR body readiness and PR-open readiness are not claimed here.
+- PR #71 is open for review. Hosted CI and human review are pending.
 
 ## Risks and follow-ups
 
