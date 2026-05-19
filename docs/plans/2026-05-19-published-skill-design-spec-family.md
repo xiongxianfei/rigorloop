@@ -1,9 +1,10 @@
 # Published Skill Design Spec Family Rollout Plan
 
-- Status: active
+- Status: done
 - Owner: maintainers
 - Start date: 2026-05-19
 - Last updated: 2026-05-19
+- Related issue or PR: PR #72, merged 2026-05-19, merge commit `5beece3c0eeefc7fb98025fd72aa95e2316ad147`
 - Related proposal: [RigorLoop Published Skill Design Contract](../proposals/2026-05-19-rigorloop-published-skill-design-contract.md)
 - Related spec: [Skill Contract](../../specs/skill-contract.md)
 - Related pilot: [RigorLoop Published Skill Design Contract Execution Plan](2026-05-19-rigorloop-published-skill-design-contract.md)
@@ -64,11 +65,11 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 - Current milestone: M3. Spec And Spec-Review Skill Rewrite
 - Current milestone state: closed
 - Last reviewed milestone: M3. Spec And Spec-Review Skill Rewrite
-- Review status: code-review-m3-r1 clean-with-notes; no material findings
+- Review status: PR #72 merged after hosted CI passed
 - Remaining in-scope implementation milestones: none
-- Next stage: hosted PR CI / human review
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: PR #72 is open; hosted CI, human review, and merge remain.
+- Next stage: none; lifecycle complete
+- Final closeout readiness: complete
+- Reason final closeout is or is not ready: all in-scope implementation milestones are closed, review-resolution has no open findings, explain-change is recorded, final local verification passed, PR #72 opened, hosted CI passed, and PR #72 merged into `main`.
 
 ## Milestones
 
@@ -230,6 +231,7 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 - [x] Explain-change recorded.
 - [x] Final verify passed.
 - [x] PR handoff completed.
+- [x] PR #72 hosted CI passed and PR #72 merged.
 
 ## Decision log
 
@@ -249,6 +251,7 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 - 2026-05-19: record explain-change before verify. Rationale: the workflow requires durable rationale before final verification and PR handoff.
 - 2026-05-19: final verify records evidence in the plan and `change.yaml` without a standalone `verify-report.md`. Rationale: no required manual proof exists, and automated validation, review closeout, lifecycle checks, temporary adapter archive proof, selected CI, and explain-change provide sufficient durable branch-ready evidence before PR handoff.
 - 2026-05-19: open PR #72 after branch-ready verification. Rationale: `pr` owns PR body/open readiness after `verify` establishes branch readiness.
+- 2026-05-19: close the lifecycle after PR #72 merged. Rationale: hosted CI passed and the PR merged into `main`, so no downstream lifecycle gate remains for this slice.
 
 ## Surprises and discoveries
 
@@ -345,18 +348,19 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 - 2026-05-19 final verify selected CI: `bash scripts/ci.sh --mode explicit $(git diff --name-only origin/main...HEAD | sed 's#^#--path #')` passed selected skills.validate, skills.regression, skills.generation_regression, skills.drift, adapters.drift, review_artifacts.validate, artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate checks.
 - 2026-05-19 final verify: branch-ready is established by local validation evidence; hosted PR CI has not been observed and is not claimed.
 - 2026-05-19 PR handoff: opened PR #72 at `https://github.com/xiongxianfei/rigorloop/pull/72`.
+- 2026-05-19 lifecycle closeout: observed PR #72 merged with hosted CI success and merge commit `5beece3c0eeefc7fb98025fd72aa95e2316ad147`.
+- 2026-05-19 lifecycle closeout validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/plan.md` passed.
+- 2026-05-19 lifecycle closeout validation: `git diff --check -- docs/plans/2026-05-19-published-skill-design-spec-family.md docs/plan.md` passed.
+- 2026-05-19 lifecycle closeout selected CI: `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/plan.md` passed selected `artifact_lifecycle.validate`.
 
 ## Outcome and retrospective
 
-- Pending. Do not use this section for current handoff state while the plan is active; see `Current Handoff Summary`.
+- PR #72 merged. The spec-family rollout lifecycle is complete.
 
 ## Readiness
 
-- See `Current Handoff Summary`.
-- PR #72 is open. Hosted CI and human review are pending; final lifecycle closeout is not yet complete.
+- Complete. No downstream lifecycle stage remains for this rollout.
 
 ## Remaining completion gates
 
-- Hosted PR CI
-- Human review
-- Merge and final plan closeout
+- None.
