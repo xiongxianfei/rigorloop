@@ -69,14 +69,14 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Asset Contract Validation And Test Spec Support
-- Current milestone state: closed
+- Current milestone: M2. Plan Skill Asset Split
+- Current milestone state: review-requested
 - Last reviewed milestone: M1. Asset Contract Validation And Test Spec Support
-- Review status: clean-with-notes
+- Review status: ready for M2 code-review
 - Remaining in-scope implementation milestones: M2, M3
-- Next stage: implement M2
+- Next stage: code-review M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2 and M3 remain unimplemented, and explain-change, verify, and PR handoff have not run.
+- Reason final closeout is or is not ready: M2 is implemented but not reviewed, M3 remains unimplemented, and explain-change, verify, and PR handoff have not run.
 
 ## Pre-implementation prerequisites
 
@@ -132,7 +132,7 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 
 ### M2. Plan Skill Asset Split
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: move the plan output structure into exactly four normative assets while preserving `SKILL.md` execution rules and common-path readability.
 - Requirements: R37-R42, R44.
 - Files/components likely touched:
@@ -278,6 +278,7 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 - 2026-05-19: M1 implemented deterministic plan asset-pilot validator support and fixtures; validation passed; ready for M1 code-review.
 - 2026-05-19: APD-CR1 review-resolution added direct missing resource-map-entry fixture coverage for the `plan` asset pilot; ready for M1 code-review rerun.
 - 2026-05-19: code-review-m1-r2 returned clean-with-notes; M1 closed and the next stage is implement M2.
+- 2026-05-19: M2 split the `plan` skill output structure into four normative packaged assets, kept lifecycle rules in `SKILL.md`, recorded behavior-preservation and token-cost evidence, and passed M2 validation; ready for M2 code-review.
 
 ## Decision log
 
@@ -285,10 +286,12 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 - 2026-05-19: architecture stage marked not required -> the change affects Markdown contracts, static validators, generated adapter packaging proof, and evidence files, not runtime architecture.
 - 2026-05-19: implemented assets-first validation as a scoped `plan` plus `assets/` contract -> keeps flat skills valid while allowing M2 to introduce the real packaged assets.
 - 2026-05-19: structural fingerprints normalize asset body text after removing metadata comments and normalizing visible placeholders -> catches template drift without treating the metadata header itself as template content.
+- 2026-05-19: `plan-skeleton.md` owns the full plan section layout while `SKILL.md` keeps compact output expectations and the resource map -> proves the assets pattern without duplicating the full skeleton in two files.
 
 ## Surprises and discoveries
 
 - Initial placeholder validation counted HTML metadata comments as placeholders; the validator now checks asset body text after metadata comments are removed.
+- The common-path reduction gate left little margin after preserving existing plan lifecycle rules, so M2 trimmed only common-path wording and kept behavior-sensitive state, settlement, and claim-boundary rules in `SKILL.md`.
 
 ## Validation notes
 
@@ -305,6 +308,16 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 - `python scripts/validate-change-metadata.py docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml` passed.
 - `git diff --check -- scripts tests docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md docs/plan.md` passed.
 - `bash scripts/ci.sh --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path tests/fixtures/skills/published-design --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md` passed with selected checks `skills.regression`, `skills.generation_regression`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
+- M2 baseline token measurement before editing: `skills/plan/SKILL.md` 15447 bytes and 3862 estimated tokens; total measured skills 250028 bytes and 62495 estimated tokens.
+- `python scripts/validate-skills.py` passed after the asset split.
+- `python scripts/test-skill-validator.py` passed with 128 tests after the asset split.
+- `python scripts/measure-skill-tokens.py --skills-root skills` measured `skills/plan/SKILL.md` at 13126 bytes and 3282 estimated tokens after the asset split, a 15.02 percent common-path reduction; total measured skills were 247707 bytes and 61915 estimated tokens.
+- `python scripts/build-skills.py --check` passed after the asset split.
+- `python scripts/validate-change-metadata.py docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml` passed after the asset split.
+- `git diff --check -- skills/plan specs/skill-contract.test.md scripts tests docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md docs/plan.md` passed after the asset split.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-log.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-resolution.md` passed after the M2 handoff update.
+- `bash scripts/ci.sh --mode explicit --path skills/plan/SKILL.md --path skills/plan/assets --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/behavior-preservation.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/token-cost.md --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md` blocked because `token-cost.md` has no deterministic v1 selector check.
+- `bash scripts/ci.sh --mode explicit --path skills/plan/SKILL.md --path skills/plan/assets --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md` passed for supported paths with selected checks `skills.validate`, `skills.regression`, `skills.generation_regression`, `skills.drift`, `adapters.drift`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
 
 ## Outcome and retrospective
 
@@ -313,4 +326,4 @@ The pilot proves that a published skill can ship non-empty skill-local `assets/`
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for M2 implementation. Readiness is not Done; all remaining implementation and downstream gates remain open.
+- Ready for M2 code-review. Readiness is not Done; all remaining implementation and downstream gates remain open.

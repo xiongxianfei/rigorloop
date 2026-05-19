@@ -129,6 +129,22 @@ validation:
     result: pass_after_spec
   - command: git diff --check -- docs/proposals/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md specs/skill-contract.md docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills
     result: pass_after_spec
+  - command: python scripts/validate-skills.py
+    result: pass_after_M2_plan_asset_split
+  - command: python scripts/test-skill-validator.py
+    result: pass_after_M2_plan_asset_split
+  - command: python scripts/measure-skill-tokens.py --skills-root skills
+    result: pass_after_M2_plan_asset_split_plan_skill_3282_estimated_tokens_15_02_percent_reduction
+  - command: python scripts/build-skills.py --check
+    result: pass_after_M2_plan_asset_split
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml
+    result: pass_after_M2_plan_asset_split
+  - command: git diff --check -- skills/plan specs/skill-contract.test.md scripts tests docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md docs/plan.md
+    result: pass_after_M2_plan_asset_split
+  - command: bash scripts/ci.sh --mode explicit --path skills/plan/SKILL.md --path skills/plan/assets --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/behavior-preservation.md --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/token-cost.md --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md
+    result: blocked_selector_no_deterministic_v1_check_for_token_cost_evidence_path
+  - command: bash scripts/ci.sh --mode explicit --path skills/plan/SKILL.md --path skills/plan/assets --path docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml --path docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md --path docs/plan.md
+    result: pass_after_M2_plan_asset_split_supported_paths
 changed_files:
   - docs/proposals/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md
   - specs/skill-contract.md
@@ -136,9 +152,16 @@ changed_files:
   - scripts/skill_validation.py
   - scripts/test-skill-validator.py
   - tests/fixtures/skills/published-design
+  - skills/plan/SKILL.md
+  - skills/plan/assets/plan-skeleton.md
+  - skills/plan/assets/milestone.md
+  - skills/plan/assets/current-handoff-summary.md
+  - skills/plan/assets/decision-log-row.md
   - docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md
   - docs/plan.md
   - docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml
+  - docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/behavior-preservation.md
+  - docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/token-cost.md
   - docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-log.md
   - docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/review-resolution.md
   - docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/reviews/proposal-review-r1.md
