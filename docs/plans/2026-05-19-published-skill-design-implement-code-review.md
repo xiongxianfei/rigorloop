@@ -9,6 +9,7 @@
 - Related pilot: [RigorLoop Published Skill Design Contract Execution Plan](2026-05-19-rigorloop-published-skill-design-contract.md)
 - Related previous rollout: [Published Skill Design Spec Family Rollout](2026-05-19-published-skill-design-spec-family.md)
 - Change root: [docs/changes/2026-05-19-published-skill-design-implement-code-review](../changes/2026-05-19-published-skill-design-implement-code-review/change.yaml)
+- Related issue or PR: PR #73, merged 2026-05-19, merge commit `dcc1d87cb07b09355a92969cd86cb206b749cf93`
 - Supersedes: none
 
 ## Purpose / big picture
@@ -62,10 +63,10 @@ This slice is intentionally narrow. It should make the implementation and review
 
 ## Current Handoff Summary
 
-- Current milestone: M3. Implement and code-review skill rewrite
+- Current milestone: lifecycle complete
 - Current milestone state: closed
 - Last reviewed milestone: M3. Implement and code-review skill rewrite
-- Review status: code-review-m3-r1 clean-with-notes; no material findings
+- Review status: PR #73 merged after hosted CI passed
 - Remaining in-scope implementation milestones: none
 - Next stage: none
 - Final closeout readiness: complete
@@ -275,6 +276,7 @@ This slice is intentionally narrow. It should make the implementation and review
 - 2026-05-19: keep M1 as evidence-only. Rationale: the audit found workflow-role and output-skeleton gaps in `implement` and `code-review`, but those skill-body changes belong to M3 after deterministic validator scope is settled.
 - 2026-05-19: keep M2 limited to regression proof for the execution/review evidence scaffold. Rationale: existing production validators already cover the deterministic contract classes in scope, so M2 only needed a fixture test proving the new change-local evidence remains present and bounded.
 - 2026-05-19: keep M3 token increases under the `+10%` hard cap. Rationale: the first rewrite exceeded the cap; trimming duplicated output prose brought `implement` to 4860 estimated tokens and `code-review` to 5554 while preserving the new workflow-role and output-skeleton fields.
+- 2026-05-19: close the lifecycle after PR #73 merged. Rationale: hosted CI passed and the PR merged into `main`, so no downstream lifecycle gate remains for this slice.
 
 ## Surprises and discoveries
 

@@ -1,0 +1,45 @@
+change_id: 2026-05-19-published-skill-design-plan-family
+title: Published skill design plan family rollout
+classification: planned
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-19-rigorloop-published-skill-design-contract.md
+  spec: specs/skill-contract.md
+  test_spec: specs/skill-contract.test.md
+  plan: docs/plans/2026-05-19-published-skill-design-plan-family.md
+requirements:
+  - Continue the published-skill design rollout with the next lifecycle pair after the merged proposal-family and spec-family slices.
+  - Keep this rollout scoped to skills/plan/SKILL.md and skills/plan-review/SKILL.md unless a reviewed plan revision changes scope.
+  - Preserve the published-skill design contract covering description routing, workflow role, execution body, resource-map conditions, self-containment, output skeletons, routing coverage, behavior preservation, behavior parity, and token-cost discipline.
+  - Preserve plan ownership of concrete plan bodies, docs/plan.md lifecycle indexing at initiative start or replanning, current handoff summaries, milestone states, upstream status settlement, and readiness-vs-Done boundaries.
+  - Preserve plan-review ownership of formal plan critique, review recording, material finding shape, downstream-blocking semantics, and no-implementation/no-verification claim boundaries.
+  - Do not merge, retire, rename, remove, or change ownership of skills in this slice.
+  - Do not introduce broad semantic scoring or runtime skill auto-selection claims.
+  - Amend the test spec for this plan-family slice before implementation starts.
+tests:
+  - Plan-review evidence for docs/plans/2026-05-19-published-skill-design-plan-family.md.
+  - Test-spec amendment for plan-family routing, preservation, parity, and validation evidence.
+  - Skill audit and routing coverage evidence under docs/changes/2026-05-19-published-skill-design-plan-family/.
+  - Focused skill validator tests when deterministic checks are added or extended.
+  - Canonical skill validation for skills/plan/SKILL.md and skills/plan-review/SKILL.md.
+  - Generated skill and temporary adapter archive validation from canonical skills.
+  - Behavior-preservation and behavior-parity evidence for plan and plan-review.
+validation:
+  - command: plan
+    result: created_ready_for_plan_review
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml
+    result: pass_after_plan
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-published-skill-design-plan-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml
+    result: pass_after_plan
+  - command: git diff --check -- docs/plans/2026-05-19-published-skill-design-plan-family.md docs/plan.md docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml
+    result: pass_after_plan
+  - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-published-skill-design-plan-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml
+    result: pass_after_plan
+changed_files:
+  - docs/plans/2026-05-19-published-skill-design-plan-family.md
+  - docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml
+  - docs/plan.md
+review:
+  status: pending
+  unresolved_items: 0
+  location: pending plan-review
