@@ -136,5 +136,5 @@ Status: changes-requested
 Detailed record: reviews/code-review-verify-fix-r1.md
 Resolution: review-resolution.md#code-review-verify-fix-r1
 Material findings: SRSC-VERIFY-CR1
-Open findings: SRSC-VERIFY-CR1
+Open findings: None
 Recording status: recorded

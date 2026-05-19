@@ -4,7 +4,7 @@
 
 This record tracks material finding disposition for formal lifecycle reviews of the skill readability and self-containment change.
 
-Closeout status: open
+Closeout status: closed
 
 ## Resolution Entries
 
@@ -82,7 +82,7 @@ No material findings. M3 is closed and final closeout can start with `explain-ch
 
 ### code-review-verify-fix-r1
 
-Review closeout: open
+Review closeout: closed
 
 #### SRSC-VERIFY-CR1
 
@@ -94,8 +94,8 @@ Decision owner: implementer
 Decision needed: resolved; finding accepted.
 Required outcome: Update `explain-change.md` so its readiness and risk language no longer claims the next lifecycle stage is `verify` or that final verify has simply not run. It should state that verify ran, found and fixed a compatibility issue, and the current active-plan handoff is code-review/review-resolution until the finding is resolved and verify reruns.
 Rationale: `explain-change.md` is a touched durable reasoning artifact. Its readiness lines still point to `verify`, while the active plan correctly points to code-review/review-resolution for the verify-stage adapter compatibility fix.
-Chosen action: pending.
+Chosen action: Reworded `explain-change.md` readiness and risk handling so it states that verify already ran, found and fixed adapter front-matter compatibility drift, and the active handoff remains review-resolution/code-review until SRSC-VERIFY-CR1 is resolved and verify reruns.
 Safe resolution path: Reword the stale readiness/risk rows in `explain-change.md`, then rerun artifact lifecycle validation, change metadata validation, review artifact validation, and `git diff --check --`.
-Stop state: review-resolution required; rerun code-review after resolution.
+Stop state: cleared; rerun code-review for the verify-stage fix.
 Validation target: artifact lifecycle validation, change metadata validation, review artifact validation, diff check, and rerun code-review.
-Validation evidence: pending.
+Validation evidence: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-18-skill-readability-self-containment.md --path docs/plan.md --path specs/skill-readability-contract.md --path specs/skill-readability-contract.test.md --path docs/changes/2026-05-18-skill-readability-self-containment/change.yaml --path docs/changes/2026-05-18-skill-readability-self-containment/review-log.md --path docs/changes/2026-05-18-skill-readability-self-containment/review-resolution.md --path docs/changes/2026-05-18-skill-readability-self-containment/explain-change.md` passed; `python scripts/validate-change-metadata.py docs/changes/2026-05-18-skill-readability-self-containment/change.yaml` passed; `python scripts/validate-review-artifacts.py docs/changes/2026-05-18-skill-readability-self-containment` passed in structure mode; `git diff --check --` passed.

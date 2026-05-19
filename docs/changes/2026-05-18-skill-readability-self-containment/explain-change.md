@@ -136,11 +136,11 @@ The pilot rewrites only `proposal` and `proposal-review`. Remaining R30 skills a
 
 | Risk or follow-up | Current handling |
 |---|---|
-| Final validation could reveal artifact drift after explain-change is added. | Next stage is `verify`; this artifact does not claim final readiness. |
+| Verify-stage compatibility fix changed implementation after explain-change was first recorded. | Verify ran, found and fixed adapter front-matter compatibility drift, and the active-plan handoff remains at code-review/review-resolution until SRSC-VERIFY-CR1 is resolved and verify reruns. |
 | Full R30 rollout remains incomplete after the pilot. | Follow-on rollout ownership is recorded in the active plan. |
 | Manual behavior-parity proof is less exhaustive than live LLM execution. | The test spec allowed manual contract comparison for this pilot; no regression classifications remain. |
 | Token increases are accepted for readability. | Both increases are within +5%, justified by cold-read and behavior-parity evidence, and below the hard cap. |
 
 ## Readiness
 
-`explain-change` is recorded. The next lifecycle stage is `verify`.
+`explain-change` is recorded and updated for the verify-stage adapter compatibility fix. The active-plan handoff is review-resolution for SRSC-VERIFY-CR1, followed by rerun code-review and rerun verify before branch-ready can be claimed.
