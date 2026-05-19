@@ -55,14 +55,14 @@ Implement the approved published-skill design contract as an audit-first, pilot-
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Validator and fixture support
-- Current milestone state: review-requested
-- Last reviewed milestone: M1. Audit and evidence scaffold
-- Review status: RLSDC-M2-CR1 resolved; M2 ready for code-review rerun
-- Remaining in-scope implementation milestones: M2, M3
-- Next stage: code-review M2 rerun
+- Current milestone: M3. Pilot skill rewrite and generated-output validation
+- Current milestone state: planned
+- Last reviewed milestone: M2. Validator and fixture support
+- Review status: M2 code-review rerun clean-with-notes; M3 ready for implement
+- Remaining in-scope implementation milestones: M3
+- Next stage: implement M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2 is awaiting rerun code-review, M3 is not implemented or reviewed, explain-change is absent, final verification has not run, and PR handoff is not prepared.
+- Reason final closeout is or is not ready: M3 is not implemented or reviewed, explain-change is absent, final verification has not run, and PR handoff is not prepared.
 
 ## Milestones
 
@@ -102,7 +102,7 @@ Implement the approved published-skill design contract as an audit-first, pilot-
 
 ### M2. Validator and fixture support
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: make the deterministic parts of R27-R36 checkable without adding broad semantic scoring.
 - Requirements: R29, R32, R33, R35, R36f.
 - Files/components likely touched:
@@ -220,6 +220,7 @@ Implement the approved published-skill design contract as an audit-first, pilot-
 - 2026-05-19: M2 validator and fixture support completed; targeted validation passed; M2 moved to `review-requested`.
 - 2026-05-19: code-review-m2-r1 returned `changes-requested` with RLSDC-M2-CR1; M2 moved to `resolution-needed`.
 - 2026-05-19: RLSDC-M2-CR1 fix implemented and validated; M2 returned to `review-requested` for code-review rerun.
+- 2026-05-19: code-review-m2-r2 returned `clean-with-notes`; M2 closed; next stage is `implement M3`.
 
 ## Decision log
 
@@ -281,6 +282,12 @@ Implement the approved published-skill design contract as an audit-first, pilot-
 - 2026-05-19 RLSDC-M2-CR1 validation: `python scripts/validate-change-metadata.py docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml` passed.
 - 2026-05-19 RLSDC-M2-CR1 validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md --path docs/plan.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/review-log.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/review-resolution.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/reviews/code-review-m2-r1.md` passed.
 - 2026-05-19 RLSDC-M2-CR1 validation: `bash scripts/ci.sh --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path tests/fixtures/skills/published-design/required-root-script-command/SKILL.md --path tests/fixtures/skills/published-design/packaged-script-resource-map/SKILL.md --path tests/fixtures/skills/published-design/packaged-script-resource-map/scripts/validate_output.py --path docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md --path docs/plan.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/review-log.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/review-resolution.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/reviews/code-review-m2-r1.md` passed selected skills regression, skill generation regression, review-artifact, artifact-lifecycle, change-metadata regression, and change-metadata checks.
+- 2026-05-19 M2 rerun code-review: `code-review-m2-r2` returned `clean-with-notes`; M2 closed and ready for `implement M3`.
+- 2026-05-19 M2 rerun code-review recording validation: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-19-rigorloop-published-skill-design-contract` passed.
+- 2026-05-19 M2 rerun code-review recording validation: `python scripts/validate-change-metadata.py docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml` passed.
+- 2026-05-19 M2 rerun code-review recording validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md --path docs/plan.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/review-log.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/review-resolution.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/reviews/code-review-m2-r2.md` passed.
+- 2026-05-19 M2 rerun code-review recording validation: `git diff --check -- docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md docs/plan.md docs/changes/2026-05-19-rigorloop-published-skill-design-contract` passed.
+- 2026-05-19 M2 rerun code-review recording validation: `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md --path docs/plan.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/review-log.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/review-resolution.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/reviews/code-review-m2-r2.md` passed selected review-artifact, artifact-lifecycle, change-metadata regression, and change-metadata checks.
 
 ## Outcome and retrospective
 
@@ -289,7 +296,7 @@ Implement the approved published-skill design contract as an audit-first, pilot-
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for `code-review M2` rerun, not final verification, branch readiness, or PR readiness.
+- This plan is ready for `implement M3`, not final verification, branch readiness, or PR readiness.
 
 ## Risks and follow-ups
 

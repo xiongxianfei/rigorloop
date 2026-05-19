@@ -7,6 +7,19 @@ This ledger records formal lifecycle reviews for the RigorLoop published skill d
 ## Review Entries
 
 ### Review entry
+Review ID: code-review-m2-r2
+Stage: code-review
+Round: 2
+Reviewed artifact: c0ec71f
+Status: clean-with-notes
+Detailed record: reviews/code-review-m2-r2.md
+Record: reviews/code-review-m2-r2.md
+Resolution: review-resolution.md#code-review-m2-r2
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
 Review ID: code-review-m2-r1
 Stage: code-review
 Round: 1
