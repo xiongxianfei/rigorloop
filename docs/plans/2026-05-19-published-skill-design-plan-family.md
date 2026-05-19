@@ -72,9 +72,9 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 - Last reviewed milestone: M3. Plan And Plan-Review Skill Rewrite
 - Review status: code-review-m3-r1 clean-with-notes; no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: ready for PR handoff
-- Reason final closeout is or is not ready: all in-scope implementation milestones are closed after clean code-review, explain-change, and final verify; PR handoff, hosted CI observation if a PR is opened, merge, and final lifecycle closeout remain open.
+- Next stage: hosted PR CI and human review
+- Final closeout readiness: not ready
+- Reason final closeout is or is not ready: PR #74 is open after final local verification; hosted CI observation, human review, merge, and final lifecycle closeout remain open.
 
 ## Milestones
 
@@ -259,7 +259,7 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 - [x] M3 implemented and reviewed.
 - [x] Explain-change recorded.
 - [x] Final verify completed.
-- [ ] PR handoff completed.
+- [x] PR handoff completed.
 
 ## Decision log
 
@@ -331,6 +331,7 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 - 2026-05-19 verify lifecycle validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path skills/plan/SKILL.md --path skills/plan-review/SKILL.md --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-plan-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-plan-family/explain-change.md --path docs/changes/2026-05-19-published-skill-design-plan-family/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-plan-family/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-plan-family/behavior-parity.md --path docs/changes/2026-05-19-published-skill-design-plan-family/review-log.md --path docs/changes/2026-05-19-published-skill-design-plan-family/reviews/code-review-m3-r1.md` passed.
 - 2026-05-19 verify validation: `git diff --check -- skills/plan/SKILL.md skills/plan-review/SKILL.md scripts/test-skill-validator.py specs/skill-contract.test.md docs/plans/2026-05-19-published-skill-design-plan-family.md docs/plan.md docs/changes/2026-05-19-published-skill-design-plan-family` passed.
 - 2026-05-19 verify selected CI: `bash scripts/ci.sh --mode explicit --path skills/plan/SKILL.md --path skills/plan-review/SKILL.md --path scripts/test-skill-validator.py --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-plan-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-plan-family/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-plan-family/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-plan-family/behavior-parity.md --path docs/changes/2026-05-19-published-skill-design-plan-family/explain-change.md --path docs/changes/2026-05-19-published-skill-design-plan-family/review-log.md --path docs/changes/2026-05-19-published-skill-design-plan-family/reviews/code-review-m3-r1.md` passed selected skills, generated skill, adapter, review-artifact, artifact-lifecycle, and change-metadata checks.
+- 2026-05-19 PR handoff: opened PR #74 at `https://github.com/xiongxianfei/rigorloop/pull/74`.
 
 ## Outcome and retrospective
 
@@ -338,6 +339,6 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 
 ## Readiness
 
-Ready for `pr`.
+Ready for hosted PR CI and human review.
 
-Remaining completion gates: PR handoff, hosted CI observation if a PR is opened, merge, and final lifecycle closeout when no downstream gate remains.
+Remaining completion gates: hosted CI observation, human review, merge, and final lifecycle closeout when no downstream gate remains.
