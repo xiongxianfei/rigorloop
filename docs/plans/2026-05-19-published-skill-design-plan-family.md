@@ -67,14 +67,14 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 
 ## Current Handoff Summary
 
-- Current milestone: planning
+- Current milestone: test-spec amendment
 - Current milestone state: not-applicable
 - Last reviewed milestone: none
-- Review status: plan not yet reviewed
+- Review status: plan-review-r1 approved with no material findings
 - Remaining in-scope implementation milestones: M1, M2, M3
-- Next stage: plan-review
+- Next stage: owner approval for test-spec amendment, then implement M1
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: the execution plan has been created for review, but plan-review, test-spec, implementation milestones, code-review, explain-change, verify, and PR handoff remain open.
+- Reason final closeout is or is not ready: plan-review is complete and the test-spec amendment is drafted, but owner approval, implementation milestones, code-review, explain-change, verify, and PR handoff remain open.
 
 ## Milestones
 
@@ -233,8 +233,9 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 - [x] 2026-05-19: PR #71 merge confirmed for the proposal-family pilot.
 - [x] 2026-05-19: PR #72 merge confirmed for the spec-family rollout.
 - [x] 2026-05-19: new plan-family rollout plan created.
-- [ ] Plan-review completed.
-- [ ] Test-spec amendment completed and approved.
+- [x] Plan-review completed.
+- [x] Test-spec amendment completed.
+- [ ] Test-spec amendment approved.
 - [ ] M1 implemented and reviewed.
 - [ ] M2 implemented and reviewed.
 - [ ] M3 implemented and reviewed.
@@ -260,6 +261,12 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 - 2026-05-19 plan validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-published-skill-design-plan-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml` passed.
 - 2026-05-19 plan validation: `git diff --check -- docs/plans/2026-05-19-published-skill-design-plan-family.md docs/plan.md docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml` passed.
 - 2026-05-19 plan selected CI: `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-published-skill-design-plan-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml` passed selected artifact-lifecycle, change-metadata regression, and change-metadata checks.
+- 2026-05-19 plan-review: `plan-review-r1` approved with no material findings; review evidence recorded under `docs/changes/2026-05-19-published-skill-design-plan-family/reviews/plan-review-r1.md`.
+- 2026-05-19 test-spec: amended `specs/skill-contract.test.md` with plan-family test cases `T25` through `T28`.
+- 2026-05-19 test-spec validation: `python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml` passed.
+- 2026-05-19 test-spec validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-plan-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml` passed.
+- 2026-05-19 test-spec validation: `git diff --check -- specs/skill-contract.test.md docs/plans/2026-05-19-published-skill-design-plan-family.md docs/plan.md docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml` passed.
+- 2026-05-19 test-spec selected CI: `bash scripts/ci.sh --mode explicit --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-plan-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml` passed selected artifact-lifecycle, change-metadata regression, and change-metadata checks.
 
 ## Outcome and retrospective
 
@@ -267,6 +274,6 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 
 ## Readiness
 
-Ready for `plan-review`.
+Ready for owner approval of the test-spec amendment, then `implement M1`.
 
-Remaining completion gates: plan-review, test-spec amendment and approval, M1 through M3 implementation and code-review, explain-change, verify, PR handoff, hosted CI observation if a PR is opened, merge, and final lifecycle closeout when no downstream gate remains.
+Remaining completion gates: test-spec amendment approval, M1 through M3 implementation and code-review, explain-change, verify, PR handoff, hosted CI observation if a PR is opened, merge, and final lifecycle closeout when no downstream gate remains.
