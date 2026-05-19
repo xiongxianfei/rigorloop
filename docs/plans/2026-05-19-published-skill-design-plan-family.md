@@ -68,13 +68,13 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 ## Current Handoff Summary
 
 - Current milestone: M2. Plan Family Validator And Fixture Support
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M1. Plan Family Audit And Evidence Scaffold
 - Review status: code-review-m1-r1 clean-with-notes; no material findings
 - Remaining in-scope implementation milestones: M2, M3
-- Next stage: implement M2
+- Next stage: code-review for M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 is closed after clean code-review, but M2, M3, explain-change, verify, and PR handoff remain open.
+- Reason final closeout is or is not ready: M2 deterministic test support is implemented and ready for code-review, but M2 review, M3, explain-change, verify, and PR handoff remain open.
 
 ## Milestones
 
@@ -123,7 +123,7 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 
 ### M2. Plan Family Validator And Fixture Support
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: make any deterministic checks needed for `plan` and `plan-review` enforceable without broad semantic scoring.
 - Requirements: R29, R32-R33, R35.
 - Files/components likely touched:
@@ -142,6 +142,10 @@ This plan keeps the rollout incremental. The planning pair owns active execution
   - Avoid adding runtime skill-selection claims.
   - Keep checks phrase/path/table based.
   - Record a no-production-validator-change rationale if M1 exposes no deterministic production validator gap.
+- Implementation result:
+  - Added focused regression tests in `scripts/test-skill-validator.py` for plan-family routing coverage, audit classifications, preservation scaffold, parity scaffold, and token baseline evidence.
+  - Left `scripts/skill_validation.py` unchanged because M1 did not identify a production validator gap that must block M3.
+  - Confirmed the checks are static phrase/table evidence checks and do not introduce runtime model-selection claims or broad semantic prose scoring.
 - Validation commands:
   - `python scripts/test-skill-validator.py`
   - `python scripts/validate-skills.py`
@@ -244,7 +248,8 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 - [x] Test-spec amendment completed.
 - [x] Test-spec amendment approved.
 - [x] M1 implemented and reviewed.
-- [ ] M2 implemented and reviewed.
+- [x] M2 implemented.
+- [ ] M2 reviewed.
 - [ ] M3 implemented and reviewed.
 - [ ] Explain-change recorded.
 - [ ] Final verify completed.
@@ -258,11 +263,13 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 | 2026-05-19 | Keep validator changes conditional in M2. | The previous rollout found some proof gaps belonged in test scaffolding rather than production validation; this slice should only add deterministic checks when the audit identifies a concrete need. |
 | 2026-05-19 | Keep the test spec amendment before implementation. | The skill-contract test spec currently names the completed spec-family rollout; this plan-family slice needs its own traceable test coverage before skill-body rewrites begin. |
 | 2026-05-19 | Treat M2 production validator changes as conditional after M1. | The M1 audit found evidence-scaffold and future test needs, but no production validator gap that must be fixed before M3. |
+| 2026-05-19 | Implement M2 in the regression harness only. | The deterministic need is proving the plan-family evidence shape and no-runtime-selection boundary; production validation already covers the reusable skill constraints. |
 
 ## Surprises and discoveries
 
 - M1 found both `plan` and `plan-review` need explicit `Workflow role` blocks in M3, but both already have compact result skeletons and portable project-local path handling.
 - M1 found no merge, retire, rename, ownership-change, or mandatory production-validator-change candidate for this slice.
+- M2 initially failed on brittle line-wrap-sensitive assertions in the new plan-family tests; the tests now check stable phrases that preserve the intended deterministic proof without depending on Markdown wrapping.
 
 ## Validation notes
 
@@ -283,6 +290,12 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 - 2026-05-19 M1 validation: `git diff --check -- docs/plans/2026-05-19-published-skill-design-plan-family.md docs/plan.md docs/changes/2026-05-19-published-skill-design-plan-family` passed.
 - 2026-05-19 M1 selected CI: `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-published-skill-design-plan-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-plan-family/skill-audit.md --path docs/changes/2026-05-19-published-skill-design-plan-family/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-plan-family/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-plan-family/behavior-parity.md` passed selected artifact-lifecycle, change-metadata regression, and change-metadata checks.
 - 2026-05-19 code-review M1: `code-review-m1-r1` clean-with-notes; no material findings; M1 closed and next stage is `implement M2`.
+- 2026-05-19 M2 validation: `python scripts/test-skill-validator.py -k plan_family` failed before stabilizing line-wrap-sensitive assertions, then passed.
+- 2026-05-19 M2 validation: `python scripts/test-skill-validator.py` passed 114 tests.
+- 2026-05-19 M2 validation: `python scripts/validate-skills.py` passed 23 skills.
+- 2026-05-19 M2 validation: `python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml` passed.
+- 2026-05-19 M2 validation: `git diff --check -- scripts/test-skill-validator.py docs/plans/2026-05-19-published-skill-design-plan-family.md docs/plan.md docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml` passed.
+- 2026-05-19 M2 selected CI: `bash scripts/ci.sh --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-plan-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml` passed selected skills regression, skill generation regression, artifact-lifecycle, change-metadata regression, and change-metadata checks.
 
 ## Outcome and retrospective
 
@@ -290,6 +303,6 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 
 ## Readiness
 
-Ready for `implement M2`.
+Ready for `code-review` for M2.
 
-Remaining completion gates: M2 and M3 implementation and code-review, explain-change, verify, PR handoff, hosted CI observation if a PR is opened, merge, and final lifecycle closeout when no downstream gate remains.
+Remaining completion gates: M2 code-review, M3 implementation and code-review, explain-change, verify, PR handoff, hosted CI observation if a PR is opened, merge, and final lifecycle closeout when no downstream gate remains.

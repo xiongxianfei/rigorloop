@@ -712,6 +712,47 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             with self.subTest(claim=claim):
                 self.assertNotIn(claim, routing)
 
+    def test_published_design_plan_family_routing_coverage_fixture_is_bounded(self) -> None:
+        routing = (
+            ROOT
+            / "docs"
+            / "changes"
+            / "2026-05-19-published-skill-design-plan-family"
+            / "routing-coverage.md"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn("prompt\nfixtures evaluate description coverage and transcript behavior", routing)
+        self.assertIn("do not\nclaim deterministic runtime model auto-selection", routing)
+        for required_field in (
+            "positive triggers",
+            "near misses",
+            "competing skills",
+            "should-not-trigger classes",
+        ):
+            with self.subTest(required_field=required_field):
+                self.assertIn(required_field, routing)
+        for skill in ("`plan`", "`plan-review`"):
+            with self.subTest(skill=skill):
+                self.assertIn(f"## {skill}", routing)
+        for fixture_type in (
+            "obvious positive",
+            "casual positive",
+            "edge positive",
+            "near negative",
+            "competing skill",
+            "should not trigger",
+        ):
+            with self.subTest(fixture_type=fixture_type):
+                self.assertIn(fixture_type, routing)
+        forbidden_claims = [
+            "proves automatic runtime selection",
+            "CI proves runtime skill selection",
+            "use broad semantic scoring",
+        ]
+        for claim in forbidden_claims:
+            with self.subTest(claim=claim):
+                self.assertNotIn(claim, routing)
+
     def test_published_design_spec_family_audit_records_deterministic_gaps(self) -> None:
         audit = (
             ROOT
@@ -731,6 +772,27 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         self.assertIn("No packaged `references/`, `scripts/`, or `assets/` directories exist", audit)
         self.assertIn("Both target skills earn their existence", audit)
         self.assertIn("None recorded in this audit.", audit)
+
+    def test_published_design_plan_family_audit_records_deterministic_gaps(self) -> None:
+        audit = (
+            ROOT
+            / "docs"
+            / "changes"
+            / "2026-05-19-published-skill-design-plan-family"
+            / "skill-audit.md"
+        ).read_text(encoding="utf-8")
+
+        for skill in ("`plan`", "`plan-review`"):
+            with self.subTest(skill=skill):
+                self.assertIn(f"| {skill} |", audit)
+                self.assertIn("description routing gap", audit)
+                self.assertIn("missing near-miss boundary", audit)
+                self.assertIn("missing workflow role", audit)
+                self.assertIn("missing output template", audit)
+        self.assertIn("Neither ships packaged `references/`, `scripts/`, or `assets/` resources", audit)
+        self.assertIn("Both skills earn their existence", audit)
+        self.assertIn("M1 did not identify a production validator gap", audit)
+        self.assertIn("None.", audit)
 
     def test_published_design_spec_family_preservation_and_parity_are_scaffolded(self) -> None:
         change_root = ROOT / "docs" / "changes" / "2026-05-19-published-skill-design-spec-family"
@@ -786,6 +848,42 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         self.assertIn("| `code-review` | 5054 |", audit)
         self.assertIn("M3 must fill final evidence", preservation)
         self.assertIn("M3 must confirm the rewrite preserves these outcomes", parity)
+
+    def test_published_design_plan_family_preservation_and_parity_are_scaffolded(self) -> None:
+        change_root = ROOT / "docs" / "changes" / "2026-05-19-published-skill-design-plan-family"
+        preservation = (change_root / "behavior-preservation.md").read_text(encoding="utf-8")
+        parity = (change_root / "behavior-parity.md").read_text(encoding="utf-8")
+
+        for skill in ("`plan`", "`plan-review`"):
+            with self.subTest(skill=skill):
+                self.assertIn(f"| {skill} |", preservation)
+                self.assertIn(skill, parity)
+        for required_rule in (
+            "Current Handoff Summary",
+            "Upstream status settlement",
+            "formal lifecycle review",
+            "review-log.md",
+            "test-spec",
+        ):
+            with self.subTest(required_rule=required_rule):
+                self.assertIn(required_rule, preservation)
+        for case_id in (
+            "PLAN-P1",
+            "PLAN-P2",
+            "PLAN-P3",
+            "PLAN-P4",
+            "PLAN-P5",
+            "PRV-P1",
+            "PRV-P2",
+            "PRV-P3",
+            "PRV-P4",
+            "PRV-P5",
+        ):
+            with self.subTest(case_id=case_id):
+                self.assertIn(case_id, parity)
+        self.assertIn("| `plan` | 14070 | 303 | 3518 | pending |", parity)
+        self.assertIn("| `plan-review` | 6529 | 165 | 1631 | pending |", parity)
+        self.assertIn("No final parity\nclaim is made in M1", parity)
 
     def test_skill_readability_pilot_pair_opts_into_contract(self) -> None:
         for skill_name in ("proposal", "proposal-review"):
