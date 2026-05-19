@@ -49,19 +49,19 @@ Implement the approved structural-hygiene contract for the skill contract and it
 ## Current Handoff Summary
 
 - Current milestone: M1. Test-spec structural grouping
-- Current milestone state: review-requested
-- Last reviewed milestone: M1 plan-review R1 approved
-- Review status: plan-review approved with no material findings; test spec approved by maintainer
+- Current milestone state: resolution-needed
+- Last reviewed milestone: M1 code-review R1 requested changes
+- Review status: changes-requested; material finding `CR-M1-001` is open
 - Remaining in-scope implementation milestones: M1
-- Next stage: code-review
+- Next stage: review-resolution
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: code-review, explain-change, verify, and PR handoff remain open.
+- Reason final closeout is or is not ready: `CR-M1-001`, review-resolution, re-implementation, re-review, explain-change, verify, and PR handoff remain open.
 
 ## Milestones
 
 ### M1. Test-spec structural grouping
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: mirror the approved skill-contract slice grouping in `specs/skill-contract.test.md` without changing existing test semantics.
 - Requirements:
   - Preserve every existing test-case ID, body, fixture reference, and coverage row.
@@ -138,6 +138,7 @@ Implement the approved structural-hygiene contract for the skill contract and it
 - [x] 2026-05-19: Test-spec amended with slice grouping.
 - [x] 2026-05-19: Test-spec approved by maintainer.
 - [x] 2026-05-19: M1 implementation completed and handed to code-review.
+- [ ] Resolve `CR-M1-001`.
 - [ ] Code-review.
 - [ ] Explain-change.
 - [ ] Verify.
@@ -163,6 +164,7 @@ Implement the approved structural-hygiene contract for the skill contract and it
 - 2026-05-19 maintainer approved the amended active test spec for implementation reliance.
 - 2026-05-19 implementation-stage preservation checks passed for Requirement coverage rows, Acceptance criteria coverage rows, normalized test-case heading text, and non-heading nonblank test-case body lines.
 - 2026-05-19 implementation-stage validation passed `git diff --check`, `validate-artifact-lifecycle`, `validate-change-metadata`, and `validate-review-artifacts --mode closeout`.
+- 2026-05-19 code-review M1 R1 recorded `CR-M1-001`: three baseline acceptance criteria were grouped under the Foundational header in `specs/skill-contract.md`.
 
 ## Outcome and retrospective
 
