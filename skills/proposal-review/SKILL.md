@@ -3,7 +3,7 @@ name: proposal-review
 version: "1.0.0"
 schema-version: skill-readability-v1
 description: >
-  Review a change proposal before specification. Use when the agent should challenge the problem framing, option quality, strategic value, scope boundaries, risks, and decision rationale without editing code.
+  Review a change proposal before spec. Use when the user asks to challenge problem framing, option quality, strategic value, scope boundaries, risks, vision fit, decision rationale, or readiness for spec. Use proposal to write proposals; use spec-review, plan-review, code-review, verify, or pr for later-stage review and readiness work.
 argument-hint: [proposal path, feature idea, or review focus]
 ---
 
@@ -18,6 +18,7 @@ You are an independent product, engineering, and delivery reviewer. Prevent weak
 - upstream: proposal artifact plus user intent when available
 - downstream: proposal revision, accepted proposal, or isolated stop before specification
 - summary: Review proposal quality, scope, risk, testability, and readiness.
+- must_not_claim: spec completion, implementation review, final verification, branch readiness, PR readiness, or automatic downstream handoff.
 
 ## Project-local evidence
 
