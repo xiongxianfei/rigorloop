@@ -91,6 +91,8 @@ validation:
     result: pass_after_m2
   - command: bash scripts/ci.sh --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path specs/skill-contract.test.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml
     result: pass_after_m2
+  - command: code-review M2
+    result: clean_with_notes_recorded_m2_closed
 changed_files:
   - scripts/test-skill-validator.py
   - specs/skill-contract.test.md
@@ -99,6 +101,7 @@ changed_files:
   - docs/changes/2026-05-19-published-skill-design-implement-code-review/review-log.md
   - docs/changes/2026-05-19-published-skill-design-implement-code-review/reviews/plan-review-r1.md
   - docs/changes/2026-05-19-published-skill-design-implement-code-review/reviews/code-review-m1-r1.md
+  - docs/changes/2026-05-19-published-skill-design-implement-code-review/reviews/code-review-m2-r1.md
   - docs/changes/2026-05-19-published-skill-design-implement-code-review/skill-audit.md
   - docs/changes/2026-05-19-published-skill-design-implement-code-review/routing-coverage.md
   - docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-preservation.md
@@ -107,6 +110,6 @@ changed_files:
 review:
   status: clean
   unresolved_items: 0
-  reviewed_artifact: commit a8692d7 M1: scaffold published skill design execution-review evidence
+  reviewed_artifact: commit ad01770 M2: validate published skill design execution-review checks
   review_log: docs/changes/2026-05-19-published-skill-design-implement-code-review/review-log.md
-  location: docs/changes/2026-05-19-published-skill-design-implement-code-review/reviews/code-review-m1-r1.md
+  location: docs/changes/2026-05-19-published-skill-design-implement-code-review/reviews/code-review-m2-r1.md
