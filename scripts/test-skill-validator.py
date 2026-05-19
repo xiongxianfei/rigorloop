@@ -2113,7 +2113,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "Contributors MUST NOT hand-edit `.codex/skills/` or `dist/adapters/` to satisfy this spec.",
             "Public shared blocks are copied and checked in v1, not generated into skills.",
             "Published skill text does not expose repository-local source paths, generated mirror paths, adapter package paths, selector path constraints, drift-check mechanics, shared-block implementation details, or RigorLoop-local examples.",
-            "The first validation slice MUST NOT add broad natural-language quality scoring.",
+            "The baseline normalization first slice and published-skill design pilot MUST NOT add broad natural-language quality scoring.",
             "The `ci` skill remains the entrypoint for the `ci-maintenance` stage label.",
         ]
         for term in required_spec_terms:
@@ -2157,7 +2157,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "The `ci` skill MUST be treated as the skill entrypoint for the visible `ci-maintenance` workflow stage label",
             spec,
         )
-        self.assertIn("The first implementation slice MUST NOT normalize every skill.", spec)
+        self.assertIn("The baseline normalization first slice MUST NOT normalize every skill.", spec)
         self.assertIn("Do not implement Phase 2, Phase 3, or Phase 4 skill normalization", plan)
         self.assertTrue((ROOT / "skills" / "ci" / "SKILL.md").exists())
 
