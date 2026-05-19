@@ -166,12 +166,12 @@ defects:
 - final lifecycle closeout must update plan state only after the downstream
   completion events actually happen.
 
-The active plan currently reports:
+After this explanation was recorded, the active plan was updated to report:
 
 ```text
-Next stage: explain-change
-Remaining completion gates: explain-change, verify, PR handoff, hosted CI
-observation if a PR is opened, merge, and final lifecycle closeout.
+Next stage: verify
+Remaining completion gates: verify, PR handoff, hosted CI observation if a PR
+is opened, merge, and final lifecycle closeout.
 ```
 
-After this explanation is recorded, the next stage is `verify`.
+This explanation does not claim final verification or PR readiness.
