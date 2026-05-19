@@ -731,6 +731,32 @@ release_gate:
                     any(name.startswith(f"{adapter}/") or name.startswith("dist/") for name in names)
                 )
 
+    def test_adapter_archives_include_packaged_skill_assets(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.copy_fixture_skills(root, ("portable-with-assets",))
+            output_dir = root / "release-output"
+            build_adapter_archives("v0.1.5", output_dir, skills_root=root / "skills")
+
+            expected = {
+                "codex": ".agents/skills/portable-with-assets/assets/template.md",
+                "claude": ".claude/skills/portable-with-assets/assets/template.md",
+                "opencode": ".opencode/skills/portable-with-assets/assets/template.md",
+            }
+            for adapter, asset_entry in expected.items():
+                archive_path = output_dir / adapter_archive_name(adapter, "v0.1.5")
+                with zipfile.ZipFile(archive_path) as archive:
+                    names = set(archive.namelist())
+                    self.assertIn(asset_entry, names)
+                    self.assertEqual(
+                        archive.read(asset_entry).decode("utf-8"),
+                        (root / "skills" / "portable-with-assets" / "assets" / "template.md").read_text(
+                            encoding="utf-8"
+                        ),
+                    )
+
+            self.assertEqual([], validate_adapter_archives("v0.1.5", output_dir, skills_root=root / "skills"))
+
     def test_validate_adapter_archives_rejects_missing_required_archive(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

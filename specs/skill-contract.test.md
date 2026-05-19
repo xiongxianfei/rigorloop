@@ -16,6 +16,8 @@
 - Completed rollout plan: [Published Skill Design Spec Family Rollout](../docs/plans/2026-05-19-published-skill-design-spec-family.md), completed after PR #72 merged.
 - Completed rollout plan: [Published Skill Design Implement And Code-Review Rollout](../docs/plans/2026-05-19-published-skill-design-implement-code-review.md), completed after PR #73 merged.
 - Current rollout plan: [Published Skill Design Plan Family Rollout](../docs/plans/2026-05-19-published-skill-design-plan-family.md), active in final closeout after clean M3 code-review and explain-change.
+- Current assets-first proposal: [Assets-First Progressive Disclosure Pilot for Published Skills](../docs/proposals/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md), accepted.
+- Current assets-first plan: [Assets-First Progressive Disclosure Pilot Execution Plan](../docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md), active after clean plan-review R2.
 - Architecture: not required. The approved slices change workflow-governance Markdown, canonical skill guidance, shared text blocks, static validation, generated skill mirrors, public adapter validation, and pilot skill wording. They do not add runtime components, storage, API boundaries, deployment boundaries, or a new validation architecture.
 - Project map: `docs/project-map.md` is present and was read for repository orientation. This test spec relies on the approved spec, active plan, workflow specs, stage skills, shared templates, generator scripts, existing validator patterns, and change-local pilot evidence.
 - Related proof surfaces:
@@ -41,6 +43,8 @@
 - Use change-local evidence for the published-skill design spec-family rollout: skill audit, routing coverage tables, behavior-preservation notes, behavior-parity evidence, and token-cost deltas for `spec` and `spec-review`.
 - Use change-local evidence for the published-skill design execution/review rollout: skill audit, routing coverage tables, behavior-preservation notes, behavior-parity evidence, and token-cost deltas for `implement` and `code-review`.
 - Use change-local evidence for the published-skill design plan-family rollout: skill audit, routing coverage tables, behavior-preservation notes, behavior-parity evidence, and token-cost deltas for `plan` and `plan-review`.
+- Use deterministic validator tests and fixtures for the assets-first plan pilot: exact asset inventory, metadata, resource-map `COPY` entries, placeholders, forbidden root dependencies, structural fingerprints, section-set parity, and generated adapter asset presence.
+- Use change-local evidence for assets-first behavior and benefit proof: behavior preservation, behavior parity, historical coverage, token cost, and milestone asset reuse.
 - Do not add runtime workflow simulation, natural-language scoring, broad prose linting, a shared-block generation build step, a standalone `review-resolution` skill, or a `skills/ci-maintenance/SKILL.md` path.
 - Do not claim routing fixtures prove deterministic model auto-selection unless a later approved routing harness exists.
 
@@ -77,6 +81,7 @@
 | Spec-family rollout plan requirements | `T21`, `T22`, `T23`, `T24` | integration, manual, smoke | Approved follow-on rollout for `spec` and `spec-review`, preserving R27-R35 behavior and reusing R36 audit, preservation, parity, and token discipline without changing the original pilot boundary |
 | Execution/review rollout plan requirements | `T25`, `T26`, `T27`, `T28` | integration, manual, smoke | Approved follow-on rollout for `implement` and `code-review`, preserving R27-R35 behavior and reusing R36 audit, preservation, parity, and token discipline without changing the original pilot boundary |
 | Plan-family rollout plan requirements | `T29`, `T30`, `T31`, `T32` | integration, manual, smoke | Approved follow-on rollout for `plan` and `plan-review`, preserving R27-R35 behavior and reusing R36 audit, preservation, parity, and token discipline without changing the original pilot boundary |
+| `R37`, `R37a`, `R37b`, `R37c`, `R37d`, `R38`, `R38a`, `R38b`, `R38c`, `R39`, `R39a`, `R39b`, `R39c`, `R39d`, `R40`, `R40a`, `R40b`, `R40c`, `R41`, `R41a`, `R41b`, `R41c`, `R42`, `R42a`, `R42b`, `R42c`, `R42d`, `R42e`, `R43`, `R43a`, `R43b`, `R43c`, `R43d`, `R44`, `R44a`, `R44b`, `R44c`, `R44d`, `R44e`, `R45`, `R45a`, `R45b`, `R45c`, `R45d`, `R45e` | `T33`, `T34`, `T35`, `T36` | integration, manual, smoke | Assets-first plan pilot scope, four normative assets, resource-map contract, output skeleton boundary, handoff asset boundary, metadata and drift checks, deterministic validation, improvement gate, adapter packaging, and parity corpus split |
 
 ## Example coverage map
 
@@ -94,6 +99,10 @@
 | `E10` | `T18` | Repository-root scripts are blocked as normal customer-project dependencies |
 | `E11` | `T19` | Routing fixtures are coverage and transcript evidence, not model-selection proof |
 | `E12` | `T16`, `T20` | Audit records merge/retire candidates without acting on them |
+| `E13` | `T33`, `T34` | `plan` asset resource-map entries use literal `COPY`, triggers, and fields-to-fill |
+| `E14` | `T33`, `T35` | `plan-skeleton.md` owns full plan section layout while `SKILL.md` keeps compact output expectations |
+| `E15` | `T33`, `T35` | `current-handoff-summary.md` remains structure-only and does not hide lifecycle policy |
+| `E16` | `T36` | Historical plans are coverage evidence only, not strict structural parity references |
 
 ## Edge case coverage
 
@@ -124,6 +133,14 @@
 - EC25, `plan-review` rewrite touches formal review recording or downstream-blocking language: `T31`
 - EC26, `plan` rewrite touches current handoff summary, upstream status settlement, or readiness-vs-Done language: `T31`
 - EC27, plan-family token cost regresses after moving routing into `description`: `T31`, `T32`
+- EC28, assets-first pilot tries to modify a skill other than `plan`: `T33`
+- EC29, `skills/plan/assets/` has more or fewer than four files or an unapproved asset status: `T33`, `T34`
+- EC30, a resource-map entry omits `COPY`, a trigger condition, fields-to-fill, or no-unfilled-placeholder guidance: `T34`
+- EC31, `plan-skeleton.md` and `SKILL.md` duplicate or disagree on full section layout: `T34`, `T35`
+- EC32, `current-handoff-summary.md` includes lifecycle transition rules, readiness semantics, validation requirements, or claim ownership: `T35`
+- EC33, a normative asset fingerprint or section set drifts without explicit version and fingerprint update: `T34`
+- EC34, common-path body token count fails to shrink by at least 15 percent or total packaged content exceeds the approved budget: `T36`
+- EC35, behavior-parity evidence treats historical plans as strict current-contract references: `T36`
 
 ## Acceptance criteria coverage map
 
@@ -166,6 +183,14 @@
 | Plan-family rollout creates audit, routing coverage, behavior-preservation, behavior-parity, and token evidence before skill-body rewrites close | `T29`, `T31` |
 | Plan-family validator changes are deterministic, fixture-backed, and limited to gaps found by the audit or existing R27-R35 checks | `T30` |
 | Plan-family generated skill and temporary adapter validation are run from canonical `skills/` without hand-editing generated public adapter bodies | `T32` |
+| Assets-first plan pilot remains a follow-on slice limited to `plan` and exactly four normative assets | `T33`, `T34` |
+| `skills/plan/SKILL.md` uses a `Resource map` with literal `COPY` entries for every asset | `T34` |
+| `assets/plan-skeleton.md` owns canonical plan section order while `SKILL.md` keeps only compact output expectations | `T35` |
+| `assets/current-handoff-summary.md` contains no lifecycle transition rules or readiness semantics | `T35` |
+| Every `plan` asset has metadata comments, normative status, and structural fingerprint coverage | `T34` |
+| Deterministic validation covers asset count, approved paths, metadata, resource-map coverage, `COPY`, placeholders, repository-root path exclusion, structural fingerprint, section-set parity, and adapter asset presence | `T34`, `T36` |
+| Assets-first plan pilot records behavior parity, at least 15 percent common-path body token reduction, total packaged content budget evidence, and milestone substructure reuse evidence | `T36` |
+| Assets-first behavior-parity evidence separates strict contract-era reference corpus from historical coverage corpus | `T36` |
 
 ## Test cases
 
@@ -1017,6 +1042,134 @@
   - `python scripts/validate-adapters.py --root <tmpdir> --version v0.1.5`
   - `bash scripts/ci.sh --mode explicit --path skills/plan/SKILL.md --path skills/plan-review/SKILL.md --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-plan-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml`
 
+### T33. Assets-first plan pilot scope and evidence scaffold
+
+- Covers: `R37`, `R37a`, `R37b`, `R37c`, `R37d`, `R38`, `R38a`, `R38b`, `R38c`, `R43b`, `R43c`, `R45e`, E13, EC28, EC29
+- Level: integration, manual
+- Fixture/setup:
+  - `skills/plan/SKILL.md`
+  - `skills/plan/assets/`
+  - `docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md`
+  - `docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml`
+  - `docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/behavior-preservation.md`
+- Steps:
+  - Assert the assets-first plan pilot is recorded as a follow-on packaged-resource pilot and does not reopen the current published-skill design pilot scope.
+  - Assert the only skill modified in the asset pilot implementation slice is `skills/plan/SKILL.md`.
+  - Assert `proposal`, `proposal-review`, `spec`, `spec-review`, `code-review`, `verify`, and `pr` are not modified by the asset pilot implementation slice.
+  - Assert no packaged `references/`, packaged `scripts/`, build-time partials, adapter install-root changes, lockfile changes, or CLI behavior changes are introduced.
+  - Assert `skills/plan/assets/` contains exactly `plan-skeleton.md`, `milestone.md`, `current-handoff-summary.md`, and `decision-log-row.md`.
+  - Assert all four assets use `normative` status and no optional, example, deprecated, or fifth asset ships.
+  - Manually confirm assets contain structural templates copied and filled by the agent, not filled examples, hidden trigger logic, or policy text that belongs in `SKILL.md` or governing specs.
+  - Manually confirm assets do not require repository-root internal paths as normal customer-project dependencies.
+- Expected result:
+  - The implementation slice is limited to the approved `plan` asset pilot and establishes the evidence surfaces before skill-body changes close.
+- Failure proves:
+  - The pilot expanded scope, shipped an unapproved resource class, modified the wrong skills, or made assets a hidden rule source.
+- Automation location:
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/validate-skills.py`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml`
+  - manual review during M1 and M2
+
+### T34. Assets-first resource-map, metadata, and drift validation
+
+- Covers: `R39`, `R39a`, `R39b`, `R39c`, `R39d`, `R42`, `R42a`, `R42b`, `R42c`, `R42d`, `R42e`, `R43`, `R43a`, `R43b`, E13, E14, EC30, EC31, EC33
+- Level: integration, manual
+- Fixture/setup:
+  - `skills/plan/SKILL.md`
+  - `skills/plan/assets/plan-skeleton.md`
+  - `skills/plan/assets/milestone.md`
+  - `skills/plan/assets/current-handoff-summary.md`
+  - `skills/plan/assets/decision-log-row.md`
+  - valid and invalid fixture skill trees under `tests/fixtures/skills/published-design/` or another existing skill fixture root
+  - `scripts/skill_validation.py`
+  - `scripts/test-skill-validator.py`
+- Steps:
+  - Assert `skills/plan/SKILL.md` includes a `Resource map` entry for each of the four normative assets.
+  - Assert each asset resource-map entry uses literal `COPY`, names the asset path, states the trigger condition, and names the fields or structures the agent must fill.
+  - Assert `COPY` is the only accepted asset verb in this pilot, while `READ` and `RUN` remain reserved for future resource classes.
+  - Assert the `Resource map` instructs the agent not to emit unfilled placeholders.
+  - Assert every asset metadata header includes template name and version, skill name, template status, structural fingerprint, and maintained-alongside path.
+  - Assert validator fixtures fail for missing metadata, non-normative status, missing resource-map entry, non-`COPY` verb, missing trigger, missing fields-to-fill, missing placeholder syntax, forbidden required root dependency, fingerprint mismatch without version update, and full-skeleton section-set mismatch.
+  - Assert static validation stays deterministic and does not use broad semantic scoring to decide whether prose is too explanatory.
+  - Manually confirm any prose-heavy asset concern is handled by a bounded heuristic declared in the spec, test spec, plan, or by code-review judgment.
+- Expected result:
+  - Asset resource-map, metadata, and drift checks are deterministic, fixture-backed, and precise enough to catch missing, unmapped, malformed, or drifted assets.
+- Failure proves:
+  - Multi-file skill packaging can drift silently or validators rely on subjective semantic scoring.
+- Automation location:
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/validate-skills.py`
+  - manual validator review during M1 and code-review
+
+### T35. Plan skeleton and handoff asset preserve output and lifecycle boundaries
+
+- Covers: `R40`, `R40a`, `R40b`, `R40c`, `R41`, `R41a`, `R41b`, `R41c`, `R43d`, `R44a`, E14, E15, EC31, EC32
+- Level: integration, manual
+- Fixture/setup:
+  - `skills/plan/SKILL.md`
+  - `skills/plan/assets/plan-skeleton.md`
+  - `skills/plan/assets/current-handoff-summary.md`
+  - `docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/behavior-preservation.md`
+  - `docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/behavior-parity.md`
+- Steps:
+  - Assert `assets/plan-skeleton.md` is the reviewed equivalent full output template for `plan`.
+  - Assert `assets/plan-skeleton.md` owns canonical plan section order, headers, and placeholders.
+  - Assert `skills/plan/SKILL.md` retains a compact output expectation summary that names the expected output shape and points to `assets/plan-skeleton.md` through the `Resource map`.
+  - Assert `skills/plan/SKILL.md` and `assets/plan-skeleton.md` do not duplicate the full plan section layout.
+  - Assert `assets/current-handoff-summary.md` contains only section headings, field labels, and placeholders.
+  - Assert `assets/current-handoff-summary.md` does not define lifecycle status values, next-stage transition rules, claim ownership, branch-ready semantics, PR-ready semantics, or validation requirements.
+  - Assert `skills/plan/SKILL.md` retains the rule that the Current Handoff Summary stays consistent with the active plan, plan index, and change metadata.
+  - If `current-handoff-summary.md` cannot satisfy the boundary, assert the handoff summary template remains inline in `skills/plan/SKILL.md` for this pilot.
+  - Manually confirm behavior-preservation evidence maps any moved behavior-significant wording to the preserved rule location.
+- Expected result:
+  - The full output skeleton can live in an asset without hiding lifecycle rules, duplicating section authority, or weakening handoff consistency.
+- Failure proves:
+  - Progressive disclosure moved workflow policy into a template or made the output contract harder to inspect and maintain.
+- Automation location:
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/validate-skills.py`
+  - manual behavior-preservation review during M2 and code-review
+
+### T36. Assets-first adapter, token, behavior-parity, and corpus proof
+
+- Covers: `R43a`, `R43d`, `R44`, `R44a`, `R44b`, `R44c`, `R44d`, `R44e`, `R45`, `R45a`, `R45b`, `R45c`, `R45d`, `R45e`, E16, EC34, EC35
+- Level: integration, smoke, manual
+- Fixture/setup:
+  - `skills/plan/SKILL.md`
+  - `skills/plan/assets/`
+  - `scripts/build-skills.py`
+  - `scripts/build-adapters.py`
+  - `scripts/validate-adapters.py`
+  - `scripts/measure-skill-tokens.py`
+  - `scripts/test-adapter-distribution.py`
+  - `docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/behavior-parity.md`
+  - `docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/historical-coverage.md`
+  - `docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/token-cost.md`
+- Steps:
+  - Build generated skills and temporary adapter archives from canonical `skills/`.
+  - Assert generated adapter output contains all four `skills/plan/assets/*` files and no generated adapter skill body or asset is hand-edited.
+  - Measure `skills/plan/SKILL.md` common-path body tokens before and after the pilot and assert the body decreases by at least 15 percent.
+  - Measure total packaged content as `skills/plan/SKILL.md` plus assets; assert growth up to `+5%` has recorded rationale and growth above `+10%` blocks rollout unless the spec is amended.
+  - Assert behavior-parity evidence covers required plan sections, milestone shape, decision log shape, current handoff summary, validation evidence, implementation and review handoff, claim boundaries, and recording discipline.
+  - Assert `assets/milestone.md` reuse evidence shows one milestone asset use per milestone across the behavior-parity reference corpus.
+  - Assert the reference corpus has at least three contract-era, contract-compliant plans and uses strict structural parity, preferably including the three plans named in `R45b`.
+  - Assert the historical corpus has 3 to 5 pre-contract-era plans, uses coverage parity rather than strict structural parity, and records historical coverage gaps in change-local evidence.
+  - Manually confirm follow-on packaged-resource guidance treats constructive skills as primary `assets/` candidates and deliberative skills as primary `references/` candidates.
+- Expected result:
+  - The pilot proves packaged assets ship through adapters, improves the common path, preserves behavior, and separates current-contract parity from historical coverage.
+- Failure proves:
+  - The pilot added packaging mechanics without measurable benefit, lost packaged assets in adapter output, weakened plan behavior, or used an invalid parity baseline.
+- Automation location:
+  - `python scripts/test-adapter-distribution.py`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/build-adapters.py --version v0.1.5 --output-dir <tmpdir>`
+  - `python scripts/validate-adapters.py --root <tmpdir> --version v0.1.5`
+  - `python scripts/measure-skill-tokens.py --skills-root skills`
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-skill-validator.py`
+  - manual parity and historical coverage review during M3 and code-review
+
 ## Fixtures and data
 
 - No new external fixtures or runtime data are required.
@@ -1048,6 +1201,17 @@
   - `docs/changes/2026-05-19-published-skill-design-plan-family/routing-coverage.md`;
   - `docs/changes/2026-05-19-published-skill-design-plan-family/behavior-preservation.md`;
   - `docs/changes/2026-05-19-published-skill-design-plan-family/behavior-parity.md`.
+- Change-local assets-first plan pilot evidence uses:
+  - `docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/behavior-preservation.md`;
+  - `docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/behavior-parity.md`;
+  - `docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/historical-coverage.md`;
+  - `docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/token-cost.md`.
+- Assets-first plan pilot static fixtures use:
+  - `skills/plan/assets/plan-skeleton.md`;
+  - `skills/plan/assets/milestone.md`;
+  - `skills/plan/assets/current-handoff-summary.md`;
+  - `skills/plan/assets/decision-log-row.md`;
+  - valid and invalid asset pilot fixture trees under `tests/fixtures/skills/published-design/` or another existing skill fixture root.
 - Any temporary fixture for validator failure cases should live under existing test fixture roots such as `tests/fixtures/skills/` and must not reference machine-local paths.
 
 ## Mocking/stubbing policy
@@ -1060,6 +1224,7 @@
 - For the spec-family rollout, do not stub `scripts/build-skills.py --check`, `scripts/build-adapters.py --version v0.1.5 --output-dir <tmpdir>`, `scripts/validate-adapters.py --root <tmpdir> --version v0.1.5`, `scripts/measure-skill-tokens.py --skills-root skills`, or `scripts/ci.sh` when those commands are used as final milestone proof.
 - For the execution/review rollout, do not stub `scripts/build-skills.py --check`, `scripts/build-adapters.py --version v0.1.5 --output-dir <tmpdir>`, `scripts/validate-adapters.py --root <tmpdir> --version v0.1.5`, `scripts/measure-skill-tokens.py --skills-root skills`, or `scripts/ci.sh` when those commands are used as final milestone proof.
 - For the plan-family rollout, do not stub `scripts/build-skills.py --check`, `scripts/build-adapters.py --version v0.1.5 --output-dir <tmpdir>`, `scripts/validate-adapters.py --root <tmpdir> --version v0.1.5`, `scripts/measure-skill-tokens.py --skills-root skills`, or `scripts/ci.sh` when those commands are used as final milestone proof.
+- For the assets-first plan pilot, do not stub `scripts/build-skills.py --check`, `scripts/build-adapters.py --version v0.1.5 --output-dir <tmpdir>`, `scripts/validate-adapters.py --root <tmpdir> --version v0.1.5`, `scripts/measure-skill-tokens.py --skills-root skills`, `scripts/test-adapter-distribution.py`, or `scripts/ci.sh` when those commands are used as final milestone proof.
 
 ## Migration or compatibility tests
 
@@ -1071,6 +1236,8 @@
 - Existing skills outside `spec` and `spec-review` remain valid during the spec-family rollout unless a reviewed plan revision changes scope: `T21`, `T23`.
 - Existing skills outside `implement` and `code-review` remain valid during the execution/review rollout unless a reviewed plan revision changes scope: `T25`, `T27`.
 - Existing skills outside `plan` and `plan-review` remain valid during the plan-family rollout unless a reviewed plan revision changes scope: `T29`, `T31`.
+- Existing skills outside `plan` remain valid during the assets-first plan pilot unless the spec is amended: `T33`.
+- Rollback for the assets-first plan pilot is to reinline asset skeletons into `skills/plan/SKILL.md`, remove `skills/plan/assets/`, and keep validator improvements only when they remain valid for flat skills: `T33`, `T34`, `T35`, `T36`.
 - Optional `when_to_use` remains compatible where supported but does not replace `description`: `T17`.
 - Packaged skill-local resources remain allowed when mapped and included in adapter output, while repository-root internal paths remain blocked as normal customer-project dependencies: `T18`.
 
@@ -1082,6 +1249,7 @@
 - Spec-family validation output should identify deterministic `spec` and `spec-review` failures by stable check ID or fixture expectation when those checks are implemented: `T22`, `T23`.
 - Execution/review validation output should identify deterministic `implement` and `code-review` failures by stable check ID or fixture expectation when those checks are implemented: `T26`, `T27`.
 - Plan-family validation output should identify deterministic `plan` and `plan-review` failures by stable check ID or fixture expectation when those checks are implemented: `T30`, `T31`.
+- Assets-first plan pilot validation output should identify asset count, approved path, metadata, resource-map coverage, `COPY`, placeholder, forbidden root dependency, structural fingerprint, section-set parity, generated adapter asset presence, and token-budget failures by stable check ID when those checks are implemented: `T34`, `T36`.
 - Review and verification artifacts should cite concrete commands and results, not generic success claims: `T13`.
 
 ## Security/privacy verification
@@ -1090,6 +1258,7 @@
 - Evidence-reading guidance must not encourage pasting sensitive logs or secrets into skill output: `T8`, `T12`.
 - Adapter output remains generated proof surface, not an independent source of truth: `T9`, `T12`.
 - Published skills must not instruct users to expose secrets, credentials, proxy URLs, private hostnames, tokens, private keys, or raw environment values while using packaged resources or scripts: `T18`.
+- Assets-first plan pilot assets must not include secrets, credentials, tokens, private keys, private user data, unjustified machine-local paths, or repository-root internal paths as normal customer-project dependencies: `T33`, `T34`.
 
 ## Performance checks
 
@@ -1098,13 +1267,15 @@
 - Skill-contract validation remains static and repository-local in the spec-family rollout: `T21`, `T22`, `T23`, `T24`.
 - Skill-contract validation remains static and repository-local in the execution/review rollout: `T25`, `T26`, `T27`, `T28`.
 - Skill-contract validation remains static and repository-local in the plan-family rollout: `T29`, `T30`, `T31`, `T32`.
-- No broad natural-language quality scoring is added: `T10`, `T19`, `T22`, `T23`, `T26`, `T27`, `T30`, `T31`.
+- Skill-contract validation remains static and repository-local in the assets-first plan pilot: `T33`, `T34`, `T35`, `T36`.
+- No broad natural-language quality scoring is added: `T10`, `T19`, `T22`, `T23`, `T26`, `T27`, `T30`, `T31`, `T34`, `T35`.
 - Evidence-reading guidance should reduce broad reads by preferring targeted summaries, IDs, headings, paths, counts, and line citations: `T8`.
 - Broad smoke is not required unless triggered by selector, plan, test spec, review-resolution, release metadata, or explicit reviewer requirement: `T13`.
 - The pilot token-cost budget is measured for `proposal` and `proposal-review` before rollout expands: `T20`.
 - The spec-family rollout measures token estimates for `spec` and `spec-review` before and after the rewrite and records rationale for material regression: `T21`, `T23`.
 - The execution/review rollout measures token estimates for `implement` and `code-review` before and after the rewrite and records rationale for material regression: `T25`, `T27`.
 - The plan-family rollout measures token estimates for `plan` and `plan-review` before and after the rewrite and records rationale for material regression: `T29`, `T31`.
+- The assets-first plan pilot measures `skills/plan/SKILL.md` common-path body tokens separately from total packaged content, requires at least 15 percent common-path reduction, allows total packaged growth up to `+5%` with rationale, and blocks above `+10%` unless the spec is amended: `T36`.
 
 ## Manual QA checklist
 
@@ -1130,6 +1301,14 @@
 - Confirm `plan` current handoff summary, upstream status settlement, active plan ownership, and readiness-vs-Done boundaries are preserved after rewrite.
 - Confirm `plan-review` formal review recording, material finding shape, blocked recording behavior, and downstream-blocking semantics are preserved after rewrite.
 - Confirm temporary adapter validation uses generated output from canonical `skills/plan` and `skills/plan-review`, not hand-edited generated bodies.
+- Confirm assets-first plan pilot evidence exists before the `plan` asset split closes.
+- Confirm `skills/plan/assets/` contains exactly four normative assets and no `references/`, `scripts/`, fifth asset, optional asset, example asset, or deprecated asset.
+- Confirm every `plan` asset is mapped from `skills/plan/SKILL.md` with literal `COPY`, a trigger condition, fields-to-fill, and no-unfilled-placeholder guidance.
+- Confirm `plan-skeleton.md` owns full section layout while `SKILL.md` keeps a compact output expectation summary.
+- Confirm `current-handoff-summary.md` contains no lifecycle transition, readiness, validation, branch-ready, PR-ready, or claim-ownership rules.
+- Confirm behavior-parity evidence separates contract-era reference plans from historical coverage plans.
+- Confirm adapter validation proves the four `plan` assets ship in generated adapter output.
+- Confirm token-cost evidence shows at least 15 percent common-path body reduction and total packaged content within the approved budget.
 
 ## What not to test and why
 
@@ -1141,6 +1320,9 @@
 - Do not treat the spec-family rollout as a change to the original pilot boundary in `R36b`; this rollout is separately scoped by the approved spec-family plan to `spec` and `spec-review`.
 - Do not treat the execution/review rollout as a change to the original pilot boundary in `R36b`; this rollout is separately scoped by the approved execution/review plan to `implement` and `code-review`.
 - Do not treat the plan-family rollout as a change to the original pilot boundary in `R36b`; this rollout is separately scoped by the approved plan-family plan to `plan` and `plan-review`.
+- Do not treat the assets-first plan pilot as authorization to roll out assets to every skill.
+- Do not add packaged `references/`, packaged `scripts/`, build-time partials, adapter root changes, lockfile changes, or CLI behavior changes for the assets-first plan pilot.
+- Do not treat historical plans as strict structural parity references for assets-first behavior evidence.
 - Do not require deterministic validator changes in M2 if M1 records that existing validation already covers the deterministic spec-family risks.
 - Do not require deterministic validator changes in M2 if M1 records that existing validation already covers the deterministic execution/review risks.
 - Do not require deterministic validator changes in M2 if M1 records that existing validation already covers the deterministic plan-family risks.
@@ -1154,7 +1336,8 @@
 
 ## Next artifacts
 
-- Current rollout: final `verify`, then `pr` handoff under [Published Skill Design Plan Family Rollout](../docs/plans/2026-05-19-published-skill-design-plan-family.md).
+- Current rollout: `implement` M1 under [Assets-First Progressive Disclosure Pilot Execution Plan](../docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md).
+- Historical carried context: the completed plan-family rollout used `T29`-`T32` for `plan` and `plan-review`.
 - Historical carried context: the merged spec-family rollout used `T21`-`T24` for `spec` and `spec-review`.
 - Historical carried context: the merged execution/review rollout used `T25`-`T28` for `implement` and `code-review`.
 - Historical carried context: the merged published-skill design pilot used `T16`-`T20` for `proposal` and `proposal-review`.
@@ -1165,4 +1348,4 @@
 
 ## Readiness
 
-Active proof-planning surface for public skill portability, claim-boundary checks, the merged published-skill design pilot, the completed spec-family rollout, the completed execution/review rollout, and the plan-family rollout. The Published Skill Design Plan Family Rollout plan owns the current execution handoff through final `verify`, then `pr`.
+Active proof-planning surface for public skill portability, claim-boundary checks, the merged published-skill design pilot, completed spec-family rollout, completed execution/review rollout, completed plan-family rollout, and assets-first plan pilot. The assets-first plan pilot M1 uses T33 and T34 as its proof plan.

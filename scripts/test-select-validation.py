@@ -600,6 +600,12 @@ raise SystemExit({exit_code})
                 "checks": {"artifact_lifecycle.validate"},
             },
             {
+                "path": "docs/changes/2026-04-25-example/adapter-packaging.md",
+                "category": "change-local-lifecycle",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
                 "path": "docs/changes/2026-04-25-example/behavior-parity-report.md",
                 "category": "change-local-lifecycle",
                 "status": "ok",
@@ -618,6 +624,12 @@ raise SystemExit({exit_code})
                 "checks": {"artifact_lifecycle.validate"},
             },
             {
+                "path": "docs/changes/2026-04-25-example/historical-coverage.md",
+                "category": "change-local-lifecycle",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
                 "path": "docs/changes/2026-04-25-example/routing-coverage.md",
                 "category": "change-local-lifecycle",
                 "status": "ok",
@@ -625,6 +637,12 @@ raise SystemExit({exit_code})
             },
             {
                 "path": "docs/changes/2026-04-25-example/skill-audit.md",
+                "category": "change-local-lifecycle",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/token-cost.md",
                 "category": "change-local-lifecycle",
                 "status": "ok",
                 "checks": {"artifact_lifecycle.validate"},

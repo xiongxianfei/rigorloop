@@ -49,6 +49,7 @@ ADAPTER_OUTPUT_CONTRACT_ROOT = PurePosixPath("dist/adapters")
 ADAPTER_SUPPORT_METADATA_FILES = frozenset({Path("README.md")})
 CODEX_LOCAL_RUNTIME_ROOT = ".codex/skills/"
 OPENCODE_COMMAND_ROOT = PurePosixPath(".opencode/commands")
+PACKAGED_RESOURCE_DIRS = ("assets", "references", "scripts")
 COMMON_FRONTMATTER = frozenset({"name", "description"})
 TRANSFORMABLE_FRONTMATTER = frozenset({"argument-hint", "schema-version", "version"})
 PORTABLE_NAME_PATTERN = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
@@ -1088,12 +1089,31 @@ def _expected_adapter_files_from_reports(
             expected[package_root / _path_from_posix(config.skill_path(report.name))] = (
                 render_skill_for_adapter(report, decision)
             )
+            for resource_path, text in _packaged_skill_resources(report):
+                expected[
+                    package_root
+                    / _path_from_posix(config.skill_root / report.name / PurePosixPath(resource_path.as_posix()))
+                ] = text
 
     if _supports_opencode_command_aliases(version):
         for alias in OPENCODE_COMMAND_ALIASES:
             expected[opencode_command_alias_relative_path(alias)] = render_opencode_command_alias(alias)
 
     return dict(sorted(expected.items(), key=lambda item: item[0].as_posix()))
+
+
+def _packaged_skill_resources(report: SkillPortabilityReport) -> tuple[tuple[Path, str], ...]:
+    skill_dir = report.path.parent
+    resources: list[tuple[Path, str]] = []
+    for resource_dir_name in PACKAGED_RESOURCE_DIRS:
+        resource_dir = skill_dir / resource_dir_name
+        if not resource_dir.is_dir():
+            continue
+        for path in sorted(resource_dir.rglob("*")):
+            if not path.is_file() or path.name == ".gitkeep":
+                continue
+            resources.append((path.relative_to(skill_dir), path.read_text(encoding="utf-8")))
+    return tuple(resources)
 
 
 def _collect_generated_files(root: Path) -> dict[Path, Path]:
