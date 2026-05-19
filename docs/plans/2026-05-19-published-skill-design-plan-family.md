@@ -67,14 +67,14 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Plan Family Validator And Fixture Support
-- Current milestone state: review-requested
-- Last reviewed milestone: M1. Plan Family Audit And Evidence Scaffold
-- Review status: code-review-m1-r1 clean-with-notes; no material findings
-- Remaining in-scope implementation milestones: M2, M3
-- Next stage: code-review for M2
+- Current milestone: M3. Plan And Plan-Review Skill Rewrite
+- Current milestone state: planned
+- Last reviewed milestone: M2. Plan Family Validator And Fixture Support
+- Review status: code-review-m2-r1 clean-with-notes; no material findings
+- Remaining in-scope implementation milestones: M3
+- Next stage: implement M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2 deterministic test support is implemented and ready for code-review, but M2 review, M3, explain-change, verify, and PR handoff remain open.
+- Reason final closeout is or is not ready: M2 is closed after clean code-review, but M3, explain-change, verify, and PR handoff remain open.
 
 ## Milestones
 
@@ -123,7 +123,7 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 
 ### M2. Plan Family Validator And Fixture Support
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: make any deterministic checks needed for `plan` and `plan-review` enforceable without broad semantic scoring.
 - Requirements: R29, R32-R33, R35.
 - Files/components likely touched:
@@ -248,8 +248,7 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 - [x] Test-spec amendment completed.
 - [x] Test-spec amendment approved.
 - [x] M1 implemented and reviewed.
-- [x] M2 implemented.
-- [ ] M2 reviewed.
+- [x] M2 implemented and reviewed.
 - [ ] M3 implemented and reviewed.
 - [ ] Explain-change recorded.
 - [ ] Final verify completed.
@@ -296,6 +295,7 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 - 2026-05-19 M2 validation: `python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml` passed.
 - 2026-05-19 M2 validation: `git diff --check -- scripts/test-skill-validator.py docs/plans/2026-05-19-published-skill-design-plan-family.md docs/plan.md docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml` passed.
 - 2026-05-19 M2 selected CI: `bash scripts/ci.sh --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-plan-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml` passed selected skills regression, skill generation regression, artifact-lifecycle, change-metadata regression, and change-metadata checks.
+- 2026-05-19 code-review M2: `code-review-m2-r1` clean-with-notes; no material findings; M2 closed and next stage is `implement M3`.
 
 ## Outcome and retrospective
 
@@ -303,6 +303,6 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 
 ## Readiness
 
-Ready for `code-review` for M2.
+Ready for `implement M3`.
 
-Remaining completion gates: M2 code-review, M3 implementation and code-review, explain-change, verify, PR handoff, hosted CI observation if a PR is opened, merge, and final lifecycle closeout when no downstream gate remains.
+Remaining completion gates: M3 implementation and code-review, explain-change, verify, PR handoff, hosted CI observation if a PR is opened, merge, and final lifecycle closeout when no downstream gate remains.
