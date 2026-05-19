@@ -929,13 +929,13 @@ This change has no user-interface surface. The relevant user experience is contr
 - A reviewer can identify `specs/skill-contract.md` as the normative skill-contract source.
 - A reviewer can distinguish skill-contract behavior from workflow-routing behavior owned by `specs/rigorloop-workflow.md`.
 - A contributor can identify the required core sections for a normalized skill.
-- A contributor can identify which skills belong to the baseline normalization first slice.
-- A contributor can identify the later normalization phases without guessing.
 - A contributor can see that `ci` is the skill entrypoint for `ci-maintenance`.
-- A reviewer can confirm that normalized skills include local do-not-overclaim guidance.
 
 ### Baseline normalization first slice (R8-R26)
 
+- A contributor can identify which skills belong to the baseline normalization first slice.
+- A contributor can identify the later normalization phases without guessing.
+- A reviewer can confirm that normalized skills include local do-not-overclaim guidance.
 - A reviewer can confirm that skill outputs are summary-first and include the common result fields or an approved equivalent.
 - A reviewer can confirm that shared blocks adopted in v1 are copied from `templates/shared/` and checked for drift.
 - A reviewer can confirm that generated `.codex/skills/` and `dist/adapters/` output are regenerated rather than hand-edited.
