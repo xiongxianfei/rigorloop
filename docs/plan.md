@@ -3,12 +3,13 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-19 RigorLoop Published Skill Design Contract](plans/2026-05-19-rigorloop-published-skill-design-contract.md) - active execution plan for implementing the approved published-skill design contract as an audit-first, pilot-scoped `proposal` and `proposal-review` change; PR #71 is open with a selector fix pushed after the initial hosted CI failure, and hosted CI rerun plus human review are pending.
+- [2026-05-19 Published Skill Design Spec Family Rollout](plans/2026-05-19-published-skill-design-spec-family.md) - active execution plan for continuing the merged published-skill design pilot with the next scoped pair, `spec` and `spec-review`; current next stage is plan-review.
 
 ## Blocked
 - none yet
 
 ## Done
+- [2026-05-19 RigorLoop Published Skill Design Contract](plans/2026-05-19-rigorloop-published-skill-design-contract.md) - completed execution plan for the audit-first published-skill design pilot on `proposal` and `proposal-review`, adding deterministic validator and selector support, recording audit/routing/preservation/parity/token evidence, passing final verify, opening PR #71, passing hosted CI after selector routing fix, and merging PR #71.
 - [2026-05-18 Skill readability and self-containment](plans/2026-05-18-skill-readability-self-containment.md) - completed execution plan for piloting quality-first installed skill readability on `proposal` and `proposal-review`, adding focused validation, cold-read proof, behavior-parity proof, token-cost comparison, preserving follow-on rollout ownership for remaining R30 skills, passing hosted CI, and merging PR #69.
 - [2026-05-18 Multi-adapter init and proxy-aware adapter download](plans/2026-05-18-multi-adapter-init-and-proxy-aware-download.md) - completed execution plan for implementing descriptor-driven `rigorloop init --adapter codex|claude|opencode`, schema v2 mixed-root lockfiles, verified local/network adapter archives, opencode command alias handling, proxy-safe download diagnostics, review-resolution closeout, final local verify, and opening PR #68.
 - [2026-05-18 Customer-portable public skills](plans/2026-05-18-customer-portable-public-skills.md) - completed execution plan for making audited public skills customer-portable, adding focused static validation, recording static and live customer-fixture dynamic token evidence, validating generated adapters from canonical skills, closing `CPS-M3-CR1`, passing final local verify with explicit selected CI proof, and opening PR #67.
