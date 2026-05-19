@@ -66,9 +66,9 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 - Last reviewed milestone: M3. Spec And Spec-Review Skill Rewrite
 - Review status: code-review-m3-r1 clean-with-notes; no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
+- Next stage: pr
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: verify and PR handoff remain.
+- Reason final closeout is or is not ready: PR handoff remains.
 
 ## Milestones
 
@@ -228,7 +228,7 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 - [x] M3 implementation started.
 - [x] M3 implemented and reviewed.
 - [x] Explain-change recorded.
-- [ ] Final verify passed.
+- [x] Final verify passed.
 - [ ] PR handoff completed.
 
 ## Decision log
@@ -247,6 +247,7 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 - 2026-05-19: keep M3 token cost within the inherited +10% hard cap. Rationale: `spec` moved from 2288 to 2514 estimated tokens (+9.9%) and `spec-review` moved from 1992 to 2183 (+9.6%) after compacting duplicate prose and skeletons.
 - 2026-05-19: close M3 after clean code-review. Rationale: `code-review-m3-r1` found no material findings, and all in-scope implementation milestones are closed.
 - 2026-05-19: record explain-change before verify. Rationale: the workflow requires durable rationale before final verification and PR handoff.
+- 2026-05-19: final verify records evidence in the plan and `change.yaml` without a standalone `verify-report.md`. Rationale: no required manual proof exists, and automated validation, review closeout, lifecycle checks, temporary adapter archive proof, selected CI, and explain-change provide sufficient durable branch-ready evidence before PR handoff.
 
 ## Surprises and discoveries
 
@@ -329,6 +330,19 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 - 2026-05-19 explain-change validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-spec-family/explain-change.md` passed.
 - 2026-05-19 explain-change validation: `git diff --check -- docs/plans/2026-05-19-published-skill-design-spec-family.md docs/plan.md docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml docs/changes/2026-05-19-published-skill-design-spec-family/explain-change.md` passed.
 - 2026-05-19 explain-change selected CI: `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-spec-family/explain-change.md` passed selected artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate checks.
+- 2026-05-19 final verify trigger check: no `broad_smoke_required`, release-smoke, manual-proof, or `ci-maintenance` trigger was found in the active plan, test spec, review-resolution, release metadata, or selector output for this path set.
+- 2026-05-19 final verify: `python scripts/test-skill-validator.py` passed 111 tests.
+- 2026-05-19 final verify: `python scripts/validate-skills.py` passed for 23 canonical skills.
+- 2026-05-19 final verify: `python scripts/measure-skill-tokens.py --skills-root skills` recorded `spec` at 2514 estimated tokens and `spec-review` at 2183 estimated tokens.
+- 2026-05-19 final verify: `python scripts/build-skills.py --check` passed using temporary generated output.
+- 2026-05-19 final verify: `python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/tmp.ypW7YNqA3F` built Codex, Claude, and opencode adapter archives.
+- 2026-05-19 final verify: `python scripts/validate-adapters.py --root /tmp/tmp.ypW7YNqA3F --version v0.1.5` passed.
+- 2026-05-19 final verify: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-19-published-skill-design-spec-family` passed.
+- 2026-05-19 final verify: `python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml` passed.
+- 2026-05-19 final verify: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...` passed for the touched spec-family skill, test-spec, plan, plan index, change-local evidence, review, and upstream pilot status artifacts.
+- 2026-05-19 final verify: `git diff --check -- $(git diff --name-only origin/main...HEAD)` passed.
+- 2026-05-19 final verify selected CI: `bash scripts/ci.sh --mode explicit $(git diff --name-only origin/main...HEAD | sed 's#^#--path #')` passed selected skills.validate, skills.regression, skills.generation_regression, skills.drift, adapters.drift, review_artifacts.validate, artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate checks.
+- 2026-05-19 final verify: branch-ready is established by local validation evidence; hosted PR CI has not been observed and is not claimed.
 
 ## Outcome and retrospective
 
@@ -337,9 +351,8 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for `verify`, not final closeout or PR readiness.
+- This plan is branch-ready and ready for `pr`; PR body/open readiness is not claimed until the `pr` stage.
 
 ## Remaining completion gates
 
-- `verify`
 - `pr`
