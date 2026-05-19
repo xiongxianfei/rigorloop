@@ -528,6 +528,12 @@ raise SystemExit({exit_code})
                 "checks": {"skills.regression", "skills.generation_regression"},
             },
             {
+                "path": "tests/fixtures/skills/skill-readability/valid-pilot/SKILL.md",
+                "category": "validator-skills",
+                "status": "ok",
+                "checks": {"skills.regression", "skills.generation_regression"},
+            },
+            {
                 "path": "scripts/validate-release.py",
                 "category": "release-script",
                 "status": "ok",
@@ -577,6 +583,24 @@ raise SystemExit({exit_code})
             },
             {
                 "path": "docs/changes/2026-04-25-example/verify-report.md",
+                "category": "change-local-lifecycle",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/implementation-notes.md",
+                "category": "change-local-lifecycle",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/cold-read-report.md",
+                "category": "change-local-lifecycle",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/behavior-parity-report.md",
                 "category": "change-local-lifecycle",
                 "status": "ok",
                 "checks": {"artifact_lifecycle.validate"},
@@ -1219,6 +1243,37 @@ raise SystemExit({exit_code})
         self.assertEqual(payload["changed_paths"], ["scripts/test-adapter-distribution.py"])
         self.assertIn(
             {"path": "scripts/test-adapter-distribution.py", "category": "adapters"},
+            payload["classified_paths"],
+        )
+        self.assertTrue(
+            {"adapters.regression", "adapters.drift", "adapters.validate"}.issubset(selected_ids(payload))
+        )
+        self.assertFalse(payload["blocking_results"])
+
+    def test_pr_mode_routes_adapter_fixture_to_adapter_checks(self) -> None:
+        repo = self.make_git_repo()
+        base = self.git_output(repo, "rev-parse", "HEAD")
+        fixture = repo / "tests" / "fixtures" / "adapters" / "example" / "SKILL.md"
+        fixture.parent.mkdir(parents=True)
+        fixture.write_text("# Adapter fixture\n", encoding="utf-8")
+        subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True, text=True)
+        subprocess.run(
+            ["git", "commit", "-m", "add adapter fixture"],
+            cwd=repo,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        head = self.git_output(repo, "rev-parse", "HEAD")
+
+        result = run_selector("--mode", "pr", "--base", base, "--head", head, cwd=repo)
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        payload = parse_stdout(result)
+
+        self.assertEqual(payload["status"], "ok")
+        self.assertEqual(payload["changed_paths"], ["tests/fixtures/adapters/example/SKILL.md"])
+        self.assertIn(
+            {"path": "tests/fixtures/adapters/example/SKILL.md", "category": "adapters"},
             payload["classified_paths"],
         )
         self.assertTrue(
