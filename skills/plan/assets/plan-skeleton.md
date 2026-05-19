@@ -1,7 +1,7 @@
 <!-- Template: plan-skeleton-v1 -->
 <!-- Skill: plan -->
 <!-- Template status: normative -->
-<!-- Structural-fingerprint: sha256:b682d4635aa75ea0f3ad6514ffdbedf20f642171056ec2e5b19ec11726ff37f0 -->
+<!-- Structural-fingerprint: sha256:029e3eb31b53356d2a57440ceefa3b404dc8184f7dc8629f13b10d4206caaba9 -->
 <!-- Maintained alongside: skills/plan/SKILL.md -->
 
 ## Status
@@ -30,6 +30,10 @@
 ## Requirements covered
 
 - <requirement id>: <milestone or evidence surface>
+
+## Current Handoff Summary
+
+<copy assets/current-handoff-summary.md>
 
 ## Milestones
 
