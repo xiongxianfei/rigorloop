@@ -191,6 +191,32 @@ validation:
     result: pass_after_explain_change
   - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-spec-family/explain-change.md
     result: pass_after_explain_change
+  - command: verify trigger check
+    result: no_broad_smoke_release_smoke_manual_proof_or_ci_maintenance_trigger
+  - command: python scripts/test-skill-validator.py
+    result: pass_final_verify_111_tests
+  - command: python scripts/validate-skills.py
+    result: pass_final_verify_23_skills
+  - command: python scripts/measure-skill-tokens.py --skills-root skills
+    result: pass_final_verify_spec_2514_spec_review_2183
+  - command: python scripts/build-skills.py --check
+    result: pass_final_verify
+  - command: python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/tmp.ypW7YNqA3F
+    result: pass_final_verify
+  - command: python scripts/validate-adapters.py --root /tmp/tmp.ypW7YNqA3F --version v0.1.5
+    result: pass_final_verify
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-19-published-skill-design-spec-family
+    result: pass_final_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml
+    result: pass_final_verify
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/skill-contract.test.md --path skills/spec/SKILL.md --path skills/spec-review/SKILL.md --path scripts/test-skill-validator.py --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-spec-family/skill-audit.md --path docs/changes/2026-05-19-published-skill-design-spec-family/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-spec-family/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-spec-family/behavior-parity.md --path docs/changes/2026-05-19-published-skill-design-spec-family/review-log.md --path docs/changes/2026-05-19-published-skill-design-spec-family/review-resolution.md --path docs/changes/2026-05-19-published-skill-design-spec-family/explain-change.md --path docs/changes/2026-05-19-published-skill-design-spec-family/reviews/plan-review-r1.md --path docs/changes/2026-05-19-published-skill-design-spec-family/reviews/code-review-m1-r1.md --path docs/changes/2026-05-19-published-skill-design-spec-family/reviews/code-review-m2-r1.md --path docs/changes/2026-05-19-published-skill-design-spec-family/reviews/code-review-m2-r2.md --path docs/changes/2026-05-19-published-skill-design-spec-family/reviews/code-review-m3-r1.md --path docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml
+    result: pass_final_verify
+  - command: git diff --check -- $(git diff --name-only origin/main...HEAD)
+    result: pass_final_verify
+  - command: bash scripts/ci.sh --mode explicit $(git diff --name-only origin/main...HEAD | sed 's#^#--path #')
+    result: pass_final_verify
+  - command: verify
+    result: branch_ready_local_validation_ready_for_pr
 changed_files:
   - skills/spec/SKILL.md
   - skills/spec-review/SKILL.md
