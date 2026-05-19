@@ -70,12 +70,12 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - Current milestone: M3. Cold-read, behavior parity, token comparison, and rollout handoff
 - Current milestone state: closed
 - Last reviewed milestone: M3. Cold-read, behavior parity, token comparison, and rollout handoff
-- Review status: clean-with-notes by `code-review-m3-r2`
+- Review status: changes-requested by `code-review-verify-fix-r1`
 - Remaining in-scope implementation milestones: none
-- Next stage: code-review
-- Next lifecycle stage after M3 implementation: code-review for verify-stage adapter compatibility fix
+- Next stage: review-resolution
+- Next lifecycle stage after M3 implementation: review-resolution for SRSC-VERIFY-CR1
 - Final closeout readiness: ready to start lifecycle closeout
-- Reason final closeout is or is not ready: all implementation milestones are closed, review-resolution is closed, and explain-change is recorded; verify found and fixed a branch-specific adapter front-matter compatibility regression, so code-review must cover the post-review implementation change before verify can claim branch-ready.
+- Reason final closeout is or is not ready: all implementation milestones are closed and explain-change is recorded, but review-resolution is open for SRSC-VERIFY-CR1; verify cannot claim branch-ready until the finding is resolved and code-review reruns cleanly.
 
 ## Completed lifecycle handoffs
 
@@ -232,6 +232,7 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - 2026-05-19: final verify broad smoke found a branch-specific adapter portability regression from the new `version` and `schema-version` front matter; fixed adapter distribution to drop those fields for non-Codex generated skill bodies while preserving them for Codex.
 - 2026-05-19: final verify found the touched adapter fixture path was unclassified by the validation selector; classified `tests/fixtures/adapters/` as adapter validation input and added selector regression coverage.
 - 2026-05-19: final verify selected CI and broad smoke passed after the adapter front-matter and selector fixes; branch-ready is still blocked until code-review covers the post-review implementation change.
+- 2026-05-19: `code-review-verify-fix-r1` found SRSC-VERIFY-CR1; next stage is review-resolution.
 
 ## Decision log
 
