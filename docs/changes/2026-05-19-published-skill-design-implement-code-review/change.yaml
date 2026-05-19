@@ -115,6 +115,8 @@ validation:
     result: pass_after_m3
   - command: code-review M3
     result: clean_with_notes_recorded_m3_closed
+  - command: explain-change
+    result: recorded_ready_for_verify
 changed_files:
   - scripts/test-skill-validator.py
   - skills/implement/SKILL.md
@@ -127,6 +129,7 @@ changed_files:
   - docs/changes/2026-05-19-published-skill-design-implement-code-review/reviews/code-review-m1-r1.md
   - docs/changes/2026-05-19-published-skill-design-implement-code-review/reviews/code-review-m2-r1.md
   - docs/changes/2026-05-19-published-skill-design-implement-code-review/reviews/code-review-m3-r1.md
+  - docs/changes/2026-05-19-published-skill-design-implement-code-review/explain-change.md
   - docs/changes/2026-05-19-published-skill-design-implement-code-review/skill-audit.md
   - docs/changes/2026-05-19-published-skill-design-implement-code-review/routing-coverage.md
   - docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-preservation.md
