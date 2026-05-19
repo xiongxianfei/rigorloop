@@ -46,9 +46,10 @@ claim deterministic runtime model auto-selection.
 
 ### Current routing assessment
 
-Current `description` is concise and includes execution-plan, stable-source, and
-milestone triggers. M3 should add clearer near-miss boundaries for competing
-lifecycle stages without turning the description into a synonym dump.
+M3 result: `description` now covers execution-plan creation/revision, stable
+upstream artifacts, risky or milestone-based work, validation, recovery,
+dependencies, current handoff state, and near-miss boundaries for `spec`,
+`test-spec`, `implement`, `code-review`, `verify`, and `pr`.
 
 ## `plan-review`
 
@@ -76,9 +77,10 @@ lifecycle stages without turning the description into a synonym dump.
 
 ### Current routing assessment
 
-Current `description` is concise and includes the main review dimensions. M3
-should add explicit near-miss language for competing review and downstream
-stages, especially `code-review`, `verify`, and `pr`.
+M3 result: `description` now covers concrete execution-plan review, core review
+dimensions, readiness for test-driven implementation, and near-miss boundaries
+for plan creation, proposal/spec/architecture review, code review, final
+verification, and PR readiness.
 
 ## Static validation boundary
 

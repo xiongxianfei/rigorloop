@@ -1,15 +1,14 @@
 # Published Skill Design Plan Family Behavior Preservation
 
 Change: `2026-05-19-published-skill-design-plan-family`
-Milestone: M1 scaffold
+Milestone: M3 final
 Date: 2026-05-19
 Scope: `skills/plan/SKILL.md`, `skills/plan-review/SKILL.md`
 
 ## Purpose
 
-Record behavior-significant wording that must be preserved when M3 rewrites the
-plan-family skill bodies. M1 records the preservation targets; M3 must update
-this file with final "preserved where" citations after edits.
+Record behavior-significant wording preserved by the M3 plan-family skill-body
+rewrite.
 
 ## Preservation table
 
@@ -35,8 +34,25 @@ this file with final "preserved where" citations after edits.
 | `plan-review` | Do not require implementation code before approving a plan. | Keeps plan review at the planning stage. | Preserve as rule or workflow role claim boundary. |
 | `plan-review` | Immediate next stage is `test-spec`; implementation readiness is downstream readiness only. | Prevents stage skipping. | Preserve in expected output and handoff guidance. |
 
-## M1 conclusion
+## M3 Preservation Result
 
-The M3 rewrite may reorganize or compact wording, but it must not weaken the
-rules above. M3 must replace this scaffold with final preservation evidence
-showing where each essential rule is preserved.
+| Skill | Essential rule preserved | Preserved where |
+|---|---|---|
+| `plan` | Stage role after approved behavior/design sources, not product-direction selection. | Frontmatter `description`, `## Workflow role`, opening paragraphs, `## When not to use`, and `## Planning rules`. |
+| `plan` | Published skill remains self-contained and does not require unavailable RigorLoop internals. | `## Project-local evidence`, `## Artifact placement`, and validated readability self-containment. |
+| `plan` | Upstream status settlement stays evidence-bound and blocks on missing or contradictory evidence. | `## Upstream status settlement`. |
+| `plan` | Concrete plan bodies and `docs/plan.md` index ownership remain distinct. | `## Output paths`, `## Outputs`, `## Required sections`, and `## Planning rules`. |
+| `plan` | Handoff remains `plan-review`; `test-spec` follows only after review when workflow allows it. | `## Handoff`, `## Output skeleton`, and `## Expected output`. |
+| `plan` | Planning must not claim implementation, review, verification, branch readiness, PR readiness, final closeout, or Done. | `## Workflow role`, `## Claims this skill must not make`, and `## Progress, readiness, closeout, and Done`. |
+| `plan` | Milestone states and `Current Handoff Summary` ownership stay intact. | `## Milestone-aware plans`. |
+| `plan` | Implementation must wait for plan-review and test-spec unless explicitly isolated. | `## Planning rules` and `## Stop conditions`. |
+| `plan-review` | Review target is the concrete plan body, not only `docs/plan.md`. | `## Inputs to read` and `## Rules`. |
+| `plan-review` | Formal review dimensions remain present. | `## Review dimensions`. |
+| `plan-review` | Material findings require evidence, required outcome, and safe resolution or `needs-decision`. | `## Material findings`. |
+| `plan-review` | Formal review recording, clean receipt behavior, detailed records, review-resolution triggers, and isolated material-review boundaries remain intact. | `## Isolation and Recording` and `## Output skeleton`. |
+| `plan-review` | Plan review must not require implementation code, review code diffs, verify, prepare PRs, or claim downstream completion. | Frontmatter `description`, `## Workflow role`, and `## Rules`. |
+| `plan-review` | Immediate next stage remains `test-spec` or plan revision, with implementation readiness kept downstream. | `## Workflow role`, `## Output skeleton`, and `## Expected output`. |
+
+No behavior-significant rule from the M1 preservation table was removed or
+weakened. The rewrite adds routing/frontmatter clarity, workflow-role fields,
+and compact output skeletons while preserving the underlying lifecycle contract.
