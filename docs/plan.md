@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-19 RigorLoop Published Skill Design Contract](plans/2026-05-19-rigorloop-published-skill-design-contract.md) - active execution plan for implementing the approved published-skill design contract as an audit-first, pilot-scoped `proposal` and `proposal-review` change; current next stage is implement M3.
+- [2026-05-19 RigorLoop Published Skill Design Contract](plans/2026-05-19-rigorloop-published-skill-design-contract.md) - active execution plan for implementing the approved published-skill design contract as an audit-first, pilot-scoped `proposal` and `proposal-review` change; current next stage is code-review M3.
 
 ## Blocked
 - none yet
