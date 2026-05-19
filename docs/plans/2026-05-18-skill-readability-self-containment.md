@@ -3,7 +3,7 @@
 - Status: active
 - Owner: maintainer
 - Start date: 2026-05-18
-- Last updated: 2026-05-18
+- Last updated: 2026-05-19
 - Related issue or PR: none yet
 - Supersedes: none
 
@@ -69,13 +69,13 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 
 - Current milestone: M3. Cold-read, behavior parity, token comparison, and rollout handoff
 - Current milestone state: closed
-- Last reviewed milestone: M2. Pilot skill rewrite and generated-output proof
+- Last reviewed milestone: M3. Cold-read, behavior parity, token comparison, and rollout handoff
 - Review status: clean-with-notes by `code-review-m3-r2`
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
-- Next lifecycle stage after M3 implementation: explain-change
+- Next stage: verify
+- Next lifecycle stage after M3 implementation: verify
 - Final closeout readiness: ready to start lifecycle closeout
-- Reason final closeout is or is not ready: all implementation milestones are closed and review-resolution is closed; explain-change, verify, and PR handoff remain incomplete.
+- Reason final closeout is or is not ready: all implementation milestones are closed, review-resolution is closed, and explain-change is recorded; verify and PR handoff remain incomplete.
 
 ## Completed lifecycle handoffs
 
@@ -178,9 +178,9 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - Expected observable result: final lifecycle evidence is coherent, plan state is synchronized with `docs/plan.md`, and the branch is ready for PR only after verify passes.
 - Commit message: `Close skill readability pilot lifecycle`
 - Milestone closeout:
-  - [ ] explain-change recorded
+  - [x] explain-change recorded
   - [ ] final verify passed
-  - [ ] plan state synchronized with `docs/plan.md`
+  - [x] plan state synchronized with `docs/plan.md`
   - [ ] PR handoff prepared
 - Risks: lifecycle state drifts between plan body and index; final selected CI scope misses a touched validation surface.
 - Rollback/recovery: run explicit-path lifecycle validation and selected CI over all touched surfaces; fix plan/index drift before PR handoff.
@@ -227,6 +227,7 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - 2026-05-18: `code-review-m3-r1` found SRSC-M3-CR1; M3 remains in `resolution-needed`.
 - 2026-05-19: accepted and fixed SRSC-M3-CR1 by replacing duplicate enum value lists with authoritative enum references; next stage is rerun code-review for M3.
 - 2026-05-19: `code-review-m3-r2` found no material findings and closed M3; all implementation milestones are closed and next stage is `explain-change`.
+- 2026-05-19: recorded explain-change at `docs/changes/2026-05-18-skill-readability-self-containment/explain-change.md`; next stage is `verify`.
 
 ## Decision log
 
@@ -272,6 +273,7 @@ The full R30 rollout list from the spec remains in scope for the overall contrac
 - 2026-05-18: M3 code-review reran `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, `python scripts/measure-skill-tokens.py`, change metadata validation, artifact lifecycle validation, review artifact validation, and `git diff --check --`; commands passed, but manual contract review found SRSC-M3-CR1.
 - 2026-05-19: SRSC-M3-CR1 fix validation passed: `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, `python scripts/build-skills.py --check`, `python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-skill-readability-adapters`, `python scripts/validate-adapters.py --root /tmp/rigorloop-skill-readability-adapters --version v0.1.5`, and `python scripts/measure-skill-tokens.py`; token counts are `proposal` 3300 and `proposal-review` 3405 estimated tokens.
 - 2026-05-19: M3 rerun code-review completed clean-with-notes; review-resolution is closed and final lifecycle closeout can start with `explain-change`.
+- 2026-05-19: explain-change recorded from the actual branch diff, approved artifacts, review-resolution, and validation evidence; final `verify` has not run yet.
 
 ## Outcome and retrospective
 
