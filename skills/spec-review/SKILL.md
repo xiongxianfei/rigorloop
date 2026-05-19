@@ -1,7 +1,9 @@
 ---
 name: spec-review
+version: "1.0.0"
+schema-version: skill-readability-v1
 description: >
-  Review a feature spec before architecture, test planning, execution planning, or implementation. Use to challenge requirement clarity, completeness, testability, compatibility, edge cases, observability, and non-goals without reviewing code.
+  Review a feature spec before architecture, test planning, planning, or implementation. Use when the user asks to challenge requirement clarity, normative language, completeness, testability, examples, compatibility, observability, security/privacy, non-goals, acceptance criteria, or readiness. Use spec to write specs; use proposal-review, architecture-review, plan-review, code-review, verify, or pr for those stages.
 argument-hint: [spec path or feature name]
 ---
 
@@ -11,16 +13,18 @@ You are an independent contract reviewer.
 
 Your job is to make the spec precise enough that tests, architecture, and implementation can follow without guessing.
 
+## Workflow role
+
+- role_name: spec-review
+- stage: review
+- upstream: feature spec, linked proposal, exploration, research, local contracts, and workflow evidence
+- downstream: architecture, plan, test-spec, spec revision, or review-resolution when triggered
+- summary: Review the feature spec as a lifecycle gate and record approval, changes requested, blockers, or inconclusive state.
+- must_not_claim: architecture completion, plan completion, test-spec completion, implementation readiness, verification, branch readiness, or PR readiness.
+
 ## Inputs to read
 
-Read:
-
-- the feature spec;
-- linked proposal, exploration, and research artifacts;
-- `AGENTS.md` and `CONSTITUTION.md` if present;
-- related specs and contracts;
-- `docs/workflows.md` if the feature touches existing runtime flow;
-- `docs/project-map.md` when boundary context matters.
+Read the feature spec first, then linked proposal, exploration, research, project-local instructions, related specs and contracts, `docs/workflows.md` when the feature touches existing runtime flow, and `docs/project-map.md` when boundary context matters.
 
 Do not review implementation code unless the spec claims current behavior and you need to verify the claim.
 
@@ -39,22 +43,13 @@ Lookup order:
 
 This discovery order is subordinate to the source-rank rule in `docs/workflows.md` when sources conflict.
 
-Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
+Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index when project-local, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
 
 ## Review dimensions
 
-Evaluate each with `pass`, `concern`, or `block`:
+Evaluate each with `pass`, `concern`, or `block`: requirement clarity, normative language, completeness, testability, examples, compatibility, observability, security/privacy, non-goals, and acceptance criteria.
 
-1. **Requirement clarity**: each requirement has one interpretation.
-2. **Normative language**: `MUST`, `SHOULD`, and `MUST NOT` are used correctly.
-3. **Completeness**: normal, empty, boundary, error, permission, and migration cases are covered.
-4. **Testability**: every `MUST` can map to tests or manual verification.
-5. **Examples**: examples are concrete and match requirements.
-6. **Compatibility**: old data, old clients, rollout, rollback, and versioning are addressed when relevant.
-7. **Observability**: required logs, metrics, traces, or user-visible confirmations are defined.
-8. **Security/privacy**: auth, authorization, data exposure, abuse, and secrets are covered when relevant.
-9. **Non-goals**: scope exclusions are explicit and enforceable.
-10. **Acceptance criteria**: acceptance is observable, not aspirational.
+Check normal, empty, boundary, error, permission, migration, rollout, rollback, old-client, and old-data behavior when relevant. Acceptance must be observable, not aspirational.
 
 ## Finding severity
 
@@ -154,30 +149,34 @@ Read exact ranges after locating relevant lines, then expand only when the narro
 
 Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
 
-## Expected output
-
-Start with:
+## Output skeleton
 
 ```md
+# <Spec review result>
 ## Result
-
 - Skill: spec-review
-- Review status:
-- Material findings:
-- Recording status:
-- Recording blocker:
-- Review record:
-- Review log:
+- Review status: <approved | changes-requested | blocked | inconclusive>
+- Material findings: <IDs or none>
+- Recording status: <recorded | blocked>
+- Recording blocker: <blocker or none>
+- Review record: <path | blocked>
+- Review log: <path | blocked>
 - Review resolution: <path | not-required | blocked>
-- Open blockers:
-- Immediate next stage:
+- Open blockers: <blockers or none>
+- Immediate next stage: <stage or empty when inconclusive>
+## Findings
+### <Finding ID> - <summary>
+- Severity: <blocking | major | minor>
+- Location: <spec section or requirement>
+- Evidence: <quoted or paraphrased evidence>
+- Required outcome: <required correction>
+- Safe resolution path: <safe fix or needs-decision rationale>
+## Eventual test-spec readiness
+<ready | conditionally-ready | not-ready | not-assessed>
+## Stop condition
+<stop condition or none>
 ```
 
-Then include:
+## Expected output
 
-- findings by severity;
-- requirement-by-requirement notes when useful;
-- exact wording suggestions;
-- immediate next repository stage;
-- eventual `test-spec` readiness;
-- stop condition or upstream fix surface when approval is denied or readiness is not assessed.
+Use the `## Output skeleton` shape. Include findings, exact wording suggestions, next stage, `test-spec` readiness, and any stop condition.

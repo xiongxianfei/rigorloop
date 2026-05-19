@@ -12,7 +12,8 @@
 - Current consuming proposal: [Single Workflow Lane, Explain-Change Before Verify, and Public Skill Surface Boundary](../docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md), accepted.
 - Current consuming plan: [Single Workflow Lane, Explain-Change Before Verify Execution Plan](../docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md), active after plan-review R2.
 - Current amendment proposal: [RigorLoop Published Skill Design Contract](../docs/proposals/2026-05-19-rigorloop-published-skill-design-contract.md), accepted.
-- Current amendment plan: [RigorLoop Published Skill Design Contract Execution Plan](../docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md), active after clean plan-review R1.
+- Completed amendment plan: [RigorLoop Published Skill Design Contract Execution Plan](../docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md), completed after PR #71 merged.
+- Current rollout plan: [Published Skill Design Spec Family Rollout](../docs/plans/2026-05-19-published-skill-design-spec-family.md), active after clean plan-review R1.
 - Architecture: not required. The approved slices change workflow-governance Markdown, canonical skill guidance, shared text blocks, static validation, generated skill mirrors, public adapter validation, and pilot skill wording. They do not add runtime components, storage, API boundaries, deployment boundaries, or a new validation architecture.
 - Project map: `docs/project-map.md` is present and was read for repository orientation. This test spec relies on the approved spec, active plan, workflow specs, stage skills, shared templates, generator scripts, existing validator patterns, and change-local pilot evidence.
 - Related proof surfaces:
@@ -35,6 +36,7 @@
 - Use generated-output drift checks after canonical skill edits to prove `.codex/skills/` and public adapter packages remain derived output.
 - Use manual contract review for nuanced prose boundaries: claim ownership, local handoff, preserving useful skill-specific guidance, avoiding hollow required sections, and preventing broad semantic quality scoring.
 - Use change-local evidence for the published-skill design pilot: skill audit, routing coverage tables, behavior-preservation notes, behavior-parity evidence, and token-cost deltas.
+- Use change-local evidence for the published-skill design spec-family rollout: skill audit, routing coverage tables, behavior-preservation notes, behavior-parity evidence, and token-cost deltas for `spec` and `spec-review`.
 - Do not add runtime workflow simulation, natural-language scoring, broad prose linting, a shared-block generation build step, a standalone `review-resolution` skill, or a `skills/ci-maintenance/SKILL.md` path.
 - Do not claim routing fixtures prove deterministic model auto-selection unless a later approved routing harness exists.
 
@@ -68,6 +70,7 @@
 | `R32`, `R32a`, `R32b`, `R32c`, `R32d`, `R33`, `R33a`, `R33b`, `R33c` | `T18`, `T20` | integration, manual | Resource-map coverage and repository-root versus packaged-resource self-containment |
 | `R35`, `R35a`, `R35b`, `R35c`, `R35d`, `R35e`, `R35f`, `R35g` | `T17`, `T19` | integration, manual | Routing fixtures, coverage tables, bounded phrase coverage, transcript review, and no runtime auto-selection CI claim |
 | `R36`, `R36a`, `R36b`, `R36c`, `R36d`, `R36e`, `R36f`, `R36g`, `R36h`, `R36i`, `R36j` | `T16`, `T19`, `T20`, `T13` | integration, manual | Audit-first pilot scope, no merge/retire side effects, token-cost budget, preservation notes, parity evidence, and generated adapter validation |
+| Spec-family rollout plan requirements | `T21`, `T22`, `T23`, `T24` | integration, manual, smoke | Approved follow-on rollout for `spec` and `spec-review`, preserving R27-R35 behavior and reusing R36 audit, preservation, parity, and token discipline without changing the original pilot boundary |
 
 ## Example coverage map
 
@@ -104,6 +107,9 @@
 - EC14, body `When to use` section summarizes scope after load: `T17`, `T18`
 - EC15, routing coverage depends on a phrase table: `T19`
 - EC16, touched pilot skill moves behavior-significant wording: `T20`
+- EC17, spec-family audit finds no validator changes are needed: `T21`, `T22`
+- EC18, `spec-review` rewrite touches formal review recording language: `T23`
+- EC19, spec-family token cost regresses after moving routing into `description`: `T23`, `T24`
 
 ## Acceptance criteria coverage map
 
@@ -134,6 +140,10 @@
 | Routing coverage table exists for each changed published-skill design pilot skill | `T19` |
 | Behavior-preservation note exists for each changed published-skill design pilot skill | `T20` |
 | Behavior-parity evidence shows no weakening of material review status, finding format, recording obligations, stop conditions, validation obligations, or claim boundaries | `T20` |
+| Spec-family rollout remains scoped to `skills/spec/SKILL.md` and `skills/spec-review/SKILL.md` for skill-body changes | `T21`, `T23` |
+| Spec-family rollout creates audit, routing coverage, behavior-preservation, behavior-parity, and token evidence before skill-body rewrites close | `T21`, `T23` |
+| Spec-family validator changes are deterministic, fixture-backed, and limited to gaps found by the audit or existing R27-R35 checks | `T22` |
+| Spec-family generated skill and temporary adapter validation are run from canonical `skills/` without hand-editing generated public adapter bodies | `T24` |
 
 ## Test cases
 
@@ -633,6 +643,122 @@
   - `scripts/test-skill-validator.py`
   - manual behavior-parity review during M3
 
+### T21. Spec-family audit and evidence scaffold
+
+- Covers: approved spec-family rollout plan M1; `R27`, `R27a`, `R27b`, `R27c`, `R28`, `R28a`, `R28b`, `R29`, `R29a`, `R29b`, `R29c`, `R29d`, `R29e`, `R29f`, `R30`, `R30a`, `R31`, `R31a`, `R34`, `R35`, `R35a`, `R35e`, `R35f`, EC17
+- Level: manual, integration
+- Fixture/setup:
+  - `skills/spec/SKILL.md`
+  - `skills/spec-review/SKILL.md`
+  - `docs/changes/2026-05-19-published-skill-design-spec-family/skill-audit.md`
+  - `docs/changes/2026-05-19-published-skill-design-spec-family/routing-coverage.md`
+  - `docs/changes/2026-05-19-published-skill-design-spec-family/behavior-preservation.md`
+  - `docs/changes/2026-05-19-published-skill-design-spec-family/behavior-parity.md`
+  - `docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml`
+- Steps:
+  - Audit `spec` and `spec-review` descriptions, workflow-role blocks, output skeletons, stop conditions, body-routing boundaries, and self-containment wording before validator or skill-body changes rely on the evidence.
+  - Record whether each skill earns its existence through a durable artifact contract, lifecycle procedure, review responsibility, output shape, validation behavior, or trust boundary.
+  - Record routing coverage tables for each changed spec-family skill with positive triggers, near misses when relevant, competing skills when relevant, and should-not-trigger prompt classes.
+  - Record behavior-preservation notes for behavior-significant wording that may be rewritten later.
+  - Define representative spec and spec-review artifacts for behavior parity.
+  - Record baseline static token estimates for `spec` and `spec-review`.
+  - If the audit finds no deterministic validator gap, record that no-change result explicitly before bypassing M2 validator edits.
+- Expected result:
+  - Reviewers can inspect spec-family evidence before any `spec` or `spec-review` skill rewrite closes.
+- Failure proves:
+  - The rollout is changing lifecycle skill behavior without an auditable baseline or deterministic routing/preservation plan.
+- Automation location:
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml`
+  - manual review during M1
+
+### T22. Spec-family deterministic validator and fixture support
+
+- Covers: approved spec-family rollout plan M2; `R29`, `R29d`, `R29f`, `R31a`, `R32`, `R32a`, `R32b`, `R32c`, `R32d`, `R33`, `R33a`, `R33b`, `R33c`, `R35`, `R35c`, `R35d`, `R35e`, `R35f`, `R35g`, EC17
+- Level: integration, manual
+- Fixture/setup:
+  - `scripts/skill_validation.py`
+  - `scripts/test-skill-validator.py`
+  - `tests/fixtures/skills/`
+  - `docs/changes/2026-05-19-published-skill-design-spec-family/routing-coverage.md`
+  - `docs/changes/2026-05-19-published-skill-design-spec-family/skill-audit.md`
+- Steps:
+  - Add or reuse focused validator fixtures only for deterministic spec-family gaps identified by `T21` or already required by R27-R35.
+  - Assert description length, description routing source, body routing boundary, packaged-resource map, and self-containment checks remain static and phrase/path/table based.
+  - Assert any routing fixture check validates coverage-table presence or bounded phrase coverage, not model auto-selection.
+  - Assert repository-root internal paths remain blocked only when required as normal customer-project dependencies and packaged skill-local scripts remain allowed when mapped.
+  - Assert no broad natural-language scoring, free-form semantic prose scoring, or runtime model-selection CI oracle is introduced.
+- Expected result:
+  - Deterministic validation supports the spec-family rewrite without overfitting prose or broadening the proof surface beyond the approved slice.
+- Failure proves:
+  - Validator changes either miss a concrete spec-family risk or become a brittle semantic quality gate.
+- Automation location:
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/validate-skills.py`
+  - `bash scripts/ci.sh --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path specs/skill-contract.test.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml`
+  - manual validator review during M2
+
+### T23. Spec and spec-review skill rewrite preserves lifecycle behavior
+
+- Covers: approved spec-family rollout plan M3; `R27`, `R27a`, `R27b`, `R27c`, `R29`, `R29a`, `R29b`, `R29c`, `R29d`, `R29e`, `R29f`, `R30`, `R30a`, `R31`, `R31a`, `R31b`, `R31c`, `R31d`, `R32`, `R32a`, `R32b`, `R32c`, `R32d`, `R33`, `R33a`, `R33b`, `R33c`, `R34`, `R34a`, `R34b`, `R35`, `R35a`, `R35b`, `R35c`, `R35d`, `R35e`, `R35f`, `R35g`, EC18, EC19
+- Level: integration, manual
+- Fixture/setup:
+  - `skills/spec/SKILL.md`
+  - `skills/spec-review/SKILL.md`
+  - `docs/changes/2026-05-19-published-skill-design-spec-family/behavior-preservation.md`
+  - `docs/changes/2026-05-19-published-skill-design-spec-family/behavior-parity.md`
+  - `docs/changes/2026-05-19-published-skill-design-spec-family/routing-coverage.md`
+  - `scripts/measure-skill-tokens.py`
+- Steps:
+  - Assert `spec` and `spec-review` frontmatter descriptions state capability and trigger contexts, include important near misses, avoid synonym dumping, and stay `<= 1024` characters.
+  - Assert any optional `when_to_use` metadata does not replace description routing.
+  - Assert bodies contain normal-path execution guidance and do not hide essential trigger logic absent from `description`.
+  - Assert lifecycle role, received input, produced output or status, handoff boundary, and downstream claims the skill must not make are preserved or clarified.
+  - Assert output skeletons remain compact and fenced, or a reviewed equivalent template is present.
+  - Assert no required maintainer-only repository-root dependency is introduced; any packaged resources have explicit load conditions and script input/output/failure guidance.
+  - Assert behavior-preservation evidence maps removed or rewritten behavior-significant wording to preserved essential rules.
+  - Assert behavior-parity evidence shows no weakening of spec output shape, spec-review material finding format, review recording obligations, stop conditions, validation obligations, or claim boundaries.
+  - Measure after-change token estimates for `spec` and `spec-review`, compare against the M1 baseline, and record rationale for material regression.
+- Expected result:
+  - `spec` and `spec-review` route more reliably, remain portable, and preserve lifecycle behavior while staying within the approved scoped rollout.
+- Failure proves:
+  - The skill rewrite changed behavior, weakened a formal review contract, introduced unavailable repository dependencies, or moved routing out of the portable description surface.
+- Automation location:
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/measure-skill-tokens.py --skills-root skills`
+  - manual behavior-preservation and parity review during M3 and code-review
+
+### T24. Spec-family generated output, adapter proof, and final selected validation
+
+- Covers: approved spec-family rollout final proof; `R2`, `R2a`, `R2b`, `R2c`, `R2d`, `R24`, `R24a`, `R24b`, `R24c`, `R33c`, `R35c`, `R35d`
+- Level: integration, smoke, manual
+- Fixture/setup:
+  - `skills/spec/SKILL.md`
+  - `skills/spec-review/SKILL.md`
+  - `specs/skill-contract.test.md`
+  - `docs/plans/2026-05-19-published-skill-design-spec-family.md`
+  - `docs/changes/2026-05-19-published-skill-design-spec-family/`
+  - temporary adapter output directory for `v0.1.5`
+- Steps:
+  - Run canonical skill validation and validator regression tests after spec-family skill edits.
+  - Run generated-skill drift checks from canonical `skills/`.
+  - Build temporary adapter archives for `v0.1.5` into a temporary directory and validate them from that output.
+  - Assert generated public adapter skill bodies are not hand-edited as tracked source.
+  - Run change metadata, artifact lifecycle, whitespace, and selected CI commands for changed spec, plan, skill, script, fixture, and change-local paths.
+  - Before PR handoff, assert explain-change, code-review closeout, verify, and PR readiness cite the actual validation commands rather than generic success claims.
+- Expected result:
+  - The spec-family rollout is proven from canonical skill source through generated skill and temporary adapter validation, with lifecycle evidence synchronized.
+- Failure proves:
+  - The rollout has stale generated output, missing adapter proof, unclassified validation paths, or unsynchronized lifecycle evidence.
+- Automation location:
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/build-adapters.py --version v0.1.5 --output-dir <tmpdir>`
+  - `python scripts/validate-adapters.py --root <tmpdir> --version v0.1.5`
+  - `bash scripts/ci.sh --mode explicit --path skills/spec/SKILL.md --path skills/spec-review/SKILL.md --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml`
+
 ## Fixtures and data
 
 - No new external fixtures or runtime data are required.
@@ -649,6 +775,11 @@
   - `docs/changes/2026-05-19-rigorloop-published-skill-design-contract/routing-coverage.md`;
   - `docs/changes/2026-05-19-rigorloop-published-skill-design-contract/behavior-preservation.md`;
   - `docs/changes/2026-05-19-rigorloop-published-skill-design-contract/behavior-parity.md`.
+- Change-local spec-family evidence uses:
+  - `docs/changes/2026-05-19-published-skill-design-spec-family/skill-audit.md`;
+  - `docs/changes/2026-05-19-published-skill-design-spec-family/routing-coverage.md`;
+  - `docs/changes/2026-05-19-published-skill-design-spec-family/behavior-preservation.md`;
+  - `docs/changes/2026-05-19-published-skill-design-spec-family/behavior-parity.md`.
 - Any temporary fixture for validator failure cases should live under existing test fixture roots such as `tests/fixtures/skills/` and must not reference machine-local paths.
 
 ## Mocking/stubbing policy
@@ -658,6 +789,7 @@
 - Generated-output tests may use temporary output roots when helper-level tests need stale, missing, or unexpected generated files.
 - Do not stub `scripts/build-skills.py --check`, `scripts/build-adapters.py --version 0.1.1 --check`, `scripts/validate-adapters.py --version 0.1.1`, or `scripts/ci.sh` in final milestone proof.
 - For the current published-skill design pilot, do not stub `scripts/build-skills.py --check`, `scripts/build-adapters.py --check`, `scripts/validate-adapters.py --version 0.1.4`, `scripts/measure-skill-tokens.py --skills-root skills`, or `scripts/ci.sh` when those commands are used as final milestone proof.
+- For the spec-family rollout, do not stub `scripts/build-skills.py --check`, `scripts/build-adapters.py --version v0.1.5 --output-dir <tmpdir>`, `scripts/validate-adapters.py --root <tmpdir> --version v0.1.5`, `scripts/measure-skill-tokens.py --skills-root skills`, or `scripts/ci.sh` when those commands are used as final milestone proof.
 
 ## Migration or compatibility tests
 
@@ -666,6 +798,7 @@
 - Generated `.codex/skills/` and `dist/adapters/` output remain derived and deterministic: `T9`, `T13`.
 - Rollback for wording-only skill changes reverts canonical skills, shared blocks, validator checks, and generated output together; manual recovery review is covered by `T13`.
 - Existing skills outside `proposal` and `proposal-review` remain valid until their approved implementation slice: `T16`, `T20`.
+- Existing skills outside `spec` and `spec-review` remain valid during the spec-family rollout unless a reviewed plan revision changes scope: `T21`, `T23`.
 - Optional `when_to_use` remains compatible where supported but does not replace `description`: `T17`.
 - Packaged skill-local resources remain allowed when mapped and included in adapter output, while repository-root internal paths remain blocked as normal customer-project dependencies: `T18`.
 
@@ -674,6 +807,7 @@
 - No runtime logs, metrics, traces, or audit events are required.
 - Validation output should identify failed required sections, shared-block drift, generated-output drift, selector classification gaps, and overclaim checks clearly enough for maintainers to fix them: `T7`, `T9`, `T10`, `T13`.
 - Published-skill design validation output should identify description-length failures, missing trigger contexts, missing near-miss boundaries, missing resource-map entries, unavailable repository-root dependencies, and routing fixture coverage gaps by stable check ID when those checks are implemented: `T17`, `T18`, `T19`.
+- Spec-family validation output should identify deterministic `spec` and `spec-review` failures by stable check ID or fixture expectation when those checks are implemented: `T22`, `T23`.
 - Review and verification artifacts should cite concrete commands and results, not generic success claims: `T13`.
 
 ## Security/privacy verification
@@ -687,10 +821,12 @@
 
 - Skill-contract validation remains static and repository-local in the first implementation slice: `T10`, `T13`.
 - Skill-contract validation remains static and repository-local in the published-skill design pilot: `T17`, `T18`, `T19`, `T20`.
-- No broad natural-language quality scoring is added: `T10`, `T19`.
+- Skill-contract validation remains static and repository-local in the spec-family rollout: `T21`, `T22`, `T23`, `T24`.
+- No broad natural-language quality scoring is added: `T10`, `T19`, `T22`, `T23`.
 - Evidence-reading guidance should reduce broad reads by preferring targeted summaries, IDs, headings, paths, counts, and line citations: `T8`.
 - Broad smoke is not required unless triggered by selector, plan, test spec, review-resolution, release metadata, or explicit reviewer requirement: `T13`.
 - The pilot token-cost budget is measured for `proposal` and `proposal-review` before rollout expands: `T20`.
+- The spec-family rollout measures token estimates for `spec` and `spec-review` before and after the rewrite and records rationale for material regression: `T21`, `T23`.
 
 ## Manual QA checklist
 
@@ -705,6 +841,9 @@
 - Confirm routing coverage tables name positive triggers, near misses, competing skills, and should-not-trigger prompt classes for both pilot skills.
 - Confirm behavior-preservation notes cite where every moved or rewritten essential rule now lives.
 - Confirm behavior-parity evidence covers material review status, finding format, recording obligations, stop conditions, validation obligations, and claim boundaries.
+- Confirm spec-family evidence exists before the `spec` and `spec-review` rewrites close.
+- Confirm `spec-review` material-finding and formal review recording obligations are preserved after rewrite.
+- Confirm temporary adapter validation uses generated output from canonical `skills/spec` and `skills/spec-review`, not hand-edited generated bodies.
 
 ## What not to test and why
 
@@ -713,6 +852,8 @@
 - Do not test deterministic model auto-selection for published-skill routing unless a later approved routing harness defines that oracle.
 - Do not require every skill in the repository to normalize in this slice; Phase 2/3/4 skills are deferred.
 - Do not require every skill in the repository to satisfy R27-R36 in this pilot; the published-skill design pilot changes only `proposal`, `proposal-review`, validator support needed for the pilot, and generated adapter validation for changed skills.
+- Do not treat the spec-family rollout as a change to the original pilot boundary in `R36b`; this rollout is separately scoped by the approved spec-family plan to `spec` and `spec-review`.
+- Do not require deterministic validator changes in M2 if M1 records that existing validation already covers the deterministic spec-family risks.
 - Do not require hosted CI observation for milestone proof unless a later stage actually observes hosted CI.
 - Do not require external tools for Codex, Claude Code, or opencode smoke; repository-owned adapter checks cover non-smoke package validation.
 - Do not snapshot entire skill files as the primary proof; exact shared-block drift checks are allowed only for adopted shared blocks.
@@ -723,9 +864,8 @@
 
 ## Next artifacts
 
-- Current amendment: `implement M1` under [RigorLoop Published Skill Design Contract Execution Plan](../docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md).
-- Historical carried context: `code-review M2` after M2 implementation handoff under the active single-workflow-lane plan.
-- Historical carried context: `implement M3` consumes `T14` for canonical and generated public skill portability proof.
+- Current rollout: `implement M1` under [Published Skill Design Spec Family Rollout](../docs/plans/2026-05-19-published-skill-design-spec-family.md).
+- Historical carried context: the merged published-skill design pilot used `T16`-`T20` for `proposal` and `proposal-review`.
 
 ## Follow-on artifacts
 
@@ -733,4 +873,4 @@
 
 ## Readiness
 
-Active and owner-approved proof-planning surface for public skill portability, claim-boundary checks, and the published-skill design pilot. The RigorLoop published skill design contract plan owns the current execution handoff to `implement M1`.
+Active proof-planning surface for public skill portability, claim-boundary checks, the merged published-skill design pilot, and the spec-family rollout. The Published Skill Design Spec Family Rollout plan owns the current execution handoff to `implement M1`.

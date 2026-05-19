@@ -322,6 +322,10 @@ validation:
     result: pass_after_pr_ci_selector_fix
   - command: bash scripts/ci.sh --mode pr --base origin/main --head HEAD
     result: pass_after_pr_ci_selector_fix
+  - command: PR #71 hosted CI
+    result: pass_after_selector_fix
+  - command: PR #71 merge
+    result: merged_2026_05_19_0f85ce5b27871313a9ca6fef11a676f89a720fe3
 changed_files:
   - docs/proposals/2026-05-19-rigorloop-published-skill-design-contract.md
   - specs/skill-contract.md
@@ -368,6 +372,6 @@ changed_files:
   - scripts/validation_selection.py
   - scripts/test-select-validation.py
 review:
-  status: pr_71_open_selector_fix_pushed_hosted_ci_rerun_pending
+  status: pr_71_merged_complete
   unresolved_items: 0
   location: docs/changes/2026-05-19-rigorloop-published-skill-design-contract/reviews/code-review-m3-r1.md
