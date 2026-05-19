@@ -113,6 +113,8 @@ validation:
     result: pass_after_m3
   - command: bash scripts/ci.sh --mode explicit --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path scripts/test-skill-validator.py --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml --path docs/changes/2026-05-19-published-skill-design-implement-code-review/skill-audit.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-parity.md
     result: pass_after_m3
+  - command: code-review M3
+    result: clean_with_notes_recorded_m3_closed
 changed_files:
   - scripts/test-skill-validator.py
   - skills/implement/SKILL.md
@@ -124,6 +126,7 @@ changed_files:
   - docs/changes/2026-05-19-published-skill-design-implement-code-review/reviews/plan-review-r1.md
   - docs/changes/2026-05-19-published-skill-design-implement-code-review/reviews/code-review-m1-r1.md
   - docs/changes/2026-05-19-published-skill-design-implement-code-review/reviews/code-review-m2-r1.md
+  - docs/changes/2026-05-19-published-skill-design-implement-code-review/reviews/code-review-m3-r1.md
   - docs/changes/2026-05-19-published-skill-design-implement-code-review/skill-audit.md
   - docs/changes/2026-05-19-published-skill-design-implement-code-review/routing-coverage.md
   - docs/changes/2026-05-19-published-skill-design-implement-code-review/behavior-preservation.md
@@ -132,6 +135,6 @@ changed_files:
 review:
   status: clean
   unresolved_items: 0
-  reviewed_artifact: commit ad01770 M2: validate published skill design execution-review checks
+  reviewed_artifact: commit 84b7363 M3: roll out published skill design to execution-review skills
   review_log: docs/changes/2026-05-19-published-skill-design-implement-code-review/review-log.md
-  location: docs/changes/2026-05-19-published-skill-design-implement-code-review/reviews/code-review-m2-r1.md
+  location: docs/changes/2026-05-19-published-skill-design-implement-code-review/reviews/code-review-m3-r1.md
