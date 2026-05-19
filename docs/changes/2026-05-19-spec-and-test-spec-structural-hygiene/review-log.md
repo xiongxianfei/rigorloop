@@ -57,3 +57,16 @@ Resolution: review-resolution.md#code-review-m1-r1
 Material findings: CR-M1-001
 Open findings: None
 Recording status: recorded
+
+### Review entry
+Review ID: code-review-m1-r2
+Stage: code-review
+Round: 2
+Reviewed artifact: implementation diff `origin/main..HEAD`
+Status: clean-with-notes
+Detailed record: reviews/code-review-m1-r2.md
+Record: reviews/code-review-m1-r2.md
+Resolution: review-resolution.md#code-review-m1-r2
+Material findings: None
+Open findings: None
+Recording status: recorded

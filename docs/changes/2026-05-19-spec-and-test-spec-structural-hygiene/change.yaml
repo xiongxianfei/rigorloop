@@ -113,6 +113,8 @@ validation:
     result: pass_after_resolution
   - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene
     result: pass_after_resolution
+  - command: code-review M1 R2
+    result: clean_with_notes_no_material_findings
 changed_files:
   - docs/proposals/2026-05-19-spec-and-test-spec-structural-hygiene.md
   - specs/skill-contract.md
@@ -126,6 +128,7 @@ changed_files:
   - docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/spec-review-r1.md
   - docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/plan-review-r1.md
   - docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/code-review-m1-r1.md
+  - docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/code-review-m1-r2.md
 review:
-  status: pending_code_review_rerun
+  status: approved
   unresolved_items: 0
