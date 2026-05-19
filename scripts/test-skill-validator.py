@@ -632,8 +632,17 @@ class SkillValidatorFixtureTests(unittest.TestCase):
     def test_published_design_repository_root_script_dependency_fails(self) -> None:
         self.assertFixtureFails(
             "published-design/required-root-script",
-            "required unavailable repository-root dependency",
+            "required repository-root dependency",
         )
+
+    def test_published_design_repository_root_script_command_dependency_fails(self) -> None:
+        self.assertFixtureFails(
+            "published-design/required-root-script-command",
+            "required repository-root dependency by command wording: scripts/validate-internal.py",
+        )
+
+    def test_published_design_packaged_script_resource_map_passes(self) -> None:
+        self.assertFixturePasses("published-design/packaged-script-resource-map")
 
     def test_published_design_routing_coverage_fixture_is_bounded(self) -> None:
         routing = (

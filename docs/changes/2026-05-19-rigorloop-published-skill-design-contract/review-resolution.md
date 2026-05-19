@@ -13,11 +13,12 @@ Review closeout: spec-review-r2
 Review closeout: spec-review-r3
 Review closeout: plan-review-r1
 Review closeout: code-review-m1-r1
+Review closeout: code-review-m2-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `plan-review-r1`, `code-review-m1-r1`
-- Findings resolved: 8
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `plan-review-r1`, `code-review-m1-r1`, `code-review-m2-r1`
+- Findings resolved: 9
 - Unresolved findings: 0
-- Final result: `RLSDC-PR1`, `RLSDC-PR2`, `RLSDC-PR3`, `RLSDC-PR4`, `SKC-PR1`, `SKC-PR2`, `SKC-PR3`, and `SKC-PR4` are accepted and resolved.
+- Final result: `RLSDC-PR1`, `RLSDC-PR2`, `RLSDC-PR3`, `RLSDC-PR4`, `SKC-PR1`, `SKC-PR2`, `SKC-PR3`, `SKC-PR4`, and `RLSDC-M2-CR1` are accepted and resolved.
 
 ## Resolution Overview
 
@@ -31,6 +32,7 @@ Review closeout: code-review-m1-r1
 | SKC-PR2 | accepted | resolved | The spec now states body `When to use` and `When not to use` sections do not replace `description` as the routing source. |
 | SKC-PR3 | accepted | resolved | The spec now requires a routing coverage table for each changed published-skill design pilot skill. |
 | SKC-PR4 | accepted | resolved | The spec now requires behavior-preservation notes and behavior-parity evidence for each changed pilot skill. |
+| RLSDC-M2-CR1 | accepted | resolved | The published-skill self-containment validator now treats imperative command wording such as `Run` as required context for repository-root-like internal paths, while preserving mapped packaged skill-local scripts. |
 
 ## Common Resolution Metadata
 
@@ -68,6 +70,23 @@ No material findings. Clean formal review approved the execution plan for plan-s
 ### code-review-m1-r1
 
 No material findings. Clean formal review closed M1 for code-review purposes. Immediate next stage is `implement M2`. No disposition entries required.
+
+### code-review-m2-r1
+
+Finding closeout for `code-review-m2-r1` is resolved. Rerun code-review is required before M2 can close.
+
+### RLSDC-M2-CR1 - Repository-root script dependency check misses ordinary `Run scripts/...` wording
+
+Finding ID: RLSDC-M2-CR1
+Disposition: accepted
+Status: resolved
+Owner: implementation author
+Owning stage: review-resolution / implement M2
+Chosen action: Split root-like path detection from required-context detection. Add command-context detection for imperative verbs such as `Run`, allow mapped packaged skill-local resources, add a negative `required-root-script-command` fixture, and add a positive `packaged-script-resource-map` fixture.
+Rationale: The validator must distinguish packaged skill-local scripts from repository-root internal scripts without allowing common required-command wording to pass.
+Validation target: Add or update deterministic validator coverage for `Run \`scripts/...\`` repository-root dependencies and retain packaged skill-local script allowance.
+Validation evidence: `python scripts/validate-skills.py tests/fixtures/skills/published-design/required-root-script-command` failed with `required repository-root dependency by command wording: scripts/validate-internal.py`; `python scripts/validate-skills.py tests/fixtures/skills/published-design/packaged-script-resource-map` passed; `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, and `git diff --check --` passed.
+Follow-up: Consider adding a same-class sweep for other imperative dependency verbs if future fixtures reveal additional required-path phrasings.
 
 ### RLSDC-PR1 - Next spec path may create a competing skill-contract source
 

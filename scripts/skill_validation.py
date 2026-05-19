@@ -67,6 +67,43 @@ SCRIPT_FAILURE_PATTERN = re.compile(r"\b(fail|failure|nonzero|non-zero|error)\b"
 PUBLISHED_INTERNAL_PATH_PATTERN = re.compile(
     r"`?(?:specs/|schemas/|docs/reports/|docs/changes/|benchmarks/|scripts/|dist/)`?"
 )
+PUBLISHED_INTERNAL_PATH_REFERENCE_PATTERN = re.compile(
+    r"`?(?P<path>(?:specs|schemas|docs/reports|docs/changes|benchmarks|scripts|dist)/[A-Za-z0-9._/-]+)`?"
+)
+PUBLISHED_REQUIRED_COMMAND_CONTEXT_PATTERN = re.compile(
+    r"""
+    ^\s*(?:[-*]\s*)?
+    (?:
+      run
+      | execute
+      | invoke
+      | call
+      | launch
+      | rerun
+      | use
+      | validate\s+with
+      | generate\s+with
+      | check\s+with
+    )\b
+    """,
+    re.IGNORECASE | re.VERBOSE,
+)
+PUBLISHED_NON_REQUIRED_CONTEXT_PATTERN = re.compile(
+    r"""
+    \b(
+      do\s+not\s+run
+      | don't\s+run
+      | not\s+required
+      | optional
+      | example
+      | for\s+example
+      | if\s+present
+      | when\s+packaged
+      | skill-local
+    )\b
+    """,
+    re.IGNORECASE | re.VERBOSE,
+)
 PUBLISHED_ALLOWED_PROJECT_LOCAL_TERMS = [
     "project-local",
     "when present",
@@ -238,10 +275,35 @@ def _resource_files(skill_dir: Path) -> list[Path]:
     return resources
 
 
-def _resource_entry_line(section: str, relative_resource: str) -> str | None:
-    for line in section.splitlines():
+def _resource_entry_text(section: str, relative_resource: str) -> str | None:
+    lines = section.splitlines()
+    for index, line in enumerate(lines):
         if relative_resource in line:
-            return line.strip()
+            entry_lines = [line.strip()]
+            for continuation in lines[index + 1 :]:
+                if continuation.startswith("- "):
+                    break
+                if continuation.strip():
+                    entry_lines.append(continuation.strip())
+            return " ".join(entry_lines)
+    return None
+
+
+def _references_packaged_resource(line: str, skill_dir: Path) -> bool:
+    for resource in _resource_files(skill_dir):
+        relative_resource = resource.relative_to(skill_dir).as_posix()
+        if relative_resource in line:
+            return True
+    return False
+
+
+def _required_repository_dependency_context(line: str) -> str | None:
+    if PUBLISHED_NON_REQUIRED_CONTEXT_PATTERN.search(line):
+        return None
+    if READABILITY_REQUIRED_CONTEXT_PATTERN.search(line):
+        return "required context"
+    if PUBLISHED_REQUIRED_COMMAND_CONTEXT_PATTERN.search(line):
+        return "command wording"
     return None
 
 
@@ -337,7 +399,7 @@ def _validate_resource_map(path: Path, body: str) -> list[str]:
     errors: list[str] = []
     for resource in resources:
         relative_resource = resource.relative_to(path.parent).as_posix()
-        entry = _resource_entry_line(section, relative_resource)
+        entry = _resource_entry_text(section, relative_resource)
         if entry is None:
             errors.append(
                 f"{path}: Resource map must name packaged resource '{relative_resource}'"
@@ -371,13 +433,18 @@ def _validate_published_self_containment(path: Path, metadata: dict[str, str], b
     for line_number, line in enumerate(_iter_lines_outside_fences(body), start=1):
         if not PUBLISHED_INTERNAL_PATH_PATTERN.search(line):
             continue
-        if not READABILITY_REQUIRED_CONTEXT_PATTERN.search(line):
+        context = _required_repository_dependency_context(line)
+        if context is None:
+            continue
+        if _references_packaged_resource(line, path.parent):
             continue
         normalized = line.lower()
         if any(term.lower() in normalized for term in PUBLISHED_ALLOWED_PROJECT_LOCAL_TERMS):
             continue
+        match = PUBLISHED_INTERNAL_PATH_REFERENCE_PATTERN.search(line)
+        dependency = match.group("path") if match else line.strip()
         errors.append(
-            f"{path}:{line_number}: required unavailable repository-root dependency: {line.strip()}"
+            f"{path}:{line_number}: required repository-root dependency by {context}: {dependency}"
         )
     return errors
 
