@@ -596,6 +596,88 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "duplicate closed enum block",
         )
 
+    def test_published_design_description_too_long_fails(self) -> None:
+        self.assertFixtureFails(
+            "published-design/description-too-long",
+            "description must be 1024 characters or fewer",
+        )
+
+    def test_published_design_when_to_use_cannot_replace_description(self) -> None:
+        self.assertFixtureFails(
+            "published-design/when-to-use-replaces-description",
+            "when_to_use must not replace description",
+        )
+
+    def test_published_design_missing_resource_map_fails(self) -> None:
+        self.assertFixtureFails(
+            "published-design/missing-resource-map",
+            "packaged resources require a '## Resource map' section",
+        )
+
+    def test_published_design_resource_map_must_name_every_resource(self) -> None:
+        self.assertFixtureFails(
+            "published-design/resource-map-missing-resource",
+            "Resource map must name packaged resource 'references/detail.md'",
+        )
+
+    def test_published_design_packaged_script_with_map_passes(self) -> None:
+        self.assertFixturePasses("published-design/packaged-script-valid")
+
+    def test_published_design_packaged_script_requires_failure_behavior(self) -> None:
+        self.assertFixtureFails(
+            "published-design/packaged-script-missing-failure",
+            "packaged script 'scripts/check.py' map entry must describe failure behavior",
+        )
+
+    def test_published_design_repository_root_script_dependency_fails(self) -> None:
+        self.assertFixtureFails(
+            "published-design/required-root-script",
+            "required repository-root dependency",
+        )
+
+    def test_published_design_repository_root_script_command_dependency_fails(self) -> None:
+        self.assertFixtureFails(
+            "published-design/required-root-script-command",
+            "required repository-root dependency by command wording: scripts/validate-internal.py",
+        )
+
+    def test_published_design_packaged_script_resource_map_passes(self) -> None:
+        self.assertFixturePasses("published-design/packaged-script-resource-map")
+
+    def test_published_design_routing_coverage_fixture_is_bounded(self) -> None:
+        routing = (
+            ROOT
+            / "docs"
+            / "changes"
+            / "2026-05-19-rigorloop-published-skill-design-contract"
+            / "routing-coverage.md"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn("This evidence is a fixture and transcript-review input.", routing)
+        self.assertIn("It does not claim deterministic runtime skill auto-selection.", routing)
+        self.assertIn("| Skill | Positive triggers | Near misses | Competing skills | Should-not-trigger prompt classes |", routing)
+        for skill in ("`proposal`", "`proposal-review`"):
+            with self.subTest(skill=skill):
+                self.assertIn(f"| {skill} |", routing)
+        for fixture_type in (
+            "Obvious positive",
+            "Casual positive",
+            "Edge positive",
+            "Near negative",
+            "Competing skill",
+            "Should not trigger",
+        ):
+            with self.subTest(fixture_type=fixture_type):
+                self.assertIn(fixture_type, routing)
+        forbidden_claims = [
+            "proves automatic runtime selection",
+            "CI proves runtime skill selection",
+            "use broad semantic scoring",
+        ]
+        for claim in forbidden_claims:
+            with self.subTest(claim=claim):
+                self.assertNotIn(claim, routing)
+
     def test_skill_readability_pilot_pair_opts_into_contract(self) -> None:
         for skill_name in ("proposal", "proposal-review"):
             skill_path = ROOT / "skills" / skill_name / "SKILL.md"
@@ -2113,7 +2195,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "Contributors MUST NOT hand-edit `.codex/skills/` or `dist/adapters/` to satisfy this spec.",
             "Public shared blocks are copied and checked in v1, not generated into skills.",
             "Published skill text does not expose repository-local source paths, generated mirror paths, adapter package paths, selector path constraints, drift-check mechanics, shared-block implementation details, or RigorLoop-local examples.",
-            "The first validation slice MUST NOT add broad natural-language quality scoring.",
+            "The baseline normalization first slice and published-skill design pilot MUST NOT add broad natural-language quality scoring.",
             "The `ci` skill remains the entrypoint for the `ci-maintenance` stage label.",
         ]
         for term in required_spec_terms:
@@ -2157,7 +2239,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "The `ci` skill MUST be treated as the skill entrypoint for the visible `ci-maintenance` workflow stage label",
             spec,
         )
-        self.assertIn("The first implementation slice MUST NOT normalize every skill.", spec)
+        self.assertIn("The baseline normalization first slice MUST NOT normalize every skill.", spec)
         self.assertIn("Do not implement Phase 2, Phase 3, or Phase 4 skill normalization", plan)
         self.assertTrue((ROOT / "skills" / "ci" / "SKILL.md").exists())
 

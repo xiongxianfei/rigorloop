@@ -3,7 +3,7 @@ name: proposal
 version: "1.0.0"
 schema-version: skill-readability-v1
 description: >
-  Create a decision-oriented change proposal before writing a feature spec or execution plan. Use after exploration has produced options or when the intended direction is clear enough to evaluate scope, value, risks, and non-goals.
+  Create a decision-oriented change proposal before spec or plan. Use when the user has a selected direction, explored options, problem statement, or issue that needs problem, goals, non-goals, options, recommendation, risks, rollout, and readiness recorded. Use proposal-review to review an existing proposal; use spec, plan, implement, or verify for downstream work.
 argument-hint: [feature idea, selected option, problem statement, or issue number]
 ---
 
@@ -18,6 +18,7 @@ You turn exploration into a reviewable direction. A proposal answers why this ch
 - upstream: user request, exploration, research, issue, or incident
 - downstream: proposal-review
 - summary: Author the proposal artifact recording problem, options, recommendation, scope, risks, and readiness.
+- must_not_claim: proposal-review approval, spec readiness, implementation readiness, verification, branch readiness, or PR readiness.
 
 ## Project-local evidence
 
