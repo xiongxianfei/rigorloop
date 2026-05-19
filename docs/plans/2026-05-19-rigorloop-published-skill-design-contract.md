@@ -60,9 +60,9 @@ Implement the approved published-skill design contract as an audit-first, pilot-
 - Last reviewed milestone: M3. Pilot skill rewrite and generated-output validation
 - Review status: M3 code-review clean-with-notes; all implementation milestones closed
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
-- Final closeout readiness: ready for explain-change; not ready for verify or PR
-- Reason final closeout is or is not ready: all in-scope implementation milestones are closed and review-resolution has no open findings; explain-change is absent, final verification has not run, and PR handoff is not prepared.
+- Next stage: verify
+- Final closeout readiness: ready for verify; not ready for PR
+- Reason final closeout is or is not ready: all in-scope implementation milestones are closed, review-resolution has no open findings, and explain-change is recorded; final verification has not run, and PR handoff is not prepared.
 
 ## Milestones
 
@@ -223,6 +223,7 @@ Implement the approved published-skill design contract as an audit-first, pilot-
 - 2026-05-19: code-review-m2-r2 returned `clean-with-notes`; M2 closed; next stage is `implement M3`.
 - 2026-05-19: M3 updated only `proposal` and `proposal-review`, filled preservation/parity/token evidence, aligned adapter validation commands to temporary v0.1.5 archives, and moved to `review-requested`.
 - 2026-05-19: code-review-m3-r1 returned `clean-with-notes`; M3 closed; all implementation milestones are closed; next stage is `explain-change`.
+- 2026-05-19: explain-change recorded durable change rationale; next stage is `verify`.
 
 ## Decision log
 
@@ -310,6 +311,11 @@ Implement the approved published-skill design contract as an audit-first, pilot-
 - 2026-05-19 M3 code-review recording validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md --path docs/plan.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/review-log.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/review-resolution.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/reviews/code-review-m3-r1.md` passed.
 - 2026-05-19 M3 code-review recording validation: `git diff --check -- docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md docs/plan.md docs/changes/2026-05-19-rigorloop-published-skill-design-contract` passed.
 - 2026-05-19 M3 code-review recording validation: `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md --path docs/plan.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/review-log.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/review-resolution.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/reviews/code-review-m3-r1.md` passed selected review-artifact, artifact-lifecycle, change-metadata regression, and change-metadata checks.
+- 2026-05-19 explain-change validation: `python scripts/validate-change-metadata.py docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml` passed.
+- 2026-05-19 explain-change validation: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-19-rigorloop-published-skill-design-contract` passed.
+- 2026-05-19 explain-change validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/explain-change.md --path docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md --path docs/plan.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/review-log.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/review-resolution.md` passed.
+- 2026-05-19 explain-change validation: `git diff --check -- docs/changes/2026-05-19-rigorloop-published-skill-design-contract/explain-change.md docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md docs/plan.md docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml` passed.
+- 2026-05-19 explain-change validation: `bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/explain-change.md --path docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md --path docs/plan.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/review-log.md --path docs/changes/2026-05-19-rigorloop-published-skill-design-contract/review-resolution.md` passed selected review-artifact, artifact-lifecycle, change-metadata regression, and change-metadata checks.
 
 ## Outcome and retrospective
 
@@ -318,7 +324,7 @@ Implement the approved published-skill design contract as an audit-first, pilot-
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for `explain-change`, not final verification, branch readiness, or PR readiness.
+- This plan is ready for `verify`, not branch readiness or PR readiness.
 
 ## Risks and follow-ups
 
