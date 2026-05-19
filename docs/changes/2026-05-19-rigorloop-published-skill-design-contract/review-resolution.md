@@ -15,8 +15,9 @@ Review closeout: plan-review-r1
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m2-r1
 Review closeout: code-review-m2-r2
+Review closeout: code-review-m3-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `plan-review-r1`, `code-review-m1-r1`, `code-review-m2-r1`, `code-review-m2-r2`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `plan-review-r1`, `code-review-m1-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`
 - Findings resolved: 9
 - Unresolved findings: 0
 - Final result: `RLSDC-PR1`, `RLSDC-PR2`, `RLSDC-PR3`, `RLSDC-PR4`, `SKC-PR1`, `SKC-PR2`, `SKC-PR3`, `SKC-PR4`, and `RLSDC-M2-CR1` are accepted and resolved.
@@ -79,6 +80,10 @@ Finding closeout for `code-review-m2-r1` is resolved. Rerun code-review is requi
 ### code-review-m2-r2
 
 No material findings. Clean formal review closed M2 for code-review purposes. Immediate next stage is `implement M3`. No disposition entries required.
+
+### code-review-m3-r1
+
+No material findings. Clean formal review closed M3 for code-review purposes. Immediate next stage is `explain-change`. No disposition entries required.
 
 ### RLSDC-M2-CR1 - Repository-root script dependency check misses ordinary `Run scripts/...` wording
 
