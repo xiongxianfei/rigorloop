@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-19 Assets-First Progressive Disclosure Pilot](plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md) - active execution plan for the assets-first `plan` packaged-resource pilot; current next stage is code-review M3 after adapter, token, behavior-parity, and historical-coverage proof, with explain-change, verify, and PR gates still open.
+- [2026-05-19 Assets-First Progressive Disclosure Pilot](plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md) - active execution plan for the assets-first `plan` packaged-resource pilot; current next stage is final closeout after clean M3 code-review, with explain-change, verify, and PR gates still open.
 
 ## Blocked
 - none yet
