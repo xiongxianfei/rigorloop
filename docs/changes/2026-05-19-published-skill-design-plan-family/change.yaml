@@ -125,6 +125,18 @@ validation:
     result: pass_after_m3
   - command: bash scripts/ci.sh --mode explicit --path skills/plan/SKILL.md --path skills/plan-review/SKILL.md --path scripts/test-skill-validator.py --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-plan-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-plan-family/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-plan-family/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-plan-family/behavior-parity.md
     result: pass_after_m3
+  - command: code-review M3
+    result: clean_with_notes_recorded_m3_closed
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-19-published-skill-design-plan-family
+    result: pass_after_m3_code_review
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml
+    result: pass_after_m3_code_review
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-published-skill-design-plan-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-plan-family/review-log.md --path docs/changes/2026-05-19-published-skill-design-plan-family/reviews/code-review-m3-r1.md
+    result: pass_after_m3_code_review
+  - command: git diff --check -- docs/plans/2026-05-19-published-skill-design-plan-family.md docs/plan.md docs/changes/2026-05-19-published-skill-design-plan-family
+    result: pass_after_m3_code_review
+  - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-published-skill-design-plan-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-plan-family/review-log.md --path docs/changes/2026-05-19-published-skill-design-plan-family/reviews/code-review-m3-r1.md
+    result: pass_after_m3_code_review
 changed_files:
   - scripts/test-skill-validator.py
   - skills/plan/SKILL.md
@@ -136,6 +148,7 @@ changed_files:
   - docs/changes/2026-05-19-published-skill-design-plan-family/reviews/plan-review-r1.md
   - docs/changes/2026-05-19-published-skill-design-plan-family/reviews/code-review-m1-r1.md
   - docs/changes/2026-05-19-published-skill-design-plan-family/reviews/code-review-m2-r1.md
+  - docs/changes/2026-05-19-published-skill-design-plan-family/reviews/code-review-m3-r1.md
   - docs/changes/2026-05-19-published-skill-design-plan-family/skill-audit.md
   - docs/changes/2026-05-19-published-skill-design-plan-family/routing-coverage.md
   - docs/changes/2026-05-19-published-skill-design-plan-family/behavior-preservation.md
@@ -144,6 +157,6 @@ changed_files:
 review:
   status: clean
   unresolved_items: 0
-  location: docs/changes/2026-05-19-published-skill-design-plan-family/reviews/code-review-m2-r1.md
-  reviewed_artifact: commit ac5763c M2: validate published skill design plan-family checks
+  location: docs/changes/2026-05-19-published-skill-design-plan-family/reviews/code-review-m3-r1.md
+  reviewed_artifact: commit 92169d5 M3: roll out published skill design to plan family
   review_log: docs/changes/2026-05-19-published-skill-design-plan-family/review-log.md
