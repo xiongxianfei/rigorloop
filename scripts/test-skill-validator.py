@@ -644,6 +644,69 @@ class SkillValidatorFixtureTests(unittest.TestCase):
     def test_published_design_packaged_script_resource_map_passes(self) -> None:
         self.assertFixturePasses("published-design/packaged-script-resource-map")
 
+    def test_published_design_plan_asset_pilot_valid_fixture_passes(self) -> None:
+        self.assertFixturePasses("published-design/plan-assets-valid")
+
+    def test_published_design_plan_asset_count_is_exact(self) -> None:
+        self.assertFixtureFails(
+            "published-design/plan-assets-missing-approved-asset",
+            "plan asset pilot must ship exactly approved assets",
+        )
+
+    def test_published_design_plan_asset_metadata_required(self) -> None:
+        self.assertFixtureFails(
+            "published-design/plan-assets-missing-metadata",
+            "asset metadata missing required field 'Template'",
+        )
+
+    def test_published_design_plan_asset_status_must_be_normative(self) -> None:
+        self.assertFixtureFails(
+            "published-design/plan-assets-optional-status",
+            "plan asset pilot asset 'assets/milestone.md' must use normative status",
+        )
+
+    def test_published_design_plan_asset_resource_map_requires_copy(self) -> None:
+        self.assertFixtureFails(
+            "published-design/plan-assets-non-copy-verb",
+            "Resource map entry for 'assets/milestone.md' must use literal COPY",
+        )
+
+    def test_published_design_plan_asset_resource_map_requires_trigger_and_fields(self) -> None:
+        self.assertFixtureFails(
+            "published-design/plan-assets-missing-fields",
+            "Resource map entry for 'assets/milestone.md' must name fields or structures to fill",
+        )
+
+    def test_published_design_plan_asset_resource_map_requires_every_asset(self) -> None:
+        self.assertFixtureFails(
+            "published-design/plan-assets-missing-resource-map-entry",
+            "Resource map must name packaged resource 'assets/decision-log-row.md'",
+        )
+
+    def test_published_design_plan_asset_placeholders_required(self) -> None:
+        self.assertFixtureFails(
+            "published-design/plan-assets-missing-placeholder",
+            "asset 'assets/milestone.md' must include a visible placeholder",
+        )
+
+    def test_published_design_plan_asset_root_dependency_fails(self) -> None:
+        self.assertFixtureFails(
+            "published-design/plan-assets-root-dependency",
+            "asset 'assets/milestone.md' must not require repository-root dependency",
+        )
+
+    def test_published_design_plan_asset_fingerprint_mismatch_fails(self) -> None:
+        self.assertFixtureFails(
+            "published-design/plan-assets-fingerprint-mismatch",
+            "asset 'assets/milestone.md' structural fingerprint mismatch",
+        )
+
+    def test_published_design_plan_skeleton_section_set_mismatch_fails(self) -> None:
+        self.assertFixtureFails(
+            "published-design/plan-assets-section-mismatch",
+            "plan-skeleton section set does not match SKILL.md expected sections",
+        )
+
     def test_published_design_routing_coverage_fixture_is_bounded(self) -> None:
         routing = (
             ROOT

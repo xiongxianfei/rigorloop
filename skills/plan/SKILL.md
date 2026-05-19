@@ -9,9 +9,11 @@ argument-hint: [feature name, spec path, architecture path, or implementation go
 
 # Living execution plan
 
-You are turning approved behavior and architecture into a safe, reviewable implementation path.
+Sequence approved behavior and architecture into reviewable implementation. Do not decide product direction.
 
-Planning happens after the spec defines behavior and architecture defines the design direction. Do not use this skill to decide what the product should be.
+## Purpose
+
+Create or revise a concrete execution plan with milestones, validation commands, recovery paths, and lifecycle readiness.
 
 ## Workflow role
 
@@ -22,118 +24,87 @@ Planning happens after the spec defines behavior and architecture defines the de
 - summary: Create or revise the execution plan artifact, milestone sequence, validation strategy, recovery path, current handoff summary, and lifecycle readiness.
 - must_not_claim: implementation completion, review approval, verification, branch readiness, PR readiness, final closeout readiness, or Done while downstream gates remain.
 
-## Purpose
-
-Create or revise a concrete execution plan that turns approved artifacts into reviewable implementation milestones, validation commands, recovery paths, and lifecycle readiness.
-
 ## Project-local evidence
 
 Public skills operate in customer-project mode by default.
 
-Use project-local artifacts when present and relevant, including `AGENTS.md`, `CONSTITUTION.md`, `docs/plan.md`, accepted proposals, approved specs, test specs, architecture records, ADRs, review findings, `docs/project-map.md`, `docs/workflows.md`, source files, tests, CI, and workflow files.
+Use project-local artifacts when present and relevant: `AGENTS.md`, `CONSTITUTION.md`, `docs/plan.md`, accepted proposals, approved specs, test specs, architecture records, ADRs, review findings, `docs/project-map.md`, `docs/workflows.md`, source files, tests, CI, and workflow files.
 
-Do not require RigorLoop repository-internal specs, docs, reports, follow-up files, or governance files in customer projects. Use portable defaults where safe, and block on ambiguity when no safe local guidance or default exists.
+Do not require RigorLoop repository-internal specs, docs, reports, follow-up files, or governance files in customer projects. Use portable defaults where safe, and block on ambiguity.
+
+## Resource map
+
+- COPY `assets/plan-skeleton.md` when creating a new plan or replacing the full plan structure.
+  Fill: sections and placeholders.
+  Sections: Status; Purpose / big picture; Source artifacts; Context and orientation; Non-goals; Requirements covered; Current Handoff Summary; Milestones; Validation plan; Risks and recovery; Dependencies; Progress; Decision log; Surprises and discoveries; Validation notes; Outcome and retrospective; Readiness.
+  Do not emit unfilled placeholders.
+- COPY `assets/milestone.md` when adding each reviewable implementation milestone.
+  Fill: ID, state, goal, requirements, files, tests, steps, validation, result, risks, rollback.
+  Do not emit unfilled placeholders.
+- COPY `assets/current-handoff-summary.md` when creating or updating the current handoff summary in a milestone-based plan.
+  Fill: milestone, state, review status, remaining milestones, next stage, readiness, reason.
+  Do not emit unfilled placeholders.
+- COPY `assets/decision-log-row.md` when recording a material planning or sequencing decision.
+  Fill: date, decision, reason, and rejected alternatives.
+  Do not emit unfilled placeholders.
 
 ## When to use
 
-Use this skill after proposal, spec, and architecture are stable enough to sequence implementation, especially for multi-file, risky, milestone-based, migration-heavy, or cross-component work.
+Use after proposal, spec, and architecture are stable enough to sequence multi-file, risky, milestone-based, migration-heavy, or cross-component work.
 
 ## When not to use
 
-Do not use this skill to choose product direction, replace missing specs, perform implementation, claim review or verification outcomes, or mark work Done when downstream lifecycle gates remain.
+Do not choose product direction, replace missing specs, implement code, claim review or verification outcomes, or mark work Done while downstream lifecycle gates remain.
 
 ## Inputs to read
 
-Read:
+Read needed project-local evidence: `AGENTS.md`, `CONSTITUTION.md` if present, `docs/plan.md`, accepted proposal, approved or reviewed spec, architecture or ADRs when relevant, test-spec if present, `docs/project-map.md`, code, tests, CI, and workflows.
 
-- `AGENTS.md`
-- `CONSTITUTION.md` if present
-- `docs/plan.md` if present
-- accepted proposal
-- approved or reviewed feature spec
-- spec-review findings
-- architecture doc and ADRs when relevant
-- architecture-review findings when available
-- test-spec if already created
-- `docs/project-map.md`
-- relevant code, tests, CI, and workflows
+Use bounded evidence first. Use broader-section or full-file reading when the target file is the artifact, relevant sections cannot be isolated safely, or surrounding context can change the plan.
 
 ## Upstream status settlement
 
-In workflow-managed downstream execution, before relying on a spec, architecture package, or ADR, check whether its tracked status matches clear formal review evidence.
-
-Do not run upstream status settlement for review-only, no-edit, or manual inspection requests. Those requests remain isolated.
+Before relying on a spec, architecture package, or ADR in workflow-managed downstream execution, check tracked status against clear review evidence. Skip review-only, no-edit, and manual inspection requests.
 
 During normal workflow-managed downstream execution, do not ask whether edits are allowed; the downstream invocation permits minimal settlement.
 
 Settle only lifecycle/status/readiness/follow-on/closeout metadata. Do not rewrite substantive artifact content.
 
-The clear review evidence check requires:
+Evidence needs durable review evidence, an approving or clean outcome, no later contradictory review record, no open findings in `review-log.md` when present, closed `review-resolution.md` when required, and explicit mapping.
 
-- durable formal review evidence for the upstream artifact;
-- an approving or clean review outcome;
-- no later contradictory review record;
-- no open findings in `review-log.md` when present;
-- closed `review-resolution.md` for material findings when required;
-- an explicit settlement mapping for this skill.
+Mappings:
 
-Mappings for this skill:
-
-- spec-review approved with no unresolved material findings -> spec `Status: approved`.
-- architecture-review approved for an architecture package with no unresolved material findings -> architecture `Status: approved`.
+- spec-review approved with no unresolved material findings -> spec `Status: approved`;
+- architecture-review approved for an architecture package with no unresolved material findings -> architecture `Status: approved`;
 - architecture-review approved for an ADR with no unresolved material findings -> ADR status `accepted` or `active` only when the ADR lifecycle vocabulary clearly supports that target.
 
-If review evidence is missing, contradictory, unresolved, the status surface is absent, the artifact type is unmapped, or the ADR has unknown lifecycle vocabulary, block instead of guessing.
-
-If the artifact type, lifecycle field, next status, or target status is unknown or unmapped, block instead of inferring a settlement.
-
-Report `## Upstream status settlement` when settlement was updated, blocked, or stale status was detected:
-
-```md
-## Upstream status settlement
-
-- Upstream artifact:
-- Review evidence:
-- Previous status:
-- New status:
-- Settlement result: updated | blocked | not-needed
-- Settlement blocker:
-```
-
-For blocked settlement with a deterministic target, report that intended target in `New status`. For blocked settlement with no deterministic target, report `New status: not-applicable`. `Settlement blocker` is required for blocked settlement and must distinguish a known target blocked by evidence/state from an unknown target blocked by missing mapping or lifecycle vocabulary.
-
-## Output paths
-
-Prefer:
-
-```text
-docs/plans/YYYY-MM-DD-slug.md
-docs/plan.md
-```
-
-Create a new dated plan for new initiatives. Update `docs/plan.md` as the lifecycle index of active, blocked, done, and superseded plans.
-For planned initiatives, `docs/plan.md` remains the lifecycle index while files under `docs/plans/` remain the plan bodies. `plan` owns creating or revising those surfaces when an initiative starts or is re-planned, not every later execution-time update.
+If evidence is missing, contradictory, unresolved, unknown, or unmapped, block instead of guessing. If the artifact type, lifecycle field, next status, or target status is unknown or unmapped, block instead of inferring a settlement. Report `## Upstream status settlement` when settlement was updated, blocked, or stale status was detected, with `Settlement result: updated | blocked | not-needed`, `New status`, `not-applicable`, and `Settlement blocker`. Name blocked settlement with a deterministic target, blocked settlement with no deterministic target, known target blocked by evidence/state, unknown target blocked by missing mapping or lifecycle vocabulary, and unknown lifecycle vocabulary.
 
 ## Artifact placement
 
 Use the project workflow guide for artifact locations when placement matters.
 
-Lookup order:
-
-1. explicit user path or change ID;
-2. active plan, change metadata, reviewed artifact path, or current artifact metadata;
-3. known governing spec or schema constraint when directly relevant;
-4. `docs/workflows.md` artifact-location table;
-5. this skill's portable default path;
-6. block on ambiguity.
+Lookup order: explicit user path or change ID; active plan, change metadata, reviewed artifact path, or current artifact metadata; known governing spec or schema constraint when directly relevant; `docs/workflows.md` artifact-location table; this skill's portable default path; block on ambiguity.
 
 This discovery order is subordinate to the source-rank rule in `docs/workflows.md` when sources conflict.
 
-Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index when project-local and present, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
+Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index when project-local, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
+
+## Expected output
+
+Output a compact result plus a plan artifact. Copy `assets/plan-skeleton.md` for section order and other assets for repeated structures. Do not duplicate full layout here.
 
 ## Outputs
 
-Produce or update the concrete plan body and, when starting or replanning an initiative, the `docs/plan.md` lifecycle index. The plan must name the milestone sequence, validation commands, recovery path, current handoff summary, and remaining completion gates.
+Produce or update the plan body and, when starting or replanning, the `docs/plan.md` lifecycle index. Name milestones, validation, recovery, current handoff summary, and Remaining completion gates.
+
+## Result
+
+- Skill: plan
+- Status: <created | updated | blocked>
+- Artifacts changed: <paths or none>
+- Open blockers: <blockers or none>
+- Next stage: <plan-review | test-spec after plan-review | blocked>
 
 ## Handoff
 
@@ -146,11 +117,11 @@ Produce or update the concrete plan body and, when starting or replanning an ini
 Do not claim:
 
 - code is implemented, review passed, verification passed, branch-ready, or PR-ready;
-- the plan is Done merely because it is ready for the next stage;
-- ready for PR or ready for final closeout without explicit remaining gates and the owning review/verification evidence;
+- the plan is Done because it is ready for the next stage;
+- ready for PR or ready for final closeout without remaining gates and owning evidence;
 - derived artifacts are current unless validation evidence proves it.
 
-Use `Readiness is not Done` as the default interpretation for handoff lines. Keep `Remaining completion gates` visible whenever readiness could be confused with completion.
+Use `Readiness is not Done` as the default interpretation for handoff lines. Keep Remaining completion gates visible whenever readiness could be confused with completion.
 
 ## Progress, readiness, closeout, and Done
 
@@ -158,69 +129,28 @@ Use `Readiness is not Done` as the default interpretation for handoff lines. Kee
 - Readiness means the next stage that can happen.
 - Closeout means the current artifact or stage satisfied its checklist.
 - Done means final lifecycle state after required gates are complete.
-- Readiness is not Done. A plan may remain `Active` while it is ready for the next gate.
+- Readiness is not Done.
 
-## Required sections
+## Plan authoring rules
 
-1. **Status**: draft, reviewed, active, blocked, done, superseded.
-2. **Purpose / big picture**: why this implementation plan exists.
-3. **Source artifacts**: proposal, spec, architecture, test spec.
-4. **Context and orientation**: files, modules, flows, and constraints a new contributor needs.
-5. **Non-goals**: scope guardrails from proposal/spec.
-6. **Requirements covered**: list requirement IDs and where they will be implemented.
-7. **Milestones**: small reviewable slices.
-8. **Validation plan**: commands and manual checks per milestone.
-9. **Risks and recovery**: rollback, feature flags, migration recovery, idempotence.
-10. **Dependencies**: internal and external sequencing constraints.
-11. **Progress**: checkboxes or status per milestone.
-12. **Decision log**: implementation decisions made during planning.
-13. **Surprises and discoveries**: updated during implementation.
-14. **Validation notes**: evidence from implementation.
-15. **Outcome and retrospective**: filled after completion.
-
-## Milestone format
-
-Each milestone should include:
-
-```text
-M1. Title
-- Milestone state:
-- Goal:
-- Requirements:
-- Files/components likely touched:
-- Dependencies:
-- Tests to add/update:
-- Implementation steps:
-- Validation commands:
-- Expected observable result:
-- Commit message: `M1: <completed milestone outcome>`
-- Milestone closeout:
-  - validation passed
-  - progress updated
-  - decision log updated if needed
-  - validation notes updated
-  - milestone committed
-- Risks:
-- Rollback/recovery:
-```
-
-Milestones should be small enough for one review loop and one coherent commit. A PR may contain one or more completed milestones when that is the clearest review boundary.
+- Derive work from spec requirements and architecture decisions.
+- Do not add behavior not in the spec.
+- Do not hide risky work in vague milestones.
+- Do not omit validation commands.
+- Keep `docs/plan.md` as an index, not a second long-form plan body.
+- Update `docs/plan.md` and the plan body together when starting, replacing, transitioning, or before the PR opens for review.
+- If completion depends on a true downstream completion event, keep the plan `Active` and name that event; merge itself is not that event.
+- Do not create a plan that only the current chat context can understand.
+- Do not proceed to implementation until `plan-review` and `test-spec` are ready unless an isolated manual invocation is requested and recorded.
+- If planning reveals spec or architecture gaps, update those artifacts first.
 
 ## Milestone-aware plans
 
-For milestone-based plans, each implementation milestone has exactly one `Milestone state`.
+Each implementation milestone has exactly one `Milestone state`: `planned`, `implementing`, `review-requested`, `resolution-needed`, or `closed`.
 
-Allowed values:
+Use `review-requested` after implementation and validation. Use `resolution-needed` for review-resolution, fixes, owner decision, or re-review. `implementation-complete` and `review-clean` are evidence descriptions, not milestone state values.
 
-- `planned`
-- `implementing`
-- `review-requested`
-- `resolution-needed`
-- `closed`
-
-Use `review-requested` after implementation and targeted validation complete and the slice has been handed to `code-review`. Use `resolution-needed` when review findings require review-resolution, fixes, owner decision, or re-review. `implementation-complete` and `review-clean` are evidence descriptions, not milestone state values.
-
-Each implementation milestone normally follows this loop:
+Normal loop:
 
 ```text
 implement M<n>
@@ -232,50 +162,21 @@ implement M<n>
 -> implement M<n+1>, when another in-scope implementation milestone remains
 ```
 
-Do not hand off to final closeout until all in-scope implementation milestones are `closed` or explicitly removed by plan revision and required review-resolution is closed.
+Do not hand off to final closeout until all in-scope implementation milestones are `closed` or removed and required review-resolution is closed. Do not postpone milestones to make final closeout available.
 
-Milestones are not postponed to make final closeout available. If a planned implementation milestone no longer belongs in the current change, revise the plan before handoff.
-
-Use `lifecycle-closeout` for a milestone or section that tracks only downstream gates such as `ci-maintenance`, `explain-change`, `verify`, PR handoff, release, deploy, or final plan closeout. A mixed milestone that still contains implementation work remains an implementation milestone for final-closeout readiness decisions.
-
-For milestone-based plans, include and update a current handoff summary whenever implementation or review changes milestone readiness:
-
-```text
-Current milestone:
-Current milestone state:
-Last reviewed milestone:
-Review status:
-Remaining in-scope implementation milestones:
-Next stage:
-Final closeout readiness:
-Reason final closeout is or is not ready:
-```
+Use `lifecycle-closeout` for a milestone or section that tracks only downstream gates such as `ci-maintenance`, `explain-change`, `verify`, PR handoff, release, deploy, or final plan closeout.
 
 The active plan `Readiness` section points to `Current Handoff Summary` for current live state. Do not duplicate the current next stage outside `Current Handoff Summary` unless the statement is explicitly historical.
 
-## Planning rules
+## Current Handoff Summary rules
 
-- Derive work from spec requirements and architecture decisions.
-- Do not add behavior not in the spec.
-- Do not hide risky work in vague milestones.
-- Do not omit validation commands.
-- Keep `docs/plan.md` as an index, not a second long-form plan body.
-- When planning starts a new initiative or replaces an older one, update the relevant `docs/plan.md` entry and plan body in the same planning change.
-- When a plan lifecycle transition is performed by a PR, plan the synchronized `docs/plan.md` and plan-body update before the PR opens for review.
-- If completion depends on a true downstream completion event, keep the plan `Active` and name that event; merge itself is not that event.
-- Do not create a plan that only the current chat context can understand.
-- Do not proceed to implementation until `plan-review` and `test-spec` are ready unless the user explicitly requests an isolated manual skill invocation and the limitation is recorded.
-- If planning reveals spec or architecture gaps, update those artifacts first.
+Update a current handoff summary whenever implementation or review changes milestone readiness. The active plan `Current Handoff Summary` owns current milestone, milestone state, last reviewed milestone, review status, remaining in-scope implementation milestones, next stage, final closeout readiness, and reason.
+
+Keep it consistent with the active plan, `docs/plan.md`, and change metadata. It must not claim branch readiness, PR readiness, final verification, final closeout readiness, or Done while downstream gates remain.
 
 ## Stop conditions
 
-Stop before handoff when:
-
-- required source artifacts are missing, contradictory, or not approved enough for the workflow state;
-- architecture, migration, security, or release boundaries are too unclear to sequence safely;
-- validation commands cannot be identified;
-- a milestone would rely on chat-only context;
-- the plan would hide open implementation work behind `Ready for final closeout`, Done, or PR readiness wording.
+Stop when source artifacts are missing or contradictory, lifecycle status is not approved enough, architecture/security/release boundaries are unclear, validation commands cannot be identified, a milestone would rely on chat-only context, or the plan would hide open work behind `Ready for final closeout`, Done, or PR readiness wording.
 
 ## Evidence collection efficiency
 
@@ -290,16 +191,12 @@ Read exact ranges after locating relevant lines, then expand only when the narro
 
 Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
 
-## Expected output
-
-Use the `## Output skeleton` shape. Include the concrete plan path, `docs/plan.md` index update when applicable, milestone sequence, validation and recovery strategy, and readiness for `plan-review` or blocker state.
-
 ## Output skeleton
 
-Fill `<placeholders>` with the actual plan result.
+Use this compact response shape; copy `assets/plan-skeleton.md` for the full plan artifact.
 
 ```md
-## Result
+Result
 
 - Skill: plan
 - Status: <created | updated | blocked>
@@ -308,7 +205,7 @@ Fill `<placeholders>` with the actual plan result.
 - Next stage: <plan-review | test-spec after plan-review | blocked>
 - Readiness: <ready for plan-review | blocked with reason>
 
-## Plan
+Plan
 
 - Plan file: <docs/plans/YYYY-MM-DD-slug.md>
 - Plan index: <docs/plan.md updated | not-needed with rationale>

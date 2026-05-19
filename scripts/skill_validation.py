@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 from dataclasses import dataclass
@@ -118,6 +119,27 @@ PUBLISHED_ALLOWED_PROJECT_LOCAL_TERMS = [
     "direct target",
     "packaged",
 ]
+PLAN_ASSET_PILOT_APPROVED_ASSETS = {
+    "assets/plan-skeleton.md",
+    "assets/milestone.md",
+    "assets/current-handoff-summary.md",
+    "assets/decision-log-row.md",
+}
+PLAN_ASSET_REQUIRED_METADATA_FIELDS = {
+    "Template",
+    "Skill",
+    "Template status",
+    "Structural-fingerprint",
+    "Maintained alongside",
+}
+PLAN_ASSET_TEMPLATE_STATUS_VALUES = {"normative", "optional", "example", "deprecated"}
+PLAN_ASSET_PLACEHOLDER_PATTERN = re.compile(r"<[^>\n]+>|\[FILL IN\]")
+PLAN_ASSET_FIELDS_TO_FILL_PATTERN = re.compile(r"\b(?:Fill|Fields|Structures):", re.IGNORECASE)
+PLAN_ASSET_METADATA_PATTERN = re.compile(r"^<!--\s*(?P<key>[^:]+):\s*(?P<value>.*?)\s*-->$")
+PLAN_ASSET_SECTIONS_PATTERN = re.compile(
+    r"\bSections:\s*(?P<sections>.*?)(?:\s+Do not emit|\s+Fill:|\s*$)",
+    re.IGNORECASE,
+)
 
 
 @dataclass(frozen=True)
@@ -287,6 +309,194 @@ def _resource_entry_text(section: str, relative_resource: str) -> str | None:
                     entry_lines.append(continuation.strip())
             return " ".join(entry_lines)
     return None
+
+
+def _asset_metadata(text: str) -> dict[str, str]:
+    metadata: dict[str, str] = {}
+    for line in text.splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        match = PLAN_ASSET_METADATA_PATTERN.match(stripped)
+        if not match:
+            continue
+        metadata[match.group("key").strip()] = match.group("value").strip()
+    return metadata
+
+
+def _asset_structural_fingerprint(text: str) -> str:
+    normalized_lines: list[str] = []
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
+        if not line:
+            continue
+        if line.startswith("<!--") and line.endswith("-->"):
+            continue
+        line = PLAN_ASSET_PLACEHOLDER_PATTERN.sub("<>", line)
+        normalized_lines.append(line)
+    normalized = "\n".join(normalized_lines)
+    return "sha256:" + hashlib.sha256(normalized.encode("utf-8")).hexdigest()
+
+
+def _markdown_h2_sections(text: str) -> list[str]:
+    sections: list[str] = []
+    for line in text.splitlines():
+        if not line.startswith("## "):
+            continue
+        heading = line[3:].strip()
+        if heading:
+            sections.append(heading)
+    return sections
+
+
+def _expected_sections_from_resource_entry(entry: str) -> list[str]:
+    match = PLAN_ASSET_SECTIONS_PATTERN.search(entry)
+    if not match:
+        return []
+    raw_sections = match.group("sections")
+    return [
+        section.strip().rstrip(".")
+        for section in raw_sections.split(";")
+        if section.strip()
+    ]
+
+
+def _asset_body_without_metadata(text: str) -> str:
+    lines = [
+        line
+        for line in text.splitlines()
+        if not (line.strip().startswith("<!--") and line.strip().endswith("-->"))
+    ]
+    return "\n".join(lines)
+
+
+def _validate_plan_asset_file(path: Path, relative_resource: str, text: str) -> list[str]:
+    errors: list[str] = []
+    metadata = _asset_metadata(text)
+
+    missing = sorted(PLAN_ASSET_REQUIRED_METADATA_FIELDS - metadata.keys())
+    for field in missing:
+        errors.append(f"{path}: asset metadata missing required field '{field}'")
+
+    if missing:
+        return errors
+
+    if metadata["Skill"] != "plan":
+        errors.append(
+            f"{path}: plan asset pilot asset '{relative_resource}' must declare Skill: plan"
+        )
+
+    status = metadata["Template status"]
+    if status not in PLAN_ASSET_TEMPLATE_STATUS_VALUES:
+        allowed = ", ".join(sorted(PLAN_ASSET_TEMPLATE_STATUS_VALUES))
+        errors.append(f"{path}: asset metadata Template status must be one of {allowed}")
+    if status != "normative":
+        errors.append(
+            f"{path}: plan asset pilot asset '{relative_resource}' must use normative status"
+        )
+
+    maintained_alongside = metadata["Maintained alongside"]
+    if maintained_alongside != "skills/plan/SKILL.md":
+        errors.append(
+            f"{path}: plan asset pilot asset '{relative_resource}' must be maintained alongside skills/plan/SKILL.md"
+        )
+
+    fingerprint = metadata["Structural-fingerprint"]
+    expected_fingerprint = _asset_structural_fingerprint(text)
+    if fingerprint != expected_fingerprint:
+        errors.append(
+            f"{path}: asset '{relative_resource}' structural fingerprint mismatch: expected {expected_fingerprint}"
+        )
+
+    if not PLAN_ASSET_PLACEHOLDER_PATTERN.search(_asset_body_without_metadata(text)):
+        errors.append(
+            f"{path}: asset '{relative_resource}' must include a visible placeholder"
+        )
+
+    for line_number, line in enumerate(_iter_lines_outside_fences(text), start=1):
+        if not PUBLISHED_INTERNAL_PATH_PATTERN.search(line):
+            continue
+        context = _required_repository_dependency_context(line)
+        if context is None:
+            continue
+        match = PUBLISHED_INTERNAL_PATH_REFERENCE_PATTERN.search(line)
+        dependency = match.group("path") if match else line.strip()
+        errors.append(
+            f"{path}:{line_number}: asset '{relative_resource}' must not require repository-root dependency: {dependency}"
+        )
+
+    return errors
+
+
+def _validate_plan_asset_pilot(path: Path, body: str, skill_name: str | None) -> list[str]:
+    skill_dir = path.parent
+    asset_dir = skill_dir / "assets"
+    if not asset_dir.is_dir():
+        return []
+    if skill_name != "plan":
+        return []
+
+    errors: list[str] = []
+    assets = [
+        asset
+        for asset in sorted(asset_dir.rglob("*"))
+        if asset.is_file() and asset.name != ".gitkeep"
+    ]
+    relative_assets = {asset.relative_to(skill_dir).as_posix() for asset in assets}
+    if relative_assets != PLAN_ASSET_PILOT_APPROVED_ASSETS:
+        expected = ", ".join(sorted(PLAN_ASSET_PILOT_APPROVED_ASSETS))
+        actual = ", ".join(sorted(relative_assets)) or "none"
+        errors.append(
+            f"{path}: plan asset pilot must ship exactly approved assets: expected {expected}; found {actual}"
+        )
+
+    section = _extract_markdown_section(body, "Resource map")
+    if section is None:
+        return errors
+
+    for relative_resource in sorted(relative_assets & PLAN_ASSET_PILOT_APPROVED_ASSETS):
+        entry = _resource_entry_text(section, relative_resource)
+        if entry is None:
+            continue
+        expected_prefix = f"- COPY `{relative_resource}`"
+        if not entry.startswith(expected_prefix):
+            errors.append(
+                f"{path}: Resource map entry for '{relative_resource}' must use literal COPY"
+            )
+        if not RESOURCE_LOAD_CONDITION_PATTERN.search(entry):
+            errors.append(
+                f"{path}: Resource map entry for '{relative_resource}' must include a trigger condition"
+            )
+        if not PLAN_ASSET_FIELDS_TO_FILL_PATTERN.search(entry):
+            errors.append(
+                f"{path}: Resource map entry for '{relative_resource}' must name fields or structures to fill"
+            )
+    if "Do not emit unfilled placeholders" not in section:
+        errors.append(
+            f"{path}: Resource map must instruct agents not to emit unfilled placeholders"
+        )
+
+    for asset in assets:
+        relative_resource = asset.relative_to(skill_dir).as_posix()
+        if relative_resource not in PLAN_ASSET_PILOT_APPROVED_ASSETS:
+            continue
+        text = asset.read_text(encoding="utf-8")
+        errors.extend(_validate_plan_asset_file(asset, relative_resource, text))
+
+    skeleton = asset_dir / "plan-skeleton.md"
+    if skeleton.is_file():
+        skeleton_entry = _resource_entry_text(section, "assets/plan-skeleton.md")
+        if skeleton_entry is not None:
+            expected_sections = _expected_sections_from_resource_entry(skeleton_entry)
+            actual_sections = _markdown_h2_sections(
+                skeleton.read_text(encoding="utf-8")
+            )
+            if expected_sections and set(expected_sections) != set(actual_sections):
+                errors.append(
+                    f"{path}: plan-skeleton section set does not match SKILL.md expected sections"
+                )
+
+    return errors
 
 
 def _references_packaged_resource(line: str, skill_dir: Path) -> bool:
@@ -598,6 +808,13 @@ def validate_skill_file(path: Path, schema: dict) -> tuple[list[str], str | None
     errors.extend(_validate_resource_map(path, body))
     errors.extend(_validate_published_self_containment(path, metadata, body))
     errors.extend(validate_readability_contract(path, metadata, body))
+    errors.extend(
+        _validate_plan_asset_pilot(
+            path,
+            body,
+            name.strip() if isinstance(name, str) else None,
+        )
+    )
 
     return errors, name.strip() if isinstance(name, str) and name.strip() else None
 
