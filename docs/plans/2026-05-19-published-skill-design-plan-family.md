@@ -67,20 +67,20 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Plan Family Audit And Evidence Scaffold
-- Current milestone state: review-requested
-- Last reviewed milestone: none
-- Review status: plan-review-r1 approved with no material findings
-- Remaining in-scope implementation milestones: M1, M2, M3
-- Next stage: code-review for M1
+- Current milestone: M2. Plan Family Validator And Fixture Support
+- Current milestone state: planned
+- Last reviewed milestone: M1. Plan Family Audit And Evidence Scaffold
+- Review status: code-review-m1-r1 clean-with-notes; no material findings
+- Remaining in-scope implementation milestones: M2, M3
+- Next stage: implement M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 evidence is implemented and ready for code-review, but M1 review, M2, M3, explain-change, verify, and PR handoff remain open.
+- Reason final closeout is or is not ready: M1 is closed after clean code-review, but M2, M3, explain-change, verify, and PR handoff remain open.
 
 ## Milestones
 
 ### M1. Plan Family Audit And Evidence Scaffold
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: create the change-local evidence structure for `plan` and `plan-review` before changing validators or skill bodies.
 - Requirements: R27-R31, R34-R35, R36 audit/preservation/parity discipline.
 - Files/components likely touched:
@@ -243,8 +243,7 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 - [x] Plan-review completed.
 - [x] Test-spec amendment completed.
 - [x] Test-spec amendment approved.
-- [x] M1 implemented.
-- [ ] M1 reviewed.
+- [x] M1 implemented and reviewed.
 - [ ] M2 implemented and reviewed.
 - [ ] M3 implemented and reviewed.
 - [ ] Explain-change recorded.
@@ -283,6 +282,7 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 - 2026-05-19 M1 validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-published-skill-design-plan-family.md --path docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-plan-family/skill-audit.md --path docs/changes/2026-05-19-published-skill-design-plan-family/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-plan-family/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-plan-family/behavior-parity.md --path docs/plan.md` passed.
 - 2026-05-19 M1 validation: `git diff --check -- docs/plans/2026-05-19-published-skill-design-plan-family.md docs/plan.md docs/changes/2026-05-19-published-skill-design-plan-family` passed.
 - 2026-05-19 M1 selected CI: `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-published-skill-design-plan-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-plan-family/skill-audit.md --path docs/changes/2026-05-19-published-skill-design-plan-family/routing-coverage.md --path docs/changes/2026-05-19-published-skill-design-plan-family/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-plan-family/behavior-parity.md` passed selected artifact-lifecycle, change-metadata regression, and change-metadata checks.
+- 2026-05-19 code-review M1: `code-review-m1-r1` clean-with-notes; no material findings; M1 closed and next stage is `implement M2`.
 
 ## Outcome and retrospective
 
@@ -290,6 +290,6 @@ This plan keeps the rollout incremental. The planning pair owns active execution
 
 ## Readiness
 
-Ready for `code-review` for M1.
+Ready for `implement M2`.
 
-Remaining completion gates: M1 code-review, M2 and M3 implementation and code-review, explain-change, verify, PR handoff, hosted CI observation if a PR is opened, merge, and final lifecycle closeout when no downstream gate remains.
+Remaining completion gates: M2 and M3 implementation and code-review, explain-change, verify, PR handoff, hosted CI observation if a PR is opened, merge, and final lifecycle closeout when no downstream gate remains.
