@@ -62,13 +62,13 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 ## Current Handoff Summary
 
 - Current milestone: M3. Spec And Spec-Review Skill Rewrite
-- Current milestone state: review-requested
-- Last reviewed milestone: M2. Spec Family Validator And Fixture Support
-- Review status: code-review-m2-r2 clean-with-notes; no material findings
-- Remaining in-scope implementation milestones: M3 code-review
-- Next stage: code-review for M3
+- Current milestone state: closed
+- Last reviewed milestone: M3. Spec And Spec-Review Skill Rewrite
+- Review status: code-review-m3-r1 clean-with-notes; no material findings
+- Remaining in-scope implementation milestones: none
+- Next stage: explain-change
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 code-review, explain-change, verify, and PR handoff remain.
+- Reason final closeout is or is not ready: explain-change, verify, and PR handoff remain.
 
 ## Milestones
 
@@ -148,7 +148,7 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 
 ### M3. Spec And Spec-Review Skill Rewrite
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: update only `spec` and `spec-review` to the published-skill design contract.
 - Requirements: R27-R35 and M1 preservation/parity evidence.
 - Files/components likely touched:
@@ -226,7 +226,7 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 - [x] M1 implemented and reviewed.
 - [x] M2 implemented and reviewed.
 - [x] M3 implementation started.
-- [x] M3 implemented; code-review pending.
+- [x] M3 implemented and reviewed.
 - [ ] Explain-change recorded.
 - [ ] Final verify passed.
 - [ ] PR handoff completed.
@@ -245,6 +245,7 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 - 2026-05-19: close M2 after clean rerun code-review. Rationale: the deterministic spec-family evidence checks satisfy T22, and the prior handoff-state finding is resolved.
 - 2026-05-19: begin M3 after M2 clean rerun review. Rationale: M3 is the only remaining in-scope implementation milestone and owns the `spec` / `spec-review` skill rewrite.
 - 2026-05-19: keep M3 token cost within the inherited +10% hard cap. Rationale: `spec` moved from 2288 to 2514 estimated tokens (+9.9%) and `spec-review` moved from 1992 to 2183 (+9.6%) after compacting duplicate prose and skeletons.
+- 2026-05-19: close M3 after clean code-review. Rationale: `code-review-m3-r1` found no material findings, and all in-scope implementation milestones are closed.
 
 ## Surprises and discoveries
 
@@ -316,6 +317,12 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 - 2026-05-19 M3 handoff sync validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-spec-family/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-spec-family/behavior-parity.md` passed.
 - 2026-05-19 M3 handoff sync validation: `git diff --check -- skills/spec/SKILL.md skills/spec-review/SKILL.md scripts/test-skill-validator.py specs/skill-contract.test.md docs/plans/2026-05-19-published-skill-design-spec-family.md docs/plan.md docs/changes/2026-05-19-published-skill-design-spec-family` passed.
 - 2026-05-19 M3 handoff sync selected CI: `bash scripts/ci.sh --mode explicit --path skills/spec/SKILL.md --path skills/spec-review/SKILL.md --path scripts/test-skill-validator.py --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-spec-family/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-spec-family/behavior-parity.md` passed selected skills.validate, skills.regression, skills.generation_regression, skills.drift, adapters.drift, artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate checks.
+- 2026-05-19 M3 code-review: `code-review-m3-r1` returned clean-with-notes with no material findings; M3 closed.
+- 2026-05-19 M3 code-review validation: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-19-published-skill-design-spec-family` passed.
+- 2026-05-19 M3 code-review validation: `python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml` passed.
+- 2026-05-19 M3 code-review validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-spec-family/review-log.md --path docs/changes/2026-05-19-published-skill-design-spec-family/reviews/code-review-m3-r1.md` passed.
+- 2026-05-19 M3 code-review validation: `git diff --check -- docs/plans/2026-05-19-published-skill-design-spec-family.md docs/plan.md docs/changes/2026-05-19-published-skill-design-spec-family` passed.
+- 2026-05-19 M3 code-review selected CI: `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-spec-family/review-log.md --path docs/changes/2026-05-19-published-skill-design-spec-family/reviews/code-review-m3-r1.md` passed selected review_artifacts.validate, artifact_lifecycle.validate, change_metadata.regression, and change_metadata.validate checks.
 
 ## Outcome and retrospective
 
@@ -324,11 +331,10 @@ This plan deliberately keeps the next rollout narrow. The merged pilot proved th
 ## Readiness
 
 - See `Current Handoff Summary`.
-- This plan is ready for `code-review` of M3, not final closeout or PR readiness.
+- This plan is ready for `explain-change`, not final closeout or PR readiness.
 
 ## Remaining completion gates
 
-- M3 code-review
 - `explain-change`
 - `verify`
 - `pr`

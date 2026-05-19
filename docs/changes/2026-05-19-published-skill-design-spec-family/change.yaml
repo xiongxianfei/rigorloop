@@ -163,6 +163,24 @@ validation:
     result: pass_after_m3_handoff_sync
   - command: bash scripts/ci.sh --mode explicit --path skills/spec/SKILL.md --path skills/spec-review/SKILL.md --path scripts/test-skill-validator.py --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-spec-family/behavior-preservation.md --path docs/changes/2026-05-19-published-skill-design-spec-family/behavior-parity.md
     result: pass_after_m3_handoff_sync
+  - command: code-review M3
+    result: clean_with_notes_recorded_m3_closed
+  - command: python scripts/test-skill-validator.py
+    result: pass_during_code_review_m3_r1
+  - command: python scripts/validate-skills.py
+    result: pass_during_code_review_m3_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml
+    result: pass_during_code_review_m3_r1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-19-published-skill-design-spec-family
+    result: pass_after_code_review_m3_r1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml
+    result: pass_after_code_review_m3_r1
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-spec-family/review-log.md --path docs/changes/2026-05-19-published-skill-design-spec-family/reviews/code-review-m3-r1.md
+    result: pass_after_code_review_m3_r1
+  - command: git diff --check -- docs/plans/2026-05-19-published-skill-design-spec-family.md docs/plan.md docs/changes/2026-05-19-published-skill-design-spec-family
+    result: pass_after_code_review_m3_r1
+  - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml --path docs/changes/2026-05-19-published-skill-design-spec-family/review-log.md --path docs/changes/2026-05-19-published-skill-design-spec-family/reviews/code-review-m3-r1.md
+    result: pass_after_code_review_m3_r1
 changed_files:
   - skills/spec/SKILL.md
   - skills/spec-review/SKILL.md
@@ -176,6 +194,7 @@ changed_files:
   - docs/changes/2026-05-19-published-skill-design-spec-family/reviews/code-review-m1-r1.md
   - docs/changes/2026-05-19-published-skill-design-spec-family/reviews/code-review-m2-r1.md
   - docs/changes/2026-05-19-published-skill-design-spec-family/reviews/code-review-m2-r2.md
+  - docs/changes/2026-05-19-published-skill-design-spec-family/reviews/code-review-m3-r1.md
   - docs/changes/2026-05-19-published-skill-design-spec-family/skill-audit.md
   - docs/changes/2026-05-19-published-skill-design-spec-family/routing-coverage.md
   - docs/changes/2026-05-19-published-skill-design-spec-family/behavior-preservation.md
@@ -184,6 +203,6 @@ changed_files:
   - docs/plans/2026-05-19-rigorloop-published-skill-design-contract.md
   - docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml
 review:
-  status: review-requested
+  status: clean-with-notes
   unresolved_items: 0
-  location: docs/plans/2026-05-19-published-skill-design-spec-family.md
+  location: docs/changes/2026-05-19-published-skill-design-spec-family/reviews/code-review-m3-r1.md
