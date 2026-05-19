@@ -160,6 +160,8 @@ validation:
     result: pass_after_m3_handoff
   - command: git diff --check --
     result: pass_after_m3_handoff
+  - command: code-review M3
+    result: changes_requested_srsc_m3_cr1
 changed_files:
   - docs/proposals/2026-05-18-skill-readability-self-containment.md
   - specs/skill-readability-contract.md
@@ -190,4 +192,5 @@ changed_files:
   - docs/changes/2026-05-18-skill-readability-self-containment/reviews/plan-review-r3.md
   - docs/changes/2026-05-18-skill-readability-self-containment/reviews/code-review-m1-r1.md
   - docs/changes/2026-05-18-skill-readability-self-containment/reviews/code-review-m2-r1.md
+  - docs/changes/2026-05-18-skill-readability-self-containment/reviews/code-review-m3-r1.md
   - docs/changes/2026-05-18-skill-readability-self-containment/review-resolution.md
