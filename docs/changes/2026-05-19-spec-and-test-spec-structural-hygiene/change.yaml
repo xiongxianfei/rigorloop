@@ -91,6 +91,8 @@ validation:
     result: pass_after_implementation
   - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene
     result: pass_after_implementation
+  - command: code-review M1 R1
+    result: changes_requested_CR-M1-001
 changed_files:
   - docs/proposals/2026-05-19-spec-and-test-spec-structural-hygiene.md
   - specs/skill-contract.md
@@ -103,6 +105,7 @@ changed_files:
   - docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/proposal-review-r1.md
   - docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/spec-review-r1.md
   - docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/plan-review-r1.md
+  - docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/code-review-m1-r1.md
 review:
-  status: approved
-  unresolved_items: 0
+  status: changes_requested
+  unresolved_items: 1
