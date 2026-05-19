@@ -1,10 +1,10 @@
 # RigorLoop Published Skill Design Contract Execution Plan
 
-- Status: active
+- Status: done
 - Owner: maintainers
 - Start date: 2026-05-19
 - Last updated: 2026-05-19
-- Related issue or PR: PR #71
+- Related issue or PR: PR #71, merged 2026-05-19, merge commit `0f85ce5b27871313a9ca6fef11a676f89a720fe3`
 - Related proposal: [RigorLoop Published Skill Design Contract](../proposals/2026-05-19-rigorloop-published-skill-design-contract.md)
 - Related spec: [Skill Contract](../../specs/skill-contract.md)
 - Change root: [docs/changes/2026-05-19-rigorloop-published-skill-design-contract](../changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml)
@@ -59,11 +59,11 @@ Implement the approved published-skill design contract as an audit-first, pilot-
 - Current milestone: M3. Pilot skill rewrite and generated-output validation
 - Current milestone state: closed
 - Last reviewed milestone: M3. Pilot skill rewrite and generated-output validation
-- Review status: PR #71 CI selector fix pushed; hosted CI rerun pending
+- Review status: PR #71 merged after hosted CI passed
 - Remaining in-scope implementation milestones: none
-- Next stage: PR review
-- Final closeout readiness: PR opened; hosted CI rerun and human review pending
-- Reason final closeout is or is not ready: all in-scope implementation milestones are closed, review-resolution has no open findings, explain-change is recorded, final local verification passed, and PR #71 is open. A PR-stage selector fix was pushed after hosted CI initially failed on change-local evidence routing; hosted CI rerun and human review are pending external PR-review outcomes.
+- Next stage: none; lifecycle complete
+- Final closeout readiness: complete
+- Reason final closeout is or is not ready: all in-scope implementation milestones are closed, review-resolution has no open findings, explain-change is recorded, final local verification passed, PR #71 opened, hosted CI passed after the selector routing fix, and PR #71 merged into `main`.
 
 ## Milestones
 
@@ -228,6 +228,7 @@ Implement the approved published-skill design contract as an audit-first, pilot-
 - 2026-05-19: final local verify passed selected skill, generated-skill, adapter archive, review closeout, metadata, lifecycle, whitespace, and selected CI checks; branch-ready evidence is recorded; next stage is `pr`.
 - 2026-05-19: PR #71 opened for review: `https://github.com/xiongxianfei/rigorloop/pull/71`.
 - 2026-05-19: PR #71 hosted CI failed before running checks because PR-mode validation selector blocked change-local pilot evidence files (`skill-audit.md`, `routing-coverage.md`, `behavior-preservation.md`, and `behavior-parity.md`) as unsupported. Classified those evidence files as change-local lifecycle artifacts, added selector regression coverage, and pushed a rerun fix.
+- 2026-05-19: PR #71 hosted CI passed and PR #71 merged into `main` at `0f85ce5b27871313a9ca6fef11a676f89a720fe3`; pilot lifecycle is complete.
 
 ## Decision log
 
@@ -350,7 +351,7 @@ Implement the approved published-skill design contract as an audit-first, pilot-
 ## Readiness
 
 - See `Current Handoff Summary`.
-- PR #71 is open for review. A selector fix for the initial hosted CI failure has been pushed; hosted CI rerun and human review are pending.
+- PR #71 merged. The pilot lifecycle is complete.
 
 ## Risks and follow-ups
 
