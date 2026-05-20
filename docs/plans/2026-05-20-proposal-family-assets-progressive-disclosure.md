@@ -54,13 +54,13 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 ## Current Handoff Summary
 
 - Current milestone: M3. Proposal-Review Structural Assets
-- Current milestone state: review-requested
-- Last reviewed milestone: M2. Proposal Skeleton Asset
-- Review status: PFA-M3-CR1 resolved; awaiting code-review M3 rerun
-- Remaining in-scope implementation milestones: M3, M4
-- Next stage: code-review M3 rerun
+- Current milestone state: closed
+- Last reviewed milestone: M3. Proposal-Review Structural Assets
+- Review status: code-review M3 R2 clean-with-notes; no material findings
+- Remaining in-scope implementation milestones: M4
+- Next stage: implement M4
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 requires code-review rerun, M4 has not run, and final explain-change, verify, and PR handoff evidence do not exist.
+- Reason final closeout is or is not ready: M4 has not run, and final explain-change, verify, and PR handoff evidence do not exist.
 
 ## Milestones
 
@@ -164,7 +164,7 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 
 ### M3. Proposal-Review Structural Assets
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Extract narrow `proposal-review` result and material-finding structures into assets without moving review judgment or review policy out of `SKILL.md`.
 - Requirements: PFA-R1-PFA-R6, PFA-R10-PFA-R13, PFA-R23-PFA-R39, PFA-R51-PFA-R52
 - Files/components likely touched:
@@ -206,7 +206,7 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
   - decision log updated if needed
   - validation notes updated
   - milestone committed
-  - result: `PFA-M3-CR1` resolved; awaiting code-review M3 rerun
+  - result: closed by code-review M3 R2 after `PFA-M3-CR1` resolution
 - Risks:
   - Review-class asset field labels could allow hidden policy.
   - `SKILL.md` could lose review judgment during skeleton compression.
@@ -315,6 +315,7 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 - 2026-05-20: M3 extracted `assets/review-result-skeleton.md` and `assets/material-finding.md`, updated `skills/proposal-review/SKILL.md` resource-map and compact output guidance, recorded preservation evidence, and moved to `review-requested`.
 - 2026-05-20: code-review M3 R1 recorded `PFA-M3-CR1`; M3 moved to `resolution-needed`.
 - 2026-05-20: Accepted and resolved `PFA-M3-CR1` by restoring the pinned `## Result` heading and literal `Skill` field, adding direct validator coverage, and returning M3 to `review-requested` for code-review rerun.
+- 2026-05-20: code-review M3 R2 returned clean-with-notes; M3 closed and next stage is implement M4.
 
 ## Decision log
 
@@ -395,6 +396,11 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
   - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure` - pass, reviews=8, findings=6, log_entries=8, resolution_entries=6
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-20-proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.test.md --path docs/plans/2026-05-20-proposal-family-assets-progressive-disclosure.md --path docs/plan.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/baseline.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/behavior-preservation.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-log.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-resolution.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r2.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/spec-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/plan-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r2.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m2-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m3-r1.md` - pass, validated 3 artifact files
   - `git diff --check --` - pass
+- 2026-05-20: code-review M3 R2 recording validation passed:
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure` - pass, reviews=9, findings=6, log_entries=9, resolution_entries=6
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml` - pass
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-20-proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.test.md --path docs/plans/2026-05-20-proposal-family-assets-progressive-disclosure.md --path docs/plan.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/baseline.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/behavior-preservation.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-log.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-resolution.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r2.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/spec-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/plan-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r2.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m2-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m3-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m3-r2.md` - pass, validated 3 artifact files
+  - `git diff --check --` - pass
 
 ## Outcome and retrospective
 
@@ -403,4 +409,4 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for code-review M3 rerun. Final closeout remains blocked until M3 re-review, M4, and downstream gates close.
+- Ready for implement M4. Final closeout remains blocked until M4 and downstream gates close.
