@@ -111,7 +111,8 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
   Fill: spec title, required-section structures, examples, requirements, acceptance criteria, next artifacts, follow-on artifacts, and readiness.
   Do not emit unfilled placeholders.
 - COPY `assets/requirement-row.md` when adding each normative requirement.
-  Fill: requirement ID and testable statement.
+  Fill: requirement ID and full requirement statement.
+  Use the requirement modal guidance in this skill when writing the statement.
   Do not emit unfilled placeholders.
 - COPY `assets/acceptance-criterion-row.md` when adding each acceptance criterion.
   Fill: criterion ID and observable outcome.
