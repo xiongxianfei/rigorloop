@@ -48,3 +48,8 @@ M2 tightened the `spec` repeated-substructure baseline wording so the
 requirement row matches the existing output skeleton field set: requirement ID
 and statement. Examples and edge cases remain first-class required sections in
 the full skeleton; they are not separate per-requirement row fields.
+
+The requirement statement field preserves modal variants owned by
+`skills/spec/SKILL.md`, including `MUST`, `MUST NOT`, and
+`SHOULD ... because ...`. Modal guidance remains authoritative in `SKILL.md`;
+`assets/requirement-row.md` is only the structural row template.

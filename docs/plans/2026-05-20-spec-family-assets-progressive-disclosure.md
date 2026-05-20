@@ -73,11 +73,11 @@ The work touches canonical skill source under `skills/`, validator and test scri
 ## Current Handoff Summary
 
 - Current milestone: M2
-- Current milestone state: resolution-needed
-- Last reviewed milestone: M1
-- Review status: code-review M2 R1 changes-requested; `SFA-M2-CR1` open
+- Current milestone state: review-requested
+- Last reviewed milestone: M2
+- Review status: `SFA-M2-CR1` accepted and resolved; M2 fix ready for code-review
 - Remaining in-scope implementation milestones: M2, M3, M4, M5
-- Next stage: review-resolution / implement M2 fix
+- Next stage: code-review M2 fix
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation milestones, code reviews, generated-output proof, explain-change, verify, and PR handoff remain incomplete.
 
@@ -134,7 +134,7 @@ The work touches canonical skill source under `skills/`, validator and test scri
   - `python scripts/test-skill-validator.py`
   - M2 preservation and behavior-parity evidence inspection
   - `git diff --check -- .`
-- Result: changes requested; `SFA-M2-CR1` requires review-resolution before M2 can close.
+- Result: M2 fix is review-requested after resolving `SFA-M2-CR1`; code-review must pass before M2 can close.
 - Risks:
   - Full skeleton asset hides too much contract surface; fall back to inline skeleton for `spec` if code review finds that risk.
 - Rollback:
@@ -277,6 +277,7 @@ Final closeout:
 - 2026-05-20: M2 implementation started for `spec` assets.
 - 2026-05-20: M2 added the four approved `spec` assets, updated `skills/spec/SKILL.md`, recorded preservation/token/cold-read evidence, and moved to review-requested.
 - 2026-05-20: code-review M2 R1 requested changes because `assets/requirement-row.md` narrows requirement rows to `MUST`.
+- 2026-05-20: accepted and resolved `SFA-M2-CR1` by changing `assets/requirement-row.md` to preserve the full requirement statement field, updating the `SKILL.md` resource-map entry, and recording modal-preservation evidence; M2 returned to review-requested.
 
 ## Decision log
 
@@ -321,6 +322,14 @@ Final closeout:
   - `git diff --check -- skills/spec docs/changes/2026-05-20-spec-family-assets-progressive-disclosure`
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/baseline.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/behavior-preservation.md --path docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md --path docs/plan.md`
+- M2 review-resolution validation passed:
+  - `python scripts/validate-skills.py skills/spec/SKILL.md`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/validate-skills.py`
+  - `git diff --check -- .`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/review-log.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/review-resolution.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/baseline.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/behavior-preservation.md --path docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md --path docs/plan.md`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-20-spec-family-assets-progressive-disclosure`
 
 ## Outcome and retrospective
 

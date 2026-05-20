@@ -57,7 +57,7 @@ skill structure will be recorded in the milestone that changes that skill.
 | --- | --- |
 | `skills/spec/SKILL.md` | Added a `Resource map`, kept rules, stop/status-settlement boundaries, closed enums, routing, claim boundaries, and validation guidance in `SKILL.md`, and replaced the full inline skeleton with compact output guidance that points to `assets/spec-skeleton.md`. |
 | `skills/spec/assets/spec-skeleton.md` | Added the full spec output skeleton with the same required section set as the PR #79 baseline. |
-| `skills/spec/assets/requirement-row.md` | Added the repeated requirement row structure matching the existing output skeleton requirement format. |
+| `skills/spec/assets/requirement-row.md` | Added the repeated requirement row structure while preserving the full requirement statement field and leaving modal guidance in `SKILL.md`. |
 | `skills/spec/assets/acceptance-criterion-row.md` | Added the repeated acceptance-criterion row structure matching the existing output skeleton acceptance-criterion format. |
 | `skills/spec/assets/decision-log-row.md` | Added the capped structural decision-log row asset recorded in the approved plan. |
 | `docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/baseline.md` | Refined the `spec` repeated-substructure wording so examples and edge cases remain required full-skeleton sections rather than per-requirement row fields. |
@@ -67,7 +67,7 @@ skill structure will be recorded in the milestone that changes that skill.
 | Skill | Source content | Existing location | Asset destination | Preservation proof |
 | --- | --- | --- | --- | --- |
 | `spec` | Full spec output skeleton section set | `skills/spec/SKILL.md`, previous `## Output skeleton` | `skills/spec/assets/spec-skeleton.md` | Same 21 section headings are present: `Status`, `Related proposal`, `Goal and context`, `Glossary`, `Examples first`, `Requirements`, `Inputs and outputs`, `State and invariants`, `Error and boundary behavior`, `Compatibility and migration`, `Observability`, `Security and privacy`, `Accessibility and UX`, `Performance expectations`, `Edge cases`, `Non-goals`, `Acceptance criteria`, `Open questions`, `Next artifacts`, `Follow-on artifacts`, `Readiness`. |
-| `spec` | Requirement row fields | Previous output skeleton `Requirements` row and requirement-format guidance | `skills/spec/assets/requirement-row.md` | Preserves requirement ID plus testable statement shape: `<requirement ID>. The system MUST <testable behavior>.` Requirement rules and testability obligation remain in `SKILL.md`. |
+| `spec` | Requirement row fields | Previous output skeleton `Requirements` row and requirement-format guidance | `skills/spec/assets/requirement-row.md` | Preserves requirement ID plus full requirement statement field: `<requirement ID>. <requirement statement>.` Requirement modal guidance, rules, and testability obligation remain in `SKILL.md`. |
 | `spec` | Acceptance-criterion row fields | Previous output skeleton `Acceptance criteria` row | `skills/spec/assets/acceptance-criterion-row.md` | Preserves acceptance-criterion ID plus observable outcome shape: `<acceptance criterion ID>. <observable acceptance outcome>.` |
 | `spec` | Decision-log row fields | Approved plan per-asset justification and proposal decision-log pattern | `skills/spec/assets/decision-log-row.md` | Preserves structural row fields: date, decision, reason, alternatives rejected. |
 
@@ -80,6 +80,23 @@ skill structure will be recorded in the milestone that changes that skill.
 | Rules and stop conditions | Upstream status settlement blockers, artifact placement, authoring rules, evidence guidance, full-file-read guidance, workflow handoff behavior, and claim boundaries remain in `SKILL.md`. |
 | Output obligation | `SKILL.md` still exposes an `Output skeleton` section and `Expected output`; the full skeleton structure is copied from `assets/spec-skeleton.md` rather than duplicated inline. |
 | Placeholder behavior | Assets contain visible placeholders as templates; M2 does not create a final representative output artifact, so no final output placeholder leak is introduced in this slice. |
+
+#### Requirement modal preservation
+
+The asset `assets/requirement-row.md` now uses:
+
+```text
+<requirement ID>. <requirement statement>.
+```
+
+This preserves all representative requirement statement forms owned by
+`skills/spec/SKILL.md`:
+
+- `R1. The system MUST ...`
+- `R2. The API MUST NOT ...`
+- `R3. The UI SHOULD ... because ...`
+
+No modal value is added, removed, or made preferred by the asset.
 
 ### Asset contract check
 

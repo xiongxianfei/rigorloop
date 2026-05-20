@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -14,9 +14,9 @@ Review closeout: code-review-m2-r1
 Review closeout: code-review-m2-r2
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `plan-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`
-- Findings resolved: 6
-- Unresolved findings: 1
-- Final result: Proposal-review R1 requested changes for proof route, per-skill skeleton boundary, generated-output proof boundaries, stricter review-class asset restrictions, and change-local baseline ownership. The proposal was revised to add those controls before downstream plan reliance. Proposal-review R2 approved the proposal with no material findings. Spec-review R1 approved the spec with no material findings. Plan-review R1 approved the execution plan with no material findings. Code-review M1 R1 requested changes for missing generated-output presence coverage in the validator foundation; the finding was accepted and resolved with a reusable generated-output presence helper plus positive and negative tests. Code-review M1 R2 found no blocking or required-change findings. Code-review M2 R1 requested changes for requirement modal parity in `assets/requirement-row.md`. Code-review M2 R2 was blocked because no new M2 fix surface exists while `SFA-M2-CR1` remains open.
+- Findings resolved: 7
+- Unresolved findings: 0
+- Final result: Proposal-review R1 requested changes for proof route, per-skill skeleton boundary, generated-output proof boundaries, stricter review-class asset restrictions, and change-local baseline ownership. The proposal was revised to add those controls before downstream plan reliance. Proposal-review R2 approved the proposal with no material findings. Spec-review R1 approved the spec with no material findings. Plan-review R1 approved the execution plan with no material findings. Code-review M1 R1 requested changes for missing generated-output presence coverage in the validator foundation; the finding was accepted and resolved with a reusable generated-output presence helper plus positive and negative tests. Code-review M1 R2 found no blocking or required-change findings. Code-review M2 R1 requested changes for requirement modal parity in `assets/requirement-row.md`; the finding was accepted and resolved by making the requirement row asset preserve the full requirement statement field while keeping modal guidance in `SKILL.md`. Code-review M2 R2 was blocked because no new M2 fix surface existed at that time.
 
 ## Resolution Overview
 
@@ -28,7 +28,7 @@ Review closeout: code-review-m2-r2
 | SFA-PR4 | accepted | resolved | Added a review-class asset boundary and acceptance criterion limiting `spec-review` assets to structure, labels, placeholders, and short fill hints. |
 | SFA-PR5 | accepted | resolved | Added a change-local baseline summary artifact requirement that maps PR #79 structures to planned assets and preserved `SKILL.md` rules. |
 | SFA-M1-CR1 | accepted | resolved | Added deterministic generated-output presence coverage without moving full archive generation out of M5. |
-| SFA-M2-CR1 | needs-decision | open | Code-review M2 R1 found that `assets/requirement-row.md` narrows requirement rows to `MUST`, while `SKILL.md` still supports `MUST`, `MUST NOT`, and `SHOULD`. |
+| SFA-M2-CR1 | accepted | resolved | Updated `assets/requirement-row.md` to preserve the full requirement statement field and keep modal guidance in `SKILL.md`. |
 
 ## Resolution Entries
 
@@ -129,14 +129,14 @@ No material findings.
 #### SFA-M2-CR1 - `requirement-row.md` narrows the allowed requirement modal verbs
 
 Finding ID: SFA-M2-CR1
-Disposition: needs-decision
-Status: open
-Decision owner: implementation owner
-Decision needed: Accept the finding and make the requirement row asset preserve the whole requirement statement without narrowing modal verbs, or revise the approved spec/plan if M2 intentionally changes requirement-row behavior.
-Owning stage: review-resolution
-Stop state: M2 remains `resolution-needed`; M3 must not begin until this finding is dispositioned and resolved or the approved artifacts are revised.
-Rationale: The finding is actionable, but implementation has not yet recorded an accepted disposition or fix.
-Validation target: Review-resolution records a final disposition and, if accepted, validation proves requirement modal parity is restored in the asset and evidence.
+Disposition: accepted
+Status: resolved
+Owner: implementer
+Owning stage: implement M2 fix
+Chosen action: Updated `skills/spec/assets/requirement-row.md` from `<requirement ID>. The system MUST <testable behavior>.` to `<requirement ID>. <requirement statement>.` Updated the `skills/spec/SKILL.md` resource-map entry to fill the full requirement statement and use modal guidance from `SKILL.md`. Updated baseline and behavior-preservation evidence to record that the asset preserves requirement ID and full requirement statement fields while `SKILL.md` remains authoritative for `MUST`, `MUST NOT`, and `SHOULD ... because ...`.
+Rationale: `SFA-M2-CR1` identified a behavior-preservation defect in the asset extraction. The fix keeps the asset structural and avoids duplicating or narrowing modal guidance.
+Validation target: M2 validation proves requirement modal parity is restored in the asset and evidence.
+Validation evidence: `python scripts/validate-skills.py skills/spec/SKILL.md`, `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, `git diff --check -- .`, change metadata validation, explicit-path artifact lifecycle validation, and review artifact closeout validation passed after the fix.
 
 ### code-review-m2-r2
 

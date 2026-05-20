@@ -3,4 +3,4 @@
 <!-- Template status: normative -->
 <!-- Maintained alongside: skills/spec/SKILL.md -->
 
-<requirement ID>. The system MUST <testable behavior>.
+<requirement ID>. <requirement statement>.

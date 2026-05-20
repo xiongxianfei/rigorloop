@@ -38,6 +38,7 @@ tests:
   - Review artifact validation for code-review M1 R1 evidence.
   - Review artifact validation for code-review M2 R1 evidence.
   - Review artifact validation for blocked code-review M2 R2 evidence.
+  - Review artifact closeout validation after resolving SFA-M2-CR1.
   - Review artifact closeout validation for recorded proposal-review findings.
   - Change metadata validation for this change-local root.
   - Whitespace validation for touched proposal and review artifacts.
@@ -168,6 +169,20 @@ validation:
     result: pass_validated_4_lifecycle_artifacts_after_code_review_m2_r2
   - command: git diff --check -- docs/changes/2026-05-20-spec-family-assets-progressive-disclosure docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md docs/plan.md
     result: pass_after_code_review_m2_r2
+  - command: python scripts/validate-skills.py skills/spec/SKILL.md
+    result: pass_validated_1_spec_skill_after_sfa_m2_cr1_fix
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_sfa_m2_cr1_fix
+  - command: python scripts/test-skill-validator.py
+    result: pass_141_tests_after_sfa_m2_cr1_fix
+  - command: git diff --check -- .
+    result: pass_after_sfa_m2_cr1_fix
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml
+    result: pass_valid_change_metadata_after_sfa_m2_cr1_fix
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/review-log.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/review-resolution.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/baseline.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/behavior-preservation.md --path docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md --path docs/plan.md
+    result: pass_validated_4_lifecycle_artifacts_after_sfa_m2_cr1_fix
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-20-spec-family-assets-progressive-disclosure
+    result: pass_reviews_8_findings_7_log_entries_8_resolution_entries_7_after_sfa_m2_cr1_fix
 changed_files:
   - docs/proposals/2026-05-20-spec-family-assets-progressive-disclosure.md
   - specs/spec-family-assets-progressive-disclosure.md
@@ -197,4 +212,4 @@ changed_files:
   - tests/fixtures/skills/published-design/generated-output-presence/
 review:
   status: open
-  unresolved_items: 1
+  unresolved_items: 0
