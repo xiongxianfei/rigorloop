@@ -47,9 +47,32 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
 
 ## Review dimensions
 
-Evaluate each with `pass`, `concern`, or `block`: requirement clarity, normative language, completeness, testability, examples, compatibility, observability, security/privacy, non-goals, and acceptance criteria.
+Evaluate each review dimension with `<review dimension verdict>`:
+
+| Review dimension | Review focus |
+| --- | --- |
+| requirement clarity | Whether the required behavior is precise enough for downstream work. |
+| normative language | Whether requirements use clear normative language. |
+| completeness | Whether required behavior and boundaries are complete enough for the change. |
+| testability | Whether requirements can be tested or manually verified. |
+| examples | Whether examples clarify expected behavior and do not hide edge cases. |
+| compatibility | Whether compatibility, migration, rollout, rollback, old-client, and old-data behavior are covered when relevant. |
+| observability | Whether logs, metrics, traces, audit events, or user-visible status are specified when relevant. |
+| security/privacy | Whether auth, authorization, secrets, data exposure, abuse cases, or privacy behavior are covered when relevant. |
+| non-goals | Whether out-of-scope behavior is explicit enough to prevent scope drift. |
+| acceptance criteria | Whether acceptance criteria are observable rather than aspirational. |
 
 Check normal, empty, boundary, error, permission, migration, rollout, rollback, old-client, and old-data behavior when relevant. Acceptance must be observable, not aspirational.
+
+## Closed enums
+
+Review dimension verdict:
+
+```text
+pass
+concern
+block
+```
 
 ## Finding severity
 
