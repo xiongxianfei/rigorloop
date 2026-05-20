@@ -2,7 +2,7 @@
 
 ## Status
 
-- active
+- done
 - Owner: maintainers
 - Start date: 2026-05-20
 - Last updated: 2026-05-20
@@ -74,9 +74,9 @@ Apply a presentation-only readability pass to the three spec-family skills, `spe
 - Last reviewed milestone: M3. Test-Spec Skill Readability And Generated Output Proof
 - Review status: code-review M3 R1 clean-with-notes; no open findings
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: PR handoff remains open.
+- Next stage: done
+- Final closeout readiness: done
+- Reason final closeout is or is not ready: PR #79 merged on 2026-05-20; PR handoff, hosted CI, and human review are complete.
 
 ## Milestones
 
@@ -278,6 +278,7 @@ Apply a presentation-only readability pass to the three spec-family skills, `spe
 - 2026-05-20: code-review M3 R1 completed clean-with-notes; M3 is closed and the next stage is the final closeout sequence starting with explain-change.
 - 2026-05-20: explain-change recorded durable rationale in `docs/changes/2026-05-20-spec-family-readability-pass/explain-change.md`; next stage is verify.
 - 2026-05-20: final local verify passed with a recorded adapter-layout warning; branch is ready for PR handoff and the next stage is pr.
+- 2026-05-20: PR #79 merged; plan closed.
 
 ## Decision log
 
@@ -381,9 +382,9 @@ Apply a presentation-only readability pass to the three spec-family skills, `spe
 
 ## Outcome and retrospective
 
-- Final local verify passed with a recorded adapter-layout warning. The change is branch-ready for PR handoff; PR body/open readiness and hosted CI observation remain downstream.
+- Completed. PR #79 merged on 2026-05-20 after PR handoff, hosted CI, and human review.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `pr`.
+- Done; no downstream plan closeout remains.

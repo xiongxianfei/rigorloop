@@ -2,7 +2,7 @@
 
 ## Status
 
-- active
+- done
 - Owner: maintainers
 - Start date: 2026-05-20
 - Last updated: 2026-05-20
@@ -58,13 +58,13 @@ Normalize `skills/test-spec/SKILL.md` to the published-skill design contract wit
 ## Current Handoff Summary
 
 - Current milestone: final closeout sequence
-- Current milestone state: pending
+- Current milestone state: closed
 - Last reviewed milestone: M3. Test-Spec Skill Normalization
 - Review status: code-review M3 R1 clean-with-notes; no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: hosted CI and human review for PR #77
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation milestones, explain-change, verify, and PR handoff are closed, but hosted CI and human review remain incomplete.
+- Next stage: done
+- Final closeout readiness: done
+- Reason final closeout is or is not ready: PR #77 merged on 2026-05-20; hosted CI and human review are complete.
 
 ## Milestones
 
@@ -249,6 +249,7 @@ Normalize `skills/test-spec/SKILL.md` to the published-skill design contract wit
 - 2026-05-20: Recorded durable explain-change rationale and advanced the handoff to verify.
 - 2026-05-20: Final local verification passed with a documented adapter expanded-tree warning; branch is ready for PR handoff.
 - 2026-05-20: Opened PR #77 for human review.
+- 2026-05-20: PR #77 merged; plan closed.
 
 ## Decision log
 
@@ -290,9 +291,9 @@ Normalize `skills/test-spec/SKILL.md` to the published-skill design contract wit
 
 ## Outcome and retrospective
 
-- Pending completion.
+- Completed. PR #77 merged on 2026-05-20 after hosted CI and human review.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- PR opened as [PR #77](https://github.com/xiongxianfei/rigorloop/pull/77); hosted CI and human review remain pending.
+- PR merged as [PR #77](https://github.com/xiongxianfei/rigorloop/pull/77); no downstream plan closeout remains.

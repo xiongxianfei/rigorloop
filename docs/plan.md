@@ -3,14 +3,15 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-20 Spec-Family Assets Progressive Disclosure](plans/2026-05-20-spec-family-assets-progressive-disclosure.md) - active plan for extending assets-only progressive disclosure to `spec`, `spec-review`, and `test-spec`; proposal and spec are accepted/approved, plan-review is clean, the matching test spec is active, M1 through M6 are closed, explain-change is recorded, final verify passed, PR #80 is open, and the current next stage is hosted CI and human review.
-- [2026-05-20 Test-Spec Contract Normalization](plans/2026-05-20-test-spec-contract-normalization.md) - active plan for proof-first normalization of `skills/test-spec/SKILL.md` to the published-skill design contract; PR #77 is open and the current next stage is hosted CI and human review.
-- [2026-05-20 Spec-Family Readability Pass](plans/2026-05-20-spec-family-readability-pass.md) - active plan for the presentation-only readability pass across `spec`, `spec-review`, and normalized `test-spec`; M1, M2, and M3 are closed, explain-change and final local verify are recorded, and the current next stage is pr.
+- none yet
 
 ## Blocked
 - none yet
 
 ## Done
+- [2026-05-20 Spec-Family Assets Progressive Disclosure](plans/2026-05-20-spec-family-assets-progressive-disclosure.md) - completed execution plan for extending assets-only progressive disclosure to `spec`, `spec-review`, and `test-spec`, adding substantial skill-local assets, validator and generated-output presence coverage, preservation/token/cold-read/generated-output evidence, final verify, opening PR #80, passing hosted CI and human review, and merging PR #80.
+- [2026-05-20 Spec-Family Readability Pass](plans/2026-05-20-spec-family-readability-pass.md) - completed execution plan for the presentation-only readability pass across `spec`, `spec-review`, and normalized `test-spec`, preserving behavior through per-skill evidence, recording explain-change and final verify, opening PR #79, passing hosted CI and human review, and merging PR #79.
+- [2026-05-20 Test-Spec Contract Normalization](plans/2026-05-20-test-spec-contract-normalization.md) - completed execution plan for proof-first normalization of `skills/test-spec/SKILL.md` to the published-skill design contract, adding focused validator proof, behavior preservation and parity evidence, generated adapter archive proof, final verify, opening PR #77, passing hosted CI and human review, and merging PR #77.
 - [2026-05-19 Spec and Test-Spec Structural Hygiene](plans/2026-05-19-spec-and-test-spec-structural-hygiene.md) - completed execution plan for grouping the skill-contract spec and test spec by slice, adding navigation and growth-strategy structure, preserving clause/criterion/test content, resolving `CR-M1-001`, passing final local verify with PR-mode selected CI and broad smoke, and recording PR handoff readiness.
 - [2026-05-19 Assets-First Progressive Disclosure Pilot](plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md) - completed execution plan for the assets-first `plan` packaged-resource pilot, adding the four packaged plan assets, deterministic validator and adapter archive proof, behavior/token/parity evidence, selector routing for change-local evidence, final local verify, PR #75, and passing hosted CI.
 - [2026-05-19 Published Skill Design Plan Family Rollout](plans/2026-05-19-published-skill-design-plan-family.md) - completed execution plan for continuing the published-skill design rollout with the `plan` and `plan-review` pair, preserving plan state ownership and review recording, passing final verify, opening PR #74, passing hosted CI, and merging PR #74.
