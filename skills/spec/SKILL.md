@@ -105,6 +105,12 @@ This discovery order is subordinate to the source-rank rule in `docs/workflows.m
 
 Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index when project-local, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
 
+## Resource map
+
+- COPY `assets/spec-skeleton.md` when creating or fully rewriting a feature spec.
+  Fill: spec title, required-section structures, examples, requirements, acceptance criteria, next artifacts, follow-on artifacts, and readiness.
+  Do not emit unfilled placeholders.
+
 ## Required sections
 
 Include these sections:
@@ -211,54 +217,11 @@ Read the full file when the whole file is the review target, the relevant sectio
 ## Output skeleton
 
 ```md
-# <Spec title>
-## Status
-<spec status>
-## Related proposal
-<proposal, issue, or upstream artifact>
-## Goal and context
-<behavior and rationale>
-## Glossary
-<terms or None>
-## Examples first
-Example E1: <name>
-Given <context>
-When <action>
-Then <observable outcome>
-## Requirements
-R1. The system MUST <testable behavior>.
-## Inputs and outputs
-<inputs, outputs, events, responses, config, data>
-## State and invariants
-<invariants>
-## Error and boundary behavior
-<errors, permissions, empty states, partial failures>
-## Compatibility and migration
-<old clients, old data, rollout, rollback>
-## Observability
-<logs, metrics, traces, audit events, user-visible status>
-## Security and privacy
-<auth, authorization, secrets, data exposure, abuse cases>
-## Accessibility and UX
-<UI accessibility or not applicable>
-## Performance expectations
-<performance contract or not applicable>
-## Edge cases
-EC1. <edge case>
-## Non-goals
-<out of scope>
-## Acceptance criteria
-AC1. <observable acceptance outcome>
-## Open questions
-<questions that do not invalidate the spec, or None>
-## Next artifacts
-<planned next artifacts>
-## Follow-on artifacts
-None yet
-## Readiness
-<ready for spec-review | blocked with reason>
+COPY `assets/spec-skeleton.md` for <spec path>.
+Fill every section named in Required sections.
+Do not emit unfilled placeholders.
 ```
 
 ## Expected output
 
-Use the `## Output skeleton` shape. Include the spec path, examples first, requirement IDs, edge cases, non-goals, acceptance criteria, ambiguities, and readiness for `spec-review` or blocker state.
+Use the `## Output skeleton` guidance and `assets/spec-skeleton.md` structure. Include the spec path, examples first, requirement IDs, edge cases, non-goals, acceptance criteria, ambiguities, and readiness for `spec-review` or blocker state.
