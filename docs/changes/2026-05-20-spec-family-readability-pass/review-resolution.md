@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -10,11 +10,12 @@ Review closeout: spec-review-r1
 Review closeout: plan-review-r1
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
+Review closeout: code-review-m2-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `plan-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `plan-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`
 - Findings resolved: 5
-- Unresolved findings: 0
-- Final result: proposal-review requested changes in R1 for dependency-baseline proof, section-ordering boundary, enum authority, behavior-parity proof, and produced-artifact readability scope. The proposal was revised to add those controls before downstream plan reliance. Proposal-review R2 approved the proposal with no material findings. Spec-review R1 approved the focused spec with no material findings. Plan-review R1 approved the execution plan with no material findings. Code-review M1 R1 requested changes for a validation fixture coverage regression; the fixture was corrected and M1 returned to code-review.
+- Unresolved findings: 1
+- Final result: proposal-review requested changes in R1 for dependency-baseline proof, section-ordering boundary, enum authority, behavior-parity proof, and produced-artifact readability scope. The proposal was revised to add those controls before downstream plan reliance. Proposal-review R2 approved the proposal with no material findings. Spec-review R1 approved the focused spec with no material findings. Plan-review R1 approved the execution plan with no material findings. Code-review M1 R1 requested changes for a validation fixture coverage regression; the fixture was corrected and M1 returned to code-review. Code-review M2 R1 requested changes for a presentation-only preservation issue in the `spec-review` review-dimension table.
 
 ## Resolution Overview
 
@@ -26,6 +27,7 @@ Review closeout: code-review-m1-r2
 | SFRP-PR4 | accepted | resolved | Added a mandatory content-preservation proof matrix and clarified that representative behavior parity supplements it. |
 | SFRP-PR5 | accepted | resolved | Reclassified produced-artifact readability as deferred follow-up and kept this proposal scoped to published skill readability. |
 | SFRP-M1-CR1 | accepted | resolved | Preserved exact settlement-result value coverage for unaffected first-slice skills while allowing `spec` to use the new enum-authority shape. |
+| SFRP-M2-CR1 | accepted | open | The `spec-review` review-dimension table adds review-focus examples that are not source-preserving tabulation of the baseline dimension list. |
 
 ## Resolution Entries
 
@@ -120,3 +122,17 @@ Validation evidence: `python scripts/test-skill-validator.py`; `python scripts/v
 ### code-review-m1-r2
 
 No material findings.
+
+### code-review-m2-r1
+
+#### SFRP-M2-CR1 - Review-focus cells introduce unproven guidance beyond the baseline prose
+
+Finding ID: SFRP-M2-CR1
+Disposition: accepted
+Status: open
+Owner: implementer or spec owner
+Owning stage: review-resolution / implement M2 fix
+Chosen action: pending source-preserving M2 fix or approved spec/owner change
+Rationale: The approved M2 scope permits presentation-only tabulation and enum authority for review-dimension verdict values. The current table adds richer review-focus examples that may be useful, but they are not directly source-mapped to the baseline `spec-review` text and can be read as new review obligations.
+Validation target: M2 returns to code-review with either a source-preserving table that removes non-baseline focus examples or an approved spec/owner change that explicitly accepts the richer review-focus guidance as behavior.
+Validation evidence: pending
