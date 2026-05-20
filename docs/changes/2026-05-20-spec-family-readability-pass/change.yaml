@@ -25,6 +25,7 @@ requirements:
   - Implement M1 by tabulating `skills/spec/SKILL.md` required-section guidance and centralizing changed closed enum values without behavior changes.
   - Update stale validation fixture expectations to accept the M1 settlement-result enum authority while preserving downstream status-settlement coverage.
   - Resolve `SFRP-M1-CR1` by making settlement-result fixture expectations skill-specific.
+  - Record clean M1 code-review rerun and close M1 before beginning M2.
   - Record M1 content-preservation, enum authority, section-order, and representative behavior-parity evidence before code review.
   - Keep produced-artifact readability, packaging, and duplicated-block resolution out of this proposal.
 tests:
@@ -42,6 +43,7 @@ tests:
   - Artifact lifecycle validation for M1 proof surfaces and plan state.
   - Selected CI validation for M1 touched paths.
   - Review-resolution validation for `SFRP-M1-CR1`.
+  - Review artifact validation for clean M1 code-review rerun.
   - Change metadata validation for this change-local root.
 validation:
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-20-spec-family-readability-pass.md --path docs/changes/2026-05-20-spec-family-readability-pass/change.yaml --path docs/changes/2026-05-20-spec-family-readability-pass/review-log.md --path docs/changes/2026-05-20-spec-family-readability-pass/review-resolution.md --path docs/changes/2026-05-20-spec-family-readability-pass/reviews/proposal-review-r1.md
@@ -142,6 +144,16 @@ validation:
     result: pass_after_sfrp_m1_cr1_fix
   - command: bash scripts/ci.sh --mode explicit --path scripts/test-skill-validator.py --path docs/plans/2026-05-20-spec-family-readability-pass.md --path docs/plan.md --path specs/spec-family-readability-pass.md --path specs/spec-family-readability-pass.test.md --path docs/changes/2026-05-20-spec-family-readability-pass/change.yaml --path docs/changes/2026-05-20-spec-family-readability-pass/review-log.md --path docs/changes/2026-05-20-spec-family-readability-pass/review-resolution.md --path docs/changes/2026-05-20-spec-family-readability-pass/behavior-preservation.md --path docs/changes/2026-05-20-spec-family-readability-pass/behavior-parity.md
     result: pass_selected_ci_after_sfrp_m1_cr1_fix_skills_regression_skills_generation_regression_review_artifacts_artifact_lifecycle_change_metadata
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-20-spec-family-readability-pass
+    result: pass_reviews_6_findings_6_log_entries_6_resolution_entries_6_after_code_review_m1_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-20-spec-family-readability-pass/change.yaml
+    result: pass_valid_change_metadata_after_code_review_m1_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-20-spec-family-readability-pass.md --path docs/plan.md --path docs/changes/2026-05-20-spec-family-readability-pass/change.yaml --path docs/changes/2026-05-20-spec-family-readability-pass/review-log.md --path docs/changes/2026-05-20-spec-family-readability-pass/review-resolution.md --path docs/changes/2026-05-20-spec-family-readability-pass/reviews/code-review-m1-r2.md
+    result: pass_validated_3_lifecycle_artifacts_after_code_review_m1_r2
+  - command: git diff --check -- docs/plans/2026-05-20-spec-family-readability-pass.md docs/plan.md docs/changes/2026-05-20-spec-family-readability-pass
+    result: pass_after_code_review_m1_r2
+  - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-20-spec-family-readability-pass.md --path docs/plan.md --path docs/changes/2026-05-20-spec-family-readability-pass/change.yaml --path docs/changes/2026-05-20-spec-family-readability-pass/review-log.md --path docs/changes/2026-05-20-spec-family-readability-pass/review-resolution.md --path docs/changes/2026-05-20-spec-family-readability-pass/reviews/code-review-m1-r2.md
+    result: pass_selected_review_artifacts_lifecycle_change_metadata_after_code_review_m1_r2
 changed_files:
   - skills/spec/SKILL.md
   - scripts/test-skill-validator.py
@@ -159,7 +171,9 @@ changed_files:
   - docs/changes/2026-05-20-spec-family-readability-pass/reviews/proposal-review-r2.md
   - docs/changes/2026-05-20-spec-family-readability-pass/reviews/spec-review-r1.md
   - docs/changes/2026-05-20-spec-family-readability-pass/reviews/plan-review-r1.md
+  - docs/changes/2026-05-20-spec-family-readability-pass/reviews/code-review-m1-r1.md
+  - docs/changes/2026-05-20-spec-family-readability-pass/reviews/code-review-m1-r2.md
 review:
-  status: review_requested
+  status: clean-with-notes
   unresolved_items: 0
-  location: docs/changes/2026-05-20-spec-family-readability-pass/reviews/code-review-m1-r1.md
+  location: docs/changes/2026-05-20-spec-family-readability-pass/reviews/code-review-m1-r2.md

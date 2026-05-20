@@ -9,8 +9,9 @@ Review closeout: proposal-review-r2
 Review closeout: spec-review-r1
 Review closeout: plan-review-r1
 Review closeout: code-review-m1-r1
+Review closeout: code-review-m1-r2
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `plan-review-r1`, `code-review-m1-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `plan-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`
 - Findings resolved: 5
 - Unresolved findings: 0
 - Final result: proposal-review requested changes in R1 for dependency-baseline proof, section-ordering boundary, enum authority, behavior-parity proof, and produced-artifact readability scope. The proposal was revised to add those controls before downstream plan reliance. Proposal-review R2 approved the proposal with no material findings. Spec-review R1 approved the focused spec with no material findings. Plan-review R1 approved the execution plan with no material findings. Code-review M1 R1 requested changes for a validation fixture coverage regression; the fixture was corrected and M1 returned to code-review.
@@ -115,3 +116,7 @@ Chosen action: Update `scripts/test-skill-validator.py` so `spec` can use the ne
 Rationale: The approved M1 scope permits presentation-only changes to `spec`; it does not justify weakening regression coverage for unaffected first-slice skills.
 Validation target: `python scripts/test-skill-validator.py` and M1 selected CI pass with the narrower fixture expectation.
 Validation evidence: `python scripts/test-skill-validator.py`; `python scripts/validate-skills.py`; `python scripts/validate-change-metadata.py docs/changes/2026-05-20-spec-family-readability-pass/change.yaml`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`; `git diff --check -- ...`; `bash scripts/ci.sh --mode explicit ...`.
+
+### code-review-m1-r2
+
+No material findings.
