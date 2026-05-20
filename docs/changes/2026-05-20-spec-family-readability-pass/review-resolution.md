@@ -11,8 +11,9 @@ Review closeout: plan-review-r1
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
 Review closeout: code-review-m2-r1
+Review closeout: code-review-m2-r2
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `plan-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `plan-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`
 - Findings resolved: 6
 - Unresolved findings: 0
 - Final result: proposal-review requested changes in R1 for dependency-baseline proof, section-ordering boundary, enum authority, behavior-parity proof, and produced-artifact readability scope. The proposal was revised to add those controls before downstream plan reliance. Proposal-review R2 approved the proposal with no material findings. Spec-review R1 approved the focused spec with no material findings. Plan-review R1 approved the execution plan with no material findings. Code-review M1 R1 requested changes for a validation fixture coverage regression; the fixture was corrected and M1 returned to code-review. Code-review M2 R1 requested changes for a presentation-only preservation issue in the `spec-review` review-dimension table; the table was narrowed to a source-preserving dimension/verdict presentation and M2 returned to code-review.
@@ -136,3 +137,7 @@ Chosen action: Revised `skills/spec-review/SKILL.md` so the Review dimensions ta
 Rationale: The approved M2 scope permits presentation-only tabulation and enum authority for review-dimension verdict values. The current table adds richer review-focus examples that may be useful, but they are not directly source-mapped to the baseline `spec-review` text and can be read as new review obligations.
 Validation target: M2 returns to code-review with a source-preserving table that removes non-baseline focus examples.
 Validation evidence: `python scripts/validate-skills.py skills/spec-review/SKILL.md`; `python scripts/validate-skills.py`; `python scripts/test-skill-validator.py`; `python scripts/validate-change-metadata.py docs/changes/2026-05-20-spec-family-readability-pass/change.yaml`; `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`; `git diff --check -- ...`; `bash scripts/ci.sh --mode explicit ...`.
+
+### code-review-m2-r2
+
+No material findings.
