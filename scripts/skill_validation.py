@@ -177,7 +177,32 @@ SPEC_REVIEW_ASSET_FORBIDDEN_POLICY_PATTERN = re.compile(
     re.IGNORECASE,
 )
 SPEC_REVIEW_ASSET_ALLOWED_FIELD_LABEL_PATTERN = re.compile(
-    r"^\s*(?:[-*]\s*)?[A-Za-z][A-Za-z /-]*:\s*<[^>\n]+>\s*$"
+    r"^\s*(?:[-*]\s*)?(?P<label>[A-Za-z][A-Za-z /_-]*):\s*<[^>\n]+>\s*$"
+)
+SPEC_REVIEW_ASSET_APPROVED_LABELS = {
+    "skill",
+    "review-status",
+    "material-findings",
+    "recording-status",
+    "recording-blocker",
+    "review-record",
+    "review-log",
+    "review-resolution",
+    "open-blockers",
+    "immediate-next-stage",
+    "finding-id",
+    "severity",
+    "location",
+    "evidence",
+    "required-outcome",
+    "safe-resolution-path",
+    "needs-decision-rationale",
+}
+SPEC_REVIEW_ASSET_FORBIDDEN_LABEL_PATTERN = re.compile(
+    r"\b(?:severity[- ]policy|sufficiency|safe[- ]resolution[- ]decision|"
+    r"recording[- ]status[- ]rules?|security|privacy|observability|"
+    r"review[- ]dimension)\b",
+    re.IGNORECASE,
 )
 
 
@@ -200,6 +225,10 @@ def _strip_quotes(value: str) -> str:
     if len(value) >= 2 and value[0] == value[-1] and value[0] in {"'", '"'}:
         return value[1:-1]
     return value
+
+
+def _normalized_asset_label(label: str) -> str:
+    return re.sub(r"[-_\s]+", "-", label.strip().lower())
 
 
 def _consume_block(lines: list[str], index: int) -> tuple[list[str], int]:
@@ -596,16 +625,26 @@ def _validate_spec_family_asset_file(
             f"{path}:{line_number}: asset '{relative_resource}' must not require repository-root dependency: {dependency}"
         )
 
-    review_policy_lines = [
-        line
-        for line in asset_body.splitlines()
-        if not line.lstrip().startswith("#")
-        and not SPEC_REVIEW_ASSET_ALLOWED_FIELD_LABEL_PATTERN.match(line)
-    ]
+    review_policy_lines: list[str] = []
+    for line in asset_body.splitlines():
+        if line.lstrip().startswith("#"):
+            continue
+        field_label_match = SPEC_REVIEW_ASSET_ALLOWED_FIELD_LABEL_PATTERN.match(line)
+        if field_label_match is not None:
+            label = field_label_match.group("label")
+            normalized_label = _normalized_asset_label(label)
+            if SPEC_REVIEW_ASSET_FORBIDDEN_LABEL_PATTERN.search(
+                line
+            ) or SPEC_REVIEW_ASSET_FORBIDDEN_LABEL_PATTERN.search(normalized_label):
+                review_policy_lines.append(line)
+                continue
+            if normalized_label in SPEC_REVIEW_ASSET_APPROVED_LABELS:
+                continue
+        review_policy_lines.append(line)
     review_policy_text = "\n".join(review_policy_lines)
     if skill_name == "spec-review" and SPEC_REVIEW_ASSET_FORBIDDEN_POLICY_PATTERN.search(review_policy_text):
         errors.append(
-            f"{path}: spec-review asset '{relative_resource}' must not contain review-policy prose"
+            f"{path}: spec-review asset '{relative_resource}' must not contain review-policy labels or guidance"
         )
 
     return errors

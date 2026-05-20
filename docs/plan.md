@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-20 Spec-Family Assets Progressive Disclosure](plans/2026-05-20-spec-family-assets-progressive-disclosure.md) - active plan for extending assets-only progressive disclosure to `spec`, `spec-review`, and `test-spec`; proposal and spec are accepted/approved, plan-review is clean, the matching test spec is active, M1 and M2 are closed, M3 is resolution-needed after code-review finding `SFA-M3-CR1`, and the current next stage is review-resolution / implement M3 fix.
+- [2026-05-20 Spec-Family Assets Progressive Disclosure](plans/2026-05-20-spec-family-assets-progressive-disclosure.md) - active plan for extending assets-only progressive disclosure to `spec`, `spec-review`, and `test-spec`; proposal and spec are accepted/approved, plan-review is clean, the matching test spec is active, M1 and M2 are closed, `SFA-M3-CR1` is resolved, M3 is review-requested, and the current next stage is code-review M3 fix.
 - [2026-05-20 Test-Spec Contract Normalization](plans/2026-05-20-test-spec-contract-normalization.md) - active plan for proof-first normalization of `skills/test-spec/SKILL.md` to the published-skill design contract; PR #77 is open and the current next stage is hosted CI and human review.
 - [2026-05-20 Spec-Family Readability Pass](plans/2026-05-20-spec-family-readability-pass.md) - active plan for the presentation-only readability pass across `spec`, `spec-review`, and normalized `test-spec`; M1, M2, and M3 are closed, explain-change and final local verify are recorded, and the current next stage is pr.
 

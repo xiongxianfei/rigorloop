@@ -840,7 +840,12 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                     "assets/review-finding.md": self.spec_family_asset_text(
                         template="spec-review-finding-v1",
                         skill="spec-review",
-                        body="## Finding <finding id>\n\n- Severity: <severity>\n- Location: <location>\n",
+                        body=(
+                            "## Finding <finding id>\n\n"
+                            "- Severity: <severity>\n"
+                            "- Location: <location>\n"
+                            "- Safe resolution path: <safe resolution path>\n"
+                        ),
                     ),
                 },
             )
@@ -1095,9 +1100,45 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             result = run_validator(root)
             self.assertNotEqual(result.returncode, 0)
             self.assertIn(
-                "spec-review asset 'assets/review-result-skeleton.md' must not contain review-policy prose",
+                "spec-review asset 'assets/review-result-skeleton.md' must not contain review-policy labels or guidance",
                 result.stdout + result.stderr,
             )
+
+    def test_spec_review_asset_review_policy_field_label_fails(self) -> None:
+        for forbidden_label in (
+            "Severity policy",
+            "Recording-status rules",
+            "Review dimension",
+            "Security",
+            "Privacy",
+            "Observability",
+            "Sufficiency",
+            "Safe-resolution decision",
+        ):
+            with self.subTest(forbidden_label=forbidden_label):
+                with tempfile.TemporaryDirectory() as temporary:
+                    root = Path(temporary)
+                    self.write_spec_family_asset_fixture(
+                        root,
+                        "spec-review",
+                        {
+                            "assets/review-result-skeleton.md": self.spec_family_asset_text(
+                                template="spec-review-result-skeleton-v1",
+                                skill="spec-review",
+                                body=f"- {forbidden_label}: <policy>\n",
+                            ),
+                            "assets/review-finding.md": self.spec_family_asset_text(
+                                template="spec-review-finding-v1", skill="spec-review"
+                            ),
+                        },
+                    )
+
+                    result = run_validator(root)
+                    self.assertNotEqual(result.returncode, 0)
+                    self.assertIn(
+                        "spec-review asset 'assets/review-result-skeleton.md' must not contain review-policy labels or guidance",
+                        result.stdout + result.stderr,
+                    )
 
     def test_spec_family_baseline_summary_records_required_surfaces(self) -> None:
         baseline = (
