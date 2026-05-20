@@ -54,13 +54,13 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 ## Current Handoff Summary
 
 - Current milestone: M3. Proposal-Review Structural Assets
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Last reviewed milestone: M2. Proposal Skeleton Asset
-- Review status: M3 implementation complete; awaiting code-review
-- Remaining in-scope implementation milestones: M4
-- Next stage: code-review M3
+- Review status: code-review M3 R1 changes-requested; material finding PFA-M3-CR1
+- Remaining in-scope implementation milestones: M3, M4
+- Next stage: review-resolution for PFA-M3-CR1
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 is awaiting code-review, M4 has not run, and final explain-change, verify, and PR handoff evidence do not exist.
+- Reason final closeout is or is not ready: M3 requires review-resolution and re-review, M4 has not run, and final explain-change, verify, and PR handoff evidence do not exist.
 
 ## Milestones
 
@@ -164,7 +164,7 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 
 ### M3. Proposal-Review Structural Assets
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Extract narrow `proposal-review` result and material-finding structures into assets without moving review judgment or review policy out of `SKILL.md`.
 - Requirements: PFA-R1-PFA-R6, PFA-R10-PFA-R13, PFA-R23-PFA-R39, PFA-R51-PFA-R52
 - Files/components likely touched:
@@ -206,7 +206,7 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
   - decision log updated if needed
   - validation notes updated
   - milestone committed
-  - result: awaiting code-review M3
+  - result: code-review M3 R1 found `PFA-M3-CR1`; resolution needed
 - Risks:
   - Review-class asset field labels could allow hidden policy.
   - `SKILL.md` could lose review judgment during skeleton compression.
@@ -313,6 +313,7 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 - 2026-05-20: M2 extracted `assets/proposal-skeleton.md`, updated `skills/proposal/SKILL.md` resource-map and compact output guidance, recorded preservation evidence, and moved to `review-requested`.
 - 2026-05-20: code-review M2 R1 returned clean-with-notes; M2 closed and next stage is implement M3.
 - 2026-05-20: M3 extracted `assets/review-result-skeleton.md` and `assets/material-finding.md`, updated `skills/proposal-review/SKILL.md` resource-map and compact output guidance, recorded preservation evidence, and moved to `review-requested`.
+- 2026-05-20: code-review M3 R1 recorded `PFA-M3-CR1`; M3 moved to `resolution-needed`.
 
 ## Decision log
 
@@ -331,6 +332,7 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 - Resolution for `PFA-M1-CR1` keeps the stricter closed allowlist scoped to `proposal-review` assets only; constructive assets such as `proposal-skeleton.md` are unaffected.
 - M2 keeps token-cost, P, cold-read, generated mirror, and temporary adapter proof in M4. M2 records preservation and behavior-parity evidence for the `proposal` extraction only.
 - M3 keeps generated mirror, temporary adapter proof, token-cost, P, cold-read, and representative no-placeholder proof in M4. M3 records preservation and behavior-parity evidence for the `proposal-review` structural extraction only.
+- Code-review found that `review-result-skeleton.md` did not preserve the pinned `Skill` result field or `## Result` heading shape; M3 must resolve `PFA-M3-CR1` before M4.
 
 ## Aligned-surface audit
 
@@ -391,4 +393,4 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for code-review M3. Final closeout remains blocked until M3 code-review, M4, and downstream gates close.
+- Ready for review-resolution on `PFA-M3-CR1`. Final closeout remains blocked until M3 review-resolution and re-review, M4, and downstream gates close.
