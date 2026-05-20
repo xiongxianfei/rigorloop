@@ -9,11 +9,12 @@ Review closeout: proposal-review-r2
 Review closeout: spec-review-r1
 Review closeout: plan-review-r1
 Review closeout: code-review-m1-r1
+Review closeout: code-review-m1-r2
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `plan-review-r1`, `code-review-m1-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `plan-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`
 - Findings resolved: 6
 - Unresolved findings: 0
-- Final result: Proposal-review R1 requested changes for proof route, per-skill skeleton boundary, generated-output proof boundaries, stricter review-class asset restrictions, and change-local baseline ownership. The proposal was revised to add those controls before downstream plan reliance. Proposal-review R2 approved the proposal with no material findings. Spec-review R1 approved the spec with no material findings. Plan-review R1 approved the execution plan with no material findings. Code-review M1 R1 requested changes for missing generated-output presence coverage in the validator foundation; the finding was accepted and resolved with a reusable generated-output presence helper plus positive and negative tests.
+- Final result: Proposal-review R1 requested changes for proof route, per-skill skeleton boundary, generated-output proof boundaries, stricter review-class asset restrictions, and change-local baseline ownership. The proposal was revised to add those controls before downstream plan reliance. Proposal-review R2 approved the proposal with no material findings. Spec-review R1 approved the spec with no material findings. Plan-review R1 approved the execution plan with no material findings. Code-review M1 R1 requested changes for missing generated-output presence coverage in the validator foundation; the finding was accepted and resolved with a reusable generated-output presence helper plus positive and negative tests. Code-review M1 R2 found no blocking or required-change findings.
 
 ## Resolution Overview
 
@@ -115,3 +116,7 @@ Chosen action: Added `mapped_asset_paths_for_skill` and `validate_generated_asse
 Rationale: M1 owns the deterministic validator foundation for generated-output presence, while M5 still owns actual generated mirror proof, temporary adapter archive generation, and adapter validation.
 Validation target: Validator tests prove generated-output presence coverage without requiring actual archive generation in M1.
 Validation evidence: `python scripts/test-skill-validator.py` passed with 141 tests after adding generated-output presence coverage. `python scripts/validate-skills.py`, `git diff --check -- .`, change metadata validation, explicit-path artifact lifecycle validation, and review artifact closeout validation also passed.
+
+### code-review-m1-r2
+
+No material findings.
