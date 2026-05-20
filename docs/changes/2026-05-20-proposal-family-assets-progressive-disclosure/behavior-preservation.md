@@ -6,8 +6,9 @@ active
 
 This artifact records source-to-asset preservation proof for the proposal-family
 assets pass. M1 established the pinned baseline and validator foundation before
-skill text changes. M2 adds the `proposal` skeleton asset and records the
-behavior-preservation evidence for that extraction.
+skill text changes. M2 added the `proposal` skeleton asset. M3 adds the narrow
+`proposal-review` structural assets and records the behavior-preservation
+evidence for that extraction.
 
 ## M1. Baseline And Validator Foundation
 
@@ -74,3 +75,43 @@ triggers in `SKILL.md`, and does not change generated-output mechanics.
 | Asset | Metadata | Resource-map entry | Placeholder | Hidden-rule check |
 | --- | --- | --- | --- | --- |
 | `assets/proposal-skeleton.md` | Template, Skill, Template status, and Maintained alongside present. | `COPY` entry names trigger, fill structures, conditional section insertion behavior, and no-placeholder instruction. | Visible placeholders present. | Structural skeleton only; rules, gates, enums, conditional triggers, and handoff behavior remain in `SKILL.md`. |
+
+## M3. Proposal-Review Structural Assets
+
+### Same-slice scope
+
+| Surface | Treatment |
+| --- | --- |
+| `skills/proposal-review/SKILL.md` | Added a `Resource map`, kept routing, evidence access, artifact placement, review dimensions, review dimension result enum, Vision fit review, vision conflict outcome enum, standing artifact gate review, scope preservation, scope-budget review, material-finding sufficiency, recording status enum, review status enum, isolation and recording rules, workflow handoff, and expected output obligations in `SKILL.md`, and replaced the full inline skeleton with compact asset-copy guidance. |
+| `skills/proposal-review/assets/review-result-skeleton.md` | Added the approved review result skeleton structure with result, material findings, review dimensions, scope-preservation result, recommended edits, and recommendation fields only. |
+| `skills/proposal-review/assets/material-finding.md` | Added the approved material-finding structure with finding ID, severity, location, evidence, required outcome, safe resolution path, and needs-decision rationale fields only. |
+| Review judgment and policy | Remain in `SKILL.md`; no review dimensions, status values, sufficiency rules, scope rules, Vision fit rules, standing artifact gate rules, recording rules, handoff rules, architecture guidance, testability guidance, risk guidance, security examples, privacy examples, or rollout examples were moved into assets. |
+
+### Preservation matrix
+
+| Skill | Source content | Existing location | Asset destination | Preservation proof |
+| --- | --- | --- | --- | --- |
+| `proposal-review` | Review result fields | `skills/proposal-review/SKILL.md`, previous `## Output skeleton`, `## Result` block | `skills/proposal-review/assets/review-result-skeleton.md` | Preserves review status, material findings, recording status, recording blocker, review record, review log, review resolution, open blockers, and immediate next stage fields as copy-and-fill labels. |
+| `proposal-review` | Review dimensions result area | `skills/proposal-review/SKILL.md`, previous `## Output skeleton`, `## Review Dimensions` block | `skills/proposal-review/assets/review-result-skeleton.md` | Preserves the review dimensions output slot as a structural placeholder while the review dimensions table and result enum remain in `SKILL.md`. |
+| `proposal-review` | Scope preservation, recommended edits, and recommendation areas | `skills/proposal-review/SKILL.md`, previous `## Output skeleton` | `skills/proposal-review/assets/review-result-skeleton.md` | Preserves structural placeholders for scope-preservation result, recommended edits, and recommendation while all review rules remain in `SKILL.md`. |
+| `proposal-review` | Material finding fields | `skills/proposal-review/SKILL.md`, `## Material findings` and previous `## Output skeleton`, `## Material Findings` block | `skills/proposal-review/assets/material-finding.md` | Preserves finding ID, severity, location, evidence, required outcome, safe resolution path, and needs-decision rationale fields. |
+
+### Behavior parity
+
+| Baseline surface | M3 result |
+| --- | --- |
+| Review dimensions | The dimension table and `pass`, `concern`, `block` result enum remain unchanged in `SKILL.md`. The asset includes only a `Review dimensions` structural placeholder. |
+| Vision fit and standing gates | Vision fit review, Vision fit enum, vision conflict outcome enum, bootstrap exception behavior, and standing artifact gate review remain unchanged in `SKILL.md`. |
+| Scope preservation and scope budget | Initial-goal treatment enum, scope-preservation failure behavior, scope-budget treatment enum, broad-proposal checks, and no-silent-narrowing behavior remain unchanged in `SKILL.md`. |
+| Material findings | Sufficiency rules and required field obligations remain unchanged in `SKILL.md`; `assets/material-finding.md` provides only the copy-and-fill field structure. |
+| Recording and review statuses | Recording status and review status enum blocks remain unchanged in `SKILL.md`. |
+| Isolation and handoff | Isolation, formal recording behavior, no automatic downstream handoff, and proposal-review gate behavior remain unchanged in `SKILL.md`. |
+| Output obligation | `SKILL.md` still exposes `Output skeleton` and `Expected output`; the structural copy-and-fill blocks are copied from the two approved assets rather than duplicated inline. |
+| Placeholder behavior | The assets contain visible placeholders as templates. M3 does not create a final representative proposal-review artifact, so no final output placeholder leak is introduced in this slice. |
+
+### Asset contract check
+
+| Asset | Metadata | Resource-map entry | Placeholder | Hidden-rule check |
+| --- | --- | --- | --- | --- |
+| `assets/review-result-skeleton.md` | Template, Skill, Template status, and Maintained alongside present. | `COPY` entry names trigger, fill structures, and no-placeholder instruction. | Visible placeholders present. | Contains headings, approved field labels, and placeholders only; no review policy, rules, enums, dimensions guidance, recording rules, or handoff behavior. |
+| `assets/material-finding.md` | Template, Skill, Template status, and Maintained alongside present. | `COPY` entry names per-finding trigger, fill fields, and no-placeholder instruction. | Visible placeholders present. | Contains headings, approved field labels, and placeholders only; no material-finding sufficiency rule, severity policy, or safe-resolution decision rule. |
