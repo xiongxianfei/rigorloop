@@ -146,6 +146,6 @@ changed_files:
   - docs/changes/2026-05-20-spec-family-readability-pass/reviews/spec-review-r1.md
   - docs/changes/2026-05-20-spec-family-readability-pass/reviews/plan-review-r1.md
 review:
-  status: approved
-  unresolved_items: 0
-  location: docs/changes/2026-05-20-spec-family-readability-pass/reviews/plan-review-r1.md
+  status: changes_requested
+  unresolved_items: 1
+  location: docs/changes/2026-05-20-spec-family-readability-pass/reviews/code-review-m1-r1.md
