@@ -73,11 +73,11 @@ The work touches canonical skill source under `skills/`, validator and test scri
 ## Current Handoff Summary
 
 - Current milestone: M1
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Last reviewed milestone: none
-- Review status: plan-review approved; test spec active; M1 awaiting code-review
+- Review status: code-review M1 R1 changes-requested; `SFA-M1-CR1` open
 - Remaining in-scope implementation milestones: M1, M2, M3, M4, M5
-- Next stage: code-review M1
+- Next stage: review-resolution / implement M1 fix
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation milestones, code reviews, generated-output proof, explain-change, verify, and PR handoff remain incomplete.
 
@@ -85,7 +85,7 @@ The work touches canonical skill source under `skills/`, validator and test scri
 
 ### M1. Baseline summary and validator foundation
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Create the change-local baseline summary and deterministic validation coverage before skill text changes.
 - Requirements: `SFA-R25` through `SFA-R29`, `SFA-R42`, `SFA-R43`, `AC-SFA-014`, `AC-SFA-015`
 - Files expected:
@@ -105,7 +105,7 @@ The work touches canonical skill source under `skills/`, validator and test scri
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/spec-family-assets-progressive-disclosure.md --path docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md --path docs/plan.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml`
   - `git diff --check -- scripts/skill_validation.py scripts/test-skill-validator.py docs/changes/2026-05-20-spec-family-assets-progressive-disclosure docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md docs/plan.md`
-- Result: implemented; awaiting code-review.
+- Result: changes requested; `SFA-M1-CR1` requires review-resolution before M1 can close.
 - Risks:
   - Validator overblocks legitimate assets; keep checks deterministic and use bounded heuristics only where declared.
 - Rollback:
@@ -271,6 +271,7 @@ Final closeout:
 - 2026-05-20: plan-review R1 approved with no material findings.
 - 2026-05-20: test spec created and marked active.
 - 2026-05-20: M1 implemented baseline summary, proof-route assessment, behavior-preservation scaffold, and deterministic validator coverage; milestone moved to review-requested.
+- 2026-05-20: code-review M1 R1 requested changes for missing generated-output presence coverage in the validator foundation.
 
 ## Decision log
 
