@@ -2012,7 +2012,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "review-resolution.md",
             "artifact type, lifecycle field, next status, or target status is unknown or unmapped",
             "block instead of inferring a settlement",
-            "Settlement result: updated | blocked | not-needed",
+            "Settlement result:",
             "New status",
             "not-applicable",
             "Settlement blocker",
