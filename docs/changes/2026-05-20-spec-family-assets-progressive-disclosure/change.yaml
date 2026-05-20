@@ -50,6 +50,8 @@ tests:
   - Behavior-preservation, token, and cold-read evidence inspection for M2.
   - Targeted and full skill validation after M3 `spec-review` asset extraction.
   - Behavior-preservation, token, and cold-read evidence inspection for M3.
+  - Targeted and full skill validation after M4 `test-spec` asset extraction.
+  - Behavior-preservation, token, and cold-read evidence inspection for M4.
 validation:
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-20-spec-family-assets-progressive-disclosure.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/review-log.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/review-resolution.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/reviews/proposal-review-r1.md
     result: pass_validated_1_lifecycle_artifact
@@ -257,6 +259,20 @@ validation:
     result: pass_validated_4_lifecycle_artifacts_after_code_review_m4_r1
   - command: git diff --check -- docs/changes/2026-05-20-spec-family-assets-progressive-disclosure docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md docs/plan.md
     result: pass_after_code_review_m4_r1
+  - command: python scripts/validate-skills.py skills/test-spec/SKILL.md
+    result: pass_validated_1_test_spec_skill_after_sfa_m4_cr1_fix
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_sfa_m4_cr1_fix
+  - command: python scripts/test-skill-validator.py
+    result: pass_142_tests_after_sfa_m4_cr1_fix
+  - command: git diff --check -- .
+    result: pass_after_sfa_m4_cr1_fix
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml
+    result: pass_valid_change_metadata_after_sfa_m4_cr1_fix
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/baseline.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/behavior-preservation.md --path docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md --path docs/plan.md
+    result: pass_validated_4_lifecycle_artifacts_after_sfa_m4_cr1_fix
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-20-spec-family-assets-progressive-disclosure
+    result: pass_reviews_12_findings_9_log_entries_12_resolution_entries_9_after_sfa_m4_cr1_fix
 changed_files:
   - docs/proposals/2026-05-20-spec-family-assets-progressive-disclosure.md
   - specs/spec-family-assets-progressive-disclosure.md
@@ -298,4 +314,4 @@ changed_files:
   - tests/fixtures/skills/published-design/generated-output-presence/
 review:
   status: open
-  unresolved_items: 1
+  unresolved_items: 0

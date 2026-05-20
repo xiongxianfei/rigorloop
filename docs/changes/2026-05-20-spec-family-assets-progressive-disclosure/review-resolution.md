@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -18,9 +18,9 @@ Review closeout: code-review-m3-r2
 Review closeout: code-review-m4-r1
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `plan-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m4-r1`
-- Findings resolved: 8
-- Unresolved findings: 1
-- Final result: Proposal-review R1 requested changes for proof route, per-skill skeleton boundary, generated-output proof boundaries, stricter review-class asset restrictions, and change-local baseline ownership. The proposal was revised to add those controls before downstream plan reliance. Proposal-review R2 approved the proposal with no material findings. Spec-review R1 approved the spec with no material findings. Plan-review R1 approved the execution plan with no material findings. Code-review M1 R1 requested changes for missing generated-output presence coverage in the validator foundation; the finding was accepted and resolved with a reusable generated-output presence helper plus positive and negative tests. Code-review M1 R2 found no blocking or required-change findings. Code-review M2 R1 requested changes for requirement modal parity in `assets/requirement-row.md`; the finding was accepted and resolved by making the requirement row asset preserve the full requirement statement field while keeping modal guidance in `SKILL.md`. Code-review M2 R2 was blocked because no new M2 fix surface existed at that time. Code-review M2 R3 found no blocking or required-change findings. Code-review M3 R1 requested changes for review-class validator coverage; the finding was accepted and resolved by checking forbidden policy labels before structural field exemptions. Code-review M3 R2 found no blocking or required-change findings. Code-review M4 R1 requested changes for coverage-map row preservation.
+- Findings resolved: 9
+- Unresolved findings: 0
+- Final result: Proposal-review R1 requested changes for proof route, per-skill skeleton boundary, generated-output proof boundaries, stricter review-class asset restrictions, and change-local baseline ownership. The proposal was revised to add those controls before downstream plan reliance. Proposal-review R2 approved the proposal with no material findings. Spec-review R1 approved the spec with no material findings. Plan-review R1 approved the execution plan with no material findings. Code-review M1 R1 requested changes for missing generated-output presence coverage in the validator foundation; the finding was accepted and resolved with a reusable generated-output presence helper plus positive and negative tests. Code-review M1 R2 found no blocking or required-change findings. Code-review M2 R1 requested changes for requirement modal parity in `assets/requirement-row.md`; the finding was accepted and resolved by making the requirement row asset preserve the full requirement statement field while keeping modal guidance in `SKILL.md`. Code-review M2 R2 was blocked because no new M2 fix surface existed at that time. Code-review M2 R3 found no blocking or required-change findings. Code-review M3 R1 requested changes for review-class validator coverage; the finding was accepted and resolved by checking forbidden policy labels before structural field exemptions. Code-review M3 R2 found no blocking or required-change findings. Code-review M4 R1 requested changes for coverage-map row preservation; the finding was accepted and resolved by restoring requirement and example coverage row-shape parity in the `test-spec` assets and resource-map guidance.
 
 ## Resolution Overview
 
@@ -34,7 +34,7 @@ Review closeout: code-review-m4-r1
 | SFA-M1-CR1 | accepted | resolved | Added deterministic generated-output presence coverage without moving full archive generation out of M5. |
 | SFA-M2-CR1 | accepted | resolved | Updated `assets/requirement-row.md` to preserve the full requirement statement field and keep modal guidance in `SKILL.md`. |
 | SFA-M3-CR1 | accepted | resolved | Updated the `spec-review` asset validator to reject forbidden review-policy labels before structural field-label exemptions while preserving approved structural labels. |
-| SFA-M4-CR1 | needs-decision | open | Code-review M4 R1 found that the coverage-map row extraction does not preserve requirement/example table row shapes. |
+| SFA-M4-CR1 | accepted | resolved | Restored requirement and example coverage-map row-shape parity in the `test-spec` skeleton, coverage-map row asset, resource map, and preservation evidence. |
 
 ## Resolution Entries
 
@@ -176,11 +176,11 @@ No material findings.
 #### SFA-M4-CR1 - Coverage-map row extraction does not preserve table row shapes
 
 Finding ID: SFA-M4-CR1
-Disposition: needs-decision
-Status: open
-Decision owner: implementation owner
-Decision needed: Accept the finding and restore coverage-map row shape parity, or revise the approved spec/test spec if changing the example coverage row shape is intentional.
-Owning stage: review-resolution
-Stop state: M4 remains `resolution-needed`; M5 must not begin until this finding is dispositioned and resolved or the approved artifacts are revised.
-Rationale: The finding is actionable, but implementation has not yet recorded an accepted disposition or fix.
-Validation target: Review-resolution records a final disposition and, if accepted, validation proves requirement and example coverage-map row shapes are preserved by the assets and `SKILL.md` resource-map guidance.
+Disposition: accepted
+Status: resolved
+Owner: implementer
+Owning stage: implement M4 fix
+Chosen action: Updated `skills/test-spec/assets/test-spec-skeleton.md` to show a four-cell requirement coverage placeholder row and a three-cell example coverage placeholder row. Updated `skills/test-spec/assets/coverage-map-row.md` to contain explicit `Requirement coverage row` and `Example coverage row` variants. Updated the `skills/test-spec/SKILL.md` resource-map entry to tell agents which variant to use and not to add a `Level` column to the example coverage map. Updated behavior-preservation evidence to record the exact baseline-to-asset row-shape parity.
+Rationale: `SFA-M4-CR1` identified a behavior-preservation defect in the asset extraction. The fix keeps one approved `coverage-map-row.md` asset while preserving both baseline table shapes.
+Validation target: M4 validation proves requirement and example coverage-map row shapes are preserved by the assets and `SKILL.md` resource-map guidance.
+Validation evidence: `python scripts/validate-skills.py skills/test-spec/SKILL.md`, `python scripts/validate-skills.py`, `python scripts/test-skill-validator.py`, `git diff --check -- .`, change metadata validation, explicit-path artifact lifecycle validation, and review artifact closeout validation passed after the fix.

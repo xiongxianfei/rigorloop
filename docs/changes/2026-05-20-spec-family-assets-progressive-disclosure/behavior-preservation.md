@@ -192,7 +192,7 @@ verdicts, finding sufficiency, severity policy, and recording obligations in
 | `skills/test-spec/SKILL.md` | Added a `Resource map`, kept rules, stop conditions, routing, claim boundaries, status and level enums, coverage obligations, validation obligations, lifecycle boundaries, and required-section guidance in `SKILL.md`, and replaced the full inline skeleton with compact asset-copy guidance. |
 | `skills/test-spec/assets/test-spec-skeleton.md` | Added the full test-spec output skeleton with the same required section set as the PR #79 baseline. |
 | `skills/test-spec/assets/test-case.md` | Added the repeated test-case block with the same field labels as the existing test-case format. |
-| `skills/test-spec/assets/coverage-map-row.md` | Added a structural traceability row for requirement, example, or edge-case coverage mapping. |
+| `skills/test-spec/assets/coverage-map-row.md` | Added structural requirement and example coverage row variants that preserve the two baseline table shapes. |
 | `skills/test-spec/assets/edge-case-row.md` | Added the repeated edge-case coverage row structure. |
 
 ### Preservation matrix
@@ -201,7 +201,8 @@ verdicts, finding sufficiency, severity policy, and recording obligations in
 | --- | --- | --- | --- | --- |
 | `test-spec` | Full test-spec output skeleton section set | Previous `skills/test-spec/SKILL.md` output skeleton | `skills/test-spec/assets/test-spec-skeleton.md` | Same 19 section headings are present: `Status`, `Related spec and plan`, `Testing strategy`, `Requirement coverage map`, `Example coverage map`, `Edge case coverage`, `Test cases`, `Fixtures and data`, `Mocking/stubbing policy`, `Migration or compatibility tests`, `Observability verification`, `Security/privacy verification`, `Performance checks`, `Manual QA checklist`, `What not to test and why`, `Uncovered gaps`, `Next artifacts`, `Follow-on artifacts`, and `Readiness`. |
 | `test-spec` | Test-case fields | Previous `## Test case format` and output skeleton test-case block | `skills/test-spec/assets/test-case.md` | Preserves test ID, title, covered requirements/examples/edge cases, level, fixture/setup, steps, expected result, failure proof, and automation location. Test case level enum remains in `SKILL.md`. |
-| `test-spec` | Coverage-map row fields | Previous requirement, example, and edge-case coverage skeleton rows | `skills/test-spec/assets/coverage-map-row.md` | Preserves traceability fields for coverage target, covered-by tests or manual verification, level or notes, and notes. Coverage obligations and coverage map level enum remain in `SKILL.md`. |
+| `test-spec` | Requirement coverage map row | Previous output skeleton requirement coverage map | `skills/test-spec/assets/test-spec-skeleton.md` and `skills/test-spec/assets/coverage-map-row.md` | Preserves 4 cells: `Requirement ID`, `Covered by`, `Level`, and `Notes`. Coverage obligations and coverage map level enum remain in `SKILL.md`. |
+| `test-spec` | Example coverage map row | Previous output skeleton example coverage map | `skills/test-spec/assets/test-spec-skeleton.md` and `skills/test-spec/assets/coverage-map-row.md` | Preserves 3 cells: `Example`, `Covered by`, and `Notes`; no `Level` cell is added. |
 | `test-spec` | Edge-case row fields | Previous output skeleton edge-case coverage row | `skills/test-spec/assets/edge-case-row.md` | Preserves edge-case plus mapped test IDs or manual verification. Edge-case coverage obligation remains in `SKILL.md`. |
 
 ### Behavior parity
@@ -212,6 +213,7 @@ verdicts, finding sufficiency, severity policy, and recording obligations in
 | Closed enums | Test spec status, test case level, and coverage map level enum blocks remain unchanged in `SKILL.md`. |
 | Rules and stop conditions | Source-spec readiness blockers, coverage rules, artifact placement, authoring rules, evidence guidance, full-file-read guidance, and claim boundaries remain in `SKILL.md`. |
 | Coverage obligations | Requirement, error behavior, migration/compatibility, architecture-boundary, and bug coverage rules remain in `SKILL.md`. |
+| Coverage map row shapes | Requirement coverage preserves the 4-cell row shape; example coverage preserves the 3-cell row shape and does not add a `Level` column. |
 | Test-case shape | `assets/test-case.md` preserves the same fields from the test-case format while adding no coverage rules. |
 | Placeholder behavior | Assets contain visible placeholders as templates; M4 does not create a final representative output artifact, so no final output placeholder leak is introduced in this slice. |
 
@@ -221,7 +223,7 @@ verdicts, finding sufficiency, severity policy, and recording obligations in
 | --- | --- | --- | --- | --- |
 | `assets/test-spec-skeleton.md` | Template, Skill, Template status, and Maintained alongside present. | `COPY` entry names trigger, fill structures, and no-placeholder instruction. | Visible placeholders present. | Structural skeleton only; rules, coverage obligations, and enums remain in `SKILL.md`. |
 | `assets/test-case.md` | Template, Skill, Template status, and Maintained alongside present. | `COPY` entry names trigger, fill structures, and no-placeholder instruction. | Visible placeholders present. | Structural test-case block only; level enum and coverage rules remain in `SKILL.md`. |
-| `assets/coverage-map-row.md` | Template, Skill, Template status, and Maintained alongside present. | `COPY` entry names trigger, fill structures, and no-placeholder instruction. | Visible placeholders present. | Structural traceability row only; coverage obligations remain in `SKILL.md`. |
+| `assets/coverage-map-row.md` | Template, Skill, Template status, and Maintained alongside present. | `COPY` entry names trigger, row variants, fill structures, no example `Level` column, and no-placeholder instruction. | Visible placeholders present. | Structural requirement/example row variants only; requirement row has 4 cells and example row has 3 cells; coverage obligations remain in `SKILL.md`. |
 | `assets/edge-case-row.md` | Template, Skill, Template status, and Maintained alongside present. | `COPY` entry names trigger, fill structures, and no-placeholder instruction. | Visible placeholders present. | Structural edge-case row only. |
 
 ### Token and cold-read evidence

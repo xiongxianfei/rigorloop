@@ -23,13 +23,13 @@
 
 | Requirement ID | Covered by | Level | Notes |
 | --- | --- | --- | --- |
-| <requirement coverage rows> |
+| <requirement ID> | <test IDs or manual verification> | <level> | <notes> |
 
 ## Example coverage map
 
 | Example | Covered by | Notes |
 | --- | --- | --- |
-| <example coverage rows> |
+| <example> | <test IDs or manual verification> | <notes> |
 
 ## Edge case coverage
 

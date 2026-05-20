@@ -124,4 +124,4 @@ Status: changes-requested
 Detailed record: reviews/code-review-m4-r1.md
 Resolution: review-resolution.md#code-review-m4-r1
 Material findings: SFA-M4-CR1
-Open findings: SFA-M4-CR1
+Open findings: None
