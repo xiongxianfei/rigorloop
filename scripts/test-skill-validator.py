@@ -12,6 +12,8 @@ import tempfile
 import textwrap
 from pathlib import Path
 
+import skill_validation
+
 
 ROOT = Path(__file__).resolve().parents[1]
 VALIDATOR = ROOT / "scripts" / "validate-skills.py"
@@ -861,6 +863,73 @@ class SkillValidatorFixtureTests(unittest.TestCase):
 
             result = run_validator(root)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_spec_family_generated_asset_presence_passes_for_complete_output(self) -> None:
+        fixture = FIXTURES / "published-design/generated-output-presence/valid"
+        errors = skill_validation.validate_generated_asset_presence(
+            skill_name="spec",
+            canonical_skill_dir=fixture / "canonical/spec",
+            generated_skill_dir=fixture / "generated/spec",
+            surface_label="generated skill mirror",
+        )
+
+        self.assertEqual(errors, [])
+
+    def test_spec_family_generated_asset_presence_fails_for_missing_generated_asset(self) -> None:
+        fixture = FIXTURES / "published-design/generated-output-presence/missing-asset"
+        errors = skill_validation.validate_generated_asset_presence(
+            skill_name="spec",
+            canonical_skill_dir=fixture / "canonical/spec",
+            generated_skill_dir=fixture / "generated/spec",
+            surface_label="generated skill mirror",
+        )
+
+        self.assertEqual(
+            errors,
+            [
+                "Generated output for skill 'spec' is missing mapped asset "
+                "'assets/acceptance-criterion-row.md' in generated skill mirror"
+            ],
+        )
+
+    def test_spec_family_generated_asset_presence_names_adapter_surface(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            canonical_skill_dir = self.write_spec_family_asset_fixture(
+                root / "canonical",
+                "spec-review",
+                {
+                    "assets/review-result-skeleton.md": self.spec_family_asset_text(
+                        template="spec-review-result-skeleton-v1",
+                        skill="spec-review",
+                        body="## Result\n\n- Review status: <review status>\n",
+                    ),
+                    "assets/review-finding.md": self.spec_family_asset_text(
+                        template="spec-review-finding-v1",
+                        skill="spec-review",
+                        body="## Finding <finding id>\n\n- Severity: <severity>\n",
+                    ),
+                },
+            )
+            generated_skill_dir = root / "generated-adapter" / "spec-review"
+            generated_asset = generated_skill_dir / "assets/review-result-skeleton.md"
+            generated_asset.parent.mkdir(parents=True, exist_ok=True)
+            generated_asset.write_text("generated result skeleton", encoding="utf-8")
+
+            errors = skill_validation.validate_generated_asset_presence(
+                skill_name="spec-review",
+                canonical_skill_dir=canonical_skill_dir,
+                generated_skill_dir=generated_skill_dir,
+                surface_label="generated adapter output",
+            )
+
+            self.assertEqual(
+                errors,
+                [
+                    "Generated output for skill 'spec-review' is missing mapped asset "
+                    "'assets/review-finding.md' in generated adapter output"
+                ],
+            )
 
     def test_spec_family_asset_rejects_unapproved_asset_paths(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
