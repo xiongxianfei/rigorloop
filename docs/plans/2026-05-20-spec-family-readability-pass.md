@@ -74,9 +74,9 @@ Apply a presentation-only readability pass to the three spec-family skills, `spe
 - Last reviewed milestone: M3. Test-Spec Skill Readability And Generated Output Proof
 - Review status: code-review M3 R1 clean-with-notes; no open findings
 - Remaining in-scope implementation milestones: none
-- Next stage: final closeout sequence, starting with explain-change
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: explain-change, verify, and PR handoff remain open.
+- Reason final closeout is or is not ready: verify and PR handoff remain open.
 
 ## Milestones
 
@@ -276,6 +276,7 @@ Apply a presentation-only readability pass to the three spec-family skills, `spe
 - 2026-05-20: M3 implementation started for `skills/test-spec/SKILL.md`; preservation, parity, generated-output, and cold-read evidence are being completed before code-review.
 - 2026-05-20: M3 implementation completed and targeted validation passed except for the explicitly deferred v0.1.5 repository-tree adapter command debt; milestone is ready for code-review.
 - 2026-05-20: code-review M3 R1 completed clean-with-notes; M3 is closed and the next stage is the final closeout sequence starting with explain-change.
+- 2026-05-20: explain-change recorded durable rationale in `docs/changes/2026-05-20-spec-family-readability-pass/explain-change.md`; next stage is verify.
 
 ## Decision log
 
@@ -358,6 +359,11 @@ Apply a presentation-only readability pass to the three spec-family skills, `spe
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-20-spec-family-readability-pass.md --path docs/plan.md --path docs/changes/2026-05-20-spec-family-readability-pass/change.yaml --path docs/changes/2026-05-20-spec-family-readability-pass/review-log.md --path docs/changes/2026-05-20-spec-family-readability-pass/review-resolution.md --path docs/changes/2026-05-20-spec-family-readability-pass/reviews/code-review-m3-r1.md`
   - `git diff --check -- docs/plans/2026-05-20-spec-family-readability-pass.md docs/plan.md docs/changes/2026-05-20-spec-family-readability-pass`
   - `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-20-spec-family-readability-pass.md --path docs/plan.md --path docs/changes/2026-05-20-spec-family-readability-pass/change.yaml --path docs/changes/2026-05-20-spec-family-readability-pass/review-log.md --path docs/changes/2026-05-20-spec-family-readability-pass/review-resolution.md --path docs/changes/2026-05-20-spec-family-readability-pass/reviews/code-review-m3-r1.md`
+- Explain-change validation passed:
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-20-spec-family-readability-pass/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-20-spec-family-readability-pass.md --path docs/plan.md --path docs/changes/2026-05-20-spec-family-readability-pass/change.yaml --path docs/changes/2026-05-20-spec-family-readability-pass/explain-change.md --path docs/changes/2026-05-20-spec-family-readability-pass/review-log.md --path docs/changes/2026-05-20-spec-family-readability-pass/review-resolution.md`
+  - `git diff --check -- docs/plans/2026-05-20-spec-family-readability-pass.md docs/plan.md docs/changes/2026-05-20-spec-family-readability-pass`
+  - `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-20-spec-family-readability-pass.md --path docs/plan.md --path docs/changes/2026-05-20-spec-family-readability-pass/change.yaml --path docs/changes/2026-05-20-spec-family-readability-pass/explain-change.md --path docs/changes/2026-05-20-spec-family-readability-pass/review-log.md --path docs/changes/2026-05-20-spec-family-readability-pass/review-resolution.md`
 
 ## Outcome and retrospective
 
@@ -366,4 +372,4 @@ Apply a presentation-only readability pass to the three spec-family skills, `spe
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for final closeout sequence, starting with `explain-change`.
+- Ready for `verify`.
