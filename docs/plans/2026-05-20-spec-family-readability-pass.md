@@ -70,19 +70,19 @@ Apply a presentation-only readability pass to the three spec-family skills, `spe
 ## Current Handoff Summary
 
 - Current milestone: M1. Spec Skill Readability
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Last reviewed milestone: none
-- Review status: M1 ready for code-review; plan-review R1 approved; test spec active and owner-approved
+- Review status: code-review M1 R1 changes-requested; finding `SFRP-M1-CR1` open
 - Remaining in-scope implementation milestones: M1, M2, M3
-- Next stage: code-review M1
+- Next stage: review-resolution / implement M1 fix
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 through M3 implementation and code-review, explain-change, verify, and PR handoff remain open.
+- Reason final closeout is or is not ready: M1 finding `SFRP-M1-CR1`, M2 through M3 implementation and code-review, explain-change, verify, and PR handoff remain open.
 
 ## Milestones
 
 ### M1. Spec Skill Readability
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: make `skills/spec/SKILL.md` scannable by tabulating required-section guidance, fencing remaining closed enums, and aligning section order where behavior clarity allows.
 - Requirements: `SFRP-R1`, `SFRP-R2`, `SFRP-R3`, `SFRP-R4`, `SFRP-R7`, `SFRP-R10` through `SFRP-R23`
 - Files/components likely touched:
@@ -265,6 +265,7 @@ Apply a presentation-only readability pass to the three spec-family skills, `spe
 - 2026-05-20: M1 implementation started for `skills/spec/SKILL.md`; proof surfaces are being created before skill text edits.
 - 2026-05-20: M1 selected CI exposed a stale downstream status-settlement fixture that required duplicate inline settlement-result values; the fixture is aligned to require the settlement result field without requiring the duplicate value list.
 - 2026-05-20: M1 implementation completed and targeted validation passed; milestone is ready for code-review.
+- 2026-05-20: code-review M1 R1 requested changes for `SFRP-M1-CR1`; the milestone is in resolution-needed state.
 
 ## Decision log
 
@@ -301,4 +302,4 @@ Apply a presentation-only readability pass to the three spec-family skills, `spe
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `code-review M1`.
+- Ready for `review-resolution` / `implement M1` fix for `SFRP-M1-CR1`.
