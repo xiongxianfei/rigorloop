@@ -1169,6 +1169,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                         skill="proposal-review",
                         body=(
                             "## Result\n\n"
+                            "- Skill: proposal-review\n"
                             "- Review status: <review status>\n"
                             "- Material findings: <material findings>\n"
                             "- Recording status: <recording status>\n"
@@ -1203,6 +1204,43 @@ class SkillValidatorFixtureTests(unittest.TestCase):
 
             result = run_validator(root)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_proposal_review_result_skeleton_preserves_baseline_result_block(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.write_spec_family_asset_fixture(
+                root,
+                "proposal-review",
+                {
+                    "assets/review-result-skeleton.md": self.proposal_family_asset_text(
+                        template="proposal-review-result-skeleton-v1",
+                        skill="proposal-review",
+                        body=(
+                            "# Result\n\n"
+                            "- Review status: <review status>\n"
+                            "- Material findings: <material findings>\n"
+                            "- Recording status: <recording status>\n"
+                        ),
+                    ),
+                    "assets/material-finding.md": self.proposal_family_asset_text(
+                        template="proposal-review-material-finding-v1",
+                        skill="proposal-review",
+                        body="- Severity: <severity>\n",
+                    ),
+                },
+            )
+
+            result = run_validator(root)
+            self.assertNotEqual(result.returncode, 0)
+            output = result.stdout + result.stderr
+            self.assertIn(
+                "proposal-review review-result-skeleton must include baseline heading: ## Result",
+                output,
+            )
+            self.assertIn(
+                "proposal-review review-result-skeleton must include baseline field: Skill",
+                output,
+            )
 
     def test_proposal_family_asset_rejects_unapproved_asset_paths(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:

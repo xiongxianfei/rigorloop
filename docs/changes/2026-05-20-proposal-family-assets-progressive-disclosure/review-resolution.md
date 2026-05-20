@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -128,9 +128,19 @@ No material findings.
 
 Finding ID: PFA-M3-CR1
 Disposition: accepted
+Status: resolved
 Owner: implementation agent
 Owning stage: implement M3
-Suggested resolution: Restore the pinned `## Result` block shape in `assets/review-result-skeleton.md`, including the `Skill` field, and update the proposal-review structural-label allowlist and fixture coverage if needed.
-Stop state: M3 remains in review-resolution until the result skeleton preserves the pinned field set and code-review rerun closes the finding.
+Chosen action: Restored the pinned `## Result` block shape in `assets/review-result-skeleton.md`, including the literal `- Skill: proposal-review` field, added `Skill` to the proposal-review structural-label allowlist, and added a validator regression test that fails when the result skeleton lacks the baseline heading or `Skill` field.
 Rationale: The approved spec requires source-to-asset parity for every extracted structure, and the pinned baseline records `Skill` as part of the review-result field set.
-Expected proof: M3 validation rerun after the fix, including `python scripts/validate-skills.py skills/proposal-review/SKILL.md`, `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, review artifact validation, lifecycle validation, and `git diff --check --`.
+Validation target: M3 validation proves the restored asset validates, the direct regression test fails missing baseline heading/field fixtures, review artifacts close, and lifecycle state returns M3 to code-review rerun.
+Validation evidence: Full M3 review-resolution validation passed after the fix; see command evidence below.
+
+Command evidence:
+- `python scripts/validate-skills.py skills/proposal-review/SKILL.md` - pass, validated 1 skill file.
+- `python scripts/test-skill-validator.py` - pass, 152 tests including `test_proposal_review_result_skeleton_preserves_baseline_result_block`.
+- `python scripts/validate-skills.py` - pass, validated 23 skill files.
+- `python scripts/validate-change-metadata.py docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml` - pass.
+- `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure` - pass.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...` - pass.
+- `git diff --check --` - pass.
