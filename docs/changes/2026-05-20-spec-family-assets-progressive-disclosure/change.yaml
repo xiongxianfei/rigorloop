@@ -349,6 +349,8 @@ changed_files:
   - docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/baseline.md
   - docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/behavior-preservation.md
   - docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/generated-output-proof.md
+  - docs/learn/sessions/2026-05-20-spec-family-asset-formalism.md
+  - docs/learn/topics/skill-asset-design.md
   - docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/review-log.md
   - docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/review-resolution.md
   - docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/reviews/proposal-review-r1.md
