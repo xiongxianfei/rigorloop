@@ -51,7 +51,7 @@ readiness, and stop conditions.
 | --- | --- | --- | --- | --- |
 | Review dimensions | `spec-review` evaluates 10 named dimensions. | `spec-review` evaluates the same 10 named dimensions in a table. | `equivalent` | Content-preservation matrix in `behavior-preservation.md`. |
 | Review-dimension verdict values | Review dimensions use `pass`, `concern`, and `block`. | Same values are defined once in `Review dimension verdict`; review dimensions reference `<review dimension verdict>`. | `equivalent` | Enum authority map in `behavior-preservation.md`. |
-| Review coverage guidance | Boundary, error, migration, rollout, rollback, old-client, old-data, and observability guidance remains required when relevant. | Same guidance remains unchanged after the review-dimension table. | `equivalent` | Content-preservation matrix in `behavior-preservation.md`. |
+| Review coverage guidance | Normal, empty, boundary, error, permission, migration, rollout, rollback, old-client, old-data behavior, and observable acceptance guidance remains required when relevant. | Same guidance remains unchanged after the review-dimension table. | `equivalent` | Content-preservation matrix in `behavior-preservation.md`. |
 | Finding severity and material-finding behavior | Finding severity and material-finding requirements define review finding shape. | Finding severity and material-finding requirements are unchanged. | `equivalent` | Diff inspection for M2. |
 | Review output skeleton | Skeleton defines result, findings, test-spec readiness, and stop condition. | Skeleton is unchanged. | `equivalent` | Content-preservation matrix in `behavior-preservation.md`. |
 
