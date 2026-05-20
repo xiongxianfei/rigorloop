@@ -32,15 +32,11 @@ created.
 | Skill | Source content | Existing location | Asset destination | Preservation proof |
 | --- | --- | --- | --- | --- |
 | `spec` | Full spec output skeleton section set | `skills/spec/SKILL.md`, `## Output skeleton`, lines 211-258 | `skills/spec/assets/spec-skeleton.md` | Baseline section set recorded in `baseline.md`; extraction proof pending M2. |
-| `spec` | Requirement row fields | `skills/spec/SKILL.md`, `## Requirements`, lines 228-229, and required-section guidance | `skills/spec/assets/requirement-row.md` | Baseline repeated fields recorded in `baseline.md`; extraction proof pending M2. |
-| `spec` | Acceptance-criterion row fields | `skills/spec/SKILL.md`, `## Acceptance criteria`, lines 250-251, and required-section guidance | `skills/spec/assets/acceptance-criterion-row.md` | Baseline repeated fields recorded in `baseline.md`; extraction proof pending M2. |
-| `spec` | Decision-log row fields | Existing proposal decision-log pattern and spec readiness/open-question guidance | `skills/spec/assets/decision-log-row.md` | Baseline repeated fields recorded in `baseline.md`; extraction proof pending M2. |
 | `spec-review` | Review result skeleton fields | `skills/spec-review/SKILL.md`, `## Output skeleton`, lines 175-201 | `skills/spec-review/assets/review-result-skeleton.md` | Baseline field set recorded in `baseline.md`; extraction proof pending M3. |
 | `spec-review` | Material-finding fields | `skills/spec-review/SKILL.md`, `## Material findings`, lines 85-94, and output skeleton findings block | `skills/spec-review/assets/review-finding.md` | Baseline field set recorded in `baseline.md`; extraction proof pending M3. |
 | `test-spec` | Full test-spec output skeleton section set | `skills/test-spec/SKILL.md`, `## Output skeleton`, lines 152-245 | `skills/test-spec/assets/test-spec-skeleton.md` | Baseline section set recorded in `baseline.md`; extraction proof pending M4. |
 | `test-spec` | Test-case fields | `skills/test-spec/SKILL.md`, `## Test case format`, lines 93-105, and output skeleton lines 187-198 | `skills/test-spec/assets/test-case.md` | Baseline repeated fields recorded in `baseline.md`; extraction proof pending M4. |
 | `test-spec` | Coverage-map row fields | `skills/test-spec/SKILL.md`, output skeleton lines 171-181 | `skills/test-spec/assets/coverage-map-row.md` | Baseline repeated fields recorded in `baseline.md`; extraction proof pending M4. |
-| `test-spec` | Edge-case row fields | `skills/test-spec/SKILL.md`, output skeleton lines 183-185 | `skills/test-spec/assets/edge-case-row.md` | Baseline repeated fields recorded in `baseline.md`; extraction proof pending M4. |
 
 ### M1 behavior parity
 
@@ -57,9 +53,7 @@ skill structure will be recorded in the milestone that changes that skill.
 | --- | --- |
 | `skills/spec/SKILL.md` | Added a `Resource map`, kept rules, stop/status-settlement boundaries, closed enums, routing, claim boundaries, and validation guidance in `SKILL.md`, and replaced the full inline skeleton with compact output guidance that points to `assets/spec-skeleton.md`. |
 | `skills/spec/assets/spec-skeleton.md` | Added the full spec output skeleton with the same required section set as the PR #79 baseline. |
-| `skills/spec/assets/requirement-row.md` | Added the repeated requirement row structure while preserving the full requirement statement field and leaving modal guidance in `SKILL.md`. |
-| `skills/spec/assets/acceptance-criterion-row.md` | Added the repeated acceptance-criterion row structure matching the existing output skeleton acceptance-criterion format. |
-| `skills/spec/assets/decision-log-row.md` | Added the capped structural decision-log row asset recorded in the approved plan. |
+| Inline row formats | Requirement, acceptance-criterion, and decision-log row formats remain in `SKILL.md`; M6 removed their one-line assets as too small to justify packaging. |
 | `docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/baseline.md` | Refined the `spec` repeated-substructure wording so examples and edge cases remain required full-skeleton sections rather than per-requirement row fields. |
 
 ### Preservation matrix
@@ -67,9 +61,7 @@ skill structure will be recorded in the milestone that changes that skill.
 | Skill | Source content | Existing location | Asset destination | Preservation proof |
 | --- | --- | --- | --- | --- |
 | `spec` | Full spec output skeleton section set | `skills/spec/SKILL.md`, previous `## Output skeleton` | `skills/spec/assets/spec-skeleton.md` | Same 21 section headings are present: `Status`, `Related proposal`, `Goal and context`, `Glossary`, `Examples first`, `Requirements`, `Inputs and outputs`, `State and invariants`, `Error and boundary behavior`, `Compatibility and migration`, `Observability`, `Security and privacy`, `Accessibility and UX`, `Performance expectations`, `Edge cases`, `Non-goals`, `Acceptance criteria`, `Open questions`, `Next artifacts`, `Follow-on artifacts`, `Readiness`. |
-| `spec` | Requirement row fields | Previous output skeleton `Requirements` row and requirement-format guidance | `skills/spec/assets/requirement-row.md` | Preserves requirement ID plus full requirement statement field: `<requirement ID>. <requirement statement>.` Requirement modal guidance, rules, and testability obligation remain in `SKILL.md`. |
-| `spec` | Acceptance-criterion row fields | Previous output skeleton `Acceptance criteria` row | `skills/spec/assets/acceptance-criterion-row.md` | Preserves acceptance-criterion ID plus observable outcome shape: `<acceptance criterion ID>. <observable acceptance outcome>.` |
-| `spec` | Decision-log row fields | Approved plan per-asset justification and proposal decision-log pattern | `skills/spec/assets/decision-log-row.md` | Preserves structural row fields: date, decision, reason, alternatives rejected. |
+| `spec` | Requirement, acceptance-criterion, and decision-log row formats | Inline format guidance and required-section guidance | `SKILL.md` inline guidance | Preserves the row shapes inline and avoids separate metadata-heavy one-line assets. |
 
 ### Behavior parity
 
@@ -83,14 +75,8 @@ skill structure will be recorded in the milestone that changes that skill.
 
 #### Requirement modal preservation
 
-The asset `assets/requirement-row.md` now uses:
-
-```text
-<requirement ID>. <requirement statement>.
-```
-
-This preserves all representative requirement statement forms owned by
-`skills/spec/SKILL.md`:
+The requirement format remains inline in `skills/spec/SKILL.md`, preserving all
+representative requirement statement forms:
 
 - `R1. The system MUST ...`
 - `R2. The API MUST NOT ...`
@@ -103,9 +89,6 @@ No modal value is added, removed, or made preferred by the asset.
 | Asset | Metadata | Resource-map entry | Placeholder | Hidden-rule check |
 | --- | --- | --- | --- | --- |
 | `assets/spec-skeleton.md` | Template, Skill, Template status, and Maintained alongside present. | `COPY` entry names trigger, fill structures, and no-placeholder instruction. | Visible placeholders present. | Structural skeleton only; rules and enums remain in `SKILL.md`. |
-| `assets/requirement-row.md` | Template, Skill, Template status, and Maintained alongside present. | `COPY` entry names trigger, fill structures, and no-placeholder instruction. | Visible placeholders present. | Structural row only; requirement rules remain in `SKILL.md`. |
-| `assets/acceptance-criterion-row.md` | Template, Skill, Template status, and Maintained alongside present. | `COPY` entry names trigger, fill structures, and no-placeholder instruction. | Visible placeholders present. | Structural row only. |
-| `assets/decision-log-row.md` | Template, Skill, Template status, and Maintained alongside present. | `COPY` entry names trigger, fill structures, and no-placeholder instruction. | Visible placeholders present. | Structural row only. |
 
 ### Token and cold-read evidence
 
@@ -123,8 +106,8 @@ Cold-read result: the installed `spec` skill body names every packaged asset in
 `Resource map`, states when each asset is copied, names the fields or
 structures to fill, and instructs the agent not to emit unfilled placeholders.
 The `Output skeleton` and `Expected output` sections tell the agent to use the
-full skeleton asset and repeated row assets without needing repository-internal
-paths or generated-output knowledge.
+full skeleton asset while keeping one-line row formats inline, without needing
+repository-internal paths or generated-output knowledge.
 
 ## M3. `spec-review` Assets
 
@@ -193,7 +176,7 @@ verdicts, finding sufficiency, severity policy, and recording obligations in
 | `skills/test-spec/assets/test-spec-skeleton.md` | Added the full test-spec output skeleton with the same required section set as the PR #79 baseline. |
 | `skills/test-spec/assets/test-case.md` | Added the repeated test-case block with the same field labels as the existing test-case format. |
 | `skills/test-spec/assets/coverage-map-row.md` | Added structural requirement and example coverage row variants that preserve the two baseline table shapes. |
-| `skills/test-spec/assets/edge-case-row.md` | Added the repeated edge-case coverage row structure. |
+| Inline edge-case format | Edge-case mapping remains in `SKILL.md`; M6 removed its one-line asset as too small to justify packaging. |
 
 ### Preservation matrix
 
@@ -203,7 +186,7 @@ verdicts, finding sufficiency, severity policy, and recording obligations in
 | `test-spec` | Test-case fields | Previous `## Test case format` and output skeleton test-case block | `skills/test-spec/assets/test-case.md` | Preserves test ID, title, covered requirements/examples/edge cases, level, fixture/setup, steps, expected result, failure proof, and automation location. Test case level enum remains in `SKILL.md`. |
 | `test-spec` | Requirement coverage map row | Previous output skeleton requirement coverage map | `skills/test-spec/assets/test-spec-skeleton.md` and `skills/test-spec/assets/coverage-map-row.md` | Preserves 4 cells: `Requirement ID`, `Covered by`, `Level`, and `Notes`. Coverage obligations and coverage map level enum remain in `SKILL.md`. |
 | `test-spec` | Example coverage map row | Previous output skeleton example coverage map | `skills/test-spec/assets/test-spec-skeleton.md` and `skills/test-spec/assets/coverage-map-row.md` | Preserves 3 cells: `Example`, `Covered by`, and `Notes`; no `Level` cell is added. |
-| `test-spec` | Edge-case row fields | Previous output skeleton edge-case coverage row | `skills/test-spec/assets/edge-case-row.md` | Preserves edge-case plus mapped test IDs or manual verification. Edge-case coverage obligation remains in `SKILL.md`. |
+| `test-spec` | Edge-case row fields | Required-section guidance and output skeleton guidance | `SKILL.md` inline guidance | Preserves edge-case plus mapped test IDs or manual verification inline. Edge-case coverage obligation remains in `SKILL.md`. |
 
 ### Behavior parity
 
@@ -224,7 +207,6 @@ verdicts, finding sufficiency, severity policy, and recording obligations in
 | `assets/test-spec-skeleton.md` | Template, Skill, Template status, and Maintained alongside present. | `COPY` entry names trigger, fill structures, and no-placeholder instruction. | Visible placeholders present. | Structural skeleton only; rules, coverage obligations, and enums remain in `SKILL.md`. |
 | `assets/test-case.md` | Template, Skill, Template status, and Maintained alongside present. | `COPY` entry names trigger, fill structures, and no-placeholder instruction. | Visible placeholders present. | Structural test-case block only; level enum and coverage rules remain in `SKILL.md`. |
 | `assets/coverage-map-row.md` | Template, Skill, Template status, and Maintained alongside present. | `COPY` entry names trigger, row variants, fill structures, no example `Level` column, and no-placeholder instruction. | Visible placeholders present. | Structural requirement/example row variants only; requirement row has 4 cells and example row has 3 cells; coverage obligations remain in `SKILL.md`. |
-| `assets/edge-case-row.md` | Template, Skill, Template status, and Maintained alongside present. | `COPY` entry names trigger, fill structures, and no-placeholder instruction. | Visible placeholders present. | Structural edge-case row only. |
 
 ### Token and cold-read evidence
 
@@ -242,8 +224,9 @@ Cold-read result: the installed `test-spec` skill body names every packaged
 asset in `Resource map`, states when each asset is copied, names the fields or
 structures to fill, and instructs the agent not to emit unfilled placeholders.
 The `Output skeleton` section tells the agent to copy the full skeleton asset
-and repeated substructure assets while keeping status values, level values,
-coverage obligations, stop conditions, and lifecycle boundaries in `SKILL.md`.
+and substantial substructure assets while keeping the trivial edge-case row
+format, status values, level values, coverage obligations, stop conditions, and
+lifecycle boundaries in `SKILL.md`.
 
 ## M5. Generated Output And Family Proof
 
@@ -251,10 +234,10 @@ coverage obligations, stop conditions, and lifecycle boundaries in `SKILL.md`.
 
 | Surface | Result |
 | --- | --- |
-| Generated skill mirror | `python scripts/build-skills.py --check` passed. A generated mirror under `/tmp/rigorloop-m5-skills-mirror` contains every mapped `spec`, `spec-review`, and `test-spec` asset. |
-| Temporary adapter archives | `python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-m5-adapters-db7QUP` built Codex, Claude, and opencode archives. |
-| Temporary adapter validation | `python scripts/validate-adapters.py --root /tmp/rigorloop-m5-adapters-db7QUP --version v0.1.5` passed. |
-| Asset archive inspection | Python `zipfile` inspection found every mapped spec-family asset in all three temporary adapter archives. |
+| Generated skill mirror | `python scripts/build-skills.py --check` passed after M6. Current mapped `spec`, `spec-review`, and `test-spec` assets are generated from canonical skills. |
+| Temporary adapter archives | `python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-m6-adapters-ohAnao` built Codex, Claude, and opencode archives. |
+| Temporary adapter validation | `python scripts/validate-adapters.py --root /tmp/rigorloop-m6-adapters-ohAnao --version v0.1.5` passed. |
+| Asset archive inspection | Python `zipfile` inspection found every current mapped spec-family asset and confirmed removed row assets are absent in all three temporary adapter archives. |
 | Tracked-tree adapter check | `python scripts/build-adapters.py --check --version v0.1.5 --verbose` failed on known missing expanded adapter package files under `dist/adapters/`; this is explicitly deferred after temporary archive proof. |
 | Generated hand edits | No generated adapter body or asset was hand-edited. Temporary generated outputs were built from canonical `skills/`. |
 
@@ -265,9 +248,9 @@ The generated-output proof is recorded in
 
 | Skill | Baseline `SKILL.md` lines | Final `SKILL.md` lines | Baseline bytes | Final bytes | Baseline estimated tokens | Final estimated tokens | Packaged asset lines | Packaged asset bytes | Packaged asset estimated tokens |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| `spec` | 264 | 239 | 10,686 | 10,660 | 2,672 | 2,662 | 111 | 1,993 | 498 |
+| `spec` | 264 | 227 | 10,686 | 9,938 | 2,672 | 2,482 | 93 | 1,360 | 340 |
 | `spec-review` | 205 | 196 | 9,206 | 9,077 | 2,302 | 2,270 | 43 | 1,210 | 302 |
-| `test-spec` | 276 | 210 | 8,558 | 8,256 | 2,140 | 2,064 | 126 | 2,697 | 674 |
+| `test-spec` | 276 | 207 | 8,558 | 8,058 | 2,140 | 2,015 | 120 | 2,482 | 621 |
 
 Common-path `SKILL.md` size decreased for all three touched skills. Packaged
 asset footprint is reported separately from common-path skill body size.
@@ -276,9 +259,9 @@ asset footprint is reported separately from common-path skill body size.
 
 | Skill | Cold-read result |
 | --- | --- |
-| `spec` | Installed skill output names each asset in `Resource map`, states when to copy it, names the fields or structures to fill, and keeps rules, status values, settlement behavior, and modal guidance in `SKILL.md`. |
+| `spec` | Installed skill output names the skeleton asset in `Resource map`, states when to copy it, names the fields to fill, and keeps one-line row formats, rules, status values, settlement behavior, and modal guidance in `SKILL.md`. |
 | `spec-review` | Installed skill output names both review assets, keeps review dimensions, verdicts, finding sufficiency, severity policy, and recording obligations in `SKILL.md`, and limits assets to structural result/finding blocks. |
-| `test-spec` | Installed skill output names each test-spec asset, identifies requirement and example coverage row variants, forbids adding a `Level` column to example coverage, and keeps coverage obligations and enums in `SKILL.md`. |
+| `test-spec` | Installed skill output names each remaining test-spec asset, identifies requirement and example coverage row variants, forbids adding a `Level` column to example coverage, keeps trivial edge-case mapping inline, and keeps coverage obligations and enums in `SKILL.md`. |
 
 ### Placeholder proof
 

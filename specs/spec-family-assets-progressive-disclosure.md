@@ -24,6 +24,7 @@ The existing `specs/skill-contract.md` already defines generic packaged-resource
 - `asset`: a skill-local file under a skill's `assets/` directory that contains a structural template copied and filled by the agent.
 - `full skeleton asset`: an asset that owns the full output skeleton for an artifact-producing skill.
 - `substructure asset`: an asset that owns one repeated row or block within an artifact.
+- `substantial asset`: an asset whose template body carries enough structure to justify a packaged file, typically a full skeleton or a multi-field block where field ordering or table shape is easy to get wrong.
 - `review-class asset`: an asset owned by a deliberative review skill, limited to output structure and not review judgment.
 - `common-path skill body`: the text in `SKILL.md` that a user or agent reads before loading packaged resources.
 - `generated skill mirror`: derived local runtime output under `.codex/skills/`.
@@ -63,6 +64,12 @@ SFA-R2. The implementation MUST NOT add packaged `references/`, packaged `script
 
 SFA-R3. Every spec-family asset MUST be a copy-and-fill structural template, not a rule reference, review rubric, decision matrix, validation checklist, tutorial, hidden enum source, or substitute for `SKILL.md` operating instructions.
 
+SFA-R3A. Every spec-family asset MUST be substantial enough to justify a packaged template. One-line rows or trivial single-field structures SHOULD remain inline in `SKILL.md` when the skill already carries the relevant format rule.
+
+SFA-R3B. A repeated structure MUST NOT become an asset solely because it is multi-instance. The structure MUST also be substantial enough to reduce copy errors, preserve a non-trivial shape, or remove meaningful full-skeleton bulk from the common-path skill body.
+
+SFA-R3C. If an asset's required metadata header is larger than the template body, implementation MUST treat that as evidence that the asset is too small and either keep the format inline or record a specific exception in the plan.
+
 SFA-R4. `skills/spec/SKILL.md` MUST keep rules, stop conditions, routing, claim boundaries, closed enums, validation obligations, and lifecycle boundaries in `SKILL.md`.
 
 SFA-R5. `skills/test-spec/SKILL.md` MUST keep rules, stop conditions, routing, claim boundaries, status and level enums, coverage obligations, validation obligations, and lifecycle boundaries in `SKILL.md`.
@@ -71,7 +78,7 @@ SFA-R6. `skills/spec-review/SKILL.md` MUST keep review dimensions, review-dimens
 
 SFA-R7. `spec` MUST use `assets/spec-skeleton.md` as its full output skeleton unless code review finds that the asset hides too much contract surface for that skill.
 
-SFA-R8. `spec` MUST include no more than these four assets unless the plan records the required higher-count justification: `spec-skeleton.md`, `requirement-row.md`, `acceptance-criterion-row.md`, and `decision-log-row.md`.
+SFA-R8. `spec` MUST include only `spec-skeleton.md` in this slice unless the plan records the required exception justification. Requirement, acceptance-criterion, and decision-log row shapes remain inline because they are trivial relative to their metadata and are already governed by inline format guidance.
 
 SFA-R9. `spec-review` MUST use only `review-result-skeleton.md` and `review-finding.md` assets in this slice.
 
@@ -79,9 +86,9 @@ SFA-R10. `spec-review` MUST NOT include a review-dimension row asset, a full rev
 
 SFA-R11. `test-spec` MUST use `assets/test-spec-skeleton.md` as its full output skeleton unless code review finds that the asset hides too much contract surface for that skill.
 
-SFA-R12. `test-spec` MUST include no more than these four assets unless the plan records the required higher-count justification: `test-spec-skeleton.md`, `test-case.md`, `coverage-map-row.md`, and `edge-case-row.md`.
+SFA-R12. `test-spec` MUST include only `test-spec-skeleton.md`, `test-case.md`, and `coverage-map-row.md` in this slice unless the plan records the required exception justification. Edge-case row shape remains inline because it is a trivial one-line mapping.
 
-SFA-R13. A higher asset count for any touched skill MUST be justified in the plan with asset path, why the asset earns its place, expected usage frequency, why the content cannot remain inline, and why it is an asset rather than a reference.
+SFA-R13. Any additional spec-family asset beyond the approved per-skill inventory MUST be justified in the plan with asset path, why the asset earns its place, expected usage frequency, why the content cannot remain inline, why it is substantial enough to template, and why it is an asset rather than a reference.
 
 SFA-R14. Every touched `SKILL.md` MUST include a `Resource map` that names every packaged asset.
 

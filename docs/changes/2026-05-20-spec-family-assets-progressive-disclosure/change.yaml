@@ -319,6 +319,26 @@ validation:
     result: pass_validated_4_lifecycle_artifacts_after_code_review_m5_r1
   - command: git diff --check -- docs/changes/2026-05-20-spec-family-assets-progressive-disclosure docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md docs/plan.md
     result: pass_after_code_review_m5_r1
+  - command: python scripts/test-skill-validator.py
+    result: pass_142_tests_after_m6_lean_asset_correction
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m6_lean_asset_correction
+  - command: python scripts/build-skills.py --check
+    result: pass_validated_generated_skills_using_temporary_output_after_m6_lean_asset_correction
+  - command: python scripts/measure-skill-tokens.py
+    result: pass_measured_23_skill_files_after_m6_lean_asset_correction
+  - command: python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-m6-adapters-ohAnao
+    result: pass_built_codex_claude_opencode_adapter_archives_after_m6_lean_asset_correction
+  - command: python scripts/validate-adapters.py --root /tmp/rigorloop-m6-adapters-ohAnao --version v0.1.5
+    result: pass_validated_temporary_adapter_archives_after_m6_lean_asset_correction
+  - command: python -c "inspect temporary adapter archives with zipfile for current spec-family assets and removed row assets"
+    result: pass_all_three_adapter_archives_include_current_mapped_assets_and_omit_removed_row_assets_after_m6
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml
+    result: pass_valid_change_metadata_after_m6_lean_asset_correction
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-20-spec-family-assets-progressive-disclosure.md --path specs/spec-family-assets-progressive-disclosure.md --path specs/spec-family-assets-progressive-disclosure.test.md --path docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md --path docs/plan.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/baseline.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/behavior-preservation.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/generated-output-proof.md
+    result: pass_validated_4_lifecycle_artifacts_after_m6_lean_asset_correction
+  - command: git diff --check -- .
+    result: pass_after_m6_lean_asset_correction
 changed_files:
   - docs/proposals/2026-05-20-spec-family-assets-progressive-disclosure.md
   - specs/spec-family-assets-progressive-disclosure.md
@@ -347,9 +367,6 @@ changed_files:
   - docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/reviews/code-review-m5-r1.md
   - skills/spec/SKILL.md
   - skills/spec/assets/spec-skeleton.md
-  - skills/spec/assets/requirement-row.md
-  - skills/spec/assets/acceptance-criterion-row.md
-  - skills/spec/assets/decision-log-row.md
   - skills/spec-review/SKILL.md
   - skills/spec-review/assets/review-result-skeleton.md
   - skills/spec-review/assets/review-finding.md
@@ -357,7 +374,6 @@ changed_files:
   - skills/test-spec/assets/test-spec-skeleton.md
   - skills/test-spec/assets/test-case.md
   - skills/test-spec/assets/coverage-map-row.md
-  - skills/test-spec/assets/edge-case-row.md
   - scripts/skill_validation.py
   - scripts/test-skill-validator.py
   - tests/fixtures/skills/published-design/generated-output-presence/

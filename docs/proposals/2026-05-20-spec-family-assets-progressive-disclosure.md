@@ -241,7 +241,7 @@ Assets are copied structures, not hidden rules.
 
 | Skill | Decision | Boundary |
 |---|---|---|
-| `spec` | Use `assets/spec-skeleton.md` as the full output skeleton, plus substructure assets. | `SKILL.md` keeps compact output expectations, owns rules/enums/stop conditions, and maps the skeleton with `COPY`. |
+| `spec` | Use `assets/spec-skeleton.md` as the full output skeleton. | `SKILL.md` keeps compact output expectations, owns rules/enums/stop conditions, and maps the skeleton with `COPY`; trivial row formats stay inline. |
 | `spec-review` | Use only `review-result-skeleton.md` and `review-finding.md`. | Keep review dimensions, review-dimension table structure, review guidance, verdict enum, and recording obligations in `SKILL.md`. |
 | `test-spec` | Use `assets/test-spec-skeleton.md` as the full output skeleton, plus test-case and coverage-map substructure assets. | `SKILL.md` keeps compact output expectations, owns rules/enums/stop conditions, and maps the skeleton with `COPY`. |
 
@@ -253,7 +253,8 @@ For this proposal, an asset is:
 
 ```text
 a packaged, skill-local, copy-and-fill structural template that the agent uses
-to produce the skill-owned artifact.
+to produce the skill-owned artifact, substantial enough to justify a separate
+file.
 ```
 
 An asset is not:
@@ -266,7 +267,11 @@ An asset is not:
 - a tutorial;
 - a hidden source of enum values;
 - a substitute for SKILL.md operating instructions.
+- a one-line row whose format is already governed inline.
 ```
+
+Smell test: if the metadata header is larger than the template body, the asset
+probably does not earn a file.
 
 Use the established resource-map verb convention:
 
@@ -351,21 +356,17 @@ skills/spec/
   SKILL.md
   assets/
     spec-skeleton.md
-    requirement-row.md
-    acceptance-criterion-row.md
-    decision-log-row.md
 ```
 
 | Asset | Use |
 |---|---|
 | `spec-skeleton.md` | Starting structure for a new spec artifact. |
-| `requirement-row.md` | Reusable row or block for a normative requirement. |
-| `acceptance-criterion-row.md` | Reusable row or block for acceptance criteria. |
-| `decision-log-row.md` | Reusable decision-log row. |
 
 `spec-skeleton.md` may own the full output structure only if `skills/spec/SKILL.md` keeps a compact output expectation summary and a resource-map entry. Do not duplicate the full skeleton in both `SKILL.md` and the asset.
 
-Closed enums stay in `SKILL.md`.
+Requirement, acceptance-criterion, and decision-log row formats stay inline.
+They are too small to justify packaged files because the inline format guidance
+already owns their shape. Closed enums stay in `SKILL.md`.
 
 ### `spec-review`
 
@@ -397,19 +398,18 @@ skills/test-spec/
     test-spec-skeleton.md
     test-case.md
     coverage-map-row.md
-    edge-case-row.md
 ```
 
 | Asset | Use |
 |---|---|
 | `test-spec-skeleton.md` | Starting structure for a new test-spec artifact. |
 | `test-case.md` | One stable test-case block. |
-| `coverage-map-row.md` | One coverage-map row connecting requirement, example, or edge case to tests. |
-| `edge-case-row.md` | One edge-case row or block. |
+| `coverage-map-row.md` | Requirement and example coverage-map row variants. |
 
 Stop conditions, coverage obligations, status enum values, and required test-spec section rules remain in `SKILL.md`.
 
-Assets only provide structure.
+Edge-case coverage row guidance stays inline because it is a trivial one-line
+mapping. Assets only provide substantial structure.
 
 ## Resource map pattern
 
@@ -424,12 +424,6 @@ Each touched `SKILL.md` should include a resource map shaped like:
 ```
 
 Examples:
-
-```md
-- COPY `assets/requirement-row.md` once per normative requirement.
-  Fill: requirement ID, statement, rationale, acceptance link, and owner.
-  Do not emit unfilled placeholders.
-```
 
 ```md
 - COPY `assets/review-finding.md` once per material finding.
@@ -472,6 +466,7 @@ For each asset extraction, record a preservation matrix:
 | `spec` | spec skeleton section set | `SKILL.md` output expectations | `assets/spec-skeleton.md` | same section set |
 | `spec-review` | finding fields | `SKILL.md` finding guidance | `assets/review-finding.md` | same field set |
 | `test-spec` | test-case fields | `SKILL.md` output skeleton | `assets/test-case.md` | same field set |
+| `test-spec` | requirement/example coverage-map rows | `SKILL.md` output skeleton | `assets/coverage-map-row.md` | same row shapes |
 
 A structural pass is insufficient if the extraction changes field names, field obligations, enum values, or stop conditions.
 

@@ -813,15 +813,6 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                     "assets/spec-skeleton.md": self.spec_family_asset_text(
                         template="spec-skeleton-v1", skill="spec", body="## Status\n\n<status>\n"
                     ),
-                    "assets/requirement-row.md": self.spec_family_asset_text(
-                        template="spec-requirement-row-v1", skill="spec"
-                    ),
-                    "assets/acceptance-criterion-row.md": self.spec_family_asset_text(
-                        template="spec-acceptance-criterion-row-v1", skill="spec"
-                    ),
-                    "assets/decision-log-row.md": self.spec_family_asset_text(
-                        template="spec-decision-log-row-v1", skill="spec"
-                    ),
                 },
             )
             self.write_spec_family_asset_fixture(
@@ -864,9 +855,6 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                     "assets/coverage-map-row.md": self.spec_family_asset_text(
                         template="test-spec-coverage-map-row-v1", skill="test-spec"
                     ),
-                    "assets/edge-case-row.md": self.spec_family_asset_text(
-                        template="test-spec-edge-case-row-v1", skill="test-spec"
-                    ),
                 },
             )
 
@@ -897,7 +885,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             errors,
             [
                 "Generated output for skill 'spec' is missing mapped asset "
-                "'assets/acceptance-criterion-row.md' in generated skill mirror"
+                "'assets/spec-skeleton.md' in generated skill mirror"
             ],
         )
 
@@ -973,28 +961,10 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                     "assets/spec-skeleton.md": self.spec_family_asset_text(
                         template="spec-skeleton-v1", skill="spec"
                     ),
-                    "assets/requirement-row.md": self.spec_family_asset_text(
-                        template="spec-requirement-row-v1", skill="spec"
-                    ),
-                    "assets/acceptance-criterion-row.md": self.spec_family_asset_text(
-                        template="spec-acceptance-criterion-row-v1", skill="spec"
-                    ),
-                    "assets/decision-log-row.md": self.spec_family_asset_text(
-                        template="spec-decision-log-row-v1", skill="spec"
-                    ),
                 },
                 resource_entries=textwrap.dedent(
                     """\
                     - READ `assets/spec-skeleton.md` when creating a spec.
-                      Do not emit unfilled placeholders.
-                    - COPY `assets/requirement-row.md` when adding requirements.
-                      Fill: requirement fields.
-                      Do not emit unfilled placeholders.
-                    - COPY `assets/acceptance-criterion-row.md` when adding acceptance criteria.
-                      Fill: acceptance fields.
-                      Do not emit unfilled placeholders.
-                    - COPY `assets/decision-log-row.md` when recording decisions.
-                      Fill: decision fields.
                       Do not emit unfilled placeholders.
                     """
                 ),
@@ -1063,15 +1033,6 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                     "spec",
                     {
                         "assets/spec-skeleton.md": asset_text,
-                        "assets/requirement-row.md": self.spec_family_asset_text(
-                            template="spec-requirement-row-v1", skill="spec"
-                        ),
-                        "assets/acceptance-criterion-row.md": self.spec_family_asset_text(
-                            template="spec-acceptance-criterion-row-v1", skill="spec"
-                        ),
-                        "assets/decision-log-row.md": self.spec_family_asset_text(
-                            template="spec-decision-log-row-v1", skill="spec"
-                        ),
                     },
                 )
 

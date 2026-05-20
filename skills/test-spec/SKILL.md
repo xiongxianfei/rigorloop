@@ -80,9 +80,6 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
   Fill: fields exactly as shown by the selected variant.
   Do not add a `Level` column to the example coverage map.
   Do not emit unfilled placeholders.
-- COPY `assets/edge-case-row.md` when adding each edge-case coverage row.
-  Fill: edge case and mapped tests or manual verification.
-  Do not emit unfilled placeholders.
 
 ## Required sections
 
@@ -173,8 +170,8 @@ migration
 # <Test spec title>
 
 COPY `assets/test-spec-skeleton.md` for the full test-spec structure. Use
-`assets/test-case.md`, `assets/coverage-map-row.md`, and
-`assets/edge-case-row.md` for repeated structures.
+`assets/test-case.md` and `assets/coverage-map-row.md` for repeated
+structures.
 ```
 
 Required sections are listed above. Do not emit unfilled placeholders.
