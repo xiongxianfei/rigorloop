@@ -1,0 +1,166 @@
+change_id: 2026-05-19-spec-and-test-spec-structural-hygiene
+title: Spec and test-spec structural hygiene
+classification: proposal
+risk: low
+artifacts:
+  proposal: docs/proposals/2026-05-19-spec-and-test-spec-structural-hygiene.md
+  spec: specs/skill-contract.md
+  plan: docs/plans/2026-05-19-spec-and-test-spec-structural-hygiene.md
+  review_resolution: docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/review-resolution.md
+  explain_change: docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/explain-change.md
+requirements:
+  - Preserve every skill-contract R-clause ID, clause text, and clause order while adding navigation structure.
+  - Preserve every acceptance criterion text and position within its slice.
+  - Preserve every skill-contract test-spec test-case ID, body, fixture, and coverage mapping.
+  - Keep spec and test-spec structural grouping coupled in one amendment.
+  - Record proposal-review approval before spec amendment relies on the proposal.
+  - Normalize the approved proposal to accepted before relying on it for the spec amendment.
+  - Draft the skill-contract structural hygiene amendment before spec-review.
+  - Record spec-review approval before downstream planning or test-spec work relies on the draft spec amendment.
+  - Normalize the approved spec status before planning relies on it.
+  - Create an active execution plan and synchronize `docs/plan.md`.
+tests:
+  - Proposal-review clean receipt and review-log validation.
+  - Artifact lifecycle validation for the proposal and review evidence.
+  - Whitespace validation for the proposal-stage artifacts.
+validation:
+  - command: proposal-review r1
+    result: approved_no_material_findings
+  - command: upstream status settlement
+    result: proposal_status_accepted
+  - command: spec
+    result: completed_pending_spec_review
+  - command: R-clause preservation check
+    result: pass_existing_R_clause_lines_unchanged
+  - command: acceptance-criterion preservation check
+    result: pass_existing_acceptance_bullets_unchanged
+  - command: example ID preservation check
+    result: pass_existing_example_ids_unchanged
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-19-spec-and-test-spec-structural-hygiene.md --path specs/skill-contract.md --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/change.yaml --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/review-log.md --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/review-resolution.md --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/proposal-review-r1.md
+    result: pass_after_spec
+  - command: git diff --check -- docs/proposals/2026-05-19-spec-and-test-spec-structural-hygiene.md specs/skill-contract.md docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene
+    result: pass_after_spec
+  - command: python scripts/validate-skills.py
+    result: pass_after_spec
+  - command: python scripts/test-skill-validator.py
+    result: pass_after_spec
+  - command: spec-review r1
+    result: approved_no_material_findings
+  - command: upstream status settlement
+    result: spec_status_approved
+  - command: plan
+    result: completed_pending_plan_review
+  - command: plan-review r1
+    result: approved_no_material_findings
+  - command: test-spec
+    result: completed_pending_implementation
+  - command: maintainer test-spec approval
+    result: approved_for_implementation_reliance
+  - command: Requirement coverage row preservation check
+    result: pass_existing_test_spec_requirement_coverage_rows_unchanged
+  - command: Acceptance criteria coverage row preservation check
+    result: pass_existing_test_spec_acceptance_coverage_rows_unchanged
+  - command: Test-case heading preservation check
+    result: pass_existing_test_case_heading_text_unchanged
+  - command: Test-case body preservation check
+    result: pass_existing_nonheading_nonblank_test_case_body_lines_unchanged
+  - command: git diff --check -- specs/skill-contract.test.md docs/plans/2026-05-19-spec-and-test-spec-structural-hygiene.md docs/plan.md docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene
+    result: pass_after_test_spec
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-19-spec-and-test-spec-structural-hygiene.md --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/plans/2026-05-19-spec-and-test-spec-structural-hygiene.md --path docs/plan.md --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/change.yaml --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/review-log.md --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/review-resolution.md --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/spec-review-r1.md --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/plan-review-r1.md
+    result: pass_after_test_spec
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/change.yaml
+    result: pass_after_test_spec
+  - command: python scripts/validate-review-artifacts.py docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene
+    result: pass_after_test_spec
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene
+    result: pass_after_test_spec
+  - command: implement M1
+    result: completed_pending_code_review
+  - command: Requirement coverage row preservation check
+    result: pass_existing_test_spec_requirement_coverage_rows_unchanged_after_implementation
+  - command: Acceptance criteria coverage row preservation check
+    result: pass_existing_test_spec_acceptance_coverage_rows_unchanged_after_implementation
+  - command: Test-case heading preservation check
+    result: pass_existing_test_case_heading_text_unchanged_after_implementation
+  - command: Test-case body preservation check
+    result: pass_existing_nonheading_nonblank_test_case_body_lines_unchanged_after_implementation
+  - command: git diff --check -- specs/skill-contract.test.md docs/plans/2026-05-19-spec-and-test-spec-structural-hygiene.md docs/plan.md docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene
+    result: pass_after_implementation
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-19-spec-and-test-spec-structural-hygiene.md --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/plans/2026-05-19-spec-and-test-spec-structural-hygiene.md --path docs/plan.md --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/change.yaml --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/review-log.md --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/review-resolution.md --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/spec-review-r1.md --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/plan-review-r1.md
+    result: pass_after_implementation
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/change.yaml
+    result: pass_after_implementation
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene
+    result: pass_after_implementation
+  - command: code-review M1 R1
+    result: changes_requested_CR-M1-001
+  - command: review-resolution CR-M1-001
+    result: accepted_resolved_pending_code_review_rerun
+  - command: acceptance-criterion text preservation check
+    result: pass_existing_spec_acceptance_criterion_text_unchanged_after_resolution
+  - command: Requirement coverage row preservation check
+    result: pass_existing_test_spec_requirement_coverage_rows_unchanged_after_resolution
+  - command: Acceptance criteria coverage row preservation check
+    result: pass_existing_test_spec_acceptance_coverage_rows_unchanged_after_resolution
+  - command: Test-case heading preservation check
+    result: pass_existing_test_case_heading_text_unchanged_after_resolution
+  - command: Test-case body preservation check
+    result: pass_existing_nonheading_nonblank_test_case_body_lines_unchanged_after_resolution
+  - command: git diff --check
+    result: pass_after_resolution
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths
+    result: pass_after_resolution
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/change.yaml
+    result: pass_after_resolution
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene
+    result: pass_after_resolution
+  - command: code-review M1 R2
+    result: clean_with_notes_no_material_findings
+  - command: explain-change
+    result: completed_pending_verify
+  - command: git diff --check -- docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/explain-change.md docs/plans/2026-05-19-spec-and-test-spec-structural-hygiene.md docs/plan.md docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/change.yaml docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/review-resolution.md
+    result: pass_after_explain_change
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-19-spec-and-test-spec-structural-hygiene.md --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/plans/2026-05-19-spec-and-test-spec-structural-hygiene.md --path docs/plan.md --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/change.yaml --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/review-log.md --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/review-resolution.md --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/explain-change.md
+    result: pass_after_explain_change
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/change.yaml
+    result: pass_after_explain_change
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene
+    result: pass_after_explain_change
+  - command: final verify preservation checks
+    result: pass_R_clauses_acceptance_criteria_examples_test_spec_rows_headings_and_bodies_preserved
+  - command: git diff --check
+    result: pass_final_verify
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-19-spec-and-test-spec-structural-hygiene.md --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/plans/2026-05-19-spec-and-test-spec-structural-hygiene.md --path docs/plan.md --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/change.yaml --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/review-log.md --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/review-resolution.md --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/explain-change.md --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/proposal-review-r1.md --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/spec-review-r1.md --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/plan-review-r1.md --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/code-review-m1-r1.md --path docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/code-review-m1-r2.md
+    result: pass_final_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/change.yaml
+    result: pass_final_verify
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene
+    result: pass_final_verify
+  - command: python scripts/validate-skills.py
+    result: pass_final_verify
+  - command: python scripts/test-skill-validator.py
+    result: pass_final_verify_128_tests
+  - command: python scripts/select-validation.py --mode pr --base 8d0ddecee8450b3730533df3b3802a75150ca45a --head HEAD --broad-smoke
+    result: pass_final_verify_selected_checks_include_broad_smoke
+  - command: bash scripts/ci.sh --mode pr --base 8d0ddecee8450b3730533df3b3802a75150ca45a --head HEAD --broad-smoke
+    result: pass_final_verify_selected_ci_and_broad_smoke
+  - command: pr readiness checks
+    result: pass_pending_pr_open
+changed_files:
+  - docs/proposals/2026-05-19-spec-and-test-spec-structural-hygiene.md
+  - specs/skill-contract.md
+  - specs/skill-contract.test.md
+  - docs/plans/2026-05-19-spec-and-test-spec-structural-hygiene.md
+  - docs/plan.md
+  - docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/change.yaml
+  - docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/review-log.md
+  - docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/review-resolution.md
+  - docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/explain-change.md
+  - docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/proposal-review-r1.md
+  - docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/spec-review-r1.md
+  - docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/plan-review-r1.md
+  - docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/code-review-m1-r1.md
+  - docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/code-review-m1-r2.md
+review:
+  status: approved
+  unresolved_items: 0
