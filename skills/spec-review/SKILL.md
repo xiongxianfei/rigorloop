@@ -45,6 +45,15 @@ This discovery order is subordinate to the source-rank rule in `docs/workflows.m
 
 Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index when project-local, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
 
+## Resource map
+
+- COPY `assets/review-result-skeleton.md` when recording the review result.
+  Fill: review title, result fields, findings summary, next stage, eventual test-spec readiness, and stop condition.
+  Do not emit unfilled placeholders.
+- COPY `assets/review-finding.md` when recording each material finding.
+  Fill: finding ID, summary, severity, location, evidence, required outcome, and safe resolution path or needs-decision rationale.
+  Do not emit unfilled placeholders.
+
 ## Review dimensions
 
 Evaluate each review dimension with `<review dimension verdict>`.
@@ -175,31 +184,13 @@ Read the full file when the whole file is the review target, the relevant sectio
 ## Output skeleton
 
 ```md
-# <Spec review result>
-## Result
-- Skill: spec-review
-- Review status: <approved | changes-requested | blocked | inconclusive>
-- Material findings: <IDs or none>
-- Recording status: <recorded | blocked>
-- Recording blocker: <blocker or none>
-- Review record: <path | blocked>
-- Review log: <path | blocked>
-- Review resolution: <path | not-required | blocked>
-- Open blockers: <blockers or none>
-- Immediate next stage: <stage or empty when inconclusive>
-## Findings
-### <Finding ID> - <summary>
-- Severity: <blocking | major | minor>
-- Location: <spec section or requirement>
-- Evidence: <quoted or paraphrased evidence>
-- Required outcome: <required correction>
-- Safe resolution path: <safe fix or needs-decision rationale>
-## Eventual test-spec readiness
-<ready | conditionally-ready | not-ready | not-assessed>
-## Stop condition
-<stop condition or none>
+COPY `assets/review-result-skeleton.md` for <spec review result>.
+Use `assets/review-finding.md` once per material finding.
+Do not emit unfilled placeholders.
 ```
 
 ## Expected output
 
-Use the `## Output skeleton` shape. Include findings, exact wording suggestions, next stage, `test-spec` readiness, and any stop condition.
+Use the `## Output skeleton` guidance and review-result asset structure.
+Include Review record, Review log, Review resolution, findings, exact wording
+suggestions, next stage, `test-spec` readiness, and any stop condition.

@@ -831,7 +831,11 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                     "assets/review-result-skeleton.md": self.spec_family_asset_text(
                         template="spec-review-result-skeleton-v1",
                         skill="spec-review",
-                        body="## Result\n\n- Review status: <review status>\n",
+                        body=(
+                            "## Result\n\n"
+                            "- Review status: <review status>\n"
+                            "- Recording status: <recording status>\n"
+                        ),
                     ),
                     "assets/review-finding.md": self.spec_family_asset_text(
                         template="spec-review-finding-v1",

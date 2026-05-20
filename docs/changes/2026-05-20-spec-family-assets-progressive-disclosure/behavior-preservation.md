@@ -125,3 +125,60 @@ structures to fill, and instructs the agent not to emit unfilled placeholders.
 The `Output skeleton` and `Expected output` sections tell the agent to use the
 full skeleton asset and repeated row assets without needing repository-internal
 paths or generated-output knowledge.
+
+## M3. `spec-review` Assets
+
+### Same-slice scope
+
+| Surface | Treatment |
+| --- | --- |
+| `skills/spec-review/SKILL.md` | Added a `Resource map`, kept review dimensions, verdict enum, severity policy, material-finding sufficiency rules, recording obligations, lifecycle boundaries, routing, claim boundaries, and validation guidance in `SKILL.md`, and replaced the inline result skeleton with compact asset-copy guidance. |
+| `skills/spec-review/assets/review-result-skeleton.md` | Added the structural review result scaffold with result fields, findings area, eventual test-spec readiness, and stop condition placeholders. |
+| `skills/spec-review/assets/review-finding.md` | Added the structural material-finding block with the same field labels as the existing material-finding contract. |
+| `scripts/skill_validation.py` | Tightened the review-class policy-prose detector so allowed field-label lines remain valid while policy prose is still rejected. |
+| `scripts/test-skill-validator.py` | Updated the valid spec-family asset fixture to prove review-class field labels such as `Recording status` are accepted. |
+
+### Preservation matrix
+
+| Skill | Source content | Existing location | Asset destination | Preservation proof |
+| --- | --- | --- | --- | --- |
+| `spec-review` | Review result fields | Previous `skills/spec-review/SKILL.md` output skeleton | `skills/spec-review/assets/review-result-skeleton.md` | Preserves result fields for skill, review status, material findings, recording status, recording blocker, review record, review log, review resolution, open blockers, immediate next stage, eventual test-spec readiness, and stop condition. Review outcome rules and recording obligations remain in `SKILL.md`. |
+| `spec-review` | Material-finding fields | `skills/spec-review/SKILL.md`, `## Material findings`, and previous output skeleton finding block | `skills/spec-review/assets/review-finding.md` | Preserves structural fields for finding ID, summary, severity, location, evidence, required outcome, and safe resolution path or needs-decision rationale. Finding sufficiency rules and severity policy remain in `SKILL.md`. |
+
+### Behavior parity
+
+| Baseline surface | M3 result |
+| --- | --- |
+| Review dimensions | Same ten review dimensions remain listed in `SKILL.md`; no review-dimension asset was created. |
+| Closed enums | Review dimension verdict enum remains unchanged in `SKILL.md`. |
+| Review rules and stop conditions | Review judgment, vague/untestable requirement rules, finding sufficiency, isolation/recording obligations, handoff boundaries, and inconclusive stop conditions remain in `SKILL.md`. |
+| Material-finding shape | `assets/review-finding.md` preserves the same material-finding fields while adding no review policy prose. |
+| Recording behavior | Recording obligations remain in `SKILL.md`; `assets/review-result-skeleton.md` preserves the result fields for review record, review log, review resolution, recording status, and recording blocker. |
+| Placeholder behavior | Assets contain visible placeholders as templates; M3 does not create a final representative output artifact, so no final output placeholder leak is introduced in this slice. |
+
+### Review-class asset boundary
+
+| Asset | Metadata | Resource-map entry | Placeholder | Hidden-rule check |
+| --- | --- | --- | --- | --- |
+| `assets/review-result-skeleton.md` | Template, Skill, Template status, and Maintained alongside present. | `COPY` entry names trigger, fill structures, and no-placeholder instruction. | Visible placeholders present. | Structural result scaffold only; review dimensions, verdicts, recording rules, and review policy remain in `SKILL.md`. |
+| `assets/review-finding.md` | Template, Skill, Template status, and Maintained alongside present. | `COPY` entry names trigger, fill structures, and no-placeholder instruction. | Visible placeholders present. | Structural finding block only; severity policy and material-finding sufficiency rules remain in `SKILL.md`. |
+
+### Token and cold-read evidence
+
+| Measurement | Baseline `spec-review/SKILL.md` | M3 `spec-review/SKILL.md` | M3 packaged assets |
+| --- | ---: | ---: | ---: |
+| Lines | 205 | 196 | 43 |
+| Bytes | 9,206 | 9,077 | 1,210 |
+| Estimated tokens | 2,302 | 2,269 | 302 |
+
+Common-path `SKILL.md` size decreased by 9 lines, 129 bytes, and 33
+estimated tokens. Packaged asset footprint is recorded separately from the
+common path.
+
+Cold-read result: the installed `spec-review` skill body names both packaged
+assets in `Resource map`, states when each asset is copied, names the fields or
+structures to fill, and instructs the agent not to emit unfilled placeholders.
+The `Output skeleton` and `Expected output` sections tell the agent to use the
+result asset and material-finding asset while keeping review dimensions,
+verdicts, finding sufficiency, severity policy, and recording obligations in
+`SKILL.md`.
