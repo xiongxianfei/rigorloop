@@ -59,4 +59,4 @@ Status: changes-requested
 Detailed record: reviews/code-review-m1-r1.md
 Resolution: review-resolution.md#code-review-m1-r1
 Material findings: PFA-M1-CR1
-Open findings: PFA-M1-CR1
+Open findings: None

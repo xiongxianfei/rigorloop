@@ -697,12 +697,20 @@ def _validate_spec_family_asset_file(
     return errors
 
 
-def _proposal_review_asset_policy_lines(asset_body: str) -> list[str]:
+def _proposal_review_asset_policy_errors(
+    path: Path,
+    relative_resource: str,
+    asset_body: str,
+) -> list[str]:
+    errors: list[str] = []
     review_policy_lines: list[str] = []
     for line in asset_body.splitlines():
         if not line.strip() or line.lstrip().startswith("#"):
             continue
         field_label_match = SPEC_REVIEW_ASSET_ALLOWED_FIELD_LABEL_PATTERN.match(line)
+        if PROPOSAL_REVIEW_ASSET_FORBIDDEN_POLICY_PATTERN.search(line):
+            review_policy_lines.append(line)
+            continue
         if field_label_match is not None:
             label = field_label_match.group("label")
             normalized_label = _normalized_asset_label(label)
@@ -711,10 +719,21 @@ def _proposal_review_asset_policy_lines(asset_body: str) -> list[str]:
             ) or PROPOSAL_REVIEW_ASSET_FORBIDDEN_LABEL_PATTERN.search(normalized_label):
                 review_policy_lines.append(line)
                 continue
-            if normalized_label in PROPOSAL_REVIEW_ASSET_ALLOWED_FIELD_LABELS:
+            if normalized_label not in PROPOSAL_REVIEW_ASSET_ALLOWED_FIELD_LABELS:
+                errors.append(
+                    f"{path}: proposal-review asset '{relative_resource}' field label is not in the approved "
+                    f"structural-label allowlist: {label}"
+                )
                 continue
+            continue
         review_policy_lines.append(line)
-    return review_policy_lines
+
+    if PROPOSAL_REVIEW_ASSET_FORBIDDEN_POLICY_PATTERN.search("\n".join(review_policy_lines)):
+        errors.append(
+            f"{path}: proposal-review asset '{relative_resource}' must not contain review-policy labels or guidance"
+        )
+
+    return errors
 
 
 def _validate_proposal_family_asset_file(
@@ -776,11 +795,9 @@ def _validate_proposal_family_asset_file(
         )
 
     if skill_name == "proposal-review":
-        review_policy_text = "\n".join(_proposal_review_asset_policy_lines(asset_body))
-        if PROPOSAL_REVIEW_ASSET_FORBIDDEN_POLICY_PATTERN.search(review_policy_text):
-            errors.append(
-                f"{path}: proposal-review asset '{relative_resource}' must not contain review-policy labels or guidance"
-            )
+        errors.extend(
+            _proposal_review_asset_policy_errors(path, relative_resource, asset_body)
+        )
 
     return errors
 

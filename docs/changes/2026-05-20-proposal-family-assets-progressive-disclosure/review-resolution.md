@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -90,10 +90,21 @@ No material findings.
 
 Finding ID: PFA-M1-CR1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implementation agent
 Owning stage: implement M1
-Chosen action: Pending. Add non-allowlisted proposal-review structural-label rejection and fixture coverage before returning M1 to code review.
+Chosen action: Updated proposal-review asset validation so field-label-shaped lines must use labels from `PROPOSAL_REVIEW_ASSET_ALLOWED_FIELD_LABELS`. Non-allowlisted structural labels now fail independently of the forbidden-policy regex.
 Rationale: The approved spec requires explicit structural-label allowlist enforcement for proposal-review assets, not only forbidden-policy phrase detection.
 Validation target: `proposal-review` asset validation rejects field labels that are not in `PROPOSAL_REVIEW_ASSET_ALLOWED_FIELD_LABELS` and keeps approved labels passing.
-Validation evidence: pending
+Validation evidence: Full M1 review-resolution validation passed after the closed-allowlist fix; see command evidence below.
+
+Command evidence:
+- `python scripts/test-skill-validator.py` - pass, 151 tests after adding non-allowlisted label regression coverage for `Architecture impact`, `Testability notes`, `Rollout realism`, and `Strategic value`.
+- `python scripts/validate-skills.py` - pass.
+- `python scripts/validate-change-metadata.py docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml` - pass.
+- `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure` - pass.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-20-proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.test.md --path docs/plans/2026-05-20-proposal-family-assets-progressive-disclosure.md --path docs/plan.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/baseline.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-log.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-resolution.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r2.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/spec-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/plan-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r1.md` - pass.
+- `git diff --check --` - pass.
+
+Resolution:
+Added a closed-allowlist validation path for `proposal-review` asset field labels. Forbidden review-policy wording still fails, approved structural labels still pass, and non-allowlisted field labels now fail with a specific structural-label allowlist error. M1 is returned to `code-review`; M2-M4 remain open and are not ready from this resolution alone.
