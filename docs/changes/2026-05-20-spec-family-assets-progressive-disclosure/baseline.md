@@ -34,7 +34,7 @@ full-skeleton boundaries for `spec` and `test-spec`, the two-asset cap for
 | --- | ---: | --- |
 | `spec` | 4 | Four approved assets created in M2. |
 | `spec-review` | 2 | Cap recorded; `review-dimension-row.md` remains excluded. |
-| `test-spec` | 4 | Cap recorded; no assets created in M1. |
+| `test-spec` | 4 | Four approved assets created in M4. |
 
 ## M1 Outcome
 
