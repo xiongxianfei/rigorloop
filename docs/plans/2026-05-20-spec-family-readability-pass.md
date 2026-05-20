@@ -70,13 +70,13 @@ Apply a presentation-only readability pass to the three spec-family skills, `spe
 ## Current Handoff Summary
 
 - Current milestone: M3. Test-Spec Skill Readability And Generated Output Proof
-- Current milestone state: review-requested
-- Last reviewed milestone: M2. Spec-Review Skill Readability
-- Review status: code-review M2 R2 clean-with-notes; no open findings; M3 is ready for code-review
-- Remaining in-scope implementation milestones: M3
-- Next stage: code-review M3
+- Current milestone state: closed
+- Last reviewed milestone: M3. Test-Spec Skill Readability And Generated Output Proof
+- Review status: code-review M3 R1 clean-with-notes; no open findings
+- Remaining in-scope implementation milestones: none
+- Next stage: final closeout sequence, starting with explain-change
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M3 code-review, explain-change, verify, and PR handoff remain open.
+- Reason final closeout is or is not ready: explain-change, verify, and PR handoff remain open.
 
 ## Milestones
 
@@ -175,7 +175,7 @@ Apply a presentation-only readability pass to the three spec-family skills, `spe
 
 ### M3. Test-Spec Skill Readability And Generated Output Proof
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: make normalized `skills/test-spec/SKILL.md` scannable, preserve the normalized baseline, and validate current generated adapter output from canonical skills.
 - Requirements: `SFRP-R1` through `SFRP-R25`
 - Files/components likely touched:
@@ -275,6 +275,7 @@ Apply a presentation-only readability pass to the three spec-family skills, `spe
 - 2026-05-20: code-review M2 R2 completed clean-with-notes; M2 is closed and the next stage is implement M3.
 - 2026-05-20: M3 implementation started for `skills/test-spec/SKILL.md`; preservation, parity, generated-output, and cold-read evidence are being completed before code-review.
 - 2026-05-20: M3 implementation completed and targeted validation passed except for the explicitly deferred v0.1.5 repository-tree adapter command debt; milestone is ready for code-review.
+- 2026-05-20: code-review M3 R1 completed clean-with-notes; M3 is closed and the next stage is the final closeout sequence starting with explain-change.
 
 ## Decision log
 
@@ -351,6 +352,12 @@ Apply a presentation-only readability pass to the three spec-family skills, `spe
   - `python scripts/build-adapters.py --version v0.1.5 --check` failed on existing repository-tree adapter layout debt: missing `dist/adapters/{codex,claude,opencode}` generated package trees and v0.1.5 manifest command alias incompatibility.
   - `python scripts/validate-adapters.py --version v0.1.5` failed on the same existing repository-tree adapter layout debt.
   - Generated adapter skill bodies were not hand-edited; selected CI still passed its current supported adapter archive drift proof.
+- Code-review M3 R1 recording validation passed:
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-20-spec-family-readability-pass`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-20-spec-family-readability-pass/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-20-spec-family-readability-pass.md --path docs/plan.md --path docs/changes/2026-05-20-spec-family-readability-pass/change.yaml --path docs/changes/2026-05-20-spec-family-readability-pass/review-log.md --path docs/changes/2026-05-20-spec-family-readability-pass/review-resolution.md --path docs/changes/2026-05-20-spec-family-readability-pass/reviews/code-review-m3-r1.md`
+  - `git diff --check -- docs/plans/2026-05-20-spec-family-readability-pass.md docs/plan.md docs/changes/2026-05-20-spec-family-readability-pass`
+  - `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-20-spec-family-readability-pass.md --path docs/plan.md --path docs/changes/2026-05-20-spec-family-readability-pass/change.yaml --path docs/changes/2026-05-20-spec-family-readability-pass/review-log.md --path docs/changes/2026-05-20-spec-family-readability-pass/review-resolution.md --path docs/changes/2026-05-20-spec-family-readability-pass/reviews/code-review-m3-r1.md`
 
 ## Outcome and retrospective
 
@@ -359,4 +366,4 @@ Apply a presentation-only readability pass to the three spec-family skills, `spe
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `code-review M3`.
+- Ready for final closeout sequence, starting with `explain-change`.
