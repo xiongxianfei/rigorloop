@@ -73,11 +73,11 @@ The work touches canonical skill source under `skills/`, validator and test scri
 ## Current Handoff Summary
 
 - Current milestone: M2
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Last reviewed milestone: M1
-- Review status: M2 implementation complete; awaiting code-review
+- Review status: code-review M2 R1 changes-requested; `SFA-M2-CR1` open
 - Remaining in-scope implementation milestones: M2, M3, M4, M5
-- Next stage: code-review M2
+- Next stage: review-resolution / implement M2 fix
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation milestones, code reviews, generated-output proof, explain-change, verify, and PR handoff remain incomplete.
 
@@ -113,7 +113,7 @@ The work touches canonical skill source under `skills/`, validator and test scri
 
 ### M2. `spec` assets
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Add `spec` structural assets and resource-map guidance without changing behavior.
 - Requirements: `SFA-R1` through `SFA-R4`, `SFA-R7`, `SFA-R8`, `SFA-R14` through `SFA-R22`, `SFA-R28` through `SFA-R31`, `SFA-R38` through `SFA-R41`
 - Files expected:
@@ -134,7 +134,7 @@ The work touches canonical skill source under `skills/`, validator and test scri
   - `python scripts/test-skill-validator.py`
   - M2 preservation and behavior-parity evidence inspection
   - `git diff --check -- .`
-- Result: review-requested after adding `spec` assets, resource map, preservation evidence, token evidence, and cold-read evidence.
+- Result: changes requested; `SFA-M2-CR1` requires review-resolution before M2 can close.
 - Risks:
   - Full skeleton asset hides too much contract surface; fall back to inline skeleton for `spec` if code review finds that risk.
 - Rollback:
@@ -276,6 +276,7 @@ Final closeout:
 - 2026-05-20: code-review M1 R2 returned clean-with-notes; M1 closed and next stage is implement M2.
 - 2026-05-20: M2 implementation started for `spec` assets.
 - 2026-05-20: M2 added the four approved `spec` assets, updated `skills/spec/SKILL.md`, recorded preservation/token/cold-read evidence, and moved to review-requested.
+- 2026-05-20: code-review M2 R1 requested changes because `assets/requirement-row.md` narrows requirement rows to `MUST`.
 
 ## Decision log
 
