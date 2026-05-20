@@ -58,9 +58,9 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 - Last reviewed milestone: M4. Generated Output, Token, Cold-Read, and Lifecycle Evidence
 - Review status: code-review M4 R1 clean-with-notes; no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: final closeout sequence, starting with explain-change
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: all implementation milestones are closed, but explain-change, verify, and PR handoff evidence do not exist.
+- Reason final closeout is or is not ready: all implementation milestones are closed and explain-change exists, but verify and PR handoff evidence do not exist.
 
 ## Milestones
 
@@ -328,6 +328,7 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 - 2026-05-20: code-review M3 R2 returned clean-with-notes; M3 closed and next stage is implement M4.
 - 2026-05-20: M4 recorded generated skill mirror proof, temporary adapter archive proof, adapter validation, tracked-tree adapter deferral, token/P evidence, cold-read evidence, and no-hand-edit evidence; M4 moved to `review-requested`.
 - 2026-05-20: code-review M4 R1 returned clean-with-notes; all implementation milestones are closed and the next stage is final closeout sequence starting with explain-change.
+- 2026-05-20: Explain-change recorded durable rationale in `docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/explain-change.md`; next stage is verify.
 
 ## Decision log
 
@@ -361,6 +362,7 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 - Generated skill mirrors and adapter packages: M4 generated mirror, temporary adapter archive, and archive inspection proof passed; tracked-tree expanded adapter check is deferred as known debt.
 - `specs/skill-contract.md`: unaffected in M1; no amendment needed before validator foundation work.
 - `docs/plan.md`: updated only as the active plan index; milestone journal details remain in this plan body.
+- `docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/explain-change.md`: records rationale only and does not own final verify or PR readiness.
 
 ## Validation notes
 
@@ -438,4 +440,4 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for final closeout sequence, starting with explain-change. Final closeout remains incomplete until explain-change, verify, and PR handoff close.
+- Ready for verify. Final closeout remains incomplete until verify and PR handoff close.
