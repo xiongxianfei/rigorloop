@@ -53,14 +53,14 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 
 ## Current Handoff Summary
 
-- Current milestone: M3. Proposal-Review Structural Assets
-- Current milestone state: closed
+- Current milestone: M4. Generated Output, Token, Cold-Read, and Lifecycle Evidence
+- Current milestone state: review-requested
 - Last reviewed milestone: M3. Proposal-Review Structural Assets
-- Review status: code-review M3 R2 clean-with-notes; no material findings
+- Review status: M4 implementation complete; awaiting code-review
 - Remaining in-scope implementation milestones: M4
-- Next stage: implement M4
+- Next stage: code-review M4
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M4 has not run, and final explain-change, verify, and PR handoff evidence do not exist.
+- Reason final closeout is or is not ready: M4 is awaiting code-review, and final explain-change, verify, and PR handoff evidence do not exist.
 
 ## Milestones
 
@@ -216,7 +216,7 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 
 ### M4. Generated Output, Token, Cold-Read, and Lifecycle Evidence
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Prove generated skill mirrors and temporary adapter packages include proposal-family assets, record token-cost and cold-read evidence, and prepare final lifecycle evidence.
 - Requirements: PFA-R40-PFA-R50
 - Files/components likely touched:
@@ -253,6 +253,14 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
   - `git diff --check --`
 - Expected observable result: Generated outputs include mapped assets, adapter validation passes or records a blocker, token/cold-read evidence is recorded, and lifecycle state is ready for explain-change and verify after all implementation reviews close.
 - Commit message: `M4: record proposal-family asset generated-output evidence`
+- Implementation evidence:
+  - Recorded `docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/generated-output-proof.md`.
+  - Proved generated skill mirror asset presence under `/tmp/rigorloop-pfa-m4-skills-final-wybuIX/skills`.
+  - Built and validated temporary `v0.1.5` adapter archives under `/tmp/rigorloop-pfa-m4-adapters-final-bT9gTu`.
+  - Inspected Codex, Claude, and opencode archive contents with Python `zipfile`; all three proposal-family assets were present under each adapter root.
+  - Ran tracked-tree adapter check and recorded the known expanded-adapter-layout deferral after temporary generated proof passed.
+  - Recorded common-path token deltas, total packaged deltas, P estimates, cold-read evidence, representative no-placeholder evidence, and no-hand-edit evidence.
+  - Trimmed duplicated `proposal/SKILL.md` output/resource-map wording so both touched common-path skill bodies are smaller than the pinned baseline while keeping asset usage and conditional-section guidance intact.
 - Milestone closeout:
   - validation passed
   - progress updated
@@ -316,6 +324,7 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 - 2026-05-20: code-review M3 R1 recorded `PFA-M3-CR1`; M3 moved to `resolution-needed`.
 - 2026-05-20: Accepted and resolved `PFA-M3-CR1` by restoring the pinned `## Result` heading and literal `Skill` field, adding direct validator coverage, and returning M3 to `review-requested` for code-review rerun.
 - 2026-05-20: code-review M3 R2 returned clean-with-notes; M3 closed and next stage is implement M4.
+- 2026-05-20: M4 recorded generated skill mirror proof, temporary adapter archive proof, adapter validation, tracked-tree adapter deferral, token/P evidence, cold-read evidence, and no-hand-edit evidence; M4 moved to `review-requested`.
 
 ## Decision log
 
@@ -336,6 +345,9 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 - M3 keeps generated mirror, temporary adapter proof, token-cost, P, cold-read, and representative no-placeholder proof in M4. M3 records preservation and behavior-parity evidence for the `proposal-review` structural extraction only.
 - Code-review found that `review-result-skeleton.md` did not preserve the pinned `Skill` result field or `## Result` heading shape; M3 must resolve `PFA-M3-CR1` before M4.
 - Resolution for `PFA-M3-CR1` adds direct validator coverage for the pinned proposal-review result skeleton heading and `Skill` field, so a future extraction cannot silently drop that baseline field while preserving only allowed-label checks.
+- M4 confirmed that packaged totals grow while common-path bodies shrink. `proposal-skeleton.md` keeps a high P estimate, so the asset is justified by common-path readability and maintainability instead of total-token reduction.
+- `proposal/SKILL.md` needed a small duplicate-wording trim during M4 because the initial M2 extraction reduced lines but left the local token estimate slightly above the pinned baseline. The final estimate is 3308 tokens versus the 3368-token baseline.
+- The tracked-tree adapter check still reports known expanded-layout debt for `dist/adapters/` with `total=112`, `missing=111`, and `manifest-error=1`; temporary adapter archive generation, validation, and archive inspection passed.
 
 ## Aligned-surface audit
 
@@ -343,9 +355,9 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 - `skills/proposal/`: M2 adds only `assets/proposal-skeleton.md` and compact `SKILL.md` resource-map/output guidance; rules, enums, gates, scope preservation, scope budget, decision-quality checks, artifact placement, and handoff behavior remain in `SKILL.md`.
 - `skills/proposal-review/`: unaffected in M1; baseline captured the source state for M3 before skill edits.
 - `skills/proposal-review/`: M3 adds only `assets/review-result-skeleton.md`, `assets/material-finding.md`, and compact `SKILL.md` resource-map/output guidance; review dimensions, review statuses, recording statuses, material-finding sufficiency, scope preservation, scope budget, Vision fit review, standing gates, isolation, recording, artifact placement, and handoff behavior remain in `SKILL.md`.
-- Generated skill mirrors and adapter packages: unaffected in M1; generated-output proof is scheduled for M4.
+- Generated skill mirrors and adapter packages: M4 generated mirror, temporary adapter archive, and archive inspection proof passed; tracked-tree expanded adapter check is deferred as known debt.
 - `specs/skill-contract.md`: unaffected in M1; no amendment needed before validator foundation work.
-- `docs/plan.md`: remains the active plan index and does not carry milestone journal details.
+- `docs/plan.md`: updated only as the active plan index; milestone journal details remain in this plan body.
 
 ## Validation notes
 
@@ -401,6 +413,20 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml` - pass
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-20-proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.test.md --path docs/plans/2026-05-20-proposal-family-assets-progressive-disclosure.md --path docs/plan.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/baseline.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/behavior-preservation.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-log.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-resolution.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r2.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/spec-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/plan-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r2.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m2-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m3-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m3-r2.md` - pass, validated 3 artifact files
   - `git diff --check --` - pass
+- 2026-05-20: M4 generated-output and token proof passed:
+  - `python scripts/build-skills.py --check --output-dir /tmp/rigorloop-pfa-m4-skills-final-wybuIX/skills` - pass, generated proposal-family assets present
+  - `python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-pfa-m4-adapters-final-bT9gTu` - pass, built Codex, Claude, and opencode adapter archives
+  - `python scripts/validate-adapters.py --root /tmp/rigorloop-pfa-m4-adapters-final-bT9gTu --version v0.1.5` - pass
+  - Python `zipfile` inspection against `/tmp/rigorloop-pfa-m4-adapters-final-bT9gTu` - pass, all three proposal-family assets present in all three adapter archives
+  - `python scripts/build-adapters.py --check --version v0.1.5 --verbose` - expected tracked-tree deferral, `total=112`, `missing=111`, `manifest-error=1`
+  - `python scripts/measure-skill-tokens.py` - pass, 23 skills, 250084 bytes, 62509 estimated tokens
+  - `python scripts/validate-skills.py skills/proposal/SKILL.md` - pass after final `proposal` wording trim
+  - `python scripts/test-skill-validator.py` - pass, 152 tests
+  - `python scripts/validate-skills.py` - pass, validated 23 skill files
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml` - pass
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure` - pass, reviews=9, findings=6, log_entries=9, resolution_entries=6
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-20-proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.test.md --path docs/plans/2026-05-20-proposal-family-assets-progressive-disclosure.md --path docs/plan.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/baseline.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/behavior-preservation.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/generated-output-proof.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-log.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-resolution.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r2.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/spec-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/plan-review-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r2.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m2-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m3-r1.md --path docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m3-r2.md` - pass, validated 3 artifact files
+  - `git diff --check --` - pass
 
 ## Outcome and retrospective
 
@@ -409,4 +435,4 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for implement M4. Final closeout remains blocked until M4 and downstream gates close.
+- Ready for code-review M4. Final closeout remains blocked until M4 review and downstream gates close.
