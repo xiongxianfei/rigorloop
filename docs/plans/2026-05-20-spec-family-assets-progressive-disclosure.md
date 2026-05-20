@@ -72,14 +72,14 @@ The work touches canonical skill source under `skills/`, validator and test scri
 
 ## Current Handoff Summary
 
-- Current milestone: M4
-- Current milestone state: review-requested
-- Last reviewed milestone: M3
-- Review status: code-review M4 R1 finding `SFA-M4-CR1` accepted and resolved; M4 fix ready for code-review
-- Remaining in-scope implementation milestones: M4, M5
-- Next stage: code-review M4 fix
+- Current milestone: M5
+- Current milestone state: planned
+- Last reviewed milestone: M4
+- Review status: code-review M4 R2 clean-with-notes; no material findings
+- Remaining in-scope implementation milestones: M5
+- Next stage: implement M5
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation milestones, code reviews, generated-output proof, explain-change, verify, and PR handoff remain incomplete.
+- Reason final closeout is or is not ready: M5 generated-output proof, M5 code review, explain-change, verify, and PR handoff remain incomplete.
 
 ## Milestones
 
@@ -167,7 +167,7 @@ The work touches canonical skill source under `skills/`, validator and test scri
 
 ### M4. `test-spec` assets
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Add `test-spec` structural assets and resource-map guidance without changing coverage obligations.
 - Requirements: `SFA-R1` through `SFA-R3`, `SFA-R5`, `SFA-R11`, `SFA-R12`, `SFA-R14` through `SFA-R22`, `SFA-R28` through `SFA-R31`, `SFA-R38` through `SFA-R41`
 - Files expected:
@@ -188,7 +188,7 @@ The work touches canonical skill source under `skills/`, validator and test scri
   - `python scripts/test-skill-validator.py`
   - M4 preservation and behavior-parity evidence inspection
   - `git diff --check -- skills/test-spec docs/changes/2026-05-20-spec-family-assets-progressive-disclosure`
-- Result: `SFA-M4-CR1` accepted and resolved after implementation; ready for code-review of the M4 fix.
+- Result: closed by code-review M4 R2 after `SFA-M4-CR1` resolution.
 - Validation evidence after `SFA-M4-CR1` fix:
   - `python scripts/validate-skills.py skills/test-spec/SKILL.md` passed.
   - `python scripts/validate-skills.py` passed.
