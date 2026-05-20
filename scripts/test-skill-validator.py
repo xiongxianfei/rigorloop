@@ -8,6 +8,8 @@ import subprocess
 import sys
 import unittest
 import math
+import tempfile
+import textwrap
 from pathlib import Path
 
 
@@ -517,6 +519,74 @@ def assert_boundary_id_covered(test_case: unittest.TestCase, body: str, boundary
 class SkillValidatorFixtureTests(unittest.TestCase):
     maxDiff = None
 
+    def write_spec_family_asset_fixture(
+        self,
+        root: Path,
+        skill_name: str,
+        assets: dict[str, str],
+        resource_entries: str | None = None,
+    ) -> Path:
+        skill_dir = root / skill_name
+        skill_dir.mkdir(parents=True)
+        if resource_entries is None:
+            resource_entries = "\n".join(
+                [
+                    f"- COPY `{relative_path}` when producing the related artifact structure.\n"
+                    f"  Fill: structural fields for {relative_path}.\n"
+                    "  Do not emit unfilled placeholders."
+                    for relative_path in sorted(assets)
+                ]
+            )
+        (skill_dir / "SKILL.md").write_text(
+            "\n".join(
+                [
+                    "---",
+                    f"name: {skill_name}",
+                    "description: Validate spec-family asset packaging.",
+                    "---",
+                    "",
+                    f"# {skill_name}",
+                    "",
+                    "## Resource map",
+                    "",
+                    resource_entries.rstrip(),
+                    "",
+                    "## Expected output",
+                    "",
+                    "Compact output summary.",
+                    "",
+                ]
+            ),
+            encoding="utf-8",
+        )
+        for relative_path, content in assets.items():
+            asset_path = skill_dir / relative_path
+            asset_path.parent.mkdir(parents=True, exist_ok=True)
+            asset_path.write_text(textwrap.dedent(content), encoding="utf-8")
+        return skill_dir
+
+    def spec_family_asset_text(
+        self,
+        *,
+        template: str,
+        skill: str,
+        status: str = "normative",
+        body: str = "| <field> | <value> |\n",
+        include_metadata: bool = True,
+    ) -> str:
+        metadata = ""
+        if include_metadata:
+            metadata = textwrap.dedent(
+                f"""\
+                <!-- Template: {template} -->
+                <!-- Skill: {skill} -->
+                <!-- Template status: {status} -->
+                <!-- Maintained alongside: skills/{skill}/SKILL.md -->
+
+                """
+            )
+        return metadata + textwrap.dedent(body)
+
     def assertFixturePasses(self, relative_path: str) -> None:
         result = run_validator(FIXTURES / relative_path)
         self.assertEqual(
@@ -730,6 +800,254 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "published-design/plan-assets-section-mismatch",
             "plan-skeleton section set does not match SKILL.md expected sections",
         )
+
+    def test_spec_family_asset_valid_fixture_passes(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.write_spec_family_asset_fixture(
+                root,
+                "spec",
+                {
+                    "assets/spec-skeleton.md": self.spec_family_asset_text(
+                        template="spec-skeleton-v1", skill="spec", body="## Status\n\n<status>\n"
+                    ),
+                    "assets/requirement-row.md": self.spec_family_asset_text(
+                        template="spec-requirement-row-v1", skill="spec"
+                    ),
+                    "assets/acceptance-criterion-row.md": self.spec_family_asset_text(
+                        template="spec-acceptance-criterion-row-v1", skill="spec"
+                    ),
+                    "assets/decision-log-row.md": self.spec_family_asset_text(
+                        template="spec-decision-log-row-v1", skill="spec"
+                    ),
+                },
+            )
+            self.write_spec_family_asset_fixture(
+                root,
+                "spec-review",
+                {
+                    "assets/review-result-skeleton.md": self.spec_family_asset_text(
+                        template="spec-review-result-skeleton-v1",
+                        skill="spec-review",
+                        body="## Result\n\n- Review status: <review status>\n",
+                    ),
+                    "assets/review-finding.md": self.spec_family_asset_text(
+                        template="spec-review-finding-v1",
+                        skill="spec-review",
+                        body="## Finding <finding id>\n\n- Severity: <severity>\n- Location: <location>\n",
+                    ),
+                },
+            )
+            self.write_spec_family_asset_fixture(
+                root,
+                "test-spec",
+                {
+                    "assets/test-spec-skeleton.md": self.spec_family_asset_text(
+                        template="test-spec-skeleton-v1",
+                        skill="test-spec",
+                        body="## Status\n\n<status>\n",
+                    ),
+                    "assets/test-case.md": self.spec_family_asset_text(
+                        template="test-spec-test-case-v1", skill="test-spec"
+                    ),
+                    "assets/coverage-map-row.md": self.spec_family_asset_text(
+                        template="test-spec-coverage-map-row-v1", skill="test-spec"
+                    ),
+                    "assets/edge-case-row.md": self.spec_family_asset_text(
+                        template="test-spec-edge-case-row-v1", skill="test-spec"
+                    ),
+                },
+            )
+
+            result = run_validator(root)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_spec_family_asset_rejects_unapproved_asset_paths(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.write_spec_family_asset_fixture(
+                root,
+                "spec-review",
+                {
+                    "assets/review-result-skeleton.md": self.spec_family_asset_text(
+                        template="spec-review-result-skeleton-v1", skill="spec-review"
+                    ),
+                    "assets/review-finding.md": self.spec_family_asset_text(
+                        template="spec-review-finding-v1", skill="spec-review"
+                    ),
+                    "assets/review-dimension-row.md": self.spec_family_asset_text(
+                        template="spec-review-dimension-row-v1", skill="spec-review"
+                    ),
+                },
+            )
+
+            result = run_validator(root)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("spec-family asset rollout must ship exactly approved assets", result.stdout + result.stderr)
+
+    def test_spec_family_asset_resource_map_requires_copy_and_fields(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.write_spec_family_asset_fixture(
+                root,
+                "spec",
+                {
+                    "assets/spec-skeleton.md": self.spec_family_asset_text(
+                        template="spec-skeleton-v1", skill="spec"
+                    ),
+                    "assets/requirement-row.md": self.spec_family_asset_text(
+                        template="spec-requirement-row-v1", skill="spec"
+                    ),
+                    "assets/acceptance-criterion-row.md": self.spec_family_asset_text(
+                        template="spec-acceptance-criterion-row-v1", skill="spec"
+                    ),
+                    "assets/decision-log-row.md": self.spec_family_asset_text(
+                        template="spec-decision-log-row-v1", skill="spec"
+                    ),
+                },
+                resource_entries=textwrap.dedent(
+                    """\
+                    - READ `assets/spec-skeleton.md` when creating a spec.
+                      Do not emit unfilled placeholders.
+                    - COPY `assets/requirement-row.md` when adding requirements.
+                      Fill: requirement fields.
+                      Do not emit unfilled placeholders.
+                    - COPY `assets/acceptance-criterion-row.md` when adding acceptance criteria.
+                      Fill: acceptance fields.
+                      Do not emit unfilled placeholders.
+                    - COPY `assets/decision-log-row.md` when recording decisions.
+                      Fill: decision fields.
+                      Do not emit unfilled placeholders.
+                    """
+                ),
+            )
+
+            result = run_validator(root)
+            output = result.stdout + result.stderr
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("Resource map entry for 'assets/spec-skeleton.md' must use literal COPY", output)
+            self.assertIn("Resource map entry for 'assets/spec-skeleton.md' must name fields or structures to fill", output)
+
+    def test_spec_family_asset_metadata_status_and_placeholder_required(self) -> None:
+        cases = [
+            (
+                "missing metadata",
+                self.spec_family_asset_text(
+                    template="spec-skeleton-v1",
+                    skill="spec",
+                    include_metadata=False,
+                ),
+                "asset metadata missing required field 'Template'",
+            ),
+            (
+                "invalid status",
+                self.spec_family_asset_text(
+                    template="spec-skeleton-v1",
+                    skill="spec",
+                    status="example",
+                ),
+                "spec-family asset 'assets/spec-skeleton.md' Template status must be one of normative, optional",
+            ),
+            (
+                "missing placeholder",
+                self.spec_family_asset_text(
+                    template="spec-skeleton-v1",
+                    skill="spec",
+                    body="## Status\n\nStatus field.\n",
+                ),
+                "asset 'assets/spec-skeleton.md' must include a visible placeholder",
+            ),
+            (
+                "filler prose",
+                self.spec_family_asset_text(
+                    template="spec-skeleton-v1",
+                    skill="spec",
+                    body="your text here\n",
+                ),
+                "asset 'assets/spec-skeleton.md' must not use filler placeholder text",
+            ),
+            (
+                "root dependency",
+                self.spec_family_asset_text(
+                    template="spec-skeleton-v1",
+                    skill="spec",
+                    body="Run scripts/internal-check.py before filling <field>.\n",
+                ),
+                "asset 'assets/spec-skeleton.md' must not require repository-root dependency",
+            ),
+        ]
+
+        for name, asset_text, expected in cases:
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                self.write_spec_family_asset_fixture(
+                    root,
+                    "spec",
+                    {
+                        "assets/spec-skeleton.md": asset_text,
+                        "assets/requirement-row.md": self.spec_family_asset_text(
+                            template="spec-requirement-row-v1", skill="spec"
+                        ),
+                        "assets/acceptance-criterion-row.md": self.spec_family_asset_text(
+                            template="spec-acceptance-criterion-row-v1", skill="spec"
+                        ),
+                        "assets/decision-log-row.md": self.spec_family_asset_text(
+                            template="spec-decision-log-row-v1", skill="spec"
+                        ),
+                    },
+                )
+
+                result = run_validator(root)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(expected, result.stdout + result.stderr)
+
+    def test_spec_review_asset_review_policy_prose_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.write_spec_family_asset_fixture(
+                root,
+                "spec-review",
+                {
+                    "assets/review-result-skeleton.md": self.spec_family_asset_text(
+                        template="spec-review-result-skeleton-v1",
+                        skill="spec-review",
+                        body="This asset MUST define severity policy for reviewers.\n<field>\n",
+                    ),
+                    "assets/review-finding.md": self.spec_family_asset_text(
+                        template="spec-review-finding-v1", skill="spec-review"
+                    ),
+                },
+            )
+
+            result = run_validator(root)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "spec-review asset 'assets/review-result-skeleton.md' must not contain review-policy prose",
+                result.stdout + result.stderr,
+            )
+
+    def test_spec_family_baseline_summary_records_required_surfaces(self) -> None:
+        baseline = (
+            ROOT
+            / "docs"
+            / "changes"
+            / "2026-05-20-spec-family-assets-progressive-disclosure"
+            / "baseline.md"
+        )
+        self.assertTrue(baseline.exists())
+        text = baseline.read_text(encoding="utf-8")
+        for required in [
+            "PR #79 remains the authoritative behavior baseline",
+            "skills/spec/SKILL.md",
+            "skills/spec-review/SKILL.md",
+            "skills/test-spec/SKILL.md",
+            "Closed enums that remain in `SKILL.md`",
+            "Stop conditions that remain in `SKILL.md`",
+            "Review dimensions or coverage obligations that remain in `SKILL.md`",
+            "Source location for each extracted asset",
+        ]:
+            with self.subTest(required=required):
+                self.assertIn(required, text)
 
     def test_published_design_routing_coverage_fixture_is_bounded(self) -> None:
         routing = (

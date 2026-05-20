@@ -140,6 +140,42 @@ PLAN_ASSET_SECTIONS_PATTERN = re.compile(
     r"\bSections:\s*(?P<sections>.*?)(?:\s+Do not emit|\s+Fill:|\s*$)",
     re.IGNORECASE,
 )
+SPEC_FAMILY_ASSET_APPROVED_ASSETS = {
+    "spec": {
+        "assets/spec-skeleton.md",
+        "assets/requirement-row.md",
+        "assets/acceptance-criterion-row.md",
+        "assets/decision-log-row.md",
+    },
+    "spec-review": {
+        "assets/review-result-skeleton.md",
+        "assets/review-finding.md",
+    },
+    "test-spec": {
+        "assets/test-spec-skeleton.md",
+        "assets/test-case.md",
+        "assets/coverage-map-row.md",
+        "assets/edge-case-row.md",
+    },
+}
+SPEC_FAMILY_ASSET_REQUIRED_METADATA_FIELDS = {
+    "Template",
+    "Skill",
+    "Template status",
+    "Maintained alongside",
+}
+SPEC_FAMILY_ASSET_TEMPLATE_STATUS_VALUES = {"normative", "optional"}
+SPEC_FAMILY_ASSET_PLACEHOLDER_PATTERN = re.compile(r"<[^>\n]+>|\[FILL IN\]|TODO:")
+SPEC_FAMILY_ASSET_FILLER_PATTERN = re.compile(
+    r"\b(?:your text here|lorem ipsum)\b",
+    re.IGNORECASE,
+)
+SPEC_REVIEW_ASSET_FORBIDDEN_POLICY_PATTERN = re.compile(
+    r"\b(?:must|should|review[- ]dimension|severity policy|sufficiency|"
+    r"safe[- ]resolution decision|recording[- ]status|security|privacy|"
+    r"observability|example)\b",
+    re.IGNORECASE,
+)
 
 
 @dataclass(frozen=True)
@@ -499,6 +535,148 @@ def _validate_plan_asset_pilot(path: Path, body: str, skill_name: str | None) ->
     return errors
 
 
+def _validate_spec_family_asset_file(
+    path: Path,
+    relative_resource: str,
+    skill_name: str,
+    text: str,
+) -> list[str]:
+    errors: list[str] = []
+    metadata = _asset_metadata(text)
+
+    missing = sorted(SPEC_FAMILY_ASSET_REQUIRED_METADATA_FIELDS - metadata.keys())
+    for field in missing:
+        errors.append(f"{path}: asset metadata missing required field '{field}'")
+
+    if missing:
+        return errors
+
+    if metadata["Skill"] != skill_name:
+        errors.append(
+            f"{path}: spec-family asset '{relative_resource}' must declare Skill: {skill_name}"
+        )
+
+    status = metadata["Template status"]
+    if status not in SPEC_FAMILY_ASSET_TEMPLATE_STATUS_VALUES:
+        allowed = ", ".join(sorted(SPEC_FAMILY_ASSET_TEMPLATE_STATUS_VALUES))
+        errors.append(
+            f"{path}: spec-family asset '{relative_resource}' Template status must be one of {allowed}"
+        )
+
+    maintained_alongside = metadata["Maintained alongside"]
+    expected_maintained_alongside = f"skills/{skill_name}/SKILL.md"
+    if maintained_alongside != expected_maintained_alongside:
+        errors.append(
+            f"{path}: spec-family asset '{relative_resource}' must be maintained alongside {expected_maintained_alongside}"
+        )
+
+    asset_body = _asset_body_without_metadata(text)
+    if not SPEC_FAMILY_ASSET_PLACEHOLDER_PATTERN.search(asset_body):
+        errors.append(
+            f"{path}: asset '{relative_resource}' must include a visible placeholder"
+        )
+
+    if SPEC_FAMILY_ASSET_FILLER_PATTERN.search(asset_body):
+        errors.append(
+            f"{path}: asset '{relative_resource}' must not use filler placeholder text"
+        )
+
+    for line_number, line in enumerate(_iter_lines_outside_fences(text), start=1):
+        if not PUBLISHED_INTERNAL_PATH_PATTERN.search(line):
+            continue
+        context = _required_repository_dependency_context(line)
+        if context is None:
+            continue
+        match = PUBLISHED_INTERNAL_PATH_REFERENCE_PATTERN.search(line)
+        dependency = match.group("path") if match else line.strip()
+        errors.append(
+            f"{path}:{line_number}: asset '{relative_resource}' must not require repository-root dependency: {dependency}"
+        )
+
+    if skill_name == "spec-review" and SPEC_REVIEW_ASSET_FORBIDDEN_POLICY_PATTERN.search(asset_body):
+        errors.append(
+            f"{path}: spec-review asset '{relative_resource}' must not contain review-policy prose"
+        )
+
+    return errors
+
+
+def _validate_spec_family_asset_rollout(
+    path: Path,
+    body: str,
+    skill_name: str | None,
+) -> list[str]:
+    if skill_name not in SPEC_FAMILY_ASSET_APPROVED_ASSETS:
+        return []
+
+    skill_dir = path.parent
+    resources = _resource_files(skill_dir)
+    if not resources:
+        return []
+
+    errors: list[str] = []
+    unexpected_resource_classes = [
+        resource.relative_to(skill_dir).as_posix()
+        for resource in resources
+        if not resource.relative_to(skill_dir).as_posix().startswith("assets/")
+    ]
+    for relative_resource in unexpected_resource_classes:
+        errors.append(
+            f"{path}: spec-family asset rollout must not ship packaged non-asset resource '{relative_resource}'"
+        )
+
+    assets = [
+        asset
+        for asset in sorted((skill_dir / "assets").rglob("*"))
+        if asset.is_file() and asset.name != ".gitkeep"
+    ] if (skill_dir / "assets").is_dir() else []
+    relative_assets = {asset.relative_to(skill_dir).as_posix() for asset in assets}
+    approved_assets = SPEC_FAMILY_ASSET_APPROVED_ASSETS[skill_name]
+    if relative_assets != approved_assets:
+        expected = ", ".join(sorted(approved_assets))
+        actual = ", ".join(sorted(relative_assets)) or "none"
+        errors.append(
+            f"{path}: spec-family asset rollout must ship exactly approved assets: expected {expected}; found {actual}"
+        )
+
+    section = _extract_markdown_section(body, "Resource map")
+    if section is None:
+        return errors
+
+    for relative_resource in sorted(relative_assets & approved_assets):
+        entry = _resource_entry_text(section, relative_resource)
+        if entry is None:
+            continue
+        expected_prefix = f"- COPY `{relative_resource}`"
+        if not entry.startswith(expected_prefix):
+            errors.append(
+                f"{path}: Resource map entry for '{relative_resource}' must use literal COPY"
+            )
+        if not RESOURCE_LOAD_CONDITION_PATTERN.search(entry):
+            errors.append(
+                f"{path}: Resource map entry for '{relative_resource}' must include a trigger condition"
+            )
+        if not PLAN_ASSET_FIELDS_TO_FILL_PATTERN.search(entry):
+            errors.append(
+                f"{path}: Resource map entry for '{relative_resource}' must name fields or structures to fill"
+            )
+        if "Do not emit unfilled placeholders" not in entry:
+            errors.append(
+                f"{path}: Resource map entry for '{relative_resource}' must instruct agents not to emit unfilled placeholders"
+            )
+
+    for asset in assets:
+        relative_resource = asset.relative_to(skill_dir).as_posix()
+        if relative_resource not in approved_assets:
+            continue
+        text = asset.read_text(encoding="utf-8")
+        errors.extend(
+            _validate_spec_family_asset_file(asset, relative_resource, skill_name, text)
+        )
+
+    return errors
+
+
 def _references_packaged_resource(line: str, skill_dir: Path) -> bool:
     for resource in _resource_files(skill_dir):
         relative_resource = resource.relative_to(skill_dir).as_posix()
@@ -810,6 +988,13 @@ def validate_skill_file(path: Path, schema: dict) -> tuple[list[str], str | None
     errors.extend(validate_readability_contract(path, metadata, body))
     errors.extend(
         _validate_plan_asset_pilot(
+            path,
+            body,
+            name.strip() if isinstance(name, str) else None,
+        )
+    )
+    errors.extend(
+        _validate_spec_family_asset_rollout(
             path,
             body,
             name.strip() if isinstance(name, str) else None,
