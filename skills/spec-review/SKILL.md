@@ -47,9 +47,32 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
 
 ## Review dimensions
 
-Evaluate each with `pass`, `concern`, or `block`: requirement clarity, normative language, completeness, testability, examples, compatibility, observability, security/privacy, non-goals, and acceptance criteria.
+Evaluate each review dimension with `<review dimension verdict>`.
+
+| Review dimension | Verdict |
+| --- | --- |
+| requirement clarity | `<review dimension verdict>` |
+| normative language | `<review dimension verdict>` |
+| completeness | `<review dimension verdict>` |
+| testability | `<review dimension verdict>` |
+| examples | `<review dimension verdict>` |
+| compatibility | `<review dimension verdict>` |
+| observability | `<review dimension verdict>` |
+| security/privacy | `<review dimension verdict>` |
+| non-goals | `<review dimension verdict>` |
+| acceptance criteria | `<review dimension verdict>` |
 
 Check normal, empty, boundary, error, permission, migration, rollout, rollback, old-client, and old-data behavior when relevant. Acceptance must be observable, not aspirational.
+
+## Closed enums
+
+Review dimension verdict:
+
+```text
+pass
+concern
+block
+```
 
 ## Finding severity
 
