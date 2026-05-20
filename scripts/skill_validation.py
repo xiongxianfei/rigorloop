@@ -210,6 +210,7 @@ PROPOSAL_FAMILY_ASSET_APPROVED_ASSETS = {
     },
 }
 PROPOSAL_REVIEW_ASSET_ALLOWED_FIELD_LABELS = {
+    "skill",
     "review-status",
     "material-findings",
     "recording-status",
@@ -736,6 +737,28 @@ def _proposal_review_asset_policy_errors(
     return errors
 
 
+def _proposal_review_asset_baseline_errors(
+    path: Path,
+    relative_resource: str,
+    asset_body: str,
+) -> list[str]:
+    errors: list[str] = []
+    if relative_resource != "assets/review-result-skeleton.md":
+        return errors
+
+    if not re.search(r"(?m)^## Result$", asset_body):
+        errors.append(
+            f"{path}: proposal-review review-result-skeleton must include baseline heading: ## Result"
+        )
+
+    if not re.search(r"(?m)^- Skill:\s*proposal-review$", asset_body):
+        errors.append(
+            f"{path}: proposal-review review-result-skeleton must include baseline field: Skill"
+        )
+
+    return errors
+
+
 def _validate_proposal_family_asset_file(
     path: Path,
     relative_resource: str,
@@ -795,6 +818,11 @@ def _validate_proposal_family_asset_file(
         )
 
     if skill_name == "proposal-review":
+        errors.extend(
+            _proposal_review_asset_baseline_errors(
+                path, relative_resource, asset_body
+            )
+        )
         errors.extend(
             _proposal_review_asset_policy_errors(path, relative_resource, asset_body)
         )

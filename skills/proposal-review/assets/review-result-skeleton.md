@@ -3,8 +3,9 @@
 <!-- Template status: normative -->
 <!-- Maintained alongside: skills/proposal-review/SKILL.md -->
 
-# Result
+## Result
 
+- Skill: proposal-review
 - Review status: <review status>
 - Material findings: <finding IDs or none>
 - Recording status: <recording status>
