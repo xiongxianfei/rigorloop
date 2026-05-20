@@ -1,5 +1,7 @@
 ---
 name: test-spec
+version: "1.0.0"
+schema-version: skill-readability-v1
 description: >
   Generate a traceable test specification from an approved feature spec and execution plan before writing test code or production code. Use to map requirements, examples, edge cases, architecture boundaries, and milestones into concrete tests.
 argument-hint: [feature spec path, plan path, or feature name]
@@ -10,6 +12,22 @@ argument-hint: [feature spec path, plan path, or feature name]
 You are designing the proof before implementation.
 
 The test spec defines how the team will know the implementation satisfies the behavioral contract.
+
+## Workflow role
+
+- role_name: test-spec
+- stage: authoring
+- upstream: approved spec, spec-review findings, approved plan, and relevant architecture or ADR records when present
+- downstream: implement
+- summary: Design the proof mapping requirements, examples, edge cases, architecture boundaries, and milestones to tests before implementation.
+- must_not_claim: implementation completion, code-review approval, verification, branch readiness, or PR readiness.
+
+## Stop conditions
+
+Stop and report the blocker instead of producing a test spec when:
+
+- the source spec is unreviewed or unstable, unless the user explicitly requests isolated test-planning output and the limitation is recorded;
+- the relevant spec-review outcome explicitly marked eventual `test-spec` readiness as `not-ready` or `not-assessed`.
 
 ## Inputs to read
 
@@ -40,13 +58,13 @@ Lookup order:
 1. explicit user path or change ID;
 2. active plan, change metadata, reviewed artifact path, or current artifact metadata;
 3. known governing spec or schema constraint when directly relevant;
-4. `docs/workflows.md` artifact-location table;
+4. project workflow guide artifact-location table, such as the `docs/workflows.md` artifact-location table when present;
 5. this skill's portable default path;
 6. block on ambiguity.
 
-This discovery order is subordinate to the source-rank rule in `docs/workflows.md` when sources conflict.
+This discovery order is subordinate to the source-rank rule in the project workflow guide when sources conflict.
 
-Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
+Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index when present in this project, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
 
 ## Required sections
 
@@ -93,10 +111,104 @@ T1. Title
 - Every architectural boundary that could break wiring needs an integration or contract test.
 - Bugs require a regression test that fails before the fix when feasible.
 
+## Output skeleton
+
+```md
+# <Test spec title>
+
+## Status
+
+<draft | active | abandoned | superseded | archived>
+
+## Related spec and plan
+
+- Spec: <path or reference>
+- Plan: <path or reference>
+- Architecture/ADRs: <paths or not applicable>
+
+## Testing strategy
+
+<unit, integration, end-to-end, smoke, manual, contract, and migration strategy>
+
+## Requirement coverage map
+
+| Requirement ID | Covered by | Level | Notes |
+| --- | --- | --- | --- |
+| <R1> | <T1> | <unit|integration|e2e|smoke|manual|contract|migration> | <notes> |
+
+## Example coverage map
+
+| Example | Covered by | Notes |
+| --- | --- | --- |
+| <E1> | <T1> | <notes> |
+
+## Edge case coverage
+
+- <edge case>: <test IDs or manual verification>
+
+## Test cases
+
+### T1. <Title>
+
+- Covers: <R1, R3, E2>
+- Level: <unit | integration | e2e | smoke | manual>
+- Fixture/setup:
+- Steps:
+- Expected result:
+- Failure proves:
+- Automation location:
+
+## Fixtures and data
+
+<fixtures, data, or none>
+
+## Mocking/stubbing policy
+
+<policy>
+
+## Migration or compatibility tests
+
+<tests or not applicable>
+
+## Observability verification
+
+<logs, metrics, traces, audit events, or not applicable>
+
+## Security/privacy verification
+
+<checks or not applicable>
+
+## Performance checks
+
+<checks or not applicable>
+
+## Manual QA checklist
+
+<manual checks or not applicable>
+
+## What not to test and why
+
+<explicit exclusions and rationale>
+
+## Uncovered gaps
+
+<gaps that must return to spec or architecture, or none>
+
+## Next artifacts
+
+<planned next steps while draft or active>
+
+## Follow-on artifacts
+
+<actual downstream artifacts, terminal disposition, or None yet>
+
+## Readiness
+
+<truthful next-stage or active-proof-surface wording>
+```
+
 ## Rules
 
-- Do not generate tests from an unreviewed or unstable spec unless the user explicitly requests isolated test-planning output and the limitation is recorded.
-- Do not generate tests from a spec-review outcome that explicitly marked eventual `test-spec` readiness as `not-ready` or `not-assessed`.
 - Do not invent behavior not specified.
 - Do not mark a requirement covered by a test that does not assert it.
 - Do not rely only on snapshots for behavioral requirements.
