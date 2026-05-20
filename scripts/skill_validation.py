@@ -601,6 +601,61 @@ def _validate_spec_family_asset_file(
     return errors
 
 
+def mapped_asset_paths_for_skill(skill_dir: Path) -> list[str]:
+    skill_file = skill_dir / "SKILL.md"
+    if not skill_file.is_file():
+        return []
+
+    try:
+        metadata, body = load_skill_file(skill_file)
+    except ValueError:
+        return []
+
+    skill_name = metadata.get("name")
+    if not isinstance(skill_name, str) or skill_name not in SPEC_FAMILY_ASSET_APPROVED_ASSETS:
+        return []
+
+    section = _extract_markdown_section(body, "Resource map")
+    if section is None:
+        return []
+
+    mapped_assets: list[str] = []
+    for relative_resource in sorted(SPEC_FAMILY_ASSET_APPROVED_ASSETS[skill_name]):
+        entry = _resource_entry_text(section, relative_resource)
+        if entry is not None and entry.startswith(f"- COPY `{relative_resource}`"):
+            mapped_assets.append(relative_resource)
+    return mapped_assets
+
+
+def validate_generated_asset_presence(
+    *,
+    skill_name: str,
+    canonical_skill_dir: Path,
+    generated_skill_dir: Path,
+    surface_label: str,
+) -> list[str]:
+    """Return stable validation errors for mapped assets missing from generated output."""
+    errors: list[str] = []
+
+    for relative_resource in mapped_asset_paths_for_skill(canonical_skill_dir):
+        canonical_path = canonical_skill_dir / relative_resource
+        generated_path = generated_skill_dir / relative_resource
+
+        if not canonical_path.is_file():
+            errors.append(
+                f"Canonical skill '{skill_name}' maps missing asset '{relative_resource}'"
+            )
+            continue
+
+        if not generated_path.is_file():
+            errors.append(
+                f"Generated output for skill '{skill_name}' is missing mapped asset "
+                f"'{relative_resource}' in {surface_label}"
+            )
+
+    return errors
+
+
 def _validate_spec_family_asset_rollout(
     path: Path,
     body: str,
