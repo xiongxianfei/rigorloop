@@ -54,13 +54,13 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 ## Current Handoff Summary
 
 - Current milestone: M4. Generated Output, Token, Cold-Read, and Lifecycle Evidence
-- Current milestone state: review-requested
-- Last reviewed milestone: M3. Proposal-Review Structural Assets
-- Review status: M4 implementation complete; awaiting code-review
-- Remaining in-scope implementation milestones: M4
-- Next stage: code-review M4
+- Current milestone state: closed
+- Last reviewed milestone: M4. Generated Output, Token, Cold-Read, and Lifecycle Evidence
+- Review status: code-review M4 R1 clean-with-notes; no material findings
+- Remaining in-scope implementation milestones: none
+- Next stage: final closeout sequence, starting with explain-change
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M4 is awaiting code-review, and final explain-change, verify, and PR handoff evidence do not exist.
+- Reason final closeout is or is not ready: all implementation milestones are closed, but explain-change, verify, and PR handoff evidence do not exist.
 
 ## Milestones
 
@@ -274,6 +274,8 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
   - Record tracked-tree debt deferral only when generated mirror proof, temporary adapter proof, and adapter validation evidence are complete or explicitly blocked.
   - Reinline assets and rerun generated-output validation if packaging cannot be proven.
 
+- Code-review closeout: closed by code-review M4 R1.
+
 ## Validation plan
 
 - `python scripts/test-skill-validator.py`: deterministic validator and fixture coverage.
@@ -325,6 +327,7 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 - 2026-05-20: Accepted and resolved `PFA-M3-CR1` by restoring the pinned `## Result` heading and literal `Skill` field, adding direct validator coverage, and returning M3 to `review-requested` for code-review rerun.
 - 2026-05-20: code-review M3 R2 returned clean-with-notes; M3 closed and next stage is implement M4.
 - 2026-05-20: M4 recorded generated skill mirror proof, temporary adapter archive proof, adapter validation, tracked-tree adapter deferral, token/P evidence, cold-read evidence, and no-hand-edit evidence; M4 moved to `review-requested`.
+- 2026-05-20: code-review M4 R1 returned clean-with-notes; all implementation milestones are closed and the next stage is final closeout sequence starting with explain-change.
 
 ## Decision log
 
@@ -435,4 +438,4 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for code-review M4. Final closeout remains blocked until M4 review and downstream gates close.
+- Ready for final closeout sequence, starting with explain-change. Final closeout remains incomplete until explain-change, verify, and PR handoff close.

@@ -114,6 +114,10 @@ Command evidence:
 
 No material findings.
 
+### code-review-m4-r1
+
+No material findings.
+
 Resolution:
 Added a closed-allowlist validation path for `proposal-review` asset field labels. Forbidden review-policy wording still fails, approved structural labels still pass, and non-allowlisted field labels now fail with a specific structural-label allowlist error. M1 is returned to `code-review`; M2-M4 remain open and are not ready from this resolution alone.
 
