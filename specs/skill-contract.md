@@ -10,6 +10,7 @@
 - [Single Workflow Lane, Explain-Change Before Verify, and Public Skill Surface Boundary](../docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md)
 - [RigorLoop Published Skill Design Contract](../docs/proposals/2026-05-19-rigorloop-published-skill-design-contract.md)
 - [Assets-First Progressive Disclosure Pilot for Published Skills](../docs/proposals/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md)
+- [Spec and Test-Spec Structural Hygiene](../docs/proposals/2026-05-19-spec-and-test-spec-structural-hygiene.md)
 
 ## Goal and context
 
@@ -28,6 +29,16 @@ This amendment also tightens token-cost discipline for normalized skills. Token-
 This amendment defines the published-skill design contract for portable operating documentation. It makes `description` the routing source, distinguishes repository-root internals from packaged skill-local resources, requires resource maps when packaged resources exist, defines published-skill design pilot routing-test evidence, and constrains the published-skill design pilot to an audit plus a `proposal` and `proposal-review` pilot.
 
 This amendment defines the assets-first progressive disclosure pilot for published skills. It adds a follow-on `plan` pilot that ships exactly four normative structural templates under `skills/plan/assets/`, keeps rules in `skills/plan/SKILL.md`, requires deterministic asset resource-map validation, proves adapter packaging for non-empty skill-local assets, and requires both behavior parity and measurable common-path improvement.
+
+This amendment defines structural hygiene for this spec and its matching test spec. It adds slice navigation and grouping while preserving existing R-clause IDs, clause text, acceptance-criterion text, test-case IDs, and cross-references.
+
+## Spec growth strategy
+
+This spec amends through accretion: each accepted amendment adds a clause band to a single file rather than splitting the file. Accretion is sustainable while ownership remains clear and the file remains navigable.
+
+Structural hygiene MUST be applied per amendment when this spec exceeds about 1200 lines or has absorbed more than about 6 slice families. Hygiene work groups clauses by slice, adds navigation aids, and prunes stale cross-references. Hygiene work MUST NOT change clause text, IDs, or numbering.
+
+Splitting this spec into multiple files MUST be pursued through a separate proposal that defends the ownership boundary along which the split occurs. Splits MUST NOT happen as part of a content amendment.
 
 ## Glossary
 
@@ -61,6 +72,21 @@ This amendment defines the assets-first progressive disclosure pilot for publish
 - `historical corpus`: pre-contract artifacts used for coverage gap analysis rather than strict structural parity.
 - `repository-root internal path`: a RigorLoop maintainer-only path such as root `specs/`, root `schemas/`, root `scripts/`, root `dist/`, root `benchmarks/`, or maintainer-only docs.
 - `routing fixture`: a representative prompt used to evaluate description coverage and transcript behavior without claiming deterministic model auto-selection.
+
+## Spec navigation
+
+This spec covers four current concerns, organized by slice:
+
+| Slice | Clause band | Examples | Parent proposal |
+|---|---|---|---|
+| Foundational | R1-R7 | E1, E3 | [Skill Contract Optimization](../docs/proposals/2026-05-08-skill-contract-optimization.md) |
+| Baseline normalization first slice | R8-R26 | E1, E2, E4, E5, E6, E7 | [Single Workflow Lane, Explain-Change Before Verify, and Public Skill Surface Boundary](../docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md) |
+| Published-skill design pilot | R27-R36 | E8-E12 | [RigorLoop Published Skill Design Contract](../docs/proposals/2026-05-19-rigorloop-published-skill-design-contract.md) |
+| Assets-first plan pilot | R37-R45 | E13-E16 | [Assets-First Progressive Disclosure Pilot for Published Skills](../docs/proposals/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md) |
+
+The Examples section remains a single sequence because some examples are cross-cutting. The Requirement and Acceptance criteria sections use slice headers for direct navigation.
+
+Cross-cutting glossary entries appear in the Glossary section. Slice terminology disambiguation appears in the Slice terminology section.
 
 ## Slice terminology
 
@@ -191,6 +217,8 @@ And gap analysis records whether the new `plan` skill can cover the same plannin
 
 ## Requirements
 
+### Foundational (R1-R7)
+
 R1. The normative skill contract MUST live in `specs/skill-contract.md`.
 
 R1a. `specs/skill-contract.md` MUST own standard skill shape, claim boundaries, result output expectations, shared-block rules, public skill surface boundaries, generated-output boundaries, evidence-reading guidance, and minimum viable skill rules.
@@ -298,6 +326,8 @@ R6c. A skill contract implementation MUST NOT require a `skills/ci-maintenance/S
 R7. Normalized periodic, on-demand, or support skills MUST define trigger, output, handoff, stop conditions, and claim boundaries appropriate to their obligation.
 
 R7a. Periodic, on-demand, and support skills include `learn`, `explore`, `research`, `vision`, `project-map`, and `bugfix` when those skills are normalized.
+
+### Baseline normalization first slice (R8-R26)
 
 R8. The baseline normalization first slice MUST normalize only these canonical skills:
 - `skills/workflow/SKILL.md`
@@ -500,6 +530,8 @@ R26a. A process-defect finding MUST identify the noisy evidence surface and the 
 
 R26b. A process-defect finding MUST NOT require reducing correctness checks, skipping required artifacts, or ignoring full-file-read escape conditions.
 
+### Published-skill design pilot (R27-R36)
+
 R27. Published skills MUST be portable operating documentation for capable agents.
 
 R27a. A published skill MUST teach a specialized workflow, artifact contract, quality gate, validation behavior, tool sequence, or trust boundary that the base model would not reliably perform unaided.
@@ -606,6 +638,8 @@ R36i. The published-skill design pilot MUST include behavior-parity evidence for
 
 R36j. A structural validation pass alone is insufficient to close the published-skill design pilot when a touched skill changed behavior-significant wording.
 
+### Assets-first plan pilot (R37-R45)
+
 R37. The assets-first plan pilot MUST be a follow-on packaged-resource pilot and MUST NOT change the current published-skill design pilot scope unless this spec is explicitly amended and approved.
 
 R37a. Implementation MUST NOT begin while `plan` is part of another active or unresolved skill-contract change unless the active plan or change-local evidence records why the overlap is safe.
@@ -706,6 +740,7 @@ Inputs:
 
 - accepted skill-contract proposal;
 - accepted assets-first progressive disclosure pilot proposal;
+- accepted structural hygiene proposal;
 - canonical skill files under `skills/`;
 - shared policy blocks under `templates/shared/`;
 - generated skill mirrors under `.codex/skills/`;
@@ -717,6 +752,7 @@ Inputs:
 Outputs:
 
 - `specs/skill-contract.md`;
+- structural navigation in `specs/skill-contract.md`;
 - normalized canonical skill source for the in-scope slice;
 - a skill existence audit for the pilot pair and recorded follow-ons for any merge or retire candidates;
 - a routing coverage table for each changed published-skill design pilot skill;
@@ -731,6 +767,7 @@ Outputs:
 - regenerated `dist/adapters/` output when canonical skills change;
 - validator checks for required sections, description length and routing coverage, resource-map coverage, self-containment, shared-block drift, generated-output drift, and narrow overclaim assertions;
 - contributor summary updates when root or workflow guidance is affected.
+- grouped test-spec coverage in `specs/skill-contract.test.md` during the matching test-spec stage.
 
 ## State and invariants
 
@@ -752,6 +789,7 @@ Outputs:
 - The assets-first plan pilot is limited to `plan`, exactly four normative `assets/` templates, and deterministic validator and adapter proof.
 - The assets-first plan pilot keeps workflow rules and lifecycle handoff semantics in `SKILL.md` or governing workflow artifacts, not hidden in assets.
 - Normative asset structure is checked for drift through metadata, structural fingerprints, and section-set parity.
+- Structural hygiene amendments preserve R-clause IDs, clause text, acceptance-criterion text, test-case IDs, and cross-references.
 
 ## Error and boundary behavior
 
@@ -778,6 +816,8 @@ Outputs:
 - If `assets/current-handoff-summary.md` defines lifecycle transition rules or readiness semantics, the pilot MUST stop for revision or keep that template inline in `SKILL.md`.
 - If `skills/plan/SKILL.md` common-path body token count does not decrease by at least 15 percent, the assets-first plan pilot MUST NOT roll out unless this spec is amended.
 - If behavior-parity evidence treats historical plans as strict structural references, the pilot evidence MUST be revised before closeout.
+- If a structural hygiene amendment changes existing R-clause text, clause IDs, acceptance-criterion text, test-case IDs, or cross-references, the amendment MUST stop for revision before spec-review approval.
+- If a clause is grouped under a slice header that conflicts with the Slice terminology clause band, the amendment MUST stop for revision before spec-review approval.
 
 ## Compatibility and migration
 
@@ -792,6 +832,7 @@ Outputs:
 - Existing packaged skill resources may remain until their owning skill is in scope, but once the skill is changed for this contract, resource-map coverage applies to packaged resources in that skill.
 - Existing `plan` behavior remains the compatibility baseline. Moving structure into assets MUST NOT weaken plan section requirements, handoff consistency, validation evidence, review handoff, or claim boundaries.
 - Rollback for the assets-first plan pilot is to reinline asset skeletons into `skills/plan/SKILL.md`, remove `skills/plan/assets/`, and keep validator improvements only when they remain valid for flat skills.
+- Structural hygiene rollback is to remove the added navigation aids and slice headers while preserving unchanged clause IDs and cross-references.
 
 ## Observability
 
@@ -801,6 +842,7 @@ Outputs:
 - No runtime logs, metrics, traces, or audit events are required because this is repository guidance behavior, not runtime product behavior.
 - Validation output SHOULD identify description-length failures, missing trigger contexts, missing near-miss boundaries, missing resource-map entries, unavailable repository-root dependencies, and routing fixture coverage gaps by stable check ID when those checks are implemented.
 - Assets-first plan pilot validation output SHOULD identify asset metadata, resource-map coverage, `COPY` verb, structural fingerprint, section-set parity, adapter asset presence, and token-budget failures by stable check ID when those checks are implemented.
+- Structural hygiene validation SHOULD identify any slice-band mismatch, changed clause ID, changed acceptance criterion, changed test-case ID, or broken cross-reference by stable location.
 
 ## Security and privacy
 
@@ -850,6 +892,8 @@ This change has no user-interface surface. The relevant user experience is contr
 18. If a historical plan lacks Current Handoff Summary, that absence is not a strict parity failure; the historical corpus checks whether the new skill can cover the same planning concern.
 19. If a future `code-review` packaged-resource proposal is created, it should justify `references/` as the primary pattern unless repeated output structures dominate the proposed change.
 20. If an asset contains a negative example of a forbidden repository-root path, validation must distinguish negative examples from required customer-project dependencies.
+21. If an example applies to more than one slice, the Examples section may remain flat while the navigation index lists the example under each relevant slice.
+22. If a future amendment adds a new slice family, the amendment must update the navigation index and grouping headers in the same change.
 
 ## Non-goals
 
@@ -874,15 +918,23 @@ This change has no user-interface surface. The relevant user experience is contr
 - Do not use packaged assets for hidden workflow rules, lifecycle transition policy, or claim ownership.
 - Do not add packaged `references/` or `scripts/` in the assets-first plan pilot.
 - Do not require historical plans to satisfy current plan structure for strict behavior parity.
+- Do not change existing R-clause IDs, R-clause text, acceptance-criterion text, test-case IDs, or cross-references during structural hygiene.
+- Do not split this spec or its matching test spec into multiple files as part of a content amendment.
+- Do not group the Examples section when doing so would obscure cross-cutting examples.
 
 ## Acceptance criteria
+
+### Foundational (R1-R7)
 
 - A reviewer can identify `specs/skill-contract.md` as the normative skill-contract source.
 - A reviewer can distinguish skill-contract behavior from workflow-routing behavior owned by `specs/rigorloop-workflow.md`.
 - A contributor can identify the required core sections for a normalized skill.
+- A contributor can see that `ci` is the skill entrypoint for `ci-maintenance`.
+
+### Baseline normalization first slice (R8-R26)
+
 - A contributor can identify which skills belong to the baseline normalization first slice.
 - A contributor can identify the later normalization phases without guessing.
-- A contributor can see that `ci` is the skill entrypoint for `ci-maintenance`.
 - A reviewer can confirm that normalized skills include local do-not-overclaim guidance.
 - A reviewer can confirm that skill outputs are summary-first and include the common result fields or an approved equivalent.
 - A reviewer can confirm that shared blocks adopted in v1 are copied from `templates/shared/` and checked for drift.
@@ -892,6 +944,9 @@ This change has no user-interface surface. The relevant user experience is contr
 - A reviewer can confirm that public skill portability checks apply to shipped skill text and generated public copies, not internal specs, plans, tests, generator scripts, maintainer docs, or repository-only contributor docs.
 - A reviewer can confirm that validator checks are positive-first, narrow, and not broad semantic scoring.
 - A contributor can determine when a new skill is justified and when an existing skill or template should be updated instead.
+
+### Published-skill design pilot (R27-R36)
+
 - A reviewer can confirm that `description` is the required portable routing source and is capped at 1024 characters.
 - A reviewer can confirm that optional `when_to_use` metadata is not required and does not replace `description`.
 - A reviewer can confirm that lifecycle skills with handoff, gate, artifact closeout, or downstream readiness responsibilities require `Workflow role`.
@@ -904,6 +959,9 @@ This change has no user-interface surface. The relevant user experience is contr
 - A reviewer can inspect a routing coverage table for each changed published-skill design pilot skill.
 - A reviewer can inspect a behavior-preservation note for each changed published-skill design pilot skill.
 - A reviewer can confirm behavior-parity evidence shows no weakening of material review status, finding format, recording obligations, stop conditions, validation obligations, or claim boundaries.
+
+### Assets-first plan pilot (R37-R45)
+
 - A reviewer can confirm the assets-first plan pilot is a follow-on slice limited to `plan` and exactly four normative assets.
 - A reviewer can confirm `skills/plan/SKILL.md` uses a `Resource map` with literal `COPY` entries for every asset.
 - A reviewer can confirm `assets/plan-skeleton.md` owns canonical plan section order while `SKILL.md` keeps only a compact output expectation summary.
@@ -913,14 +971,19 @@ This change has no user-interface surface. The relevant user experience is contr
 - A reviewer can confirm the assets-first plan pilot records behavior parity, at least 15 percent common-path body token reduction, total packaged content budget evidence, and milestone substructure reuse evidence.
 - A reviewer can confirm behavior-parity evidence separates a strict contract-era reference corpus from a historical coverage corpus.
 
+### Structural hygiene
+
+No acceptance criteria are added in this amendment. Structural hygiene is reviewed by preserving the existing acceptance-criterion text while adding navigation headers.
+
 ## Open questions
 
-- None.
+- None. Spec-stage decisions resolved the proposal's open questions as follows: use about 1200 lines or more than about 6 slice families as the hygiene trigger; group the test spec Requirement coverage map during the matching test-spec amendment; keep the navigation index focused on R-clause bands; apply the growth strategy to this spec only; keep Examples flat because examples can be cross-cutting.
 
 ## Next artifacts
 
 - Current amendment: plan for the audit-first `proposal` and `proposal-review` pilot.
 - Current draft amendment: spec-review for the assets-first `plan` progressive disclosure pilot.
+- Current draft amendment: spec-review for the spec and test-spec structural hygiene amendment.
 - After plan: `plan-review`.
 - Historical carried context: `code-review M2` under [Single Workflow Lane, Explain-Change Before Verify Execution Plan](../docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md) after M2 implementation handoff.
 - Historical carried context: `implement M3` consumes the public skill portability proof.
@@ -943,7 +1006,10 @@ This change has no user-interface surface. The relevant user experience is contr
 - Current draft amendment proposal-review: [proposal-review-r2](../docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/reviews/proposal-review-r2.md).
 - Current amendment spec-review: [spec-review-r1](../docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/reviews/spec-review-r1.md).
 - Current draft amendment plan: [Assets-First Progressive Disclosure Pilot Execution Plan](../docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md).
+- Current amendment proposal: [Spec and Test-Spec Structural Hygiene](../docs/proposals/2026-05-19-spec-and-test-spec-structural-hygiene.md).
+- Current amendment proposal-review: [proposal-review-r1](../docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/proposal-review-r1.md).
+- Current amendment spec-review: [spec-review-r1](../docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/spec-review-r1.md).
 
 ## Readiness
 
-Approved assets-first plan pilot amendment. Current downstream stage: plan-review for the assets-first progressive disclosure pilot execution plan.
+Approved structural hygiene amendment. Current downstream stage: plan for the spec and test-spec structural hygiene amendment.

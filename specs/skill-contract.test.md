@@ -18,6 +18,8 @@
 - Current rollout plan: [Published Skill Design Plan Family Rollout](../docs/plans/2026-05-19-published-skill-design-plan-family.md), active in final closeout after clean M3 code-review and explain-change.
 - Current assets-first proposal: [Assets-First Progressive Disclosure Pilot for Published Skills](../docs/proposals/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md), accepted.
 - Current assets-first plan: [Assets-First Progressive Disclosure Pilot Execution Plan](../docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md), active after clean plan-review R2.
+- Current structural-hygiene proposal: [Spec and Test-Spec Structural Hygiene](../docs/proposals/2026-05-19-spec-and-test-spec-structural-hygiene.md), accepted.
+- Current structural-hygiene plan: [Spec and Test-Spec Structural Hygiene Execution Plan](../docs/plans/2026-05-19-spec-and-test-spec-structural-hygiene.md), active after clean plan-review R1.
 - Architecture: not required. The approved slices change workflow-governance Markdown, canonical skill guidance, shared text blocks, static validation, generated skill mirrors, public adapter validation, and pilot skill wording. They do not add runtime components, storage, API boundaries, deployment boundaries, or a new validation architecture.
 - Project map: `docs/project-map.md` is present and was read for repository orientation. This test spec relies on the approved spec, active plan, workflow specs, stage skills, shared templates, generator scripts, existing validator patterns, and change-local pilot evidence.
 - Related proof surfaces:
@@ -50,6 +52,8 @@
 
 ## Requirement coverage map
 
+### Foundational (R1-R7)
+
 | Requirement IDs | Covered by | Level | Notes |
 | --- | --- | --- | --- |
 | `R1`, `R1a`, `R1b`, `R1c`, `R1d`, `R20`, `R20a`, `R20b` | `T1`, `T11`, `T13` | contract, manual | Normative source split and source-of-truth order |
@@ -59,6 +63,11 @@
 | `R5`, `R5a`, `R5b` | `T4`, `T5`, `T7` | integration, manual | Review skill status/finding/recording contract and shared review recording preservation |
 | `R6`, `R6a`, `R6b`, `R6c` | `T3`, `T4`, `T12` | integration, manual | Execution skill proof boundaries and `ci`/`ci-maintenance` naming split |
 | `R7`, `R7a` | `T4`, `T11` | manual | `learn` and later support skills keep trigger/output/handoff boundaries |
+
+### Baseline normalization first slice (R8-R26)
+
+| Requirement IDs | Covered by | Level | Notes |
+| --- | --- | --- | --- |
 | `R8`, `R8a`, `R8b`, `R8c`, `R8d`, `R8e`, `R8f`, `R8g`, `R8h` | `T2`, `T3`, `T4`, `T5`, `T6`, `T8`, `T9`, `T14` | integration, manual | First-slice scope, core sections, claims, result output, readiness wording, targeted reading, generated drift, and public surface cleanup |
 | `R9`, `R9a`, `R9b`, `R9c`, `R9d` | `T3`, `T12` | manual, integration | Later-phase normalization order and optional skills remain out of scope |
 | `R10`, `R10a`, `R10b`, `R10c`, `R10d`, `R10e`, `R10f` | `T4`, `T10`, `T13` | integration, manual | Claims this skill must not make and narrow overclaim checks |
@@ -72,6 +81,11 @@
 | `R18`, `R18a`, `R18b`, `R18c`, `R18d` | `T10`, `T13` | integration, manual | Positive-first, narrow, incident-based validator strategy |
 | `R19`, `R19a`, `R19b`, `R19c` | `T11`, `T13` | manual, integration | Minimum viable skill rule and guidance placement |
 | `R21`-`R26` | `T15`, `T13` | integration, manual | Token-cost discipline amendment, bounded evidence, output caps, validation semantics, narrow static proof, and noisy-evidence process defects |
+
+### Published-skill design pilot (R27-R36)
+
+| Requirement IDs | Covered by | Level | Notes |
+| --- | --- | --- | --- |
 | `R27`, `R27a`, `R27b`, `R27c`, `R28`, `R28a`, `R28b` | `T16`, `T20` | manual, integration | Published skills as portable operating documentation and skill existence audit |
 | `R29`, `R29a`, `R29b`, `R29c`, `R29d`, `R29e`, `R29f` | `T17`, `T19` | integration, manual | Description routing source, length cap, near misses, optional `when_to_use`, and routing coverage |
 | `R30`, `R30a`, `R30b`, `R31`, `R31a`, `R31b`, `R31c`, `R31d`, `R34`, `R34a`, `R34b` | `T18`, `T20` | integration, manual | Workflow role, execution body, body routing boundary, output skeletons, examples, and hard-constraint discipline |
@@ -81,6 +95,11 @@
 | Spec-family rollout plan requirements | `T21`, `T22`, `T23`, `T24` | integration, manual, smoke | Approved follow-on rollout for `spec` and `spec-review`, preserving R27-R35 behavior and reusing R36 audit, preservation, parity, and token discipline without changing the original pilot boundary |
 | Execution/review rollout plan requirements | `T25`, `T26`, `T27`, `T28` | integration, manual, smoke | Approved follow-on rollout for `implement` and `code-review`, preserving R27-R35 behavior and reusing R36 audit, preservation, parity, and token discipline without changing the original pilot boundary |
 | Plan-family rollout plan requirements | `T29`, `T30`, `T31`, `T32` | integration, manual, smoke | Approved follow-on rollout for `plan` and `plan-review`, preserving R27-R35 behavior and reusing R36 audit, preservation, parity, and token discipline without changing the original pilot boundary |
+
+### Assets-first plan pilot (R37-R45)
+
+| Requirement IDs | Covered by | Level | Notes |
+| --- | --- | --- | --- |
 | `R37`, `R37a`, `R37b`, `R37c`, `R37d`, `R38`, `R38a`, `R38b`, `R38c`, `R39`, `R39a`, `R39b`, `R39c`, `R39d`, `R40`, `R40a`, `R40b`, `R40c`, `R41`, `R41a`, `R41b`, `R41c`, `R42`, `R42a`, `R42b`, `R42c`, `R42d`, `R42e`, `R43`, `R43a`, `R43b`, `R43c`, `R43d`, `R44`, `R44a`, `R44b`, `R44c`, `R44d`, `R44e`, `R45`, `R45a`, `R45b`, `R45c`, `R45d`, `R45e` | `T33`, `T34`, `T35`, `T36` | integration, manual, smoke | Assets-first plan pilot scope, four normative assets, resource-map contract, output skeleton boundary, handoff asset boundary, metadata and drift checks, deterministic validation, improvement gate, adapter packaging, and parity corpus split |
 
 ## Example coverage map
@@ -144,11 +163,18 @@
 
 ## Acceptance criteria coverage map
 
+### Foundational (R1-R7)
+
 | Acceptance criterion | Covered by |
 | --- | --- |
 | Skill contract source is identifiable | `T1`, `T13` |
 | Skill-contract behavior is distinct from workflow-routing behavior | `T1`, `T5`, `T14` |
 | Required core sections are identifiable | `T2` |
+
+### Baseline normalization first slice (R8-R26)
+
+| Acceptance criterion | Covered by |
+| --- | --- |
 | First implementation slice is identifiable | `T3` |
 | Later normalization phases are identifiable | `T3` |
 | `ci` is the `ci-maintenance` entrypoint | `T3`, `T12` |
@@ -159,6 +185,11 @@
 | Published skills omit repository-maintainer internals | `T14` |
 | Validator checks are positive-first, narrow, and not broad semantic scoring | `T10` |
 | New skill justification is clear | `T11` |
+
+### Published-skill design pilot (R27-R36)
+
+| Acceptance criterion | Covered by |
+| --- | --- |
 | `description` is the required portable routing source and is capped at 1024 characters | `T17`, `T19` |
 | Optional `when_to_use` metadata is not required and does not replace `description` | `T17` |
 | Lifecycle skills with handoff, gate, artifact closeout, or downstream readiness responsibilities require `Workflow role` | `T18` |
@@ -183,6 +214,11 @@
 | Plan-family rollout creates audit, routing coverage, behavior-preservation, behavior-parity, and token evidence before skill-body rewrites close | `T29`, `T31` |
 | Plan-family validator changes are deterministic, fixture-backed, and limited to gaps found by the audit or existing R27-R35 checks | `T30` |
 | Plan-family generated skill and temporary adapter validation are run from canonical `skills/` without hand-editing generated public adapter bodies | `T32` |
+
+### Assets-first plan pilot (R37-R45)
+
+| Acceptance criterion | Covered by |
+| --- | --- |
 | Assets-first plan pilot remains a follow-on slice limited to `plan` and exactly four normative assets | `T33`, `T34` |
 | `skills/plan/SKILL.md` uses a `Resource map` with literal `COPY` entries for every asset | `T34` |
 | `assets/plan-skeleton.md` owns canonical plan section order while `SKILL.md` keeps only compact output expectations | `T35` |
@@ -194,7 +230,9 @@
 
 ## Test cases
 
-### T1. Normative skill-contract source and workflow-routing split
+### Foundational (R1-R7)
+
+#### T1. Normative skill-contract source and workflow-routing split
 
 - Covers: `R1`, `R1a`, `R1b`, `R1c`, `R1d`, `R20`, `R20a`, `R20b`
 - Level: contract, manual
@@ -216,7 +254,7 @@
   - `scripts/test-skill-validator.py`
   - manual contract review during M2
 
-### T2. Required and conditional sections are present without hollow normalization
+#### T2. Required and conditional sections are present without hollow normalization
 
 - Covers: `R3`, `R3a`, `R3b`, `R3c`, `R4`, `R4a`, `R8a`, EC1, EC2
 - Level: integration, manual
@@ -243,7 +281,7 @@
   - `scripts/test-skill-validator.py`
   - `python scripts/validate-skills.py`
 
-### T3. First-slice and later-phase scope stay exact
+#### T3. First-slice and later-phase scope stay exact
 
 - Covers: `R6b`, `R6c`, `R8`, `R8g`, `R9`, `R9a`, `R9b`, `R9c`, `R9d`, E2, E7, EC8
 - Level: integration, manual
@@ -266,7 +304,7 @@
   - `scripts/test-skill-validator.py`
   - `rg --files skills | rg '(^|/)(ci-maintenance|review-resolution|ui-design|ui-design-review|workflow-contract|adopt-rigorloop)/SKILL.md$'` as negative proof
 
-### T4. Claim boundaries and do-not-overclaim guidance
+#### T4. Claim boundaries and do-not-overclaim guidance
 
 - Covers: `R5`, `R5a`, `R5b`, `R6`, `R6a`, `R7`, `R7a`, `R8b`, `R10`, `R10a`, `R10b`, `R10c`, `R10d`, `R10e`, `R10f`, E1
 - Level: integration, manual
@@ -294,7 +332,7 @@
   - `scripts/test-skill-validator.py`
   - manual review during M3
 
-### T5. Result blocks and handoff sections are summary-first and local
+#### T5. Result blocks and handoff sections are summary-first and local
 
 - Covers: `R4`, `R5`, `R8c`, `R11`, `R11a`, `R11b`, `R11c`, `R12`, `R12a`, `R12b`, `R12c`
 - Level: integration, manual
@@ -317,7 +355,7 @@
   - `scripts/test-skill-validator.py`
   - manual review during M3
 
-### T6. Progress, readiness, closeout, and Done stay distinct
+#### T6. Progress, readiness, closeout, and Done stay distinct
 
 - Covers: `R8d`, `R13`, `R13a`, `R13b`, `R13c`, `R13d`, `R13e`, `R13f`, E1
 - Level: integration, manual
@@ -342,7 +380,7 @@
   - `scripts/test-skill-validator.py`
   - manual plan and skill review during M3 and verify
 
-### T7. Public shared blocks are canonical copied text with drift checks
+#### T7. Public shared blocks are canonical copied text with drift checks
 
 - Covers: `R5b`, `R14`, `R14a`, `R14b`, `R14c`, `R14d`, `R14e`, `R15`, `R15a`, `R15b`, E3, EC3, EC4
 - Level: integration, manual
@@ -366,7 +404,9 @@
   - `scripts/test-skill-validator.py`
   - manual review during M2 and M3
 
-### T8. Evidence-reading and example guidance stay bounded
+### Baseline normalization first slice (R8-R26)
+
+#### T8. Evidence-reading and example guidance stay bounded
 
 - Covers: `R8e`, `R16`, `R16a`, `R16b`, `R16c`, `R17`, `R17a`, `R17b`, EC5
 - Level: integration, manual
@@ -388,7 +428,7 @@
   - `scripts/test-skill-validator.py`
   - manual review during M2 and M3
 
-### T9. Generated output is refreshed from concrete canonical changes
+#### T9. Generated output is refreshed from concrete canonical changes
 
 - Covers: `R2`, `R2a`, `R2b`, `R2c`, `R2d`, `R8f`, E4, EC6
 - Level: integration, smoke
@@ -414,7 +454,7 @@
 - Automation location:
   - commands named above
 
-### T10. Forbidden-overclaim validation is narrow and positive-first
+#### T10. Forbidden-overclaim validation is narrow and positive-first
 
 - Covers: `R10`, `R18`, `R18a`, `R18b`, `R18c`, `R18d`, E5, EC7
 - Level: integration, manual
@@ -439,7 +479,7 @@
   - `scripts/test-skill-validator.py`
   - manual review of validator changes
 
-### T11. Minimum viable skill rule and guidance placement
+#### T11. Minimum viable skill rule and guidance placement
 
 - Covers: `R7`, `R7a`, `R19`, `R19a`, `R19b`, `R19c`, `R20`, E6
 - Level: manual, integration
@@ -461,7 +501,7 @@
   - manual review during M2
   - `scripts/test-skill-validator.py` for required terms if implemented
 
-### T12. Compatibility, security, and non-goal boundaries
+#### T12. Compatibility, security, and non-goal boundaries
 
 - Covers: `R6b`, `R6c`, `R9c`, `R9d`, E7, EC8
 - Level: manual, integration
@@ -484,7 +524,7 @@
   - `rg --files`
   - manual review during M2, M3, and M4
 
-### T13. Full milestone and final validation closeout
+#### T13. Full milestone and final validation closeout
 
 - Covers: all requirements as final integration proof
 - Level: integration, smoke, manual
@@ -507,7 +547,7 @@
   - active plan commands
   - `scripts/ci.sh`
 
-### T14. Published skills exclude repository-maintainer details
+#### T14. Published skills exclude repository-maintainer details
 
 - Covers: `R3d`, `R3e`, `R8h`, `R12b`, `R15c`, E4
 - Level: integration, manual
@@ -529,7 +569,7 @@
   - `scripts/test-skill-validator.py`
   - generated-output drift checks
 
-### T15. Token-cost amendment and static proof stay narrow
+#### T15. Token-cost amendment and static proof stay narrow
 
 - Covers: `R21`, `R21a`, `R21b`, `R22`, `R22a`, `R22b`, `R22c`, `R23`, `R23a`, `R23b`, `R24`, `R24a`, `R24b`, `R24c`, `R25`, `R25a`, `R25b`, `R25c`, `R25d`, `R26`, `R26a`, `R26b`
 - Level: integration, manual
@@ -555,7 +595,9 @@
   - `scripts/test-skill-validator.py`
   - manual review during M1 and code-review
 
-### T16. Published skill existence audit and pilot scope
+### Published-skill design pilot (R27-R36)
+
+#### T16. Published skill existence audit and pilot scope
 
 - Covers: `R27`, `R27a`, `R27b`, `R27c`, `R28`, `R28a`, `R28b`, `R36`, `R36a`, `R36b`, `R36c`, `R36d`, `R36e`, E12, EC13
 - Level: manual, integration
@@ -578,7 +620,7 @@
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-19-rigorloop-published-skill-design-contract/change.yaml`
   - negative proof with `rg --files skills` when merge, retire, rename, removal, or ownership change is suspected
 
-### T17. Description routing source and body routing boundary
+#### T17. Description routing source and body routing boundary
 
 - Covers: `R29`, `R29a`, `R29b`, `R29c`, `R29d`, `R29e`, `R29f`, `R31a`, E8, EC14
 - Level: integration, manual
@@ -604,7 +646,7 @@
   - `python scripts/validate-skills.py`
   - manual review during M2 and M3
 
-### T18. Workflow role, output skeleton, resource map, and self-containment
+#### T18. Workflow role, output skeleton, resource map, and self-containment
 
 - Covers: `R30`, `R30a`, `R30b`, `R31`, `R31b`, `R31c`, `R31d`, `R32`, `R32a`, `R32b`, `R32c`, `R32d`, `R33`, `R33a`, `R33b`, `R33c`, `R34`, `R34a`, `R34b`, E9, E10, EC9, EC10, EC11, EC14
 - Level: integration, manual
@@ -634,7 +676,7 @@
   - `python scripts/validate-skills.py`
   - manual review during M2 and M3
 
-### T19. Routing fixtures and coverage tables stay deterministic
+#### T19. Routing fixtures and coverage tables stay deterministic
 
 - Covers: `R35`, `R35a`, `R35b`, `R35c`, `R35d`, `R35e`, `R35f`, `R35g`, `R29f`, E11, EC12, EC15
 - Level: integration, manual
@@ -657,7 +699,7 @@
   - `scripts/test-skill-validator.py`
   - manual review during M1, M2, and M3
 
-### T20. Behavior preservation, parity, token budget, and generated-output validation
+#### T20. Behavior preservation, parity, token budget, and generated-output validation
 
 - Covers: `R27b`, `R27c`, `R34a`, `R34b`, `R36b`, `R36c`, `R36d`, `R36e`, `R36f`, `R36g`, `R36h`, `R36i`, `R36j`, E12, EC13, EC16
 - Level: integration, manual, smoke
@@ -690,7 +732,7 @@
   - `scripts/test-skill-validator.py`
   - manual behavior-parity review during M3
 
-### T21. Spec-family audit and evidence scaffold
+#### T21. Spec-family audit and evidence scaffold
 
 - Covers: approved spec-family rollout plan M1; `R27`, `R27a`, `R27b`, `R27c`, `R28`, `R28a`, `R28b`, `R29`, `R29a`, `R29b`, `R29c`, `R29d`, `R29e`, `R29f`, `R30`, `R30a`, `R31`, `R31a`, `R34`, `R35`, `R35a`, `R35e`, `R35f`, EC17
 - Level: manual, integration
@@ -719,7 +761,7 @@
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml`
   - manual review during M1
 
-### T22. Spec-family deterministic validator and fixture support
+#### T22. Spec-family deterministic validator and fixture support
 
 - Covers: approved spec-family rollout plan M2; `R29`, `R29d`, `R29f`, `R31a`, `R32`, `R32a`, `R32b`, `R32c`, `R32d`, `R33`, `R33a`, `R33b`, `R33c`, `R35`, `R35c`, `R35d`, `R35e`, `R35f`, `R35g`, EC17
 - Level: integration, manual
@@ -745,7 +787,7 @@
   - `bash scripts/ci.sh --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path specs/skill-contract.test.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml`
   - manual validator review during M2
 
-### T23. Spec and spec-review skill rewrite preserves lifecycle behavior
+#### T23. Spec and spec-review skill rewrite preserves lifecycle behavior
 
 - Covers: approved spec-family rollout plan M3; `R27`, `R27a`, `R27b`, `R27c`, `R29`, `R29a`, `R29b`, `R29c`, `R29d`, `R29e`, `R29f`, `R30`, `R30a`, `R31`, `R31a`, `R31b`, `R31c`, `R31d`, `R32`, `R32a`, `R32b`, `R32c`, `R32d`, `R33`, `R33a`, `R33b`, `R33c`, `R34`, `R34a`, `R34b`, `R35`, `R35a`, `R35b`, `R35c`, `R35d`, `R35e`, `R35f`, `R35g`, EC18, EC19
 - Level: integration, manual
@@ -776,7 +818,7 @@
   - `python scripts/measure-skill-tokens.py --skills-root skills`
   - manual behavior-preservation and parity review during M3 and code-review
 
-### T24. Spec-family generated output, adapter proof, and final selected validation
+#### T24. Spec-family generated output, adapter proof, and final selected validation
 
 - Covers: approved spec-family rollout final proof; `R2`, `R2a`, `R2b`, `R2c`, `R2d`, `R24`, `R24a`, `R24b`, `R24c`, `R33c`, `R35c`, `R35d`
 - Level: integration, smoke, manual
@@ -806,7 +848,7 @@
   - `python scripts/validate-adapters.py --root <tmpdir> --version v0.1.5`
   - `bash scripts/ci.sh --mode explicit --path skills/spec/SKILL.md --path skills/spec-review/SKILL.md --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-spec-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-spec-family/change.yaml`
 
-### T25. Execution/review audit and evidence scaffold
+#### T25. Execution/review audit and evidence scaffold
 
 - Covers: approved execution/review rollout plan M1; `R27`, `R27a`, `R27b`, `R27c`, `R28`, `R28a`, `R28b`, `R29`, `R29a`, `R29b`, `R29c`, `R29d`, `R29e`, `R29f`, `R30`, `R30a`, `R31`, `R31a`, `R34`, `R35`, `R35a`, `R35e`, `R35f`, EC20, EC21, EC22
 - Level: manual, integration
@@ -835,7 +877,7 @@
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml`
   - manual review during M1
 
-### T26. Execution/review deterministic validator and fixture support
+#### T26. Execution/review deterministic validator and fixture support
 
 - Covers: approved execution/review rollout plan M2; `R29`, `R29d`, `R29f`, `R31a`, `R32`, `R32a`, `R32b`, `R32c`, `R32d`, `R33`, `R33a`, `R33b`, `R33c`, `R35`, `R35c`, `R35d`, `R35e`, `R35f`, `R35g`, EC20
 - Level: integration, manual
@@ -861,7 +903,7 @@
   - `bash scripts/ci.sh --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path specs/skill-contract.test.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml`
   - manual validator review during M2
 
-### T27. Implement and code-review skill rewrite preserves lifecycle behavior
+#### T27. Implement and code-review skill rewrite preserves lifecycle behavior
 
 - Covers: approved execution/review rollout plan M3; `R27`, `R27a`, `R27b`, `R27c`, `R29`, `R29a`, `R29b`, `R29c`, `R29d`, `R29e`, `R29f`, `R30`, `R30a`, `R31`, `R31a`, `R31b`, `R31c`, `R31d`, `R32`, `R32a`, `R32b`, `R32c`, `R32d`, `R33`, `R33a`, `R33b`, `R33c`, `R34`, `R34a`, `R34b`, `R35`, `R35a`, `R35b`, `R35c`, `R35d`, `R35e`, `R35f`, `R35g`, EC21, EC22, EC23
 - Level: integration, manual
@@ -894,7 +936,7 @@
   - `python scripts/measure-skill-tokens.py --skills-root skills`
   - manual behavior-preservation and parity review during M3 and code-review
 
-### T28. Execution/review generated output, adapter proof, and final selected validation
+#### T28. Execution/review generated output, adapter proof, and final selected validation
 
 - Covers: approved execution/review rollout final proof; `R2`, `R2a`, `R2b`, `R2c`, `R2d`, `R24`, `R24a`, `R24b`, `R24c`, `R33c`, `R35c`, `R35d`
 - Level: integration, smoke, manual
@@ -924,7 +966,7 @@
   - `python scripts/validate-adapters.py --root <tmpdir> --version v0.1.5`
   - `bash scripts/ci.sh --mode explicit --path skills/implement/SKILL.md --path skills/code-review/SKILL.md --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-implement-code-review.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-implement-code-review/change.yaml`
 
-### T29. Plan-family audit and evidence scaffold
+#### T29. Plan-family audit and evidence scaffold
 
 - Covers: approved plan-family rollout plan M1; `R27`, `R27a`, `R27b`, `R27c`, `R28`, `R28a`, `R28b`, `R29`, `R29a`, `R29b`, `R29c`, `R29d`, `R29e`, `R29f`, `R30`, `R30a`, `R31`, `R31a`, `R34`, `R35`, `R35a`, `R35e`, `R35f`, EC24, EC25, EC26
 - Level: manual, integration
@@ -953,7 +995,7 @@
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-19-published-skill-design-plan-family.md --path docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml --path docs/plan.md`
   - manual audit during M1
 
-### T30. Plan-family deterministic validator and fixture support
+#### T30. Plan-family deterministic validator and fixture support
 
 - Covers: approved plan-family rollout plan M2; `R29`, `R29d`, `R29f`, `R31a`, `R32`, `R32a`, `R32b`, `R32c`, `R32d`, `R33`, `R33a`, `R33b`, `R33c`, `R35`, `R35c`, `R35d`, `R35e`, `R35f`, `R35g`, EC24
 - Level: integration, manual
@@ -979,7 +1021,7 @@
   - `bash scripts/ci.sh --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path specs/skill-contract.test.md --path docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml`
   - manual validator review during M2
 
-### T31. Plan and plan-review skill rewrite preserves lifecycle behavior
+#### T31. Plan and plan-review skill rewrite preserves lifecycle behavior
 
 - Covers: approved plan-family rollout plan M3; `R27`, `R27a`, `R27b`, `R27c`, `R29`, `R29a`, `R29b`, `R29c`, `R29d`, `R29e`, `R29f`, `R30`, `R30a`, `R31`, `R31a`, `R31b`, `R31c`, `R31d`, `R32`, `R32a`, `R32b`, `R32c`, `R32d`, `R33`, `R33a`, `R33b`, `R33c`, `R34`, `R34a`, `R34b`, `R35`, `R35a`, `R35b`, `R35c`, `R35d`, `R35e`, `R35f`, `R35g`, EC25, EC26, EC27
 - Level: integration, manual
@@ -1012,7 +1054,7 @@
   - `python scripts/measure-skill-tokens.py --skills-root skills`
   - manual behavior-preservation and parity review during M3 and code-review
 
-### T32. Plan-family generated output, adapter proof, and final selected validation
+#### T32. Plan-family generated output, adapter proof, and final selected validation
 
 - Covers: approved plan-family rollout final proof; `R2`, `R2a`, `R2b`, `R2c`, `R2d`, `R24`, `R24a`, `R24b`, `R24c`, `R33c`, `R35c`, `R35d`
 - Level: integration, smoke, manual
@@ -1042,7 +1084,9 @@
   - `python scripts/validate-adapters.py --root <tmpdir> --version v0.1.5`
   - `bash scripts/ci.sh --mode explicit --path skills/plan/SKILL.md --path skills/plan-review/SKILL.md --path specs/skill-contract.test.md --path docs/plans/2026-05-19-published-skill-design-plan-family.md --path docs/plan.md --path docs/changes/2026-05-19-published-skill-design-plan-family/change.yaml`
 
-### T33. Assets-first plan pilot scope and evidence scaffold
+### Assets-first plan pilot (R37-R45)
+
+#### T33. Assets-first plan pilot scope and evidence scaffold
 
 - Covers: `R37`, `R37a`, `R37b`, `R37c`, `R37d`, `R38`, `R38a`, `R38b`, `R38c`, `R43b`, `R43c`, `R45e`, E13, EC28, EC29
 - Level: integration, manual
@@ -1071,7 +1115,7 @@
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/change.yaml`
   - manual review during M1 and M2
 
-### T34. Assets-first resource-map, metadata, and drift validation
+#### T34. Assets-first resource-map, metadata, and drift validation
 
 - Covers: `R39`, `R39a`, `R39b`, `R39c`, `R39d`, `R42`, `R42a`, `R42b`, `R42c`, `R42d`, `R42e`, `R43`, `R43a`, `R43b`, E13, E14, EC30, EC31, EC33
 - Level: integration, manual
@@ -1102,7 +1146,7 @@
   - `python scripts/validate-skills.py`
   - manual validator review during M1 and code-review
 
-### T35. Plan skeleton and handoff asset preserve output and lifecycle boundaries
+#### T35. Plan skeleton and handoff asset preserve output and lifecycle boundaries
 
 - Covers: `R40`, `R40a`, `R40b`, `R40c`, `R41`, `R41a`, `R41b`, `R41c`, `R43d`, `R44a`, E14, E15, EC31, EC32
 - Level: integration, manual
@@ -1131,7 +1175,7 @@
   - `python scripts/validate-skills.py`
   - manual behavior-preservation review during M2 and code-review
 
-### T36. Assets-first adapter, token, behavior-parity, and corpus proof
+#### T36. Assets-first adapter, token, behavior-parity, and corpus proof
 
 - Covers: `R43a`, `R43d`, `R44`, `R44a`, `R44b`, `R44c`, `R44d`, `R44e`, `R45`, `R45a`, `R45b`, `R45c`, `R45d`, `R45e`, E16, EC34, EC35
 - Level: integration, smoke, manual
@@ -1336,6 +1380,7 @@
 
 ## Next artifacts
 
+- Current structural-hygiene rollout: `implement` M1 under [Spec and Test-Spec Structural Hygiene Execution Plan](../docs/plans/2026-05-19-spec-and-test-spec-structural-hygiene.md).
 - Current rollout: `implement` M1 under [Assets-First Progressive Disclosure Pilot Execution Plan](../docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md).
 - Historical carried context: the completed plan-family rollout used `T29`-`T32` for `plan` and `plan-review`.
 - Historical carried context: the merged spec-family rollout used `T21`-`T24` for `spec` and `spec-review`.
@@ -1348,4 +1393,4 @@
 
 ## Readiness
 
-Active proof-planning surface for public skill portability, claim-boundary checks, the merged published-skill design pilot, completed spec-family rollout, completed execution/review rollout, completed plan-family rollout, and assets-first plan pilot. The assets-first plan pilot M1 uses T33 and T34 as its proof plan.
+Active proof-planning surface for public skill portability, claim-boundary checks, the merged published-skill design pilot, completed spec-family rollout, completed execution/review rollout, completed plan-family rollout, assets-first plan pilot, and structural-hygiene grouping. The active structural-hygiene plan `Current Handoff Summary` owns the next workflow action.
