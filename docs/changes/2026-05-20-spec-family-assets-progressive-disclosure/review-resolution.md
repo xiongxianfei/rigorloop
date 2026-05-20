@@ -11,11 +11,12 @@ Review closeout: plan-review-r1
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
 Review closeout: code-review-m2-r1
+Review closeout: code-review-m2-r2
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `plan-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `plan-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`
 - Findings resolved: 6
 - Unresolved findings: 1
-- Final result: Proposal-review R1 requested changes for proof route, per-skill skeleton boundary, generated-output proof boundaries, stricter review-class asset restrictions, and change-local baseline ownership. The proposal was revised to add those controls before downstream plan reliance. Proposal-review R2 approved the proposal with no material findings. Spec-review R1 approved the spec with no material findings. Plan-review R1 approved the execution plan with no material findings. Code-review M1 R1 requested changes for missing generated-output presence coverage in the validator foundation; the finding was accepted and resolved with a reusable generated-output presence helper plus positive and negative tests. Code-review M1 R2 found no blocking or required-change findings. Code-review M2 R1 requested changes for requirement modal parity in `assets/requirement-row.md`.
+- Final result: Proposal-review R1 requested changes for proof route, per-skill skeleton boundary, generated-output proof boundaries, stricter review-class asset restrictions, and change-local baseline ownership. The proposal was revised to add those controls before downstream plan reliance. Proposal-review R2 approved the proposal with no material findings. Spec-review R1 approved the spec with no material findings. Plan-review R1 approved the execution plan with no material findings. Code-review M1 R1 requested changes for missing generated-output presence coverage in the validator foundation; the finding was accepted and resolved with a reusable generated-output presence helper plus positive and negative tests. Code-review M1 R2 found no blocking or required-change findings. Code-review M2 R1 requested changes for requirement modal parity in `assets/requirement-row.md`. Code-review M2 R2 was blocked because no new M2 fix surface exists while `SFA-M2-CR1` remains open.
 
 ## Resolution Overview
 
@@ -136,3 +137,8 @@ Owning stage: review-resolution
 Stop state: M2 remains `resolution-needed`; M3 must not begin until this finding is dispositioned and resolved or the approved artifacts are revised.
 Rationale: The finding is actionable, but implementation has not yet recorded an accepted disposition or fix.
 Validation target: Review-resolution records a final disposition and, if accepted, validation proves requirement modal parity is restored in the asset and evidence.
+
+### code-review-m2-r2
+
+Blocked. No new implementation surface exists after `code-review-m2-r1`;
+`SFA-M2-CR1` remains open and M2 remains in `resolution-needed`.

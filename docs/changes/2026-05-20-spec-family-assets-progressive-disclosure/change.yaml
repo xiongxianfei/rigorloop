@@ -37,6 +37,7 @@ tests:
   - Review artifact validation for clean plan-review evidence.
   - Review artifact validation for code-review M1 R1 evidence.
   - Review artifact validation for code-review M2 R1 evidence.
+  - Review artifact validation for blocked code-review M2 R2 evidence.
   - Review artifact closeout validation for recorded proposal-review findings.
   - Change metadata validation for this change-local root.
   - Whitespace validation for touched proposal and review artifacts.
@@ -159,6 +160,14 @@ validation:
     result: pass_validated_4_lifecycle_artifacts_after_code_review_m2_r1
   - command: git diff --check -- docs/changes/2026-05-20-spec-family-assets-progressive-disclosure docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md docs/plan.md
     result: pass_after_code_review_m2_r1
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-20-spec-family-assets-progressive-disclosure
+    result: pass_reviews_8_findings_7_log_entries_8_resolution_entries_7_after_code_review_m2_r2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml
+    result: pass_valid_change_metadata_after_code_review_m2_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/review-log.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/review-resolution.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/reviews/code-review-m2-r2.md --path docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md --path docs/plan.md
+    result: pass_validated_4_lifecycle_artifacts_after_code_review_m2_r2
+  - command: git diff --check -- docs/changes/2026-05-20-spec-family-assets-progressive-disclosure docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md docs/plan.md
+    result: pass_after_code_review_m2_r2
 changed_files:
   - docs/proposals/2026-05-20-spec-family-assets-progressive-disclosure.md
   - specs/spec-family-assets-progressive-disclosure.md
@@ -177,6 +186,7 @@ changed_files:
   - docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/reviews/code-review-m1-r1.md
   - docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/reviews/code-review-m1-r2.md
   - docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/reviews/code-review-m2-r1.md
+  - docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/reviews/code-review-m2-r2.md
   - skills/spec/SKILL.md
   - skills/spec/assets/spec-skeleton.md
   - skills/spec/assets/requirement-row.md
