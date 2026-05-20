@@ -78,9 +78,9 @@ The work touches canonical skill source under `skills/`, validator and test scri
 - Last reviewed milestone: M6
 - Review status: code-review M6 R1 clean-with-notes; no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: branch-ready
-- Reason final closeout is or is not ready: all in-scope implementation milestones are closed, explain-change is recorded, final verify passed, and PR handoff remains incomplete.
+- Next stage: hosted CI and human review for PR #80
+- Final closeout readiness: not ready
+- Reason final closeout is or is not ready: implementation milestones, explain-change, verify, and PR handoff are closed, but hosted CI and human review remain incomplete.
 
 ## Milestones
 
@@ -341,6 +341,7 @@ Final closeout:
 - 2026-05-20: code-review M6 R1 found no blocking or required-change findings; M6 closed and the next stage is final closeout starting with explain-change.
 - 2026-05-20: explain-change recorded the problem-to-diff rationale, review-resolution summary, validation evidence, alternatives rejected, scope control, and remaining verify/PR handoff work; next stage is verify.
 - 2026-05-20: verify found and fixed a selector routing gap for `baseline.md` and `generated-output-proof.md`, reran selector regression and PR-mode CI, recorded `verify-report.md`, and marked the branch ready for PR handoff.
+- 2026-05-20: Opened PR #80 for hosted CI and human review.
 
 ## Decision log
 
@@ -474,6 +475,7 @@ Final closeout:
 
 ## Outcome and retrospective
 
+- PR opened: [PR #80](https://github.com/xiongxianfei/rigorloop/pull/80).
 - Active plan; final outcome not yet known.
 
 ## Readiness
@@ -482,4 +484,5 @@ Final closeout:
 
 ## Risks and follow-ups
 
+- PR #80 is open; hosted CI and human review remain pending.
 - Follow-up proposals remain separate for packaged `references/`, packaged `scripts/`, produced-artifact readability, and build-time partials.
