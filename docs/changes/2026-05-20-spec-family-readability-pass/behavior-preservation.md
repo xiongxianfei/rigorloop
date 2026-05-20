@@ -99,4 +99,72 @@ visible in their previous relative order.
 
 ## M3. Test-Spec Skill Readability And Generated Output Proof
 
-Pending M3 implementation.
+### Normalized baseline gate
+
+| Check | Evidence | Result |
+| --- | --- | --- |
+| `version` and `schema-version` front matter | `skills/test-spec/SKILL.md`, lines 1-8 | present |
+| Workflow role | `skills/test-spec/SKILL.md`, lines 16-23 | present |
+| Stop conditions | `skills/test-spec/SKILL.md`, lines 25-30 | present before normal artifact-generation guidance |
+| Fenced output skeleton | `skills/test-spec/SKILL.md`, lines 152-246 | present |
+| Normalization evidence | `docs/changes/2026-05-20-test-spec-contract-normalization/` | predecessor evidence present on branch |
+
+### Same-slice scope
+
+| Surface | Treatment |
+| --- | --- |
+| `skills/test-spec/SKILL.md` | Tabulate required sections and coverage rules, add authoritative closed-enum surfaces, and replace duplicate inline enum lists with enum references. |
+| Produced test-spec artifact contract | Preserve output skeleton headings, required sections, coverage-map obligations, test-case format fields, stop conditions, and rules. |
+| Generated adapter output | Validate from canonical skills in M3; generated public adapter skill bodies are not hand-edited. |
+| Routing description | Unchanged. |
+| Packaging, generated adapter skill bodies, build-time partials | Unchanged in M3. |
+
+### Content-preservation matrix
+
+| Source content | Existing location | New location | Change type | Preservation proof |
+| --- | --- | --- | --- | --- |
+| Required test-spec section list: Status; Related spec and plan; Testing strategy; Requirement coverage map; Example coverage map; Edge case coverage; Test cases; Fixtures and data; Mocking/stubbing policy; Migration or compatibility tests; Observability verification; Security/privacy verification; Performance checks; Manual QA checklist; What not to test; Uncovered gaps; Next artifacts; Follow-on artifacts; Readiness | `skills/test-spec/SKILL.md`, baseline `## Required sections`, lines 69-89 | `skills/test-spec/SKILL.md`, edited `## Required sections` table, lines 69-91 | tabulated | Same 19 section names, same order, no section added or removed. Obligations are preserved in the table cells. |
+| Test spec status values: `draft`, `active`, `abandoned`, `superseded`, `archived` | `skills/test-spec/SKILL.md`, baseline `## Required sections`, line 71, and output skeleton, line 121 | `skills/test-spec/SKILL.md`, edited `## Closed enums`, lines 118-128 | fenced | Same spelling and membership; required-section table and output skeleton use `<test spec status>`. |
+| Test case level values: `unit`, `integration`, `e2e`, `smoke`, `manual` | `skills/test-spec/SKILL.md`, baseline `## Test case format`, line 98, and output skeleton, line 154 | `skills/test-spec/SKILL.md`, edited `## Closed enums`, lines 130-138 | fenced | Same spelling and membership; test-case format and output skeleton use `<test case level>`. |
+| Coverage map level values: `unit`, `integration`, `e2e`, `smoke`, `manual`, `contract`, `migration` | `skills/test-spec/SKILL.md`, baseline output skeleton requirement coverage map, line 137 | `skills/test-spec/SKILL.md`, edited `## Closed enums`, lines 140-150 | fenced | Same spelling and membership; requirement coverage map uses `<coverage map level>`. |
+| Coverage rules: every `MUST` requirement needs coverage; every error behavior needs coverage; every migration or compatibility claim needs coverage or explicit manual verification; every architectural boundary that could break wiring needs an integration or contract test; bugs require a regression test that fails before the fix when feasible | `skills/test-spec/SKILL.md`, baseline `## Coverage rules`, lines 106-112 | `skills/test-spec/SKILL.md`, edited `## Coverage rules` table, lines 108-116 | tabulated | Same five rules, same order, no coverage rule added or removed. |
+| Stop conditions for unreviewed or unstable specs and `not-ready` or `not-assessed` spec-review outcomes | `skills/test-spec/SKILL.md`, baseline `## Stop conditions`, lines 25-30 | `skills/test-spec/SKILL.md`, edited `## Stop conditions`, lines 25-30 | unchanged | Stop conditions remain before normal output guidance. |
+| Output skeleton required sections and order | `skills/test-spec/SKILL.md`, baseline `## Output skeleton`, lines 114-208 | `skills/test-spec/SKILL.md`, edited `## Output skeleton`, lines 152-246 | enum-reference only | Same headings and order; only status and level placeholders change from inline full enum lists to authoritative enum references. |
+| Rules, evidence collection, and expected output obligations | `skills/test-spec/SKILL.md`, baseline lines 210-238 | `skills/test-spec/SKILL.md`, edited lines 248-276 | unchanged | M3 does not change rules, evidence collection guidance, full-file-read guidance, or expected output obligations. |
+
+### Enum authority map
+
+| Skill | Enum | Existing source | Authoritative destination | Values | Duplicate handling |
+| --- | --- | --- | --- | --- | --- |
+| `test-spec` | test spec status | Required sections and output skeleton | `## Closed enums` fenced `Test spec status` block, lines 118-128 | `draft`; `active`; `abandoned`; `superseded`; `archived` | Required-section table and output skeleton use `<test spec status>`. |
+| `test-spec` | test case level | Test case format and output skeleton | `## Closed enums` fenced `Test case level` block, lines 130-138 | `unit`; `integration`; `e2e`; `smoke`; `manual` | Test case format and output skeleton use `<test case level>`. |
+| `test-spec` | coverage map level | Output skeleton requirement coverage map | `## Closed enums` fenced `Coverage map level` block, lines 140-150 | `unit`; `integration`; `e2e`; `smoke`; `manual`; `contract`; `migration` | Requirement coverage map uses `<coverage map level>`. |
+
+### Section-order exceptions
+
+None for M3. Stop conditions remain before input handling, required sections,
+coverage rules, closed enums, and output skeleton. The new `Closed enums`
+section is placed before the output skeleton so the skeleton can reference the
+authoritative values without duplicating them.
+
+### Generated adapter output boundary
+
+Generated public adapter skill bodies were not hand-edited. M3 validation
+attempted the repository-owned generation and adapter validation commands from
+the active plan. `python scripts/build-adapters.py --version v0.1.5 --check`
+and `python scripts/validate-adapters.py --version v0.1.5` failed on existing
+adapter-layout debt: repository-tree adapter directories are absent under
+`dist/adapters/`, and the tracked manifest includes command aliases rejected by
+the v0.1.5 adapter check. The active plan anticipated this failure mode and
+permits recording an explicit deferral for unrelated baseline archive-layout
+debt. M3 therefore defers repository-tree adapter output validation while
+continuing to rely on selected CI's adapter archive drift check for the current
+supported adapter proof. Generated adapter skill bodies were not hand-edited.
+
+### Cold-read notes
+
+| Skill | Required sections or dimensions | Closed enums | Boundaries and output expectations | Result |
+| --- | --- | --- | --- | --- |
+| `spec` | `## Required sections` table, lines 108-136 | `## Closed enums`, lines 161-179 | Workflow role, upstream status settlement, rules, output skeleton, and handoff behavior remain findable by top-level heading. | pass |
+| `spec-review` | `## Review dimensions` table, lines 48-65 | `## Closed enums`, lines 67-75 | Workflow role, material findings, isolation/recording, rules, handoff behavior, and output skeleton remain findable by top-level heading. | pass |
+| `test-spec` | `## Required sections` table, lines 69-91, and `## Coverage rules` table, lines 108-116 | `## Closed enums`, lines 118-150 | Workflow role, stop conditions, input handling, test-case format, output skeleton, rules, and expected output remain findable by top-level heading. | pass |

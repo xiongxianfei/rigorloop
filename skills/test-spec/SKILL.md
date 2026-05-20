@@ -68,25 +68,27 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
 
 ## Required sections
 
-1. **Status**: draft, active, abandoned, superseded, archived.
-2. **Related spec and plan**.
-3. **Testing strategy**: unit, integration, end-to-end, smoke, manual, contract, migration.
-4. **Requirement coverage map**: every requirement ID maps to one or more tests or explicit manual verification.
-5. **Example coverage map**: every example maps to a test when feasible.
-6. **Edge case coverage**.
-7. **Test cases** with stable IDs.
-8. **Fixtures and data**.
-9. **Mocking/stubbing policy**.
-10. **Migration or compatibility tests** when relevant.
-11. **Observability verification** when logs, metrics, traces, or audit events are required.
-12. **Security/privacy verification** when relevant.
-13. **Performance checks** when relevant.
-14. **Manual QA checklist** when automation is insufficient.
-15. **What not to test** and why.
-16. **Uncovered gaps** that must return to spec or architecture.
-17. **Next artifacts**: planned next steps while the test spec remains draft or active.
-18. **Follow-on artifacts**: actual downstream artifacts or terminal disposition. If present before any real follow-ons exist, say `None yet`.
-19. **Readiness**: truthful next-stage or active-proof-surface wording.
+| Section | Requirement |
+| --- | --- |
+| Status | Use `<test spec status>`. |
+| Related spec and plan | Include the related spec and plan. |
+| Testing strategy | Cover unit, integration, end-to-end, smoke, manual, contract, and migration strategy. |
+| Requirement coverage map | Every requirement ID maps to one or more tests or explicit manual verification. |
+| Example coverage map | Every example maps to a test when feasible. |
+| Edge case coverage | Include edge case coverage. |
+| Test cases | Include test cases with stable IDs. |
+| Fixtures and data | Include fixtures and data. |
+| Mocking/stubbing policy | Include mocking/stubbing policy. |
+| Migration or compatibility tests | Include when relevant. |
+| Observability verification | Include when logs, metrics, traces, or audit events are required. |
+| Security/privacy verification | Include when relevant. |
+| Performance checks | Include when relevant. |
+| Manual QA checklist | Include when automation is insufficient. |
+| What not to test | Include what not to test and why. |
+| Uncovered gaps | Include gaps that must return to spec or architecture. |
+| Next artifacts | Include planned next steps while the test spec remains draft or active. |
+| Follow-on artifacts | Include actual downstream artifacts or terminal disposition. If present before any real follow-ons exist, say `None yet`. |
+| Readiness | Include truthful next-stage or active-proof-surface wording. |
 
 ## Test case format
 
@@ -95,7 +97,7 @@ Use:
 ```text
 T1. Title
 - Covers: R1, R3, E2
-- Level: unit | integration | e2e | smoke | manual
+- Level: <test case level>
 - Fixture/setup:
 - Steps:
 - Expected result:
@@ -105,11 +107,47 @@ T1. Title
 
 ## Coverage rules
 
-- Every `MUST` requirement needs coverage.
-- Every error behavior needs coverage.
-- Every migration or compatibility claim needs coverage or explicit manual verification.
-- Every architectural boundary that could break wiring needs an integration or contract test.
-- Bugs require a regression test that fails before the fix when feasible.
+| Coverage target | Rule |
+| --- | --- |
+| `MUST` requirements | Every `MUST` requirement needs coverage. |
+| Error behavior | Every error behavior needs coverage. |
+| Migration or compatibility claims | Every migration or compatibility claim needs coverage or explicit manual verification. |
+| Architectural boundaries that could break wiring | Every architectural boundary that could break wiring needs an integration or contract test. |
+| Bugs | Bugs require a regression test that fails before the fix when feasible. |
+
+## Closed enums
+
+Test spec status:
+
+```text
+draft
+active
+abandoned
+superseded
+archived
+```
+
+Test case level:
+
+```text
+unit
+integration
+e2e
+smoke
+manual
+```
+
+Coverage map level:
+
+```text
+unit
+integration
+e2e
+smoke
+manual
+contract
+migration
+```
 
 ## Output skeleton
 
@@ -118,7 +156,7 @@ T1. Title
 
 ## Status
 
-<draft | active | abandoned | superseded | archived>
+<test spec status>
 
 ## Related spec and plan
 
@@ -134,7 +172,7 @@ T1. Title
 
 | Requirement ID | Covered by | Level | Notes |
 | --- | --- | --- | --- |
-| <R1> | <T1> | <unit|integration|e2e|smoke|manual|contract|migration> | <notes> |
+| <R1> | <T1> | <coverage map level> | <notes> |
 
 ## Example coverage map
 
@@ -151,7 +189,7 @@ T1. Title
 ### T1. <Title>
 
 - Covers: <R1, R3, E2>
-- Level: <unit | integration | e2e | smoke | manual>
+- Level: <test case level>
 - Fixture/setup:
 - Steps:
 - Expected result:

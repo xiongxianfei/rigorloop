@@ -32,6 +32,9 @@ requirements:
   - Record code-review M2 R1 finding `SFRP-M2-CR1` before review-resolution or implementation fixes.
   - Resolve `SFRP-M2-CR1` by narrowing the `spec-review` review-dimension table to source-preserving dimension names and verdict placeholders.
   - Record clean M2 code-review rerun and close M2 before beginning M3.
+  - Implement M3 by tabulating `skills/test-spec/SKILL.md` required-section and coverage-rule guidance and centralizing changed closed enum values without behavior changes.
+  - Record M3 content-preservation, enum authority, section-order, representative behavior-parity, generated-output, and cold-read evidence before code review.
+  - Record an explicit generated adapter validation deferral for the existing v0.1.5 repository-tree adapter layout debt exposed by M3 adapter commands.
   - Keep produced-artifact readability, packaging, and duplicated-block resolution out of this proposal.
 tests:
   - Artifact lifecycle validation for the proposal and change-local review artifacts.
@@ -56,6 +59,12 @@ tests:
   - Review artifact validation for code-review M2 R1 findings.
   - Review-resolution validation for `SFRP-M2-CR1`.
   - Review artifact validation for clean M2 code-review rerun.
+  - Direct skill validation for `skills/test-spec/SKILL.md`.
+  - Skill-validator regression validation after M3 enum authority.
+  - Generated skill mirror validation.
+  - Adapter command validation attempt and explicit deferral for unrelated baseline layout debt.
+  - Artifact lifecycle validation for M3 proof surfaces and plan state.
+  - Selected CI validation for M3 touched paths.
 validation:
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-20-spec-family-readability-pass.md --path docs/changes/2026-05-20-spec-family-readability-pass/change.yaml --path docs/changes/2026-05-20-spec-family-readability-pass/review-log.md --path docs/changes/2026-05-20-spec-family-readability-pass/review-resolution.md --path docs/changes/2026-05-20-spec-family-readability-pass/reviews/proposal-review-r1.md
     result: pass_validated_1_lifecycle_artifact
@@ -213,9 +222,30 @@ validation:
     result: pass_after_code_review_m2_r2
   - command: bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-20-spec-family-readability-pass.md --path docs/plan.md --path docs/changes/2026-05-20-spec-family-readability-pass/change.yaml --path docs/changes/2026-05-20-spec-family-readability-pass/review-log.md --path docs/changes/2026-05-20-spec-family-readability-pass/review-resolution.md --path docs/changes/2026-05-20-spec-family-readability-pass/reviews/code-review-m2-r2.md
     result: pass_selected_review_artifacts_lifecycle_change_metadata_after_code_review_m2_r2
+  - command: python scripts/validate-skills.py skills/test-spec/SKILL.md
+    result: pass_validated_1_skill_file_for_m3
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_for_m3
+  - command: python scripts/test-skill-validator.py
+    result: pass_132_tests_for_m3
+  - command: python scripts/build-skills.py --check
+    result: pass_validated_generated_skills_for_m3
+  - command: python scripts/build-adapters.py --version v0.1.5 --check
+    result: failed_deferred_existing_adapter_layout_debt_manifest_aliases_and_missing_repository_tree_adapter_dirs
+  - command: python scripts/validate-adapters.py --version v0.1.5
+    result: failed_deferred_existing_adapter_layout_debt_missing_repository_tree_adapter_dirs
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-20-spec-family-readability-pass/change.yaml
+    result: pass_valid_change_metadata_after_m3
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-20-spec-family-readability-pass.md --path docs/plan.md --path specs/spec-family-readability-pass.md --path specs/spec-family-readability-pass.test.md --path docs/changes/2026-05-20-spec-family-readability-pass/change.yaml --path docs/changes/2026-05-20-spec-family-readability-pass/behavior-preservation.md --path docs/changes/2026-05-20-spec-family-readability-pass/behavior-parity.md
+    result: pass_validated_3_lifecycle_artifacts_after_m3
+  - command: git diff --check -- skills/spec/SKILL.md skills/spec-review/SKILL.md skills/test-spec/SKILL.md docs/plans/2026-05-20-spec-family-readability-pass.md docs/plan.md specs/spec-family-readability-pass.md specs/spec-family-readability-pass.test.md docs/changes/2026-05-20-spec-family-readability-pass
+    result: pass_after_m3
+  - command: bash scripts/ci.sh --mode explicit --path skills/spec/SKILL.md --path skills/spec-review/SKILL.md --path skills/test-spec/SKILL.md --path docs/plans/2026-05-20-spec-family-readability-pass.md --path docs/plan.md --path specs/spec-family-readability-pass.md --path specs/spec-family-readability-pass.test.md --path docs/changes/2026-05-20-spec-family-readability-pass/change.yaml --path docs/changes/2026-05-20-spec-family-readability-pass/behavior-preservation.md --path docs/changes/2026-05-20-spec-family-readability-pass/behavior-parity.md
+    result: pass_selected_skill_artifact_lifecycle_change_metadata_and_adapter_archive_checks_after_m3
 changed_files:
   - skills/spec/SKILL.md
   - skills/spec-review/SKILL.md
+  - skills/test-spec/SKILL.md
   - scripts/test-skill-validator.py
   - docs/proposals/2026-05-20-spec-family-readability-pass.md
   - specs/spec-family-readability-pass.md
