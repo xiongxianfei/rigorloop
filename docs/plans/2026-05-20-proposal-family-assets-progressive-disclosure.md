@@ -53,14 +53,14 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Proposal Skeleton Asset
-- Current milestone state: review-requested
-- Last reviewed milestone: M1. Baseline and Validator Foundation
-- Review status: code-review requested for M2
-- Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: code-review M2
+- Current milestone: M3. Proposal-Review Structural Assets
+- Current milestone state: planned
+- Last reviewed milestone: M2. Proposal Skeleton Asset
+- Review status: code-review M2 R1 clean-with-notes; no material findings
+- Remaining in-scope implementation milestones: M3, M4
+- Next stage: implement M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2-M4 have not run, and final explain-change, verify, and PR handoff evidence do not exist.
+- Reason final closeout is or is not ready: M3-M4 have not run, and final explain-change, verify, and PR handoff evidence do not exist.
 
 ## Milestones
 
@@ -116,7 +116,7 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 
 ### M2. Proposal Skeleton Asset
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Extract the `proposal` output skeleton into `assets/proposal-skeleton.md` without changing proposal behavior or conditional section triggers.
 - Requirements: PFA-R1-PFA-R5, PFA-R7-PFA-R22, PFA-R29-PFA-R39
 - Files/components likely touched:
@@ -154,6 +154,7 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
   - decision log updated if needed
   - validation notes updated
   - milestone committed
+  - result: closed by code-review M2 R1
 - Risks:
   - Full skeleton extraction could hide too much contract surface.
   - Conditional sections could become mandatory or disappear.
@@ -302,6 +303,7 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 - 2026-05-20: code-review M1 R2 returned clean-with-notes; M1 closed and next stage is implement M2.
 - 2026-05-20: M2 implementation started for `skills/proposal/SKILL.md`, `skills/proposal/assets/proposal-skeleton.md`, and proposal preservation evidence only.
 - 2026-05-20: M2 extracted `assets/proposal-skeleton.md`, updated `skills/proposal/SKILL.md` resource-map and compact output guidance, recorded preservation evidence, and moved to `review-requested`.
+- 2026-05-20: code-review M2 R1 returned clean-with-notes; M2 closed and next stage is implement M3.
 
 ## Decision log
 
@@ -370,4 +372,4 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for code-review M2. Final closeout remains blocked until M2-M4 and downstream gates close.
+- Ready for implement M3. Final closeout remains blocked until M3-M4 and downstream gates close.
