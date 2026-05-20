@@ -69,20 +69,20 @@ Apply a presentation-only readability pass to the three spec-family skills, `spe
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Spec Skill Readability
-- Current milestone state: review-requested
-- Last reviewed milestone: none
-- Review status: code-review M1 R1 finding `SFRP-M1-CR1` resolved; M1 ready for code-review rerun
-- Remaining in-scope implementation milestones: M1, M2, M3
-- Next stage: code-review M1 rerun
+- Current milestone: M2. Spec-Review Skill Readability
+- Current milestone state: planned
+- Last reviewed milestone: M1. Spec Skill Readability
+- Review status: code-review M1 R2 clean-with-notes; no open findings
+- Remaining in-scope implementation milestones: M2, M3
+- Next stage: implement M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 code-review rerun, M2 through M3 implementation and code-review, explain-change, verify, and PR handoff remain open.
+- Reason final closeout is or is not ready: M2 through M3 implementation and code-review, explain-change, verify, and PR handoff remain open.
 
 ## Milestones
 
 ### M1. Spec Skill Readability
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: make `skills/spec/SKILL.md` scannable by tabulating required-section guidance, fencing remaining closed enums, and aligning section order where behavior clarity allows.
 - Requirements: `SFRP-R1`, `SFRP-R2`, `SFRP-R3`, `SFRP-R4`, `SFRP-R7`, `SFRP-R10` through `SFRP-R23`
 - Files/components likely touched:
@@ -267,6 +267,7 @@ Apply a presentation-only readability pass to the three spec-family skills, `spe
 - 2026-05-20: M1 implementation completed and targeted validation passed; milestone is ready for code-review.
 - 2026-05-20: code-review M1 R1 requested changes for `SFRP-M1-CR1`; the milestone is in resolution-needed state.
 - 2026-05-20: implemented the `SFRP-M1-CR1` fixture fix; `spec` now asserts the `## Closed enums` settlement-result values while `architecture` and `plan` retain exact inline value-list coverage.
+- 2026-05-20: code-review M1 R2 completed clean-with-notes; M1 is closed and the next stage is implement M2.
 
 ## Decision log
 
@@ -310,4 +311,4 @@ Apply a presentation-only readability pass to the three spec-family skills, `spe
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `code-review M1` rerun.
+- Ready for `implement M2`.
