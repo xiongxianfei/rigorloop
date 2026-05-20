@@ -25,6 +25,7 @@ requirements:
   - Record durable explain-change rationale before verify.
   - Pass final local verification before PR handoff.
   - Open PR handoff after branch-ready verification passes.
+  - Record PR #77 merge and hosted CI success before lifecycle closeout.
   - Keep family-wide readability, packaging, routing changes, and produced-artifact readability out of this proposal.
 tests:
   - Artifact lifecycle validation for the proposal and change-local review artifacts.
@@ -39,6 +40,7 @@ tests:
   - PR handoff evidence.
   - Temporary adapter archive validation for generated-output proof from canonical skills.
   - Artifact lifecycle validation for the active plan and plan index.
+  - Hosted CI and PR merge evidence for lifecycle closeout.
   - Review artifact closeout validation for recorded proposal-review findings.
   - Change metadata validation for this change-local root.
 validation:
@@ -188,6 +190,8 @@ validation:
     result: pass_post_rebase_selected_skills_generation_adapter_review_artifacts_lifecycle_change_metadata_checks
   - command: gh pr create --base main --head proposal/test-spec-contract-normalization
     result: opened_pr_77
+  - command: gh pr view 77 --json url,state,mergedAt,mergeCommit,headRefName,baseRefName,statusCheckRollup,title
+    result: merged_pr_77_hosted_ci_success_merge_commit_88b93f74083042ab6be07a50bed36cab9c49ea8b
 changed_files:
   - specs/skill-contract.md
   - specs/skill-contract.test.md

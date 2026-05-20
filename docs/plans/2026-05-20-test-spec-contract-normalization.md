@@ -2,7 +2,7 @@
 
 ## Status
 
-- active
+- done
 - Owner: maintainers
 - Start date: 2026-05-20
 - Last updated: 2026-05-20
@@ -58,13 +58,13 @@ Normalize `skills/test-spec/SKILL.md` to the published-skill design contract wit
 ## Current Handoff Summary
 
 - Current milestone: final closeout sequence
-- Current milestone state: pending
+- Current milestone state: closed
 - Last reviewed milestone: M3. Test-Spec Skill Normalization
 - Review status: code-review M3 R1 clean-with-notes; no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: hosted CI and human review for PR #77
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation milestones, explain-change, verify, and PR handoff are closed, but hosted CI and human review remain incomplete.
+- Next stage: none
+- Final closeout readiness: complete
+- Reason final closeout is or is not ready: implementation milestones, explain-change, verify, PR handoff, hosted CI, human review, and PR #77 merge are complete.
 
 ## Milestones
 
@@ -249,6 +249,7 @@ Normalize `skills/test-spec/SKILL.md` to the published-skill design contract wit
 - 2026-05-20: Recorded durable explain-change rationale and advanced the handoff to verify.
 - 2026-05-20: Final local verification passed with a documented adapter expanded-tree warning; branch is ready for PR handoff.
 - 2026-05-20: Opened PR #77 for human review.
+- 2026-05-20: PR #77 passed hosted CI and merged into `main` with merge commit `88b93f74083042ab6be07a50bed36cab9c49ea8b`.
 
 ## Decision log
 
@@ -287,12 +288,14 @@ Normalize `skills/test-spec/SKILL.md` to the published-skill design contract wit
 - Explain-change recorded at `docs/changes/2026-05-20-test-spec-contract-normalization/explain-change.md`.
 - Verify recorded at `docs/changes/2026-05-20-test-spec-contract-normalization/verify-report.md`; local validation passed and hosted CI was not observed.
 - PR opened: [PR #77](https://github.com/xiongxianfei/rigorloop/pull/77).
+- Hosted CI for PR #77 passed on GitHub Actions: [ci / ci](https://github.com/xiongxianfei/rigorloop/actions/runs/26154042019/job/76928617320).
+- PR #77 merged on 2026-05-20 with merge commit `88b93f74083042ab6be07a50bed36cab9c49ea8b`.
 
 ## Outcome and retrospective
 
-- Pending completion.
+- Completed. `test-spec` now matches the published-skill design contract shape for metadata, Workflow role, visible stop conditions, and output skeleton while preserving the existing rules, stop conditions, coverage obligations, and output obligations.
+- The follow-on spec-family readability work remains out of scope for this plan.
 
 ## Readiness
 
-- See `Current Handoff Summary`.
-- PR opened as [PR #77](https://github.com/xiongxianfei/rigorloop/pull/77); hosted CI and human review remain pending.
+- Closed. [PR #77](https://github.com/xiongxianfei/rigorloop/pull/77) passed hosted CI and merged into `main`.
