@@ -58,9 +58,9 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 - Last reviewed milestone: M4. Generated Output, Token, Cold-Read, and Lifecycle Evidence
 - Review status: code-review M4 R1 clean-with-notes; no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
+- Next stage: pr
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: all implementation milestones are closed and explain-change exists, but verify and PR handoff evidence do not exist.
+- Reason final closeout is or is not ready: branch-ready verification passed, but PR handoff evidence does not exist.
 
 ## Milestones
 
@@ -329,6 +329,7 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 - 2026-05-20: M4 recorded generated skill mirror proof, temporary adapter archive proof, adapter validation, tracked-tree adapter deferral, token/P evidence, cold-read evidence, and no-hand-edit evidence; M4 moved to `review-requested`.
 - 2026-05-20: code-review M4 R1 returned clean-with-notes; all implementation milestones are closed and the next stage is final closeout sequence starting with explain-change.
 - 2026-05-20: Explain-change recorded durable rationale in `docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/explain-change.md`; next stage is verify.
+- 2026-05-20: Final local verify passed, `verify-report.md` was recorded, and the branch is ready for PR handoff.
 
 ## Decision log
 
@@ -363,6 +364,7 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 - `specs/skill-contract.md`: unaffected in M1; no amendment needed before validator foundation work.
 - `docs/plan.md`: updated only as the active plan index; milestone journal details remain in this plan body.
 - `docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/explain-change.md`: records rationale only and does not own final verify or PR readiness.
+- `docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/verify-report.md`: records branch-ready verification and hands off to `pr`; it does not claim PR-body readiness or hosted CI success.
 
 ## Validation notes
 
@@ -440,4 +442,4 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for verify. Final closeout remains incomplete until verify and PR handoff close.
+- Branch-ready and ready for PR handoff. Final closeout remains incomplete until PR handoff closes.
