@@ -566,10 +566,28 @@ class SkillValidatorFixtureTests(unittest.TestCase):
     def test_skill_readability_valid_fixture_passes(self) -> None:
         self.assertFixturePasses("skill-readability/valid-pilot")
 
+    def test_skill_readability_missing_version_fails(self) -> None:
+        self.assertFixtureFails(
+            "skill-readability/missing-version",
+            "version: missing required readability contract field",
+        )
+
+    def test_skill_readability_invalid_schema_version_fails(self) -> None:
+        self.assertFixtureFails(
+            "skill-readability/invalid-schema-version",
+            "schema-version must be 'skill-readability-v1'",
+        )
+
     def test_skill_readability_missing_workflow_role_fails(self) -> None:
         self.assertFixtureFails(
             "skill-readability/missing-workflow-role",
             "missing required '## Workflow role' section",
+        )
+
+    def test_skill_readability_missing_workflow_role_field_fails(self) -> None:
+        self.assertFixtureFails(
+            "skill-readability/missing-workflow-role-field",
+            "Workflow role missing required field 'downstream'",
         )
 
     def test_skill_readability_invalid_stage_fails(self) -> None:
@@ -582,6 +600,12 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         self.assertFixtureFails(
             "skill-readability/missing-output-skeleton",
             "missing required '## Output skeleton' section",
+        )
+
+    def test_skill_readability_output_skeleton_without_placeholder_fails(self) -> None:
+        self.assertFixtureFails(
+            "skill-readability/output-skeleton-without-placeholder",
+            "Output skeleton must include fillable placeholders",
         )
 
     def test_skill_readability_required_internal_reference_fails(self) -> None:
