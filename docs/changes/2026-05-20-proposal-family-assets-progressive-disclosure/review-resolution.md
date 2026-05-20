@@ -2,12 +2,13 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
 Review closeout: spec-review-r1
 Review closeout: plan-review-r1
+Review closeout: code-review-m1-r1
 
 ## Resolution Entries
 
@@ -80,3 +81,19 @@ No material findings.
 ### plan-review-r1
 
 No material findings.
+
+### code-review-m1-r1
+
+## Findings
+
+#### PFA-M1-CR1
+
+Finding ID: PFA-M1-CR1
+Disposition: accepted
+Status: open
+Owner: implementation agent
+Owning stage: implement M1
+Chosen action: Pending. Add non-allowlisted proposal-review structural-label rejection and fixture coverage before returning M1 to code review.
+Rationale: The approved spec requires explicit structural-label allowlist enforcement for proposal-review assets, not only forbidden-policy phrase detection.
+Validation target: `proposal-review` asset validation rejects field labels that are not in `PROPOSAL_REVIEW_ASSET_ALLOWED_FIELD_LABELS` and keeps approved labels passing.
+Validation evidence: pending

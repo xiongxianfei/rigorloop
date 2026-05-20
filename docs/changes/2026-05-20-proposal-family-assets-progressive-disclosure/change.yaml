@@ -44,6 +44,7 @@ changed_files:
   - docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-log.md
   - docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/review-resolution.md
   - docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/plan-review-r1.md
+  - docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/code-review-m1-r1.md
   - docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r1.md
   - docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/proposal-review-r2.md
   - docs/changes/2026-05-20-proposal-family-assets-progressive-disclosure/reviews/spec-review-r1.md
@@ -55,5 +56,5 @@ changed_files:
   - specs/proposal-family-assets-progressive-disclosure.md
   - specs/proposal-family-assets-progressive-disclosure.test.md
 review:
-  status: pending code-review
-  unresolved_items: 0
+  status: changes-requested
+  unresolved_items: 1

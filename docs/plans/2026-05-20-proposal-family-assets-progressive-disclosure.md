@@ -54,19 +54,19 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 ## Current Handoff Summary
 
 - Current milestone: M1. Baseline and Validator Foundation
-- Current milestone state: review-requested
-- Last reviewed milestone: none
-- Review status: plan-review approved; test spec active
+- Current milestone state: resolution-needed
+- Last reviewed milestone: M1. Baseline and Validator Foundation
+- Review status: code-review M1 R1 changes-requested; review-resolution required for PFA-M1-CR1
 - Remaining in-scope implementation milestones: M1, M2, M3, M4
-- Next stage: code-review M1
+- Next stage: review-resolution for PFA-M1-CR1
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 is awaiting code review, M2-M4 have not run, and final explain-change, verify, and PR handoff evidence do not exist.
+- Reason final closeout is or is not ready: M1 has open finding PFA-M1-CR1, M2-M4 have not run, and final explain-change, verify, and PR handoff evidence do not exist.
 
 ## Milestones
 
 ### M1. Baseline and Validator Foundation
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Create the pinned behavior baseline and deterministic validator/test coverage needed before changing skill text.
 - Requirements: PFA-R23-PFA-R28, PFA-R29-PFA-R32, PFA-R33-PFA-R39, PFA-R51-PFA-R52
 - Files/components likely touched:
@@ -290,6 +290,7 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 - 2026-05-20: Plan created after proposal acceptance, spec approval, and clean spec-review R1.
 - 2026-05-20: Clean plan-review R1 recorded; matching test spec created as the active proof surface for implementation.
 - 2026-05-20: M1 implemented and set to `review-requested` after validator and skill validation passed.
+- 2026-05-20: Code-review M1 R1 recorded `PFA-M1-CR1`; M1 moved to `resolution-needed`.
 
 ## Decision log
 
@@ -304,6 +305,7 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 
 - M1 did not require edits to canonical skill text. The baseline captured the pinned source state before any `skills/proposal/` or `skills/proposal-review/` edits.
 - Existing spec-family validator helpers were close enough to reuse as a bounded pattern, but proposal-review needed a separate allowlist and forbidden-label set because its review-policy surfaces differ.
+- Code-review found that the allowlist is not yet enforced for otherwise neutral non-allowlisted labels; M1 must resolve `PFA-M1-CR1` before M2.
 
 ## Aligned-surface audit
 
@@ -339,4 +341,4 @@ Implement the approved proposal-family assets progressive-disclosure contract fo
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for code-review M1. Do not start M2 until M1 code review closes and any required review-resolution is complete.
+- Ready for review-resolution on `PFA-M1-CR1`. Do not start M2 until M1 review-resolution closes and code-review rerun closes M1.
