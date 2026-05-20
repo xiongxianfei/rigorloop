@@ -176,6 +176,9 @@ SPEC_REVIEW_ASSET_FORBIDDEN_POLICY_PATTERN = re.compile(
     r"observability|example)\b",
     re.IGNORECASE,
 )
+SPEC_REVIEW_ASSET_ALLOWED_FIELD_LABEL_PATTERN = re.compile(
+    r"^\s*(?:[-*]\s*)?[A-Za-z][A-Za-z /-]*:\s*<[^>\n]+>\s*$"
+)
 
 
 @dataclass(frozen=True)
@@ -593,7 +596,14 @@ def _validate_spec_family_asset_file(
             f"{path}:{line_number}: asset '{relative_resource}' must not require repository-root dependency: {dependency}"
         )
 
-    if skill_name == "spec-review" and SPEC_REVIEW_ASSET_FORBIDDEN_POLICY_PATTERN.search(asset_body):
+    review_policy_lines = [
+        line
+        for line in asset_body.splitlines()
+        if not line.lstrip().startswith("#")
+        and not SPEC_REVIEW_ASSET_ALLOWED_FIELD_LABEL_PATTERN.match(line)
+    ]
+    review_policy_text = "\n".join(review_policy_lines)
+    if skill_name == "spec-review" and SPEC_REVIEW_ASSET_FORBIDDEN_POLICY_PATTERN.search(review_policy_text):
         errors.append(
             f"{path}: spec-review asset '{relative_resource}' must not contain review-policy prose"
         )
