@@ -3,12 +3,13 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-20 Test-Spec Contract Normalization](plans/2026-05-20-test-spec-contract-normalization.md) - active plan for proof-first normalization of `skills/test-spec/SKILL.md` to the published-skill design contract; PR #77 is open and the current next stage is hosted CI and human review.
+- none yet
 
 ## Blocked
 - none yet
 
 ## Done
+- [2026-05-20 Test-Spec Contract Normalization](plans/2026-05-20-test-spec-contract-normalization.md) - completed execution plan for proof-first normalization of `skills/test-spec/SKILL.md` to the published-skill design contract, adding focused test-spec proof obligations, validator regression fixtures, behavior preservation and parity evidence, generated adapter archive validation, final local verify, PR #77, hosted CI, and merging PR #77.
 - [2026-05-19 Spec and Test-Spec Structural Hygiene](plans/2026-05-19-spec-and-test-spec-structural-hygiene.md) - completed execution plan for grouping the skill-contract spec and test spec by slice, adding navigation and growth-strategy structure, preserving clause/criterion/test content, resolving `CR-M1-001`, passing final local verify with PR-mode selected CI and broad smoke, and recording PR handoff readiness.
 - [2026-05-19 Assets-First Progressive Disclosure Pilot](plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md) - completed execution plan for the assets-first `plan` packaged-resource pilot, adding the four packaged plan assets, deterministic validator and adapter archive proof, behavior/token/parity evidence, selector routing for change-local evidence, final local verify, PR #75, and passing hosted CI.
 - [2026-05-19 Published Skill Design Plan Family Rollout](plans/2026-05-19-published-skill-design-plan-family.md) - completed execution plan for continuing the published-skill design rollout with the `plan` and `plan-review` pair, preserving plan state ownership and review recording, passing final verify, opening PR #74, passing hosted CI, and merging PR #74.
