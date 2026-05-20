@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -11,6 +11,7 @@ Review closeout: plan-review-r1
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
 Review closeout: code-review-m2-r1
+Review closeout: code-review-m3-r1
 
 ## Resolution Entries
 
@@ -118,3 +119,18 @@ No material findings.
 ### code-review-m2-r1
 
 No material findings.
+
+### code-review-m3-r1
+
+## Findings
+
+#### PFA-M3-CR1
+
+Finding ID: PFA-M3-CR1
+Disposition: accepted
+Owner: implementation agent
+Owning stage: implement M3
+Suggested resolution: Restore the pinned `## Result` block shape in `assets/review-result-skeleton.md`, including the `Skill` field, and update the proposal-review structural-label allowlist and fixture coverage if needed.
+Stop state: M3 remains in review-resolution until the result skeleton preserves the pinned field set and code-review rerun closes the finding.
+Rationale: The approved spec requires source-to-asset parity for every extracted structure, and the pinned baseline records `Skill` as part of the review-result field set.
+Expected proof: M3 validation rerun after the fix, including `python scripts/validate-skills.py skills/proposal-review/SKILL.md`, `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`, review artifact validation, lifecycle validation, and `git diff --check --`.
