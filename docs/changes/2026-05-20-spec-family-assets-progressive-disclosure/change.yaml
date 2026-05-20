@@ -387,6 +387,8 @@ validation:
     result: pass_62_tests_after_selector_routing_fix_during_final_verify
   - command: bash scripts/ci.sh --mode pr --base 88b93f74083042ab6be07a50bed36cab9c49ea8b --head HEAD
     result: pass_selected_pr_ci_checks_during_final_verify
+  - command: bash scripts/ci.sh --mode pr --base origin/main --head HEAD
+    result: pass_selected_pr_ci_checks_against_current_origin_main_before_pr
 changed_files:
   - docs/proposals/2026-05-20-spec-family-assets-progressive-disclosure.md
   - specs/spec-family-assets-progressive-disclosure.md

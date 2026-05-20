@@ -69,10 +69,11 @@ Working directory: `/home/xiongxianfei/data/20260419-rigorloop`
 | `git diff --check -- .` | pass | No whitespace errors. |
 | `python scripts/test-select-validation.py` | pass | Ran 62 selector tests after adding `baseline.md` and `generated-output-proof.md` routing. |
 | `bash scripts/ci.sh --mode pr --base 88b93f74083042ab6be07a50bed36cab9c49ea8b --head HEAD` | pass | Selected CI checks passed locally. |
+| `bash scripts/ci.sh --mode pr --base origin/main --head HEAD` | pass | Selected CI checks passed locally after fetching current `origin/main`. |
 
 ## CI Status
 
-Local PR-mode CI passed through `scripts/ci.sh`.
+Local PR-mode CI passed through `scripts/ci.sh` against current `origin/main`.
 
 Hosted CI has not been observed in this stage. The PR stage must not claim
 hosted CI until GitHub reports it.
