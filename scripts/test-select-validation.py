@@ -624,6 +624,18 @@ raise SystemExit({exit_code})
                 "checks": {"artifact_lifecycle.validate"},
             },
             {
+                "path": "docs/changes/2026-04-25-example/baseline.md",
+                "category": "change-local-lifecycle",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
+                "path": "docs/changes/2026-04-25-example/generated-output-proof.md",
+                "category": "change-local-lifecycle",
+                "status": "ok",
+                "checks": {"artifact_lifecycle.validate"},
+            },
+            {
                 "path": "docs/changes/2026-04-25-example/historical-coverage.md",
                 "category": "change-local-lifecycle",
                 "status": "ok",
