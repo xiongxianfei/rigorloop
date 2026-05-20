@@ -73,11 +73,11 @@ The work touches canonical skill source under `skills/`, validator and test scri
 ## Current Handoff Summary
 
 - Current milestone: M3
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Last reviewed milestone: M2
-- Review status: M3 implemented and ready for code-review
+- Review status: code-review M3 R1 changes-requested; `SFA-M3-CR1` open
 - Remaining in-scope implementation milestones: M3, M4, M5
-- Next stage: code-review M3
+- Next stage: review-resolution / implement M3 fix
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation milestones, code reviews, generated-output proof, explain-change, verify, and PR handoff remain incomplete.
 
@@ -142,7 +142,7 @@ The work touches canonical skill source under `skills/`, validator and test scri
 
 ### M3. `spec-review` assets
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Add narrow review-class assets for `spec-review` while keeping review judgment in `SKILL.md`.
 - Requirements: `SFA-R1` through `SFA-R3`, `SFA-R6`, `SFA-R9`, `SFA-R10`, `SFA-R14`, `SFA-R15`, `SFA-R19` through `SFA-R24`, `SFA-R28` through `SFA-R31`, `SFA-R38` through `SFA-R41`
 - Files expected:
@@ -159,7 +159,7 @@ The work touches canonical skill source under `skills/`, validator and test scri
   - `python scripts/test-skill-validator.py`
   - M3 preservation and behavior-parity evidence inspection
   - `git diff --check -- skills/spec-review docs/changes/2026-05-20-spec-family-assets-progressive-disclosure`
-- Result: review-requested after adding narrow `spec-review` assets and M3 preservation evidence.
+- Result: changes requested; `SFA-M3-CR1` requires review-resolution before M3 can close.
 - Risks:
   - `review-finding.md` accumulates hidden review policy; enforce `SFA-R23` and `SFA-R24` through validator and code review.
 - Rollback:
@@ -280,6 +280,7 @@ Final closeout:
 - 2026-05-20: accepted and resolved `SFA-M2-CR1` by changing `assets/requirement-row.md` to preserve the full requirement statement field, updating the `SKILL.md` resource-map entry, and recording modal-preservation evidence; M2 returned to review-requested.
 - 2026-05-20: code-review M2 R3 returned clean-with-notes; M2 closed and next stage is implement M3.
 - 2026-05-20: M3 added the two approved narrow `spec-review` assets, updated `skills/spec-review/SKILL.md`, tightened the review-class validator to allow structural field labels while rejecting policy prose, recorded preservation/token/cold-read evidence, and moved to review-requested.
+- 2026-05-20: code-review M3 R1 requested changes because the review-class validator allows forbidden policy labels when they are shaped as field labels.
 
 ## Decision log
 
@@ -344,6 +345,11 @@ Final closeout:
   - `git diff --check -- .`
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/baseline.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/behavior-preservation.md --path docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md --path docs/plan.md`
+- M3 R1 code-review recording validation passed:
+  - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-20-spec-family-assets-progressive-disclosure`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md --path docs/plan.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/review-log.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/review-resolution.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/reviews/code-review-m3-r1.md`
+  - `git diff --check -- docs/changes/2026-05-20-spec-family-assets-progressive-disclosure docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md docs/plan.md`
 
 ## Outcome and retrospective
 
