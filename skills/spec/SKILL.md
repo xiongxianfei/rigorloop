@@ -72,7 +72,7 @@ Report `## Upstream status settlement` when settlement was updated, blocked, or 
 - Review evidence:
 - Previous status:
 - New status:
-- Settlement result: updated | blocked | not-needed
+- Settlement result: <settlement result>
 - Settlement blocker:
 ```
 
@@ -107,7 +107,31 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
 
 ## Required sections
 
-Include these sections: Status; Related proposal; Goal and context; Glossary; Examples first; Requirements; Inputs and outputs; State and invariants; Error and boundary behavior; Compatibility and migration; Observability; Security and privacy; Accessibility and UX; Performance expectations; Edge cases; Non-goals; Acceptance criteria; Open questions; Next artifacts; Follow-on artifacts; Readiness.
+Include these sections:
+
+| Section | Requirement |
+| --- | --- |
+| Status | Required section. |
+| Related proposal | Required section. |
+| Goal and context | Required section. |
+| Glossary | Required section. |
+| Examples first | Required section. |
+| Requirements | Required section. |
+| Inputs and outputs | Required section. |
+| State and invariants | Required section. |
+| Error and boundary behavior | Required section. |
+| Compatibility and migration | Required section. |
+| Observability | Required section. |
+| Security and privacy | Required section. |
+| Accessibility and UX | Required section. |
+| Performance expectations | Required section. |
+| Edge cases | Required section. |
+| Non-goals | Required section. |
+| Acceptance criteria | Required section. |
+| Open questions | Required section. |
+| Next artifacts | Required section. |
+| Follow-on artifacts | Required section. |
+| Readiness | Required section. |
 
 Use `None`, `not applicable`, or a short rationale for sections that do not apply. `Follow-on artifacts`, when present before real follow-ons exist, says `None yet`.
 
@@ -132,6 +156,26 @@ Example E1: valid input creates a record
 Given ...
 When ...
 Then ...
+```
+
+## Closed enums
+
+Spec status:
+
+```text
+draft
+approved
+abandoned
+superseded
+archived
+```
+
+Settlement result:
+
+```text
+updated
+blocked
+not-needed
 ```
 
 ## Rules
@@ -169,7 +213,7 @@ Read the full file when the whole file is the review target, the relevant sectio
 ```md
 # <Spec title>
 ## Status
-<draft | approved | abandoned | superseded | archived>
+<spec status>
 ## Related proposal
 <proposal, issue, or upstream artifact>
 ## Goal and context

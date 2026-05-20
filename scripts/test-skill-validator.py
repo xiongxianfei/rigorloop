@@ -1997,6 +1997,30 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                     self.assertIn(term, body)
 
     def test_downstream_status_settlement_first_slice_skill_guidance(self) -> None:
+        def extract_fenced_block_after_heading(
+            body: str,
+            heading: str,
+            *,
+            start_after: str | None = None,
+        ) -> list[str]:
+            search_start = 0
+            if start_after is not None:
+                search_start = body.find(start_after)
+                self.assertNotEqual(search_start, -1, f"missing start marker {start_after!r}")
+            heading_index = body.find(heading, search_start)
+            self.assertNotEqual(heading_index, -1, f"missing heading {heading!r}")
+            fence_start = body.find("```text", heading_index)
+            self.assertNotEqual(fence_start, -1, f"missing fenced block after {heading!r}")
+            value_start = body.find("\n", fence_start)
+            self.assertNotEqual(value_start, -1, f"malformed fenced block after {heading!r}")
+            fence_end = body.find("```", value_start + 1)
+            self.assertNotEqual(fence_end, -1, f"unterminated fenced block after {heading!r}")
+            return [
+                line.strip()
+                for line in body[value_start + 1 : fence_end].splitlines()
+                if line.strip()
+            ]
+
         common_required_terms = [
             "Upstream status settlement",
             "workflow-managed downstream execution",
@@ -2012,7 +2036,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "review-resolution.md",
             "artifact type, lifecycle field, next status, or target status is unknown or unmapped",
             "block instead of inferring a settlement",
-            "Settlement result: updated | blocked | not-needed",
+            "Settlement result:",
             "New status",
             "not-applicable",
             "Settlement blocker",
@@ -2026,10 +2050,14 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "spec": [
                 "proposal-review approved",
                 "proposal `Status: accepted`",
+                "<settlement result>",
+                "## Closed enums",
+                "Settlement result:",
             ],
             "architecture": [
                 "spec-review approved",
                 "spec `Status: approved`",
+                "Settlement result: updated | blocked | not-needed",
             ],
             "plan": [
                 "spec-review approved",
@@ -2039,6 +2067,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                 "ADR",
                 "`accepted` or `active`",
                 "unknown lifecycle vocabulary",
+                "Settlement result: updated | blocked | not-needed",
             ],
         }
 
@@ -2047,6 +2076,20 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             for term in common_required_terms + skill_specific_terms[skill_name]:
                 with self.subTest(skill=skill_name, term=term):
                     self.assertIn(term, body)
+            if skill_name == "spec":
+                with self.subTest(skill=skill_name, enum="settlement result"):
+                    self.assertEqual(
+                        extract_fenced_block_after_heading(
+                            body,
+                            "Settlement result:",
+                            start_after="## Closed enums",
+                        ),
+                        ["updated", "blocked", "not-needed"],
+                    )
+                    self.assertNotIn(
+                        "Settlement result: updated | blocked | not-needed",
+                        body,
+                    )
 
     def test_downstream_status_settlement_first_slice_boundaries(self) -> None:
         forbidden_operational_terms = [
