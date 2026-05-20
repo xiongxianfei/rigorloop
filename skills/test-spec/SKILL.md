@@ -66,6 +66,21 @@ This discovery order is subordinate to the source-rank rule in the project workf
 
 Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index when present in this project, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
 
+## Resource map
+
+- COPY `assets/test-spec-skeleton.md` when creating or fully rewriting a test spec.
+  Fill: title, sections, coverage maps, test cases, artifacts, and readiness.
+  Do not emit unfilled placeholders.
+- COPY `assets/test-case.md` when adding each test case.
+  Fill: test ID, title, covers, level, setup, steps, expected result, failure proof, and automation location.
+  Do not emit unfilled placeholders.
+- COPY `assets/coverage-map-row.md` when adding each requirement, example, or traceability coverage-map row.
+  Fill: target, covered-by tests or manual verification, level or notes, and notes.
+  Do not emit unfilled placeholders.
+- COPY `assets/edge-case-row.md` when adding each edge-case coverage row.
+  Fill: edge case and mapped tests or manual verification.
+  Do not emit unfilled placeholders.
+
 ## Required sections
 
 | Section | Requirement |
@@ -154,96 +169,12 @@ migration
 ```md
 # <Test spec title>
 
-## Status
-
-<test spec status>
-
-## Related spec and plan
-
-- Spec: <path or reference>
-- Plan: <path or reference>
-- Architecture/ADRs: <paths or not applicable>
-
-## Testing strategy
-
-<unit, integration, end-to-end, smoke, manual, contract, and migration strategy>
-
-## Requirement coverage map
-
-| Requirement ID | Covered by | Level | Notes |
-| --- | --- | --- | --- |
-| <R1> | <T1> | <coverage map level> | <notes> |
-
-## Example coverage map
-
-| Example | Covered by | Notes |
-| --- | --- | --- |
-| <E1> | <T1> | <notes> |
-
-## Edge case coverage
-
-- <edge case>: <test IDs or manual verification>
-
-## Test cases
-
-### T1. <Title>
-
-- Covers: <R1, R3, E2>
-- Level: <test case level>
-- Fixture/setup:
-- Steps:
-- Expected result:
-- Failure proves:
-- Automation location:
-
-## Fixtures and data
-
-<fixtures, data, or none>
-
-## Mocking/stubbing policy
-
-<policy>
-
-## Migration or compatibility tests
-
-<tests or not applicable>
-
-## Observability verification
-
-<logs, metrics, traces, audit events, or not applicable>
-
-## Security/privacy verification
-
-<checks or not applicable>
-
-## Performance checks
-
-<checks or not applicable>
-
-## Manual QA checklist
-
-<manual checks or not applicable>
-
-## What not to test and why
-
-<explicit exclusions and rationale>
-
-## Uncovered gaps
-
-<gaps that must return to spec or architecture, or none>
-
-## Next artifacts
-
-<planned next steps while draft or active>
-
-## Follow-on artifacts
-
-<actual downstream artifacts, terminal disposition, or None yet>
-
-## Readiness
-
-<truthful next-stage or active-proof-surface wording>
+COPY `assets/test-spec-skeleton.md` for the full test-spec structure. Use
+`assets/test-case.md`, `assets/coverage-map-row.md`, and
+`assets/edge-case-row.md` for repeated structures.
 ```
+
+Required sections are listed above. Do not emit unfilled placeholders.
 
 ## Rules
 
