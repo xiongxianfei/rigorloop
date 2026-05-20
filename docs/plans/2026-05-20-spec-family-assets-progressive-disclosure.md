@@ -73,11 +73,11 @@ The work touches canonical skill source under `skills/`, validator and test scri
 ## Current Handoff Summary
 
 - Current milestone: M2
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M1
-- Review status: code-review M1 R2 clean-with-notes; no required review-resolution
+- Review status: M2 implementation complete; awaiting code-review
 - Remaining in-scope implementation milestones: M2, M3, M4, M5
-- Next stage: implement M2
+- Next stage: code-review M2
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation milestones, code reviews, generated-output proof, explain-change, verify, and PR handoff remain incomplete.
 
@@ -113,7 +113,7 @@ The work touches canonical skill source under `skills/`, validator and test scri
 
 ### M2. `spec` assets
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Add `spec` structural assets and resource-map guidance without changing behavior.
 - Requirements: `SFA-R1` through `SFA-R4`, `SFA-R7`, `SFA-R8`, `SFA-R14` through `SFA-R22`, `SFA-R28` through `SFA-R31`, `SFA-R38` through `SFA-R41`
 - Files expected:
@@ -133,8 +133,8 @@ The work touches canonical skill source under `skills/`, validator and test scri
   - `python scripts/validate-skills.py`
   - `python scripts/test-skill-validator.py`
   - M2 preservation and behavior-parity evidence inspection
-  - `git diff --check -- skills/spec docs/changes/2026-05-20-spec-family-assets-progressive-disclosure`
-- Result: pending
+  - `git diff --check -- .`
+- Result: review-requested after adding `spec` assets, resource map, preservation evidence, token evidence, and cold-read evidence.
 - Risks:
   - Full skeleton asset hides too much contract surface; fall back to inline skeleton for `spec` if code review finds that risk.
 - Rollback:
@@ -274,6 +274,8 @@ Final closeout:
 - 2026-05-20: code-review M1 R1 requested changes for missing generated-output presence coverage in the validator foundation.
 - 2026-05-20: accepted and resolved `SFA-M1-CR1` by adding deterministic generated-output presence helper coverage; M1 returned to review-requested.
 - 2026-05-20: code-review M1 R2 returned clean-with-notes; M1 closed and next stage is implement M2.
+- 2026-05-20: M2 implementation started for `spec` assets.
+- 2026-05-20: M2 added the four approved `spec` assets, updated `skills/spec/SKILL.md`, recorded preservation/token/cold-read evidence, and moved to review-requested.
 
 ## Decision log
 
@@ -311,6 +313,13 @@ Final closeout:
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/review-log.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/review-resolution.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/reviews/code-review-m1-r2.md --path docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md --path docs/plan.md`
   - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-20-spec-family-assets-progressive-disclosure`
   - `git diff --check -- docs/changes/2026-05-20-spec-family-assets-progressive-disclosure docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md docs/plan.md`
+- M2 validation passed:
+  - `python scripts/validate-skills.py skills/spec/SKILL.md`
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-skill-validator.py`
+  - `git diff --check -- skills/spec docs/changes/2026-05-20-spec-family-assets-progressive-disclosure`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/baseline.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/behavior-preservation.md --path docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md --path docs/plan.md`
 
 ## Outcome and retrospective
 

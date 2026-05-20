@@ -48,3 +48,63 @@ M1 does not edit canonical skill text or generated output. Behavior parity for
 `spec`, `spec-review`, and `test-spec` therefore remains unchanged from the
 approved PR #79 baseline. Representative behavior parity for each extracted
 skill structure will be recorded in the milestone that changes that skill.
+
+## M2. `spec` Assets
+
+### Same-slice scope
+
+| Surface | Treatment |
+| --- | --- |
+| `skills/spec/SKILL.md` | Added a `Resource map`, kept rules, stop/status-settlement boundaries, closed enums, routing, claim boundaries, and validation guidance in `SKILL.md`, and replaced the full inline skeleton with compact output guidance that points to `assets/spec-skeleton.md`. |
+| `skills/spec/assets/spec-skeleton.md` | Added the full spec output skeleton with the same required section set as the PR #79 baseline. |
+| `skills/spec/assets/requirement-row.md` | Added the repeated requirement row structure matching the existing output skeleton requirement format. |
+| `skills/spec/assets/acceptance-criterion-row.md` | Added the repeated acceptance-criterion row structure matching the existing output skeleton acceptance-criterion format. |
+| `skills/spec/assets/decision-log-row.md` | Added the capped structural decision-log row asset recorded in the approved plan. |
+| `docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/baseline.md` | Refined the `spec` repeated-substructure wording so examples and edge cases remain required full-skeleton sections rather than per-requirement row fields. |
+
+### Preservation matrix
+
+| Skill | Source content | Existing location | Asset destination | Preservation proof |
+| --- | --- | --- | --- | --- |
+| `spec` | Full spec output skeleton section set | `skills/spec/SKILL.md`, previous `## Output skeleton` | `skills/spec/assets/spec-skeleton.md` | Same 21 section headings are present: `Status`, `Related proposal`, `Goal and context`, `Glossary`, `Examples first`, `Requirements`, `Inputs and outputs`, `State and invariants`, `Error and boundary behavior`, `Compatibility and migration`, `Observability`, `Security and privacy`, `Accessibility and UX`, `Performance expectations`, `Edge cases`, `Non-goals`, `Acceptance criteria`, `Open questions`, `Next artifacts`, `Follow-on artifacts`, `Readiness`. |
+| `spec` | Requirement row fields | Previous output skeleton `Requirements` row and requirement-format guidance | `skills/spec/assets/requirement-row.md` | Preserves requirement ID plus testable statement shape: `<requirement ID>. The system MUST <testable behavior>.` Requirement rules and testability obligation remain in `SKILL.md`. |
+| `spec` | Acceptance-criterion row fields | Previous output skeleton `Acceptance criteria` row | `skills/spec/assets/acceptance-criterion-row.md` | Preserves acceptance-criterion ID plus observable outcome shape: `<acceptance criterion ID>. <observable acceptance outcome>.` |
+| `spec` | Decision-log row fields | Approved plan per-asset justification and proposal decision-log pattern | `skills/spec/assets/decision-log-row.md` | Preserves structural row fields: date, decision, reason, alternatives rejected. |
+
+### Behavior parity
+
+| Baseline surface | M2 result |
+| --- | --- |
+| Required sections | Same 21 required sections remain listed in `SKILL.md`; `assets/spec-skeleton.md` carries the same full section set. |
+| Closed enums | Spec status and settlement-result enum blocks remain unchanged in `SKILL.md`. |
+| Rules and stop conditions | Upstream status settlement blockers, artifact placement, authoring rules, evidence guidance, full-file-read guidance, workflow handoff behavior, and claim boundaries remain in `SKILL.md`. |
+| Output obligation | `SKILL.md` still exposes an `Output skeleton` section and `Expected output`; the full skeleton structure is copied from `assets/spec-skeleton.md` rather than duplicated inline. |
+| Placeholder behavior | Assets contain visible placeholders as templates; M2 does not create a final representative output artifact, so no final output placeholder leak is introduced in this slice. |
+
+### Asset contract check
+
+| Asset | Metadata | Resource-map entry | Placeholder | Hidden-rule check |
+| --- | --- | --- | --- | --- |
+| `assets/spec-skeleton.md` | Template, Skill, Template status, and Maintained alongside present. | `COPY` entry names trigger, fill structures, and no-placeholder instruction. | Visible placeholders present. | Structural skeleton only; rules and enums remain in `SKILL.md`. |
+| `assets/requirement-row.md` | Template, Skill, Template status, and Maintained alongside present. | `COPY` entry names trigger, fill structures, and no-placeholder instruction. | Visible placeholders present. | Structural row only; requirement rules remain in `SKILL.md`. |
+| `assets/acceptance-criterion-row.md` | Template, Skill, Template status, and Maintained alongside present. | `COPY` entry names trigger, fill structures, and no-placeholder instruction. | Visible placeholders present. | Structural row only. |
+| `assets/decision-log-row.md` | Template, Skill, Template status, and Maintained alongside present. | `COPY` entry names trigger, fill structures, and no-placeholder instruction. | Visible placeholders present. | Structural row only. |
+
+### Token and cold-read evidence
+
+| Measurement | Baseline `spec/SKILL.md` | M2 `spec/SKILL.md` | M2 packaged assets |
+| --- | ---: | ---: | ---: |
+| Lines | 264 | 238 | 111 |
+| Bytes | 10,686 | 10,573 | 2,005 |
+| Estimated tokens | 2,672 | 2,641 | 502 |
+
+Common-path `SKILL.md` size decreased by 26 lines, 113 bytes, and 31
+estimated tokens. Packaged asset footprint is recorded separately from the
+common path.
+
+Cold-read result: the installed `spec` skill body names every packaged asset in
+`Resource map`, states when each asset is copied, names the fields or
+structures to fill, and instructs the agent not to emit unfilled placeholders.
+The `Output skeleton` and `Expected output` sections tell the agent to use the
+full skeleton asset and repeated row assets without needing repository-internal
+paths or generated-output knowledge.

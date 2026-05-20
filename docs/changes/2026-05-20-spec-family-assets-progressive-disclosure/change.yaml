@@ -22,6 +22,7 @@ requirements:
   - Update the active plan and plan index so implementation relies on the active test spec.
   - Implement M1 baseline summary and validator foundation before skill text changes.
   - Resolve code-review M1 finding SFA-M1-CR1 before M1 closeout or M2 implementation.
+  - Implement M2 `spec` assets with behavior-preservation, token, and cold-read evidence before M2 code review.
   - Record the proof-route assessment that no skill-contract spec amendment is required before skill edits.
   - Keep rules, stop conditions, enums, review dimensions, coverage obligations, routing, and lifecycle boundaries in SKILL.md.
   - Require generated skill mirror and temporary generated adapter proof for packaged assets.
@@ -39,6 +40,8 @@ tests:
   - Whitespace validation for touched proposal and review artifacts.
   - Skill validator fixture coverage for spec-family asset mapping, metadata, status, placeholder, review-class boundary, and baseline-summary checks.
   - Full canonical skill validation after M1 validator changes.
+  - Targeted and full skill validation after M2 `spec` asset extraction.
+  - Behavior-preservation, token, and cold-read evidence inspection for M2.
 validation:
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-20-spec-family-assets-progressive-disclosure.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/review-log.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/review-resolution.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/reviews/proposal-review-r1.md
     result: pass_validated_1_lifecycle_artifact
@@ -134,6 +137,18 @@ validation:
     result: pass_reviews_6_findings_6_log_entries_6_resolution_entries_6_after_code_review_m1_r2
   - command: git diff --check -- docs/changes/2026-05-20-spec-family-assets-progressive-disclosure docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md docs/plan.md
     result: pass_after_code_review_m1_r2
+  - command: python scripts/validate-skills.py skills/spec/SKILL.md
+    result: pass_validated_1_spec_skill_after_m2
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m2
+  - command: python scripts/test-skill-validator.py
+    result: pass_141_tests_after_m2
+  - command: git diff --check -- .
+    result: pass_after_m2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml
+    result: pass_valid_change_metadata_after_m2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/baseline.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/behavior-preservation.md --path docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md --path docs/plan.md
+    result: pass_validated_4_lifecycle_artifacts_after_m2
 changed_files:
   - docs/proposals/2026-05-20-spec-family-assets-progressive-disclosure.md
   - specs/spec-family-assets-progressive-disclosure.md
@@ -151,6 +166,11 @@ changed_files:
   - docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/reviews/plan-review-r1.md
   - docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/reviews/code-review-m1-r1.md
   - docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/reviews/code-review-m1-r2.md
+  - skills/spec/SKILL.md
+  - skills/spec/assets/spec-skeleton.md
+  - skills/spec/assets/requirement-row.md
+  - skills/spec/assets/acceptance-criterion-row.md
+  - skills/spec/assets/decision-log-row.md
   - scripts/skill_validation.py
   - scripts/test-skill-validator.py
   - tests/fixtures/skills/published-design/generated-output-presence/
