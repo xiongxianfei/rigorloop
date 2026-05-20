@@ -35,7 +35,29 @@ No M1 representative-output difference is classified as `regression`.
 
 ## M2. Spec-Review Skill Readability
 
-Pending M2 implementation.
+### Representative input
+
+Representative input: `specs/spec-family-readability-pass.md`.
+
+This input exercises the `spec-review` skill's core responsibilities:
+reviewing requirement clarity, normative language, completeness, testability,
+examples, compatibility, observability, security/privacy, non-goals,
+acceptance criteria, material findings, recording state, eventual test-spec
+readiness, and stop conditions.
+
+### Parity classification
+
+| Compared behavior | Baseline expectation | Edited expectation | Classification | Evidence |
+| --- | --- | --- | --- | --- |
+| Review dimensions | `spec-review` evaluates 10 named dimensions. | `spec-review` evaluates the same 10 named dimensions in a table. | `equivalent` | Content-preservation matrix in `behavior-preservation.md`. |
+| Review-dimension verdict values | Review dimensions use `pass`, `concern`, and `block`. | Same values are defined once in `Review dimension verdict`; review dimensions reference `<review dimension verdict>`. | `equivalent` | Enum authority map in `behavior-preservation.md`. |
+| Review coverage guidance | Boundary, error, migration, rollout, rollback, old-client, old-data, and observability guidance remains required when relevant. | Same guidance remains unchanged after the review-dimension table. | `equivalent` | Content-preservation matrix in `behavior-preservation.md`. |
+| Finding severity and material-finding behavior | Finding severity and material-finding requirements define review finding shape. | Finding severity and material-finding requirements are unchanged. | `equivalent` | Diff inspection for M2. |
+| Review output skeleton | Skeleton defines result, findings, test-spec readiness, and stop condition. | Skeleton is unchanged. | `equivalent` | Content-preservation matrix in `behavior-preservation.md`. |
+
+### Regression assessment
+
+No M2 representative-output difference is classified as `regression`.
 
 ## M3. Test-Spec Skill Readability And Generated Output Proof
 
