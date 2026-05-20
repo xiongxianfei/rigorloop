@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- none yet
+- [2026-05-20 Test-Spec Contract Normalization](plans/2026-05-20-test-spec-contract-normalization.md) - active plan for proof-first normalization of `skills/test-spec/SKILL.md` to the published-skill design contract; PR #77 is open and the current next stage is hosted CI and human review.
 
 ## Blocked
 - none yet

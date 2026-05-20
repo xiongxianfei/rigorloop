@@ -20,6 +20,8 @@
 - Current assets-first plan: [Assets-First Progressive Disclosure Pilot Execution Plan](../docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md), active after clean plan-review R2.
 - Current structural-hygiene proposal: [Spec and Test-Spec Structural Hygiene](../docs/proposals/2026-05-19-spec-and-test-spec-structural-hygiene.md), accepted.
 - Current structural-hygiene plan: [Spec and Test-Spec Structural Hygiene Execution Plan](../docs/plans/2026-05-19-spec-and-test-spec-structural-hygiene.md), active after clean plan-review R1.
+- Current test-spec normalization proposal: [Test-Spec Contract Normalization](../docs/proposals/2026-05-20-test-spec-contract-normalization.md), accepted.
+- Current test-spec normalization plan: [Test-Spec Contract Normalization Plan](../docs/plans/2026-05-20-test-spec-contract-normalization.md), active after clean plan-review R1.
 - Architecture: not required. The approved slices change workflow-governance Markdown, canonical skill guidance, shared text blocks, static validation, generated skill mirrors, public adapter validation, and pilot skill wording. They do not add runtime components, storage, API boundaries, deployment boundaries, or a new validation architecture.
 - Project map: `docs/project-map.md` is present and was read for repository orientation. This test spec relies on the approved spec, active plan, workflow specs, stage skills, shared templates, generator scripts, existing validator patterns, and change-local pilot evidence.
 - Related proof surfaces:
@@ -47,6 +49,7 @@
 - Use change-local evidence for the published-skill design plan-family rollout: skill audit, routing coverage tables, behavior-preservation notes, behavior-parity evidence, and token-cost deltas for `plan` and `plan-review`.
 - Use deterministic validator tests and fixtures for the assets-first plan pilot: exact asset inventory, metadata, resource-map `COPY` entries, placeholders, forbidden root dependencies, structural fingerprints, section-set parity, and generated adapter asset presence.
 - Use change-local evidence for assets-first behavior and benefit proof: behavior preservation, behavior parity, historical coverage, token cost, and milestone asset reuse.
+- Use focused proof for the test-spec normalization slice: frontmatter metadata, `Workflow role`, dedicated `Stop conditions`, output-skeleton preservation, behavior parity on a representative input, and current generated-output validation from canonical `skills/`.
 - Do not add runtime workflow simulation, natural-language scoring, broad prose linting, a shared-block generation build step, a standalone `review-resolution` skill, or a `skills/ci-maintenance/SKILL.md` path.
 - Do not claim routing fixtures prove deterministic model auto-selection unless a later approved routing harness exists.
 
@@ -101,6 +104,7 @@
 | Requirement IDs | Covered by | Level | Notes |
 | --- | --- | --- | --- |
 | `R37`, `R37a`, `R37b`, `R37c`, `R37d`, `R38`, `R38a`, `R38b`, `R38c`, `R39`, `R39a`, `R39b`, `R39c`, `R39d`, `R40`, `R40a`, `R40b`, `R40c`, `R41`, `R41a`, `R41b`, `R41c`, `R42`, `R42a`, `R42b`, `R42c`, `R42d`, `R42e`, `R43`, `R43a`, `R43b`, `R43c`, `R43d`, `R44`, `R44a`, `R44b`, `R44c`, `R44d`, `R44e`, `R45`, `R45a`, `R45b`, `R45c`, `R45d`, `R45e` | `T33`, `T34`, `T35`, `T36` | integration, manual, smoke | Assets-first plan pilot scope, four normative assets, resource-map contract, output skeleton boundary, handoff asset boundary, metadata and drift checks, deterministic validation, improvement gate, adapter packaging, and parity corpus split |
+| `R29g`, `R29h`, `R30`, `R30a`, `R31e`, `R34`, `R34c` | `T37`, `T38`, `T39`, `T40` | integration, manual, smoke | Test-spec contract normalization frontmatter metadata, Workflow role, surfaced stop conditions, output skeleton, preservation proof, behavior parity, and generated-output validation |
 
 ## Example coverage map
 
@@ -122,6 +126,7 @@
 | `E14` | `T33`, `T35` | `plan-skeleton.md` owns full plan section layout while `SKILL.md` keeps compact output expectations |
 | `E15` | `T33`, `T35` | `current-handoff-summary.md` remains structure-only and does not hide lifecycle policy |
 | `E16` | `T36` | Historical plans are coverage evidence only, not strict structural parity references |
+| `E17` | `T37`, `T39` | `test-spec` gains contract metadata and structure while preservation evidence maps moved stop conditions and skeletonized obligations back to source wording |
 
 ## Edge case coverage
 
@@ -160,6 +165,10 @@
 - EC33, a normative asset fingerprint or section set drifts without explicit version and fingerprint update: `T34`
 - EC34, common-path body token count fails to shrink by at least 15 percent or total packaged content exceeds the approved budget: `T36`
 - EC35, behavior-parity evidence treats historical plans as strict current-contract references: `T36`
+- EC36, `test-spec` stop-condition wording moves to a dedicated section and accidentally adds, drops, weakens, or reorders a blocker: `T37`, `T39`
+- EC37, `test-spec` output skeleton implies a new required section, test-case field, coverage map, or output obligation: `T37`, `T39`
+- EC38, existing validators already cover test-spec normalization and no validator change is needed: `T38`
+- EC39, generated adapter validation finds unrelated stale output after the canonical `test-spec` edit: `T40`
 
 ## Acceptance criteria coverage map
 
@@ -227,6 +236,11 @@
 | Deterministic validation covers asset count, approved paths, metadata, resource-map coverage, `COPY`, placeholders, repository-root path exclusion, structural fingerprint, section-set parity, and adapter asset presence | `T34`, `T36` |
 | Assets-first plan pilot records behavior parity, at least 15 percent common-path body token reduction, total packaged content budget evidence, and milestone substructure reuse evidence | `T36` |
 | Assets-first behavior-parity evidence separates strict contract-era reference corpus from historical coverage corpus | `T36` |
+| Test-spec normalization adds `version: "1.0.0"` and `schema-version: skill-readability-v1` to `skills/test-spec/SKILL.md` | `T37`, `T39` |
+| Test-spec normalization adds a field-complete `Workflow role` without claiming implementation, review, verification, branch, or PR readiness | `T37`, `T39` |
+| Test-spec normalization surfaces invocation-blocking conditions in a dedicated `Stop conditions` section with source-to-destination preservation evidence | `T37`, `T39` |
+| Test-spec normalization adds a fenced output skeleton that preserves the existing required section set, test-case format, coverage maps, and output obligations | `T37`, `T39` |
+| Test-spec generated adapter output is rebuilt or validated from canonical `skills/`, or a reviewed plan update records an explicit deferral | `T40` |
 
 ## Test cases
 
@@ -1214,6 +1228,112 @@
   - `python scripts/test-skill-validator.py`
   - manual parity and historical coverage review during M3 and code-review
 
+### T37. Test-spec normalization proof scaffold
+
+- Covers: `R29g`, `R29h`, `R30`, `R30a`, `R31e`, `R34`, `R34c`, E17, EC36, EC37
+- Level: manual, integration
+- Fixture/setup:
+  - `skills/test-spec/SKILL.md`
+  - `docs/proposals/2026-05-20-test-spec-contract-normalization.md`
+  - `docs/plans/2026-05-20-test-spec-contract-normalization.md`
+  - `docs/changes/2026-05-20-test-spec-contract-normalization/behavior-preservation.md`
+  - `docs/changes/2026-05-20-test-spec-contract-normalization/behavior-parity.md`
+- Steps:
+  - Record the pre-change baseline for `skills/test-spec/SKILL.md`: frontmatter fields, absence of `Workflow role`, absence of a fenced output skeleton, current Rules stop-condition text, required section list, test-case format, and coverage rules.
+  - Assert the normalization target is limited to `test-spec`; `spec` and `spec-review` remain out of scope for skill-body edits.
+  - Assert the expected frontmatter target is `version: "1.0.0"` and `schema-version: skill-readability-v1` unless a later approved contract requires a newer schema value.
+  - Define the required `Workflow role` fields for `test-spec`: role name, stage, upstream, downstream, summary, and must-not-claim boundaries.
+  - Require a source-to-destination preservation matrix for moved stop conditions and skeletonized output obligations before code-review.
+  - Name the representative input for behavior parity as the accepted [Test-Spec Contract Normalization proposal](../docs/proposals/2026-05-20-test-spec-contract-normalization.md), approved [Skill Contract](skill-contract.md), and active [Test-Spec Contract Normalization Plan](../docs/plans/2026-05-20-test-spec-contract-normalization.md).
+- Expected result:
+  - Implementation has an approved proof scaffold before `skills/test-spec/SKILL.md` changes, and reviewers can inspect the exact baseline, target structure, preservation matrix requirement, and behavior-parity input.
+- Failure proves:
+  - The skill rewrite can proceed on chat-only preservation claims or an ambiguous schema, stop-condition, skeleton, or parity target.
+- Automation location:
+  - manual review during M1 and code-review
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/plans/2026-05-20-test-spec-contract-normalization.md --path docs/plan.md --path docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml`
+
+### T38. Test-spec normalization validator support
+
+- Covers: `R29g`, `R29h`, `R30`, `R30a`, `R31e`, `R34c`, EC38
+- Level: integration, manual
+- Fixture/setup:
+  - `scripts/skill_validation.py`
+  - `scripts/test-skill-validator.py`
+  - `tests/fixtures/skills/`
+  - `skills/test-spec/SKILL.md`
+  - `docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml`
+- Steps:
+  - Inspect existing validator coverage for frontmatter `version`, frontmatter `schema-version`, `Workflow role`, `Stop conditions`, and output skeleton checks on normalized skills.
+  - Add narrow deterministic validator or fixture coverage only for missing checks that repository validation owns.
+  - Assert any `test-spec` schema check expects `schema-version: skill-readability-v1` unless a later approved contract changes the expected value.
+  - Assert validator changes do not attempt broad semantic scoring of stop-condition meaning, output-skeleton fidelity, or representative output quality.
+  - If existing validators are sufficient, record the no-change rationale in the plan or change-local evidence before M3 proceeds.
+- Expected result:
+  - Deterministic validation catches machine-checkable structural gaps without replacing the manual preservation matrix or behavior-parity review.
+- Failure proves:
+  - Validator support is either too weak to catch required structural fields or too broad and brittle for preservation semantics.
+- Automation location:
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/validate-skills.py`
+  - `bash scripts/ci.sh --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path specs/skill-contract.test.md --path docs/plans/2026-05-20-test-spec-contract-normalization.md --path docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml`
+  - manual validator review during M2
+
+### T39. Test-spec skill rewrite preserves behavior
+
+- Covers: `R29g`, `R29h`, `R30`, `R30a`, `R31e`, `R34`, `R34c`, E17, EC36, EC37
+- Level: integration, manual
+- Fixture/setup:
+  - `skills/test-spec/SKILL.md`
+  - `docs/changes/2026-05-20-test-spec-contract-normalization/behavior-preservation.md`
+  - `docs/changes/2026-05-20-test-spec-contract-normalization/behavior-parity.md`
+  - `docs/plans/2026-05-20-test-spec-contract-normalization.md`
+- Steps:
+  - Assert `skills/test-spec/SKILL.md` frontmatter includes `version: "1.0.0"` and `schema-version: skill-readability-v1`.
+  - Assert `Workflow role` states `test-spec` as the role, authoring as the stage, approved spec/spec-review findings/approved plan as upstream input, implementation as downstream, proof design as summary, and implementation completion, code-review approval, verification, branch readiness, and PR readiness as must-not-claim boundaries.
+  - Assert `Stop conditions` appears before normal artifact-generation procedure and preserves the existing unreviewed or unstable spec blocker and the existing `not-ready` or `not-assessed` spec-review blocker without adding new blocking states.
+  - Assert the fenced output skeleton preserves the existing 19 required sections, stable test-case format, requirement coverage map, example coverage map, edge-case coverage, and coverage rules.
+  - Assert the preservation matrix records source content, existing location, new location, change type, and preservation proof for each moved stop condition and skeletonized output obligation.
+  - Run or record a representative `test-spec` output comparison using the input named in `T37`; confirm no material change to required sections, test-case structure, coverage-map obligations, stop conditions, or output obligations.
+  - Assert routing description behavior is unchanged unless validation proves a contract failure and a reviewed plan update permits the change.
+- Expected result:
+  - `test-spec` gains contract-required metadata and structure while preserving its prior invocation blockers and produced test-spec obligations.
+- Failure proves:
+  - Normalization changed `test-spec` behavior, weakened a lifecycle boundary, added an output obligation, or relied on structural validation alone.
+- Automation location:
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-skill-validator.py`
+  - manual preservation-matrix and behavior-parity review during M3 and code-review
+
+### T40. Test-spec generated output and selected validation
+
+- Covers: `R2`, `R2a`, `R2b`, `R2c`, `R2d`, `R29g`, `R29h`, `R34c`, EC39
+- Level: integration, smoke, manual
+- Fixture/setup:
+  - `skills/test-spec/SKILL.md`
+  - `specs/skill-contract.test.md`
+  - `docs/plans/2026-05-20-test-spec-contract-normalization.md`
+  - `docs/changes/2026-05-20-test-spec-contract-normalization/`
+  - temporary adapter output directory for `v0.1.5`
+- Steps:
+  - Run canonical skill validation and validator regression tests after the `test-spec` skill edit.
+  - Run generated-skill drift checks from canonical `skills/`.
+  - Build temporary adapter archives for `v0.1.5` into a temporary directory and validate them from that output, or record a reviewed plan update that explicitly defers generated-output validation with rationale.
+  - Assert generated public adapter skill bodies are not hand-edited as tracked source.
+  - Run change metadata, artifact lifecycle, whitespace, and selected CI commands for changed spec, plan, skill, script, fixture, and change-local paths.
+  - If generated-output validation finds unrelated stale baseline debt, record the exact drift and route owner decision for deferral instead of hand-editing generated skill bodies.
+- Expected result:
+  - The `test-spec` normalization is proven from canonical skill source through current generated-output validation or an explicit reviewed deferral, with lifecycle evidence synchronized.
+- Failure proves:
+  - Published adapter output can drift from canonical `skills/test-spec/SKILL.md`, or validation evidence is not strong enough for code-review and verify.
+- Automation location:
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/build-adapters.py --version v0.1.5 --check`
+  - `python scripts/validate-adapters.py --version v0.1.5`
+  - `bash scripts/ci.sh --mode explicit --path skills/test-spec/SKILL.md --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/plans/2026-05-20-test-spec-contract-normalization.md --path docs/plan.md --path docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml`
+
 ## Fixtures and data
 
 - No new external fixtures or runtime data are required.
@@ -1250,6 +1370,10 @@
   - `docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/behavior-parity.md`;
   - `docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/historical-coverage.md`;
   - `docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/token-cost.md`.
+- Change-local test-spec normalization evidence uses:
+  - `docs/changes/2026-05-20-test-spec-contract-normalization/behavior-preservation.md`;
+  - `docs/changes/2026-05-20-test-spec-contract-normalization/behavior-parity.md`;
+  - `docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml`.
 - Assets-first plan pilot static fixtures use:
   - `skills/plan/assets/plan-skeleton.md`;
   - `skills/plan/assets/milestone.md`;
@@ -1269,6 +1393,7 @@
 - For the execution/review rollout, do not stub `scripts/build-skills.py --check`, `scripts/build-adapters.py --version v0.1.5 --output-dir <tmpdir>`, `scripts/validate-adapters.py --root <tmpdir> --version v0.1.5`, `scripts/measure-skill-tokens.py --skills-root skills`, or `scripts/ci.sh` when those commands are used as final milestone proof.
 - For the plan-family rollout, do not stub `scripts/build-skills.py --check`, `scripts/build-adapters.py --version v0.1.5 --output-dir <tmpdir>`, `scripts/validate-adapters.py --root <tmpdir> --version v0.1.5`, `scripts/measure-skill-tokens.py --skills-root skills`, or `scripts/ci.sh` when those commands are used as final milestone proof.
 - For the assets-first plan pilot, do not stub `scripts/build-skills.py --check`, `scripts/build-adapters.py --version v0.1.5 --output-dir <tmpdir>`, `scripts/validate-adapters.py --root <tmpdir> --version v0.1.5`, `scripts/measure-skill-tokens.py --skills-root skills`, `scripts/test-adapter-distribution.py`, or `scripts/ci.sh` when those commands are used as final milestone proof.
+- For the test-spec normalization slice, do not stub `scripts/build-skills.py --check`, `scripts/build-adapters.py --version v0.1.5 --check`, `scripts/validate-adapters.py --version v0.1.5`, `scripts/validate-skills.py`, `scripts/test-skill-validator.py`, or `scripts/ci.sh` when those commands are used as final milestone proof.
 
 ## Migration or compatibility tests
 
@@ -1284,6 +1409,8 @@
 - Rollback for the assets-first plan pilot is to reinline asset skeletons into `skills/plan/SKILL.md`, remove `skills/plan/assets/`, and keep validator improvements only when they remain valid for flat skills: `T33`, `T34`, `T35`, `T36`.
 - Optional `when_to_use` remains compatible where supported but does not replace `description`: `T17`.
 - Packaged skill-local resources remain allowed when mapped and included in adapter output, while repository-root internal paths remain blocked as normal customer-project dependencies: `T18`.
+- Existing skills outside `test-spec` remain valid during the test-spec normalization slice unless a reviewed plan revision changes scope: `T37`, `T39`.
+- Rollback for the test-spec normalization slice is to revert `skills/test-spec/SKILL.md` and any generated output changes together, while keeping proof artifacts if they remain useful for a narrower rewrite: `T39`, `T40`.
 
 ## Observability verification
 
@@ -1294,6 +1421,7 @@
 - Execution/review validation output should identify deterministic `implement` and `code-review` failures by stable check ID or fixture expectation when those checks are implemented: `T26`, `T27`.
 - Plan-family validation output should identify deterministic `plan` and `plan-review` failures by stable check ID or fixture expectation when those checks are implemented: `T30`, `T31`.
 - Assets-first plan pilot validation output should identify asset count, approved path, metadata, resource-map coverage, `COPY`, placeholder, forbidden root dependency, structural fingerprint, section-set parity, generated adapter asset presence, and token-budget failures by stable check ID when those checks are implemented: `T34`, `T36`.
+- Test-spec normalization validation output should identify missing frontmatter metadata, wrong spec-family schema value, missing `Workflow role`, missing `Stop conditions`, missing output skeleton, generated-output drift, and lifecycle evidence gaps by stable check ID or explicit review evidence when those checks are implemented: `T38`, `T40`.
 - Review and verification artifacts should cite concrete commands and results, not generic success claims: `T13`.
 
 ## Security/privacy verification
@@ -1303,6 +1431,7 @@
 - Adapter output remains generated proof surface, not an independent source of truth: `T9`, `T12`.
 - Published skills must not instruct users to expose secrets, credentials, proxy URLs, private hostnames, tokens, private keys, or raw environment values while using packaged resources or scripts: `T18`.
 - Assets-first plan pilot assets must not include secrets, credentials, tokens, private keys, private user data, unjustified machine-local paths, or repository-root internal paths as normal customer-project dependencies: `T33`, `T34`.
+- Test-spec normalization evidence and generated-output validation must not commit secrets, credentials, tokens, private keys, private user data, or unjustified machine-local paths: `T39`, `T40`.
 
 ## Performance checks
 
@@ -1320,6 +1449,7 @@
 - The execution/review rollout measures token estimates for `implement` and `code-review` before and after the rewrite and records rationale for material regression: `T25`, `T27`.
 - The plan-family rollout measures token estimates for `plan` and `plan-review` before and after the rewrite and records rationale for material regression: `T29`, `T31`.
 - The assets-first plan pilot measures `skills/plan/SKILL.md` common-path body tokens separately from total packaged content, requires at least 15 percent common-path reduction, allows total packaged growth up to `+5%` with rationale, and blocks above `+10%` unless the spec is amended: `T36`.
+- Test-spec normalization does not have a token-cost target; token cost is not a driver, and no behavior-preserving output obligation may be weakened to reduce tokens: `T37`, `T39`.
 
 ## Manual QA checklist
 
@@ -1353,6 +1483,12 @@
 - Confirm behavior-parity evidence separates contract-era reference plans from historical coverage plans.
 - Confirm adapter validation proves the four `plan` assets ship in generated adapter output.
 - Confirm token-cost evidence shows at least 15 percent common-path body reduction and total packaged content within the approved budget.
+- Confirm `test-spec` frontmatter includes `version: "1.0.0"` and `schema-version: skill-readability-v1`.
+- Confirm `test-spec` has a `Workflow role` with upstream, downstream, summary, and must-not-claim boundaries.
+- Confirm `test-spec` stop conditions are dedicated, visible, and preservation-mapped to the prior Rules wording.
+- Confirm the `test-spec` output skeleton preserves the existing 19 required sections, test-case format, coverage maps, and coverage obligations.
+- Confirm behavior-parity evidence for `test-spec` uses the representative input named in `T37` and shows no material output change.
+- Confirm generated-output validation for `test-spec` uses canonical `skills/test-spec/SKILL.md` and does not hand-edit generated adapter bodies.
 
 ## What not to test and why
 
@@ -1373,6 +1509,9 @@
 - Do not require hosted CI observation for milestone proof unless a later stage actually observes hosted CI.
 - Do not require external tools for Codex, Claude Code, or opencode smoke; repository-owned adapter checks cover non-smoke package validation.
 - Do not snapshot entire skill files as the primary proof; exact shared-block drift checks are allowed only for adopted shared blocks.
+- Do not use test-spec normalization to tabulate required-section prose, fence enums, change routing description behavior, add packaged resources, or edit `spec` and `spec-review`.
+- Do not treat the `test-spec` output skeleton as permission to add, remove, rename, or reorder required sections or coverage obligations.
+- Do not treat generated adapter validation as permission to retroactively rewrite legacy adapter archives.
 
 ## Uncovered gaps
 
@@ -1382,6 +1521,7 @@
 
 - Current structural-hygiene rollout: `implement` M1 under [Spec and Test-Spec Structural Hygiene Execution Plan](../docs/plans/2026-05-19-spec-and-test-spec-structural-hygiene.md).
 - Current rollout: `implement` M1 under [Assets-First Progressive Disclosure Pilot Execution Plan](../docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md).
+- Current rollout: `implement` M2 under [Test-Spec Contract Normalization Plan](../docs/plans/2026-05-20-test-spec-contract-normalization.md).
 - Historical carried context: the completed plan-family rollout used `T29`-`T32` for `plan` and `plan-review`.
 - Historical carried context: the merged spec-family rollout used `T21`-`T24` for `spec` and `spec-review`.
 - Historical carried context: the merged execution/review rollout used `T25`-`T28` for `implement` and `code-review`.
@@ -1393,4 +1533,4 @@
 
 ## Readiness
 
-Active proof-planning surface for public skill portability, claim-boundary checks, the merged published-skill design pilot, completed spec-family rollout, completed execution/review rollout, completed plan-family rollout, assets-first plan pilot, and structural-hygiene grouping. The active structural-hygiene plan `Current Handoff Summary` owns the next workflow action.
+Active proof-planning surface for public skill portability, claim-boundary checks, the merged published-skill design pilot, completed spec-family rollout, completed execution/review rollout, completed plan-family rollout, assets-first plan pilot, structural-hygiene grouping, and test-spec contract normalization. The active plan `Current Handoff Summary` for each initiative owns its current workflow action.
