@@ -3,4 +3,16 @@
 <!-- Template status: normative -->
 <!-- Maintained alongside: skills/test-spec/SKILL.md -->
 
-| <coverage target> | <covered by test IDs or manual verification> | <coverage map level or notes> | <notes> |
+# Coverage map row variants
+
+## Requirement coverage row
+
+```md
+| <requirement ID> | <test IDs or manual verification> | <level> | <notes> |
+```
+
+## Example coverage row
+
+```md
+| <example> | <test IDs or manual verification> | <notes> |
+```

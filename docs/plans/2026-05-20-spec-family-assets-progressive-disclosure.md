@@ -73,11 +73,11 @@ The work touches canonical skill source under `skills/`, validator and test scri
 ## Current Handoff Summary
 
 - Current milestone: M4
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M3
-- Review status: code-review M4 R1 changes-requested; `SFA-M4-CR1` open
+- Review status: code-review M4 R1 finding `SFA-M4-CR1` accepted and resolved; M4 fix ready for code-review
 - Remaining in-scope implementation milestones: M4, M5
-- Next stage: review-resolution / implement M4 fix
+- Next stage: code-review M4 fix
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation milestones, code reviews, generated-output proof, explain-change, verify, and PR handoff remain incomplete.
 
@@ -167,7 +167,7 @@ The work touches canonical skill source under `skills/`, validator and test scri
 
 ### M4. `test-spec` assets
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Add `test-spec` structural assets and resource-map guidance without changing coverage obligations.
 - Requirements: `SFA-R1` through `SFA-R3`, `SFA-R5`, `SFA-R11`, `SFA-R12`, `SFA-R14` through `SFA-R22`, `SFA-R28` through `SFA-R31`, `SFA-R38` through `SFA-R41`
 - Files expected:
@@ -180,7 +180,7 @@ The work touches canonical skill source under `skills/`, validator and test scri
 - Per-asset justification:
   - `test-spec-skeleton.md`: used once per test spec; full output skeleton asset to reduce common-path body while keeping compact summary in `SKILL.md`.
   - `test-case.md`: used once per test case; repeated test case block.
-  - `coverage-map-row.md`: used once per requirement/example/edge-case mapping; repeated traceability row.
+  - `coverage-map-row.md`: used once per requirement or example coverage mapping; preserves separate requirement and example row variants.
   - `edge-case-row.md`: used once per edge case; repeated edge-case block.
 - Validation:
   - `python scripts/validate-skills.py skills/test-spec/SKILL.md`
@@ -188,7 +188,13 @@ The work touches canonical skill source under `skills/`, validator and test scri
   - `python scripts/test-skill-validator.py`
   - M4 preservation and behavior-parity evidence inspection
   - `git diff --check -- skills/test-spec docs/changes/2026-05-20-spec-family-assets-progressive-disclosure`
-- Result: changes requested; `SFA-M4-CR1` requires review-resolution before M4 can close.
+- Result: `SFA-M4-CR1` accepted and resolved after implementation; ready for code-review of the M4 fix.
+- Validation evidence after `SFA-M4-CR1` fix:
+  - `python scripts/validate-skills.py skills/test-spec/SKILL.md` passed.
+  - `python scripts/validate-skills.py` passed.
+  - `python scripts/test-skill-validator.py` passed with 142 tests.
+  - `git diff --check -- .` passed.
+  - Change metadata, explicit-path artifact lifecycle, and review artifact closeout validation passed.
 - Risks:
   - Full skeleton asset hides coverage obligations; keep coverage rules in `SKILL.md` and fall back to inline skeleton if needed.
 - Rollback:

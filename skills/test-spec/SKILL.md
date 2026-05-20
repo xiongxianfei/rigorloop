@@ -74,8 +74,11 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
 - COPY `assets/test-case.md` when adding each test case.
   Fill: test ID, title, covers, level, setup, steps, expected result, failure proof, and automation location.
   Do not emit unfilled placeholders.
-- COPY `assets/coverage-map-row.md` when adding each requirement, example, or traceability coverage-map row.
-  Fill: target, covered-by tests or manual verification, level or notes, and notes.
+- COPY `assets/coverage-map-row.md` when adding requirement or example coverage-map rows.
+  Use the `Requirement coverage row` variant for the requirement coverage map.
+  Use the `Example coverage row` variant for the example coverage map.
+  Fill: fields exactly as shown by the selected variant.
+  Do not add a `Level` column to the example coverage map.
   Do not emit unfilled placeholders.
 - COPY `assets/edge-case-row.md` when adding each edge-case coverage row.
   Fill: edge case and mapped tests or manual verification.
