@@ -4,7 +4,7 @@ This file tracks active, blocked, done, and superseded plans.
 
 ## Active
 - [2026-05-20 Test-Spec Contract Normalization](plans/2026-05-20-test-spec-contract-normalization.md) - active plan for proof-first normalization of `skills/test-spec/SKILL.md` to the published-skill design contract; PR #77 is open and the current next stage is hosted CI and human review.
-- [2026-05-20 Spec-Family Readability Pass](plans/2026-05-20-spec-family-readability-pass.md) - active plan for the presentation-only readability pass across `spec`, `spec-review`, and normalized `test-spec`; M1 is closed, M2 is resolution-needed for `SFRP-M2-CR1`, and the current next stage is review-resolution / implement M2 fix.
+- [2026-05-20 Spec-Family Readability Pass](plans/2026-05-20-spec-family-readability-pass.md) - active plan for the presentation-only readability pass across `spec`, `spec-review`, and normalized `test-spec`; M1 is closed, `SFRP-M2-CR1` is resolved, M2 is review-requested, and the current next stage is code-review M2 rerun.
 
 ## Blocked
 - none yet

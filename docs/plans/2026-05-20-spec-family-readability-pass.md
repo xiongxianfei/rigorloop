@@ -70,13 +70,13 @@ Apply a presentation-only readability pass to the three spec-family skills, `spe
 ## Current Handoff Summary
 
 - Current milestone: M2. Spec-Review Skill Readability
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Last reviewed milestone: M1. Spec Skill Readability
-- Review status: code-review M2 R1 changes-requested for `SFRP-M2-CR1`; review-resolution required before M2 can close
+- Review status: `SFRP-M2-CR1` accepted and resolved; M2 fix ready for code-review rerun
 - Remaining in-scope implementation milestones: M2, M3
-- Next stage: review-resolution / implement M2 fix
+- Next stage: code-review M2 rerun
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M2 review-resolution, M2 rerun code-review, M3 implementation and code-review, explain-change, verify, and PR handoff remain open.
+- Reason final closeout is or is not ready: M2 rerun code-review, M3 implementation and code-review, explain-change, verify, and PR handoff remain open.
 
 ## Milestones
 
@@ -131,7 +131,7 @@ Apply a presentation-only readability pass to the three spec-family skills, `spe
 
 ### M2. Spec-Review Skill Readability
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: make `skills/spec-review/SKILL.md` scannable by tabulating review dimensions, creating authoritative verdict enum surfaces, and preserving review-recording and material-finding behavior.
 - Requirements: `SFRP-R1`, `SFRP-R2`, `SFRP-R3`, `SFRP-R4`, `SFRP-R8`, `SFRP-R10` through `SFRP-R23`
 - Files/components likely touched:
@@ -271,6 +271,7 @@ Apply a presentation-only readability pass to the three spec-family skills, `spe
 - 2026-05-20: M2 implementation started for `skills/spec-review/SKILL.md`; preservation and parity evidence are being updated before skill text edits.
 - 2026-05-20: M2 implementation completed and targeted validation passed; milestone is ready for code-review.
 - 2026-05-20: code-review M2 R1 requested changes for `SFRP-M2-CR1`; the milestone is in resolution-needed state.
+- 2026-05-20: implemented the `SFRP-M2-CR1` source-preservation fix; the `spec-review` dimension table now contains only baseline dimensions and verdict placeholders, with non-baseline review-focus examples removed.
 
 ## Decision log
 
@@ -319,6 +320,15 @@ Apply a presentation-only readability pass to the three spec-family skills, `spe
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-20-spec-family-readability-pass.md --path docs/plan.md --path docs/changes/2026-05-20-spec-family-readability-pass/change.yaml --path docs/changes/2026-05-20-spec-family-readability-pass/review-log.md --path docs/changes/2026-05-20-spec-family-readability-pass/review-resolution.md --path docs/changes/2026-05-20-spec-family-readability-pass/reviews/code-review-m2-r1.md`
   - `git diff --check -- docs/plans/2026-05-20-spec-family-readability-pass.md docs/plan.md docs/changes/2026-05-20-spec-family-readability-pass`
   - `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-20-spec-family-readability-pass.md --path docs/plan.md --path docs/changes/2026-05-20-spec-family-readability-pass/change.yaml --path docs/changes/2026-05-20-spec-family-readability-pass/review-log.md --path docs/changes/2026-05-20-spec-family-readability-pass/review-resolution.md --path docs/changes/2026-05-20-spec-family-readability-pass/reviews/code-review-m2-r1.md`
+- `SFRP-M2-CR1` fix validation passed:
+  - `python scripts/validate-skills.py skills/spec-review/SKILL.md`
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-20-spec-family-readability-pass`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-20-spec-family-readability-pass/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-20-spec-family-readability-pass.md --path docs/plan.md --path specs/spec-family-readability-pass.md --path specs/spec-family-readability-pass.test.md --path docs/changes/2026-05-20-spec-family-readability-pass/change.yaml --path docs/changes/2026-05-20-spec-family-readability-pass/behavior-preservation.md --path docs/changes/2026-05-20-spec-family-readability-pass/behavior-parity.md --path docs/changes/2026-05-20-spec-family-readability-pass/review-log.md --path docs/changes/2026-05-20-spec-family-readability-pass/review-resolution.md`
+  - `git diff --check -- skills/spec-review/SKILL.md docs/plans/2026-05-20-spec-family-readability-pass.md docs/plan.md docs/changes/2026-05-20-spec-family-readability-pass`
+  - `bash scripts/ci.sh --mode explicit --path skills/spec-review/SKILL.md --path docs/plans/2026-05-20-spec-family-readability-pass.md --path docs/plan.md --path specs/spec-family-readability-pass.md --path specs/spec-family-readability-pass.test.md --path docs/changes/2026-05-20-spec-family-readability-pass/change.yaml --path docs/changes/2026-05-20-spec-family-readability-pass/review-log.md --path docs/changes/2026-05-20-spec-family-readability-pass/review-resolution.md --path docs/changes/2026-05-20-spec-family-readability-pass/behavior-preservation.md --path docs/changes/2026-05-20-spec-family-readability-pass/behavior-parity.md`
 
 ## Outcome and retrospective
 
@@ -327,4 +337,4 @@ Apply a presentation-only readability pass to the three spec-family skills, `spe
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `review-resolution` / `implement M2 fix`.
+- Ready for `code-review M2` rerun.

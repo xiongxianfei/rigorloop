@@ -47,20 +47,20 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
 
 ## Review dimensions
 
-Evaluate each review dimension with `<review dimension verdict>`:
+Evaluate each review dimension with `<review dimension verdict>`.
 
-| Review dimension | Review focus |
+| Review dimension | Verdict |
 | --- | --- |
-| requirement clarity | Whether the required behavior is precise enough for downstream work. |
-| normative language | Whether requirements use clear normative language. |
-| completeness | Whether required behavior and boundaries are complete enough for the change. |
-| testability | Whether requirements can be tested or manually verified. |
-| examples | Whether examples clarify expected behavior and do not hide edge cases. |
-| compatibility | Whether compatibility, migration, rollout, rollback, old-client, and old-data behavior are covered when relevant. |
-| observability | Whether logs, metrics, traces, audit events, or user-visible status are specified when relevant. |
-| security/privacy | Whether auth, authorization, secrets, data exposure, abuse cases, or privacy behavior are covered when relevant. |
-| non-goals | Whether out-of-scope behavior is explicit enough to prevent scope drift. |
-| acceptance criteria | Whether acceptance criteria are observable rather than aspirational. |
+| requirement clarity | `<review dimension verdict>` |
+| normative language | `<review dimension verdict>` |
+| completeness | `<review dimension verdict>` |
+| testability | `<review dimension verdict>` |
+| examples | `<review dimension verdict>` |
+| compatibility | `<review dimension verdict>` |
+| observability | `<review dimension verdict>` |
+| security/privacy | `<review dimension verdict>` |
+| non-goals | `<review dimension verdict>` |
+| acceptance criteria | `<review dimension verdict>` |
 
 Check normal, empty, boundary, error, permission, migration, rollout, rollback, old-client, and old-data behavior when relevant. Acceptance must be observable, not aspirational.
 
