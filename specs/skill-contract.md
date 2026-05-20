@@ -11,6 +11,7 @@
 - [RigorLoop Published Skill Design Contract](../docs/proposals/2026-05-19-rigorloop-published-skill-design-contract.md)
 - [Assets-First Progressive Disclosure Pilot for Published Skills](../docs/proposals/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md)
 - [Spec and Test-Spec Structural Hygiene](../docs/proposals/2026-05-19-spec-and-test-spec-structural-hygiene.md)
+- [Test-Spec Contract Normalization](../docs/proposals/2026-05-20-test-spec-contract-normalization.md)
 
 ## Goal and context
 
@@ -31,6 +32,8 @@ This amendment defines the published-skill design contract for portable operatin
 This amendment defines the assets-first progressive disclosure pilot for published skills. It adds a follow-on `plan` pilot that ships exactly four normative structural templates under `skills/plan/assets/`, keeps rules in `skills/plan/SKILL.md`, requires deterministic asset resource-map validation, proves adapter packaging for non-empty skill-local assets, and requires both behavior parity and measurable common-path improvement.
 
 This amendment defines structural hygiene for this spec and its matching test spec. It adds slice navigation and grouping while preserving existing R-clause IDs, clause text, acceptance-criterion text, test-case IDs, and cross-references.
+
+This amendment defines the contract gap found by the test-spec contract normalization proposal. It makes normalized-skill front-matter metadata explicit, requires visible stop-condition sections for invocation-blocking boundaries, and requires preservation proof when an existing artifact-producing skill gains an output skeleton.
 
 ## Spec growth strategy
 
@@ -63,6 +66,7 @@ Splitting this spec into multiple files MUST be pursued through a separate propo
 - `high-volume surface`: a file set, artifact, log, generated output tree, or historical record set likely to produce large output.
 - `output cap`: a tool or command setting that truncates returned text. Output caps are safety rails, not evidence-selection strategy.
 - `routing description`: the frontmatter `description` field that must contain portable skill-selection guidance.
+- `frontmatter schema version`: the frontmatter `schema-version` value that identifies the reviewed skill structure generation.
 - `workflow role`: a short section that states a lifecycle skill's stage role, received input, produced output, and downstream claim boundary.
 - `packaged skill resource`: a file shipped inside the installed skill package, such as `<skill>/references/`, `<skill>/scripts/`, or `<skill>/assets/`.
 - `packaged asset`: a structural template shipped under a skill-local `assets/` directory and copied into an output artifact when the resource map says to use it.
@@ -214,6 +218,14 @@ Given a historical plan was written before the published-skill design contract e
 When the assets-first plan pilot uses it as evidence
 Then strict structural parity is not required
 And gap analysis records whether the new `plan` skill can cover the same planning concerns.
+
+### Example E17: existing artifact-producing skill gains contract metadata
+
+Given `test-spec` is a normalized spec-family skill
+When it gains `version`, `schema-version`, `Workflow role`, a `Stop conditions` section, and a fenced output skeleton
+Then `schema-version` is `skill-readability-v1`
+And preservation evidence maps moved stop conditions and skeletonized output obligations back to their prior source wording
+And no new blocking state, section, field, coverage obligation, or output obligation is introduced without an approved behavior change.
 
 ## Requirements
 
@@ -560,6 +572,10 @@ R29e. Optional adapter-specific metadata such as `when_to_use` MAY exist, but re
 
 R29f. Validators MUST evaluate routing coverage against `description`, not require `when_to_use`.
 
+R29g. A normalized published skill MUST include frontmatter `version` and `schema-version` fields.
+
+R29h. A normalized spec-family skill using the current reviewed spec-family structure MUST use `schema-version: skill-readability-v1` unless a later approved contract amendment defines and requires a newer schema version.
+
 R30. A lifecycle skill MUST include `Workflow role` when it produces or closes a lifecycle artifact, gates a stage, participates in stage handoff, or claims downstream readiness.
 
 R30a. `Workflow role` MUST state the lifecycle role, received input, produced output or status, and downstream claims the skill must not make.
@@ -575,6 +591,8 @@ R31b. A skill body SHOULD use imperative instructions for procedure, resource ro
 R31c. A skill body SHOULD explain the rationale for judgment-affecting rules when the rationale helps prevent over-application or under-application.
 
 R31d. Hard-constraint language SHOULD be reserved for security boundaries, privacy constraints, destructive actions, required output formats, claim ownership, formal review recording, schema requirements, and validation requirements.
+
+R31e. A normalized skill with invocation-blocking conditions SHOULD surface those conditions in a dedicated `Stop conditions` section before normal artifact-generation or execution guidance.
 
 R32. A skill that ships packaged `references/`, `scripts/`, or `assets/` resources MUST include a `Resource map`.
 
@@ -599,6 +617,8 @@ R34. Artifact-producing skills MUST include a compact fenced output skeleton or 
 R34a. Examples and counterexamples MAY clarify behavior, but examples MUST NOT replace normative output skeletons.
 
 R34b. Long examples SHOULD live in packaged references, assets, or other appropriate artifacts instead of the common-path `SKILL.md` body.
+
+R34c. When an existing artifact-producing skill gains a fenced output skeleton, the implementation MUST prove that the skeleton preserves the existing required section set, item format, coverage obligations, and output obligations unless an approved spec explicitly changes them.
 
 R35. First-slice routing tests MUST be prompt fixtures and transcript-review inputs unless a dedicated routing harness is approved.
 
@@ -745,6 +765,7 @@ Inputs:
 - shared policy blocks under `templates/shared/`;
 - generated skill mirrors under `.codex/skills/`;
 - generated adapter output under `dist/adapters/`;
+- accepted test-spec contract normalization proposal;
 - workflow contract in `specs/rigorloop-workflow.md`;
 - contributor summaries in `docs/workflows.md` and `AGENTS.md`;
 - skill validator and generated-output drift validation scripts.
@@ -761,6 +782,7 @@ Outputs:
 - four normative `plan` assets and their resource-map entries for the assets-first plan pilot;
 - structural fingerprint and section-set drift evidence for normative `plan` assets;
 - behavior-parity reference and historical corpus evidence for the assets-first plan pilot;
+- preservation evidence for existing artifact-producing skills that gain a fenced output skeleton;
 - common-path body token reduction and total packaged content measurements for the assets-first plan pilot;
 - copied shared policy blocks where adopted;
 - regenerated `.codex/skills/` output when canonical skills change;
@@ -783,6 +805,7 @@ Outputs:
 - The baseline normalization first slice is limited to seven canonical skills.
 - The `ci` skill remains the entrypoint for the `ci-maintenance` stage label.
 - `description` remains the portable routing source for published skills.
+- Normalized published skills carry reviewed frontmatter version metadata.
 - Packaged skill-local resources are allowed only when included in adapter output and mapped in `SKILL.md`.
 - Repository-root internal paths are not normal customer-project dependencies.
 - The published-skill design pilot does not merge, retire, rename, remove, or change ownership of skills.
@@ -801,6 +824,10 @@ Outputs:
 - If the workflow stage label `ci-maintenance` is used in a normalization list, spec and plan authors MUST map it to the existing `ci` skill entrypoint unless a later approved spec renames the skill path.
 - If a new optional skill does not yet exist or lacks approved artifact or gate ownership, it MUST NOT be included in implementation scope solely because it is named as a Phase 4 candidate.
 - If `description` exceeds 1024 characters, validation MUST fail.
+- If a normalized published skill omits `version` or `schema-version`, contract validation or manual review MUST fail for that skill.
+- If a normalized spec-family skill uses a schema version other than `skill-readability-v1` without a later approved contract citation, the change MUST stop for spec review or owner decision.
+- If an invocation-blocking stop condition is moved into a `Stop conditions` section, preservation evidence MUST map the source wording to the destination wording and show that no new blocking state was added without approval.
+- If an existing artifact-producing skill gains an output skeleton and the skeleton changes the required section set, item format, coverage obligation, or output obligation without an approved behavior change, the normalization MUST stop for revision.
 - If a skill ships packaged resources without a `Resource map`, validation MUST fail for that skill.
 - If a published skill requires an unavailable repository-root internal path as a customer-project dependency, portability validation MUST fail.
 - If a validator cannot distinguish repository-root `scripts/` from packaged skill-local scripts, the validator MUST be narrowed before it is relied on.
@@ -828,6 +855,8 @@ Outputs:
 - Existing formal review recording rules remain authoritative for review records; this spec only defines how shared review guidance is copied and checked in skills.
 - Rollback for wording-only skill changes may revert the affected canonical skills, shared blocks, validator checks, and generated output together.
 - Existing skills are not invalid solely because their `description` exceeds 1024 characters or lacks the new routing structure until the approved implementation slice brings them into scope.
+- Existing unnormalized skills are not invalid solely because they lack `version` or `schema-version` until an approved normalization slice brings them into scope.
+- Existing stop-condition wording may move to a dedicated `Stop conditions` section during normalization when preservation evidence proves the blocking semantics are unchanged.
 - Optional `when_to_use` metadata remains compatible when an adapter supports it, but it is not required and does not replace `description`.
 - Existing packaged skill resources may remain until their owning skill is in scope, but once the skill is changed for this contract, resource-map coverage applies to packaged resources in that skill.
 - Existing `plan` behavior remains the compatibility baseline. Moving structure into assets MUST NOT weaken plan section requirements, handoff consistency, validation evidence, review handoff, or claim boundaries.
@@ -841,6 +870,8 @@ Outputs:
 - Review and verification artifacts SHOULD cite validation commands and results rather than generic success claims.
 - No runtime logs, metrics, traces, or audit events are required because this is repository guidance behavior, not runtime product behavior.
 - Validation output SHOULD identify description-length failures, missing trigger contexts, missing near-miss boundaries, missing resource-map entries, unavailable repository-root dependencies, and routing fixture coverage gaps by stable check ID when those checks are implemented.
+- Validation output SHOULD identify missing frontmatter `version` and `schema-version` fields for normalized skills by stable check ID when those checks are implemented.
+- Validation output SHOULD identify output-skeleton preservation failures by stable check ID when those checks are implemented.
 - Assets-first plan pilot validation output SHOULD identify asset metadata, resource-map coverage, `COPY` verb, structural fingerprint, section-set parity, adapter asset presence, and token-budget failures by stable check ID when those checks are implemented.
 - Structural hygiene validation SHOULD identify any slice-band mismatch, changed clause ID, changed acceptance criterion, changed test-case ID, or broken cross-reference by stable location.
 
@@ -948,8 +979,11 @@ This change has no user-interface surface. The relevant user experience is contr
 ### Published-skill design pilot (R27-R36)
 
 - A reviewer can confirm that `description` is the required portable routing source and is capped at 1024 characters.
+- A reviewer can confirm that normalized published skills include `version` and `schema-version` frontmatter and that normalized spec-family skills use `skill-readability-v1` unless a later approved contract requires a newer value.
 - A reviewer can confirm that optional `when_to_use` metadata is not required and does not replace `description`.
 - A reviewer can confirm that lifecycle skills with handoff, gate, artifact closeout, or downstream readiness responsibilities require `Workflow role`.
+- A reviewer can confirm that invocation-blocking stop conditions are visible as a `Stop conditions` section or an approved equivalent and that preservation evidence maps moved stop conditions back to their source wording.
+- A reviewer can confirm that an output skeleton added to an existing artifact-producing skill preserves the prior section set, item format, coverage obligations, and output obligations.
 - A reviewer can confirm that skills with packaged resources include a resource map naming every packaged resource with a load condition.
 - A reviewer can confirm that packaged skill-local scripts are distinguished from forbidden repository-root scripts.
 - A reviewer can confirm that published-skill design pilot routing tests are bounded fixture and transcript evidence unless an approved harness exists.
@@ -984,6 +1018,7 @@ No acceptance criteria are added in this amendment. Structural hygiene is review
 - Current amendment: plan for the audit-first `proposal` and `proposal-review` pilot.
 - Current draft amendment: spec-review for the assets-first `plan` progressive disclosure pilot.
 - Current draft amendment: spec-review for the spec and test-spec structural hygiene amendment.
+- Current draft amendment: spec-review for test-spec contract normalization metadata, stop-condition surfacing, and output-skeleton preservation.
 - After plan: `plan-review`.
 - Historical carried context: `code-review M2` under [Single Workflow Lane, Explain-Change Before Verify Execution Plan](../docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md) after M2 implementation handoff.
 - Historical carried context: `implement M3` consumes the public skill portability proof.
@@ -1009,7 +1044,10 @@ No acceptance criteria are added in this amendment. Structural hygiene is review
 - Current amendment proposal: [Spec and Test-Spec Structural Hygiene](../docs/proposals/2026-05-19-spec-and-test-spec-structural-hygiene.md).
 - Current amendment proposal-review: [proposal-review-r1](../docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/proposal-review-r1.md).
 - Current amendment spec-review: [spec-review-r1](../docs/changes/2026-05-19-spec-and-test-spec-structural-hygiene/reviews/spec-review-r1.md).
+- Current amendment proposal: [Test-Spec Contract Normalization](../docs/proposals/2026-05-20-test-spec-contract-normalization.md).
+- Current amendment proposal-review: [proposal-review-r2](../docs/changes/2026-05-20-test-spec-contract-normalization/reviews/proposal-review-r2.md).
+- Current amendment spec-review: [spec-review-r1](../docs/changes/2026-05-20-test-spec-contract-normalization/reviews/spec-review-r1.md).
 
 ## Readiness
 
-Approved structural hygiene amendment. Current downstream stage: plan for the spec and test-spec structural hygiene amendment.
+Approved structural hygiene and test-spec contract normalization amendments. Current downstream workflow state is owned by the active plan for each initiative.

@@ -1,0 +1,221 @@
+change_id: 2026-05-20-test-spec-contract-normalization
+title: Test-spec contract normalization
+classification: proposal
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-05-20-test-spec-contract-normalization.md
+  spec: specs/skill-contract.md
+  test_spec: specs/skill-contract.test.md
+  plan: docs/plans/2026-05-20-test-spec-contract-normalization.md
+  explain_change: docs/changes/2026-05-20-test-spec-contract-normalization/explain-change.md
+  verify_report: docs/changes/2026-05-20-test-spec-contract-normalization/verify-report.md
+  review_resolution: docs/changes/2026-05-20-test-spec-contract-normalization/review-resolution.md
+requirements:
+  - Record the proposal direction for normalizing `test-spec` to the published-skill design contract without changing behavior.
+  - Resolve proposal-review findings TSCN-PR1, TSCN-PR2, TSCN-PR3, and TSCN-PR4 before downstream plan reliance.
+  - Amend the skill contract for the discovered front-matter metadata contract gap before implementation.
+  - Create an active execution plan that sequences proof planning, validator support, and skill normalization without starting implementation.
+  - Add focused test-spec proof obligations for the test-spec normalization slice before validator or skill-body implementation.
+  - Record owner approval for the focused test-spec amendment before M2 validator support begins.
+  - Add or confirm deterministic validator support for test-spec normalization structural checks before canonical skill normalization.
+  - Record clean M2 code-review before starting M3.
+  - Normalize canonical `skills/test-spec/SKILL.md` while preserving rules, stop conditions, coverage obligations, and output obligations.
+  - Record behavior-preservation and behavior-parity evidence for M3 before code-review.
+  - Record clean M3 code-review before final closeout.
+  - Record durable explain-change rationale before verify.
+  - Pass final local verification before PR handoff.
+  - Open PR handoff after branch-ready verification passes.
+  - Keep family-wide readability, packaging, routing changes, and produced-artifact readability out of this proposal.
+tests:
+  - Artifact lifecycle validation for the proposal and change-local review artifacts.
+  - Artifact lifecycle validation for the skill contract spec amendment.
+  - Artifact lifecycle validation for the focused skill-contract test spec amendment.
+  - Skill validator regression coverage for readability metadata, schema version, Workflow role fields, and output skeleton placeholders.
+  - Code-review evidence for M2 validator and fixture support.
+  - Skill validation and behavior-preservation evidence for canonical `test-spec` normalization.
+  - Code-review evidence for M3 canonical skill normalization.
+  - Durable explain-change rationale linking the diff to proposal, spec, plan, tests, reviews, and validation evidence.
+  - Final local verification report before PR handoff.
+  - PR handoff evidence.
+  - Temporary adapter archive validation for generated-output proof from canonical skills.
+  - Artifact lifecycle validation for the active plan and plan index.
+  - Review artifact closeout validation for recorded proposal-review findings.
+  - Change metadata validation for this change-local root.
+validation:
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-20-test-spec-contract-normalization.md --path docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml --path docs/changes/2026-05-20-test-spec-contract-normalization/review-log.md --path docs/changes/2026-05-20-test-spec-contract-normalization/review-resolution.md --path docs/changes/2026-05-20-test-spec-contract-normalization/reviews/proposal-review-r1.md
+    result: pass_validated_1_lifecycle_artifact
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-20-test-spec-contract-normalization
+    result: pass_reviews_1_findings_4_log_entries_1_resolution_entries_4
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml
+    result: pass_valid_change_metadata
+  - command: git diff --check -- docs/proposals/2026-05-20-test-spec-contract-normalization.md docs/changes/2026-05-20-test-spec-contract-normalization
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-20-test-spec-contract-normalization.md --path docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml --path docs/changes/2026-05-20-test-spec-contract-normalization/review-log.md --path docs/changes/2026-05-20-test-spec-contract-normalization/review-resolution.md --path docs/changes/2026-05-20-test-spec-contract-normalization/reviews/proposal-review-r1.md
+    result: pass_selected_review_artifacts_lifecycle_change_metadata_checks
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-05-20-test-spec-contract-normalization.md --path docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml --path docs/changes/2026-05-20-test-spec-contract-normalization/review-log.md --path docs/changes/2026-05-20-test-spec-contract-normalization/review-resolution.md --path docs/changes/2026-05-20-test-spec-contract-normalization/reviews/proposal-review-r1.md --path docs/changes/2026-05-20-test-spec-contract-normalization/reviews/proposal-review-r2.md
+    result: pass_selected_review_artifacts_lifecycle_change_metadata_checks_after_proposal_review_r2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/skill-contract.md --path docs/proposals/2026-05-20-test-spec-contract-normalization.md --path docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml --path docs/changes/2026-05-20-test-spec-contract-normalization/review-log.md --path docs/changes/2026-05-20-test-spec-contract-normalization/review-resolution.md --path docs/changes/2026-05-20-test-spec-contract-normalization/reviews/proposal-review-r1.md --path docs/changes/2026-05-20-test-spec-contract-normalization/reviews/proposal-review-r2.md
+    result: pass_validated_2_lifecycle_artifact_files_after_spec_amendment
+  - command: bash scripts/ci.sh --mode explicit --path specs/skill-contract.md --path docs/proposals/2026-05-20-test-spec-contract-normalization.md --path docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml --path docs/changes/2026-05-20-test-spec-contract-normalization/review-log.md --path docs/changes/2026-05-20-test-spec-contract-normalization/review-resolution.md --path docs/changes/2026-05-20-test-spec-contract-normalization/reviews/proposal-review-r1.md --path docs/changes/2026-05-20-test-spec-contract-normalization/reviews/proposal-review-r2.md
+    result: pass_selected_review_artifacts_lifecycle_change_metadata_checks_after_spec_amendment
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-20-test-spec-contract-normalization
+    result: pass_reviews_3_findings_4_log_entries_3_resolution_entries_4_after_spec_review
+  - command: bash scripts/ci.sh --mode explicit --path specs/skill-contract.md --path docs/proposals/2026-05-20-test-spec-contract-normalization.md --path docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml --path docs/changes/2026-05-20-test-spec-contract-normalization/review-log.md --path docs/changes/2026-05-20-test-spec-contract-normalization/review-resolution.md --path docs/changes/2026-05-20-test-spec-contract-normalization/reviews/proposal-review-r1.md --path docs/changes/2026-05-20-test-spec-contract-normalization/reviews/proposal-review-r2.md --path docs/changes/2026-05-20-test-spec-contract-normalization/reviews/spec-review-r1.md
+    result: pass_selected_review_artifacts_lifecycle_change_metadata_checks_after_spec_review
+  - command: plan
+    result: active_plan_created_ready_for_plan_review
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/skill-contract.md --path docs/plan.md --path docs/plans/2026-05-20-test-spec-contract-normalization.md --path docs/proposals/2026-05-20-test-spec-contract-normalization.md --path docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml --path docs/changes/2026-05-20-test-spec-contract-normalization/review-log.md --path docs/changes/2026-05-20-test-spec-contract-normalization/review-resolution.md --path docs/changes/2026-05-20-test-spec-contract-normalization/reviews/proposal-review-r1.md --path docs/changes/2026-05-20-test-spec-contract-normalization/reviews/proposal-review-r2.md --path docs/changes/2026-05-20-test-spec-contract-normalization/reviews/spec-review-r1.md
+    result: pass_validated_2_lifecycle_artifact_files_after_plan_created
+  - command: bash scripts/ci.sh --mode explicit --path specs/skill-contract.md --path docs/plan.md --path docs/plans/2026-05-20-test-spec-contract-normalization.md --path docs/proposals/2026-05-20-test-spec-contract-normalization.md --path docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml --path docs/changes/2026-05-20-test-spec-contract-normalization/review-log.md --path docs/changes/2026-05-20-test-spec-contract-normalization/review-resolution.md --path docs/changes/2026-05-20-test-spec-contract-normalization/reviews/proposal-review-r1.md --path docs/changes/2026-05-20-test-spec-contract-normalization/reviews/proposal-review-r2.md --path docs/changes/2026-05-20-test-spec-contract-normalization/reviews/spec-review-r1.md
+    result: pass_selected_review_artifacts_lifecycle_plan_index_change_metadata_checks_after_plan_created
+  - command: plan-review-r1
+    result: approved_no_material_findings
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-20-test-spec-contract-normalization
+    result: pass_reviews_4_findings_4_log_entries_4_resolution_entries_4_after_plan_review
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/skill-contract.md --path docs/plan.md --path docs/plans/2026-05-20-test-spec-contract-normalization.md --path docs/proposals/2026-05-20-test-spec-contract-normalization.md --path docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml --path docs/changes/2026-05-20-test-spec-contract-normalization/review-log.md --path docs/changes/2026-05-20-test-spec-contract-normalization/review-resolution.md --path docs/changes/2026-05-20-test-spec-contract-normalization/reviews/proposal-review-r1.md --path docs/changes/2026-05-20-test-spec-contract-normalization/reviews/proposal-review-r2.md --path docs/changes/2026-05-20-test-spec-contract-normalization/reviews/spec-review-r1.md --path docs/changes/2026-05-20-test-spec-contract-normalization/reviews/plan-review-r1.md
+    result: pass_validated_2_lifecycle_artifact_files_after_plan_review
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml
+    result: pass_valid_change_metadata_after_plan_review
+  - command: bash scripts/ci.sh --mode explicit --path specs/skill-contract.md --path docs/plan.md --path docs/plans/2026-05-20-test-spec-contract-normalization.md --path docs/proposals/2026-05-20-test-spec-contract-normalization.md --path docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml --path docs/changes/2026-05-20-test-spec-contract-normalization/review-log.md --path docs/changes/2026-05-20-test-spec-contract-normalization/review-resolution.md --path docs/changes/2026-05-20-test-spec-contract-normalization/reviews/proposal-review-r1.md --path docs/changes/2026-05-20-test-spec-contract-normalization/reviews/proposal-review-r2.md --path docs/changes/2026-05-20-test-spec-contract-normalization/reviews/spec-review-r1.md --path docs/changes/2026-05-20-test-spec-contract-normalization/reviews/plan-review-r1.md
+    result: pass_selected_review_artifacts_lifecycle_plan_index_change_metadata_checks_after_plan_review
+  - command: git diff --check -- specs/skill-contract.md docs/plan.md docs/plans/2026-05-20-test-spec-contract-normalization.md docs/proposals/2026-05-20-test-spec-contract-normalization.md docs/changes/2026-05-20-test-spec-contract-normalization
+    result: pass_after_plan_review
+  - command: test-spec
+    result: focused_proof_coverage_T37_T40_added_to_specs_skill_contract_test_md
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/plans/2026-05-20-test-spec-contract-normalization.md --path docs/plan.md --path docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml
+    result: pass_validated_3_lifecycle_artifact_files_after_test_spec_amendment
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml
+    result: pass_valid_change_metadata_after_test_spec_amendment
+  - command: git diff --check -- specs/skill-contract.test.md docs/plans/2026-05-20-test-spec-contract-normalization.md docs/plan.md docs/changes/2026-05-20-test-spec-contract-normalization
+    result: pass_after_test_spec_amendment
+  - command: bash scripts/ci.sh --mode explicit --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/plans/2026-05-20-test-spec-contract-normalization.md --path docs/plan.md --path docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml
+    result: pass_selected_lifecycle_plan_index_change_metadata_checks_after_test_spec_amendment
+  - command: owner-approval
+    result: focused_test_spec_amendment_approved_for_M2_on_2026_05_20
+  - command: implement M2
+    result: validator_fixture_support_added_review_requested
+  - command: python scripts/test-skill-validator.py
+    result: pass_132_tests_after_M2_validator_fixtures
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_M2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml
+    result: pass_valid_change_metadata_after_M2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/plans/2026-05-20-test-spec-contract-normalization.md --path docs/plan.md --path docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml
+    result: pass_validated_3_lifecycle_artifact_files_after_M2
+  - command: git diff --check -- scripts tests docs/plans/2026-05-20-test-spec-contract-normalization.md docs/plan.md docs/changes/2026-05-20-test-spec-contract-normalization
+    result: pass_after_M2
+  - command: bash scripts/ci.sh --mode explicit --path scripts/skill_validation.py --path scripts/test-skill-validator.py --path tests/fixtures/skills/skill-readability/missing-version/SKILL.md --path tests/fixtures/skills/skill-readability/invalid-schema-version/SKILL.md --path tests/fixtures/skills/skill-readability/missing-workflow-role-field/SKILL.md --path tests/fixtures/skills/skill-readability/output-skeleton-without-placeholder/SKILL.md --path docs/plans/2026-05-20-test-spec-contract-normalization.md --path docs/plan.md --path docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml
+    result: pass_selected_skills_regression_generation_regression_lifecycle_change_metadata_checks_after_M2
+  - command: code-review-m2-r1
+    result: clean_with_notes_no_material_findings_M2_closed
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-20-test-spec-contract-normalization
+    result: pass_reviews_5_findings_4_log_entries_5_resolution_entries_4_after_code_review_M2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml
+    result: pass_valid_change_metadata_after_code_review_M2
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/plans/2026-05-20-test-spec-contract-normalization.md --path docs/plan.md --path docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml --path docs/changes/2026-05-20-test-spec-contract-normalization/review-log.md --path docs/changes/2026-05-20-test-spec-contract-normalization/review-resolution.md --path docs/changes/2026-05-20-test-spec-contract-normalization/reviews/code-review-m2-r1.md
+    result: pass_validated_3_lifecycle_artifact_files_after_code_review_M2
+  - command: git diff --check -- docs/plans/2026-05-20-test-spec-contract-normalization.md docs/plan.md docs/changes/2026-05-20-test-spec-contract-normalization
+    result: pass_after_code_review_M2
+  - command: bash scripts/ci.sh --mode explicit --path scripts/test-skill-validator.py --path tests/fixtures/skills/skill-readability/missing-version/SKILL.md --path tests/fixtures/skills/skill-readability/invalid-schema-version/SKILL.md --path tests/fixtures/skills/skill-readability/missing-workflow-role-field/SKILL.md --path tests/fixtures/skills/skill-readability/output-skeleton-without-placeholder/SKILL.md --path docs/plans/2026-05-20-test-spec-contract-normalization.md --path docs/plan.md --path docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml --path docs/changes/2026-05-20-test-spec-contract-normalization/review-log.md --path docs/changes/2026-05-20-test-spec-contract-normalization/review-resolution.md --path docs/changes/2026-05-20-test-spec-contract-normalization/reviews/code-review-m2-r1.md
+    result: pass_selected_skills_review_artifacts_lifecycle_change_metadata_checks_after_code_review_M2
+  - command: implement M3
+    result: test_spec_skill_normalized_review_requested
+  - command: python scripts/validate-skills.py skills/test-spec/SKILL.md
+    result: pass_validated_1_skill_file_after_M3
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_M3
+  - command: python scripts/test-skill-validator.py
+    result: pass_132_tests_after_M3
+  - command: python scripts/build-skills.py --check
+    result: pass_generated_skills_temp_output_check_after_M3
+  - command: python scripts/build-adapters.py --version v0.1.5 --check
+    result: fail_baseline_expanded_adapter_tree_missing_current_release_archive_layout
+  - command: python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/tmp.NBI6tpmMoX
+    result: pass_built_temporary_adapter_archives_after_M3
+  - command: python scripts/validate-adapters.py --root /tmp/tmp.NBI6tpmMoX --version v0.1.5
+    result: pass_validated_temporary_adapter_archives_after_M3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml
+    result: pass_valid_change_metadata_after_M3
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/plans/2026-05-20-test-spec-contract-normalization.md --path docs/plan.md --path docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml --path docs/changes/2026-05-20-test-spec-contract-normalization/behavior-preservation.md --path docs/changes/2026-05-20-test-spec-contract-normalization/behavior-parity.md
+    result: pass_validated_3_lifecycle_artifact_files_after_M3
+  - command: git diff --check -- skills/test-spec/SKILL.md specs/skill-contract.md specs/skill-contract.test.md docs/plans/2026-05-20-test-spec-contract-normalization.md docs/plan.md docs/changes/2026-05-20-test-spec-contract-normalization
+    result: pass_after_M3
+  - command: bash scripts/ci.sh --mode explicit --path skills/test-spec/SKILL.md --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/plans/2026-05-20-test-spec-contract-normalization.md --path docs/plan.md --path docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml --path docs/changes/2026-05-20-test-spec-contract-normalization/behavior-preservation.md --path docs/changes/2026-05-20-test-spec-contract-normalization/behavior-parity.md
+    result: pass_selected_skills_generation_adapter_lifecycle_change_metadata_checks_after_M3
+  - command: code-review-m3-r1
+    result: clean_with_notes_no_material_findings_M3_closed
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-20-test-spec-contract-normalization
+    result: pass_reviews_6_findings_4_log_entries_6_resolution_entries_4_after_code_review_M3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml
+    result: pass_valid_change_metadata_after_code_review_M3
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/plans/2026-05-20-test-spec-contract-normalization.md --path docs/plan.md --path docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml --path docs/changes/2026-05-20-test-spec-contract-normalization/review-log.md --path docs/changes/2026-05-20-test-spec-contract-normalization/review-resolution.md --path docs/changes/2026-05-20-test-spec-contract-normalization/reviews/code-review-m3-r1.md --path docs/changes/2026-05-20-test-spec-contract-normalization/behavior-preservation.md --path docs/changes/2026-05-20-test-spec-contract-normalization/behavior-parity.md
+    result: pass_validated_3_lifecycle_artifact_files_after_code_review_M3
+  - command: git diff --check -- docs/plans/2026-05-20-test-spec-contract-normalization.md docs/plan.md docs/changes/2026-05-20-test-spec-contract-normalization
+    result: pass_after_code_review_M3
+  - command: bash scripts/ci.sh --mode explicit --path skills/test-spec/SKILL.md --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/plans/2026-05-20-test-spec-contract-normalization.md --path docs/plan.md --path docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml --path docs/changes/2026-05-20-test-spec-contract-normalization/review-log.md --path docs/changes/2026-05-20-test-spec-contract-normalization/review-resolution.md --path docs/changes/2026-05-20-test-spec-contract-normalization/reviews/code-review-m3-r1.md --path docs/changes/2026-05-20-test-spec-contract-normalization/behavior-preservation.md --path docs/changes/2026-05-20-test-spec-contract-normalization/behavior-parity.md
+    result: pass_selected_skills_generation_adapter_review_artifacts_lifecycle_change_metadata_checks_after_code_review_M3
+  - command: explain-change
+    result: durable_explain_change_recorded_ready_for_verify
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml
+    result: pass_valid_change_metadata_after_explain_change
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/plans/2026-05-20-test-spec-contract-normalization.md --path docs/plan.md --path docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml --path docs/changes/2026-05-20-test-spec-contract-normalization/explain-change.md --path docs/changes/2026-05-20-test-spec-contract-normalization/review-log.md --path docs/changes/2026-05-20-test-spec-contract-normalization/review-resolution.md
+    result: pass_validated_3_lifecycle_artifact_files_after_explain_change
+  - command: git diff --check -- docs/plans/2026-05-20-test-spec-contract-normalization.md docs/plan.md docs/changes/2026-05-20-test-spec-contract-normalization
+    result: pass_after_explain_change
+  - command: bash scripts/ci.sh --mode explicit --path skills/test-spec/SKILL.md --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/plans/2026-05-20-test-spec-contract-normalization.md --path docs/plan.md --path docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml --path docs/changes/2026-05-20-test-spec-contract-normalization/explain-change.md --path docs/changes/2026-05-20-test-spec-contract-normalization/review-log.md --path docs/changes/2026-05-20-test-spec-contract-normalization/review-resolution.md --path docs/changes/2026-05-20-test-spec-contract-normalization/reviews/code-review-m3-r1.md --path docs/changes/2026-05-20-test-spec-contract-normalization/behavior-preservation.md --path docs/changes/2026-05-20-test-spec-contract-normalization/behavior-parity.md
+    result: pass_selected_skills_generation_adapter_review_artifacts_lifecycle_change_metadata_checks_after_explain_change
+  - command: verify
+    result: branch_ready_with_warning_ready_for_pr_handoff
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml
+    result: pass_valid_change_metadata_after_verify
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/plans/2026-05-20-test-spec-contract-normalization.md --path docs/plan.md --path docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml --path docs/changes/2026-05-20-test-spec-contract-normalization/explain-change.md --path docs/changes/2026-05-20-test-spec-contract-normalization/verify-report.md --path docs/changes/2026-05-20-test-spec-contract-normalization/review-log.md --path docs/changes/2026-05-20-test-spec-contract-normalization/review-resolution.md
+    result: pass_validated_3_lifecycle_artifact_files_after_verify
+  - command: git diff --check -- skills/test-spec/SKILL.md specs/skill-contract.md specs/skill-contract.test.md scripts/test-skill-validator.py docs/plans/2026-05-20-test-spec-contract-normalization.md docs/plan.md docs/changes/2026-05-20-test-spec-contract-normalization tests/fixtures/skills/skill-readability/missing-version tests/fixtures/skills/skill-readability/invalid-schema-version tests/fixtures/skills/skill-readability/missing-workflow-role-field tests/fixtures/skills/skill-readability/output-skeleton-without-placeholder
+    result: pass_after_verify
+  - command: bash scripts/ci.sh --mode explicit --path skills/test-spec/SKILL.md --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/plans/2026-05-20-test-spec-contract-normalization.md --path docs/plan.md --path docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml --path docs/changes/2026-05-20-test-spec-contract-normalization/explain-change.md --path docs/changes/2026-05-20-test-spec-contract-normalization/verify-report.md --path docs/changes/2026-05-20-test-spec-contract-normalization/review-log.md --path docs/changes/2026-05-20-test-spec-contract-normalization/review-resolution.md --path docs/changes/2026-05-20-test-spec-contract-normalization/reviews/code-review-m3-r1.md --path docs/changes/2026-05-20-test-spec-contract-normalization/behavior-preservation.md --path docs/changes/2026-05-20-test-spec-contract-normalization/behavior-parity.md --path scripts/test-skill-validator.py --path tests/fixtures/skills/skill-readability/missing-version/SKILL.md --path tests/fixtures/skills/skill-readability/invalid-schema-version/SKILL.md --path tests/fixtures/skills/skill-readability/missing-workflow-role-field/SKILL.md --path tests/fixtures/skills/skill-readability/output-skeleton-without-placeholder/SKILL.md
+    result: pass_selected_skills_generation_adapter_review_artifacts_lifecycle_change_metadata_checks_after_verify
+  - command: git rebase origin/main
+    result: pass_conflicts_resolved_in_skill_contract_spec_and_test_spec
+  - command: python scripts/validate-skills.py && python scripts/test-skill-validator.py && python scripts/build-skills.py --check
+    result: pass_post_rebase_validated_23_skills_132_tests_generated_skill_check
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-20-test-spec-contract-normalization && python scripts/validate-change-metadata.py docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml && python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/plans/2026-05-20-test-spec-contract-normalization.md --path docs/plan.md --path docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml --path docs/changes/2026-05-20-test-spec-contract-normalization/explain-change.md --path docs/changes/2026-05-20-test-spec-contract-normalization/verify-report.md --path docs/changes/2026-05-20-test-spec-contract-normalization/review-log.md --path docs/changes/2026-05-20-test-spec-contract-normalization/review-resolution.md
+    result: pass_post_rebase_review_metadata_lifecycle_checks
+  - command: python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/tmp.1rkZ99pGur && python scripts/validate-adapters.py --root /tmp/tmp.1rkZ99pGur --version v0.1.5
+    result: pass_post_rebase_temporary_adapter_archive_validation
+  - command: git diff --check -- $(git diff --name-only origin/main...HEAD)
+    result: pass_post_rebase
+  - command: bash scripts/ci.sh --mode explicit --path skills/test-spec/SKILL.md --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/plans/2026-05-20-test-spec-contract-normalization.md --path docs/plan.md --path docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml --path docs/changes/2026-05-20-test-spec-contract-normalization/explain-change.md --path docs/changes/2026-05-20-test-spec-contract-normalization/verify-report.md --path docs/changes/2026-05-20-test-spec-contract-normalization/review-log.md --path docs/changes/2026-05-20-test-spec-contract-normalization/review-resolution.md --path docs/changes/2026-05-20-test-spec-contract-normalization/reviews/code-review-m3-r1.md --path docs/changes/2026-05-20-test-spec-contract-normalization/behavior-preservation.md --path docs/changes/2026-05-20-test-spec-contract-normalization/behavior-parity.md --path scripts/test-skill-validator.py --path tests/fixtures/skills/skill-readability/missing-version/SKILL.md --path tests/fixtures/skills/skill-readability/invalid-schema-version/SKILL.md --path tests/fixtures/skills/skill-readability/missing-workflow-role-field/SKILL.md --path tests/fixtures/skills/skill-readability/output-skeleton-without-placeholder/SKILL.md
+    result: pass_post_rebase_selected_skills_generation_adapter_review_artifacts_lifecycle_change_metadata_checks
+  - command: gh pr create --base main --head proposal/test-spec-contract-normalization
+    result: opened_pr_77
+changed_files:
+  - specs/skill-contract.md
+  - specs/skill-contract.test.md
+  - docs/plan.md
+  - docs/plans/2026-05-20-test-spec-contract-normalization.md
+  - docs/proposals/2026-05-20-test-spec-contract-normalization.md
+  - docs/changes/2026-05-20-test-spec-contract-normalization/change.yaml
+  - docs/changes/2026-05-20-test-spec-contract-normalization/review-log.md
+  - docs/changes/2026-05-20-test-spec-contract-normalization/review-resolution.md
+  - docs/changes/2026-05-20-test-spec-contract-normalization/explain-change.md
+  - docs/changes/2026-05-20-test-spec-contract-normalization/verify-report.md
+  - docs/changes/2026-05-20-test-spec-contract-normalization/reviews/proposal-review-r1.md
+  - docs/changes/2026-05-20-test-spec-contract-normalization/reviews/proposal-review-r2.md
+  - docs/changes/2026-05-20-test-spec-contract-normalization/reviews/spec-review-r1.md
+  - docs/changes/2026-05-20-test-spec-contract-normalization/reviews/plan-review-r1.md
+  - docs/changes/2026-05-20-test-spec-contract-normalization/reviews/code-review-m2-r1.md
+  - docs/changes/2026-05-20-test-spec-contract-normalization/reviews/code-review-m3-r1.md
+  - docs/changes/2026-05-20-test-spec-contract-normalization/behavior-preservation.md
+  - docs/changes/2026-05-20-test-spec-contract-normalization/behavior-parity.md
+  - scripts/test-skill-validator.py
+  - skills/test-spec/SKILL.md
+  - tests/fixtures/skills/skill-readability/missing-version/SKILL.md
+  - tests/fixtures/skills/skill-readability/invalid-schema-version/SKILL.md
+  - tests/fixtures/skills/skill-readability/missing-workflow-role-field/SKILL.md
+  - tests/fixtures/skills/skill-readability/output-skeleton-without-placeholder/SKILL.md
+review:
+  status: approved
+  unresolved_items: 0
+  review_log: docs/changes/2026-05-20-test-spec-contract-normalization/review-log.md
+  latest_review: docs/changes/2026-05-20-test-spec-contract-normalization/reviews/code-review-m3-r1.md
+  location: docs/changes/2026-05-20-test-spec-contract-normalization/review-resolution.md
