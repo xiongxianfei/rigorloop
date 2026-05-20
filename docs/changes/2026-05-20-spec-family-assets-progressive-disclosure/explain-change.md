@@ -8,8 +8,9 @@ deliberately small: full skeletons and substantial multi-field blocks live in
 `assets/`, while trivial one-line row formats remain inline in `SKILL.md`.
 
 The change also adds deterministic validator coverage, generated-output proof,
-behavior-preservation evidence, review records, and a learn capture for the
-asset-formalism lesson surfaced during implementation.
+behavior-preservation evidence, selector routing for the new change-local proof
+artifacts, review records, and a learn capture for the asset-formalism lesson
+surfaced during implementation.
 
 ## Problem
 
@@ -44,6 +45,7 @@ defined inline is not enough.
 | `skills/test-spec/SKILL.md` and `skills/test-spec/assets/*` | Added `test-spec-skeleton.md`, `test-case.md`, and `coverage-map-row.md`; preserved requirement/example coverage row variants; kept edge-case row format inline. | Full skeleton and multi-field blocks earn assets; trivial edge-case rows do not. | `SFA-R5`, `SFA-R11`, `SFA-R12`, `SFA-R14` through `SFA-R22` | M4 row-shape preservation evidence; M6 lean asset proof |
 | `scripts/skill_validation.py` | Added spec-family asset inventory checks, resource-map checks, asset metadata/status/placeholder checks, review-class boundary checks, generated-output presence helper, and reduced approved asset inventory after M6. | Make the asset contract deterministic rather than review-only. | `SFA-R42`, `SFA-R43`, `AC-SFA-015` | `python scripts/test-skill-validator.py` passed with 142 tests |
 | `scripts/test-skill-validator.py` and `tests/fixtures/skills/published-design/generated-output-presence/` | Added positive and negative fixture coverage for generated asset presence and spec-family asset validation boundaries. | Prove canonical mapped assets must appear under supplied generated output roots without making M1 generate real archives. | `SFA-R32`, `SFA-R42`, `AC-SFA-009`, `AC-SFA-015` | Validator tests and generated-output proof |
+| `scripts/validation_selection.py` and `scripts/test-select-validation.py` | Classified `baseline.md` and `generated-output-proof.md` as change-local lifecycle artifacts and added selector regression coverage. | Final PR-mode CI initially blocked because these new proof artifacts had no deterministic selector route. They now route to artifact lifecycle validation instead of manual-routing failure. | CI-maintenance triggered by verify | `python scripts/test-select-validation.py` and `bash scripts/ci.sh --mode pr ...` passed |
 | `docs/changes/.../baseline.md` | Added change-local baseline summary. | Let reviewers inspect which PR #79 structures were being preserved without redefining PR #79 as the baseline. | `SFA-R25` through `SFA-R27`, `AC-SFA-014` | M1 review closed after baseline and validator foundation |
 | `docs/changes/.../behavior-preservation.md` | Recorded source-to-asset preservation, behavior parity, token counts, cold-read checks, and the final lean asset set. | Prove extraction did not change output behavior or hide rules. | `SFA-R28` through `SFA-R31`, `SFA-R38` through `SFA-R41` | Code-review M2-M6 records |
 | `docs/changes/.../generated-output-proof.md` | Recorded generated skill mirror proof, temporary adapter archive proof, adapter validation, archive inspection, tracked-tree deferral, and M6 refreshed proof. | Prove assets reach published generated output without hand-editing generated adapter bodies. | `SFA-R32` through `SFA-R37`, `AC-SFA-009` through `AC-SFA-011` | `build-skills`, `build-adapters`, `validate-adapters`, and archive inspection passed |
@@ -58,6 +60,7 @@ defined inline is not enough.
 | Generated-output fixtures | Added valid and missing-asset generated-output fixture shapes. | A canonical mapped asset missing from a supplied generated root fails deterministically. |
 | Review-class fixtures | Added forbidden policy-label cases and allowed structural label cases. | `spec-review` assets may contain structural fields such as `Severity`, but not policy labels such as `Severity policy`. |
 | Test-spec row-shape proof | Added/updated coverage around requirement and example coverage-map variants. | Requirement coverage preserves four cells; example coverage preserves three cells and does not gain a `Level` column. |
+| Selector regression tests | Added `baseline.md` and `generated-output-proof.md` to the routed change-local lifecycle artifact cases. | PR-mode CI does not block on these proof artifacts as unsupported paths. |
 
 This is the right test level because the behavior is mostly static contract
 validation and generated-output presence, not runtime application behavior.
@@ -76,6 +79,8 @@ Recorded validation includes:
 - `python scripts/validate-change-metadata.py docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml`
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`
 - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-20-spec-family-assets-progressive-disclosure`
+- `python scripts/test-select-validation.py`
+- `bash scripts/ci.sh --mode pr --base 88b93f74083042ab6be07a50bed36cab9c49ea8b --head HEAD`
 - `git diff --check -- .`
 
 Final verify has not run yet.
