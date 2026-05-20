@@ -78,12 +78,7 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
 ## Resource map
 
 - COPY `assets/proposal-skeleton.md` when creating a new proposal artifact.
-  Fill: title, status, problem, goals, non-goals, Vision fit, context,
-  options considered, recommended direction, expected behavior changes,
-  architecture impact, testing and verification strategy, rollout and rollback,
-  risks and mitigations, open questions, decision log, next artifacts,
-  follow-on artifacts, and readiness.
-  Add conditional sections such as `Initial intent preservation` and
+  Fill: required proposal sections, plus `Initial intent preservation` and
   `Scope budget` when this skill's trigger rules apply.
   Do not emit unfilled placeholders.
 
@@ -284,7 +279,6 @@ Do not emit unfilled placeholders.
 
 ## Expected output
 
-Use the `## Output skeleton` guidance and `assets/proposal-skeleton.md`
-structure. Include the proposal file path, clear recommended direction,
-alternatives and rationale, non-goals and risks, open questions, and readiness
-statement for `proposal-review` or blocker state.
+Use `assets/proposal-skeleton.md` to include the proposal path, recommendation,
+rationale, risks, open questions, and readiness for `proposal-review` or blocker
+state.
