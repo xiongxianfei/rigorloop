@@ -74,13 +74,13 @@ The work touches canonical skill source under `skills/`, validator and test scri
 ## Current Handoff Summary
 
 - Current milestone: M6
-- Current milestone state: review-requested
-- Last reviewed milestone: M5
-- Review status: M6 implementation ready for code-review after lean asset correction
+- Current milestone state: closed
+- Last reviewed milestone: M6
+- Review status: code-review M6 R1 clean-with-notes; no material findings
 - Remaining in-scope implementation milestones: none
-- Next stage: code-review for M6
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lean asset correction requires code-review before explain-change, verify, and PR handoff.
+- Next stage: final closeout, starting with explain-change
+- Final closeout readiness: ready to start
+- Reason final closeout is or is not ready: all in-scope implementation milestones are closed; explain-change, final verify, and PR handoff remain incomplete.
 
 ## Milestones
 
@@ -237,7 +237,7 @@ The work touches canonical skill source under `skills/`, validator and test scri
 
 ### M6. Lean asset correction
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Remove low-value row assets and align the contract, validators, generated-output expectations, and evidence with the substantial-template rule.
 - Requirements: `SFA-R3A` through `SFA-R3C`, `SFA-R8`, `SFA-R12`, `SFA-R14` through `SFA-R22`, `SFA-R28` through `SFA-R41`
 - Files expected:
@@ -264,7 +264,7 @@ The work touches canonical skill source under `skills/`, validator and test scri
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/spec-family-assets-progressive-disclosure.md --path specs/spec-family-assets-progressive-disclosure.test.md --path docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md --path docs/plan.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/baseline.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/behavior-preservation.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/generated-output-proof.md`
   - `git diff --check -- .`
-- Result: implementation complete; awaiting code-review.
+- Result: closed by code-review M6 R1 with no material findings.
 - Risks:
   - Historical review records still mention now-removed row assets; keep them as historical evidence and update current governing/evidence surfaces instead.
 - Rollback:
@@ -338,6 +338,7 @@ Final closeout:
 - 2026-05-20: M5 recorded generated skill mirror proof, temporary adapter archive proof, adapter validation, tracked-tree deferral, token evidence, and cold-read proof; implementation milestones were closed and next stage became final closeout starting with explain-change.
 - 2026-05-20: code-review M5 R1 found no blocking or required-change findings; M5 closed.
 - 2026-05-20: M6 applied the lean asset correction: dropped trivial row assets, kept substantial skeleton/block assets, updated validators, fixtures, spec, test spec, and evidence, and moved to code-review.
+- 2026-05-20: code-review M6 R1 found no blocking or required-change findings; M6 closed and the next stage is final closeout starting with explain-change.
 
 ## Decision log
 
@@ -445,6 +446,11 @@ Final closeout:
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-20-spec-family-assets-progressive-disclosure.md --path specs/spec-family-assets-progressive-disclosure.md --path specs/spec-family-assets-progressive-disclosure.test.md --path docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md --path docs/plan.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/baseline.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/behavior-preservation.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/generated-output-proof.md`
   - `git diff --check -- .`
+- M6 R1 code-review recording validation passed:
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-20-spec-family-assets-progressive-disclosure`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/review-log.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/review-resolution.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/reviews/code-review-m6-r1.md --path docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md --path docs/plan.md`
+  - `git diff --check -- docs/changes/2026-05-20-spec-family-assets-progressive-disclosure docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md docs/plan.md`
 
 ## Outcome and retrospective
 

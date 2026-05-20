@@ -18,11 +18,12 @@ Review closeout: code-review-m3-r2
 Review closeout: code-review-m4-r1
 Review closeout: code-review-m4-r2
 Review closeout: code-review-m5-r1
+Review closeout: code-review-m6-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `plan-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m5-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `plan-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m5-r1`, `code-review-m6-r1`
 - Findings resolved: 9
 - Unresolved findings: 0
-- Final result: Proposal-review R1 requested changes for proof route, per-skill skeleton boundary, generated-output proof boundaries, stricter review-class asset restrictions, and change-local baseline ownership. The proposal was revised to add those controls before downstream plan reliance. Proposal-review R2 approved the proposal with no material findings. Spec-review R1 approved the spec with no material findings. Plan-review R1 approved the execution plan with no material findings. Code-review M1 R1 requested changes for missing generated-output presence coverage in the validator foundation; the finding was accepted and resolved with a reusable generated-output presence helper plus positive and negative tests. Code-review M1 R2 found no blocking or required-change findings. Code-review M2 R1 requested changes for requirement modal parity in `assets/requirement-row.md`; the finding was accepted and resolved by making the requirement row asset preserve the full requirement statement field while keeping modal guidance in `SKILL.md`. Code-review M2 R2 was blocked because no new M2 fix surface existed at that time. Code-review M2 R3 found no blocking or required-change findings. Code-review M3 R1 requested changes for review-class validator coverage; the finding was accepted and resolved by checking forbidden policy labels before structural field exemptions. Code-review M3 R2 found no blocking or required-change findings. Code-review M4 R1 requested changes for coverage-map row preservation; the finding was accepted and resolved by restoring requirement and example coverage row-shape parity in the `test-spec` assets and resource-map guidance. Code-review M4 R2 found no blocking or required-change findings. Code-review M5 R1 found no blocking or required-change findings.
+- Final result: Proposal-review R1 requested changes for proof route, per-skill skeleton boundary, generated-output proof boundaries, stricter review-class asset restrictions, and change-local baseline ownership. The proposal was revised to add those controls before downstream plan reliance. Proposal-review R2 approved the proposal with no material findings. Spec-review R1 approved the spec with no material findings. Plan-review R1 approved the execution plan with no material findings. Code-review M1 R1 requested changes for missing generated-output presence coverage in the validator foundation; the finding was accepted and resolved with a reusable generated-output presence helper plus positive and negative tests. Code-review M1 R2 found no blocking or required-change findings. Code-review M2 R1 requested changes for requirement modal parity in `assets/requirement-row.md`; the finding was accepted and resolved by making the requirement row asset preserve the full requirement statement field while keeping modal guidance in `SKILL.md`. Code-review M2 R2 was blocked because no new M2 fix surface existed at that time. Code-review M2 R3 found no blocking or required-change findings. Code-review M3 R1 requested changes for review-class validator coverage; the finding was accepted and resolved by checking forbidden policy labels before structural field exemptions. Code-review M3 R2 found no blocking or required-change findings. Code-review M4 R1 requested changes for coverage-map row preservation; the finding was accepted and resolved by restoring requirement and example coverage row-shape parity in the `test-spec` assets and resource-map guidance. Code-review M4 R2 found no blocking or required-change findings. Code-review M5 R1 found no blocking or required-change findings. Code-review M6 R1 found no blocking or required-change findings after the lean asset correction.
 
 ## Resolution Overview
 
@@ -192,5 +193,9 @@ Validation evidence: `python scripts/validate-skills.py skills/test-spec/SKILL.m
 No material findings.
 
 ### code-review-m5-r1
+
+No material findings.
+
+### code-review-m6-r1
 
 No material findings.
