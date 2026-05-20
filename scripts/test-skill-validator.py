@@ -1361,6 +1361,40 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                         result.stdout + result.stderr,
                     )
 
+    def test_proposal_review_asset_non_allowlisted_field_labels_fail(self) -> None:
+        for label in (
+            "Architecture impact",
+            "Testability notes",
+            "Rollout realism",
+            "Strategic value",
+        ):
+            with self.subTest(label=label), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                self.write_spec_family_asset_fixture(
+                    root,
+                    "proposal-review",
+                    {
+                        "assets/review-result-skeleton.md": self.proposal_family_asset_text(
+                            template="proposal-review-result-skeleton-v1",
+                            skill="proposal-review",
+                            body=f"- {label}: <notes>\n",
+                        ),
+                        "assets/material-finding.md": self.proposal_family_asset_text(
+                            template="proposal-review-material-finding-v1",
+                            skill="proposal-review",
+                            body="- Severity: <severity>\n",
+                        ),
+                    },
+                )
+
+                result = run_validator(root)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(
+                    "proposal-review asset 'assets/review-result-skeleton.md' field label is not in the approved structural-label allowlist: "
+                    + label,
+                    result.stdout + result.stderr,
+                )
+
     def test_proposal_review_asset_policy_prose_fails(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
