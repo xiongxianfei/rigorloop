@@ -74,9 +74,9 @@ Apply a presentation-only readability pass to the three spec-family skills, `spe
 - Last reviewed milestone: M3. Test-Spec Skill Readability And Generated Output Proof
 - Review status: code-review M3 R1 clean-with-notes; no open findings
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
+- Next stage: pr
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: verify and PR handoff remain open.
+- Reason final closeout is or is not ready: PR handoff remains open.
 
 ## Milestones
 
@@ -277,6 +277,7 @@ Apply a presentation-only readability pass to the three spec-family skills, `spe
 - 2026-05-20: M3 implementation completed and targeted validation passed except for the explicitly deferred v0.1.5 repository-tree adapter command debt; milestone is ready for code-review.
 - 2026-05-20: code-review M3 R1 completed clean-with-notes; M3 is closed and the next stage is the final closeout sequence starting with explain-change.
 - 2026-05-20: explain-change recorded durable rationale in `docs/changes/2026-05-20-spec-family-readability-pass/explain-change.md`; next stage is verify.
+- 2026-05-20: final local verify passed with a recorded adapter-layout warning; branch is ready for PR handoff and the next stage is pr.
 
 ## Decision log
 
@@ -364,12 +365,25 @@ Apply a presentation-only readability pass to the three spec-family skills, `spe
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-20-spec-family-readability-pass.md --path docs/plan.md --path docs/changes/2026-05-20-spec-family-readability-pass/change.yaml --path docs/changes/2026-05-20-spec-family-readability-pass/explain-change.md --path docs/changes/2026-05-20-spec-family-readability-pass/review-log.md --path docs/changes/2026-05-20-spec-family-readability-pass/review-resolution.md`
   - `git diff --check -- docs/plans/2026-05-20-spec-family-readability-pass.md docs/plan.md docs/changes/2026-05-20-spec-family-readability-pass`
   - `bash scripts/ci.sh --mode explicit --path docs/plans/2026-05-20-spec-family-readability-pass.md --path docs/plan.md --path docs/changes/2026-05-20-spec-family-readability-pass/change.yaml --path docs/changes/2026-05-20-spec-family-readability-pass/explain-change.md --path docs/changes/2026-05-20-spec-family-readability-pass/review-log.md --path docs/changes/2026-05-20-spec-family-readability-pass/review-resolution.md`
+- Final verify validation passed:
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-20-spec-family-readability-pass`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-20-spec-family-readability-pass/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-20-spec-family-readability-pass.md --path specs/spec-family-readability-pass.md --path specs/spec-family-readability-pass.test.md --path docs/plans/2026-05-20-spec-family-readability-pass.md --path docs/plan.md --path docs/changes/2026-05-20-spec-family-readability-pass/change.yaml --path docs/changes/2026-05-20-spec-family-readability-pass/behavior-preservation.md --path docs/changes/2026-05-20-spec-family-readability-pass/behavior-parity.md --path docs/changes/2026-05-20-spec-family-readability-pass/explain-change.md --path docs/changes/2026-05-20-spec-family-readability-pass/review-log.md --path docs/changes/2026-05-20-spec-family-readability-pass/review-resolution.md`
+  - `git diff --check -- skills/spec/SKILL.md skills/spec-review/SKILL.md skills/test-spec/SKILL.md scripts/test-skill-validator.py docs/proposals/2026-05-20-spec-family-readability-pass.md specs/spec-family-readability-pass.md specs/spec-family-readability-pass.test.md docs/plans/2026-05-20-spec-family-readability-pass.md docs/plan.md docs/changes/2026-05-20-spec-family-readability-pass`
+  - `bash scripts/ci.sh --mode explicit --path skills/spec/SKILL.md --path skills/spec-review/SKILL.md --path skills/test-spec/SKILL.md --path scripts/test-skill-validator.py --path docs/proposals/2026-05-20-spec-family-readability-pass.md --path specs/spec-family-readability-pass.md --path specs/spec-family-readability-pass.test.md --path docs/plans/2026-05-20-spec-family-readability-pass.md --path docs/plan.md --path docs/changes/2026-05-20-spec-family-readability-pass/change.yaml --path docs/changes/2026-05-20-spec-family-readability-pass/behavior-preservation.md --path docs/changes/2026-05-20-spec-family-readability-pass/behavior-parity.md --path docs/changes/2026-05-20-spec-family-readability-pass/explain-change.md --path docs/changes/2026-05-20-spec-family-readability-pass/review-log.md --path docs/changes/2026-05-20-spec-family-readability-pass/review-resolution.md`
+  - `python scripts/build-adapters.py --version v0.1.5 --output-dir <tmpdir>`
+  - `python scripts/validate-adapters.py --root <tmpdir> --version v0.1.5`
+  - `python scripts/build-adapters.py --version v0.1.5 --check` failed on existing tracked repository-tree adapter layout debt and remains an explicit warning.
+  - `python scripts/validate-adapters.py --version v0.1.5` failed on the same existing tracked repository-tree adapter layout debt and remains an explicit warning.
 
 ## Outcome and retrospective
 
-- To be filled after all milestones, explain-change, verify, and PR handoff are complete.
+- Final local verify passed with a recorded adapter-layout warning. The change is branch-ready for PR handoff; PR body/open readiness and hosted CI observation remain downstream.
 
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `verify`.
+- Ready for `pr`.
