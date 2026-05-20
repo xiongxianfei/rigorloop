@@ -43,7 +43,8 @@ PR #79 completed the spec-family readability pass and left spec-family packaging
 - Assets are copied structures, not hidden rules.
 - PR #79 remains the authoritative behavior baseline.
 - `spec-review` assets are limited to `review-result-skeleton.md` and `review-finding.md`.
-- `spec` is capped at four assets and `test-spec` is capped at four assets unless the plan is amended with the higher-count justification required by `SFA-R13`.
+- `spec` is limited to `spec-skeleton.md`; trivial requirement, acceptance-criterion, and decision-log row formats stay inline.
+- `test-spec` is limited to `test-spec-skeleton.md`, `test-case.md`, and `coverage-map-row.md`; trivial edge-case row format stays inline.
 - Generated mirror proof and temporary adapter archive proof are mandatory.
 - Tracked-tree adapter debt may be deferred only with explicit rationale after temporary generated output proof is preserved.
 - Implementation must not start until plan-review passes and the matching test spec is approved.
@@ -72,14 +73,14 @@ The work touches canonical skill source under `skills/`, validator and test scri
 
 ## Current Handoff Summary
 
-- Current milestone: M5
-- Current milestone state: closed
-- Last reviewed milestone: M4
-- Review status: code-review M5 R1 clean-with-notes; no material findings
+- Current milestone: M6
+- Current milestone state: review-requested
+- Last reviewed milestone: M5
+- Review status: M6 implementation ready for code-review after lean asset correction
 - Remaining in-scope implementation milestones: none
-- Next stage: final closeout, starting with explain-change
+- Next stage: code-review for M6
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation milestones are closed, but explain-change, verify, and PR handoff remain incomplete.
+- Reason final closeout is or is not ready: lean asset correction requires code-review before explain-change, verify, and PR handoff.
 
 ## Milestones
 
@@ -119,15 +120,10 @@ The work touches canonical skill source under `skills/`, validator and test scri
 - Files expected:
   - `skills/spec/SKILL.md`
   - `skills/spec/assets/spec-skeleton.md`
-  - `skills/spec/assets/requirement-row.md`
-  - `skills/spec/assets/acceptance-criterion-row.md`
-  - `skills/spec/assets/decision-log-row.md`
   - change-local preservation, parity, token, and cold-read evidence
 - Per-asset justification:
   - `spec-skeleton.md`: used once per new spec; full output skeleton asset to reduce common-path body while keeping compact summary in `SKILL.md`.
-  - `requirement-row.md`: used once per requirement; repeated substructure with stable fields.
-  - `acceptance-criterion-row.md`: used once per acceptance criterion; repeated substructure with stable fields.
-  - `decision-log-row.md`: used when decisions are recorded; accepted as a capped asset because specs commonly carry multiple durable decisions and the row is structural.
+- Inline formats: requirement, acceptance-criterion, and decision-log rows stay in `SKILL.md` because they are one-line structures already covered by inline format guidance.
 - Validation:
   - `python scripts/validate-skills.py skills/spec/SKILL.md`
   - `python scripts/validate-skills.py`
@@ -135,6 +131,7 @@ The work touches canonical skill source under `skills/`, validator and test scri
   - M2 preservation and behavior-parity evidence inspection
   - `git diff --check -- .`
 - Result: closed by code-review M2 R3 after `SFA-M2-CR1` resolution.
+- Current correction: M6 removed the three trivial row assets and their resource-map entries.
 - Risks:
   - Full skeleton asset hides too much contract surface; fall back to inline skeleton for `spec` if code review finds that risk.
 - Rollback:
@@ -175,13 +172,12 @@ The work touches canonical skill source under `skills/`, validator and test scri
   - `skills/test-spec/assets/test-spec-skeleton.md`
   - `skills/test-spec/assets/test-case.md`
   - `skills/test-spec/assets/coverage-map-row.md`
-  - `skills/test-spec/assets/edge-case-row.md`
   - change-local preservation, parity, token, and cold-read evidence
 - Per-asset justification:
   - `test-spec-skeleton.md`: used once per test spec; full output skeleton asset to reduce common-path body while keeping compact summary in `SKILL.md`.
   - `test-case.md`: used once per test case; repeated test case block.
   - `coverage-map-row.md`: used once per requirement or example coverage mapping; preserves separate requirement and example row variants.
-  - `edge-case-row.md`: used once per edge case; repeated edge-case block.
+- Inline format: edge-case coverage stays in `SKILL.md` because it is a trivial one-line mapping.
 - Validation:
   - `python scripts/validate-skills.py skills/test-spec/SKILL.md`
   - `python scripts/validate-skills.py`
@@ -189,6 +185,7 @@ The work touches canonical skill source under `skills/`, validator and test scri
   - M4 preservation and behavior-parity evidence inspection
   - `git diff --check -- skills/test-spec docs/changes/2026-05-20-spec-family-assets-progressive-disclosure`
 - Result: closed by code-review M4 R2 after `SFA-M4-CR1` resolution.
+- Current correction: M6 removed the trivial `edge-case-row.md` asset and its resource-map entry.
 - Validation evidence after `SFA-M4-CR1` fix:
   - `python scripts/validate-skills.py skills/test-spec/SKILL.md` passed.
   - `python scripts/validate-skills.py` passed.
@@ -237,6 +234,41 @@ The work touches canonical skill source under `skills/`, validator and test scri
   - Tracked-tree adapter debt is confused with temporary archive proof; record separate deferral only when allowed by `SFA-R36`.
 - Rollback:
   - Rebuild generated outputs from reverted canonical skills; preserve generic validator changes only when still valid.
+
+### M6. Lean asset correction
+
+- Milestone state: review-requested
+- Goal: Remove low-value row assets and align the contract, validators, generated-output expectations, and evidence with the substantial-template rule.
+- Requirements: `SFA-R3A` through `SFA-R3C`, `SFA-R8`, `SFA-R12`, `SFA-R14` through `SFA-R22`, `SFA-R28` through `SFA-R41`
+- Files expected:
+  - `skills/spec/SKILL.md`
+  - `skills/spec/assets/spec-skeleton.md`
+  - `skills/test-spec/SKILL.md`
+  - `skills/test-spec/assets/test-spec-skeleton.md`
+  - `skills/test-spec/assets/test-case.md`
+  - `skills/test-spec/assets/coverage-map-row.md`
+  - `specs/spec-family-assets-progressive-disclosure.md`
+  - `specs/spec-family-assets-progressive-disclosure.test.md`
+  - `scripts/skill_validation.py`
+  - `scripts/test-skill-validator.py`
+  - generated-output presence fixtures
+  - change-local preservation, generated-output, token, and cold-read evidence
+- Per-asset decision:
+  - Keep `spec-skeleton.md`, `test-spec-skeleton.md`, `test-case.md`, `coverage-map-row.md`, `review-result-skeleton.md`, and `review-finding.md`.
+  - Drop `requirement-row.md`, `acceptance-criterion-row.md`, `decision-log-row.md`, and `edge-case-row.md`.
+- Validation:
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/validate-skills.py`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/measure-skill-tokens.py`
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/spec-family-assets-progressive-disclosure.md --path specs/spec-family-assets-progressive-disclosure.test.md --path docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md --path docs/plan.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/baseline.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/behavior-preservation.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/generated-output-proof.md`
+  - `git diff --check -- .`
+- Result: implementation complete; awaiting code-review.
+- Risks:
+  - Historical review records still mention now-removed row assets; keep them as historical evidence and update current governing/evidence surfaces instead.
+- Rollback:
+  - Restore removed row assets and resource-map entries only if code-review finds a current contract or usability regression.
 
 ## Validation plan
 
@@ -291,7 +323,7 @@ Final closeout:
 - 2026-05-20: accepted and resolved `SFA-M1-CR1` by adding deterministic generated-output presence helper coverage; M1 returned to review-requested.
 - 2026-05-20: code-review M1 R2 returned clean-with-notes; M1 closed and next stage is implement M2.
 - 2026-05-20: M2 implementation started for `spec` assets.
-- 2026-05-20: M2 added the four approved `spec` assets, updated `skills/spec/SKILL.md`, recorded preservation/token/cold-read evidence, and moved to review-requested.
+- 2026-05-20: M2 added the approved `spec` assets, updated `skills/spec/SKILL.md`, recorded preservation/token/cold-read evidence, and moved to review-requested.
 - 2026-05-20: code-review M2 R1 requested changes because `assets/requirement-row.md` narrows requirement rows to `MUST`.
 - 2026-05-20: accepted and resolved `SFA-M2-CR1` by changing `assets/requirement-row.md` to preserve the full requirement statement field, updating the `SKILL.md` resource-map entry, and recording modal-preservation evidence; M2 returned to review-requested.
 - 2026-05-20: code-review M2 R3 returned clean-with-notes; M2 closed and next stage is implement M3.
@@ -299,19 +331,26 @@ Final closeout:
 - 2026-05-20: code-review M3 R1 requested changes because the review-class validator allows forbidden policy labels when they are shaped as field labels.
 - 2026-05-20: accepted and resolved `SFA-M3-CR1` by checking forbidden policy labels before structural field exemptions, adding an explicit `spec-review` structural-label allowlist, and adding fixture coverage for policy-shaped labels; M3 returned to review-requested.
 - 2026-05-20: code-review M3 R2 returned clean-with-notes; M3 closed and next stage is implement M4.
-- 2026-05-20: M4 added the four approved `test-spec` assets, updated `skills/test-spec/SKILL.md`, recorded preservation/token/cold-read evidence, and moved to review-requested.
+- 2026-05-20: M4 added the approved `test-spec` assets, updated `skills/test-spec/SKILL.md`, recorded preservation/token/cold-read evidence, and moved to review-requested.
 - 2026-05-20: code-review M4 R1 requested changes because the coverage-map row extraction does not preserve requirement/example table row shapes.
+- 2026-05-20: accepted and resolved `SFA-M4-CR1` by restoring requirement/example coverage row-shape parity; M4 returned to review-requested.
+- 2026-05-20: code-review M4 R2 returned clean-with-notes; M4 closed and next stage is implement M5.
+- 2026-05-20: M5 recorded generated skill mirror proof, temporary adapter archive proof, adapter validation, tracked-tree deferral, token evidence, and cold-read proof; implementation milestones were closed and next stage became final closeout starting with explain-change.
+- 2026-05-20: code-review M5 R1 found no blocking or required-change findings; M5 closed.
+- 2026-05-20: M6 applied the lean asset correction: dropped trivial row assets, kept substantial skeleton/block assets, updated validators, fixtures, spec, test spec, and evidence, and moved to code-review.
 
 ## Decision log
 
 - 2026-05-20: No separate architecture package for this plan -> the change is constrained to skill text, assets, validators, generated-output proof, and lifecycle evidence; no architecture/data/security/deployment boundary changes are introduced.
 - 2026-05-20: Use five implementation milestones -> separates baseline/validator foundation, each skill family member, and generated-output closeout for reviewable slices.
+- 2026-05-20: Add M6 lean asset correction -> removes row assets whose template bodies are too small to justify packaged files and keeps the substantial assets.
 - 2026-05-20: Test spec comes after plan-review -> follows repository workflow ordering and lets test cases map to concrete milestones.
 - 2026-05-20: Existing `specs/skill-contract.md` plus the approved spec-family assets spec is sufficient for implementation -> no skill-contract spec amendment is required before skill edits.
 
 ## Surprises and discoveries
 
 - 2026-05-20: M3 showed the review-class policy-prose validator was too broad for allowed structural field labels such as `Recording status`; the validator now exempts only approved structural labels and rejects policy-shaped labels before exemption.
+- 2026-05-20: The `spec` row assets and `test-spec` edge-case row asset had a poor metadata-to-content ratio and duplicated inline format guidance, so M6 removed them rather than preserving formalism.
 
 ## Validation notes
 
@@ -395,6 +434,17 @@ Final closeout:
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md --path docs/plan.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/review-log.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/review-resolution.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/reviews/code-review-m4-r1.md`
   - `git diff --check -- docs/changes/2026-05-20-spec-family-assets-progressive-disclosure docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md docs/plan.md`
+- M6 validation passed:
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/validate-skills.py`
+  - `python scripts/build-skills.py --check`
+  - `python scripts/measure-skill-tokens.py`
+  - `python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-m6-adapters-ohAnao`
+  - `python scripts/validate-adapters.py --root /tmp/rigorloop-m6-adapters-ohAnao --version v0.1.5`
+  - Python `zipfile` inspection found all current mapped assets and confirmed removed row assets are absent in all three temporary adapter archives.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-20-spec-family-assets-progressive-disclosure.md --path specs/spec-family-assets-progressive-disclosure.md --path specs/spec-family-assets-progressive-disclosure.test.md --path docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md --path docs/plan.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/baseline.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/behavior-preservation.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/generated-output-proof.md`
+  - `git diff --check -- .`
 
 ## Outcome and retrospective
 

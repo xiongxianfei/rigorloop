@@ -34,15 +34,18 @@ This is an assets-only skill packaging and preservation change. The proof combin
 | `SFA-R1` | `T3`, `T4`, `T5`, `T7` | integration | Asset directories are limited to the three spec-family skills and checked in generated output. |
 | `SFA-R2` | `T2`, `T3`, `T4`, `T5`, `T9` | unit | Validator and review checks block references, scripts, partials, install-root, lockfile, CLI, and unrelated skill assets. |
 | `SFA-R3` | `T2`, `T3`, `T4`, `T5`, `T6` | unit | Asset content and preservation evidence prove assets are structural templates only. |
+| `SFA-R3A` | `T2`, `T3`, `T5`, `T6` | unit | Approved asset inventories drop trivial one-line rows and keep only substantial templates. |
+| `SFA-R3B` | `T3`, `T5`, `T6` | manual | Multi-instance structures justify assets only when they are also substantial. |
+| `SFA-R3C` | `T2`, `T3`, `T5` | manual | Metadata-to-body ratio is treated as an asset-smell check for trivial row templates. |
 | `SFA-R4` | `T3`, `T6` | manual | `spec` rules and lifecycle boundaries remain in `SKILL.md`. |
 | `SFA-R5` | `T5`, `T6` | manual | `test-spec` rules and coverage obligations remain in `SKILL.md`. |
 | `SFA-R6` | `T4`, `T6` | manual | `spec-review` review judgment and recording rules remain in `SKILL.md`. |
 | `SFA-R7` | `T3`, `T6` | manual | `spec` full skeleton asset or fallback is proven. |
-| `SFA-R8` | `T2`, `T3` | unit | `spec` asset count and approved paths are checked. |
+| `SFA-R8` | `T2`, `T3` | unit | `spec` asset inventory is limited to the full skeleton asset. |
 | `SFA-R9` | `T2`, `T4` | unit | `spec-review` asset list is exactly scoped. |
 | `SFA-R10` | `T2`, `T4` | unit | Review-dimension assets and review-judgment assets are blocked. |
 | `SFA-R11` | `T5`, `T6` | manual | `test-spec` full skeleton asset or fallback is proven. |
-| `SFA-R12` | `T2`, `T5` | unit | `test-spec` asset count and approved paths are checked. |
+| `SFA-R12` | `T2`, `T5` | unit | `test-spec` asset inventory is limited to the full skeleton, test-case block, and coverage-map row variants. |
 | `SFA-R13` | `T1`, `T9` | manual | Higher-count justification is either absent because caps are followed or recorded in the plan. |
 | `SFA-R14` | `T2`, `T3`, `T4`, `T5` | unit | Each touched `SKILL.md` has a resource map naming every asset. |
 | `SFA-R15` | `T2`, `T3`, `T4`, `T5` | unit | Resource-map entries use `COPY`, conditions, fill fields, and no-unfilled-placeholder instruction. |
@@ -119,7 +122,7 @@ This is an assets-only skill packaging and preservation change. The proof combin
 - Fixture/setup: `scripts/skill_validation.py`, `scripts/test-skill-validator.py`, validator fixtures for valid and invalid spec-family asset layouts.
 - Steps:
   1. Add positive fixtures for the approved asset layouts.
-  2. Add negative fixtures for unmapped assets, non-`COPY` resource-map verbs, missing fill fields, missing no-placeholder instruction, missing metadata, invalid statuses, missing visible placeholders, filler placeholder content, repository-root dependency requirements, extra assets, `review-dimension-row.md`, and review-policy prose in `spec-review` assets.
+  2. Add negative fixtures for unmapped assets, non-`COPY` resource-map verbs, missing fill fields, missing no-placeholder instruction, missing metadata, invalid statuses, missing visible placeholders, filler placeholder content, repository-root dependency requirements, extra assets, one-line spec row assets, `review-dimension-row.md`, and review-policy prose in `spec-review` assets.
   3. Run the validator unit suite.
   4. Run full skill validation after canonical skill edits.
 - Expected result: all positive fixtures pass, negative fixtures fail for the expected reason, and full skill validation passes.
@@ -132,12 +135,13 @@ This is an assets-only skill packaging and preservation change. The proof combin
 - Level: manual
 - Fixture/setup: baseline summary, edited `skills/spec/SKILL.md`, `skills/spec/assets/*.md`, preservation matrix, behavior-parity evidence.
 - Steps:
-  1. Confirm only the four approved `spec` assets exist.
+  1. Confirm only `assets/spec-skeleton.md` exists under `skills/spec/assets/`.
   2. Confirm `SKILL.md` retains rules, stops, routing, claim boundaries, closed enums, validation obligations, and lifecycle boundaries.
   3. Confirm `spec-skeleton.md` owns the full skeleton and `SKILL.md` keeps a compact output expectation summary, or record inline fallback.
   4. Confirm the full skeleton is not duplicated in both places.
-  5. Confirm every extracted field maps to baseline source content.
-  6. Confirm representative `spec` behavior parity has no unresolved regression.
+  5. Confirm requirement, acceptance-criterion, and decision-log row formats remain inline rather than packaged as trivial assets.
+  6. Confirm every extracted field maps to baseline source content.
+  7. Confirm representative `spec` behavior parity has no unresolved regression.
 - Expected result: `spec` asset extraction preserves behavior and satisfies the asset contract.
 - Failure proves: `spec` assets changed or hid the skill contract.
 - Automation location: `python scripts/validate-skills.py skills/spec/SKILL.md`; preservation and parity evidence under the change root.
@@ -163,12 +167,13 @@ This is an assets-only skill packaging and preservation change. The proof combin
 - Level: manual
 - Fixture/setup: baseline summary, edited `skills/test-spec/SKILL.md`, `skills/test-spec/assets/*.md`, preservation matrix, behavior-parity evidence.
 - Steps:
-  1. Confirm only the four approved `test-spec` assets exist.
+  1. Confirm only `test-spec-skeleton.md`, `test-case.md`, and `coverage-map-row.md` exist under `skills/test-spec/assets/`.
   2. Confirm `SKILL.md` retains rules, stops, routing, claim boundaries, status and level enums, coverage obligations, validation obligations, and lifecycle boundaries.
   3. Confirm `test-spec-skeleton.md` owns the full skeleton and `SKILL.md` keeps a compact output expectation summary, or record inline fallback.
   4. Confirm the full skeleton is not duplicated in both places.
-  5. Confirm every extracted field maps to baseline source content.
-  6. Confirm representative `test-spec` behavior parity has no unresolved regression.
+  5. Confirm edge-case row guidance remains inline rather than packaged as a trivial asset.
+  6. Confirm every extracted field maps to baseline source content.
+  7. Confirm representative `test-spec` behavior parity has no unresolved regression.
 - Expected result: `test-spec` asset extraction preserves behavior and coverage obligations.
 - Failure proves: `test-spec` assets changed or hid the proof-planning contract.
 - Automation location: `python scripts/validate-skills.py skills/test-spec/SKILL.md`; preservation and parity evidence under the change root.

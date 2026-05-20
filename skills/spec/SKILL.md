@@ -110,16 +110,6 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
 - COPY `assets/spec-skeleton.md` when creating or fully rewriting a feature spec.
   Fill: spec title, required-section structures, examples, requirements, acceptance criteria, next artifacts, follow-on artifacts, and readiness.
   Do not emit unfilled placeholders.
-- COPY `assets/requirement-row.md` when adding each normative requirement.
-  Fill: requirement ID and full requirement statement.
-  Use the requirement modal guidance in this skill when writing the statement.
-  Do not emit unfilled placeholders.
-- COPY `assets/acceptance-criterion-row.md` when adding each acceptance criterion.
-  Fill: criterion ID and observable outcome.
-  Do not emit unfilled placeholders.
-- COPY `assets/decision-log-row.md` when recording a durable spec decision.
-  Fill: date, decision, reason, and alternatives rejected.
-  Do not emit unfilled placeholders.
 
 ## Required sections
 
@@ -229,8 +219,6 @@ Read the full file when the whole file is the review target, the relevant sectio
 ```md
 COPY `assets/spec-skeleton.md` for <spec path>.
 Fill every section named in Required sections.
-Use `assets/requirement-row.md`, `assets/acceptance-criterion-row.md`,
-and `assets/decision-log-row.md` for repeated rows when applicable.
 Do not emit unfilled placeholders.
 ```
 

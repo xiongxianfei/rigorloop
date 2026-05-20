@@ -143,9 +143,6 @@ PLAN_ASSET_SECTIONS_PATTERN = re.compile(
 SPEC_FAMILY_ASSET_APPROVED_ASSETS = {
     "spec": {
         "assets/spec-skeleton.md",
-        "assets/requirement-row.md",
-        "assets/acceptance-criterion-row.md",
-        "assets/decision-log-row.md",
     },
     "spec-review": {
         "assets/review-result-skeleton.md",
@@ -155,7 +152,6 @@ SPEC_FAMILY_ASSET_APPROVED_ASSETS = {
         "assets/test-spec-skeleton.md",
         "assets/test-case.md",
         "assets/coverage-map-row.md",
-        "assets/edge-case-row.md",
     },
 }
 SPEC_FAMILY_ASSET_REQUIRED_METADATA_FIELDS = {
