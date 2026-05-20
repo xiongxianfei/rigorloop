@@ -125,3 +125,13 @@ Detailed record: reviews/code-review-m4-r1.md
 Resolution: review-resolution.md#code-review-m4-r1
 Material findings: SFA-M4-CR1
 Open findings: None
+
+### Review entry
+Review ID: code-review-m4-r2
+Stage: code-review
+Round: 2
+Status: clean-with-notes
+Detailed record: reviews/code-review-m4-r2.md
+Resolution: review-resolution.md#code-review-m4-r2
+Material findings: None
+Open findings: None
