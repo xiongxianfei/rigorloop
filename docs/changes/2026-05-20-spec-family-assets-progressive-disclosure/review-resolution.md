@@ -2,17 +2,18 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
 Review closeout: spec-review-r1
 Review closeout: plan-review-r1
+Review closeout: code-review-m1-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `plan-review-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `plan-review-r1`, `code-review-m1-r1`
 - Findings resolved: 5
-- Unresolved findings: 0
-- Final result: Proposal-review R1 requested changes for proof route, per-skill skeleton boundary, generated-output proof boundaries, stricter review-class asset restrictions, and change-local baseline ownership. The proposal was revised to add those controls before downstream plan reliance. Proposal-review R2 approved the proposal with no material findings. Spec-review R1 approved the spec with no material findings. Plan-review R1 approved the execution plan with no material findings.
+- Unresolved findings: 1
+- Final result: Proposal-review R1 requested changes for proof route, per-skill skeleton boundary, generated-output proof boundaries, stricter review-class asset restrictions, and change-local baseline ownership. The proposal was revised to add those controls before downstream plan reliance. Proposal-review R2 approved the proposal with no material findings. Spec-review R1 approved the spec with no material findings. Plan-review R1 approved the execution plan with no material findings. Code-review M1 R1 requested changes for missing generated-output presence coverage in the validator foundation.
 
 ## Resolution Overview
 
@@ -23,6 +24,7 @@ Review closeout: plan-review-r1
 | SFA-PR3 | accepted | resolved | Added generated-output proof boundaries separating generated mirror proof, temporary adapter archive proof, tracked-tree proof, and explicit stale-debt deferral. |
 | SFA-PR4 | accepted | resolved | Added a review-class asset boundary and acceptance criterion limiting `spec-review` assets to structure, labels, placeholders, and short fill hints. |
 | SFA-PR5 | accepted | resolved | Added a change-local baseline summary artifact requirement that maps PR #79 structures to planned assets and preserved `SKILL.md` rules. |
+| SFA-M1-CR1 | needs-decision | open | Code-review M1 R1 found that generated-output presence coverage is missing from the M1 validator foundation. |
 
 ## Resolution Entries
 
@@ -99,3 +101,17 @@ No material findings.
 ### plan-review-r1
 
 No material findings.
+
+### code-review-m1-r1
+
+#### SFA-M1-CR1 - Generated-output presence coverage is missing from the M1 validator foundation
+
+Finding ID: SFA-M1-CR1
+Disposition: needs-decision
+Status: open
+Decision owner: implementation owner
+Decision needed: Accept the finding and add deterministic generated-output presence coverage to M1, or revise the approved plan/test-spec if generated-output presence coverage is intentionally deferred outside M1.
+Owning stage: review-resolution
+Stop state: M1 remains `resolution-needed`; M2 must not begin until this finding is dispositioned and resolved or the approved artifacts are revised.
+Rationale: The finding is actionable, but implementation has not yet recorded an accepted disposition or fix.
+Validation target: Review-resolution records a final disposition and, if accepted, validation proves generated-output presence coverage is implemented.
