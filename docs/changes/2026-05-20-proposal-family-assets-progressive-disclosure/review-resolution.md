@@ -9,6 +9,7 @@ Review closeout: proposal-review-r2
 Review closeout: spec-review-r1
 Review closeout: plan-review-r1
 Review closeout: code-review-m1-r1
+Review closeout: code-review-m1-r2
 
 ## Resolution Entries
 
@@ -108,3 +109,7 @@ Command evidence:
 
 Resolution:
 Added a closed-allowlist validation path for `proposal-review` asset field labels. Forbidden review-policy wording still fails, approved structural labels still pass, and non-allowlisted field labels now fail with a specific structural-label allowlist error. M1 is returned to `code-review`; M2-M4 remain open and are not ready from this resolution alone.
+
+### code-review-m1-r2
+
+No material findings.

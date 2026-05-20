@@ -3,7 +3,7 @@
 This file tracks active, blocked, done, and superseded plans.
 
 ## Active
-- [2026-05-20 Proposal-Family Assets Progressive Disclosure](plans/2026-05-20-proposal-family-assets-progressive-disclosure.md) - active execution plan for adding assets-only progressive disclosure to `proposal` and `proposal-review`; M1 baseline and validator foundation has resolved `PFA-M1-CR1` and is ready for code-review rerun, with per-skill asset milestones, generated-output proof, token-cost P evidence, and final lifecycle closeout still in scope.
+- [2026-05-20 Proposal-Family Assets Progressive Disclosure](plans/2026-05-20-proposal-family-assets-progressive-disclosure.md) - active execution plan for adding assets-only progressive disclosure to `proposal` and `proposal-review`; M1 baseline and validator foundation is closed after clean code-review M1 R2, M2 proposal skeleton asset is next, with proposal-review asset extraction, generated-output proof, token-cost P evidence, and final lifecycle closeout still in scope.
 
 ## Blocked
 - none yet
