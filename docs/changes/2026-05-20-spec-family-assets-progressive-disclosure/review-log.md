@@ -85,3 +85,13 @@ Detailed record: reviews/code-review-m2-r2.md
 Resolution: review-resolution.md#code-review-m2-r2
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: code-review-m2-r3
+Stage: code-review
+Round: 3
+Status: clean-with-notes
+Detailed record: reviews/code-review-m2-r3.md
+Resolution: review-resolution.md#code-review-m2-r3
+Material findings: None
+Open findings: None
