@@ -72,12 +72,12 @@ The work touches canonical skill source under `skills/`, validator and test scri
 
 ## Current Handoff Summary
 
-- Current milestone: M1
-- Current milestone state: review-requested
-- Last reviewed milestone: none
-- Review status: code-review M1 R1 changes-requested; `SFA-M1-CR1` resolved; awaiting code-review rerun
-- Remaining in-scope implementation milestones: M1, M2, M3, M4, M5
-- Next stage: code-review M1 rerun
+- Current milestone: M2
+- Current milestone state: planned
+- Last reviewed milestone: M1
+- Review status: code-review M1 R2 clean-with-notes; no required review-resolution
+- Remaining in-scope implementation milestones: M2, M3, M4, M5
+- Next stage: implement M2
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation milestones, code reviews, generated-output proof, explain-change, verify, and PR handoff remain incomplete.
 
@@ -85,7 +85,7 @@ The work touches canonical skill source under `skills/`, validator and test scri
 
 ### M1. Baseline summary and validator foundation
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Create the change-local baseline summary and deterministic validation coverage before skill text changes.
 - Requirements: `SFA-R25` through `SFA-R29`, `SFA-R42`, `SFA-R43`, `AC-SFA-014`, `AC-SFA-015`
 - Files expected:
@@ -105,7 +105,7 @@ The work touches canonical skill source under `skills/`, validator and test scri
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/spec-family-assets-progressive-disclosure.md --path docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md --path docs/plan.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml`
   - `git diff --check -- scripts/skill_validation.py scripts/test-skill-validator.py docs/changes/2026-05-20-spec-family-assets-progressive-disclosure docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md docs/plan.md`
-- Result: M1 fix implemented; `SFA-M1-CR1` resolved and awaiting code-review rerun.
+- Result: closed by code-review M1 R2 after `SFA-M1-CR1` resolution.
 - Risks:
   - Validator overblocks legitimate assets; keep checks deterministic and use bounded heuristics only where declared.
 - Rollback:
@@ -273,6 +273,7 @@ Final closeout:
 - 2026-05-20: M1 implemented baseline summary, proof-route assessment, behavior-preservation scaffold, and deterministic validator coverage; milestone moved to review-requested.
 - 2026-05-20: code-review M1 R1 requested changes for missing generated-output presence coverage in the validator foundation.
 - 2026-05-20: accepted and resolved `SFA-M1-CR1` by adding deterministic generated-output presence helper coverage; M1 returned to review-requested.
+- 2026-05-20: code-review M1 R2 returned clean-with-notes; M1 closed and next stage is implement M2.
 
 ## Decision log
 
@@ -305,6 +306,11 @@ Final closeout:
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/review-log.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/review-resolution.md --path docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md --path docs/plan.md`
   - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-20-spec-family-assets-progressive-disclosure`
+- M1 R2 code-review recording validation passed:
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/review-log.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/review-resolution.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/reviews/code-review-m1-r2.md --path docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md --path docs/plan.md`
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-20-spec-family-assets-progressive-disclosure`
+  - `git diff --check -- docs/changes/2026-05-20-spec-family-assets-progressive-disclosure docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md docs/plan.md`
 
 ## Outcome and retrospective
 
