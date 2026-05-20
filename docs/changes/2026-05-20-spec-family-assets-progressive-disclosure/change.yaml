@@ -28,6 +28,7 @@ requirements:
   - Keep rules, stop conditions, enums, review dimensions, coverage obligations, routing, and lifecycle boundaries in SKILL.md.
   - Require generated skill mirror and temporary generated adapter proof for packaged assets.
   - Require a change-local baseline summary before implementation.
+  - Implement M5 generated mirror, temporary adapter archive, token, and cold-read proof before M5 code review.
 tests:
   - Artifact lifecycle validation for the proposal and change-local review artifacts.
   - Artifact lifecycle validation for the focused spec.
@@ -53,6 +54,9 @@ tests:
   - Behavior-preservation, token, and cold-read evidence inspection for M3.
   - Targeted and full skill validation after M4 `test-spec` asset extraction.
   - Behavior-preservation, token, and cold-read evidence inspection for M4.
+  - Generated skill mirror proof for spec-family assets.
+  - Temporary adapter archive build and validation proof for spec-family assets.
+  - Token-cost and cold-read evidence inspection for M5.
 validation:
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-20-spec-family-assets-progressive-disclosure.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/review-log.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/review-resolution.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/reviews/proposal-review-r1.md
     result: pass_validated_1_lifecycle_artifact
@@ -282,6 +286,30 @@ validation:
     result: pass_validated_4_lifecycle_artifacts_after_code_review_m4_r2
   - command: git diff --check -- docs/changes/2026-05-20-spec-family-assets-progressive-disclosure docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md docs/plan.md
     result: pass_after_code_review_m4_r2
+  - command: python scripts/build-skills.py --check
+    result: pass_validated_generated_skills_using_temporary_output_after_m5
+  - command: python scripts/build-skills.py --output-dir /tmp/rigorloop-m5-skills-mirror
+    result: pass_generated_skill_mirror_contains_all_spec_family_assets_after_m5
+  - command: python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-m5-adapters-db7QUP
+    result: pass_built_codex_claude_opencode_adapter_archives_after_m5
+  - command: python scripts/validate-adapters.py --root /tmp/rigorloop-m5-adapters-db7QUP --version v0.1.5
+    result: pass_validated_temporary_adapter_archives_after_m5
+  - command: python -c "inspect temporary adapter archives with zipfile for spec-family assets"
+    result: pass_all_three_adapter_archives_include_all_mapped_spec_family_assets_after_m5
+  - command: python scripts/build-adapters.py --check --version v0.1.5 --verbose
+    result: deferred_tracked_tree_expanded_adapter_files_missing_after_temporary_archive_proof_after_m5
+  - command: python scripts/measure-skill-tokens.py
+    result: pass_measured_23_skill_files_after_m5
+  - command: python scripts/validate-skills.py
+    result: pass_validated_23_skill_files_after_m5
+  - command: python scripts/test-skill-validator.py
+    result: pass_142_tests_after_m5
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml
+    result: pass_valid_change_metadata_after_m5
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-20-spec-family-assets-progressive-disclosure.md --path specs/spec-family-assets-progressive-disclosure.md --path specs/spec-family-assets-progressive-disclosure.test.md --path docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md --path docs/plan.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/behavior-preservation.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/generated-output-proof.md
+    result: pass_validated_4_lifecycle_artifacts_after_m5
+  - command: git diff --check -- .
+    result: pass_after_m5
 changed_files:
   - docs/proposals/2026-05-20-spec-family-assets-progressive-disclosure.md
   - specs/spec-family-assets-progressive-disclosure.md
@@ -291,6 +319,7 @@ changed_files:
   - docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml
   - docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/baseline.md
   - docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/behavior-preservation.md
+  - docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/generated-output-proof.md
   - docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/review-log.md
   - docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/review-resolution.md
   - docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/reviews/proposal-review-r1.md

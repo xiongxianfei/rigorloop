@@ -73,13 +73,13 @@ The work touches canonical skill source under `skills/`, validator and test scri
 ## Current Handoff Summary
 
 - Current milestone: M5
-- Current milestone state: planned
+- Current milestone state: review-requested
 - Last reviewed milestone: M4
 - Review status: code-review M4 R2 clean-with-notes; no material findings
 - Remaining in-scope implementation milestones: M5
-- Next stage: implement M5
+- Next stage: code-review M5
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M5 generated-output proof, M5 code review, explain-change, verify, and PR handoff remain incomplete.
+- Reason final closeout is or is not ready: M5 code review, explain-change, verify, and PR handoff remain incomplete.
 
 ## Milestones
 
@@ -202,7 +202,7 @@ The work touches canonical skill source under `skills/`, validator and test scri
 
 ### M5. Generated output, family proof, and closeout
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Prove generated mirrors and temporary adapter packages include all mapped assets, then prepare final lifecycle closeout.
 - Requirements: `SFA-R32` through `SFA-R41`, `AC-SFA-008` through `AC-SFA-013`
 - Files expected:
@@ -222,7 +222,17 @@ The work touches canonical skill source under `skills/`, validator and test scri
   - `python scripts/validate-change-metadata.py docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-20-spec-family-assets-progressive-disclosure.md --path specs/spec-family-assets-progressive-disclosure.md --path specs/spec-family-assets-progressive-disclosure.test.md --path docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md --path docs/plan.md --path docs/changes/2026-05-20-spec-family-assets-progressive-disclosure/change.yaml`
   - `git diff --check -- .`
-- Result: pending
+- Result: generated mirror proof, temporary adapter archive proof, token evidence, cold-read evidence, and tracked-tree deferral recorded; ready for code-review.
+- Validation evidence:
+  - `python scripts/build-skills.py --check` passed.
+  - `python scripts/build-skills.py --output-dir /tmp/rigorloop-m5-skills-mirror` passed; mirror inspection found all mapped spec-family assets.
+  - `python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/rigorloop-m5-adapters-db7QUP` passed.
+  - `python scripts/validate-adapters.py --root /tmp/rigorloop-m5-adapters-db7QUP --version v0.1.5` passed.
+  - Python `zipfile` archive inspection found all mapped spec-family assets in Codex, Claude, and opencode temporary adapter archives.
+  - `python scripts/build-adapters.py --check --version v0.1.5 --verbose` failed on known missing tracked expanded adapter files under `dist/adapters/`; deferred after temporary archive proof under `SFA-R36`.
+  - `python scripts/measure-skill-tokens.py` passed.
+  - `python scripts/validate-skills.py` passed.
+  - `python scripts/test-skill-validator.py` passed with 142 tests.
 - Risks:
   - Tracked-tree adapter debt is confused with temporary archive proof; record separate deferral only when allowed by `SFA-R36`.
 - Rollback:
