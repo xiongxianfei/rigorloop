@@ -54,12 +54,12 @@ The review-artifact parser contract remains unchanged. The implementation must p
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Code-review assets
-- Current milestone state: review-requested
-- Last reviewed milestone: M1. Validator foundation and contract sufficiency assessment
-- Review status: M2 implementation ready for code-review
-- Remaining in-scope implementation milestones: M2, M3, M4, M5
-- Next stage: code-review M2
+- Current milestone: M3. Proposal-review asset conformance
+- Current milestone state: ready
+- Last reviewed milestone: M2. Code-review assets
+- Review status: M2 clean-with-notes; no open findings
+- Remaining in-scope implementation milestones: M3, M4, M5
+- Next stage: implement M3
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation milestones, code-review, review-resolution if triggered, explain-change, verify, and PR handoff are still outstanding.
 
@@ -109,7 +109,7 @@ The review-artifact parser contract remains unchanged. The implementation must p
 
 ### M2. Code-review assets
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Add `code-review` material-finding and result-skeleton assets, resource-map entries, and preservation/parity evidence.
 - Requirements: RSF-R1 through RSF-R30, RSF-R43, AC-RSF-001 through AC-RSF-013
 - Files/components likely touched:
@@ -146,7 +146,7 @@ The review-artifact parser contract remains unchanged. The implementation must p
 
 ### M3. Proposal-review asset conformance
 
-- Milestone state: planned
+- Milestone state: ready
 - Goal: Bring existing `proposal-review` assets and resource-map entries under the review-family contract without changing proposal-review behavior.
 - Requirements: RSF-R1 through RSF-R30, RSF-R43, AC-RSF-001 through AC-RSF-013
 - Files/components likely touched:
@@ -314,6 +314,7 @@ The review-artifact parser contract remains unchanged. The implementation must p
 - 2026-05-21: `RSF-M1-CR1` accepted and fixed. The non-enum severity test now inserts an actual `Severity: not-a-current-enum` field before asserting structure validation passes. M1 is ready for code-review rerun.
 - 2026-05-21: M1 code-review rerun returned clean-with-notes. M1 is closed and the active handoff is `implement M2`.
 - 2026-05-21: M2 added `code-review` material-finding and result-skeleton assets, resource-map entries, focused validator coverage, and preservation evidence. M2 is ready for code-review.
+- 2026-05-21: M2 code-review returned clean-with-notes. M2 is closed and the active handoff is `implement M3`.
 
 ## Decision log
 
@@ -338,6 +339,7 @@ The review-artifact parser contract remains unchanged. The implementation must p
 - 2026-05-21: After `RSF-M1-CR1` fix, focused validation passed: `python scripts/test-review-artifact-validator.py`; `python scripts/test-skill-validator.py`; `python scripts/validate-skills.py`.
 - 2026-05-21: M1 code-review rerun recorded clean-with-notes after `RSF-M1-CR1` resolution.
 - 2026-05-21: M2 targeted validation passed: `python scripts/test-skill-validator.py`; `python scripts/validate-skills.py`; `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape`; `git diff --check --`.
+- 2026-05-21: M2 code-review recorded clean-with-notes with no material findings.
 
 ## Outcome and retrospective
 
@@ -346,5 +348,5 @@ The review-artifact parser contract remains unchanged. The implementation must p
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `code-review M2`.
+- Ready for `implement M3`.
 - Not ready for final closeout or PR; implementation, code-review, review-resolution if triggered, explain-change, verify, and PR handoff remain.
