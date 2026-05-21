@@ -21,6 +21,7 @@ tests:
   - Test-spec authoring created the fixture-driven proof plan for compact change metadata validation.
   - Maintainer approved the active test spec for implementation reliance.
   - M1 added compact shape recognition and legacy compatibility validator coverage; M1 is ready for code-review.
+  - Code-review M1 R1 returned clean-with-notes with no material findings; M1 is closed.
 review:
   status: clean
   unresolved_items: 0
@@ -107,6 +108,14 @@ validation:
     result: pass_after_m1_implementation
   - command: python -m py_compile scripts/validate-change-metadata.py scripts/change_metadata_semantics.py
     result: pass_after_m1_implementation
+  - command: git diff --check --
+    result: pass_after_code_review_m1_r1_recording
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml
+    result: pass_after_code_review_m1_r1_recording
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-compact-change-validation-metadata
+    result: pass_reviews_5_findings_3_log_entries_5_resolution_entries_3_after_code_review_m1_r1_recording
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-05-21-compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.md --path specs/compact-change-validation-metadata.test.md --path docs/plans/2026-05-21-compact-change-validation-metadata.md --path docs/plan.md --path docs/changes/2026-05-21-compact-change-validation-metadata/change.yaml --path docs/changes/2026-05-21-compact-change-validation-metadata/review-log.md --path docs/changes/2026-05-21-compact-change-validation-metadata/review-resolution.md --path docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md
+    result: pass_after_code_review_m1_r1_recording
 changed_files:
   - docs/proposals/2026-05-21-compact-change-validation-metadata.md
   - specs/compact-change-validation-metadata.md
@@ -120,6 +129,7 @@ changed_files:
   - docs/changes/2026-05-21-compact-change-validation-metadata/reviews/spec-review-r1.md
   - docs/changes/2026-05-21-compact-change-validation-metadata/reviews/spec-review-r2.md
   - docs/changes/2026-05-21-compact-change-validation-metadata/reviews/plan-review-r1.md
+  - docs/changes/2026-05-21-compact-change-validation-metadata/reviews/code-review-m1-r1.md
   - scripts/validate-change-metadata.py
   - scripts/test-change-metadata-validator.py
   - tests/fixtures/change-metadata/compact-valid/change.yaml

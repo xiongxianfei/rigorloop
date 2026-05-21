@@ -11,6 +11,7 @@ This ledger records formal lifecycle reviews for the compact change validation m
 | proposal-review-r1 | proposal-review | 1 | `docs/proposals/2026-05-21-compact-change-validation-metadata.md` | `reviews/proposal-review-r1.md` | approved | 0 | recorded |
 | spec-review-r2 | spec-review | 2 | `specs/compact-change-validation-metadata.md` | `reviews/spec-review-r2.md` | approved | 0 | recorded |
 | plan-review-r1 | plan-review | 1 | `docs/plans/2026-05-21-compact-change-validation-metadata.md` | `reviews/plan-review-r1.md` | approved | 0 | recorded |
+| code-review-m1-r1 | code-review | 1 | `87c5cd4` | `reviews/code-review-m1-r1.md` | clean-with-notes | 0 | recorded |
 
 ## Review Entries
 
