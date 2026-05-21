@@ -59,9 +59,9 @@ The review-artifact parser contract remains unchanged. The implementation must p
 - Last reviewed milestone: M5. Generated output, token, cold-read, and lifecycle closeout
 - Review status: M5 clean-with-notes; no open findings
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: explain-change, verify, and PR handoff are still outstanding.
+- Reason final closeout is or is not ready: verify and PR handoff are still outstanding.
 
 ## Milestones
 
@@ -322,6 +322,7 @@ The review-artifact parser contract remains unchanged. The implementation must p
 - 2026-05-21: M4 code-review returned clean-with-notes. M4 is closed and the active handoff is `implement M5`.
 - 2026-05-21: M5 recorded generated skill mirror proof, temporary adapter archive proof, token-cost evidence, cold-read proof, scope-boundary proof, and follow-on triggers. M5 is ready for code-review.
 - 2026-05-21: M5 code-review returned clean-with-notes. All implementation milestones are closed and the active handoff is `explain-change`.
+- 2026-05-21: Explain-change recorded durable rationale linking the diff to the proposal, spec requirements, test spec, plan milestones, review-resolution findings, validation evidence, rejected alternatives, scope controls, and follow-ups. Active handoff is `verify`.
 
 ## Decision log
 
@@ -353,6 +354,7 @@ The review-artifact parser contract remains unchanged. The implementation must p
 - 2026-05-21: M4 code-review recorded clean-with-notes with no material findings.
 - 2026-05-21: M5 generated-output validation passed: `python scripts/build-skills.py --check`; `python scripts/build-adapters.py --version v0.1.5 --output-dir /tmp/tmp.cG1mr7T4PH`; `python scripts/validate-adapters.py --root /tmp/tmp.cG1mr7T4PH --version v0.1.5`; `python scripts/measure-skill-tokens.py`.
 - 2026-05-21: M5 code-review recorded clean-with-notes with no material findings.
+- 2026-05-21: Explain-change artifact created at `docs/changes/2026-05-21-review-skill-family-consistency-parser-owned-finding-shape/explain-change.md`; local validation pending verify.
 
 ## Outcome and retrospective
 
@@ -361,5 +363,5 @@ The review-artifact parser contract remains unchanged. The implementation must p
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Ready for `explain-change`.
-- Not ready for final closeout or PR; explain-change, verify, and PR handoff remain.
+- Ready for `verify`.
+- Not ready for final closeout or PR; verify and PR handoff remain.
