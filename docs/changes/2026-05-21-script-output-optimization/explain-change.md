@@ -6,6 +6,8 @@ This change makes `scripts/test-select-validation.py` compact on success and act
 
 The work also records the audit, behavior-preservation proof, review resolutions, and CI-wrapper preservation evidence required by the approved lifecycle. `scripts/ci.sh` was not changed because the M4 proof showed the existing wrapper already hides successful child output by default, exposes it under `--verbose`, and expands failed command output.
 
+After the first final-verify attempt, PR-mode selected CI exposed a routing gap for four change-local evidence files created by this initiative. A narrow selector-maintenance patch now routes those evidence files through the existing lifecycle validation check and adds selector regression coverage for that routing.
+
 ## Problem
 
 The proposal identified a maintainer-experience defect: passing validation output scaled with work performed instead of information needed to act. A passing 62-test run communicated one actionable fact through a long list of `ok` lines. The approved direction was presentation-only: shorten success output without changing validation behavior, selected tests, failure detection, exit codes, or repair evidence.
@@ -27,6 +29,10 @@ The proposal identified a maintainer-experience defect: passing validation outpu
   - Mapped default success/failure, verbose, quiet, conflicting flags, zero-test safety, rerun guidance, JSON deferral, wrapper preservation, and behavior-preservation proof to concrete tests.
 - Plan: [docs/plans/2026-05-21-script-output-optimization.md](/home/xiongxianfei/data/20260419-rigorloop/docs/plans/2026-05-21-script-output-optimization.md:1)
   - Split the work into audit/baseline, tests, formatter implementation, CI-wrapper preservation, and lifecycle evidence milestones.
+- Post-verify selector-maintenance decision:
+  - Final verify found PR-mode CI blocked on `output-contract-red-test.md`, `script-output-audit.md`, `selected-tests-baseline.txt`, and `selected-tests-m3.txt` because those required evidence files were classified as `change-local-unsupported`.
+  - The safe fix was to route those exact evidence filenames as `change-local-lifecycle`, reusing `artifact_lifecycle.validate` rather than weakening CI or renaming durable evidence after review.
+  - Code-review `code-review-ci-routing-r1` closed this maintenance patch with no material findings.
 
 ## Diff Rationale By Area
 
@@ -42,6 +48,8 @@ The proposal identified a maintainer-experience defect: passing validation outpu
 | `docs/proposals`, `specs`, `docs/plans`, `docs/plan.md`, `change.yaml` | Added and maintained lifecycle artifacts, requirements, milestone state, validation notes, and active-plan index state | Keep this non-trivial change reviewable and avoid chat-only lifecycle state | repository workflow contract and active plan | metadata, lifecycle, and review-artifact validation |
 | `review-log.md`, `review-resolution.md`, `reviews/` | Recorded material findings and clean review receipts across proposal, spec, architecture, plan, and implementation milestones | Preserve review evidence and required dispositions | formal review recording rules | closeout review-artifact validation reports 14 reviews, 10 findings, 14 log entries, and 10 resolution entries |
 | `scripts/ci.sh` | No production change | M4 proved existing wrapper behavior already satisfied the first-slice boundary | spec `R28`-`R31`, plan `M4` | wrapper default, verbose, failed-output expansion, and focused wrapper regression proofs passed |
+| `scripts/validation_selection.py` | Routed `output-contract-red-test.md`, `script-output-audit.md`, `selected-tests-baseline.txt`, and `selected-tests-m3.txt` as `change-local-lifecycle` | Final verify proved PR-mode CI otherwise blocked before validating required evidence files | post-verify CI blocker, `TSRO-014`, code-review `code-review-ci-routing-r1` | PR-mode CI now passes and selects `artifact_lifecycle.validate` for the evidence files |
+| `scripts/test-select-validation.py` selector fixtures | Added exact path fixtures for the four evidence filenames | Keep the selector-routing fix deterministic and regression-tested | selector maintenance review, `TSRO-014` | `python scripts/test-select-validation.py` passes 73 tests |
 
 ## Tests Added Or Changed
 
@@ -49,6 +57,7 @@ The proposal identified a maintainer-experience defect: passing validation outpu
 - `ScriptOutputFixtureTests.fixture_contract_failure` provides a controlled failing target so failure output can be tested without changing the real validation suite.
 - The default validation command now includes output-contract acceptance coverage after the `SRO-M3-CR1` review fix.
 - Existing CI-wrapper regression tests were used for M4 to prove default child-output hiding, failed child-output expansion, and verbose output ordering without editing `scripts/ci.sh`.
+- Selector regression fixtures now prove the four script-output evidence files classify as `change-local-lifecycle` and route to `artifact_lifecycle.validate`, closing the PR-mode CI blocker found by final verify.
 
 ## Validation Evidence Before Final Verify
 
@@ -79,6 +88,14 @@ The proposal identified a maintainer-experience defect: passing validation outpu
   - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-script-output-optimization` passed.
   - `git diff --check --` passed.
   - `bash scripts/ci.sh --mode explicit --path docs/changes/2026-05-21-script-output-optimization/explain-change.md --path docs/changes/2026-05-21-script-output-optimization/change.yaml --path docs/plans/2026-05-21-script-output-optimization.md --path docs/plan.md --jobs 1` passed.
+- Selector-maintenance and review proof:
+  - `python scripts/test-select-validation.py` passed after routing maintenance.
+  - `bash scripts/ci.sh --mode pr --base $(git merge-base HEAD main) --head HEAD --jobs 1` passed after routing maintenance, selecting `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate`, and `selector.regression`.
+  - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-05-21-script-output-optimization` passed after `code-review-ci-routing-r1`: 15 reviews, 10 findings, 15 log entries, 10 resolution entries.
+  - `python scripts/validate-change-metadata.py docs/changes/2026-05-21-script-output-optimization/change.yaml` passed.
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...` passed for the review-recording artifacts.
+  - `git diff --check --` passed.
+  - Selected CI for the review-recording artifacts passed with `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`.
 
 These are pre-final-verify results. Final `verify` has not run yet.
 
@@ -98,7 +115,7 @@ These are pre-final-verify results. Final `verify` has not run yet.
   - `SRO-M2-CR1` required removing expected-failure masking and recording explicit red-test proof.
   - `SRO-M3-CR1` required output-contract tests to run in the ordinary post-M3 validation path.
 - All ten material findings were accepted and resolved in [review-resolution.md](/home/xiongxianfei/data/20260419-rigorloop/docs/changes/2026-05-21-script-output-optimization/review-resolution.md:1).
-- Clean follow-up reviews closed M1, M2, M3, M4, and M5 with no material findings.
+- Clean follow-up reviews closed M1, M2, M3, M4, M5, and the post-verify selector-routing maintenance patch with no material findings.
 
 ## Alternatives Rejected
 
@@ -108,13 +125,15 @@ These are pre-final-verify results. Final `verify` has not run yet.
 - New JSON support in the first slice: deferred because it is a separate machine-readable contract.
 - Common script-output helper library: deferred until more scripts adopt the pattern and shared abstraction pressure is real.
 - Broad CI-wrapper rewrite: rejected by the first-slice boundary and unnecessary after M4 proof.
+- Manual-only routing for the four evidence files after final verify: rejected because hosted PR CI uses `scripts/ci.sh --mode pr`, so those files needed deterministic selector routing before PR handoff.
 
 ## Scope Control
 
 - The first implementation target stayed `scripts/test-select-validation.py`.
 - `scripts/ci.sh` was audited and tested but left unchanged.
 - Test selection and validation behavior were preserved except for adding required output-contract acceptance tests to the ordinary validation path after M3.
-- No generated adapters, public skills, workflow specs, selector classification logic, JSON schema, release artifacts, or lifecycle-validator behavior were changed for this initiative.
+- No generated adapters, public skills, workflow specs, JSON schema, release artifacts, or lifecycle-validator behavior were changed for this initiative.
+- Selector classification logic changed only in the post-verify maintenance patch needed to route this initiative's required evidence files through existing lifecycle validation.
 - The shorter output contract does not hide failure evidence behind `--verbose`, and quiet mode remains silent only for successful outcomes.
 
 ## Risks And Follow-Ups
@@ -123,6 +142,7 @@ These are pre-final-verify results. Final `verify` has not run yet.
 - PR handoff has not happened, and hosted CI has not been observed for this branch.
 - If additional scripts adopt the same output shape, a common helper library can be proposed later.
 - JSON output and broader CI log standardization remain follow-on proposals, not part of this first slice.
+- The selector-routing maintenance is intentionally narrow. Additional change-local evidence filenames should still require explicit routing decisions instead of becoming blanket `docs/changes/**` pass-throughs.
 
 ## Readiness
 
